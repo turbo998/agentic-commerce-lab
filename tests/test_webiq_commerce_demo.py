@@ -22865,6 +22865,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-hospital-laundry-tunnel-ironer-sandbox", demo_zh)
 
+    def test_b2b_industrial_psa_membrane_nitrogen_generator_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_psa_membrane_nitrogen_generator_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant $240 O2 span gas/zero dust + <=0.003mg/m3 oil guard + 99.995% N2 -> 200 OK ($120,000.00)
+        ok_res = evaluate_b2b_industrial_psa_membrane_nitrogen_generator_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_PSA_MEMBRANE_NITROGEN_GENERATOR_SETTLED")
+        self.assertEqual(ok_res.settled_psa_nitrogen_generator_cents, 12000000)
+
+        # 2. $18,500 CMS sieve/membrane upcoding on $240 O2 sensor drift or $165 valve leak -> 403 Blocked
+        cms_403 = evaluate_b2b_industrial_psa_membrane_nitrogen_generator_policy(
+            span_gas_o2_sensor_and_cycle_valve_no_carbon_dust_verified=False,
+        )
+        self.assertFalse(cms_403.allowed)
+        self.assertEqual(cms_403.http_status, 403)
+        self.assertEqual(
+            cms_403.decision_code,
+            "CMS_SIEVE_OR_MEMBRANE_REPLACEMENT_UPCODING_ON_240_DOLLAR_O2_SENSOR_VALVE_BLOCKED",
+        )
+
+        # 3. Upstream $320 oil-vapor filter bypass (>0.003 mg/m3) or bed hold-down neglect -> 422 Blocked
+        oil_422 = evaluate_b2b_industrial_psa_membrane_nitrogen_generator_policy(
+            upstream_oil_vapor_0003mg_filter_and_bed_hold_down_verified=False,
+        )
+        self.assertFalse(oil_422.allowed)
+        self.assertEqual(oil_422.http_status, 422)
+        self.assertEqual(
+            oil_422.decision_code,
+            "UPSTREAM_OIL_VAPOR_FILTER_BYPASS_OR_BED_HOLD_DOWN_DUSTING_NEGLECT",
+        )
+
+        # 4. Failed N2 purity ppm, air factor or room <19.5% O2 depletion alarm -> 451 Hold
+        pur_451 = evaluate_b2b_industrial_psa_membrane_nitrogen_generator_policy(
+            webiq_n2_purity_air_factor_and_room_o2_alarm_clean=False,
+        )
+        self.assertFalse(pur_451.allowed)
+        self.assertEqual(pur_451.http_status, 451)
+
+        # 5. Web IQ $240 O2 sensor + $165 cycle valve + $320 oil guard saving $26,400 ($93,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_psa_membrane_nitrogen_generator_policy(
+            automated_o2_sensor_cycle_valve_and_oil_guard_savings_cents=2640000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_psa_nitrogen_generator_cents, 9360000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_psa_membrane_nitrogen_generator_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-psa-membrane-nitrogen-generator-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
