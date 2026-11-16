@@ -37023,6 +37023,106 @@ def evaluate_b2b_hospital_pneumatic_tube_system_pts_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BWarehouseMotiveForkliftBatteryDecision:
+    """Deterministic decision output for B2B warehouse motive forklift battery, $240 2V cell & OSHA 1910.178g."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    motive_forklift_battery_lane: str
+    settled_motive_forklift_battery_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_warehouse_motive_forklift_battery_policy(
+    *,
+    mandate_id: str = "b2b_warehouse_motive_forklift_battery_osha1910_178g_single_2v_cell_mandate_2026",
+    motive_forklift_battery_cents: int = 12600000,
+    per_cell_2v_load_matrix_and_single_cell_swap_verified: bool = True,
+    load_bank_80pct_ah_curve_no_acid_spiking_and_sb350_verified: bool = True,
+    webiq_osha1910_178g_h2_vent_and_scrap_lead_credit_clean: bool = True,
+    automated_single_2v_cell_extraction_and_desulfation_savings_cents: int = 0,
+) -> B2BWarehouseMotiveForkliftBatteryDecision:
+    """Evaluate B2B warehouse motive forklift battery 24-cell load matrix, $240 2V cell swap & OSHA 1910.178g."""
+    if not mandate_id.startswith("b2b_warehouse_motive_forklift_battery_osha1910_178g_single_2v_cell_mandate_"):
+        return B2BWarehouseMotiveForkliftBatteryDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_MOTIVE_FORKLIFT_BATTERY_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            motive_forklift_battery_lane="INVALID_MOTIVE_FORKLIFT_BATTERY_MANDATE_PREFIX",
+            settled_motive_forklift_battery_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not per_cell_2v_load_matrix_and_single_cell_swap_verified:
+        return B2BWarehouseMotiveForkliftBatteryDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="WHOLE_BATTERY_PACK_CONDEMNATION_ON_SINGLE_BAD_2V_CELL_BLOCKED",
+            action_pill="Send to a human",
+            motive_forklift_battery_lane="WHOLE_BATTERY_PACK_CONDEMNATION_ON_SINGLE_BAD_2V_CELL_BLOCKED",
+            settled_motive_forklift_battery_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not load_bank_80pct_ah_curve_no_acid_spiking_and_sb350_verified:
+        return B2BWarehouseMotiveForkliftBatteryDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="ACID_SPIKING_SPECIFIC_GRAVITY_FRAUD_OR_SB350_CONNECTOR_UPCODING",
+            action_pill="Send to a human",
+            motive_forklift_battery_lane="ACID_SPIKING_SPECIFIC_GRAVITY_FRAUD_OR_SB350_CONNECTOR_UPCODING",
+            settled_motive_forklift_battery_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_osha1910_178g_h2_vent_and_scrap_lead_credit_clean:
+        return B2BWarehouseMotiveForkliftBatteryDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="MISSING_OSHA1910_178G_H2_VENTILATION_OR_UNCREDITED_SCRAP_LEAD_VALUE_HOLD",
+            action_pill="Send to a human",
+            motive_forklift_battery_lane="MISSING_OSHA1910_178G_H2_VENTILATION_OR_UNCREDITED_SCRAP_LEAD_VALUE_HOLD",
+            settled_motive_forklift_battery_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_single_2v_cell_extraction_and_desulfation_savings_cents > 0:
+        net_cents = max(
+            0,
+            motive_forklift_battery_cents - automated_single_2v_cell_extraction_and_desulfation_savings_cents,
+        )
+        return B2BWarehouseMotiveForkliftBatteryDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_SINGLE_2V_CELL_EXTRACTION_AND_DESULFATION_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            motive_forklift_battery_lane="AUTOMATED_SINGLE_2V_CELL_EXTRACTION_AND_DESULFATION_SAVINGS_CONFIRM",
+            settled_motive_forklift_battery_cents=net_cents,
+            latency_ms=230,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BWarehouseMotiveForkliftBatteryDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_WAREHOUSE_MOTIVE_FORKLIFT_BATTERY_SETTLED",
+        action_pill="Act automatically",
+        motive_forklift_battery_lane="VERIFIED_WAREHOUSE_MOTIVE_FORKLIFT_BATTERY_SETTLED",
+        settled_motive_forklift_battery_cents=motive_forklift_battery_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -49156,6 +49256,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "diverter_blower_upcoding_block_latency_ms": pts_div_403.latency_ms,
     }
 
+    mfb_commit_ok = evaluate_b2b_warehouse_motive_forklift_battery_policy()
+    mfb_cel_403 = evaluate_b2b_warehouse_motive_forklift_battery_policy(
+        per_cell_2v_load_matrix_and_single_cell_swap_verified=False,
+    )
+    mfb_acd_422 = evaluate_b2b_warehouse_motive_forklift_battery_policy(
+        load_bank_80pct_ah_curve_no_acid_spiking_and_sb350_verified=False,
+    )
+    mfb_h2v_451 = evaluate_b2b_warehouse_motive_forklift_battery_policy(
+        webiq_osha1910_178g_h2_vent_and_scrap_lead_credit_clean=False,
+    )
+    mfb_sav_409 = evaluate_b2b_warehouse_motive_forklift_battery_policy(
+        automated_single_2v_cell_extraction_and_desulfation_savings_cents=2360000,
+    )
+    b2b_warehouse_motive_forklift_battery_guards = {
+        "all_passed": (
+            mfb_commit_ok.allowed
+            and mfb_commit_ok.settled_motive_forklift_battery_cents == 12600000
+            and not mfb_cel_403.allowed
+            and mfb_cel_403.http_status == 403
+            and not mfb_acd_422.allowed
+            and mfb_acd_422.http_status == 422
+            and not mfb_h2v_451.allowed
+            and mfb_h2v_451.http_status == 451
+            and not mfb_sav_409.allowed
+            and mfb_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_motive_forklift_battery_settlement_latency_ms": mfb_commit_ok.latency_ms,
+        "whole_battery_pack_condemnation_block_latency_ms": mfb_cel_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -49537,6 +49667,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_ai_datacenter_liquid_cooling_cdu_guards": b2b_ai_datacenter_liquid_cooling_cdu_guards,
         "b2b_industrial_plate_heat_exchanger_phe_guards": b2b_industrial_plate_heat_exchanger_phe_guards,
         "b2b_hospital_pneumatic_tube_system_pts_guards": b2b_hospital_pneumatic_tube_system_pts_guards,
+        "b2b_warehouse_motive_forklift_battery_guards": b2b_warehouse_motive_forklift_battery_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -59078,6 +59209,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="pts-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Warehouse Motive Forklift Battery Fleet, $240 2V Cell & OSHA 1910.178g Sandbox (Round 369) -->
+      <div class="finops-box" id="b2b-warehouse-motive-forklift-battery-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-mfb-title">🔋 B2B 物流仓叉车牵引蓄电池车队、$240 单节 2V 电芯抽换锁与防加浓酸欺诈沙盒 (Round 369 · EnerSys Hawker / East Penn Deka)</span>
+        </div>
+        <div class="control-row">
+          <label><span>18/24 节单体 C/5 放电电压矩阵与 $240 拔芯单换锁 + &gt;=80% Ah 恒流放电积分 (防加浓酸) + Web IQ 废铅残值核验:</span></label>
+          <select id="mfb-select" onchange="updateB2BWarehouseMotiveForkliftBatterySandbox()">
+            <option value="mfb_commit_ok">🔋 24 节单体矩阵核实 + &gt;=80% Ah 放电积分 + 氢气排风/废铅残值抵扣合规：10ms 清算 $126,000.00! (Act automatically)</option>
+            <option value="mfb_cel_403">🛑 24 节串联单体中仅 1–2 节 2.0V 电芯干水短路 (&lt;1.70V) 其余 22 节容量 &gt;=88%，外包商却拒绝 $240 拔芯单换强推 $8,500 报废整块 1.5 吨电池 → 11ms 触发 HTTP 403!</option>
+            <option value="mfb_acd_422">🚨 往极板硫化的旧电池里直接偷倒浓硫酸伪造 1.290 高比重读数 (C/5 假负载实测放电 &lt;80% Ah)，或将 $85 安德森插头烧蚀虚报为电池内阻大 → 14ms 触发 HTTP 422!</option>
+            <option value="mfb_h2v_451">🛑 充电间缺失 OSHA 1910.178(g) / IEEE 1635 氢气 (&lt;1% LEL) 排风联锁或私吞 3,000 磅旧电池 $950 废铅法定回收抵扣残值：Web IQ /v3/browse 265ms 触发 HTTP 451!</option>
+            <option value="mfb_sav_409">🧑‍⚖️ Web IQ 自动将 $8,500 整块电池报废换新单降级为抽换 2 节 $240 单体电芯加 $320 脉冲去硫并追回旧铅回收残值立省 $23,600.00 (净付 $102,400.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="mfb-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -59885,6 +60034,7 @@ function renderAll() {{
   updateB2BAiDatacenterLiquidCoolingCduSandbox();
   updateB2BIndustrialPlateHeatExchangerPheSandbox();
   updateB2BHospitalPneumaticTubeSystemPtsSandbox();
+  updateB2BWarehouseMotiveForkliftBatterySandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -77768,6 +77918,52 @@ function updateB2BHospitalPneumaticTubeSystemPtsSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🧪 毛毡环/换向器密封核实 + 软着陆 &lt;=12.0g + RFID 盘点 &amp; UL 1479 合规：已自动清算 (VERIFIED_HOSPITAL_PNEUMATIC_TUBE_PTS_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零瓶环磨薄被宰 $11,500 换三通、零急诊血样 30g 硬砸溶血与幽灵丢瓶增购</strong>：B2B 医院医用气动物流系统维保批次已完成安全清算（<code>$112,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BWarehouseMotiveForkliftBatterySandbox() {{
+  var sel = document.getElementById("mfb-select");
+  var outEl = document.getElementById("mfb-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "mfb_cel_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 WHOLE_BATTERY_PACK_CONDEMNATION_ON_SINGLE_BAD_2V_CELL_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对 5 小时率（<code>C/5</code>）假负载 24 节单体独立电压矩阵发现：<code>48V 850Ah</code> 电池组中 22 节单体放电电压 <code>&gt;=1.90V</code> 健康，仅 <code>#7、#14 两节 2.0V 单体</code> 因浮球卡死干水短路，只需花 <code>$240/节</code> 拔芯单换却被忽悠花 <code>$8,500</code> 整块报废，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "mfb_acd_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 ACID_SPIKING_SPECIFIC_GRAVITY_FRAUD_OR_SB350_CONNECTOR_UPCODING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计去硫再生后 <code>C/5</code> 恒流放电安时积分曲线发现：静态比重虽为 <code>1.290 SG</code> 但实测放电容量仅 <code>48% Ah (&lt;80% Ah 红线)</code>，属违规吸走清水偷倒浓硫酸（<code>Acid Spiking</code>）或将 <code>$85 SB350 插头烧蚀</code> 虚报为电池报废，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "mfb_h2v_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 MISSING_OSHA1910_178G_H2_VENTILATION_OR_UNCREDITED_SCRAP_LEAD_VALUE_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>OSHA 1910.178(g) / IEEE 1635</code> 充电间规范与 <code>LME</code> 废铅回收行情发现：充电间缺失氢气（<code>&lt;1% LEL</code>）排风联锁或未抵扣 3,000 磅旧电池 <code>$950</code> 废铅残值，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "mfb_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_SINGLE_2V_CELL_EXTRACTION_AND_DESULFATION_SAVINGS_CONFIRM (230ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>将 $8,500 整块叉车电池更换降级为抽换 $240 2.0V 坏单体电芯 + 48h 高频脉冲去硫与追回旧电池废铅回收残值抵扣</code>，单批立省 <code>$23,600.00</code>（净结算额优化至 <code>$102,400.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🔋 24 节单体矩阵核实 + &gt;=80% Ah 放电积分 + 氢气排风 &amp; 废铅抵扣合规：已自动清算 (VERIFIED_WAREHOUSE_MOTIVE_FORKLIFT_BATTERY_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零坏 1 节 $240 单体被宰 $8,500 换整块电池、零偷倒浓硫酸伪造高比重与私吞废铅残值</strong>：B2B 物流仓叉车牵引蓄电池车队维保批次已完成安全清算（<code>$126,000.00</code>）！" +
     "</div>";
 }}
 
