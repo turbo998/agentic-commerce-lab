@@ -22352,6 +22352,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-datacenter-crac-crah-precision-hvac-sandbox", demo_zh)
 
+    def test_b2b_industrial_steam_deaerator_nace_sp0590_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_steam_deaerator_nace_sp0590_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant $85 spray nozzle/vent + DO <=7 ppb + NACE SP0590 WFMT + R-Stamp -> 200 OK ($128,000.00)
+        ok_res = evaluate_b2b_industrial_steam_deaerator_nace_sp0590_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_STEAM_DEAERATOR_NACE_SP0590_SETTLED")
+        self.assertEqual(ok_res.settled_industrial_steam_deaerator_cents, 12800000)
+
+        # 2. $34,000 tray-stack upcoding on $85 spray nozzle or chemical scavenger overdosing -> 403 Blocked
+        try_403 = evaluate_b2b_industrial_steam_deaerator_nace_sp0590_policy(
+            spray_nozzle_vent_plume_and_7ppb_do_verified=False,
+        )
+        self.assertFalse(try_403.allowed)
+        self.assertEqual(try_403.http_status, 403)
+        self.assertEqual(
+            try_403.decision_code,
+            "TRAY_STACK_UPCODING_ON_85_DOLLAR_SPRAY_NOZZLE_OR_SCAVENGER_OVERDOSE_BLOCKED",
+        )
+
+        # 3. Skipped NACE SP0590 WFMT weld inspection or sub-cooled >2F deaerator temperature -> 422 Blocked
+        wfm_422 = evaluate_b2b_industrial_steam_deaerator_nace_sp0590_policy(
+            nace_sp0590_wfmt_weld_and_saturation_temp_verified=False,
+        )
+        self.assertFalse(wfm_422.allowed)
+        self.assertEqual(wfm_422.http_status, 422)
+        self.assertEqual(
+            wfm_422.decision_code,
+            "SKIPPED_NACE_SP0590_WFMT_WELD_INSPECTION_OR_SUBCOOLED_DA_TEMP_FAULT",
+        )
+
+        # 4. Uncertified ASNT MT inspector or unstamped NBBI R-Stamp vessel weld repair -> 451 Hold
+        rst_451 = evaluate_b2b_industrial_steam_deaerator_nace_sp0590_policy(
+            webiq_asnt_mt_inspector_and_nbbi_r_stamp_clean=False,
+        )
+        self.assertFalse(rst_451.allowed)
+        self.assertEqual(rst_451.http_status, 451)
+
+        # 5. Web IQ $85 spray nozzle replacement & 75% scavenger reduction saving $26,200 ($101,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_steam_deaerator_nace_sp0590_policy(
+            automated_spray_nozzle_replacement_and_scavenger_reduction_savings_cents=2620000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_industrial_steam_deaerator_cents, 10180000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_steam_deaerator_nace_sp0590_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-steam-deaerator-nace-sp0590-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -37623,6 +37623,106 @@ def evaluate_b2b_datacenter_crac_crah_precision_hvac_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BIndustrialSteamDeaeratorNaceSp0590Decision:
+    """Deterministic decision output for B2B industrial steam deaerator, $85 spray nozzle & NACE SP0590 WFMT."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    industrial_steam_deaerator_lane: str
+    settled_industrial_steam_deaerator_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_industrial_steam_deaerator_nace_sp0590_policy(
+    *,
+    mandate_id: str = "b2b_industrial_steam_deaerator_nace_sp0590_wfmt_spray_nozzle_mandate_2026",
+    industrial_steam_deaerator_cents: int = 12800000,
+    spray_nozzle_vent_plume_and_7ppb_do_verified: bool = True,
+    nace_sp0590_wfmt_weld_and_saturation_temp_verified: bool = True,
+    webiq_asnt_mt_inspector_and_nbbi_r_stamp_clean: bool = True,
+    automated_spray_nozzle_replacement_and_scavenger_reduction_savings_cents: int = 0,
+) -> B2BIndustrialSteamDeaeratorNaceSp0590Decision:
+    """Evaluate B2B industrial steam deaerator $85 spray nozzle, <=7 ppb DO & NACE SP0590 WFMT settlement."""
+    if not mandate_id.startswith("b2b_industrial_steam_deaerator_nace_sp0590_wfmt_spray_nozzle_mandate_"):
+        return B2BIndustrialSteamDeaeratorNaceSp0590Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_INDUSTRIAL_STEAM_DEAERATOR_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            industrial_steam_deaerator_lane="INVALID_INDUSTRIAL_STEAM_DEAERATOR_MANDATE_PREFIX",
+            settled_industrial_steam_deaerator_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not spray_nozzle_vent_plume_and_7ppb_do_verified:
+        return B2BIndustrialSteamDeaeratorNaceSp0590Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="TRAY_STACK_UPCODING_ON_85_DOLLAR_SPRAY_NOZZLE_OR_SCAVENGER_OVERDOSE_BLOCKED",
+            action_pill="Send to a human",
+            industrial_steam_deaerator_lane="TRAY_STACK_UPCODING_ON_85_DOLLAR_SPRAY_NOZZLE_OR_SCAVENGER_OVERDOSE_BLOCKED",
+            settled_industrial_steam_deaerator_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not nace_sp0590_wfmt_weld_and_saturation_temp_verified:
+        return B2BIndustrialSteamDeaeratorNaceSp0590Decision(
+            allowed=False,
+            http_status=422,
+            decision_code="SKIPPED_NACE_SP0590_WFMT_WELD_INSPECTION_OR_SUBCOOLED_DA_TEMP_FAULT",
+            action_pill="Send to a human",
+            industrial_steam_deaerator_lane="SKIPPED_NACE_SP0590_WFMT_WELD_INSPECTION_OR_SUBCOOLED_DA_TEMP_FAULT",
+            settled_industrial_steam_deaerator_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_asnt_mt_inspector_and_nbbi_r_stamp_clean:
+        return B2BIndustrialSteamDeaeratorNaceSp0590Decision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNCERTIFIED_ASNT_MT_INSPECTOR_OR_UNSTAMPED_NBBI_R_VESSEL_WELD_HOLD",
+            action_pill="Send to a human",
+            industrial_steam_deaerator_lane="UNCERTIFIED_ASNT_MT_INSPECTOR_OR_UNSTAMPED_NBBI_R_VESSEL_WELD_HOLD",
+            settled_industrial_steam_deaerator_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_spray_nozzle_replacement_and_scavenger_reduction_savings_cents > 0:
+        net_cents = max(
+            0,
+            industrial_steam_deaerator_cents - automated_spray_nozzle_replacement_and_scavenger_reduction_savings_cents,
+        )
+        return B2BIndustrialSteamDeaeratorNaceSp0590Decision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_SPRAY_NOZZLE_REPLACEMENT_AND_SCAVENGER_REDUCTION_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            industrial_steam_deaerator_lane="AUTOMATED_SPRAY_NOZZLE_REPLACEMENT_AND_SCAVENGER_REDUCTION_SAVINGS_CONFIRM",
+            settled_industrial_steam_deaerator_cents=net_cents,
+            latency_ms=230,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BIndustrialSteamDeaeratorNaceSp0590Decision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_INDUSTRIAL_STEAM_DEAERATOR_NACE_SP0590_SETTLED",
+        action_pill="Act automatically",
+        industrial_steam_deaerator_lane="VERIFIED_INDUSTRIAL_STEAM_DEAERATOR_NACE_SP0590_SETTLED",
+        settled_industrial_steam_deaerator_cents=industrial_steam_deaerator_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -49936,6 +50036,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "whole_humidifier_upcoding_block_latency_ms": crc_hum_403.latency_ms,
     }
 
+    dea_commit_ok = evaluate_b2b_industrial_steam_deaerator_nace_sp0590_policy()
+    dea_try_403 = evaluate_b2b_industrial_steam_deaerator_nace_sp0590_policy(
+        spray_nozzle_vent_plume_and_7ppb_do_verified=False,
+    )
+    dea_wfm_422 = evaluate_b2b_industrial_steam_deaerator_nace_sp0590_policy(
+        nace_sp0590_wfmt_weld_and_saturation_temp_verified=False,
+    )
+    dea_rst_451 = evaluate_b2b_industrial_steam_deaerator_nace_sp0590_policy(
+        webiq_asnt_mt_inspector_and_nbbi_r_stamp_clean=False,
+    )
+    dea_sav_409 = evaluate_b2b_industrial_steam_deaerator_nace_sp0590_policy(
+        automated_spray_nozzle_replacement_and_scavenger_reduction_savings_cents=2620000,
+    )
+    b2b_industrial_steam_deaerator_nace_sp0590_guards = {
+        "all_passed": (
+            dea_commit_ok.allowed
+            and dea_commit_ok.settled_industrial_steam_deaerator_cents == 12800000
+            and not dea_try_403.allowed
+            and dea_try_403.http_status == 403
+            and not dea_wfm_422.allowed
+            and dea_wfm_422.http_status == 422
+            and not dea_rst_451.allowed
+            and dea_rst_451.http_status == 451
+            and not dea_sav_409.allowed
+            and dea_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_industrial_steam_deaerator_settlement_latency_ms": dea_commit_ok.latency_ms,
+        "tray_stack_upcoding_block_latency_ms": dea_try_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -50323,6 +50453,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_hospital_mri_superconducting_cryocooler_guards": b2b_hospital_mri_superconducting_cryocooler_guards,
         "b2b_industrial_furnace_oven_nfpa86_ams2750_guards": b2b_industrial_furnace_oven_nfpa86_ams2750_guards,
         "b2b_datacenter_crac_crah_precision_hvac_guards": b2b_datacenter_crac_crah_precision_hvac_guards,
+        "b2b_industrial_steam_deaerator_nace_sp0590_guards": b2b_industrial_steam_deaerator_nace_sp0590_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -59972,6 +60103,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="crc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Industrial Steam Deaerator, $85 Spray Nozzle & NACE SP0590 WFMT Sandbox (Round 375) -->
+      <div class="finops-box" id="b2b-industrial-steam-deaerator-nace-sp0590-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-dea-title">💨 B2B 工业蒸汽锅炉房热力除氧器 (DA)、$85 弹簧雾化喷嘴锁与 NACE SP0590 荧光磁粉沙盒 (Round 375 · Cleaver-Brooks / BFS / Cochrane)</span>
+        </div>
+        <div class="control-row">
+          <label><span>$85 316SS 弹簧喷嘴与排汽羽流 (DO &lt;=7 ppb) 锁 + NACE SP0590 365nm WFMT 焊缝探伤锁 + Web IQ NBBI R-Stamp 核验:</span></label>
+          <select id="dea-select" onchange="updateB2BIndustrialSteamDeaeratorNaceSp0590Sandbox()">
+            <option value="dea_commit_ok">💨 $85 喷嘴/排汽核实 + 物理溶氧 DO &lt;=7 ppb + NACE SP0590 WFMT + NBBI R-Stamp 合规：10ms 清算 $128,000.00! (Act automatically)</option>
+            <option value="dea_try_403">🛑 未更换罐顶疲软的 $85 弹簧雾化喷嘴或未调大顶部排汽阀，直接忽悠花 $34,000 换全套静止 304SS 淋水盘架并趁机多卖 5 倍亚硫酸钠除氧剂 → 11ms 触发 HTTP 403!</option>
+            <option value="dea_wfm_422">🚨 进罐定检跳过 AMPP/NACE SP0590 水位线焊缝打磨后 365nm 湿法荧光磁粉探伤 (WFMT)，或给水温度低于饱和沸点 &gt;2°F → 14ms 触发 HTTP 422!</option>
+            <option value="dea_rst_451">🛑 无损探伤人员无 ASNT Level II MT 证书或无 NBBI R-Stamp 压力容器执照的游击队擅自在除氧器内壁补焊：Web IQ /v3/browse 265ms 触发 HTTP 451!</option>
+            <option value="dea_sav_409">🧑‍⚖️ Web IQ 自动将 $34,000 全套不锈钢淋水盘更换单降级为更换 4 只 $85 316SS 弹簧雾化喷嘴并砍掉 75% 多余化学除氧剂立省 $26,200.00 (净付 $101,800.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="dea-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -60785,6 +60934,7 @@ function renderAll() {{
   updateB2BHospitalMriSuperconductingCryocoolerSandbox();
   updateB2BIndustrialFurnaceOvenNfpa86Ams2750Sandbox();
   updateB2BDatacenterCracCrahPrecisionHvacSandbox();
+  updateB2BIndustrialSteamDeaeratorNaceSp0590Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -78944,6 +79094,52 @@ function updateB2BDatacenterCracCrahPrecisionHvacSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>❄️ $160 加湿桶/排水阀核实 + EC 风机动平衡 + 露点群控零对抗合规：已自动清算 (VERIFIED_DATACENTER_CRAC_CRAH_PRECISION_HVAC_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零 $160 加湿塑料桶结垢被宰 $8,500 换总成、零相邻精密空调加湿与除湿互殴烧电</strong>：B2B 数据中心 CRAC/CRAH 精密空调维保批次已完成安全清算（<code>$124,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BIndustrialSteamDeaeratorNaceSp0590Sandbox() {{
+  var sel = document.getElementById("dea-select");
+  var outEl = document.getElementById("dea-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "dea_try_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 TRAY_STACK_UPCODING_ON_85_DOLLAR_SPRAY_NOZZLE_OR_SCAVENGER_OVERDOSE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对进罐淋水盘照片与痕量溶氧仪发现：48 层静止 <code>304/430SS 不锈钢淋水盘架</code> 100% 完好，出水溶氧升高实为罐顶 <code>4 只 $85 弹簧雾化喷嘴疲软</code> 与排汽阀开度过小，却被高报 <code>$34,000</code> 换淋水盘并倾销 5 倍亚硫酸钠，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "dea_wfm_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SKIPPED_NACE_SP0590_WFMT_WELD_INSPECTION_OR_SUBCOOLED_DA_TEMP_FAULT (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计除氧器储水箱内壁探伤报告与蒸汽表发现：定检跳过 <code>AMPP / NACE SP0590</code> 水位线环焊缝打磨后 <code>365nm 湿法荧光磁粉探伤 (WFMT)</code>，或实测水温低于对应压力的饱和沸点 <code>&gt;2.0°F</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "dea_rst_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNCERTIFIED_ASNT_MT_INSPECTOR_OR_UNSTAMPED_NBBI_R_VESSEL_WELD_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>NBBI R-Stamp</code> 压力容器维修名录与 <code>ASNT Level II/III MT</code> 证书库发现：探伤员无有效资质或补焊施工方未持有 <code>R-Stamp</code> 授权钢印，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "dea_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_SPRAY_NOZZLE_REPLACEMENT_AND_SCAVENGER_REDUCTION_SAVINGS_CONFIRM (230ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>保留完好的 304SS 不锈钢淋水盘架 + 仅更换 4 只 $85 316SS 弹簧雾化喷嘴恢复 DO &lt;=7 ppb 物理除氧并核减 75% 亚硫酸钠化学除氧剂采购量</code>，单批立省 <code>$26,200.00</code>（净结算额优化至 <code>$101,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>💨 $85 喷嘴/排汽核实 + DO &lt;=7 ppb + NACE SP0590 WFMT &amp; R-Stamp 合规：已自动清算 (VERIFIED_INDUSTRIAL_STEAM_DEAERATOR_NACE_SP0590_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零坏个 $85 喷嘴被宰 $34,000 换淋水盘、零跳过 WFMT 紫外探伤与狂卖 5 倍化学除氧剂</strong>：B2B 工业蒸汽锅炉房热力除氧器定检维保批次已完成安全清算（<code>$128,000.00</code>）！" +
     "</div>";
 }}
 
