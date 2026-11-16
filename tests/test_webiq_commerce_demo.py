@@ -22238,6 +22238,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-hospital-mri-superconducting-cryocooler-sandbox", demo_zh)
 
+    def test_b2b_industrial_furnace_oven_nfpa86_ams2750_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_furnace_oven_nfpa86_ams2750_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant purge switch + encrypted AMS 2750H TUS/SAT + NFPA 86 LEL -> 200 OK ($146,000.00)
+        ok_res = evaluate_b2b_industrial_furnace_oven_nfpa86_ams2750_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_FURNACE_OVEN_NFPA86_AMS2750_SETTLED")
+        self.assertEqual(ok_res.settled_industrial_furnace_oven_cents, 14600000)
+
+        # 2. $18,000 burner or exhaust-fan upcoding on $165 pre-purge pressure switch -> 403 Blocked
+        prg_403 = evaluate_b2b_industrial_furnace_oven_nfpa86_ams2750_policy(
+            purge_airflow_switch_isolation_and_duct_manometer_verified=False,
+        )
+        self.assertFalse(prg_403.allowed)
+        self.assertEqual(prg_403.http_status, 403)
+        self.assertEqual(
+            prg_403.decision_code,
+            "BURNER_OR_EXHAUST_FAN_UPCODING_ON_165_DOLLAR_PURGE_SWITCH_BLOCKED",
+        )
+
+        # 3. Falsified AMS 2750H TUS controller offset or overused thermocouple wire spool -> 422 Blocked
+        tus_422 = evaluate_b2b_industrial_furnace_oven_nfpa86_ams2750_policy(
+            ams2750_encrypted_tus_raw_log_and_tc_spool_limit_verified=False,
+        )
+        self.assertFalse(tus_422.allowed)
+        self.assertEqual(tus_422.http_status, 422)
+        self.assertEqual(
+            tus_422.decision_code,
+            "FALSIFIED_AMS2750_TUS_CONTROLLER_OFFSET_OR_OVERUSED_TC_WIRE_SPOOL",
+        )
+
+        # 4. Unaccredited ISO 17025 pyrometry vendor or skipped NFPA 86 LEL test -> 451 Hold
+        lel_451 = evaluate_b2b_industrial_furnace_oven_nfpa86_ams2750_policy(
+            webiq_iso17025_pyrometry_and_nfpa86_lel_interlock_clean=False,
+        )
+        self.assertFalse(lel_451.allowed)
+        self.assertEqual(lel_451.http_status, 451)
+
+        # 5. Web IQ $165 purge pressure switch downgrade & TUS audit saving $27,400 ($118,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_furnace_oven_nfpa86_ams2750_policy(
+            automated_purge_pressure_switch_downgrade_and_tus_audit_savings_cents=2740000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_industrial_furnace_oven_cents, 11860000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_furnace_oven_nfpa86_ams2750_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-furnace-oven-nfpa86-ams2750-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

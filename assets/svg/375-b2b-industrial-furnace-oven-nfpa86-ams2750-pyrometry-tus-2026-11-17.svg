@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg375" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#3B0764"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent375" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg375)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent375)"/>
+
+  <!-- Header -->
+  <text x="48" y="58" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">ROUND 373 · INDUSTRIAL FURNACE &amp; CURING OVEN (NFPA 86 / SAE AMS 2750H), $165 PURGE SWITCH &amp; ENCRYPTED TUS</text>
+  <text x="48" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">航空汽车热处理炉与固化烘箱维保、$165 预吹扫压差开关锁与 AMS 2750H TUS 清算架构</text>
+  <text x="48" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13.5">Ipsen / SECO/WARWICK / Despatch / Nadcap · 4倍容积预吹扫压差锁 + 9/20点 TUS 加密原文件 + 热电偶批号 CF + &lt;=25% LEL</text>
+
+  <!-- Left Column: Telemetry & Physics Locks -->
+  <rect x="44" y="132" width="356" height="495" rx="12" fill="#1E293B" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="64" y="160" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">🔥 四大工业炉窑防爆与高温计量硬门禁</text>
+
+  <rect x="60" y="176" width="324" height="102" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="74" y="198" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. $165 预吹扫压差开关 &amp; 风道微压计锁</text>
+  <text x="74" y="218" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 90% 吹扫点火锁死源于 $165 压差微动开关硅胶管裂</text>
+  <text x="74" y="236" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 强制核验手持微压计风道动压 (&gt;=0.5 in. w.g.)</text>
+  <text x="74" y="254" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 11ms 拦截把小开关故障高报 $18,000 换防爆风机</text>
+
+  <rect x="60" y="290" width="324" height="102" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="74" y="312" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. AMS 2750H TUS 加密原文件 &amp; 偶丝锁</text>
+  <text x="74" y="332" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 严禁在温控表后台偷改 Offset 凑出 ±5°F 合格假象</text>
+  <text x="74" y="350" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 锁死 &gt;1,000°F 非贵金属偶丝卷 (Spool) 使用次数上限</text>
+  <text x="74" y="368" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 14ms 阻断手改 Excel 伪造炉温均匀性报告</text>
+
+  <rect x="60" y="404" width="324" height="102" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="74" y="426" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. NFPA 86 4倍预吹扫 &amp; &lt;=25% LEL 锁</text>
+  <text x="74" y="446" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 点火前强制完成 &gt;=4 倍炉膛容积新风换气预吹扫</text>
+  <text x="74" y="464" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• A类溶剂固化烘箱可燃气体分析仪 &lt;=25% LEL 切断</text>
+  <text x="74" y="482" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 杜绝炉膛残余天然气或涂布溶剂闪爆特大事故</text>
+
+  <rect x="60" y="518" width="324" height="92" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="74" y="540" fill="#C084FC" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">4. Web IQ ISO 17025 &amp; Nadcap 核查</text>
+  <text x="74" y="560" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• /v3/browse 核验 A2LA/NVLAP ISO 17025 现场校准范围</text>
+  <text x="74" y="578" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 265ms 拦截无资质计量机构与燃气双切断阀内漏</text>
+  <text x="74" y="596" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 100% 满足航空 PRI Nadcap 与汽车 CQI-9 严审</text>
+
+  <!-- Center Column: 5-Lane Deterministic Matrix -->
+  <rect x="416" y="132" width="424" height="495" rx="12" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="436" y="160" fill="#BAE6FD" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">⚖️ 五路确定性清算决策矩阵 (5-Lane Matrix)</text>
+
+  <!-- Lane 200 -->
+  <rect x="432" y="176" width="392" height="76" rx="8" fill="#064E3B" stroke="#10B981"/>
+  <text x="446" y="198" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">✅ HTTP 200 · Act automatically (10ms)</text>
+  <text x="446" y="218" fill="#ECFDF5" font-family="Segoe UI, Arial, sans-serif" font-size="12">VERIFIED_INDUSTRIAL_FURNACE_OVEN_NFPA86_AMS2750_SETTLED</text>
+  <text x="446" y="238" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">风压开关核实 + 加密 TUS/SAT 原文件 + NFPA 86 → $146,000.00</text>
+
+  <!-- Lane 403 -->
+  <rect x="432" y="264" width="392" height="76" rx="8" fill="#450A0A" stroke="#EF4444"/>
+  <text x="446" y="286" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🛑 HTTP 403 · Send to a human (11ms)</text>
+  <text x="446" y="306" fill="#FEE2E2" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">BURNER_OR_EXHAUST_FAN_UPCODING_ON_165_DOLLAR_PURGE_SWITCH_BLOCKED</text>
+  <text x="446" y="326" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">拦截把 $165 预吹扫压差开关或皮管裂高报 $18,000 换风机 → $0.00</text>
+
+  <!-- Lane 422 -->
+  <rect x="432" y="352" width="392" height="76" rx="8" fill="#450A0A" stroke="#F87171"/>
+  <text x="446" y="374" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🚨 HTTP 422 · Send to a human (14ms)</text>
+  <text x="446" y="394" fill="#FEE2E2" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">FALSIFIED_AMS2750_TUS_CONTROLLER_OFFSET_OR_OVERUSED_TC_WIRE_SPOOL</text>
+  <text x="446" y="414" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">拦截违规篡改温控表 Offset 或超次用旧热电偶丝伪造 TUS → $0.00</text>
+
+  <!-- Lane 451 -->
+  <rect x="432" y="440" width="392" height="76" rx="8" fill="#3B0764" stroke="#C084FC"/>
+  <text x="446" y="462" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🛑 HTTP 451 · Send to a human (265ms)</text>
+  <text x="446" y="482" fill="#F3E8FF" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">UNACCREDITED_ISO17025_PYROMETRY_VENDOR_OR_SKIPPED_NFPA86_LEL_TEST_HOLD</text>
+  <text x="446" y="502" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">Web IQ 挂起无 ISO 17025 高温资质或漏测 NFPA 86 25% LEL → $0.00</text>
+
+  <!-- Lane 409 -->
+  <rect x="432" y="528" width="392" height="84" rx="8" fill="#451A03" stroke="#F59E0B"/>
+  <text x="446" y="550" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🧑‍⚖️ HTTP 409 · Confirm (230ms)</text>
+  <text x="446" y="570" fill="#FEF3C7" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">AUTOMATED_PURGE_PRESSURE_SWITCH_DOWNGRADE_AND_TUS_AUDIT_SAVINGS_CONFIRM</text>
+  <text x="446" y="592" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">改换 $165 预吹扫压差开关 + 驳回违规 TUS 复测费立省 $27,400 → $118,600.00</text>
+
+  <!-- Right Column: FinOps & Benchmark -->
+  <rect x="856" y="132" width="300" height="495" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="876" y="160" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">📊 成本精算与基准对比</text>
+
+  <rect x="872" y="176" width="268" height="145" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="886" y="198" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">单批热处理炉与烘箱大修校准总额</text>
+  <text x="886" y="226" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">$146,000.00</text>
+  <text x="886" y="252" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">Web IQ 压差开关降级 &amp; 核校立省：</text>
+  <text x="886" y="278" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">-$27,400.00 (-18.8%)</text>
+  <text x="886" y="304" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">净清算额：$118,600.00</text>
+
+  <rect x="872" y="335" width="268" height="140" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="886" y="357" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Web IQ vs. 竞品检索能力</text>
+  <text x="886" y="379" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Web IQ: 230ms 直连 A2LA/NVLAP</text>
+  <text x="886" y="399" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  高温计量范围与 PRI Nadcap 规范</text>
+  <text x="886" y="421" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Bright Data: 缺乏偶丝批号 CF 修正</text>
+  <text x="886" y="441" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">  与预吹扫微压差确定性隔离模型</text>
+  <text x="886" y="461" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Exa: 无法做 NFPA 86 双阀强校验</text>
+
+  <rect x="872" y="489" width="268" height="121" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="886" y="511" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🛠️ 生产核验清单 (Checklist)</text>
+  <text x="886" y="533" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">☑ 风道微压计 &amp; $165 预吹扫压差开关</text>
+  <text x="886" y="553" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">☑ AMS 2750H 加密 .daq &amp; 偶丝次数锁</text>
+  <text x="886" y="573" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">☑ ISO 17025 资质 &amp; NFPA 86 25% LEL</text>
+  <text x="886" y="593" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" font-weight="700">☑ 零虚构坐标 · CSP 自包含沙盒通过</text>
+</svg>

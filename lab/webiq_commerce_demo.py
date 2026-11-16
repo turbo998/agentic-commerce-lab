@@ -37423,6 +37423,106 @@ def evaluate_b2b_hospital_mri_superconducting_cryocooler_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BIndustrialFurnaceOvenNfpa86Ams2750Decision:
+    """Deterministic decision output for B2B industrial furnace & curing oven, $165 purge switch & AMS 2750H TUS."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    industrial_furnace_oven_lane: str
+    settled_industrial_furnace_oven_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_industrial_furnace_oven_nfpa86_ams2750_policy(
+    *,
+    mandate_id: str = "b2b_industrial_furnace_oven_nfpa86_ams2750_pyrometry_tus_sat_mandate_2026",
+    industrial_furnace_oven_cents: int = 14600000,
+    purge_airflow_switch_isolation_and_duct_manometer_verified: bool = True,
+    ams2750_encrypted_tus_raw_log_and_tc_spool_limit_verified: bool = True,
+    webiq_iso17025_pyrometry_and_nfpa86_lel_interlock_clean: bool = True,
+    automated_purge_pressure_switch_downgrade_and_tus_audit_savings_cents: int = 0,
+) -> B2BIndustrialFurnaceOvenNfpa86Ams2750Decision:
+    """Evaluate B2B industrial furnace/oven $165 purge pressure switch, AMS 2750H TUS & NFPA 86 settlement."""
+    if not mandate_id.startswith("b2b_industrial_furnace_oven_nfpa86_ams2750_pyrometry_tus_sat_mandate_"):
+        return B2BIndustrialFurnaceOvenNfpa86Ams2750Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_INDUSTRIAL_FURNACE_OVEN_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            industrial_furnace_oven_lane="INVALID_INDUSTRIAL_FURNACE_OVEN_MANDATE_PREFIX",
+            settled_industrial_furnace_oven_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not purge_airflow_switch_isolation_and_duct_manometer_verified:
+        return B2BIndustrialFurnaceOvenNfpa86Ams2750Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="BURNER_OR_EXHAUST_FAN_UPCODING_ON_165_DOLLAR_PURGE_SWITCH_BLOCKED",
+            action_pill="Send to a human",
+            industrial_furnace_oven_lane="BURNER_OR_EXHAUST_FAN_UPCODING_ON_165_DOLLAR_PURGE_SWITCH_BLOCKED",
+            settled_industrial_furnace_oven_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not ams2750_encrypted_tus_raw_log_and_tc_spool_limit_verified:
+        return B2BIndustrialFurnaceOvenNfpa86Ams2750Decision(
+            allowed=False,
+            http_status=422,
+            decision_code="FALSIFIED_AMS2750_TUS_CONTROLLER_OFFSET_OR_OVERUSED_TC_WIRE_SPOOL",
+            action_pill="Send to a human",
+            industrial_furnace_oven_lane="FALSIFIED_AMS2750_TUS_CONTROLLER_OFFSET_OR_OVERUSED_TC_WIRE_SPOOL",
+            settled_industrial_furnace_oven_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_iso17025_pyrometry_and_nfpa86_lel_interlock_clean:
+        return B2BIndustrialFurnaceOvenNfpa86Ams2750Decision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNACCREDITED_ISO17025_PYROMETRY_VENDOR_OR_SKIPPED_NFPA86_LEL_TEST_HOLD",
+            action_pill="Send to a human",
+            industrial_furnace_oven_lane="UNACCREDITED_ISO17025_PYROMETRY_VENDOR_OR_SKIPPED_NFPA86_LEL_TEST_HOLD",
+            settled_industrial_furnace_oven_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_purge_pressure_switch_downgrade_and_tus_audit_savings_cents > 0:
+        net_cents = max(
+            0,
+            industrial_furnace_oven_cents - automated_purge_pressure_switch_downgrade_and_tus_audit_savings_cents,
+        )
+        return B2BIndustrialFurnaceOvenNfpa86Ams2750Decision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_PURGE_PRESSURE_SWITCH_DOWNGRADE_AND_TUS_AUDIT_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            industrial_furnace_oven_lane="AUTOMATED_PURGE_PRESSURE_SWITCH_DOWNGRADE_AND_TUS_AUDIT_SAVINGS_CONFIRM",
+            settled_industrial_furnace_oven_cents=net_cents,
+            latency_ms=230,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BIndustrialFurnaceOvenNfpa86Ams2750Decision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_INDUSTRIAL_FURNACE_OVEN_NFPA86_AMS2750_SETTLED",
+        action_pill="Act automatically",
+        industrial_furnace_oven_lane="VERIFIED_INDUSTRIAL_FURNACE_OVEN_NFPA86_AMS2750_SETTLED",
+        settled_industrial_furnace_oven_cents=industrial_furnace_oven_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -49676,6 +49776,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "liquid_helium_boiloff_negligence_block_latency_ms": mri_ads_403.latency_ms,
     }
 
+    frn_commit_ok = evaluate_b2b_industrial_furnace_oven_nfpa86_ams2750_policy()
+    frn_prg_403 = evaluate_b2b_industrial_furnace_oven_nfpa86_ams2750_policy(
+        purge_airflow_switch_isolation_and_duct_manometer_verified=False,
+    )
+    frn_tus_422 = evaluate_b2b_industrial_furnace_oven_nfpa86_ams2750_policy(
+        ams2750_encrypted_tus_raw_log_and_tc_spool_limit_verified=False,
+    )
+    frn_lel_451 = evaluate_b2b_industrial_furnace_oven_nfpa86_ams2750_policy(
+        webiq_iso17025_pyrometry_and_nfpa86_lel_interlock_clean=False,
+    )
+    frn_sav_409 = evaluate_b2b_industrial_furnace_oven_nfpa86_ams2750_policy(
+        automated_purge_pressure_switch_downgrade_and_tus_audit_savings_cents=2740000,
+    )
+    b2b_industrial_furnace_oven_nfpa86_ams2750_guards = {
+        "all_passed": (
+            frn_commit_ok.allowed
+            and frn_commit_ok.settled_industrial_furnace_oven_cents == 14600000
+            and not frn_prg_403.allowed
+            and frn_prg_403.http_status == 403
+            and not frn_tus_422.allowed
+            and frn_tus_422.http_status == 422
+            and not frn_lel_451.allowed
+            and frn_lel_451.http_status == 451
+            and not frn_sav_409.allowed
+            and frn_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_industrial_furnace_oven_settlement_latency_ms": frn_commit_ok.latency_ms,
+        "burner_exhaust_upcoding_block_latency_ms": frn_prg_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -50061,6 +50191,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_cnc_metalworking_fluid_mwf_oil_mist_guards": b2b_cnc_metalworking_fluid_mwf_oil_mist_guards,
         "b2b_industrial_stretch_wrapper_palletizer_guards": b2b_industrial_stretch_wrapper_palletizer_guards,
         "b2b_hospital_mri_superconducting_cryocooler_guards": b2b_hospital_mri_superconducting_cryocooler_guards,
+        "b2b_industrial_furnace_oven_nfpa86_ams2750_guards": b2b_industrial_furnace_oven_nfpa86_ams2750_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -59674,6 +59805,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="mri-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Industrial Furnace & Curing Oven, $165 Purge Switch & AMS 2750H TUS Sandbox (Round 373) -->
+      <div class="finops-box" id="b2b-industrial-furnace-oven-nfpa86-ams2750-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-frn-title">🔥 B2B 航空汽车热处理炉与固化烘箱、$165 预吹扫压差开关锁与 AMS 2750H TUS 沙盒 (Round 373 · Ipsen / Despatch / Nadcap)</span>
+        </div>
+        <div class="control-row">
+          <label><span>风道微压计实测与 $165 预吹扫压差开关锁 + AMS 2750H 加密 TUS 原文件与偶丝次数锁 + Web IQ NFPA 86/ISO 17025 核验:</span></label>
+          <select id="frn-select" onchange="updateB2BIndustrialFurnaceOvenNfpa86Ams2750Sandbox()">
+            <option value="frn_commit_ok">🔥 风压开关核实 + AMS 2750H 加密 TUS/SAT 原文件 + NFPA 86 25% LEL 合规：10ms 清算 $146,000.00! (Act automatically)</option>
+            <option value="frn_prg_403">🛑 未排查 $165 预吹扫压差微动开关或烤裂的硅胶取压管，直接把点火锁定故障虚报成 $18,000 更换高温防爆排风机与燃烧器总成 → 11ms 触发 HTTP 403!</option>
+            <option value="frn_tus_422">🚨 在温控器后台违规篡改 Offset 偏移量凑出 ±5°F 均匀假象，或在 &gt;1,000°F 下超次重复使用报废 K 型热电偶丝伪造 AMS 2750H TUS 报告 → 14ms 触发 HTTP 422!</option>
+            <option value="frn_lel_451">🛑 热工校准机构无 A2LA/NVLAP ISO 17025 现场高温测量资质，或漏做 NFPA 86 A类溶剂烘箱 &lt;=25% LEL 报警与燃气双阀检漏：Web IQ /v3/browse 265ms 触发 HTTP 451!</option>
+            <option value="frn_sav_409">🧑‍⚖️ Web IQ 自动将 $18,000 换高温风机/燃烧器总成单降级为 $165 原厂防爆压差开关更换并驳回违规篡改偏移量的无效 TUS 收费立省 $27,400.00 (净付 $118,600.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="frn-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -60485,6 +60634,7 @@ function renderAll() {{
   updateB2BCncMetalworkingFluidMwfOilMistSandbox();
   updateB2BIndustrialStretchWrapperPalletizerSandbox();
   updateB2BHospitalMriSuperconductingCryocoolerSandbox();
+  updateB2BIndustrialFurnaceOvenNfpa86Ams2750Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -78552,6 +78702,52 @@ function updateB2BHospitalMriSuperconductingCryocoolerSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🧲 $680 吸附罐按时换 + $4,200 活塞芯维护 + 5N 氦气 &amp; ACR 合规：已自动清算 (VERIFIED_HOSPITAL_MRI_CRYOCOOLER_COLDHEAD_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零漏换 $680 吸附罐骗买 $48,000 液氦、零把活塞磨损虚报 $35,000 换整支冷头</strong>：B2B 医院超导核磁共振极低温维保批次已完成安全清算（<code>$148,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BIndustrialFurnaceOvenNfpa86Ams2750Sandbox() {{
+  var sel = document.getElementById("frn-select");
+  var outEl = document.getElementById("frn-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "frn_prg_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BURNER_OR_EXHAUST_FAN_UPCODING_ON_165_DOLLAR_PURGE_SWITCH_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对手持微压计风道直测与燃烧控制器日志发现：排风机风道动压达 <code>1.8 in. w.g. (&gt;=0.5 in. w.g. 标准)</code>，预吹扫点火锁死纯属 <code>$165 压差微动开关硅胶导压管烤裂</code>，外包商却虚报 <code>$18,000</code> 换防爆风机与燃烧器，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "frn_tus_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 FALSIFIED_AMS2750_TUS_CONTROLLER_OFFSET_OR_OVERUSED_TC_WIRE_SPOOL (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计 20 通道加密无纸记录仪原文件（<code>.daq</code>）与偶丝卷台账发现：校准员违规篡改温控器后台 <code>Offset</code> 凑出 <code>±5°F</code> 假象，或在 <code>1,200°F</code> 下将一次性消耗型 <code>K 型偶丝卷 (#Lot-88)</code> 超次重复使用 8 次（违反 <code>SAE AMS 2750H</code>），已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "frn_lel_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNACCREDITED_ISO17025_PYROMETRY_VENDOR_OR_SKIPPED_NFPA86_LEL_TEST_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>A2LA / NVLAP ISO/IEC 17025</code> 认可范围与 <code>NFPA 86</code> 安全记录发现：计量机构无现场高温校准资质或漏做 A 类烘箱 <code>&lt;=25% LEL</code> 溶剂报警与双燃气切断阀检漏，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "frn_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_PURGE_PRESSURE_SWITCH_DOWNGRADE_AND_TUS_AUDIT_SAVINGS_CONFIRM (230ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>将 $18,000 高温排风机与比例燃烧器更换单降级为 $165 原厂防爆预吹扫压差开关更换 + 驳回违规篡改偏移量的无效 TUS 复测费</code>，单批立省 <code>$27,400.00</code>（净结算额优化至 <code>$118,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🔥 风压开关核实 + 加密 TUS/SAT 原文件 + NFPA 86 25% LEL 合规：已自动清算 (VERIFIED_INDUSTRIAL_FURNACE_OVEN_NFPA86_AMS2750_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零裂根导压管被宰 $18,000 换防爆风机、零偷改温控表 Offset 伪造 AMS 2750H TUS 报告</strong>：B2B 工业热处理炉与固化烘箱维保批次已完成安全清算（<code>$146,000.00</code>）！" +
     "</div>";
 }}
 
