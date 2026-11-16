@@ -21155,6 +21155,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-errcs-bda-public-safety-das-sandbox", demo_zh)
 
+    def test_b2b_commercial_lightning_protection_spd_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_lightning_protection_spd_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant IEEE 81 62% plateau + RTU bonding + LPI/UL 96A Master Label clean -> 200 OK ($114,000.00)
+        ok_res = evaluate_b2b_commercial_lightning_protection_spd_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_LIGHTNING_NFPA780_UL96A_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_lightning_spd_cents, 11400000)
+
+        # 2. Clamp-on meter internal steel-loop shortcut or unbonded rooftop RTU -> 403 Blocked
+        clp_403 = evaluate_b2b_commercial_lightning_protection_spd_policy(
+            ieee81_fall_of_potential_62pct_and_rtu_bonding_verified=False,
+        )
+        self.assertFalse(clp_403.allowed)
+        self.assertEqual(clp_403.http_status, 403)
+        self.assertEqual(
+            clp_403.decision_code,
+            "CLAMP_METER_INTERNAL_LOOP_SHORTCUT_OR_UNBONDED_ROOFTOP_RTU_BLOCKED",
+        )
+
+        # 3. $4,500 full SPD enclosure swap upcoding on $140 MOV cartridge or bare Cu-Al corrosion -> 422 Blocked
+        mov_422 = evaluate_b2b_commercial_lightning_protection_spd_policy(
+            modular_mov_cartridge_downgrade_and_bimetallic_clamp_verified=False,
+        )
+        self.assertFalse(mov_422.allowed)
+        self.assertEqual(mov_422.http_status, 422)
+        self.assertEqual(
+            mov_422.decision_code,
+            "FULL_SPD_ENCLOSURE_SWAP_UPCODING_OR_BIMETALLIC_GALVANIC_CORROSION_VIOLATION",
+        )
+
+        # 4. Uncertified LPI lightning contractor or expired 5-year UL 96A Master Label -> 451 Hold
+        lpi_451 = evaluate_b2b_commercial_lightning_protection_spd_policy(
+            webiq_lpi_master_license_and_ul96a_master_label_clean=False,
+        )
+        self.assertFalse(lpi_451.allowed)
+        self.assertEqual(lpi_451.http_status, 451)
+
+        # 5. Web IQ $140 modular MOV cartridge downgrade saving $17,100 ($96,900 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_lightning_protection_spd_policy(
+            automated_modular_mov_cartridge_downgrade_and_ground_test_cents=1710000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_lightning_spd_cents, 9690000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_lightning_protection_spd_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-lightning-protection-spd-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
