@@ -36123,6 +36123,106 @@ def evaluate_b2b_commercial_parking_garage_concrete_restoration_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BHospitalSpdSteamSterilizerAamiSt79Decision:
+    """Deterministic decision output for B2B hospital SPD steam sterilizer, Bowie-Dick/BI & AAMI ST79."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    hospital_spd_sterilizer_lane: str
+    settled_hospital_spd_sterilizer_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_hospital_spd_steam_sterilizer_aami_st79_policy(
+    *,
+    mandate_id: str = "b2b_hospital_spd_steam_sterilizer_aami_st79_bowie_dick_mandate_2026",
+    hospital_spd_sterilizer_cents: int = 12800000,
+    steam_trap_door_gasket_isolation_and_blankoff_vacuum_verified: bool = True,
+    leak_rate_under_1mmhg_and_bowie_dick_3x_bi_verified: bool = True,
+    webiq_cbet_tech_and_asme_relief_valve_clean: bool = True,
+    automated_steam_trap_door_gasket_pm_kit_downgrade_savings_cents: int = 0,
+) -> B2BHospitalSpdSteamSterilizerAamiSt79Decision:
+    """Evaluate B2B hospital SPD steam sterilizer $95 trap/$145 gasket isolation, leak rate & AAMI ST79 settlement."""
+    if not mandate_id.startswith("b2b_hospital_spd_steam_sterilizer_aami_st79_bowie_dick_mandate_"):
+        return B2BHospitalSpdSteamSterilizerAamiSt79Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_HOSPITAL_SPD_STERILIZER_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            hospital_spd_sterilizer_lane="INVALID_HOSPITAL_SPD_STERILIZER_MANDATE_PREFIX",
+            settled_hospital_spd_sterilizer_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not steam_trap_door_gasket_isolation_and_blankoff_vacuum_verified:
+        return B2BHospitalSpdSteamSterilizerAamiSt79Decision(
+            allowed=False,
+            http_status=403,
+            decision_code="STEAM_GENERATOR_OR_VACUUM_PUMP_UPCODING_ON_TRAP_GASKET_BLOCKED",
+            action_pill="Send to a human",
+            hospital_spd_sterilizer_lane="STEAM_GENERATOR_OR_VACUUM_PUMP_UPCODING_ON_TRAP_GASKET_BLOCKED",
+            settled_hospital_spd_sterilizer_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not leak_rate_under_1mmhg_and_bowie_dick_3x_bi_verified:
+        return B2BHospitalSpdSteamSterilizerAamiSt79Decision(
+            allowed=False,
+            http_status=422,
+            decision_code="FAILED_CHAMBER_VACUUM_LEAK_RATE_OR_SKIPPED_BOWIE_DICK_BI_CHALLENGE",
+            action_pill="Send to a human",
+            hospital_spd_sterilizer_lane="FAILED_CHAMBER_VACUUM_LEAK_RATE_OR_SKIPPED_BOWIE_DICK_BI_CHALLENGE",
+            settled_hospital_spd_sterilizer_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_cbet_tech_and_asme_relief_valve_clean:
+        return B2BHospitalSpdSteamSterilizerAamiSt79Decision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNCERTIFIED_CBET_STERILIZER_TECH_OR_EXPIRED_ASME_RELIEF_VALVE_HOLD",
+            action_pill="Send to a human",
+            hospital_spd_sterilizer_lane="UNCERTIFIED_CBET_STERILIZER_TECH_OR_EXPIRED_ASME_RELIEF_VALVE_HOLD",
+            settled_hospital_spd_sterilizer_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_steam_trap_door_gasket_pm_kit_downgrade_savings_cents > 0:
+        net_cents = max(
+            0,
+            hospital_spd_sterilizer_cents - automated_steam_trap_door_gasket_pm_kit_downgrade_savings_cents,
+        )
+        return B2BHospitalSpdSteamSterilizerAamiSt79Decision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_STEAM_TRAP_DOOR_GASKET_PM_KIT_DOWNGRADE_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            hospital_spd_sterilizer_lane="AUTOMATED_STEAM_TRAP_DOOR_GASKET_PM_KIT_DOWNGRADE_SAVINGS_CONFIRM",
+            settled_hospital_spd_sterilizer_cents=net_cents,
+            latency_ms=230,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BHospitalSpdSteamSterilizerAamiSt79Decision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_HOSPITAL_SPD_STEAM_STERILIZER_ST79_SETTLED",
+        action_pill="Act automatically",
+        hospital_spd_sterilizer_lane="VERIFIED_HOSPITAL_SPD_STEAM_STERILIZER_ST79_SETTLED",
+        settled_hospital_spd_sterilizer_cents=hospital_spd_sterilizer_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -47986,6 +48086,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "phantom_spall_patch_sqft_block_latency_ms": pkg_spl_403.latency_ms,
     }
 
+    spd_commit_ok = evaluate_b2b_hospital_spd_steam_sterilizer_aami_st79_policy()
+    spd_gen_403 = evaluate_b2b_hospital_spd_steam_sterilizer_aami_st79_policy(
+        steam_trap_door_gasket_isolation_and_blankoff_vacuum_verified=False,
+    )
+    spd_bdi_422 = evaluate_b2b_hospital_spd_steam_sterilizer_aami_st79_policy(
+        leak_rate_under_1mmhg_and_bowie_dick_3x_bi_verified=False,
+    )
+    spd_cbt_451 = evaluate_b2b_hospital_spd_steam_sterilizer_aami_st79_policy(
+        webiq_cbet_tech_and_asme_relief_valve_clean=False,
+    )
+    spd_sav_409 = evaluate_b2b_hospital_spd_steam_sterilizer_aami_st79_policy(
+        automated_steam_trap_door_gasket_pm_kit_downgrade_savings_cents=2240000,
+    )
+    b2b_hospital_spd_steam_sterilizer_aami_st79_guards = {
+        "all_passed": (
+            spd_commit_ok.allowed
+            and spd_commit_ok.settled_hospital_spd_sterilizer_cents == 12800000
+            and not spd_gen_403.allowed
+            and spd_gen_403.http_status == 403
+            and not spd_bdi_422.allowed
+            and spd_bdi_422.http_status == 422
+            and not spd_cbt_451.allowed
+            and spd_cbt_451.http_status == 451
+            and not spd_sav_409.allowed
+            and spd_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_hospital_spd_sterilizer_settlement_latency_ms": spd_commit_ok.latency_ms,
+        "steam_generator_upcoding_block_latency_ms": spd_gen_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48358,6 +48488,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_industrial_reverse_osmosis_ro_edi_guards": b2b_industrial_reverse_osmosis_ro_edi_guards,
         "b2b_industrial_overhead_bridge_crane_osha1910_guards": b2b_industrial_overhead_bridge_crane_osha1910_guards,
         "b2b_commercial_parking_garage_concrete_restoration_guards": b2b_commercial_parking_garage_concrete_restoration_guards,
+        "b2b_hospital_spd_steam_sterilizer_aami_st79_guards": b2b_hospital_spd_steam_sterilizer_aami_st79_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -57737,6 +57868,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="pkg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Hospital SPD Steam Sterilizer, Bowie-Dick/BI & AAMI ST79 Sandbox (Round 360) -->
+      <div class="finops-box" id="b2b-hospital-spd-steam-sterilizer-aami-st79-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-spd-title">🏥 B2B 医院消毒供应中心 (SPD) 脉动真空灭菌器、$95 疏水阀/门封隔离锁与 AAMI ST79 清算沙盒 (Round 360 · STERIS / Getinge / Belimed)</span>
+        </div>
+        <div class="control-row">
+          <label><span>$95 疏水阀/$145 门封与真空泵盲板锁 + 保压检漏 (&lt;=1.0 mmHg/min) &amp; Bowie-Dick/3x BI 锁 + Web IQ CBET 核验:</span></label>
+          <select id="spd-select" onchange="updateB2BHospitalSpdSteamSterilizerAamiSt79Sandbox()">
+            <option value="spd_commit_ok">🏥 疏水阀/门封核实 + 保压检漏 &lt;=1.0 mmHg/min + Bowie-Dick &amp; 3 锅 BI 阴性 + CBET 合规：10ms 清算 $128,000.00! (Act automatically)</option>
+            <option value="spd_gen_403">🛑 未排查 $95 热静力疏水阀卡死或 $145 硅胶门封条微漏即把手术湿包 (Wet Packs) 或抽真空超时虚报成 $19,500 换蒸汽发生器/真空泵 → 11ms 触发 HTTP 403!</option>
+            <option value="spd_bdi_422">🚨 腔体真空保压泄漏率 &gt;1.0 mmHg/min 存在冷气团隐患，或大修后未跑 Bowie-Dick 与连续 3 锅嗜热脂肪芽孢杆菌 (BI) 挑战 → 14ms 触发 HTTP 422!</option>
+            <option value="spd_cbt_451">🛑 拆修人员无 ACI/AAMI CBET 注册医工技师资质或 ASME Section VIII 安全泄压阀铅封超期：Web IQ /v3/browse 265ms 触发 HTTP 451!</option>
+            <option value="spd_sav_409">🧑‍⚖️ Web IQ 自动将 $19,500 蒸汽发生器与液环真空泵更换单降级为 $95 疏水阀芯加 $145 原厂硅胶门封条 PM 修理包立省 $22,400.00 (净付 $105,600.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="spd-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -58535,6 +58684,7 @@ function renderAll() {{
   updateB2BIndustrialReverseOsmosisRoEdiSandbox();
   updateB2BIndustrialOverheadBridgeCraneOsha1910Sandbox();
   updateB2BCommercialParkingGarageConcreteRestorationSandbox();
+  updateB2BHospitalSpdSteamSterilizerAamiSt79Sandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -76004,6 +76154,52 @@ function updateB2BCommercialParkingGarageConcreteRestorationSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🏢 浇筑前切缝裸坑 LiDAR + CSP 3-4 抛丸 + &gt;=40 mils 聚氨酯 &amp; 结构 PE 合规：已自动清算 (VERIFIED_COMMERCIAL_PARKING_GARAGE_RESTORATION_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零盖上黑漆虚报 $95/sq.ft. 空鼓面积、零跳过抛丸偷减聚氨酯厚度与光环腐蚀</strong>：B2B 商业停车楼结构混凝土修复批次已完成安全清算（<code>$168,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BHospitalSpdSteamSterilizerAamiSt79Sandbox() {{
+  var sel = document.getElementById("spd-select");
+  var outEl = document.getElementById("spd-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "spd_gen_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 STEAM_GENERATOR_OR_VACUUM_PUMP_UPCODING_ON_TRAP_GASKET_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对真空泵盲板极限负压与疏水阀红外温差发现：液环真空泵盲板实测 <code>48 mbar</code> 完好，器械湿包与抽真空超时实为 <code>$95 热静力疏水阀卡死</code> 与 <code>$145 硅胶门封条微漏</code>，外包商却虚报 <code>$19,500</code> 换发生器与真空泵，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "spd_bdi_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 FAILED_CHAMBER_VACUUM_LEAK_RATE_OR_SKIPPED_BOWIE_DICK_BI_CHALLENGE (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计 <code>AAMI ST79 Section 13</code> 复工打印凭条发现：腔体真空保压泄漏率 <code>2.4 mmHg/min (&gt;1.0 mmHg/min 红线)</code>，或大修后未跑满 <code>134°C×3.5m Bowie-Dick</code> 与连续 3 锅 <code>Geobacillus stearothermophilus BI</code> 阴性挑战，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "spd_cbt_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNCERTIFIED_CBET_STERILIZER_TECH_OR_EXPIRED_ASME_RELIEF_VALVE_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>ACI / AAMI CBET</code> 注册生物医学设备技师名录与 <code>ASME Section VIII</code> 压力容器记录发现：技师无有效资质或安全泄压阀铅封超期，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "spd_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_STEAM_TRAP_DOOR_GASKET_PM_KIT_DOWNGRADE_SAVINGS_CONFIRM (230ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>将 $19,500 纯蒸汽发生器与液环真空泵更换单降级为 STERIS/Getinge 原厂 $95 疏水阀芯 + $145 硅胶门封条 PM 修理包</code>，单批立省 <code>$22,400.00</code>（净结算额优化至 <code>$105,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🏥 疏水阀/门封核实 + 保压检漏 &lt;=1.0 mmHg/min + Bowie-Dick &amp; 3x BI 合规：已自动清算 (VERIFIED_HOSPITAL_SPD_STEAM_STERILIZER_ST79_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零卡死个 $95 疏水阀被宰 $19,500 换发生器、零手术湿包与漏做 3 锅 BI 芽孢挑战</strong>：B2B 医院消毒供应中心脉动真空灭菌器维保批次已完成安全清算（<code>$128,000.00</code>）！" +
     "</div>";
 }}
 

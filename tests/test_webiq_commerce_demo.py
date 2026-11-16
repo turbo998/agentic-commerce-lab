@@ -21497,6 +21497,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-parking-garage-concrete-restoration-sandbox", demo_zh)
 
+    def test_b2b_hospital_spd_steam_sterilizer_aami_st79_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_hospital_spd_steam_sterilizer_aami_st79_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant trap/gasket isolation + leak <=1.0 mmHg/min + Bowie-Dick & 3x BI + CBET -> 200 OK ($128,000.00)
+        ok_res = evaluate_b2b_hospital_spd_steam_sterilizer_aami_st79_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_HOSPITAL_SPD_STEAM_STERILIZER_ST79_SETTLED")
+        self.assertEqual(ok_res.settled_hospital_spd_sterilizer_cents, 12800000)
+
+        # 2. $19,500 steam generator or vacuum pump upcoding on $95 trap / $145 door gasket -> 403 Blocked
+        gen_403 = evaluate_b2b_hospital_spd_steam_sterilizer_aami_st79_policy(
+            steam_trap_door_gasket_isolation_and_blankoff_vacuum_verified=False,
+        )
+        self.assertFalse(gen_403.allowed)
+        self.assertEqual(gen_403.http_status, 403)
+        self.assertEqual(
+            gen_403.decision_code,
+            "STEAM_GENERATOR_OR_VACUUM_PUMP_UPCODING_ON_TRAP_GASKET_BLOCKED",
+        )
+
+        # 3. Chamber vacuum leak rate >1.0 mmHg/min or skipped Bowie-Dick & 3x BI qualification -> 422 Blocked
+        bdi_422 = evaluate_b2b_hospital_spd_steam_sterilizer_aami_st79_policy(
+            leak_rate_under_1mmhg_and_bowie_dick_3x_bi_verified=False,
+        )
+        self.assertFalse(bdi_422.allowed)
+        self.assertEqual(bdi_422.http_status, 422)
+        self.assertEqual(
+            bdi_422.decision_code,
+            "FAILED_CHAMBER_VACUUM_LEAK_RATE_OR_SKIPPED_BOWIE_DICK_BI_CHALLENGE",
+        )
+
+        # 4. Uncertified AAMI CBET technician or expired ASME Section VIII relief valve -> 451 Hold
+        cbt_451 = evaluate_b2b_hospital_spd_steam_sterilizer_aami_st79_policy(
+            webiq_cbet_tech_and_asme_relief_valve_clean=False,
+        )
+        self.assertFalse(cbt_451.allowed)
+        self.assertEqual(cbt_451.http_status, 451)
+
+        # 5. Web IQ $95 steam-trap & $145 door-gasket PM kit downgrade saving $22,400 ($105,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_hospital_spd_steam_sterilizer_aami_st79_policy(
+            automated_steam_trap_door_gasket_pm_kit_downgrade_savings_cents=2240000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_hospital_spd_sterilizer_cents, 10560000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_hospital_spd_steam_sterilizer_aami_st79_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-hospital-spd-steam-sterilizer-aami-st79-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
