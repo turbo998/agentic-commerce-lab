@@ -21953,6 +21953,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-plate-heat-exchanger-phe-sandbox", demo_zh)
 
+    def test_b2b_hospital_pneumatic_tube_system_pts_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_hospital_pneumatic_tube_system_pts_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Velcro band/diverter seal + <=12.0g landing + RFID audit + UL 1479 -> 200 OK ($112,000.00)
+        ok_res = evaluate_b2b_hospital_pneumatic_tube_system_pts_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_HOSPITAL_PNEUMATIC_TUBE_PTS_SETTLED")
+        self.assertEqual(ok_res.settled_hospital_pts_cents, 11200000)
+
+        # 2. $11,500 diverter or blower upcoding on $38 worn carrier Velcro band -> 403 Blocked
+        div_403 = evaluate_b2b_hospital_pneumatic_tube_system_pts_policy(
+            carrier_velcro_band_and_diverter_seal_isolation_verified=False,
+        )
+        self.assertFalse(div_403.allowed)
+        self.assertEqual(div_403.http_status, 403)
+        self.assertEqual(
+            div_403.decision_code,
+            "DIVERTER_OR_BLOWER_UPCODING_ON_38_DOLLAR_CARRIER_VELCRO_BAND_BLOCKED",
+        )
+
+        # 3. Excessive landing impact >12.0g (hemolysis) or phantom RFID carrier loss -> 422 Blocked
+        hem_422 = evaluate_b2b_hospital_pneumatic_tube_system_pts_policy(
+            g_force_under_12g_hemolysis_and_rfid_carrier_audit_verified=False,
+        )
+        self.assertFalse(hem_422.allowed)
+        self.assertEqual(hem_422.http_status, 422)
+        self.assertEqual(
+            hem_422.decision_code,
+            "EXCESSIVE_CARRIER_IMPACT_G_FORCE_HEMOLYSIS_OR_PHANTOM_RFID_CARRIER_LOSS",
+        )
+
+        # 4. Uncertified PTS technician or skipped UL 1479 fire-damper interlock test -> 451 Hold
+        ul_451 = evaluate_b2b_hospital_pneumatic_tube_system_pts_policy(
+            webiq_pts_oem_tech_and_ul1479_fire_damper_clean=False,
+        )
+        self.assertFalse(ul_451.allowed)
+        self.assertEqual(ul_451.http_status, 451)
+
+        # 5. Web IQ $38 carrier Velcro band & $145 diverter seal kit saving $20,800 ($91,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_hospital_pneumatic_tube_system_pts_policy(
+            automated_carrier_velcro_band_and_diverter_seal_kit_savings_cents=2080000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_hospital_pts_cents, 9120000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_hospital_pneumatic_tube_system_pts_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-hospital-pneumatic-tube-system-pts-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
