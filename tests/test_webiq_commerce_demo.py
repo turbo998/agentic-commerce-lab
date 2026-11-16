@@ -21782,6 +21782,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-truck-weighbridge-scale-nist-hb44-sandbox", demo_zh)
 
+    def test_b2b_warehouse_automated_conveyor_sortation_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_warehouse_automated_conveyor_sortation_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant takeup/splice check + MDR register check + ASME B20.1 E-stop -> 200 OK ($138,000.00)
+        ok_res = evaluate_b2b_warehouse_automated_conveyor_sortation_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_WAREHOUSE_CONVEYOR_SORTATION_ASME_B20_1_SETTLED")
+        self.assertEqual(ok_res.settled_warehouse_conveyor_sortation_cents, 13800000)
+
+        # 2. Premature $32,000 whole-loop belt replacement on $180 splice with remaining take-up travel -> 403 Blocked
+        blt_403 = evaluate_b2b_warehouse_automated_conveyor_sortation_policy(
+            takeup_travel_exhausted_and_splice_relacing_verified=False,
+        )
+        self.assertFalse(blt_403.allowed)
+        self.assertEqual(blt_403.http_status, 403)
+        self.assertEqual(
+            blt_403.decision_code,
+            "PREMATURE_WHOLE_LOOP_BELT_REPLACEMENT_ON_SPLICE_LACING_BLOCKED",
+        )
+
+        # 3. $850 MDR roller or $2,600 gearbox upcoding on $95 control card / $12 Poly-V band -> 422 Blocked
+        mdr_422 = evaluate_b2b_warehouse_automated_conveyor_sortation_policy(
+            mdr_control_card_polyv_isolation_and_divert_shoe_verified=False,
+        )
+        self.assertFalse(mdr_422.allowed)
+        self.assertEqual(mdr_422.http_status, 422)
+        self.assertEqual(
+            mdr_422.decision_code,
+            "MDR_ROLLER_OR_GEARBOX_UPCODING_ON_95_DOLLAR_CARD_OR_POLY_V_BAND",
+        )
+
+        # 4. Skipped ASME B20.1 pull-cord E-stop test or missing OSHA 1910.212 nip-point guard -> 451 Hold
+        est_451 = evaluate_b2b_warehouse_automated_conveyor_sortation_policy(
+            webiq_asme_b20_1_pullcord_estop_and_nip_guard_clean=False,
+        )
+        self.assertFalse(est_451.allowed)
+        self.assertEqual(est_451.http_status, 451)
+
+        # 5. Web IQ $180 belt splice re-lacing & $95 MDR card downgrade saving $26,500 ($111,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_warehouse_automated_conveyor_sortation_policy(
+            automated_belt_splice_relacing_and_mdr_control_card_savings_cents=2650000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_warehouse_conveyor_sortation_cents, 11150000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_warehouse_automated_conveyor_sortation_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-warehouse-automated-conveyor-sortation-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
