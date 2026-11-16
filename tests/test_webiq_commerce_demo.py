@@ -21041,6 +21041,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-chiller-plant-approach-eddy-current-sandbox", demo_zh)
 
+    def test_b2b_datacenter_clean_agent_nfpa2001_vesda_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_datacenter_clean_agent_nfpa2001_vesda_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant ultrasonic liquid level + disarmed solenoid + NICET/door-fan >=10m clean -> 200 OK ($152,000.00)
+        ok_res = evaluate_b2b_datacenter_clean_agent_nfpa2001_vesda_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_DATACENTER_CLEAN_AGENT_NFPA2001_SETTLED")
+        self.assertEqual(ok_res.settled_datacenter_clean_agent_cents, 15200000)
+
+        # 2. 5-min pressure-gauge glance without ultrasonic level or armed solenoid test -> 403 Blocked
+        lvl_403 = evaluate_b2b_datacenter_clean_agent_nfpa2001_vesda_policy(
+            ultrasonic_liquid_level_and_solenoid_disarmed_verified=False,
+        )
+        self.assertFalse(lvl_403.allowed)
+        self.assertEqual(lvl_403.http_status, 403)
+        self.assertEqual(
+            lvl_403.decision_code,
+            "UNWEIGHED_CYLINDER_GAUGE_GLANCE_OR_UNDISARMED_SOLENOID_TEST_BLOCKED",
+        )
+
+        # 3. $14,000 fake clean-agent recharge on <=5% liquid loss or $4,200 VESDA laser chamber upcoding -> 422 Blocked
+        n2_422 = evaluate_b2b_datacenter_clean_agent_nfpa2001_vesda_policy(
+            n2_topoff_downgrade_and_vesda_filter_cartridge_verified=False,
+        )
+        self.assertFalse(n2_422.allowed)
+        self.assertEqual(n2_422.http_status, 422)
+        self.assertEqual(
+            n2_422.decision_code,
+            "FAKE_CLEAN_AGENT_RECHARGE_UPCODING_OR_VESDA_LASER_CHAMBER_PADDING",
+        )
+
+        # 4. Uncertified NICET Special Hazards technician or door-fan hold time < 10 minutes -> 451 Hold
+        nic_451 = evaluate_b2b_datacenter_clean_agent_nfpa2001_vesda_policy(
+            webiq_nicet_special_hazards_and_10min_doorfan_clean=False,
+        )
+        self.assertFalse(nic_451.allowed)
+        self.assertEqual(nic_451.http_status, 451)
+
+        # 5. Web IQ $180 N2 top-off & $65 VESDA filter downgrade saving $22,800 ($129,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_datacenter_clean_agent_nfpa2001_vesda_policy(
+            automated_n2_topoff_and_vesda_filter_downgrade_savings_cents=2280000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_datacenter_clean_agent_cents, 12920000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_datacenter_clean_agent_nfpa2001_vesda_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-datacenter-clean-agent-nfpa2001-vesda-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

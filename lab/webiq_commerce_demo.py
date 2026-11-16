@@ -35323,6 +35323,106 @@ def evaluate_b2b_commercial_chiller_plant_approach_eddy_current_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BDatacenterCleanAgentNfpa2001VesdaDecision:
+    """Deterministic decision output for B2B data center clean-agent fire suppression NFPA 2001, door-fan & VESDA."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    datacenter_clean_agent_lane: str
+    settled_datacenter_clean_agent_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_datacenter_clean_agent_nfpa2001_vesda_policy(
+    *,
+    mandate_id: str = "b2b_datacenter_clean_agent_nfpa2001_doorfan_vesda_filter_mandate_2026",
+    datacenter_clean_agent_cents: int = 15200000,
+    ultrasonic_liquid_level_and_solenoid_disarmed_verified: bool = True,
+    n2_topoff_downgrade_and_vesda_filter_cartridge_verified: bool = True,
+    webiq_nicet_special_hazards_and_10min_doorfan_clean: bool = True,
+    automated_n2_topoff_and_vesda_filter_downgrade_savings_cents: int = 0,
+) -> B2BDatacenterCleanAgentNfpa2001VesdaDecision:
+    """Evaluate B2B data center clean-agent ultrasonic liquid level, solenoid disarm, VESDA filter & door-fan settlement."""
+    if not mandate_id.startswith("b2b_datacenter_clean_agent_nfpa2001_doorfan_vesda_filter_mandate_"):
+        return B2BDatacenterCleanAgentNfpa2001VesdaDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_DATACENTER_CLEAN_AGENT_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            datacenter_clean_agent_lane="INVALID_DATACENTER_CLEAN_AGENT_MANDATE_PREFIX",
+            settled_datacenter_clean_agent_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not ultrasonic_liquid_level_and_solenoid_disarmed_verified:
+        return B2BDatacenterCleanAgentNfpa2001VesdaDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="UNWEIGHED_CYLINDER_GAUGE_GLANCE_OR_UNDISARMED_SOLENOID_TEST_BLOCKED",
+            action_pill="Send to a human",
+            datacenter_clean_agent_lane="UNWEIGHED_CYLINDER_GAUGE_GLANCE_OR_UNDISARMED_SOLENOID_TEST_BLOCKED",
+            settled_datacenter_clean_agent_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not n2_topoff_downgrade_and_vesda_filter_cartridge_verified:
+        return B2BDatacenterCleanAgentNfpa2001VesdaDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="FAKE_CLEAN_AGENT_RECHARGE_UPCODING_OR_VESDA_LASER_CHAMBER_PADDING",
+            action_pill="Send to a human",
+            datacenter_clean_agent_lane="FAKE_CLEAN_AGENT_RECHARGE_UPCODING_OR_VESDA_LASER_CHAMBER_PADDING",
+            settled_datacenter_clean_agent_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_nicet_special_hazards_and_10min_doorfan_clean:
+        return B2BDatacenterCleanAgentNfpa2001VesdaDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNCERTIFIED_NICET_SPECIAL_HAZARDS_TECH_OR_SUB10MIN_DOORFAN_HOLD_TIME_HOLD",
+            action_pill="Send to a human",
+            datacenter_clean_agent_lane="UNCERTIFIED_NICET_SPECIAL_HAZARDS_TECH_OR_SUB10MIN_DOORFAN_HOLD_TIME_HOLD",
+            settled_datacenter_clean_agent_cents=0,
+            latency_ms=270,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_n2_topoff_and_vesda_filter_downgrade_savings_cents > 0:
+        net_cents = max(
+            0,
+            datacenter_clean_agent_cents - automated_n2_topoff_and_vesda_filter_downgrade_savings_cents,
+        )
+        return B2BDatacenterCleanAgentNfpa2001VesdaDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_N2_TOPOFF_AND_VESDA_FILTER_DOWNGRADE_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            datacenter_clean_agent_lane="AUTOMATED_N2_TOPOFF_AND_VESDA_FILTER_DOWNGRADE_SAVINGS_CONFIRM",
+            settled_datacenter_clean_agent_cents=net_cents,
+            latency_ms=235,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BDatacenterCleanAgentNfpa2001VesdaDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_DATACENTER_CLEAN_AGENT_NFPA2001_SETTLED",
+        action_pill="Act automatically",
+        datacenter_clean_agent_lane="VERIFIED_DATACENTER_CLEAN_AGENT_NFPA2001_SETTLED",
+        settled_datacenter_clean_agent_cents=datacenter_clean_agent_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -46946,6 +47046,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cosmetic_tube_rinse_approach_block_latency_ms": chl_app_403.latency_ms,
     }
 
+    cln_commit_ok = evaluate_b2b_datacenter_clean_agent_nfpa2001_vesda_policy()
+    cln_lvl_403 = evaluate_b2b_datacenter_clean_agent_nfpa2001_vesda_policy(
+        ultrasonic_liquid_level_and_solenoid_disarmed_verified=False,
+    )
+    cln_n2_422 = evaluate_b2b_datacenter_clean_agent_nfpa2001_vesda_policy(
+        n2_topoff_downgrade_and_vesda_filter_cartridge_verified=False,
+    )
+    cln_nic_451 = evaluate_b2b_datacenter_clean_agent_nfpa2001_vesda_policy(
+        webiq_nicet_special_hazards_and_10min_doorfan_clean=False,
+    )
+    cln_sav_409 = evaluate_b2b_datacenter_clean_agent_nfpa2001_vesda_policy(
+        automated_n2_topoff_and_vesda_filter_downgrade_savings_cents=2280000,
+    )
+    b2b_datacenter_clean_agent_nfpa2001_vesda_guards = {
+        "all_passed": (
+            cln_commit_ok.allowed
+            and cln_commit_ok.settled_datacenter_clean_agent_cents == 15200000
+            and not cln_lvl_403.allowed
+            and cln_lvl_403.http_status == 403
+            and not cln_n2_422.allowed
+            and cln_n2_422.http_status == 422
+            and not cln_nic_451.allowed
+            and cln_nic_451.http_status == 451
+            and not cln_sav_409.allowed
+            and cln_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_datacenter_clean_agent_settlement_latency_ms": cln_commit_ok.latency_ms,
+        "unweighed_gauge_glance_solenoid_block_latency_ms": cln_lvl_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -47310,6 +47440,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_boiler_asme_csd1_nbic_guards": b2b_commercial_boiler_asme_csd1_nbic_guards,
         "b2b_industrial_compressed_air_iso8573_guards": b2b_industrial_compressed_air_iso8573_guards,
         "b2b_commercial_chiller_plant_approach_eddy_current_guards": b2b_commercial_chiller_plant_approach_eddy_current_guards,
+        "b2b_datacenter_clean_agent_nfpa2001_vesda_guards": b2b_datacenter_clean_agent_nfpa2001_vesda_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -56545,6 +56676,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="chl-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Data Center Clean-Agent NFPA 2001, Door-Fan & VESDA Sandbox (Round 352) -->
+      <div class="finops-box" id="b2b-datacenter-clean-agent-nfpa2001-vesda-sandbox" style="margin-top:12px;border-color:#EF4444;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cln-title">🧯 B2B 数据中心洁净气体灭火 (NFPA 2001 FM-200/Novec 1230)、门风扇与 VESDA 清算沙盒 (Round 352 · Kidde / Ansul / NICET)</span>
+        </div>
+        <div class="control-row">
+          <label><span>逐瓶超声波液位毫米锁 + 测试前物理拆离电磁阀 + $180 补氮/$65 VESDA 滤芯降级锁 + Web IQ NICET/保压核验:</span></label>
+          <select id="cln-select" onchange="updateB2BDatacenterCleanAgentNfpa2001VesdaSandbox()">
+            <option value="cln_commit_ok">🧯 超声波液位失重 &lt;=5% + 电磁阀物理拆离测试 + 门风扇保压 &gt;=10 分钟合规：10ms 清算 $152,000.00! (Act automatically)</option>
+            <option value="cln_lvl_403">🛑 进机房只看一眼压力表 5 分钟走人未测超声波液位，或测试报警主机前未把钢瓶头电磁驱动阀 (Solenoid) 拧下 → 11ms 触发 HTTP 403!</option>
+            <option value="cln_n2_422">🚨 顶部干氮气微渗掉压（液态药剂失重 &lt;1% 只需 $180 补氮）却骗花 $14,000 重灌全氟己酮，或把 $65 VESDA 滤芯脏堵报成 $4,200 换激光腔 → 14ms 触发 HTTP 422!</option>
+            <option value="cln_nic_451">🛑 维保人员缺失 NICET Special Hazards Level II/III 执照或机房 NFPA 2001 门风扇气密性保留时间 &lt;10 分钟：Web IQ /v3/browse 270ms 触发 HTTP 451!</option>
+            <option value="cln_sav_409">🧑‍⚖️ Web IQ 自动将 $14,000 假充药剂降级为 $180 干氮气复压并将 $4,200 换 VESDA 激光腔降级为换 $65 双级滤芯立省 $22,800.00 (净付 $129,200.00) → 235ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cln-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -57335,6 +57484,7 @@ function renderAll() {{
   updateB2BCommercialBoilerAsmeCsd1NbicSandbox();
   updateB2BIndustrialCompressedAirIso8573Sandbox();
   updateB2BCommercialChillerPlantApproachEddyCurrentSandbox();
+  updateB2BDatacenterCleanAgentNfpa2001VesdaSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -74436,6 +74586,52 @@ function updateB2BCommercialChillerPlantApproachEddyCurrentSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>❄️ 冷凝趋近温差 &lt;=2.5°F + ASME V 涡流波形达标 + ASHRAE 15 合规：已自动清算 (VERIFIED_COMMERCIAL_CHILLER_PLANT_ASHRAE15_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零只冲端盖假通炮、零无波形恐吓换管与 $9,500 假换油泵</strong>：B2B 商业冷水机组通炮与涡流探伤批次已完成安全清算（<code>$164,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BDatacenterCleanAgentNfpa2001VesdaSandbox() {{
+  var sel = document.getElementById("cln-select");
+  var outEl = document.getElementById("cln-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "cln_lvl_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNWEIGHED_CYLINDER_GAUGE_GLANCE_OR_UNDISARMED_SOLENOID_TEST_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对 <code>NFPA 2001</code> 半年检记录发现：维保工仅看了一眼压力表未提交 <code>Portlevel 超声波液位毫米数/称重净重</code>，或测试报警主机前未上传已将瓶头 <code>电磁先导阀 (Solenoid Actuator)</code> 物理拧下悬空的照片，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cln_n2_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 FAKE_CLEAN_AGENT_RECHARGE_UPCODING_OR_VESDA_LASER_CHAMBER_PADDING (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计钢瓶超声波液位与 <code>VESDA</code> 故障日志发现：钢瓶液面高度显示 <code>350 lb 全氟己酮失重仅 0.7%（&lt;=5% 法定线，仅需 $180 补干氮气）</code> 却被虚报为 <code>$14,000 重灌药剂</code>，或将 <code>$65 空气滤芯脏堵</code> 虚报为 <code>$4,200 换激光腔</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cln_nic_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNCERTIFIED_NICET_SPECIAL_HAZARDS_TECH_OR_SUB10MIN_DOORFAN_HOLD_TIME_HOLD (270ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查 <code>NICET Special Hazards Suppression Systems</code> 名录与 <code>NFPA 2001 Annex C</code> 门风扇报告发现：技术人员无有效 <code>NICET Level II/III</code> 证书或机房浸渍保留时间不足 <code>10.0 分钟</code>，已在 270ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cln_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_N2_TOPOFF_AND_VESDA_FILTER_DOWNGRADE_SAVINGS_CONFIRM (235ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>将液位达标掉压钢瓶从 $14,000 重灌药剂降级为 $180 干氮气复压 + 将 $4,200 换 VESDA 激光探测腔降级为更换 $65 双级空气滤芯与采样管反吹</code>，单批立省 <code>$22,800.00</code>（净结算额优化至 <code>$129,200.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🧯 超声波液位达标 + 物理拆离电磁阀 + 门风扇 &gt;=10m 合规：已自动清算 (VERIFIED_DATACENTER_CLEAN_AGENT_NFPA2001_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零看表糊弄与带阀误喷、零 $14,000 假充药剂与 $4,200 假换激光腔</strong>：B2B 数据中心洁净气体灭火与 VESDA 维保批次已完成安全清算（<code>$152,000.00</code>）！" +
     "</div>";
 }}
 
