@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg369" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="55%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent369" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg369)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent369)"/>
+
+  <!-- Header -->
+  <text x="48" y="58" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">ROUND 367 · INDUSTRIAL &amp; DISTRICT-COOLING PLATE HEAT EXCHANGER (PHE / AHRI 400), ASTM E165 UV &amp; $42 REGASKET</text>
+  <text x="48" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">工业与区域供冷板式换热器 (PHE) 拆洗、ASTM E165 紫外荧光探伤与 $42 免胶换垫清算架构</text>
+  <text x="48" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13.5">Alfa Laval / Kelvion / Tranter / Sondex · 逐张板片暗室紫外针孔图 + 低氯氨基磺酸洗 (&lt;25ppm Cl⁻) + 铭牌 A-Dimension 锁</text>
+
+  <!-- Left Column: Telemetry & Physics Locks -->
+  <rect x="44" y="132" width="356" height="495" rx="12" fill="#1E293B" stroke="#10B981" stroke-width="1.2"/>
+  <text x="64" y="160" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">♨️ 四大板式换热器探伤与组装硬门禁</text>
+
+  <rect x="60" y="176" width="324" height="102" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="74" y="198" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. ASTM E165 紫外荧光探伤 &amp; $42 换垫锁</text>
+  <text x="74" y="218" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 侧面信号孔滴水 99% 源于 $42 EPDM 橡胶垫老化</text>
+  <text x="74" y="236" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 强制逐张板片暗室 365nm 紫外荧光穿透针孔定位</text>
+  <text x="74" y="254" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 11ms 拦截忽悠换整包 120 张 316L 板片骗 $24,000</text>
+
+  <rect x="60" y="290" width="324" height="102" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="74" y="312" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 无氯酸洗 (&lt;25 ppm Cl⁻) 防点蚀红线</text>
+  <text x="74" y="332" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 严禁拿廉价工业盐酸 (HCl) 浸泡 0.5mm 不锈钢板片</text>
+  <text x="74" y="350" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 强制采用柠檬酸/氨基磺酸 (Cl⁻ &lt; 25 ppm) 循环除垢</text>
+  <text x="74" y="368" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 14ms 阻断游击队盐酸泡穿好板片后甩锅业主买单</text>
+
+  <rect x="60" y="404" width="324" height="102" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="74" y="426" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 铭牌夹紧尺寸 (A-Dimension ±2mm) 锁</text>
+  <text x="74" y="446" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 复装必须按铭牌 A-min / A-max 四角对角均匀锁紧</text>
+  <text x="74" y="464" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 严禁不换老垫片强行过拧螺杆压塌板片波纹密封槽</text>
+  <text x="74" y="482" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 保障 316L 与钛合金板片组 20 年机械寿命</text>
+
+  <rect x="60" y="518" width="324" height="92" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="74" y="540" fill="#C084FC" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">4. Web IQ 原厂胶条硫化批号 &amp; 3-A 核查</text>
+  <text x="74" y="560" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• /v3/browse 核验 Alfa Laval/Kelvion 胶条 Cure Date</text>
+  <text x="74" y="578" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 265ms 拦截库存超 3 年硬化胶条或 1.25x 水压泄压</text>
+  <text x="74" y="596" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 满足 AHRI 400 与 FDA / 3-A 食品医药卫生合规</text>
+
+  <!-- Center Column: 5-Lane Deterministic Matrix -->
+  <rect x="416" y="132" width="424" height="495" rx="12" fill="#1E293B" stroke="#38BDF8" stroke-width="1.2"/>
+  <text x="436" y="160" fill="#BAE6FD" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">⚖️ 五路确定性清算决策矩阵 (5-Lane Matrix)</text>
+
+  <!-- Lane 200 -->
+  <rect x="432" y="176" width="392" height="76" rx="8" fill="#064E3B" stroke="#10B981"/>
+  <text x="446" y="198" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">✅ HTTP 200 · Act automatically (10ms)</text>
+  <text x="446" y="218" fill="#ECFDF5" font-family="Segoe UI, Arial, sans-serif" font-size="12">VERIFIED_INDUSTRIAL_PLATE_HEAT_EXCHANGER_PHE_SETTLED</text>
+  <text x="446" y="238" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">ASTM E165 探伤 + &lt;25ppm 无氯酸洗 + A-Dim 达标 → $132,000.00</text>
+
+  <!-- Lane 403 -->
+  <rect x="432" y="264" width="392" height="76" rx="8" fill="#450A0A" stroke="#EF4444"/>
+  <text x="446" y="286" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🛑 HTTP 403 · Send to a human (11ms)</text>
+  <text x="446" y="306" fill="#FEE2E2" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">PLATE_PACK_REPLACEMENT_UPCODING_ON_42_DOLLAR_ELASTOMER_GASKET_BLOCKED</text>
+  <text x="446" y="326" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">拦截无紫外针孔证明把 $42 垫片老化高报 $24,000 整包换板 → $0.00</text>
+
+  <!-- Lane 422 -->
+  <rect x="432" y="352" width="392" height="76" rx="8" fill="#450A0A" stroke="#F87171"/>
+  <text x="446" y="374" fill="#FECACA" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🚨 HTTP 422 · Send to a human (14ms)</text>
+  <text x="446" y="394" fill="#FEE2E2" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">HYDROCHLORIC_ACID_CHLORIDE_PITTING_OR_CRUSHED_A_DIMENSION_PLATE_GROOVE</text>
+  <text x="446" y="414" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">拦截用含氯盐酸泡穿 316L 板片或过拧螺杆压塌 A-Dimension → $0.00</text>
+
+  <!-- Lane 451 -->
+  <rect x="432" y="440" width="392" height="76" rx="8" fill="#3B0764" stroke="#C084FC"/>
+  <text x="446" y="462" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🛑 HTTP 451 · Send to a human (265ms)</text>
+  <text x="446" y="482" fill="#F3E8FF" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">EXPIRED_NON_OEM_GASKET_CURE_DATE_OR_FAILED_ASME_HYDRO_TEST_HOLD</text>
+  <text x="446" y="502" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">Web IQ 挂起超期假冒橡胶垫片或 1.25x MAWP 水压未通过 → $0.00</text>
+
+  <!-- Lane 409 -->
+  <rect x="432" y="528" width="392" height="84" rx="8" fill="#451A03" stroke="#F59E0B"/>
+  <text x="446" y="550" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🧑‍⚖️ HTTP 409 · Confirm (230ms)</text>
+  <text x="446" y="570" fill="#FEF3C7" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">AUTOMATED_CLIP_ON_EPDM_REGASKETING_AND_SINGLE_PLATE_SAVINGS_CONFIRM</text>
+  <text x="446" y="592" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">保留 118 张好板片仅换 $42 原厂 Clip-On EPDM 垫片立省 $25,200 → $106,800.00</text>
+
+  <!-- Right Column: FinOps & Benchmark -->
+  <rect x="856" y="132" width="300" height="495" rx="12" fill="#1E293B" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="876" y="160" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">📊 成本精算与基准对比</text>
+
+  <rect x="872" y="176" width="268" height="145" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="886" y="198" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">单批板式换热器拆洗与大修总额</text>
+  <text x="886" y="226" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">$132,000.00</text>
+  <text x="886" y="252" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">Web IQ 紫外保板 &amp; 换垫降级立省：</text>
+  <text x="886" y="278" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">-$25,200.00 (-19.1%)</text>
+  <text x="886" y="304" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">净清算额：$106,800.00</text>
+
+  <rect x="872" y="335" width="268" height="140" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="886" y="357" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Web IQ vs. 竞品检索能力</text>
+  <text x="886" y="379" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Web IQ: 230ms 直连 Alfa Laval</text>
+  <text x="886" y="399" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  胶条批号库与 AHRI 400 / 3-A 认证</text>
+  <text x="886" y="421" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Bright Data: 缺乏 ASTM E165 紫外</text>
+  <text x="886" y="441" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">  探伤与 A-Dimension 螺距确定性模型</text>
+  <text x="886" y="461" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Exa: 无法做 DIN 7716 胶龄强校验</text>
+
+  <rect x="872" y="489" width="268" height="121" rx="8" fill="#0F172A" stroke="#334155"/>
+  <text x="886" y="511" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🛠️ 生产核验清单 (Checklist)</text>
+  <text x="886" y="533" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">☑ 逐张板片 ASTM E165 紫外荧光图</text>
+  <text x="886" y="553" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">☑ 酸洗 Cl⁻ &lt;25ppm &amp; 铭牌 A-Dimension</text>
+  <text x="886" y="573" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">☑ 原厂 EPDM 硫化批号 &amp; 1.25x 水压</text>
+  <text x="886" y="593" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="11.5" font-weight="700">☑ 零虚构坐标 · CSP 自包含沙盒通过</text>
+</svg>

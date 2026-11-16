@@ -21896,6 +21896,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-ai-datacenter-liquid-cooling-cdu-sandbox", demo_zh)
 
+    def test_b2b_industrial_plate_heat_exchanger_phe_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_plate_heat_exchanger_phe_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant ASTM E165 UV + <25ppm Cl- acid + A-Dimension + OEM gasket -> 200 OK ($132,000.00)
+        ok_res = evaluate_b2b_industrial_plate_heat_exchanger_phe_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_PLATE_HEAT_EXCHANGER_PHE_SETTLED")
+        self.assertEqual(ok_res.settled_industrial_phe_cents, 13200000)
+
+        # 2. $24,000 plate-pack replacement upcoding on $42 elastomer gasket leak without UV proof -> 403 Blocked
+        plt_403 = evaluate_b2b_industrial_plate_heat_exchanger_phe_policy(
+            astm_e165_uv_dye_penetrant_and_gasket_only_verified=False,
+        )
+        self.assertFalse(plt_403.allowed)
+        self.assertEqual(plt_403.http_status, 403)
+        self.assertEqual(
+            plt_403.decision_code,
+            "PLATE_PACK_REPLACEMENT_UPCODING_ON_42_DOLLAR_ELASTOMER_GASKET_BLOCKED",
+        )
+
+        # 3. Hydrochloric acid (Cl- >= 25 ppm) chloride pitting or crushed A-Dimension groove -> 422 Blocked
+        hcl_422 = evaluate_b2b_industrial_plate_heat_exchanger_phe_policy(
+            low_chloride_acid_wash_and_a_dimension_tolerance_verified=False,
+        )
+        self.assertFalse(hcl_422.allowed)
+        self.assertEqual(hcl_422.http_status, 422)
+        self.assertEqual(
+            hcl_422.decision_code,
+            "HYDROCHLORIC_ACID_CHLORIDE_PITTING_OR_CRUSHED_A_DIMENSION_PLATE_GROOVE",
+        )
+
+        # 4. Expired non-OEM gasket cure date or failed ASME 1.25x MAWP hydro test -> 451 Hold
+        cur_451 = evaluate_b2b_industrial_plate_heat_exchanger_phe_policy(
+            webiq_oem_gasket_cure_date_and_hydro_test_clean=False,
+        )
+        self.assertFalse(cur_451.allowed)
+        self.assertEqual(cur_451.http_status, 451)
+
+        # 5. Web IQ $42 clip-on EPDM regasketing & single-plate swap saving $25,200 ($106,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_plate_heat_exchanger_phe_policy(
+            automated_clip_on_epdm_regasketing_and_single_plate_savings_cents=2520000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_industrial_phe_cents, 10680000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_plate_heat_exchanger_phe_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-plate-heat-exchanger-phe-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
