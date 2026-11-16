@@ -22808,6 +22808,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-acid-gas-wet-scrubber-sandbox", demo_zh)
 
+    def test_b2b_commercial_hospital_laundry_tunnel_ironer_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_hospital_laundry_tunnel_ironer_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant $185 steam trap + <1/8 in. duct lint (>=1,800 FPM)/pH 5.5-6.5 + CDC 160F -> 200 OK ($120,000.00)
+        ok_res = evaluate_b2b_commercial_hospital_laundry_tunnel_ironer_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_HOSPITAL_LAUNDRY_TUNNEL_IRONER_SETTLED")
+        self.assertEqual(ok_res.settled_hospital_laundry_tunnel_cents, 12000000)
+
+        # 2. $12,800 steam chest/burner upcoding on $185 plugged trap or $165 rotary joint -> 403 Blocked
+        trp_403 = evaluate_b2b_commercial_hospital_laundry_tunnel_ironer_policy(
+            steam_trap_subcooling_and_rotary_joint_seal_isolation_verified=False,
+        )
+        self.assertFalse(trp_403.allowed)
+        self.assertEqual(trp_403.http_status, 403)
+        self.assertEqual(
+            trp_403.decision_code,
+            "STEAM_CHEST_OR_BURNER_REPLACEMENT_UPCODING_ON_185_DOLLAR_TRAP_SEAL_BLOCKED",
+        )
+
+        # 3. Dryer duct lint fire hazard (>=1/8 in. / <1,800 FPM) or fabric sour pH neglect -> 422 Blocked
+        lnt_422 = evaluate_b2b_commercial_hospital_laundry_tunnel_ironer_policy(
+            dryer_duct_lint_cleanout_1800fpm_and_fabric_sour_ph_verified=False,
+        )
+        self.assertFalse(lnt_422.allowed)
+        self.assertEqual(lnt_422.http_status, 422)
+        self.assertEqual(
+            lnt_422.decision_code,
+            "DRYER_DUCT_LINT_FIRE_HAZARD_OR_FABRIC_SOUR_PH_NEGLECT",
+        )
+
+        # 4. Failed CDC/HLAC >=160F x 25m / PAA >=150 ppm disinfection or cross-contamination -> 451 Hold
+        cdc_451 = evaluate_b2b_commercial_hospital_laundry_tunnel_ironer_policy(
+            webiq_cdc_hlac_160f_paa_disinfection_and_negative_pressure_clean=False,
+        )
+        self.assertFalse(cdc_451.allowed)
+        self.assertEqual(cdc_451.http_status, 451)
+
+        # 5. Web IQ $185 trap + $165 rotary seal & duct cleanout saving $22,600 ($97,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_hospital_laundry_tunnel_ironer_policy(
+            automated_steam_trap_rotary_joint_and_duct_cleanout_savings_cents=2260000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_hospital_laundry_tunnel_cents, 9740000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_hospital_laundry_tunnel_ironer_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-hospital-laundry-tunnel-ironer-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
