@@ -21440,6 +21440,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-overhead-bridge-crane-osha1910-sandbox", demo_zh)
 
+    def test_b2b_commercial_parking_garage_concrete_restoration_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_parking_garage_concrete_restoration_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant pre-pour sawcut spall LiDAR + ICRI CSP 3-4 shotblast + >=40 mils + PE clean -> 200 OK ($168,000.00)
+        ok_res = evaluate_b2b_commercial_parking_garage_concrete_restoration_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_PARKING_GARAGE_RESTORATION_SETTLED")
+        self.assertEqual(ok_res.settled_parking_garage_restoration_cents, 16800000)
+
+        # 2. Post-pour phantom $95/sq.ft. spall padding without open-cavity LiDAR or feather-edging -> 403 Blocked
+        spl_403 = evaluate_b2b_commercial_parking_garage_concrete_restoration_policy(
+            pre_pour_sawcut_spall_lidar_sqft_verified=False,
+        )
+        self.assertFalse(spl_403.allowed)
+        self.assertEqual(spl_403.http_status, 403)
+        self.assertEqual(
+            spl_403.decision_code,
+            "PHANTOM_SPALL_PATCH_SQFT_PADDING_OR_UNSAWCUT_FEATHER_EDGE_BLOCKED",
+        )
+
+        # 3. Skipped ICRI CSP 3-4 shot-blast or thin <40 mil polyurethane traffic coating -> 422 Blocked
+        cot_422 = evaluate_b2b_commercial_parking_garage_concrete_restoration_policy(
+            icri_csp_shotblast_and_40mil_coating_gallon_balance_verified=False,
+        )
+        self.assertFalse(cot_422.allowed)
+        self.assertEqual(cot_422.http_status, 422)
+        self.assertEqual(
+            cot_422.decision_code,
+            "SKIPPED_ICRI_CSP_SHOTBLAST_OR_THIN_TRAFFIC_COATING_UNDER_40MILS",
+        )
+
+        # 4. Unstamped Structural PE PT-tendon repair or missing galvanic zinc anodes -> 451 Hold
+        pe_451 = evaluate_b2b_commercial_parking_garage_concrete_restoration_policy(
+            webiq_structural_pe_and_galvanic_zinc_anode_clean=False,
+        )
+        self.assertFalse(pe_451.allowed)
+        self.assertEqual(pe_451.http_status, 451)
+
+        # 5. Web IQ pre-pour LiDAR net sq.ft. & coating-gallon audit saving $28,500 ($139,500 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_parking_garage_concrete_restoration_policy(
+            automated_lidar_spall_net_sqft_and_coating_gallon_audit_savings_cents=2850000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_parking_garage_restoration_cents, 13950000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_parking_garage_concrete_restoration_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-parking-garage-concrete-restoration-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

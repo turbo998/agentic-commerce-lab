@@ -36023,6 +36023,106 @@ def evaluate_b2b_industrial_overhead_bridge_crane_osha1910_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BCommercialParkingGarageConcreteRestorationDecision:
+    """Deterministic decision output for B2B commercial parking garage concrete restoration, pre-pour LiDAR & ICRI."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    parking_garage_restoration_lane: str
+    settled_parking_garage_restoration_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_commercial_parking_garage_concrete_restoration_policy(
+    *,
+    mandate_id: str = "b2b_commercial_parking_garage_concrete_restoration_astm_d4580_icri_mandate_2026",
+    parking_garage_restoration_cents: int = 16800000,
+    pre_pour_sawcut_spall_lidar_sqft_verified: bool = True,
+    icri_csp_shotblast_and_40mil_coating_gallon_balance_verified: bool = True,
+    webiq_structural_pe_and_galvanic_zinc_anode_clean: bool = True,
+    automated_lidar_spall_net_sqft_and_coating_gallon_audit_savings_cents: int = 0,
+) -> B2BCommercialParkingGarageConcreteRestorationDecision:
+    """Evaluate B2B commercial parking garage pre-pour sawcut spall LiDAR, ICRI CSP 3-4 shot-blast & 40-mil coating."""
+    if not mandate_id.startswith("b2b_commercial_parking_garage_concrete_restoration_astm_d4580_icri_mandate_"):
+        return B2BCommercialParkingGarageConcreteRestorationDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_PARKING_GARAGE_RESTORATION_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            parking_garage_restoration_lane="INVALID_PARKING_GARAGE_RESTORATION_MANDATE_PREFIX",
+            settled_parking_garage_restoration_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not pre_pour_sawcut_spall_lidar_sqft_verified:
+        return B2BCommercialParkingGarageConcreteRestorationDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="PHANTOM_SPALL_PATCH_SQFT_PADDING_OR_UNSAWCUT_FEATHER_EDGE_BLOCKED",
+            action_pill="Send to a human",
+            parking_garage_restoration_lane="PHANTOM_SPALL_PATCH_SQFT_PADDING_OR_UNSAWCUT_FEATHER_EDGE_BLOCKED",
+            settled_parking_garage_restoration_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not icri_csp_shotblast_and_40mil_coating_gallon_balance_verified:
+        return B2BCommercialParkingGarageConcreteRestorationDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="SKIPPED_ICRI_CSP_SHOTBLAST_OR_THIN_TRAFFIC_COATING_UNDER_40MILS",
+            action_pill="Send to a human",
+            parking_garage_restoration_lane="SKIPPED_ICRI_CSP_SHOTBLAST_OR_THIN_TRAFFIC_COATING_UNDER_40MILS",
+            settled_parking_garage_restoration_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_structural_pe_and_galvanic_zinc_anode_clean:
+        return B2BCommercialParkingGarageConcreteRestorationDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNSTAMPED_STRUCTURAL_PE_PT_TENDON_REPAIR_OR_MISSING_ZINC_ANODE_HOLD",
+            action_pill="Send to a human",
+            parking_garage_restoration_lane="UNSTAMPED_STRUCTURAL_PE_PT_TENDON_REPAIR_OR_MISSING_ZINC_ANODE_HOLD",
+            settled_parking_garage_restoration_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_lidar_spall_net_sqft_and_coating_gallon_audit_savings_cents > 0:
+        net_cents = max(
+            0,
+            parking_garage_restoration_cents - automated_lidar_spall_net_sqft_and_coating_gallon_audit_savings_cents,
+        )
+        return B2BCommercialParkingGarageConcreteRestorationDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_LIDAR_SPALL_NET_SQFT_AND_COATING_GALLON_AUDIT_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            parking_garage_restoration_lane="AUTOMATED_LIDAR_SPALL_NET_SQFT_AND_COATING_GALLON_AUDIT_SAVINGS_CONFIRM",
+            settled_parking_garage_restoration_cents=net_cents,
+            latency_ms=230,
+            provenance="official_doc_snapshot",
+        )
+
+    return B2BCommercialParkingGarageConcreteRestorationDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_COMMERCIAL_PARKING_GARAGE_RESTORATION_SETTLED",
+        action_pill="Act automatically",
+        parking_garage_restoration_lane="VERIFIED_COMMERCIAL_PARKING_GARAGE_RESTORATION_SETTLED",
+        settled_parking_garage_restoration_cents=parking_garage_restoration_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -47856,6 +47956,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hoist_gearbox_upcoding_block_latency_ms": crn_gbx_403.latency_ms,
     }
 
+    pkg_commit_ok = evaluate_b2b_commercial_parking_garage_concrete_restoration_policy()
+    pkg_spl_403 = evaluate_b2b_commercial_parking_garage_concrete_restoration_policy(
+        pre_pour_sawcut_spall_lidar_sqft_verified=False,
+    )
+    pkg_cot_422 = evaluate_b2b_commercial_parking_garage_concrete_restoration_policy(
+        icri_csp_shotblast_and_40mil_coating_gallon_balance_verified=False,
+    )
+    pkg_pe_451 = evaluate_b2b_commercial_parking_garage_concrete_restoration_policy(
+        webiq_structural_pe_and_galvanic_zinc_anode_clean=False,
+    )
+    pkg_sav_409 = evaluate_b2b_commercial_parking_garage_concrete_restoration_policy(
+        automated_lidar_spall_net_sqft_and_coating_gallon_audit_savings_cents=2850000,
+    )
+    b2b_commercial_parking_garage_concrete_restoration_guards = {
+        "all_passed": (
+            pkg_commit_ok.allowed
+            and pkg_commit_ok.settled_parking_garage_restoration_cents == 16800000
+            and not pkg_spl_403.allowed
+            and pkg_spl_403.http_status == 403
+            and not pkg_cot_422.allowed
+            and pkg_cot_422.http_status == 422
+            and not pkg_pe_451.allowed
+            and pkg_pe_451.http_status == 451
+            and not pkg_sav_409.allowed
+            and pkg_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_parking_garage_restoration_settlement_latency_ms": pkg_commit_ok.latency_ms,
+        "phantom_spall_patch_sqft_block_latency_ms": pkg_spl_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48227,6 +48357,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_industrial_combustible_dust_baghouse_nfpa652_guards": b2b_industrial_combustible_dust_baghouse_nfpa652_guards,
         "b2b_industrial_reverse_osmosis_ro_edi_guards": b2b_industrial_reverse_osmosis_ro_edi_guards,
         "b2b_industrial_overhead_bridge_crane_osha1910_guards": b2b_industrial_overhead_bridge_crane_osha1910_guards,
+        "b2b_commercial_parking_garage_concrete_restoration_guards": b2b_commercial_parking_garage_concrete_restoration_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -57588,6 +57719,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="crn-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Commercial Parking Garage Concrete Restoration, Pre-Pour LiDAR & Traffic Coating Sandbox (Round 359) -->
+      <div class="finops-box" id="b2b-commercial-parking-garage-concrete-restoration-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-pkg-title">🏢 B2B 商业停车楼结构混凝土空鼓修补、浇筑前切缝裸坑 LiDAR 锁与 &gt;=40 mils 聚氨酯耐磨地坪沙盒 (Round 359 · Sika / Tremco / ICRI 310.2R)</span>
+        </div>
+        <div class="control-row">
+          <label><span>浇筑前 &gt;=3/4" 垂直切缝裸坑 LiDAR 面积锁 + ICRI CSP 3-4 抛丸与 &gt;=40 mils 加仑平衡 + Web IQ 结构 PE/锌阳极核验:</span></label>
+          <select id="pkg-select" onchange="updateB2BCommercialParkingGarageConcreteRestorationSandbox()">
+            <option value="pkg_commit_ok">🏢 浇筑前切缝裸坑 LiDAR + CSP 3-4 抛丸 + &gt;=40 mils 聚氨酯 + 结构 PE 合规：10ms 清算 $168,000.00! (Act automatically)</option>
+            <option value="pkg_spl_403">🛑 浇完修补砂浆刷上黑面漆后在账单里凭空虚报 300 sq.ft. ($95/sq.ft.) 空鼓修补面积，或未切 &gt;=3/4" 直角边留羽毛边 → 11ms 触发 HTTP 403!</option>
+            <option value="pkg_cot_422">🚨 聚氨酯防水耐磨地坪跳过 ICRI CSP 3-4 无尘钢丸抛丸，或按空桶加仑数物料平衡折算干膜厚度仅 21 mils (&lt;40 mils) 偷工减料 → 14ms 触发 HTTP 422!</option>
+            <option value="pkg_pe_451">🛑 后张法预应力 (PT) 楼板凿除无州注册结构工程师 (PE) 签章/GPR 扫筋，或漏埋抗光环腐蚀牺牲锌阳极块：Web IQ /v3/browse 265ms 触发 HTTP 451!</option>
+            <option value="pkg_sav_409">🧑‍⚖️ Web IQ 自动按浇筑前切缝裸坑 LiDAR 点云核减无照片的 300 sq.ft. 虚报空鼓尺数并按实际空桶加仑结算立省 $28,500.00 (净付 $139,500.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="pkg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -58385,6 +58534,7 @@ function renderAll() {{
   updateB2BIndustrialCombustibleDustBaghouseNfpa652Sandbox();
   updateB2BIndustrialReverseOsmosisRoEdiSandbox();
   updateB2BIndustrialOverheadBridgeCraneOsha1910Sandbox();
+  updateB2BCommercialParkingGarageConcreteRestorationSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -75808,6 +75958,52 @@ function updateB2BIndustrialOverheadBridgeCraneOsha1910Sandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🏗️ 内窥镜/抱闸核实 + MFL 钢丝绳探伤 + 125% 拉力计 &amp; CCAA 合规：已自动清算 (VERIFIED_INDUSTRIAL_OVERHEAD_CRANE_OSHA1910_179_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零坏个 $185 整流块被宰 $16,500 换减速机、零看表面油泥盲换 $6,800 钢丝绳</strong>：B2B 工业桥式与门式起重机定检维保批次已完成安全清算（<code>$152,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BCommercialParkingGarageConcreteRestorationSandbox() {{
+  var sel = document.getElementById("pkg-select");
+  var outEl = document.getElementById("pkg-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "pkg_spl_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 PHANTOM_SPALL_PATCH_SQFT_PADDING_OR_UNSAWCUT_FEATHER_EDGE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "核对逐坑编号浇筑前裸坑 <code>LiDAR</code> 点云发现：账单申报 <code>2,200 sq.ft. ($95/sq.ft.)</code> 混凝土空鼓修补，但具备 <code>&gt;=3/4 in. 垂直切边与钢筋下 3/4 in. 掏空</code> 的浇筑前裸坑仅 <code>1,900 sq.ft.</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "pkg_cot_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 SKIPPED_ICRI_CSP_SHOTBLAST_OR_THIN_TRAFFIC_COATING_UNDER_40MILS (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "审计车库聚氨酯耐磨防水地坪工单与原厂涂料桶 Lot 扫码发现：施工队跳过 <code>ICRI CSP 3–4</code> 无尘钢丸抛丸，或按加仑物料平衡（<code>30 sq.ft./gal</code>）折算干膜厚度仅 <code>21 mils (&lt;40 mils 标准)</code>，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "pkg_pe_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNSTAMPED_STRUCTURAL_PE_PT_TENDON_REPAIR_OR_MISSING_ZINC_ANODE_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核查州注册结构工程师（<code>Structural PE</code>）名录与 <code>ICRI 310.2R</code> 规范发现：后张法预应力（<code>PT</code>）楼板凿除无有效 <code>PE</code> 签章或漏埋抗光环腐蚀牺牲锌阳极块，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "pkg_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_LIDAR_SPALL_NET_SQFT_AND_COATING_GALLON_AUDIT_SAVINGS_CONFIRM (230ms · Confirm · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 核实启用 <code>按浇筑前 &gt;=3/4 in. 切缝裸坑 LiDAR 净面积核减 300 sq.ft. 虚报空鼓修补尺数 + 按 Sika/Tremco 实际空桶加仑数折算地坪面积</code>，单批立省 <code>$28,500.00</code>（净结算额优化至 <code>$139,500.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🏢 浇筑前切缝裸坑 LiDAR + CSP 3-4 抛丸 + &gt;=40 mils 聚氨酯 &amp; 结构 PE 合规：已自动清算 (VERIFIED_COMMERCIAL_PARKING_GARAGE_RESTORATION_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零盖上黑漆虚报 $95/sq.ft. 空鼓面积、零跳过抛丸偷减聚氨酯厚度与光环腐蚀</strong>：B2B 商业停车楼结构混凝土修复批次已完成安全清算（<code>$168,000.00</code>）！" +
     "</div>";
 }}
 
