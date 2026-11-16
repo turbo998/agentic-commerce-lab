@@ -22751,6 +22751,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-ultrasonic-plastic-welder-20khz-sandbox", demo_zh)
 
+    def test_b2b_industrial_acid_gas_wet_scrubber_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_acid_gas_wet_scrubber_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant $480 in-situ CIP descaling (<=2.0 in. w.g.) + >=92% pH/ORP slope + >=99% removal -> 200 OK ($120,000.00)
+        ok_res = evaluate_b2b_industrial_acid_gas_wet_scrubber_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_ACID_GAS_WET_SCRUBBER_SETTLED")
+        self.assertEqual(ok_res.settled_acid_gas_wet_scrubber_cents, 12000000)
+
+        # 2. $14,500 packing-media dump upcoding without $480 in-situ CIP acid descaling -> 403 Blocked
+        med_403 = evaluate_b2b_industrial_acid_gas_wet_scrubber_policy(
+            in_situ_cip_acid_descaling_and_spray_nozzle_cone_verified=False,
+        )
+        self.assertFalse(med_403.allowed)
+        self.assertEqual(med_403.http_status, 403)
+        self.assertEqual(
+            med_403.decision_code,
+            "PACKING_MEDIA_DUMP_REPLACEMENT_UPCODING_ON_480_DOLLAR_CIP_DESCALING_BLOCKED",
+        )
+
+        # 3. Uncalibrated $115 pH/ORP probe slope (<92%) or disabled conductivity blowdown -> 422 Blocked
+        prb_422 = evaluate_b2b_industrial_acid_gas_wet_scrubber_policy(
+            ph_orp_probe_nist_slope_92pct_and_conductivity_blowdown_verified=False,
+        )
+        self.assertFalse(prb_422.allowed)
+        self.assertEqual(prb_422.http_status, 422)
+        self.assertEqual(
+            prb_422.decision_code,
+            "UNCALIBRATED_PH_ORP_PROBE_SLOPE_OR_CONDUCTIVITY_BLOWDOWN_NEGLECT",
+        )
+
+        # 4. Failed EPA Method 26A >=99% scrubbing efficiency or mist eliminator carryover -> 451 Hold
+        epa_451 = evaluate_b2b_industrial_acid_gas_wet_scrubber_policy(
+            webiq_epa_99pct_removal_and_mist_eliminator_dp_clean=False,
+        )
+        self.assertFalse(epa_451.allowed)
+        self.assertEqual(epa_451.http_status, 451)
+
+        # 5. Web IQ $480 CIP descaling + $115 pH/ORP probe & caustic savings ($23,200 off -> $96,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_acid_gas_wet_scrubber_policy(
+            automated_cip_descaling_and_ph_orp_probe_savings_cents=2320000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_acid_gas_wet_scrubber_cents, 9680000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_acid_gas_wet_scrubber_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-acid-gas-wet-scrubber-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
