@@ -23036,6 +23036,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-robotic-mig-spot-welding-cell-sandbox", demo_zh)
 
+    def test_b2b_industrial_cooling_tower_gearbox_fan_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_cooling_tower_gearbox_fan_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Fe<75ppm tooth/PAO flush + <=0.25deg blade pitch + <=3.5mm/s & drift eliminator -> 200 OK ($115,000.00)
+        ok_res = evaluate_b2b_industrial_cooling_tower_gearbox_fan_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_COOLING_TOWER_GEARBOX_FAN_SETTLED")
+        self.assertEqual(ok_res.settled_cooling_tower_gearbox_cents, 11500000)
+
+        # 2. $14,200 right-angle gearbox replacement upcoding on $185 seal/breather milky oil -> 403 Blocked
+        gbx_403 = evaluate_b2b_industrial_cooling_tower_gearbox_fan_policy(
+            bevel_gear_tooth_iron_ppm_and_seal_breather_flush_verified=False,
+        )
+        self.assertFalse(gbx_403.allowed)
+        self.assertEqual(gbx_403.http_status, 403)
+        self.assertEqual(
+            gbx_403.decision_code,
+            "RIGHT_ANGLE_GEARBOX_REPLACEMENT_UPCODING_ON_185_DOLLAR_SEAL_BREATHER_BLOCKED",
+        )
+
+        # 3. Fan blade pitch imbalance >±0.25deg or motor FLA overload neglect -> 422 Blocked
+        ptc_422 = evaluate_b2b_industrial_cooling_tower_gearbox_fan_policy(
+            digital_inclinometer_pitch_025deg_and_motor_fla_verified=False,
+        )
+        self.assertFalse(ptc_422.allowed)
+        self.assertEqual(ptc_422.http_status, 422)
+        self.assertEqual(
+            ptc_422.decision_code,
+            "FAN_BLADE_PITCH_IMBALANCE_OVER_025DEG_OR_MOTOR_FLA_OVERLOAD_NEGLECT",
+        )
+
+        # 4. Failed CTI vibration limit (>3.5 mm/s) or ASHRAE 188 drift eliminator gap -> 451 Hold
+        vib_451 = evaluate_b2b_industrial_cooling_tower_gearbox_fan_policy(
+            webiq_cti_vibration_35mms_and_ashrae188_drift_eliminator_clean=False,
+        )
+        self.assertFalse(vib_451.allowed)
+        self.assertEqual(vib_451.http_status, 451)
+
+        # 5. Web IQ $185 seal/breather PAO flush & digital blade pitch saving $25,800 ($89,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_cooling_tower_gearbox_fan_policy(
+            automated_seal_breather_pao_flush_and_blade_pitch_savings_cents=2580000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_cooling_tower_gearbox_cents, 8920000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_cooling_tower_gearbox_fan_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-cooling-tower-gearbox-fan-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
