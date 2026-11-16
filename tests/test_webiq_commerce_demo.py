@@ -20471,6 +20471,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-elevator-cab-escalator-step-sandbox", demo_zh)
 
+    def test_b2b_commercial_irrigation_sewer_submeter_arborist_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_irrigation_sewer_submeter_arborist_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 0.0 GPM rain shutoff + sewer sub-meter credit + $18 diaphragm + ISA clean -> 200 OK ($112,000.00)
+        ok_res = evaluate_b2b_commercial_irrigation_sewer_submeter_arborist_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_IRRIGATION_ISA_ARBORIST_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_irrigation_arborist_cents, 11200000)
+
+        # 2. Sprinklers running in rain/freeze or unfiled sewer-deduct sub-meter -> 403 Blocked
+        ran_403 = evaluate_b2b_commercial_irrigation_sewer_submeter_arborist_policy(
+            rain_freeze_shutoff_and_sewer_deduct_submeter_verified=False,
+        )
+        self.assertFalse(ran_403.allowed)
+        self.assertEqual(ran_403.http_status, 403)
+        self.assertEqual(
+            ran_403.decision_code,
+            "RAIN_FREEZE_IRRIGATION_BYPASS_OR_UNFILED_SEWER_DEDUCT_SUBMETER_BLOCKED",
+        )
+
+        # 3. $280 full valve swap on $18 diaphragm wear or unverified tree injection padding -> 422 Blocked
+        vlv_422 = evaluate_b2b_commercial_irrigation_sewer_submeter_arborist_policy(
+            valve_diaphragm_downgrade_and_tree_dbh_vial_verified=False,
+        )
+        self.assertFalse(vlv_422.allowed)
+        self.assertEqual(vlv_422.http_status, 422)
+        self.assertEqual(
+            vlv_422.decision_code,
+            "IRRIGATION_VALVE_ROTOR_SWAP_UPCODING_OR_UNVERIFIED_TREE_INJECTION_PADDING",
+        )
+
+        # 4. Uncertified ISA arborist or illegal ANSI A300 tree topping -> 451 Hold
+        isa_451 = evaluate_b2b_commercial_irrigation_sewer_submeter_arborist_policy(
+            webiq_isa_arborist_and_ansi_a300_no_topping_clean=False,
+        )
+        self.assertFalse(isa_451.allowed)
+        self.assertEqual(isa_451.http_status, 451)
+
+        # 5. Web IQ $18 diaphragm downgrade & sewer sub-meter credit saving $16,800 ($95,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_irrigation_sewer_submeter_arborist_policy(
+            automated_valve_diaphragm_downgrade_and_sewer_credit_savings_cents=1680000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_irrigation_arborist_cents, 9520000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_irrigation_sewer_submeter_arborist_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-irrigation-sewer-submeter-arborist-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
