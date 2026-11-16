@@ -22523,6 +22523,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-industrial-press-hydraulic-oil-iso4406-sandbox", demo_zh)
 
+    def test_b2b_datacenter_overhead_busway_busduct_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_datacenter_overhead_busway_busduct_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant stab/module check + NEMA BU 1.1 torque + DLRO <=50uOhm + UL 857 -> 200 OK ($135,000.00)
+        ok_res = evaluate_b2b_datacenter_overhead_busway_busduct_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_DATACENTER_OVERHEAD_BUSWAY_NEMA_BU1_SETTLED")
+        self.assertEqual(ok_res.settled_datacenter_busway_busduct_cents, 13500000)
+
+        # 2. $7,800 whole tap-off plug-in box upcoding on $145 meter card or $45 fuse -> 403 Blocked
+        tap_403 = evaluate_b2b_datacenter_overhead_busway_busduct_policy(
+            tapoff_stab_finger_and_internal_fuse_meter_isolation_verified=False,
+        )
+        self.assertFalse(tap_403.allowed)
+        self.assertEqual(tap_403.http_status, 403)
+        self.assertEqual(
+            tap_403.decision_code,
+            "WHOLE_TAPOFF_PLUGIN_BOX_UPCODING_ON_145_DOLLAR_METER_OR_FUSE_BLOCKED",
+        )
+
+        # 3. Blind joint over-torquing damage or $18,500 busduct section upcoding on $380 joint pack -> 422 Blocked
+        trq_422 = evaluate_b2b_datacenter_overhead_busway_busduct_policy(
+            nema_bu1_shear_bolt_belleville_and_joint_pack_verified=False,
+        )
+        self.assertFalse(trq_422.allowed)
+        self.assertEqual(trq_422.http_status, 422)
+        self.assertEqual(
+            trq_422.decision_code,
+            "BLIND_JOINT_OVERTORQUING_DAMAGE_OR_BUSDUCT_SECTION_UPCODING_ON_JOINT_PACK",
+        )
+
+        # 4. Unlisted UL 857 tap-off SCCR mismatch or missing busduct fire barrier -> 451 Hold
+        ul_451 = evaluate_b2b_datacenter_overhead_busway_busduct_policy(
+            webiq_ul857_sccr_and_neta_busduct_fire_barrier_clean=False,
+        )
+        self.assertFalse(ul_451.allowed)
+        self.assertEqual(ul_451.http_status, 451)
+
+        # 5. Web IQ $145 tap-off meter/fuse & $380 joint pack saving $26,800 ($108,200 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_datacenter_overhead_busway_busduct_policy(
+            automated_tapoff_meter_fuse_and_380_dollar_joint_pack_savings_cents=2680000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_datacenter_busway_busduct_cents, 10820000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_datacenter_overhead_busway_busduct_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-datacenter-overhead-busway-busduct-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
