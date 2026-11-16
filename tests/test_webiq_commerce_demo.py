@@ -22637,6 +22637,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-sewage-ejector-grinder-pump-sandbox", demo_zh)
 
+    def test_b2b_commercial_conveyor_dishmachine_nsf3_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_conveyor_dishmachine_nsf3_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 20-PSI rinse PRV + wash arms clear/mL per rack + >=160F (3600 HUE) -> 200 OK ($115,000.00)
+        ok_res = evaluate_b2b_commercial_conveyor_dishmachine_nsf3_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_CONVEYOR_DISHMACHINE_NSF3_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_dishmachine_nsf3_cents, 11500000)
+
+        # 2. $6,500 booster heater upcoding on $95 high-PSI rinse PRV or $165 contactor -> 403 Blocked
+        bst_403 = evaluate_b2b_commercial_conveyor_dishmachine_nsf3_policy(
+            flowing_rinse_20psi_prv_and_booster_contactor_isolation_verified=False,
+        )
+        self.assertFalse(bst_403.allowed)
+        self.assertEqual(bst_403.http_status, 403)
+        self.assertEqual(
+            bst_403.decision_code,
+            "BOOSTER_HEATER_REPLACEMENT_UPCODING_ON_95_DOLLAR_RINSE_PRV_OR_CONTACTOR_BLOCKED",
+        )
+
+        # 3. Rinse-aid/detergent overdosing (mL/rack spike) or clogged wash-arm neglect -> 422 Blocked
+        chm_422 = evaluate_b2b_commercial_conveyor_dishmachine_nsf3_policy(
+            wash_arm_nozzle_cleanout_and_ml_per_rack_titration_verified=False,
+        )
+        self.assertFalse(chm_422.allowed)
+        self.assertEqual(chm_422.http_status, 422)
+        self.assertEqual(
+            chm_422.decision_code,
+            "RINSE_AID_DETERGENT_OVERDOSING_OR_CLOGGED_WASH_ARM_NOZZLE_NEGLECT",
+        )
+
+        # 4. Failed NSF/ANSI 3 160F plate surface temp (<3,600 HUE) or low sanitizer ppm -> 451 Hold
+        hue_451 = evaluate_b2b_commercial_conveyor_dishmachine_nsf3_policy(
+            webiq_nsf3_160f_plate_hue_and_sanitizer_ppm_clean=False,
+        )
+        self.assertFalse(hue_451.allowed)
+        self.assertEqual(hue_451.http_status, 451)
+
+        # 5. Web IQ $95 rinse PRV, $165 contactor & per-rack chemical audit saving $21,400 ($93,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_conveyor_dishmachine_nsf3_policy(
+            automated_rinse_prv_contactor_kit_and_per_rack_chemical_savings_cents=2140000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_dishmachine_nsf3_cents, 9360000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_conveyor_dishmachine_nsf3_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-conveyor-dishmachine-nsf3-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
