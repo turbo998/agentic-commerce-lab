@@ -20699,6 +20699,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-evse-charger-om-ocpp201-sandbox", demo_zh)
 
+    def test_b2b_commercial_switchgear_nfpa70b_arcflash_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_switchgear_nfpa70b_arcflash_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant exposed-bus >=40% load IR + PE IEEE 1584 + DLRO + NETA clean -> 200 OK ($148,000.00)
+        ok_res = evaluate_b2b_commercial_switchgear_nfpa70b_arcflash_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_SWITCHGEAR_NFPA70B_NETA_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_switchgear_nfpa70b_cents, 14800000)
+
+        # 2. Closed steel panel door IR fraud or unloaded <40% thermography -> 403 Blocked
+        ir_403 = evaluate_b2b_commercial_switchgear_nfpa70b_arcflash_policy(
+            exposed_bus_ir_and_40pct_load_current_verified=False,
+        )
+        self.assertFalse(ir_403.allowed)
+        self.assertEqual(ir_403.http_status, 403)
+        self.assertEqual(
+            ir_403.decision_code,
+            "CLOSED_PANEL_COVER_IR_FRAUD_OR_UNLOADED_SUB40PCT_THERMOGRAPHY_BLOCKED",
+        )
+
+        # 3. Generic $2 arc-flash sticker scam or $8,500 breaker swap without DLRO micro-ohm proof -> 422 Blocked
+        arc_422 = evaluate_b2b_commercial_switchgear_nfpa70b_arcflash_policy(
+            pe_stamped_ieee1584_and_dlro_microohm_verified=False,
+        )
+        self.assertFalse(arc_422.allowed)
+        self.assertEqual(arc_422.http_status, 422)
+        self.assertEqual(
+            arc_422.decision_code,
+            "GENERIC_ARCFLASH_STICKER_SCAM_OR_BREAKER_SWAP_WITHOUT_DLRO_MICROOHM_PROOF",
+        )
+
+        # 4. Unaccredited NETA testing vendor or unstamped NFPA 70E arc-flash study -> 451 Hold
+        net_451 = evaluate_b2b_commercial_switchgear_nfpa70b_arcflash_policy(
+            webiq_neta_accredited_vendor_and_state_pe_clean=False,
+        )
+        self.assertFalse(net_451.allowed)
+        self.assertEqual(net_451.http_status, 451)
+
+        # 5. Web IQ $180 trip-unit battery downgrade & IR rescan deduction saving $22,200 ($125,800 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_switchgear_nfpa70b_arcflash_policy(
+            automated_trip_unit_battery_downgrade_and_ir_rescan_savings_cents=2220000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_switchgear_nfpa70b_cents, 12580000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_switchgear_nfpa70b_arcflash_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-switchgear-nfpa70b-arcflash-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
