@@ -20243,6 +20243,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-locksmith-master-key-eac-sandbox", demo_zh)
 
+    def test_b2b_commercial_glazing_storefront_igu_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_commercial_glazing_storefront_igu_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant board-up credit + laser Low-E IGU spec + SGCC Cat II bug clean -> 200 OK ($124,000.00)
+        ok_res = evaluate_b2b_commercial_glazing_storefront_igu_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_GLAZING_STOREFRONT_IGU_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_glazing_igu_cents, 12400000)
+
+        # 2. Predatory board-up double-dip or unverified Low-E coating spec -> 403 Blocked
+        brd_403 = evaluate_b2b_commercial_glazing_storefront_igu_policy(
+            boardup_credit_and_laser_low_e_igu_spec_verified=False,
+        )
+        self.assertFalse(brd_403.allowed)
+        self.assertEqual(brd_403.http_status, 403)
+        self.assertEqual(
+            brd_403.decision_code,
+            "PREDATORY_BOARDUP_DOUBLE_DIP_OR_UNVERIFIED_LOW_E_IGU_SPEC_BLOCKED",
+        )
+
+        # 3. $3,400 full mullion frame tear-out upcoding or unclaimed 10-year OEM IGU seal warranty -> 422 Blocked
+        frm_422 = evaluate_b2b_commercial_glazing_storefront_igu_policy(
+            intact_mullion_reglaze_only_and_10yr_igu_warranty_verified=False,
+        )
+        self.assertFalse(frm_422.allowed)
+        self.assertEqual(frm_422.http_status, 422)
+        self.assertEqual(
+            frm_422.decision_code,
+            "FULL_MULLION_FRAME_SWAP_UPCODING_OR_UNCLAIMED_10YR_IGU_SEAL_WARRANTY",
+        )
+
+        # 4. Missing permanent SGCC / ANSI Z97.1 safety bug or annealed glass in IBC 2406 zone -> 451 Hold
+        sgc_451 = evaluate_b2b_commercial_glazing_storefront_igu_policy(
+            webiq_sgcc_safety_glazing_bug_and_ibc2406_clean=False,
+        )
+        self.assertFalse(sgc_451.allowed)
+        self.assertEqual(sgc_451.http_status, 451)
+
+        # 5. Web IQ board-up credit & 10-year IGU warranty deduction saving $18,600 ($105,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_commercial_glazing_storefront_igu_policy(
+            automated_boardup_credit_and_igu_warranty_savings_cents=1860000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_glazing_igu_cents, 10540000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_commercial_glazing_storefront_igu_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-glazing-storefront-igu-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
