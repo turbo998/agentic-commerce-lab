@@ -22466,6 +22466,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-ice-machine-walkin-freezer-sandbox", demo_zh)
 
+    def test_b2b_industrial_press_hydraulic_oil_iso4406_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_industrial_press_hydraulic_oil_iso4406_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant TAN/RULER vacuum dehydration + servo flush MPC <=15 + ISO 4406 <=16/14/11 -> 200 OK ($139,000.00)
+        ok_res = evaluate_b2b_industrial_press_hydraulic_oil_iso4406_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_INDUSTRIAL_PRESS_HYDRAULIC_ISO4406_SETTLED")
+        self.assertEqual(ok_res.settled_industrial_press_hydraulic_cents, 13900000)
+
+        # 2. $16,000 whole-reservoir hydraulic oil dumping on emulsified water when TAN/RULER pass -> 403 Blocked
+        oil_403 = evaluate_b2b_industrial_press_hydraulic_oil_iso4406_policy(
+            tan_ruler_base_oil_and_vacuum_dehydration_verified=False,
+        )
+        self.assertFalse(oil_403.allowed)
+        self.assertEqual(oil_403.http_status, 403)
+        self.assertEqual(
+            oil_403.decision_code,
+            "WHOLE_RESERVOIR_HYDRAULIC_OIL_DUMPING_ON_EMULSIFIED_WATER_BLOCKED",
+        )
+
+        # 3. $6,400 proportional servo-valve upcoding on $190 varnish spool flush -> 422 Blocked
+        srv_422 = evaluate_b2b_industrial_press_hydraulic_oil_iso4406_policy(
+            servo_valve_varnish_flush_and_mpc_under_15_verified=False,
+        )
+        self.assertFalse(srv_422.allowed)
+        self.assertEqual(srv_422.http_status, 422)
+        self.assertEqual(
+            srv_422.decision_code,
+            "PROPORTIONAL_SERVO_VALVE_UPCODING_ON_190_DOLLAR_VARNISH_SPOOL_FLUSH",
+        )
+
+        # 4. Failed ISO 4406 <=16/14/11 particle cleanliness or missing $65 desiccant breather -> 451 Hold
+        iso_451 = evaluate_b2b_industrial_press_hydraulic_oil_iso4406_policy(
+            webiq_iso4406_cleanliness_and_desiccant_breather_clean=False,
+        )
+        self.assertFalse(iso_451.allowed)
+        self.assertEqual(iso_451.http_status, 451)
+
+        # 5. Web IQ $750 vacuum dehydration kidney-loop & $190 servo flush saving $28,400 ($110,600 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_industrial_press_hydraulic_oil_iso4406_policy(
+            automated_vacuum_dehydration_kidney_loop_and_servo_flush_savings_cents=2840000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_industrial_press_hydraulic_cents, 11060000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_industrial_press_hydraulic_oil_iso4406_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-industrial-press-hydraulic-oil-iso4406-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
