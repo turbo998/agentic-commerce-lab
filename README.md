@@ -466,6 +466,7 @@
 - **专题 431（在线教育 `EdTech` 与企业培训采购 `Corporate L&D: Coursera / Guild / Udemy` “员工学费资助、完课率对赌托管与僵尸席位回收”Agent 架构选型 FAQ：硬拦截“买课送iPad”硬件套现、凭 `W3C OpenBadges 3.0` 加密证书与 `Grade >= B` 释放尾款、`IRS Sec. 127 $5,250` 免税/薪资计税自动分桶与 45天休眠僵尸席位自动轮转令牌 `edtech_corporate_lnd_tuition_escrow_mandate_...`）**：**[《在线教育（EdTech）与企业培训采购（Corporate L&D：Coursera / Guild / Udemy）“员工学费资助、完课率对赌托管与僵尸席位回收”Agent 架构选型 FAQ：IRS `$5,250` 免税锁、成绩达标放款与按课时退费实战指南》](docs/edtech-corporate-lnd-tuition-reimbursement-seat-reclaim-agent-selection-faq.md)**
 - **专题 432（企业社会责任 `CSR` 配捐、公益众筹与慈善捐赠 `Benevity / YourCause / Stripe` “员工 1:1 配捐防套现回扣、501(c)(3) 免税核验与对价扣除”Agent 架构选型 FAQ：不可退 DAF 直连与理事关联图谱拦截空壳机构回扣套现、扣除慈善晚宴/义卖公允价值 `Quid Pro Quo FMV`、Web IQ IRS Pub 78 免税核验与凑整捐随主单合并免 $0.30 固定费批量清算令牌 `corporate_csr_donation_matching_mandate_...`）**：**[《企业社会责任（CSR）配捐、公益众筹与慈善捐赠（Benevity / YourCause / Stripe）“员工 1:1 配捐防套现回扣、501(c)(3) 免税核验与对价扣除”Agent 架构选型 FAQ：防假公益骗配捐与税务抵扣实战指南》](docs/corporate-csr-donation-matching-501c3-anti-kickback-agent-selection-faq.md)**
 - **专题 433（商业交易 Agent 全链路可观测性、PCI-DSS 脱敏与转化漏斗审计 `OpenTelemetry GenAI / Azure Monitor / LangSmith / Arize Phoenix` 架构选型 FAQ：内存级 Luhn 卡号/密钥零落盘掩码、W3C `traceparent` 转化漏斗归因、发版前 Golden Eval 100% 回归门禁与 5% 尾采样降本令牌 `commercial_agent_observability_audit_mandate_...`）**：**[《商业交易 Agent 全链路可观测性、PCI-DSS 脱敏与转化漏斗审计（OpenTelemetry GenAI / Azure Monitor / LangSmith / Arize Phoenix）架构选型 FAQ：防明文卡号入日志、掉单归因与黄金评测集实战指南》](docs/commercial-agent-opentelemetry-observability-pci-redaction-audit-selection-faq.md)**
+- **专题 434（直播带货、限量潮鞋首发与大促秒杀 `TikTok Shop / Shopify Plus / 直播电商` “原子锁库防超卖、防恶意占库与价保退差”Agent 架构选型 FAQ：Redis Lua 180s 短 TTL 预授权锁防“拍下不付”占库、直播 ASR 口播价与购物车实付价强对齐及 7天原路秒退差价令牌 `live_shopping_flash_sale_mandate_...`）**：**[《直播带货、限量潮鞋首发与大促秒杀（TikTok Shop / Shopify Plus / 直播电商）“原子锁库防超卖、防恶意占库与价保退差”Agent 架构选型 FAQ：180秒释放锁、防口播错价与自动退差实战指南》](docs/live-shopping-flash-sale-inventory-lock-price-drop-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1334,6 +1335,8 @@
 ![2026-11-18 企业 CSR 员工配捐与慈善捐赠 (Benevity/Stripe) 防回扣套现、501(c)(3) 免税核验与对价扣除 Agent 架构一图流总结](assets/svg/434-corporate-csr-donation-matching-501c3-anti-kickback-2026-11-18.svg)
 
 ![2026-11-18 商业交易 Agent 全链路可观测性 (OpenTelemetry / LangSmith / Arize)、PCI 脱敏与转化漏斗审计架构一图流总结](assets/svg/435-commercial-agent-opentelemetry-observability-pci-redaction-audit-2026-11-18.svg)
+
+![2026-11-18 直播带货与大促秒杀 (TikTok Shop/Shopify Plus) 原子锁库、防拍下不付占库与价保退差 Agent 架构一图流总结](assets/svg/436-live-shopping-flash-sale-inventory-lock-price-drop-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

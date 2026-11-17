@@ -25830,5 +25830,85 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertIn("commercial-agent-observability-audit-sandbox", html)
 
 
+    def test_live_shopping_flash_sale_agent_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            LiveShoppingFlashSaleAgentPolicyInput,
+            evaluate_live_shopping_flash_sale_agent_policy,
+        )
+
+        happy = evaluate_live_shopping_flash_sale_agent_policy(
+            LiveShoppingFlashSaleAgentPolicyInput(
+                campaign_flash_sale_gmv_usd=Decimal("320000.00"),
+                inventory_hoarding_bot_or_address_limit_bypass_detected=False,
+                live_verbal_price_cart_mismatch_or_oversell_detected=False,
+                webiq_deceptive_anchor_price_flag=False,
+                restricted_key_age_days=25,
+                short_ttl_waitlist_and_instant_price_drop_refund_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "REDIS_LUA_ATOMIC_180S_LOCK_AND_ASR_PARITY_AUTHORIZED")
+        self.assertTrue(str(happy["flash_sale_token"]).startswith("live_shopping_flash_sale_mandate_"))
+
+        hoarding_block = evaluate_live_shopping_flash_sale_agent_policy(
+            LiveShoppingFlashSaleAgentPolicyInput(
+                campaign_flash_sale_gmv_usd=Decimal("320000.00"),
+                inventory_hoarding_bot_or_address_limit_bypass_detected=True,
+                live_verbal_price_cart_mismatch_or_oversell_detected=False,
+                webiq_deceptive_anchor_price_flag=False,
+                restricted_key_age_days=25,
+                short_ttl_waitlist_and_instant_price_drop_refund_enabled=False,
+            )
+        )
+        self.assertEqual(hoarding_block["http_status"], 403)
+        self.assertEqual(hoarding_block["decision"], "INVENTORY_HOARDING_BOT_OR_ADDRESS_LIMIT_BYPASS_BLOCKED")
+
+        mismatch_block = evaluate_live_shopping_flash_sale_agent_policy(
+            LiveShoppingFlashSaleAgentPolicyInput(
+                campaign_flash_sale_gmv_usd=Decimal("320000.00"),
+                inventory_hoarding_bot_or_address_limit_bypass_detected=False,
+                live_verbal_price_cart_mismatch_or_oversell_detected=True,
+                webiq_deceptive_anchor_price_flag=False,
+                restricted_key_age_days=25,
+                short_ttl_waitlist_and_instant_price_drop_refund_enabled=False,
+            )
+        )
+        self.assertEqual(mismatch_block["http_status"], 422)
+        self.assertEqual(mismatch_block["decision"], "LIVE_VERBAL_PRICE_CART_MISMATCH_OR_OVERSELL_BLOCKED")
+
+        anchor_hold = evaluate_live_shopping_flash_sale_agent_policy(
+            LiveShoppingFlashSaleAgentPolicyInput(
+                campaign_flash_sale_gmv_usd=Decimal("320000.00"),
+                inventory_hoarding_bot_or_address_limit_bypass_detected=False,
+                live_verbal_price_cart_mismatch_or_oversell_detected=False,
+                webiq_deceptive_anchor_price_flag=True,
+                restricted_key_age_days=192,
+                short_ttl_waitlist_and_instant_price_drop_refund_enabled=False,
+            )
+        )
+        self.assertEqual(anchor_hold["http_status"], 451)
+        self.assertEqual(anchor_hold["decision"], "WEBIQ_DECEPTIVE_ANCHOR_PRICE_OR_180D_KEY_HOLD")
+
+        pricedrop_confirm = evaluate_live_shopping_flash_sale_agent_policy(
+            LiveShoppingFlashSaleAgentPolicyInput(
+                campaign_flash_sale_gmv_usd=Decimal("320000.00"),
+                inventory_hoarding_bot_or_address_limit_bypass_detected=False,
+                live_verbal_price_cart_mismatch_or_oversell_detected=False,
+                webiq_deceptive_anchor_price_flag=False,
+                restricted_key_age_days=25,
+                short_ttl_waitlist_and_instant_price_drop_refund_enabled=True,
+            )
+        )
+        self.assertEqual(pricedrop_confirm["http_status"], 409)
+        self.assertEqual(pricedrop_confirm["savings_usd"], "76800.00")
+        self.assertEqual(pricedrop_confirm["approved_budget_usd"], "243200.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("live_shopping_flash_sale_agent_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("live-shopping-flash-sale-sandbox", html)
+
+
 if __name__ == "__main__":
     unittest.main()
