@@ -24176,6 +24176,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("chargeback-ce30-friendly-fraud-agent-sandbox", demo_zh)
 
+    def test_bnpl_webview_margin_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_bnpl_webview_margin_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant BNPL WebView handover + 0% APR + post-MDR margin safe -> 200 OK
+        ok = evaluate_bnpl_webview_margin_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_bnpl_webview_margin_cents, 15500000)
+
+        # 2. Headless browser automation on BNPL WebView or forwarding requires_action -> 403 Forbidden
+        aut_403 = evaluate_bnpl_webview_margin_agent_policy(
+            no_headless_webview_automation_or_forwarded_requires_action=False,
+        )
+        self.assertFalse(aut_403.allowed)
+        self.assertEqual(aut_403.http_status, 403)
+
+        # 3. 6.5% BNPL MDR wiping out promo margin or 24.99% APR exceeding buyer mandate -> 422 Unprocessable
+        mdr_422 = evaluate_bnpl_webview_margin_agent_policy(
+            post_mdr_margin_and_buyer_apr_cap_verified=False,
+        )
+        self.assertFalse(mdr_422.allowed)
+        self.assertEqual(mdr_422.http_status, 422)
+
+        # 4. Unattended background task without device control or un-reamortized partial refund -> 451 Hold
+        dev_451 = evaluate_bnpl_webview_margin_agent_policy(
+            device_navigation_control_and_partial_refund_reamortization_clean=False,
+        )
+        self.assertFalse(dev_451.allowed)
+        self.assertEqual(dev_451.http_status, 451)
+
+        # 5. Dynamic post-MDR margin routing + unattended SPT fallback saving $32,550 ($122,450 net) -> 409 Confirm
+        sav_409 = evaluate_bnpl_webview_margin_agent_policy(
+            dynamic_mdr_routing_and_spt_fallback_savings_cents=3255000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_bnpl_webview_margin_cents, 12245000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["bnpl_webview_margin_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("bnpl-webview-margin-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
