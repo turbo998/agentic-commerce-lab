@@ -24560,6 +24560,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("loyalty-points-giftcard-promo-agent-sandbox", demo_zh)
 
+    def test_b2b_trade_credit_factoring_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_trade_credit_factoring_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 3-way KYB + full-pipeline exposure safe + non-recourse factoring -> 200 OK
+        ok = evaluate_b2b_trade_credit_factoring_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_b2b_trade_credit_cents, 23000000)
+
+        # 2. Impersonated corporate domain or unverified shipping dock -> 403 Forbidden
+        kyb_403 = evaluate_b2b_trade_credit_factoring_agent_policy(
+            corporate_kyb_domain_and_registered_dock_verified=False,
+        )
+        self.assertFalse(kyb_403.allowed)
+        self.assertEqual(kyb_403.http_status, 403)
+
+        # 3. Full-pipeline exposure exceeding limit or >15d past-due invoice -> 422 Unprocessable
+        exp_422 = evaluate_b2b_trade_credit_factoring_agent_policy(
+            full_pipeline_exposure_within_limit_and_zero_past_due=False,
+        )
+        self.assertFalse(exp_422.allowed)
+        self.assertEqual(exp_422.http_status, 422)
+
+        # 4. Web IQ buyer insolvency or tax-lien filing -> 451 Hold
+        sol_451 = evaluate_b2b_trade_credit_factoring_agent_policy(
+            webiq_buyer_solvency_and_tax_lien_clean=False,
+        )
+        self.assertFalse(sol_451.allowed)
+        self.assertEqual(sol_451.http_status, 451)
+
+        # 5. Anti-impersonation KYB + hybrid non-recourse factoring saving $48,300 ($181,700 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_trade_credit_factoring_agent_policy(
+            anti_impersonation_and_non_recourse_factoring_savings_cents=4830000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_b2b_trade_credit_cents, 18170000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_trade_credit_factoring_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-trade-credit-factoring-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
