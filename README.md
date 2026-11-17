@@ -436,6 +436,7 @@
 - **专题 401（电商大促动态调价、竞品实时跟价 `Price Matching` 与防恶意比价套利 Agent 架构选型 FAQ：服务端 Microsoft Web IQ `liveCrawl='force'` 同款 `GTIN/UPC` 全新现货穿透验真、品牌最低广告价 `MAP` 与 `COGS` 双层硬地板、1 小时 `<= 12%` 防算法螺旋降价断路器、Stripe Catalog `mode='upsert'` 增量同步令牌 `ecommerce_dynamic_repricing_map_price_match_mandate_...` vs F12 假截图骗退差、0 库存秒杀钓鱼价与算法对轰闪崩）**：**[《电商大促动态调价、竞品实时跟价（Price Matching）与防比价套利 Agent 架构选型 FAQ：Web IQ 同款 GTIN 验真、MAP 价格红线与防螺旋降价熔断实战指南》](docs/ecommerce-dynamic-repricing-competitor-price-match-map-margin-guard-agent-selection-faq.md)**
 - **专题 402（跨境网红达人营销 `Creator & Affiliate Marketing` 智能寻源、带货分佣反作弊与退货期满释放 Agent 架构选型 FAQ：Exa 语义寻源与 Web IQ 反水军 `SIVT <= 15%` 品牌安全接地、拦截结账页最后 60 秒比价插件尾跳劫持 `Coupon Poaching`、30 天退货窗口期满释放与退货自动冲销 `Clawback Escrow`、Stripe Connect `Separate Charges` 禁传 `Stripe-Account` 请求头与 `W-9 / W-8BEN` 税务锁令牌 `creator_affiliate_marketing_escrow_clawback_mandate_...` vs 假粉骗坑位费与下单提佣后退货白嫖）**：**[《跨境网红达人营销（Creator & Affiliate Marketing）智能寻源、带货分佣反作弊与退货期满释放 Agent 架构选型 FAQ：Exa/Web IQ 寻源、防劫持刷单与 Connect 分账实战指南》](docs/creator-affiliate-marketing-sourcing-escrow-payout-clawback-agent-selection-faq.md)**
 - **专题 403（企业员工费用报销 `T&E Expense Audit` 与商务卡智能合规审计 Agent 架构选型 FAQ：全司商务卡流水与个人现金小票的小费前/后双金额时空碰撞防一单两报 `Double-Dip`、酒店退房水单 `Hotel Folio` 逐行拆解自动剥离迷你吧烟酒与 SPA、多重取证拦截 AIGC 伪造热敏小票与 Web IQ 真实商户/官方汇率接地令牌 `corporate_expense_audit_double_dip_folio_mandate_...` vs 10% 人工抽检漏网与刷卡加现金重复套现）**：**[《企业员工费用报销（T&E Expense Audit）与商务卡智能合规审计 Agent 架构选型 FAQ：水单行项拆解、刷卡与现金双重报销（Double-Dip）去重、防 AI 假小票与 ERP 自动入账实战指南》](docs/corporate-expense-audit-receipt-ocr-double-dip-prevention-erp-agent-selection-faq.md)**
+- **专题 404（零售与快消 `Retail & CPG` 需求预测、自动补货与供应商协同 `VMI / CPFR` Agent 架构选型 FAQ：全链路净库存头寸 `On-Hand + On-Order 在途 - Committed` 防交货期重复下单、偶发团购脉冲削峰防牛鞭效应、保质期周转天数硬上限 `DOS <= 50% 剩余效期` 与 A 类爆款整托凑箱、Web IQ 监管召回绊网 `FCB=OPEN` 令牌 `retail_cpg_autonomous_replenishment_vmi_mandate_...` vs 漏算在途爆仓与凑单买爆临期品）**：**[《零售与快消（Retail & CPG）需求预测、自动补货与供应商协同（VMI / CPFR）Agent 架构选型 FAQ：防牛鞭效应、在途去重、MOQ 整托凑箱与 AP2 预算上限实战指南》](docs/retail-cpg-demand-forecasting-autonomous-replenishment-moq-po-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1244,6 +1245,8 @@
 ![2026-11-18 跨境网红达人营销智能寻源、带货分佣反作弊与退货期满释放 Agent 架构一图流总结](assets/svg/404-creator-affiliate-marketing-sourcing-escrow-payout-clawback-2026-11-18.svg)
 
 ![2026-11-18 企业员工费用报销 (T&E) 与商务卡智能合规审计 Agent 架构一图流总结](assets/svg/405-corporate-expense-audit-receipt-ocr-double-dip-prevention-erp-2026-11-18.svg)
+
+![2026-11-18 零售与快消 (Retail & CPG) 需求预测、自动补货与 VMI 协同 Agent 架构一图流总结](assets/svg/406-retail-cpg-demand-forecasting-autonomous-replenishment-moq-po-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

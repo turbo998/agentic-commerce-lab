@@ -24005,6 +24005,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("corporate-expense-audit-double-dip-sandbox", demo_zh)
 
+    def test_retail_cpg_autonomous_replenishment_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_retail_cpg_autonomous_replenishment_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Net Inventory Position + A-Class pallet rounding + shelf-life DOS cap + FCB closed -> 200 OK ($175,000.00)
+        ok_res = evaluate_retail_cpg_autonomous_replenishment_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_RETAIL_CPG_AUTONOMOUS_REPLENISHMENT_SETTLED")
+        self.assertEqual(ok_res.settled_retail_cpg_replenishment_cents, 17500000)
+
+        # 2. Ignored open in-transit POs (double ordering) or bullwhip bulk spike extrapolation -> 403 Blocked
+        int_403 = evaluate_retail_cpg_autonomous_replenishment_policy(
+            in_transit_po_deducted_and_bullwhip_spike_winsorized_verified=False,
+        )
+        self.assertFalse(int_403.allowed)
+        self.assertEqual(int_403.http_status, 403)
+        self.assertEqual(
+            int_403.decision_code,
+            "IGNORED_IN_TRANSIT_PO_DOUBLE_ORDERING_OR_BULLWHIP_SPIKE_BLOCKED",
+        )
+
+        # 3. MOQ pallet padding exceeding shelf-life DOS cap or supplier price ceiling breach -> 422 Blocked
+        dos_422 = evaluate_retail_cpg_autonomous_replenishment_policy(
+            shelf_life_dos_ceiling_and_a_class_pallet_rounding_verified=False,
+        )
+        self.assertFalse(dos_422.allowed)
+        self.assertEqual(dos_422.http_status, 422)
+        self.assertEqual(
+            dos_422.decision_code,
+            "MOQ_PALLET_PADDING_EXCEEDS_SHELF_LIFE_OR_PRICE_CEILING_BREACH_BLOCKED",
+        )
+
+        # 4. Web IQ safety recall trips Financial Circuit Breaker (FCB=OPEN) -> 451 Hold
+        rec_451 = evaluate_retail_cpg_autonomous_replenishment_policy(
+            webiq_zero_safety_recall_fcb_closed_clean=False,
+        )
+        self.assertFalse(rec_451.allowed)
+        self.assertEqual(rec_451.http_status, 451)
+
+        # 5. Net-position dedup & A-Class pallet spoilage prevention saving $36,750 ($138,250 net) -> 409 Confirm
+        sav_409 = evaluate_retail_cpg_autonomous_replenishment_policy(
+            automated_net_position_dedup_and_pallet_spoilage_savings_cents=3675000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_retail_cpg_replenishment_cents, 13825000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["retail_cpg_autonomous_replenishment_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("retail-cpg-autonomous-replenishment-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
