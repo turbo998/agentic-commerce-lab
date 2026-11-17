@@ -23150,6 +23150,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-pharma-cleanroom-lyophilizer-gmp-sandbox", demo_zh)
 
+    def test_commercial_agent_platform_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_commercial_agent_platform_selection_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant hybrid platform (Copilot Studio UI + Foundry 5-state FSM + L1-L3 funnel + MCP OAuth 2.1) -> 200 OK ($125,000.00)
+        ok_res = evaluate_commercial_agent_platform_selection_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_AGENT_HYBRID_PLATFORM_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_agent_platform_cents, 12500000)
+
+        # 2. Unbounded low-code generative orchestration without deterministic FSM / payload-hash idempotency -> 403 Blocked
+        fsm_403 = evaluate_commercial_agent_platform_selection_policy(
+            deterministic_fsm_and_payload_hash_idempotency_verified=False,
+        )
+        self.assertFalse(fsm_403.allowed)
+        self.assertEqual(fsm_403.http_status, 403)
+        self.assertEqual(
+            fsm_403.decision_code,
+            "UNBOUNDED_GENERATIVE_ORCHESTRATION_WITHOUT_FSM_IDEMPOTENCY_BLOCKED",
+        )
+
+        # 3. Anonymous high-volume browsing traffic without L1/L2/L3 FinOps funnel causing CAC margin wipeout -> 422 Blocked
+        cac_422 = evaluate_commercial_agent_platform_selection_policy(
+            three_tier_finops_funnel_and_cac_margin_guard_verified=False,
+        )
+        self.assertFalse(cac_422.allowed)
+        self.assertEqual(cac_422.http_status, 422)
+        self.assertEqual(
+            cac_422.decision_code,
+            "ANONYMOUS_HIGH_VOLUME_PER_CONVERSATION_BILLING_MARGIN_WIPEOUT",
+        )
+
+        # 4. Missing MCP OAuth 2.1 RFC 8707 aud binding or using post-Nov 30 static sk_live_* key -> 451 Hold
+        mcp_451 = evaluate_commercial_agent_platform_selection_policy(
+            webiq_mcp_oauth21_audience_binding_and_nov30_key_clean=False,
+        )
+        self.assertFalse(mcp_451.allowed)
+        self.assertEqual(mcp_451.http_status, 451)
+
+        # 5. Hybrid Copilot Studio + Foundry L1-L3 funnel & Web IQ passage optimization saving $26,250 ($98,750 net) -> 409 Confirm
+        sav_409 = evaluate_commercial_agent_platform_selection_policy(
+            automated_hybrid_platform_and_l1_l3_funnel_savings_cents=2625000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_agent_platform_cents, 9875000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["commercial_agent_platform_selection_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("commercial-agent-platform-selection-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

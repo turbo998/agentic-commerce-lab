@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg391" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070B19"/>
+      <stop offset="50%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent391" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#818CF8"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg391)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#1E293B" stroke-width="2"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent391)"/>
+
+  <!-- Header -->
+  <text x="52" y="58" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">2026-11-18 · ROUND 389 · COMMERCIAL AGENT PLATFORM &amp; BUILD PATH SELECTION GUIDE</text>
+  <text x="52" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="800">商业智能体构建平台选型：Copilot Studio + D365 vs Azure AI Foundry (SK/LangGraph) vs Agentforce/Shopify</text>
+  <text x="52" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">前店后厂混合架构 (Hybrid Touchpoint + Deterministic MCP Core) · 三级漏斗压降 78% TCO · 100% 防重扣与防注入 · 批次立省 $26,250.00 (21.0%)</text>
+
+  <!-- Left Column: Business Pain Points & Selection Pitfalls -->
+  <rect x="48" y="132" width="352" height="390" rx="12" fill="#1E1B2E" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="68" y="162" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">❌ 商业 Agent 平台选型三大致命误区</text>
+
+  <rect x="64" y="178" width="320" height="98" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="200" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 纯低代码生成式编排直连支付与 ERP 写接口</text>
+  <text x="78" y="220" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 靠概率性 Prompt 决定是否锁库、扣款与退回积分</text>
+  <text x="78" y="238" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 缺少 Pre-LLM 隐藏 DOM 清洗与 SHA-256 幂等键锁</text>
+  <text x="78" y="256" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 极易引发超时重试双倍扣款、悬挂订单与注入盗刷!</text>
+
+  <rect x="64" y="288" width="320" height="98" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="310" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 公网匿名流量照搬高单价按会话/Action 计费</text>
+  <text x="78" y="330" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 零售电商匿名浏览转化率仅 2.0%–3.5% (100 问 2.5 单)</text>
+  <text x="78" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 若不分流直接调高价套件，单均获客 AI 成本飙至 $20–$80</text>
+  <text x="78" y="366" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 造成“未转化先破产”的毛利倒挂与刷流账单爆炸!</text>
+
+  <rect x="64" y="398" width="320" height="106" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="420" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 跨平台 MCP 调用混用静态密钥或缺失受众绑定</text>
+  <text x="78" y="440" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 2026-11-30 起 Stripe MCP 全面封禁 sk_live_* 静态密钥</text>
+  <text x="78" y="458" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 缺少 RFC 8707 aud 与 RFC 9207 iss 精确校验易遭重放</text>
+  <text x="78" y="480" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 传统粗放架构预算：$125,000 / 季度（高成本+高风险）</text>
+
+  <!-- Center Column: 5-Lane Deterministic Gate -->
+  <rect x="420" y="132" width="380" height="390" rx="12" fill="#0F2238" stroke="#38BDF8" stroke-width="1.5"/>
+  <text x="440" y="162" fill="#7DD3FC" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">🛡️ 前店后厂混合架构五车道选型与安全门禁</text>
+
+  <rect x="436" y="178" width="348" height="56" rx="8" fill="#091526" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="450" y="200" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 403 · 拦截无状态机/无幂等锁直连支付 (11ms)</text>
+  <text x="450" y="220" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">强制写操作下沉至 Foundry 5 态 FSM + SHA-256 幂等键核验</text>
+
+  <rect x="436" y="244" width="348" height="56" rx="8" fill="#091526" stroke="#F97316" stroke-width="1.2"/>
+  <text x="450" y="266" fill="#FB923C" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🚨 HTTP 422 · 拦截公网流量未分级致毛利倒挂 (14ms)</text>
+  <text x="450" y="286" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">强制启用 L1 语义缓存/小模型 → L2 Web IQ → L3 结账漏斗</text>
+
+  <rect x="436" y="310" width="348" height="56" rx="8" fill="#091526" stroke="#A855F7" stroke-width="1.2"/>
+  <text x="450" y="332" fill="#C084FC" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 451 · 拦截静态密钥与缺失 aud 绑定 (265ms)</text>
+  <text x="450" y="352" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">强制 MCP OAuth 2.1 (RFC 8707 aud + RFC 9207 iss) + 分级升权</text>
+
+  <rect x="436" y="376" width="348" height="58" rx="8" fill="#091526" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="450" y="398" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🧑‍⚖️ HTTP 409 · 混合架构与三级漏斗降本确认 (230ms)</text>
+  <text x="450" y="418" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="11">Copilot Studio 触点 + Foundry 漏斗立省 $26,250 → 净付 $98,750</text>
+
+  <rect x="436" y="444" width="348" height="60" rx="8" fill="#06281E" stroke="#10B981" stroke-width="1.5"/>
+  <text x="450" y="468" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">✅ HTTP 200 · 前店后厂全链路合规自动清算 (10ms)</text>
+  <text x="450" y="488" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="11">OBO 身份 + Web IQ 接地 + 180s ERP 锁库 + SPT 结算 ($125,000)</text>
+
+  <!-- Right Column: Platform Comparison & Quantitative Metrics -->
+  <rect x="820" y="132" width="332" height="390" rx="12" fill="#0B2420" stroke="#10B981" stroke-width="1.5"/>
+  <text x="840" y="162" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">📊 四大构建路径黄金分工矩阵</text>
+
+  <rect x="836" y="178" width="300" height="104" rx="8" fill="#071715" stroke="#065F46" stroke-width="1"/>
+  <text x="850" y="200" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🧭 平台选型三大铁律</text>
+  <text x="850" y="222" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 内部协同/D365 审批：选 Copilot Studio (2–4周)</text>
+  <text x="850" y="242" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 交易状态机/跨网比价：选 Foundry + LangGraph/SK</text>
+  <text x="850" y="262" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 单一闭环后台：Shopify Sidekick / Agentforce</text>
+
+  <rect x="836" y="294" width="300" height="104" rx="8" fill="#071715" stroke="#065F46" stroke-width="1"/>
+  <text x="850" y="316" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">⚡ 三级流量漏斗与 Web IQ 性能</text>
+  <text x="850" y="338" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• L1 缓存/SLM (70%) + L2 Web IQ (25%) + L3 (5%)</text>
+  <text x="850" y="358" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Web IQ /v3/browse passage：680 tok (省 7.1x)</text>
+  <text x="850" y="378" fill="#7DD3FC" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 状态机门禁延迟：10ms – 14ms · 100% 幂等防重</text>
+
+  <rect x="836" y="410" width="300" height="94" rx="8" fill="#071715" stroke="#10B981" stroke-width="1.5"/>
+  <text x="850" y="434" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">💰 季度 AI 商业平台 TCO 净节省</text>
+  <text x="850" y="460" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">立省 $26,250.00 (-21.0%)</text>
+  <text x="850" y="484" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12">原预算 $125,000.00 → 漏斗优化净付 $98,750.00</text>
+
+  <!-- Footer Mandate Strip -->
+  <rect x="48" y="538" width="1104" height="96" rx="10" fill="#091326" stroke="#334155" stroke-width="1.5"/>
+  <text x="68" y="566" fill="#38BDF8" font-family="Consolas, monospace" font-size="13" font-weight="700">Mandate Prefix: agentic_commerce_platform_copilot_studio_foundry_hybrid_mandate_*</text>
+  <text x="68" y="590" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">✅ Good Fit: 全渠道零售 AI 导购、企业跨 ERP (D365/SAP/Shopify) 采购助手、高并发大促转化与金融级受限支付编排</text>
+  <text x="68" y="614" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">⛔ Not For: 不涉及任何外部实时比价、库存锁定或资金划拨的纯静态 FAQ 文档问答（直接用标准 Copilot Studio 知识库即可） · Provenance: deterministic_offline_simulation + official_doc_snapshot</text>
+</svg>
