@@ -24704,6 +24704,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("live-event-ticketing-anti-scalper-agent-sandbox", demo_zh)
 
+    def test_embedded_insurance_fnol_claims_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_embedded_insurance_fnol_claims_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant live parallax capture + SN match + direct B2B repair settlement -> 200 OK
+        ok = evaluate_embedded_insurance_fnol_claims_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_embedded_insurance_fnol_cents, 17500000)
+
+        # 2. GenAI inpainted fake damage photo, duplicate pHash, or serial mismatch -> 403 Forbidden
+        inp_403 = evaluate_embedded_insurance_fnol_claims_agent_policy(
+            live_parallax_no_aigc_inpainting_and_serial_matched=False,
+        )
+        self.assertFalse(inp_403.allowed)
+        self.assertEqual(inp_403.http_status, 403)
+
+        # 3. Pre-existing waiting period claim or repair exceeding 65% replacement value -> 422 Unprocessable
+        rep_422 = evaluate_embedded_insurance_fnol_claims_agent_policy(
+            waiting_period_clear_and_repair_within_65pct_salvage_cap=False,
+        )
+        self.assertFalse(rep_422.allowed)
+        self.assertEqual(rep_422.http_status, 422)
+
+        # 4. Web IQ unverified carrier disruption or stale (>180d) payout key -> 451 Hold
+        key_451 = evaluate_embedded_insurance_fnol_claims_agent_policy(
+            webiq_carrier_event_verified_and_payout_key_under_180d=False,
+        )
+        self.assertFalse(key_451.allowed)
+        self.assertEqual(key_451.http_status, 451)
+
+        # 5. Anti-inpainting forensics + repair-vs-replace optimizer saving $38,500 ($136,500 net) -> 409 Confirm
+        sav_409 = evaluate_embedded_insurance_fnol_claims_agent_policy(
+            anti_inpainting_and_repair_replace_optimizer_savings_cents=3850000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_embedded_insurance_fnol_cents, 13650000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["embedded_insurance_fnol_claims_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("embedded-insurance-fnol-claims-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
