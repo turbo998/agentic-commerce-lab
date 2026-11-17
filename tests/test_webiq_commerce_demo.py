@@ -23777,6 +23777,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("enterprise-ap-three-way-match-discount-sandbox", demo_zh)
 
+    def test_enterprise_cpq_deal_desk_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_enterprise_cpq_deal_desk_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 100% BOM solver + Pocket Margin >=45% + seller-initiated OCA -> 200 OK ($185,000.00)
+        ok_res = evaluate_enterprise_cpq_deal_desk_agent_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_ENTERPRISE_CPQ_DEAL_DESK_OCA_SETTLED")
+        self.assertEqual(ok_res.settled_enterprise_cpq_deal_desk_cents, 18500000)
+
+        # 2. Incomplete BOM (mandatory module removed) or channel deal-registration conflict -> 403 Blocked
+        bom_403 = evaluate_enterprise_cpq_deal_desk_agent_policy(
+            bom_corequisite_complete_and_no_channel_deal_reg_conflict_verified=False,
+        )
+        self.assertFalse(bom_403.allowed)
+        self.assertEqual(bom_403.http_status, 403)
+        self.assertEqual(
+            bom_403.decision_code,
+            "INCOMPLETE_BOM_MANDATORY_MODULE_REMOVED_OR_CHANNEL_DEAL_REG_CONFLICT_BLOCKED",
+        )
+
+        # 3. Pocket-margin waterfall breach (<45% after rebates & free PS hours) -> 422 Blocked
+        mgn_422 = evaluate_enterprise_cpq_deal_desk_agent_policy(
+            pocket_margin_waterfall_above_45pct_floor_verified=False,
+        )
+        self.assertFalse(mgn_422.allowed)
+        self.assertEqual(mgn_422.http_status, 422)
+        self.assertEqual(
+            mgn_422.decision_code,
+            "POCKET_MARGIN_WATERFALL_FLOOR_BREACH_OR_UNAPPROVED_FREE_PS_HOURS_BLOCKED",
+        )
+
+        # 4. Buyer-initiated OCA or reviving seller-terminated expired quote -> 451 Hold
+        oca_451 = evaluate_enterprise_cpq_deal_desk_agent_policy(
+            webiq_oca_seller_initiated_and_no_expired_reinitiation_clean=False,
+        )
+        self.assertFalse(oca_451.allowed)
+        self.assertEqual(oca_451.http_status, 451)
+
+        # 5. Multi-year commitment restructuring & free PS hour cap saving $37,000 ($148,000 net) -> 409 Confirm
+        sav_409 = evaluate_enterprise_cpq_deal_desk_agent_policy(
+            automated_multiyear_lock_and_ps_cap_margin_savings_cents=3700000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_enterprise_cpq_deal_desk_cents, 14800000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["enterprise_cpq_deal_desk_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("enterprise-cpq-deal-desk-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
