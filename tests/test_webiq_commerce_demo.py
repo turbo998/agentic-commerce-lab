@@ -24944,6 +24944,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cloud-telecom-cud-bill-shock-agent-sandbox", demo_zh)
 
+    def test_marketplace_seller_kyb_escrow_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_marketplace_seller_kyb_escrow_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant master charge + weight/ZIP verified delivery + 15% rolling reserve -> 200 OK
+        ok = evaluate_marketplace_seller_kyb_escrow_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_marketplace_seller_escrow_cents, 29000000)
+
+        # 2. Stripe-Account header on Separate-Charges root call or seller self-dealing -> 403 Forbidden
+        hdr_403 = evaluate_marketplace_seller_kyb_escrow_agent_policy(
+            no_stripe_account_header_on_root_and_no_self_dealing=False,
+        )
+        self.assertFalse(hdr_403.allowed)
+        self.assertEqual(hdr_403.http_status, 403)
+
+        # 3. 0.02kg empty-envelope fake tracking or insufficient rolling reserve -> 422 Unprocessable
+        trk_422 = evaluate_marketplace_seller_kyb_escrow_agent_policy(
+            carrier_weight_zip_matched_and_rolling_reserve_funded=False,
+        )
+        self.assertFalse(trk_422.allowed)
+        self.assertEqual(trk_422.http_status, 422)
+
+        # 4. Web IQ seller UBO sanction/insolvency alert or stale (>180d) payout key -> 451 Hold
+        ubo_451 = evaluate_marketplace_seller_kyb_escrow_agent_policy(
+            webiq_seller_ubo_clean_and_payout_key_under_180d=False,
+        )
+        self.assertFalse(ubo_451.allowed)
+        self.assertEqual(ubo_451.http_status, 451)
+
+        # 5. Delivery escrow + 15% rolling reserve bust-out defense saving $60,900 ($229,100 net) -> 409 Confirm
+        sav_409 = evaluate_marketplace_seller_kyb_escrow_agent_policy(
+            delivery_escrow_and_rolling_reserve_bust_out_savings_cents=6090000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_marketplace_seller_escrow_cents, 22910000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["marketplace_seller_kyb_escrow_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("marketplace-seller-kyb-escrow-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
