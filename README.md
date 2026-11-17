@@ -446,6 +446,7 @@
 - **专题 411（零售媒体网络 `RMN: Amazon Ads / Walmart Connect / Instacart Ads` “智能广告竞价、黄金购物车 `Buy Box` 与库存联动停投”Agent 架构选型 FAQ：丢失 Buy Box 与核心尺码断码 10ms 自动熔断停投、Web IQ 搜索货架感知拦截自然排名第 1 品牌词自蚕食、SKU 级净贡献毛利 `Contribution Margin` 锁死最高 CPC 出价令牌 `retail_media_rmn_buybox_iroas_mandate_...`）**：**[《零售媒体网络（RMN：Amazon Ads / Walmart Connect / Instacart Ads）“智能广告竞价、黄金购物车（Buy Box）与库存联动停投”Agent 架构选型 FAQ：断货秒停、防自然流量自蚕食与净毛利 ROAS 实战指南》](docs/retail-media-network-rmn-ad-bidding-buybox-stock-pause-roas-agent-selection-faq.md)**
 - **专题 412（企业 B2B SaaS“客户成功 `CSM` 智能增购、席位按日折算 `Co-Termed Proration` 与多产品交叉销售”Agent 架构选型 FAQ：在途 `P1/P2` 故障工单 10ms 静默禁推销、对齐主合同到期日 `(Remaining Days / 365)` 精确折算、老客户历史锁价 `Grandfathered Rate` 保护与 `Stripe v2 OCA (orca_*)` 自助扩容令牌 `b2b_saas_csm_coterm_expansion_mandate_...`）**：**[《企业 B2B SaaS“客户成功（CSM）智能增购、席位按日折算（Co-Termed Proration）与多产品交叉销售”Agent 架构选型 FAQ：P1 故障禁推销、统一到期日折算与 Stripe OCA 扩容实战指南》](docs/b2b-saas-csm-expansion-coterm-proration-cross-sell-agent-selection-faq.md)**
 - **专题 413（商业智能体“模型路由、Token 成本控制 `FinOps` 与延迟分层”选型对比 FAQ：L0 确定性 `Decimal` 规则引擎 vs L1 `SHA256(Tenant+Tier+Catalog)` 分区语义缓存 `Harrier-270M/0.6B` vs L2 高吞吐轻量 SLM `GPT-4o-mini/Haiku/Phi-4` vs L3 深度推理模型 `GPT-5.4/Opus/o3` 四级漏斗令牌 `commercial_model_routing_finops_cascade_mandate_...`）**：**[《商业智能体“模型路由、Token 成本控制（FinOps）与延迟分层”选型对比 FAQ：前沿推理大模型 vs. 轻量 SLM vs. 语义缓存与确定性规则四级漏斗实战指南》](docs/commercial-agent-model-routing-slm-vs-frontier-llm-finops-cache-selection-faq.md)**
+- **专题 414（零售电商、航司酒店与连锁消费“会员积分 `Loyalty Points`、储值礼品卡与大促优惠券防羊毛党套利”Agent 架构选型 FAQ：30天 `PENDING_ESCROW` 退货期积分托管、退货自动扣减已花积分、严禁礼品卡套现洗钱与 2PC 混合支付 `Points + Gift Card + Stripe SPT` 原子回滚令牌 `loyalty_points_giftcard_promo_escrow_mandate_...`）**：**[《零售电商、航司酒店与连锁消费“会员积分（Loyalty Points）、储值礼品卡与大促优惠券防羊毛党套利”Agent 架构选型 FAQ：积分冻结期、防礼品卡洗钱与混合支付原子回滚实战指南》](docs/loyalty-points-gift-card-promo-stacking-anti-arbitrage-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1274,6 +1275,8 @@
 ![2026-11-18 企业 B2B SaaS 客户成功 (CSM) 智能增购、统一到期日折算 (Co-Terming) 与交叉销售 Agent 架构一图流总结](assets/svg/414-b2b-saas-csm-expansion-coterm-proration-cross-sell-2026-11-18.svg)
 
 ![2026-11-18 商业智能体模型路由、Token FinOps 成本控制与四级延迟分层选型一图流总结](assets/svg/415-commercial-agent-model-routing-slm-vs-frontier-llm-finops-cache-2026-11-18.svg)
+
+![2026-11-18 零售与航司酒旅会员积分 (Loyalty Points)、储值礼品卡与防羊毛党套利 Agent 架构一图流总结](assets/svg/416-loyalty-points-gift-card-promo-stacking-anti-arbitrage-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

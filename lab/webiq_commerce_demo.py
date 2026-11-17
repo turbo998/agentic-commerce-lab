@@ -41496,6 +41496,103 @@ def evaluate_commercial_model_routing_finops_agent_policy(
     )
 
 
+@dataclass(frozen=True)
+class LoyaltyPointsGiftcardPromoAgentDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    loyalty_giftcard_promo_lane: str
+    settled_loyalty_giftcard_promo_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_loyalty_points_giftcard_promo_agent_policy(
+    *,
+    mandate_id: str = "loyalty_points_giftcard_promo_escrow_mandate_20261118_001",
+    loyalty_giftcard_promo_cents: int = 16000000,
+    no_giftcard_cash_out_or_pin_enumeration_attack: bool = True,
+    post_promo_margin_safe_and_spent_points_clawback_netted: bool = True,
+    webiq_promo_code_not_leaked_and_velocity_normal: bool = True,
+    pending_points_escrow_and_2pc_split_tender_savings_cents: int = 0,
+) -> LoyaltyPointsGiftcardPromoAgentDecision:
+    if not mandate_id.startswith("loyalty_points_giftcard_promo_escrow_mandate_"):
+        return LoyaltyPointsGiftcardPromoAgentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_LOYALTY_GIFTCARD_PROMO_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            loyalty_giftcard_promo_lane="INVALID_LOYALTY_GIFTCARD_PROMO_MANDATE_PREFIX",
+            settled_loyalty_giftcard_promo_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not no_giftcard_cash_out_or_pin_enumeration_attack:
+        return LoyaltyPointsGiftcardPromoAgentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="GIFT_CARD_CASH_OUT_LAUNDERING_OR_PIN_ENUMERATION_ATTACK_BLOCKED",
+            action_pill="Send to a human",
+            loyalty_giftcard_promo_lane="GIFT_CARD_CASH_OUT_LAUNDERING_OR_PIN_ENUMERATION_ATTACK_BLOCKED",
+            settled_loyalty_giftcard_promo_cents=0,
+            latency_ms=11,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not post_promo_margin_safe_and_spent_points_clawback_netted:
+        return LoyaltyPointsGiftcardPromoAgentDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="PROMO_STACK_MARGIN_WIPEOUT_OR_SPENT_POINTS_UNADJUSTED_REFUND_BLOCKED",
+            action_pill="Send to a human",
+            loyalty_giftcard_promo_lane="PROMO_STACK_MARGIN_WIPEOUT_OR_SPENT_POINTS_UNADJUSTED_REFUND_BLOCKED",
+            settled_loyalty_giftcard_promo_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_promo_code_not_leaked_and_velocity_normal:
+        return LoyaltyPointsGiftcardPromoAgentDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="WEBIQ_LEAKED_PROMO_CODE_VIRAL_ABUSE_OR_VELOCITY_SPIKE_HOLD",
+            action_pill="Send to a human",
+            loyalty_giftcard_promo_lane="WEBIQ_LEAKED_PROMO_CODE_VIRAL_ABUSE_OR_VELOCITY_SPIKE_HOLD",
+            settled_loyalty_giftcard_promo_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if pending_points_escrow_and_2pc_split_tender_savings_cents > 0:
+        net_cents = max(
+            0,
+            loyalty_giftcard_promo_cents - pending_points_escrow_and_2pc_split_tender_savings_cents,
+        )
+        return LoyaltyPointsGiftcardPromoAgentDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="PENDING_POINTS_ESCROW_AND_2PC_SPLIT_TENDER_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            loyalty_giftcard_promo_lane="PENDING_POINTS_ESCROW_AND_2PC_SPLIT_TENDER_SAVINGS_CONFIRM",
+            settled_loyalty_giftcard_promo_cents=net_cents,
+            latency_ms=230,
+            provenance="deterministic_offline_simulation",
+        )
+
+    return LoyaltyPointsGiftcardPromoAgentDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_2PC_SPLIT_TENDER_AND_POINTS_ESCROW_SETTLED",
+        action_pill="Act automatically",
+        loyalty_giftcard_promo_lane="VERIFIED_2PC_SPLIT_TENDER_AND_POINTS_ESCROW_SETTLED",
+        settled_loyalty_giftcard_promo_cents=loyalty_giftcard_promo_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -54979,6 +55076,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unpartitioned_cache_leak_block_latency_ms": mrf_cac_403.latency_ms,
     }
 
+    lpg_commit_ok = evaluate_loyalty_points_giftcard_promo_agent_policy()
+    lpg_pin_403 = evaluate_loyalty_points_giftcard_promo_agent_policy(
+        no_giftcard_cash_out_or_pin_enumeration_attack=False,
+    )
+    lpg_stk_422 = evaluate_loyalty_points_giftcard_promo_agent_policy(
+        post_promo_margin_safe_and_spent_points_clawback_netted=False,
+    )
+    lpg_lek_451 = evaluate_loyalty_points_giftcard_promo_agent_policy(
+        webiq_promo_code_not_leaked_and_velocity_normal=False,
+    )
+    lpg_sav_409 = evaluate_loyalty_points_giftcard_promo_agent_policy(
+        pending_points_escrow_and_2pc_split_tender_savings_cents=3360000,
+    )
+    loyalty_points_giftcard_promo_agent_guards = {
+        "all_passed": (
+            lpg_commit_ok.allowed
+            and lpg_commit_ok.settled_loyalty_giftcard_promo_cents == 16000000
+            and not lpg_pin_403.allowed
+            and lpg_pin_403.http_status == 403
+            and not lpg_stk_422.allowed
+            and lpg_stk_422.http_status == 422
+            and not lpg_lek_451.allowed
+            and lpg_lek_451.http_status == 451
+            and not lpg_sav_409.allowed
+            and lpg_sav_409.action_pill == "Confirm"
+        ),
+        "loyalty_giftcard_promo_settlement_latency_ms": lpg_commit_ok.latency_ms,
+        "giftcard_cash_out_or_pin_enum_block_latency_ms": lpg_pin_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -55405,6 +55532,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "retail_media_rmn_roas_agent_guards": retail_media_rmn_roas_agent_guards,
         "b2b_csm_expansion_coterm_agent_guards": b2b_csm_expansion_coterm_agent_guards,
         "commercial_model_routing_finops_agent_guards": commercial_model_routing_finops_agent_guards,
+        "loyalty_points_giftcard_promo_agent_guards": loyalty_points_giftcard_promo_agent_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -65756,6 +65884,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="mrf-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Loyalty Points, Gift Card & Promo Stacking Anti-Arbitrage Sandbox (Round 414) -->
+      <div class="finops-box" id="loyalty-points-giftcard-promo-agent-sandbox" style="margin-top:12px;border-color:#F59E0B;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-lpg-title">🎁 零售与酒旅“会员积分、礼品卡与优惠券防套利”沙盒：30天积分冻结 + 防礼品卡洗钱 + 2PC 混合支付 (Round 414)</span>
+        </div>
+        <div class="control-row">
+          <label><span>PENDING_ESCROW 退货期积分冻结 + 严禁礼品卡套现/枚举 + 叠券毛利底线锁 + Web IQ 外泄码熔断:</span></label>
+          <select id="lpg-select" onchange="updateLoyaltyPointsGiftcardPromoAgentSandbox()">
+            <option value="lpg_commit_ok">🎁 积分+礼品卡+SPT 2PC 原子提交 + 新赠积分锁入 30天 PENDING_ESCROW 合规：10ms 清算 $160,000.00! (Act automatically)</option>
+            <option value="lpg_pin_403">🛑 黑产试图用礼品卡套购新礼品卡/金条洗钱、退货跨轨退回个人银行卡现金，或脚本暴力穷举 16 位 PIN 码 → 11ms 触发 HTTP 403!</option>
+            <option value="lpg_stk_422">🚨 多券无互斥叠加击穿成本底线酿成“0元购”，或羊毛党花光赠送积分后对原单申请不扣减全额退现金 → 14ms 触发 HTTP 422!</option>
+            <option value="lpg_lek_451">🛑 Web IQ 检出内部 KOL 专属优惠码被发上公开羊毛论坛疯传 (核销斜率突增 5x) → 265ms 触发 HTTP 451 秒级吊销!</option>
+            <option value="lpg_sav_409">🧑‍⚖️ 启用 30天积分托管防退货白嫖 + 折后毛利硬底线锁 + 2PC 混合支付零吞分，季度立省 $33,600.00 (净值 $126,400.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="lpg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -66608,6 +66754,7 @@ function renderAll() {{
   updateRetailMediaRmnRoasAgentSandbox();
   updateB2bCsmExpansionCotermAgentSandbox();
   updateCommercialModelRoutingFinopsAgentSandbox();
+  updateLoyaltyPointsGiftcardPromoAgentSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -86561,6 +86708,52 @@ function updateCommercialModelRoutingFinopsAgentSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🧭 L0 确定性算术 + L1 分区语义缓存 + L2/L3 复杂度分流合规：已自动清算 (VERIFIED_FOUR_TIER_MODEL_ROUTING_AND_L0_DECIMAL_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零跨租户缓存串户泄密、零 LLM 算术幻觉拒付、100% 满足 &lt;4,000ms 结账热路径 SLA</strong>：商业智能体模型网关批次已完成安全清算（<code>$170,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateLoyaltyPointsGiftcardPromoAgentSandbox() {{
+  var sel = document.getElementById("lpg-select");
+  var outEl = document.getElementById("lpg-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "lpg_pin_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 GIFT_CARD_CASH_OUT_LAUNDERING_OR_PIN_ENUMERATION_ATTACK_BLOCKED (11ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "储值卡反洗钱与防枚举门禁阻断：严禁使用礼品卡嵌套购买新礼品卡/金条、严禁退货时将礼品卡支付额退至外部银行卡套现，并拦截高频 16 位 PIN 码爆破，已在 11ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "lpg_stk_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PROMO_STACK_MARGIN_WIPEOUT_OR_SPENT_POINTS_UNADJUSTED_REFUND_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "叠券毛利底线与积分退货冲抵门禁阻断：多张优惠券叠加后实付价击穿 <code>COGS × 1.15</code> 毛利红线（0元购风险），或买家花光赠送积分后对原单申请不扣减积分的全额现金退款，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "lpg_lek_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 WEBIQ_LEAKED_PROMO_CODE_VIRAL_ABUSE_OR_VELOCITY_SPIKE_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "外泄神券秒级熔断挂起：Web IQ 实时检索发现内部专属优惠码已在公开羊毛论坛疯传且分钟级核销斜率突增 <code>&gt;5x</code>，已在 265ms 内吊销该码并挂起异常订单！" +
+      "</div>";
+    return;
+  }}
+  if (v === "lpg_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 PENDING_POINTS_ESCROW_AND_2PC_SPLIT_TENDER_SAVINGS_CONFIRM (230ms · Confirm · deterministic_offline_simulation)：<br>" +
+      "启用积分托管与防薅收银台：<code>30天 PENDING_ESCROW 退货期积分冻结 + 折后毛利硬底线锁 + 2PC 混合支付原子回滚</code>，单季立省被薅积分与穿仓损失 <code>$33,600.00</code>（净值 <code>$126,400.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🎁 2PC 混合支付原子提交 + PENDING_ESCROW 积分冻结 + 叠券毛利合规：已自动清算 (VERIFIED_2PC_SPLIT_TENDER_AND_POINTS_ESCROW_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零退货空套积分、零 0 元购叠券穿仓、零礼品卡洗钱套现</strong>：会员积分与储值卡混合结算批次已完成安全清算（<code>$160,000.00</code>）！" +
     "</div>";
 }}
 

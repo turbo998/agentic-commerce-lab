@@ -24512,6 +24512,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("commercial-model-routing-finops-agent-sandbox", demo_zh)
 
+    def test_loyalty_points_giftcard_promo_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_loyalty_points_giftcard_promo_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 2PC split-tender + PENDING_ESCROW points + margin floor safe -> 200 OK
+        ok = evaluate_loyalty_points_giftcard_promo_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_loyalty_giftcard_promo_cents, 16000000)
+
+        # 2. Gift-card cash-out laundering or PIN enumeration attack -> 403 Forbidden
+        pin_403 = evaluate_loyalty_points_giftcard_promo_agent_policy(
+            no_giftcard_cash_out_or_pin_enumeration_attack=False,
+        )
+        self.assertFalse(pin_403.allowed)
+        self.assertEqual(pin_403.http_status, 403)
+
+        # 3. Promo stack margin wipeout or full cash refund after spending bonus points -> 422 Unprocessable
+        stk_422 = evaluate_loyalty_points_giftcard_promo_agent_policy(
+            post_promo_margin_safe_and_spent_points_clawback_netted=False,
+        )
+        self.assertFalse(stk_422.allowed)
+        self.assertEqual(stk_422.http_status, 422)
+
+        # 4. Web IQ detection of leaked VIP promo code viral abuse -> 451 Hold
+        lek_451 = evaluate_loyalty_points_giftcard_promo_agent_policy(
+            webiq_promo_code_not_leaked_and_velocity_normal=False,
+        )
+        self.assertFalse(lek_451.allowed)
+        self.assertEqual(lek_451.http_status, 451)
+
+        # 5. 30-day points escrow + promo margin floor + 2PC split-tender saving $33,600 ($126,400 net) -> 409 Confirm
+        sav_409 = evaluate_loyalty_points_giftcard_promo_agent_policy(
+            pending_points_escrow_and_2pc_split_tender_savings_cents=3360000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_loyalty_giftcard_promo_cents, 12640000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["loyalty_points_giftcard_promo_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("loyalty-points-giftcard-promo-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
