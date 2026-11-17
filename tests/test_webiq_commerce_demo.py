@@ -24656,6 +24656,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("automotive-ev-vin-fni-agent-sandbox", demo_zh)
 
+    def test_live_event_ticketing_anti_scalper_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_live_event_ticketing_anti_scalper_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant FIDO2 passkey + contiguous zero-stranding + rotating TOTP pass -> 200 OK
+        ok = evaluate_live_event_ticketing_anti_scalper_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_live_event_ticketing_cents, 19000000)
+
+        # 2. Headless scalper bot automation or resale above face value cap -> 403 Forbidden
+        bot_403 = evaluate_live_event_ticketing_anti_scalper_agent_policy(
+            fido2_human_passkey_and_face_value_resale_cap_verified=False,
+        )
+        self.assertFalse(bot_403.allowed)
+        self.assertEqual(bot_403.http_status, 403)
+
+        # 3. Single-seat stranding in row or hidden drip-fee surprise -> 422 Unprocessable
+        str_422 = evaluate_live_event_ticketing_anti_scalper_agent_policy(
+            row_bitmap_zero_single_seat_stranding_and_all_in_price_clean=False,
+        )
+        self.assertFalse(str_422.allowed)
+        self.assertEqual(str_422.http_status, 422)
+
+        # 4. Web IQ official event postponement or cancellation -> 451 Hold
+        evt_451 = evaluate_live_event_ticketing_anti_scalper_agent_policy(
+            webiq_event_schedule_active_and_venue_safe=False,
+        )
+        self.assertFalse(evt_451.allowed)
+        self.assertEqual(evt_451.http_status, 451)
+
+        # 5. Anti-stranding bitmap + closed-loop face-value waitlist saving $39,900 ($150,100 net) -> 409 Confirm
+        sav_409 = evaluate_live_event_ticketing_anti_scalper_agent_policy(
+            anti_stranding_bitmap_and_face_value_waitlist_savings_cents=3990000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_live_event_ticketing_cents, 15010000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["live_event_ticketing_anti_scalper_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("live-event-ticketing-anti-scalper-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -449,6 +449,7 @@
 - **专题 414（零售电商、航司酒店与连锁消费“会员积分 `Loyalty Points`、储值礼品卡与大促优惠券防羊毛党套利”Agent 架构选型 FAQ：30天 `PENDING_ESCROW` 退货期积分托管、退货自动扣减已花积分、严禁礼品卡套现洗钱与 2PC 混合支付 `Points + Gift Card + Stripe SPT` 原子回滚令牌 `loyalty_points_giftcard_promo_escrow_mandate_...`）**：**[《零售电商、航司酒店与连锁消费“会员积分（Loyalty Points）、储值礼品卡与大促优惠券防羊毛党套利”Agent 架构选型 FAQ：积分冻结期、防礼品卡洗钱与混合支付原子回滚实战指南》](docs/loyalty-points-gift-card-promo-stacking-anti-arbitrage-agent-selection-faq.md)**
 - **专题 415（企业 B2B 电商与批发平台“商业信用账期 `Net-30 / Net-60 Trade Credit`、实时授信核保与无追索权保理 `Resolve / Hokodo / Balance`”Agent 架构选型 FAQ：官方域名 SSO + Open Banking 对公验资 + 备案仓库三联锁防冒充 500 强骗赊销、含在途未开票单的全口径敞口锁与 `T+1` 无追索权保理回款令牌 `b2b_trade_credit_net30_factoring_mandate_...`）**：**[《企业 B2B 电商与批发平台“商业信用账期（Net-30 / Net-60 Trade Credit）、实时授信核保与无追索权保理”Agent 架构选型 FAQ：防冒名骗贷、超期自动停供与 T+1 保理回款实战指南》](docs/b2b-trade-credit-net30-underwriting-non-recourse-factoring-agent-selection-faq.md)**
 - **专题 416（智能汽车与直营新能源车企 `EV Digital Retailing` “在线选配锁单、VIN 定金状态机与金融保险 `F&I` 合规结账”Agent 架构选型 FAQ：72h 冷静期与 `AP2 MandateVC` 二次签名转大定、符合 `FTC CARS Rule` 严禁默认勾选隐形装潢费、软硬件拆单保住 `$7,500` 新能源免税/补贴悬崖令牌 `automotive_ev_vin_deposit_fni_mandate_...`）**：**[《智能汽车与直营新能源车企（EV Digital Retailing）“在线选配锁单、VIN 定金状态机与金融保险（F&I）合规结账”Agent 架构选型 FAQ：小订转大定冷静期、禁绑隐形附加品与全落地价实战指南》](docs/automotive-ev-digital-retailing-vin-deposit-fni-compliance-agent-selection-faq.md)**
+- **专题 417（文娱演出、体育赛事与热门景区“高并发票务预订、防黄牛抢票机器人与实名原价候补”Agent 架构选型 FAQ：FIDO2 硬件证明防机房无头脚本扫票、64位行位图 `Leave-0-or-2` 反孤座算法挽回 6% 票房死角、首屏 All-In 含费透明票价与 30s 动态旋转 TOTP 票夹令牌 `live_event_ticketing_anti_scalper_mandate_...`）**：**[《文娱演出、体育赛事与热门景区“高并发票务预订、防黄牛抢票机器人与实名原价候补”Agent 架构选型 FAQ：FIDO2 硬件队列、连座原子锁与含服务费全包价实战指南》](docs/live-event-ticketing-anti-scalper-bot-queue-face-value-resale-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1283,6 +1284,8 @@
 ![2026-11-18 企业 B2B 商业信用账期 (Net-30/60)、实时授信核保与无追索权保理 Agent 架构一图流总结](assets/svg/417-b2b-trade-credit-net30-underwriting-non-recourse-factoring-2026-11-18.svg)
 
 ![2026-11-18 智能汽车与新能源直营 (EV Digital Retailing) 在线选配锁单、VIN定金状态机与 F&I 合规 Agent 架构一图流总结](assets/svg/418-automotive-ev-digital-retailing-vin-deposit-fni-compliance-2026-11-18.svg)
+
+![2026-11-18 文娱演出与体育赛事高并发票务、防黄牛抢票机器人与官方原价候补 Agent 架构一图流总结](assets/svg/419-live-event-ticketing-anti-scalper-bot-queue-face-value-resale-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
