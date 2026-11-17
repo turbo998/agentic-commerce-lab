@@ -462,6 +462,7 @@
 - **专题 427（企业软件外包、咨询服务与全球远程用工 `B2B SOW & Freelance: Upwork / Deel / Fieldglass` “里程碑资金托管、防范围蔓延与税务预扣”Agent 架构选型 FAQ：隔离沙箱 CI 100% 通过后托管放款与无水印源码/IP 转让原子互换、SOW `Not-to-Exceed (NTE)` 硬封顶与 `Stripe v2 OCA` 变更单锁、`W-9 / W-8BEN` 税表与 `AB5/IR35` 门禁令牌 `b2b_services_sow_milestone_escrow_mandate_...`）**：**[《企业软件外包、咨询服务与全球远程用工（B2B SOW & Freelance：Upwork / Deel / Fieldglass）“里程碑资金托管、防范围蔓延与税务预扣”Agent 架构选型 FAQ：交付物验收锁、变更单与 W-8BEN 实战指南》](docs/b2b-services-sow-milestone-escrow-scope-creep-tax-withholding-agent-selection-faq.md)**
 - **专题 428（机场免税店、离岛免税与旅游零售 `Travel Retail: CDFG / Dufry / Lotte` “航班登机口实时联动、海关免税额度核销与防套代购”Agent 架构选型 FAQ：人证票卡提货“五码合一”阻断假离境与拼卡套代购、联程转机 `>100ml` 液体 `LAGs` 防安检没收、AODB 改登机口动态闪送与隔离区实提 `manual Capture` 令牌 `travel_retail_duty_free_customs_mandate_...`）**：**[《机场免税店、离岛免税与旅游零售（Travel Retail：CDFG / Dufry / Lotte）“航班登机口实时联动、海关免税额度核销与防套代购”Agent 架构选型 FAQ：登机牌核验、中转液体防没收与离境提货实战指南》](docs/travel-retail-duty-free-flight-gate-sync-customs-allowance-agent-selection-faq.md)**
 - **专题 429（大件家居家具与大家电电商 `IKEA / Wayfair / 居然之家` “入户通道尺寸预检、送装一体 `White-Glove` 与定制防悔单”Agent 架构选型 FAQ：出库前 3D 电梯轿厢对角线与楼道转角几何碰撞求解自动切分体模块款 `Modular Split-Box`、A4纸视觉标定橱柜水电、`FABRIC_CUT_STARTED` 定制开料锁与 `CPSC STURDY Act` 防倾倒墙锚分账门禁令牌 `home_furnishing_spatial_white_glove_mandate_...`）**：**[《大件家居家具与大家电电商（IKEA / Wayfair / 居然之家）“入户通道尺寸预检、送装一体（White-Glove）与定制防悔单”Agent 架构选型 FAQ：消灭 28% 卡电梯退货与安装费乱象实战指南》](docs/home-furnishing-large-appliance-spatial-clearance-white-glove-agent-selection-faq.md)**
+- **专题 430（新能源充电网络与出行车队 `EV Charging & Fleet Mobility: Tesla Supercharger / 蔚来 / ChargePoint` “即插即充 `ISO 15118`、分时电价 `TOU` 寻优与超时占位费管理”Agent 架构选型 FAQ：`ISO 15118` 车辆证书双向认证拦截贴纸假二维码钓鱼 `Quishing`、按剩余 `SoC` 精准 `manual` 预授权拔枪秒解冻、场站占用率 `<50%` 免收超时占位费与 15m 切片错峰寻优令牌 `ev_charging_roaming_tou_idle_mandate_...`）**：**[《新能源充电网络与出行车队（EV Charging & Fleet Mobility）“即插即充（ISO 15118）、分时电价（TOU）寻优与超时占位费管理”Agent 架构选型 FAQ：防假二维码钓鱼、跨网漫游预授权与错峰充电实战指南》](docs/ev-charging-roaming-plug-and-charge-tou-tariff-idle-fee-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1322,6 +1323,8 @@
 ![2026-11-18 机场免税店与离岛免税 (Travel Retail) 航班登机口联动、海关免税额度锁与防套代购 Agent 架构一图流总结](assets/svg/430-travel-retail-duty-free-flight-gate-sync-customs-allowance-2026-11-18.svg)
 
 ![2026-11-18 大件家居与大家电电商入户通道尺寸预检、送装一体与定制防悔单 Agent 架构一图流总结](assets/svg/431-home-furnishing-large-appliance-spatial-clearance-white-glove-2026-11-18.svg)
+
+![2026-11-18 新能源充电网络与车队补能即插即充 (ISO 15118)、分时电价寻优与超时占位费管理 Agent 架构一图流总结](assets/svg/432-ev-charging-roaming-plug-and-charge-tou-tariff-idle-fee-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

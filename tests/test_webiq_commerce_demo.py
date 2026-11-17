@@ -25280,6 +25280,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("home-furnishing-spatial-white-glove-agent-sandbox", demo_zh)
 
+    def test_ev_charging_roaming_tou_idle_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_ev_charging_roaming_tou_idle_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant ISO 15118 certificate + SoC-bounded pre-auth + TOU capture -> 200 OK
+        ok = evaluate_ev_charging_roaming_tou_idle_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_ev_charging_roaming_cents, 18500000)
+
+        # 2. Static sticker QR phishing (Quishing) or unauthorized EVSE MCC -> 403 Forbidden
+        qsh_403 = evaluate_ev_charging_roaming_tou_idle_agent_policy(
+            iso15118_cert_no_quishing_and_mcc_5552_verified=False,
+        )
+        self.assertFalse(qsh_403.allowed)
+        self.assertEqual(qsh_403.http_status, 403)
+
+        # 3. Unjustified idle fee on empty station (<50% occupancy) or excessive flat pre-auth -> 422 Unprocessable
+        idl_422 = evaluate_ev_charging_roaming_tou_idle_agent_policy(
+            soc_bounded_preauth_and_occupancy_gated_idle_fee_fair=False,
+        )
+        self.assertFalse(idl_422.allowed)
+        self.assertEqual(idl_422.http_status, 422)
+
+        # 4. Web IQ utility grid demand-response curtailment or faulty 0-kWh meter -> 451 Hold
+        grd_451 = evaluate_ev_charging_roaming_tou_idle_agent_policy(
+            webiq_grid_curtailment_clear_and_evse_meter_valid=False,
+        )
+        self.assertFalse(grd_451.allowed)
+        self.assertEqual(grd_451.http_status, 451)
+
+        # 5. TOU off-peak fleet routing + fair idle-fee waiver saving $40,700 ($144,300 net) -> 409 Confirm
+        sav_409 = evaluate_ev_charging_roaming_tou_idle_agent_policy(
+            tou_offpeak_routing_and_idle_fee_waiver_savings_cents=4070000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_ev_charging_roaming_cents, 14430000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["ev_charging_roaming_tou_idle_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ev-charging-roaming-tou-idle-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
