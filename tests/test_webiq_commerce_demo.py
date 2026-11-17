@@ -24062,6 +24062,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("retail-cpg-autonomous-replenishment-sandbox", demo_zh)
 
+    def test_agentic_protocol_stack_interoperability_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agentic_protocol_stack_interoperability_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 6-protocol stack (MCP + A2A + ACP/UCP + AP2 + SPT/MPP 200-unit aligned) -> 200 OK ($220,000.00)
+        ok_res = evaluate_agentic_protocol_stack_interoperability_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_AGENTIC_PROTOCOL_STACK_INTEROPERABILITY_SETTLED")
+        self.assertEqual(ok_res.settled_agentic_protocol_stack_cents, 22000000)
+
+        # 2. UCP handler mismatch (Link/GPay on com.stripe.payments) or MPP pay_argv shell injection -> 403 Blocked
+        ucp_403 = evaluate_agentic_protocol_stack_interoperability_policy(
+            ucp_handler_split_and_mpp_argv_sanitized_verified=False,
+        )
+        self.assertFalse(ucp_403.allowed)
+        self.assertEqual(ucp_403.http_status, 403)
+        self.assertEqual(
+            ucp_403.decision_code,
+            "UCP_HANDLER_MISMATCH_LINK_GPAY_TRAP_OR_MPP_ARGV_INJECTION_BLOCKED",
+        )
+
+        # 3. AP2 MandateVC ceiling exceeded or unaligned MPP sub-cent truncation -> 422 Blocked
+        ap2_422 = evaluate_agentic_protocol_stack_interoperability_policy(
+            ap2_mandate_ceiling_and_200unit_mpp_alignment_verified=False,
+        )
+        self.assertFalse(ap2_422.allowed)
+        self.assertEqual(ap2_422.http_status, 422)
+        self.assertEqual(
+            ap2_422.decision_code,
+            "AP2_MANDATE_CEILING_EXCEEDED_OR_UNALIGNED_MPP_SUBCENT_TRUNCATION_BLOCKED",
+        )
+
+        # 4. MCP OAuth 2.1 RFC 9207 iss case mismatch or post-Nov 30 static sk_live_* key -> 451 Hold
+        iss_451 = evaluate_agentic_protocol_stack_interoperability_policy(
+            webiq_mcp_rfc9207_exact_iss_and_oauth21_clean=False,
+        )
+        self.assertFalse(iss_451.allowed)
+        self.assertEqual(iss_451.http_status, 451)
+
+        # 5. Unified dual-ecosystem adapter (ACP+UCP) & 200-unit zero-truncation MPP saving $44,000 ($176,000 net) -> 409 Confirm
+        sav_409 = evaluate_agentic_protocol_stack_interoperability_policy(
+            automated_dual_ecosystem_adapter_and_zero_truncation_savings_cents=4400000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_agentic_protocol_stack_cents, 17600000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agentic_protocol_stack_interoperability_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-protocol-stack-interoperability-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -437,6 +437,7 @@
 - **专题 402（跨境网红达人营销 `Creator & Affiliate Marketing` 智能寻源、带货分佣反作弊与退货期满释放 Agent 架构选型 FAQ：Exa 语义寻源与 Web IQ 反水军 `SIVT <= 15%` 品牌安全接地、拦截结账页最后 60 秒比价插件尾跳劫持 `Coupon Poaching`、30 天退货窗口期满释放与退货自动冲销 `Clawback Escrow`、Stripe Connect `Separate Charges` 禁传 `Stripe-Account` 请求头与 `W-9 / W-8BEN` 税务锁令牌 `creator_affiliate_marketing_escrow_clawback_mandate_...` vs 假粉骗坑位费与下单提佣后退货白嫖）**：**[《跨境网红达人营销（Creator & Affiliate Marketing）智能寻源、带货分佣反作弊与退货期满释放 Agent 架构选型 FAQ：Exa/Web IQ 寻源、防劫持刷单与 Connect 分账实战指南》](docs/creator-affiliate-marketing-sourcing-escrow-payout-clawback-agent-selection-faq.md)**
 - **专题 403（企业员工费用报销 `T&E Expense Audit` 与商务卡智能合规审计 Agent 架构选型 FAQ：全司商务卡流水与个人现金小票的小费前/后双金额时空碰撞防一单两报 `Double-Dip`、酒店退房水单 `Hotel Folio` 逐行拆解自动剥离迷你吧烟酒与 SPA、多重取证拦截 AIGC 伪造热敏小票与 Web IQ 真实商户/官方汇率接地令牌 `corporate_expense_audit_double_dip_folio_mandate_...` vs 10% 人工抽检漏网与刷卡加现金重复套现）**：**[《企业员工费用报销（T&E Expense Audit）与商务卡智能合规审计 Agent 架构选型 FAQ：水单行项拆解、刷卡与现金双重报销（Double-Dip）去重、防 AI 假小票与 ERP 自动入账实战指南》](docs/corporate-expense-audit-receipt-ocr-double-dip-prevention-erp-agent-selection-faq.md)**
 - **专题 404（零售与快消 `Retail & CPG` 需求预测、自动补货与供应商协同 `VMI / CPFR` Agent 架构选型 FAQ：全链路净库存头寸 `On-Hand + On-Order 在途 - Committed` 防交货期重复下单、偶发团购脉冲削峰防牛鞭效应、保质期周转天数硬上限 `DOS <= 50% 剩余效期` 与 A 类爆款整托凑箱、Web IQ 监管召回绊网 `FCB=OPEN` 令牌 `retail_cpg_autonomous_replenishment_vmi_mandate_...` vs 漏算在途爆仓与凑单买爆临期品）**：**[《零售与快消（Retail & CPG）需求预测、自动补货与供应商协同（VMI / CPFR）Agent 架构选型 FAQ：防牛鞭效应、在途去重、MOQ 整托凑箱与 AP2 预算上限实战指南》](docs/retail-cpg-demand-forecasting-autonomous-replenishment-moq-po-agent-selection-faq.md)**
+- **专题 405（商业智能体六大核心协议选型与互操作指南：`MCP` vs `A2A` vs `ACP` OpenAI/Stripe vs `UCP` Google/Shopify vs `AP2` `MandateVC` vs `x402 / MPP Tempo` 四层 OSI 黄金分工 FAQ：L1 内部工具调用 `MCP OAuth 2.1 RFC 9207` 与跨企业对等议价 `A2A`、L2 双生态结账状态机与 UCP 处理器分流 `com.stripe.payments` vs `com.google.pay`、L3 `AP2` 硬件签名委托、L4 `SPT/VIC` 与 `MPP 200单位` 零损耗微支付令牌 `agentic_protocol_stack_mcp_a2a_acp_ucp_ap2_x402_mandate_...`）**：**[《商业智能体六大核心协议选型与互操作 FAQ：MCP vs. A2A vs. ACP (OpenAI/Stripe) vs. UCP (Google/Shopify) vs. AP2 (MandateVC) vs. x402 / MPP 全栈分工指南》](docs/agentic-commerce-protocol-stack-mcp-vs-a2a-acp-ucp-ap2-x402-interoperability-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1247,6 +1248,8 @@
 ![2026-11-18 企业员工费用报销 (T&E) 与商务卡智能合规审计 Agent 架构一图流总结](assets/svg/405-corporate-expense-audit-receipt-ocr-double-dip-prevention-erp-2026-11-18.svg)
 
 ![2026-11-18 零售与快消 (Retail & CPG) 需求预测、自动补货与 VMI 协同 Agent 架构一图流总结](assets/svg/406-retail-cpg-demand-forecasting-autonomous-replenishment-moq-po-2026-11-18.svg)
+
+![2026-11-18 商业智能体六大协议选型与互操作：MCP vs A2A vs ACP vs UCP vs AP2 vs x402/MPP 一图流总结](assets/svg/407-agentic-commerce-protocol-stack-mcp-a2a-acp-ucp-ap2-x402-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
