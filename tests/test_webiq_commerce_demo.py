@@ -25088,6 +25088,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("proptech-lease-escrow-fair-housing-agent-sandbox", demo_zh)
 
+    def test_gaming_digital_goods_webshop_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_gaming_digital_goods_webshop_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant adult/parental consent + BIN region match + D2C WebShop settlement -> 200 OK
+        ok = evaluate_gaming_digital_goods_webshop_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_gaming_digital_webshop_cents, 22500000)
+
+        # 2. Minor spend cap breach, missing parental passkey, or broker emulator top-up -> 403 Forbidden
+        min_403 = evaluate_gaming_digital_goods_webshop_agent_policy(
+            minor_spend_cap_and_parental_passkey_verified=False,
+        )
+        self.assertFalse(min_403.allowed)
+        self.assertEqual(min_403.http_status, 403)
+
+        # 3. Post-gacha spent-currency refund abuse or <72h P2P auction trade hold violation -> 422 Unprocessable
+        clw_422 = evaluate_gaming_digital_goods_webshop_agent_policy(
+            negative_gem_clawback_and_72h_trade_hold_enforced=False,
+        )
+        self.assertFalse(clw_422.allowed)
+        self.assertEqual(clw_422.http_status, 422)
+
+        # 4. Web IQ regional VPN BIN arbitrage -> 451 Hold
+        vpn_451 = evaluate_gaming_digital_goods_webshop_agent_policy(
+            webiq_bin_region_matched_and_dma_link_compliant=False,
+        )
+        self.assertFalse(vpn_451.allowed)
+        self.assertEqual(vpn_451.http_status, 451)
+
+        # 5. Official D2C WebShop routing + Apple Consumption telemetry saving $51,750 ($173,250 net) -> 409 Confirm
+        sav_409 = evaluate_gaming_digital_goods_webshop_agent_policy(
+            d2c_webshop_routing_and_apple_consumption_reply_savings_cents=5175000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_gaming_digital_webshop_cents, 17325000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["gaming_digital_goods_webshop_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("gaming-digital-goods-webshop-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
