@@ -25750,5 +25750,85 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertIn("corporate-csr-donation-matching-sandbox", html)
 
 
+    def test_commercial_agent_observability_audit_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            CommercialAgentObservabilityAuditPolicyInput,
+            evaluate_commercial_agent_observability_audit_policy,
+        )
+
+        happy = evaluate_commercial_agent_observability_audit_policy(
+            CommercialAgentObservabilityAuditPolicyInput(
+                quarterly_observability_audit_budget_usd=Decimal("125000.00"),
+                unredacted_pci_pan_pii_or_secret_in_trace_detected=False,
+                golden_eval_regression_failure_or_broken_traceparent_detected=False,
+                webiq_data_residency_breach_flag=False,
+                restricted_key_age_days=30,
+                tail_based_sampling_and_worm_tiering_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "OTEL_EDGE_REDACTED_FULL_FUNNEL_WORM_AUDIT_AUTHORIZED")
+        self.assertTrue(str(happy["observability_audit_token"]).startswith("commercial_agent_observability_audit_mandate_"))
+
+        pan_block = evaluate_commercial_agent_observability_audit_policy(
+            CommercialAgentObservabilityAuditPolicyInput(
+                quarterly_observability_audit_budget_usd=Decimal("125000.00"),
+                unredacted_pci_pan_pii_or_secret_in_trace_detected=True,
+                golden_eval_regression_failure_or_broken_traceparent_detected=False,
+                webiq_data_residency_breach_flag=False,
+                restricted_key_age_days=30,
+                tail_based_sampling_and_worm_tiering_enabled=False,
+            )
+        )
+        self.assertEqual(pan_block["http_status"], 403)
+        self.assertEqual(pan_block["decision"], "UNREDACTED_PCI_PAN_PII_OR_SECRET_LEAK_IN_TRACE_BLOCKED")
+
+        eval_block = evaluate_commercial_agent_observability_audit_policy(
+            CommercialAgentObservabilityAuditPolicyInput(
+                quarterly_observability_audit_budget_usd=Decimal("125000.00"),
+                unredacted_pci_pan_pii_or_secret_in_trace_detected=False,
+                golden_eval_regression_failure_or_broken_traceparent_detected=True,
+                webiq_data_residency_breach_flag=False,
+                restricted_key_age_days=30,
+                tail_based_sampling_and_worm_tiering_enabled=False,
+            )
+        )
+        self.assertEqual(eval_block["http_status"], 422)
+        self.assertEqual(eval_block["decision"], "GOLDEN_EVAL_REGRESSION_FAILURE_OR_BROKEN_AUDIT_TRACE_BLOCKED")
+
+        residency_hold = evaluate_commercial_agent_observability_audit_policy(
+            CommercialAgentObservabilityAuditPolicyInput(
+                quarterly_observability_audit_budget_usd=Decimal("125000.00"),
+                unredacted_pci_pan_pii_or_secret_in_trace_detected=False,
+                golden_eval_regression_failure_or_broken_traceparent_detected=False,
+                webiq_data_residency_breach_flag=True,
+                restricted_key_age_days=190,
+                tail_based_sampling_and_worm_tiering_enabled=False,
+            )
+        )
+        self.assertEqual(residency_hold["http_status"], 451)
+        self.assertEqual(residency_hold["decision"], "WEBIQ_DATA_RESIDENCY_BREACH_OR_180D_AUDIT_KEY_HOLD")
+
+        tailsample_confirm = evaluate_commercial_agent_observability_audit_policy(
+            CommercialAgentObservabilityAuditPolicyInput(
+                quarterly_observability_audit_budget_usd=Decimal("125000.00"),
+                unredacted_pci_pan_pii_or_secret_in_trace_detected=False,
+                golden_eval_regression_failure_or_broken_traceparent_detected=False,
+                webiq_data_residency_breach_flag=False,
+                restricted_key_age_days=30,
+                tail_based_sampling_and_worm_tiering_enabled=True,
+            )
+        )
+        self.assertEqual(tailsample_confirm["http_status"], 409)
+        self.assertEqual(tailsample_confirm["savings_usd"], "32500.00")
+        self.assertEqual(tailsample_confirm["approved_budget_usd"], "92500.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("commercial_agent_observability_audit_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("commercial-agent-observability-audit-sandbox", html)
+
+
 if __name__ == "__main__":
     unittest.main()
