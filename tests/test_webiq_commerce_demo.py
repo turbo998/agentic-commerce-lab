@@ -26233,5 +26233,88 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertIn("corporate-mice-event-banquet-sandbox", html)
 
 
+    def test_wealth_robo_advisor_treasury_agent_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            WealthRoboAdvisorTreasuryAgentPolicyInput,
+            evaluate_wealth_robo_advisor_treasury_agent_policy,
+        )
+
+        happy = evaluate_wealth_robo_advisor_treasury_agent_policy(
+            WealthRoboAdvisorTreasuryAgentPolicyInput(
+                quarterly_wealth_tlh_and_sweep_pool_usd=Decimal("260000.00"),
+                suitability_risk_mismatch_or_third_party_withdrawal_detected=False,
+                irs_30d_wash_sale_conflict_or_uninsured_single_bank_detected=False,
+                webiq_sweep_bank_rating_downgrade_flag=False,
+                restricted_key_age_days=35,
+                cross_index_tlh_and_multi_bank_fdic_sweep_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "REG_BI_SUITABLE_AND_WASH_SALE_FREE_FDIC_SWEEP_AUTHORIZED")
+        self.assertTrue(str(happy["wealth_treasury_token"]).startswith("wealth_robo_advisor_treasury_mandate_"))
+
+        regbi_block = evaluate_wealth_robo_advisor_treasury_agent_policy(
+            WealthRoboAdvisorTreasuryAgentPolicyInput(
+                quarterly_wealth_tlh_and_sweep_pool_usd=Decimal("260000.00"),
+                suitability_risk_mismatch_or_third_party_withdrawal_detected=True,
+                irs_30d_wash_sale_conflict_or_uninsured_single_bank_detected=False,
+                webiq_sweep_bank_rating_downgrade_flag=False,
+                restricted_key_age_days=35,
+                cross_index_tlh_and_multi_bank_fdic_sweep_enabled=False,
+            )
+        )
+        self.assertEqual(regbi_block["http_status"], 403)
+        self.assertEqual(regbi_block["decision"], "SUITABILITY_RISK_MISMATCH_OR_THIRD_PARTY_WITHDRAWAL_BLOCKED")
+
+        wash_block = evaluate_wealth_robo_advisor_treasury_agent_policy(
+            WealthRoboAdvisorTreasuryAgentPolicyInput(
+                quarterly_wealth_tlh_and_sweep_pool_usd=Decimal("260000.00"),
+                suitability_risk_mismatch_or_third_party_withdrawal_detected=False,
+                irs_30d_wash_sale_conflict_or_uninsured_single_bank_detected=True,
+                webiq_sweep_bank_rating_downgrade_flag=False,
+                restricted_key_age_days=35,
+                cross_index_tlh_and_multi_bank_fdic_sweep_enabled=False,
+            )
+        )
+        self.assertEqual(wash_block["http_status"], 422)
+        self.assertEqual(
+            wash_block["decision"],
+            "IRS_30D_WASH_SALE_CONFLICT_OR_UNINSURED_SINGLE_BANK_EXPOSURE_BLOCKED",
+        )
+
+        bank_hold = evaluate_wealth_robo_advisor_treasury_agent_policy(
+            WealthRoboAdvisorTreasuryAgentPolicyInput(
+                quarterly_wealth_tlh_and_sweep_pool_usd=Decimal("260000.00"),
+                suitability_risk_mismatch_or_third_party_withdrawal_detected=False,
+                irs_30d_wash_sale_conflict_or_uninsured_single_bank_detected=False,
+                webiq_sweep_bank_rating_downgrade_flag=True,
+                restricted_key_age_days=195,
+                cross_index_tlh_and_multi_bank_fdic_sweep_enabled=False,
+            )
+        )
+        self.assertEqual(bank_hold["http_status"], 451)
+        self.assertEqual(bank_hold["decision"], "WEBIQ_SWEEP_BANK_RATING_DOWNGRADE_OR_180D_KEY_HOLD")
+
+        sweep_confirm = evaluate_wealth_robo_advisor_treasury_agent_policy(
+            WealthRoboAdvisorTreasuryAgentPolicyInput(
+                quarterly_wealth_tlh_and_sweep_pool_usd=Decimal("260000.00"),
+                suitability_risk_mismatch_or_third_party_withdrawal_detected=False,
+                irs_30d_wash_sale_conflict_or_uninsured_single_bank_detected=False,
+                webiq_sweep_bank_rating_downgrade_flag=False,
+                restricted_key_age_days=35,
+                cross_index_tlh_and_multi_bank_fdic_sweep_enabled=True,
+            )
+        )
+        self.assertEqual(sweep_confirm["http_status"], 409)
+        self.assertEqual(sweep_confirm["savings_usd"], "57200.00")
+        self.assertEqual(sweep_confirm["approved_budget_usd"], "202800.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("wealth_robo_advisor_treasury_agent_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("wealth-robo-advisor-treasury-sandbox", html)
+
+
 if __name__ == "__main__":
     unittest.main()

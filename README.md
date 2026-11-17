@@ -471,6 +471,7 @@
 - **专题 436（宠物电商周期购与宠物医疗保险直赔 `Chewy Autoship / Trupanion / 宠物医院` “兽医处方核验、跨物种/体重剂量安全锁与秒级直赔”Agent 架构选型 FAQ：猫咪禁氯菊酯 `Permethrin` 毒理锁与兽医 `e-Rx` 核验、幼宠生长体重配档、医院 PIMS `SOAP` 拦截等待期骗保与 RER 食量自适应顺延令牌 `pet_ecommerce_vet_insurance_mandate_...`）**：**[《宠物电商周期购与宠物医疗保险直赔（Chewy Autoship / Trupanion / 宠物医院）“兽医处方核验、跨物种/体重剂量安全锁与秒级直赔”Agent 架构选型 FAQ：防驱虫药中毒、等待期骗保与智能周期购实战指南》](docs/pet-ecommerce-autoship-vet-rx-insurance-direct-pay-agent-selection-faq.md)**
 - **专题 437（共享办公、企业弹性工位与会议室预订 `WeWork / IWG Regus / Industrious` “门禁出勤率审计、幽灵工位缩容与会议室爽约释放”Agent 架构选型 FAQ：手机 NFC 防一卡多刷与访客 NDA 锁、集团赠送积分池优先抵扣、刷卡 `<=8天/月` 幽灵工位自动转日票与会议室 15m 未签到释放令牌 `coworking_flex_office_mandate_...`）**：**[《共享办公、企业弹性工位与会议室预订（WeWork / IWG Regus / Industrious）“门禁出勤率审计、幽灵工位缩容与会议室爽约释放”Agent 架构选型 FAQ：混合办公降本与防乱扣超额费实战指南》](docs/coworking-flex-office-ghost-desk-downsize-room-release-agent-selection-faq.md)**
 - **专题 438（企业会展 `MICE`、酒店团队包房与宴会餐饮采购 `Cvent / 万豪会务 / 酒店宴会` “客房空置转售抵扣、BEO 保底人数动态锁与 AV 隐形费审计”Agent 架构选型 FAQ：搭建商百万美元 `COI` 责任险与定金防伪锁、PMS 已转售散客空房全额冲抵违约金、剥离 AV 设备 24% 餐饮服务费与会前 72h 航班联动保底人数寻优令牌 `corporate_mice_event_banquet_mandate_...`）**：**[《企业会展（MICE）、酒店团队包房与宴会餐饮采购（Cvent / 万豪会务 / 酒店宴会）“客房空置转售抵扣、BEO 保底人数动态锁与 AV 隐形费审计”Agent 架构选型 FAQ：防未住满天价罚金与餐饮浪费实战指南》](docs/corporate-mice-event-hotel-attrition-beo-catering-agent-selection-faq.md)**
+- **专题 439（零售财富管理、智能投顾与企业财资 `Betterment / Wealthfront / Stripe Treasury` “IRS 30天洗售防违规、适当性护栏与 FDIC 多行分拆”Agent 架构选型 FAQ：FINRA Reg BI 适当性与同名出金锁、跨全家庭/IRA/DRIP 61天防洗售图谱、跨指数商 ETF 置换与 `<=$245k/家` 多银行 FDIC 自动清分令牌 `wealth_robo_advisor_treasury_mandate_...`）**：**[《零售财富管理、智能投顾与企业财资（Betterment / Wealthfront / Stripe Treasury）“IRS 30天洗售防违规、适当性护栏与 FDIC 多行分拆”Agent 架构选型 FAQ：税损收割与现金管理实战指南》](docs/wealth-robo-advisor-wash-sale-fdic-treasury-sweep-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1349,6 +1350,8 @@
 ![2026-11-18 共享办公与企业弹性工位 (WeWork/IWG Regus) 门禁出勤审计、幽灵工位缩容与会议室释放 Agent 架构一图流总结](assets/svg/439-coworking-flex-office-ghost-desk-downsize-room-release-2026-11-18.svg)
 
 ![2026-11-18 企业会展 (MICE)、酒店包房与宴会采购 (Cvent/Marriott) 客房空置转售抵扣、BEO 保底人数与 AV 审计 Agent 架构一图流总结](assets/svg/440-corporate-mice-event-hotel-attrition-beo-catering-2026-11-18.svg)
+
+![2026-11-18 零售财富管理与企业财资 (Betterment/Stripe Treasury) IRS 洗售拦截、适当性护栏与 FDIC 分拆 Agent 架构一图流总结](assets/svg/441-wealth-robo-advisor-wash-sale-fdic-treasury-sweep-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
