@@ -24368,6 +24368,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("recommerce-trade-in-clawback-agent-sandbox", demo_zh)
 
+    def test_retail_media_rmn_roas_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_retail_media_rmn_roas_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Buy-Box active + core sizes in stock + contribution-margin iROAS bid -> 200 OK
+        ok = evaluate_retail_media_rmn_roas_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_retail_media_rmn_cents, 20500000)
+
+        # 2. Lost Buy Box or core-size stockout ad spend waste -> 403 Forbidden
+        buy_403 = evaluate_retail_media_rmn_roas_agent_policy(
+            buybox_active_and_core_sizes_in_stock_verified=False,
+        )
+        self.assertFalse(buy_403.allowed)
+        self.assertEqual(buy_403.http_status, 403)
+
+        # 3. Bid exceeding SKU contribution-margin breakeven or brand organic cannibalization -> 422 Unprocessable
+        can_422 = evaluate_retail_media_rmn_roas_agent_policy(
+            bid_within_contribution_margin_and_no_brand_cannibalization=False,
+        )
+        self.assertFalse(can_422.allowed)
+        self.assertEqual(can_422.http_status, 422)
+
+        # 4. Web IQ midnight click-bot IVT spike or hourly pacing exhaustion -> 451 Hold
+        ivt_451 = evaluate_retail_media_rmn_roas_agent_policy(
+            webiq_ad_click_ivt_and_hourly_pacing_clean=False,
+        )
+        self.assertFalse(ivt_451.allowed)
+        self.assertEqual(ivt_451.http_status, 451)
+
+        # 5. Stockout auto-pause + brand anti-cannibalization saving $45,100 ($159,900 net) -> 409 Confirm
+        sav_409 = evaluate_retail_media_rmn_roas_agent_policy(
+            stockout_auto_pause_and_anti_cannibalization_savings_cents=4510000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_retail_media_rmn_cents, 15990000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["retail_media_rmn_roas_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("retail-media-rmn-roas-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
