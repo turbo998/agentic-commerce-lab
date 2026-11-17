@@ -26150,5 +26150,88 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertIn("coworking-flex-office-sandbox", html)
 
 
+    def test_corporate_mice_event_banquet_agent_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            CorporateMiceEventBanquetAgentPolicyInput,
+            evaluate_corporate_mice_event_banquet_agent_policy,
+        )
+
+        happy = evaluate_corporate_mice_event_banquet_agent_policy(
+            CorporateMiceEventBanquetAgentPolicyInput(
+                conference_master_folio_budget_usd=Decimal("310000.00"),
+                event_vendor_bec_wire_fraud_or_missing_coi_detected=False,
+                uncredited_resold_room_attrition_or_av_service_fee_padding_detected=False,
+                webiq_force_majeure_venue_closure_flag=False,
+                restricted_key_age_days=30,
+                flight_synced_72h_beo_and_attrition_mitigation_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "COI_VERIFIED_AND_CLEAN_BEO_MASTER_FOLIO_AUTHORIZED")
+        self.assertTrue(str(happy["mice_event_token"]).startswith("corporate_mice_event_banquet_mandate_"))
+
+        bec_block = evaluate_corporate_mice_event_banquet_agent_policy(
+            CorporateMiceEventBanquetAgentPolicyInput(
+                conference_master_folio_budget_usd=Decimal("310000.00"),
+                event_vendor_bec_wire_fraud_or_missing_coi_detected=True,
+                uncredited_resold_room_attrition_or_av_service_fee_padding_detected=False,
+                webiq_force_majeure_venue_closure_flag=False,
+                restricted_key_age_days=30,
+                flight_synced_72h_beo_and_attrition_mitigation_enabled=False,
+            )
+        )
+        self.assertEqual(bec_block["http_status"], 403)
+        self.assertEqual(bec_block["decision"], "EVENT_VENDOR_BEC_WIRE_FRAUD_OR_MISSING_COI_INSURANCE_BLOCKED")
+
+        attrition_block = evaluate_corporate_mice_event_banquet_agent_policy(
+            CorporateMiceEventBanquetAgentPolicyInput(
+                conference_master_folio_budget_usd=Decimal("310000.00"),
+                event_vendor_bec_wire_fraud_or_missing_coi_detected=False,
+                uncredited_resold_room_attrition_or_av_service_fee_padding_detected=True,
+                webiq_force_majeure_venue_closure_flag=False,
+                restricted_key_age_days=30,
+                flight_synced_72h_beo_and_attrition_mitigation_enabled=False,
+            )
+        )
+        self.assertEqual(attrition_block["http_status"], 422)
+        self.assertEqual(
+            attrition_block["decision"],
+            "UNCREDITED_RESOLD_ROOM_ATTRITION_OR_AV_SERVICE_FEE_PADDING_BLOCKED",
+        )
+
+        fm_hold = evaluate_corporate_mice_event_banquet_agent_policy(
+            CorporateMiceEventBanquetAgentPolicyInput(
+                conference_master_folio_budget_usd=Decimal("310000.00"),
+                event_vendor_bec_wire_fraud_or_missing_coi_detected=False,
+                uncredited_resold_room_attrition_or_av_service_fee_padding_detected=False,
+                webiq_force_majeure_venue_closure_flag=True,
+                restricted_key_age_days=195,
+                flight_synced_72h_beo_and_attrition_mitigation_enabled=False,
+            )
+        )
+        self.assertEqual(fm_hold["http_status"], 451)
+        self.assertEqual(fm_hold["decision"], "WEBIQ_FORCE_MAJEURE_VENUE_CLOSURE_OR_180D_KEY_HOLD")
+
+        beo_confirm = evaluate_corporate_mice_event_banquet_agent_policy(
+            CorporateMiceEventBanquetAgentPolicyInput(
+                conference_master_folio_budget_usd=Decimal("310000.00"),
+                event_vendor_bec_wire_fraud_or_missing_coi_detected=False,
+                uncredited_resold_room_attrition_or_av_service_fee_padding_detected=False,
+                webiq_force_majeure_venue_closure_flag=False,
+                restricted_key_age_days=30,
+                flight_synced_72h_beo_and_attrition_mitigation_enabled=True,
+            )
+        )
+        self.assertEqual(beo_confirm["http_status"], 409)
+        self.assertEqual(beo_confirm["savings_usd"], "74400.00")
+        self.assertEqual(beo_confirm["approved_budget_usd"], "235600.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("corporate_mice_event_banquet_agent_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("corporate-mice-event-banquet-sandbox", html)
+
+
 if __name__ == "__main__":
     unittest.main()
