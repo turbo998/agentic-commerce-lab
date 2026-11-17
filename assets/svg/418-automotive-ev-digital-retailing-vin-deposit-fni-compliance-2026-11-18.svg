@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg418" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070B19"/>
+      <stop offset="50%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent418" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#818CF8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg418)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#1E293B" stroke-width="2"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent418)"/>
+
+  <!-- Header -->
+  <text x="52" y="58" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">2026-11-18 · ROUND 416 · AUTOMOTIVE &amp; EV DIGITAL RETAILING, VIN DEPOSIT LOCK &amp; F&amp;I COMPLIANCE AGENT</text>
+  <text x="52" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="20.5" font-weight="800">智能汽车与新能源直营 (EV Digital Retailing) 架构：小订转大定冷静期、VIN 锁与补贴悬崖保护</text>
+  <text x="52" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">72h 冷静期+二次签名转大定 · 严禁默认勾选 F&amp;I 隐形装潢费 · 软硬件拆单保住 $7,500 新能源补贴 · 立省 $50,400.00 (21.0%)</text>
+
+  <!-- Left Column: Automotive Retailing Pitfalls -->
+  <rect x="48" y="132" width="352" height="390" rx="12" fill="#1E1B2E" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="68" y="162" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">❌ 传统买车选配与车贷结账三大深坑</text>
+
+  <rect x="64" y="178" width="320" height="98" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="200" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 误触按钮秒锁不可退大定 &amp; 捆绑 $1,500 假装潢</text>
+  <text x="78" y="220" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 车主在 App 看车漆误触确认，$700 小订秒变不可退大定</text>
+  <text x="78" y="238" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 车贷合同默认勾选 $1,500 氮气轮胎/镀膜与隐形金融服务费</text>
+  <text x="78" y="256" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 违反 FTC CARS Rule 与消保法，引发集体维权与拒付!</text>
+
+  <rect x="64" y="288" width="320" height="98" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="310" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 加选配置微超开票上限痛失 $7,500 新能源补贴</text>
+  <text x="78" y="330" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 整车免税/补贴红线为 $80,000，车主选配后开票 $81,500</text>
+  <text x="78" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 因超标 $1,500 导致整笔 $7,500 政府补贴/免税直接归零</text>
+  <text x="78" y="366" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 或两家门店销售同时把同一台现车 VIN 卖给两个客户!</text>
+
+  <rect x="64" y="398" width="320" height="106" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="420" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 地方置换补贴池已空仍承诺补贴致提车纠纷</text>
+  <text x="78" y="440" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 市级以旧换新补贴资金池昨日已用尽，Agent 仍按旧表算价</text>
+  <text x="78" y="458" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 车主提车上牌后发现领不到补贴，要求车企全额赔偿</text>
+  <text x="78" y="480" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 传统汽车数字零售补贴损失与退订基线：$240,000 / 季度</text>
+
+  <!-- Center Column: 5-Lane Deterministic Gate -->
+  <rect x="420" y="132" width="380" height="390" rx="12" fill="#0F2238" stroke="#38BDF8" stroke-width="1.5"/>
+  <text x="440" y="162" fill="#7DD3FC" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">🛡️ 汽车 VIN 锁、OTD 与补贴悬崖五车道门禁</text>
+
+  <rect x="436" y="178" width="348" height="56" rx="8" fill="#091526" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="450" y="200" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 403 · 拦截隐形捆绑装潢与未经同意锁单 (11ms)</text>
+  <text x="450" y="220" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">严禁默认勾选 F&amp;I 附加品 + 转不可退大定强制 AP2 二次显式签名</text>
+
+  <rect x="436" y="244" width="348" height="56" rx="8" fill="#091526" stroke="#F97316" stroke-width="1.2"/>
+  <text x="450" y="266" fill="#FB923C" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🚨 HTTP 422 · 拦截现车 VIN 重分与破补贴悬崖 (14ms)</text>
+  <text x="450" y="286" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">分布式互斥锁定唯一 VIN + 拦截突破 $80k 补贴上限的愚蠢合单</text>
+
+  <rect x="436" y="310" width="348" height="56" rx="8" fill="#091526" stroke="#A855F7" stroke-width="1.2"/>
+  <text x="450" y="332" fill="#C084FC" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 451 · 拦截地方新能源补贴池耗尽风险 (265ms)</text>
+  <text x="450" y="352" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">Web IQ 实时核验上牌城市政府置换补贴剩余额度与免税目录</text>
+
+  <rect x="436" y="376" width="348" height="58" rx="8" fill="#091526" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="450" y="398" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🧑‍⚖️ HTTP 409 · 硬件随车开票 + 软件提车后 OTA 拆单 (230ms)</text>
+  <text x="450" y="418" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="11">车价压回 $76.5k 保住全额补贴立省 $50,400 → 净值 $189,600</text>
+
+  <rect x="436" y="444" width="348" height="60" rx="8" fill="#06281E" stroke="#10B981" stroke-width="1.5"/>
+  <text x="450" y="468" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">✅ HTTP 200 · 唯一 VIN 锁定 + 透明 OTD 合同清算 (10ms)</text>
+  <text x="450" y="488" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="11">定金 SPT + 尾款车贷/电汇专户闭环 ($240,000 批次)</text>
+
+  <!-- Right Column: Quantitative Metrics -->
+  <rect x="820" y="132" width="332" height="390" rx="12" fill="#0B2420" stroke="#10B981" stroke-width="1.5"/>
+  <text x="840" y="162" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">📊 汽车数字零售第一性原理</text>
+
+  <rect x="836" y="178" width="300" height="104" rx="8" fill="#071715" stroke="#065F46" stroke-width="1"/>
+  <text x="850" y="200" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🚗 补贴悬崖拆单与 OTD 铁律</text>
+  <text x="850" y="222" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 硬件随整车开票 (&lt;= 法定免税/补贴上限)</text>
+  <text x="850" y="242" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 高阶智驾软件拆至上牌后 App OTA 解锁</text>
+  <text x="850" y="262" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 小订可退 (manual) 与大定排产严格两阶段隔离</text>
+
+  <rect x="836" y="294" width="300" height="104" rx="8" fill="#071715" stroke="#065F46" stroke-width="1"/>
+  <text x="850" y="316" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">⚡ 锁单转化与合规零投诉</text>
+  <text x="850" y="338" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 误触锁单与隐形收费维权投诉率：0.0%</text>
+  <text x="850" y="358" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 选配跨悬崖误丢政府补贴发生率：0.0%</text>
+  <text x="850" y="378" fill="#7DD3FC" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 现车 VIN 一车两卖并发冲突率：0.0%</text>
+
+  <rect x="836" y="410" width="300" height="94" rx="8" fill="#071715" stroke="#10B981" stroke-width="1.5"/>
+  <text x="850" y="434" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">💰 季度保补贴与防退订净增效</text>
+  <text x="850" y="460" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">立省 $50,400.00 (-21.0%)</text>
+  <text x="850" y="484" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12">原补贴流失与退车损耗 $240,000.00 → 净值 $189,600.00</text>
+
+  <!-- Footer Mandate Strip -->
+  <rect x="48" y="538" width="1104" height="96" rx="10" fill="#091326" stroke="#334155" stroke-width="1.5"/>
+  <text x="68" y="566" fill="#38BDF8" font-family="Consolas, monospace" font-size="13" font-weight="700">Mandate Prefix: automotive_ev_vin_deposit_fni_mandate_*</text>
+  <text x="68" y="590" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">✅ Good Fit: 新能源车企 DTC 在线选配下订、大型经销商集团透明一口价商城、汽车金融 F&amp;I 线上签约与旧车带贷置换</text>
+  <text x="68" y="614" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">⛔ Not For: 无冷静期/无二次签名的一键不可退锁单或夹带默认勾选装潢包的暗黑结账流 · Provenance: official_doc_snapshot + deterministic_offline_simulation</text>
+</svg>

@@ -41690,6 +41690,103 @@ def evaluate_b2b_trade_credit_factoring_agent_policy(
     )
 
 
+@dataclass(frozen=True)
+class AutomotiveEvVinFniAgentDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    automotive_ev_vin_lane: str
+    settled_automotive_ev_vin_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_automotive_ev_vin_fni_agent_policy(
+    *,
+    mandate_id: str = "automotive_ev_vin_deposit_fni_mandate_20261118_001",
+    automotive_ev_vin_cents: int = 24000000,
+    no_forced_fni_junk_addons_and_explicit_lock_consent: bool = True,
+    unique_vin_mutex_and_subsidy_msrp_cliff_safe: bool = True,
+    webiq_regional_ev_subsidy_pool_active: bool = True,
+    post_delivery_ota_software_split_and_subsidy_savings_cents: int = 0,
+) -> AutomotiveEvVinFniAgentDecision:
+    if not mandate_id.startswith("automotive_ev_vin_deposit_fni_mandate_"):
+        return AutomotiveEvVinFniAgentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_AUTOMOTIVE_EV_VIN_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            automotive_ev_vin_lane="INVALID_AUTOMOTIVE_EV_VIN_MANDATE_PREFIX",
+            settled_automotive_ev_vin_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not no_forced_fni_junk_addons_and_explicit_lock_consent:
+        return AutomotiveEvVinFniAgentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="FORCED_FNI_JUNK_ADDONS_OR_UNCONSENTED_NONREFUNDABLE_VIN_LOCK_BLOCKED",
+            action_pill="Send to a human",
+            automotive_ev_vin_lane="FORCED_FNI_JUNK_ADDONS_OR_UNCONSENTED_NONREFUNDABLE_VIN_LOCK_BLOCKED",
+            settled_automotive_ev_vin_cents=0,
+            latency_ms=11,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not unique_vin_mutex_and_subsidy_msrp_cliff_safe:
+        return AutomotiveEvVinFniAgentDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="DUPLICATE_VIN_ALLOCATION_OR_SUBSIDY_MSRP_CLIFF_BREACH_BLOCKED",
+            action_pill="Send to a human",
+            automotive_ev_vin_lane="DUPLICATE_VIN_ALLOCATION_OR_SUBSIDY_MSRP_CLIFF_BREACH_BLOCKED",
+            settled_automotive_ev_vin_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_regional_ev_subsidy_pool_active:
+        return AutomotiveEvVinFniAgentDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="WEBIQ_REGIONAL_EV_SUBSIDY_POOL_EXHAUSTED_OR_HOMOLOGATION_HOLD",
+            action_pill="Send to a human",
+            automotive_ev_vin_lane="WEBIQ_REGIONAL_EV_SUBSIDY_POOL_EXHAUSTED_OR_HOMOLOGATION_HOLD",
+            settled_automotive_ev_vin_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if post_delivery_ota_software_split_and_subsidy_savings_cents > 0:
+        net_cents = max(
+            0,
+            automotive_ev_vin_cents - post_delivery_ota_software_split_and_subsidy_savings_cents,
+        )
+        return AutomotiveEvVinFniAgentDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="POST_DELIVERY_OTA_SOFTWARE_SPLIT_AND_SUBSIDY_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            automotive_ev_vin_lane="POST_DELIVERY_OTA_SOFTWARE_SPLIT_AND_SUBSIDY_SAVINGS_CONFIRM",
+            settled_automotive_ev_vin_cents=net_cents,
+            latency_ms=230,
+            provenance="deterministic_offline_simulation",
+        )
+
+    return AutomotiveEvVinFniAgentDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_UNIQUE_VIN_LOCK_AND_TRANSPARENT_OTD_SETTLED",
+        action_pill="Act automatically",
+        automotive_ev_vin_lane="VERIFIED_UNIQUE_VIN_LOCK_AND_TRANSPARENT_OTD_SETTLED",
+        settled_automotive_ev_vin_cents=automotive_ev_vin_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -55233,6 +55330,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "impersonated_kyb_or_dock_block_latency_ms": btc_kyb_403.latency_ms,
     }
 
+    aev_commit_ok = evaluate_automotive_ev_vin_fni_agent_policy()
+    aev_fni_403 = evaluate_automotive_ev_vin_fni_agent_policy(
+        no_forced_fni_junk_addons_and_explicit_lock_consent=False,
+    )
+    aev_vin_422 = evaluate_automotive_ev_vin_fni_agent_policy(
+        unique_vin_mutex_and_subsidy_msrp_cliff_safe=False,
+    )
+    aev_sub_451 = evaluate_automotive_ev_vin_fni_agent_policy(
+        webiq_regional_ev_subsidy_pool_active=False,
+    )
+    aev_sav_409 = evaluate_automotive_ev_vin_fni_agent_policy(
+        post_delivery_ota_software_split_and_subsidy_savings_cents=5040000,
+    )
+    automotive_ev_vin_fni_agent_guards = {
+        "all_passed": (
+            aev_commit_ok.allowed
+            and aev_commit_ok.settled_automotive_ev_vin_cents == 24000000
+            and not aev_fni_403.allowed
+            and aev_fni_403.http_status == 403
+            and not aev_vin_422.allowed
+            and aev_vin_422.http_status == 422
+            and not aev_sub_451.allowed
+            and aev_sub_451.http_status == 451
+            and not aev_sav_409.allowed
+            and aev_sav_409.action_pill == "Confirm"
+        ),
+        "automotive_ev_vin_settlement_latency_ms": aev_commit_ok.latency_ms,
+        "forced_fni_or_unconsented_lock_block_latency_ms": aev_fni_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -55661,6 +55788,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "commercial_model_routing_finops_agent_guards": commercial_model_routing_finops_agent_guards,
         "loyalty_points_giftcard_promo_agent_guards": loyalty_points_giftcard_promo_agent_guards,
         "b2b_trade_credit_factoring_agent_guards": b2b_trade_credit_factoring_agent_guards,
+        "automotive_ev_vin_fni_agent_guards": automotive_ev_vin_fni_agent_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -66048,6 +66176,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="btc-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Automotive & EV Digital Retailing, VIN Deposit Lock & F&I Compliance Sandbox (Round 416) -->
+      <div class="finops-box" id="automotive-ev-vin-fni-agent-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-aev-title">🚗 智能汽车与新能源直营 (EV Digital Retailing) 沙盒：72h 冷静期转大定 + VIN 独占锁 + 补贴悬崖拆单 (Round 416)</span>
+        </div>
+        <div class="control-row">
+          <label><span>AP2 二次显式签名转大定 + 严禁默认勾选 F&amp;I 隐形装潢费 + 软硬件拆单保 $7,500 新能源补贴:</span></label>
+          <select id="aev-select" onchange="updateAutomotiveEvVinFniAgentSandbox()">
+            <option value="aev_commit_ok">🚗 二次签名转大定锁唯一 VIN + 透明全落地价 (OTD) + 补贴资格完好：10ms 清算 $240,000.00! (Act automatically)</option>
+            <option value="aev_fni_403">🛑 车贷结账单默认勾选 $1,500 氮气轮胎/镀膜隐形装潢包 (违反 FTC CARS Rule)，或未经二次签名将可退小订静默锁死为不可退大定 → 11ms 触发 HTTP 403!</option>
+            <option value="aev_vin_422">🚨 两家门店并发把同一台现车 VIN 卖给两个客户，或将 $5,000 智驾软件打包进整车发票致车价达 $81.5k 突破 $80k 补贴悬崖痛失 $7,500 补贴 → 14ms 触发 HTTP 422!</option>
+            <option value="aev_sub_451">🛑 Web IQ 检出购车人所在城市当季新能源置换补贴资金池已耗尽，或该配置批次暂未进入免税公告目录 → 265ms 触发 HTTP 451!</option>
+            <option value="aev_sav_409">🧑‍⚖️ 启用软硬件拆单优化 (车价压回 $76.5k 保住 $7,500 补贴，提车后 OTA 激活软件) + 剥离隐形加价，季度立省 $50,400.00 (净值 $189,600.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="aev-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -66902,6 +67048,7 @@ function renderAll() {{
   updateCommercialModelRoutingFinopsAgentSandbox();
   updateLoyaltyPointsGiftcardPromoAgentSandbox();
   updateB2bTradeCreditFactoringAgentSandbox();
+  updateAutomotiveEvVinFniAgentSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -86947,6 +87094,52 @@ function updateB2bTradeCreditFactoringAgentSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🏦 三要素对公 KYB 合规 + 全口径敞口受控 + 无追索权保理 T+1 回款：已自动清算 (VERIFIED_B2B_KYB_AND_NON_RECOURSE_FACTORING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零冒充名企骗贷坏账、零在途未开票超支、DSO 从 48 天压降至 4 天</strong>：企业 B2B 信用账期与保理批次已完成安全清算（<code>$230,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAutomotiveEvVinFniAgentSandbox() {{
+  var sel = document.getElementById("aev-select");
+  var outEl = document.getElementById("aev-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "aev_fni_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 FORCED_FNI_JUNK_ADDONS_OR_UNCONSENTED_NONREFUNDABLE_VIN_LOCK_BLOCKED (11ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "汽车金融 F&amp;I 合规与定金门禁阻断：检测到车贷合同默认勾选 <code>$1,500 氮气轮胎/镀膜隐形附加包（违反 FTC CARS Rule）</code>，或未经购车人二次显式签名将可退小订静默锁死为不可退大定，已在 11ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "aev_vin_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 DUPLICATE_VIN_ALLOCATION_OR_SUBSIDY_MSRP_CLIFF_BREACH_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "VIN 独占锁与补贴悬崖门禁阻断：同一现车 <code>VIN</code> 发生跨门店并发重复分配，或前装软件合并开票导致整车 MSRP（<code>$81,500 &gt; $80,000</code>）突破法定免税/补贴上限痛失 <code>$7,500</code> 补贴，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "aev_sub_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 WEBIQ_REGIONAL_EV_SUBSIDY_POOL_EXHAUSTED_OR_HOMOLOGATION_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "地方购车补贴池额度挂起：Web IQ 实时核验发现上牌城市当季新能源以旧换新补贴资金池已申领完毕，已在 265ms 内挂起锁单并向准车主透明披露！" +
+      "</div>";
+    return;
+  }}
+  if (v === "aev_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 POST_DELIVERY_OTA_SOFTWARE_SPLIT_AND_SUBSIDY_SAVINGS_CONFIRM (230ms · Confirm · deterministic_offline_simulation)：<br>" +
+      "启用补贴悬崖软硬件拆单与透明 OTD：<code>整车硬件按 $76,500 开票保住全额 $7,500 新能源补贴 + 高阶智驾软件移至提车后 OTA 解锁 + 剥离无效经销商加价</code>，单季立省 <code>$50,400.00</code>（净值 <code>$189,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🚗 二次签名转大定锁唯一 VIN + 透明全落地价 (OTD) + 新能源补贴合规：已自动清算 (VERIFIED_UNIQUE_VIN_LOCK_AND_TRANSPARENT_OTD_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零误触锁单维权、零隐形装潢加价、100% 保住政府购车补贴与现车唯一 VIN</strong>：智能汽车数字零售批次已完成安全清算（<code>$240,000.00</code>）！" +
     "</div>";
 }}
 
