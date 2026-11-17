@@ -469,6 +469,7 @@
 - **专题 434（直播带货、限量潮鞋首发与大促秒杀 `TikTok Shop / Shopify Plus / 直播电商` “原子锁库防超卖、防恶意占库与价保退差”Agent 架构选型 FAQ：Redis Lua 180s 短 TTL 预授权锁防“拍下不付”占库、直播 ASR 口播价与购物车实付价强对齐及 7天原路秒退差价令牌 `live_shopping_flash_sale_mandate_...`）**：**[《直播带货、限量潮鞋首发与大促秒杀（TikTok Shop / Shopify Plus / 直播电商）“原子锁库防超卖、防恶意占库与价保退差”Agent 架构选型 FAQ：180秒释放锁、防口播错价与自动退差实战指南》](docs/live-shopping-flash-sale-inventory-lock-price-drop-agent-selection-faq.md)**
 - **专题 435（邮轮度假、主题乐园与综合度假村 `Disney MagicBand / 皇家加勒比 / 环球影城` “手环无感挂账增量预授权、停航/停运自动退赔与未成年限额”Agent 架构选型 FAQ：儿童手环 AP2 日限额与禁酒锁、每 $250 阶梯增量预授权防下船逃单、取消靠港必退港务税与停运通兑快通卡升级令牌 `cruise_theme_park_resort_folio_mandate_...`）**：**[《邮轮度假、主题乐园与综合度假村（Disney MagicBand / 皇家加勒比 / 环球影城）“手环无感挂账增量预授权、停航/停运自动退赔与未成年限额”Agent 架构选型 FAQ：防下船逃单、快通卡改签与港务税退费实战指南》](docs/cruise-theme-park-resort-wristband-folio-rain-check-agent-selection-faq.md)**
 - **专题 436（宠物电商周期购与宠物医疗保险直赔 `Chewy Autoship / Trupanion / 宠物医院` “兽医处方核验、跨物种/体重剂量安全锁与秒级直赔”Agent 架构选型 FAQ：猫咪禁氯菊酯 `Permethrin` 毒理锁与兽医 `e-Rx` 核验、幼宠生长体重配档、医院 PIMS `SOAP` 拦截等待期骗保与 RER 食量自适应顺延令牌 `pet_ecommerce_vet_insurance_mandate_...`）**：**[《宠物电商周期购与宠物医疗保险直赔（Chewy Autoship / Trupanion / 宠物医院）“兽医处方核验、跨物种/体重剂量安全锁与秒级直赔”Agent 架构选型 FAQ：防驱虫药中毒、等待期骗保与智能周期购实战指南》](docs/pet-ecommerce-autoship-vet-rx-insurance-direct-pay-agent-selection-faq.md)**
+- **专题 437（共享办公、企业弹性工位与会议室预订 `WeWork / IWG Regus / Industrious` “门禁出勤率审计、幽灵工位缩容与会议室爽约释放”Agent 架构选型 FAQ：手机 NFC 防一卡多刷与访客 NDA 锁、集团赠送积分池优先抵扣、刷卡 `<=8天/月` 幽灵工位自动转日票与会议室 15m 未签到释放令牌 `coworking_flex_office_mandate_...`）**：**[《共享办公、企业弹性工位与会议室预订（WeWork / IWG Regus / Industrious）“门禁出勤率审计、幽灵工位缩容与会议室爽约释放”Agent 架构选型 FAQ：混合办公降本与防乱扣超额费实战指南》](docs/coworking-flex-office-ghost-desk-downsize-room-release-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1343,6 +1344,8 @@
 ![2026-11-18 邮轮度假与主题乐园 (Disney/Royal Caribbean) 手环增量预授权、停航停运退赔与未成年防盗刷 Agent 架构一图流总结](assets/svg/437-cruise-theme-park-resort-wristband-folio-rain-check-2026-11-18.svg)
 
 ![2026-11-18 宠物电商周期购与宠物险直赔 (Chewy/Trupanion) 兽医处方核验、跨物种剂量安全锁与秒级直赔 Agent 架构一图流总结](assets/svg/438-pet-ecommerce-autoship-vet-rx-insurance-direct-pay-2026-11-18.svg)
+
+![2026-11-18 共享办公与企业弹性工位 (WeWork/IWG Regus) 门禁出勤审计、幽灵工位缩容与会议室释放 Agent 架构一图流总结](assets/svg/439-coworking-flex-office-ghost-desk-downsize-room-release-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

@@ -43611,6 +43611,80 @@ def evaluate_pet_ecommerce_vet_insurance_agent_policy(
     }
 
 
+@dataclass(frozen=True)
+class CoworkingFlexOfficeAgentPolicyInput:
+    quarterly_coworking_flex_office_budget_usd: Decimal
+    badge_passback_sharing_or_unsigned_visitor_nda_detected: bool
+    unapplied_included_credits_or_invalid_autorenew_detected: bool
+    webiq_location_closure_unabated_flag: bool
+    restricted_key_age_days: int
+    ghost_desk_downsize_and_15m_room_release_enabled: bool
+
+
+def evaluate_coworking_flex_office_agent_policy(
+    policy_input: CoworkingFlexOfficeAgentPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate coworking & flex-office badge utilization audit, master credit waterfall & 15m no-show room release policy."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_coworking_flex_office_budget_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.badge_passback_sharing_or_unsigned_visitor_nda_detected:
+        return {
+            "http_status": 403,
+            "decision": "BADGE_PASSBACK_SHARING_OR_UNSIGNED_VISITOR_NDA_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "coworking_token": None,
+            "reason": "Blocked NFC passback credential sharing or external guest access without a signed digital NDA.",
+        }
+
+    if policy_input.unapplied_included_credits_or_invalid_autorenew_detected:
+        return {
+            "http_status": 422,
+            "decision": "UNAPPLIED_INCLUDED_CREDITS_OR_INVALID_AUTORENEW_BLOCKED",
+            "latency_ms": 13,
+            "approved_budget_usd": "0.00",
+            "coworking_token": None,
+            "reason": "Blocked cash meeting-room overage while master contract Included Credits remained or post-notice evergreen renewal.",
+        }
+
+    if policy_input.webiq_location_closure_unabated_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_LOCATION_CLOSURE_UNABATED_OR_180D_KEY_HOLD",
+            "latency_ms": 255,
+            "approved_budget_usd": "0.00",
+            "coworking_token": None,
+            "reason": "Web IQ detected coworking location closure without rent abatement or key age > 180 days.",
+        }
+
+    if policy_input.ghost_desk_downsize_and_15m_room_release_enabled:
+        savings = (gross * Decimal("0.25")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"COWORK_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "GHOST_DESK_DAY_PASS_DOWNSIZE_AND_15M_ROOM_RELEASE_CONFIRM",
+            "latency_ms": 215,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "coworking_token": f"coworking_flex_office_mandate_{digest}",
+            "reason": "60-day badge audit downsizing <=8d/mo ghost desks to Day Passes + 15m room release saved 25.0%.",
+        }
+
+    digest = hashlib.sha256(f"COWORK_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "NFC_BADGE_VERIFIED_AND_MASTER_CREDITS_WATERFALL_AUTHORIZED",
+        "latency_ms": 9,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "coworking_token": f"coworking_flex_office_mandate_{digest}",
+        "reason": "Verified 1-to-1 NFC badge compliance, applied master Included Credits waterfall, and settled net invoice.",
+    }
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -57899,6 +57973,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    coworking_flex_office_agent_guard = {
+        "happy_path": evaluate_coworking_flex_office_agent_policy(
+            CoworkingFlexOfficeAgentPolicyInput(
+                quarterly_coworking_flex_office_budget_usd=Decimal("220000.00"),
+                badge_passback_sharing_or_unsigned_visitor_nda_detected=False,
+                unapplied_included_credits_or_invalid_autorenew_detected=False,
+                webiq_location_closure_unabated_flag=False,
+                restricted_key_age_days=40,
+                ghost_desk_downsize_and_15m_room_release_enabled=False,
+            )
+        ),
+        "passback_or_nda_block": evaluate_coworking_flex_office_agent_policy(
+            CoworkingFlexOfficeAgentPolicyInput(
+                quarterly_coworking_flex_office_budget_usd=Decimal("220000.00"),
+                badge_passback_sharing_or_unsigned_visitor_nda_detected=True,
+                unapplied_included_credits_or_invalid_autorenew_detected=False,
+                webiq_location_closure_unabated_flag=False,
+                restricted_key_age_days=40,
+                ghost_desk_downsize_and_15m_room_release_enabled=False,
+            )
+        ),
+        "unapplied_credits_or_autorenew_block": evaluate_coworking_flex_office_agent_policy(
+            CoworkingFlexOfficeAgentPolicyInput(
+                quarterly_coworking_flex_office_budget_usd=Decimal("220000.00"),
+                badge_passback_sharing_or_unsigned_visitor_nda_detected=False,
+                unapplied_included_credits_or_invalid_autorenew_detected=True,
+                webiq_location_closure_unabated_flag=False,
+                restricted_key_age_days=40,
+                ghost_desk_downsize_and_15m_room_release_enabled=False,
+            )
+        ),
+        "webiq_closure_or_key_hold": evaluate_coworking_flex_office_agent_policy(
+            CoworkingFlexOfficeAgentPolicyInput(
+                quarterly_coworking_flex_office_budget_usd=Decimal("220000.00"),
+                badge_passback_sharing_or_unsigned_visitor_nda_detected=False,
+                unapplied_included_credits_or_invalid_autorenew_detected=False,
+                webiq_location_closure_unabated_flag=True,
+                restricted_key_age_days=192,
+                ghost_desk_downsize_and_15m_room_release_enabled=False,
+            )
+        ),
+        "ghost_desk_downsize_confirm": evaluate_coworking_flex_office_agent_policy(
+            CoworkingFlexOfficeAgentPolicyInput(
+                quarterly_coworking_flex_office_budget_usd=Decimal("220000.00"),
+                badge_passback_sharing_or_unsigned_visitor_nda_detected=False,
+                unapplied_included_credits_or_invalid_autorenew_detected=False,
+                webiq_location_closure_unabated_flag=False,
+                restricted_key_age_days=40,
+                ghost_desk_downsize_and_15m_room_release_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -58348,6 +58475,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "live_shopping_flash_sale_agent_guard": live_shopping_flash_sale_agent_guard,
         "cruise_theme_park_resort_folio_agent_guard": cruise_theme_park_resort_folio_agent_guard,
         "pet_ecommerce_vet_insurance_agent_guard": pet_ecommerce_vet_insurance_agent_guard,
+        "coworking_flex_office_agent_guard": coworking_flex_office_agent_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -69248,6 +69376,51 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         </div>
       </div>
 
+      <!-- Interactive Coworking & Flex-Office Badge Audit & Ghost-Desk Sandbox (2026-11-18 Round 437) -->
+      <div class="finops-box" id="coworking-flex-office-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏢 共享办公与企业弹性工位 (WeWork/IWG Regus) 门禁出勤审计、幽灵工位缩容与会议室释放沙盒 (Round 437 · 2026-11-18)</div>
+            <div class="finops-subtitle">实测手机 NFC 防一卡多刷与外部访客 NDA 门禁 (HTTP 403)、集团赠送会议室积分池优先抵扣与防霸王自动续期 (HTTP 422)、Web IQ 网点停业免租核验与 180d 密钥挂起 (HTTP 451) 及刷卡 &lt;=8天/月自动转日票+会议室 15m 未签到释放立省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="cowork-verdict-pill">HTTP 200 · NFC_BADGE_VERIFIED_AND_MASTER_CREDITS_WATERFALL_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">企业季度共享办公与会议室采购预算 ($ USD) <span class="control-val" id="cowork-gross-label">$220,000</span></label>
+            <input type="range" id="cowork-gross-slider" min="40000" max="800000" step="20000" value="220000" oninput="updateCoworkingFlexOfficeSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">门禁防混刷、集团积分瀑布抵扣与幽灵工位缩容场景</label>
+            <select id="cowork-mode-select" onchange="updateCoworkingFlexOfficeSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ NFC 实名门禁合规 + 集团赠送积分优先抵扣 + 净账单清算 (HTTP 200)</option>
+              <option value="passback_403">🛑 一卡多刷混用随心通卡 或 外部访客未签署电子 NDA 进入专属套间 (HTTP 403)</option>
+              <option value="credits_422">🚨 主合同赠送会议室积分未抵扣即收现金超额费 或 退租通知后强扣续期租金 (HTTP 422)</option>
+              <option value="closure_451">🛑 Web IQ 检出网点消防/装修闭店未免租 (Abatement) 或密钥 &gt;180d (HTTP 451)</option>
+              <option value="downsize_409">🧑‍⚖️ 60天刷卡 &lt;=8天/月幽灵工位自动转按次日票 + 会议室 15m 未签到释放立省 25% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原幽灵工位与空会议室超额基线</div>
+            <div class="finops-kpi-val" id="cowork-gross-kpi">$220,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">转日票与 15m 释放立省</div>
+            <div class="finops-kpi-val" id="cowork-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">企业弹性办公净结算金额</div>
+            <div class="finops-kpi-val" id="cowork-net-kpi" style="color:#60A5FA;">$220,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">CRE 空间采购合规令牌</div>
+            <div class="finops-kpi-val" id="cowork-token-kpi" style="font-size:10px;color:#A78BFA;">coworking_flex_office_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -70123,6 +70296,7 @@ function renderAll() {{
   updateLiveShoppingFlashSaleSandbox();
   updateCruiseThemeParkResortFolioSandbox();
   updatePetEcommerceVetInsuranceSandbox();
+  updateCoworkingFlexOfficeSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -91179,6 +91353,61 @@ function updatePetEcommerceVetInsuranceSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'pet_ecommerce_vet_insurance_mandate_verified';
+  }}
+}}
+
+function updateCoworkingFlexOfficeSandbox() {{
+  const grossSlider = document.getElementById('cowork-gross-slider');
+  const modeSelect = document.getElementById('cowork-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '220000');
+  const mode = modeSelect.value;
+  document.getElementById('cowork-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('cowork-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('cowork-verdict-pill');
+  const savingsKpi = document.getElementById('cowork-savings-kpi');
+  const netKpi = document.getElementById('cowork-net-kpi');
+  const tokenKpi = document.getElementById('cowork-token-kpi');
+
+  if (mode === 'passback_403') {{
+    pill.textContent = 'HTTP 403 · BADGE_PASSBACK_SHARING_OR_UNSIGNED_VISITOR_NDA_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_BADGE_PASSBACK_OR_UNSIGNED_NDA';
+  }} else if (mode === 'credits_422') {{
+    pill.textContent = 'HTTP 422 · UNAPPLIED_INCLUDED_CREDITS_OR_INVALID_AUTORENEW_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNAPPLIED_CREDITS_OR_POST_NOTICE_RENEW';
+  }} else if (mode === 'closure_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_LOCATION_CLOSURE_UNABATED_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_UNABATED_CLOSURE_OR_180D_KEY';
+  }} else if (mode === 'downsize_409') {{
+    const savings = Math.round(gross * 0.25 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · GHOST_DESK_DAY_PASS_DOWNSIZE_AND_15M_ROOM_RELEASE_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'coworking_flex_office_mandate_saved25pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · NFC_BADGE_VERIFIED_AND_MASTER_CREDITS_WATERFALL_AUTHORIZED (9ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'coworking_flex_office_mandate_verified';
   }}
 }}
 

@@ -26070,5 +26070,85 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertIn("pet-ecommerce-vet-insurance-sandbox", html)
 
 
+    def test_coworking_flex_office_agent_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            CoworkingFlexOfficeAgentPolicyInput,
+            evaluate_coworking_flex_office_agent_policy,
+        )
+
+        happy = evaluate_coworking_flex_office_agent_policy(
+            CoworkingFlexOfficeAgentPolicyInput(
+                quarterly_coworking_flex_office_budget_usd=Decimal("220000.00"),
+                badge_passback_sharing_or_unsigned_visitor_nda_detected=False,
+                unapplied_included_credits_or_invalid_autorenew_detected=False,
+                webiq_location_closure_unabated_flag=False,
+                restricted_key_age_days=40,
+                ghost_desk_downsize_and_15m_room_release_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "NFC_BADGE_VERIFIED_AND_MASTER_CREDITS_WATERFALL_AUTHORIZED")
+        self.assertTrue(str(happy["coworking_token"]).startswith("coworking_flex_office_mandate_"))
+
+        passback_block = evaluate_coworking_flex_office_agent_policy(
+            CoworkingFlexOfficeAgentPolicyInput(
+                quarterly_coworking_flex_office_budget_usd=Decimal("220000.00"),
+                badge_passback_sharing_or_unsigned_visitor_nda_detected=True,
+                unapplied_included_credits_or_invalid_autorenew_detected=False,
+                webiq_location_closure_unabated_flag=False,
+                restricted_key_age_days=40,
+                ghost_desk_downsize_and_15m_room_release_enabled=False,
+            )
+        )
+        self.assertEqual(passback_block["http_status"], 403)
+        self.assertEqual(passback_block["decision"], "BADGE_PASSBACK_SHARING_OR_UNSIGNED_VISITOR_NDA_BLOCKED")
+
+        credits_block = evaluate_coworking_flex_office_agent_policy(
+            CoworkingFlexOfficeAgentPolicyInput(
+                quarterly_coworking_flex_office_budget_usd=Decimal("220000.00"),
+                badge_passback_sharing_or_unsigned_visitor_nda_detected=False,
+                unapplied_included_credits_or_invalid_autorenew_detected=True,
+                webiq_location_closure_unabated_flag=False,
+                restricted_key_age_days=40,
+                ghost_desk_downsize_and_15m_room_release_enabled=False,
+            )
+        )
+        self.assertEqual(credits_block["http_status"], 422)
+        self.assertEqual(credits_block["decision"], "UNAPPLIED_INCLUDED_CREDITS_OR_INVALID_AUTORENEW_BLOCKED")
+
+        closure_hold = evaluate_coworking_flex_office_agent_policy(
+            CoworkingFlexOfficeAgentPolicyInput(
+                quarterly_coworking_flex_office_budget_usd=Decimal("220000.00"),
+                badge_passback_sharing_or_unsigned_visitor_nda_detected=False,
+                unapplied_included_credits_or_invalid_autorenew_detected=False,
+                webiq_location_closure_unabated_flag=True,
+                restricted_key_age_days=192,
+                ghost_desk_downsize_and_15m_room_release_enabled=False,
+            )
+        )
+        self.assertEqual(closure_hold["http_status"], 451)
+        self.assertEqual(closure_hold["decision"], "WEBIQ_LOCATION_CLOSURE_UNABATED_OR_180D_KEY_HOLD")
+
+        downsize_confirm = evaluate_coworking_flex_office_agent_policy(
+            CoworkingFlexOfficeAgentPolicyInput(
+                quarterly_coworking_flex_office_budget_usd=Decimal("220000.00"),
+                badge_passback_sharing_or_unsigned_visitor_nda_detected=False,
+                unapplied_included_credits_or_invalid_autorenew_detected=False,
+                webiq_location_closure_unabated_flag=False,
+                restricted_key_age_days=40,
+                ghost_desk_downsize_and_15m_room_release_enabled=True,
+            )
+        )
+        self.assertEqual(downsize_confirm["http_status"], 409)
+        self.assertEqual(downsize_confirm["savings_usd"], "55000.00")
+        self.assertEqual(downsize_confirm["approved_budget_usd"], "165000.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("coworking_flex_office_agent_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("coworking-flex-office-sandbox", html)
+
+
 if __name__ == "__main__":
     unittest.main()
