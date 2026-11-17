@@ -26399,5 +26399,90 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertIn("fitness-wellness-subscription-sandbox", html)
 
 
+    def test_cross_border_reverse_logistics_drawback_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            CrossBorderReverseLogisticsDrawbackPolicyInput,
+            evaluate_cross_border_reverse_logistics_drawback_policy,
+        )
+
+        happy = evaluate_cross_border_reverse_logistics_drawback_policy(
+            CrossBorderReverseLogisticsDrawbackPolicyInput(
+                quarterly_reverse_logistics_and_duty_pool_usd=Decimal("240000.00"),
+                returnless_refund_arbitrage_ring_or_unverified_drop_off_detected=False,
+                missing_cbp_7501_import_entry_or_hts_drawback_mismatch_detected=False,
+                webiq_3pl_return_hub_congestion_flag=False,
+                restricted_key_age_days=30,
+                in_country_3pl_restock_and_99pct_duty_drawback_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "RETURN_BAR_SCAN_VERIFIED_AND_CBP_7501_DRAWBACK_AUTHORIZED")
+        self.assertTrue(
+            str(happy["reverse_drawback_token"]).startswith("cross_border_reverse_logistics_drawback_mandate_")
+        )
+
+        arb_block = evaluate_cross_border_reverse_logistics_drawback_policy(
+            CrossBorderReverseLogisticsDrawbackPolicyInput(
+                quarterly_reverse_logistics_and_duty_pool_usd=Decimal("240000.00"),
+                returnless_refund_arbitrage_ring_or_unverified_drop_off_detected=True,
+                missing_cbp_7501_import_entry_or_hts_drawback_mismatch_detected=False,
+                webiq_3pl_return_hub_congestion_flag=False,
+                restricted_key_age_days=30,
+                in_country_3pl_restock_and_99pct_duty_drawback_enabled=False,
+            )
+        )
+        self.assertEqual(arb_block["http_status"], 403)
+        self.assertEqual(arb_block["decision"], "RETURNLESS_REFUND_ARBITRAGE_RING_OR_UNVERIFIED_DROP_OFF_BLOCKED")
+
+        cbp_block = evaluate_cross_border_reverse_logistics_drawback_policy(
+            CrossBorderReverseLogisticsDrawbackPolicyInput(
+                quarterly_reverse_logistics_and_duty_pool_usd=Decimal("240000.00"),
+                returnless_refund_arbitrage_ring_or_unverified_drop_off_detected=False,
+                missing_cbp_7501_import_entry_or_hts_drawback_mismatch_detected=True,
+                webiq_3pl_return_hub_congestion_flag=False,
+                restricted_key_age_days=30,
+                in_country_3pl_restock_and_99pct_duty_drawback_enabled=False,
+            )
+        )
+        self.assertEqual(cbp_block["http_status"], 422)
+        self.assertEqual(
+            cbp_block["decision"],
+            "MISSING_CBP_7501_IMPORT_ENTRY_OR_HTS_DRAWBACK_MISMATCH_BLOCKED",
+        )
+
+        hub_hold = evaluate_cross_border_reverse_logistics_drawback_policy(
+            CrossBorderReverseLogisticsDrawbackPolicyInput(
+                quarterly_reverse_logistics_and_duty_pool_usd=Decimal("240000.00"),
+                returnless_refund_arbitrage_ring_or_unverified_drop_off_detected=False,
+                missing_cbp_7501_import_entry_or_hts_drawback_mismatch_detected=False,
+                webiq_3pl_return_hub_congestion_flag=True,
+                restricted_key_age_days=192,
+                in_country_3pl_restock_and_99pct_duty_drawback_enabled=False,
+            )
+        )
+        self.assertEqual(hub_hold["http_status"], 451)
+        self.assertEqual(hub_hold["decision"], "WEBIQ_3PL_RETURN_HUB_CONGESTION_OR_180D_KEY_HOLD")
+
+        restock_confirm = evaluate_cross_border_reverse_logistics_drawback_policy(
+            CrossBorderReverseLogisticsDrawbackPolicyInput(
+                quarterly_reverse_logistics_and_duty_pool_usd=Decimal("240000.00"),
+                returnless_refund_arbitrage_ring_or_unverified_drop_off_detected=False,
+                missing_cbp_7501_import_entry_or_hts_drawback_mismatch_detected=False,
+                webiq_3pl_return_hub_congestion_flag=False,
+                restricted_key_age_days=30,
+                in_country_3pl_restock_and_99pct_duty_drawback_enabled=True,
+            )
+        )
+        self.assertEqual(restock_confirm["http_status"], 409)
+        self.assertEqual(restock_confirm["savings_usd"], "62400.00")
+        self.assertEqual(restock_confirm["approved_budget_usd"], "177600.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_reverse_logistics_drawback_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("cross-border-reverse-logistics-drawback-sandbox", html)
+
+
 if __name__ == "__main__":
     unittest.main()

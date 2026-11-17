@@ -43907,6 +43907,80 @@ def evaluate_fitness_wellness_subscription_agent_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderReverseLogisticsDrawbackPolicyInput:
+    quarterly_reverse_logistics_and_duty_pool_usd: Decimal
+    returnless_refund_arbitrage_ring_or_unverified_drop_off_detected: bool
+    missing_cbp_7501_import_entry_or_hts_drawback_mismatch_detected: bool
+    webiq_3pl_return_hub_congestion_flag: bool
+    restricted_key_age_days: int
+    in_country_3pl_restock_and_99pct_duty_drawback_enabled: bool
+
+
+def evaluate_cross_border_reverse_logistics_drawback_policy(
+    policy_input: CrossBorderReverseLogisticsDrawbackPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate cross-border reverse logistics anti-arbitrage gate, in-country 3PL re-fulfillment & CBP 99% duty drawback."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_reverse_logistics_and_duty_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.returnless_refund_arbitrage_ring_or_unverified_drop_off_detected:
+        return {
+            "http_status": 403,
+            "decision": "RETURNLESS_REFUND_ARBITRAGE_RING_OR_UNVERIFIED_DROP_OFF_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "reverse_drawback_token": None,
+            "reason": "Blocked returnless-refund arbitrage ring or refund request prior to in-person Return-Bar barcode scan.",
+        }
+
+    if policy_input.missing_cbp_7501_import_entry_or_hts_drawback_mismatch_detected:
+        return {
+            "http_status": 422,
+            "decision": "MISSING_CBP_7501_IMPORT_ENTRY_OR_HTS_DRAWBACK_MISMATCH_BLOCKED",
+            "latency_ms": 13,
+            "approved_budget_usd": "0.00",
+            "reverse_drawback_token": None,
+            "reason": "Blocked 99% CBP Duty Drawback claim missing original Form 7501 entry or matching 8-digit HTS code.",
+        }
+
+    if policy_input.webiq_3pl_return_hub_congestion_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_3PL_RETURN_HUB_CONGESTION_OR_180D_KEY_HOLD",
+            "latency_ms": 260,
+            "approved_budget_usd": "0.00",
+            "reverse_drawback_token": None,
+            "reason": "Web IQ detected regional 3PL return-hub backlog/customs hold or key age > 180 days.",
+        }
+
+    if policy_input.in_country_3pl_restock_and_99pct_duty_drawback_enabled:
+        savings = (gross * Decimal("0.26")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"REV_DRAWBACK_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "IN_COUNTRY_3PL_RESTOCK_AND_99PCT_CBP_DUTY_DRAWBACK_CONFIRM",
+            "latency_ms": 220,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "reverse_drawback_token": f"cross_border_reverse_logistics_drawback_mandate_{digest}",
+            "reason": "Domestic 3PL 48h re-fulfillment and TFTEA 99% CBP Duty Drawback recovery reduced net return cost by 26.0%.",
+        }
+
+    digest = hashlib.sha256(f"REV_DRAWBACK_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "RETURN_BAR_SCAN_VERIFIED_AND_CBP_7501_DRAWBACK_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "reverse_drawback_token": f"cross_border_reverse_logistics_drawback_mandate_{digest}",
+        "reason": "Verified in-person Return-Bar scan, matched CBP Form 7501 8-digit HTS entry, and authorized local restock.",
+    }
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -58407,6 +58481,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_reverse_logistics_drawback_guard = {
+        "happy_path": evaluate_cross_border_reverse_logistics_drawback_policy(
+            CrossBorderReverseLogisticsDrawbackPolicyInput(
+                quarterly_reverse_logistics_and_duty_pool_usd=Decimal("240000.00"),
+                returnless_refund_arbitrage_ring_or_unverified_drop_off_detected=False,
+                missing_cbp_7501_import_entry_or_hts_drawback_mismatch_detected=False,
+                webiq_3pl_return_hub_congestion_flag=False,
+                restricted_key_age_days=30,
+                in_country_3pl_restock_and_99pct_duty_drawback_enabled=False,
+            )
+        ),
+        "returnless_arbitrage_block": evaluate_cross_border_reverse_logistics_drawback_policy(
+            CrossBorderReverseLogisticsDrawbackPolicyInput(
+                quarterly_reverse_logistics_and_duty_pool_usd=Decimal("240000.00"),
+                returnless_refund_arbitrage_ring_or_unverified_drop_off_detected=True,
+                missing_cbp_7501_import_entry_or_hts_drawback_mismatch_detected=False,
+                webiq_3pl_return_hub_congestion_flag=False,
+                restricted_key_age_days=30,
+                in_country_3pl_restock_and_99pct_duty_drawback_enabled=False,
+            )
+        ),
+        "missing_7501_or_hts_block": evaluate_cross_border_reverse_logistics_drawback_policy(
+            CrossBorderReverseLogisticsDrawbackPolicyInput(
+                quarterly_reverse_logistics_and_duty_pool_usd=Decimal("240000.00"),
+                returnless_refund_arbitrage_ring_or_unverified_drop_off_detected=False,
+                missing_cbp_7501_import_entry_or_hts_drawback_mismatch_detected=True,
+                webiq_3pl_return_hub_congestion_flag=False,
+                restricted_key_age_days=30,
+                in_country_3pl_restock_and_99pct_duty_drawback_enabled=False,
+            )
+        ),
+        "webiq_3pl_congestion_or_key_hold": evaluate_cross_border_reverse_logistics_drawback_policy(
+            CrossBorderReverseLogisticsDrawbackPolicyInput(
+                quarterly_reverse_logistics_and_duty_pool_usd=Decimal("240000.00"),
+                returnless_refund_arbitrage_ring_or_unverified_drop_off_detected=False,
+                missing_cbp_7501_import_entry_or_hts_drawback_mismatch_detected=False,
+                webiq_3pl_return_hub_congestion_flag=True,
+                restricted_key_age_days=192,
+                in_country_3pl_restock_and_99pct_duty_drawback_enabled=False,
+            )
+        ),
+        "in_country_restock_and_drawback_confirm": evaluate_cross_border_reverse_logistics_drawback_policy(
+            CrossBorderReverseLogisticsDrawbackPolicyInput(
+                quarterly_reverse_logistics_and_duty_pool_usd=Decimal("240000.00"),
+                returnless_refund_arbitrage_ring_or_unverified_drop_off_detected=False,
+                missing_cbp_7501_import_entry_or_hts_drawback_mismatch_detected=False,
+                webiq_3pl_return_hub_congestion_flag=False,
+                restricted_key_age_days=30,
+                in_country_3pl_restock_and_99pct_duty_drawback_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -58860,6 +58987,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "corporate_mice_event_banquet_agent_guard": corporate_mice_event_banquet_agent_guard,
         "wealth_robo_advisor_treasury_agent_guard": wealth_robo_advisor_treasury_agent_guard,
         "fitness_wellness_subscription_agent_guard": fitness_wellness_subscription_agent_guard,
+        "cross_border_reverse_logistics_drawback_guard": cross_border_reverse_logistics_drawback_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -69940,6 +70068,51 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         </div>
       </div>
 
+      <!-- Interactive Cross-Border Reverse Logistics & CBP 99% Duty Drawback Sandbox (2026-11-18 Round 441) -->
+      <div class="finops-box" id="cross-border-reverse-logistics-drawback-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📦 跨境逆向物流、海外本地 3PL 换标重售与 CBP 99% 海关退税沙盒 (Round 441 · 2026-11-18)</div>
+            <div class="finops-subtitle">实测同地址限次与无盒退货站当面扫码拦截“仅退款”羊毛团伙 (HTTP 403)、CBP Form 7501 进口单与 8位 HTS 税号双向匹配 (HTTP 422)、Web IQ 3PL 退货仓爆仓切流与 180d 密钥挂起 (HTTP 451) 及 A级品留存海外 3PL 48h 换标重发+退运追回 99% 关税立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="rev-drawback-verdict-pill">HTTP 200 · RETURN_BAR_SCAN_VERIFIED_AND_CBP_7501_DRAWBACK_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度跨境逆向退货与进口关税回收池 ($ USD) <span class="control-val" id="rev-drawback-gross-label">$240,000</span></label>
+            <input type="range" id="rev-drawback-gross-slider" min="40000" max="800000" step="20000" value="240000" oninput="updateCrossBorderReverseLogisticsDrawbackSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">防白嫖验货、本地 3PL 换标重发与 CBP 99% 关税退回场景</label>
+            <select id="rev-drawback-mode-select" onchange="updateCrossBorderReverseLogisticsDrawbackSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 无盒退货站当面扫码 + Form 7501 退税匹配 + 本地重售 (HTTP 200)</option>
+              <option value="arbitrage_403">🛑 羊毛党团伙利用免退货漏洞刷单白嫖 或 高残值商品未交回退货站即索要退款 (HTTP 403)</option>
+              <option value="missing7501_422">🚨 申报 99% 海关退税缺失原进口 CBP Form 7501 报关单号 或 8位 HTS 不匹配 (HTTP 422)</option>
+              <option value="congestion_451">🛑 Web IQ 检出海外退货 3PL 仓爆仓积压/海关严查冻结或密钥 &gt;180d (HTTP 451)</option>
+              <option value="restock_409">🧑‍⚖️ A级退货留存美国本地 3PL 48h 换标重发 + 退运尾货追回 99% 关税立省 26% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原跨国退运与沉没关税损耗基线</div>
+            <div class="finops-kpi-val" id="rev-drawback-gross-kpi">$240,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">本地换标重发与 99% 退税立省</div>
+            <div class="finops-kpi-val" id="rev-drawback-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净逆向履约成本</div>
+            <div class="finops-kpi-val" id="rev-drawback-net-kpi" style="color:#60A5FA;">$240,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">逆向物流与退税合规令牌</div>
+            <div class="finops-kpi-val" id="rev-drawback-token-kpi" style="font-size:10px;color:#A78BFA;">cross_border_reverse_logistics_drawback_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -70819,6 +70992,7 @@ function renderAll() {{
   updateCorporateMiceEventBanquetSandbox();
   updateWealthRoboAdvisorTreasurySandbox();
   updateFitnessWellnessSubscriptionSandbox();
+  updateCrossBorderReverseLogisticsDrawbackSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -92095,6 +92269,61 @@ function updateFitnessWellnessSubscriptionSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'fitness_wellness_subscription_mandate_verified';
+  }}
+}}
+
+function updateCrossBorderReverseLogisticsDrawbackSandbox() {{
+  const grossSlider = document.getElementById('rev-drawback-gross-slider');
+  const modeSelect = document.getElementById('rev-drawback-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '240000');
+  const mode = modeSelect.value;
+  document.getElementById('rev-drawback-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('rev-drawback-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('rev-drawback-verdict-pill');
+  const savingsKpi = document.getElementById('rev-drawback-savings-kpi');
+  const netKpi = document.getElementById('rev-drawback-net-kpi');
+  const tokenKpi = document.getElementById('rev-drawback-token-kpi');
+
+  if (mode === 'arbitrage_403') {{
+    pill.textContent = 'HTTP 403 · RETURNLESS_REFUND_ARBITRAGE_RING_OR_UNVERIFIED_DROP_OFF_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_RETURNLESS_ARBITRAGE_OR_UNSCANNED';
+  }} else if (mode === 'missing7501_422') {{
+    pill.textContent = 'HTTP 422 · MISSING_CBP_7501_IMPORT_ENTRY_OR_HTS_DRAWBACK_MISMATCH_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_MISSING_CBP_7501_OR_HTS_MISMATCH';
+  }} else if (mode === 'congestion_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_3PL_RETURN_HUB_CONGESTION_OR_180D_KEY_HOLD (260ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_3PL_HUB_CONGESTION_OR_180D_KEY';
+  }} else if (mode === 'restock_409') {{
+    const savings = Math.round(gross * 0.26 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · IN_COUNTRY_3PL_RESTOCK_AND_99PCT_CBP_DUTY_DRAWBACK_CONFIRM (220ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'cross_border_reverse_logistics_drawback_mandate_saved26pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · RETURN_BAR_SCAN_VERIFIED_AND_CBP_7501_DRAWBACK_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'cross_border_reverse_logistics_drawback_mandate_verified';
   }}
 }}
 

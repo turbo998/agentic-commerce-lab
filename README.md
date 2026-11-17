@@ -473,6 +473,7 @@
 - **专题 438（企业会展 `MICE`、酒店团队包房与宴会餐饮采购 `Cvent / 万豪会务 / 酒店宴会` “客房空置转售抵扣、BEO 保底人数动态锁与 AV 隐形费审计”Agent 架构选型 FAQ：搭建商百万美元 `COI` 责任险与定金防伪锁、PMS 已转售散客空房全额冲抵违约金、剥离 AV 设备 24% 餐饮服务费与会前 72h 航班联动保底人数寻优令牌 `corporate_mice_event_banquet_mandate_...`）**：**[《企业会展（MICE）、酒店团队包房与宴会餐饮采购（Cvent / 万豪会务 / 酒店宴会）“客房空置转售抵扣、BEO 保底人数动态锁与 AV 隐形费审计”Agent 架构选型 FAQ：防未住满天价罚金与餐饮浪费实战指南》](docs/corporate-mice-event-hotel-attrition-beo-catering-agent-selection-faq.md)**
 - **专题 439（零售财富管理、智能投顾与企业财资 `Betterment / Wealthfront / Stripe Treasury` “IRS 30天洗售防违规、适当性护栏与 FDIC 多行分拆”Agent 架构选型 FAQ：FINRA Reg BI 适当性与同名出金锁、跨全家庭/IRA/DRIP 61天防洗售图谱、跨指数商 ETF 置换与 `<=$245k/家` 多银行 FDIC 自动清分令牌 `wealth_robo_advisor_treasury_mandate_...`）**：**[《零售财富管理、智能投顾与企业财资（Betterment / Wealthfront / Stripe Treasury）“IRS 30天洗售防违规、适当性护栏与 FDIC 多行分拆”Agent 架构选型 FAQ：税损收割与现金管理实战指南》](docs/wealth-robo-advisor-wash-sale-fdic-treasury-sweep-agent-selection-faq.md)**
 - **专题 440（连锁健身房、精品团课与运动健康订阅 `ClassPass / Mindbody / Peloton / 乐刻` “FTC 一键退订合规、替补成功免收爽约罚金与停卡保号”Agent 架构选型 FAQ：同渠道 In-App 一键退订锁、Waitlist 候补补位成功即免 $25 晚取消罚金与同屏 60天免费停卡保号令牌 `fitness_wellness_subscription_mandate_...`）**：**[《连锁健身房、精品团课与运动健康订阅（ClassPass / Mindbody / Peloton / 乐刻）“FTC 一键退订合规、替补成功免收爽约罚金与停卡保号”Agent 架构选型 FAQ：防霸王挽留罚款与流失挽回实战指南》](docs/fitness-wellness-classpass-click-to-cancel-waitlist-freeze-agent-selection-faq.md)**
+- **专题 441（跨境电商逆向物流、海外 3PL 本地换标重售与海关退税 `Loop Returns / Happy Returns / CBP 19 U.S.C. §1313` Agent 架构选型 FAQ：无盒退货站当面扫码拦截“仅退款”套利、A级品留存海外 3PL 48h 换标重发与 `CBP Form 7501` 追回 99% 进口关税令牌 `cross_border_reverse_logistics_drawback_mandate_...`）**：**[《跨境电商逆向物流、海外 3PL 本地换标重售与海关退税（Loop Returns / Happy Returns / CBP 19 U.S.C. §1313）Agent 架构选型 FAQ：防退款不退货被薅穿与 99% 关税退回实战指南》](docs/cross-border-reverse-logistics-3pl-restock-duty-drawback-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1355,6 +1356,8 @@
 ![2026-11-18 零售财富管理与企业财资 (Betterment/Stripe Treasury) IRS 洗售拦截、适当性护栏与 FDIC 分拆 Agent 架构一图流总结](assets/svg/441-wealth-robo-advisor-wash-sale-fdic-treasury-sweep-2026-11-18.svg)
 
 ![2026-11-18 连锁健身房与精品团课订阅 (ClassPass/Mindbody) FTC 一键退订、候补补位免罚与停卡保号 Agent 架构一图流总结](assets/svg/442-fitness-wellness-classpass-click-to-cancel-waitlist-freeze-2026-11-18.svg)
+
+![2026-11-18 跨境电商逆向物流、海外本地 3PL 换标重售与 CBP 99% 海关退税 Agent 架构一图流总结](assets/svg/443-cross-border-reverse-logistics-3pl-restock-duty-drawback-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
