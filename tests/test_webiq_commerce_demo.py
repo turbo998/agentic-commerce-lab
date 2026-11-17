@@ -25328,6 +25328,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ev-charging-roaming-tou-idle-agent-sandbox", demo_zh)
 
+    def test_edtech_corporate_lnd_tuition_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_edtech_corporate_lnd_tuition_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant accredited course + OpenBadges Grade >= B + IRS $5,250 split -> 200 OK
+        ok = evaluate_edtech_corporate_lnd_tuition_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_edtech_corporate_lnd_cents, 16500000)
+
+        # 2. Hardware kickback tuition fraud or unaccredited diploma mill -> 403 Forbidden
+        kck_403 = evaluate_edtech_corporate_lnd_tuition_agent_policy(
+            no_hardware_kickback_and_openbadges_accredited_verified=False,
+        )
+        self.assertFalse(kck_403.allowed)
+        self.assertEqual(kck_403.http_status, 403)
+
+        # 3. Unsplit tuition above IRS $5,250 cap, failed grade (<B), or denied pro-rata refund -> 422 Unprocessable
+        irs_422 = evaluate_edtech_corporate_lnd_tuition_agent_policy(
+            irs_5250_tax_split_and_grade_b_or_prorata_refund_valid=False,
+        )
+        self.assertFalse(irs_422.allowed)
+        self.assertEqual(irs_422.http_status, 422)
+
+        # 4. Web IQ provider accreditation revoked or closure risk -> 451 Hold
+        acc_451 = evaluate_edtech_corporate_lnd_tuition_agent_policy(
+            webiq_provider_accreditation_active_and_solvent=False,
+        )
+        self.assertFalse(acc_451.allowed)
+        self.assertEqual(acc_451.http_status, 451)
+
+        # 5. 45-day zombie-seat re-harvesting + completion escrow saving $36,300 ($128,700 net) -> 409 Confirm
+        sav_409 = evaluate_edtech_corporate_lnd_tuition_agent_policy(
+            zombie_seat_reharvesting_and_completion_escrow_savings_cents=3630000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_edtech_corporate_lnd_cents, 12870000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["edtech_corporate_lnd_tuition_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("edtech-corporate-lnd-tuition-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
