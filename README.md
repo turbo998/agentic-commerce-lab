@@ -430,6 +430,7 @@
 - **专题 395（跨境电商多语种智能客服与退换货售后自动化 `RMA` Agent 架构选型 FAQ：Web IQ 属地站点政策接地与 `HTTP 202` 严禁编造退货期限、“以换代退 `Exchange-First`” `+15%` 礼金挽留 `42%` 订单、逆向净残值公式 `Net Recovery <= $0` 智能免寄回止损国际运费、承运商揽收称重锁与 Stripe MCP `create_refund` 人类确认令牌 `cross_border_multilingual_cs_rma_refund_mandate_...` vs 无门禁提示词注入秒退与 `$28` 商品倒贴 `$16` 国际退货运费）**：**[《跨境电商多语种智能客服与退换货售后自动化（RMA）Agent 架构选型 FAQ：多语种属地政策接地、以换代退挽留、逆向残值计算与退款人类确认门禁实战指南》](docs/cross-border-multilingual-customer-service-rma-refund-automation-selection-faq.md)**
 - **专题 396（订阅制 SaaS 客户续费挽留与智能营销编排 Agent 架构选型 FAQ：产品活跃遥测非折扣优先分流 `Pause / Right-Sizing`、边际算力成本 `>= 1.35x COGS` 毛利底线与 365 天防薅冷却锁、FTC `Click-to-Cancel` 同屏对等一键退订合规、Stripe 周期 SPT `usage_limits.recurring_interval` 禁传 `setup_future_usage` 令牌 `saas_subscription_churn_retention_cadence_spt_mandate_...` vs 迷宫式阻挠退订重罚与无脑发 5 折券算力毛利倒挂）**：**[《订阅制 SaaS 客户续费挽留与智能营销编排 Agent 架构选型 FAQ：活跃遥测分流、暂停/降配优先、LTV 毛利锁、周期 SPT 与 FTC 一键退订合规实战指南》](docs/saas-subscription-churn-retention-offer-orchestration-billing-agent-selection-faq.md)**
 - **专题 397（对接企业 ERP / CRM / 电商后台 `Shopify / Dynamics 365 / SAP S/4HANA / Salesforce` 的商业智能体幂等下单、防重扣款与异常补偿 `Saga` 架构选型 FAQ：网关派生 `HMAC-SHA256` 意图幂等锁拦截大模型超时改参漂移、本地事务发件箱 `Transactional Outbox` 跑赢 Stripe `4,000 ms` `finalize_checkout` 硬超时、两阶段 `capture_method=manual` 预授权零手续费 `Void` 回滚与世代围栏令牌 `enterprise_erp_crm_shopify_sap_d365_idempotent_saga_mandate_...` vs 随机 UUID 双倍扣款与同步调慢速 SAP 超时拒付）**：**[《对接企业 ERP / CRM / 电商后台（Shopify / Dynamics 365 / SAP / Salesforce）的商业智能体幂等下单、防重扣款与异常补偿（Saga）架构选型 FAQ》](docs/enterprise-erp-crm-shopify-sap-d365-idempotent-order-saga-architecture-selection-faq.md)**
+- **专题 398（全渠道零售“线上下单门店自提 / 门店前置仓闪送” `BOPIS / Curbside / Ship-from-Store` 智能履约路由与防缺货甩单 Agent 架构选型 FAQ：品类分级安全库存缓冲垫 `Safety Stock Buffer` 消灭幽灵库存、分布式寻源最大拆包数 `<= 2` 与拆单运费 `<= 35%` 毛利封顶、拣货缺货 `Short-Pick` 10ms 冻结与自动改派邻店/免费次日达挽留、`30s` 动态 TOTP 取货码与 `manual` 预授权核销实扣令牌 `omnichannel_retail_bopis_ship_from_store_dom_mandate_...` vs 客户跑空客诉、4 店碎单运费倒亏与静态二维码截屏冒领）**：**[《全渠道零售“线上下单门店自提 / 门店前置仓闪送”（BOPIS / Ship-from-Store）Agent 架构选型 FAQ：门店安全库存缓冲、防拆单运费暴增、取货核销锁与缺货自动升级实战指南》](docs/omnichannel-retail-bopis-ship-from-store-inventory-buffer-fulfillment-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1226,6 +1227,8 @@
 ![2026-11-18 订阅制 SaaS 客户续费挽留与智能营销编排 Agent 架构：遥测分流、暂停降配、LTV 毛利锁与 FTC 合规一图流总结](assets/svg/398-saas-subscription-churn-retention-offer-orchestration-billing-2026-11-18.svg)
 
 ![2026-11-18 对接企业 ERP/CRM/电商后台 (Shopify/D365/SAP/Salesforce) 幂等下单、防重扣款与 Saga 异常补偿架构一图流总结](assets/svg/399-enterprise-erp-crm-shopify-sap-d365-idempotent-order-saga-2026-11-18.svg)
+
+![2026-11-18 全渠道零售线上下单门店自提 (BOPIS) 与门店闪送 (Ship-from-Store) Agent 架构一图流总结](assets/svg/400-omnichannel-retail-bopis-ship-from-store-inventory-buffer-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

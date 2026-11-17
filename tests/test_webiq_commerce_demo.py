@@ -23663,6 +23663,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("enterprise-erp-crm-idempotent-saga-sandbox", demo_zh)
 
+    def test_omnichannel_bopis_ship_from_store_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_omnichannel_bopis_ship_from_store_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant buffered Store ATP + single-node DOM fill + rotating TOTP handover capture -> 200 OK ($170,000.00)
+        ok_res = evaluate_omnichannel_bopis_ship_from_store_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_OMNICHANNEL_BOPIS_SHIP_FROM_STORE_SETTLED")
+        self.assertEqual(ok_res.settled_omnichannel_bopis_dom_cents, 17000000)
+
+        # 2. Selling phantom store inventory below safety buffer or static QR screenshot pickup -> 403 Blocked
+        buf_403 = evaluate_omnichannel_bopis_ship_from_store_policy(
+            store_safety_buffer_and_rotating_totp_pickup_verified=False,
+        )
+        self.assertFalse(buf_403.allowed)
+        self.assertEqual(buf_403.http_status, 403)
+        self.assertEqual(
+            buf_403.decision_code,
+            "PHANTOM_STORE_INVENTORY_BELOW_SAFETY_BUFFER_OR_STATIC_QR_PICKUP_BLOCKED",
+        )
+
+        # 3. Excessive split-shipment freight bleed (>35% margin) or blind short-pick order cancellation -> 422 Blocked
+        spl_422 = evaluate_omnichannel_bopis_ship_from_store_policy(
+            split_shipment_freight_cap_and_short_pick_rescue_verified=False,
+        )
+        self.assertFalse(spl_422.allowed)
+        self.assertEqual(spl_422.http_status, 422)
+        self.assertEqual(
+            spl_422.decision_code,
+            "EXCESSIVE_SPLIT_SHIPMENT_FREIGHT_BLEED_OR_SHORT_PICK_BLIND_CANCEL_BLOCKED",
+        )
+
+        # 4. Stale store POS sync heartbeat or emergency store closure alert -> 451 Hold
+        pos_451 = evaluate_omnichannel_bopis_ship_from_store_policy(
+            webiq_store_pos_heartbeat_and_operating_status_clean=False,
+        )
+        self.assertFalse(pos_451.allowed)
+        self.assertEqual(pos_451.http_status, 451)
+
+        # 5. DOM consolidation & short-pick neighbor-store rescue saving $35,700 ($134,300 net) -> 409 Confirm
+        sav_409 = evaluate_omnichannel_bopis_ship_from_store_policy(
+            automated_dom_consolidation_and_short_pick_rescue_savings_cents=3570000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_omnichannel_bopis_dom_cents, 13430000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["omnichannel_bopis_ship_from_store_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("omnichannel-bopis-ship-from-store-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
