@@ -42757,6 +42757,103 @@ def evaluate_gaming_digital_goods_webshop_agent_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2bServicesSowMilestoneEscrowAgentDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    b2b_services_sow_lane: str
+    settled_b2b_services_sow_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_services_sow_milestone_escrow_agent_policy(
+    *,
+    mandate_id: str = "b2b_services_sow_milestone_escrow_mandate_20261118_001",
+    b2b_services_sow_cents: int = 23500000,
+    no_off_platform_circumvention_and_work_entropy_verified: bool = True,
+    within_sow_nte_cap_and_sandbox_ci_passed: bool = True,
+    webiq_w8ben_w9_valid_and_ab5_classification_clean: bool = True,
+    atomic_ip_escrow_swap_and_nte_lock_savings_cents: int = 0,
+) -> B2bServicesSowMilestoneEscrowAgentDecision:
+    if not mandate_id.startswith("b2b_services_sow_milestone_escrow_mandate_"):
+        return B2bServicesSowMilestoneEscrowAgentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_B2B_SERVICES_SOW_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            b2b_services_sow_lane="INVALID_B2B_SERVICES_SOW_MANDATE_PREFIX",
+            settled_b2b_services_sow_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not no_off_platform_circumvention_and_work_entropy_verified:
+        return B2bServicesSowMilestoneEscrowAgentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="OFF_PLATFORM_CIRCUMVENTION_OR_SYNTHETIC_JIGGLER_TIME_FRAUD_BLOCKED",
+            action_pill="Send to a human",
+            b2b_services_sow_lane="OFF_PLATFORM_CIRCUMVENTION_OR_SYNTHETIC_JIGGLER_TIME_FRAUD_BLOCKED",
+            settled_b2b_services_sow_cents=0,
+            latency_ms=11,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not within_sow_nte_cap_and_sandbox_ci_passed:
+        return B2bServicesSowMilestoneEscrowAgentDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNAPPROVED_SCOPE_CREEP_EXCEEDS_NTE_OR_DELIVERABLE_CI_FAILED_BLOCKED",
+            action_pill="Send to a human",
+            b2b_services_sow_lane="UNAPPROVED_SCOPE_CREEP_EXCEEDS_NTE_OR_DELIVERABLE_CI_FAILED_BLOCKED",
+            settled_b2b_services_sow_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_w8ben_w9_valid_and_ab5_classification_clean:
+        return B2bServicesSowMilestoneEscrowAgentDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="MISSING_W8BEN_W9_TAX_FORM_OR_AB5_MISCLASSIFICATION_OR_180D_KEY_HOLD",
+            action_pill="Send to a human",
+            b2b_services_sow_lane="MISSING_W8BEN_W9_TAX_FORM_OR_AB5_MISCLASSIFICATION_OR_180D_KEY_HOLD",
+            settled_b2b_services_sow_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if atomic_ip_escrow_swap_and_nte_lock_savings_cents > 0:
+        net_cents = max(
+            0,
+            b2b_services_sow_cents - atomic_ip_escrow_swap_and_nte_lock_savings_cents,
+        )
+        return B2bServicesSowMilestoneEscrowAgentDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="ATOMIC_IP_ESCROW_SWAP_AND_NTE_LOCK_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            b2b_services_sow_lane="ATOMIC_IP_ESCROW_SWAP_AND_NTE_LOCK_SAVINGS_CONFIRM",
+            settled_b2b_services_sow_cents=net_cents,
+            latency_ms=230,
+            provenance="deterministic_offline_simulation",
+        )
+
+    return B2bServicesSowMilestoneEscrowAgentDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_SANDBOX_CI_ESCROW_AND_ATOMIC_IP_SWAP_SETTLED",
+        action_pill="Act automatically",
+        b2b_services_sow_lane="VERIFIED_SANDBOX_CI_ESCROW_AND_ATOMIC_IP_SWAP_SETTLED",
+        settled_b2b_services_sow_cents=b2b_services_sow_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -56630,6 +56727,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "minor_cap_or_broker_topup_block_latency_ms": gdw_min_403.latency_ms,
     }
 
+    bss_commit_ok = evaluate_b2b_services_sow_milestone_escrow_agent_policy()
+    bss_cir_403 = evaluate_b2b_services_sow_milestone_escrow_agent_policy(
+        no_off_platform_circumvention_and_work_entropy_verified=False,
+    )
+    bss_nte_422 = evaluate_b2b_services_sow_milestone_escrow_agent_policy(
+        within_sow_nte_cap_and_sandbox_ci_passed=False,
+    )
+    bss_tax_451 = evaluate_b2b_services_sow_milestone_escrow_agent_policy(
+        webiq_w8ben_w9_valid_and_ab5_classification_clean=False,
+    )
+    bss_sav_409 = evaluate_b2b_services_sow_milestone_escrow_agent_policy(
+        atomic_ip_escrow_swap_and_nte_lock_savings_cents=4935000,
+    )
+    b2b_services_sow_milestone_escrow_agent_guards = {
+        "all_passed": (
+            bss_commit_ok.allowed
+            and bss_commit_ok.settled_b2b_services_sow_cents == 23500000
+            and not bss_cir_403.allowed
+            and bss_cir_403.http_status == 403
+            and not bss_nte_422.allowed
+            and bss_nte_422.http_status == 422
+            and not bss_tax_451.allowed
+            and bss_tax_451.http_status == 451
+            and not bss_sav_409.allowed
+            and bss_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_services_sow_settlement_latency_ms": bss_commit_ok.latency_ms,
+        "circumvention_or_jiggler_block_latency_ms": bss_cir_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -57069,6 +57196,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "telehealth_pharmacy_fsa_erx_agent_guards": telehealth_pharmacy_fsa_erx_agent_guards,
         "proptech_lease_escrow_fair_housing_agent_guards": proptech_lease_escrow_fair_housing_agent_guards,
         "gaming_digital_goods_webshop_agent_guards": gaming_digital_goods_webshop_agent_guards,
+        "b2b_services_sow_milestone_escrow_agent_guards": b2b_services_sow_milestone_escrow_agent_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -67654,6 +67782,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="gdw-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive B2B Services (SOW), Milestone Escrow, Scope-Creep & Tax Withholding Sandbox (Round 427) -->
+      <div class="finops-box" id="b2b-services-sow-milestone-escrow-agent-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-bss-title">🤝 企业软件外包与全球远程用工 (B2B SOW/Deel/Upwork) 沙盒：沙箱 CI 托管 + 防范围蔓延 + W-8BEN 税表锁 (Round 427)</span>
+        </div>
+        <div class="control-row">
+          <label><span>沙箱 CI 验收 + 放款与 IP 源码原子互换 + SOW NTE 封顶锁 + W-9/W-8BEN 前置核验:</span></label>
+          <select id="bss-select" onchange="updateB2bServicesSowMilestoneEscrowAgentSandbox()">
+            <option value="bss_commit_ok">🤝 沙箱 CI 100% 全绿 + 工时 &lt;= SOW NTE 上限 + W-8BEN 有效 + 放款与 IP 原子互换：10ms 清算 $235,000.00! (Act automatically)</option>
+            <option value="bss_cir_403">🛑 买卖双方在会话中私发外部微信号/链接企图绕过平台跳单逃佣金，或外包顾问用鼠标连点器 (Mouse Jiggler) 空刷 0 提交假工时 → 11ms 触发 HTTP 403!</option>
+            <option value="bss_nte_422">🚨 顾问未经签署 Change Order 变更单擅自突破 SOW 200 小时封顶上限 (Scope Creep 超支 180%)，或交付代码未过沙箱 CI 测试即强行请款 → 14ms 触发 HTTP 422!</option>
+            <option value="bss_tax_451">🛑 服务商缺失有效 W-9/W-8BEN 税务表单 (面临 24%-30% 法定补扣税)、触发加州 AB5/英国 IR35 假外包风险，或打款密钥 &gt;180 天 → 265ms 触发 HTTP 451!</option>
+            <option value="bss_sav_409">🧑‍⚖️ 启用硬性 NTE 工时封顶锁 + 自动化沙箱 CI 验收 + 放款与无水印源码/IP 原子交割，季度立省 $49,350.00 (净值 $185,650.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="bss-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -68519,6 +68665,7 @@ function renderAll() {{
   updateTelehealthPharmacyFsaErxAgentSandbox();
   updateProptechLeaseEscrowFairHousingAgentSandbox();
   updateGamingDigitalGoodsWebshopAgentSandbox();
+  updateB2bServicesSowMilestoneEscrowAgentSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -89070,6 +89217,52 @@ function updateGamingDigitalGoodsWebshopAgentSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🎮 成年/家长签名核验 + BIN 国籍一致 + 官方 D2C WebShop 清算：已自动清算 (VERIFIED_D2C_WEBSHOP_AND_FIFO_LOT_CLAWBACK_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零未成年无授权盗刷、零抽完卡恶意退费白嫖、综合发行净毛利率提升 +14.8 pts</strong>：游戏充值与数字文娱批次已完成安全清算（<code>$225,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2bServicesSowMilestoneEscrowAgentSandbox() {{
+  var sel = document.getElementById("bss-select");
+  var outEl = document.getElementById("bss-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "bss_cir_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 OFF_PLATFORM_CIRCUMVENTION_OR_SYNTHETIC_JIGGLER_TIME_FRAUD_BLOCKED (11ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "防私下跳单与工时防伪门禁阻断：检测到会话试图诱导客户绕过平台私下转账逃避佣金（<code>Off-Platform Circumvention</code>），或使用鼠标连点器（Mouse Jiggler）伪造零提交熵值的虚假工时，已在 11ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "bss_nte_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNAPPROVED_SCOPE_CREEP_EXCEEDS_NTE_OR_DELIVERABLE_CI_FAILED_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "SOW 封顶金额（NTE）与沙箱 CI 门禁阻断：未经签批 <code>Stripe v2 OCA (orca_*)</code> 变更单擅自突破 SOW 工时封顶上限（Scope Creep），或里程碑交付代码未通过隔离沙箱自动化 CI 测试，已在 14ms 内阻断请款！" +
+      "</div>";
+    return;
+  }}
+  if (v === "bss_tax_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 MISSING_W8BEN_W9_TAX_FORM_OR_AB5_MISCLASSIFICATION_OR_180D_KEY_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "跨国税务预扣与用工分类挂起：服务商缺失有效 <code>W-9 / W-8BEN</code> 税表（触发 24%–30% 法定预扣）、命中加州 AB5 / 英国 IR35 假外包真雇员风险，或打款密钥 <code>&gt;180 天</code>，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "bss_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 ATOMIC_IP_ESCROW_SWAP_AND_NTE_LOCK_SAVINGS_CONFIRM (230ms · Confirm · deterministic_offline_simulation)：<br>" +
+      "启用沙箱 CI 托管与钱码原子交割：<code>SOW NTE 硬封顶杜绝范围蔓延超支 + 沙箱 CI 100% 通过后原子互换托管款与无水印源码 IP</code>，单季立省 <code>$49,350.00</code>（净值 <code>$185,650.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🤝 沙箱 CI 验收全绿 + SOW NTE 受控 + 放款与 IP 转让原子交割：已自动清算 (VERIFIED_SANDBOX_CI_ESCROW_AND_ATOMIC_IP_SWAP_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零未经审批工时蔓延超支、零烂尾代码/白嫖源码扯皮、100% 满足 W-9/W-8BEN 税务合规</strong>：B2B 软件外包与远程用工批次已完成安全清算（<code>$235,000.00</code>）！" +
     "</div>";
 }}
 

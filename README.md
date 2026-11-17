@@ -459,6 +459,7 @@
 - **专题 424（大健康医药电商、连锁药房与远程医疗 `Telehealth & Online Pharmacy` “FSA/HSA 医保个账自动拆单 `SIGIS IIAS`、电子处方核验与仿制药平替”Agent 架构选型 FAQ：SIGIS IIAS 毫秒级剥离非医疗品双轨扣款 `FSA/HSA + Stripe SPT`、Surescripts `e-Rx` 与致命药物相互作用 `DDI` 拦截、`DAW=0` AB级同成分仿制药省 70% 与退药 100% 销毁禁回流 `ATP` 令牌 `telehealth_pharmacy_fsa_iias_erx_mandate_...`）**：**[《大健康医药电商、连锁药房与远程医疗（Telehealth & Online Pharmacy）“FSA/HSA 医保个账自动拆单（IIAS）、电子处方核验与仿制药平替”Agent 架构选型 FAQ：防非医保品混刷、处方互锁与自动算清自付额实战指南》](docs/telehealth-pharmacy-fsa-hsa-iias-split-tender-erx-generic-agent-selection-faq.md)**
 - **专题 425（房产租赁、长租公寓与商业地产科技 `PropTech` “AI 找房签约、押金监管专户 `Escrow` 与防电汇篡改诈骗”Agent 架构选型 FAQ：《公平住房法》`FHA` 反歧视导向硬阻断、只读监管信托专户免疫 `Real Estate BEC` 电汇钓鱼改号、城市法定押金上限 `<=1月租` 与退租自然磨损豁免/剩余折旧寿命定损令牌 `proptech_lease_escrow_fair_housing_mandate_...`）**：**[《房产租赁、长租公寓与商业地产科技（PropTech）“AI 找房签约、押金监管专户（Escrow）与防电汇篡改诈骗”Agent 架构选型 FAQ：公平住房法合规、法定押金锁与退租验房定损实战指南》](docs/proptech-real-estate-lease-deposit-escrow-fair-housing-wire-agent-selection-faq.md)**
 - **专题 426（游戏充值、数字文娱与虚拟商品“应用内购 `IAP` vs. 网页直充 `D2C WebShop` 选型、未成年人限额与恶意退费追回”Agent 架构选型 FAQ：官方 `D2C WebShop (3.4% 费率 + 10% 赠钻)` 省下 25% 渠道税、家长 `AP2 Passkey` 逐笔签名防未成年误充、FIFO 批次负钻石余额锁定与 Apple `ConsumptionRequest` 50ms 遥测回传令牌 `gaming_digital_goods_webshop_clawback_mandate_...`）**：**[《游戏充值、数字文娱与虚拟商品“应用内购（IAP）vs. 网页直充（WebShop）选型、未成年人限额与恶意退费追回”Agent 架构选型 FAQ：省 25% 渠道税、防熊孩子盗刷与抽卡拒付回滚实战指南》](docs/gaming-digital-goods-webshop-iap-minor-cap-clawback-agent-selection-faq.md)**
+- **专题 427（企业软件外包、咨询服务与全球远程用工 `B2B SOW & Freelance: Upwork / Deel / Fieldglass` “里程碑资金托管、防范围蔓延与税务预扣”Agent 架构选型 FAQ：隔离沙箱 CI 100% 通过后托管放款与无水印源码/IP 转让原子互换、SOW `Not-to-Exceed (NTE)` 硬封顶与 `Stripe v2 OCA` 变更单锁、`W-9 / W-8BEN` 税表与 `AB5/IR35` 门禁令牌 `b2b_services_sow_milestone_escrow_mandate_...`）**：**[《企业软件外包、咨询服务与全球远程用工（B2B SOW & Freelance：Upwork / Deel / Fieldglass）“里程碑资金托管、防范围蔓延与税务预扣”Agent 架构选型 FAQ：交付物验收锁、变更单与 W-8BEN 实战指南》](docs/b2b-services-sow-milestone-escrow-scope-creep-tax-withholding-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1313,6 +1314,8 @@
 ![2026-11-18 房产租赁与地产科技 (PropTech) AI 找房签约、押金监管专户与防电汇篡改 Agent 架构一图流总结](assets/svg/427-proptech-real-estate-lease-deposit-escrow-fair-housing-wire-2026-11-18.svg)
 
 ![2026-11-18 游戏充值与数字文娱应用内购 (IAP) vs 网页直充 (WebShop)、未成年人限额与恶意退费追回 Agent 架构一图流总结](assets/svg/428-gaming-digital-goods-webshop-iap-minor-cap-clawback-2026-11-18.svg)
+
+![2026-11-18 企业软件外包与全球远程用工 (B2B SOW/Deel/Upwork) 里程碑托管、防范围蔓延与税务预扣 Agent 架构一图流总结](assets/svg/429-b2b-services-sow-milestone-escrow-scope-creep-tax-withholding-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
