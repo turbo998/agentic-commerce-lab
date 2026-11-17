@@ -444,6 +444,7 @@
 - **专题 409（生鲜商超即时零售与餐饮外卖 `Grocery & QSR Instant Delivery` “智能点单、称重预授权容差与缺货替换”Agent 架构选型 FAQ：非标生鲜 `Catch-Weight +15% manual` 预授权单次实重捕获、花生/麸质/乳糖/清真/纯素 100% 零冲突硬否决平替、后厨 `KITCHEN_PREP_STARTED` 防白嫖截单锁令牌 `grocery_qsr_catch_weight_preauth_substitution_mandate_...`）**：**[《生鲜商超即时零售与餐饮外卖（Grocery & QSR Instant Delivery）“智能点单、称重预授权容差与缺货替换”Agent 架构选型 FAQ：生鲜 `+15%` 称重预授权、过敏原零容忍平替与后厨出餐锁实战指南》](docs/grocery-qsr-instant-delivery-catch-weight-preauth-substitution-agent-selection-faq.md)**
 - **专题 410（3C 数码、奢侈品与二手车“以旧换新 `Trade-In / Recommerce` 智能估价、激活锁核验与差额追回预授权”Agent 架构选型 FAQ：寄件前 GSMA 盗抢黑名单与 `Find My / iCloud` 激活锁硬拦截、前置镜面反射防伪 AI 预检、先享立减 `$500` 独立质押预授权 `Clawback Hold` 与到仓降级差额部分捕获令牌 `recommerce_trade_in_valuation_clawback_mandate_...`）**：**[《3C 数码、奢侈品与二手车“以旧换新（Trade-In / Recommerce）智能估价、激活锁核验与差额追回预授权”Agent 架构选型 FAQ：GSMA/iCloud 锁硬阻断与防空手套白狼质押锁实战指南》](docs/recommerce-trade-in-valuation-activation-lock-clawback-hold-agent-selection-faq.md)**
 - **专题 411（零售媒体网络 `RMN: Amazon Ads / Walmart Connect / Instacart Ads` “智能广告竞价、黄金购物车 `Buy Box` 与库存联动停投”Agent 架构选型 FAQ：丢失 Buy Box 与核心尺码断码 10ms 自动熔断停投、Web IQ 搜索货架感知拦截自然排名第 1 品牌词自蚕食、SKU 级净贡献毛利 `Contribution Margin` 锁死最高 CPC 出价令牌 `retail_media_rmn_buybox_iroas_mandate_...`）**：**[《零售媒体网络（RMN：Amazon Ads / Walmart Connect / Instacart Ads）“智能广告竞价、黄金购物车（Buy Box）与库存联动停投”Agent 架构选型 FAQ：断货秒停、防自然流量自蚕食与净毛利 ROAS 实战指南》](docs/retail-media-network-rmn-ad-bidding-buybox-stock-pause-roas-agent-selection-faq.md)**
+- **专题 412（企业 B2B SaaS“客户成功 `CSM` 智能增购、席位按日折算 `Co-Termed Proration` 与多产品交叉销售”Agent 架构选型 FAQ：在途 `P1/P2` 故障工单 10ms 静默禁推销、对齐主合同到期日 `(Remaining Days / 365)` 精确折算、老客户历史锁价 `Grandfathered Rate` 保护与 `Stripe v2 OCA (orca_*)` 自助扩容令牌 `b2b_saas_csm_coterm_expansion_mandate_...`）**：**[《企业 B2B SaaS“客户成功（CSM）智能增购、席位按日折算（Co-Termed Proration）与多产品交叉销售”Agent 架构选型 FAQ：P1 故障禁推销、统一到期日折算与 Stripe OCA 扩容实战指南》](docs/b2b-saas-csm-expansion-coterm-proration-cross-sell-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1268,6 +1269,8 @@
 ![2026-11-18 3C数码与高值商品以旧换新 (Trade-In) 智能估价、激活锁核验与差额追回预授权 Agent 架构一图流总结](assets/svg/412-recommerce-trade-in-valuation-activation-lock-clawback-hold-2026-11-18.svg)
 
 ![2026-11-18 零售媒体网络 (RMN) 智能广告竞价、Buy Box 黄金购物车与库存联动停投 Agent 架构一图流总结](assets/svg/413-retail-media-network-rmn-ad-bidding-buybox-stock-pause-roas-2026-11-18.svg)
+
+![2026-11-18 企业 B2B SaaS 客户成功 (CSM) 智能增购、统一到期日折算 (Co-Terming) 与交叉销售 Agent 架构一图流总结](assets/svg/414-b2b-saas-csm-expansion-coterm-proration-cross-sell-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

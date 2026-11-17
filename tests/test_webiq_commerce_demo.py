@@ -24416,6 +24416,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("retail-media-rmn-roas-agent-sandbox", demo_zh)
 
+    def test_b2b_csm_expansion_coterm_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_csm_expansion_coterm_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant zero-incident + co-termed daily proration + Stripe v2 OCA expansion -> 200 OK
+        ok = evaluate_b2b_csm_expansion_coterm_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_b2b_csm_expansion_cents, 21500000)
+
+        # 2. Upsell outreach during active P1 incident or re-initiating non-terminal orca_* -> 403 Forbidden
+        inc_403 = evaluate_b2b_csm_expansion_coterm_agent_policy(
+            no_active_p1_incident_and_oca_non_terminal_reinit_clean=False,
+        )
+        self.assertFalse(inc_403.allowed)
+        self.assertEqual(inc_403.http_status, 403)
+
+        # 3. Non-co-termed billing cycle or overwriting grandfathered base seat rate -> 422 Unprocessable
+        cot_422 = evaluate_b2b_csm_expansion_coterm_agent_policy(
+            cotermed_daily_proration_and_grandfathered_rate_protected=False,
+        )
+        self.assertFalse(cot_422.allowed)
+        self.assertEqual(cot_422.http_status, 422)
+
+        # 4. Web IQ customer credit downgrade or Blanket PO balance exceeded -> 451 Hold
+        crd_451 = evaluate_b2b_csm_expansion_coterm_agent_policy(
+            webiq_customer_credit_and_blanket_po_balance_clean=False,
+        )
+        self.assertFalse(crd_451.allowed)
+        self.assertEqual(crd_451.http_status, 451)
+
+        # 5. Incident veto + self-serve co-termed OCA saving $45,150 ($169,850 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_csm_expansion_coterm_agent_policy(
+            incident_veto_and_self_serve_coterm_oca_savings_cents=4515000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_b2b_csm_expansion_cents, 16985000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_csm_expansion_coterm_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-csm-expansion-coterm-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
