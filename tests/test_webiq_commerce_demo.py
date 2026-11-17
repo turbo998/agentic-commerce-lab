@@ -25232,6 +25232,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("travel-retail-duty-free-customs-agent-sandbox", demo_zh)
 
+    def test_home_furnishing_spatial_white_glove_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_home_furnishing_spatial_white_glove_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 3D elevator clearance + cabinet cutout match + white-glove anchor proof -> 200 OK
+        ok = evaluate_home_furnishing_spatial_white_glove_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_home_furnishing_white_glove_cents, 21500000)
+
+        # 2. Post-cut MTO cancellation or predatory unlisted installer fee -> 403 Forbidden
+        mto_403 = evaluate_home_furnishing_spatial_white_glove_agent_policy(
+            no_post_cut_mto_cancel_and_no_predatory_install_fee=False,
+        )
+        self.assertFalse(mto_403.allowed)
+        self.assertEqual(mto_403.http_status, 403)
+
+        # 3. 3D elevator/doorway clearance collision or cabinet cutout mismatch -> 422 Unprocessable
+        clr_422 = evaluate_home_furnishing_spatial_white_glove_agent_policy(
+            elevator_doorway_3d_clearance_and_cabinet_cutout_matched=False,
+        )
+        self.assertFalse(clr_422.allowed)
+        self.assertEqual(clr_422.http_status, 422)
+
+        # 4. Web IQ CPSC STURDY tip-over recall or missing wall-anchor proof -> 451 Hold
+        tip_451 = evaluate_home_furnishing_spatial_white_glove_agent_policy(
+            webiq_cpsc_sturdy_recall_clean_and_wall_anchor_verified=False,
+        )
+        self.assertFalse(tip_451.allowed)
+        self.assertEqual(tip_451.http_status, 451)
+
+        # 5. Modular split-box switch + pre-install audit saving $47,300 ($167,700 net) -> 409 Confirm
+        sav_409 = evaluate_home_furnishing_spatial_white_glove_agent_policy(
+            modular_split_box_and_pre_install_audit_savings_cents=4730000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_home_furnishing_white_glove_cents, 16770000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["home_furnishing_spatial_white_glove_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("home-furnishing-spatial-white-glove-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
