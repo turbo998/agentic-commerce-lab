@@ -24119,6 +24119,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-protocol-stack-interoperability-sandbox", demo_zh)
 
+    def test_chargeback_ce30_friendly_fraud_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_chargeback_ce30_friendly_fraud_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant RDR micro-deflection + Visa CE 3.0 120-365d match + AP2 MandateVC signature -> 200 OK ($165,000.00)
+        ok_res = evaluate_chargeback_ce30_friendly_fraud_agent_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_CHARGEBACK_CE30_REPRESENTMENT_SETTLED")
+        self.assertEqual(ok_res.settled_chargeback_ce30_agent_cents, 16500000)
+
+        # 2. Forged/hallucinated dispute evidence or missing AP2 MandateVC signature -> 403 Blocked
+        frg_403 = evaluate_chargeback_ce30_friendly_fraud_agent_policy(
+            unforged_immutable_evidence_and_ap2_mandate_signature_verified=False,
+        )
+        self.assertFalse(frg_403.allowed)
+        self.assertEqual(frg_403.http_status, 403)
+        self.assertEqual(
+            frg_403.decision_code,
+            "FORGED_DISPUTE_EVIDENCE_OR_MISSING_AP2_MANDATE_SIGNATURE_BLOCKED",
+        )
+
+        # 3. Invalid Visa CE 3.0 window (<120d / >365d), <2 matched elements, or negative-EV micro-fight -> 422 Blocked
+        ce3_422 = evaluate_chargeback_ce30_friendly_fraud_agent_policy(
+            ce30_120_to_365d_two_orders_and_positive_ev_fight_verified=False,
+        )
+        self.assertFalse(ce3_422.allowed)
+        self.assertEqual(ce3_422.http_status, 422)
+        self.assertEqual(
+            ce3_422.decision_code,
+            "CE30_HISTORICAL_FOOTPRINT_WINDOW_OR_ELEMENT_COUNT_INVALID_BLOCKED",
+        )
+
+        # 4. Merchant VDMP ratio approaching 0.9% ceiling or missing Web IQ policy snapshot hash -> 451 Hold
+        vdm_451 = evaluate_chargeback_ce30_friendly_fraud_agent_policy(
+            webiq_vdmp_under_09pct_and_policy_snapshot_hash_clean=False,
+        )
+        self.assertFalse(vdm_451.allowed)
+        self.assertEqual(vdm_451.http_status, 451)
+
+        # 5. Automated RDR micro-deflection & Visa CE 3.0 high-ticket recovery saving $34,650 ($130,350 net) -> 409 Confirm
+        sav_409 = evaluate_chargeback_ce30_friendly_fraud_agent_policy(
+            automated_rdr_micro_deflection_and_ce30_recovery_savings_cents=3465000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_chargeback_ce30_agent_cents, 13035000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["chargeback_ce30_friendly_fraud_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("chargeback-ce30-friendly-fraud-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
