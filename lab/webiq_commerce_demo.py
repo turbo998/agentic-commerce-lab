@@ -40423,6 +40423,106 @@ def evaluate_creator_affiliate_escrow_clawback_policy(
     )
 
 
+@dataclass(frozen=True)
+class CorporateExpenseAuditDoubleDipDecision:
+    """Deterministic decision output for corporate T&E expense audit, card-vs-cash double-dip prevention & folio carve-out."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    corporate_expense_audit_lane: str
+    settled_corporate_expense_audit_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_corporate_expense_audit_double_dip_policy(
+    *,
+    mandate_id: str = "corporate_expense_audit_double_dip_folio_mandate_2026",
+    corporate_expense_audit_cents: int = 14500000,
+    no_card_cash_double_dip_and_authentic_receipt_verified: bool = True,
+    itemized_hotel_folio_no_alcohol_spa_and_per_diem_verified: bool = True,
+    webiq_merchant_category_and_fcpa_hospitality_clean: bool = True,
+    automated_double_dip_block_and_folio_carve_out_savings_cents: int = 0,
+) -> CorporateExpenseAuditDoubleDipDecision:
+    """Evaluate corporate T&E expense audit, pre-tip/post-tip card-vs-cash dedup, hotel folio carve-out & FCPA gate."""
+    if not mandate_id.startswith("corporate_expense_audit_double_dip_folio_mandate_"):
+        return CorporateExpenseAuditDoubleDipDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_CORPORATE_EXPENSE_AUDIT_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            corporate_expense_audit_lane="INVALID_CORPORATE_EXPENSE_AUDIT_MANDATE_PREFIX",
+            settled_corporate_expense_audit_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not no_card_cash_double_dip_and_authentic_receipt_verified:
+        return CorporateExpenseAuditDoubleDipDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="CARD_AND_CASH_DOUBLE_DIP_OR_SYNTHETIC_AI_RECEIPT_FRAUD_BLOCKED",
+            action_pill="Send to a human",
+            corporate_expense_audit_lane="CARD_AND_CASH_DOUBLE_DIP_OR_SYNTHETIC_AI_RECEIPT_FRAUD_BLOCKED",
+            settled_corporate_expense_audit_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not itemized_hotel_folio_no_alcohol_spa_and_per_diem_verified:
+        return CorporateExpenseAuditDoubleDipDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNITEMIZED_HOTEL_FOLIO_ALCOHOL_SPA_OR_PER_DIEM_CAP_BREACH_BLOCKED",
+            action_pill="Send to a human",
+            corporate_expense_audit_lane="UNITEMIZED_HOTEL_FOLIO_ALCOHOL_SPA_OR_PER_DIEM_CAP_BREACH_BLOCKED",
+            settled_corporate_expense_audit_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_merchant_category_and_fcpa_hospitality_clean:
+        return CorporateExpenseAuditDoubleDipDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="HIGH_RISK_MERCHANT_CATEGORY_OR_FCPA_BRIBERY_AUDIT_HOLD",
+            action_pill="Send to a human",
+            corporate_expense_audit_lane="HIGH_RISK_MERCHANT_CATEGORY_OR_FCPA_BRIBERY_AUDIT_HOLD",
+            settled_corporate_expense_audit_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_double_dip_block_and_folio_carve_out_savings_cents > 0:
+        net_cents = max(
+            0,
+            corporate_expense_audit_cents - automated_double_dip_block_and_folio_carve_out_savings_cents,
+        )
+        return CorporateExpenseAuditDoubleDipDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_DOUBLE_DIP_BLOCK_AND_FOLIO_CARVE_OUT_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            corporate_expense_audit_lane="AUTOMATED_DOUBLE_DIP_BLOCK_AND_FOLIO_CARVE_OUT_SAVINGS_CONFIRM",
+            settled_corporate_expense_audit_cents=net_cents,
+            latency_ms=230,
+            provenance="deterministic_offline_simulation",
+        )
+
+    return CorporateExpenseAuditDoubleDipDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_CORPORATE_EXPENSE_AUDIT_FOLIO_SETTLED",
+        action_pill="Act automatically",
+        corporate_expense_audit_lane="VERIFIED_CORPORATE_EXPENSE_AUDIT_FOLIO_SETTLED",
+        settled_corporate_expense_audit_cents=corporate_expense_audit_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -53576,6 +53676,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "sivt_or_coupon_poaching_block_latency_ms": cam_pch_403.latency_ms,
     }
 
+    cea_commit_ok = evaluate_corporate_expense_audit_double_dip_policy()
+    cea_dip_403 = evaluate_corporate_expense_audit_double_dip_policy(
+        no_card_cash_double_dip_and_authentic_receipt_verified=False,
+    )
+    cea_fol_422 = evaluate_corporate_expense_audit_double_dip_policy(
+        itemized_hotel_folio_no_alcohol_spa_and_per_diem_verified=False,
+    )
+    cea_fcp_451 = evaluate_corporate_expense_audit_double_dip_policy(
+        webiq_merchant_category_and_fcpa_hospitality_clean=False,
+    )
+    cea_sav_409 = evaluate_corporate_expense_audit_double_dip_policy(
+        automated_double_dip_block_and_folio_carve_out_savings_cents=3045000,
+    )
+    corporate_expense_audit_double_dip_guards = {
+        "all_passed": (
+            cea_commit_ok.allowed
+            and cea_commit_ok.settled_corporate_expense_audit_cents == 14500000
+            and not cea_dip_403.allowed
+            and cea_dip_403.http_status == 403
+            and not cea_fol_422.allowed
+            and cea_fol_422.http_status == 422
+            and not cea_fcp_451.allowed
+            and cea_fcp_451.http_status == 451
+            and not cea_sav_409.allowed
+            and cea_sav_409.action_pill == "Confirm"
+        ),
+        "corporate_expense_audit_settlement_latency_ms": cea_commit_ok.latency_ms,
+        "card_cash_double_dip_block_latency_ms": cea_dip_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -53991,6 +54121,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "enterprise_cpq_deal_desk_agent_guards": enterprise_cpq_deal_desk_agent_guards,
         "ecommerce_dynamic_repricing_map_guards": ecommerce_dynamic_repricing_map_guards,
         "creator_affiliate_escrow_clawback_guards": creator_affiliate_escrow_clawback_guards,
+        "corporate_expense_audit_double_dip_guards": corporate_expense_audit_double_dip_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -64144,6 +64275,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cam-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Corporate T&E Expense Audit & Double-Dip Prevention Sandbox (Round 403) -->
+      <div class="finops-box" id="corporate-expense-audit-double-dip-sandbox" style="margin-top:12px;border-color:#818CF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cea-title">🧾 企业员工费用报销 (T&amp;E) 与商务卡智能合规审计沙盒：防刷卡+现金双报 + 酒店水单拆解 + 防 AI 假票 (Round 403)</span>
+        </div>
+        <div class="control-row">
+          <label><span>跨源小费前/后双金额碰撞防 Double-Dip + 酒店水单自动剥离迷你吧烟酒/SPA + Web IQ 汇率/FCPA 合规核验:</span></label>
+          <select id="cea-select" onchange="updateCorporateExpenseAuditDoubleDipSandbox()">
+            <option value="cea_commit_ok">🧾 跨源查重唯一真实凭证 + 酒店水单行项全合规 + 官方汇率自动拆分 GL 科目入账：10ms 清算 $145,000.00! (Act automatically)</option>
+            <option value="cea_dip_403">🛑 经理刷公司商务卡 $210 (含 $30 小费) 后下属又拿 $180 预打单申报个人现金垫付 (Double-Dip)，或上传 AIGC 生成的假热敏小票 → 11ms 触发 HTTP 403!</option>
+            <option value="cea_fol_422">🚨 五星酒店仅上传一张 $950 信用卡刷卡总条未附水单明细，或水单内夹带 $270 迷你吧洋酒/SPA 个人消费与虚报 8% 海外汇率 → 14ms 触发 HTTP 422!</option>
+            <option value="cea_fcp_451">🛑 Web IQ 穿透核查发现报销小票抬头虽为“商务咨询”实为高危高尔夫会所/夜总会，或涉及公职人员/医疗代表敏感招待未备案 → 265ms 触发 HTTP 451!</option>
+            <option value="cea_sav_409">🧑‍⚖️ 启用免整单退回的智能差额核减 (自动扣除同行已刷卡重复餐费与迷你吧个人消费)，季度立省虚高报销 $30,450.00 (净付 $114,550.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cea-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -64985,6 +65134,7 @@ function renderAll() {{
   updateEnterpriseCpqDealDeskAgentSandbox();
   updateEcommerceDynamicRepricingMapSandbox();
   updateCreatorAffiliateEscrowClawbackSandbox();
+  updateCorporateExpenseAuditDoubleDipSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -84432,6 +84582,52 @@ function updateCreatorAffiliateEscrowClawbackSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🎥 真实达人引流 (SIVT=2.1%) + 满 30天退货期净额核算 + W-8BEN/W-9 完备 Connect 分账合规：已自动清算 (VERIFIED_CREATOR_AFFILIATE_ESCROW_CLAWBACK_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零水军假粉骗坑位费、零插件尾跳劫持自然流量、零下单提佣后退货白嫖</strong>：跨境网红达人营销与联盟分佣批次已完成安全清算（<code>$150,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateCorporateExpenseAuditDoubleDipSandbox() {{
+  var sel = document.getElementById("cea-select");
+  var outEl = document.getElementById("cea-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "cea_dip_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 CARD_AND_CASH_DOUBLE_DIP_OR_SYNTHETIC_AI_RECEIPT_FRAUD_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "跨源时空查重与图像防伪拦截：检出该笔 <code>$180</code> 餐饮现金报销单与同行经理昨日公司商务卡刷卡流水（<code>$210 含 $30 小费</code>）在同一商户发生小费前基础金额碰撞（一单两报 <code>Double-Dip</code>），或检出 AIGC 伪造热敏纸小票特征，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cea_fol_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNITEMIZED_HOTEL_FOLIO_ALCOHOL_SPA_OR_PER_DIEM_CAP_BREACH_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "水单行项拆解引擎阻断：仅上传信用卡刷卡条缺失酒店逐行退房水单（<code>Hotel Folio</code>），或水单内包含未剥离的 <code>迷你吧洋酒 / SPA 个人消费</code> 及手填虚高 <code>8%</code> 海外换汇汇率，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cea_fcp_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 HIGH_RISK_MERCHANT_CATEGORY_OR_FCPA_BRIBERY_AUDIT_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse</code> 商户属性穿透与 FCPA 合规挂起：小票开票抬头虽为“XX 商务咨询”但实测经营地址为高危娱乐会所/高尔夫球场，或招待名单涉及未备案公职人员/受监管医疗代表，已在 265ms 内挂起移交合规官！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cea_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_DOUBLE_DIP_BLOCK_AND_FOLIO_CARVE_OUT_SAVINGS_CONFIRM (230ms · Confirm · deterministic_offline_simulation)：<br>" +
+      "启用 100% 全量智能费控审计：<code>跨源拦截商务卡+现金一单双报 + 酒店水单自动剥离个人迷你吧/SPA 差额生成一键确认卡 + 锁定交易日官方汇率</code>，单季核减虚高 T&amp;E 支出 <code>$30,450.00</code>（净合规报销额优化至 <code>$114,550.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🧾 跨源查重唯一真实凭证 + 酒店水单零违规 + 官方汇率自动拆分 GL 入账合规：已自动清算 (VERIFIED_CORPORATE_EXPENSE_AUDIT_FOLIO_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零刷卡+现金一单双报、零迷你吧洋酒混入房费、零 AIGC 假小票骗报</strong>：企业员工费用报销与商务卡对账批次已完成安全清算（<code>$145,000.00</code>）！" +
     "</div>";
 }}
 

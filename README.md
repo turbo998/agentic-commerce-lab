@@ -435,6 +435,7 @@
 - **专题 400（B2B 企业大客户销售 `CPQ: Configure-Price-Quote` 智能配置报价与阶梯折扣审批 `Deal Desk` Agent 架构选型 FAQ：确定性 BOM 约束求解器封杀漏配必选维保/网关、全链路价格瀑布 `Price Waterfall` 核算扣除渠道返点与免费实施人天后的真实口袋毛利 `Pocket Margin >= 45%`、Web IQ 实控人穿透防窜货与 Stripe v2 OCA 卖方协议锁 `enterprise_cpq_deal_desk_margin_oca_mandate_...` vs 销售私删模块返工与过期报价单被恶意复活）**：**[《B2B 企业大客户销售（CPQ：Configure-Price-Quote）智能配置报价与阶梯折扣审批（Deal Desk）Agent 架构选型 FAQ：配置约束求解、口袋毛利护栏与 Quote-to-Cash 实战指南》](docs/enterprise-cpq-configure-price-quote-deal-desk-margin-approval-agent-selection-faq.md)**
 - **专题 401（电商大促动态调价、竞品实时跟价 `Price Matching` 与防恶意比价套利 Agent 架构选型 FAQ：服务端 Microsoft Web IQ `liveCrawl='force'` 同款 `GTIN/UPC` 全新现货穿透验真、品牌最低广告价 `MAP` 与 `COGS` 双层硬地板、1 小时 `<= 12%` 防算法螺旋降价断路器、Stripe Catalog `mode='upsert'` 增量同步令牌 `ecommerce_dynamic_repricing_map_price_match_mandate_...` vs F12 假截图骗退差、0 库存秒杀钓鱼价与算法对轰闪崩）**：**[《电商大促动态调价、竞品实时跟价（Price Matching）与防比价套利 Agent 架构选型 FAQ：Web IQ 同款 GTIN 验真、MAP 价格红线与防螺旋降价熔断实战指南》](docs/ecommerce-dynamic-repricing-competitor-price-match-map-margin-guard-agent-selection-faq.md)**
 - **专题 402（跨境网红达人营销 `Creator & Affiliate Marketing` 智能寻源、带货分佣反作弊与退货期满释放 Agent 架构选型 FAQ：Exa 语义寻源与 Web IQ 反水军 `SIVT <= 15%` 品牌安全接地、拦截结账页最后 60 秒比价插件尾跳劫持 `Coupon Poaching`、30 天退货窗口期满释放与退货自动冲销 `Clawback Escrow`、Stripe Connect `Separate Charges` 禁传 `Stripe-Account` 请求头与 `W-9 / W-8BEN` 税务锁令牌 `creator_affiliate_marketing_escrow_clawback_mandate_...` vs 假粉骗坑位费与下单提佣后退货白嫖）**：**[《跨境网红达人营销（Creator & Affiliate Marketing）智能寻源、带货分佣反作弊与退货期满释放 Agent 架构选型 FAQ：Exa/Web IQ 寻源、防劫持刷单与 Connect 分账实战指南》](docs/creator-affiliate-marketing-sourcing-escrow-payout-clawback-agent-selection-faq.md)**
+- **专题 403（企业员工费用报销 `T&E Expense Audit` 与商务卡智能合规审计 Agent 架构选型 FAQ：全司商务卡流水与个人现金小票的小费前/后双金额时空碰撞防一单两报 `Double-Dip`、酒店退房水单 `Hotel Folio` 逐行拆解自动剥离迷你吧烟酒与 SPA、多重取证拦截 AIGC 伪造热敏小票与 Web IQ 真实商户/官方汇率接地令牌 `corporate_expense_audit_double_dip_folio_mandate_...` vs 10% 人工抽检漏网与刷卡加现金重复套现）**：**[《企业员工费用报销（T&E Expense Audit）与商务卡智能合规审计 Agent 架构选型 FAQ：水单行项拆解、刷卡与现金双重报销（Double-Dip）去重、防 AI 假小票与 ERP 自动入账实战指南》](docs/corporate-expense-audit-receipt-ocr-double-dip-prevention-erp-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1241,6 +1242,8 @@
 ![2026-11-18 电商大促动态调价、竞品实时跟价与防比价套利 Agent 架构一图流总结](assets/svg/403-ecommerce-dynamic-repricing-competitor-price-match-map-margin-guard-2026-11-18.svg)
 
 ![2026-11-18 跨境网红达人营销智能寻源、带货分佣反作弊与退货期满释放 Agent 架构一图流总结](assets/svg/404-creator-affiliate-marketing-sourcing-escrow-payout-clawback-2026-11-18.svg)
+
+![2026-11-18 企业员工费用报销 (T&E) 与商务卡智能合规审计 Agent 架构一图流总结](assets/svg/405-corporate-expense-audit-receipt-ocr-double-dip-prevention-erp-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

@@ -23948,6 +23948,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("creator-affiliate-escrow-clawback-sandbox", demo_zh)
 
+    def test_corporate_expense_audit_double_dip_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_corporate_expense_audit_double_dip_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant cross-source unique receipt + itemized hotel folio + FCPA clean -> 200 OK ($145,000.00)
+        ok_res = evaluate_corporate_expense_audit_double_dip_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_CORPORATE_EXPENSE_AUDIT_FOLIO_SETTLED")
+        self.assertEqual(ok_res.settled_corporate_expense_audit_cents, 14500000)
+
+        # 2. Card-and-cash double-dip (pre-tip slip + post-tip card charge) or synthetic AI receipt -> 403 Blocked
+        dip_403 = evaluate_corporate_expense_audit_double_dip_policy(
+            no_card_cash_double_dip_and_authentic_receipt_verified=False,
+        )
+        self.assertFalse(dip_403.allowed)
+        self.assertEqual(dip_403.http_status, 403)
+        self.assertEqual(
+            dip_403.decision_code,
+            "CARD_AND_CASH_DOUBLE_DIP_OR_SYNTHETIC_AI_RECEIPT_FRAUD_BLOCKED",
+        )
+
+        # 3. Unitemized hotel slip, hidden minibar alcohol/spa charges, or per-diem breach -> 422 Blocked
+        fol_422 = evaluate_corporate_expense_audit_double_dip_policy(
+            itemized_hotel_folio_no_alcohol_spa_and_per_diem_verified=False,
+        )
+        self.assertFalse(fol_422.allowed)
+        self.assertEqual(fol_422.http_status, 422)
+        self.assertEqual(
+            fol_422.decision_code,
+            "UNITEMIZED_HOTEL_FOLIO_ALCOHOL_SPA_OR_PER_DIEM_CAP_BREACH_BLOCKED",
+        )
+
+        # 4. High-risk disguised entertainment venue or FCPA hospitality violation -> 451 Hold
+        fcp_451 = evaluate_corporate_expense_audit_double_dip_policy(
+            webiq_merchant_category_and_fcpa_hospitality_clean=False,
+        )
+        self.assertFalse(fcp_451.allowed)
+        self.assertEqual(fcp_451.http_status, 451)
+
+        # 5. Cross-source double-dip block & automated folio personal carve-out saving $30,450 ($114,550 net) -> 409 Confirm
+        sav_409 = evaluate_corporate_expense_audit_double_dip_policy(
+            automated_double_dip_block_and_folio_carve_out_savings_cents=3045000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_corporate_expense_audit_cents, 11455000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["corporate_expense_audit_double_dip_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("corporate-expense-audit-double-dip-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
