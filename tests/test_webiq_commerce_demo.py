@@ -24992,6 +24992,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("marketplace-seller-kyb-escrow-agent-sandbox", demo_zh)
 
+    def test_telehealth_pharmacy_fsa_erx_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_telehealth_pharmacy_fsa_erx_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant e-Rx + zero DDI + SIGIS IIAS split-tender -> 200 OK
+        ok = evaluate_telehealth_pharmacy_fsa_erx_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_telehealth_pharmacy_fsa_cents, 18000000)
+
+        # 2. Invalid e-Rx, severe drug-drug interaction (DDI), or non-eligible FSA swipe -> 403 Forbidden
+        erx_403 = evaluate_telehealth_pharmacy_fsa_erx_agent_policy(
+            valid_erx_zero_ddi_and_sigis_iias_eligible_split=False,
+        )
+        self.assertFalse(erx_403.allowed)
+        self.assertEqual(erx_403.http_status, 403)
+
+        # 3. Overriding physician DAW=1 flag or restocking returned medication into ATP -> 422 Unprocessable
+        daw_422 = evaluate_telehealth_pharmacy_fsa_erx_agent_policy(
+            daw1_respected_and_returned_rx_not_restocked=False,
+        )
+        self.assertFalse(daw_422.allowed)
+        self.assertEqual(daw_422.http_status, 422)
+
+        # 4. Web IQ FDA NDC lot recall or cold-chain excursion -> 451 Hold
+        lot_451 = evaluate_telehealth_pharmacy_fsa_erx_agent_policy(
+            webiq_fda_drug_lot_recall_and_cold_chain_clean=False,
+        )
+        self.assertFalse(lot_451.allowed)
+        self.assertEqual(lot_451.http_status, 451)
+
+        # 5. AB-rated generic substitution + IIAS split-tender saving $39,600 ($140,400 net) -> 409 Confirm
+        sav_409 = evaluate_telehealth_pharmacy_fsa_erx_agent_policy(
+            ab_rated_generic_switch_and_iias_split_savings_cents=3960000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_telehealth_pharmacy_fsa_cents, 14040000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["telehealth_pharmacy_fsa_erx_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("telehealth-pharmacy-fsa-erx-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
