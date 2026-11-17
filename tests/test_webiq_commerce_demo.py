@@ -25661,5 +25661,94 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertIn("bnpl-handover-selector-sandbox", demo_zh)
 
 
+    def test_corporate_csr_donation_matching_agent_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            CorporateCsrDonationMatchingAgentPolicyInput,
+            evaluate_corporate_csr_donation_matching_agent_policy,
+        )
+
+        happy = evaluate_corporate_csr_donation_matching_agent_policy(
+            CorporateCsrDonationMatchingAgentPolicyInput(
+                quarterly_csr_matching_budget_usd=Decimal("150000.00"),
+                circular_kickback_collusion_or_forged_receipt_detected=False,
+                quid_pro_quo_benefit_unsubtracted_or_annual_match_cap_exceeded=False,
+                webiq_charity_501c3_revoked_or_sanctioned_flag=False,
+                restricted_key_age_days=45,
+                anti_kickback_and_piggyback_roundup_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "CORPORATE_CSR_501C3_NET_TAX_RECEIPT_AND_BATCH_ACH_AUTHORIZED")
+        self.assertTrue(str(happy["csr_matching_token"]).startswith("corporate_csr_donation_matching_mandate_"))
+
+        kickback_block = evaluate_corporate_csr_donation_matching_agent_policy(
+            CorporateCsrDonationMatchingAgentPolicyInput(
+                quarterly_csr_matching_budget_usd=Decimal("150000.00"),
+                circular_kickback_collusion_or_forged_receipt_detected=True,
+                quid_pro_quo_benefit_unsubtracted_or_annual_match_cap_exceeded=False,
+                webiq_charity_501c3_revoked_or_sanctioned_flag=False,
+                restricted_key_age_days=45,
+                anti_kickback_and_piggyback_roundup_enabled=False,
+            )
+        )
+        self.assertEqual(kickback_block["http_status"], 403)
+        self.assertEqual(
+            kickback_block["decision"],
+            "CIRCULAR_MATCHING_KICKBACK_COLLUSION_OR_FORGED_DONATION_RECEIPT_BLOCKED",
+        )
+
+        quidproquo_block = evaluate_corporate_csr_donation_matching_agent_policy(
+            CorporateCsrDonationMatchingAgentPolicyInput(
+                quarterly_csr_matching_budget_usd=Decimal("150000.00"),
+                circular_kickback_collusion_or_forged_receipt_detected=False,
+                quid_pro_quo_benefit_unsubtracted_or_annual_match_cap_exceeded=True,
+                webiq_charity_501c3_revoked_or_sanctioned_flag=False,
+                restricted_key_age_days=45,
+                anti_kickback_and_piggyback_roundup_enabled=False,
+            )
+        )
+        self.assertEqual(quidproquo_block["http_status"], 422)
+        self.assertEqual(
+            quidproquo_block["decision"],
+            "QUID_PRO_QUO_BENEFIT_UNSUBTRACTED_OR_ANNUAL_MATCH_CAP_EXCEEDED_BLOCKED",
+        )
+
+        revoked_hold = evaluate_corporate_csr_donation_matching_agent_policy(
+            CorporateCsrDonationMatchingAgentPolicyInput(
+                quarterly_csr_matching_budget_usd=Decimal("150000.00"),
+                circular_kickback_collusion_or_forged_receipt_detected=False,
+                quid_pro_quo_benefit_unsubtracted_or_annual_match_cap_exceeded=False,
+                webiq_charity_501c3_revoked_or_sanctioned_flag=True,
+                restricted_key_age_days=195,
+                anti_kickback_and_piggyback_roundup_enabled=False,
+            )
+        )
+        self.assertEqual(revoked_hold["http_status"], 451)
+        self.assertEqual(
+            revoked_hold["decision"],
+            "WEBIQ_CHARITY_501C3_REVOKED_OR_SANCTIONED_OR_180D_KEY_HOLD",
+        )
+
+        piggyback_confirm = evaluate_corporate_csr_donation_matching_agent_policy(
+            CorporateCsrDonationMatchingAgentPolicyInput(
+                quarterly_csr_matching_budget_usd=Decimal("150000.00"),
+                circular_kickback_collusion_or_forged_receipt_detected=False,
+                quid_pro_quo_benefit_unsubtracted_or_annual_match_cap_exceeded=False,
+                webiq_charity_501c3_revoked_or_sanctioned_flag=False,
+                restricted_key_age_days=45,
+                anti_kickback_and_piggyback_roundup_enabled=True,
+            )
+        )
+        self.assertEqual(piggyback_confirm["http_status"], 409)
+        self.assertEqual(piggyback_confirm["savings_usd"], "33000.00")
+        self.assertEqual(piggyback_confirm["approved_budget_usd"], "117000.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("corporate_csr_donation_matching_agent_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("corporate-csr-donation-matching-sandbox", html)
+
+
 if __name__ == "__main__":
     unittest.main()
