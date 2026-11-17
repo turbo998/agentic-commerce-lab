@@ -24320,6 +24320,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("grocery-qsr-catch-weight-substitution-agent-sandbox", demo_zh)
 
+    def test_recommerce_trade_in_clawback_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_recommerce_trade_in_clawback_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Clean GSMA IMEI + Activation Lock OFF + Grade-A inspection release -> 200 OK
+        ok = evaluate_recommerce_trade_in_clawback_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_recommerce_trade_in_cents, 19500000)
+
+        # 2. Stolen GSMA IMEI, iCloud Activation Lock ON, or dummy phone swap -> 403 Forbidden
+        lck_403 = evaluate_recommerce_trade_in_clawback_agent_policy(
+            gsma_imei_clean_and_activation_lock_off_verified=False,
+        )
+        self.assertFalse(lck_403.allowed)
+        self.assertEqual(lck_403.http_status, 403)
+
+        # 3. Expired 14-day return window or unconsented re-grading clawback -> 422 Unprocessable
+        exp_422 = evaluate_recommerce_trade_in_clawback_agent_policy(
+            within_14d_window_and_regrading_buyer_consented=False,
+        )
+        self.assertFalse(exp_422.allowed)
+        self.assertEqual(exp_422.http_status, 422)
+
+        # 4. Web IQ launch-week wholesale residual crash (>12%) -> 451 Hold
+        res_451 = evaluate_recommerce_trade_in_clawback_agent_policy(
+            webiq_wholesale_residual_stable_and_serial_clean=False,
+        )
+        self.assertFalse(res_451.allowed)
+        self.assertEqual(res_451.http_status, 451)
+
+        # 5. Mirror pre-check + secured clawback hold partial capture saving $40,950 ($154,050 net) -> 409 Confirm
+        sav_409 = evaluate_recommerce_trade_in_clawback_agent_policy(
+            mirror_precheck_and_clawback_hold_recovery_savings_cents=4095000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_recommerce_trade_in_cents, 15405000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["recommerce_trade_in_clawback_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("recommerce-trade-in-clawback-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

@@ -442,6 +442,7 @@
 - **专题 407（商业智能体“先买后付 `BNPL: Klarna / Affirm / Afterpay` 与分期信贷”结账架构选型 FAQ：隔离系统 WebView 人类移交防 `HTTP 403` 反自动化拦截、严禁卖家向 Agent 转发 `payment_intent.requires_action`、扣除 `6%` 贴息费率 `MDR` 动态毛利底线锁、无人值守后台自动回退 `Stripe SPT` 卡轨道与部分退货分期尾款重算 `Re-Amortization` 令牌 `ecommerce_bnpl_webview_handover_mdr_margin_mandate_...`）**：**[《商业智能体“先买后付（BNPL：Klarna / Affirm / Afterpay）与分期信贷”结账架构选型 FAQ：受控宿主 WebView 移交、禁转 `requires_action` 与贴息毛利锁实战指南》](docs/ecommerce-bnpl-installment-klarna-affirm-webview-handover-margin-agent-selection-faq.md)**
 - **专题 408（跨境电商与全球 SaaS“税务合规、名义商户 `MoR vs. SoR Stripe Tax` 与 DDP 完税结账”Agent 架构选型 FAQ：`< $2M` MoR `Paddle/Global-e` vs `>= $2M` SoR `Stripe Tax 0.5%` 混合路由省 `50%` 通道抽成、欧盟 VIES 实时在线核验 `0% VAT Reverse Charge`、8位 HS 编码 `DDP` 预完税免除 `$18` 快递代垫费与 `32%` 到付拒收令牌 `cross_border_tax_mor_sor_ddp_duty_mandate_...`）**：**[《跨境电商与全球 SaaS“税务合规、名义商户（MoR vs. SoR Stripe Tax）与 DDP 完税结账”Agent 架构选型 FAQ：欧盟 VIES 反向征收、HS 编码完税锁与经济联结实战指南》](docs/cross-border-tax-compliance-mor-vs-sor-stripe-tax-ddp-duty-agent-selection-faq.md)**
 - **专题 409（生鲜商超即时零售与餐饮外卖 `Grocery & QSR Instant Delivery` “智能点单、称重预授权容差与缺货替换”Agent 架构选型 FAQ：非标生鲜 `Catch-Weight +15% manual` 预授权单次实重捕获、花生/麸质/乳糖/清真/纯素 100% 零冲突硬否决平替、后厨 `KITCHEN_PREP_STARTED` 防白嫖截单锁令牌 `grocery_qsr_catch_weight_preauth_substitution_mandate_...`）**：**[《生鲜商超即时零售与餐饮外卖（Grocery & QSR Instant Delivery）“智能点单、称重预授权容差与缺货替换”Agent 架构选型 FAQ：生鲜 `+15%` 称重预授权、过敏原零容忍平替与后厨出餐锁实战指南》](docs/grocery-qsr-instant-delivery-catch-weight-preauth-substitution-agent-selection-faq.md)**
+- **专题 410（3C 数码、奢侈品与二手车“以旧换新 `Trade-In / Recommerce` 智能估价、激活锁核验与差额追回预授权”Agent 架构选型 FAQ：寄件前 GSMA 盗抢黑名单与 `Find My / iCloud` 激活锁硬拦截、前置镜面反射防伪 AI 预检、先享立减 `$500` 独立质押预授权 `Clawback Hold` 与到仓降级差额部分捕获令牌 `recommerce_trade_in_valuation_clawback_mandate_...`）**：**[《3C 数码、奢侈品与二手车“以旧换新（Trade-In / Recommerce）智能估价、激活锁核验与差额追回预授权”Agent 架构选型 FAQ：GSMA/iCloud 锁硬阻断与防空手套白狼质押锁实战指南》](docs/recommerce-trade-in-valuation-activation-lock-clawback-hold-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1262,6 +1263,8 @@
 ![2026-11-18 跨境电商与全球 SaaS 税务合规 (MoR vs SoR Stripe Tax) 与 DDP 完税结账 Agent 架构一图流总结](assets/svg/410-cross-border-tax-compliance-mor-vs-sor-stripe-tax-ddp-duty-2026-11-18.svg)
 
 ![2026-11-18 生鲜商超即时零售与餐饮外卖智能点单、称重预授权容差与过敏原安全替换 Agent 架构一图流总结](assets/svg/411-grocery-qsr-instant-delivery-catch-weight-preauth-substitution-2026-11-18.svg)
+
+![2026-11-18 3C数码与高值商品以旧换新 (Trade-In) 智能估价、激活锁核验与差额追回预授权 Agent 架构一图流总结](assets/svg/412-recommerce-trade-in-valuation-activation-lock-clawback-hold-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

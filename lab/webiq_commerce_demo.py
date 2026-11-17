@@ -41108,6 +41108,103 @@ def evaluate_grocery_qsr_catch_weight_substitution_agent_policy(
     )
 
 
+@dataclass(frozen=True)
+class RecommerceTradeInClawbackAgentDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    recommerce_trade_in_lane: str
+    settled_recommerce_trade_in_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_recommerce_trade_in_clawback_agent_policy(
+    *,
+    mandate_id: str = "recommerce_trade_in_valuation_clawback_mandate_20261118_001",
+    recommerce_trade_in_cents: int = 19500000,
+    gsma_imei_clean_and_activation_lock_off_verified: bool = True,
+    within_14d_window_and_regrading_buyer_consented: bool = True,
+    webiq_wholesale_residual_stable_and_serial_clean: bool = True,
+    mirror_precheck_and_clawback_hold_recovery_savings_cents: int = 0,
+) -> RecommerceTradeInClawbackAgentDecision:
+    if not mandate_id.startswith("recommerce_trade_in_valuation_clawback_mandate_"):
+        return RecommerceTradeInClawbackAgentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_RECOMMERCE_TRADE_IN_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            recommerce_trade_in_lane="INVALID_RECOMMERCE_TRADE_IN_MANDATE_PREFIX",
+            settled_recommerce_trade_in_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not gsma_imei_clean_and_activation_lock_off_verified:
+        return RecommerceTradeInClawbackAgentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="STOLEN_GSMA_IMEI_OR_ICLOUD_ACTIVATION_LOCK_OR_DUMMY_SWAP_BLOCKED",
+            action_pill="Send to a human",
+            recommerce_trade_in_lane="STOLEN_GSMA_IMEI_OR_ICLOUD_ACTIVATION_LOCK_OR_DUMMY_SWAP_BLOCKED",
+            settled_recommerce_trade_in_cents=0,
+            latency_ms=11,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not within_14d_window_and_regrading_buyer_consented:
+        return RecommerceTradeInClawbackAgentDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="TRADE_IN_WINDOW_EXPIRED_OR_UNCONSENTED_REGRADING_CLAWBACK_BLOCKED",
+            action_pill="Send to a human",
+            recommerce_trade_in_lane="TRADE_IN_WINDOW_EXPIRED_OR_UNCONSENTED_REGRADING_CLAWBACK_BLOCKED",
+            settled_recommerce_trade_in_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_wholesale_residual_stable_and_serial_clean:
+        return RecommerceTradeInClawbackAgentDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="WEBIQ_WHOLESALE_RESIDUAL_CRASH_OR_SANCTIONED_SERIAL_HOLD",
+            action_pill="Send to a human",
+            recommerce_trade_in_lane="WEBIQ_WHOLESALE_RESIDUAL_CRASH_OR_SANCTIONED_SERIAL_HOLD",
+            settled_recommerce_trade_in_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if mirror_precheck_and_clawback_hold_recovery_savings_cents > 0:
+        net_cents = max(
+            0,
+            recommerce_trade_in_cents - mirror_precheck_and_clawback_hold_recovery_savings_cents,
+        )
+        return RecommerceTradeInClawbackAgentDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="MIRROR_PRECHECK_AND_PARTIAL_CLAWBACK_HOLD_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            recommerce_trade_in_lane="MIRROR_PRECHECK_AND_PARTIAL_CLAWBACK_HOLD_SAVINGS_CONFIRM",
+            settled_recommerce_trade_in_cents=net_cents,
+            latency_ms=230,
+            provenance="deterministic_offline_simulation",
+        )
+
+    return RecommerceTradeInClawbackAgentDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_TRADE_IN_GRADE_A_CLAWBACK_HOLD_RELEASED",
+        action_pill="Act automatically",
+        recommerce_trade_in_lane="VERIFIED_TRADE_IN_GRADE_A_CLAWBACK_HOLD_RELEASED",
+        settled_recommerce_trade_in_cents=recommerce_trade_in_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -54471,6 +54568,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "allergen_conflict_substitution_block_latency_ms": gqs_alg_403.latency_ms,
     }
 
+    rti_commit_ok = evaluate_recommerce_trade_in_clawback_agent_policy()
+    rti_lck_403 = evaluate_recommerce_trade_in_clawback_agent_policy(
+        gsma_imei_clean_and_activation_lock_off_verified=False,
+    )
+    rti_exp_422 = evaluate_recommerce_trade_in_clawback_agent_policy(
+        within_14d_window_and_regrading_buyer_consented=False,
+    )
+    rti_res_451 = evaluate_recommerce_trade_in_clawback_agent_policy(
+        webiq_wholesale_residual_stable_and_serial_clean=False,
+    )
+    rti_sav_409 = evaluate_recommerce_trade_in_clawback_agent_policy(
+        mirror_precheck_and_clawback_hold_recovery_savings_cents=4095000,
+    )
+    recommerce_trade_in_clawback_agent_guards = {
+        "all_passed": (
+            rti_commit_ok.allowed
+            and rti_commit_ok.settled_recommerce_trade_in_cents == 19500000
+            and not rti_lck_403.allowed
+            and rti_lck_403.http_status == 403
+            and not rti_exp_422.allowed
+            and rti_exp_422.http_status == 422
+            and not rti_res_451.allowed
+            and rti_res_451.http_status == 451
+            and not rti_sav_409.allowed
+            and rti_sav_409.action_pill == "Confirm"
+        ),
+        "recommerce_trade_in_settlement_latency_ms": rti_commit_ok.latency_ms,
+        "gsma_or_activation_lock_block_latency_ms": rti_lck_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -54893,6 +55020,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "bnpl_webview_margin_agent_guards": bnpl_webview_margin_agent_guards,
         "cross_border_tax_mor_ddp_agent_guards": cross_border_tax_mor_ddp_agent_guards,
         "grocery_qsr_catch_weight_substitution_agent_guards": grocery_qsr_catch_weight_substitution_agent_guards,
+        "recommerce_trade_in_clawback_agent_guards": recommerce_trade_in_clawback_agent_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -65172,6 +65300,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="gqs-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Recommerce & Trade-In Valuation, Activation Lock & Clawback Hold Sandbox (Round 410) -->
+      <div class="finops-box" id="recommerce-trade-in-clawback-agent-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-rti-title">📱 3C数码与高值商品“以旧换新 (Trade-In)”沙盒：GSMA/激活锁门禁 + 镜面预检 + 质押追回锁 (Round 410)</span>
+        </div>
+        <div class="control-row">
+          <label><span>GSMA 盗抢/合约/iCloud 激活锁硬核验 + 先享立减 $500 质押预授权 (Clawback Hold) + 成色降级部分 Capture:</span></label>
+          <select id="rti-select" onchange="updateRecommerceTradeInClawbackAgentSandbox()">
+            <option value="rti_commit_ok">📱 IMEI 清白无激活锁 + 14天内到仓与镜面 A 级一致 + 0 费率解冻 $500 质押：10ms 清算 $195,000.00! (Act automatically)</option>
+            <option value="rti_lck_403">🛑 旧机属 GSMA 盗抢黑名单 / 运营商欠费合约机，未关闭 Find My iCloud 激活锁，或寄回塑料模型机调包 → 11ms 触发 HTTP 403!</option>
+            <option value="rti_exp_422">🚨 超过 14 天锁价期逾期未寄回旧机，或质检员未经买家双选确认单方面暴力“到手刀”强扣 $200 差价 → 14ms 触发 HTTP 422!</option>
+            <option value="rti_res_451">🛑 Web IQ 检出新品发布会致旧机二级批发拍卖残值单周暴跌 &gt;12%，或序列号触发合规风控 → 265ms 触发 HTTP 451!</option>
+            <option value="rti_sav_409">🧑‍⚖️ 启用寄件前激活锁拦截省双程保价运费 + 镜面 AI 预检 + 质押预授权差额部分捕获，季度立省 $40,950.00 (净值 $154,050.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="rti-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -66020,6 +66166,7 @@ function renderAll() {{
   updateBnplWebviewMarginAgentSandbox();
   updateCrossBorderTaxMorDdpAgentSandbox();
   updateGroceryQsrCatchWeightSubstitutionAgentSandbox();
+  updateRecommerceTradeInClawbackAgentSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -85789,6 +85936,52 @@ function updateGroceryQsrCatchWeightSubstitutionAgentSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>⚖️ 生鲜 +15% 预授权池单次实重捕获 + 零过敏原冲突平替 + KDS 截单合规：已自动清算 (VERIFIED_CATCH_WEIGHT_AND_ALLERGEN_SAFE_FULFILLMENT_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零过敏原误替客诉、零超重白送或二次催付烂单、零出餐后恶意白嫖退单</strong>：生鲜商超与餐饮外卖批次已完成安全清算（<code>$145,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateRecommerceTradeInClawbackAgentSandbox() {{
+  var sel = document.getElementById("rti-select");
+  var outEl = document.getElementById("rti-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "rti_lck_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 STOLEN_GSMA_IMEI_OR_ICLOUD_ACTIVATION_LOCK_OR_DUMMY_SWAP_BLOCKED (11ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "设备产权与防调包门禁阻断：旧机 IMEI 命中 <code>GSMA 全球失窃黑名单 / 运营商欠费合约锁</code>、未退出 <code>Find My / iCloud 激活锁</code>（二级残值为 $0），或到仓检出塑料模型机调包，已在 11ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "rti_exp_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 TRADE_IN_WINDOW_EXPIRED_OR_UNCONSENTED_REGRADING_CLAWBACK_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "锁价有效期与成色降级门禁阻断：超过 <code>14 天寄回窗口</code>逾期未寄旧机，或质检员未经买家双选确认试图单方面强扣降级差价（到手刀），已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "rti_res_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 WEBIQ_WHOLESALE_RESIDUAL_CRASH_OR_SANCTIONED_SERIAL_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "二级批发残值暴跌与序列号合规挂起：Web IQ 实时检出新品发布会引发上一代机型二手批发拍卖均价单周暴跌 <code>&gt;12%</code>，已在 265ms 内挂起并重算实时保值报价！" +
+      "</div>";
+    return;
+  }}
+  if (v === "rti_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 MIRROR_PRECHECK_AND_PARTIAL_CLAWBACK_HOLD_SAVINGS_CONFIRM (230ms · Confirm · deterministic_offline_simulation)：<br>" +
+      "启用以旧换新双轨质押与镜面预检：<code>寄件前拦截带锁机省双程保价运费 + 镜面 AI 预检压降砍价率 + $500 质押预授权仅部分捕获 $80 折旧差额</code>，单季立省 <code>$40,950.00</code>（净成本压降至 <code>$154,050.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>📱 GSMA/iCloud 无锁核验 + 镜面 A 级一致 + $500 质押预授权 0 费率解冻：已自动清算 (VERIFIED_TRADE_IN_GRADE_A_CLAWBACK_HOLD_RELEASED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零模型机空手套白狼、零收进带激活锁废砖、零暴力到手刀拒付</strong>：3C 数码与高值商品以旧换新批次已完成安全清算（<code>$195,000.00</code>）！" +
     "</div>";
 }}
 
