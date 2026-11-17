@@ -40323,6 +40323,106 @@ def evaluate_ecommerce_dynamic_repricing_map_policy(
     )
 
 
+@dataclass(frozen=True)
+class CreatorAffiliateEscrowClawbackDecision:
+    """Deterministic decision output for creator/affiliate marketing sourcing, anti-poaching attribution & 30d clawback escrow."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    creator_affiliate_escrow_lane: str
+    settled_creator_affiliate_escrow_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_creator_affiliate_escrow_clawback_policy(
+    *,
+    mandate_id: str = "creator_affiliate_marketing_escrow_clawback_mandate_2026",
+    creator_affiliate_escrow_cents: int = 15000000,
+    sivt_bot_filtered_and_no_last_second_coupon_poaching_verified: bool = True,
+    post_30d_return_window_and_rma_clawback_deducted_verified: bool = True,
+    webiq_connect_no_header_without_obo_and_tax_form_clean: bool = True,
+    automated_anti_poaching_and_rma_clawback_savings_cents: int = 0,
+) -> CreatorAffiliateEscrowClawbackDecision:
+    """Evaluate creator & affiliate marketing sourcing, anti-poaching attribution, 30d return-window escrow & Connect split payout."""
+    if not mandate_id.startswith("creator_affiliate_marketing_escrow_clawback_mandate_"):
+        return CreatorAffiliateEscrowClawbackDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_CREATOR_AFFILIATE_ESCROW_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            creator_affiliate_escrow_lane="INVALID_CREATOR_AFFILIATE_ESCROW_MANDATE_PREFIX",
+            settled_creator_affiliate_escrow_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not sivt_bot_filtered_and_no_last_second_coupon_poaching_verified:
+        return CreatorAffiliateEscrowClawbackDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="FAKE_BOT_ENGAGEMENT_SIVT_OR_LAST_SECOND_COUPON_POACHING_BLOCKED",
+            action_pill="Send to a human",
+            creator_affiliate_escrow_lane="FAKE_BOT_ENGAGEMENT_SIVT_OR_LAST_SECOND_COUPON_POACHING_BLOCKED",
+            settled_creator_affiliate_escrow_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not post_30d_return_window_and_rma_clawback_deducted_verified:
+        return CreatorAffiliateEscrowClawbackDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="PREMATURE_PAYOUT_BEFORE_RETURN_WINDOW_OR_UNCLAWED_REFUND_COMMISSION_BLOCKED",
+            action_pill="Send to a human",
+            creator_affiliate_escrow_lane="PREMATURE_PAYOUT_BEFORE_RETURN_WINDOW_OR_UNCLAWED_REFUND_COMMISSION_BLOCKED",
+            settled_creator_affiliate_escrow_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_connect_no_header_without_obo_and_tax_form_clean:
+        return CreatorAffiliateEscrowClawbackDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="CONNECT_HEADER_WITHOUT_OBO_OR_UNVERIFIED_TAX_FORM_OR_BRAND_SAFETY_HOLD",
+            action_pill="Send to a human",
+            creator_affiliate_escrow_lane="CONNECT_HEADER_WITHOUT_OBO_OR_UNVERIFIED_TAX_FORM_OR_BRAND_SAFETY_HOLD",
+            settled_creator_affiliate_escrow_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_anti_poaching_and_rma_clawback_savings_cents > 0:
+        net_cents = max(
+            0,
+            creator_affiliate_escrow_cents - automated_anti_poaching_and_rma_clawback_savings_cents,
+        )
+        return CreatorAffiliateEscrowClawbackDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_ANTI_POACHING_AND_RMA_CLAWBACK_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            creator_affiliate_escrow_lane="AUTOMATED_ANTI_POACHING_AND_RMA_CLAWBACK_SAVINGS_CONFIRM",
+            settled_creator_affiliate_escrow_cents=net_cents,
+            latency_ms=230,
+            provenance="deterministic_offline_simulation",
+        )
+
+    return CreatorAffiliateEscrowClawbackDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_CREATOR_AFFILIATE_ESCROW_CLAWBACK_SETTLED",
+        action_pill="Act automatically",
+        creator_affiliate_escrow_lane="VERIFIED_CREATOR_AFFILIATE_ESCROW_CLAWBACK_SETTLED",
+        settled_creator_affiliate_escrow_cents=creator_affiliate_escrow_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -53446,6 +53546,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "fake_screenshot_or_oos_bait_block_latency_ms": edr_fak_403.latency_ms,
     }
 
+    cam_commit_ok = evaluate_creator_affiliate_escrow_clawback_policy()
+    cam_pch_403 = evaluate_creator_affiliate_escrow_clawback_policy(
+        sivt_bot_filtered_and_no_last_second_coupon_poaching_verified=False,
+    )
+    cam_clw_422 = evaluate_creator_affiliate_escrow_clawback_policy(
+        post_30d_return_window_and_rma_clawback_deducted_verified=False,
+    )
+    cam_tax_451 = evaluate_creator_affiliate_escrow_clawback_policy(
+        webiq_connect_no_header_without_obo_and_tax_form_clean=False,
+    )
+    cam_sav_409 = evaluate_creator_affiliate_escrow_clawback_policy(
+        automated_anti_poaching_and_rma_clawback_savings_cents=3150000,
+    )
+    creator_affiliate_escrow_clawback_guards = {
+        "all_passed": (
+            cam_commit_ok.allowed
+            and cam_commit_ok.settled_creator_affiliate_escrow_cents == 15000000
+            and not cam_pch_403.allowed
+            and cam_pch_403.http_status == 403
+            and not cam_clw_422.allowed
+            and cam_clw_422.http_status == 422
+            and not cam_tax_451.allowed
+            and cam_tax_451.http_status == 451
+            and not cam_sav_409.allowed
+            and cam_sav_409.action_pill == "Confirm"
+        ),
+        "creator_affiliate_escrow_settlement_latency_ms": cam_commit_ok.latency_ms,
+        "sivt_or_coupon_poaching_block_latency_ms": cam_pch_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -53860,6 +53990,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "enterprise_ap_three_way_match_discount_guards": enterprise_ap_three_way_match_discount_guards,
         "enterprise_cpq_deal_desk_agent_guards": enterprise_cpq_deal_desk_agent_guards,
         "ecommerce_dynamic_repricing_map_guards": ecommerce_dynamic_repricing_map_guards,
+        "creator_affiliate_escrow_clawback_guards": creator_affiliate_escrow_clawback_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -63995,6 +64126,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="edr-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Creator & Affiliate Marketing Sourcing, Anti-Poaching & Clawback Escrow Sandbox (Round 402) -->
+      <div class="finops-box" id="creator-affiliate-escrow-clawback-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cam-title">🎥 跨境网红达人营销智能寻源、带货分佣反作弊与退货期满释放沙盒：防插件劫持 + 30天托管 Clawback + Connect 分账 (Round 402)</span>
+        </div>
+        <div class="control-row">
+          <label><span>SIVT 反水军与拦截结账最后 60s 插件劫持 + 30天退货期满释放托管 (自动冲销退货) + Connect 禁传 Stripe-Account 头核验:</span></label>
+          <select id="cam-select" onchange="updateCreatorAffiliateEscrowClawbackSandbox()">
+            <option value="cam_commit_ok">🎥 真实达人引流 (SIVT=2.1%) + 满 30天退货期净额核算 + W-8BEN/W-9 完备 Connect 分账：10ms 清算 $150,000.00! (Act automatically)</option>
+            <option value="cam_pch_403">🛑 50 万僵尸粉刷量水军号 (SIVT&gt;15%) 骗取一口价坑位费，或比价浏览器插件在自然流量买家结账最后 10s 尾跳劫持优惠码 → 11ms 触发 HTTP 403!</option>
+            <option value="cam_clw_422">🚨 下单付款后未满 30 天退货窗口即抢跑向达人放款，或买家第 7 天退货退款后未自动冲销 (Clawback) 已计提的 20% 佣金 → 14ms 触发 HTTP 422!</option>
+            <option value="cam_tax_451">🛑 Stripe Connect Separate Charges (未设 on_behalf_of) 误传 Stripe-Account 请求头，或达人缺失 W-9/W-8BEN 税表及触发品牌安全丑闻 → 265ms 触发 HTTP 451!</option>
+            <option value="cam_sav_409">🧑‍⚖️ 启用结账页反插件劫持锁 + 退货订单按比例自动 Clawback 冲销 + KOC 净成交分佣结构，季度立省冤枉佣金 $31,500.00 (净付 $118,500.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cam-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -64835,6 +64984,7 @@ function renderAll() {{
   updateEnterpriseApThreeWayMatchDiscountSandbox();
   updateEnterpriseCpqDealDeskAgentSandbox();
   updateEcommerceDynamicRepricingMapSandbox();
+  updateCreatorAffiliateEscrowClawbackSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -84236,6 +84386,52 @@ function updateEcommerceDynamicRepricingMapSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🏷️ Web IQ 同 GTIN 现货验真 + 高于 MAP/COGS 双地板 + Catalog upsert 同步合规：已自动清算 (VERIFIED_ECOMMERCE_DYNAMIC_REPRICING_MAP_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零假截图与 0 库存钓鱼套利、零算法螺旋闪崩破价、零查价超时掉单</strong>：电商大促动态调价与竞品跟价批次已完成安全清算（<code>$160,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateCreatorAffiliateEscrowClawbackSandbox() {{
+  var sel = document.getElementById("cam-select");
+  var outEl = document.getElementById("cam-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "cam_pch_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 FAKE_BOT_ENGAGEMENT_SIVT_OR_LAST_SECOND_COUPON_POACHING_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "反作弊与归因门禁拦截：检测到候选达人互动评论中机器刷量水军（<code>SIVT &gt; 15%</code>），或自然搜索买家在结账页最后 60 秒被浏览器比价插件自动注入公开网红码（<code>Coupon Poaching</code> 尾跳劫持），已在 11ms 内硬拦截并剥夺虚假佣金！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cam_clw_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 PREMATURE_PAYOUT_BEFORE_RETURN_WINDOW_OR_UNCLAWED_REFUND_COMMISSION_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "退货窗口托管引擎阻断：订单尚未满 <code>30 天无理由退货期</code> 即试图向达人提前放款，或买家已发起 RMA 退货退款却未按比例冲销（<code>Clawback</code>）待结算佣金，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cam_tax_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 CONNECT_HEADER_WITHOUT_OBO_OR_UNVERIFIED_TAX_FORM_OR_BRAND_SAFETY_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Stripe Connect 与税务合规挂起：在未设置 <code>on_behalf_of</code> 的平台代收分账中违规传入了 <code>Stripe-Account</code> 请求头（<code>blocked_connect_header_without_obo</code>），或达人缺失 <code>W-9 / W-8BEN</code> 税表及命中 Web IQ 品牌丑闻告警，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cam_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_ANTI_POACHING_AND_RMA_CLAWBACK_SAVINGS_CONFIRM (230ms · Confirm · deterministic_offline_simulation)：<br>" +
+      "启用达人营销净成交托管闭环：<code>拦截浏览器插件结账尾跳抢归因 + 30天退货期满释放自动冲销退货单佣金 + Exa/Web IQ 高转化 KOC 寻源</code>，单季立省冤枉佣金 <code>$31,500.00</code>（营销净支出优化至 <code>$118,500.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🎥 真实达人引流 (SIVT=2.1%) + 满 30天退货期净额核算 + W-8BEN/W-9 完备 Connect 分账合规：已自动清算 (VERIFIED_CREATOR_AFFILIATE_ESCROW_CLAWBACK_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零水军假粉骗坑位费、零插件尾跳劫持自然流量、零下单提佣后退货白嫖</strong>：跨境网红达人营销与联盟分佣批次已完成安全清算（<code>$150,000.00</code>）！" +
     "</div>";
 }}
 

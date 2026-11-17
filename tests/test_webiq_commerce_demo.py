@@ -23891,6 +23891,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-dynamic-repricing-map-sandbox", demo_zh)
 
+    def test_creator_affiliate_escrow_clawback_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_creator_affiliate_escrow_clawback_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant authentic creator referral + 30d return-window escrow + Connect separate transfer -> 200 OK ($150,000.00)
+        ok_res = evaluate_creator_affiliate_escrow_clawback_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_CREATOR_AFFILIATE_ESCROW_CLAWBACK_SETTLED")
+        self.assertEqual(ok_res.settled_creator_affiliate_escrow_cents, 15000000)
+
+        # 2. Bot-inflated SIVT creator or last-second checkout browser extension coupon poaching -> 403 Blocked
+        pch_403 = evaluate_creator_affiliate_escrow_clawback_policy(
+            sivt_bot_filtered_and_no_last_second_coupon_poaching_verified=False,
+        )
+        self.assertFalse(pch_403.allowed)
+        self.assertEqual(pch_403.http_status, 403)
+        self.assertEqual(
+            pch_403.decision_code,
+            "FAKE_BOT_ENGAGEMENT_SIVT_OR_LAST_SECOND_COUPON_POACHING_BLOCKED",
+        )
+
+        # 3. Premature commission payout before 30-day return window or unclawed RMA refund -> 422 Blocked
+        clw_422 = evaluate_creator_affiliate_escrow_clawback_policy(
+            post_30d_return_window_and_rma_clawback_deducted_verified=False,
+        )
+        self.assertFalse(clw_422.allowed)
+        self.assertEqual(clw_422.http_status, 422)
+        self.assertEqual(
+            clw_422.decision_code,
+            "PREMATURE_PAYOUT_BEFORE_RETURN_WINDOW_OR_UNCLAWED_REFUND_COMMISSION_BLOCKED",
+        )
+
+        # 4. Passing Stripe-Account header on Separate Charges without OBO or missing W-9/W-8BEN tax form -> 451 Hold
+        tax_451 = evaluate_creator_affiliate_escrow_clawback_policy(
+            webiq_connect_no_header_without_obo_and_tax_form_clean=False,
+        )
+        self.assertFalse(tax_451.allowed)
+        self.assertEqual(tax_451.http_status, 451)
+
+        # 5. Anti-poaching attribution lock & RMA commission clawback saving $31,500 ($118,500 net) -> 409 Confirm
+        sav_409 = evaluate_creator_affiliate_escrow_clawback_policy(
+            automated_anti_poaching_and_rma_clawback_savings_cents=3150000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_creator_affiliate_escrow_cents, 11850000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["creator_affiliate_escrow_clawback_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("creator-affiliate-escrow-clawback-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
