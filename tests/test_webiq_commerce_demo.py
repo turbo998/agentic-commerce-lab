@@ -23720,6 +23720,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("omnichannel-bopis-ship-from-store-sandbox", demo_zh)
 
+    def test_enterprise_ap_three_way_match_discount_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_enterprise_ap_three_way_match_discount_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant PO-GRN-Invoice line-item match + Vendor Master vault lock + human approval -> 200 OK ($200,000.00)
+        ok_res = evaluate_enterprise_ap_three_way_match_discount_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_ENTERPRISE_AP_THREE_WAY_MATCH_SETTLED")
+        self.assertEqual(ok_res.settled_enterprise_ap_three_way_cents, 20000000)
+
+        # 2. BEC bank-account change on invoice or unconfirmed send_money treasury call -> 403 Blocked
+        bec_403 = evaluate_enterprise_ap_three_way_match_discount_policy(
+            vendor_master_bank_vault_match_and_human_treasury_approval_verified=False,
+        )
+        self.assertFalse(bec_403.allowed)
+        self.assertEqual(bec_403.http_status, 403)
+        self.assertEqual(
+            bec_403.decision_code,
+            "BEC_BANK_ACCOUNT_CHANGE_ON_INVOICE_OR_UNCONFIRMED_TREASURY_BLOCKED",
+        )
+
+        # 3. Invoice quantity exceeds GRN Accepted Qty or duplicate invoice variant -> 422 Blocked
+        grn_422 = evaluate_enterprise_ap_three_way_match_discount_policy(
+            line_item_grn_accepted_qty_and_unique_invoice_hash_verified=False,
+        )
+        self.assertFalse(grn_422.allowed)
+        self.assertEqual(grn_422.http_status, 422)
+        self.assertEqual(
+            grn_422.decision_code,
+            "INVOICE_QTY_EXCEEDS_GRN_ACCEPTED_OR_DUPLICATE_INVOICE_VARIATION_BLOCKED",
+        )
+
+        # 4. Treasury key dormant > 180 days or vendor tax/sanction alert -> 451 Hold
+        key_451 = evaluate_enterprise_ap_three_way_match_discount_policy(
+            webiq_treasury_key_active_within_180d_and_vendor_tax_clean=False,
+        )
+        self.assertFalse(key_451.allowed)
+        self.assertEqual(key_451.http_status, 451)
+
+        # 5. Short-ship Debit Memo & 2/10 Net 30 early-pay discount saving $40,000 ($160,000 net) -> 409 Confirm
+        sav_409 = evaluate_enterprise_ap_three_way_match_discount_policy(
+            automated_short_ship_debit_memo_and_2_10_net30_discount_savings_cents=4000000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_enterprise_ap_three_way_cents, 16000000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["enterprise_ap_three_way_match_discount_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("enterprise-ap-three-way-match-discount-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
