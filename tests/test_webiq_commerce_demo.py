@@ -23549,6 +23549,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-multilingual-cs-rma-sandbox", demo_zh)
 
+    def test_saas_churn_retention_subscription_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_saas_churn_retention_subscription_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant FTC symmetric cancel UI + compute COGS floor + cadence SPT renewal -> 200 OK ($190,000.00)
+        ok_res = evaluate_saas_churn_retention_subscription_agent_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_SAAS_CHURN_RETENTION_CADENCE_SPT_SETTLED")
+        self.assertEqual(ok_res.settled_saas_churn_retention_cents, 19000000)
+
+        # 2. FTC Click-to-Cancel dark pattern or forbidden setup_future_usage on SPT -> 403 Blocked
+        ftc_403 = evaluate_saas_churn_retention_subscription_agent_policy(
+            ftc_click_to_cancel_symmetric_ui_and_no_sfu_on_spt_verified=False,
+        )
+        self.assertFalse(ftc_403.allowed)
+        self.assertEqual(ftc_403.http_status, 403)
+        self.assertEqual(
+            ftc_403.decision_code,
+            "FTC_CLICK_TO_CANCEL_DARK_PATTERN_OR_FORBIDDEN_SPT_SETUP_FUTURE_USAGE_BLOCKED",
+        )
+
+        # 3. Retention discount below marginal compute COGS or silent renewal price hike above ceiling -> 422 Blocked
+        cog_422 = evaluate_saas_churn_retention_subscription_agent_policy(
+            retention_offer_above_compute_cogs_and_within_ceiling_verified=False,
+        )
+        self.assertFalse(cog_422.allowed)
+        self.assertEqual(cog_422.http_status, 422)
+        self.assertEqual(
+            cog_422.decision_code,
+            "RETENTION_OFFER_BELOW_COGS_OR_RENEWAL_PRICE_EXCEEDS_INTERVAL_CEILING",
+        )
+
+        # 4. off_session=True without recurring_interval or FCB tripped -> 451 Hold
+        int_451 = evaluate_saas_churn_retention_subscription_agent_policy(
+            webiq_recurring_interval_configured_and_fcb_closed_clean=False,
+        )
+        self.assertFalse(int_451.allowed)
+        self.assertEqual(int_451.http_status, 451)
+
+        # 5. Telemetry pause/right-sizing retention saving $39,900 ($150,100 net) -> 409 Confirm
+        sav_409 = evaluate_saas_churn_retention_subscription_agent_policy(
+            automated_telemetry_pause_rightsize_retention_savings_cents=3990000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_saas_churn_retention_cents, 15010000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["saas_churn_retention_subscription_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-churn-retention-subscription-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

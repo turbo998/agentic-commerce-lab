@@ -428,6 +428,7 @@
 - **专题 393（OTA 机酒差旅智能规划与自动比价改签 Agent `Corporate & Consumer OTA Travel Planning & Auto-Rebooking Agent` 架构选型 FAQ：Web IQ 全包到手价与退改截止时间接地、机酒多段两阶段 `capture_method=manual` 预授权防甩单 Saga、购后降价 `Hold-New-Before-Cancel-Old` 先锁新单再退旧单与净省 `>= $25` 门禁、`<= 180d` 远期 SPT 令牌 `ota_travel_rebooking_ndc_saga_mandate_...` vs 机票出票酒店满房单边退票亏损、隐性 Resort/行李费超标与先退旧房踏空）**：**[《OTA 机酒差旅智能规划与自动比价改签 Agent 架构选型 FAQ：GDS/NDC 实时全包价接地、差旅合规门禁、两阶段防甩单 Saga 与净节省改签实战指南》](docs/ota-travel-planning-price-drop-rebooking-ndc-saga-architecture-selection-faq.md)**
 - **专题 394（企业 B2B 采购寻源询价 `RFQ`、多供应商比价与合同条款初审 Copilot 端到端架构选型 FAQ：`EXW/FOB -> DDP` 到岸总拥有成本 `Landed TCO` 同口径归一化、MSA 法务 Playbook 四大毒丸条款硬拦截与自动 Redline、Web IQ 供应商资信与反围标穿透、对接 `SAP Ariba / Dynamics 365 / Coupa` 成本中心预算冻结与三单匹配令牌 `b2b_rfq_sourcing_contract_redline_erp_copilot_mandate_...` vs 裸单价假低价定标与合同背面霸王续约）**：**[《企业 B2B 采购寻源询价（RFQ）、供应商比价与合同条款初审 Copilot 架构选型 FAQ：到岸 TCO 归一化、法务红线扫描与 ERP (SAP / D365 / Coupa) 审批流实战指南》](docs/b2b-rfq-sourcing-supplier-comparison-contract-redline-erp-copilot-selection-faq.md)**
 - **专题 395（跨境电商多语种智能客服与退换货售后自动化 `RMA` Agent 架构选型 FAQ：Web IQ 属地站点政策接地与 `HTTP 202` 严禁编造退货期限、“以换代退 `Exchange-First`” `+15%` 礼金挽留 `42%` 订单、逆向净残值公式 `Net Recovery <= $0` 智能免寄回止损国际运费、承运商揽收称重锁与 Stripe MCP `create_refund` 人类确认令牌 `cross_border_multilingual_cs_rma_refund_mandate_...` vs 无门禁提示词注入秒退与 `$28` 商品倒贴 `$16` 国际退货运费）**：**[《跨境电商多语种智能客服与退换货售后自动化（RMA）Agent 架构选型 FAQ：多语种属地政策接地、以换代退挽留、逆向残值计算与退款人类确认门禁实战指南》](docs/cross-border-multilingual-customer-service-rma-refund-automation-selection-faq.md)**
+- **专题 396（订阅制 SaaS 客户续费挽留与智能营销编排 Agent 架构选型 FAQ：产品活跃遥测非折扣优先分流 `Pause / Right-Sizing`、边际算力成本 `>= 1.35x COGS` 毛利底线与 365 天防薅冷却锁、FTC `Click-to-Cancel` 同屏对等一键退订合规、Stripe 周期 SPT `usage_limits.recurring_interval` 禁传 `setup_future_usage` 令牌 `saas_subscription_churn_retention_cadence_spt_mandate_...` vs 迷宫式阻挠退订重罚与无脑发 5 折券算力毛利倒挂）**：**[《订阅制 SaaS 客户续费挽留与智能营销编排 Agent 架构选型 FAQ：活跃遥测分流、暂停/降配优先、LTV 毛利锁、周期 SPT 与 FTC 一键退订合规实战指南》](docs/saas-subscription-churn-retention-offer-orchestration-billing-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1220,6 +1221,8 @@
 ![2026-11-18 企业 B2B 采购寻源询价 (RFQ)、供应商比价与合同条款初审 Copilot 架构一图流总结](assets/svg/396-b2b-rfq-sourcing-supplier-comparison-contract-redline-erp-copilot-2026-11-18.svg)
 
 ![2026-11-18 跨境电商多语种智能客服与退换货售后自动化 (RMA) Agent 架构一图流总结](assets/svg/397-cross-border-multilingual-customer-service-rma-refund-automation-2026-11-18.svg)
+
+![2026-11-18 订阅制 SaaS 客户续费挽留与智能营销编排 Agent 架构：遥测分流、暂停降配、LTV 毛利锁与 FTC 合规一图流总结](assets/svg/398-saas-subscription-churn-retention-offer-orchestration-billing-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
