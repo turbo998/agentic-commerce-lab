@@ -24272,6 +24272,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-tax-mor-ddp-agent-sandbox", demo_zh)
 
+    def test_grocery_qsr_catch_weight_substitution_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_grocery_qsr_catch_weight_substitution_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant catch-weight scale capture + allergen-safe substitution -> 200 OK
+        ok = evaluate_grocery_qsr_catch_weight_substitution_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_grocery_qsr_agent_cents, 14500000)
+
+        # 2. Allergen or religious dietary conflict on substitution -> 403 Forbidden
+        alg_403 = evaluate_grocery_qsr_catch_weight_substitution_agent_policy(
+            allergen_and_dietary_conflict_zero_verified=False,
+        )
+        self.assertFalse(alg_403.allowed)
+        self.assertEqual(alg_403.http_status, 403)
+
+        # 3. Scale capture exceeding +15% pre-auth tolerance or post-prep cutoff cancel -> 422 Unprocessable
+        cwt_422 = evaluate_grocery_qsr_catch_weight_substitution_agent_policy(
+            catch_weight_within_15pct_preauth_and_pre_cutoff_state=False,
+        )
+        self.assertFalse(cwt_422.allowed)
+        self.assertEqual(cwt_422.http_status, 422)
+
+        # 4. Web IQ food-safety batch alert or extreme weather suspension -> 451 Hold
+        fsa_451 = evaluate_grocery_qsr_catch_weight_substitution_agent_policy(
+            webiq_food_safety_lot_and_weather_dispatch_clean=False,
+        )
+        self.assertFalse(fsa_451.allowed)
+        self.assertEqual(fsa_451.http_status, 451)
+
+        # 5. Catch-weight single capture + allergen-safe <=10% upgrade saving $29,000 ($116,000 net) -> 409 Confirm
+        sav_409 = evaluate_grocery_qsr_catch_weight_substitution_agent_policy(
+            catch_weight_single_capture_and_allergen_safe_upgrade_savings_cents=2900000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_grocery_qsr_agent_cents, 11600000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["grocery_qsr_catch_weight_substitution_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("grocery-qsr-catch-weight-substitution-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
