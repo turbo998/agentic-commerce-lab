@@ -23378,6 +23378,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-shopping-stylist-bundle-sandbox", demo_zh)
 
+    def test_ota_travel_rebooking_ndc_saga_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_ota_travel_rebooking_ndc_saga_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 2-phase flight+hotel Saga + all-in fare + <=180d SPT + 24h idempotency -> 200 OK ($165,000.00)
+        ok_res = evaluate_ota_travel_rebooking_ndc_saga_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_OTA_TRAVEL_REBOOKING_NDC_SAGA_SETTLED")
+        self.assertEqual(ok_res.settled_ota_travel_rebooking_cents, 16500000)
+
+        # 2. Unbundled single-leg automatic capture or canceling old booking before holding new -> 403 Blocked
+        leg_403 = evaluate_ota_travel_rebooking_ndc_saga_policy(
+            two_phase_preauth_saga_and_hold_new_before_cancel_old_verified=False,
+        )
+        self.assertFalse(leg_403.allowed)
+        self.assertEqual(leg_403.http_status, 403)
+        self.assertEqual(
+            leg_403.decision_code,
+            "UNBUNDLED_SINGLE_LEG_CAPTURE_OR_CANCEL_OLD_BEFORE_HOLD_NEW_BLOCKED",
+        )
+
+        # 3. Drip pricing (bag/resort fees) breaching T&E cap or negative net rebooking yield -> 422 Blocked
+        drp_422 = evaluate_ota_travel_rebooking_ndc_saga_policy(
+            all_in_landed_fare_within_te_cap_and_positive_net_rebook_verified=False,
+        )
+        self.assertFalse(drp_422.allowed)
+        self.assertEqual(drp_422.http_status, 422)
+        self.assertEqual(
+            drp_422.decision_code,
+            "DRIP_PRICING_TE_POLICY_BREACH_OR_NEGATIVE_NET_REBOOKING_YIELD_BLOCKED",
+        )
+
+        # 4. Forward booking SPT expiry > 180 days or 24h Idempotency-Key payload drift -> 451 Hold
+        ttl_451 = evaluate_ota_travel_rebooking_ndc_saga_policy(
+            webiq_booking_spt_under_180d_and_24h_idempotency_clean=False,
+        )
+        self.assertFalse(ttl_451.allowed)
+        self.assertEqual(ttl_451.http_status, 451)
+
+        # 5. Automated price-drop rebooking & 2-phase Saga zero-loss saving $34,650 ($130,350 net) -> 409 Confirm
+        sav_409 = evaluate_ota_travel_rebooking_ndc_saga_policy(
+            automated_price_drop_rebooking_and_saga_zero_loss_savings_cents=3465000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_ota_travel_rebooking_cents, 13035000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["ota_travel_rebooking_ndc_saga_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-travel-rebooking-ndc-saga-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
