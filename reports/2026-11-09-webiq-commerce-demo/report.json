@@ -2020,6 +2020,661 @@
     "b2b_pharma_lyophilizer_settlement_latency_ms": 10,
     "lyo_shelf_condenser_upcoding_block_latency_ms": 11
   },
+  "commercial_agent_platform_selection_guards": {
+    "all_passed": true,
+    "commercial_agent_platform_settlement_latency_ms": 10,
+    "unbounded_generative_orchestration_block_latency_ms": 11
+  },
+  "commercial_search_grounding_selection_guards": {
+    "all_passed": true,
+    "commercial_search_grounding_settlement_latency_ms": 10,
+    "blackbox_synthesized_checkout_block_latency_ms": 11
+  },
+  "agent_payment_toolkit_selection_guards": {
+    "all_passed": true,
+    "agent_payment_toolkit_settlement_latency_ms": 10,
+    "reusable_pan_or_double_resolve_block_latency_ms": 11
+  },
+  "ecommerce_shopping_stylist_bundle_guards": {
+    "all_passed": true,
+    "ecommerce_shopping_bundle_settlement_latency_ms": 10,
+    "oos_or_disable_checkout_block_latency_ms": 11
+  },
+  "ota_travel_rebooking_ndc_saga_guards": {
+    "all_passed": true,
+    "ota_travel_rebooking_settlement_latency_ms": 10,
+    "unbundled_leg_or_cancel_first_block_latency_ms": 11
+  },
+  "b2b_rfq_sourcing_contract_redline_copilot_guards": {
+    "all_passed": true,
+    "b2b_rfq_copilot_settlement_latency_ms": 10,
+    "unnormalized_exw_or_no_budget_block_latency_ms": 11
+  },
+  "cross_border_multilingual_cs_rma_guards": {
+    "all_passed": true,
+    "cross_border_cs_rma_settlement_latency_ms": 10,
+    "unconfirmed_refund_or_weight_block_latency_ms": 11
+  },
+  "saas_churn_retention_subscription_agent_guards": {
+    "all_passed": true,
+    "saas_churn_retention_settlement_latency_ms": 10,
+    "ftc_dark_pattern_or_sfu_block_latency_ms": 11
+  },
+  "enterprise_erp_crm_idempotent_saga_guards": {
+    "all_passed": true,
+    "enterprise_erp_crm_saga_settlement_latency_ms": 10,
+    "random_idempotency_or_pre_erp_capture_block_latency_ms": 11
+  },
+  "omnichannel_bopis_ship_from_store_guards": {
+    "all_passed": true,
+    "omnichannel_bopis_dom_settlement_latency_ms": 10,
+    "phantom_stock_or_static_qr_block_latency_ms": 11
+  },
+  "enterprise_ap_three_way_match_discount_guards": {
+    "all_passed": true,
+    "enterprise_ap_three_way_settlement_latency_ms": 10,
+    "bec_bank_change_or_unconfirmed_treasury_block_latency_ms": 11
+  },
+  "enterprise_cpq_deal_desk_agent_guards": {
+    "all_passed": true,
+    "enterprise_cpq_deal_desk_settlement_latency_ms": 10,
+    "incomplete_bom_or_channel_conflict_block_latency_ms": 11
+  },
+  "ecommerce_dynamic_repricing_map_guards": {
+    "all_passed": true,
+    "ecommerce_dynamic_repricing_settlement_latency_ms": 10,
+    "fake_screenshot_or_oos_bait_block_latency_ms": 11
+  },
+  "creator_affiliate_escrow_clawback_guards": {
+    "all_passed": true,
+    "creator_affiliate_escrow_settlement_latency_ms": 10,
+    "sivt_or_coupon_poaching_block_latency_ms": 11
+  },
+  "corporate_expense_audit_double_dip_guards": {
+    "all_passed": true,
+    "corporate_expense_audit_settlement_latency_ms": 10,
+    "card_cash_double_dip_block_latency_ms": 11
+  },
+  "retail_cpg_autonomous_replenishment_guards": {
+    "all_passed": true,
+    "retail_cpg_replenishment_settlement_latency_ms": 10,
+    "in_transit_double_order_or_bullwhip_block_latency_ms": 11
+  },
+  "agentic_protocol_stack_interoperability_guards": {
+    "all_passed": true,
+    "agentic_protocol_stack_settlement_latency_ms": 10,
+    "ucp_handler_or_argv_injection_block_latency_ms": 11
+  },
+  "chargeback_ce30_friendly_fraud_agent_guards": {
+    "all_passed": true,
+    "chargeback_ce30_settlement_latency_ms": 10,
+    "forged_evidence_or_missing_mandate_block_latency_ms": 11
+  },
+  "bnpl_webview_margin_agent_guards": {
+    "all_passed": true,
+    "bnpl_webview_margin_settlement_latency_ms": 10,
+    "headless_bnpl_or_requires_action_block_latency_ms": 11
+  },
+  "cross_border_tax_mor_ddp_agent_guards": {
+    "all_passed": true,
+    "cross_border_tax_ddp_settlement_latency_ms": 10,
+    "invalid_vies_or_reverse_charge_block_latency_ms": 11
+  },
+  "grocery_qsr_catch_weight_substitution_agent_guards": {
+    "all_passed": true,
+    "grocery_qsr_settlement_latency_ms": 10,
+    "allergen_conflict_substitution_block_latency_ms": 11
+  },
+  "recommerce_trade_in_clawback_agent_guards": {
+    "all_passed": true,
+    "recommerce_trade_in_settlement_latency_ms": 10,
+    "gsma_or_activation_lock_block_latency_ms": 11
+  },
+  "retail_media_rmn_roas_agent_guards": {
+    "all_passed": true,
+    "retail_media_rmn_settlement_latency_ms": 10,
+    "buybox_lost_or_stockout_ad_block_latency_ms": 11
+  },
+  "b2b_csm_expansion_coterm_agent_guards": {
+    "all_passed": true,
+    "b2b_csm_expansion_settlement_latency_ms": 10,
+    "p1_incident_or_oca_reinit_block_latency_ms": 11
+  },
+  "commercial_model_routing_finops_agent_guards": {
+    "all_passed": true,
+    "model_routing_finops_settlement_latency_ms": 10,
+    "unpartitioned_cache_leak_block_latency_ms": 11
+  },
+  "loyalty_points_giftcard_promo_agent_guards": {
+    "all_passed": true,
+    "loyalty_giftcard_promo_settlement_latency_ms": 10,
+    "giftcard_cash_out_or_pin_enum_block_latency_ms": 11
+  },
+  "b2b_trade_credit_factoring_agent_guards": {
+    "all_passed": true,
+    "b2b_trade_credit_settlement_latency_ms": 10,
+    "impersonated_kyb_or_dock_block_latency_ms": 11
+  },
+  "automotive_ev_vin_fni_agent_guards": {
+    "all_passed": true,
+    "automotive_ev_vin_settlement_latency_ms": 10,
+    "forced_fni_or_unconsented_lock_block_latency_ms": 11
+  },
+  "live_event_ticketing_anti_scalper_agent_guards": {
+    "all_passed": true,
+    "live_event_ticketing_settlement_latency_ms": 10,
+    "scalper_bot_or_resale_cap_block_latency_ms": 11
+  },
+  "embedded_insurance_fnol_claims_agent_guards": {
+    "all_passed": true,
+    "embedded_insurance_fnol_settlement_latency_ms": 10,
+    "aigc_inpainting_or_phash_block_latency_ms": 11
+  },
+  "cross_border_fx_treasury_agent_guards": {
+    "all_passed": true,
+    "cross_border_fx_treasury_settlement_latency_ms": 10,
+    "ny_or_connect_stablecoin_block_latency_ms": 11
+  },
+  "b2b_punchout_edi_orchestration_agent_guards": {
+    "all_passed": true,
+    "b2b_punchout_edi_settlement_latency_ms": 10,
+    "punchout_direct_checkout_or_sftp_replace_block_latency_ms": 11
+  },
+  "luxury_clienteling_vic_allocation_agent_guards": {
+    "all_passed": true,
+    "luxury_clienteling_vic_settlement_latency_ms": 10,
+    "illegal_tying_or_flipper_block_latency_ms": 11
+  },
+  "cloud_telecom_cud_bill_shock_agent_guards": {
+    "all_passed": true,
+    "cloud_telecom_cud_settlement_latency_ms": 10,
+    "sim_swap_or_spt_sfu_block_latency_ms": 11
+  },
+  "marketplace_seller_kyb_escrow_agent_guards": {
+    "all_passed": true,
+    "marketplace_seller_escrow_settlement_latency_ms": 10,
+    "stripe_account_header_or_self_dealing_block_latency_ms": 11
+  },
+  "telehealth_pharmacy_fsa_erx_agent_guards": {
+    "all_passed": true,
+    "telehealth_pharmacy_fsa_settlement_latency_ms": 10,
+    "invalid_erx_or_non_eligible_fsa_block_latency_ms": 11
+  },
+  "proptech_lease_escrow_fair_housing_agent_guards": {
+    "all_passed": true,
+    "proptech_lease_escrow_settlement_latency_ms": 10,
+    "fha_steering_or_escrow_wire_change_block_latency_ms": 11
+  },
+  "gaming_digital_goods_webshop_agent_guards": {
+    "all_passed": true,
+    "gaming_digital_webshop_settlement_latency_ms": 10,
+    "minor_cap_or_broker_topup_block_latency_ms": 11
+  },
+  "b2b_services_sow_milestone_escrow_agent_guards": {
+    "all_passed": true,
+    "b2b_services_sow_settlement_latency_ms": 10,
+    "circumvention_or_jiggler_block_latency_ms": 11
+  },
+  "travel_retail_duty_free_customs_agent_guards": {
+    "all_passed": true,
+    "travel_retail_duty_free_settlement_latency_ms": 10,
+    "fake_departure_or_mule_card_block_latency_ms": 11
+  },
+  "home_furnishing_spatial_white_glove_agent_guards": {
+    "all_passed": true,
+    "home_furnishing_white_glove_settlement_latency_ms": 10,
+    "post_cut_mto_or_predatory_fee_block_latency_ms": 11
+  },
+  "ev_charging_roaming_tou_idle_agent_guards": {
+    "all_passed": true,
+    "ev_charging_roaming_settlement_latency_ms": 10,
+    "quishing_qr_or_invalid_mcc_block_latency_ms": 11
+  },
+  "edtech_corporate_lnd_tuition_agent_guards": {
+    "all_passed": true,
+    "edtech_corporate_lnd_settlement_latency_ms": 10,
+    "hardware_kickback_or_diploma_mill_block_latency_ms": 11
+  },
+  "corporate_csr_donation_matching_agent_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "CORPORATE_CSR_501C3_NET_TAX_RECEIPT_AND_BATCH_ACH_AUTHORIZED",
+      "latency_ms": 10,
+      "approved_budget_usd": "150000.00",
+      "savings_usd": "0.00",
+      "csr_matching_token": "corporate_csr_donation_matching_mandate_d23254d512c4d7",
+      "reason": "Verified active IRS 501(c)(3) status, subtracted Quid Pro Quo FMV, and queued zero-fee batch ACH disbursement."
+    },
+    "kickback_fraud_block": {
+      "http_status": 403,
+      "decision": "CIRCULAR_MATCHING_KICKBACK_COLLUSION_OR_FORGED_DONATION_RECEIPT_BLOCKED",
+      "latency_ms": 11,
+      "approved_budget_usd": "0.00",
+      "csr_matching_token": null,
+      "reason": "Blocked employee-shell charity circular kickback ring or unverified offline PDF donation receipt."
+    },
+    "quid_pro_quo_or_cap_block": {
+      "http_status": 422,
+      "decision": "QUID_PRO_QUO_BENEFIT_UNSUBTRACTED_OR_ANNUAL_MATCH_CAP_EXCEEDED_BLOCKED",
+      "latency_ms": 14,
+      "approved_budget_usd": "0.00",
+      "csr_matching_token": null,
+      "reason": "Blocked donation match with unsubtracted Quid Pro Quo gala/merchandise FMV or exceeded annual employee match cap."
+    },
+    "webiq_501c3_revoked_or_key_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_CHARITY_501C3_REVOKED_OR_SANCTIONED_OR_180D_KEY_HOLD",
+      "latency_ms": 265,
+      "approved_budget_usd": "0.00",
+      "csr_matching_token": null,
+      "reason": "Web IQ detected revoked IRS Pub 78 501(c)(3) tax-exempt status, OFAC hit, or key age > 180 days."
+    },
+    "anti_kickback_and_piggyback_confirm": {
+      "http_status": 409,
+      "decision": "ANTI_KICKBACK_DAF_AND_PIGGYBACK_ROUNDUP_BATCH_SAVINGS_CONFIRM",
+      "latency_ms": 230,
+      "approved_budget_usd": "117000.00",
+      "savings_usd": "33000.00",
+      "csr_matching_token": "corporate_csr_donation_matching_mandate_a0334e2e64e5d0",
+      "reason": "Irrevocable DAF anti-kickback gate and main-cart piggyback round-up batch ACH reduced fraud and fee loss by 22.0%."
+    }
+  },
+  "commercial_agent_observability_audit_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "OTEL_EDGE_REDACTED_FULL_FUNNEL_WORM_AUDIT_AUTHORIZED",
+      "latency_ms": 9,
+      "approved_budget_usd": "125000.00",
+      "savings_usd": "0.00",
+      "observability_audit_token": "commercial_agent_observability_audit_mandate_b6271ee3c1b73b",
+      "reason": "Verified edge Luhn PAN/PII redaction, 100% Golden Eval pass, and end-to-end W3C traceparent funnel lineage."
+    },
+    "unredacted_pci_pan_block": {
+      "http_status": 403,
+      "decision": "UNREDACTED_PCI_PAN_PII_OR_SECRET_LEAK_IN_TRACE_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "observability_audit_token": null,
+      "reason": "Blocked trace export containing unredacted Luhn credit card PAN, CVV, SSN, or rk_live_* secret."
+    },
+    "golden_eval_or_traceparent_block": {
+      "http_status": 422,
+      "decision": "GOLDEN_EVAL_REGRESSION_FAILURE_OR_BROKEN_AUDIT_TRACE_BLOCKED",
+      "latency_ms": 13,
+      "approved_budget_usd": "0.00",
+      "observability_audit_token": null,
+      "reason": "Blocked release or settlement due to <100% Golden Dataset CI pass rate or missing W3C traceparent / mandate hash."
+    },
+    "webiq_residency_or_key_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_DATA_RESIDENCY_BREACH_OR_180D_AUDIT_KEY_HOLD",
+      "latency_ms": 255,
+      "approved_budget_usd": "0.00",
+      "observability_audit_token": null,
+      "reason": "Web IQ detected cross-border telemetry residency breach (GDPR/PIPL) or audit signing key age > 180 days."
+    },
+    "tail_sampling_worm_confirm": {
+      "http_status": 409,
+      "decision": "TAIL_BASED_SAMPLING_AND_WORM_AUDIT_SAVINGS_CONFIRM",
+      "latency_ms": 215,
+      "approved_budget_usd": "92500.00",
+      "savings_usd": "32500.00",
+      "observability_audit_token": "commercial_agent_observability_audit_mandate_ad78c6351d8e77",
+      "reason": "100% WORM retention for checkout/error spans + 5% tail-sampling on read-only chats cut observability spend by 26.0%."
+    }
+  },
+  "live_shopping_flash_sale_agent_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "REDIS_LUA_ATOMIC_180S_LOCK_AND_ASR_PARITY_AUTHORIZED",
+      "latency_ms": 8,
+      "approved_budget_usd": "320000.00",
+      "savings_usd": "0.00",
+      "flash_sale_token": "live_shopping_flash_sale_mandate_e87cbb8602e4c3",
+      "reason": "Verified Redis Lua atomic reservation, 180s payment lease, and live ASR verbal-to-cart price parity."
+    },
+    "hoarding_bot_or_limit_block": {
+      "http_status": 403,
+      "decision": "INVENTORY_HOARDING_BOT_OR_ADDRESS_LIMIT_BYPASS_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "flash_sale_token": null,
+      "reason": "Blocked unpaid cart-hoarding bot or scalper bypassing household limit via address/virtual-card rotation."
+    },
+    "verbal_price_mismatch_block": {
+      "http_status": 422,
+      "decision": "LIVE_VERBAL_PRICE_CART_MISMATCH_OR_OVERSELL_BLOCKED",
+      "latency_ms": 12,
+      "approved_budget_usd": "0.00",
+      "flash_sale_token": null,
+      "reason": "Blocked flash-sale checkout where live ASR verbal price/gift differed from cart calculation or stock exhausted."
+    },
+    "webiq_anchor_price_or_key_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_DECEPTIVE_ANCHOR_PRICE_OR_180D_KEY_HOLD",
+      "latency_ms": 260,
+      "approved_budget_usd": "0.00",
+      "flash_sale_token": null,
+      "reason": "Web IQ detected deceptive strikethrough anchor price (FTC/Omnibus violation) or promo key age > 180 days."
+    },
+    "waitlist_and_price_drop_confirm": {
+      "http_status": 409,
+      "decision": "SHORT_TTL_WAITLIST_RECLAIM_AND_INSTANT_PRICE_DROP_REFUND_CONFIRM",
+      "latency_ms": 220,
+      "approved_budget_usd": "243200.00",
+      "savings_usd": "76800.00",
+      "flash_sale_token": "live_shopping_flash_sale_mandate_d6d338e44a1def",
+      "reason": "180s payment-backed lease waitlist reclaim and 7-day partial-refund price match cut flash-sale leakage by 24.0%."
+    }
+  },
+  "cruise_theme_park_resort_folio_agent_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "STEPPED_FOLIO_INCREMENTAL_AUTH_AND_SINGLE_CAPTURE_AUTHORIZED",
+      "latency_ms": 10,
+      "approved_budget_usd": "275000.00",
+      "savings_usd": "0.00",
+      "resort_folio_token": "cruise_theme_park_resort_folio_mandate_3adec595bff448",
+      "reason": "Verified wristband age/spend cap, full incremental pre-authorization coverage, and single final capture."
+    },
+    "minor_or_exclusion_block": {
+      "http_status": 403,
+      "decision": "MINOR_WRISTBAND_ALCOHOL_CAP_OR_CASINO_SELF_EXCLUSION_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "resort_folio_token": null,
+      "reason": "Blocked minor wristband alcohol/over-cap purchase or casino marker by a self-excluded patron."
+    },
+    "incremental_auth_or_port_tax_block": {
+      "http_status": 422,
+      "decision": "FOLIO_INCREMENTAL_AUTH_DECLINED_OR_SKIPPED_PORT_TAX_WITHHELD_BLOCKED",
+      "latency_ms": 13,
+      "approved_budget_usd": "0.00",
+      "resort_folio_token": null,
+      "reason": "Paused wristband folio due to declined stepped increment_authorization or withheld skipped-port government taxes."
+    },
+    "webiq_safety_or_key_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_RIDE_SAFETY_SHUTDOWN_OR_CDC_OUTBREAK_OR_180D_KEY_HOLD",
+      "latency_ms": 265,
+      "approved_budget_usd": "0.00",
+      "resort_folio_token": null,
+      "reason": "Web IQ detected ride safety shutdown, CDC VSP maritime outbreak alert, or settlement key age > 180 days."
+    },
+    "incremental_and_rain_check_confirm": {
+      "http_status": 409,
+      "decision": "STEPPED_INCREMENTAL_AUTH_AND_MULTI_EXPERIENCE_RAIN_CHECK_CONFIRM",
+      "latency_ms": 225,
+      "approved_budget_usd": "211750.00",
+      "savings_usd": "63250.00",
+      "resort_folio_token": "cruise_theme_park_resort_folio_mandate_1b7e3b88805dff",
+      "reason": "Stepped $250 incremental pre-auth and automated Multi-Experience rain-check passes reduced walk-off debt and churn by 23.0%."
+    }
+  },
+  "pet_ecommerce_vet_insurance_agent_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "SPECIES_SAFE_VET_ERX_AND_80_20_CLINIC_DIRECT_PAY_AUTHORIZED",
+      "latency_ms": 9,
+      "approved_budget_usd": "195000.00",
+      "savings_usd": "0.00",
+      "pet_commerce_token": "pet_ecommerce_vet_insurance_mandate_59a0d60b6f37da",
+      "reason": "Verified species-safe vet e-Rx, matched weight dosing band, and settled 80/20 clinic direct-pay."
+    },
+    "cross_species_or_rx_block": {
+      "http_status": 403,
+      "decision": "CROSS_SPECIES_TOXIC_PERMETHRIN_OR_INVALID_VET_RX_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "pet_commerce_token": null,
+      "reason": "Blocked feline exposure to canine permethrin SKU or dispensing without active veterinary e-Rx."
+    },
+    "weight_or_pre_existing_block": {
+      "http_status": 422,
+      "decision": "WEIGHT_DOSE_TIER_MISMATCH_OR_PRE_EXISTING_CONDITION_BLOCKED",
+      "latency_ms": 13,
+      "approved_budget_usd": "0.00",
+      "pet_commerce_token": null,
+      "reason": "Blocked out-of-tier weight dose shipment or clinic claim with PIMS SOAP pre-existing/waiting-period onset."
+    },
+    "webiq_fda_recall_or_key_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_FDA_CVM_PET_FOOD_RECALL_OR_180D_KEY_HOLD",
+      "latency_ms": 260,
+      "approved_budget_usd": "0.00",
+      "pet_commerce_token": null,
+      "reason": "Web IQ detected FDA CVM pet-food/drug lot recall (Salmonella/Aflatoxin) or key age > 180 days."
+    },
+    "rer_cadence_and_direct_pay_confirm": {
+      "http_status": 409,
+      "decision": "RER_CADENCE_SHIFT_AND_5S_VET_DIRECT_PAY_SAVINGS_CONFIRM",
+      "latency_ms": 220,
+      "approved_budget_usd": "150150.00",
+      "savings_usd": "44850.00",
+      "pet_commerce_token": "pet_ecommerce_vet_insurance_mandate_33fe83b4a6fe04",
+      "reason": "RER calorie-burn Autoship cadence tuning and PIMS 5s clinic direct-pay cut churn and claims fraud by 23.0%."
+    }
+  },
+  "coworking_flex_office_agent_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "NFC_BADGE_VERIFIED_AND_MASTER_CREDITS_WATERFALL_AUTHORIZED",
+      "latency_ms": 9,
+      "approved_budget_usd": "220000.00",
+      "savings_usd": "0.00",
+      "coworking_token": "coworking_flex_office_mandate_e26e072c9277c0",
+      "reason": "Verified 1-to-1 NFC badge compliance, applied master Included Credits waterfall, and settled net invoice."
+    },
+    "passback_or_nda_block": {
+      "http_status": 403,
+      "decision": "BADGE_PASSBACK_SHARING_OR_UNSIGNED_VISITOR_NDA_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "coworking_token": null,
+      "reason": "Blocked NFC passback credential sharing or external guest access without a signed digital NDA."
+    },
+    "unapplied_credits_or_autorenew_block": {
+      "http_status": 422,
+      "decision": "UNAPPLIED_INCLUDED_CREDITS_OR_INVALID_AUTORENEW_BLOCKED",
+      "latency_ms": 13,
+      "approved_budget_usd": "0.00",
+      "coworking_token": null,
+      "reason": "Blocked cash meeting-room overage while master contract Included Credits remained or post-notice evergreen renewal."
+    },
+    "webiq_closure_or_key_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_LOCATION_CLOSURE_UNABATED_OR_180D_KEY_HOLD",
+      "latency_ms": 255,
+      "approved_budget_usd": "0.00",
+      "coworking_token": null,
+      "reason": "Web IQ detected coworking location closure without rent abatement or key age > 180 days."
+    },
+    "ghost_desk_downsize_confirm": {
+      "http_status": 409,
+      "decision": "GHOST_DESK_DAY_PASS_DOWNSIZE_AND_15M_ROOM_RELEASE_CONFIRM",
+      "latency_ms": 215,
+      "approved_budget_usd": "165000.00",
+      "savings_usd": "55000.00",
+      "coworking_token": "coworking_flex_office_mandate_4586092e342f9f",
+      "reason": "60-day badge audit downsizing <=8d/mo ghost desks to Day Passes + 15m room release saved 25.0%."
+    }
+  },
+  "corporate_mice_event_banquet_agent_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "COI_VERIFIED_AND_CLEAN_BEO_MASTER_FOLIO_AUTHORIZED",
+      "latency_ms": 10,
+      "approved_budget_usd": "310000.00",
+      "savings_usd": "0.00",
+      "mice_event_token": "corporate_mice_event_banquet_mandate_d92e88f68876f4",
+      "reason": "Verified contractor COI insurance, credited resold transient rooms, and settled clean BEO master folio."
+    },
+    "bec_or_missing_coi_block": {
+      "http_status": 403,
+      "decision": "EVENT_VENDOR_BEC_WIRE_FRAUD_OR_MISSING_COI_INSURANCE_BLOCKED",
+      "latency_ms": 10,
+      "approved_budget_usd": "0.00",
+      "mice_event_token": null,
+      "reason": "Blocked email-modified venue deposit IBAN (BEC) or staging contractor without active $1M+ COI insurance."
+    },
+    "attrition_or_av_fee_block": {
+      "http_status": 422,
+      "decision": "UNCREDITED_RESOLD_ROOM_ATTRITION_OR_AV_SERVICE_FEE_PADDING_BLOCKED",
+      "latency_ms": 14,
+      "approved_budget_usd": "0.00",
+      "mice_event_token": null,
+      "reason": "Blocked master folio charging attrition on resold rooms or applying 24% F&B service fee to AV equipment."
+    },
+    "webiq_force_majeure_or_key_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_FORCE_MAJEURE_VENUE_CLOSURE_OR_180D_KEY_HOLD",
+      "latency_ms": 265,
+      "approved_budget_usd": "0.00",
+      "mice_event_token": null,
+      "reason": "Web IQ detected official Force Majeure venue/weather shutdown or payout key age > 180 days."
+    },
+    "flight_synced_beo_and_attrition_confirm": {
+      "http_status": 409,
+      "decision": "FLIGHT_SYNCED_72H_BEO_AND_ATTRITION_MITIGATION_CONFIRM",
+      "latency_ms": 225,
+      "approved_budget_usd": "235600.00",
+      "savings_usd": "74400.00",
+      "mice_event_token": "corporate_mice_event_banquet_mandate_1ef4cae3f13651",
+      "reason": "72h flight-synced BEO headcount (5% overset buffer) and PMS resold-room attrition mitigation saved 24.0%."
+    }
+  },
+  "wealth_robo_advisor_treasury_agent_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "REG_BI_SUITABLE_AND_WASH_SALE_FREE_FDIC_SWEEP_AUTHORIZED",
+      "latency_ms": 10,
+      "approved_budget_usd": "260000.00",
+      "savings_usd": "0.00",
+      "wealth_treasury_token": "wealth_robo_advisor_treasury_mandate_d4fcf75901ef62",
+      "reason": "Verified FINRA Reg BI suitability, clean 61-day household wash-sale window, and 100% FDIC-insured sweep allocation."
+    },
+    "suitability_or_withdrawal_block": {
+      "http_status": 403,
+      "decision": "SUITABILITY_RISK_MISMATCH_OR_THIRD_PARTY_WITHDRAWAL_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "wealth_treasury_token": null,
+      "reason": "Blocked trade exceeding client FINRA Reg BI risk tolerance or withdrawal to a non-matching third-party bank account."
+    },
+    "wash_sale_or_fdic_cap_block": {
+      "http_status": 422,
+      "decision": "IRS_30D_WASH_SALE_CONFLICT_OR_UNINSURED_SINGLE_BANK_EXPOSURE_BLOCKED",
+      "latency_ms": 13,
+      "approved_budget_usd": "0.00",
+      "wealth_treasury_token": null,
+      "reason": "Blocked TLH swap conflicting with [-30d, +30d] household/IRA DRIP window or single-bank balance exceeding $250k FDIC cap."
+    },
+    "webiq_bank_downgrade_or_key_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_SWEEP_BANK_RATING_DOWNGRADE_OR_180D_KEY_HOLD",
+      "latency_ms": 260,
+      "approved_budget_usd": "0.00",
+      "wealth_treasury_token": null,
+      "reason": "Web IQ detected partner sweep bank rating/liquidity downgrade or signing key age > 180 days."
+    },
+    "cross_index_and_fdic_sweep_confirm": {
+      "http_status": 409,
+      "decision": "CROSS_INDEX_TLH_AND_245K_MULTI_BANK_FDIC_SWEEP_CONFIRM",
+      "latency_ms": 220,
+      "approved_budget_usd": "202800.00",
+      "savings_usd": "57200.00",
+      "wealth_treasury_token": "wealth_robo_advisor_treasury_mandate_711d4ed2fc7db0",
+      "reason": "Cross-index TLH pair substitution and <=$245k/bank multi-bank FDIC cash sweep preserved 22.0% in tax alpha and yield."
+    }
+  },
+  "fitness_wellness_subscription_agent_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "FTC_SYMMETRICAL_CANCEL_AND_FAIR_BACKFILL_BILLING_AUTHORIZED",
+      "latency_ms": 9,
+      "approved_budget_usd": "180000.00",
+      "savings_usd": "0.00",
+      "fitness_subscription_token": "fitness_wellness_subscription_mandate_966d48f84ebcea",
+      "reason": "Verified FTC Click-to-Cancel symmetry, fair waitlist-backfill fee waiver, and compliant studio settlement."
+    },
+    "ftc_click_to_cancel_block": {
+      "http_status": 403,
+      "decision": "FTC_CLICK_TO_CANCEL_VIOLATION_OR_POST_CANCEL_BILLING_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "fitness_subscription_token": null,
+      "reason": "Blocked dark-pattern in-person/phone cancellation requirement or recurring charge after cancellation."
+    },
+    "backfilled_double_dip_block": {
+      "http_status": 422,
+      "decision": "BACKFILLED_SEAT_DOUBLE_DIP_PENALTY_OR_MEDICAL_DENIAL_BLOCKED",
+      "latency_ms": 12,
+      "approved_budget_usd": "0.00",
+      "fitness_subscription_token": null,
+      "reason": "Blocked $25 late-cancel fee because the vacated spot was backfilled by the waitlist or medical exemption applied."
+    },
+    "webiq_studio_closure_or_key_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_STUDIO_CLOSURE_INSOLVENCY_OR_180D_KEY_HOLD",
+      "latency_ms": 255,
+      "approved_budget_usd": "0.00",
+      "fitness_subscription_token": null,
+      "reason": "Web IQ detected partner fitness studio closure/insolvency or settlement key age > 180 days."
+    },
+    "freeze_and_backfill_waiver_confirm": {
+      "http_status": 409,
+      "decision": "SAME_SCREEN_60D_FREEZE_AND_WAITLIST_BACKFILL_WAIVER_CONFIRM",
+      "latency_ms": 215,
+      "approved_budget_usd": "136800.00",
+      "savings_usd": "43200.00",
+      "fitness_subscription_token": "fitness_wellness_subscription_mandate_7a5d300ecb688b",
+      "reason": "Same-screen 60-day pause_collection freeze and waitlist-backfill late-fee waiver reduced churn and disputes by 24.0%."
+    }
+  },
+  "cross_border_reverse_logistics_drawback_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "RETURN_BAR_SCAN_VERIFIED_AND_CBP_7501_DRAWBACK_AUTHORIZED",
+      "latency_ms": 10,
+      "approved_budget_usd": "240000.00",
+      "savings_usd": "0.00",
+      "reverse_drawback_token": "cross_border_reverse_logistics_drawback_mandate_472d478210b656",
+      "reason": "Verified in-person Return-Bar scan, matched CBP Form 7501 8-digit HTS entry, and authorized local restock."
+    },
+    "returnless_arbitrage_block": {
+      "http_status": 403,
+      "decision": "RETURNLESS_REFUND_ARBITRAGE_RING_OR_UNVERIFIED_DROP_OFF_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "reverse_drawback_token": null,
+      "reason": "Blocked returnless-refund arbitrage ring or refund request prior to in-person Return-Bar barcode scan."
+    },
+    "missing_7501_or_hts_block": {
+      "http_status": 422,
+      "decision": "MISSING_CBP_7501_IMPORT_ENTRY_OR_HTS_DRAWBACK_MISMATCH_BLOCKED",
+      "latency_ms": 13,
+      "approved_budget_usd": "0.00",
+      "reverse_drawback_token": null,
+      "reason": "Blocked 99% CBP Duty Drawback claim missing original Form 7501 entry or matching 8-digit HTS code."
+    },
+    "webiq_3pl_congestion_or_key_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_3PL_RETURN_HUB_CONGESTION_OR_180D_KEY_HOLD",
+      "latency_ms": 260,
+      "approved_budget_usd": "0.00",
+      "reverse_drawback_token": null,
+      "reason": "Web IQ detected regional 3PL return-hub backlog/customs hold or key age > 180 days."
+    },
+    "in_country_restock_and_drawback_confirm": {
+      "http_status": 409,
+      "decision": "IN_COUNTRY_3PL_RESTOCK_AND_99PCT_CBP_DUTY_DRAWBACK_CONFIRM",
+      "latency_ms": 220,
+      "approved_budget_usd": "177600.00",
+      "savings_usd": "62400.00",
+      "reverse_drawback_token": "cross_border_reverse_logistics_drawback_mandate_b9e24498efff2b",
+      "reason": "Domestic 3PL 48h re-fulfillment and TFTEA 99% CBP Duty Drawback recovery reduced net return cost by 26.0%."
+    }
+  },
   "scenarios": [
     {
       "id": "W01",
