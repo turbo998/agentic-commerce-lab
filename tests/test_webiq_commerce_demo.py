@@ -26316,5 +26316,88 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertIn("wealth-robo-advisor-treasury-sandbox", html)
 
 
+    def test_fitness_wellness_subscription_agent_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            FitnessWellnessSubscriptionAgentPolicyInput,
+            evaluate_fitness_wellness_subscription_agent_policy,
+        )
+
+        happy = evaluate_fitness_wellness_subscription_agent_policy(
+            FitnessWellnessSubscriptionAgentPolicyInput(
+                quarterly_fitness_subscription_revenue_usd=Decimal("180000.00"),
+                ftc_click_to_cancel_violation_or_post_cancel_billing_detected=False,
+                backfilled_seat_double_dip_penalty_or_medical_denial_detected=False,
+                webiq_studio_closure_insolvency_flag=False,
+                restricted_key_age_days=28,
+                same_screen_freeze_and_waitlist_backfill_waiver_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "FTC_SYMMETRICAL_CANCEL_AND_FAIR_BACKFILL_BILLING_AUTHORIZED")
+        self.assertTrue(str(happy["fitness_subscription_token"]).startswith("fitness_wellness_subscription_mandate_"))
+
+        ftc_block = evaluate_fitness_wellness_subscription_agent_policy(
+            FitnessWellnessSubscriptionAgentPolicyInput(
+                quarterly_fitness_subscription_revenue_usd=Decimal("180000.00"),
+                ftc_click_to_cancel_violation_or_post_cancel_billing_detected=True,
+                backfilled_seat_double_dip_penalty_or_medical_denial_detected=False,
+                webiq_studio_closure_insolvency_flag=False,
+                restricted_key_age_days=28,
+                same_screen_freeze_and_waitlist_backfill_waiver_enabled=False,
+            )
+        )
+        self.assertEqual(ftc_block["http_status"], 403)
+        self.assertEqual(ftc_block["decision"], "FTC_CLICK_TO_CANCEL_VIOLATION_OR_POST_CANCEL_BILLING_BLOCKED")
+
+        backfill_block = evaluate_fitness_wellness_subscription_agent_policy(
+            FitnessWellnessSubscriptionAgentPolicyInput(
+                quarterly_fitness_subscription_revenue_usd=Decimal("180000.00"),
+                ftc_click_to_cancel_violation_or_post_cancel_billing_detected=False,
+                backfilled_seat_double_dip_penalty_or_medical_denial_detected=True,
+                webiq_studio_closure_insolvency_flag=False,
+                restricted_key_age_days=28,
+                same_screen_freeze_and_waitlist_backfill_waiver_enabled=False,
+            )
+        )
+        self.assertEqual(backfill_block["http_status"], 422)
+        self.assertEqual(
+            backfill_block["decision"],
+            "BACKFILLED_SEAT_DOUBLE_DIP_PENALTY_OR_MEDICAL_DENIAL_BLOCKED",
+        )
+
+        closure_hold = evaluate_fitness_wellness_subscription_agent_policy(
+            FitnessWellnessSubscriptionAgentPolicyInput(
+                quarterly_fitness_subscription_revenue_usd=Decimal("180000.00"),
+                ftc_click_to_cancel_violation_or_post_cancel_billing_detected=False,
+                backfilled_seat_double_dip_penalty_or_medical_denial_detected=False,
+                webiq_studio_closure_insolvency_flag=True,
+                restricted_key_age_days=191,
+                same_screen_freeze_and_waitlist_backfill_waiver_enabled=False,
+            )
+        )
+        self.assertEqual(closure_hold["http_status"], 451)
+        self.assertEqual(closure_hold["decision"], "WEBIQ_STUDIO_CLOSURE_INSOLVENCY_OR_180D_KEY_HOLD")
+
+        freeze_confirm = evaluate_fitness_wellness_subscription_agent_policy(
+            FitnessWellnessSubscriptionAgentPolicyInput(
+                quarterly_fitness_subscription_revenue_usd=Decimal("180000.00"),
+                ftc_click_to_cancel_violation_or_post_cancel_billing_detected=False,
+                backfilled_seat_double_dip_penalty_or_medical_denial_detected=False,
+                webiq_studio_closure_insolvency_flag=False,
+                restricted_key_age_days=28,
+                same_screen_freeze_and_waitlist_backfill_waiver_enabled=True,
+            )
+        )
+        self.assertEqual(freeze_confirm["http_status"], 409)
+        self.assertEqual(freeze_confirm["savings_usd"], "43200.00")
+        self.assertEqual(freeze_confirm["approved_budget_usd"], "136800.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("fitness_wellness_subscription_agent_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("fitness-wellness-subscription-sandbox", html)
+
+
 if __name__ == "__main__":
     unittest.main()
