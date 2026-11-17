@@ -426,6 +426,7 @@
 - **专题 391（Agent 支付与结账协议五大方案横向选型对比：Stripe Agent Toolkit `Shared Payment Tokens` vs Visa Intelligent Commerce `VIC` vs Mastercard Agent Pay vs PayPal Agentic Toolkit vs 企业预算虚拟卡 `Ramp / Brex / Stripe Issuing` 选型与风控架构 FAQ：34 国 `spt_...` 免卡号结算、全球发卡行 `VTS/MDES` 网络令牌与 `FIDO2 Passkey`、跨境钱包买家保护、B2B 长尾网站单次精确美分限额虚拟卡 2 秒 Webhook 鉴权即刷即销令牌 `agentic_payment_toolkit_stripe_spt_visa_vic_mc_paypal_vcard_mandate_...` vs 共用主卡 PAN 盗刷与 `2026-11-30` 静态密钥淘汰）**：**[《Agent 支付与结账协议选型 FAQ：Stripe Agent Toolkit (`SPT`) vs. Visa Intelligent Commerce vs. Mastercard Agent Pay vs. PayPal Agentic Toolkit vs. 企业预算虚拟卡实战指南》](docs/agentic-payment-toolkit-stripe-spt-vs-visa-vic-mastercard-paypal-virtual-card-selection-faq.md)**
 - **专题 392（电商个性化 AI 导购与跨品类搭配转化助手 `AI Shopping Stylist & Cross-Category Bundle Conversion Agent` 端到端架构选型 FAQ：前置 `ATP >= 1` 尺码硬过滤与 `disable_checkout=false` 门禁、共现搭配图谱与确定性促销排他锁 `net_margin_pct >= 18.0%`、Microsoft Web IQ 版型偏码实测接地与对话内 UCP/ACP 一键整套锁库结账令牌 `ecommerce_ai_shopping_stylist_bundle_conversion_mandate_...` vs 纯向量检索推荐断码缺货款、大模型心算叠券击穿毛利与外链跳转 70% 流失）**：**[《电商个性化 AI 导购与跨品类搭配转化助手架构选型 FAQ：混合目录检索、实时库存尺码硬过滤、凑单毛利护栏与一键加购状态机实战指南》](docs/ecommerce-ai-shopping-assistant-cross-category-bundle-conversion-architecture-selection-faq.md)**
 - **专题 393（OTA 机酒差旅智能规划与自动比价改签 Agent `Corporate & Consumer OTA Travel Planning & Auto-Rebooking Agent` 架构选型 FAQ：Web IQ 全包到手价与退改截止时间接地、机酒多段两阶段 `capture_method=manual` 预授权防甩单 Saga、购后降价 `Hold-New-Before-Cancel-Old` 先锁新单再退旧单与净省 `>= $25` 门禁、`<= 180d` 远期 SPT 令牌 `ota_travel_rebooking_ndc_saga_mandate_...` vs 机票出票酒店满房单边退票亏损、隐性 Resort/行李费超标与先退旧房踏空）**：**[《OTA 机酒差旅智能规划与自动比价改签 Agent 架构选型 FAQ：GDS/NDC 实时全包价接地、差旅合规门禁、两阶段防甩单 Saga 与净节省改签实战指南》](docs/ota-travel-planning-price-drop-rebooking-ndc-saga-architecture-selection-faq.md)**
+- **专题 394（企业 B2B 采购寻源询价 `RFQ`、多供应商比价与合同条款初审 Copilot 端到端架构选型 FAQ：`EXW/FOB -> DDP` 到岸总拥有成本 `Landed TCO` 同口径归一化、MSA 法务 Playbook 四大毒丸条款硬拦截与自动 Redline、Web IQ 供应商资信与反围标穿透、对接 `SAP Ariba / Dynamics 365 / Coupa` 成本中心预算冻结与三单匹配令牌 `b2b_rfq_sourcing_contract_redline_erp_copilot_mandate_...` vs 裸单价假低价定标与合同背面霸王续约）**：**[《企业 B2B 采购寻源询价（RFQ）、供应商比价与合同条款初审 Copilot 架构选型 FAQ：到岸 TCO 归一化、法务红线扫描与 ERP (SAP / D365 / Coupa) 审批流实战指南》](docs/b2b-rfq-sourcing-supplier-comparison-contract-redline-erp-copilot-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1214,6 +1215,8 @@
 ![2026-11-18 电商个性化 AI 导购与跨品类搭配转化助手架构：混合检索、库存尺码锁、凑单毛利护栏与一键加购一图流总结](assets/svg/394-ecommerce-ai-shopping-assistant-cross-category-bundle-conversion-2026-11-18.svg)
 
 ![2026-11-18 OTA 机酒差旅智能规划与自动比价改签 Agent 架构：全包价接地、两阶段防甩单 Saga 与净节省改签一图流总结](assets/svg/395-ota-travel-planning-price-drop-rebooking-ndc-saga-2026-11-18.svg)
+
+![2026-11-18 企业 B2B 采购寻源询价 (RFQ)、供应商比价与合同条款初审 Copilot 架构一图流总结](assets/svg/396-b2b-rfq-sourcing-supplier-comparison-contract-redline-erp-copilot-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 

@@ -23435,6 +23435,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-travel-rebooking-ndc-saga-sandbox", demo_zh)
 
+    def test_b2b_rfq_sourcing_contract_redline_copilot_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_rfq_sourcing_contract_redline_copilot_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Normalized DDP Landed TCO + MSA clean + Post-GRN terms + ERP budget lock -> 200 OK ($180,000.00)
+        ok_res = evaluate_b2b_rfq_sourcing_contract_redline_copilot_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_B2B_RFQ_SOURCING_CONTRACT_COPILOT_SETTLED")
+        self.assertEqual(ok_res.settled_b2b_rfq_copilot_cents, 18000000)
+
+        # 2. Unnormalized EXW raw-price award or bypassed ERP cost-center budget encumbrance -> 403 Blocked
+        exw_403 = evaluate_b2b_rfq_sourcing_contract_redline_copilot_policy(
+            ddp_landed_tco_normalized_and_erp_budget_encumbrance_verified=False,
+        )
+        self.assertFalse(exw_403.allowed)
+        self.assertEqual(exw_403.http_status, 403)
+        self.assertEqual(
+            exw_403.decision_code,
+            "UNNORMALIZED_EXW_RAW_PRICE_AWARD_OR_BYPASSED_ERP_BUDGET_ENCUMBRANCE_BLOCKED",
+        )
+
+        # 3. Contract poison pill (LoL cap <12m, silent evergreen renewal, or pre-GRN invoice trigger) -> 422 Blocked
+        msa_422 = evaluate_b2b_rfq_sourcing_contract_redline_copilot_policy(
+            msa_lol_cap_and_no_evergreen_and_post_grn_terms_verified=False,
+        )
+        self.assertFalse(msa_422.allowed)
+        self.assertEqual(msa_422.http_status, 422)
+        self.assertEqual(
+            msa_422.decision_code,
+            "CONTRACT_POISON_PILL_LOL_CAP_AUTO_RENEWAL_OR_PRE_GRN_INVOICE_TERM_BLOCKED",
+        )
+
+        # 4. Web IQ detects supplier sanction/litigation risk or collusive bid rigging -> 451 Hold
+        san_451 = evaluate_b2b_rfq_sourcing_contract_redline_copilot_policy(
+            webiq_supplier_sanction_litigation_and_anticollusion_clean=False,
+        )
+        self.assertFalse(san_451.allowed)
+        self.assertEqual(san_451.http_status, 451)
+
+        # 5. Normalized Landed TCO negotiation & Net-60 working-capital discount saving $36,000 ($144,000 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_rfq_sourcing_contract_redline_copilot_policy(
+            automated_landed_tco_negotiation_and_net60_savings_cents=3600000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_b2b_rfq_copilot_cents, 14400000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_rfq_sourcing_contract_redline_copilot_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-rfq-sourcing-contract-redline-copilot-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

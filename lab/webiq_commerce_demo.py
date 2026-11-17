@@ -39523,6 +39523,106 @@ def evaluate_ota_travel_rebooking_ndc_saga_policy(
     )
 
 
+@dataclass(frozen=True)
+class B2BRfqSourcingContractRedlineCopilotDecision:
+    """Deterministic decision output for enterprise B2B RFQ sourcing, quote TCO normalization & contract redline Copilot."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    b2b_rfq_copilot_lane: str
+    settled_b2b_rfq_copilot_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_b2b_rfq_sourcing_contract_redline_copilot_policy(
+    *,
+    mandate_id: str = "b2b_rfq_sourcing_contract_redline_erp_copilot_mandate_2026",
+    b2b_rfq_copilot_cents: int = 18000000,
+    ddp_landed_tco_normalized_and_erp_budget_encumbrance_verified: bool = True,
+    msa_lol_cap_and_no_evergreen_and_post_grn_terms_verified: bool = True,
+    webiq_supplier_sanction_litigation_and_anticollusion_clean: bool = True,
+    automated_landed_tco_negotiation_and_net60_savings_cents: int = 0,
+) -> B2BRfqSourcingContractRedlineCopilotDecision:
+    """Evaluate B2B RFQ sourcing, Landed TCO quote normalization, MSA contract redlining & ERP budget gate."""
+    if not mandate_id.startswith("b2b_rfq_sourcing_contract_redline_erp_copilot_mandate_"):
+        return B2BRfqSourcingContractRedlineCopilotDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_B2B_RFQ_COPILOT_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            b2b_rfq_copilot_lane="INVALID_B2B_RFQ_COPILOT_MANDATE_PREFIX",
+            settled_b2b_rfq_copilot_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not ddp_landed_tco_normalized_and_erp_budget_encumbrance_verified:
+        return B2BRfqSourcingContractRedlineCopilotDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="UNNORMALIZED_EXW_RAW_PRICE_AWARD_OR_BYPASSED_ERP_BUDGET_ENCUMBRANCE_BLOCKED",
+            action_pill="Send to a human",
+            b2b_rfq_copilot_lane="UNNORMALIZED_EXW_RAW_PRICE_AWARD_OR_BYPASSED_ERP_BUDGET_ENCUMBRANCE_BLOCKED",
+            settled_b2b_rfq_copilot_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not msa_lol_cap_and_no_evergreen_and_post_grn_terms_verified:
+        return B2BRfqSourcingContractRedlineCopilotDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="CONTRACT_POISON_PILL_LOL_CAP_AUTO_RENEWAL_OR_PRE_GRN_INVOICE_TERM_BLOCKED",
+            action_pill="Send to a human",
+            b2b_rfq_copilot_lane="CONTRACT_POISON_PILL_LOL_CAP_AUTO_RENEWAL_OR_PRE_GRN_INVOICE_TERM_BLOCKED",
+            settled_b2b_rfq_copilot_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_supplier_sanction_litigation_and_anticollusion_clean:
+        return B2BRfqSourcingContractRedlineCopilotDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="SUPPLIER_SANCTION_LITIGATION_RISK_OR_COLLUSIVE_BIDDING_HOLD",
+            action_pill="Send to a human",
+            b2b_rfq_copilot_lane="SUPPLIER_SANCTION_LITIGATION_RISK_OR_COLLUSIVE_BIDDING_HOLD",
+            settled_b2b_rfq_copilot_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_landed_tco_negotiation_and_net60_savings_cents > 0:
+        net_cents = max(
+            0,
+            b2b_rfq_copilot_cents - automated_landed_tco_negotiation_and_net60_savings_cents,
+        )
+        return B2BRfqSourcingContractRedlineCopilotDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_LANDED_TCO_NEGOTIATION_AND_NET60_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            b2b_rfq_copilot_lane="AUTOMATED_LANDED_TCO_NEGOTIATION_AND_NET60_SAVINGS_CONFIRM",
+            settled_b2b_rfq_copilot_cents=net_cents,
+            latency_ms=230,
+            provenance="deterministic_offline_simulation",
+        )
+
+    return B2BRfqSourcingContractRedlineCopilotDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_B2B_RFQ_SOURCING_CONTRACT_COPILOT_SETTLED",
+        action_pill="Act automatically",
+        b2b_rfq_copilot_lane="VERIFIED_B2B_RFQ_SOURCING_CONTRACT_COPILOT_SETTLED",
+        settled_b2b_rfq_copilot_cents=b2b_rfq_copilot_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -52406,6 +52506,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unbundled_leg_or_cancel_first_block_latency_ms": ota_leg_403.latency_ms,
     }
 
+    rfq_commit_ok = evaluate_b2b_rfq_sourcing_contract_redline_copilot_policy()
+    rfq_exw_403 = evaluate_b2b_rfq_sourcing_contract_redline_copilot_policy(
+        ddp_landed_tco_normalized_and_erp_budget_encumbrance_verified=False,
+    )
+    rfq_msa_422 = evaluate_b2b_rfq_sourcing_contract_redline_copilot_policy(
+        msa_lol_cap_and_no_evergreen_and_post_grn_terms_verified=False,
+    )
+    rfq_san_451 = evaluate_b2b_rfq_sourcing_contract_redline_copilot_policy(
+        webiq_supplier_sanction_litigation_and_anticollusion_clean=False,
+    )
+    rfq_sav_409 = evaluate_b2b_rfq_sourcing_contract_redline_copilot_policy(
+        automated_landed_tco_negotiation_and_net60_savings_cents=3600000,
+    )
+    b2b_rfq_sourcing_contract_redline_copilot_guards = {
+        "all_passed": (
+            rfq_commit_ok.allowed
+            and rfq_commit_ok.settled_b2b_rfq_copilot_cents == 18000000
+            and not rfq_exw_403.allowed
+            and rfq_exw_403.http_status == 403
+            and not rfq_msa_422.allowed
+            and rfq_msa_422.http_status == 422
+            and not rfq_san_451.allowed
+            and rfq_san_451.http_status == 451
+            and not rfq_sav_409.allowed
+            and rfq_sav_409.action_pill == "Confirm"
+        ),
+        "b2b_rfq_copilot_settlement_latency_ms": rfq_commit_ok.latency_ms,
+        "unnormalized_exw_or_no_budget_block_latency_ms": rfq_exw_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -52812,6 +52942,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agent_payment_toolkit_selection_guards": agent_payment_toolkit_selection_guards,
         "ecommerce_shopping_stylist_bundle_guards": ecommerce_shopping_stylist_bundle_guards,
         "ota_travel_rebooking_ndc_saga_guards": ota_travel_rebooking_ndc_saga_guards,
+        "b2b_rfq_sourcing_contract_redline_copilot_guards": b2b_rfq_sourcing_contract_redline_copilot_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -62803,6 +62934,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="ota-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Enterprise B2B RFQ Sourcing, Quote Comparison & Contract Redline Copilot Sandbox (Round 394) -->
+      <div class="finops-box" id="b2b-rfq-sourcing-contract-redline-copilot-sandbox" style="margin-top:12px;border-color:#818CF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-rfq-title">🏢 企业 B2B 采购寻源询价 (RFQ)、供应商比价与合同初审 Copilot 沙盒：到岸 TCO 归一化 + 法务毒丸拦截 + ERP 预算锁 (Round 394)</span>
+        </div>
+        <div class="control-row">
+          <label><span>EXW-&gt;DDP 到岸 TCO 同口径归一化 + MSA 法务 Playbook 四大毒丸扫描 + SAP Ariba / D365 / Coupa 预算预留核验:</span></label>
+          <select id="rfq-select" onchange="updateB2BRfqSourcingContractRedlineCopilotSandbox()">
+            <option value="rfq_commit_ok">🏢 DDP 到岸 TCO 同口径最优 + MSA 零毒丸条款 + GRN 验收后起算账期 + ERP 预算冻结：10ms 清算 $180,000.00! (Act automatically)</option>
+            <option value="rfq_exw_403">🛑 未将 EXW 工厂交货报价折算运费关税直接按表面低价定标 (实际倒亏 14%)，或绕过 ERP 成本中心预算冻结直发正式 PO → 11ms 触发 HTTP 403!</option>
+            <option value="rfq_msa_422">🚨 供应商合同夹带“赔偿上限 &lt;12个月”、“静默涨价自动续约 3 年”毒丸条款，或把账期起算点从收货验收 (GRN) 偷换为开票日 → 14ms 触发 HTTP 422!</option>
+            <option value="rfq_san_451">🛑 Web IQ /v3/browse &amp; /news 穿透检出参标供应商存在贸易制裁/断供诉讼风险，或三家参标商实控人/注册地址重合涉嫌围标 → 265ms 触发 HTTP 451!</option>
+            <option value="rfq_sav_409">🧑‍⚖️ 启用 Landed TCO 同口径比价议价 + 自动生成法务 Redline 锁定 GRN 后 Net-60 账期折现，单批立省 $36,000.00 (净付 $144,000.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="rfq-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -63635,6 +63784,7 @@ function renderAll() {{
   updateAgentPaymentToolkitSelectionSandbox();
   updateEcommerceShoppingStylistBundleSandbox();
   updateOtaTravelRebookingNdcSagaSandbox();
+  updateB2BRfqSourcingContractRedlineCopilotSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -82668,6 +82818,52 @@ function updateOtaTravelRebookingNdcSagaSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>✈️ 机酒两阶段双锁齐备 + Web IQ 全包价核验 + &lt;=180d 远期 SPT + 24h 幂等键合规：已自动清算 (VERIFIED_OTA_TRAVEL_REBOOKING_NDC_SAGA_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零机票出票酒店满房甩单、零隐性 Resort/行李费超支、零先退旧房踏空</strong>：OTA 机酒差旅规划与自动改签批次已完成安全清算（<code>$165,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateB2BRfqSourcingContractRedlineCopilotSandbox() {{
+  var sel = document.getElementById("rfq-select");
+  var outEl = document.getElementById("rfq-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "rfq_exw_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 UNNORMALIZED_EXW_RAW_PRICE_AWARD_OR_BYPASSED_ERP_BUDGET_ENCUMBRANCE_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "寻源与 ERP 门禁拦截：检测到未将 <code>EXW 工厂交货报价</code> 折算国际运费、关税与预付款资金占用成本即按表面裸价定标，或试图绕过 <code>SAP Ariba / D365 / Coupa</code> 成本中心预算冻结直发正式 PO，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "rfq_msa_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 CONTRACT_POISON_PILL_LOL_CAP_AUTO_RENEWAL_OR_PRE_GRN_INVOICE_TERM_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "法务 Playbook 扫描阻断：供应商合同草案包含 <code>赔偿责任上限 &lt;12个月合同额</code>、<code>静默涨价自动续约 3 年</code> 毒丸条款，或将 <code>Net-60</code> 账期起算点从“合格收货单（<code>GRN</code>）”偷换为“开票日”，已在 14ms 内阻断并生成 Redline 修订稿！" +
+      "</div>";
+    return;
+  }}
+  if (v === "rfq_san_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 SUPPLIER_SANCTION_LITIGATION_RISK_OR_COLLUSIVE_BIDDING_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "Microsoft Web IQ <code>/v3/browse &amp; /v3/search/news</code> 穿透尽调发现：参标供应商存在重大断供违约诉讼、贸易合规风险或三家报价商实控人重合涉嫌关联陪标围标，已在 265ms 内挂起定标！" +
+      "</div>";
+    return;
+  }}
+  if (v === "rfq_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_LANDED_TCO_NEGOTIATION_AND_NET60_SAVINGS_CONFIRM (230ms · Confirm · deterministic_offline_simulation)：<br>" +
+      "启用 B2B 寻源与合同初审闭环：<code>拉齐 DDP 到岸总成本识破 EXW 假低价 + Web IQ 公开基准价对标压价 + 法务 Redline 锁定 GRN 验收后 Net-60 账期折现</code>，单批采购立省 <code>$36,000.00</code>（净结算额优化至 <code>$144,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🏢 DDP 到岸 TCO 同口径最优 + MSA 法务零毒丸 + GRN 账期锁 + ERP 预算预留合规：已自动清算 (VERIFIED_B2B_RFQ_SOURCING_CONTRACT_COPILOT_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零 EXW 隐性运费倒亏、零霸王续约与低赔偿毒丸、零无预算违规发单</strong>：企业 B2B 采购寻源与合同初审批次已完成安全清算（<code>$180,000.00</code>）！" +
     "</div>";
 }}
 
