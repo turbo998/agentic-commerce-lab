@@ -24800,6 +24800,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-fx-treasury-agent-sandbox", demo_zh)
 
+    def test_b2b_punchout_edi_orchestration_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_b2b_punchout_edi_orchestration_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant cXML PunchOut cart return + EDI 850/855 UOM match + 856 ASN ack -> 200 OK
+        ok = evaluate_b2b_punchout_edi_orchestration_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_b2b_punchout_edi_cents, 26000000)
+
+        # 2. Direct payment capture inside PunchOut session or SFTP inventory mode='replace' -> 403 Forbidden
+        pco_403 = evaluate_b2b_punchout_edi_orchestration_agent_policy(
+            punchout_disable_checkout_and_sftp_upsert_verified=False,
+        )
+        self.assertFalse(pco_403.allowed)
+        self.assertEqual(pco_403.http_status, 403)
+
+        # 3. EDI 850/855 UOM (EA vs CS) mismatch, price creep, or missing UNSPSC -> 422 Unprocessable
+        uom_422 = evaluate_b2b_punchout_edi_orchestration_agent_policy(
+            edi_850_855_uom_price_and_unspsc_matched=False,
+        )
+        self.assertFalse(uom_422.allowed)
+        self.assertEqual(uom_422.http_status, 422)
+
+        # 4. Missing EDI 997 acknowledgment on EDI 856 ASN (SSCC-18) -> 451 Hold
+        asn_451 = evaluate_b2b_punchout_edi_orchestration_agent_policy(
+            edi_856_asn_sscc18_and_997_ack_received=False,
+        )
+        self.assertFalse(asn_451.allowed)
+        self.assertEqual(asn_451.http_status, 451)
+
+        # 5. Touchless cXML/EDI O2C + ASN compliance saving $54,600 ($205,400 net) -> 409 Confirm
+        sav_409 = evaluate_b2b_punchout_edi_orchestration_agent_policy(
+            touchless_cxml_edi_o2c_and_asn_penalty_savings_cents=5460000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_b2b_punchout_edi_cents, 20540000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["b2b_punchout_edi_orchestration_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-punchout-edi-orchestration-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
