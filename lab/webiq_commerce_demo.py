@@ -43463,6 +43463,80 @@ def evaluate_live_shopping_flash_sale_agent_policy(
     }
 
 
+@dataclass(frozen=True)
+class CruiseThemeParkResortFolioAgentPolicyInput:
+    voyage_or_park_folio_settlement_usd: Decimal
+    minor_wristband_alcohol_cap_or_casino_self_exclusion_detected: bool
+    folio_incremental_auth_declined_or_skipped_port_tax_withheld: bool
+    webiq_ride_safety_shutdown_or_cdc_outbreak_flag: bool
+    restricted_key_age_days: int
+    stepped_incremental_auth_and_auto_rain_check_enabled: bool
+
+
+def evaluate_cruise_theme_park_resort_folio_agent_policy(
+    policy_input: CruiseThemeParkResortFolioAgentPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate cruise/theme-park wristband incremental folio auth, minor/exclusion gate & automated rain-check recovery."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.voyage_or_park_folio_settlement_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.minor_wristband_alcohol_cap_or_casino_self_exclusion_detected:
+        return {
+            "http_status": 403,
+            "decision": "MINOR_WRISTBAND_ALCOHOL_CAP_OR_CASINO_SELF_EXCLUSION_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "resort_folio_token": None,
+            "reason": "Blocked minor wristband alcohol/over-cap purchase or casino marker by a self-excluded patron.",
+        }
+
+    if policy_input.folio_incremental_auth_declined_or_skipped_port_tax_withheld:
+        return {
+            "http_status": 422,
+            "decision": "FOLIO_INCREMENTAL_AUTH_DECLINED_OR_SKIPPED_PORT_TAX_WITHHELD_BLOCKED",
+            "latency_ms": 13,
+            "approved_budget_usd": "0.00",
+            "resort_folio_token": None,
+            "reason": "Paused wristband folio due to declined stepped increment_authorization or withheld skipped-port government taxes.",
+        }
+
+    if policy_input.webiq_ride_safety_shutdown_or_cdc_outbreak_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_RIDE_SAFETY_SHUTDOWN_OR_CDC_OUTBREAK_OR_180D_KEY_HOLD",
+            "latency_ms": 265,
+            "approved_budget_usd": "0.00",
+            "resort_folio_token": None,
+            "reason": "Web IQ detected ride safety shutdown, CDC VSP maritime outbreak alert, or settlement key age > 180 days.",
+        }
+
+    if policy_input.stepped_incremental_auth_and_auto_rain_check_enabled:
+        savings = (gross * Decimal("0.23")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"RESORT_FOLIO_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "STEPPED_INCREMENTAL_AUTH_AND_MULTI_EXPERIENCE_RAIN_CHECK_CONFIRM",
+            "latency_ms": 225,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "resort_folio_token": f"cruise_theme_park_resort_folio_mandate_{digest}",
+            "reason": "Stepped $250 incremental pre-auth and automated Multi-Experience rain-check passes reduced walk-off debt and churn by 23.0%.",
+        }
+
+    digest = hashlib.sha256(f"RESORT_FOLIO_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "STEPPED_FOLIO_INCREMENTAL_AUTH_AND_SINGLE_CAPTURE_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "resort_folio_token": f"cruise_theme_park_resort_folio_mandate_{digest}",
+        "reason": "Verified wristband age/spend cap, full incremental pre-authorization coverage, and single final capture.",
+    }
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -57645,6 +57719,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cruise_theme_park_resort_folio_agent_guard = {
+        "happy_path": evaluate_cruise_theme_park_resort_folio_agent_policy(
+            CruiseThemeParkResortFolioAgentPolicyInput(
+                voyage_or_park_folio_settlement_usd=Decimal("275000.00"),
+                minor_wristband_alcohol_cap_or_casino_self_exclusion_detected=False,
+                folio_incremental_auth_declined_or_skipped_port_tax_withheld=False,
+                webiq_ride_safety_shutdown_or_cdc_outbreak_flag=False,
+                restricted_key_age_days=35,
+                stepped_incremental_auth_and_auto_rain_check_enabled=False,
+            )
+        ),
+        "minor_or_exclusion_block": evaluate_cruise_theme_park_resort_folio_agent_policy(
+            CruiseThemeParkResortFolioAgentPolicyInput(
+                voyage_or_park_folio_settlement_usd=Decimal("275000.00"),
+                minor_wristband_alcohol_cap_or_casino_self_exclusion_detected=True,
+                folio_incremental_auth_declined_or_skipped_port_tax_withheld=False,
+                webiq_ride_safety_shutdown_or_cdc_outbreak_flag=False,
+                restricted_key_age_days=35,
+                stepped_incremental_auth_and_auto_rain_check_enabled=False,
+            )
+        ),
+        "incremental_auth_or_port_tax_block": evaluate_cruise_theme_park_resort_folio_agent_policy(
+            CruiseThemeParkResortFolioAgentPolicyInput(
+                voyage_or_park_folio_settlement_usd=Decimal("275000.00"),
+                minor_wristband_alcohol_cap_or_casino_self_exclusion_detected=False,
+                folio_incremental_auth_declined_or_skipped_port_tax_withheld=True,
+                webiq_ride_safety_shutdown_or_cdc_outbreak_flag=False,
+                restricted_key_age_days=35,
+                stepped_incremental_auth_and_auto_rain_check_enabled=False,
+            )
+        ),
+        "webiq_safety_or_key_hold": evaluate_cruise_theme_park_resort_folio_agent_policy(
+            CruiseThemeParkResortFolioAgentPolicyInput(
+                voyage_or_park_folio_settlement_usd=Decimal("275000.00"),
+                minor_wristband_alcohol_cap_or_casino_self_exclusion_detected=False,
+                folio_incremental_auth_declined_or_skipped_port_tax_withheld=False,
+                webiq_ride_safety_shutdown_or_cdc_outbreak_flag=True,
+                restricted_key_age_days=195,
+                stepped_incremental_auth_and_auto_rain_check_enabled=False,
+            )
+        ),
+        "incremental_and_rain_check_confirm": evaluate_cruise_theme_park_resort_folio_agent_policy(
+            CruiseThemeParkResortFolioAgentPolicyInput(
+                voyage_or_park_folio_settlement_usd=Decimal("275000.00"),
+                minor_wristband_alcohol_cap_or_casino_self_exclusion_detected=False,
+                folio_incremental_auth_declined_or_skipped_port_tax_withheld=False,
+                webiq_ride_safety_shutdown_or_cdc_outbreak_flag=False,
+                restricted_key_age_days=35,
+                stepped_incremental_auth_and_auto_rain_check_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -58092,6 +58219,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "corporate_csr_donation_matching_agent_guard": corporate_csr_donation_matching_agent_guard,
         "commercial_agent_observability_audit_guard": commercial_agent_observability_audit_guard,
         "live_shopping_flash_sale_agent_guard": live_shopping_flash_sale_agent_guard,
+        "cruise_theme_park_resort_folio_agent_guard": cruise_theme_park_resort_folio_agent_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -68902,6 +69030,51 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         </div>
       </div>
 
+      <!-- Interactive Cruise, Theme Park & Resort Wristband Folio Sandbox (2026-11-18 Round 435) -->
+      <div class="finops-box" id="cruise-theme-park-resort-folio-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎡 邮轮度假与主题乐园 (Disney/皇家加勒比) 手环增量预授权、停航停运退赔与未成年防盗刷沙盒 (Round 435 · 2026-11-18)</div>
+            <div class="finops-subtitle">实测儿童手环 AP2 日限额/禁酒锁与娱乐场自我禁入拦截 (HTTP 403)、每满 $250 阶梯增量预授权防下船逃单与取消靠港必退港务税 (HTTP 422)、Web IQ 游乐设备故障/疫情与 180d 密钥挂起 (HTTP 451) 及设备停运自动升级全园通兑券立省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="resort-folio-verdict-pill">HTTP 200 · STEPPED_FOLIO_INCREMENTAL_AUTH_AND_SINGLE_CAPTURE_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">航次 / 主题园区综合手环挂账结算批次 ($ USD) <span class="control-val" id="resort-folio-gross-label">$275,000</span></label>
+            <input type="range" id="resort-folio-gross-slider" min="50000" max="1000000" step="25000" value="275000" oninput="updateCruiseThemeParkResortFolioSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">手环分级限额、阶梯增量预授权与停航/停运无感退赔场景</label>
+            <select id="resort-folio-mode-select" onchange="updateCruiseThemeParkResortFolioSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 阶梯增量预授权足额担保 + 成年手环合规 + 离船单次合并实扣 (HTTP 200)</option>
+              <option value="minor_403">🛑 未成年手环越权买酒/超日限额 或 自我禁入名单赌客挂账筹码 (HTTP 403)</option>
+              <option value="declined_422">🚨 公海累计挂账突破增量预授权遭拒付 或 取消停靠港截留港务税 (HTTP 422)</option>
+              <option value="safety_451">🛑 Web IQ 检出 CDC 海事疫情/游乐设施故障停运或结算密钥 &gt;180d (HTTP 451)</option>
+              <option value="raincheck_409">🧑‍⚖️ 启用每 $250 阶梯预授权防逃单 + 停运秒级升级全园通兑快通卡立省 23% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原下船逃单坏账与停运退票基线</div>
+            <div class="finops-kpi-val" id="resort-folio-gross-kpi">$275,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">阶梯预授权与通兑券立省</div>
+            <div class="finops-kpi-val" id="resort-folio-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">航次/园区净止损后结算</div>
+            <div class="finops-kpi-val" id="resort-folio-net-kpi" style="color:#60A5FA;">$275,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">手环挂账与退赔合规令牌</div>
+            <div class="finops-kpi-val" id="resort-folio-token-kpi" style="font-size:10px;color:#A78BFA;">cruise_theme_park_resort_folio_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -69775,6 +69948,7 @@ function renderAll() {{
   updateCorporateCsrDonationMatchingSandbox();
   updateCommercialAgentObservabilityAuditSandbox();
   updateLiveShoppingFlashSaleSandbox();
+  updateCruiseThemeParkResortFolioSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -90721,6 +90895,61 @@ function updateLiveShoppingFlashSaleSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'live_shopping_flash_sale_mandate_verified';
+  }}
+}}
+
+function updateCruiseThemeParkResortFolioSandbox() {{
+  const grossSlider = document.getElementById('resort-folio-gross-slider');
+  const modeSelect = document.getElementById('resort-folio-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '275000');
+  const mode = modeSelect.value;
+  document.getElementById('resort-folio-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('resort-folio-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('resort-folio-verdict-pill');
+  const savingsKpi = document.getElementById('resort-folio-savings-kpi');
+  const netKpi = document.getElementById('resort-folio-net-kpi');
+  const tokenKpi = document.getElementById('resort-folio-token-kpi');
+
+  if (mode === 'minor_403') {{
+    pill.textContent = 'HTTP 403 · MINOR_WRISTBAND_ALCOHOL_CAP_OR_CASINO_SELF_EXCLUSION_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_MINOR_ALCOHOL_OR_SELF_EXCLUSION';
+  }} else if (mode === 'declined_422') {{
+    pill.textContent = 'HTTP 422 · FOLIO_INCREMENTAL_AUTH_DECLINED_OR_SKIPPED_PORT_TAX_WITHHELD_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNBACKED_FOLIO_OR_WITHHELD_PORT_TAX';
+  }} else if (mode === 'safety_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_RIDE_SAFETY_SHUTDOWN_OR_CDC_OUTBREAK_OR_180D_KEY_HOLD (265ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_RIDE_SHUTDOWN_OR_CDC_OUTBREAK';
+  }} else if (mode === 'raincheck_409') {{
+    const savings = Math.round(gross * 0.23 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · STEPPED_INCREMENTAL_AUTH_AND_MULTI_EXPERIENCE_RAIN_CHECK_CONFIRM (225ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'cruise_theme_park_resort_folio_mandate_saved23pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · STEPPED_FOLIO_INCREMENTAL_AUTH_AND_SINGLE_CAPTURE_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'cruise_theme_park_resort_folio_mandate_verified';
   }}
 }}
 

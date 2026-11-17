@@ -25910,5 +25910,85 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertIn("live-shopping-flash-sale-sandbox", html)
 
 
+    def test_cruise_theme_park_resort_folio_agent_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            CruiseThemeParkResortFolioAgentPolicyInput,
+            evaluate_cruise_theme_park_resort_folio_agent_policy,
+        )
+
+        happy = evaluate_cruise_theme_park_resort_folio_agent_policy(
+            CruiseThemeParkResortFolioAgentPolicyInput(
+                voyage_or_park_folio_settlement_usd=Decimal("275000.00"),
+                minor_wristband_alcohol_cap_or_casino_self_exclusion_detected=False,
+                folio_incremental_auth_declined_or_skipped_port_tax_withheld=False,
+                webiq_ride_safety_shutdown_or_cdc_outbreak_flag=False,
+                restricted_key_age_days=35,
+                stepped_incremental_auth_and_auto_rain_check_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "STEPPED_FOLIO_INCREMENTAL_AUTH_AND_SINGLE_CAPTURE_AUTHORIZED")
+        self.assertTrue(str(happy["resort_folio_token"]).startswith("cruise_theme_park_resort_folio_mandate_"))
+
+        minor_block = evaluate_cruise_theme_park_resort_folio_agent_policy(
+            CruiseThemeParkResortFolioAgentPolicyInput(
+                voyage_or_park_folio_settlement_usd=Decimal("275000.00"),
+                minor_wristband_alcohol_cap_or_casino_self_exclusion_detected=True,
+                folio_incremental_auth_declined_or_skipped_port_tax_withheld=False,
+                webiq_ride_safety_shutdown_or_cdc_outbreak_flag=False,
+                restricted_key_age_days=35,
+                stepped_incremental_auth_and_auto_rain_check_enabled=False,
+            )
+        )
+        self.assertEqual(minor_block["http_status"], 403)
+        self.assertEqual(minor_block["decision"], "MINOR_WRISTBAND_ALCOHOL_CAP_OR_CASINO_SELF_EXCLUSION_BLOCKED")
+
+        folio_block = evaluate_cruise_theme_park_resort_folio_agent_policy(
+            CruiseThemeParkResortFolioAgentPolicyInput(
+                voyage_or_park_folio_settlement_usd=Decimal("275000.00"),
+                minor_wristband_alcohol_cap_or_casino_self_exclusion_detected=False,
+                folio_incremental_auth_declined_or_skipped_port_tax_withheld=True,
+                webiq_ride_safety_shutdown_or_cdc_outbreak_flag=False,
+                restricted_key_age_days=35,
+                stepped_incremental_auth_and_auto_rain_check_enabled=False,
+            )
+        )
+        self.assertEqual(folio_block["http_status"], 422)
+        self.assertEqual(folio_block["decision"], "FOLIO_INCREMENTAL_AUTH_DECLINED_OR_SKIPPED_PORT_TAX_WITHHELD_BLOCKED")
+
+        safety_hold = evaluate_cruise_theme_park_resort_folio_agent_policy(
+            CruiseThemeParkResortFolioAgentPolicyInput(
+                voyage_or_park_folio_settlement_usd=Decimal("275000.00"),
+                minor_wristband_alcohol_cap_or_casino_self_exclusion_detected=False,
+                folio_incremental_auth_declined_or_skipped_port_tax_withheld=False,
+                webiq_ride_safety_shutdown_or_cdc_outbreak_flag=True,
+                restricted_key_age_days=195,
+                stepped_incremental_auth_and_auto_rain_check_enabled=False,
+            )
+        )
+        self.assertEqual(safety_hold["http_status"], 451)
+        self.assertEqual(safety_hold["decision"], "WEBIQ_RIDE_SAFETY_SHUTDOWN_OR_CDC_OUTBREAK_OR_180D_KEY_HOLD")
+
+        raincheck_confirm = evaluate_cruise_theme_park_resort_folio_agent_policy(
+            CruiseThemeParkResortFolioAgentPolicyInput(
+                voyage_or_park_folio_settlement_usd=Decimal("275000.00"),
+                minor_wristband_alcohol_cap_or_casino_self_exclusion_detected=False,
+                folio_incremental_auth_declined_or_skipped_port_tax_withheld=False,
+                webiq_ride_safety_shutdown_or_cdc_outbreak_flag=False,
+                restricted_key_age_days=35,
+                stepped_incremental_auth_and_auto_rain_check_enabled=True,
+            )
+        )
+        self.assertEqual(raincheck_confirm["http_status"], 409)
+        self.assertEqual(raincheck_confirm["savings_usd"], "63250.00")
+        self.assertEqual(raincheck_confirm["approved_budget_usd"], "211750.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cruise_theme_park_resort_folio_agent_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("cruise-theme-park-resort-folio-sandbox", html)
+
+
 if __name__ == "__main__":
     unittest.main()
