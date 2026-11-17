@@ -25184,6 +25184,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-services-sow-milestone-escrow-agent-sandbox", demo_zh)
 
+    def test_travel_retail_duty_free_customs_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_travel_retail_duty_free_customs_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 5-way departure identity + customs allowance safe + airside gate capture -> 200 OK
+        ok = evaluate_travel_retail_duty_free_customs_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_travel_retail_duty_free_cents, 24500000)
+
+        # 2. Fake-departure ticket cancellation scheme or smuggling mule card sharing -> 403 Forbidden
+        smg_403 = evaluate_travel_retail_duty_free_customs_agent_policy(
+            five_way_departure_identity_and_no_mule_card_sharing=False,
+        )
+        self.assertFalse(smg_403.allowed)
+        self.assertEqual(smg_403.http_status, 403)
+
+        # 3. Customs allowance/quantity exceeded or connecting-flight >100ml liquid confiscation risk -> 422 Unprocessable
+        lag_422 = evaluate_travel_retail_duty_free_customs_agent_policy(
+            customs_allowance_qty_and_transit_lags_liquid_safe=False,
+        )
+        self.assertFalse(lag_422.allowed)
+        self.assertEqual(lag_422.http_status, 422)
+
+        # 4. Web IQ flight cancellation or last-minute gate change cutoff -> 451 Hold
+        flt_451 = evaluate_travel_retail_duty_free_customs_agent_policy(
+            webiq_flight_active_and_gate_sync_within_cutoff=False,
+        )
+        self.assertFalse(flt_451.allowed)
+        self.assertEqual(flt_451.http_status, 451)
+
+        # 5. Dynamic gate re-routing + airside manual capture saving $51,450 ($193,550 net) -> 409 Confirm
+        sav_409 = evaluate_travel_retail_duty_free_customs_agent_policy(
+            dynamic_gate_rerouting_and_manual_preauth_savings_cents=5145000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_travel_retail_duty_free_cents, 19355000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["travel_retail_duty_free_customs_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("travel-retail-duty-free-customs-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

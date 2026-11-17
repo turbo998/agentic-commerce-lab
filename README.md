@@ -460,6 +460,7 @@
 - **专题 425（房产租赁、长租公寓与商业地产科技 `PropTech` “AI 找房签约、押金监管专户 `Escrow` 与防电汇篡改诈骗”Agent 架构选型 FAQ：《公平住房法》`FHA` 反歧视导向硬阻断、只读监管信托专户免疫 `Real Estate BEC` 电汇钓鱼改号、城市法定押金上限 `<=1月租` 与退租自然磨损豁免/剩余折旧寿命定损令牌 `proptech_lease_escrow_fair_housing_mandate_...`）**：**[《房产租赁、长租公寓与商业地产科技（PropTech）“AI 找房签约、押金监管专户（Escrow）与防电汇篡改诈骗”Agent 架构选型 FAQ：公平住房法合规、法定押金锁与退租验房定损实战指南》](docs/proptech-real-estate-lease-deposit-escrow-fair-housing-wire-agent-selection-faq.md)**
 - **专题 426（游戏充值、数字文娱与虚拟商品“应用内购 `IAP` vs. 网页直充 `D2C WebShop` 选型、未成年人限额与恶意退费追回”Agent 架构选型 FAQ：官方 `D2C WebShop (3.4% 费率 + 10% 赠钻)` 省下 25% 渠道税、家长 `AP2 Passkey` 逐笔签名防未成年误充、FIFO 批次负钻石余额锁定与 Apple `ConsumptionRequest` 50ms 遥测回传令牌 `gaming_digital_goods_webshop_clawback_mandate_...`）**：**[《游戏充值、数字文娱与虚拟商品“应用内购（IAP）vs. 网页直充（WebShop）选型、未成年人限额与恶意退费追回”Agent 架构选型 FAQ：省 25% 渠道税、防熊孩子盗刷与抽卡拒付回滚实战指南》](docs/gaming-digital-goods-webshop-iap-minor-cap-clawback-agent-selection-faq.md)**
 - **专题 427（企业软件外包、咨询服务与全球远程用工 `B2B SOW & Freelance: Upwork / Deel / Fieldglass` “里程碑资金托管、防范围蔓延与税务预扣”Agent 架构选型 FAQ：隔离沙箱 CI 100% 通过后托管放款与无水印源码/IP 转让原子互换、SOW `Not-to-Exceed (NTE)` 硬封顶与 `Stripe v2 OCA` 变更单锁、`W-9 / W-8BEN` 税表与 `AB5/IR35` 门禁令牌 `b2b_services_sow_milestone_escrow_mandate_...`）**：**[《企业软件外包、咨询服务与全球远程用工（B2B SOW & Freelance：Upwork / Deel / Fieldglass）“里程碑资金托管、防范围蔓延与税务预扣”Agent 架构选型 FAQ：交付物验收锁、变更单与 W-8BEN 实战指南》](docs/b2b-services-sow-milestone-escrow-scope-creep-tax-withholding-agent-selection-faq.md)**
+- **专题 428（机场免税店、离岛免税与旅游零售 `Travel Retail: CDFG / Dufry / Lotte` “航班登机口实时联动、海关免税额度核销与防套代购”Agent 架构选型 FAQ：人证票卡提货“五码合一”阻断假离境与拼卡套代购、联程转机 `>100ml` 液体 `LAGs` 防安检没收、AODB 改登机口动态闪送与隔离区实提 `manual Capture` 令牌 `travel_retail_duty_free_customs_mandate_...`）**：**[《机场免税店、离岛免税与旅游零售（Travel Retail：CDFG / Dufry / Lotte）“航班登机口实时联动、海关免税额度核销与防套代购”Agent 架构选型 FAQ：登机牌核验、中转液体防没收与离境提货实战指南》](docs/travel-retail-duty-free-flight-gate-sync-customs-allowance-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1316,6 +1317,8 @@
 ![2026-11-18 游戏充值与数字文娱应用内购 (IAP) vs 网页直充 (WebShop)、未成年人限额与恶意退费追回 Agent 架构一图流总结](assets/svg/428-gaming-digital-goods-webshop-iap-minor-cap-clawback-2026-11-18.svg)
 
 ![2026-11-18 企业软件外包与全球远程用工 (B2B SOW/Deel/Upwork) 里程碑托管、防范围蔓延与税务预扣 Agent 架构一图流总结](assets/svg/429-b2b-services-sow-milestone-escrow-scope-creep-tax-withholding-2026-11-18.svg)
+
+![2026-11-18 机场免税店与离岛免税 (Travel Retail) 航班登机口联动、海关免税额度锁与防套代购 Agent 架构一图流总结](assets/svg/430-travel-retail-duty-free-flight-gate-sync-customs-allowance-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
