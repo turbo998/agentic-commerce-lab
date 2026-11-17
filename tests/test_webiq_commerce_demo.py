@@ -25990,5 +25990,85 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         self.assertIn("cruise-theme-park-resort-folio-sandbox", html)
 
 
+    def test_pet_ecommerce_vet_insurance_agent_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            PetEcommerceVetInsuranceAgentPolicyInput,
+            evaluate_pet_ecommerce_vet_insurance_agent_policy,
+        )
+
+        happy = evaluate_pet_ecommerce_vet_insurance_agent_policy(
+            PetEcommerceVetInsuranceAgentPolicyInput(
+                quarterly_pet_autoship_and_claims_usd=Decimal("195000.00"),
+                cross_species_toxic_permethrin_or_invalid_vet_rx_detected=False,
+                weight_dose_tier_mismatch_or_pre_existing_condition_detected=False,
+                webiq_fda_cvm_pet_food_recall_flag=False,
+                restricted_key_age_days=30,
+                rer_cadence_shift_and_vet_direct_pay_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "SPECIES_SAFE_VET_ERX_AND_80_20_CLINIC_DIRECT_PAY_AUTHORIZED")
+        self.assertTrue(str(happy["pet_commerce_token"]).startswith("pet_ecommerce_vet_insurance_mandate_"))
+
+        toxic_block = evaluate_pet_ecommerce_vet_insurance_agent_policy(
+            PetEcommerceVetInsuranceAgentPolicyInput(
+                quarterly_pet_autoship_and_claims_usd=Decimal("195000.00"),
+                cross_species_toxic_permethrin_or_invalid_vet_rx_detected=True,
+                weight_dose_tier_mismatch_or_pre_existing_condition_detected=False,
+                webiq_fda_cvm_pet_food_recall_flag=False,
+                restricted_key_age_days=30,
+                rer_cadence_shift_and_vet_direct_pay_enabled=False,
+            )
+        )
+        self.assertEqual(toxic_block["http_status"], 403)
+        self.assertEqual(toxic_block["decision"], "CROSS_SPECIES_TOXIC_PERMETHRIN_OR_INVALID_VET_RX_BLOCKED")
+
+        weight_block = evaluate_pet_ecommerce_vet_insurance_agent_policy(
+            PetEcommerceVetInsuranceAgentPolicyInput(
+                quarterly_pet_autoship_and_claims_usd=Decimal("195000.00"),
+                cross_species_toxic_permethrin_or_invalid_vet_rx_detected=False,
+                weight_dose_tier_mismatch_or_pre_existing_condition_detected=True,
+                webiq_fda_cvm_pet_food_recall_flag=False,
+                restricted_key_age_days=30,
+                rer_cadence_shift_and_vet_direct_pay_enabled=False,
+            )
+        )
+        self.assertEqual(weight_block["http_status"], 422)
+        self.assertEqual(weight_block["decision"], "WEIGHT_DOSE_TIER_MISMATCH_OR_PRE_EXISTING_CONDITION_BLOCKED")
+
+        recall_hold = evaluate_pet_ecommerce_vet_insurance_agent_policy(
+            PetEcommerceVetInsuranceAgentPolicyInput(
+                quarterly_pet_autoship_and_claims_usd=Decimal("195000.00"),
+                cross_species_toxic_permethrin_or_invalid_vet_rx_detected=False,
+                weight_dose_tier_mismatch_or_pre_existing_condition_detected=False,
+                webiq_fda_cvm_pet_food_recall_flag=True,
+                restricted_key_age_days=191,
+                rer_cadence_shift_and_vet_direct_pay_enabled=False,
+            )
+        )
+        self.assertEqual(recall_hold["http_status"], 451)
+        self.assertEqual(recall_hold["decision"], "WEBIQ_FDA_CVM_PET_FOOD_RECALL_OR_180D_KEY_HOLD")
+
+        rer_confirm = evaluate_pet_ecommerce_vet_insurance_agent_policy(
+            PetEcommerceVetInsuranceAgentPolicyInput(
+                quarterly_pet_autoship_and_claims_usd=Decimal("195000.00"),
+                cross_species_toxic_permethrin_or_invalid_vet_rx_detected=False,
+                weight_dose_tier_mismatch_or_pre_existing_condition_detected=False,
+                webiq_fda_cvm_pet_food_recall_flag=False,
+                restricted_key_age_days=30,
+                rer_cadence_shift_and_vet_direct_pay_enabled=True,
+            )
+        )
+        self.assertEqual(rer_confirm["http_status"], 409)
+        self.assertEqual(rer_confirm["savings_usd"], "44850.00")
+        self.assertEqual(rer_confirm["approved_budget_usd"], "150150.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("pet_ecommerce_vet_insurance_agent_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("pet-ecommerce-vet-insurance-sandbox", html)
+
+
 if __name__ == "__main__":
     unittest.main()
