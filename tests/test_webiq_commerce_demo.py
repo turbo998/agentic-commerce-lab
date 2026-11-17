@@ -23834,6 +23834,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("enterprise-cpq-deal-desk-agent-sandbox", demo_zh)
 
+    def test_ecommerce_dynamic_repricing_map_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_ecommerce_dynamic_repricing_map_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Web IQ live GTIN/InStock proof + above MAP/COGS floor + Catalog upsert -> 200 OK ($160,000.00)
+        ok_res = evaluate_ecommerce_dynamic_repricing_map_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_ECOMMERCE_DYNAMIC_REPRICING_MAP_SETTLED")
+        self.assertEqual(ok_res.settled_ecommerce_dynamic_repricing_cents, 16000000)
+
+        # 2. Forged screenshot, OutOfStock bait price, or refurbished SKU mismatch -> 403 Blocked
+        fak_403 = evaluate_ecommerce_dynamic_repricing_map_policy(
+            server_side_gtin_in_stock_and_new_condition_verified=False,
+        )
+        self.assertFalse(fak_403.allowed)
+        self.assertEqual(fak_403.http_status, 403)
+        self.assertEqual(
+            fak_403.decision_code,
+            "FAKE_SCREENSHOT_OR_OUT_OF_STOCK_BAIT_OR_REFURBISHED_MISMATCH_BLOCKED",
+        )
+
+        # 3. MAP policy floor breach, algorithmic price spiral, or invalid replace mode on pricing feed -> 422 Blocked
+        map_422 = evaluate_ecommerce_dynamic_repricing_map_policy(
+            above_map_and_cogs_floor_and_upsert_mode_verified=False,
+        )
+        self.assertFalse(map_422.allowed)
+        self.assertEqual(map_422.http_status, 422)
+        self.assertEqual(
+            map_422.decision_code,
+            "MAP_POLICY_FLOOR_BREACH_OR_PRICE_SPIRAL_OR_INVALID_REPLACE_MODE_BLOCKED",
+        )
+
+        # 4. Stale competitor crawl cache (liveCrawlSucceeded=false) or expired 300s upload URL -> 451 Hold
+        stl_451 = evaluate_ecommerce_dynamic_repricing_map_policy(
+            webiq_live_crawl_fresh_and_300s_upload_url_clean=False,
+        )
+        self.assertFalse(stl_451.allowed)
+        self.assertEqual(stl_451.http_status, 451)
+
+        # 5. Server-side GTIN arbitrage block & MAP margin protection saving $33,600 ($126,400 net) -> 409 Confirm
+        sav_409 = evaluate_ecommerce_dynamic_repricing_map_policy(
+            automated_gtin_arbitrage_block_and_map_margin_savings_cents=3360000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_ecommerce_dynamic_repricing_cents, 12640000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["ecommerce_dynamic_repricing_map_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-dynamic-repricing-map-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
