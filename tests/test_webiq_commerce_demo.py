@@ -23264,6 +23264,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("commercial-search-grounding-selection-sandbox", demo_zh)
 
+    def test_agent_payment_toolkit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_agent_payment_toolkit_selection_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant 5-rail payment routing (Stripe SPT + Visa VIC + MC + PayPal + Single-use VCN) -> 200 OK ($140,000.00)
+        ok_res = evaluate_agent_payment_toolkit_selection_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_AGENT_PAYMENT_TOOLKIT_MULTIRAIL_SETTLED")
+        self.assertEqual(ok_res.settled_agent_payment_toolkit_cents, 14000000)
+
+        # 2. Raw reusable master card PAN, post-Nov 30 sk_live_* or double SPT resolve -> 403 Blocked
+        pan_403 = evaluate_agent_payment_toolkit_selection_policy(
+            zero_reusable_pan_and_nov30_key_and_single_resolve_verified=False,
+        )
+        self.assertFalse(pan_403.allowed)
+        self.assertEqual(pan_403.http_status, 403)
+        self.assertEqual(
+            pan_403.decision_code,
+            "RAW_REUSABLE_PAN_OR_POST_NOV30_STATIC_KEY_OR_DOUBLE_RESOLVE_BLOCKED",
+        )
+
+        # 3. Calling SPT outside 34 supported countries or unbounded virtual card limit -> 422 Blocked
+        reg_422 = evaluate_agent_payment_toolkit_selection_policy(
+            spt_34_country_routing_and_single_use_vcard_cap_verified=False,
+        )
+        self.assertFalse(reg_422.allowed)
+        self.assertEqual(reg_422.http_status, 422)
+        self.assertEqual(
+            reg_422.decision_code,
+            "UNSUPPORTED_SPT_REGION_OR_UNBOUNDED_VIRTUAL_CARD_SPEND_LIMIT_BLOCKED",
+        )
+
+        # 4. Visa VIC Passkey silent retry or unconfirmed PayPal/MCP refund/payout -> 451 Hold
+        vic_451 = evaluate_agent_payment_toolkit_selection_policy(
+            webiq_vic_passkey_fail_closed_and_refund_hitl_clean=False,
+        )
+        self.assertFalse(vic_451.allowed)
+        self.assertEqual(vic_451.http_status, 451)
+
+        # 5. Multi-rail routing & single-use VCN interchange rebate saving $29,400 ($110,600 net) -> 409 Confirm
+        sav_409 = evaluate_agent_payment_toolkit_selection_policy(
+            automated_multirail_routing_and_vcard_rebate_savings_cents=2940000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_agent_payment_toolkit_cents, 11060000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["agent_payment_toolkit_selection_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agent-payment-toolkit-selection-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

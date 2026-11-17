@@ -39223,6 +39223,106 @@ def evaluate_commercial_search_grounding_selection_policy(
     )
 
 
+@dataclass(frozen=True)
+class AgentPaymentToolkitSelectionDecision:
+    """Deterministic decision output for agent payment & checkout toolkit selection (Stripe SPT vs Visa VIC vs Mastercard Agent Pay vs PayPal vs Corporate Virtual Card)."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    agent_payment_toolkit_lane: str
+    settled_agent_payment_toolkit_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_agent_payment_toolkit_selection_policy(
+    *,
+    mandate_id: str = "agentic_payment_toolkit_stripe_spt_visa_vic_mc_paypal_vcard_mandate_2026",
+    agent_payment_toolkit_cents: int = 14000000,
+    zero_reusable_pan_and_nov30_key_and_single_resolve_verified: bool = True,
+    spt_34_country_routing_and_single_use_vcard_cap_verified: bool = True,
+    webiq_vic_passkey_fail_closed_and_refund_hitl_clean: bool = True,
+    automated_multirail_routing_and_vcard_rebate_savings_cents: int = 0,
+) -> AgentPaymentToolkitSelectionDecision:
+    """Evaluate agent payment & checkout toolkit selection: Stripe SPT vs Visa VIC vs Mastercard Agent Pay vs PayPal vs Corporate Virtual Cards."""
+    if not mandate_id.startswith("agentic_payment_toolkit_stripe_spt_visa_vic_mc_paypal_vcard_mandate_"):
+        return AgentPaymentToolkitSelectionDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_AGENT_PAYMENT_TOOLKIT_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            agent_payment_toolkit_lane="INVALID_AGENT_PAYMENT_TOOLKIT_MANDATE_PREFIX",
+            settled_agent_payment_toolkit_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not zero_reusable_pan_and_nov30_key_and_single_resolve_verified:
+        return AgentPaymentToolkitSelectionDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="RAW_REUSABLE_PAN_OR_POST_NOV30_STATIC_KEY_OR_DOUBLE_RESOLVE_BLOCKED",
+            action_pill="Send to a human",
+            agent_payment_toolkit_lane="RAW_REUSABLE_PAN_OR_POST_NOV30_STATIC_KEY_OR_DOUBLE_RESOLVE_BLOCKED",
+            settled_agent_payment_toolkit_cents=0,
+            latency_ms=11,
+            provenance="official_doc_snapshot",
+        )
+
+    if not spt_34_country_routing_and_single_use_vcard_cap_verified:
+        return AgentPaymentToolkitSelectionDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="UNSUPPORTED_SPT_REGION_OR_UNBOUNDED_VIRTUAL_CARD_SPEND_LIMIT_BLOCKED",
+            action_pill="Send to a human",
+            agent_payment_toolkit_lane="UNSUPPORTED_SPT_REGION_OR_UNBOUNDED_VIRTUAL_CARD_SPEND_LIMIT_BLOCKED",
+            settled_agent_payment_toolkit_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_vic_passkey_fail_closed_and_refund_hitl_clean:
+        return AgentPaymentToolkitSelectionDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="VIC_PASSKEY_FAIL_CLOSED_OR_PAYPAL_REFUND_PAYOUT_HITL_HOLD",
+            action_pill="Send to a human",
+            agent_payment_toolkit_lane="VIC_PASSKEY_FAIL_CLOSED_OR_PAYPAL_REFUND_PAYOUT_HITL_HOLD",
+            settled_agent_payment_toolkit_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_multirail_routing_and_vcard_rebate_savings_cents > 0:
+        net_cents = max(
+            0,
+            agent_payment_toolkit_cents - automated_multirail_routing_and_vcard_rebate_savings_cents,
+        )
+        return AgentPaymentToolkitSelectionDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_MULTIRAIL_ROUTING_AND_VCARD_REBATE_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            agent_payment_toolkit_lane="AUTOMATED_MULTIRAIL_ROUTING_AND_VCARD_REBATE_SAVINGS_CONFIRM",
+            settled_agent_payment_toolkit_cents=net_cents,
+            latency_ms=230,
+            provenance="deterministic_offline_simulation",
+        )
+
+    return AgentPaymentToolkitSelectionDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_AGENT_PAYMENT_TOOLKIT_MULTIRAIL_SETTLED",
+        action_pill="Act automatically",
+        agent_payment_toolkit_lane="VERIFIED_AGENT_PAYMENT_TOOLKIT_MULTIRAIL_SETTLED",
+        settled_agent_payment_toolkit_cents=agent_payment_toolkit_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -52016,6 +52116,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "blackbox_synthesized_checkout_block_latency_ms": csg_blk_403.latency_ms,
     }
 
+    apt_commit_ok = evaluate_agent_payment_toolkit_selection_policy()
+    apt_pan_403 = evaluate_agent_payment_toolkit_selection_policy(
+        zero_reusable_pan_and_nov30_key_and_single_resolve_verified=False,
+    )
+    apt_reg_422 = evaluate_agent_payment_toolkit_selection_policy(
+        spt_34_country_routing_and_single_use_vcard_cap_verified=False,
+    )
+    apt_vic_451 = evaluate_agent_payment_toolkit_selection_policy(
+        webiq_vic_passkey_fail_closed_and_refund_hitl_clean=False,
+    )
+    apt_sav_409 = evaluate_agent_payment_toolkit_selection_policy(
+        automated_multirail_routing_and_vcard_rebate_savings_cents=2940000,
+    )
+    agent_payment_toolkit_selection_guards = {
+        "all_passed": (
+            apt_commit_ok.allowed
+            and apt_commit_ok.settled_agent_payment_toolkit_cents == 14000000
+            and not apt_pan_403.allowed
+            and apt_pan_403.http_status == 403
+            and not apt_reg_422.allowed
+            and apt_reg_422.http_status == 422
+            and not apt_vic_451.allowed
+            and apt_vic_451.http_status == 451
+            and not apt_sav_409.allowed
+            and apt_sav_409.action_pill == "Confirm"
+        ),
+        "agent_payment_toolkit_settlement_latency_ms": apt_commit_ok.latency_ms,
+        "reusable_pan_or_double_resolve_block_latency_ms": apt_pan_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -52419,6 +52549,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_pharma_cleanroom_lyophilizer_gmp_guards": b2b_pharma_cleanroom_lyophilizer_gmp_guards,
         "commercial_agent_platform_selection_guards": commercial_agent_platform_selection_guards,
         "commercial_search_grounding_selection_guards": commercial_search_grounding_selection_guards,
+        "agent_payment_toolkit_selection_guards": agent_payment_toolkit_selection_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -62356,6 +62487,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="csg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Agent Payment & Checkout Toolkit Selection Sandbox (Round 391) -->
+      <div class="finops-box" id="agent-payment-toolkit-selection-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-apt-title">💳 Agent 支付与结账协议选型沙盒：Stripe SPT vs Visa VIC vs Mastercard Agent Pay vs PayPal vs 企业预算虚拟卡 (Round 391)</span>
+        </div>
+        <div class="control-row">
+          <label><span>零可复用主卡 PAN / 2026-11-30 OAuth 2.1 + 34国 SPT / 全球 VIC/MC 智能选轨 + B2B 单次限额虚拟卡 2秒 Webhook 核验:</span></label>
+          <select id="apt-select" onchange="updateAgentPaymentToolkitSelectionSandbox()">
+            <option value="apt_commit_ok">🏆 34国 Stripe SPT + 全球 Visa VIC/MC + 跨境 PayPal + B2B 单次美分限额虚拟卡合规：10ms 清算 $140,000.00! (Act automatically)</option>
+            <option value="apt_pan_403">🛑 将可复用企业主卡 16 位 PAN 明文塞进 Agent 上下文、2026-11-30 后使用 sk_live_* 或对同一 SPT 混调 Resolve 与 PaymentIntent → 11ms 触发 HTTP 403!</option>
+            <option value="apt_reg_422">🚨 在 34 个支持国以外的非 Stripe 收单商户强调 SPT，或签发未设 per_authorization 单次美分限额与 MCC 锁的敞口虚拟卡 → 14ms 触发 HTTP 422!</option>
+            <option value="apt_vic_451">🛑 Visa VIC 入网漏传 CVV2 或在 FIDO2 Passkey 失败后后台静默重试，或 PayPal/Stripe MCP 退款与 Payouts 未经人类确认 → 265ms 触发 HTTP 451!</option>
+            <option value="apt_sav_409">🧑‍⚖️ 启用五轨智能支付路由 (34国 SPT + 全球 VIC/MC 免跨境拒付 + B2B 单次虚拟卡即刷即销叠加 1.5% 刷卡回佣) 批次立省 $29,400.00 (净付 $110,600.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="apt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -63185,6 +63334,7 @@ function renderAll() {{
   updateB2BPharmaCleanroomLyophilizerGmpSandbox();
   updateCommercialAgentPlatformSelectionSandbox();
   updateCommercialSearchGroundingSelectionSandbox();
+  updateAgentPaymentToolkitSelectionSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -82080,6 +82230,52 @@ function updateCommercialSearchGroundingSelectionSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🔍 Web IQ /v3/browse passage (680 tok) + liveCrawl 新鲜度核验 + SHA-256 价格锁合规：已自动清算 (VERIFIED_COMMERCIAL_SEARCH_GROUNDING_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零黑盒合成价格幻觉、零隐藏 DOM 注入盗刷与整页 Token 浪费</strong>：实时商业搜索与网页接地批次已完成安全清算（<code>$110,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateAgentPaymentToolkitSelectionSandbox() {{
+  var sel = document.getElementById("apt-select");
+  var outEl = document.getElementById("apt-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "apt_pan_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 RAW_REUSABLE_PAN_OR_POST_NOV30_STATIC_KEY_OR_DOUBLE_RESOLVE_BLOCKED (11ms · Send to a human · official_doc_snapshot)：<br>" +
+      "支付安全审计拦截：检测到向 Agent 上下文传入可重复刷的 16 位主卡 PAN、在 <code>2026-11-30</code> 截止日后仍使用静态私钥 <code>sk_live_*</code>，或对同一枚 <code>spt_...</code> 违规混调 <code>/resolve</code> 与 <code>PaymentIntent</code>，已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "apt_reg_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 UNSUPPORTED_SPT_REGION_OR_UNBOUNDED_VIRTUAL_CARD_SPEND_LIMIT_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "支付轨道校验发现：目标商户位于 34 个 Stripe SPT 支持国以外（应切换至 <code>Visa VIC / Mastercard Agent Pay</code>），或兜底虚拟卡未配置 <code>per_authorization</code> 单次精确美分限额与 MCC 品类锁，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "apt_vic_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 VIC_PASSKEY_FAIL_CLOSED_OR_PAYPAL_REFUND_PAYOUT_HITL_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "协议合规门禁挂起：检测到 <code>Visa VIC</code> 入网漏传 <code>CVV2</code> 或在 <code>FIDO2 Passkey</code> 失败后后台静默重试，或调用 <code>PayPal / Stripe MCP</code> 退款与批量打款（<code>Payouts</code>）时缺失人类主管签名确认，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "apt_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_MULTIRAIL_ROUTING_AND_VCARD_REBATE_SAVINGS_CONFIRM (230ms · Confirm · deterministic_offline_simulation)：<br>" +
+      "启用五轨智能支付路由：<code>34国 Stripe SPT + 全球 Visa VIC / MC Agent Pay + 跨境 PayPal 买家保护 + B2B 单次虚拟卡即刷即销（叠加 1.5% Interchange 刷卡回佣冲抵）</code>，单批立省 <code>$29,400.00</code>（净结算成本优化至 <code>$110,600.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>💳 五轨智能支付路由 (Stripe SPT + Visa VIC + MC Agent Pay + PayPal + 单次虚拟卡) 合规：已自动清算 (VERIFIED_AGENT_PAYMENT_TOOLKIT_MULTIRAIL_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零明文主卡泄露、零跨区收单拒付、零长尾网站二次盗刷</strong>：Agent 支付与结账协议多轨批次已完成安全清算（<code>$140,000.00</code>）！" +
     "</div>";
 }}
 
