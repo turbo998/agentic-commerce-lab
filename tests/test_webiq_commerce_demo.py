@@ -24464,6 +24464,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-csm-expansion-coterm-agent-sandbox", demo_zh)
 
+    def test_commercial_model_routing_finops_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_commercial_model_routing_finops_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant L0-L3 cascade routing + partitioned cache + L0 Decimal math -> 200 OK
+        ok = evaluate_commercial_model_routing_finops_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_model_routing_finops_cents, 17000000)
+
+        # 2. Unpartitioned cross-tenant/cross-VIP semantic cache or PII caching -> 403 Forbidden
+        cac_403 = evaluate_commercial_model_routing_finops_agent_policy(
+            semantic_cache_tenant_tier_partitioned_and_pii_free=False,
+        )
+        self.assertFalse(cac_403.allowed)
+        self.assertEqual(cac_403.http_status, 403)
+
+        # 3. Session token spend breaching margin cap or LLM arithmetic hallucination -> 422 Unprocessable
+        mth_422 = evaluate_commercial_model_routing_finops_agent_policy(
+            session_token_within_margin_cap_and_l0_decimal_math_used=False,
+        )
+        self.assertFalse(mth_422.allowed)
+        self.assertEqual(mth_422.http_status, 422)
+
+        # 4. Slow model on <4,000ms checkout hot path or regional TPM 429 -> 451 Hold
+        sla_451 = evaluate_commercial_model_routing_finops_agent_policy(
+            checkout_hotpath_under_4s_and_regional_tpm_quota_healthy=False,
+        )
+        self.assertFalse(sla_451.allowed)
+        self.assertEqual(sla_451.http_status, 451)
+
+        # 5. 4-tier cascade (40% L1 cache + 50% L2 SLM + 10% L3) saving $39,100 ($130,900 net) -> 409 Confirm
+        sav_409 = evaluate_commercial_model_routing_finops_agent_policy(
+            four_tier_cascade_and_prompt_cache_savings_cents=3910000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_model_routing_finops_cents, 13090000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["commercial_model_routing_finops_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("commercial-model-routing-finops-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
