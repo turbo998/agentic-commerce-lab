@@ -23321,6 +23321,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agent-payment-toolkit-selection-sandbox", demo_zh)
 
+    def test_ecommerce_shopping_stylist_bundle_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_ecommerce_shopping_stylist_bundle_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant ATP size filter + >=18% net margin + Web IQ fit grounding + 1-click bundle lock -> 200 OK ($155,000.00)
+        ok_res = evaluate_ecommerce_shopping_stylist_bundle_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_ECOMMERCE_SHOPPING_STYLIST_BUNDLE_SETTLED")
+        self.assertEqual(ok_res.settled_ecommerce_shopping_bundle_cents, 15500000)
+
+        # 2. Out-of-stock variant (ATP=0), disable_checkout=true, or incompatible bundle -> 403 Blocked
+        oos_403 = evaluate_ecommerce_shopping_stylist_bundle_policy(
+            atp_in_stock_and_disable_checkout_false_and_compat_verified=False,
+        )
+        self.assertFalse(oos_403.allowed)
+        self.assertEqual(oos_403.http_status, 403)
+        self.assertEqual(
+            oos_403.decision_code,
+            "OUT_OF_STOCK_VARIANT_OR_DISABLE_CHECKOUT_OR_INCOMPATIBLE_BUNDLE_BLOCKED",
+        )
+
+        # 3. Promo-stacking net-margin breach (<18%) or LLM discount math drift -> 422 Blocked
+        mgn_422 = evaluate_ecommerce_shopping_stylist_bundle_policy(
+            deterministic_promo_exclusivity_and_18pct_net_margin_verified=False,
+        )
+        self.assertFalse(mgn_422.allowed)
+        self.assertEqual(mgn_422.http_status, 422)
+        self.assertEqual(
+            mgn_422.decision_code,
+            "BUNDLE_DISCOUNT_STACKING_NET_MARGIN_FLOOR_OR_LLM_MATH_DRIFT_BLOCKED",
+        )
+
+        # 4. Incomplete SFTP manifest.json barrier or product safety recall alert -> 451 Hold
+        rec_451 = evaluate_ecommerce_shopping_stylist_bundle_policy(
+            webiq_catalog_manifest_barrier_and_zero_recall_clean=False,
+        )
+        self.assertFalse(rec_451.allowed)
+        self.assertEqual(rec_451.http_status, 451)
+
+        # 5. Cross-category tiered bundling & Web IQ fit return reduction saving $32,550 ($122,450 net) -> 409 Confirm
+        sav_409 = evaluate_ecommerce_shopping_stylist_bundle_policy(
+            automated_bundle_tier_and_fit_return_reduction_savings_cents=3255000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_ecommerce_shopping_bundle_cents, 12245000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["ecommerce_shopping_stylist_bundle_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-shopping-stylist-bundle-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
