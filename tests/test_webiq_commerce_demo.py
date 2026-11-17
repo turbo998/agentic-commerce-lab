@@ -23606,6 +23606,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-churn-retention-subscription-agent-sandbox", demo_zh)
 
+    def test_enterprise_erp_crm_idempotent_saga_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_enterprise_erp_crm_idempotent_saga_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant gateway-derived SHA-256 idempotency + Outbox <4s + 2-phase manual pre-auth Saga -> 200 OK ($210,000.00)
+        ok_res = evaluate_enterprise_erp_crm_idempotent_saga_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_ENTERPRISE_ERP_CRM_IDEMPOTENT_SAGA_SETTLED")
+        self.assertEqual(ok_res.settled_enterprise_erp_crm_saga_cents, 21000000)
+
+        # 2. LLM random idempotency UUID or automatic capture before ERP order confirmation -> 403 Blocked
+        idem_403 = evaluate_enterprise_erp_crm_idempotent_saga_policy(
+            gateway_derived_idempotency_and_manual_preauth_before_erp_verified=False,
+        )
+        self.assertFalse(idem_403.allowed)
+        self.assertEqual(idem_403.http_status, 403)
+        self.assertEqual(
+            idem_403.decision_code,
+            "LLM_RANDOM_IDEMPOTENCY_KEY_OR_UNBUNDLED_AUTOMATIC_CAPTURE_BEFORE_ERP_BLOCKED",
+        )
+
+        # 3. Retry payload SHA-256 hash drift (LLM parameter mutation) or stale Cart ETag -> 422 Blocked
+        drf_422 = evaluate_enterprise_erp_crm_idempotent_saga_policy(
+            canonical_payload_sha256_match_and_cart_etag_verified=False,
+        )
+        self.assertFalse(drf_422.allowed)
+        self.assertEqual(drf_422.http_status, 422)
+        self.assertEqual(
+            drf_422.decision_code,
+            "IDEMPOTENCY_PAYLOAD_HASH_DRIFT_OR_STALE_CART_ETAG_BLOCKED",
+        )
+
+        # 4. Synchronous slow SAP call inside 4,000ms finalize_checkout webhook or stale generation fencing -> 451 Hold
+        out_451 = evaluate_enterprise_erp_crm_idempotent_saga_policy(
+            webiq_outbox_under_4s_webhook_and_generation_fencing_clean=False,
+        )
+        self.assertFalse(out_451.allowed)
+        self.assertEqual(out_451.http_status, 451)
+
+        # 5. Gateway idempotent dedup & zero-fee pre-auth void Saga saving $42,000 ($168,000 net) -> 409 Confirm
+        sav_409 = evaluate_enterprise_erp_crm_idempotent_saga_policy(
+            automated_idempotent_dedup_and_zero_fee_void_saga_savings_cents=4200000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_enterprise_erp_crm_saga_cents, 16800000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["enterprise_erp_crm_idempotent_saga_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("enterprise-erp-crm-idempotent-saga-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
