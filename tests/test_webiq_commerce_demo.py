@@ -23207,6 +23207,63 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("commercial-agent-platform-selection-sandbox", demo_zh)
 
+    def test_commercial_search_grounding_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_commercial_search_grounding_selection_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant Web IQ /v3/browse passage + liveCrawl freshness + SHA-256 price digest -> 200 OK ($110,000.00)
+        ok_res = evaluate_commercial_search_grounding_selection_policy()
+        self.assertTrue(ok_res.allowed)
+        self.assertEqual(ok_res.http_status, 200)
+        self.assertEqual(ok_res.decision_code, "VERIFIED_COMMERCIAL_SEARCH_GROUNDING_SETTLED")
+        self.assertEqual(ok_res.settled_commercial_search_grounding_cents, 11000000)
+
+        # 2. Black-box synthesized answer (Perplexity Sonar / Managed Bing Grounding) used directly for checkout -> 403 Blocked
+        blk_403 = evaluate_commercial_search_grounding_selection_policy(
+            caller_visible_raw_passage_and_sha256_price_digest_verified=False,
+        )
+        self.assertFalse(blk_403.allowed)
+        self.assertEqual(blk_403.http_status, 403)
+        self.assertEqual(
+            blk_403.decision_code,
+            "BLACKBOX_SYNTHESIZED_ANSWER_OR_INVISIBLE_PASSAGE_CHECKOUT_BLOCKED",
+        )
+
+        # 3. Stale crawl cache (liveCrawlSucceeded=false) or unsliced 4,800-token full-page HTML -> 422 Blocked
+        stl_422 = evaluate_commercial_search_grounding_selection_policy(
+            live_crawl_freshness_and_passage_token_compression_verified=False,
+        )
+        self.assertFalse(stl_422.allowed)
+        self.assertEqual(stl_422.http_status, 422)
+        self.assertEqual(
+            stl_422.decision_code,
+            "STALE_CRAWL_CACHE_OR_UNALIGNED_FULL_PAGE_HTML_TOKEN_BLOAT_BLOCKED",
+        )
+
+        # 4. Unsafe Browser-use automation on BNPL/3DS payment WebView or plaintext http:// scheme -> 451 Hold
+        web_451 = evaluate_commercial_search_grounding_selection_policy(
+            webiq_https_scheme_and_bnpl_webview_non_automation_clean=False,
+        )
+        self.assertFalse(web_451.allowed)
+        self.assertEqual(web_451.http_status, 451)
+
+        # 5. 4-stage tiered grounding & Web IQ passage compression saving $24,200 ($85,800 net) -> 409 Confirm
+        sav_409 = evaluate_commercial_search_grounding_selection_policy(
+            automated_tiered_grounding_and_passage_compression_savings_cents=2420000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_commercial_search_grounding_cents, 8580000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["commercial_search_grounding_selection_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("commercial-search-grounding-selection-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

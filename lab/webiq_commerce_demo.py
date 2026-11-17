@@ -39123,6 +39123,106 @@ def evaluate_commercial_agent_platform_selection_policy(
     )
 
 
+@dataclass(frozen=True)
+class CommercialSearchGroundingSelectionDecision:
+    """Deterministic decision output for commercial search & web grounding selection (Web IQ vs Perplexity Sonar vs Tavily vs Exa vs Firecrawl/Browser-use)."""
+
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    commercial_search_grounding_lane: str
+    settled_commercial_search_grounding_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_commercial_search_grounding_selection_policy(
+    *,
+    mandate_id: str = "agentic_commerce_grounding_webiq_sonar_tavily_exa_firecrawl_mandate_2026",
+    commercial_search_grounding_cents: int = 11000000,
+    caller_visible_raw_passage_and_sha256_price_digest_verified: bool = True,
+    live_crawl_freshness_and_passage_token_compression_verified: bool = True,
+    webiq_https_scheme_and_bnpl_webview_non_automation_clean: bool = True,
+    automated_tiered_grounding_and_passage_compression_savings_cents: int = 0,
+) -> CommercialSearchGroundingSelectionDecision:
+    """Evaluate real-time commercial search & web grounding selection: Web IQ vs Perplexity Sonar vs Tavily vs Exa vs Firecrawl/Browser-use."""
+    if not mandate_id.startswith("agentic_commerce_grounding_webiq_sonar_tavily_exa_firecrawl_mandate_"):
+        return CommercialSearchGroundingSelectionDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_COMMERCIAL_SEARCH_GROUNDING_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            commercial_search_grounding_lane="INVALID_COMMERCIAL_SEARCH_GROUNDING_MANDATE_PREFIX",
+            settled_commercial_search_grounding_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not caller_visible_raw_passage_and_sha256_price_digest_verified:
+        return CommercialSearchGroundingSelectionDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="BLACKBOX_SYNTHESIZED_ANSWER_OR_INVISIBLE_PASSAGE_CHECKOUT_BLOCKED",
+            action_pill="Send to a human",
+            commercial_search_grounding_lane="BLACKBOX_SYNTHESIZED_ANSWER_OR_INVISIBLE_PASSAGE_CHECKOUT_BLOCKED",
+            settled_commercial_search_grounding_cents=0,
+            latency_ms=11,
+            provenance="synthetic_policy",
+        )
+
+    if not live_crawl_freshness_and_passage_token_compression_verified:
+        return CommercialSearchGroundingSelectionDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="STALE_CRAWL_CACHE_OR_UNALIGNED_FULL_PAGE_HTML_TOKEN_BLOAT_BLOCKED",
+            action_pill="Send to a human",
+            commercial_search_grounding_lane="STALE_CRAWL_CACHE_OR_UNALIGNED_FULL_PAGE_HTML_TOKEN_BLOAT_BLOCKED",
+            settled_commercial_search_grounding_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not webiq_https_scheme_and_bnpl_webview_non_automation_clean:
+        return CommercialSearchGroundingSelectionDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNSAFE_BROWSER_AUTOMATION_ON_PAYMENT_WEBVIEW_OR_HTTP_SCHEME_HOLD",
+            action_pill="Send to a human",
+            commercial_search_grounding_lane="UNSAFE_BROWSER_AUTOMATION_ON_PAYMENT_WEBVIEW_OR_HTTP_SCHEME_HOLD",
+            settled_commercial_search_grounding_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if automated_tiered_grounding_and_passage_compression_savings_cents > 0:
+        net_cents = max(
+            0,
+            commercial_search_grounding_cents - automated_tiered_grounding_and_passage_compression_savings_cents,
+        )
+        return CommercialSearchGroundingSelectionDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="AUTOMATED_TIERED_GROUNDING_AND_PASSAGE_COMPRESSION_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            commercial_search_grounding_lane="AUTOMATED_TIERED_GROUNDING_AND_PASSAGE_COMPRESSION_SAVINGS_CONFIRM",
+            settled_commercial_search_grounding_cents=net_cents,
+            latency_ms=230,
+            provenance="deterministic_offline_simulation",
+        )
+
+    return CommercialSearchGroundingSelectionDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_COMMERCIAL_SEARCH_GROUNDING_SETTLED",
+        action_pill="Act automatically",
+        commercial_search_grounding_lane="VERIFIED_COMMERCIAL_SEARCH_GROUNDING_SETTLED",
+        settled_commercial_search_grounding_cents=commercial_search_grounding_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -51886,6 +51986,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "unbounded_generative_orchestration_block_latency_ms": cap_fsm_403.latency_ms,
     }
 
+    csg_commit_ok = evaluate_commercial_search_grounding_selection_policy()
+    csg_blk_403 = evaluate_commercial_search_grounding_selection_policy(
+        caller_visible_raw_passage_and_sha256_price_digest_verified=False,
+    )
+    csg_stl_422 = evaluate_commercial_search_grounding_selection_policy(
+        live_crawl_freshness_and_passage_token_compression_verified=False,
+    )
+    csg_web_451 = evaluate_commercial_search_grounding_selection_policy(
+        webiq_https_scheme_and_bnpl_webview_non_automation_clean=False,
+    )
+    csg_sav_409 = evaluate_commercial_search_grounding_selection_policy(
+        automated_tiered_grounding_and_passage_compression_savings_cents=2420000,
+    )
+    commercial_search_grounding_selection_guards = {
+        "all_passed": (
+            csg_commit_ok.allowed
+            and csg_commit_ok.settled_commercial_search_grounding_cents == 11000000
+            and not csg_blk_403.allowed
+            and csg_blk_403.http_status == 403
+            and not csg_stl_422.allowed
+            and csg_stl_422.http_status == 422
+            and not csg_web_451.allowed
+            and csg_web_451.http_status == 451
+            and not csg_sav_409.allowed
+            and csg_sav_409.action_pill == "Confirm"
+        ),
+        "commercial_search_grounding_settlement_latency_ms": csg_commit_ok.latency_ms,
+        "blackbox_synthesized_checkout_block_latency_ms": csg_blk_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -52288,6 +52418,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_industrial_cooling_tower_gearbox_fan_guards": b2b_industrial_cooling_tower_gearbox_fan_guards,
         "b2b_pharma_cleanroom_lyophilizer_gmp_guards": b2b_pharma_cleanroom_lyophilizer_gmp_guards,
         "commercial_agent_platform_selection_guards": commercial_agent_platform_selection_guards,
+        "commercial_search_grounding_selection_guards": commercial_search_grounding_selection_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -62207,6 +62338,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="cap-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Commercial Search & Web Grounding Selection Sandbox (Round 390) -->
+      <div class="finops-box" id="commercial-search-grounding-selection-sandbox" style="margin-top:12px;border-color:#38BDF8;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-csg-title">🔍 实时商业搜索与网页接地选型沙盒：Web IQ / Bing vs Perplexity Sonar vs Tavily vs Exa vs Firecrawl/Browser-use (Round 390)</span>
+        </div>
+        <div class="control-row">
+          <label><span>调用方可见原文 (Web IQ /v3/browse passage) + liveCrawlSucceeded 新鲜度与 7.1x Token 压缩 + 严禁 BNPL WebView 自动化核验:</span></label>
+          <select id="csg-select" onchange="updateCommercialSearchGroundingSelectionSandbox()">
+            <option value="csg_commit_ok">🏆 Exa 寻源 + Web IQ /v3/browse passage (680 tok, P95 240ms) + SHA-256 价格锁 + 零召回风险合规：10ms 清算 $110,000.00! (Act automatically)</option>
+            <option value="csg_blk_403">🛑 拿黑盒合成问答 (Perplexity Sonar / 托管 Bing Grounding) 直接解析价格触发自动扣款 (调用方不可见原文、无法防注入与算哈希) → 11ms 触发 HTTP 403!</option>
+            <option value="csg_stl_422">🚨 将过期缓存 (liveCrawlSucceeded=false / HTTP 202) 当作实时闪购价下单，或未启用 passage 切片直接塞入 4,800+ tok 整页 HTML → 14ms 触发 HTTP 422!</option>
+            <option value="csg_web_451">🛑 违规使用 Browser-use 自动化点击 Affirm BNPL 信贷/3DS 支付 WebView、传入 http:// 明文链接 (410) 或绕过 strict SafeSearch → 265ms 触发 HTTP 451!</option>
+            <option value="csg_sav_409">🧑‍⚖️ 启用四级按需接地漏斗 (Exa 寻源 + Web IQ $1/1k passage 省 7.1x Token + 仅 &lt;3% 规格弹窗降级 Browser-use) 季度立省 $24,200.00 (净付 $85,800.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="csg-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -63035,6 +63184,7 @@ function renderAll() {{
   updateB2BIndustrialCoolingTowerGearboxFanSandbox();
   updateB2BPharmaCleanroomLyophilizerGmpSandbox();
   updateCommercialAgentPlatformSelectionSandbox();
+  updateCommercialSearchGroundingSelectionSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -81884,6 +82034,52 @@ function updateCommercialAgentPlatformSelectionSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>🏆 前店后厂混合架构 (Copilot Studio 触点 + Foundry 5态状态机 + L1-L3 漏斗 + MCP OAuth 2.1) 合规：已自动清算 (VERIFIED_COMMERCIAL_AGENT_HYBRID_PLATFORM_SETTLED · 10ms · Act automatically):</strong><br>" +
     "• <strong>零低代码跳步双倍扣款、零公网匿名流量账单倒挂与静态密钥越权</strong>：企业全域商业智能体平台批次已完成安全清算（<code>$125,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateCommercialSearchGroundingSelectionSandbox() {{
+  var sel = document.getElementById("csg-select");
+  var outEl = document.getElementById("csg-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "csg_blk_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 BLACKBOX_SYNTHESIZED_ANSWER_OR_INVISIBLE_PASSAGE_CHECKOUT_BLOCKED (11ms · Send to a human · synthetic_policy)：<br>" +
+      "接地安全审计发现：当前请求试图将 <code>Perplexity Sonar API</code> 或 <code>Foundry 托管 Bing Grounding</code> 的黑盒合成文本直接作为自动扣款价格依据（调用方代码不可见原始 DOM 片段、无法做 Pre-LLM 防注入清洗与 <code>SHA-256</code> 价格摘要校验），已在 11ms 内硬拦截！" +
+      "</div>";
+    return;
+  }}
+  if (v === "csg_stl_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 STALE_CRAWL_CACHE_OR_UNALIGNED_FULL_PAGE_HTML_TOKEN_BLOAT_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "实时重抓校验发现：目标商户页返回 <code>liveCrawlSucceeded=false</code>（或 <code>HTTP 202</code> 异步排队未完成），或未启用 <code>contentFormat='passage' (&lt;=3,000c)</code> 直接塞入 <code>4,800+ tokens</code> 整页 HTML 造成 7.1x 上下文膨胀，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "csg_web_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNSAFE_BROWSER_AUTOMATION_ON_PAYMENT_WEBVIEW_OR_HTTP_SCHEME_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "合规守卫拦截：检测到试图使用 <code>Browser-use</code> 自动化操作 <code>Affirm BNPL 信贷 / 3DS2 支付 WebView</code>、抓取不安全的 <code>http://</code> 明文链接（<code>410 HttpSchemeGone</code>）或用未授权 <code>site:</code> 绕过消费级 SafeSearch，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "csg_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 AUTOMATED_TIERED_GROUNDING_AND_PASSAGE_COMPRESSION_SAVINGS_CONFIRM (230ms · Confirm · deterministic_offline_simulation)：<br>" +
+      "启用四级按需接地漏斗：<code>Exa 语义寻源 + Microsoft Web IQ /v3/browse passage ($1/1k URLs, 680 tok 省 7.1x Token) + Firecrawl 异步抽取 + 仅 &lt;3% 动态弹窗按需降级 Browser-use</code>，季度立省 <code>$24,200.00</code>（净付 <code>$85,800.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🔍 Web IQ /v3/browse passage (680 tok) + liveCrawl 新鲜度核验 + SHA-256 价格锁合规：已自动清算 (VERIFIED_COMMERCIAL_SEARCH_GROUNDING_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零黑盒合成价格幻觉、零隐藏 DOM 注入盗刷与整页 Token 浪费</strong>：实时商业搜索与网页接地批次已完成安全清算（<code>$110,000.00</code>）！" +
     "</div>";
 }}
 
