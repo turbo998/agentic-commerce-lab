@@ -24848,6 +24848,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-punchout-edi-orchestration-agent-sandbox", demo_zh)
 
+    def test_luxury_clienteling_vic_allocation_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_luxury_clienteling_vic_allocation_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant anti-tying outreach + global passport quota safe + Visa VIC + Aura DPP -> 200 OK
+        ok = evaluate_luxury_clienteling_vic_allocation_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_luxury_clienteling_vic_cents, 28000000)
+
+        # 2. Illegal pre-spend tying condition, grey-market flipper, or Visa VIC Passkey failure -> 403 Forbidden
+        tye_403 = evaluate_luxury_clienteling_vic_allocation_agent_policy(
+            no_illegal_tying_and_visa_vic_passkey_cvv2_verified=False,
+        )
+        self.assertFalse(tye_403.allowed)
+        self.assertEqual(tye_403.http_status, 403)
+
+        # 3. Global passport quota exceeded (>2/yr) or counterfeit DPP return swap -> 422 Unprocessable
+        dpp_422 = evaluate_luxury_clienteling_vic_allocation_agent_policy(
+            global_passport_quota_and_aura_dpp_authentic=False,
+        )
+        self.assertFalse(dpp_422.allowed)
+        self.assertEqual(dpp_422.http_status, 422)
+
+        # 4. Web IQ $10k+ AML/PEP alert or third-party multi-card structuring -> 451 Hold
+        aml_451 = evaluate_luxury_clienteling_vic_allocation_agent_policy(
+            webiq_high_value_aml_pep_and_same_name_payor_clean=False,
+        )
+        self.assertFalse(aml_451.allowed)
+        self.assertEqual(aml_451.http_status, 451)
+
+        # 5. Global quota lock + Aura DPP anti-swap saving $58,800 ($221,200 net) -> 409 Confirm
+        sav_409 = evaluate_luxury_clienteling_vic_allocation_agent_policy(
+            global_quota_and_dpp_return_swap_prevention_savings_cents=5880000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_luxury_clienteling_vic_cents, 22120000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["luxury_clienteling_vic_allocation_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("luxury-clienteling-vic-allocation-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
