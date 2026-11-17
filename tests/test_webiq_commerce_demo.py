@@ -24896,6 +24896,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("luxury-clienteling-vic-allocation-agent-sandbox", demo_zh)
 
+    def test_cloud_telecom_cud_bill_shock_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_cloud_telecom_cud_bill_shock_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant P20 baseload CUD + bill-shock shield + Cadence SPT -> 200 OK
+        ok = evaluate_cloud_telecom_cud_bill_shock_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_cloud_telecom_cud_cents, 21000000)
+
+        # 2. SIM-swap port-out attack or passing setup_future_usage on SPT -> 403 Forbidden
+        sim_403 = evaluate_cloud_telecom_cud_bill_shock_agent_policy(
+            no_sim_swap_attack_and_spt_setup_future_usage_absent=False,
+        )
+        self.assertFalse(sim_403.allowed)
+        self.assertEqual(sim_403.http_status, 403)
+
+        # 3. Over-committed CUD above baseload or unshielded overage bill shock -> 422 Unprocessable
+        cud_422 = evaluate_cloud_telecom_cud_bill_shock_agent_policy(
+            cud_sized_to_p20_baseload_and_overage_shielded=False,
+        )
+        self.assertFalse(cud_422.allowed)
+        self.assertEqual(cud_422.http_status, 422)
+
+        # 4. Web IQ confirmed SLA outage missing minimum-commit waiver -> 451 Hold
+        sla_451 = evaluate_cloud_telecom_cud_bill_shock_agent_policy(
+            webiq_sla_outage_commit_waiver_applied=False,
+        )
+        self.assertFalse(sla_451.allowed)
+        self.assertEqual(sla_451.http_status, 451)
+
+        # 5. Baseload CUD + retroactive tier-cap shield saving $46,200 ($163,800 net) -> 409 Confirm
+        sav_409 = evaluate_cloud_telecom_cud_bill_shock_agent_policy(
+            baseload_cud_and_retroactive_tier_cap_savings_cents=4620000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_cloud_telecom_cud_cents, 16380000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["cloud_telecom_cud_bill_shock_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cloud-telecom-cud-bill-shock-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
