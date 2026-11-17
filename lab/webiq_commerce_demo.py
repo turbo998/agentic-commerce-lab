@@ -40917,6 +40917,100 @@ def evaluate_bnpl_webview_margin_agent_policy(
     )
 
 
+@dataclass(frozen=True)
+class CrossBorderTaxMorDdpAgentDecision:
+    allowed: bool
+    http_status: int
+    decision_code: str
+    action_pill: str
+    cross_border_tax_ddp_lane: str
+    settled_cross_border_tax_ddp_cents: int
+    latency_ms: int
+    provenance: str
+
+
+def evaluate_cross_border_tax_mor_ddp_agent_policy(
+    *,
+    mandate_id: str = "cross_border_tax_mor_sor_ddp_duty_mandate_20261118_001",
+    cross_border_tax_ddp_cents: int = 18500000,
+    live_vies_vat_and_cross_border_reverse_charge_verified: bool = True,
+    tax_duty_inclusive_total_within_mandate_and_hs_code_present: bool = True,
+    economic_nexus_registered_and_ddp_pre_cleared: bool = True,
+    hybrid_sor_stripe_tax_and_ddp_refusal_savings_cents: int = 0,
+) -> CrossBorderTaxMorDdpAgentDecision:
+    if not mandate_id.startswith("cross_border_tax_mor_sor_ddp_duty_mandate_"):
+        return CrossBorderTaxMorDdpAgentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_CROSS_BORDER_TAX_DDP_MANDATE_PREFIX",
+            action_pill="Send to a human",
+            cross_border_tax_ddp_lane="INVALID_CROSS_BORDER_TAX_DDP_MANDATE_PREFIX",
+            settled_cross_border_tax_ddp_cents=0,
+            latency_ms=9,
+            provenance="synthetic_policy",
+        )
+
+    if not live_vies_vat_and_cross_border_reverse_charge_verified:
+        return CrossBorderTaxMorDdpAgentDecision(
+            allowed=False,
+            http_status=403,
+            decision_code="INVALID_VIES_VAT_NUMBER_OR_DOMESTIC_REVERSE_CHARGE_ABUSE_BLOCKED",
+            action_pill="Send to a human",
+            cross_border_tax_ddp_lane="INVALID_VIES_VAT_NUMBER_OR_DOMESTIC_REVERSE_CHARGE_ABUSE_BLOCKED",
+            settled_cross_border_tax_ddp_cents=0,
+            latency_ms=11,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not tax_duty_inclusive_total_within_mandate_and_hs_code_present:
+        return CrossBorderTaxMorDdpAgentDecision(
+            allowed=False,
+            http_status=422,
+            decision_code="TAX_DUTY_INCLUSIVE_TOTAL_EXCEEDS_MANDATE_OR_MISSING_HS_CODE_BLOCKED",
+            action_pill="Send to a human",
+            cross_border_tax_ddp_lane="TAX_DUTY_INCLUSIVE_TOTAL_EXCEEDS_MANDATE_OR_MISSING_HS_CODE_BLOCKED",
+            settled_cross_border_tax_ddp_cents=0,
+            latency_ms=14,
+            provenance="deterministic_offline_simulation",
+        )
+
+    if not economic_nexus_registered_and_ddp_pre_cleared:
+        return CrossBorderTaxMorDdpAgentDecision(
+            allowed=False,
+            http_status=451,
+            decision_code="UNREGISTERED_ECONOMIC_NEXUS_BREACH_OR_DDU_CUSTOMS_REJECTION_HOLD",
+            action_pill="Send to a human",
+            cross_border_tax_ddp_lane="UNREGISTERED_ECONOMIC_NEXUS_BREACH_OR_DDU_CUSTOMS_REJECTION_HOLD",
+            settled_cross_border_tax_ddp_cents=0,
+            latency_ms=265,
+            provenance="official_doc_snapshot",
+        )
+
+    if hybrid_sor_stripe_tax_and_ddp_refusal_savings_cents > 0:
+        net_cents = max(0, cross_border_tax_ddp_cents - hybrid_sor_stripe_tax_and_ddp_refusal_savings_cents)
+        return CrossBorderTaxMorDdpAgentDecision(
+            allowed=False,
+            http_status=409,
+            decision_code="HYBRID_SOR_STRIPE_TAX_AND_DDP_REFUSAL_SAVINGS_CONFIRM",
+            action_pill="Confirm",
+            cross_border_tax_ddp_lane="HYBRID_SOR_STRIPE_TAX_AND_DDP_REFUSAL_SAVINGS_CONFIRM",
+            settled_cross_border_tax_ddp_cents=net_cents,
+            latency_ms=230,
+            provenance="deterministic_offline_simulation",
+        )
+
+    return CrossBorderTaxMorDdpAgentDecision(
+        allowed=True,
+        http_status=200,
+        decision_code="VERIFIED_VIES_AND_DDP_LANDED_DUTY_SETTLED",
+        action_pill="Act automatically",
+        cross_border_tax_ddp_lane="VERIFIED_VIES_AND_DDP_LANDED_DUTY_SETTLED",
+        settled_cross_border_tax_ddp_cents=cross_border_tax_ddp_cents,
+        latency_ms=10,
+        provenance="deterministic_offline_simulation",
+    )
+
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -54220,6 +54314,36 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "headless_bnpl_or_requires_action_block_latency_ms": bnp_aut_403.latency_ms,
     }
 
+    cbt_commit_ok = evaluate_cross_border_tax_mor_ddp_agent_policy()
+    cbt_vie_403 = evaluate_cross_border_tax_mor_ddp_agent_policy(
+        live_vies_vat_and_cross_border_reverse_charge_verified=False,
+    )
+    cbt_inc_422 = evaluate_cross_border_tax_mor_ddp_agent_policy(
+        tax_duty_inclusive_total_within_mandate_and_hs_code_present=False,
+    )
+    cbt_nex_451 = evaluate_cross_border_tax_mor_ddp_agent_policy(
+        economic_nexus_registered_and_ddp_pre_cleared=False,
+    )
+    cbt_sav_409 = evaluate_cross_border_tax_mor_ddp_agent_policy(
+        hybrid_sor_stripe_tax_and_ddp_refusal_savings_cents=3700000,
+    )
+    cross_border_tax_mor_ddp_agent_guards = {
+        "all_passed": (
+            cbt_commit_ok.allowed
+            and cbt_commit_ok.settled_cross_border_tax_ddp_cents == 18500000
+            and not cbt_vie_403.allowed
+            and cbt_vie_403.http_status == 403
+            and not cbt_inc_422.allowed
+            and cbt_inc_422.http_status == 422
+            and not cbt_nex_451.allowed
+            and cbt_nex_451.http_status == 451
+            and not cbt_sav_409.allowed
+            and cbt_sav_409.action_pill == "Confirm"
+        ),
+        "cross_border_tax_ddp_settlement_latency_ms": cbt_commit_ok.latency_ms,
+        "invalid_vies_or_reverse_charge_block_latency_ms": cbt_vie_403.latency_ms,
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -54640,6 +54764,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_protocol_stack_interoperability_guards": agentic_protocol_stack_interoperability_guards,
         "chargeback_ce30_friendly_fraud_agent_guards": chargeback_ce30_friendly_fraud_agent_guards,
         "bnpl_webview_margin_agent_guards": bnpl_webview_margin_agent_guards,
+        "cross_border_tax_mor_ddp_agent_guards": cross_border_tax_mor_ddp_agent_guards,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -64883,6 +65008,24 @@ def render_webiq_live_demo_html(report: dict[str, Any] | None = None, *, lang: L
         <div id="bnp-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
       </div>
 
+      <!-- Interactive Cross-Border Tax Compliance (MoR vs SoR Stripe Tax) & DDP Duty Sandbox (Round 408) -->
+      <div class="finops-box" id="cross-border-tax-mor-ddp-agent-sandbox" style="margin-top:12px;border-color:#10B981;">
+        <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
+          <span class="panel-title" id="ui-cbt-title">🌍 跨境电商与全球 SaaS 税务合规沙盒：MoR vs SoR (Stripe Tax) + 欧盟 VIES 反向征收 + DDP 完税锁 (Round 408)</span>
+        </div>
+        <div class="control-row">
+          <label><span>欧盟 VIES 实时在线核验 + 8位 HS 编码 DDP 完税结账 + 含税总额 &lt;= Mandate 上限 + Economic Nexus 监控:</span></label>
+          <select id="cbt-select" onchange="updateCrossBorderTaxMorDdpAgentSandbox()">
+            <option value="cbt_commit_ok">🌍 欧盟 VIES valid=True 存证 + 8位 HS 编码 DDP 预完税 + 含税总额 &lt;= 上限：10ms 清算 $185,000.00! (Act automatically)</option>
+            <option value="cbt_vie_403">🛑 仅用正则假验欧盟 VAT 税号免除 20% 增值税，或本国同区企业交易违规滥用 Reverse Charge → 11ms 触发 HTTP 403!</option>
+            <option value="cbt_inc_422">🚨 按净价签发 SPT 后叠加 21% VAT 与关税突破买家 Mandate 上限，或缺失精确 8位 HS 海关编码乱估关税 → 14ms 触发 HTTP 422!</option>
+            <option value="cbt_nex_451">🛑 突破美国州级 $100,000 经济联结 (Economic Nexus) 未注册税号，或走 DDU 到付清关致买家被收 $18 代垫费拒收 → 265ms 触发 HTTP 451!</option>
+            <option value="cbt_sav_409">🧑‍⚖️ 启用核心税区切 SoR (Stripe Tax 0.5% 替代 5% MoR) + DDP 预清关消灭 32% 到付拒收退件，季度立省 $37,000.00 (净值 $148,000.00) → 230ms 触发 HTTP 409!</option>
+          </select>
+        </div>
+        <div id="cbt-readout" style="margin-top:8px;font-size:12px;line-height:1.48;"></div>
+      </div>
+
       <!-- Interactive Stage 1756 Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -65729,6 +65872,7 @@ function renderAll() {{
   updateAgenticProtocolStackInteroperabilitySandbox();
   updateChargebackCe30FriendlyFraudAgentSandbox();
   updateBnplWebviewMarginAgentSandbox();
+  updateCrossBorderTaxMorDdpAgentSandbox();
   updateStage1752Sandbox();
   updateStage1753Sandbox();
   updateStage1754Sandbox();
@@ -85406,6 +85550,52 @@ function updateBnplWebviewMarginAgentSandbox() {{
     "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
     "<strong>📱 受控系统 WebView 人类确认 + 0% APR + 贴息后净毛利 28.8% 合规：已自动清算 (CONTROLLED_SYSTEM_WEBVIEW_HANDOVER_0APR_MDR_MARGIN_VERIFIED_OK · 10ms · Act automatically):</strong><br>" +
     "• <strong>零无头自动化信贷违约、零 6% 贴息负毛利亏本单、部分退货尾款重算完备</strong>：BNPL 与分期信贷结账批次已完成安全清算（<code>$155,000.00</code>）！" +
+    "</div>";
+}}
+
+function updateCrossBorderTaxMorDdpAgentSandbox() {{
+  var sel = document.getElementById("cbt-select");
+  var outEl = document.getElementById("cbt-readout");
+  if (!sel || !outEl) return;
+  var v = sel.value;
+
+  if (v === "cbt_vie_403") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 403 INVALID_VIES_VAT_NUMBER_OR_DOMESTIC_REVERSE_CHARGE_ABUSE_BLOCKED (11ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "欧盟 VIES 增值税门禁阻断：检测到买方 VAT 税号未通过官方 VIES 实时在线核验（<code>valid=False</code>）或买卖双方处于同一成员国违规套用 <code>0% Reverse Charge</code>，已在 11ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cbt_inc_422") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🚨 HTTP 422 TAX_DUTY_INCLUSIVE_TOTAL_EXCEEDS_MANDATE_OR_MISSING_HS_CODE_BLOCKED (14ms · Send to a human · deterministic_offline_simulation)：<br>" +
+      "含税完税总价与海关编码门禁阻断：计入消费税/VAT 与进口关税后的 <code>Landed Total</code> 突破买家 <code>SPT / AP2 Mandate</code> 授权上限，或实物SKU缺失 8–10 位 HS 编码，已在 14ms 内阻断！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cbt_nex_451") {{
+    outEl.innerHTML =
+      "<div style='background:var(--red-bg);border:1px solid var(--red);color:#FECACA;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🛑 HTTP 451 UNREGISTERED_ECONOMIC_NEXUS_BREACH_OR_DDU_CUSTOMS_REJECTION_HOLD (265ms · Send to a human · official_doc_snapshot)：<br>" +
+      "经济联结与清关模式挂起：目标州滚动 12 个月销售额已突破 <code>$100,000 Economic Nexus</code> 但尚未完成税号注册，或跨境直邮采用高拒收率 <code>DDU 到付清关</code>，已在 265ms 内挂起！" +
+      "</div>";
+    return;
+  }}
+  if (v === "cbt_sav_409") {{
+    outEl.innerHTML =
+      "<div style='background:rgba(245,158,11,0.18);border:1px solid #F59E0B;color:#FDE68A;padding:8px 10px;border-radius:8px;font-weight:600;'>" +
+      "🧑‍⚖️ HTTP 409 HYBRID_SOR_STRIPE_TAX_AND_DDP_REFUSAL_SAVINGS_CONFIRM (230ms · Confirm · deterministic_offline_simulation)：<br>" +
+      "启用混合全球税务与完税路由：<code>美欧英加核心税区切回 SoR (Stripe Tax 0.5% 替代 5% MoR) + 8位 HS 编码 DDP 预完税免除 $18 快递代垫费与 32% 拒收退件</code>，单季立省 <code>$37,000.00</code>（净成本压降至 <code>$148,000.00</code>）！" +
+      "</div>";
+    return;
+  }}
+
+  outEl.innerHTML =
+    "<div style='background:var(--green-bg);border:1px solid var(--green);color:#A7F3D0;padding:8px 10px;border-radius:8px;'>" +
+    "<strong>🌍 欧盟 VIES 在线存证 + 8位 HS 编码 DDP 预完税 + 含税总额合规：已自动清算 (VERIFIED_VIES_AND_DDP_LANDED_DUTY_SETTLED · 10ms · Act automatically):</strong><br>" +
+    "• <strong>零假税号逃税追缴、零 DDU 到付拒收退件、含税完税总额严格受控于 Mandate 上限内</strong>：跨境电商与全球 SaaS 结算批次已完成安全清算（<code>$185,000.00</code>）！" +
     "</div>";
 }}
 

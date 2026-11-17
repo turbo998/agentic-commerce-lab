@@ -24224,6 +24224,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("bnpl-webview-margin-agent-sandbox", demo_zh)
 
+    def test_cross_border_tax_mor_ddp_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_cross_border_tax_mor_ddp_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant VIES verification + DDP duty pre-clearance + landed total within mandate -> 200 OK
+        ok = evaluate_cross_border_tax_mor_ddp_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_cross_border_tax_ddp_cents, 18500000)
+
+        # 2. Invalid VIES VAT number or domestic reverse-charge abuse -> 403 Forbidden
+        vie_403 = evaluate_cross_border_tax_mor_ddp_agent_policy(
+            live_vies_vat_and_cross_border_reverse_charge_verified=False,
+        )
+        self.assertFalse(vie_403.allowed)
+        self.assertEqual(vie_403.http_status, 403)
+
+        # 3. Tax + duty landed total exceeding mandate ceiling or missing HS code -> 422 Unprocessable
+        inc_422 = evaluate_cross_border_tax_mor_ddp_agent_policy(
+            tax_duty_inclusive_total_within_mandate_and_hs_code_present=False,
+        )
+        self.assertFalse(inc_422.allowed)
+        self.assertEqual(inc_422.http_status, 422)
+
+        # 4. Unregistered Economic Nexus breach or DDU customs refusal risk -> 451 Hold
+        nex_451 = evaluate_cross_border_tax_mor_ddp_agent_policy(
+            economic_nexus_registered_and_ddp_pre_cleared=False,
+        )
+        self.assertFalse(nex_451.allowed)
+        self.assertEqual(nex_451.http_status, 451)
+
+        # 5. Hybrid core-SoR (Stripe Tax 0.5%) + DDP refusal elimination saving $37,000 ($148,000 net) -> 409 Confirm
+        sav_409 = evaluate_cross_border_tax_mor_ddp_agent_policy(
+            hybrid_sor_stripe_tax_and_ddp_refusal_savings_cents=3700000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_cross_border_tax_ddp_cents, 14800000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["cross_border_tax_mor_ddp_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-tax-mor-ddp-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 
