@@ -25040,6 +25040,54 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         demo_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("telehealth-pharmacy-fsa-erx-agent-sandbox", demo_zh)
 
+    def test_proptech_lease_escrow_fair_housing_agent_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            evaluate_proptech_lease_escrow_fair_housing_agent_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        # 1. Compliant FHA search + pinned escrow vault + statutory deposit cap & depreciation -> 200 OK
+        ok = evaluate_proptech_lease_escrow_fair_housing_agent_policy()
+        self.assertTrue(ok.allowed)
+        self.assertEqual(ok.http_status, 200)
+        self.assertEqual(ok.settled_proptech_lease_escrow_cents, 27000000)
+
+        # 2. Fair Housing Act steering or unverified escrow wire routing change -> 403 Forbidden
+        fha_403 = evaluate_proptech_lease_escrow_fair_housing_agent_policy(
+            no_fha_protected_class_steering_and_escrow_wire_vault_locked=False,
+        )
+        self.assertFalse(fha_403.allowed)
+        self.assertEqual(fha_403.http_status, 403)
+
+        # 3. Deposit exceeding statutory cap or deducting normal wear & tear / undepreciated cost -> 422 Unprocessable
+        dep_422 = evaluate_proptech_lease_escrow_fair_housing_agent_policy(
+            deposit_within_statutory_cap_and_move_out_depreciation_applied=False,
+        )
+        self.assertFalse(dep_422.allowed)
+        self.assertEqual(dep_422.http_status, 422)
+
+        # 4. Web IQ property foreclosure/condemnation lien or expired 21-day refund window -> 451 Hold
+        ttl_451 = evaluate_proptech_lease_escrow_fair_housing_agent_policy(
+            webiq_property_title_clean_and_within_21d_refund_window=False,
+        )
+        self.assertFalse(ttl_451.allowed)
+        self.assertEqual(ttl_451.http_status, 451)
+
+        # 5. Pinned escrow vault + depreciated move-out settlement saving $56,700 ($213,300 net) -> 409 Confirm
+        sav_409 = evaluate_proptech_lease_escrow_fair_housing_agent_policy(
+            pinned_escrow_vault_and_depreciated_move_out_savings_cents=5670000,
+        )
+        self.assertFalse(sav_409.allowed)
+        self.assertEqual(sav_409.http_status, 409)
+        self.assertEqual(sav_409.settled_proptech_lease_escrow_cents, 21330000)
+        self.assertEqual(sav_409.action_pill, "Confirm")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertTrue(suite["proptech_lease_escrow_fair_housing_agent_guards"]["all_passed"])
+        demo_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("proptech-lease-escrow-fair-housing-agent-sandbox", demo_zh)
+
     def test_recurring_replenishment_spt_cadence_vs_vaulting_selection(self) -> None:
         from lab.webiq_commerce_demo import evaluate_recurring_replenishment_spt_policy
 

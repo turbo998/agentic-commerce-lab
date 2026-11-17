@@ -457,6 +457,7 @@
 - **专题 422（云服务、AI API 平台与电信运营商“按量计费防天价账单 `Bill-Shock Shield`、承诺用量折扣 `CUD / RI / PTU` 寻优与转网挽留”Agent 架构选型 FAQ：仅按 90天 `P20` 稳态基线锁定长期预留防空转、异常超支一键追溯性升档套餐封顶 `Retroactive Tier Cap`、FIDO2 硬件验证拦截 `SIM-Swap` 盗号与合规 `Stripe Cadence SPT` 令牌 `cloud_telecom_cud_bill_shock_shield_mandate_...`）**：**[《云服务、AI API 平台与电信运营商“按量计费防天价账单（Bill-Shock Shield）、承诺用量折扣（CUD/RI）寻优与转网挽留”Agent 架构选型 FAQ：防波峰误签三年长约与追溯封顶实战指南》](docs/cloud-telecom-usage-billing-cud-rightsizing-bill-shock-shield-agent-selection-faq.md)**
 - **专题 423（多商户撮合平台 `Multi-Vendor Marketplace: Stripe Connect / Adyen / Mirakl` “卖家入驻 KYB、滚动保证金 `Rolling Reserve` 与签收放款”Agent 架构选型 FAQ：`Separate Charges` 主收单严禁传 `Stripe-Account` 头、快递称重/邮编双匹配拦截 `0.02kg` 空信封跑路骗局、15% 滚动保证金池与 `<= 180天` 提现密钥锁令牌 `marketplace_seller_kyb_rolling_reserve_mandate_...`）**：**[《多商户撮合平台（Multi-Vendor Marketplace：Stripe Connect / Adyen / Mirakl）“卖家入驻 KYB、滚动保证金（Rolling Reserve）与签收放款”Agent 架构选型 FAQ：防假单号卷款跑路与合规分账实战指南》](docs/marketplace-seller-kyb-rolling-reserve-delivery-escrow-agent-selection-faq.md)**
 - **专题 424（大健康医药电商、连锁药房与远程医疗 `Telehealth & Online Pharmacy` “FSA/HSA 医保个账自动拆单 `SIGIS IIAS`、电子处方核验与仿制药平替”Agent 架构选型 FAQ：SIGIS IIAS 毫秒级剥离非医疗品双轨扣款 `FSA/HSA + Stripe SPT`、Surescripts `e-Rx` 与致命药物相互作用 `DDI` 拦截、`DAW=0` AB级同成分仿制药省 70% 与退药 100% 销毁禁回流 `ATP` 令牌 `telehealth_pharmacy_fsa_iias_erx_mandate_...`）**：**[《大健康医药电商、连锁药房与远程医疗（Telehealth & Online Pharmacy）“FSA/HSA 医保个账自动拆单（IIAS）、电子处方核验与仿制药平替”Agent 架构选型 FAQ：防非医保品混刷、处方互锁与自动算清自付额实战指南》](docs/telehealth-pharmacy-fsa-hsa-iias-split-tender-erx-generic-agent-selection-faq.md)**
+- **专题 425（房产租赁、长租公寓与商业地产科技 `PropTech` “AI 找房签约、押金监管专户 `Escrow` 与防电汇篡改诈骗”Agent 架构选型 FAQ：《公平住房法》`FHA` 反歧视导向硬阻断、只读监管信托专户免疫 `Real Estate BEC` 电汇钓鱼改号、城市法定押金上限 `<=1月租` 与退租自然磨损豁免/剩余折旧寿命定损令牌 `proptech_lease_escrow_fair_housing_mandate_...`）**：**[《房产租赁、长租公寓与商业地产科技（PropTech）“AI 找房签约、押金监管专户（Escrow）与防电汇篡改诈骗”Agent 架构选型 FAQ：公平住房法合规、法定押金锁与退租验房定损实战指南》](docs/proptech-real-estate-lease-deposit-escrow-fair-housing-wire-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1307,6 +1308,8 @@
 ![2026-11-18 多商户撮合平台 (Marketplace: Stripe Connect/Adyen) 卖家 KYB、滚动保证金与签收托管放款 Agent 架构一图流总结](assets/svg/425-marketplace-seller-kyb-rolling-reserve-delivery-escrow-2026-11-18.svg)
 
 ![2026-11-18 大健康医药电商与远程医疗 (Telehealth/Pharmacy) FSA/HSA 自动拆单、电子处方核验与仿制药平替 Agent 架构一图流总结](assets/svg/426-telehealth-pharmacy-fsa-hsa-iias-split-tender-erx-generic-2026-11-18.svg)
+
+![2026-11-18 房产租赁与地产科技 (PropTech) AI 找房签约、押金监管专户与防电汇篡改 Agent 架构一图流总结](assets/svg/427-proptech-real-estate-lease-deposit-escrow-fair-housing-wire-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
