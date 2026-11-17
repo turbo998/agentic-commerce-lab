@@ -451,6 +451,7 @@
 - **专题 416（智能汽车与直营新能源车企 `EV Digital Retailing` “在线选配锁单、VIN 定金状态机与金融保险 `F&I` 合规结账”Agent 架构选型 FAQ：72h 冷静期与 `AP2 MandateVC` 二次签名转大定、符合 `FTC CARS Rule` 严禁默认勾选隐形装潢费、软硬件拆单保住 `$7,500` 新能源免税/补贴悬崖令牌 `automotive_ev_vin_deposit_fni_mandate_...`）**：**[《智能汽车与直营新能源车企（EV Digital Retailing）“在线选配锁单、VIN 定金状态机与金融保险（F&I）合规结账”Agent 架构选型 FAQ：小订转大定冷静期、禁绑隐形附加品与全落地价实战指南》](docs/automotive-ev-digital-retailing-vin-deposit-fni-compliance-agent-selection-faq.md)**
 - **专题 417（文娱演出、体育赛事与热门景区“高并发票务预订、防黄牛抢票机器人与实名原价候补”Agent 架构选型 FAQ：FIDO2 硬件证明防机房无头脚本扫票、64位行位图 `Leave-0-or-2` 反孤座算法挽回 6% 票房死角、首屏 All-In 含费透明票价与 30s 动态旋转 TOTP 票夹令牌 `live_event_ticketing_anti_scalper_mandate_...`）**：**[《文娱演出、体育赛事与热门景区“高并发票务预订、防黄牛抢票机器人与实名原价候补”Agent 架构选型 FAQ：FIDO2 硬件队列、连座原子锁与含服务费全包价实战指南》](docs/live-event-ticketing-anti-scalper-bot-queue-face-value-resale-agent-selection-faq.md)**
 - **专题 418（零售电商嵌入式保险 `Extend / AppleCare / 运费险` “智能报案定损 `FNOL`、多模态反诈与秒级理赔”Agent 架构选型 FAQ：受控相机 3s 视差实拍与 PRNU 频域伪影拦截 `AIGC Inpainting` 假裂纹图、全局 `pHash` 查重、`Repair <= 65% Replacement` 修换经济寻优与 `<= 180天` 打款密钥锁令牌 `embedded_insurance_fnol_claims_mandate_...`）**：**[《零售电商嵌入式保险（运费险 / 3C 碎屏延保 / 航延险）“智能报案定损（FNOL）、多模态反诈与秒级理赔”Agent 架构选型 FAQ：防 AI 假图骗保、修换比价与 180 天打款密钥实战指南》](docs/embedded-ecommerce-insurance-warranty-claims-fnol-fraud-payout-agent-selection-faq.md)**
+- **专题 419（跨境电商与多币种平台“外汇锁汇 `FX Rate Lock`、同币种原币结算 `Like-for-Like` 与防退货汇损”Agent 架构选型 FAQ：`EUR/GBP` 原币留存自然对冲消灭 `2%+2%=4%` 往返双重换汇失血、15m 加密锁汇报价 `fx_quote_id` TTL、退货 100% 绑定原 `Charge ID` 历史汇率与纽约州/Connect 稳定币禁令令牌 `cross_border_fx_like_for_like_treasury_mandate_...`）**：**[《跨境电商与多币种平台“外汇锁汇（FX Rate Lock）、本币同币种结算（Like-for-Like）与退货汇损防护”Agent 架构选型 FAQ：消灭 4% 双重汇损、历史汇率退货与合规分账实战指南》](docs/cross-border-multi-currency-fx-lock-like-for-like-treasury-agent-selection-faq.md)**
 
 ![2026-11-14 Cloudflare 智能体商业最新产品矩阵与六大落地场景全景图](assets/svg/189-cloudflare-agentic-commerce-fullstack-2026-11-14.svg)
 
@@ -1289,6 +1290,8 @@
 ![2026-11-18 文娱演出与体育赛事高并发票务、防黄牛抢票机器人与官方原价候补 Agent 架构一图流总结](assets/svg/419-live-event-ticketing-anti-scalper-bot-queue-face-value-resale-2026-11-18.svg)
 
 ![2026-11-18 零售电商嵌入式保险与延保 (Extend/AppleCare) 智能报案定损、多模态反诈与秒级理赔 Agent 架构一图流总结](assets/svg/420-embedded-ecommerce-insurance-warranty-claims-fnol-fraud-payout-2026-11-18.svg)
+
+![2026-11-18 跨境电商与多币种平台外汇锁汇 (FX Rate Lock)、同币种结算 (Like-for-Like) 与退货汇损防护 Agent 架构一图流总结](assets/svg/421-cross-border-multi-currency-fx-lock-like-for-like-treasury-2026-11-18.svg)
 
 ![Agentic Commerce & Microsoft Web IQ 4-Layer Architecture](assets/svg/01-agentic-commerce-webiq-architecture.svg)
 
