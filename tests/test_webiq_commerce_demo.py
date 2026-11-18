@@ -8475,6 +8475,90 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("automotive-ev-d2c-checkout-sandbox", html)
 
+    def test_consumer_healthcare_medspa_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            ConsumerHealthcareMedspaEscrowPolicyInput,
+            evaluate_consumer_healthcare_medspa_escrow_policy,
+        )
+
+        happy = evaluate_consumer_healthcare_medspa_escrow_policy(
+            ConsumerHealthcareMedspaEscrowPolicyInput(
+                quarterly_healthcare_package_escrow_pool_usd=Decimal("250000.00"),
+                duplicate_udi_counterfeit_scan_or_coerced_clinic_loan_detected=False,
+                premature_full_package_payout_or_punitive_refund_deduction_detected=False,
+                webiq_clinic_license_suspension_flag=False,
+                restricted_key_age_days=30,
+                per_session_escrow_and_hsa_fsa_pretax_split_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "FOUR_FACTOR_UDI_VERIFIED_AND_PER_SESSION_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["healthcare_escrow_token"]).startswith("consumer_healthcare_medspa_escrow_mandate_")
+        )
+
+        udi_block = evaluate_consumer_healthcare_medspa_escrow_policy(
+            ConsumerHealthcareMedspaEscrowPolicyInput(
+                quarterly_healthcare_package_escrow_pool_usd=Decimal("250000.00"),
+                duplicate_udi_counterfeit_scan_or_coerced_clinic_loan_detected=True,
+                premature_full_package_payout_or_punitive_refund_deduction_detected=False,
+                webiq_clinic_license_suspension_flag=False,
+                restricted_key_age_days=30,
+                per_session_escrow_and_hsa_fsa_pretax_split_enabled=False,
+            )
+        )
+        self.assertEqual(udi_block["http_status"], 403)
+        self.assertEqual(udi_block["decision"], "DUPLICATE_UDI_COUNTERFEIT_SCAN_OR_COERCED_CLINIC_LOAN_BLOCKED")
+
+        payout_block = evaluate_consumer_healthcare_medspa_escrow_policy(
+            ConsumerHealthcareMedspaEscrowPolicyInput(
+                quarterly_healthcare_package_escrow_pool_usd=Decimal("250000.00"),
+                duplicate_udi_counterfeit_scan_or_coerced_clinic_loan_detected=False,
+                premature_full_package_payout_or_punitive_refund_deduction_detected=True,
+                webiq_clinic_license_suspension_flag=False,
+                restricted_key_age_days=30,
+                per_session_escrow_and_hsa_fsa_pretax_split_enabled=False,
+            )
+        )
+        self.assertEqual(payout_block["http_status"], 422)
+        self.assertEqual(
+            payout_block["decision"],
+            "PREMATURE_FULL_PACKAGE_PAYOUT_OR_PUNITIVE_REFUND_DEDUCTION_BLOCKED",
+        )
+
+        lic_hold = evaluate_consumer_healthcare_medspa_escrow_policy(
+            ConsumerHealthcareMedspaEscrowPolicyInput(
+                quarterly_healthcare_package_escrow_pool_usd=Decimal("250000.00"),
+                duplicate_udi_counterfeit_scan_or_coerced_clinic_loan_detected=False,
+                premature_full_package_payout_or_punitive_refund_deduction_detected=False,
+                webiq_clinic_license_suspension_flag=True,
+                restricted_key_age_days=191,
+                per_session_escrow_and_hsa_fsa_pretax_split_enabled=False,
+            )
+        )
+        self.assertEqual(lic_hold["http_status"], 451)
+        self.assertEqual(lic_hold["decision"], "WEBIQ_CLINIC_LICENSE_SUSPENSION_OR_180D_KEY_HOLD")
+
+        opt_confirm = evaluate_consumer_healthcare_medspa_escrow_policy(
+            ConsumerHealthcareMedspaEscrowPolicyInput(
+                quarterly_healthcare_package_escrow_pool_usd=Decimal("250000.00"),
+                duplicate_udi_counterfeit_scan_or_coerced_clinic_loan_detected=False,
+                premature_full_package_payout_or_punitive_refund_deduction_detected=False,
+                webiq_clinic_license_suspension_flag=False,
+                restricted_key_age_days=30,
+                per_session_escrow_and_hsa_fsa_pretax_split_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "57500.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "192500.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("consumer_healthcare_medspa_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("consumer-healthcare-medspa-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
