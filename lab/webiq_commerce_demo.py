@@ -15992,6 +15992,80 @@ def evaluate_wealth_cash_sweep_treasury_wash_sale_policy(
         "reason": "Verified SEC Reg BI suitability, 61-day cross-account wash-sale immunity, and <=$245k/bank FDIC sweep.",
     }
 
+
+@dataclass(frozen=True)
+class DigitalMediaPaywallAiCrawlerPolicyInput:
+    quarterly_digital_media_licensing_pool_usd: Decimal
+    unsigned_scraper_bot_or_enterprise_credential_sharing_detected: bool
+    per_article_card_fee_wipeout_or_monthly_fare_cap_exceeded_detected: bool
+    webiq_tdm_training_copyright_breach_flag: bool
+    restricted_key_age_days: int
+    http402_crawler_licensing_and_fare_cap_bundle_enabled: bool
+
+
+def evaluate_digital_media_paywall_ai_crawler_policy(
+    policy_input: DigitalMediaPaywallAiCrawlerPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Digital Media Paywall HTTP 402 AI crawler licensing, transit-style monthly Fare-Capping & B2B seat upsell."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_digital_media_licensing_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.unsigned_scraper_bot_or_enterprise_credential_sharing_detected:
+        return {
+            "http_status": 403,
+            "decision": "UNSIGNED_SCRAPER_BOT_OR_ENTERPRISE_CREDENTIAL_SHARING_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "digital_media_token": None,
+            "reason": "Blocked unsigned scraper bot bypassing paywall or 100-employee concurrent sharing of a single personal login.",
+        }
+
+    if policy_input.per_article_card_fee_wipeout_or_monthly_fare_cap_exceeded_detected:
+        return {
+            "http_status": 422,
+            "decision": "PER_ARTICLE_CARD_FEE_WIPEOUT_OR_MONTHLY_FARE_CAP_EXCEEDED_BLOCKED",
+            "latency_ms": 12,
+            "approved_budget_usd": "0.00",
+            "digital_media_token": None,
+            "reason": "Blocked $0.50 single-article charge on $0.30 fixed-fee card rail or billing per-article reader above $20 monthly cap.",
+        }
+
+    if policy_input.webiq_tdm_training_copyright_breach_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_TDM_TRAINING_COPYRIGHT_BREACH_OR_180D_KEY_HOLD",
+            "latency_ms": 250,
+            "approved_budget_usd": "0.00",
+            "digital_media_token": None,
+            "reason": "Web IQ detected W3C TDMRep foundation-model training violation on RAG-only license or key age > 180 days.",
+        }
+
+    if policy_input.http402_crawler_licensing_and_fare_cap_bundle_enabled:
+        savings = (gross * Decimal("0.25")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"MEDIA_402_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "HTTP402_AI_CRAWLER_LICENSING_AND_FARE_CAP_BUNDLE_CONFIRM",
+            "latency_ms": 210,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "digital_media_token": f"digital_media_paywall_ai_crawler_mandate_{digest}",
+            "reason": "HTTP 402 MPP AI-crawler licensing, $20/mo Fare-Capping, and B2B seat upsell improved net yield by 25.0%.",
+        }
+
+    digest = hashlib.sha256(f"MEDIA_402_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "WEB_BOT_AUTH_VERIFIED_AND_HTTP402_FARE_CAP_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "digital_media_token": f"digital_media_paywall_ai_crawler_mandate_{digest}",
+        "reason": "Verified RFC 9421 Web Bot Auth, HTTP 402 MPP micropayment voucher, W3C TDMRep scope, and monthly Fare-Cap.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -21413,6 +21487,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    digital_media_paywall_ai_crawler_guard = {
+        "happy_path": evaluate_digital_media_paywall_ai_crawler_policy(
+            DigitalMediaPaywallAiCrawlerPolicyInput(
+                quarterly_digital_media_licensing_pool_usd=Decimal("250000.00"),
+                unsigned_scraper_bot_or_enterprise_credential_sharing_detected=False,
+                per_article_card_fee_wipeout_or_monthly_fare_cap_exceeded_detected=False,
+                webiq_tdm_training_copyright_breach_flag=False,
+                restricted_key_age_days=30,
+                http402_crawler_licensing_and_fare_cap_bundle_enabled=False,
+            )
+        ),
+        "unsigned_scraper_or_sharing_block": evaluate_digital_media_paywall_ai_crawler_policy(
+            DigitalMediaPaywallAiCrawlerPolicyInput(
+                quarterly_digital_media_licensing_pool_usd=Decimal("250000.00"),
+                unsigned_scraper_bot_or_enterprise_credential_sharing_detected=True,
+                per_article_card_fee_wipeout_or_monthly_fare_cap_exceeded_detected=False,
+                webiq_tdm_training_copyright_breach_flag=False,
+                restricted_key_age_days=30,
+                http402_crawler_licensing_and_fare_cap_bundle_enabled=False,
+            )
+        ),
+        "card_fee_wipeout_or_fare_cap_block": evaluate_digital_media_paywall_ai_crawler_policy(
+            DigitalMediaPaywallAiCrawlerPolicyInput(
+                quarterly_digital_media_licensing_pool_usd=Decimal("250000.00"),
+                unsigned_scraper_bot_or_enterprise_credential_sharing_detected=False,
+                per_article_card_fee_wipeout_or_monthly_fare_cap_exceeded_detected=True,
+                webiq_tdm_training_copyright_breach_flag=False,
+                restricted_key_age_days=30,
+                http402_crawler_licensing_and_fare_cap_bundle_enabled=False,
+            )
+        ),
+        "webiq_tdm_breach_or_key_hold": evaluate_digital_media_paywall_ai_crawler_policy(
+            DigitalMediaPaywallAiCrawlerPolicyInput(
+                quarterly_digital_media_licensing_pool_usd=Decimal("250000.00"),
+                unsigned_scraper_bot_or_enterprise_credential_sharing_detected=False,
+                per_article_card_fee_wipeout_or_monthly_fare_cap_exceeded_detected=False,
+                webiq_tdm_training_copyright_breach_flag=True,
+                restricted_key_age_days=191,
+                http402_crawler_licensing_and_fare_cap_bundle_enabled=False,
+            )
+        ),
+        "http402_crawler_and_fare_cap_confirm": evaluate_digital_media_paywall_ai_crawler_policy(
+            DigitalMediaPaywallAiCrawlerPolicyInput(
+                quarterly_digital_media_licensing_pool_usd=Decimal("250000.00"),
+                unsigned_scraper_bot_or_enterprise_credential_sharing_detected=False,
+                per_article_card_fee_wipeout_or_monthly_fare_cap_exceeded_detected=False,
+                webiq_tdm_training_copyright_breach_flag=False,
+                restricted_key_age_days=30,
+                http402_crawler_licensing_and_fare_cap_bundle_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21557,6 +21684,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pet_ecommerce_autoship_vet_direct_pay_guard": pet_ecommerce_autoship_vet_direct_pay_guard,
         "coworking_flexible_office_rightsizing_guard": coworking_flexible_office_rightsizing_guard,
         "wealth_cash_sweep_treasury_wash_sale_guard": wealth_cash_sweep_treasury_wash_sale_guard,
+        "digital_media_paywall_ai_crawler_guard": digital_media_paywall_ai_crawler_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -27499,6 +27627,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">智能投顾与 FDIC 扫单令牌</div>
             <div class="finops-kpi-val" id="wealth-sweep-token-kpi" style="font-size:10px;color:#A78BFA;">wealth_cash_sweep_treasury_wash_sale_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Digital Media Paywall & AI Crawler Licensing (Cloudflare Pay-Per-Crawl HTTP 402, Fare-Capping & B2B Upsell) Sandbox -->
+      <div class="finops-box" id="digital-media-paywall-ai-crawler-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📰 数字媒体付费墙、研报微支付与 AI 爬虫按次授权清算 (Cloudflare Pay-Per-Crawl / TollBit) 沙盒</div>
+            <div class="finops-subtitle">实测边缘 Web Bot Auth 拦截未签名野生爬虫与百人共享个人账号 (HTTP 403)、禁止 $0.50 单篇走信用卡倒挂与 $20 月度封顶转包月 (HTTP 422)、W3C TDMRep 禁训练版权锁 (HTTP 451) 及 HTTP 402 AI 按次分润+B2B 团购升舱增收 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="media-402-verdict-pill">HTTP 200 · WEB_BOT_AUTH_VERIFIED_AND_HTTP402_FARE_CAP_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度数字出版订阅与 AI 爬虫授权结算池 ($ USD) <span class="control-val" id="media-402-gross-label">$250,000</span></label>
+            <input type="range" id="media-402-gross-slider" min="50000" max="900000" step="25000" value="250000" oninput="updateDigitalMediaPaywallAiCrawlerSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">Web Bot Auth 边缘验签、HTTP 402 微支付与人类阅读月度封顶场景</label>
+            <select id="media-402-mode-select" onchange="updateDigitalMediaPaywallAiCrawlerSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ Web Bot Auth 验签 + HTTP 402 通道微支付 + $20 月度封顶守护 (HTTP 200)</option>
+              <option value="scraper_403">🛑 未携带 RFC 9421 签名的野生爬虫偷抓全文 或 投行百人并发共用 1个个人账号 (HTTP 403)</option>
+              <option value="fee_422">🚨 将 $0.50 单篇解锁逐笔送入 $0.30 固定费信用卡轨 或 按篇读者扣费突破 $20 包月价 (HTTP 422)</option>
+              <option value="tdm_451">🛑 Web IQ 检出调用方违反 W3C TDMRep 声明将仅限引用内容用于模型训练或密钥 &gt;180d (HTTP 451)</option>
+              <option value="bundle_409">🧑‍⚖️ AI 爬虫 HTTP 402 ($0.015/次) 按次变现 + 人类单篇满 $20 自动转包月 + B2B 升舱立增 25% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原 AI 白嫖流失与微支付卡费基线</div>
+            <div class="finops-kpi-val" id="media-402-gross-kpi">$250,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">402 爬虫授权与封顶转化增益</div>
+            <div class="finops-kpi-val" id="media-402-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净出版与内容清算成本</div>
+            <div class="finops-kpi-val" id="media-402-net-kpi" style="color:#60A5FA;">$250,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">双轨内容授权与封顶令牌</div>
+            <div class="finops-kpi-val" id="media-402-token-kpi" style="font-size:10px;color:#A78BFA;">digital_media_paywall_ai_crawler_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -34700,6 +34873,61 @@ function updateWealthCashSweepTreasuryWashSaleSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'wealth_cash_sweep_treasury_wash_sale_mandate_verified';
+  }}
+}}
+
+function updateDigitalMediaPaywallAiCrawlerSandbox() {{
+  const grossSlider = document.getElementById('media-402-gross-slider');
+  const modeSelect = document.getElementById('media-402-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '250000');
+  const mode = modeSelect.value;
+  document.getElementById('media-402-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('media-402-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('media-402-verdict-pill');
+  const savingsKpi = document.getElementById('media-402-savings-kpi');
+  const netKpi = document.getElementById('media-402-net-kpi');
+  const tokenKpi = document.getElementById('media-402-token-kpi');
+
+  if (mode === 'scraper_403') {{
+    pill.textContent = 'HTTP 403 · UNSIGNED_SCRAPER_BOT_OR_ENTERPRISE_CREDENTIAL_SHARING_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNSIGNED_SCRAPER_OR_SEAT_SHARING';
+  }} else if (mode === 'fee_422') {{
+    pill.textContent = 'HTTP 422 · PER_ARTICLE_CARD_FEE_WIPEOUT_OR_MONTHLY_FARE_CAP_EXCEEDED_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_CARD_FEE_WIPEOUT_OR_FARE_CAP_BREACH';
+  }} else if (mode === 'tdm_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_TDM_TRAINING_COPYRIGHT_BREACH_OR_180D_KEY_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_W3C_TDM_TRAINING_BAN_OR_180D_KEY';
+  }} else if (mode === 'bundle_409') {{
+    const savings = Math.round(gross * 0.25 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · HTTP402_AI_CRAWLER_LICENSING_AND_FARE_CAP_BUNDLE_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'digital_media_paywall_ai_crawler_mandate_saved25pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · WEB_BOT_AUTH_VERIFIED_AND_HTTP402_FARE_CAP_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'digital_media_paywall_ai_crawler_mandate_verified';
   }}
 }}
 

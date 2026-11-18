@@ -9348,6 +9348,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("wealth-cash-sweep-treasury-wash-sale-sandbox", html)
 
+    def test_digital_media_paywall_ai_crawler_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            DigitalMediaPaywallAiCrawlerPolicyInput,
+            evaluate_digital_media_paywall_ai_crawler_policy,
+        )
+
+        happy = evaluate_digital_media_paywall_ai_crawler_policy(
+            DigitalMediaPaywallAiCrawlerPolicyInput(
+                quarterly_digital_media_licensing_pool_usd=Decimal("250000.00"),
+                unsigned_scraper_bot_or_enterprise_credential_sharing_detected=False,
+                per_article_card_fee_wipeout_or_monthly_fare_cap_exceeded_detected=False,
+                webiq_tdm_training_copyright_breach_flag=False,
+                restricted_key_age_days=30,
+                http402_crawler_licensing_and_fare_cap_bundle_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "WEB_BOT_AUTH_VERIFIED_AND_HTTP402_FARE_CAP_AUTHORIZED")
+        self.assertTrue(
+            str(happy["digital_media_token"]).startswith("digital_media_paywall_ai_crawler_mandate_")
+        )
+
+        scraper_block = evaluate_digital_media_paywall_ai_crawler_policy(
+            DigitalMediaPaywallAiCrawlerPolicyInput(
+                quarterly_digital_media_licensing_pool_usd=Decimal("250000.00"),
+                unsigned_scraper_bot_or_enterprise_credential_sharing_detected=True,
+                per_article_card_fee_wipeout_or_monthly_fare_cap_exceeded_detected=False,
+                webiq_tdm_training_copyright_breach_flag=False,
+                restricted_key_age_days=30,
+                http402_crawler_licensing_and_fare_cap_bundle_enabled=False,
+            )
+        )
+        self.assertEqual(scraper_block["http_status"], 403)
+        self.assertEqual(
+            scraper_block["decision"],
+            "UNSIGNED_SCRAPER_BOT_OR_ENTERPRISE_CREDENTIAL_SHARING_BLOCKED",
+        )
+
+        fee_block = evaluate_digital_media_paywall_ai_crawler_policy(
+            DigitalMediaPaywallAiCrawlerPolicyInput(
+                quarterly_digital_media_licensing_pool_usd=Decimal("250000.00"),
+                unsigned_scraper_bot_or_enterprise_credential_sharing_detected=False,
+                per_article_card_fee_wipeout_or_monthly_fare_cap_exceeded_detected=True,
+                webiq_tdm_training_copyright_breach_flag=False,
+                restricted_key_age_days=30,
+                http402_crawler_licensing_and_fare_cap_bundle_enabled=False,
+            )
+        )
+        self.assertEqual(fee_block["http_status"], 422)
+        self.assertEqual(
+            fee_block["decision"],
+            "PER_ARTICLE_CARD_FEE_WIPEOUT_OR_MONTHLY_FARE_CAP_EXCEEDED_BLOCKED",
+        )
+
+        tdm_hold = evaluate_digital_media_paywall_ai_crawler_policy(
+            DigitalMediaPaywallAiCrawlerPolicyInput(
+                quarterly_digital_media_licensing_pool_usd=Decimal("250000.00"),
+                unsigned_scraper_bot_or_enterprise_credential_sharing_detected=False,
+                per_article_card_fee_wipeout_or_monthly_fare_cap_exceeded_detected=False,
+                webiq_tdm_training_copyright_breach_flag=True,
+                restricted_key_age_days=191,
+                http402_crawler_licensing_and_fare_cap_bundle_enabled=False,
+            )
+        )
+        self.assertEqual(tdm_hold["http_status"], 451)
+        self.assertEqual(
+            tdm_hold["decision"],
+            "WEBIQ_TDM_TRAINING_COPYRIGHT_BREACH_OR_180D_KEY_HOLD",
+        )
+
+        opt_confirm = evaluate_digital_media_paywall_ai_crawler_policy(
+            DigitalMediaPaywallAiCrawlerPolicyInput(
+                quarterly_digital_media_licensing_pool_usd=Decimal("250000.00"),
+                unsigned_scraper_bot_or_enterprise_credential_sharing_detected=False,
+                per_article_card_fee_wipeout_or_monthly_fare_cap_exceeded_detected=False,
+                webiq_tdm_training_copyright_breach_flag=False,
+                restricted_key_age_days=30,
+                http402_crawler_licensing_and_fare_cap_bundle_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "62500.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "187500.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("digital_media_paywall_ai_crawler_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("digital-media-paywall-ai-crawler-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
