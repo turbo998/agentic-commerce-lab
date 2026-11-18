@@ -9528,6 +9528,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("home-services-on-demand-repair-escrow-sandbox", html)
 
+    def test_wedding_bespoke_event_milestone_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            WeddingBespokeEventMilestoneEscrowPolicyInput,
+            evaluate_wedding_bespoke_event_milestone_escrow_policy,
+        )
+
+        happy = evaluate_wedding_bespoke_event_milestone_escrow_policy(
+            WeddingBespokeEventMilestoneEscrowPolicyInput(
+                quarterly_wedding_event_escrow_pool_usd=Decimal("280000.00"),
+                partial_vendor_slot_conflict_or_bait_switch_crew_substitution_detected=False,
+                premature_100pct_wedding_payout_or_hidden_venue_vendor_fee_detected=False,
+                webiq_outdoor_storm_no_rain_plan_or_180d_spt_flag=False,
+                restricted_key_age_days=30,
+                five_vendor_slot_saga_and_30_50_20_media_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "ALL_VENDOR_SLOTS_LOCKED_AND_30_50_20_GALLERY_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["wedding_event_token"]).startswith("wedding_bespoke_event_milestone_escrow_mandate_")
+        )
+
+        slot_block = evaluate_wedding_bespoke_event_milestone_escrow_policy(
+            WeddingBespokeEventMilestoneEscrowPolicyInput(
+                quarterly_wedding_event_escrow_pool_usd=Decimal("280000.00"),
+                partial_vendor_slot_conflict_or_bait_switch_crew_substitution_detected=True,
+                premature_100pct_wedding_payout_or_hidden_venue_vendor_fee_detected=False,
+                webiq_outdoor_storm_no_rain_plan_or_180d_spt_flag=False,
+                restricted_key_age_days=30,
+                five_vendor_slot_saga_and_30_50_20_media_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(slot_block["http_status"], 403)
+        self.assertEqual(
+            slot_block["decision"],
+            "PARTIAL_VENDOR_SLOT_CONFLICT_OR_BAIT_SWITCH_CREW_SUBSTITUTION_BLOCKED",
+        )
+
+        media_block = evaluate_wedding_bespoke_event_milestone_escrow_policy(
+            WeddingBespokeEventMilestoneEscrowPolicyInput(
+                quarterly_wedding_event_escrow_pool_usd=Decimal("280000.00"),
+                partial_vendor_slot_conflict_or_bait_switch_crew_substitution_detected=False,
+                premature_100pct_wedding_payout_or_hidden_venue_vendor_fee_detected=True,
+                webiq_outdoor_storm_no_rain_plan_or_180d_spt_flag=False,
+                restricted_key_age_days=30,
+                five_vendor_slot_saga_and_30_50_20_media_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(media_block["http_status"], 422)
+        self.assertEqual(
+            media_block["decision"],
+            "PREMATURE_100PCT_WEDDING_PAYOUT_OR_HIDDEN_VENUE_VENDOR_FEE_BLOCKED",
+        )
+
+        storm_hold = evaluate_wedding_bespoke_event_milestone_escrow_policy(
+            WeddingBespokeEventMilestoneEscrowPolicyInput(
+                quarterly_wedding_event_escrow_pool_usd=Decimal("280000.00"),
+                partial_vendor_slot_conflict_or_bait_switch_crew_substitution_detected=False,
+                premature_100pct_wedding_payout_or_hidden_venue_vendor_fee_detected=False,
+                webiq_outdoor_storm_no_rain_plan_or_180d_spt_flag=True,
+                restricted_key_age_days=191,
+                five_vendor_slot_saga_and_30_50_20_media_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(storm_hold["http_status"], 451)
+        self.assertEqual(
+            storm_hold["decision"],
+            "WEBIQ_OUTDOOR_STORM_NO_RAIN_PLAN_OR_180D_SPT_HOLD",
+        )
+
+        opt_confirm = evaluate_wedding_bespoke_event_milestone_escrow_policy(
+            WeddingBespokeEventMilestoneEscrowPolicyInput(
+                quarterly_wedding_event_escrow_pool_usd=Decimal("280000.00"),
+                partial_vendor_slot_conflict_or_bait_switch_crew_substitution_detected=False,
+                premature_100pct_wedding_payout_or_hidden_venue_vendor_fee_detected=False,
+                webiq_outdoor_storm_no_rain_plan_or_180d_spt_flag=False,
+                restricted_key_age_days=30,
+                five_vendor_slot_saga_and_30_50_20_media_escrow_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "67200.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "212800.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("wedding_bespoke_event_milestone_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("wedding-bespoke-event-milestone-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

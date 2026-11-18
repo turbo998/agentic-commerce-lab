@@ -16140,6 +16140,80 @@ def evaluate_home_services_on_demand_repair_escrow_policy(
         "reason": "Verified trade license, Standardized Price-Book cap, old-vs-new part proof, and 80/20 warranty escrow.",
     }
 
+
+@dataclass(frozen=True)
+class WeddingBespokeEventMilestoneEscrowPolicyInput:
+    quarterly_wedding_event_escrow_pool_usd: Decimal
+    partial_vendor_slot_conflict_or_bait_switch_crew_substitution_detected: bool
+    premature_100pct_wedding_payout_or_hidden_venue_vendor_fee_detected: bool
+    webiq_outdoor_storm_no_rain_plan_or_180d_spt_flag: bool
+    restricted_key_age_days: int
+    five_vendor_slot_saga_and_30_50_20_media_escrow_enabled: bool
+
+
+def evaluate_wedding_bespoke_event_milestone_escrow_policy(
+    policy_input: WeddingBespokeEventMilestoneEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Wedding & Bespoke Event 5-vendor 2PC Slot Saga, named-principal crew check & 30/50/20 media deliverable escrow."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_wedding_event_escrow_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.partial_vendor_slot_conflict_or_bait_switch_crew_substitution_detected:
+        return {
+            "http_status": 403,
+            "decision": "PARTIAL_VENDOR_SLOT_CONFLICT_OR_BAIT_SWITCH_CREW_SUBSTITUTION_BLOCKED",
+            "latency_ms": 10,
+            "approved_budget_usd": "0.00",
+            "wedding_event_token": None,
+            "reason": "Blocked partial deposit capture when venue/core vendor slot conflicted or unapproved apprentice replaced Lead Photographer.",
+        }
+
+    if policy_input.premature_100pct_wedding_payout_or_hidden_venue_vendor_fee_detected:
+        return {
+            "http_status": 422,
+            "decision": "PREMATURE_100PCT_WEDDING_PAYOUT_OR_HIDDEN_VENUE_VENDOR_FEE_BLOCKED",
+            "latency_ms": 13,
+            "approved_budget_usd": "0.00",
+            "wedding_event_token": None,
+            "reason": "Blocked 100% pre-ceremony payout before raw/edited gallery hash verification or undisclosed venue load-in fee.",
+        }
+
+    if policy_input.webiq_outdoor_storm_no_rain_plan_or_180d_spt_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_OUTDOOR_STORM_NO_RAIN_PLAN_OR_180D_SPT_HOLD",
+            "latency_ms": 255,
+            "approved_budget_usd": "0.00",
+            "wedding_event_token": None,
+            "reason": "Web IQ detected 72h severe storm alert without indoor Rain-Plan backup or single SPT horizon > 180 days.",
+        }
+
+    if policy_input.five_vendor_slot_saga_and_30_50_20_media_escrow_enabled:
+        savings = (gross * Decimal("0.24")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"WEDDING_ESC_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "FIVE_VENDOR_SLOT_SAGA_AND_30_50_20_MEDIA_ESCROW_CONFIRM",
+            "latency_ms": 215,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "wedding_event_token": f"wedding_bespoke_event_milestone_escrow_mandate_{digest}",
+            "reason": "5-vendor 2PC Slot Saga, 30/50/20 gallery-verified escrow, and venue fee lock reduced losses by 24.0%.",
+        }
+
+    digest = hashlib.sha256(f"WEDDING_ESC_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "ALL_VENDOR_SLOTS_LOCKED_AND_30_50_20_GALLERY_ESCROW_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "wedding_event_token": f"wedding_bespoke_event_milestone_escrow_mandate_{digest}",
+        "reason": "Verified 5-vendor atomic slot lock, named-principal check-in, and 30/50/20 cloud-gallery milestone escrow.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -21667,6 +21741,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    wedding_bespoke_event_milestone_escrow_guard = {
+        "happy_path": evaluate_wedding_bespoke_event_milestone_escrow_policy(
+            WeddingBespokeEventMilestoneEscrowPolicyInput(
+                quarterly_wedding_event_escrow_pool_usd=Decimal("280000.00"),
+                partial_vendor_slot_conflict_or_bait_switch_crew_substitution_detected=False,
+                premature_100pct_wedding_payout_or_hidden_venue_vendor_fee_detected=False,
+                webiq_outdoor_storm_no_rain_plan_or_180d_spt_flag=False,
+                restricted_key_age_days=30,
+                five_vendor_slot_saga_and_30_50_20_media_escrow_enabled=False,
+            )
+        ),
+        "slot_conflict_or_crew_swap_block": evaluate_wedding_bespoke_event_milestone_escrow_policy(
+            WeddingBespokeEventMilestoneEscrowPolicyInput(
+                quarterly_wedding_event_escrow_pool_usd=Decimal("280000.00"),
+                partial_vendor_slot_conflict_or_bait_switch_crew_substitution_detected=True,
+                premature_100pct_wedding_payout_or_hidden_venue_vendor_fee_detected=False,
+                webiq_outdoor_storm_no_rain_plan_or_180d_spt_flag=False,
+                restricted_key_age_days=30,
+                five_vendor_slot_saga_and_30_50_20_media_escrow_enabled=False,
+            )
+        ),
+        "premature_payout_or_hidden_venue_fee_block": evaluate_wedding_bespoke_event_milestone_escrow_policy(
+            WeddingBespokeEventMilestoneEscrowPolicyInput(
+                quarterly_wedding_event_escrow_pool_usd=Decimal("280000.00"),
+                partial_vendor_slot_conflict_or_bait_switch_crew_substitution_detected=False,
+                premature_100pct_wedding_payout_or_hidden_venue_vendor_fee_detected=True,
+                webiq_outdoor_storm_no_rain_plan_or_180d_spt_flag=False,
+                restricted_key_age_days=30,
+                five_vendor_slot_saga_and_30_50_20_media_escrow_enabled=False,
+            )
+        ),
+        "webiq_storm_rain_plan_or_180d_hold": evaluate_wedding_bespoke_event_milestone_escrow_policy(
+            WeddingBespokeEventMilestoneEscrowPolicyInput(
+                quarterly_wedding_event_escrow_pool_usd=Decimal("280000.00"),
+                partial_vendor_slot_conflict_or_bait_switch_crew_substitution_detected=False,
+                premature_100pct_wedding_payout_or_hidden_venue_vendor_fee_detected=False,
+                webiq_outdoor_storm_no_rain_plan_or_180d_spt_flag=True,
+                restricted_key_age_days=191,
+                five_vendor_slot_saga_and_30_50_20_media_escrow_enabled=False,
+            )
+        ),
+        "five_vendor_saga_and_media_escrow_confirm": evaluate_wedding_bespoke_event_milestone_escrow_policy(
+            WeddingBespokeEventMilestoneEscrowPolicyInput(
+                quarterly_wedding_event_escrow_pool_usd=Decimal("280000.00"),
+                partial_vendor_slot_conflict_or_bait_switch_crew_substitution_detected=False,
+                premature_100pct_wedding_payout_or_hidden_venue_vendor_fee_detected=False,
+                webiq_outdoor_storm_no_rain_plan_or_180d_spt_flag=False,
+                restricted_key_age_days=30,
+                five_vendor_slot_saga_and_30_50_20_media_escrow_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21813,6 +21940,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "wealth_cash_sweep_treasury_wash_sale_guard": wealth_cash_sweep_treasury_wash_sale_guard,
         "digital_media_paywall_ai_crawler_guard": digital_media_paywall_ai_crawler_guard,
         "home_services_on_demand_repair_escrow_guard": home_services_on_demand_repair_escrow_guard,
+        "wedding_bespoke_event_milestone_escrow_guard": wedding_bespoke_event_milestone_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -27845,6 +27973,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">家庭服务封顶与质保令牌</div>
             <div class="finops-kpi-val" id="home-svc-token-kpi" style="font-size:10px;color:#A78BFA;">home_services_on_demand_repair_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Wedding & Bespoke Event Services (5-Vendor 2PC Slot Saga, 30/50/20 Media Escrow & Venue Fee Lock) Sandbox -->
+      <div class="finops-box" id="wedding-bespoke-event-milestone-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">💍 婚庆策划、高端摄影与定制活动服务 (The Knot / 婚礼纪：五方档期 Saga 与 30/50/20 成片托管) 沙盒</div>
+            <div class="finops-subtitle">实测场地+四大金刚全员 Pre-Hold 原子锁档与主创防掉包签到 (HTTP 403)、留存 20% 尾款直至云盘验齐无水印原片/精修与禁收隐形进场费 (HTTP 422)、72h 暴雨自动切室内备厅 (HTTP 451) 及多商协同立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="wedding-esc-verdict-pill">HTTP 200 · ALL_VENDOR_SLOTS_LOCKED_AND_30_50_20_GALLERY_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度婚庆策划与多供应商里程碑托管池 ($ USD) <span class="control-val" id="wedding-esc-gross-label">$280,000</span></label>
+            <input type="range" id="wedding-esc-gross-slider" min="50000" max="1000000" step="20000" value="280000" oninput="updateWeddingBespokeEventMilestoneEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">五方档期 2PC 原子锁、主创防掉包、30/50/20 验片放款与 Rain Plan 场景</label>
+            <select id="wedding-esc-mode-select" onchange="updateWeddingBespokeEventMilestoneEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 五方档期原子共锁 + 主创实名到场 + 30/50/20 云盘验片放款 (HTTP 200)</option>
+              <option value="slot_403">🛑 主场地撞档未锁成却单方实扣摄影不可退定金 或 将签约总监摄影掉包为学徒 (HTTP 403)</option>
+              <option value="media_422">🚨 未上传足额无水印原片/精修即要求婚礼当天提走 100% 全款 或 酒店勒索外聘进场费 (HTTP 422)</option>
+              <option value="storm_451">🛑 Web IQ 检出户外婚礼 72h 暴雨预警未锁室内备选厅 或 单笔 SPT 提前期 &gt;180d (HTTP 451)</option>
+              <option value="saga_409">🧑‍⚖️ 五方档期 2PC 原子共锁 + 20% 交片尾款托管将 30天交片率拉升至 99% 立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原撞档废单、进场费与拖片基线</div>
+            <div class="finops-kpi-val" id="wedding-esc-gross-kpi">$280,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">档期共锁与验片托管立省</div>
+            <div class="finops-kpi-val" id="wedding-esc-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净婚庆多商清算成本</div>
+            <div class="finops-kpi-val" id="wedding-esc-net-kpi" style="color:#60A5FA;">$280,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">婚庆多商里程碑托管令牌</div>
+            <div class="finops-kpi-val" id="wedding-esc-token-kpi" style="font-size:10px;color:#A78BFA;">wedding_bespoke_event_milestone_escrow_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -35156,6 +35329,61 @@ function updateHomeServicesOnDemandRepairEscrowSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'home_services_on_demand_repair_escrow_mandate_verified';
+  }}
+}}
+
+function updateWeddingBespokeEventMilestoneEscrowSandbox() {{
+  const grossSlider = document.getElementById('wedding-esc-gross-slider');
+  const modeSelect = document.getElementById('wedding-esc-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '280000');
+  const mode = modeSelect.value;
+  document.getElementById('wedding-esc-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('wedding-esc-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('wedding-esc-verdict-pill');
+  const savingsKpi = document.getElementById('wedding-esc-savings-kpi');
+  const netKpi = document.getElementById('wedding-esc-net-kpi');
+  const tokenKpi = document.getElementById('wedding-esc-token-kpi');
+
+  if (mode === 'slot_403') {{
+    pill.textContent = 'HTTP 403 · PARTIAL_VENDOR_SLOT_CONFLICT_OR_BAIT_SWITCH_CREW_SUBSTITUTION_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_SLOT_CONFLICT_OR_CREW_SWAP';
+  }} else if (mode === 'media_422') {{
+    pill.textContent = 'HTTP 422 · PREMATURE_100PCT_WEDDING_PAYOUT_OR_HIDDEN_VENUE_VENDOR_FEE_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNUPLOADED_GALLERY_OR_VENUE_LOADIN_FEE';
+  }} else if (mode === 'storm_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_OUTDOOR_STORM_NO_RAIN_PLAN_OR_180D_SPT_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_72H_RAIN_PLAN_SWITCH_OR_2_TRANCHE_SPT';
+  }} else if (mode === 'saga_409') {{
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · FIVE_VENDOR_SLOT_SAGA_AND_30_50_20_MEDIA_ESCROW_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'wedding_bespoke_event_milestone_escrow_mandate_saved24pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · ALL_VENDOR_SLOTS_LOCKED_AND_30_50_20_GALLERY_ESCROW_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'wedding_bespoke_event_milestone_escrow_mandate_verified';
   }}
 }}
 
