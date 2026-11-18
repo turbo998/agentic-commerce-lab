@@ -8145,6 +8145,87 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("enterprise-treasury-supplier-portal-ap-sandbox", html)
 
+    def test_social_search_native_checkout_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            SocialSearchNativeCheckoutPolicyInput,
+            evaluate_social_search_native_checkout_policy,
+        )
+
+        happy = evaluate_social_search_native_checkout_policy(
+            SocialSearchNativeCheckoutPolicyInput(
+                quarterly_social_search_checkout_gmv_usd=Decimal("340000.00"),
+                walmart_agent_profile_violation_or_missing_safety_warning_detected=False,
+                ucp_brand_mor_mismatch_or_unapproved_storefront_checkout_detected=False,
+                webiq_ucp_catalog_sale_price_drift_flag=False,
+                restricted_key_age_days=30,
+                multi_brand_shop_pay_and_ucp_native_checkout_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "UCP_BRAND_MOR_AND_CATALOG_SAFETY_WARNING_CHECKOUT_AUTHORIZED")
+        self.assertTrue(
+            str(happy["social_search_checkout_token"]).startswith("social_search_native_checkout_ucp_mcp_mandate_")
+        )
+
+        profile_block = evaluate_social_search_native_checkout_policy(
+            SocialSearchNativeCheckoutPolicyInput(
+                quarterly_social_search_checkout_gmv_usd=Decimal("340000.00"),
+                walmart_agent_profile_violation_or_missing_safety_warning_detected=True,
+                ucp_brand_mor_mismatch_or_unapproved_storefront_checkout_detected=False,
+                webiq_ucp_catalog_sale_price_drift_flag=False,
+                restricted_key_age_days=30,
+                multi_brand_shop_pay_and_ucp_native_checkout_enabled=False,
+            )
+        )
+        self.assertEqual(profile_block["http_status"], 403)
+        self.assertEqual(profile_block["decision"], "WALMART_AGENT_PROFILE_VIOLATION_OR_MISSING_SAFETY_WARNING_BLOCKED")
+
+        mor_block = evaluate_social_search_native_checkout_policy(
+            SocialSearchNativeCheckoutPolicyInput(
+                quarterly_social_search_checkout_gmv_usd=Decimal("340000.00"),
+                walmart_agent_profile_violation_or_missing_safety_warning_detected=False,
+                ucp_brand_mor_mismatch_or_unapproved_storefront_checkout_detected=True,
+                webiq_ucp_catalog_sale_price_drift_flag=False,
+                restricted_key_age_days=30,
+                multi_brand_shop_pay_and_ucp_native_checkout_enabled=False,
+            )
+        )
+        self.assertEqual(mor_block["http_status"], 422)
+        self.assertEqual(mor_block["decision"], "UCP_BRAND_MOR_MISMATCH_OR_UNAPPROVED_STOREFRONT_CHECKOUT_BLOCKED")
+
+        drift_hold = evaluate_social_search_native_checkout_policy(
+            SocialSearchNativeCheckoutPolicyInput(
+                quarterly_social_search_checkout_gmv_usd=Decimal("340000.00"),
+                walmart_agent_profile_violation_or_missing_safety_warning_detected=False,
+                ucp_brand_mor_mismatch_or_unapproved_storefront_checkout_detected=False,
+                webiq_ucp_catalog_sale_price_drift_flag=True,
+                restricted_key_age_days=190,
+                multi_brand_shop_pay_and_ucp_native_checkout_enabled=False,
+            )
+        )
+        self.assertEqual(drift_hold["http_status"], 451)
+        self.assertEqual(drift_hold["decision"], "WEBIQ_UCP_CATALOG_SALE_PRICE_DRIFT_OR_180D_KEY_HOLD")
+
+        opt_confirm = evaluate_social_search_native_checkout_policy(
+            SocialSearchNativeCheckoutPolicyInput(
+                quarterly_social_search_checkout_gmv_usd=Decimal("340000.00"),
+                walmart_agent_profile_violation_or_missing_safety_warning_detected=False,
+                ucp_brand_mor_mismatch_or_unapproved_storefront_checkout_detected=False,
+                webiq_ucp_catalog_sale_price_drift_flag=False,
+                restricted_key_age_days=30,
+                multi_brand_shop_pay_and_ucp_native_checkout_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "71400.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "268600.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("social_search_native_checkout_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("social-search-native-checkout-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

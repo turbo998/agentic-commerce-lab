@@ -2,11 +2,11 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`120` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`121` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
-- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (8 guides)](#platform-grounding)
+- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (9 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (32 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (23 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (21 guides)](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (8 Guides)
+## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (9 Guides)
 
 > Platform selection (Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify), real-time search grounding (Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl), catalog feed barriers, A2UI isolation, and Web Bot Auth vs WAF governance.
 
@@ -32,6 +32,7 @@
 | 6 | **E-Commerce Anti-Fraud & Legitimate Agent Identity Architecture: RFC 9421 Web Bot Auth / Visa TAP vs. Legacy WAF & CAPTCHA Selection & First-Principles FAQ** | [English](ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.en.md) · [中文](ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.md) |
 | 7 | **AI Agent Web Comparison-Shopping Indirect Prompt Injection & Review-Section DOM Poisoning Defense Architecture: Cryptographically Signed ACP Structured Feed & Instruction-Data Separation + Payee DID Pinning vs. Raw HTML Scraping Hijack & Hidden CSS Payee Redirection Selection FAQ** | [English](indirect-prompt-injection-dom-poisoning-vs-signed-acp-feed-faq.en.md) · [中文](indirect-prompt-injection-dom-poisoning-vs-signed-acp-feed-faq.md) |
 | 8 | **Agentic Commerce Real-Time Web Grounding Selection & First-Principles FAQ: Microsoft Web IQ vs. Exa vs. Bright Data vs. Foundry Bing Grounding** | [English](webiq-vs-exa-brightdata-grounding-selection-faq.en.md) · [中文](webiq-vs-exa-brightdata-grounding-selection-faq.md) |
+| 9 | **Social & Search Native Checkout Architecture Selection FAQ: Google AI Mode / Gemini (`UCP`) vs. TikTok Buy Direct (`UCP Brand-as-MoR`) vs. Shopify Fall '26 Multi-Brand Checkout vs. Walmart Agent Gateway (`MCP`)** | [English](social-search-native-checkout-google-ucp-vs-tiktok-buy-direct-shopify-walmart-mcp-selection-faq.en.md) · [中文](social-search-native-checkout-google-ucp-vs-tiktok-buy-direct-shopify-walmart-mcp-selection-faq.md) |
 
 <a id="payments-mandates"></a>
 ## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (32 Guides)
