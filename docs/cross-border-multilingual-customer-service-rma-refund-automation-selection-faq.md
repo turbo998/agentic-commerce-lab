@@ -1,9 +1,9 @@
 # 跨境电商多语种智能客服与退换货售后自动化（RMA）Agent 架构选型 FAQ：多语种属地政策接地、以换代退挽留、逆向残值计算与退款人类确认门禁实战指南
 
-> **专题定位（跨境电商客服与售后逆向履约应用聚焦 · Round 395）**：面向为出海 DTC 品牌、跨境电商平台（Shopify Plus / 亚马逊独立站矩阵 / TikTok Shop 生态）及全球零售客户设计客服与售后 Agent 的 **Cloud & AI Solution Architect**，系统解决跨境售后最痛的四大商业与工程难题：**“怎么防止 $28 的商品花 $22 国际运费退回来倒贴钱、怎么用‘以换代退（Exchange-First）’把 40% 的退款单挽留为换货单、怎么杜绝多语种客服胡编退货期限或违反欧盟 14 天法规、以及怎么在 Stripe MCP `create_refund` 上加装防提示词注入与防空包骗退的确定性门禁”**。  
+> **专题定位（跨境电商客服与售后逆向履约应用聚焦）**：面向为出海 DTC 品牌、跨境电商平台（Shopify Plus / 亚马逊独立站矩阵 / TikTok Shop 生态）及全球零售客户设计客服与售后 Agent 的 **Cloud & AI Solution Architect**，系统解决跨境售后最痛的四大商业与工程难题：**“怎么防止 $28 的商品花 $22 国际运费退回来倒贴钱、怎么用‘以换代退（Exchange-First）’把 40% 的退款单挽留为换货单、怎么杜绝多语种客服胡编退货期限或违反欧盟 14 天法规、以及怎么在 Stripe MCP `create_refund` 上加装防提示词注入与防空包骗退的确定性门禁”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、跨境客服与 RMA 平台选型矩阵、定量挽留/逆向降本与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](cross-border-multilingual-customer-service-rma-refund-automation-selection-faq.md)** · **[English Version (`cross-border-multilingual-customer-service-rma-refund-automation-selection-faq.en.md`)](cross-border-multilingual-customer-service-rma-refund-automation-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Microsoft Web IQ `/v3/browse` `passage`（`HTTP 202` 异步重抓契约、摘要与正文 `restocking_fee` 一致性核验）及 Stripe MCP `create_refund` 人类确认门禁引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；逆向残值公式、以换代退挽留与防空包称重门禁仿真引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业免寄回阈值与信誉分规则标记为 `synthetic_policy`；外部工单 SaaS 在线并发压测标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Microsoft Web IQ `/v3/browse` `passage`（`HTTP 202` 异步重抓契约、摘要与正文 `restocking_fee` 一致性核验）及 Stripe MCP `create_refund` 人类确认门禁引自 `research/sources.json`（标记为 `official_doc_snapshot`）；逆向残值公式、以换代退挽留与防空包称重门禁仿真引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业免寄回阈值与信誉分规则标记为 `synthetic_policy`；外部工单 SaaS 在线并发压测标记为 `not_measured`。
 
 ![2026-11-18 跨境电商多语种智能客服与退换货售后自动化 (RMA) Agent 架构一图流总结](../assets/svg/397-cross-border-multilingual-customer-service-rma-refund-automation-2026-11-18.svg)
 

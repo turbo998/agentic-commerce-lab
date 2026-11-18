@@ -1,7 +1,6 @@
 """Offline, zero-dependency Cross-Border Multi-Seller Settlement, Token-Margin FCB & Incoterms Guard.
 
-Implements three deterministic AI-Native control-plane verifiers for Cross-Border Agentic Commerce
-(Stage 3 — 2026-10-19), backed by Stripe Connect SPT (`2026-09-30.preview`), Stripe Billing
+Implements three deterministic AI-Native control-plane verifiers for Cross-Border Agentic Commerce, backed by Stripe Connect SPT (`2026-09-30.preview`), Stripe Billing
 Token Metering (`docs.stripe.com/billing/token-billing.md`), Stripe MPP Tempo Sessions
 (`2026-07-29.preview`), Google AP2 Section 7.4 Fiduciary Circuit Breaker (`PR #165`), and UCP
 Catalog Feed (`PR #866`):

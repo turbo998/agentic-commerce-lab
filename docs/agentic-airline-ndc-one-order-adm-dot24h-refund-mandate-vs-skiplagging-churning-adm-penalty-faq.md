@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：智能体商旅预订（OTA / 企业差旅 TMC `MCC 3000–3299, 4722`）、国际航协新分销能力（IATA `NDC v21.3 / One Order`）与传统 GDS（Amadeus / Sabre / Travelport）、IATA `Resolution 850m` 代理人借记通知单（ADM: Agency Debit Memo 航司罚款）、严禁“弃程甩尾票（Hidden-City / Skiplagging）”与“反复订退虚占舱位（PNR Churning > 3次）”、询订比（Look-to-Book Ratio）缓存流控、美国交通部（US DOT）24 小时免费退票铁律（`14 CFR § 259.5(b)(4)`）与 2024/2025 重大航变（国内延误 $\ge 3\text{h}$ / 国际 $\ge 6\text{h}$）自动原路退现金新规、以及未乘机政府机场税费（`XF / AY / UB` vs 航司燃油费 `YQ/YR`）精准退税  
 > **阅读对象**：在线旅游平台（OTA）与企业差旅管理（TMC）架构师、航司 NDC 直连与运价引擎（ATPCO Fare Rules）研发负责人、票务结算风控与法务总监  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 219 智能体机票防 ADM 弃程/虚占拦截、US DOT 航变自动退现金、政府机场税剥离与 Microsoft Web IQ 航协规程核验交互沙盒）](../live-demo.html) · [`assets/svg/221-agentic-airline-ndc-one-order-adm-dot24h-refund-2026-11-14.svg`](../assets/svg/221-agentic-airline-ndc-one-order-adm-dot24h-refund-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含智能体机票防 ADM 弃程/虚占拦截、US DOT 航变自动退现金、政府机场税剥离与 Microsoft Web IQ 航协规程核验交互沙盒）](../live-demo.html) · [`assets/svg/221-agentic-airline-ndc-one-order-adm-dot24h-refund-2026-11-14.svg`](../assets/svg/221-agentic-airline-ndc-one-order-adm-dot24h-refund-2026-11-14.svg)
 
 ---
 

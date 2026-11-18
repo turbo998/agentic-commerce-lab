@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：智能体网约车/Robotaxi 调度、即时生鲜配送、航空酒店收益管理（Dynamic Yield Management）与票务动态定价、美国各州《反哄抬物价法》（加州刑法典 `Penal Code § 396` 紧急状态下涨幅 `<= 10%` 硬顶、纽约州 `GBL § 396-r`、佛罗里达州 `Stat. § 501.160`）、FEMA 与州长紧急状态行政令（State of Emergency Executive Order）地理围栏实时熔断、30 天历史前基准价（Pre-Emergency Baseline）锁定、以及结账防跳价签名报价单（Cryptographic Price-Lock Quote `TTL 300s`）  
 > **阅读对象**：出行平台（Ride-Hailing / Robotaxi）与即时零售定价架构师、运筹优化与强化学习（RL Pricing）算法负责人、公共政策与法务合规总监  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 218 智能体动态定价紧急状态令 `<=10%` 反哄抬熔断、300s 报价锁防跳价与 Microsoft Web IQ FEMA/州政府紧急状态行政令实时核验交互沙盒）](../live-demo.html) · [`assets/svg/220-agentic-surge-pricing-emergency-anti-gouging-cap-2026-11-14.svg`](../assets/svg/220-agentic-surge-pricing-emergency-anti-gouging-cap-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含智能体动态定价紧急状态令 `<=10%` 反哄抬熔断、300s 报价锁防跳价与 Microsoft Web IQ FEMA/州政府紧急状态行政令实时核验交互沙盒）](../live-demo.html) · [`assets/svg/220-agentic-surge-pricing-emergency-anti-gouging-cap-2026-11-14.svg`](../assets/svg/220-agentic-surge-pricing-emergency-anti-gouging-cap-2026-11-14.svg)
 
 ---
 

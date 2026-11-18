@@ -1,4 +1,4 @@
-"""Stage 21: 16-Scenario 7-Card 4:5 Visual Benchmark Report for Stages 18–21
+"""16-Scenario 7-Card 4:5 Visual Benchmark Report for 21
 (Subscription Metering, PSD3/FTC Click-to-Cancel, Promo/Affiliate/Loyalty, Embedded BNPL/Insurance/Factoring & Circular DPP/Trade-In).
 
 Generates `reports/agentic-commerce-lifecycle-finance-bench/report.json` and
@@ -57,10 +57,10 @@ class LifecycleFinanceScenarioRow:
 
 
 def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
-    """Run all 16 deterministic scenarios across Stages 18–21."""
+    """Run all 16 deterministic scenarios across 21."""
     rows: list[LifecycleFinanceScenarioRow] = []
 
-    # S01: Stage 18 Usage Metering Watermark Deduplication & Valid Admission
+    # S01: Usage Metering Watermark Deduplication & Valid Admission
     t0 = time.perf_counter()
     s01 = evaluate_usage_based_metering_idempotency(
         {
@@ -80,7 +80,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S01_USAGE_METERING_IDEMPOTENT_WATERMARK",
-            "Stage 18",
+            "",
             "Deduplicate duplicate UUIDv7 usage event within 300s watermark",
             "USAGE_METERING_IDEMPOTENT_AND_WITHIN_CAP",
             s01.decision_code,
@@ -92,7 +92,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S02: Stage 18 Late Watermark Expired Block
+    # S02: Late Watermark Expired Block
     t0 = time.perf_counter()
     s02 = evaluate_usage_based_metering_idempotency(
         {
@@ -109,7 +109,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S02_USAGE_METERING_LATE_WATERMARK_BLOCK",
-            "Stage 18",
+            "",
             "Reject stale usage event 800s behind billing watermark (>300s cap)",
             "USAGE_EVENT_LATE_WATERMARK_EXPIRED",
             s02.decision_code,
@@ -121,7 +121,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S03: Stage 18 Runaway Spend Cap Hard Throttle
+    # S03: Runaway Spend Cap Hard Throttle
     t0 = time.perf_counter()
     s03 = evaluate_usage_based_metering_idempotency(
         {
@@ -138,7 +138,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S03_RUNAWAY_LOOP_SPEND_CAP_THROTTLE",
-            "Stage 18",
+            "",
             "Halt runaway agent token loop exceeding $200 hard spend cap",
             "SPEND_CAP_HARD_LIMIT_REACHED_THROTTLED",
             s03.decision_code,
@@ -150,7 +150,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S04: Stage 18 PSD3 Price Escalation Re-Consent Guard (>5%)
+    # S04: PSD3 Price Escalation Re-Consent Guard (>5%)
     t0 = time.perf_counter()
     s04 = evaluate_recurring_mandate_renewal_and_pre_debit_notice(
         {
@@ -166,7 +166,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S04_PSD3_RECURRING_PRICE_ESCALATION_BLOCK",
-            "Stage 18",
+            "",
             "Require fresh buyer re-consent on +18% renewal price hike (>5% cap)",
             "RECURRING_PRICE_ESCALATION_RECONSENT_REQUIRED",
             s04.decision_code,
@@ -178,7 +178,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S05: Stage 18 FTC Click-to-Cancel Retention Wall Block
+    # S05: FTC Click-to-Cancel Retention Wall Block
     t0 = time.perf_counter()
     s05 = execute_ftc_click_to_cancel_symmetric_offramp(
         {
@@ -195,7 +195,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S05_FTC_RETENTION_DARK_PATTERN_WALL_BLOCK",
-            "Stage 18",
+            "",
             "Block 5-step human-chat retention wall violating FTC Click-to-Cancel",
             "DARK_PATTERN_RETENTION_WALL_BLOCKED",
             s05.decision_code,
@@ -207,7 +207,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S06: Stage 19 Promo Coupon Stack Floor Margin Breach Block
+    # S06: Promo Coupon Stack Floor Margin Breach Block
     t0 = time.perf_counter()
     s06 = evaluate_promo_coupon_stacking_invariant(
         {
@@ -226,7 +226,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S06_PROMO_STACK_MARGIN_FLOOR_BREACH",
-            "Stage 19",
+            "",
             "Block stacked coupons eroding net margin to 300 bps (<1500 bps floor)",
             "PROMO_STACK_EXCEEDS_FLOOR_MARGIN_BLOCKED",
             s06.decision_code,
@@ -238,7 +238,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S07: Stage 19 Sybil Self-Referral Ring Block
+    # S07: Sybil Self-Referral Ring Block
     t0 = time.perf_counter()
     s07 = evaluate_promo_coupon_stacking_invariant(
         {
@@ -254,7 +254,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S07_SYBIL_SELF_REFERRAL_RING_BLOCK",
-            "Stage 19",
+            "",
             "Block self-referral coupon where buyer and referrer share principal DID",
             "SELF_REFERRAL_SYBIL_RING_BLOCKED",
             s07.decision_code,
@@ -266,7 +266,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S08: Stage 19 Last-Second Affiliate Attribution Hijack Block (<=5s)
+    # S08: Last-Second Affiliate Attribution Hijack Block (<=5s)
     t0 = time.perf_counter()
     s08 = verify_cryptographic_affiliate_attribution_chain(
         {
@@ -296,7 +296,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S08_LAST_SECOND_AFFILIATE_HIJACK_BLOCK",
-            "Stage 19",
+            "",
             "Block browser extension injecting affiliate hop 2s before checkout",
             "LAST_SECOND_ATTRIBUTION_HIJACK_BLOCKED",
             s08.decision_code,
@@ -308,7 +308,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S09: Stage 19 Loyalty Return Clawback & Spent Cashback Principal Deduction
+    # S09: Loyalty Return Clawback & Spent Cashback Principal Deduction
     t0 = time.perf_counter()
     s09 = evaluate_loyalty_points_escrow_and_return_clawback(
         {
@@ -325,7 +325,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S09_LOYALTY_RETURN_CASHBACK_DEFICIT_DEDUCTION",
-            "Stage 19",
+            "",
             "Deduct $15.00 spent cashback deficit from $200.00 return principal",
             "CASHBACK_DEFICIT_DEDUCTED_FROM_REFUND",
             s09.decision_code,
@@ -337,7 +337,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S10: Stage 20 Multi-Issuer BNPL Stacking Block
+    # S10: Multi-Issuer BNPL Stacking Block
     t0 = time.perf_counter()
     s10 = evaluate_agentic_bnpl_trade_credit_underwriting(
         {
@@ -355,7 +355,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S10_MULTI_ISSUER_BNPL_STACKING_BLOCK",
-            "Stage 20",
+            "",
             "Block phantom BNPL stacking across 4 concurrent issuers (DTI 45%)",
             "MULTI_ISSUER_BNPL_STACKING_BLOCKED",
             s10.decision_code,
@@ -367,7 +367,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S11: Stage 20 Parametric SLA Microinsurance Instant Settlement
+    # S11: Parametric SLA Microinsurance Instant Settlement
     t0 = time.perf_counter()
     s11 = evaluate_parametric_sla_microinsurance_claim(
         {
@@ -386,7 +386,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S11_PARAMETRIC_SLA_INSTANT_PAYOUT",
-            "Stage 20",
+            "",
             "Settle $500 GPU downtime parametric claim on 3-oracle quorum",
             "PARAMETRIC_INSTANT_PAYOUT_SETTLED",
             s11.decision_code,
@@ -398,7 +398,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S12: Stage 20 Parametric Double-Dip Indemnity Block
+    # S12: Parametric Double-Dip Indemnity Block
     t0 = time.perf_counter()
     s12 = evaluate_parametric_sla_microinsurance_claim(
         {
@@ -417,7 +417,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S12_PARAMETRIC_DOUBLE_DIP_INDEMNITY_BLOCK",
-            "Stage 20",
+            "",
             "Block insurance double-dip when merchant already refunded 100% loss",
             "DOUBLE_DIP_INDEMNITY_BLOCKED",
             s12.decision_code,
@@ -429,7 +429,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S13: Stage 20 B2B Invoice Factoring Double-Pledging Block
+    # S13: B2B Invoice Factoring Double-Pledging Block
     t0 = time.perf_counter()
     s13 = verify_invoice_factoring_ucc_lien_uniqueness(
         {
@@ -448,7 +448,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S13_INVOICE_FACTORING_DOUBLE_PLEDGE_BLOCK",
-            "Stage 20",
+            "",
             "Block B2B invoice factoring already pledged to factor_alpha",
             "INVOICE_DOUBLE_PLEDGING_BLOCKED",
             s13.decision_code,
@@ -460,7 +460,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S14: Stage 21 EU ESPR Stolen/Recalled DPP Hardware Block
+    # S14: EU ESPR Stolen/Recalled DPP Hardware Block
     t0 = time.perf_counter()
     s14 = verify_digital_product_passport_provenance(
         {
@@ -476,7 +476,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S14_EU_ESPR_DPP_STOLEN_ASSET_BLOCK",
-            "Stage 21",
+            "",
             "Block resale of GPU server flagged stolen in EU ESPR DPP registry",
             "STOLEN_OR_RECALLED_DPP_ASSET_BLOCKED",
             s14.decision_code,
@@ -488,7 +488,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S15: Stage 21 Authenticated C2C Escrow Release & Brand Royalty Split
+    # S15: Authenticated C2C Escrow Release & Brand Royalty Split
     t0 = time.perf_counter()
     s15 = evaluate_authenticated_c2c_escrow_inspection_release(
         {
@@ -505,7 +505,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S15_AUTHENTICATED_C2C_ESCROW_ROYALTY_SPLIT",
-            "Stage 21",
+            "",
             "Release authenticated C2C escrow with 94%/3.5%/2.5% royalty conservation",
             "AUTHENTICATED_ESCROW_RELEASED_WITH_ROYALTY_SPLIT",
             s15.decision_code,
@@ -517,7 +517,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
         )
     )
 
-    # S16: Stage 21 Trade-In Unilateral Bait-and-Switch Downgrade Block
+    # S16: Trade-In Unilateral Bait-and-Switch Downgrade Block
     t0 = time.perf_counter()
     s16 = evaluate_trade_in_residual_value_and_grade_clawback(
         {
@@ -533,7 +533,7 @@ def run_lifecycle_finance_circular_benchmark() -> dict[str, Any]:
     rows.append(
         LifecycleFinanceScenarioRow(
             "S16_TRADE_IN_BAIT_AND_SWITCH_CLAWBACK_BLOCK",
-            "Stage 21",
+            "",
             "Block unilateral 25% post-receipt Trade-In downgrade debit (>5% cap)",
             "UNILATERAL_TRADE_IN_BAIT_AND_SWITCH_BLOCKED",
             s16.decision_code,
@@ -584,7 +584,7 @@ def render_lifecycle_finance_seven_card_html(report: dict[str, Any]) -> str:
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Agentic Commerce Stages 18–21 Benchmark Report (7-Card 4:5 Deck)</title>
+<title>Agentic Commerce 21 Benchmark Report (7-Card 4:5 Deck)</title>
 <style>
   body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 24px; }}
   .deck {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 24px; max-width: 1480px; margin: 0 auto; }}
@@ -614,7 +614,7 @@ def render_lifecycle_finance_seven_card_html(report: dict[str, Any]) -> str:
     <div>
       <div class="eyebrow">1 / 7 · HANDS-ON · LIFECYCLE, EMBEDDED FINANCE &amp; CIRCULAR DPP</div>
       <h2>AI-Native Guards Score <span class="accent">{report['ai_native_passed']}/{report['total_scenarios']} (100%)</span> vs Classic 3-Tier <span style="color:#f87171">{report['classic_3tier_passed']}/{report['total_scenarios']} (6.2%)</span></h2>
-      <p class="muted">Deterministic benchmark across Stages 18–21: Usage Metering Watermark &amp; FTC Click-to-Cancel, Promo/Affiliate/Loyalty Guards, Embedded BNPL &amp; Parametric Insurance, and EU ESPR DPP Resale Escrow.</p>
+      <p class="muted">Deterministic benchmark across Usage Metering Watermark &amp; FTC Click-to-Cancel, Promo/Affiliate/Loyalty Guards, Embedded BNPL &amp; Parametric Insurance, and EU ESPR DPP Resale Escrow.</p>
       <div class="codeblock">Cohort A (AI-Native 6-Plane): 16 / 16 passed (100.0%)
 Cohort B (Classic 3-Tier Web):  1 / 16 passed (  6.2%)
 Order-Reversal Stability:      16 / 16 invariant (0.0 pts drift)</div>
@@ -695,21 +695,21 @@ S16: UNILATERAL_TRADE_IN_BAIT_AND_SWITCH_BLOCKED (-25% &gt; 5% cap)
   <section class="card">
     <div>
       <div class="eyebrow">6 / 7 · LATENCY</div>
-      <h2>Sub-20 µs Deterministic Verification Across Stages 18–21</h2>
+      <h2>Sub-20 µs Deterministic Verification Across 21</h2>
       <div class="bar-row">
-        <div>Stage 18 Watermark Metering + PSD3 + FTC Offramp (<strong>11.4 µs</strong> vs 410,000 µs manual)</div>
+        <div>Watermark Metering + PSD3 + FTC Offramp (<strong>11.4 µs</strong> vs 410,000 µs manual)</div>
         <div class="bar-track"><div class="bar-primary" style="width:12%"></div><div class="bar-base" style="width:88%"></div></div>
       </div>
       <div class="bar-row">
-        <div>Stage 19 Promo Floor + Multi-Hop JWS Attribution (<strong>13.5 µs</strong> vs 520,000 µs webhook)</div>
+        <div>Promo Floor + Multi-Hop JWS Attribution (<strong>13.5 µs</strong> vs 520,000 µs webhook)</div>
         <div class="bar-track"><div class="bar-primary" style="width:14%"></div><div class="bar-base" style="width:86%"></div></div>
       </div>
       <div class="bar-row">
-        <div>Stage 20 BNPL Underwriting + Parametric Quorum + Lien (<strong>12.6 µs</strong> vs 890,000 µs adjuster)</div>
+        <div>BNPL Underwriting + Parametric Quorum + Lien (<strong>12.6 µs</strong> vs 890,000 µs adjuster)</div>
         <div class="bar-track"><div class="bar-primary" style="width:11%"></div><div class="bar-base" style="width:89%"></div></div>
       </div>
       <div class="bar-row">
-        <div>Stage 21 EU ESPR DPP + C2C Royalty Split + Trade-In (<strong>14.2 µs</strong> vs 640,000 µs batch)</div>
+        <div>EU ESPR DPP + C2C Royalty Split + Trade-In (<strong>14.2 µs</strong> vs 640,000 µs batch)</div>
         <div class="bar-track"><div class="bar-primary" style="width:13%"></div><div class="bar-base" style="width:87%"></div></div>
       </div>
     </div>
@@ -719,7 +719,7 @@ S16: UNILATERAL_TRADE_IN_BAIT_AND_SWITCH_BLOCKED (-25% &gt; 5% cap)
   <section class="card">
     <div>
       <div class="eyebrow">7 / 7 · MY TAKE</div>
-      <h2>Production Fit vs. Non-Goals for Stages 18–21 Guards</h2>
+      <h2>Production Fit vs. Non-Goals for 21 Guards</h2>
       <div class="grid2">
         <div class="box-good">
           <strong>✅ Good fit</strong>
@@ -758,7 +758,7 @@ def write_lifecycle_finance_report(output_dir: Path) -> tuple[Path, Path]:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Generate Stages 18-21 16-scenario 7-card report.")
+    parser = argparse.ArgumentParser(description="Generate 21 16-scenario 7-card report.")
     parser.add_argument(
         "--output-dir",
         default="reports/agentic-commerce-lifecycle-finance-bench",

@@ -1,9 +1,9 @@
 # 商业智能体构建路径与平台选型 FAQ：Microsoft Copilot Studio + Dynamics 365 vs. Azure AI Foundry (Semantic Kernel / LangGraph) vs. Salesforce Agentforce / Shopify Sidekick 实战指南
 
-> **专题定位（架构师选型聚焦 · Round 389）**：面向为零售电商、企业采购、金融支付与 SaaS 客户设计 AI Agent 的 **Cloud & AI Solution Architect**，系统回答一个最高频的售前与架构评审难题：**“企业到底该用 Copilot Studio 低代码连接器、Azure AI Foundry + Semantic Kernel / LangGraph 专业代码定制，还是直接买 Shopify Sidekick / Salesforce Agentforce 原生商业套件？怎么解决不买错、不乱扣款、不被刷爆 Token 账单？”**  
+> **专题定位（架构师选型聚焦）**：面向为零售电商、企业采购、金融支付与 SaaS 客户设计 AI Agent 的 **Cloud & AI Solution Architect**，系统回答一个最高频的售前与架构评审难题：**“企业到底该用 Copilot Studio 低代码连接器、Azure AI Foundry + Semantic Kernel / LangGraph 专业代码定制，还是直接买 Shopify Sidekick / Salesforce Agentforce 原生商业套件？怎么解决不买错、不乱扣款、不被刷爆 Token 账单？”**  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心选型结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、多平台横向决策矩阵、定量成本测算与 7-Card 溯源表、上线风控 Checklist）。  
 > **双语版本**：**[中文版（当前）](agentic-commerce-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-shopify-selection-faq.md)** · **[English Version (`agentic-commerce-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-shopify-selection-faq.en.md`)](agentic-commerce-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-shopify-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：文中 Microsoft Web IQ、Stripe SPT 与 MCP OAuth 2.1 协议契约引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；平台路由门禁、TCO 剪刀差与状态机耗时引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业预算限额与混合路由阈值标记为 `synthetic_policy`；未挂载生产租户密钥的第三方 SaaS 在线并发压测标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：文中 Microsoft Web IQ、Stripe SPT 与 MCP OAuth 2.1 协议契约引自 `research/sources.json`（标记为 `official_doc_snapshot`）；平台路由门禁、TCO 剪刀差与状态机耗时引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业预算限额与混合路由阈值标记为 `synthetic_policy`；未挂载生产租户密钥的第三方 SaaS 在线并发压测标记为 `not_measured`。
 
 ![2026-11-18 商业智能体构建路径与平台选型：Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify 一图流总结](../assets/svg/391-agentic-commerce-platform-copilot-studio-foundry-agentforce-shopify-2026-11-18.svg)
 

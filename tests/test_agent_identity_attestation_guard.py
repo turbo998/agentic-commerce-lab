@@ -1,4 +1,4 @@
-"""Unit tests for Stage 7 RFC 9421 Agent Identity Attestation & Anti-Sybil Quota Guard."""
+"""Unit tests for RFC 9421 Agent Identity Attestation & Anti-Sybil Quota Guard."""
 
 from __future__ import annotations
 

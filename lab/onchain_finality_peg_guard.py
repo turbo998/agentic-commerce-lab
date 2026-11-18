@@ -1,4 +1,4 @@
-"""x402 EIP-3009 Authorization Window & Replay Guard, Stablecoin De-Peg Oracle Circuit Breaker, Tiered L2 Finality Gate & Gas-Congestion MPP Tempo Router (Stage 13).
+"""x402 EIP-3009 Authorization Window & Replay Guard, Stablecoin De-Peg Oracle Circuit Breaker, Tiered L2 Finality Gate & Gas-Congestion MPP Tempo Router.
 
 Enforces four production invariants for on-chain and hybrid agentic payments
 (`Coinbase x402` EIP-3009 `ReceiveWithAuthorization` on Base/EVM and
@@ -252,7 +252,7 @@ def evaluate_stablecoin_depeg_and_gas_routing(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Run Stage 13 x402 EIP-3009 finality, stablecoin peg & MPP gas routing guard."
+        description="Run x402 EIP-3009 finality, stablecoin peg & MPP gas routing guard."
     )
     parser.parse_args(argv)
 

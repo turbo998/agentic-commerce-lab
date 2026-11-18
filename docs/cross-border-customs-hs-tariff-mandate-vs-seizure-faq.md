@@ -1,6 +1,6 @@
 # 跨境贸易海关编码（HS Code）与完税交货（DDP Landed-Cost）担保授权架构：预清关关税锁定令牌（`customs_ddp_tariff_mandate_...` + 10 位税则归类验真）vs 传统到岸未完税（DDU）包裹扣关与低报逃税罚款选型与原理解析 FAQ
 
-> **文档类型**：AI Solution Architect 架构选型与协议第一性原理解析指南（FAQ-Driven Deep Dive · Round 33）  
+> **文档类型**：AI Solution Architect 架构选型与协议第一性原理解析指南（FAQ-Driven Deep Dive）  
 > **阅读耗时**：3 分钟速览选型结论 · 10 分钟掌握跨境 DDP 总到岸成本锁定、严禁低报货值闯关门禁与 Microsoft Web IQ 海关税则表（HTS/TARIC）及自贸协定（FTA）原产地减免边界  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md`（通俗大白话 + 第一性原理 + Mermaid 决策树/对比图/时序图 + 选型矩阵 + 可复现定量报告 + 生产核验清单）  
 > **核心专题**：**唯一聚焦「跨境采购 Agent 在执行跨国商品与工业件采购时，如何通过强制绑定商业发票与报关金额一致、锁定 DDP 完税交货上限以及核验 10 位 HS 海关编码，彻底阻断卖方私自低报货值（Fake De Minimis）导致的海关扣押罚款、DDU 到岸天价补税勒索以及胡乱填报 HS 编码引发的退运灾难」**  

@@ -3,7 +3,7 @@
 > **专题定位（单一决策聚焦）**：本篇仅聚焦 **“AI Agent 支付结算轨道怎么选与底层资金流原理”** 这一项核心架构决策（有关网页接地选型请直接阅读姊妹篇 **[《实时网页接地选型 FAQ：Microsoft Web IQ vs. Exa vs. Bright Data》](webiq-vs-exa-brightdata-grounding-selection-faq.md)**；合集导航页见 **[《支付轨道与接地总览入口》](agentic-payment-rails-and-webiq-grounding-selection-faq.md)**）。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md`（核心结论、第一性原理 Q&A、Mermaid 决策树/对比图/时序图、选型矩阵、带 Provenance 溯源的定量发现、生产 Checklist）。  
 > **双语版本**：**[中文版（当前）](agentic-payment-rails-spt-vic-x402-selection-faq.md)** · **[English Version (`agentic-payment-rails-spt-vic-x402-selection-faq.en.md`)](agentic-payment-rails-spt-vic-x402-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-08`）**：文中官方协议规则引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；本地评测数据引自 `reports/agentic-commerce-webiq-grounding-demo-bench/report.json`（标记为 `deterministic_offline_simulation`）；企业风控阈值与地区围栏示例标记为 `synthetic_policy`；未挂载真实生产密钥的第三方在线支付网关实测标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-08`）**：文中官方协议规则引自 `research/sources.json`（标记为 `official_doc_snapshot`）；本地评测数据引自 `reports/agentic-commerce-webiq-grounding-demo-bench/report.json`（标记为 `deterministic_offline_simulation`）；企业风控阈值与地区围栏示例标记为 `synthetic_policy`；未挂载真实生产密钥的第三方在线支付网关实测标记为 `not_measured`。
 
 ![Agentic Commerce 支付轨道选型一图流总结](../assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -147,8 +147,8 @@ sequenceDiagram
 
 | 指标 / 规则项 | 数值 / 结论 | 数据类别 (Provenance) | 精确来源路径 / As-Of 日期与适用范围说明 |
 |---|---|---|---|
-| **Stripe SPT 支持国家数** | **`34` 个国家/地区** | `official_doc_snapshot` | `research/daily/2026-11-08-sources.json` (`stripe-spt`, `as_of: 2026-11-08`, SHA-256 `ec830c09...`) |
-| **Stripe MCP 密钥断代截止日** | **`2026-11-30`** 后拒绝 `sk_live_*` 与未打标 `rk_live_*` | `official_doc_snapshot` | `research/daily/2026-11-08-sources.json` (`stripe-mcp`, `as_of: 2026-11-08`, SHA-256 `407eb306...`) |
+| **Stripe SPT 支持国家数** | **`34` 个国家/地区** | `official_doc_snapshot` | `research/sources.json` (`stripe-spt`, `as_of: 2026-11-08`, SHA-256 `ec830c09...`) |
+| **Stripe MCP 密钥断代截止日** | **`2026-11-30`** 后拒绝 `sk_live_*` 与未打标 `rk_live_*` | `official_doc_snapshot` | `research/sources.json` (`stripe-mcp`, `as_of: 2026-11-08`, SHA-256 `407eb306...`) |
 | **Seller Webhook 超时阈值** | **`4,000 ms`**（查价超时回退目录，终审超时拒单） | `official_doc_snapshot` | `docs.stripe.com/agentic-commerce/protocol/shared-payment-tokens` (`as_of: 2026-11-08`) |
 | **MPP Tempo 整美分对齐损耗** | **`200 单位`损耗 `$0.000000`** vs 未对齐 50 单位损耗 **`54.3%` (`$0.023750`)** | `deterministic_offline_simulation` | `reports/agentic-commerce-webiq-grounding-demo-bench/report.json` (`W08` / `lab/webiq_commerce_demo.py`) |
 | **RFC 9207 `iss` 混淆攻击拦截** | **`100%` 阻断**大小写混淆 `https://AUTH.merchant.example` | `deterministic_offline_simulation` | `reports/agentic-commerce-webiq-grounding-demo-bench/report.json` (`stage_1756_guards`) |

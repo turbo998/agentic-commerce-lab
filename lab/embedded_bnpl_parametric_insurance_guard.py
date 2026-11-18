@@ -1,4 +1,4 @@
-"""Stage 20: Embedded BNPL / B2B Trade-Credit Underwriting, Parametric SLA Microinsurance & Invoice Factoring Double-Pledge Guard.
+"""Embedded BNPL / B2B Trade-Credit Underwriting, Parametric SLA Microinsurance & Invoice Factoring Double-Pledge Guard.
 
 Implements three deterministic production guardrails for Agentic Commerce working-capital financing,
 embedded parametric insurance, and B2B receivable factoring:

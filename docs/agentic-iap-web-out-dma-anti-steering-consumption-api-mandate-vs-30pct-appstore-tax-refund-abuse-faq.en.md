@@ -3,7 +3,7 @@
 > **Document Type**: Architect's Selection & First-Principles FAQ (Benchmarking the 6-Section Standard of `ib-vs-ethernet-roce-selection-faq.md`)  
 > **Core Domain Coverage**: Mobile AI Agent Subscriptions & Token Top-Ups (`iOS StoreKit 2 / Google Play Billing` vs. `Stripe Web-to-App Checkout`), EU Digital Markets Act (`DMA`), US Anti-Steering Injunction & Japan `MSCA` Geo-Fenced `StoreKit External Purchase Link Entitlements`, EU Core Technology Fee (`CTF €0.50`) Unit-Economics Gating, Apple App Store Server API `CONSUMPTION_REQUEST` 12-Hour Telemetry (`consumptionStatus = FULLY_CONSUMED`), and Instant `REFUND / REVOKE` JWS Entitlement Revocation  
 > **Target Audience**: AI-Native App & Mobile Gaming Monetization Architects, Subscription & Entitlement Engineering Leads, App Store Compliance Counsel, and CFOs  
-> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Round 210 Interactive Sandbox for Geo-Fenced IAP vs. Web-Out Routing, Apple Consumption API Refund Defense & Microsoft Web IQ DMA / App Store Fee Verification)](../live-demo.en.html) · [`assets/svg/212-agentic-iap-web-out-dma-anti-steering-consumption-api-2026-11-14.svg`](../assets/svg/212-agentic-iap-web-out-dma-anti-steering-consumption-api-2026-11-14.svg)
+> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Interactive Sandbox for Geo-Fenced IAP vs. Web-Out Routing, Apple Consumption API Refund Defense & Microsoft Web IQ DMA / App Store Fee Verification)](../live-demo.en.html) · [`assets/svg/212-agentic-iap-web-out-dma-anti-steering-consumption-api-2026-11-14.svg`](../assets/svg/212-agentic-iap-web-out-dma-anti-steering-consumption-api-2026-11-14.svg)
 
 ---
 

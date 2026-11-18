@@ -6,7 +6,7 @@
 > **Last Updated**: 2026-11-08 (Aligned with IETF `Idempotency-Key` Draft Standard, Stripe API Payload-Fingerprint Semantics & Deterministic Deduplication Benchmark Suite, *as of 2026-11-08*)  
 > **Global Provenance & Evidence Notice**: All quantitative metrics in this guide carry explicit provenance labels: `deterministic_offline_simulation` (reproducible local evaluation in `lab/webiq_commerce_demo.py`), `synthetic_policy` (reference lock TTL and retry guard rules), `official_doc_snapshot` (Stripe / IETF protocol documentation snapshot *as of 2026-11-08*), and `not_measured` (external issuer mainframe ISO 8583 deduplication windows).
 
-![2026-11-08 AI Agent Tool-Call Timeout, Retry Storm & Double-Charge Prevention Visual Summary](../../assets/svg/19-idempotency-payload-hash-vs-double-charge-2026-11-08.svg)
+![2026-11-08 AI Agent Tool-Call Timeout, Retry Storm & Double-Charge Prevention Visual Summary](../assets/svg/19-idempotency-payload-hash-vs-double-charge-2026-11-08.svg)
 
 ---
 

@@ -4,7 +4,7 @@
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md`（先给一针见血的选型结论，再用第一性原理大白话讲透跨境清算机制、汇损陷阱与合规红线，提供客户高频灵魂拷问 Q&A、Mermaid 决策树与时序图、选型矩阵与上线核验清单）  
 > **双语版本**：**[中文版（当前）](cross-border-agent-settlement-x402-vs-card-network-faq.md)** · **[English Version (`cross-border-agent-settlement-x402-vs-card-network-faq.en.md`)](cross-border-agent-settlement-x402-vs-card-network-faq.en.md)**  
 > **配套可交互演示**：**[🚀 H5 跨境双轨结算与整美分对齐实时沙盒 (`../live-demo.html`)](../live-demo.html)** · **[📊 7-Card 4:5 视觉评测报告 (`../benchmark-cards.html`)](../benchmark-cards.html)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-08`）**：Stripe SPT 支持的 **34 个国家/地区**与 MPP Tempo 整美分向下截断规则引自 `research/daily/2026-11-08-sources.json`（**`official_doc_snapshot`**, `as_of: 2026-11-08`）；`200 单位` `$0.000000` 损耗与未对齐 `54.3%` 损耗引自 `reports/agentic-commerce-webiq-grounding-demo-bench/report.json`（**`deterministic_offline_simulation`**）；文中 `US-NY` 地理围栏、`2.0%` 汇率滑点阈值与 `120 天` 卡争议期参考规则属于本实验室策略网关风控示例（明确标为 **`synthetic_policy`**，不构成法律意见）；无生产凭证的跨国收单行在线实测标为 **`not_measured`**。
+> **数据溯源声明（Provenance & As-Of `2026-11-08`）**：Stripe SPT 支持的 **34 个国家/地区**与 MPP Tempo 整美分向下截断规则引自 `research/sources.json`（**`official_doc_snapshot`**, `as_of: 2026-11-08`）；`200 单位` `$0.000000` 损耗与未对齐 `54.3%` 损耗引自 `reports/agentic-commerce-webiq-grounding-demo-bench/report.json`（**`deterministic_offline_simulation`**）；文中 `US-NY` 地理围栏、`2.0%` 汇率滑点阈值与 `120 天` 卡争议期参考规则属于本实验室策略网关风控示例（明确标为 **`synthetic_policy`**，不构成法律意见）；无生产凭证的跨国收单行在线实测标为 **`not_measured`**。
 
 ![跨境多币种 Agent 结算架构：稳定币/x402 链上结算 vs 卡组令牌网络选型一图流](../assets/svg/05-cross-border-agent-settlement-2026-11-08.svg)
 
@@ -184,6 +184,6 @@ sequenceDiagram
 - [ ] **1. 履约可逆性分轨核验（Reversibility Split）**：是否已将“有物流/服务履约周期的实物与 SaaS 交易”强制锁定在带 120 天拒付保护的卡组令牌网络（**Stripe SPT v2 / Visa VIC**），并严禁 Agent 对实物商品直接发起不可撤回的链上 USDC 转账？
 - [ ] **2. Tempo 6 位小数整美分 GCD 步长对齐（Zero-Truncation Alignment）**：在接入 Stripe MPP Tempo (`pathUSD`) 时，是否已在网关层配置最小无损批量步长公式 $N_{\min} = 10000 / \gcd(\text{round}(p \times 10^6), 10000)$，防止亚美分尾数在法币入账时被截断清零？
 - [ ] **3. 纽约州（`US-NY`）与受限司法管辖区硬围栏（Geofence Gate）**：微支付网关是否已在请求入口校验买方与商户所在州/国家，对 `US-NY` 及受限法域强制返回 `HTTP 403` 或平滑降级至法币预付点数轨道？
-- [ ] **4. Stripe SPT 34 国覆盖矩阵与 Visa VIC 全球回退（34-Country Matrix & Fallback）**：路由器是否已内置最新的 Stripe SPT 34 国白名单（`research/daily/2026-11-08-sources.json`），对 34 国内的多商户分账启用 `Stripe Connect SPT`，对 34 国外的商户自动切换 `Visa VIC (VTS + TAP)`？
+- [ ] **4. Stripe SPT 34 国覆盖矩阵与 Visa VIC 全球回退（34-Country Matrix & Fallback）**：路由器是否已内置最新的 Stripe SPT 34 国白名单（`research/sources.json`），对 34 国内的多商户分账启用 `Stripe Connect SPT`，对 34 国外的商户自动切换 `Visa VIC (VTS + TAP)`？
 - [ ] **5. Connect 跨国分账请求头与 4 秒非对称超时纪律（Connect Header & 4s Hook SLA）**：在 Stripe Connect `Destination` / `Separate Charges` 且未设 `on_behalf_of` 时，是否已确保**不传 `Stripe-Account` 请求头**？卖家 `finalize_checkout` 风控接口是否已压测确保在 `4,000 ms` 内返回？
 - [ ] **6. Web IQ (`G3` `global`) 含税落地价与 2% 汇率滑点熔断（Landed Cost & FX Guard）**：在发起跨币种扣款前，是否已通过 Web IQ `/v3/browse` (`passage`) 核验包含 VAT、进口关税与国际运费的真实落地总价，并对 `> 2.0%` 的汇率异常滑点配置了自动暂停确认（`Confirm`）？

@@ -1,6 +1,6 @@
 # B2B 跨企业联合拼单起订量聚合（Autonomous B2B MOQ Syndicate Aggregation）与全有或全无智能托管（All-or-Nothing Conditional Escrow Mandate）架构：凑单达标条件释放令牌（`moq_syndicate_escrow_...` + 到期未达标零手续费自动解冻）vs 传统先交定金被套牢（Stranded Deposit）与拼单团长卷款跑路选型与原理解析 FAQ
 
-> **文档类型**：AI Solution Architect 架构选型与协议第一性原理解析指南（FAQ-Driven Deep Dive · Round 31）  
+> **文档类型**：AI Solution Architect 架构选型与协议第一性原理解析指南（FAQ-Driven Deep Dive）  
 > **阅读耗时**：3 分钟速览选型结论 · 10 分钟掌握全有或全无条件起订量托管（All-or-Nothing MOQ Escrow）、到期零损耗自动解冻与 Microsoft Web IQ 源头工厂阶梯价核验边界  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md`（通俗大白话 + 第一性原理 + Mermaid 决策树/对比图/时序图 + 选型矩阵 + 可复现定量报告 + 生产核验清单）  
 > **核心专题**：**唯一聚焦「B2B 跨企业采购 Agent 联合拼单凑齐源头工厂起订量（MOQ）时，如何通过加密绑定的全有或全无拼单托管凭证与到期自动解冻机制，彻底根除传统先交定金凑不够数被长期套牢、拼单团长未达标提前划扣资金以及虚报出厂价赚差价」**  

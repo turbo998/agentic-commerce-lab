@@ -1,9 +1,9 @@
 # 高奢零售、名表珠宝与稀缺限量款“私人导购（Luxury Clienteling VIC）、配额防代购倒卖与高额反洗钱结算”Agent 架构选型 FAQ：禁强制配货、全球护照配额锁与数字真品证书实战指南
 
-> **专题定位（高奢皮具箱包 LVMH / Kering / Richemont / Hermès、瑞士名表高级珠宝、稀缺限量球鞋潮玩与 VIC 私人顾问 Clienteling 智能体聚焦 · Round 421）**：面向为全球顶级奢侈品集团、高级腕表珠宝品牌与买手店设计私人客户顾问（Clienteling Copilot）与稀缺配额分配系统的 **Cloud & AI Solution Architect**，系统解答高奢商业中最敏感、监管与品牌资产风险最高的四大工程难题：**“为什么职业代购团伙（Reseller Flippers）能雇人跨巴黎、东京、迪拜三地门店在 1 周内买走 12 只同款热门腕表转手挂上二级平台加价 $15,000 倒卖、为什么导购 Agent 在微信/WhatsApp 聊天里直白写出‘买这只 $12,000 的包必须先买满 $15,000 的成衣珠宝’会立即触发美国/欧盟反垄断集体诉讼（Illegal Tying Violation `HTTP 403`）、为什么一双 $18,000 的高级珠宝腕表网购退货时会被黑产用高仿超 A 货掉包（Counterfeit Return Swap）、以及超过 $10,000 的高额奢品交易怎么无缝完成 AML/KYC 反洗钱核验与 Visa VIC / 私人银行电汇结算”**。  
+> **专题定位（高奢皮具箱包 LVMH / Kering / Richemont / Hermès、瑞士名表高级珠宝、稀缺限量球鞋潮玩与 VIC 私人顾问 Clienteling 智能体聚焦）**：面向为全球顶级奢侈品集团、高级腕表珠宝品牌与买手店设计私人客户顾问（Clienteling Copilot）与稀缺配额分配系统的 **Cloud & AI Solution Architect**，系统解答高奢商业中最敏感、监管与品牌资产风险最高的四大工程难题：**“为什么职业代购团伙（Reseller Flippers）能雇人跨巴黎、东京、迪拜三地门店在 1 周内买走 12 只同款热门腕表转手挂上二级平台加价 $15,000 倒卖、为什么导购 Agent 在微信/WhatsApp 聊天里直白写出‘买这只 $12,000 的包必须先买满 $15,000 的成衣珠宝’会立即触发美国/欧盟反垄断集体诉讼（Illegal Tying Violation `HTTP 403`）、为什么一双 $18,000 的高级珠宝腕表网购退货时会被黑产用高仿超 A 货掉包（Counterfeit Return Swap）、以及超过 $10,000 的高额奢品交易怎么无缝完成 AML/KYC 反洗钱核验与 Visa VIC / 私人银行电汇结算”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、高奢 Clienteling 与稀缺配额分配架构选型矩阵、定量品牌溢价保护/防假货测算与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](luxury-retail-clienteling-vic-allocation-anti-reseller-aml-agent-selection-faq.md)** · **[English Version (`luxury-retail-clienteling-vic-allocation-anti-reseller-aml-agent-selection-faq.en.md`)](luxury-retail-clienteling-vic-allocation-anti-reseller-aml-agent-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Visa Intelligent Commerce（`VIC` VTS 必须含 CVV2、Passkey 挑战失败强制 `fail-closed`）与 Web IQ `/v3/search` 二级奢品转售平台（Chrono24 / Vestiaire / 得物）序列号巡检引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；全球护照/实名配额锁、反强制搭售合规话术守卫、NFC 数字真品护照（DPP）验真与 AML 门槛核验引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；年度热门包表配额上限（`<= 2 件/年`）标记为 `synthetic_policy`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Visa Intelligent Commerce（`VIC` VTS 必须含 CVV2、Passkey 挑战失败强制 `fail-closed`）与 Web IQ `/v3/search` 二级奢品转售平台（Chrono24 / Vestiaire / 得物）序列号巡检引自 `research/sources.json`（标记为 `official_doc_snapshot`）；全球护照/实名配额锁、反强制搭售合规话术守卫、NFC 数字真品护照（DPP）验真与 AML 门槛核验引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；年度热门包表配额上限（`<= 2 件/年`）标记为 `synthetic_policy`。
 
 ![2026-11-18 高奢零售与名表珠宝私人导购 (Clienteling VIC)、全球护照配额锁与反洗钱结算 Agent 架构一图流总结](../assets/svg/423-luxury-retail-clienteling-vic-allocation-anti-reseller-aml-2026-11-18.svg)
 
@@ -33,7 +33,7 @@
 1. **高奢 Clienteling Copilot 的“合规语义防火墙（Anti-Tying Semantic Firewall `HTTP 403`）”**：
    - 所有由 AI 辅助起草或自动发送给 VIC 客户的微信/WhatsApp/邮件消息，在发出前必须经过确定性合规策略门禁；
    - 严禁将“稀缺配额分配（Quota Allocation）”与“其他非稀缺品类消费额（Spend Ratio）”做条件关联表达；
-   - 同时，若买家的 Visa VIC 授权挑战未传入 `CVV2` 或设备 `Passkey` 验证失败，严格按 Visa Stage 1755 规范执行 **`fail-closed` 硬阻断（`HTTP 403`）**。
+   - 同时，若买家的 Visa VIC 授权挑战未传入 `CVV2` 或设备 `Passkey` 验证失败，严格按 Visa 规范执行 **`fail-closed` 硬阻断（`HTTP 403`）**。
 
 ---
 

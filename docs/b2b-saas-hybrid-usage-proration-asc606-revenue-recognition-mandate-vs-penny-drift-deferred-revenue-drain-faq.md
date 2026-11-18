@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：B2B AI SaaS 与云服务“席位订阅 + Token 用量（Hybrid Seat + Usage-Based Billing）”混合计费、周期中途升降配按秒精确折算（Exact-Second Integer Proration）与降配仅退贷项通知单（Credit Note vs. Cash Refund）、多资源包过期优先扣减瀑布流（Expiry-First Bucket Waterfall）、以及美国 FASB `ASC 606` / 国际会计准则 `IFRS 15` 五步法收入确认（履约义务 POB 拆分、独立售价 `SSP` 分摊与递延收入 Contract Liability 锁定）  
 > **阅读对象**：AI SaaS 与云计算计费账务（Billing & Revenue Subledger）架构师、商业化产品负责人、CFO、财务共享中心与四大审计对接负责人  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 205 B2B SaaS 混合计费按秒折算、额度消耗瀑布流与 Microsoft Web IQ ASC 606 / IFRS 15 独立售价 SSP 分摊核验交互沙盒）](../live-demo.html) · [`assets/svg/207-b2b-saas-hybrid-usage-proration-asc606-revenue-2026-11-14.svg`](../assets/svg/207-b2b-saas-hybrid-usage-proration-asc606-revenue-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含B2B SaaS 混合计费按秒折算、额度消耗瀑布流与 Microsoft Web IQ ASC 606 / IFRS 15 独立售价 SSP 分摊核验交互沙盒）](../live-demo.html) · [`assets/svg/207-b2b-saas-hybrid-usage-proration-asc606-revenue-2026-11-14.svg`](../assets/svg/207-b2b-saas-hybrid-usage-proration-asc606-revenue-2026-11-14.svg)
 
 ---
 

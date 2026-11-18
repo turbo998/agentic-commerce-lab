@@ -1,9 +1,9 @@
 # 全渠道零售“线上下单门店自提 / 门店前置仓闪送”（BOPIS / Ship-from-Store）Agent 架构选型 FAQ：门店安全库存缓冲、防拆单运费暴增、取货核销锁与缺货自动升级实战指南
 
-> **专题定位（全渠道新零售履约与门店协同应用聚焦 · Round 398）**：面向为大型商超百货、连锁鞋服、生鲜药店与 3C 零售集团设计全渠道订单管理（DOM, Distributed Order Management）与导购履约 Agent 的 **Cloud & AI Solution Architect**，系统解决全渠道零售最核心的四大痛点：**“为什么门店账面显示有 2 件库存、客户线上下单自提（BOPIS）跑到门店却被告知早被线下顾客拿走了（幽灵库存）、为什么一笔 3 件商品的订单被乱拆成 3 家门店发货导致快递费吃光整单毛利、怎么防止路边自提（Curbside Pickup）被黑产截获二维码冒领、以及当拣货员发现残次缺货时怎么无损自动转仓或升级免费次日达”**。  
+> **专题定位（全渠道新零售履约与门店协同应用聚焦）**：面向为大型商超百货、连锁鞋服、生鲜药店与 3C 零售集团设计全渠道订单管理（DOM, Distributed Order Management）与导购履约 Agent 的 **Cloud & AI Solution Architect**，系统解决全渠道零售最核心的四大痛点：**“为什么门店账面显示有 2 件库存、客户线上下单自提（BOPIS）跑到门店却被告知早被线下顾客拿走了（幽灵库存）、为什么一笔 3 件商品的订单被乱拆成 3 家门店发货导致快递费吃光整单毛利、怎么防止路边自提（Curbside Pickup）被黑产截获二维码冒领、以及当拣货员发现残次缺货时怎么无损自动转仓或升级免费次日达”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、全渠道寻源路由方案选型矩阵、定量履约转化与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](omnichannel-retail-bopis-ship-from-store-inventory-buffer-fulfillment-agent-selection-faq.md)** · **[English Version (`omnichannel-retail-bopis-ship-from-store-inventory-buffer-fulfillment-agent-selection-faq.en.md`)](omnichannel-retail-bopis-ship-from-store-inventory-buffer-fulfillment-agent-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：UCP/ACP 履约事件约束、Stripe `capture_method=manual` 预授权与 Microsoft Web IQ 契约引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；门店安全库存缓冲垫、拆单运费上限锁与取货核销门禁引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业门店缓冲阈值（如 `buffer >= 2`）与最大拆包裹数标记为 `synthetic_policy`；外部连锁门店 POS 生产网络压测标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：UCP/ACP 履约事件约束、Stripe `capture_method=manual` 预授权与 Microsoft Web IQ 契约引自 `research/sources.json`（标记为 `official_doc_snapshot`）；门店安全库存缓冲垫、拆单运费上限锁与取货核销门禁引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业门店缓冲阈值（如 `buffer >= 2`）与最大拆包裹数标记为 `synthetic_policy`；外部连锁门店 POS 生产网络压测标记为 `not_measured`。
 
 ![2026-11-18 全渠道零售线上下单门店自提 (BOPIS) 与门店闪送 (Ship-from-Store) Agent 架构一图流总结](../assets/svg/400-omnichannel-retail-bopis-ship-from-store-inventory-buffer-2026-11-18.svg)
 

@@ -1,4 +1,4 @@
-# Stage 26: Maritime Trade Finance MLETR Electronic Bill of Lading (eBL) Title Transfer, eUCP 600 Letter of Credit Document-Match & Marine Demurrage Escrow Guard
+# Maritime Trade Finance MLETR Electronic Bill of Lading (eBL) Title Transfer, eUCP 600 Letter of Credit Document-Match & Marine Demurrage Escrow Guard
 
 **Verification Date:** `2026-10-19` (`Asia/Shanghai`)  
 **Executable Module:** `lab/trade_finance_ebl_lc_demurrage_guard.py`  

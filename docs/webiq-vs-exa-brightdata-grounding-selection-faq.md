@@ -5,7 +5,7 @@
 > **双语版本**：**[中文版（当前）](webiq-vs-exa-brightdata-grounding-selection-faq.md)** · **[English Version (`webiq-vs-exa-brightdata-grounding-selection-faq.en.md`)](webiq-vs-exa-brightdata-grounding-selection-faq.en.md)**  
 > **数据溯源声明（Provenance & As-Of `2026-11-08`）**：各厂商公开标价引自官方定价页快照（标记为 `official_list_price`, `as_of: 2026-11-08`）；本地确定性模拟指标引自 `reports/agentic-commerce-webiq-grounding-demo-bench/report.json`（标记为 `deterministic_offline_simulation`）；`site:` 域名白名单与 `30 天`退货期校验阈值属于本实验室参考策略规则（标记为 `synthetic_policy`）；未配置生产 API Key 的第三方搜索供应商在线实测统一标为 **`not_measured`**。
 
-![Web IQ vs Exa / Bright Data / 主流 Web Search 竞品选型矩阵](../docs/research/webiq-search-competitive-2026-11-08.svg)
+![Web IQ vs Exa / Bright Data / 主流 Web Search 竞品选型矩阵](research/webiq-search-competitive-2026-11-12.svg)
 
 ---
 

@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：智能体受控商品电商（名庄红酒烈酒、处方医疗、电子雾化、分级数字内容与游戏）、W3C Digital Credentials API 与 `ISO/IEC 18013-5` 移动电子驾照（`mDL`：Apple Wallet / Google Wallet / 欧盟 `eIDAS 2.0 EUDI Wallet`）、政府发证机关根证书（`IACA Root CA`）签名的零知识/选择性年龄披露（`age_over_21 == true` 零明文身份证照片留存）、美国各州酒类直邮许可证（DTC Shipping License / 禁运州如犹他州、密西西比州硬拦截）与个人月度购买升数上限、以及物流末端强制 `21+` 成人查验身份证签收（`ASR: Adult Signature Required`）与卡组织 `VIRP / BRAM` 高危合规门禁  
 > **阅读对象**：高端酒水、医药健康与数字娱乐平台架构师、数字身份与隐私计算（Privacy-Preserving KYC）工程负责人、法务合规总监与首席信息安全官（CISO）  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 214 智能体 mDL `ISO 18013-5` 零知识 `age_over_21` 验真、禁运州邮编拦截、末端 `ASR 21+` 签收绑定与 Microsoft Web IQ 各州酒类/受控品直邮法规核验交互沙盒）](../live-demo.html) · [`assets/svg/216-agentic-age-restricted-mdl-iso18013-zkp-adult-signature-2026-11-14.svg`](../assets/svg/216-agentic-age-restricted-mdl-iso18013-zkp-adult-signature-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含智能体 mDL `ISO 18013-5` 零知识 `age_over_21` 验真、禁运州邮编拦截、末端 `ASR 21+` 签收绑定与 Microsoft Web IQ 各州酒类/受控品直邮法规核验交互沙盒）](../live-demo.html) · [`assets/svg/216-agentic-age-restricted-mdl-iso18013-zkp-adult-signature-2026-11-14.svg`](../assets/svg/216-agentic-age-restricted-mdl-iso18013-zkp-adult-signature-2026-11-14.svg)
 
 ---
 

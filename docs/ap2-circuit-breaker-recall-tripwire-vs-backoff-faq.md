@@ -6,7 +6,7 @@
 > **最后更新**：2026-11-08（基于 AP2 / Stripe SPT v2 令牌吊销语义、Microsoft Web IQ 监管召回接地与确定性断路器评测套件，*as of 2026-11-08*）  
 > **全局数据溯源声明（Provenance & Evidence Notice）**：本文所有定量指标均显式标注来源类型：`deterministic_offline_simulation`（基于 `lab/webiq_commerce_demo.py` 的本地可复现离线仿真）、`synthetic_policy`（架构师参考风控策略阈值，非硬编码法规上限）、`official_doc_snapshot`（截至 *as of 2026-11-08* 的官方协议文档快照）及 `not_measured`（未配置生产凭证或未接入真实监管专网的外部实测项）。
 
-![2026-11-08 多智能体支付失控熔断、供应链召回硬阻断与预算速度限制架构一图流总结](../../assets/svg/18-ap2-circuit-breaker-recall-tripwire-2026-11-08.svg)
+![2026-11-08 多智能体支付失控熔断、供应链召回硬阻断与预算速度限制架构一图流总结](../assets/svg/18-ap2-circuit-breaker-recall-tripwire-2026-11-08.svg)
 
 ---
 

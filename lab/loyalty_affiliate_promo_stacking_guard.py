@@ -1,4 +1,4 @@
-"""Stage 19: Promo Coupon Stacking Guard, Cryptographic Affiliate Attribution & Loyalty Clawback.
+"""Promo Coupon Stacking Guard, Cryptographic Affiliate Attribution & Loyalty Clawback.
 
 Implements three deterministic production guardrails for Agentic Commerce promotions,
 multi-agent affiliate attribution, and loyalty/cashback return settlement:

@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：智能体商旅预订（OTA / 酒店 PMS `MCC 7011` / 租车与Robotaxi `MCC 7512`）、Visa / Mastercard 预估预授权标识符（Estimated Authorization Indicator）、同单交易识别码（`TID`）增量预授权（Incremental Authorization 突破 `+15%` 容差红线）、离店结算差额即时部分冲正（`ISO 8583 0420 Partial Reversal` 防止押金冻结 30 天）、未入住（No-Show 仅限首晚房费+税）以及严禁将“房间吸烟罚款/租车刮擦维修费（Property Damage）”直接走原预授权延迟扣款（触发 `Visa 12.6 / 13.5` 必输拒付）  
 > **阅读对象**：在线旅游平台（OTA）与企业差旅（TMC）架构师、酒店 PMS 与租车出行结算系统负责人、支付合规与风控总监  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 207 智能体酒店租车增量预授权、离店押金 `0420` 秒解冻、阻断战损罚款违规强扣与 Microsoft Web IQ 卡组织旅宿规程核验交互沙盒）](../live-demo.html) · [`assets/svg/209-agentic-hospitality-lodging-car-rental-incremental-auth-2026-11-14.svg`](../assets/svg/209-agentic-hospitality-lodging-car-rental-incremental-auth-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含智能体酒店租车增量预授权、离店押金 `0420` 秒解冻、阻断战损罚款违规强扣与 Microsoft Web IQ 卡组织旅宿规程核验交互沙盒）](../live-demo.html) · [`assets/svg/209-agentic-hospitality-lodging-car-rental-incremental-auth-2026-11-14.svg`](../assets/svg/209-agentic-hospitality-lodging-car-rental-incremental-auth-2026-11-14.svg)
 
 ---
 

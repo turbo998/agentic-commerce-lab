@@ -1,4 +1,4 @@
-"""Stage 23: Digital Goods / SaaS Seat DRM Revocation, Secondary Ticketing Anti-Scalping Rotating-QR Escrow & C2PA Generative IP Micro-Royalty Split Guard.
+"""Digital Goods / SaaS Seat DRM Revocation, Secondary Ticketing Anti-Scalping Rotating-QR Escrow & C2PA Generative IP Micro-Royalty Split Guard.
 
 Implements three deterministic digital-asset & ticketing invariants:
 1. `evaluate_digital_license_seat_activation_guard`:

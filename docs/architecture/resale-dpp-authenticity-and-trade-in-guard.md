@@ -1,4 +1,4 @@
-# Stage 21: EU ESPR Digital Product Passport (DPP) Provenance, C2C Authentication Escrow & Trade-In Anti-Bait-and-Switch Guard
+# EU ESPR Digital Product Passport (DPP) Provenance, C2C Authentication Escrow & Trade-In Anti-Bait-and-Switch Guard
 
 **Verification Date:** 2026-10-19 (Beijing Time)  
 **Implementation Module:** `lab/resale_dpp_authenticity_escrow_guard.py`  

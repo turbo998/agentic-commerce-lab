@@ -7,7 +7,7 @@
 > - `synthetic_policy`：本文用于演示只读询价超时回退安全边界的 Catalog Feed 新鲜度阈值（如 `feed_age_seconds <= 900s` 允许降级、`> 900s` 返回 `503 Stale Catalog`），属于架构师参考策略（Reference Policy），**并非**固定法律限制。
 > - `deterministic_offline_simulation`：沙盒测试（`evaluate_catalog_feed_and_webhook_sla_policy`）中的端到端延迟（如 `310 ms` / `325 ms`）与 100% 脏读/幽灵扣款拦截率来自本地确定性沙盒模拟；商户生产环境 ERP/OMS 在黑五高峰期的真实线上压测响应延迟统一标注为 `not_measured`。
 
-![2026-11-08 商品目录摄入与 4,000ms 双钩子非对称降级架构一图流](../../assets/svg/11-catalog-feed-manifest-vs-4s-webhook-2026-11-08.svg)
+![2026-11-08 商品目录摄入与 4,000ms 双钩子非对称降级架构一图流](../assets/svg/11-catalog-feed-manifest-vs-4s-webhook-2026-11-08.svg)
 
 ---
 
@@ -189,7 +189,7 @@ sequenceDiagram
 | **`finalize_hook_within_sla_captured`** | `finalize_checkout` | 钩子耗时 `380 ms`（`<= 4,000 ms`），`inventory_locked=True` | `finalize_checkout_confirmed_spt_captured` | `200 OK` | **`$149.00`（OMS 锁单确认 + SPT 扣款一步完成）** |
 
 > 📊 **配套交互式演示与 7-Card 报告**：
-> - 在 **[`live-demo.html`](../../live-demo.html)** 的 **`#catalog-webhook-sla-sandbox`（商户目录 `manifest.json` 屏障与 4,000 ms 双钩子非对称降级交互式沙盒）** 中，点击 4 个预设按钮即可实时对比“缺 `manifest.json` 挂起”、“只读询价超 4s 优雅降级读 Upsert 缓存”、“最终锁单超 4s 铁律 504 硬拒单”与“380ms 正常锁单扣款”的完整状态机输出。
+> - 在 **[`live-demo.html`](../live-demo.html)** 的 **`#catalog-webhook-sla-sandbox`（商户目录 `manifest.json` 屏障与 4,000 ms 双钩子非对称降级交互式沙盒）** 中，点击 4 个预设按钮即可实时对比“缺 `manifest.json` 挂起”、“只读询价超 4s 优雅降级读 Upsert 缓存”、“最终锁单超 4s 铁律 504 硬拒单”与“380ms 正常锁单扣款”的完整状态机输出。
 > - **真实性边界提醒**：商户生产环境 ERP/OMS 在大促高峰期的真实网络延迟受商户自身架构影响，未在本地沙盒虚构生产实测值，统一标注为 `not_measured`。
 
 ---

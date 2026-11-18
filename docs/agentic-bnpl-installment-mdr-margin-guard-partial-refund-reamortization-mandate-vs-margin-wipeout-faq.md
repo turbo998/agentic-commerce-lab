@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：智能体先享后付（Buy Now, Pay Later, BNPL：Klarna / Affirm / Afterpay / PayPal Pay in 4 / Apple Pay Later 替代路由）、商户贴息扣率（Merchant Discount Rate, MDR `4.5%–6.5%`）与净贡献毛利（Contribution Margin）底线门禁、美国 CFPB 2024/2025 BNPL 监管新规（适用 Regulation Z 信用卡账单争议与退货暂停扣款保护）、多件试穿退货（Bracketing）不退手续费陷阱、以及部分退货分期计划尾部优先抵扣重算（Tail-First Schedule Re-amortization）  
 > **阅读对象**：电商交易与收银台架构师、智能体营销与定价负责人、支付清算与财务风控总监、售后退换货系统负责人  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 200 智能体 BNPL 商户贴息 MDR 毛利底线门禁、CFPB Reg Z 退货即时冻结分期扣款与 Microsoft Web IQ 费率对标沙盒）](../live-demo.html) · [`assets/svg/202-agentic-bnpl-installment-mdr-margin-guard-reamortization-2026-11-14.svg`](../assets/svg/202-agentic-bnpl-installment-mdr-margin-guard-reamortization-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含智能体 BNPL 商户贴息 MDR 毛利底线门禁、CFPB Reg Z 退货即时冻结分期扣款与 Microsoft Web IQ 费率对标沙盒）](../live-demo.html) · [`assets/svg/202-agentic-bnpl-installment-mdr-margin-guard-reamortization-2026-11-14.svg`](../assets/svg/202-agentic-bnpl-installment-mdr-margin-guard-reamortization-2026-11-14.svg)
 
 ---
 

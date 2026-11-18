@@ -4,7 +4,7 @@
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md`（开篇直接给出选型结论，再用第一性原理大白话讲透“为什么传统验证码和 IP 白名单在 Agent 时代全面失效”、RFC 9421 签名头与 Visa TAP 双锚定机制如何运作，提供灵魂拷问 Q&A、Mermaid 决策树与时序图、选型矩阵与上线核验清单）  
 > **双语版本**：**[中文版（当前）](ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.md)** · **[English Version (`ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.en.md`)](ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.en.md)**  
 > **配套可交互演示**：**[🚀 H5 电商防爬与 Agent 签名验真沙盒 (`../live-demo.html`)](../live-demo.html)** · **[📊 7-Card 4:5 视觉评测报告 (`../benchmark-cards.html`)](../benchmark-cards.html)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-08`）**：RFC 9421 签名规范与 Visa TAP / Cloudflare Web Bot Auth 架构引自 `research/daily/2026-11-08-sources.json`（**`official_doc_snapshot`**, `as_of: 2026-11-08`）；`1.8 ms` 边缘验签模拟耗时、`100%` 伪造/重放拦截率引自本地确定性测试套件 `reports/agentic-commerce-webiq-grounding-demo-bench/report.json`（**`deterministic_offline_simulation`**）；`300 秒`防重放窗口与 `$0.001/call` 超频微支付费率属于实验室参考网关策略（标为 **`synthetic_policy`**）；外部商业 CDN 生产环境在线实测标为 **`not_measured`**。
+> **数据溯源声明（Provenance & As-Of `2026-11-08`）**：RFC 9421 签名规范与 Visa TAP / Cloudflare Web Bot Auth 架构引自 `research/sources.json`（**`official_doc_snapshot`**, `as_of: 2026-11-08`）；`1.8 ms` 边缘验签模拟耗时、`100%` 伪造/重放拦截率引自本地确定性测试套件 `reports/agentic-commerce-webiq-grounding-demo-bench/report.json`（**`deterministic_offline_simulation`**）；`300 秒`防重放窗口与 `$0.001/call` 超频微支付费率属于实验室参考网关策略（标为 **`synthetic_policy`**）；外部商业 CDN 生产环境在线实测标为 **`not_measured`**。
 
 ![电商防爬反欺诈与合法 Agent 身份认证架构选型一图流](../assets/svg/06-web-bot-auth-tap-vs-waf-2026-11-08.svg)
 

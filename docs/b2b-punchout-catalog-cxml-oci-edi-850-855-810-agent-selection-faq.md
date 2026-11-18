@@ -1,9 +1,9 @@
 # 企业 B2B 采购目录集成（cXML / OCI PunchOut：SAP Ariba / Coupa）与 EDI 850/855/810 订单协同 Agent 架构选型 FAQ：PunchOut 禁直接扣款、UOM 箱件防错与 ASN 对账实战指南
 
-> **专题定位（世界 500 强企业 B2B 采购门户 SAP Ariba / Coupa / Jaggaer 集成、cXML/OCI PunchOut 目录跳出与 EDI 850/855/856/810 自动化智能体聚焦 · Round 420）**：面向为工业办公耗材（如 Grainger / 京东企采 / Amazon Business）、IT 硬件分销商与品牌大客户部设计 B2B 电子采购对接系统的 **Cloud & AI Solution Architect**，系统解答企业级大客户采购对接中最容易踩坑的四大协议与工程难题：**“为什么买方采购员从 SAP Ariba / Coupa 点击进入你的电商网站（PunchOut Session）选好商品后，如果你在网页上直接弹出信用卡收银台扣款，买方财务部会立刻拉黑你的供应商资格（必须设 `disable_checkout=true` 将购物车封装成 `cXML PunchOutOrderMessage` 传回买方 ERP 走内部预算审批）、为什么买方 EDI 850 采购单写的是 `10 EA`（10 个，单价 $12），卖方 AI 解析器却当成了 `10 CS`（10 箱共 240 个，总价 $2,880）直接发错货、怎么拦截供应商在 EDI 855 订单确认单里偷偷塞入涨价 8% 的单价变更、以及怎么保障供应商目录同步严守 Stripe SFTP `mode='upsert'` 而不使用全量 `replace` 清空在线商品”**。  
+> **专题定位（世界 500 强企业 B2B 采购门户 SAP Ariba / Coupa / Jaggaer 集成、cXML/OCI PunchOut 目录跳出与 EDI 850/855/856/810 自动化智能体聚焦）**：面向为工业办公耗材（如 Grainger / 京东企采 / Amazon Business）、IT 硬件分销商与品牌大客户部设计 B2B 电子采购对接系统的 **Cloud & AI Solution Architect**，系统解答企业级大客户采购对接中最容易踩坑的四大协议与工程难题：**“为什么买方采购员从 SAP Ariba / Coupa 点击进入你的电商网站（PunchOut Session）选好商品后，如果你在网页上直接弹出信用卡收银台扣款，买方财务部会立刻拉黑你的供应商资格（必须设 `disable_checkout=true` 将购物车封装成 `cXML PunchOutOrderMessage` 传回买方 ERP 走内部预算审批）、为什么买方 EDI 850 采购单写的是 `10 EA`（10 个，单价 $12），卖方 AI 解析器却当成了 `10 CS`（10 箱共 240 个，总价 $2,880）直接发错货、怎么拦截供应商在 EDI 855 订单确认单里偷偷塞入涨价 8% 的单价变更、以及怎么保障供应商目录同步严守 Stripe SFTP `mode='upsert'` 而不使用全量 `replace` 清空在线商品”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、B2B 电子采购集成路径选型矩阵、定量错单/罚款测算与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](b2b-punchout-catalog-cxml-oci-edi-850-855-810-agent-selection-faq.md)** · **[English Version (`b2b-punchout-catalog-cxml-oci-edi-850-855-810-agent-selection-faq.en.md`)](b2b-punchout-catalog-cxml-oci-edi-850-855-810-agent-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe Agentic Commerce SFTP Catalog（`disable_checkout=true` 发现模式、库存更新仅支持 `mode="upsert"` 严禁 `replace`）与 Web IQ `/v3/search` 联合国 UNSPSC 分类核验引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；cXML PunchOut 购物车回传拦截直接扣款、EDI 850/855 单价与包装单位（UOM）校验、856 ASN 条码核验引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe Agentic Commerce SFTP Catalog（`disable_checkout=true` 发现模式、库存更新仅支持 `mode="upsert"` 严禁 `replace`）与 Web IQ `/v3/search` 联合国 UNSPSC 分类核验引自 `research/sources.json`（标记为 `official_doc_snapshot`）；cXML PunchOut 购物车回传拦截直接扣款、EDI 850/855 单价与包装单位（UOM）校验、856 ASN 条码核验引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）。
 
 ![2026-11-18 企业 B2B 采购目录集成 (cXML/OCI PunchOut) 与 EDI 850/855/810 订单协同 Agent 架构一图流总结](../assets/svg/422-b2b-punchout-catalog-cxml-oci-edi-850-855-810-2026-11-18.svg)
 
@@ -150,7 +150,7 @@ sequenceDiagram
 ## 🛠️ 六、商业上线风控与架构评审 Checklist（Architect Production Checklist）
 
 - [ ] **1. PunchOut 会话强制开启 `disable_checkout=true` 仅回传购物车（`HTTP 403`）**：当识别到会话源自 `cXML PunchOutSetupRequest` 或 `SAP OCI` 时，是否已隐藏全部直接支付按钮，确保 100% 通过 `PunchOutOrderMessage` 回传买方 ERP 审批？
-- [ ] **2. SFTP 商品与库存目录增量同步锁（强制 `mode="upsert"`）**：向平台或企业采购网同步库存时，是否已在代码层严禁传入 `mode="replace"`（遵守 Stage 1754 硬约束）？
+- [ ] **2. SFTP 商品与库存目录增量同步锁（强制 `mode="upsert"`）**：向平台或企业采购网同步库存时，是否已在代码层严禁传入 `mode="replace"`（遵守 硬约束）？
 - [ ] **3. EDI 850 / 855 计量单位（UOM）换算表与协议单价零上浮校验（`HTTP 422`）**：解析采购单时是否强制将 `EA / PK / BX / CS / PLT` 换算为基准最小单位核对总价，并拦截任何高于协议价的 855 确认单？
 - [ ] **4. 8 位 `UNSPSC` 标准分类码与买方物料号（Buyer Part Number）完整性校验**：回传的购物车与电子发票是否 100% 携带买方财务系统要求的主数据编码？
 - [ ] **5. `EDI 856 ASN`（含 `SSCC-18` 托盘码）与 `EDI 997` 回执前置门禁（`HTTP 451`）**：在触发 `EDI 810` 电子发票与扣款前，是否强制确认买方已成功接收并确认预发货通知？

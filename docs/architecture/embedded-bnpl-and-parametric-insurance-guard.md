@@ -1,4 +1,4 @@
-# Stage 20: Embedded BNPL / B2B Trade-Credit Underwriting, Parametric SLA Microinsurance & Invoice Factoring Double-Pledge Guard
+# Embedded BNPL / B2B Trade-Credit Underwriting, Parametric SLA Microinsurance & Invoice Factoring Double-Pledge Guard
 
 **Verification Date:** 2026-10-19 (Beijing Time)  
 **Implementation Module:** `lab/embedded_bnpl_parametric_insurance_guard.py`  

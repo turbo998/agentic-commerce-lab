@@ -3,7 +3,7 @@
 > **Document Type**: Architect's Selection & First-Principles FAQ (Benchmarking the 6-Section Standard of `ib-vs-ethernet-roce-selection-faq.md`)  
 > **Core Domain Coverage**: Multi-PSP Payment Orchestration (`Stripe / Adyen / Checkout.com / Worldpay / dLocal`), 8-Digit IIN/BIN Local Acquiring Alignment (Eliminating `1.20%–1.80%` Cross-Border Scheme Fees & Lifting Auth Rates by `+13.5%`), Visa Transaction Retry Program (`Category 1` Hard Decline Zero-Retry Rule & Rolling 30-Day `<= 15` Retry Cap), Mastercard Merchant Advice Codes (`MAC 01 / 03 / 21`), and Reversal-Before-Cascade (`ISO 8583 0400`) Idempotency on Processor Timeouts (`Code 91 / 96`)  
 > **Target Audience**: Global SaaS & Cross-Border E-Commerce Payment Architects, Payment Orchestration Engineers, Treasury & FinOps Directors, and Card-Scheme Compliance Leads  
-> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Round 202 Interactive Sandbox for 8-Digit BIN Local Acquiring, Visa Cat-1 / Mastercard MAC Hard-Decline Circuit Breaking, and Microsoft Web IQ Scheme Retry Rule Verification)](../live-demo.en.html) · [`assets/svg/204-agentic-multi-psp-smart-routing-local-acquiring-mac-2026-11-14.svg`](../assets/svg/204-agentic-multi-psp-smart-routing-local-acquiring-mac-2026-11-14.svg)
+> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Interactive Sandbox for 8-Digit BIN Local Acquiring, Visa Cat-1 / Mastercard MAC Hard-Decline Circuit Breaking, and Microsoft Web IQ Scheme Retry Rule Verification)](../live-demo.en.html) · [`assets/svg/204-agentic-multi-psp-smart-routing-local-acquiring-mac-2026-11-14.svg`](../assets/svg/204-agentic-multi-psp-smart-routing-local-acquiring-mac-2026-11-14.svg)
 
 ---
 

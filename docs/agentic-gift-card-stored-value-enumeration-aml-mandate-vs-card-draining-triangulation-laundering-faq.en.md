@@ -3,7 +3,7 @@
 > **Document Type**: Architect's Selection & First-Principles FAQ (Benchmarking the 6-Section Standard of `ib-vs-ethernet-roce-selection-faq.md`)  
 > **Core Domain Coverage**: Closed-Loop Gift Cards & Stored-Value Wallets, Anti-Enumeration Defense (CSPRNG Serial Numbers + HSM-Peppered `Argon2id` PIN Hashing + Authenticated Rate Limiting), Payment-Source Loop Prohibition (`Zero Gift-Card-to-Gift-Card` & `Zero BNPL-to-Gift-Card`), Triangulation Money-Laundering Velocity Locks, US FinCEN Prepaid Access Rule (`31 CFR § 1010.100(ww)` `<= $2,000/day` Closed-Loop Exemption Cap), EU 5AMLD/6AMLD Anonymous E-Money Caps (`€150`), and US Federal CARD Act (`>= 5-Year` Expiry & Dormancy Fee Rules)  
 > **Target Audience**: Retail & Digital Gaming Platform Architects, Stored-Value Wallet & Ledger Engineers, Fraud & AML Compliance Directors, and CFOs  
-> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Round 204 Interactive Sandbox for Gift-Card Enumeration Defense, Triangulation Laundering Holds, FinCEN $2,000 Cap Enforcement & Microsoft Web IQ CARD Act Verification)](../live-demo.en.html) · [`assets/svg/206-agentic-gift-card-stored-value-enumeration-aml-2026-11-14.svg`](../assets/svg/206-agentic-gift-card-stored-value-enumeration-aml-2026-11-14.svg)
+> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Interactive Sandbox for Gift-Card Enumeration Defense, Triangulation Laundering Holds, FinCEN $2,000 Cap Enforcement & Microsoft Web IQ CARD Act Verification)](../live-demo.en.html) · [`assets/svg/206-agentic-gift-card-stored-value-enumeration-aml-2026-11-14.svg`](../assets/svg/206-agentic-gift-card-stored-value-enumeration-aml-2026-11-14.svg)
 
 ---
 

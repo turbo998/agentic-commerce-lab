@@ -1,4 +1,4 @@
-"""Unit tests for Stage 27: Real-Time Agentic Ad-Bidding (RTB) Invalid Traffic (IVT) Escrow, Sovereign AI Compute Export Control / Geofencing & SLA Credit-Note Reconciliation Guard."""
+"""Unit tests for Real-Time Agentic Ad-Bidding (RTB) Invalid Traffic (IVT) Escrow, Sovereign AI Compute Export Control / Geofencing & SLA Credit-Note Reconciliation Guard."""
 
 from __future__ import annotations
 

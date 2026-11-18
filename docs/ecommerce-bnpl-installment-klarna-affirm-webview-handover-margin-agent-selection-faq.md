@@ -1,9 +1,9 @@
 # 商业智能体“先买后付（BNPL：Klarna / Affirm / Afterpay）与分期信贷”结账架构选型 FAQ：受控宿主 WebView 移交、禁转 `requires_action` 与贴息毛利锁实战指南
 
-> **专题定位（零售电商与金融信贷 BNPL 结账、合规移交与贴息毛利保护聚焦 · Round 407）**：面向为高客单价美妆时尚、3C 家电、家具家居与在线教育设计结账智能体的 **Cloud & AI Solution Architect**，系统解答 BNPL（先买后付）接入 AI Agent 时最关键的四大工程与财务难题：**“为什么用无头浏览器（Playwright / Browser-use）替用户自动点 Affirm/Klarna 分期确认页会 100% 违法并触发 `HTTP 403` 封禁、为什么 Stripe SPT 规范明令禁止卖家把 `payment_intent.requires_action` 直接抛回给后台 Agent、怎么防止薄利多销的引流商品在叠加 8 折促销券后再被刷 6% 商户贴息费率（MDR）的 0 息分期导致卖一台亏一台、以及部分退货时怎么精确重算剩余分期账单（Re-Amortization）”**。  
+> **专题定位（零售电商与金融信贷 BNPL 结账、合规移交与贴息毛利保护聚焦）**：面向为高客单价美妆时尚、3C 家电、家具家居与在线教育设计结账智能体的 **Cloud & AI Solution Architect**，系统解答 BNPL（先买后付）接入 AI Agent 时最关键的四大工程与财务难题：**“为什么用无头浏览器（Playwright / Browser-use）替用户自动点 Affirm/Klarna 分期确认页会 100% 违法并触发 `HTTP 403` 封禁、为什么 Stripe SPT 规范明令禁止卖家把 `payment_intent.requires_action` 直接抛回给后台 Agent、怎么防止薄利多销的引流商品在叠加 8 折促销券后再被刷 6% 商户贴息费率（MDR）的 0 息分期导致卖一台亏一台、以及部分退货时怎么精确重算剩余分期账单（Re-Amortization）”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、BNPL 与卡令牌结账选型矩阵、定量贴息毛利/转化测算与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](ecommerce-bnpl-installment-klarna-affirm-webview-handover-margin-agent-selection-faq.md)** · **[English Version (`ecommerce-bnpl-installment-klarna-affirm-webview-handover-margin-agent-selection-faq.en.md`)](ecommerce-bnpl-installment-klarna-affirm-webview-handover-margin-agent-selection-faq.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe Multi-Rail SPT（Affirm 严禁 Agent 自动化操作 WebView、严禁在无设备导航控制权时用 Affirm、严禁卖家向 Agent 转发 `payment_intent.requires_action`）引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；受控 WebView 移交、0% APR 贴息毛利锁与分期重算仿真引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；商户最低净毛利阈值（如 `>= 15%`）标记为 `synthetic_policy`；外部 BNPL 贷款机构生产信审延迟标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe Multi-Rail SPT（Affirm 严禁 Agent 自动化操作 WebView、严禁在无设备导航控制权时用 Affirm、严禁卖家向 Agent 转发 `payment_intent.requires_action`）引自 `research/sources.json`（标记为 `official_doc_snapshot`）；受控 WebView 移交、0% APR 贴息毛利锁与分期重算仿真引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；商户最低净毛利阈值（如 `>= 15%`）标记为 `synthetic_policy`；外部 BNPL 贷款机构生产信审延迟标记为 `not_measured`。
 
 ![2026-11-18 商业智能体先买后付 (BNPL: Klarna/Affirm) 受控 WebView 移交与贴息毛利保护架构一图流总结](../assets/svg/409-ecommerce-bnpl-installment-klarna-affirm-webview-handover-margin-2026-11-18.svg)
 
@@ -147,7 +147,7 @@ sequenceDiagram
 | **商户 6% 免息贴息 MDR 叠加优惠券击穿净毛利底线，或隐藏 24.99% APR 超买家预算** | **`HTTP 422 Unprocessable` · `14 ms` 拦截** (`BNPL_MDR_MARGIN_WIPEOUT_OR_APR_TOTAL_REPAYMENT_EXCEEDS_MANDATE_BLOCKED`) | `deterministic_offline_simulation` | 拦截商家贴息亏本单以及本息总还款额突破买家 `Mandate` 授权上限的高息分期 |
 | **无人值守后台任务无设备导航控制权，或部分退货未重算未到期分期尾款** | **`HTTP 451 Hold` · `265 ms` 挂起** (`UNATTENDED_SURFACE_NO_DEVICE_CONTROL_OR_UNREAMORTIZED_PARTIAL_REFUND_HOLD`) | `official_doc_snapshot` | 在无设备控制权时挂起 BNPL 并引导回退 `Stripe SPT` 卡轨道，强制部分退货走尾款重算 |
 | **启用“高毛利单免息分期提转化 + 低毛利单自动切卡令牌省 5.5% MDR 贴息”** | **`HTTP 409 Confirm` · 立省贴息磨损与弃购损失 `$32,550.00`（净成本优化至 `$122,450.00`）** | `deterministic_offline_simulation` | 消除低毛利引流品 6% 免息贴息倒亏，并在无人值守场景无缝回退 SPT 卡轨道（综合增效 `21.0%`） |
-| **外部 BNPL 机构（Klarna / Affirm / Afterpay）生产信审引擎在线压测** | 标记为 **`not_measured`** | `not_measured` | 通过本仓库 Stage 1756 与 BNPL Handover 确定性契约单测完整验证 |
+| **外部 BNPL 机构（Klarna / Affirm / Afterpay）生产信审引擎在线压测** | 标记为 **`not_measured`** | `not_measured` | 通过本仓库 与 BNPL Handover 确定性契约单测完整验证 |
 
 ---
 

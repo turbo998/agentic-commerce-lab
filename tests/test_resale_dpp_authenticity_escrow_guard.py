@@ -1,4 +1,4 @@
-"""Unit tests for Stage 21 EU ESPR DPP Provenance, C2C Authentication Escrow, Trade-In Guard & 16-Scenario 7-Card Deck."""
+"""Unit tests for EU ESPR DPP Provenance, C2C Authentication Escrow, Trade-In Guard & 16-Scenario 7-Card Deck."""
 
 from __future__ import annotations
 

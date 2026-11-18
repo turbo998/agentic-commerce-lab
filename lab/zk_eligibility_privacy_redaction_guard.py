@@ -1,4 +1,4 @@
-"""Stage 17: Zero-Knowledge Selective-Disclosure Eligibility, PCI-DSS 4.0.1 Redaction Firewall & GDPR Crypto-Shredding Guard.
+"""Zero-Knowledge Selective-Disclosure Eligibility, PCI-DSS 4.0.1 Redaction Firewall & GDPR Crypto-Shredding Guard.
 
 Implements three deterministic privacy and compliance controls for Agentic Commerce:
 1. ``evaluate_zk_selective_disclosure_eligibility``: Verifies IETF SD-JWT / zk-VC boolean

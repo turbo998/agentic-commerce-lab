@@ -1,4 +1,4 @@
-"""Stage 27: Real-Time Agentic Ad-Bidding (RTB) Invalid Traffic (IVT) Escrow, Sovereign AI Compute Export Control / Geofencing & SLA Penalty Credit-Note Reconciliation Guard.
+"""Real-Time Agentic Ad-Bidding (RTB) Invalid Traffic (IVT) Escrow, Sovereign AI Compute Export Control / Geofencing & SLA Penalty Credit-Note Reconciliation Guard.
 
 Implements three deterministic enterprise M2M & cloud-procurement invariants:
 1. `evaluate_agentic_rtb_invalid_traffic_escrow`:

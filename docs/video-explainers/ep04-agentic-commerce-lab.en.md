@@ -24,10 +24,10 @@ This episode distills overnight autonomous research breakthroughs into a Bilibil
 - **English Narration**:
   > When AI agents gain checkout and payment authority, protocol guardrails prevent financial loss.
 - **Chinese Narration (16:9)**:
-  > 让 AI 帮你写周报写错了最多挨顿骂，但让 AI 替你自动比价、下单、绑卡支付，一旦出 Bug 就是真金白银的资损。Google 与行业联盟推出的 UCP 统一商业协议，以及 AP2 智能体支付协议，正在定义下一代 AI 电商标准。但标准刚落地，攻击面也随之而来：回调重放、分页死循环、授权凭据篡改。我们的 Agentic Commerce 实验室在第一百七十七阶段，把这些高危漏洞全部变成了确定性防线。
+  > 让 AI 帮你写周报写错了最多挨顿骂，但让 AI 替你自动比价、下单、绑卡支付，一旦出 Bug 就是真金白银的资损。Google 与行业联盟推出的 UCP 统一商业协议，以及 AP2 智能体支付协议，正在定义下一代 AI 电商标准。但标准刚落地，攻击面也随之而来：回调重放、分页死循环、授权凭据篡改。我们的 Agentic Commerce 实验室把这些高危漏洞全部变成了确定性防线。
 
 #### Architecture Flow & Verified Metrics
-- **Stage 177**: 协议演进阶段 (`UCP + AP2 + ACP 深度对齐`)
+- **UCP + AP2 + ACP**: 协议演进阶段 (`UCP + AP2 + ACP 深度对齐`)
 - **UCP #974/#897**: 覆盖上游议题 (`含 #939 / #774 / AP2 #290`)
 - **100% 拦截**: 基准评测通过 (`7-Card 4:5 标准基准报告`)
 
@@ -88,7 +88,7 @@ if not verify_detached_jws(cart.digest(), mandate.signature, user_pubkey):
 - **English Narration**:
   > Verified via 7-Card 4:5 benchmark deck: 100% perturbation consistency and sub-ms latency on main.
 - **Chinese Narration (16:9)**:
-  > 为了确保每一条护栏都经得起生产环境考验，我们严格按照七卡四比五视觉评测标准，对 Stage 一七六到一七七的全部测试集进行了正反序扰动测试与高并发延迟压测。结果显示，在正反序扰动下判定一致性达到百分之百，单批吞吐延迟保持在亚毫秒级别。所有护栏代码、七卡评测报告与中英双语文档，均已合并推送至 agentic-commerce-lab 主分支。
+  > 为了确保每一条护栏都经得起生产环境考验，我们严格按照七卡四比五视觉评测标准，对全量协议护栏测试集进行了正反序扰动测试与高并发延迟压测。结果显示，在正反序扰动下判定一致性达到百分之百，单批吞吐延迟保持在亚毫秒级别。所有护栏代码、七卡评测报告与中英双语文档，均已合并推送至 agentic-commerce-lab 主分支。
 
 #### Architecture Flow & Verified Metrics
 - **0.0 pts**: 正反序扰动漂移 (`100% 确定性不变量裁决`)
@@ -97,7 +97,7 @@ if not verify_detached_jws(cart.digest(), mandate.signature, user_pubkey):
 
 ```python
 {
-  "stage": 177, "total_cases": 48, "passed": 48,
+  "total_cases": 48, "passed": 48,
   "perturbation_drift_pts": 0.0, "p99_latency_ms": 0.14,
   "provenance": "measured", "branch": "main"
 }

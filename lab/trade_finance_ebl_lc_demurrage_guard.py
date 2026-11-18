@@ -1,4 +1,4 @@
-"""Stage 26: Cross-Border Trade Finance MLETR Electronic Bill of Lading (eBL) Title Transfer, eUCP 600 Letter of Credit Document-Match & Marine Demurrage/Detention Escrow Guard.
+"""Cross-Border Trade Finance MLETR Electronic Bill of Lading (eBL) Title Transfer, eUCP 600 Letter of Credit Document-Match & Marine Demurrage/Detention Escrow Guard.
 
 Implements three deterministic maritime trade-finance & supply-chain settlement invariants:
 1. `verify_mletr_electronic_bill_of_lading_endorsement`:

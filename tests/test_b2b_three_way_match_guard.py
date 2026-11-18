@@ -1,4 +1,4 @@
-"""Unit tests for Stage 10 Enterprise B2B 3-Way Match, Split-Shipment Escrow & Dynamic Discounting Guard."""
+"""Unit tests for Enterprise B2B 3-Way Match, Split-Shipment Escrow & Dynamic Discounting Guard."""
 
 from __future__ import annotations
 

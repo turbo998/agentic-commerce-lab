@@ -1,9 +1,9 @@
 # Agent 支付与结账协议选型 FAQ：Stripe Agent Toolkit (`SPT`) vs. Visa Intelligent Commerce vs. Mastercard Agent Pay vs. PayPal Agentic Toolkit vs. 企业预算虚拟卡实战指南
 
-> **专题定位（架构师选型聚焦 · Round 391）**：面向为零售电商、跨境出海、OTA 差旅与企业 B2B 采购设计支付结算架构的 **Cloud & AI Solution Architect**，系统横向对比当前五大主流商业智能体支付方案：**Stripe Agent Toolkit (`Shared Payment Tokens`)、Visa Intelligent Commerce (`VIC`)、Mastercard Agent Pay、PayPal Agentic Toolkit 以及企业预算虚拟卡（Ramp / Brex / Stripe Issuing）**。彻底讲清 **“商户收单网络不统一怎么付、长尾老旧网站没接 Agent 协议怎么付、跨境独立站怎么提转化、怎么从根源上杜绝 Agent 被注入盗刷与重复扣款”**。  
+> **专题定位（架构师选型聚焦）**：面向为零售电商、跨境出海、OTA 差旅与企业 B2B 采购设计支付结算架构的 **Cloud & AI Solution Architect**，系统横向对比当前五大主流商业智能体支付方案：**Stripe Agent Toolkit (`Shared Payment Tokens`)、Visa Intelligent Commerce (`VIC`)、Mastercard Agent Pay、PayPal Agentic Toolkit 以及企业预算虚拟卡（Ramp / Brex / Stripe Issuing）**。彻底讲清 **“商户收单网络不统一怎么付、长尾老旧网站没接 Agent 协议怎么付、跨境独立站怎么提转化、怎么从根源上杜绝 Agent 被注入盗刷与重复扣款”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心选型结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/五轨架构对比/时序图、五大方案横向决策矩阵、定量费率与 7-Card 溯源表、生产风控 Checklist）。  
 > **双语版本**：**[中文版（当前）](agentic-payment-toolkit-stripe-spt-vs-visa-vic-mastercard-paypal-virtual-card-selection-faq.md)** · **[English Version (`agentic-payment-toolkit-stripe-spt-vs-visa-vic-mastercard-paypal-virtual-card-selection-faq.en.md`)](agentic-payment-toolkit-stripe-spt-vs-visa-vic-mastercard-paypal-virtual-card-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe SPT（34 国支持、Connect 请求头规则、`2026-11-30` MCP 密钥切换）与 Visa VIC（`CVV2` 入网、VPP Passkey 闭锁）引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；公开标准收单费率标记为 `official_list_price`；五轨路由门禁与防盗刷仿真引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；未挂载生产网关密钥的第三方在线授权延迟标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe SPT（34 国支持、Connect 请求头规则、`2026-11-30` MCP 密钥切换）与 Visa VIC（`CVV2` 入网、VPP Passkey 闭锁）引自 `research/sources.json`（标记为 `official_doc_snapshot`）；公开标准收单费率标记为 `official_list_price`；五轨路由门禁与防盗刷仿真引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；未挂载生产网关密钥的第三方在线授权延迟标记为 `not_measured`。
 
 ![2026-11-18 Agent 支付与结账协议五大方案选型：Stripe SPT vs Visa VIC vs Mastercard Agent Pay vs PayPal vs 企业虚拟卡一图流总结](../assets/svg/393-agentic-payment-toolkit-stripe-spt-visa-vic-mastercard-paypal-vcard-2026-11-18.svg)
 

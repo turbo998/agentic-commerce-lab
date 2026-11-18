@@ -3,7 +3,7 @@
 > **Document Type**: Architect's Selection & First-Principles FAQ (Benchmarking the 6-Section Standard of `ib-vs-ethernet-roce-selection-faq.md`)  
 > **Core Domain Coverage**: AI Agent Marketplaces, Creator Economy & Global Freelancer Mass Payouts, US IRS `Form 1099-K` (Third-Party Settlement Organizations `TPSO`), `Form 1099-NEC` & `Form 1042-S`, Real-Time IRS e-Services `TIN Matching`, `IRC § 3406` Mandatory **`24%` Backup Withholding Escrow**, `IRC § 1441` Chapter 3 Non-Resident Alien Withholding (`30%` Statutory vs. Tax Treaty Royalty Relief), and `Form W-8BEN` 3-Calendar-Year Expiration & U.S. Indicia Curing  
 > **Target Audience**: AI Marketplace & Creator Platform Architects, Global Mass-Payouts & Treasury Engineers, Tax Compliance Directors, and CFOs  
-> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Round 209 Interactive Sandbox for Real-Time IRS TIN Matching, 24% Backup Withholding Escrow, W-8BEN 3-Year Expiration Locking & Microsoft Web IQ Tax-Treaty / State 1099-K Verification)](../live-demo.en.html) · [`assets/svg/211-agentic-creator-payout-1099k-w8ben-backup-withholding-2026-11-14.svg`](../assets/svg/211-agentic-creator-payout-1099k-w8ben-backup-withholding-2026-11-14.svg)
+> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Interactive Sandbox for Real-Time IRS TIN Matching, 24% Backup Withholding Escrow, W-8BEN 3-Year Expiration Locking & Microsoft Web IQ Tax-Treaty / State 1099-K Verification)](../live-demo.en.html) · [`assets/svg/211-agentic-creator-payout-1099k-w8ben-backup-withholding-2026-11-14.svg`](../assets/svg/211-agentic-creator-payout-1099k-w8ben-backup-withholding-2026-11-14.svg)
 
 ---
 

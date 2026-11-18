@@ -1,4 +1,4 @@
-"""Unit tests for Stage 9 Recurring Subscription TCCV & Atomic 3-Layer Revocation Guard."""
+"""Unit tests for Recurring Subscription TCCV & Atomic 3-Layer Revocation Guard."""
 
 from __future__ import annotations
 

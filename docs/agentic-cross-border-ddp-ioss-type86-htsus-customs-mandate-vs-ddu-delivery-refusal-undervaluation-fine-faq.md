@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：跨境电商完税交货（Incoterms 2020 `DDP: Delivered Duty Paid` vs `DAP/DDU`）、欧盟一站式进口增值税申报（EU Import One-Stop Shop, `IOSS <= €150` 内在货值上限与 `H7` 超简化报关单加密绑定防盗用）、美国海关与边境保护局（CBP）Section 321（`$800` 免税额改革与 ACE `Entry Type 86` 强制 10 位 `HTSUS` 税则号及 301 条款核查）、以及严防 AI 报关 Agent “低报货值（Undervaluation）”或“拆单逃税（Structuring）”触发 `19 U.S.C. § 1592` 走私扣货重罚  
 > **阅读对象**：跨境 DTC 独立站与全球电商平台架构师、国际关务与跨境物流（Cross-Border Trade Compliance）工程负责人、税务合规与财务总监  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 203 跨境直邮 DDP 欧盟 IOSS `€150` 阈值门禁、美国 CBP Type 86 10位 HTSUS 校验与 Microsoft Web IQ 各国实时关税税率核验交互沙盒）](../live-demo.html) · [`assets/svg/205-agentic-cross-border-ddp-ioss-type86-htsus-customs-2026-11-14.svg`](../assets/svg/205-agentic-cross-border-ddp-ioss-type86-htsus-customs-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含跨境直邮 DDP 欧盟 IOSS `€150` 阈值门禁、美国 CBP Type 86 10位 HTSUS 校验与 Microsoft Web IQ 各国实时关税税率核验交互沙盒）](../live-demo.html) · [`assets/svg/205-agentic-cross-border-ddp-ioss-type86-htsus-customs-2026-11-14.svg`](../assets/svg/205-agentic-cross-border-ddp-ioss-type86-htsus-customs-2026-11-14.svg)
 
 ---
 

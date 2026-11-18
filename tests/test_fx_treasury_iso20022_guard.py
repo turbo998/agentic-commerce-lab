@@ -1,4 +1,4 @@
-"""Unit tests for Stage 15 FX Quote Lock, Multi-Currency Natural Netting & ISO 20022 pacs.008 Guard."""
+"""Unit tests for FX Quote Lock, Multi-Currency Natural Netting & ISO 20022 pacs.008 Guard."""
 
 from __future__ import annotations
 

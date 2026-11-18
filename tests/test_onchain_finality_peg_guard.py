@@ -1,4 +1,4 @@
-"""Unit tests for Stage 13 x402 EIP-3009 Finality, Stablecoin De-Peg & Gas Routing Guard."""
+"""Unit tests for x402 EIP-3009 Finality, Stablecoin De-Peg & Gas Routing Guard."""
 
 from __future__ import annotations
 

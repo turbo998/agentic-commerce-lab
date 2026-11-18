@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：智能体餐饮外卖与即时生鲜商超（QSR / 云厨房 Ghost Kitchen `MCC 5812 / 5814` 与生鲜超市 `MCC 5411`）、非标散装生鲜按实秤计价（Catch-Weight Variable Pricing：单根 `TID` `+15%` 称重缓冲预授权 + `GS1-128 / DataBar` 计价秤条码一次部分清分）、后厨显示系统（`KDS_FIRED`）点火下锅不可无损撤单状态机、出餐防拆封签克重比对（`Tamper-Evident Seal + Scale Weight ±5%` 防“少送漏送”恶意仅退款）、以及纽约/旧金山/西雅图等市政外卖平台配送佣金法定硬上限（`Core Delivery Commission <= 15%`）  
 > **阅读对象**：即时零售与本地生活平台（外卖/生鲜闪购）支付与履约架构师、连锁餐饮 POS/KDS 研发负责人、商户清分合规与反“羊毛党吃白食”风控总监  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 221 即时生鲜 `+15%` 称重缓冲清分、后厨 KDS 下锅防撤单、出餐克重防恶意仅退款与 Microsoft Web IQ 市政佣金法规核验交互沙盒）](../live-demo.html) · [`assets/svg/223-agentic-qsr-grocery-catch-weight-prep-cutoff-fee-cap-2026-11-14.svg`](../assets/svg/223-agentic-qsr-grocery-catch-weight-prep-cutoff-fee-cap-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含即时生鲜 `+15%` 称重缓冲清分、后厨 KDS 下锅防撤单、出餐克重防恶意仅退款与 Microsoft Web IQ 市政佣金法规核验交互沙盒）](../live-demo.html) · [`assets/svg/223-agentic-qsr-grocery-catch-weight-prep-cutoff-fee-cap-2026-11-14.svg`](../assets/svg/223-agentic-qsr-grocery-catch-weight-prep-cutoff-fee-cap-2026-11-14.svg)
 
 ---
 

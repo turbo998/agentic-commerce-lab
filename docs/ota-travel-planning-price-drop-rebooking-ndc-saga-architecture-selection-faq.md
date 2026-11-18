@@ -1,9 +1,9 @@
 # OTA 机酒差旅智能规划与自动比价改签 Agent 架构选型 FAQ：GDS/NDC 实时全包价接地、差旅合规门禁、两阶段防甩单 Saga 与净节省改签实战指南
 
-> **专题定位（OTA 机酒与企业差旅应用聚焦 · Round 393）**：面向为在线旅游平台（OTA）、企业差旅管理（TMC：如 SAP Concur / Navan / 携程商旅生态）及航司酒旅集团设计 AI Agent 的 **Cloud & AI Solution Architect**，深入剖析差旅智能体最核心的四大工程挑战：**“怎么防止机票出票成功但酒店满房导致退票亏钱、怎么识破廉航行李费与酒店度假村费（Drip Pricing）隐性加价、怎么在降价自动改签时确保扣除手续费后依然净赚、以及怎么处理远期预订的 180 天支付授权”**。  
+> **专题定位（OTA 机酒与企业差旅应用聚焦）**：面向为在线旅游平台（OTA）、企业差旅管理（TMC：如 SAP Concur / Navan / 携程商旅生态）及航司酒旅集团设计 AI Agent 的 **Cloud & AI Solution Architect**，深入剖析差旅智能体最核心的四大工程挑战：**“怎么防止机票出票成功但酒店满房导致退票亏钱、怎么识破廉航行李费与酒店度假村费（Drip Pricing）隐性加价、怎么在降价自动改签时确保扣除手续费后依然净赚、以及怎么处理远期预订的 180 天支付授权”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、OTA 与差旅技术栈选型矩阵、定量改签净收益与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](ota-travel-planning-price-drop-rebooking-ndc-saga-architecture-selection-faq.md)** · **[English Version (`ota-travel-planning-price-drop-rebooking-ndc-saga-architecture-selection-faq.en.md`)](ota-travel-planning-price-drop-rebooking-ndc-saga-architecture-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe Service Bookings `180 天` 远期 SPT 上限、`409 slot_unavailable` 与 `24h Idempotency-Key` 契约引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；机酒两阶段 Saga 回滚、全包价接地与净节省改签仿真引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业差旅标准与最小改签净收益阈值（如 `>= $25.00`）标记为 `synthetic_policy`；外部 GDS/航司生产网实时出票延迟标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe Service Bookings `180 天` 远期 SPT 上限、`409 slot_unavailable` 与 `24h Idempotency-Key` 契约引自 `research/sources.json`（标记为 `official_doc_snapshot`）；机酒两阶段 Saga 回滚、全包价接地与净节省改签仿真引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业差旅标准与最小改签净收益阈值（如 `>= $25.00`）标记为 `synthetic_policy`；外部 GDS/航司生产网实时出票延迟标记为 `not_measured`。
 
 ![2026-11-18 OTA 机酒差旅智能规划与自动比价改签 Agent 架构：全包价接地、两阶段防甩单 Saga 与净节省改签一图流总结](../assets/svg/395-ota-travel-planning-price-drop-rebooking-ndc-saga-2026-11-18.svg)
 

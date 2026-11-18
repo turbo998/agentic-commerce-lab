@@ -1,4 +1,4 @@
-"""Stage 9: Recurring Mandate, Free-Trial Negative-Option Trap & Atomic 3-Layer Revocation Guard.
+"""Recurring Mandate, Free-Trial Negative-Option Trap & Atomic 3-Layer Revocation Guard.
 
 Implements deterministic verification for:
 1. Total Committed Contract Value (TCCV) invariant and Negative-Option / Free-Trial Auto-Conversion
@@ -307,7 +307,7 @@ def execute_atomic_revocation_cascade(
 
 
 def run_demo_scenarios() -> list[dict[str, Any]]:
-    """Run deterministic Stage 9 scenarios demonstrating TCCV & 3-layer revocation guards."""
+    """Run deterministic scenarios demonstrating TCCV & 3-layer revocation guards."""
     scenarios: list[dict[str, Any]] = []
 
     # 1. Compliant SaaS seat subscription within TCCV and per-cycle mandate caps
@@ -380,7 +380,7 @@ def run_demo_scenarios() -> list[dict[str, Any]]:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Run Stage 9 Recurring Subscription TCCV & Atomic 3-Layer Revocation Guard demo."
+        description="Run Recurring Subscription TCCV & Atomic 3-Layer Revocation Guard demo."
     )
     parser.add_argument("--json", action="store_true", help="Print JSON output.")
     args = parser.parse_args(argv)
@@ -389,7 +389,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.json:
         print(json.dumps({"scenarios": results}, indent=2))
     else:
-        print("=== Stage 9: Recurring Mandates, TCCV & Atomic 3-Layer Revocation Guard ===")
+        print("=== Recurring Mandates, TCCV & Atomic 3-Layer Revocation Guard ===")
         for item in results:
             print(
                 f"  [{item['scenario_id']}] decision={item['decision_code']} "

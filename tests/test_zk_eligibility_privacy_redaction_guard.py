@@ -1,4 +1,4 @@
-"""Unit tests for Stage 17 ZK Selective-Disclosure Eligibility, PCI-DSS Redaction & Crypto-Shredding Guard."""
+"""Unit tests for ZK Selective-Disclosure Eligibility, PCI-DSS Redaction & Crypto-Shredding Guard."""
 
 from __future__ import annotations
 

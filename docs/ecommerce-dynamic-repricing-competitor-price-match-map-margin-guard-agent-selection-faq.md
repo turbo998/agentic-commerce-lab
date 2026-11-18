@@ -1,9 +1,9 @@
 # 电商大促动态调价、竞品实时跟价（Price Matching）与防比价套利 Agent 架构选型 FAQ：Web IQ 同款 GTIN 验真、MAP 价格红线与防螺旋降价熔断实战指南
 
-> **专题定位（零售电商动态定价、竞品跟价与购后保价应用聚焦 · Round 401）**：面向为大型综合电商、3C 家电平台、品牌官方旗舰店设计智能调价（Dynamic Repricing）与自动买贵退差（Price Match Guarantee）智能体的 **Cloud & AI Solution Architect**，系统解决电商定价最核心的四大痛点：**“怎么防止黑产在二手小网站挂一个无货的 $199 假链接（加上 PS 截图）来骗取官方店 $300 差价补贴、怎么防止两家商家的调价 Agent 陷入毫秒级‘你降 1 分我降 1 分’的算法死循环把 $800 的电视机降成 $10、怎么确保跟价绝不跌破品牌方最低广告价（MAP Policy）招致断供处罚、以及怎么应对卖家调价 Webhook 4,000ms 超时”**。  
+> **专题定位（零售电商动态定价、竞品跟价与购后保价应用聚焦）**：面向为大型综合电商、3C 家电平台、品牌官方旗舰店设计智能调价（Dynamic Repricing）与自动买贵退差（Price Match Guarantee）智能体的 **Cloud & AI Solution Architect**，系统解决电商定价最核心的四大痛点：**“怎么防止黑产在二手小网站挂一个无货的 $199 假链接（加上 PS 截图）来骗取官方店 $300 差价补贴、怎么防止两家商家的调价 Agent 陷入毫秒级‘你降 1 分我降 1 分’的算法死循环把 $800 的电视机降成 $10、怎么确保跟价绝不跌破品牌方最低广告价（MAP Policy）招致断供处罚、以及怎么应对卖家调价 Webhook 4,000ms 超时”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、动态调价与比价接地选型矩阵、定量防损/转化测算与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](ecommerce-dynamic-repricing-competitor-price-match-map-margin-guard-agent-selection-faq.md)** · **[English Version (`ecommerce-dynamic-repricing-competitor-price-match-map-margin-guard-agent-selection-faq.en.md`)](ecommerce-dynamic-repricing-competitor-price-match-map-margin-guard-agent-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Microsoft Web IQ `/v3/browse`（`liveCrawl='force'`、`liveCrawlSucceeded`、防隐藏 DOM 注入）与 Stripe Catalog `upsert` / 4 秒非对称 Webhook 契约引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；同款 GTIN 现货核验、MAP 底线锁与防算法螺旋降价熔断引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业白名单竞品池与单日最大降幅阈值标记为 `synthetic_policy`；外部第三方电商平台在线秒杀压测标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Microsoft Web IQ `/v3/browse`（`liveCrawl='force'`、`liveCrawlSucceeded`、防隐藏 DOM 注入）与 Stripe Catalog `upsert` / 4 秒非对称 Webhook 契约引自 `research/sources.json`（标记为 `official_doc_snapshot`）；同款 GTIN 现货核验、MAP 底线锁与防算法螺旋降价熔断引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业白名单竞品池与单日最大降幅阈值标记为 `synthetic_policy`；外部第三方电商平台在线秒杀压测标记为 `not_measured`。
 
 ![2026-11-18 电商大促动态调价、竞品实时跟价与防比价套利 Agent 架构一图流总结](../assets/svg/403-ecommerce-dynamic-repricing-competitor-price-match-map-margin-guard-2026-11-18.svg)
 

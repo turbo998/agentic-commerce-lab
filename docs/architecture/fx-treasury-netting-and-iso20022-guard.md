@@ -1,7 +1,5 @@
 # Cross-Border Real-Time FX Quote Lock, Multi-Currency Treasury Natural Netting Sweep & ISO 20022 `pacs.008` Clearing Compliance
 
-**Stage 15 Deliverable — 2026-10-19 Overnight Evolution**
-
 ---
 
 ## 1. Executive Summary & Architectural Problem Statement

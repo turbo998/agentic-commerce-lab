@@ -1,6 +1,6 @@
 # Autonomous B2B Sealed-Bid Reverse Auction & Cryptographic Commit-Reveal Anti-Collusion Mandate Architecture: Two-Phase Sealed-Bid Commitment (`rfq_sealed_bid_commit_...` + Web IQ UBO Anti-Rigging Grounding) vs. Plaintext Price Signaling & Sybil Shell-Company Bid Rigging Selection FAQ
 
-> **Document Type**: AI Solution Architect Selection Guide & First-Principles Protocol Deep Dive (FAQ-Driven · Round 32)  
+> **Document Type**: AI Solution Architect Selection Guide & First-Principles Protocol Deep Dive (FAQ-Driven)  
 > **Reading Time**: 3 minutes for executive conclusions · 10 minutes for Two-Phase Commit-Reveal Sealed-Bid mechanics, reserve ceiling enforcement, and Microsoft Web IQ Ultimate Beneficial Owner (UBO) anti-collusion boundaries  
 > **Style Benchmark**: Strictly modeled after `ib-vs-ethernet-roce-selection-faq.md` (Plain-language first principles + Mermaid decision tree / comparison / sequence diagrams + Architect Decision Matrix + Reproducible Benchmark + Production Checklist)  
 > **Core Topic**: **Exclusively focused on how enterprise B2B procurement agents run autonomous Request-for-Quotation (RFQ) reverse auctions using cryptographic Two-Phase Commit-Reveal mandates and beneficial-ownership grounding, eliminating plaintext price-signaling collusion, last-second phantom bid withdrawals, and Sybil shell-company bid rigging**  

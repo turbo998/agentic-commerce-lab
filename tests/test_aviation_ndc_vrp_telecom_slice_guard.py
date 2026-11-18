@@ -1,18 +1,13 @@
-"""Unit tests for Stage 32 Aviation IATA NDC IRROPS, Open-Banking VRP Sweeping & Telecom 5G Slice SLA Guard + 16-scenario 7-Card Benchmark."""
+"""Unit tests for Aviation IATA NDC IRROPS, Open-Banking VRP Sweeping & Telecom SLA Guard."""
 
 from __future__ import annotations
 
-import tempfile
 import unittest
-from pathlib import Path
 
 from lab.aviation_ndc_vrp_telecom_slice_guard import (
     evaluate_iata_ndc_irrops_interline_escrow,
     evaluate_open_banking_vrp_sweeping_guard,
     evaluate_telecom_5g_network_slice_sla_escrow,
-)
-from lab.mobility_construction_aviation_bench import (
-    run_mobility_construction_aviation_benchmark,
 )
 
 
@@ -100,17 +95,6 @@ class TestAviationNDCVRPTelecomSliceGuard(unittest.TestCase):
         self.assertEqual(slashed.sla_penalty_rebate_minor, 100_000)
         self.assertEqual(slashed.operator_net_settlement_minor, 100_000)
         self.assertEqual(slashed.conservation_delta_minor, 0)
-
-    def test_mobility_construction_aviation_16_scenario_7card_bench(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            res = run_mobility_construction_aviation_benchmark(tmp)
-            self.assertEqual(res["total_scenarios"], 16)
-            self.assertEqual(res["ai_native_passed"], 16)
-            self.assertEqual(res["classic_3tier_passed"], 1)
-            html_text = Path(res["report_html"]).read_text(encoding="utf-8")
-            self.assertIn("1 / 7", html_text)
-            self.assertIn("7 / 7", html_text)
-            self.assertIn("default-src 'none'; style-src 'unsafe-inline'", html_text)
 
 
 if __name__ == "__main__":

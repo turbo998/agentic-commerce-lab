@@ -1,7 +1,5 @@
 # Enterprise B2B 3-Way Match (`PO == GRN == Invoice`), Split-Shipment Partial Capture Escrow & Dynamic Discounting (`2/10 Net 30`) Guard
 
-**Stage 10 Deliverable — 2026-10-19 Overnight Evolution**
-
 ---
 
 ## 1. Executive Summary & Architectural Problem Statement

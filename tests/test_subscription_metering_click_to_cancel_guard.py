@@ -1,4 +1,4 @@
-"""Unit tests for Stage 18 Agentic Subscription Lifecycle, Usage Metering & FTC Click-to-Cancel Guard."""
+"""Unit tests for Agentic Subscription Lifecycle, Usage Metering & FTC Click-to-Cancel Guard."""
 
 from __future__ import annotations
 

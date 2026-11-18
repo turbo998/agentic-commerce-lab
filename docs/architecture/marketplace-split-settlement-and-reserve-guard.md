@@ -1,7 +1,5 @@
 # Multi-Party Marketplace Split Settlement Conservation, Sub-Merchant KYB Rolling Reserve Escalation & Negative-Balance Clawback Waterfall
 
-**Stage 14 Deliverable — 2026-10-19 Overnight Evolution**
-
 ---
 
 ## 1. Executive Summary & Architectural Problem Statement

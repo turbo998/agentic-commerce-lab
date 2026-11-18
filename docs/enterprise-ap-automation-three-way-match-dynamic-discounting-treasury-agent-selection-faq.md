@@ -1,9 +1,9 @@
 # 企业 B2B 应付账款（AP）自动化、三单匹配（3-Way Match）与早付现金折扣（2/10 Net 30）Agent 架构选型 FAQ：行项公差对齐、BEC 改账号防诈骗与司库付款门禁实战指南
 
-> **专题定位（企业财务 AP 自动化、供应链金融与司库风控聚焦 · Round 399）**：面向为跨国制造、零售连锁与大型企业财务共享中心（SSC）设计应付账款（Accounts Payable, AP）与司库资金管理（Treasury）智能体的 **Cloud & AI Solution Architect**，系统解决企业财务付款最核心的四大痛点：**“怎么把供应商 PDF 发票里的合并行项与 ERP 采购单（PO）及仓库收货单（GRN）精确对齐、怎么 100% 封杀黑客伪造供应商邮件要求修改收款银行账号（BEC 诈骗）、怎么自动捕捉‘10 天内付款打 98 折（2/10 Net 30，折合年化无风险收益率 36.7%）’的早付现金折扣、以及怎么守住司库打款（`send_money`）的人类确认红线”**。  
+> **专题定位（企业财务 AP 自动化、供应链金融与司库风控聚焦）**：面向为跨国制造、零售连锁与大型企业财务共享中心（SSC）设计应付账款（Accounts Payable, AP）与司库资金管理（Treasury）智能体的 **Cloud & AI Solution Architect**，系统解决企业财务付款最核心的四大痛点：**“怎么把供应商 PDF 发票里的合并行项与 ERP 采购单（PO）及仓库收货单（GRN）精确对齐、怎么 100% 封杀黑客伪造供应商邮件要求修改收款银行账号（BEC 诈骗）、怎么自动捕捉‘10 天内付款打 98 折（2/10 Net 30，折合年化无风险收益率 36.7%）’的早付现金折扣、以及怎么守住司库打款（`send_money`）的人类确认红线”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、企业 AP 与司库自动化选型矩阵、定量早付收益与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](enterprise-ap-automation-three-way-match-dynamic-discounting-treasury-agent-selection-faq.md)** · **[English Version (`enterprise-ap-automation-three-way-match-dynamic-discounting-treasury-agent-selection-faq.en.md`)](enterprise-ap-automation-three-way-match-dynamic-discounting-treasury-agent-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe MCP 司库打款（`send_money`）人类确认门禁、`180 天` 打款密钥休眠锁与 Microsoft Web IQ 契约引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；三单行项公差匹配、BEC 收款账号哈希锁与 `2/10 Net 30` 动态贴现计算引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业行项公差（如单价 `<= 1%`、数量 `<= 0%`）标记为 `synthetic_policy`；外部私有银行银企直联接口在线压测标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe MCP 司库打款（`send_money`）人类确认门禁、`180 天` 打款密钥休眠锁与 Microsoft Web IQ 契约引自 `research/sources.json`（标记为 `official_doc_snapshot`）；三单行项公差匹配、BEC 收款账号哈希锁与 `2/10 Net 30` 动态贴现计算引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业行项公差（如单价 `<= 1%`、数量 `<= 0%`）标记为 `synthetic_policy`；外部私有银行银企直联接口在线压测标记为 `not_measured`。
 
 ![2026-11-18 企业 B2B 应付账款 (AP) 自动化、三单匹配与早付现金折扣 (2/10 Net 30) Agent 架构一图流总结](../assets/svg/401-enterprise-ap-automation-three-way-match-dynamic-discounting-2026-11-18.svg)
 

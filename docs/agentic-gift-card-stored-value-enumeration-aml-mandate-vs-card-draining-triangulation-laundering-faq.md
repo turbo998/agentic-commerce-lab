@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：闭环预付礼品卡（Closed-Loop Gift Card）与品牌储值钱包（Stored-Value Balance）、防卡号序列枚举撞库（Anti-Enumeration CSPRNG 卡号与 HSM Pepper + Argon2id PIN 哈希）、严禁“信用卡盗刷买电子卡秒充秒提（Triangulation Laundering）”与“礼品卡买礼品卡 / BNPL 买礼品卡（Loop Prohibition）”、美国 FinCEN 预付准入法规（`31 CFR § 1010.100(ww)` 单卡单日 `<= $2,000` 免 MSB 牌照红线）与欧盟反洗钱指令（5AMLD/6AMLD 匿名预付卡线上 `€150` 上限）  
 > **阅读对象**：零售电商与数字游戏/内容平台架构师、会员储值与礼品卡账务系统负责人、反欺诈与反洗钱（AML）风控总监、CFO  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 204 智能体礼品卡防枚举撞库、阻断礼品卡/BNPL 套购礼品卡与 Microsoft Web IQ FinCEN `$2,000` / 欧盟 6AMLD 限额核验交互沙盒）](../live-demo.html) · [`assets/svg/206-agentic-gift-card-stored-value-enumeration-aml-2026-11-14.svg`](../assets/svg/206-agentic-gift-card-stored-value-enumeration-aml-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含智能体礼品卡防枚举撞库、阻断礼品卡/BNPL 套购礼品卡与 Microsoft Web IQ FinCEN `$2,000` / 欧盟 6AMLD 限额核验交互沙盒）](../live-demo.html) · [`assets/svg/206-agentic-gift-card-stored-value-enumeration-aml-2026-11-14.svg`](../assets/svg/206-agentic-gift-card-stored-value-enumeration-aml-2026-11-14.svg)
 
 ---
 

@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：智能体售后退换货授权（Return Merchandise Authorization, RMA）与逆向物流（Reverse Logistics）、极速揽收退款（Instant Drop-Off Refund）、防虚假运单改址欺诈（FTID: Fraudulent Tracking ID Manipulation 篡改收件地址寄空信封至同邮编便利店）、快递网点首扫电子秤重量公差门禁（Induction Weight `±5%`）、高单价 3C/奢品出库与入库序列号（IMEI / Serial Number / NFC 防伪芯片）1:1 哈希核验、以及先授信后追索（Conditional Clawback Hold）机制  
 > **阅读对象**：电商售后与逆向供应链架构师、仓储管理系统（WMS）与质检自动化负责人、反欺诈风控总监、财务总监  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 206 智能体售后 RMA 防 FTID 改址假退货、首扫重量与 IMEI 序列号核验及 Microsoft Web IQ NRF 退货欺诈规程核验交互沙盒）](../live-demo.html) · [`assets/svg/208-agentic-reverse-logistics-rma-instant-refund-weight-imei-2026-11-14.svg`](../assets/svg/208-agentic-reverse-logistics-rma-instant-refund-weight-imei-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含智能体售后 RMA 防 FTID 改址假退货、首扫重量与 IMEI 序列号核验及 Microsoft Web IQ NRF 退货欺诈规程核验交互沙盒）](../live-demo.html) · [`assets/svg/208-agentic-reverse-logistics-rma-instant-refund-weight-imei-2026-11-14.svg`](../assets/svg/208-agentic-reverse-logistics-rma-instant-refund-weight-imei-2026-11-14.svg)
 
 ---
 

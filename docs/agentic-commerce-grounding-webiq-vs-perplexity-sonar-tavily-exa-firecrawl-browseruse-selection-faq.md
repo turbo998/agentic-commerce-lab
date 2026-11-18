@@ -1,9 +1,9 @@
 # 实时商业搜索与网页接地（Grounding）选型 FAQ：Microsoft Web IQ / Bing Grounding vs. Perplexity Sonar API vs. Tavily vs. Exa vs. Firecrawl / Browser-use 实战指南
 
-> **专题定位（架构师选型聚焦 · Round 390）**：面向为零售比价、B2B 寻源、市场舆情洞察与金融研报采集构建 AI Agent 的 **Cloud & AI Solution Architect**，系统拆解当前最主流的 6 类搜索与网页接地工具：**Microsoft Web IQ、Azure AI Foundry Bing Grounding、Perplexity Sonar API、Tavily、Exa 以及 Firecrawl / Browser-use**。讲清在 **“商品实时比价锁单、舆情品牌安全监控、B2B 供应商寻源与深层研报结构化抽取”** 四大商业场景下，各自的实时性、Token 成本、企业合规边界与防提示词注入能力该如何取舍。  
+> **专题定位（架构师选型聚焦）**：面向为零售比价、B2B 寻源、市场舆情洞察与金融研报采集构建 AI Agent 的 **Cloud & AI Solution Architect**，系统拆解当前最主流的 6 类搜索与网页接地工具：**Microsoft Web IQ、Azure AI Foundry Bing Grounding、Perplexity Sonar API、Tavily、Exa 以及 Firecrawl / Browser-use**。讲清在 **“商品实时比价锁单、舆情品牌安全监控、B2B 供应商寻源与深层研报结构化抽取”** 四大商业场景下，各自的实时性、Token 成本、企业合规边界与防提示词注入能力该如何取舍。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心选型结论速览、架构师灵魂拷问 Q&A、Mermaid 决策树/数据流对比/时序图、六大方案横向选型矩阵、定量成本与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](agentic-commerce-grounding-webiq-vs-perplexity-sonar-tavily-exa-firecrawl-browseruse-selection-faq.md)** · **[English Version (`agentic-commerce-grounding-webiq-vs-perplexity-sonar-tavily-exa-firecrawl-browseruse-selection-faq.en.md`)](agentic-commerce-grounding-webiq-vs-perplexity-sonar-tavily-exa-firecrawl-browseruse-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Microsoft Web IQ 官方参数、计费与错误码引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；公开目录价格标记为 `official_list_price`；本地多源路由门禁、Token 压缩倍率与防注入阻断率引自 `lab/webiq_commerce_demo.py` 及 `lab/webiq_search_bakeoff.py`（标记为 `deterministic_offline_simulation`）；未挂载商业私钥的外部 SaaS 在线延迟实测统一标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Microsoft Web IQ 官方参数、计费与错误码引自 `research/sources.json`（标记为 `official_doc_snapshot`）；公开目录价格标记为 `official_list_price`；本地多源路由门禁、Token 压缩倍率与防注入阻断率引自 `lab/webiq_commerce_demo.py` 及 `lab/webiq_search_bakeoff.py`（标记为 `deterministic_offline_simulation`）；未挂载商业私钥的外部 SaaS 在线延迟实测统一标记为 `not_measured`。
 
 ![2026-11-18 实时商业搜索与网页接地选型：Web IQ vs Perplexity Sonar vs Tavily vs Exa vs Firecrawl/Browser-use 一图流总结](../assets/svg/392-agentic-commerce-grounding-webiq-sonar-tavily-exa-firecrawl-browseruse-2026-11-18.svg)
 

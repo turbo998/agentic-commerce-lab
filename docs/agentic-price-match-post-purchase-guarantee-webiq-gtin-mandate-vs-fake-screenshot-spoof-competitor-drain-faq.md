@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：智能体售后“30 天买贵必赔 / 自动价保（Price Match & Price Drop Protection）”、严禁采信用户上传的比价截图（F12 网页元素篡改与 AI 伪造截图欺诈）、Microsoft Web IQ 权威竞品白名单域名 + `14位 GTIN/UPC` 全新自营现货（In-Stock 1P Sold & Shipped）实时穿透核验、以及促销售后价保“实付净额对标原则（Net-Paid vs. New-Net）”防优惠券双倍叠加套利（Double-Dipping）  
 > **阅读对象**：全渠道零售与品牌电商售后架构师、智能客服（AI Contact Center）工程负责人、大促定价与促销风控总监、CFO  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 211 智能体买贵必赔防 F12 假截图、防缺货/翻新机错配、防优惠券双倍退差价与 Microsoft Web IQ 竞品实时现价核验交互沙盒）](../live-demo.html) · [`assets/svg/213-agentic-price-match-post-purchase-guarantee-webiq-gtin-2026-11-14.svg`](../assets/svg/213-agentic-price-match-post-purchase-guarantee-webiq-gtin-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含智能体买贵必赔防 F12 假截图、防缺货/翻新机错配、防优惠券双倍退差价与 Microsoft Web IQ 竞品实时现价核验交互沙盒）](../live-demo.html) · [`assets/svg/213-agentic-price-match-post-purchase-guarantee-webiq-gtin-2026-11-14.svg`](../assets/svg/213-agentic-price-match-post-purchase-guarantee-webiq-gtin-2026-11-14.svg)
 
 ---
 

@@ -1,4 +1,4 @@
-"""Stage 1735: Two-store approval-admission provenance reader & stored policy row integrity tests."""
+"""Two-store approval-admission provenance reader & stored policy row integrity tests."""
 
 from __future__ import annotations
 

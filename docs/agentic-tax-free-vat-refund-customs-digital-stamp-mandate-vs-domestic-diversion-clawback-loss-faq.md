@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：智能体跨境旅游零售、奢侈品重奢门店（LVMH / Richemont / Kering 类 `MCC 5944 / 5311`）与机场离境退税（Tourist VAT / GST / 消费税 Refund）、欧盟《增值税指令（`EU VAT Directive 2006/112/EC Article 147`）》与日本 `PIE` 免税电子化制度、**欧洲各国海关电子退税核销网（法国 `PABLO`、西班牙/意大利 `DIVA / OTELLO`、德国 `ATLAS`）数字签名验章（彻底废除易伪造的纸质橡皮图章）**、**“市内即买即退（Downtown Instant Refund）”强制绑定非储值信用卡 `>= 100%` 增值税额担保预授权（若 `21天` 内未获机场海关离境扫描则自动扣回 `Clawback` 补税，粉碎本地代购团伙“领完退税不带货出境”境内倒卖逃税）**、以及直连数字退税消除传统柜台高达 `30%–45%` 的退税截留与汇率盘剥  
 > **阅读对象**：全球奢侈品集团、百货集团与免税零售（Travel Retail）全渠道架构师、跨境退税清算网关研发负责人、国际税务合规（VAT/GST）与反走私风控总监  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 234 奢品离境退税 `PABLO/DIVA` 电子海关章验签、市内即买即退信用卡担保追回锁、日本/欧盟防境内代购倒卖与 Microsoft Web IQ 各国海关退税法规核验交互沙盒）](../live-demo.html) · [`assets/svg/236-agentic-tax-free-vat-refund-customs-digital-stamp-2026-11-14.svg`](../assets/svg/236-agentic-tax-free-vat-refund-customs-digital-stamp-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含奢品离境退税 `PABLO/DIVA` 电子海关章验签、市内即买即退信用卡担保追回锁、日本/欧盟防境内代购倒卖与 Microsoft Web IQ 各国海关退税法规核验交互沙盒）](../live-demo.html) · [`assets/svg/236-agentic-tax-free-vat-refund-customs-digital-stamp-2026-11-14.svg`](../assets/svg/236-agentic-tax-free-vat-refund-customs-digital-stamp-2026-11-14.svg)
 
 ---
 

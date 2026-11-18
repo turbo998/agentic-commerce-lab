@@ -5,7 +5,7 @@
 > **Bilingual Editions**: **[中文版 (`webiq-vs-exa-brightdata-grounding-selection-faq.md`)](webiq-vs-exa-brightdata-grounding-selection-faq.md)** · **[English Version (Current)](webiq-vs-exa-brightdata-grounding-selection-faq.en.md)**  
 > **Provenance & As-Of Notice (`2026-11-08`)**: Vendor pricing cites published pricing pages (`official_list_price`, `as_of: 2026-11-08`); local simulation metrics cite `reports/agentic-commerce-webiq-grounding-demo-bench/report.json` (`deterministic_offline_simulation`); `site:` allowlist and `30-day` return-window thresholds are lab reference rules (`synthetic_policy`); live uncredentialed third-party search provider latency/recall is explicitly marked **`not_measured`**.
 
-![Web IQ vs Exa / Bright Data / Mainstream Web Search Competitive Matrix](../docs/research/webiq-search-competitive-2026-11-08.svg)
+![Web IQ vs Exa / Bright Data / Mainstream Web Search Competitive Matrix](research/webiq-search-competitive-2026-11-12.svg)
 
 ---
 

@@ -1,4 +1,4 @@
-"""Stage 32: IATA NDC Interline Baggage/IRROPS Settlement, PSD2/Open-Banking Variable Recurring Payment (VRP) Sweeping Guard & Telecom 5G Network-Slice SLA Escrow.
+"""IATA NDC Interline Baggage/IRROPS Settlement, PSD2/Open-Banking Variable Recurring Payment (VRP) Sweeping Guard & Telecom 5G Network-Slice SLA Escrow.
 
 Implements deterministic AI-Native settlement guardrails for:
 1. Aviation IATA NDC / ONE Order Interline Baggage & Irregular Operations (IRROPS) EU261 / DOT

@@ -106,7 +106,7 @@ flowchart LR
         P2 --> P3["💥 商户毛利被薅光<br/>买家卡没刷成却丢光积分!"]
     end
 
-    subgraph GoodPromo["✅ 受控促销锁 + 积分/法币双阶段原子 Saga (Round 21)"]
+    subgraph GoodPromo["✅ 受控促销锁 + 积分/法币双阶段原子 Saga"]
         G1["Web IQ 预审活动排除条款<br/>网关限频 <=3 次 + 互斥/受众/40% 毛利红线"] --> G2["Phase 1: 软冻结 promo_lock + loyalty_hold<br/>Phase 2: 刷 spt_... 扣取法币余款"]
         G2 --> G3["🛡️ 成功则 275ms 原子核销<br/>拒付则 21ms 零损耗退还积分与神券!"]
     end

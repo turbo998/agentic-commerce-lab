@@ -1,4 +1,4 @@
-"""Unit tests for Stage 14 Multi-Party Marketplace Split Settlement, KYB Rolling Reserve & Clawback Waterfall Guard."""
+"""Unit tests for Multi-Party Marketplace Split Settlement, KYB Rolling Reserve & Clawback Waterfall Guard."""
 
 from __future__ import annotations
 

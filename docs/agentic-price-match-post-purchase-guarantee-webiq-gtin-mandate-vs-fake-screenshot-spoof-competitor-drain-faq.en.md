@@ -3,7 +3,7 @@
 > **Document Type**: Architect's Selection & First-Principles FAQ (Benchmarking the 6-Section Standard of `ib-vs-ethernet-roce-selection-faq.md`)  
 > **Core Domain Coverage**: Agentic Post-Purchase Price-Drop Protection & Competitor Price-Match Guarantees, Defending Against Client-Side `F12` DOM-Edited Screenshots & Spoofed Shopify Domains, Microsoft Web IQ Whitelisted 1P Domain + `14-Digit GTIN / UPC` + `Schema.org/InStock` + `NewCondition` Verification, and Net-Paid-Minus-Gift-Value Calculation (Preventing Coupon & Free-Gift Double-Dipping)  
 > **Target Audience**: Omnichannel Retail & Consumer Electronics Architects, AI Customer-Support & Claims Engineering Leads, Promotional Pricing & Fraud Directors, and CFOs  
-> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Round 211 Interactive Sandbox for Anti-Screenshot Price-Match Gating, Net-Paid Promo Deduction & Microsoft Web IQ Live Competitor GTIN/In-Stock Verification)](../live-demo.en.html) · [`assets/svg/213-agentic-price-match-post-purchase-guarantee-webiq-gtin-2026-11-14.svg`](../assets/svg/213-agentic-price-match-post-purchase-guarantee-webiq-gtin-2026-11-14.svg)
+> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Interactive Sandbox for Anti-Screenshot Price-Match Gating, Net-Paid Promo Deduction & Microsoft Web IQ Live Competitor GTIN/In-Stock Verification)](../live-demo.en.html) · [`assets/svg/213-agentic-price-match-post-purchase-guarantee-webiq-gtin-2026-11-14.svg`](../assets/svg/213-agentic-price-match-post-purchase-guarantee-webiq-gtin-2026-11-14.svg)
 
 ---
 

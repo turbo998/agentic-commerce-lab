@@ -1,9 +1,9 @@
 # 商业智能体六大核心协议选型与互操作 FAQ：`MCP` vs. `A2A` vs. `ACP` (OpenAI/Stripe) vs. `UCP` (Google/Shopify) vs. `AP2` (`MandateVC`) vs. `x402 / MPP` 全栈分工指南
 
-> **专题定位（智能体商业协议栈全景选型与互操作架构聚焦 · Round 405）**：面向在售前宣讲与架构设计中被客户高频追问 **“MCP、A2A、ACP、UCP、AP2、x402 到底是什么关系？它们是互斥竞争还是分层互补？我们公司做电商/采购 Agent 到底该接哪几个？”** 的 **Cloud & AI Solution Architect**，提供一份一针见血的**《Agentic Commerce 六大协议 OSI 分层映射与选型互操作指南》**。  
+> **专题定位（智能体商业协议栈全景选型与互操作架构聚焦）**：面向在售前宣讲与架构设计中被客户高频追问 **“MCP、A2A、ACP、UCP、AP2、x402 到底是什么关系？它们是互斥竞争还是分层互补？我们公司做电商/采购 Agent 到底该接哪几个？”** 的 **Cloud & AI Solution Architect**，提供一份一针见血的**《Agentic Commerce 六大协议 OSI 分层映射与选型互操作指南》**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/分层对比/时序图、六大协议横向决策矩阵、定量协议校验与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](agentic-commerce-protocol-stack-mcp-vs-a2a-acp-ucp-ap2-x402-interoperability-selection-faq.md)** · **[English Version (`agentic-commerce-protocol-stack-mcp-vs-a2a-acp-ucp-ap2-x402-interoperability-selection-faq.en.md`)](agentic-commerce-protocol-stack-mcp-vs-a2a-acp-ucp-ap2-x402-interoperability-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：MCP OAuth 2.1 (`RFC 9207` `iss` / `RFC 8707` `aud`)、Stripe ACP (`SPT`)、Google/Shopify UCP (`com.stripe.payments` vs `com.google.pay` 处理器分流)、AP2 (`MandateVC`) 及 x402 / MPP Tempo 契约均引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；六协议联合状态机与互操作门禁引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：MCP OAuth 2.1 (`RFC 9207` `iss` / `RFC 8707` `aud`)、Stripe ACP (`SPT`)、Google/Shopify UCP (`com.stripe.payments` vs `com.google.pay` 处理器分流)、AP2 (`MandateVC`) 及 x402 / MPP Tempo 契约均引自 `research/sources.json`（标记为 `official_doc_snapshot`）；六协议联合状态机与互操作门禁引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）。
 
 ![2026-11-18 商业智能体六大协议选型与互操作：MCP vs A2A vs ACP vs UCP vs AP2 vs x402/MPP 一图流总结](../assets/svg/407-agentic-commerce-protocol-stack-mcp-a2a-acp-ucp-ap2-x402-2026-11-18.svg)
 

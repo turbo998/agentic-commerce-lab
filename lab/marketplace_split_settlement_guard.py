@@ -1,4 +1,4 @@
-"""Multi-Party Marketplace Split Settlement Conservation, Sub-Merchant KYB Rolling Reserve Escalation & Negative-Balance Clawback Waterfall Guard (Stage 14).
+"""Multi-Party Marketplace Split Settlement Conservation, Sub-Merchant KYB Rolling Reserve Escalation & Negative-Balance Clawback Waterfall Guard.
 
 Enforces three production financial invariants for multi-seller agentic marketplaces
 (Stripe Connect / Adyen Balance Platform / UCP Multi-Merchant Carts):
@@ -332,7 +332,7 @@ def execute_negative_balance_clawback_waterfall(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Run Stage 14 marketplace split settlement, KYB rolling reserve & clawback guard."
+        description="Run marketplace split settlement, KYB rolling reserve & clawback guard."
     )
     parser.parse_args(argv)
 

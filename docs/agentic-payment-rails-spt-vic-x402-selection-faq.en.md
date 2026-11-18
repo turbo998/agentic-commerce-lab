@@ -3,7 +3,7 @@
 > **Single-Topic Scope**: This guide focuses exclusively on **Agentic Payment & Settlement Rail Selection (`Stripe SPT` vs. `Visa VIC` vs. `x402 / MPP Tempo`)**. For real-time web grounding selection, see the companion guide **[Real-Time Web Grounding Selection FAQ: Microsoft Web IQ vs. Exa vs. Bright Data](webiq-vs-exa-brightdata-grounding-selection-faq.en.md)** (or the combined navigation hub **[Payment & Grounding Hub](agentic-payment-rails-and-webiq-grounding-selection-faq.en.md)**).  
 > **Style Benchmark**: Modeled directly on `ib-vs-ethernet-roce-selection-faq.md` (Executive Summary, First-Principles Q&A, Mermaid Decision Tree / Comparison / Sequence Diagram, 6-Dimension Matrix, Provenance-Tagged Benchmark Table, and Architect Checklist).  
 > **Bilingual Editions**: **[中文版 (`agentic-payment-rails-spt-vic-x402-selection-faq.md`)](agentic-payment-rails-spt-vic-x402-selection-faq.md)** · **[English Version (Current)](agentic-payment-rails-spt-vic-x402-selection-faq.en.md)**  
-> **Provenance & As-Of Notice (`2026-11-08`)**: Official protocol rules cite `research/daily/2026-11-08-sources.json` (`official_doc_snapshot`); local evaluation metrics cite `reports/agentic-commerce-webiq-grounding-demo-bench/report.json` (`deterministic_offline_simulation`); reference enterprise risk thresholds/geofences are labeled `synthetic_policy`; live uncredentialed third-party payment network latency is marked `not_measured`.
+> **Provenance & As-Of Notice (`2026-11-08`)**: Official protocol rules cite `research/sources.json` (`official_doc_snapshot`); local evaluation metrics cite `reports/agentic-commerce-webiq-grounding-demo-bench/report.json` (`deterministic_offline_simulation`); reference enterprise risk thresholds/geofences are labeled `synthetic_policy`; live uncredentialed third-party payment network latency is marked `not_measured`.
 
 ![Agentic Commerce Payment Rails Executive Visual Summary](../assets/svg/03-agentic-commerce-2026-11-08-visual-summary.svg)
 
@@ -146,8 +146,8 @@ Every metric below is explicitly tagged with its provenance category (`official_
 
 | Metric / Rule | Value / Finding | Provenance Category | Source Path / As-Of Date & Scope |
 |---|---|---|---|
-| **Stripe SPT Country Coverage** | **`34` countries** | `official_doc_snapshot` | `research/daily/2026-11-08-sources.json` (`stripe-spt`, `as_of: 2026-11-08`, SHA-256 `ec830c09...`) |
-| **Stripe MCP Key Sunset Date** | **`2026-11-30`** cutoff for `sk_live_*` & untagged `rk_live_*` | `official_doc_snapshot` | `research/daily/2026-11-08-sources.json` (`stripe-mcp`, `as_of: 2026-11-08`, SHA-256 `407eb306...`) |
+| **Stripe SPT Country Coverage** | **`34` countries** | `official_doc_snapshot` | `research/sources.json` (`stripe-spt`, `as_of: 2026-11-08`, SHA-256 `ec830c09...`) |
+| **Stripe MCP Key Sunset Date** | **`2026-11-30`** cutoff for `sk_live_*` & untagged `rk_live_*` | `official_doc_snapshot` | `research/sources.json` (`stripe-mcp`, `as_of: 2026-11-08`, SHA-256 `407eb306...`) |
 | **Seller Webhook Timeout SLA** | **`4,000 ms`** (price hook falls back to catalog; finalize declines) | `official_doc_snapshot` | `docs.stripe.com/agentic-commerce/protocol/shared-payment-tokens` (`as_of: 2026-11-08`) |
 | **MPP Tempo Sub-Cent Truncation** | **`$0.000000` loss at `200 units`** vs. **`54.3%` (`$0.023750`)** on unaligned 50 units | `deterministic_offline_simulation` | `reports/agentic-commerce-webiq-grounding-demo-bench/report.json` (`W08` / `lab/webiq_commerce_demo.py`) |
 | **RFC 9207 `iss` Mix-Up Block Rate** | **`100%` blocked** on case-folded `https://AUTH.merchant.example` | `deterministic_offline_simulation` | `reports/agentic-commerce-webiq-grounding-demo-bench/report.json` (`stage_1756_guards`) |

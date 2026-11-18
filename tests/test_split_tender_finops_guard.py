@@ -1,4 +1,4 @@
-"""Unit tests for Stage 12 Split-Tender Reverse Waterfall, Anti-Cash-Out & Enterprise FinOps Guard."""
+"""Unit tests for Split-Tender Reverse Waterfall, Anti-Cash-Out & Enterprise FinOps Guard."""
 
 from __future__ import annotations
 

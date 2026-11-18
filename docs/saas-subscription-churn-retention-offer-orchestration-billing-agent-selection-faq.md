@@ -1,9 +1,9 @@
 # 订阅制 SaaS 客户续费挽留与智能营销编排 Agent 架构选型 FAQ：活跃遥测分流、暂停/降配优先、LTV 毛利锁、周期 SPT 与 FTC 一键退订合规实战指南
 
-> **专题定位（订阅制 SaaS 客户留存与计费编排应用聚焦 · Round 396）**：面向为 B2B/B2C 订阅制 SaaS、AI 应用会员、流媒体与开发者工具设计增长与留存（Churn Prevention & Lifecycle Marketing）智能体的 **Cloud & AI Solution Architect**，系统解答四大核心商业与架构难题：**“怎么在不违法阻挠退订的前提下把 35% 的流失客户挽留下来、怎么防止正常付费老用户假装退订套取 5 折挽留神券、怎么遵循 FTC 一键退订（Click-to-Cancel）法规零暗黑模式红线、以及怎么正确使用 Stripe 周期 SPT（`recurring_interval` 禁传 `setup_future_usage`）完成改约续费”**。  
+> **专题定位（订阅制 SaaS 客户留存与计费编排应用聚焦）**：面向为 B2B/B2C 订阅制 SaaS、AI 应用会员、流媒体与开发者工具设计增长与留存（Churn Prevention & Lifecycle Marketing）智能体的 **Cloud & AI Solution Architect**，系统解答四大核心商业与架构难题：**“怎么在不违法阻挠退订的前提下把 35% 的流失客户挽留下来、怎么防止正常付费老用户假装退订套取 5 折挽留神券、怎么遵循 FTC 一键退订（Click-to-Cancel）法规零暗黑模式红线、以及怎么正确使用 Stripe 周期 SPT（`recurring_interval` 禁传 `setup_future_usage`）完成改约续费”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、SaaS 留存与计费技术栈选型矩阵、定量 NRR/挽留测算与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](saas-subscription-churn-retention-offer-orchestration-billing-agent-selection-faq.md)** · **[English Version (`saas-subscription-churn-retention-offer-orchestration-billing-agent-selection-faq.en.md`)](saas-subscription-churn-retention-offer-orchestration-billing-agent-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe 周期订阅 SPT（`usage_limits.recurring_interval`、`off_session=True`、禁传 `setup_future_usage` 返回 `HTTP 400`、`requires_action -> active` 3DS 恢复）与 Microsoft Web IQ 契约引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；挽留分流、365 天防薅冷却锁与 FTC 一键退订门禁引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业折扣上限与冷却期阈值标记为 `synthetic_policy`；外部私有 SaaS 租户生产留存率压测标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe 周期订阅 SPT（`usage_limits.recurring_interval`、`off_session=True`、禁传 `setup_future_usage` 返回 `HTTP 400`、`requires_action -> active` 3DS 恢复）与 Microsoft Web IQ 契约引自 `research/sources.json`（标记为 `official_doc_snapshot`）；挽留分流、365 天防薅冷却锁与 FTC 一键退订门禁引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业折扣上限与冷却期阈值标记为 `synthetic_policy`；外部私有 SaaS 租户生产留存率压测标记为 `not_measured`。
 
 ![2026-11-18 订阅制 SaaS 客户续费挽留与智能营销编排 Agent 架构：遥测分流、暂停降配、LTV 毛利锁与 FTC 合规一图流总结](../assets/svg/398-saas-subscription-churn-retention-offer-orchestration-billing-2026-11-18.svg)
 

@@ -1,4 +1,4 @@
-"""Unit tests for Stage 16 HS-Code DDP Landed Cost (De-Minimis/CBAM), Cold-Chain MKT Escrow & Scope 3 Carbon Router."""
+"""Unit tests for HS-Code DDP Landed Cost (De-Minimis/CBAM) & Multimodal Carrier SLA Router."""
 
 from __future__ import annotations
 
@@ -6,7 +6,6 @@ from decimal import Decimal
 import unittest
 
 from lab.green_logistics_customs_sla_guard import (
-    evaluate_cold_chain_iot_telemetry_escrow,
     evaluate_hs_code_landed_cost_and_deminimis,
     main,
     optimize_carbon_pareto_carrier_route,
@@ -69,43 +68,6 @@ class GreenLogisticsCustomsSlaGuardTestSuite(unittest.TestCase):
             structuring.decision_code,
             "CUSTOMS_SPLIT_CONSIGNMENT_EVASION_BLOCKED",
         )
-
-    def test_cold_chain_arrhenius_mkt_verifies_compliant_and_claims_escrow_on_breach(self) -> None:
-        compliant = evaluate_cold_chain_iot_telemetry_escrow(
-            {
-                "shipment_id": "shp_ok_01",
-                "temperature_readings_c": [4.2, 4.5, 4.8, 5.1, 4.9, 4.6],
-                "sample_interval_minutes": 5,
-                "min_allowed_temp_c": 2.0,
-                "max_allowed_temp_c": 8.0,
-                "max_mkt_celsius": 8.0,
-                "max_excursion_minutes": 15,
-                "escrow_total_minor": 120_000,
-            }
-        )
-        self.assertTrue(compliant.sla_compliant)
-        self.assertTrue(compliant.seller_payout_released)
-        self.assertEqual(compliant.buyer_compensation_minor, 0)
-        self.assertEqual(compliant.seller_net_release_minor, 120_000)
-
-        breached = evaluate_cold_chain_iot_telemetry_escrow(
-            {
-                "shipment_id": "shp_breach_02",
-                "temperature_readings_c": [4.5, 11.5, 12.2, 13.0, 12.5, 5.0],  # 4 * 5 = 20 min > 15 min
-                "sample_interval_minutes": 5,
-                "min_allowed_temp_c": 2.0,
-                "max_allowed_temp_c": 8.0,
-                "max_mkt_celsius": 8.0,
-                "max_excursion_minutes": 15,
-                "escrow_total_minor": 200_000,
-                "breach_compensation_bps": 10_000,
-            }
-        )
-        self.assertFalse(breached.sla_compliant)
-        self.assertFalse(breached.seller_payout_released)
-        self.assertEqual(breached.decision_code, "COLD_CHAIN_SLA_BREACH_ESCROW_CLAIMED")
-        self.assertEqual(breached.buyer_compensation_minor, 200_000)
-        self.assertGreater(Decimal(breached.mkt_celsius), Decimal("8.00"))
 
     def test_scope3_carbon_pareto_router_selects_lowest_co2e_within_sla(self) -> None:
         res = optimize_carbon_pareto_carrier_route(

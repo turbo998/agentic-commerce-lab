@@ -1,9 +1,9 @@
 # 企业 B2B 采购寻源询价（RFQ）、供应商比价与合同条款初审 Copilot 架构选型 FAQ：到岸 TCO 归一化、法务红线扫描与 ERP (SAP / D365 / Coupa) 审批流实战指南
 
-> **专题定位（企业 B2B 采购寻源与法务初审应用聚焦 · Round 394）**：面向为制造、零售、科技与跨国集团设计企业级采购智能体（Source-to-Pay / Procure-to-Pay Copilot）的 **Cloud & AI Solution Architect**，系统解决 B2B 采购最核心的四大落地难题：**“怎么把五花八门的供应商 PDF/Excel 报价单拉齐到同一到岸总成本（Landed TCO）口径对比、怎么自动揪出供应商合同里的自动续约与低赔偿上限‘毒丸条款’、怎么用 Web IQ 核查供应商制裁/诉讼与市场底价、以及怎么安全对接 SAP Ariba / Dynamics 365 / Coupa 的 PR-to-PO 预算锁与分级审批矩阵（DOA）”**。  
+> **专题定位（企业 B2B 采购寻源与法务初审应用聚焦）**：面向为制造、零售、科技与跨国集团设计企业级采购智能体（Source-to-Pay / Procure-to-Pay Copilot）的 **Cloud & AI Solution Architect**，系统解决 B2B 采购最核心的四大落地难题：**“怎么把五花八门的供应商 PDF/Excel 报价单拉齐到同一到岸总成本（Landed TCO）口径对比、怎么自动揪出供应商合同里的自动续约与低赔偿上限‘毒丸条款’、怎么用 Web IQ 核查供应商制裁/诉讼与市场底价、以及怎么安全对接 SAP Ariba / Dynamics 365 / Coupa 的 PR-to-PO 预算锁与分级审批矩阵（DOA）”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、B2B 采购 Copilot 构建路径选型矩阵、定量降本与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](b2b-rfq-sourcing-supplier-comparison-contract-redline-erp-copilot-selection-faq.md)** · **[English Version (`b2b-rfq-sourcing-supplier-comparison-contract-redline-erp-copilot-selection-faq.en.md`)](b2b-rfq-sourcing-supplier-comparison-contract-redline-erp-copilot-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Microsoft Web IQ、Stripe B2B 支付与 MCP OAuth 2.1 契约引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；报价 TCO 归一化、法务红线拦截与 ERP 状态机仿真引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业授权审批阈值（DOA）与法务赔偿下限标记为 `synthetic_policy`；外部客户私有 SAP/Coupa 生产实例压测标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Microsoft Web IQ、Stripe B2B 支付与 MCP OAuth 2.1 契约引自 `research/sources.json`（标记为 `official_doc_snapshot`）；报价 TCO 归一化、法务红线拦截与 ERP 状态机仿真引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；企业授权审批阈值（DOA）与法务赔偿下限标记为 `synthetic_policy`；外部客户私有 SAP/Coupa 生产实例压测标记为 `not_measured`。
 
 ![2026-11-18 企业 B2B 采购寻源询价 (RFQ)、供应商比价与合同条款初审 Copilot 架构一图流总结](../assets/svg/396-b2b-rfq-sourcing-supplier-comparison-contract-redline-erp-copilot-2026-11-18.svg)
 

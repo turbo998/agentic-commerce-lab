@@ -1,6 +1,6 @@
 # Agentic Subscription Lifecycle, Usage-Metering Watermark Idempotency & FTC Click-to-Cancel / PSD3 Recurring Mandate Guard
 
-**Date**: 2026-10-19 (Stage 18 Overnight Deep-Dive)  
+**Date**: 2026-10-19  
 **Scope**: Stripe Billing / Metronome Usage Metering (`stripe-token-billing`) × PSD3 / RBI Recurring Mandate Pre-Debit & Price-Escalation Rules × FTC Negative Option ("Click-to-Cancel") Symmetric Offramp
 
 ---

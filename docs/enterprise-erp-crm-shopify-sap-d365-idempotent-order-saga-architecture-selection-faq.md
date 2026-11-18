@@ -1,9 +1,9 @@
 # 对接企业 ERP / CRM / 电商后台（Shopify / Dynamics 365 / SAP / Salesforce）的商业智能体幂等下单、防重扣款与异常补偿（Saga）架构选型 FAQ
 
-> **专题定位（企业核心系统集成与分布式事务架构聚焦 · Round 397）**：面向为零售集团、制造分销与跨国企业设计交易型 AI Agent 的 **Cloud & AI Solution Architect**，系统拆解商业智能体在打通 **Shopify、Microsoft Dynamics 365、SAP S/4HANA 与 Salesforce** 四大后台时的核心工程难题：**“为什么大模型工具超时重试会导致双倍扣款与重复发货、怎么解决 Stripe 4,000ms Webhook 硬超时与慢速传统 ERP 接口之间的冲突、以及当‘钱扣了但 ERP 创单失败’时怎么用确定性 Saga 状态机与事务发件箱（Transactional Outbox）实现 100% 自动回滚平账”**。  
+> **专题定位（企业核心系统集成与分布式事务架构聚焦）**：面向为零售集团、制造分销与跨国企业设计交易型 AI Agent 的 **Cloud & AI Solution Architect**，系统拆解商业智能体在打通 **Shopify、Microsoft Dynamics 365、SAP S/4HANA 与 Salesforce** 四大后台时的核心工程难题：**“为什么大模型工具超时重试会导致双倍扣款与重复发货、怎么解决 Stripe 4,000ms Webhook 硬超时与慢速传统 ERP 接口之间的冲突、以及当‘钱扣了但 ERP 创单失败’时怎么用确定性 Saga 状态机与事务发件箱（Transactional Outbox）实现 100% 自动回滚平账”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、四大企业后台集成选型矩阵、定量防重/回滚测算与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](enterprise-erp-crm-shopify-sap-d365-idempotent-order-saga-architecture-selection-faq.md)** · **[English Version (`enterprise-erp-crm-shopify-sap-d365-idempotent-order-saga-architecture-selection-faq.en.md`)](enterprise-erp-crm-shopify-sap-d365-idempotent-order-saga-architecture-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe 卖家 Webhook `4,000 ms` 非对称超时、HTTP `424` 重试映射与 `24h Idempotency-Key` 载荷一致性契约引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；意图派生幂等锁、本地原子回读（Atomic Readback）与 Saga 补偿仿真引自 `lab/webiq_commerce_demo.py` 及 `lab/stripe_atomic_readback.py`（标记为 `deterministic_offline_simulation`）；企业 ERP 批处理超时阈值标记为 `synthetic_policy`；外部客户私有 SAP/D365 生产网关在线压测标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe 卖家 Webhook `4,000 ms` 非对称超时、HTTP `424` 重试映射与 `24h Idempotency-Key` 载荷一致性契约引自 `research/sources.json`（标记为 `official_doc_snapshot`）；意图派生幂等锁、本地原子回读（Atomic Readback）与 Saga 补偿仿真引自 `lab/webiq_commerce_demo.py` 及 `lab/stripe_atomic_readback.py`（标记为 `deterministic_offline_simulation`）；企业 ERP 批处理超时阈值标记为 `synthetic_policy`；外部客户私有 SAP/D365 生产网关在线压测标记为 `not_measured`。
 
 ![2026-11-18 对接企业 ERP/CRM/电商后台 (Shopify/D365/SAP/Salesforce) 幂等下单、防重扣款与 Saga 异常补偿架构一图流总结](../assets/svg/399-enterprise-erp-crm-shopify-sap-d365-idempotent-order-saga-2026-11-18.svg)
 

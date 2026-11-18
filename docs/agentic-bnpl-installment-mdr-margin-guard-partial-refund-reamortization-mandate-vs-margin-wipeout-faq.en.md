@@ -3,7 +3,7 @@
 > **Document Type**: Architect's Selection & First-Principles FAQ (Benchmarking the 6-Section Standard of `ib-vs-ethernet-roce-selection-faq.md`)  
 > **Core Domain Coverage**: Agentic Buy Now, Pay Later (`BNPL`: Klarna / Affirm / Afterpay / PayPal Pay in 4), Merchant Discount Rate (`MDR 4.5%–6.5%`) vs. SKU Contribution-Margin Floor Gating, US CFPB 2024/2025 BNPL Interpretive Rule (`Regulation Z / Truth in Lending Act` Billing Error & Return Autopay Pause Protections), Multi-Size "Bracketing" Non-Refundable Fee Traps, and Tail-First Partial-Return Schedule Re-Amortization  
 > **Target Audience**: E-Commerce Checkout & Payment Architects, Agentic Pricing & Promotions Engineers, Treasury & FinOps Directors, and Reverse-Logistics / Returns Systems Leads  
-> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Round 200 Interactive Sandbox for BNPL MDR Margin-Floor Gating, CFPB Reg Z Drop-Off Autopay Pause, Tail-First Re-Amortization & Microsoft Web IQ Regulatory Verification)](../live-demo.en.html) · [`assets/svg/202-agentic-bnpl-installment-mdr-margin-guard-reamortization-2026-11-14.svg`](../assets/svg/202-agentic-bnpl-installment-mdr-margin-guard-reamortization-2026-11-14.svg)
+> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Interactive Sandbox for BNPL MDR Margin-Floor Gating, CFPB Reg Z Drop-Off Autopay Pause, Tail-First Re-Amortization & Microsoft Web IQ Regulatory Verification)](../live-demo.en.html) · [`assets/svg/202-agentic-bnpl-installment-mdr-margin-guard-reamortization-2026-11-14.svg`](../assets/svg/202-agentic-bnpl-installment-mdr-margin-guard-reamortization-2026-11-14.svg)
 
 ---
 

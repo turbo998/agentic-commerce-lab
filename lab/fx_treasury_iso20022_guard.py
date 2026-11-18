@@ -1,4 +1,4 @@
-"""Cross-Border Real-Time FX Quote Lock, Multi-Currency Treasury Natural Netting Sweep & ISO 20022 `pacs.008` Clearing Compliance Guard (Stage 15).
+"""Cross-Border Real-Time FX Quote Lock, Multi-Currency Treasury Natural Netting Sweep & ISO 20022 `pacs.008` Clearing Compliance Guard.
 
 Enforces three deterministic treasury and cross-border clearing invariants for
 autonomous B2B/B2C agentic commerce:
@@ -288,7 +288,7 @@ def validate_iso20022_pacs008_instruction(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Run Stage 15 FX Quote Lock, Multi-Currency Netting & ISO 20022 pacs.008 guard."
+        description="Run FX Quote Lock, Multi-Currency Netting & ISO 20022 pacs.008 guard."
     )
     parser.parse_args(argv)
 

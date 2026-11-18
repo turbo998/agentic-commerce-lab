@@ -1,9 +1,9 @@
 # 生鲜商超即时零售与餐饮外卖（Grocery & QSR Instant Delivery）“智能点单、称重预授权容差与缺货替换”Agent 架构选型 FAQ：生鲜 `+15%` 称重预授权、过敏原零容忍平替与后厨出餐锁实战指南
 
-> **专题定位（生鲜商超 O2O、即时零售与连锁餐饮外卖智能体聚焦 · Round 409）**：面向为大型连锁商超（如山姆/盒马/Instacart/Walmart）、社区生鲜前置仓与连锁快餐（QSR）设计智能点单与履约系统的 **Cloud & AI Solution Architect**，系统解答生鲜与外卖场景最棘手的四大工程与资金难题：**“为什么买一条预估 1.0kg 的鲜活帝王蟹或和牛牛排，门店实际称重 1.12kg 时直接补扣差价会触发 `Stripe SPT` 超额拒付、怎么设计非标生鲜按重计价（Catch-Weight `+15%` 预授权缓冲池 + 实重精确结算 `capture_amount <= auth_amount`）、为什么前置仓缺货时用含花生/麸质的吐司自动替换无麸质吐司会酿成严重食品安全事故、以及外卖骑手已到店/后厨已下锅（Kitchen Prep-Cutoff）后买家要求无责取消怎么防恶意白嫖”**。  
+> **专题定位（生鲜商超 O2O、即时零售与连锁餐饮外卖智能体聚焦）**：面向为大型连锁商超（如山姆/盒马/Instacart/Walmart）、社区生鲜前置仓与连锁快餐（QSR）设计智能点单与履约系统的 **Cloud & AI Solution Architect**，系统解答生鲜与外卖场景最棘手的四大工程与资金难题：**“为什么买一条预估 1.0kg 的鲜活帝王蟹或和牛牛排，门店实际称重 1.12kg 时直接补扣差价会触发 `Stripe SPT` 超额拒付、怎么设计非标生鲜按重计价（Catch-Weight `+15%` 预授权缓冲池 + 实重精确结算 `capture_amount <= auth_amount`）、为什么前置仓缺货时用含花生/麸质的吐司自动替换无麸质吐司会酿成严重食品安全事故、以及外卖骑手已到店/后厨已下锅（Kitchen Prep-Cutoff）后买家要求无责取消怎么防恶意白嫖”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、即时零售与外卖 Agent 架构横向选型矩阵、定量损耗/履约测算与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](grocery-qsr-instant-delivery-catch-weight-preauth-substitution-agent-selection-faq.md)** · **[English Version (`grocery-qsr-instant-delivery-catch-weight-preauth-substitution-agent-selection-faq.en.md`)](grocery-qsr-instant-delivery-catch-weight-preauth-substitution-agent-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe `capture_method="manual"` 增量/部分捕获规范与 Web IQ `/v3/browse` 营养成分/过敏原核验引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；生鲜 Catch-Weight `+15%` 容差池、过敏原硬过滤与后厨截单状态机引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；生鲜称重上浮容差上限（`<= +15%`）标记为 `synthetic_policy`；外部前置仓电子秤硬件串口延迟标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe `capture_method="manual"` 增量/部分捕获规范与 Web IQ `/v3/browse` 营养成分/过敏原核验引自 `research/sources.json`（标记为 `official_doc_snapshot`）；生鲜 Catch-Weight `+15%` 容差池、过敏原硬过滤与后厨截单状态机引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；生鲜称重上浮容差上限（`<= +15%`）标记为 `synthetic_policy`；外部前置仓电子秤硬件串口延迟标记为 `not_measured`。
 
 ![2026-11-18 生鲜商超即时零售与餐饮外卖智能点单、称重预授权容差与过敏原安全替换 Agent 架构一图流总结](../assets/svg/411-grocery-qsr-instant-delivery-catch-weight-preauth-substitution-2026-11-18.svg)
 

@@ -1,6 +1,6 @@
 # Cross-Border Customs HS-Code & DDP Landed-Cost Mandate Architecture: Pre-Cleared Tariff Lock (`customs_ddp_tariff_mandate_...` + 10-Digit HTS/TARIC Verification) vs. DDU Surprise Brokerage Shocks & De Minimis Undervaluation Seizures Selection FAQ
 
-> **Document Type**: AI Solution Architect Selection Guide & First-Principles Protocol Deep Dive (FAQ-Driven · Round 33)  
+> **Document Type**: AI Solution Architect Selection Guide & First-Principles Protocol Deep Dive (FAQ-Driven)  
 > **Reading Time**: 3 minutes for executive conclusions · 10 minutes for DDP landed-cost ceiling enforcement, anti-undervaluation gates, and Microsoft Web IQ official HTS/TARIC & Free Trade Agreement (FTA) origin tariff grounding  
 > **Style Benchmark**: Strictly modeled after `ib-vs-ethernet-roce-selection-faq.md` (Plain-language first principles + Mermaid decision tree / comparison / sequence diagrams + Architect Decision Matrix + Reproducible Benchmark + Production Checklist)  
 > **Core Topic**: **Exclusively focused on how cross-border procurement agents enforce 1:1 parity between commercial invoice payments and customs declarations, lock Delivered Duty Paid (DDP) landed-cost ceilings, and verify 10-digit Harmonized System (HS) codes against official tariff schedules—eliminating De Minimis undervaluation seizures, surprise DDU port hostage fees, and LLM-hallucinated HS classification penalties**  

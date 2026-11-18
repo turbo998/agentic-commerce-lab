@@ -1,4 +1,4 @@
-"""Unit tests for Stage 26: Maritime Trade Finance MLETR eBL Title Transfer, eUCP 600 Letter of Credit Document-Match & Marine Demurrage Escrow Guard."""
+"""Unit tests for Maritime Trade Finance MLETR eBL Title Transfer, eUCP 600 Letter of Credit Document-Match & Marine Demurrage Escrow Guard."""
 
 from __future__ import annotations
 

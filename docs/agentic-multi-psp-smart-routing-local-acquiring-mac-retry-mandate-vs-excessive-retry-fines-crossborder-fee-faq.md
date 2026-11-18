@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：多支付服务商（Multi-PSP：Stripe / Adyen / Checkout.com / Worldpay / dLocal）动态智能路由（Smart Payment Routing）、发卡行卡号前 6–8 位（IIN/BIN）本地收单行对齐（Local Acquiring 免除 `1.2%–1.8%` 跨境卡组费并提升 `13%` 授权通过率）、Visa 交易重试新规（Category 1 硬拒付零重试 & 30 天最多 15 次上限）与 Mastercard 商户建议码（Merchant Advice Code, `MAC 01 / 03 / 21`）、以及主通道超时（Code `91`）切换备通道前的 `ISO 8583 0400` 冲正锁防双倍扣款  
 > **阅读对象**：全球化 SaaS 与跨境电商支付网关架构师、支付编排（Payment Orchestration）工程负责人、财务风控与收单合规总监  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 202 智能体多收单行 BIN 本地路由、Visa Cat-1 / Mastercard MAC 硬拒付零重试熔断与 Microsoft Web IQ 卡组织重试罚款规程核验交互沙盒）](../live-demo.html) · [`assets/svg/204-agentic-multi-psp-smart-routing-local-acquiring-mac-2026-11-14.svg`](../assets/svg/204-agentic-multi-psp-smart-routing-local-acquiring-mac-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含智能体多收单行 BIN 本地路由、Visa Cat-1 / Mastercard MAC 硬拒付零重试熔断与 Microsoft Web IQ 卡组织重试罚款规程核验交互沙盒）](../live-demo.html) · [`assets/svg/204-agentic-multi-psp-smart-routing-local-acquiring-mac-2026-11-14.svg`](../assets/svg/204-agentic-multi-psp-smart-routing-local-acquiring-mac-2026-11-14.svg)
 
 ---
 

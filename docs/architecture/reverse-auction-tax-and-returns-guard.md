@@ -1,7 +1,5 @@
 # Sealed-Bid Vickrey Reverse Auction (`Commit-Reveal RFQ`), Cross-Border B2B VAT Reverse-Charge & Post-Purchase RMA Bilateral Guard
 
-**Stage 11 Deliverable — 2026-10-19 Overnight Evolution**
-
 ---
 
 ## 1. Executive Summary & Architectural Problem Statement

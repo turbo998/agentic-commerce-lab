@@ -1,4 +1,4 @@
-"""Stage 11: Multi-Seller Commit-Reveal Vickrey Reverse Auction (RFQ), Cross-Border B2B VAT
+"""Multi-Seller Commit-Reveal Vickrey Reverse Auction (RFQ), Cross-Border B2B VAT
 Reverse-Charge / Tax Nexus Verification & Post-Purchase RMA Return Anti-Fraud / Anti-Restocking Trap Guard.
 
 Implements deterministic verification for:
@@ -248,7 +248,7 @@ def verify_rma_return_and_restocking_guard(
 
 
 def run_demo_scenarios() -> list[dict[str, Any]]:
-    """Run deterministic Stage 11 scenarios for Sealed RFQ, B2B VAT Reverse-Charge, and RMA Guard."""
+    """Run deterministic scenarios for Sealed RFQ, B2B VAT Reverse-Charge, and RMA Guard."""
     rfq_id = "rfq_enterprise_ssd_01"
     bids = [
         {
@@ -328,7 +328,7 @@ def run_demo_scenarios() -> list[dict[str, Any]]:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Run Stage 11 Sealed-Bid Vickrey RFQ, B2B VAT Reverse-Charge & RMA Guard demo."
+        description="Run Sealed-Bid Vickrey RFQ, B2B VAT Reverse-Charge & RMA Guard demo."
     )
     parser.add_argument("--json", action="store_true", help="Print JSON output.")
     args = parser.parse_args(argv)
@@ -337,7 +337,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.json:
         print(json.dumps({"scenarios": results}, indent=2))
     else:
-        print("=== Stage 11: Sealed-Bid Vickrey RFQ, B2B VAT Reverse-Charge & RMA Guard ===")
+        print("=== Sealed-Bid Vickrey RFQ, B2B VAT Reverse-Charge & RMA Guard ===")
         for item in results:
             print(f"  [{item['scenario_id']}] decision={item['decision_code']}")
     return 0

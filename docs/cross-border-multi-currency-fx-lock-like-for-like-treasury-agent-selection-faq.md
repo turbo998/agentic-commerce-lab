@@ -1,9 +1,9 @@
 # 跨境电商与多币种平台“外汇锁汇（FX Rate Lock）、本币同币种结算（Like-for-Like）与退货汇损防护”Agent 架构选型 FAQ：消灭 4% 双重汇损、历史汇率退货与合规分账实战指南
 
-> **专题定位（跨境电商、全球 OTA 机酒平台、出海 SaaS 与多币种资金池 Treasury 智能体聚焦 · Round 419）**：面向为全球跨境平台、多币种独立站与国际差旅结算设计多币种计价与全球司库（Global Treasury & FX）架构的 **Cloud & AI Solution Architect**，系统解答跨国收付汇中最隐蔽、最吞噬净利润的四大工程难题：**“为什么欧洲买家付了 €1,000 欧元，平台收单时先被支付网关强制扣 2% 汇损换成美元入账，3 天后给欧洲供应商打款时又被扣 2% 汇损从美元买回欧元（一进一出白白蒸发 4% 净利率）、为什么日元/英镑汇率日内大跌 2.5% 时，套利党会故意买高价值商品等汇率涨了再申请退货赚取汇率差（FX Return Arbitrage）、怎么设计带有效期（TTL）的锁汇报价单（Locked FX Quote Token）防止买家拿着 3 天前的旧汇率强行结算、以及为什么在涉及纽约州商家或 Stripe Connect 分账时严禁违规调用稳定币轨道（触发 `HTTP 403`）”**。  
+> **专题定位（跨境电商、全球 OTA 机酒平台、出海 SaaS 与多币种资金池 Treasury 智能体聚焦）**：面向为全球跨境平台、多币种独立站与国际差旅结算设计多币种计价与全球司库（Global Treasury & FX）架构的 **Cloud & AI Solution Architect**，系统解答跨国收付汇中最隐蔽、最吞噬净利润的四大工程难题：**“为什么欧洲买家付了 €1,000 欧元，平台收单时先被支付网关强制扣 2% 汇损换成美元入账，3 天后给欧洲供应商打款时又被扣 2% 汇损从美元买回欧元（一进一出白白蒸发 4% 净利率）、为什么日元/英镑汇率日内大跌 2.5% 时，套利党会故意买高价值商品等汇率涨了再申请退货赚取汇率差（FX Return Arbitrage）、怎么设计带有效期（TTL）的锁汇报价单（Locked FX Quote Token）防止买家拿着 3 天前的旧汇率强行结算、以及为什么在涉及纽约州商家或 Stripe Connect 分账时严禁违规调用稳定币轨道（触发 `HTTP 403`）”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、全球多币种收单与司库平台横向选型矩阵、定量汇损/退货套利测算与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](cross-border-multi-currency-fx-lock-like-for-like-treasury-agent-selection-faq.md)** · **[English Version (`cross-border-multi-currency-fx-lock-like-for-like-treasury-agent-selection-faq.en.md`)](cross-border-multi-currency-fx-lock-like-for-like-treasury-agent-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe 稳定币分账限制（纽约州商家禁用、Connect 分账禁用、`hostedFeePayer` 禁用）、`<= 180 天` 财务打款密钥与 Web IQ `/v3/search` 央行汇率波动核验引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；同币种原币入账（Like-for-Like）、锁汇报价 TTL 与原历史交易汇率退款引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；标准跨境换汇加点（`1.5%–2.5%`）标记为 `official_list_price`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe 稳定币分账限制（纽约州商家禁用、Connect 分账禁用、`hostedFeePayer` 禁用）、`<= 180 天` 财务打款密钥与 Web IQ `/v3/search` 央行汇率波动核验引自 `research/sources.json`（标记为 `official_doc_snapshot`）；同币种原币入账（Like-for-Like）、锁汇报价 TTL 与原历史交易汇率退款引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；标准跨境换汇加点（`1.5%–2.5%`）标记为 `official_list_price`。
 
 ![2026-11-18 跨境电商与多币种平台外汇锁汇 (FX Rate Lock)、同币种结算 (Like-for-Like) 与退货汇损防护 Agent 架构一图流总结](../assets/svg/421-cross-border-multi-currency-fx-lock-like-for-like-treasury-2026-11-18.svg)
 
@@ -20,7 +20,7 @@
 3. **锁汇报价单生命周期（FX Quote TTL）选型：必选【带加密签名与有效期（如 `15 分钟` 或 `24 小时`）的锁汇句柄（`fx_quote_id`），过期自动失效重询价（`HTTP 422`）】**：
    - **核心原因**：防止 B2B 或高客单价买家在汇率有利时生成多份不同币种报价单，等 3 天后汇率暴动才挑对自己最有利的那张旧报价单付款。
 4. **跨境稳定币与分账司法合规选型：严守【纽约州（NY）注册商家禁入稳定币轨道、Stripe Connect 分账禁混用稳定币及 `<= 180 天` 出款密钥红线（`HTTP 403 / 451`）】**：
-   - **核心原因**：严格执行 Stripe 官方 Stage 1754/1755 合规边界，任何触碰 NY 稳定币禁令或 Connect 稳定币分账的请求必须在 **`11 ms`** 内返回 `HTTP 403`。
+   - **核心原因**：严格执行 Stripe 官方 /1755 合规边界，任何触碰 NY 稳定币禁令或 Connect 稳定币分账的请求必须在 **`11 ms`** 内返回 `HTTP 403`。
 
 ---
 
@@ -142,7 +142,7 @@ sequenceDiagram
 | 指标 / 门禁规则项 | 实测数值 / 决策行为 | 数据类别 (Provenance) | 精确来源路径 / 算例说明与架构意义 |
 |---|---|---|---|
 | **同币种原币入账（Like-for-Like）+ 锁汇 TTL 有效 + 原历史汇率退货（Happy Path）** | **`HTTP 200 OK` · `10 ms`**（门禁耗时，季度跨境多币种司库结算批次 `$250,000.00`） | `deterministic_offline_simulation` | `lab/webiq_commerce_demo.py` (`evaluate_cross_border_fx_treasury_agent_policy`)：验证同币种结算与锁汇闭环 |
-| **违反纽约州（NY）稳定币禁令、Connect 稳定币分账，或向未核验账户打款** | **`HTTP 403 Forbidden` · `11 ms` 拦截** (`NY_STABLECOIN_CONNECT_VIOLATION_OR_UNVERIFIED_TREASURY_PAYOUT_BLOCKED`) | `official_doc_snapshot` | 严格执行 Stage 1754 纽约州与 Connect 稳定币分账禁令 |
+| **违反纽约州（NY）稳定币禁令、Connect 稳定币分账，或向未核验账户打款** | **`HTTP 403 Forbidden` · `11 ms` 拦截** (`NY_STABLECOIN_CONNECT_VIOLATION_OR_UNVERIFIED_TREASURY_PAYOUT_BLOCKED`) | `official_doc_snapshot` | 严格执行 纽约州与 Connect 稳定币分账禁令 |
 | **锁汇报价单超时过期（Expired FX Quote TTL），或退货按即期汇率重算套利** | **`HTTP 422 Unprocessable` · `14 ms` 拦截** (`EXPIRED_FX_QUOTE_TTL_OR_SPOT_RATE_RETURN_ARBITRAGE_BLOCKED`) | `deterministic_offline_simulation` | 阻断拿着过期汇率付款以及利用无理由退货套取汇率差 |
 | **Web IQ 检出小币种汇率日内闪崩 `>3%` 点差熔断，或司库打款密钥 `>180 天`** | **`HTTP 451 Hold` · `265 ms` 挂起** (`WEBIQ_FX_VOLATILITY_CIRCUIT_BREAKER_OR_STALE_180D_TREASURY_KEY_HOLD`) | `official_doc_snapshot` | 在央行干预或汇率闪崩时暂停无保护锁汇，并强制轮换超 180 天密钥 |
 | **启用“Like-for-Like 原币池消除 4% 往返换汇 + 批发汇率定时归集”** | **`HTTP 409 Confirm` · 立省双重换汇手续费与退货汇损 `$52,500.00`（净结算成本优化至 `$197,500.00`）** | `deterministic_offline_simulation` | 消灭收单强转美元再买回欧元的双重割肉（综合增效 `21.0%`） |

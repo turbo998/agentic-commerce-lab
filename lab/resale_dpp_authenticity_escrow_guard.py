@@ -1,4 +1,4 @@
-"""Stage 21: EU ESPR Digital Product Passport (DPP) Provenance, C2C Authentication Escrow & Trade-In Anti-Bait-and-Switch Guard.
+"""EU ESPR Digital Product Passport (DPP) Provenance, C2C Authentication Escrow & Trade-In Anti-Bait-and-Switch Guard.
 
 Implements three deterministic production guardrails for circular-economy Agentic Commerce
 (high-value electronics, enterprise GPUs, luxury goods, and certified industrial spares):

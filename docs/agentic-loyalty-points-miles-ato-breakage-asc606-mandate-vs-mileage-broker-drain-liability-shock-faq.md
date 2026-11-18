@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：智能体会员积分、航司里程与酒店常旅客计划（Loyalty Miles, Points & Cash+Points 混合支付）、防撞库盗号秒转积分与票代黄牛倒卖（Anti-ATO FIDO2 Passkey + 新增受让人 `>=72h` 冷静期 + 严禁积分兑现闭环礼品卡）、会计准则 `ASC 606-10-55-42 / IFRS 15`“重大权利（Material Right）”独立售价（`SSP`）递延收入合同负债核算与沉淀率（Breakage Rate）精算、动态积分价值区间锁（`CPP: Cents-Per-Point <= 1.5¢` 防越权升值导致资产负债表重述爆雷）、以及欧盟/加利福尼亚积分过期合规与购买积分（Paid Points）不可过期隔离  
 > **阅读对象**：航司/酒店/大型零售集团会员忠诚度与联名卡结算架构师、支付与混合收银（Cash+Points）研发负责人、CFO 财务收入确认（ASC 606）与反黑产总监  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 222 智能体积分里程防盗刷洗分、新增受让人 72h 锁、`ASC 606` 单点价值 CPP 熔断与 Microsoft Web IQ 会计/消保法规核验交互沙盒）](../live-demo.html) · [`assets/svg/224-agentic-loyalty-points-miles-ato-breakage-asc606-2026-11-14.svg`](../assets/svg/224-agentic-loyalty-points-miles-ato-breakage-asc606-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含智能体积分里程防盗刷洗分、新增受让人 72h 锁、`ASC 606` 单点价值 CPP 熔断与 Microsoft Web IQ 会计/消保法规核验交互沙盒）](../live-demo.html) · [`assets/svg/224-agentic-loyalty-points-miles-ato-breakage-asc606-2026-11-14.svg`](../assets/svg/224-agentic-loyalty-points-miles-ato-breakage-asc606-2026-11-14.svg)
 
 ---
 

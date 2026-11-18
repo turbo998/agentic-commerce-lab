@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：移动端 AI 智能体订阅与算力充值（iOS `StoreKit 2` / Android `Google Play Billing` vs `Stripe Web Checkout`）、欧盟《数字市场法案（DMA）》与美日反引导禁令（Anti-Steering External Purchase Link Entitlement）地域围栏动态路由、苹果核心技术费（CTF `€0.50`）盈亏平衡精算、App Store Server API `CONSUMPTION_REQUEST` 12 小时内回传 12 维消费遥测（`consumptionStatus = FULLY_CONSUMED`）阻断“充完算力向苹果恶意申退”白嫖、以及 `REFUND / REVOKE` JWS 签名事件毫秒级回收权益  
 > **阅读对象**：AI Native 应用与移动游戏商业化架构师、增长与订阅计费（Subscription & Entitlement）工程负责人、法务合规总监与 CFO  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 210 智能体 IAP vs Web-Out 地域合规路由、Apple `CONSUMPTION_REQUEST` 12h 抗恶意退款与 Microsoft Web IQ 各国应用商店反垄断费率核验交互沙盒）](../live-demo.html) · [`assets/svg/212-agentic-iap-web-out-dma-anti-steering-consumption-api-2026-11-14.svg`](../assets/svg/212-agentic-iap-web-out-dma-anti-steering-consumption-api-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含智能体 IAP vs Web-Out 地域合规路由、Apple `CONSUMPTION_REQUEST` 12h 抗恶意退款与 Microsoft Web IQ 各国应用商店反垄断费率核验交互沙盒）](../live-demo.html) · [`assets/svg/212-agentic-iap-web-out-dma-anti-steering-consumption-api-2026-11-14.svg`](../assets/svg/212-agentic-iap-web-out-dma-anti-steering-consumption-api-2026-11-14.svg)
 
 ---
 

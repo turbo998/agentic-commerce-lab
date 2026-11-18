@@ -1,6 +1,6 @@
 # B2B 自动询报价暗标逆向拍卖（Autonomous B2B Sealed-Bid Reverse Auction）与防围标串标密码学承诺（Cryptographic Commit-Reveal Anti-Collusion Mandate）架构：两阶段盲标哈希承诺令牌（`rfq_sealed_bid_commit_...` + Web IQ 实控人穿透防陪标核验）vs 传统明标泄露底价与关联空壳公司围标串通选型与原理解析 FAQ
 
-> **文档类型**：AI Solution Architect 架构选型与协议第一性原理解析指南（FAQ-Driven Deep Dive · Round 32）  
+> **文档类型**：AI Solution Architect 架构选型与协议第一性原理解析指南（FAQ-Driven Deep Dive）  
 > **阅读耗时**：3 分钟速览选型结论 · 10 分钟掌握两阶段盲标哈希承诺（Commit-Reveal Sealed Bid）、保留底价红线与 Microsoft Web IQ 供应商实控人（UBO）防围标核验边界  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md`（通俗大白话 + 第一性原理 + Mermaid 决策树/对比图/时序图 + 选型矩阵 + 可复现定量报告 + 生产核验清单）  
 > **核心专题**：**唯一聚焦「企业采购 Agent 在自动发起 B2B 询报价（RFQ）与多供应商逆向竞价时，如何通过两阶段密码学盲标承诺（Commit-Reveal）与实控人股权穿透核验，彻底阻断明文报价提前泄露、临期恶意改标撤标以及同一老板注册 3 家空壳马甲公司围标抬价」**  

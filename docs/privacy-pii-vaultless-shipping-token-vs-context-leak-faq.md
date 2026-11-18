@@ -6,7 +6,7 @@
 > **最后更新**：2026-11-08（基于 UCP 履约地址最小化披露规范、OWASP LLM01 间接提示词注入防护与 GDPR Art. 17 密码学粉碎评测套件，*as of 2026-11-08*）  
 > **全局数据溯源声明（Provenance & Evidence Notice）**：本文所有定量指标均显式标注来源类型：`deterministic_offline_simulation`（基于 `lab/webiq_commerce_demo.py` 的本地可复现离线仿真）、`synthetic_policy`（架构师参考 DLP 拦截规则与令牌作用域策略）、`official_doc_snapshot`（截至 *as of 2026-11-08* 的 GDPR / OWASP / UCP 规范文档快照）及 `not_measured`（外部顺丰/FedEx/DHL 承运商电子面单主机实时打印耗时实测项）。
 
-![2026-11-08 AI Agent 结账隐私合规、收货地址脱敏与提示词注入防泄密架构一图流总结](../../assets/svg/20-privacy-pii-vaultless-shipping-token-2026-11-08.svg)
+![2026-11-08 AI Agent 结账隐私合规、收货地址脱敏与提示词注入防泄密架构一图流总结](../assets/svg/20-privacy-pii-vaultless-shipping-token-2026-11-08.svg)
 
 ---
 

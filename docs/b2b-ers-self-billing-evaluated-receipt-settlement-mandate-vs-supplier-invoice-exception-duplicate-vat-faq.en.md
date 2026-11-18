@@ -3,7 +3,7 @@
 > **Document Type**: Architect's Selection & First-Principles FAQ (Benchmarking the 6-Section Standard of `ib-vs-ethernet-roce-selection-faq.md`)  
 > **Core Domain Coverage**: B2B Evaluated Receipt Settlement (`ERS` / `Self-Billing` / `Autofacturation` / `Gutschriftverfahren`), EU VAT Directive `2006/112/EC Article 224` & UK HMRC VAT Notice `700/62` Bilateral Self-Billing Agreements (`SBA <= 12 Months`), Peppol BIS Self-Billing 3.0 & ANSI X12 `EDI 861`, Calibrated Warehouse Net-Weight Receipt Tolerances, and Anti-Double-Invoicing (`Blocking Rogue Supplier EDI 810 on ERS POs`)  
 > **Target Audience**: Automotive OEM & Direct-Materials Supply-Chain Architects, Retail VMI / Consignment Settlement Engineers, ERP (`SAP S/4HANA MRRL` / Oracle Fusion) AP Automation Directors, and Global Tax Counsel  
-> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Round 201 Interactive Sandbox for B2B ERS Self-Billing, Rogue Supplier Invoice Blocking, and Microsoft Web IQ EU VAT Art. 224 / HMRC Compliance Verification)](../live-demo.en.html) · [`assets/svg/203-b2b-ers-self-billing-evaluated-receipt-settlement-2026-11-14.svg`](../assets/svg/203-b2b-ers-self-billing-evaluated-receipt-settlement-2026-11-14.svg)
+> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Interactive Sandbox for B2B ERS Self-Billing, Rogue Supplier Invoice Blocking, and Microsoft Web IQ EU VAT Art. 224 / HMRC Compliance Verification)](../live-demo.en.html) · [`assets/svg/203-b2b-ers-self-billing-evaluated-receipt-settlement-2026-11-14.svg`](../assets/svg/203-b2b-ers-self-billing-evaluated-receipt-settlement-2026-11-14.svg)
 
 ---
 

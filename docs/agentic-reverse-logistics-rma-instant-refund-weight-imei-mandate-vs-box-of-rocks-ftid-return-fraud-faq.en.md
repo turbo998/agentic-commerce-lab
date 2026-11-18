@@ -3,7 +3,7 @@
 > **Document Type**: Architect's Selection & First-Principles FAQ (Benchmarking the 6-Section Standard of `ib-vs-ethernet-roce-selection-faq.md`)  
 > **Core Domain Coverage**: Agentic Return Merchandise Authorization (`RMA`) & Reverse Logistics, Instant Drop-Off Refunds vs. Return-to-Exchange Conversion, Fraudulent Tracking ID Manipulation (`FTID` Empty-Envelope Address Rerouting), Carrier Sorting-Hub Dimensioning-Weighing-Scanning (`DWS ±5%` Weight Tolerance), Outbound-vs-Inbound Serial / `IMEI` / NFC Cryptographic Hash Parity, and EU Consumer Rights Directive (`2011/83/EU Art. 14`) Diminished-Value Deductions  
 > **Target Audience**: E-Commerce Returns & Reverse-Supply-Chain Architects, Warehouse Management System (`WMS`) Engineers, Fraud & Loss-Prevention Directors, and CFOs  
-> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Round 206 Interactive Sandbox for Anti-FTID Geohash/Weight Gating, Outbound-vs-Inbound IMEI Hash Verification & Microsoft Web IQ Return Compliance Lookup)](../live-demo.en.html) · [`assets/svg/208-agentic-reverse-logistics-rma-instant-refund-weight-imei-2026-11-14.svg`](../assets/svg/208-agentic-reverse-logistics-rma-instant-refund-weight-imei-2026-11-14.svg)
+> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Interactive Sandbox for Anti-FTID Geohash/Weight Gating, Outbound-vs-Inbound IMEI Hash Verification & Microsoft Web IQ Return Compliance Lookup)](../live-demo.en.html) · [`assets/svg/208-agentic-reverse-logistics-rma-instant-refund-weight-imei-2026-11-14.svg`](../assets/svg/208-agentic-reverse-logistics-rma-instant-refund-weight-imei-2026-11-14.svg)
 
 ---
 

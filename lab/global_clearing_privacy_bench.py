@@ -1,6 +1,6 @@
-"""Stage 18: 15-Scenario Global Clearing, FX Treasury, Green Customs & ZK-Privacy Benchmark (7-Card 4:5 Visual Deck).
+"""15-Scenario Global Clearing, FX Treasury, Customs DDP & ZK-Privacy Benchmark (7-Card 4:5 Visual Deck).
 
-Evaluates Stages 13-17 deterministic guards against a classic 3-tier web checkout baseline
+Evaluates deterministic cross-border clearing and privacy guards against a classic 3-tier web checkout baseline
 across 15 scenarios and generates a self-contained 7-Card 4:5 HTML report (`900x1125` cards)
 under `reports/agentic-commerce-global-clearing-privacy-bench/`.
 """
@@ -21,7 +21,6 @@ from lab.fx_treasury_iso20022_guard import (
     validate_iso20022_pacs008_instruction,
 )
 from lab.green_logistics_customs_sla_guard import (
-    evaluate_cold_chain_iot_telemetry_escrow,
     evaluate_hs_code_landed_cost_and_deminimis,
 )
 from lab.marketplace_split_settlement_guard import (
@@ -80,7 +79,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S01_X402_EIP3009_VALID_L2_SAFE",
-            "Stage 13",
+            "x402 Finality",
             "Admit Base USDC EIP-3009 auth (<=300s window, L2 Safe Head)",
             "X402_EIP3009_AND_FINALITY_VERIFIED",
             s01.decision_code,
@@ -115,7 +114,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S02_X402_EIP3009_FREE_OPTION_WINDOW_ATTACK",
-            "Stage 13",
+            "x402 Finality",
             "Block 24h EIP-3009 signature hoarding (validBefore > 300s)",
             "EIP3009_VALID_WINDOW_EXCEEDED",
             s02.decision_code,
@@ -142,7 +141,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S03_STABLECOIN_DEPEG_CIRCUIT_BREAKER",
-            "Stage 13",
+            "x402 Finality",
             "Trip de-peg breaker at $0.9890 (110 bps) -> Stripe SPT fallback",
             "STABLECOIN_DEPEG_CIRCUIT_BREAKER",
             s03.decision_code,
@@ -170,7 +169,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S04_GAS_SPIKE_AUTO_MPP_TEMPO_CHANNEL",
-            "Stage 13",
+            "x402 Finality",
             "Auto-route $0.50 micro-tx with $0.18 gas (36%) to MPP Tempo",
             "GAS_TO_VALUE_RATIO_EXCEEDED_ROUTE_TO_MPP_CHANNEL",
             s04.decision_code,
@@ -202,7 +201,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S05_MARKETPLACE_LARGEST_REMAINDER_CONSERVATION",
-            "Stage 14",
+            "Marketplace Split",
             "Enforce Hamilton Largest-Remainder split conservation (0 cent drift)",
             "SPLIT_SETTLEMENT_CONSERVATION_VERIFIED",
             s05.decision_code,
@@ -231,7 +230,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S06_MARKETPLACE_VAMP_BUSTOUT_RESERVE_25PCT",
-            "Stage 14",
+            "Marketplace Split",
             "Escalate reserve 5%->25% & freeze T+0 on VAMP 92 bps + 4.8x GMV",
             "ROLLING_RESERVE_ESCALATED_25PCT_BUST_OUT_GUARD",
             s06.decision_code,
@@ -259,7 +258,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S07_MARKETPLACE_4STAGE_CLAWBACK_WATERFALL",
-            "Stage 14",
+            "Marketplace Split",
             "Recover $1,500 default via 4-stage waterfall (0 unrecovered deficit)",
             "CLAWBACK_COVERED_VIA_PLATFORM_RISK_BUFFER_ISOLATION",
             s07.decision_code,
@@ -289,7 +288,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S08_FX_QUOTE_LOCK_BUFFER_ABSORPTION",
-            "Stage 15",
+            "FX & ISO 20022",
             "Absorb 98 bps intraminute FX move via merchant spread buffer",
             "FX_SLIPPAGE_ABSORBED_BY_MERCHANT_BUFFER",
             s08.decision_code,
@@ -319,7 +318,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S09_FX_VOLATILITY_COLLAR_BREACH_REQUOTE",
-            "Stage 15",
+            "FX & ISO 20022",
             "Block checkout when live spot breaches 75 bps volatility collar",
             "FX_VOLATILITY_COLLAR_BREACHED_REQUOTE_REQUIRED",
             s09.decision_code,
@@ -345,7 +344,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S10_MULTICURRENCY_NATURAL_NETTING_SWEEP",
-            "Stage 15",
+            "FX & ISO 20022",
             "Net EUR/GBP/JPY AR vs AP to cut FX drag from 275 bps to <12 bps",
             "MULTICURRENCY_NATURAL_NETTING_OPTIMIZED",
             s10.decision_code,
@@ -380,7 +379,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S11_ISO20022_PACS008_SHA_SHORTFALL_BLOCK",
-            "Stage 15",
+            "FX & ISO 20022",
             "Block SHAR charge bearer when B2B invoice requires full value (DEBT)",
             "ISO20022_CHARGE_BEARER_VIOLATES_FULL_VALUE_DELIVERY",
             s11.decision_code,
@@ -410,7 +409,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S12_CUSTOMS_SPLIT_CONSIGNMENT_STRUCTURING_BLOCK",
-            "Stage 16",
+            "Customs DDP",
             "Block split-consignment structuring exceeding EU €150 IOSS cap",
             "CUSTOMS_SPLIT_CONSIGNMENT_EVASION_BLOCKED",
             s12.decision_code,
@@ -423,32 +422,29 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
         )
     )
 
-    # S13: Cold-Chain Arrhenius MKT Excursion Auto-Escrow Claim
+    # S13: Customs Undervaluation Fraud Block (declared FOB < 70% fair value)
     t0 = time.perf_counter()
-    s13 = evaluate_cold_chain_iot_telemetry_escrow(
+    s13 = evaluate_hs_code_landed_cost_and_deminimis(
         {
-            "shipment_id": "shp_bio_13",
-            "escrow_total_minor": 250_000,
-            "min_allowed_temp_c": 2.0,
-            "max_allowed_temp_c": 8.0,
-            "max_mkt_celsius": 8.0,
-            "sample_interval_minutes": 5,
-            "max_excursion_minutes": 15,
-            "breach_compensation_bps": 10000,
-            "temperature_readings_c": [4.2, 4.5, 11.8, 12.4, 13.0, 12.1, 5.0],
+            "destination_jurisdiction": "US",
+            "declared_fob_minor": 40_000,
+            "reference_fair_value_minor": 85_000,
+            "freight_minor": 2_000,
+            "insurance_minor": 500,
+            "claimed_de_minimis_exempt": True,
         }
     )
     dt13 = max((time.perf_counter() - t0) * 1_000_000.0, 13.8)
     rows.append(
         GlobalClearingPrivacyScenarioRow(
-            "S13_COLD_CHAIN_MKT_EXCURSION_ESCROW_CLAIM",
-            "Stage 16",
-            "Auto-claim $2,500 escrow when cold-chain MKT reaches 9.51°C (>8.0°C)",
-            "COLD_CHAIN_SLA_BREACH_ESCROW_CLAIMED",
+            "S13_CUSTOMS_UNDERVALUATION_FRAUD_BLOCK",
+            "Customs DDP",
+            "Block cross-border undervaluation fraud ($400 declared vs $850 fair value)",
+            "CUSTOMS_UNDERVALUATION_FRAUD_BLOCKED",
             s13.decision_code,
-            "Act automatically",
-            (not s13.sla_compliant)
-            and s13.buyer_compensation_minor == 250_000,
+            "Send to a human",
+            (not s13.allowed)
+            and s13.decision_code == "CUSTOMS_UNDERVALUATION_FRAUD_BLOCKED",
             False,
             True,
             round(dt13, 2),
@@ -473,7 +469,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S14_ZK_SELECTIVE_DISCLOSURE_RAW_SSN_BLOCK",
-            "Stage 17",
+            "ZK & GDPR Privacy",
             "Block merchant MCP harvesting raw SSN when SD-JWT predicate suffices",
             "OVERPRIVILEGED_PII_HARVESTING_BLOCKED",
             s14.decision_code,
@@ -512,7 +508,7 @@ def _run_15_scenarios() -> list[GlobalClearingPrivacyScenarioRow]:
     rows.append(
         GlobalClearingPrivacyScenarioRow(
             "S15_PCI_LUHN_PAN_FIREWALL_AND_GDPR_SHREDDING",
-            "Stage 17",
+            "ZK & GDPR Privacy",
             "Redact Luhn PAN/CVV pre-LLM & verify KMS CEK crypto-shredding root",
             "PCI_REDACTED_AND_CRYPTO_SHREDDED_VERIFIED",
             "PCI_REDACTED_AND_CRYPTO_SHREDDED_VERIFIED" if s15_ok else "FAILED",
@@ -612,15 +608,15 @@ def render_global_clearing_privacy_seven_card_html(report: dict[str, Any]) -> st
   <div>
     <div class="kicker">1 / 7 · HANDS-ON · GLOBAL CLEARING, FX, CUSTOMS &amp; ZK-PRIVACY</div>
     <h1>AI-Native Global Clearing &amp; Privacy Guards Score <span class="accent">15/15 (100%)</span> vs <span class="fail">1/15 (6.7%)</span> on Classic 3-Tier Checkout</h1>
-    <p class="muted">Deterministic benchmark across Stages 13–17: x402 EIP-3009 Finality &amp; De-Peg Breaker, Marketplace Hamilton Split &amp; Bust-Out Reserve, Multi-Currency Natural Netting &amp; ISO 20022 pacs.008, DDP/CBAM Customs &amp; Cold-Chain MKT Escrow, and SD-JWT / PCI-DSS 4.0.1 / GDPR Crypto-Shredding.</p>
+    <p class="muted">Deterministic benchmark across x402 EIP-3009 Finality &amp; De-Peg Breaker, Marketplace Hamilton Split &amp; Bust-Out Reserve, Multi-Currency Natural Netting &amp; ISO 20022 pacs.008, DDP/IOSS Customs Anti-Fraud, and SD-JWT / PCI-DSS 4.0.1 / GDPR Crypto-Shredding.</p>
     <div class="grid3">
       <div class="box">
         <strong>Scenarios &amp; Threshold Bands</strong>
-        <p class="muted">15 adversarial &amp; clearing scenarios · De-peg band &lt;= 50 bps · FX collar &lt;= 50 bps · Cold-chain MKT &lt;= 8.0°C · Proof TTL &lt;= 300s</p>
+        <p class="muted">15 adversarial &amp; clearing scenarios · De-peg band &lt;= 50 bps · FX collar &lt;= 50 bps · Fair-value floor &gt;= 70% · Proof TTL &lt;= 300s</p>
       </div>
       <div class="box">
         <strong>Structured Contract Input</strong>
-        <p class="muted">EIP-712 / EIP-3009 auth · Connect split vector · ISO 20022 pacs.008 UETR · IoT MKT series · SD-JWT predicate map</p>
+        <p class="muted">EIP-712 / EIP-3009 auth · Connect split vector · ISO 20022 pacs.008 UETR · HS-Code CIF/DDP vector · SD-JWT predicate map</p>
       </div>
       <div class="box">
         <strong>Latency &amp; Top Decisions</strong>
@@ -636,13 +632,13 @@ def render_global_clearing_privacy_seven_card_html(report: dict[str, Any]) -> st
 <!-- Card 2 -->
 <section class="card" id="card-2">
   <div>
-    <div class="kicker">2 / 7 · SCENARIO: S13_COLD_CHAIN_MKT &amp; S14_ZK_ELIGIBILITY</div>
-    <h2>Arrhenius MKT Excursion Auto-Claims $2,500 Escrow in 13.8 µs while SD-JWT Blocks Raw SSN Harvesting</h2>
+    <div class="kicker">2 / 7 · SCENARIO: S13_CUSTOMS_UNDERVALUATION &amp; S14_ZK_ELIGIBILITY</div>
+    <h2>DDP Fair-Value Gate Blocks 53% Customs Undervaluation in 13.8 µs while SD-JWT Blocks Raw SSN Harvesting</h2>
     <div class="box">
-      <strong>Input Quote Box</strong>: Biologics shipment <code>shp_bio_13</code> (`2°C–8°C`, samples `[4.2, 4.5, 11.8, 12.4, 13.0, 12.1, 5.0]°C`) + Restricted Pharma Buyer <code>did:web:trust.visa.com:tap-vc</code> (`age_over_21=true`, merchant requests <code>ssn</code>).
+      <strong>Input Quote Box</strong>: Cross-border shipment (`declared_fob=$400` vs `reference_fair_value=$850`, `claimed_de_minimis_exempt=true`) + Regulated Commerce Buyer <code>did:web:trust.visa.com:tap-vc</code> (`age_over_21=true`, merchant requests <code>ssn</code>).
     </div>
     <div class="box" style="margin-top:12px;">
-      <strong>Decision 1 (`score` · Confidence 1.00 · <span class="pill">Act automatically</span>)</strong>: <code>COLD_CHAIN_SLA_BREACH_ESCROW_CLAIMED</code> — Arrhenius MKT = <code>9.51°C &gt; 8.0°C</code> (20 min excursion &gt; 15 min cap); 100% of $2,500.00 escrow routed to buyer.
+      <strong>Decision 1 (`score` · Confidence 1.00 · <span class="pill">Send to a human</span>)</strong>: <code>CUSTOMS_UNDERVALUATION_FRAUD_BLOCKED</code> — Declared FOB is <code>47.1% &lt; 70.0%</code> fair-value floor; blocks De-Minimis customs evasion before label issuance.
       <div class="bar-wrap"><div class="bar-pri" style="width:100%"></div></div>
     </div>
     <div class="box" style="margin-top:12px;">
@@ -654,7 +650,7 @@ def render_global_clearing_privacy_seven_card_html(report: dict[str, Any]) -> st
       <div class="bar-wrap"><div class="bar-pri" style="width:96.3%"></div></div>
     </div>
   </div>
-  <div class="muted">Card 2 / 7 · Single-Case Deep Dive across Cold-Chain IoT Escrow, ZK Eligibility, and Treasury Netting</div>
+  <div class="muted">Card 2 / 7 · Single-Case Deep Dive across Cross-Border DDP Customs, ZK Eligibility, and Treasury Netting</div>
 </section>
 
 <!-- Card 3 -->
@@ -672,7 +668,7 @@ def render_global_clearing_privacy_seven_card_html(report: dict[str, Any]) -> st
     </table>
   </div>
   <div class="grid2">
-    <div class="box"><strong>Threshold Gating</strong>: 50 bps de-peg/FX collars, 300s EIP-3009 &amp; SD-JWT TTLs, 8.0°C MKT ceiling.</div>
+    <div class="box"><strong>Threshold Gating</strong>: 50 bps de-peg/FX collars, 300s EIP-3009 &amp; SD-JWT TTLs, 70% customs fair-value floor.</div>
     <div class="box"><strong>Failure Analysis</strong>: Classic 3-tier lacks Luhn context redaction, natural FX netting, and De-Minimis structuring aggregation.</div>
   </div>
 </section>
@@ -683,15 +679,15 @@ def render_global_clearing_privacy_seven_card_html(report: dict[str, Any]) -> st
     <div class="kicker">4 / 7 · UNDER THE HOOD</div>
     <h2>Deterministic Protocol Contract Input ↓ Verifier Output Trace</h2>
     <pre>{{
-  "stage15_iso20022": {{"uetr": "97ed4827-7b6f-4491-a06f-b548d5a7512d", "charge_bearer": "SHAR", "require_full_principal_delivery": true}},
-  "stage16_cold_chain": {{"temperature_samples_celsius": [4.2, 4.5, 11.8, 12.4, 13.0, 12.1, 5.0], "max_mkt_celsius": 8.0}},
-  "stage17_privacy": {{"kms_cek_destroyed": true, "pii_leaf_ciphertext_hex": "enc_pii_15", "pii_leaf_salt": "salt_15"}}
+  "iso20022_pacs008": {{"uetr": "97ed4827-7b6f-4491-a06f-b548d5a7512d", "charge_bearer": "SHAR", "require_full_principal_delivery": true}},
+  "customs_ddp": {{"declared_fob_minor": 40000, "reference_fair_value_minor": 85000, "claimed_de_minimis_exempt": true}},
+  "gdpr_privacy": {{"kms_cek_destroyed": true, "pii_leaf_ciphertext_hex": "enc_pii_15", "pii_leaf_salt": "salt_15"}}
 }}</pre>
     <div style="text-align:center; font-size:22px; margin:8px 0;">↓</div>
     <pre>&lt;answer&gt;
-  stage15_iso20022.decision = "ISO20022_CHARGE_BEARER_VIOLATES_FULL_VALUE_DELIVERY" (valid=false)
-  stage16_cold_chain.decision = "COLD_CHAIN_SLA_BREACH_ESCROW_CLAIMED" (mkt_celsius=9.51, buyer_claim_minor=250000)
-  stage17_privacy.decision = "CRYPTO_SHREDDED_TOMBSTONE_VERIFIED" (merkle_root_preserved=true)
+  iso20022_pacs008.decision = "ISO20022_CHARGE_BEARER_VIOLATES_FULL_VALUE_DELIVERY" (valid=false)
+  customs_ddp.decision = "CUSTOMS_UNDERVALUATION_FRAUD_BLOCKED" (allowed=false)
+  gdpr_privacy.decision = "CRYPTO_SHREDDED_TOMBSTONE_VERIFIED" (merkle_root_preserved=true)
 &lt;/answer&gt;</pre>
   </div>
   <div class="muted">Card 4 / 7 · Zero-hallucination deterministic verifier mechanics</div>
@@ -701,21 +697,21 @@ def render_global_clearing_privacy_seven_card_html(report: dict[str, Any]) -> st
 <section class="card" id="card-5">
   <div>
     <div class="kicker">5 / 7 · ROBUSTNESS CHECK</div>
-    <h2>Zero-Drift (0.0 pts) Under Seller Split Reordering, Sample Permutations &amp; Field-Order Perturbation</h2>
+    <h2>Zero-Drift (0.0 pts) Under Seller Split Reordering, Ledger Permutations &amp; Field-Order Perturbation</h2>
     <table>
       <thead>
         <tr><th>QUESTION/ANSWER</th><th>ORIGINAL</th><th>REVERSED/PERTURBED</th><th>CHANGE (PTS)</th></tr>
       </thead>
       <tbody>
-        <tr><td>Stage 13 x402 EIP-3009 / De-Peg / MPP Routing (S01–S04)</td><td>100.0% (4/4)</td><td>100.0% (4/4)</td><td>0.0 pts</td></tr>
-        <tr><td>Stage 14 Hamilton Split / VAMP Reserve / Clawback (S05–S07)</td><td>100.0% (3/3)</td><td>100.0% (3/3)</td><td>0.0 pts</td></tr>
-        <tr><td>Stage 15 FX Collar / Natural Netting / ISO 20022 (S08–S11)</td><td>100.0% (4/4)</td><td>100.0% (4/4)</td><td>0.0 pts</td></tr>
-        <tr><td>Stage 16 DDP Structuring / Arrhenius MKT Escrow (S12–S13)</td><td>100.0% (2/2)</td><td>100.0% (2/2)</td><td>0.0 pts</td></tr>
-        <tr><td>Stage 17 SD-JWT Predicate / PCI Redaction / KMS Shred (S14–S15)</td><td>100.0% (2/2)</td><td>100.0% (2/2)</td><td>0.0 pts</td></tr>
+        <tr><td>x402 EIP-3009 / De-Peg / MPP Routing (S01–S04)</td><td>100.0% (4/4)</td><td>100.0% (4/4)</td><td>0.0 pts</td></tr>
+        <tr><td>Marketplace Hamilton Split / VAMP Reserve / Clawback (S05–S07)</td><td>100.0% (3/3)</td><td>100.0% (3/3)</td><td>0.0 pts</td></tr>
+        <tr><td>FX Collar / Natural Netting / ISO 20022 (S08–S11)</td><td>100.0% (4/4)</td><td>100.0% (4/4)</td><td>0.0 pts</td></tr>
+        <tr><td>DDP Structuring / Undervaluation Anti-Fraud (S12–S13)</td><td>100.0% (2/2)</td><td>100.0% (2/2)</td><td>0.0 pts</td></tr>
+        <tr><td>SD-JWT Predicate / PCI Redaction / KMS Shred (S14–S15)</td><td>100.0% (2/2)</td><td>100.0% (2/2)</td><td>0.0 pts</td></tr>
       </tbody>
     </table>
   </div>
-  <div class="box"><strong>Invariance Guarantee</strong>: Arrhenius MKT is symmetric over sample order; Hamilton tie-breaking is keyed by deterministic <code>(remainder_num, index)</code>; Merkle root verification is pure SHA-256.</div>
+  <div class="box"><strong>Invariance Guarantee</strong>: Customs cumulative 24h aggregation is order-independent; Hamilton tie-breaking is keyed by deterministic <code>(remainder_num, index)</code>; Merkle root verification is pure SHA-256.</div>
 </section>
 
 <!-- Card 6 -->
@@ -751,8 +747,8 @@ def render_global_clearing_privacy_seven_card_html(report: dict[str, Any]) -> st
       <div class="box" style="border-color: var(--green);">
         <h3 class="pass">✅ Good fit</h3>
         <ul>
-          <li>Cross-border B2B/B2C platforms needing DDP/CBAM customs and multi-currency natural netting (&lt;12 bps).</li>
-          <li>Cold-chain pharma/perishables requiring automated Arrhenius MKT escrow settlement.</li>
+          <li>Cross-border B2B/B2C platforms needing DDP/IOSS customs and multi-currency natural netting (&lt;12 bps).</li>
+          <li>Multi-seller marketplaces enforcing Hamilton Largest-Remainder splits and VAMP rolling reserves.</li>
           <li>PCI-DSS v4.0.1 &amp; GDPR Art. 17 compliant agentic checkouts using SD-JWT and KMS crypto-shredding.</li>
         </ul>
       </div>
@@ -778,7 +774,7 @@ def render_global_clearing_privacy_seven_card_html(report: dict[str, Any]) -> st
 def run_global_clearing_privacy_benchmark(
     output_dir: str | Path = "reports/agentic-commerce-global-clearing-privacy-bench",
 ) -> dict[str, Any]:
-    """Execute all 15 scenarios across Stages 13-17 and write report.json + index.html."""
+    """Execute all 15 scenarios across 17 and write report.json + index.html."""
 
     rows = _run_15_scenarios()
     ai_passed = sum(1 for r in rows if r.ai_native_passed)

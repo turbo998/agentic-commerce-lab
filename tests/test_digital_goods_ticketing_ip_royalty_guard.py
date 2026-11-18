@@ -1,4 +1,4 @@
-"""Unit tests for Stage 23 Digital Goods DRM, Anti-Scalping Ticketing Escrow & C2PA Royalty Split Guard."""
+"""Unit tests for Digital Goods DRM, Anti-Scalping Ticketing Escrow & C2PA Royalty Split Guard."""
 
 from __future__ import annotations
 

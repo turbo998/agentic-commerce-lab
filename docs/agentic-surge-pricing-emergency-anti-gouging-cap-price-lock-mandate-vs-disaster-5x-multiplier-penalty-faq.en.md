@@ -3,7 +3,7 @@
 > **Document Type**: Architect's Selection & First-Principles FAQ (Benchmarking the 6-Section Standard of `ib-vs-ethernet-roce-selection-faq.md`)  
 > **Core Domain Coverage**: Agentic Ride-Hailing / Robotaxi Dispatch, Instant Grocery/Medicine Delivery, Airline/Hotel Dynamic Yield Management & Live Ticketing, US State Anti-Price-Gouging Statutes (`California Penal Code § 396` `<= 10%` Emergency Cap, `New York GBL § 396-r`, `Florida Stat. § 501.160`, `Texas DTPA § 17.46`), FEMA & Gubernatorial State-of-Emergency Geofenced Circuit Breakers, Immutable 30-Day Pre-Emergency Baseline Ledgers, and Cryptographic `Price-Lock Quote Tokens (TTL = 300s)` (Preventing FTC Bait-and-Switch Mid-Checkout Price Jumps)  
 > **Target Audience**: Mobility, Instant-Delivery & Travel Pricing Architects, Reinforcement-Learning (`RL`) Yield Management Engineers, Public Policy & Legal Compliance Directors, and CFOs  
-> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Round 218 Interactive Sandbox for State-of-Emergency <=10% Surge Clamping, 300s Price-Lock Token Verification & Microsoft Web IQ FEMA / State AG Anti-Gouging Rule Lookup)](../live-demo.en.html) · [`assets/svg/220-agentic-surge-pricing-emergency-anti-gouging-cap-2026-11-14.svg`](../assets/svg/220-agentic-surge-pricing-emergency-anti-gouging-cap-2026-11-14.svg)
+> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Interactive Sandbox for State-of-Emergency <=10% Surge Clamping, 300s Price-Lock Token Verification & Microsoft Web IQ FEMA / State AG Anti-Gouging Rule Lookup)](../live-demo.en.html) · [`assets/svg/220-agentic-surge-pricing-emergency-anti-gouging-cap-2026-11-14.svg`](../assets/svg/220-agentic-surge-pricing-emergency-anti-gouging-cap-2026-11-14.svg)
 
 ---
 

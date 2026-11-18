@@ -1,4 +1,4 @@
-"""Unit tests for Stage 11 Sealed-Bid Vickrey RFQ, B2B VAT Reverse-Charge & RMA Return Guard."""
+"""Unit tests for Sealed-Bid Vickrey RFQ, B2B VAT Reverse-Charge & RMA Return Guard."""
 
 from __future__ import annotations
 

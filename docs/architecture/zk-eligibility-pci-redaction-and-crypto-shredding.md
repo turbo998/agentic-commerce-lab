@@ -1,6 +1,6 @@
 # Privacy-Preserving Zero-Knowledge Eligibility (`SD-JWT` / `zk-VC`), PCI-DSS v4.0.1 Redaction Firewall & GDPR Crypto-Shredding Ledger
 
-**Date**: 2026-10-19 (Stage 17 Overnight Deep-Dive)  
+**Date**: 2026-10-19  
 **Scope**: IETF `SD-JWT` (RFC 9901) / W3C Verifiable Credentials × Visa VIC / Stripe SPT Tokenization (`PCI-DSS v4.0.1`) × ACP `PR #316` ATDRP §7.4a Merkle Ledger × GDPR Art. 17 Crypto-Shredding
 
 ---

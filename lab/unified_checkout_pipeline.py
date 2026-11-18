@@ -1,4 +1,4 @@
-"""Stage 8: 7-Gate End-to-End Unified Agentic Checkout Pipeline Orchestrator and
+"""7-Gate End-to-End Unified Agentic Checkout Pipeline Orchestrator and
 14-Scenario Chaos Resilience 7-Card 4:5 Benchmark Report Generator.
 
 Chains all 7 deterministic guard layers with fail-fast short-circuiting and microsecond telemetry:
@@ -56,7 +56,6 @@ from lab.fx_treasury_iso20022_guard import (
     validate_iso20022_pacs008_instruction,
 )
 from lab.green_logistics_customs_sla_guard import (
-    evaluate_cold_chain_iot_telemetry_escrow,
     evaluate_hs_code_landed_cost_and_deminimis,
 )
 from lab.marketplace_split_settlement_guard import (
@@ -107,15 +106,6 @@ from lab.digital_goods_ticketing_ip_royalty_guard import (
     evaluate_event_ticket_anti_scalping_escrow,
     evaluate_generative_ip_royalty_micro_split,
 )
-from lab.energy_v2g_compute_carbon_guard import (
-    evaluate_ev_iso15118_v2g_energy_settlement,
-    evaluate_gpu_spot_compute_sla_and_carbon_retirement,
-)
-from lab.healthcare_fsa_rx_hipaa_guard import (
-    evaluate_sigis_fsa_hsa_iias_split_tender,
-    redact_hipaa_phi_from_payment_descriptor,
-    verify_eprescribing_ncpdp_dea_dispense_guard,
-)
 from lab.trade_finance_ebl_lc_demurrage_guard import (
     evaluate_eucp600_letter_of_credit_document_presentation,
     evaluate_marine_demurrage_detention_parametric_escrow,
@@ -130,157 +120,6 @@ from lab.workload_arch_bench import (
 from lab.zk_eligibility_privacy_redaction_guard import (
     evaluate_zk_selective_disclosure_eligibility,
     scan_and_redact_agent_context_pii_pci,
-)
-from lab.ucp_post_order_catalog_food_guard import (
-    evaluate_acp_mcp_mutating_tool_and_host_gate,
-    evaluate_ucp_catalog_substitute_vs_search_guard,
-    evaluate_ucp_food_allergen_and_dietary_guard,
-    evaluate_ucp_order_consultation_decision_guard,
-    evaluate_ucp_order_modification_lookup_and_fence,
-)
-from lab.ucp_ui_quote_offer_declared_fields_guard import (
-    evaluate_ucp_declared_fields_extensible_checkout,
-    evaluate_ucp_offer_decision_integrity_guard,
-    evaluate_ucp_quote_lifecycle_and_totals_guard,
-    evaluate_ucp_ui_extension_a2ui_mcp_guard,
-    verify_ucp_split_payment_no_credential_echo,
-)
-from lab.ucp_return_webhook_subscription_guard import (
-    evaluate_ucp_business_identity_and_escalation_guard,
-    evaluate_ucp_capability_event_webhook_guard,
-    evaluate_ucp_purchase_options_subscription_payment_guard,
-    evaluate_ucp_return_policy_eligibility_and_fees_guard,
-)
-from lab.ucp_food_lodging_feed_identity_guard import (
-    evaluate_ucp_bulk_catalog_feed_guard,
-    evaluate_ucp_food_checkout_and_fulfillment_guard,
-    evaluate_ucp_identity_linking_and_ecdsa_raw_rs_guard,
-    evaluate_ucp_lodging_cancellation_schedule_guard,
-)
-from lab.ucp_bundle_ap2_budget_acp_telemetry_guard import (
-    evaluate_ap2_iso4217_budget_execution_and_dispute_guard,
-    evaluate_ucp_ap2_credential_provider_tokenization_guard,
-    evaluate_ucp_bundle_cart_and_deferred_terms_guard,
-    evaluate_ucp_catalog_purpose_and_acp_delegate_telemetry_guard,
-)
-from lab.ucp_payment_finality_order_access_acp_india_guard import (
-    evaluate_acp_razorpay_upi_s2s_and_feed_extensions_guard,
-    evaluate_ucp_checkout_payment_finality_and_order_reporting_guard,
-    evaluate_ucp_guest_order_access_and_rest_response_binding_guard,
-    evaluate_ucp_token_context_buyer_consent_and_correspondence_guard,
-)
-from lab.ucp_correlation_idempotency_ap2_conformance_guard import (
-    compute_ap2_open_mandate_hash,
-    evaluate_ap2_mandate_hash_constraints_and_receipt_guard,
-    evaluate_ucp_idempotency_conditional_write_and_signals_guard,
-    evaluate_ucp_identity_recognized_issuer_and_loyalty_guard,
-    evaluate_ucp_platform_reference_and_permalink_version_guard,
-)
-from lab.ucp_wallet_order_modification_consultation_ap2_sdjwt_guard import (
-    compute_ucp_consultation_proposal_digest,
-    evaluate_ucp_ap2_merchant_auth_sdjwt_and_discount_fulfillment_guard,
-    evaluate_ucp_order_consultation_digest_and_auth_guard,
-    evaluate_ucp_order_modification_lookup_and_fence_guard,
-    evaluate_ucp_wallet_attestation_and_payment_render_artifact_guard,
-)
-from lab.ucp_fulfillment_events_similarity_nano_credential_guard import (
-    evaluate_ucp_catalog_similarity_extension_and_image_anchor_guard,
-    evaluate_ucp_credential_echo_cart_checkout_and_deferred_terms_guard,
-    evaluate_ucp_nano_payment_instrument_and_session_binding_guard,
-    evaluate_ucp_standardized_fulfillment_events_and_split_shipment_guard,
-)
-from lab.acp_atdrp_dispute_signature_deep_links_visa_tap_pq_guard import (
-    evaluate_acp_atdrp_dispute_resolution_guard,
-    evaluate_acp_delegate_signature_mcp_idempotency_and_deep_links_guard,
-    evaluate_visa_tap_rfc9421_and_hybrid_pq_did_guard,
-)
-from lab.ucp_address_components_capability_webhooks_quote_acp_feed_guard import (
-    evaluate_acp_host_gate_server_timing_and_feed_update_guard,
-    evaluate_ucp_address_line_components_guard,
-    evaluate_ucp_identity_selection_and_capability_webhook_guard,
-    evaluate_ucp_quote_and_declared_fields_guard,
-)
-from lab.ucp_ap2_token_issuance_catalog_purpose_acp_upi_circle_tap_rfc9421_guard import (
-    ACPFeedExtensionsAndRazorpayUPICircleGuardResult,
-    AP2OpenMandateHashEntropyAndTAPSIMGuardResult,
-    UCPAP2TokenIssuanceAndContentDigestGuardResult,
-    UCPCatalogSearchPurposeAndReferenceIdsGuardResult,
-    evaluate_acp_feed_extensions_and_razorpay_upi_circle_guard,
-    evaluate_ap2_open_mandate_hash_entropy_and_tap_rfc9421_guard,
-    evaluate_ucp_ap2_token_issuance_and_content_digest_guard,
-    evaluate_ucp_catalog_search_purpose_and_reference_ids_guard,
-)
-from lab.ucp_schema_bundle_acp_drift_ap2_aud_tau2_intake_guard import (
-    AcpSchemaOpenApiDriftGuardResult,
-    Ap2KbAudCnfPoppyDpopGuardResult,
-    Tau2IntakeAndTapX402GuardResult,
-    UcpSchemaBundleSellerLogoGuardResult,
-    verify_acp_schema_openapi_property_drift,
-    verify_ap2_kb_aud_cnf_and_poppy_dpop_rules,
-    verify_tau2_intake_and_tap_x402_checkout,
-    verify_ucp_schema_bundle_and_seller_logo,
-)
-from lab.ucp_schema_acp_drift_ap2_aud_tau2_intake_bench import (
-    SchemaDriftAudIntakeScenarioResult,
-    run_ucp_schema_acp_drift_ap2_aud_tau2_intake_benchmark,
-    write_ucp_schema_acp_drift_ap2_aud_tau2_intake_report,
-)
-from lab.ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_guard import (
-    AcpDelegateAuthAndErrorEnvelopeGuardResult,
-    Tau2LoanServicingAndTimeGuardResult,
-    UcpRenderArtifactHostedCheckoutGuardResult,
-    UcpRfc9728CheckoutLifecycleGuardResult,
-    canonicalize_tau2_banking_time_verified,
-    verify_acp_delegate_auth_signature_and_error_envelope,
-    verify_tau2_loan_servicing_and_time_canonicalization,
-    verify_ucp_render_artifact_and_hosted_checkout_guard,
-    verify_ucp_rfc9728_identity_linking_and_checkout_lifecycle,
-)
-from lab.ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_bench import (
-    Rfc9728PixRazorpayAcpLoanScenarioResult,
-    run_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_benchmark,
-    write_ucp_rfc9728_pix_razorpay_acp_envelope_tau2_loan_report,
-)
-from lab.ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_guard import (
-    AcpItemUrlAndFeedUpsertGuardResult,
-    Ap2MultihopAndAtomicConsumptionGuardResult,
-    Tau2VoiceV2SubmissionAndPass3GuardResult,
-    UcpPurchaseOptionsAndOffersGuardResult,
-    verify_acp_item_url_and_feed_upsert_guard,
-    verify_ap2_multihop_present_and_atomic_consumption_guard,
-    verify_tau2_voice_v2_banking_entity_and_crossed_pass3_guard,
-    verify_ucp_purchase_options_and_seller_offers_guard,
-)
-from lab.ucp_purchase_options_offers_acp_feed_ap2_multihop_tau2_voice_bench import (
-    Stage59ScenarioResult,
-    generate_stage59_benchmark_report,
-    run_stage59_benchmark_scenarios,
-)
-from lab.ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_guard import (
-    AcpCheckoutLineItemAndDelegateAuthResultGuardResult,
-    Ap2VctInstrumentExtensionsAndChainDecoderGuardResult,
-    Tau2VoiceDesignScaleAndTextMatrixGuardResult,
-    UcpRootArrayOrderAndAuthStateGuardResult,
-    verify_acp_checkout_line_item_and_delegate_auth_result,
-    verify_ap2_vct_instrument_extensions_and_chain_decoder,
-    verify_tau2_voice_design_scale_and_text_matrix_inline,
-    verify_ucp_root_array_order_annotations_and_auth_state,
-)
-from lab.ucp_root_array_order_acp_lineitem_ap2_vct_tau2_voice_design_bench import (
-    Stage61ScenarioResult,
-    generate_stage61_benchmark_report,
-    run_stage61_benchmark_scenarios,
-)
-from lab.ucp_cart_complete_acp_store_offer_ap2_x402_tau2_telecom_guard import (
-    AcpStoreOfferOrderDelegateGuardResult,
-    Ap2ClosedBindingX402TrustBoostGuardResult,
-    Tau2TelecomLiveDbFaultCliGuardResult,
-    UcpCartCompleteAuthRequirementsGuardResult,
-    compute_ucp_requirement_digest,
-    validate_acp_store_offer_order_delegate_guard,
-    validate_ap2_closed_binding_x402_trustboost_guard,
-    validate_tau2_telecom_livedb_fault_cli_guard,
-    validate_ucp_cart_complete_auth_requirements_guard,
 )
 
 
@@ -354,87 +193,77 @@ class UnifiedCheckoutPipelineInput:
     token_collected_minor: int
     reported_bank_payout_minor: int
 
-    # Optional Stage 9 Recurring Subscription & TCCV Mandate Gate
+    # Optional Recurring Subscription & TCCV Mandate Gate
     recurring_mandate: dict[str, Any] | None = None
     subscription_offer_terms: dict[str, Any] | None = None
 
-    # Optional Stage 10 Enterprise B2B 3-Way Match & Split-Shipment Escrow Gate
+    # Optional Enterprise B2B 3-Way Match & Split-Shipment Escrow Gate
     b2b_po_mandate: dict[str, Any] | None = None
     b2b_grn_receipt: dict[str, Any] | None = None
     b2b_e_invoice: dict[str, Any] | None = None
     b2b_vendor_master: dict[str, Any] | None = None
 
-    # Optional Stage 11 Sealed-Bid Vickrey RFQ & Cross-Border B2B Tax Nexus Gate
+    # Optional Sealed-Bid Vickrey RFQ & Cross-Border B2B Tax Nexus Gate
     rfq_spec: dict[str, Any] | None = None
     rfq_bids: list[dict[str, Any]] | None = None
     rfq_checkout_quote: dict[str, Any] | None = None
     rfq_tax_context: dict[str, Any] | None = None
 
-    # Optional Stage 12 Split-Tender Waterfall & Enterprise Cost-Center Encumbrance Gate
+    # Optional Split-Tender Waterfall & Enterprise Cost-Center Encumbrance Gate
     split_tender_bundle: dict[str, Any] | None = None
     cost_center_chargeback_bundle: dict[str, Any] | None = None
 
-    # Optional Stage 13 x402 EIP-3009 Finality & Stablecoin De-Peg / Gas Routing Gate
+    # Optional x402 EIP-3009 Finality & Stablecoin De-Peg / Gas Routing Gate
     x402_auth_bundle: dict[str, Any] | None = None
     x402_delivery_context: dict[str, Any] | None = None
     stablecoin_peg_and_gas_context: dict[str, Any] | None = None
 
-    # Optional Stage 14 Marketplace Split Settlement & Sub-Merchant KYB Rolling Reserve Gate
+    # Optional Marketplace Split Settlement & Sub-Merchant KYB Rolling Reserve Gate
     marketplace_settlement_bundle: dict[str, Any] | None = None
     seller_kyb_risk_profile: dict[str, Any] | None = None
 
-    # Optional Stage 15 FX Quote Lock & ISO 20022 pacs.008 Instruction Gate
+    # Optional FX Quote Lock & ISO 20022 pacs.008 Instruction Gate
     fx_quote_lock_context: dict[str, Any] | None = None
     iso20022_pacs008_payload: dict[str, Any] | None = None
 
-    # Optional Stage 16 HS-Code DDP De-Minimis/CBAM & Cold-Chain IoT MKT Escrow Gate
+    # Optional HS-Code DDP De-Minimis/CBAM Customs Gate
     customs_deminimis_cbam_context: dict[str, Any] | None = None
-    cold_chain_telemetry_bundle: dict[str, Any] | None = None
 
-    # Optional Stage 17 ZK Selective-Disclosure Eligibility & PCI/PII Context Firewall Gate
+    # Optional ZK Selective-Disclosure Eligibility & PCI/PII Context Firewall Gate
     zk_eligibility_context: dict[str, Any] | None = None
     agent_context_payload_text: str | None = None
 
-    # Optional Stage 18 Subscription Metering, PSD3 Renewal & FTC Click-to-Cancel Gate
+    # Optional Subscription Metering, PSD3 Renewal & FTC Click-to-Cancel Gate
     usage_metering_bundle: dict[str, Any] | None = None
     recurring_renewal_context: dict[str, Any] | None = None
     click_to_cancel_request: dict[str, Any] | None = None
 
-    # Optional Stage 19 Promo Coupon Stacking, Affiliate Attribution & Loyalty Clawback Gate
+    # Optional Promo Coupon Stacking, Affiliate Attribution & Loyalty Clawback Gate
     promo_stacking_context: dict[str, Any] | None = None
     affiliate_attribution_bundle: dict[str, Any] | None = None
     loyalty_clawback_context: dict[str, Any] | None = None
 
-    # Optional Stage 20 Embedded BNPL, Parametric Microinsurance & Invoice Factoring Gate
+    # Optional Embedded BNPL, Parametric Microinsurance & Invoice Factoring Gate
     bnpl_underwriting_request: dict[str, Any] | None = None
     parametric_insurance_claim: dict[str, Any] | None = None
     invoice_factoring_request: dict[str, Any] | None = None
 
-    # Optional Stage 21 EU ESPR DPP Provenance, C2C Authentication Escrow & Trade-In Gate
+    # Optional EU ESPR DPP Provenance, C2C Authentication Escrow & Trade-In Gate
     dpp_provenance_bundle: dict[str, Any] | None = None
     c2c_escrow_context: dict[str, Any] | None = None
     trade_in_valuation_context: dict[str, Any] | None = None
 
-    # Optional Stage 22 Vickrey Auction / Reverse RFQ, Consortium Group-Buying Escrow & Bond Slash Gate
+    # Optional Vickrey Auction / Reverse RFQ, Consortium Group-Buying Escrow & Bond Slash Gate
     vickrey_auction_bundle: dict[str, Any] | None = None
     consortium_escrow_bundle: dict[str, Any] | None = None
     earnest_bond_default_context: dict[str, Any] | None = None
 
-    # Optional Stage 23 Digital License DRM, Anti-Scalping Ticket Escrow & C2PA Royalty Split Gate
+    # Optional Digital License DRM, Anti-Scalping Ticket Escrow & C2PA Royalty Split Gate
     digital_license_context: dict[str, Any] | None = None
     event_ticket_escrow_bundle: dict[str, Any] | None = None
     c2pa_ip_royalty_bundle: dict[str, Any] | None = None
 
-    # Optional Stage 24 Healthcare FSA/HSA SIGIS IIAS, NCPDP/DEA eRx & HIPAA Descriptor Scrubber Gate
-    sigis_fsa_cart_context: dict[str, Any] | None = None
-    eprescribing_rx_context: dict[str, Any] | None = None
-    hipaa_descriptor_context: dict[str, Any] | None = None
-
-    # Optional Stage 25 EV ISO 15118/V2G Energy Settlement, GPU Goodput SLA & Carbon Retirement Gate
-    v2g_energy_session_context: dict[str, Any] | None = None
-    gpu_compute_carbon_context: dict[str, Any] | None = None
-
-    # Optional Stage 26 MLETR eBL Title Transfer, eUCP 600 LC & Marine Demurrage Escrow Gate
+    # Optional MLETR eBL Title Transfer, eUCP 600 LC & Marine Demurrage Escrow Gate
     mletr_ebl_context: dict[str, Any] | None = None
     eucp600_lc_context: dict[str, Any] | None = None
     marine_demurrage_context: dict[str, Any] | None = None
@@ -567,39 +396,12 @@ def execute_unified_agentic_checkout(
         sub_lifecycle_ok = cc_off_res.canceled
         sub_lifecycle_reason = cc_off_res.decision_code
 
-    healthcare_ok = True
-    healthcare_reason = ""
-    if inp.sigis_fsa_cart_context is not None:
-        sigis_res = evaluate_sigis_fsa_hsa_iias_split_tender(inp.sigis_fsa_cart_context)
-        healthcare_ok = bool(sigis_res["allowed"])
-        healthcare_reason = (
-            sigis_res["reason_codes"][0]
-            if sigis_res["reason_codes"]
-            else "SIGIS_IIAS_SPLIT_FAILED"
-        )
-    if healthcare_ok and inp.eprescribing_rx_context is not None:
-        rx_res = verify_eprescribing_ncpdp_dea_dispense_guard(
-            inp.eprescribing_rx_context
-        )
-        healthcare_ok = bool(rx_res["allowed"])
-        healthcare_reason = (
-            rx_res["reason_codes"][0]
-            if rx_res["reason_codes"]
-            else "NCPDP_DISPENSE_BLOCKED"
-        )
-    if healthcare_ok and inp.hipaa_descriptor_context is not None:
-        hipaa_res = redact_hipaa_phi_from_payment_descriptor(
-            inp.hipaa_descriptor_context
-        )
-        healthcare_reason = hipaa_res["reason_codes"][0]
-
     g2_passed = (
         feed_res.valid
         and broker_res.allowed
         and recurring_ok
         and zk_pci_ok
         and sub_lifecycle_ok
-        and healthcare_ok
     )
     g2_code = (
         "CATALOG_AND_POLICY_BROKER_VERIFIED"
@@ -616,11 +418,7 @@ def execute_unified_agentic_checkout(
                     else (
                         zk_pci_reason
                         if not zk_pci_ok
-                        else (
-                            sub_lifecycle_reason
-                            if not sub_lifecycle_ok
-                            else healthcare_reason
-                        )
+                        else sub_lifecycle_reason
                     )
                 )
             )
@@ -700,12 +498,6 @@ def execute_unified_agentic_checkout(
         )
         green_customs_ok = cd_res.allowed
         green_customs_reason = cd_res.decision_code
-    if green_customs_ok and inp.cold_chain_telemetry_bundle is not None:
-        cc_iot_res = evaluate_cold_chain_iot_telemetry_escrow(
-            inp.cold_chain_telemetry_bundle
-        )
-        green_customs_ok = cc_iot_res.sla_compliant
-        green_customs_reason = cc_iot_res.decision_code
 
     auction_consortium_ok = True
     auction_consortium_reason = ""
@@ -1031,19 +823,6 @@ def execute_unified_agentic_checkout(
         dig_ip_ok = c2_res.allowed
         dig_ip_reason = c2_res.decision_code
 
-    v2g_compute_ok = True
-    v2g_compute_reason = ""
-    if inp.v2g_energy_session_context is not None:
-        v2g_res = evaluate_ev_iso15118_v2g_energy_settlement(inp.v2g_energy_session_context)
-        v2g_compute_ok = bool(v2g_res["allowed"])
-        v2g_compute_reason = str(v2g_res["decision_code"])
-    if v2g_compute_ok and inp.gpu_compute_carbon_context is not None:
-        gpu_res = evaluate_gpu_spot_compute_sla_and_carbon_retirement(
-            inp.gpu_compute_carbon_context
-        )
-        v2g_compute_ok = bool(gpu_res["allowed"])
-        v2g_compute_reason = str(gpu_res["decision_code"])
-
     g6_passed = (
         connect_res.valid
         and spt_res.allowed
@@ -1053,7 +832,6 @@ def execute_unified_agentic_checkout(
         and bnpl_ins_ok
         and dpp_circular_ok
         and dig_ip_ok
-        and v2g_compute_ok
     )
     g6_code = (
         "CONNECT_SPLIT_AND_SPT_SINGLE_USE_OK"
@@ -1079,7 +857,7 @@ def execute_unified_agentic_checkout(
                                 else (
                                     dpp_circular_reason
                                     if not dpp_circular_ok
-                                    else (dig_ip_reason if not dig_ip_ok else v2g_compute_reason)
+                                    else dig_ip_reason
                                 )
                             )
                         )
@@ -1746,7 +1524,7 @@ def render_resilience_seven_card_html(report: dict[str, Any]) -> str:
     </div>
   </div>
   <div class="dark-box">Provenance: measured_deterministic_local_verifier (independently_reproduced=true) · Module: lab/unified_checkout_pipeline.py</div>
-  <div class="footer"><span>Agentic Commerce Lab · Stage 8 Benchmark</span><span>Card 1 of 7</span></div>
+  <div class="footer"><span>Agentic Commerce Lab Benchmark</span><span>Card 1 of 7</span></div>
 </section>
 
 <!-- Card 2 -->
@@ -1885,7 +1663,7 @@ def run_demo(output_dir: Path | None = None) -> dict[str, Any]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Run Stage 8 7-Gate Unified Agentic Checkout Pipeline & Resilience Benchmark."
+        description="Run 7-Gate Unified Agentic Checkout Pipeline & Resilience Benchmark."
     )
     parser.add_argument(
         "--output-dir",

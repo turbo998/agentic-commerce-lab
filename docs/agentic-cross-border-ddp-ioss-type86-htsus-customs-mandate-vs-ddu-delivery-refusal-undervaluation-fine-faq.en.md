@@ -3,7 +3,7 @@
 > **Document Type**: Architect's Selection & First-Principles FAQ (Benchmarking the 6-Section Standard of `ib-vs-ethernet-roce-selection-faq.md`)  
 > **Core Domain Coverage**: Cross-Border E-Commerce Delivered Duty Paid (`Incoterms 2020 DDP` vs. `DDU / DAP`), EU Import One-Stop Shop (`IOSS <= €150.00` Intrinsic Value Threshold & Encrypted `H7 / ITMATT` Manifest Binding), US Customs and Border Protection (`CBP Section 321 $800 De Minimis` & ACE `Entry Type 86` Mandatory 10-Digit `HTSUS` Classification), and Anti-Undervaluation / Anti-Structuring (`19 U.S.C. § 1592` Customs Fraud Prevention)  
 > **Target Audience**: Cross-Border DTC & Global Marketplace Architects, International Trade Compliance & Customs Engineering Leads, Tax Directors, and Supply-Chain FinOps Teams  
-> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Round 203 Interactive Sandbox for Cross-Border DDP Landed-Cost Calculation, EU IOSS €150 Gating, US CBP Type 86 10-Digit HTSUS Validation & Microsoft Web IQ Tariff Lookup)](../live-demo.en.html) · [`assets/svg/205-agentic-cross-border-ddp-ioss-type86-htsus-customs-2026-11-14.svg`](../assets/svg/205-agentic-cross-border-ddp-ioss-type86-htsus-customs-2026-11-14.svg)
+> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Interactive Sandbox for Cross-Border DDP Landed-Cost Calculation, EU IOSS €150 Gating, US CBP Type 86 10-Digit HTSUS Validation & Microsoft Web IQ Tariff Lookup)](../live-demo.en.html) · [`assets/svg/205-agentic-cross-border-ddp-ioss-type86-htsus-customs-2026-11-14.svg`](../assets/svg/205-agentic-cross-border-ddp-ioss-type86-htsus-customs-2026-11-14.svg)
 
 ---
 

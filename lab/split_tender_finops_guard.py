@@ -1,4 +1,4 @@
-"""Stage 12: Split-Tender Reverse Refund Waterfall, Anti-Cash-Out Laundering, Enterprise
+"""Split-Tender Reverse Refund Waterfall, Anti-Cash-Out Laundering, Enterprise
 Multi-Cost-Center Pre-Auth Encumbrance & 12-Scenario Enterprise Procurement 7-Card 4:5 Benchmark.
 
 Implements deterministic verification for:
@@ -256,20 +256,20 @@ def run_enterprise_procurement_benchmark_suite() -> dict[str, Any]:
         mandate={"mandate_id": "m_e01", "allow_recurring": True, "max_total_commitment_minor": 60_000, "max_per_cycle_minor": 5_000},
         offer_terms={"billing_interval": "month", "trial_days": 14, "auto_convert": True, "initial_charge_minor": 0, "recurring_charge_minor": 4_900, "min_commitment_cycles": 6, "early_termination_fee_minor": 5_000, "cancel_cutoff_hours_before_trial_end": 24.0, "auto_cancel_hook_armed": True, "summary_discloses_recurring": True},
     )
-    scenarios.append({"id": "E01", "domain": "Stage 9 · TCCV", "title": "Compliant SaaS seat subscription ($344 TCCV <= $600 cap)", "expected": "ALLOW", "model_answer": e01.decision_code, "ai_native_pass": e01.allowed, "classic_3tier_pass": True, "action": "Act automatically", "latency_us": 18.4})
+    scenarios.append({"id": "E01", "domain": "TCCV", "title": "Compliant SaaS seat subscription ($344 TCCV <= $600 cap)", "expected": "ALLOW", "model_answer": e01.decision_code, "ai_native_pass": e01.allowed, "classic_3tier_pass": True, "action": "Act automatically", "latency_us": 18.4})
 
     # E02: Free-trial negative-option trap ($0 initial, $2,538 TCCV on $50 one-time mandate)
     e02 = verify_subscription_trial_and_recurring_mandate(
         mandate={"mandate_id": "m_e02", "allow_recurring": False, "max_total_commitment_minor": 5_000, "max_per_cycle_minor": 5_000},
         offer_terms={"billing_interval": "month", "trial_days": 7, "auto_convert": True, "initial_charge_minor": 0, "recurring_charge_minor": 19_900, "min_commitment_cycles": 12, "early_termination_fee_minor": 15_000, "cancel_cutoff_hours_before_trial_end": 72.0, "auto_cancel_hook_armed": False, "summary_discloses_recurring": False},
     )
-    scenarios.append({"id": "E02", "domain": "Stage 9 · Trial Trap", "title": "$0 free trial with hidden $2,538 12-mo lock-in & ETF", "expected": "BLOCK", "model_answer": e02.decision_code, "ai_native_pass": not e02.allowed, "classic_3tier_pass": False, "action": "Block & alert principal", "latency_us": 19.2})
+    scenarios.append({"id": "E02", "domain": "Trial Trap", "title": "$0 free trial with hidden $2,538 12-mo lock-in & ETF", "expected": "BLOCK", "model_answer": e02.decision_code, "ai_native_pass": not e02.allowed, "classic_3tier_pass": False, "action": "Block & alert principal", "latency_us": 19.2})
 
     # E03: Atomic 3-Layer Revocation & Zombie MIT Charge Block
     e03 = execute_atomic_revocation_cascade(
         {"mandate_id": "m_e03", "revoked_at_epoch": 1792368000, "ap2_revocation_jws": "eyJhbGciOiJFZERTQSJ9.rev.sig", "spt_status": "deactivated", "network_token_status": "deactivated", "subscription_status": "canceled", "merchant_cancellation_ack_id": "ack_991", "mit_charge_attempt": {"attempted": True, "attempt_epoch": 1792454400, "amount_minor": 4_900}}
     )
-    scenarios.append({"id": "E03", "domain": "Stage 9 · Revocation", "title": "Post-revocation Zombie MIT charge intercepted (Visa 13.5 / MC 4841)", "expected": "BLOCK", "model_answer": e03.decision_code, "ai_native_pass": e03.zombie_mit_blocked, "classic_3tier_pass": False, "action": "Block MIT & compile 13.5/4841", "latency_us": 21.6})
+    scenarios.append({"id": "E03", "domain": "Revocation", "title": "Post-revocation Zombie MIT charge intercepted (Visa 13.5 / MC 4841)", "expected": "BLOCK", "model_answer": e03.decision_code, "ai_native_pass": e03.zombie_mit_blocked, "classic_3tier_pass": False, "action": "Block MIT & compile 13.5/4841", "latency_us": 21.6})
 
     # E04: B2B Split-Shipment Partial Capture (PO == GRN == Invoice)
     e04 = verify_b2b_three_way_match_and_escrow(
@@ -278,7 +278,7 @@ def run_enterprise_procurement_benchmark_suite() -> dict[str, Any]:
         e_invoice={"invoice_id": "inv_e04", "payout_endpoint_id": "acct_kyb_01", "ancillary_charges_minor": 30_000, "lines": [{"sku": "sku_h200", "qty_invoiced": 6, "unit_price_minor": 200_000}]},
         vendor_master={"kyb_verified_endpoint_id": "acct_kyb_01", "ofac_sanctioned": False},
     )
-    scenarios.append({"id": "E04", "domain": "Stage 10 · 3-Way Match", "title": "Split-shipment partial capture for 6/10 accepted GRN units", "expected": "ALLOW_PARTIAL", "model_answer": e04.decision_code, "ai_native_pass": e04.settlement_approved, "classic_3tier_pass": False, "action": "Capture 60% & hold 40% escrow", "latency_us": 24.5})
+    scenarios.append({"id": "E04", "domain": "3-Way Match", "title": "Split-shipment partial capture for 6/10 accepted GRN units", "expected": "ALLOW_PARTIAL", "model_answer": e04.decision_code, "ai_native_pass": e04.settlement_approved, "classic_3tier_pass": False, "action": "Capture 60% & hold 40% escrow", "latency_us": 24.5})
 
     # E05: Unfulfilled backorder premature full-PO capture attempt
     e05 = verify_b2b_three_way_match_and_escrow(
@@ -287,7 +287,7 @@ def run_enterprise_procurement_benchmark_suite() -> dict[str, Any]:
         e_invoice={"invoice_id": "inv_e05", "payout_endpoint_id": "acct_kyb_01", "ancillary_charges_minor": 50_000, "lines": [{"sku": "sku_h200", "qty_invoiced": 10, "unit_price_minor": 200_000}]},
         vendor_master={"kyb_verified_endpoint_id": "acct_kyb_01", "ofac_sanctioned": False},
     )
-    scenarios.append({"id": "E05", "domain": "Stage 10 · Backorder", "title": "Supplier bills 10/10 units while 6 remain unshipped on backorder", "expected": "BLOCK", "model_answer": e05.decision_code, "ai_native_pass": not e05.settlement_approved, "classic_3tier_pass": False, "action": "Block unfulfilled capture", "latency_us": 22.1})
+    scenarios.append({"id": "E05", "domain": "Backorder", "title": "Supplier bills 10/10 units while 6 remain unshipped on backorder", "expected": "BLOCK", "model_answer": e05.decision_code, "ai_native_pass": not e05.settlement_approved, "classic_3tier_pass": False, "action": "Block unfulfilled capture", "latency_us": 22.1})
 
     # E06: Business Email Compromise (BEC) vendor payout endpoint hijack
     e06 = verify_b2b_three_way_match_and_escrow(
@@ -296,13 +296,13 @@ def run_enterprise_procurement_benchmark_suite() -> dict[str, Any]:
         e_invoice={"invoice_id": "inv_e06", "payout_endpoint_id": "acct_attacker_spoofed", "ancillary_charges_minor": 10_000, "lines": [{"sku": "sku_h200", "qty_invoiced": 2, "unit_price_minor": 200_000}]},
         vendor_master={"kyb_verified_endpoint_id": "acct_kyb_01", "ofac_sanctioned": False},
     )
-    scenarios.append({"id": "E06", "domain": "Stage 10 · BEC Defense", "title": "Spoofed e-Invoice swaps payout account away from KYB vendor master", "expected": "BLOCK", "model_answer": e06.decision_code, "ai_native_pass": not e06.settlement_approved, "classic_3tier_pass": False, "action": "Freeze payout & alert AP", "latency_us": 20.8})
+    scenarios.append({"id": "E06", "domain": "BEC Defense", "title": "Spoofed e-Invoice swaps payout account away from KYB vendor master", "expected": "BLOCK", "model_answer": e06.decision_code, "ai_native_pass": not e06.settlement_approved, "classic_3tier_pass": False, "action": "Freeze payout & alert AP", "latency_us": 20.8})
 
     # E07: Dynamic Discounting 2/10 Net 30 (37.24% implied APR vs 8% hurdle)
     e07 = evaluate_dynamic_discounting_apr(
         gross_invoice_minor=1_000_000, discount_rate_bps=200, discount_day=10, net_due_day=30, treasury_hurdle_apr_pct=8.0, three_way_match_verified=True
     )
-    scenarios.append({"id": "E07", "domain": "Stage 10 · Treasury APR", "title": "2/10 Net 30 early discount yields 37.24% implied APR (> 8% hurdle)", "expected": "ACCELERATE_DAY_10", "model_answer": e07.decision_code, "ai_native_pass": e07.take_early_discount, "classic_3tier_pass": False, "action": "Settle Day 10 & capture 2%", "latency_us": 14.7})
+    scenarios.append({"id": "E07", "domain": "Treasury APR", "title": "2/10 Net 30 early discount yields 37.24% implied APR (> 8% hurdle)", "expected": "ACCELERATE_DAY_10", "model_answer": e07.decision_code, "ai_native_pass": e07.take_early_discount, "classic_3tier_pass": False, "action": "Settle Day 10 & capture 2%", "latency_us": 14.7})
 
     # E08: Sealed-Bid Vickrey RFQ Bait-and-Switch Surcharge Injection
     e08 = verify_sealed_rfq_and_tax_nexus(
@@ -311,7 +311,7 @@ def run_enterprise_procurement_benchmark_suite() -> dict[str, Any]:
         checkout_quote={"seller_id": "s_alpha", "pre_tax_all_in_minor": 43_500, "tax_charged_minor": 0},
         tax_context={"seller_country": "DE", "buyer_country": "FR", "buyer_is_b2b": True, "buyer_vat_verified": True, "seller_tax_registration_valid": True, "statutory_tax_rate_bps": 2000},
     )
-    scenarios.append({"id": "E08", "domain": "Stage 11 · Vickrey RFQ", "title": "Winning RFQ bidder injects $35 hidden activation surcharge at checkout", "expected": "BLOCK", "model_answer": e08.decision_code, "ai_native_pass": not e08.allowed, "classic_3tier_pass": False, "action": "Reject surcharge drift", "latency_us": 26.3})
+    scenarios.append({"id": "E08", "domain": "Vickrey RFQ", "title": "Winning RFQ bidder injects $35 hidden activation surcharge at checkout", "expected": "BLOCK", "model_answer": e08.decision_code, "ai_native_pass": not e08.allowed, "classic_3tier_pass": False, "action": "Reject surcharge drift", "latency_us": 26.3})
 
     # E09: Cross-Border B2B VAT Reverse-Charge Over-Collection
     e09 = verify_sealed_rfq_and_tax_nexus(
@@ -320,25 +320,25 @@ def run_enterprise_procurement_benchmark_suite() -> dict[str, Any]:
         checkout_quote={"seller_id": "s_alpha", "pre_tax_all_in_minor": 40_000, "tax_charged_minor": 8_000},
         tax_context={"seller_country": "DE", "buyer_country": "FR", "buyer_is_b2b": True, "buyer_vat_verified": True, "seller_tax_registration_valid": True, "statutory_tax_rate_bps": 2000},
     )
-    scenarios.append({"id": "E09", "domain": "Stage 11 · B2B Tax", "title": "Seller charges 20% VAT on Intra-EU B2B reverse-charge order (0% due)", "expected": "BLOCK", "model_answer": e09.decision_code, "ai_native_pass": not e09.allowed, "classic_3tier_pass": False, "action": "Enforce 0% reverse-charge", "latency_us": 25.1})
+    scenarios.append({"id": "E09", "domain": "B2B Tax", "title": "Seller charges 20% VAT on Intra-EU B2B reverse-charge order (0% due)", "expected": "BLOCK", "model_answer": e09.decision_code, "ai_native_pass": not e09.allowed, "classic_3tier_pass": False, "action": "Enforce 0% reverse-charge", "latency_us": 25.1})
 
     # E10: RMA Return Serial Swap & Illegal SNAD Restocking Fee
     e10 = verify_rma_return_and_restocking_guard(
         {"rma_id": "rma_e10", "return_reason": "DEFECTIVE_OR_SNAD", "paid_item_amount_minor": 40_000, "proposed_restocking_fee_minor": 6_000, "ucp_disclosed_max_restocking_bps": 1500, "shipped_serial_sha256": "sha256:sn_ok", "returned_serial_sha256": "sha256:sn_ok", "shipped_weight_grams": 500.0, "returned_weight_grams": 499.0}
     )
-    scenarios.append({"id": "E10", "domain": "Stage 11 · RMA Guard", "title": "Merchant deducts 15% restocking fee on verified defective/SNAD return", "expected": "BLOCK", "model_answer": e10.decision_code, "ai_native_pass": not e10.refund_approved, "classic_3tier_pass": False, "action": "Mandate 100% SNAD refund", "latency_us": 17.9})
+    scenarios.append({"id": "E10", "domain": "RMA Guard", "title": "Merchant deducts 15% restocking fee on verified defective/SNAD return", "expected": "BLOCK", "model_answer": e10.decision_code, "ai_native_pass": not e10.refund_approved, "classic_3tier_pass": False, "action": "Mandate 100% SNAD refund", "latency_us": 17.9})
 
     # E11: Split-Tender Closed-Loop Gift Card Cash-Out Laundering on Refund
     e11 = verify_split_tender_waterfall_and_clawback(
         {"order_id": "ord_e11", "gross_order_minor": 50_000, "promo_discount_minor": 5_000, "max_promo_discount_cap_minor": 10_000, "mutually_exclusive_coupons_stacked": False, "closed_loop_tender_minor": 35_000, "captured_open_loop_minor": 10_000, "refund_requested_minor": 45_000, "proposed_open_loop_refund_minor": 45_000, "proposed_closed_loop_refund_minor": 0}
     )
-    scenarios.append({"id": "E11", "domain": "Stage 12 · Split-Tender", "title": "Refund attempts to cash out $350 gift card onto open-loop USDC/Card", "expected": "BLOCK", "model_answer": e11.decision_code, "ai_native_pass": not e11.allowed, "classic_3tier_pass": False, "action": "Cap open-loop refund at $100", "latency_us": 19.8})
+    scenarios.append({"id": "E11", "domain": "Split-Tender", "title": "Refund attempts to cash out $350 gift card onto open-loop USDC/Card", "expected": "BLOCK", "model_answer": e11.decision_code, "ai_native_pass": not e11.allowed, "classic_3tier_pass": False, "action": "Cap open-loop refund at $100", "latency_us": 19.8})
 
     # E12: Multi-Cost-Center Concurrent Pre-Auth Encumbrance Overspend
     e12 = verify_enterprise_cost_center_chargeback(
         {"requisition_id": "req_e12", "merchandise_minor": 90_000, "tax_minor": 8_000, "agent_token_overhead_minor": 2_000, "cost_centers": [{"cost_center_id": "CC_AI_RND", "split_bps": 6000, "budget_cap_minor": 100_000, "existing_encumbrance_minor": 50_000, "actual_spent_minor": 0}, {"cost_center_id": "CC_FINOPS", "split_bps": 4000, "budget_cap_minor": 100_000, "existing_encumbrance_minor": 10_000, "actual_spent_minor": 0}]}
     )
-    scenarios.append({"id": "E12", "domain": "Stage 12 · Encumbrance", "title": "60/40 cost-center split breaches CC_AI_RND unencumbered budget ($600 > $500)", "expected": "BLOCK", "model_answer": e12.decision_code, "ai_native_pass": not e12.allowed, "classic_3tier_pass": False, "action": "Block encumbrance overflow", "latency_us": 18.6})
+    scenarios.append({"id": "E12", "domain": "Encumbrance", "title": "60/40 cost-center split breaches CC_AI_RND unencumbered budget ($600 > $500)", "expected": "BLOCK", "model_answer": e12.decision_code, "ai_native_pass": not e12.allowed, "classic_3tier_pass": False, "action": "Block encumbrance overflow", "latency_us": 18.6})
 
     ai_passed = sum(1 for s in scenarios if s["ai_native_pass"])
     classic_passed = sum(1 for s in scenarios if s["classic_3tier_pass"])
@@ -357,7 +357,7 @@ def run_enterprise_procurement_benchmark_suite() -> dict[str, Any]:
 
 
 def render_enterprise_procurement_seven_card_html(report: Mapping[str, Any]) -> str:
-    """Render the self-contained 7-Card 4:5 Visual Report for Stages 9-12."""
+    """Render the self-contained 7-Card 4:5 Visual Report for 12."""
     rows_html = []
     for s in report["scenarios"]:
         c_mark = "✓ PASS" if s["classic_3tier_pass"] else "✕ MISS"
@@ -409,7 +409,7 @@ def render_enterprise_procurement_seven_card_html(report: Mapping[str, Any]) -> 
       <div class="meta">1 / 7 · HANDS-ON · ENTERPRISE B2B, SUBSCRIPTIONS, RFQ &amp; FINOPS (Card 1 of 7)</div>
       <h2>AI-Native Procurement Guard Enforces <span class="accent">12/12 (100.0%)</span> Lifecycle Invariants vs. 1/12 (8.3%) on Classic 3-Tier</h2>
       <div class="grid2">
-        <div class="box"><strong>Stages 9–12 Scope</strong><br>TCCV Trial Guard · 3-Layer Revocation · 3-Way Match · BEC/Sanctions · 2/10 Net 30 APR · Vickrey RFQ · B2B VAT · RMA · Split-Tender · GL Encumbrance</div>
+        <div class="box"><strong>12 Scope</strong><br>TCCV Trial Guard · 3-Layer Revocation · 3-Way Match · BEC/Sanctions · 2/10 Net 30 APR · Vickrey RFQ · B2B VAT · RMA · Split-Tender · GL Encumbrance</div>
         <div class="box"><strong>Latency &amp; Drift</strong><br>Median Gate Evaluation: <strong>20.3 µs</strong><br>Perturbation Drift: <strong>0.0 pts</strong><br>Unit Test Suite: <strong>135+ Tests Passing</strong></div>
       </div>
     </div>
@@ -495,22 +495,22 @@ E11: CLOSED_LOOP_CASH_OUT_LAUNDERING_BLOCKED (open_refund=45000 &gt; 10000)
       <div class="meta">6 / 7 · LATENCY · IN-PROCESS GUARD VS EXTERNAL ERP/PSP ROUND-TRIP (Card 6 of 7)</div>
       <h2>Sub-30 µs Deterministic Pre-Filter vs. 140–420 ms Unprotected Downstream API Round-Trips</h2>
       <div class="bar-row">
-        <div>Stage 9 TCCV &amp; 3-Layer Revocation (19.7 µs vs 165,000 µs)</div>
+        <div>TCCV &amp; 3-Layer Revocation (19.7 µs vs 165,000 µs)</div>
         <div class="bar-Pair"><div class="bar-primary" style="width:12%"></div><span>19.7 µs</span></div>
         <div class="bar-Pair"><div class="bar-base" style="width:85%"></div><span>165,000 µs</span></div>
       </div>
       <div class="bar-row">
-        <div>Stage 10 B2B 3-Way Match &amp; 2/10 Net 30 APR (20.5 µs vs 310,000 µs)</div>
+        <div>B2B 3-Way Match &amp; 2/10 Net 30 APR (20.5 µs vs 310,000 µs)</div>
         <div class="bar-Pair"><div class="bar-primary" style="width:13%"></div><span>20.5 µs</span></div>
         <div class="bar-Pair"><div class="bar-base" style="width:95%"></div><span>310,000 µs</span></div>
       </div>
       <div class="bar-row">
-        <div>Stage 11 Sealed Vickrey RFQ &amp; RMA Guard (23.1 µs vs 240,000 µs)</div>
+        <div>Sealed Vickrey RFQ &amp; RMA Guard (23.1 µs vs 240,000 µs)</div>
         <div class="bar-Pair"><div class="bar-primary" style="width:15%"></div><span>23.1 µs</span></div>
         <div class="bar-Pair"><div class="bar-base" style="width:88%"></div><span>240,000 µs</span></div>
       </div>
       <div class="bar-row">
-        <div>Stage 12 Split-Tender &amp; Cost-Center GL (19.2 µs vs 190,000 µs)</div>
+        <div>Split-Tender &amp; Cost-Center GL (19.2 µs vs 190,000 µs)</div>
         <div class="bar-Pair"><div class="bar-primary" style="width:12%"></div><span>19.2 µs</span></div>
         <div class="bar-Pair"><div class="bar-base" style="width:82%"></div><span>190,000 µs</span></div>
       </div>
@@ -563,7 +563,7 @@ def write_enterprise_procurement_report_artifacts(output_dir: Path) -> tuple[Pat
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Run Stage 12 Split-Tender & Enterprise FinOps Guard + 7-Card Report generator."
+        description="Run Split-Tender & Enterprise FinOps Guard + 7-Card Report generator."
     )
     parser.add_argument(
         "--output-dir",

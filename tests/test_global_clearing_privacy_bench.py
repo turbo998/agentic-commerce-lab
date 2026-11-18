@@ -1,4 +1,4 @@
-"""Unit tests for Stage 18 15-Scenario Global Clearing, FX, Customs & ZK-Privacy 7-Card Benchmark."""
+"""Unit tests for 15-Scenario Global Clearing, FX, Customs & ZK-Privacy 7-Card Benchmark."""
 
 from __future__ import annotations
 

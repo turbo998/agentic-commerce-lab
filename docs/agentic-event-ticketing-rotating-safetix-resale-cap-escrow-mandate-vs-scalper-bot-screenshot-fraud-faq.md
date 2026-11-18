@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：智能体演唱会、顶级体育赛事与剧院票务交易（Primary & Secondary Ticketing `MCC 7922`）、美国联邦《反抢票机器人法（BOTS Act `15 U.S.C. § 45c`）》与设备硬件证明（WebAuthn / Device Attestation）、15 秒动态旋转加密检票码（`RFC 6238 TOTP SafeTix` + Apple VAS / Google Smart Tap NFC 防截图倒卖）与二级市场官方换绑重签发（`Barcode Re-Issuance` 旧码立即作废）、原价/限溢价转售池（`Face-Value Exchange <= 1.10x` 票面价封顶）、美国 FTC《反垃圾隐藏费最终规则（`16 CFR Part 464`）》与纽约州 `ACAL § 25.07` 首屏全包价（All-In Pricing）披露、以及演出开场前资金 100% 专户托管（Event-Completion Escrow 防主办方卷款跑路引发全盘拒付）  
 > **阅读对象**：演出票务平台（大麦 / Ticketmaster / StubHub / DICE 类）与文体场馆架构师、二级票务担保交易与清分网关研发负责人、反黄牛风控与消费者权益法务总监  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 227 智能体演出票务 15s 动态码换绑、防黄牛溢价封顶、开演托管退现与 Microsoft Web IQ FTC/BOTS 法案核验交互沙盒）](../live-demo.html) · [`assets/svg/229-agentic-event-ticketing-rotating-safetix-resale-cap-escrow-2026-11-14.svg`](../assets/svg/229-agentic-event-ticketing-rotating-safetix-resale-cap-escrow-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含智能体演出票务 15s 动态码换绑、防黄牛溢价封顶、开演托管退现与 Microsoft Web IQ FTC/BOTS 法案核验交互沙盒）](../live-demo.html) · [`assets/svg/229-agentic-event-ticketing-rotating-safetix-resale-cap-escrow-2026-11-14.svg`](../assets/svg/229-agentic-event-ticketing-rotating-safetix-resale-cap-escrow-2026-11-14.svg)
 
 ---
 

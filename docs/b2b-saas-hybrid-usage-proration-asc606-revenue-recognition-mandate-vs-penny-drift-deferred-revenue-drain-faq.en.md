@@ -3,7 +3,7 @@
 > **Document Type**: Architect's Selection & First-Principles FAQ (Benchmarking the 6-Section Standard of `ib-vs-ethernet-roce-selection-faq.md`)  
 > **Core Domain Coverage**: B2B AI SaaS & Cloud Hybrid Billing (`Per-Seat Subscription + Prepaid Token Commit + Pay-As-You-Go Overage`), Exact-Second 64-Bit Integer Proration, Mid-Cycle Downgrade Service Credit Notes (Blocking Hit-and-Run Cash Refund Arbitrage), First-Expiring-First-Out (`FEFO`) Credit Bucket Waterfalls, and FASB `ASC 606` / IASB `IFRS 15` 5-Step Revenue Recognition (Performance Obligation `POB` Unbundling, Standalone Selling Price `SSP` Allocation & Deferred Revenue / Contract Liability Ledgers)  
 > **Target Audience**: AI SaaS & Cloud Billing / Revenue Subledger Architects, Monetization Engineering Leads, CFOs, Controllers, and Big-4 Audit Readiness Teams  
-> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Round 205 Interactive Sandbox for Exact-Second Hybrid Proration, FEFO Credit Waterfall, Anti-Downgrade-Cashout & Microsoft Web IQ ASC 606 SSP Verification)](../live-demo.en.html) · [`assets/svg/207-b2b-saas-hybrid-usage-proration-asc606-revenue-2026-11-14.svg`](../assets/svg/207-b2b-saas-hybrid-usage-proration-asc606-revenue-2026-11-14.svg)
+> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Interactive Sandbox for Exact-Second Hybrid Proration, FEFO Credit Waterfall, Anti-Downgrade-Cashout & Microsoft Web IQ ASC 606 SSP Verification)](../live-demo.en.html) · [`assets/svg/207-b2b-saas-hybrid-usage-proration-asc606-revenue-2026-11-14.svg`](../assets/svg/207-b2b-saas-hybrid-usage-proration-asc606-revenue-2026-11-14.svg)
 
 ---
 

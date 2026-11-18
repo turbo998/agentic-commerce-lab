@@ -3,7 +3,7 @@
 > **Document Type**: Architect's Selection & First-Principles FAQ (Benchmarking the 6-Section Standard of `ib-vs-ethernet-roce-selection-faq.md`)  
 > **Core Domain Coverage**: ICC Uniform Customs and Practice for Documentary Credits (`UCP 600` & `eUCP Version 2.1`), UNCITRAL Model Law on Electronic Transferable Records (`MLETR`) & UK Electronic Trade Documents Act (`ETDA 2023`), Digital Container Shipping Association (`DCSA eBL v3.0`) Exclusive Control Transfer, SWIFT `MT700` Mirror-Image Validation (`Field 45A` Description of Goods, `Field 44C` Latest Date of Shipment, `Field 48` Presentation Period `<= 21 Days`), and UCP 600 Article 28 CIF Insurance Coverage (`>= 110%`)  
 > **Target Audience**: Cross-Border Commodity & Supply-Chain Architects, Trade Finance Directors, Global Logistics & Customs Engineering Leads, CFOs, and General Counsel  
-> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Round 199 Interactive Sandbox for eUCP v2.1 Zero-Discrepancy Pre-Audit, DCSA v3.0 eBL Exclusive Control Verification & Microsoft Web IQ Port Demurrage / Vessel Sanctions Verification)](../live-demo.en.html) · [`assets/svg/201-b2b-eucp-ebl-electronic-letter-of-credit-mletr-2026-11-14.svg`](../assets/svg/201-b2b-eucp-ebl-electronic-letter-of-credit-mletr-2026-11-14.svg)
+> **Companion Interactive Deliverables**: [`live-demo.en.html` (Includes the Interactive Sandbox for eUCP v2.1 Zero-Discrepancy Pre-Audit, DCSA v3.0 eBL Exclusive Control Verification & Microsoft Web IQ Port Demurrage / Vessel Sanctions Verification)](../live-demo.en.html) · [`assets/svg/201-b2b-eucp-ebl-electronic-letter-of-credit-mletr-2026-11-14.svg`](../assets/svg/201-b2b-eucp-ebl-electronic-letter-of-credit-mletr-2026-11-14.svg)
 
 ---
 

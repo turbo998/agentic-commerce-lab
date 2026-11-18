@@ -1,4 +1,4 @@
-"""Stage 10: Enterprise B2B 3-Way Match (`PO == GRN == Invoice`), Split-Shipment Partial
+"""Enterprise B2B 3-Way Match (`PO == GRN == Invoice`), Split-Shipment Partial
 Capture Escrow, Beneficiary Hijack / Sanctions Screening & Dynamic Discounting (`2/10 Net 30`) Guard.
 
 Implements deterministic verification for:
@@ -297,7 +297,7 @@ def evaluate_dynamic_discounting_apr(
 
 
 def run_demo_scenarios() -> list[dict[str, Any]]:
-    """Run deterministic Stage 10 B2B 3-way match, BEC defense, and 2/10 Net 30 scenarios."""
+    """Run deterministic B2B 3-way match, BEC defense, and 2/10 Net 30 scenarios."""
     scenarios: list[dict[str, Any]] = []
 
     # 1. Compliant split-shipment partial capture (60 of 100 units delivered, 0 damaged)
@@ -362,7 +362,7 @@ def run_demo_scenarios() -> list[dict[str, Any]]:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Run Stage 10 B2B 3-Way Match, Escrow & Dynamic Discounting Guard demo."
+        description="Run B2B 3-Way Match, Escrow & Dynamic Discounting Guard demo."
     )
     parser.add_argument("--json", action="store_true", help="Print JSON output.")
     args = parser.parse_args(argv)
@@ -371,7 +371,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.json:
         print(json.dumps({"scenarios": results}, indent=2))
     else:
-        print("=== Stage 10: B2B 3-Way Match, Split-Shipment Escrow & Dynamic Discounting ===")
+        print("=== B2B 3-Way Match, Split-Shipment Escrow & Dynamic Discounting ===")
         for item in results:
             print(f"  [{item['scenario_id']}] decision={item['decision_code']}")
     return 0

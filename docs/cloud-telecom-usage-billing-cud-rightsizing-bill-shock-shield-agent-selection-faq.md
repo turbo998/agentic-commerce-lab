@@ -1,9 +1,9 @@
 # 云服务、AI API 平台与电信运营商“按量计费防天价账单（Bill-Shock Shield）、承诺用量折扣（CUD/RI）寻优与转网挽留”Agent 架构选型 FAQ：防波峰误签三年长约与追溯封顶实战指南
 
-> **专题定位（公有云/AI Token 按量计费 Usage-Based Billing、AWS/Azure Savings Plans & PTU 预留实例寻优、5G/国际漫游通信套餐与防天价账单智能体聚焦 · Round 422）**：面向为云计算平台、大模型 API 供应商、SaaS 按量计费引擎（如 Stripe Billing Meter / Orb / Metronome）与电信运营商设计计费优化与客户留存系统的 **Cloud & AI Solution Architect**，系统解答按量消费（Consumption-Based Commerce）中最痛的四大财务与安全难题：**“为什么客户的开发实习生写了个死循环脚本或出国忘关国际漫游，一夜跑出 $48,000 的天价超额账单（Bill Shock），如果平台硬扣这笔钱客户直接破产赖账并全网控诉、为什么 FinOps 推荐 Agent 把双 11 大促那一周的峰值算力当成常态，劝客户签下 3 年期不可退的预留实例（RI / CUD / PTU），导致大促过后 80% 预留算力闲置白交钱（Over-Commitment Trap `HTTP 422`）、怎么防止黑客通过社工客服绕过身份验证发起 SIM 卡补卡/携号转网劫持（SIM-Swap Port-Out Attack `HTTP 403`）、以及怎么用 Stripe 周期性 `Cadence SPT`（严禁传 `setup_future_usage`）安全完成每月浮动用量自动扣款”**。  
+> **专题定位（公有云/AI Token 按量计费 Usage-Based Billing、AWS/Azure Savings Plans & PTU 预留实例寻优、5G/国际漫游通信套餐与防天价账单智能体聚焦）**：面向为云计算平台、大模型 API 供应商、SaaS 按量计费引擎（如 Stripe Billing Meter / Orb / Metronome）与电信运营商设计计费优化与客户留存系统的 **Cloud & AI Solution Architect**，系统解答按量消费（Consumption-Based Commerce）中最痛的四大财务与安全难题：**“为什么客户的开发实习生写了个死循环脚本或出国忘关国际漫游，一夜跑出 $48,000 的天价超额账单（Bill Shock），如果平台硬扣这笔钱客户直接破产赖账并全网控诉、为什么 FinOps 推荐 Agent 把双 11 大促那一周的峰值算力当成常态，劝客户签下 3 年期不可退的预留实例（RI / CUD / PTU），导致大促过后 80% 预留算力闲置白交钱（Over-Commitment Trap `HTTP 422`）、怎么防止黑客通过社工客服绕过身份验证发起 SIM 卡补卡/携号转网劫持（SIM-Swap Port-Out Attack `HTTP 403`）、以及怎么用 Stripe 周期性 `Cadence SPT`（严禁传 `setup_future_usage`）安全完成每月浮动用量自动扣款”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、按量计费与预留寻优架构选型矩阵、定量防天价账单/预留节省测算与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](cloud-telecom-usage-billing-cud-rightsizing-bill-shock-shield-agent-selection-faq.md)** · **[English Version (`cloud-telecom-usage-billing-cud-rightsizing-bill-shock-shield-agent-selection-faq.en.md`)](cloud-telecom-usage-billing-cud-rightsizing-bill-shock-shield-agent-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe 周期性 `Cadence SPT`（`off_session=True` 必须配 `recurring_interval` 且严禁传 `setup_future_usage`）与 Web IQ `/v3/search` 竞品资费基准核验引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；SIM-Swap 携转拦截、P15 基线水位 CUD 预留寻优与天价超额账单追溯性套餐封顶（Retroactive Tier Cap）引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：Stripe 周期性 `Cadence SPT`（`off_session=True` 必须配 `recurring_interval` 且严禁传 `setup_future_usage`）与 Web IQ `/v3/search` 竞品资费基准核验引自 `research/sources.json`（标记为 `official_doc_snapshot`）；SIM-Swap 携转拦截、P15 基线水位 CUD 预留寻优与天价超额账单追溯性套餐封顶（Retroactive Tier Cap）引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）。
 
 ![2026-11-18 云服务、AI API 与电信运营商按量计费防天价账单 (Bill-Shock Shield) 与承诺用量折扣 (CUD/RI) 寻优 Agent 架构一图流总结](../assets/svg/424-cloud-telecom-usage-billing-cud-rightsizing-bill-shock-shield-2026-11-18.svg)
 
@@ -53,7 +53,7 @@
 
 ### Q3：每月账单金额随用量浮动的自动扣款，在接入 Stripe Agent Toolkit 时为什么绝对不能传 `setup_future_usage='off_session'`？
 
-**答：这是 Stripe 官方 SPT 周期性扣款规范（Stage 1754 `official_doc_snapshot`）的硬性红线：**
+**答：这是 Stripe 官方 SPT 周期性扣款规范的硬性红线：**
 
 - 对绑定了共享支付令牌（`SPT`）的周期性续费或按量月结账单，必须通过令牌自身的 **`recurring_interval="month"`（Cadence SPT）** 加上 `off_session=True` 来完成后台扣款，且单笔扣款金额不得突破买家的周期授权上限（`interval_mandate_ceiling_usd`）；
 - 一旦代码里画蛇添足传了 `setup_future_usage="off_session"`，Stripe 接口会直接返回 `HTTP 400/403` 拒绝交易！

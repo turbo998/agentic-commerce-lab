@@ -1,4 +1,4 @@
-"""Unit tests for Stage 8 7-Gate Unified Agentic Checkout Pipeline & Chaos Resilience Benchmark."""
+"""Unit tests for 7-Gate Unified Agentic Checkout Pipeline & Chaos Resilience Benchmark."""
 
 from __future__ import annotations
 

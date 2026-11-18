@@ -6,7 +6,7 @@
 > **Last Updated**: 2026-11-08 (Aligned with UCP Data Minimization Principles, OWASP LLM01 Indirect Prompt Injection Defenses & GDPR Art. 17 Crypto-Shredding Suite, *as of 2026-11-08*)  
 > **Global Provenance & Evidence Notice**: All quantitative metrics in this guide carry explicit provenance labels: `deterministic_offline_simulation` (reproducible local evaluation in `lab/webiq_commerce_demo.py`), `synthetic_policy` (reference DLP rules and token audience constraints), `official_doc_snapshot` (GDPR / OWASP / UCP specification snapshot *as of 2026-11-08*), and `not_measured` (external carrier label-generation mainframe latency).
 
-![2026-11-08 Agentic Checkout Privacy, Shipping Address Tokenization & Prompt-Injection DLP Visual Summary](../../assets/svg/20-privacy-pii-vaultless-shipping-token-2026-11-08.svg)
+![2026-11-08 Agentic Checkout Privacy, Shipping Address Tokenization & Prompt-Injection DLP Visual Summary](../assets/svg/20-privacy-pii-vaultless-shipping-token-2026-11-08.svg)
 
 ---
 

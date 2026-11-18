@@ -1,4 +1,4 @@
-"""Stage 18: Agentic Subscription Lifecycle, Usage-Metering Watermark Idempotency & FTC Click-to-Cancel / PSD3 Recurring Mandate Guard.
+"""Agentic Subscription Lifecycle, Usage-Metering Watermark Idempotency & FTC Click-to-Cancel / PSD3 Recurring Mandate Guard.
 
 Implements three deterministic controls for SaaS, token/API quota, and recurring replenishment subscriptions:
 1. ``evaluate_usage_based_metering_idempotency``: Enforces UUIDv7/idempotency-key deduplication,

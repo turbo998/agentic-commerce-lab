@@ -1,4 +1,4 @@
-"""Unit tests for Stage 20 Embedded BNPL, Parametric Microinsurance & Invoice Factoring Guard."""
+"""Unit tests for Embedded BNPL, Parametric Microinsurance & Invoice Factoring Guard."""
 
 from __future__ import annotations
 

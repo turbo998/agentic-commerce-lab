@@ -1,4 +1,4 @@
-"""Stage 7: Cryptographic Agent Identity Attestation (RFC 9421 × Visa TAP × Stripe Agent Directory)
+"""Cryptographic Agent Identity Attestation (RFC 9421 × Visa TAP × Stripe Agent Directory)
 and Principal-Bound Anti-Scalping / Anti-Sybil Scarcity Quota Guard.
 
 Covers:
@@ -497,7 +497,7 @@ def run_demo() -> dict[str, Any]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Run Stage 7 RFC 9421 Agent Identity Attestation & Anti-Scalping Guard."
+        description="Run RFC 9421 Agent Identity Attestation & Anti-Scalping Guard."
     )
     parser.parse_args(argv)
     summary = run_demo()

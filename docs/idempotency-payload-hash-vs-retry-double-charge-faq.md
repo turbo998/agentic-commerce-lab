@@ -6,7 +6,7 @@
 > **最后更新**：2026-11-08（基于 IETF `Idempotency-Key` 规范草案、Stripe API 幂等载荷比对语义与确定性防重扣评测套件，*as of 2026-11-08*）  
 > **全局数据溯源声明（Provenance & Evidence Notice）**：本文所有定量指标均显式标注来源类型：`deterministic_offline_simulation`（基于 `lab/webiq_commerce_demo.py` 的本地可复现离线仿真）、`synthetic_policy`（架构师参考幂等缓存 TTL 与锁超时策略）、`official_doc_snapshot`（截至 *as of 2026-11-08* 的 Stripe / IETF 官方协议文档快照）及 `not_measured`（外部跨国发卡行底层核心系统幂等去重窗口实测项）。
 
-![2026-11-08 AI Agent 工具调用超时、重试风暴与防重扣幂等架构一图流总结](../../assets/svg/19-idempotency-payload-hash-vs-double-charge-2026-11-08.svg)
+![2026-11-08 AI Agent 工具调用超时、重试风暴与防重扣幂等架构一图流总结](../assets/svg/19-idempotency-payload-hash-vs-double-charge-2026-11-08.svg)
 
 ---
 

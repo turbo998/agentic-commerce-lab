@@ -1,4 +1,4 @@
-# Stage 22 — Cross-Protocol Agentic Real-Time Auction / Reverse RFQ Clearing, Consortium Group-Buying Tiered Escrow & Anti-Collusion / Earnest-Bond Slashing Guard
+# Cross-Protocol Agentic Real-Time Auction / Reverse RFQ Clearing, Consortium Group-Buying Tiered Escrow & Anti-Collusion / Earnest-Bond Slashing Guard
 
 ## 1. Executive Summary
 

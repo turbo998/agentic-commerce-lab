@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：AI 智能体应用商店（GPT Store / Agent Marketplace）、创作者分润与全球灵活用工出金（Creator & Gig Payouts）、美国国税局 `Form 1099-K`（第三方结算组织 TPSO）与 `Form 1099-NEC / 1042-S`、IRS e-Services 实时姓名-税号匹配（TIN Matching API）、美国国内税收法典 `IRC § 3406` 未验证税号强制 **`24%` 备用预提税（Backup Withholding）**、非美国居民 `Form W-8BEN` 三年自然日历年到期锁与 `IRC § 1441`（`30%` 默认预提 vs 双边税收协定减免）  
 > **阅读对象**：AI Agent 交易市场与创作者平台架构师、全球发薪与跨境结汇（Mass Payouts）负责人、集团税务总监与 CFO  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 209 创作者分账 IRS TIN 实时匹配、`24%` 备用预提税自动托管与 Microsoft Web IQ 税收协定及 W-8BEN 效期核验交互沙盒）](../live-demo.html) · [`assets/svg/211-agentic-creator-payout-1099k-w8ben-backup-withholding-2026-11-14.svg`](../assets/svg/211-agentic-creator-payout-1099k-w8ben-backup-withholding-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含创作者分账 IRS TIN 实时匹配、`24%` 备用预提税自动托管与 Microsoft Web IQ 税收协定及 W-8BEN 效期核验交互沙盒）](../live-demo.html) · [`assets/svg/211-agentic-creator-payout-1099k-w8ben-backup-withholding-2026-11-14.svg`](../assets/svg/211-agentic-creator-payout-1099k-w8ben-backup-withholding-2026-11-14.svg)
 
 ---
 

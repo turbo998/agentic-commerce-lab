@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：智能体数字内容、云游戏、流媒体与新兴市场运营商话费直扣（Direct Carrier Billing `DCB / Boku / Bango / 运营商计费网关`）、彻底废除明文基站网关透传（Legacy HTTP `X-MSISDN` Header Enrichment）并升级为 **GSMA Open Gateway `CAMARA Number Verification` OAuth 2.0 + 端侧生物特征二次确认**（粉碎木马 APK 后台偷关 Wi-Fi 注入透明点击层 `WAP Clickjacking / Toll Fraud`）、欧盟《支付服务指令（`PSD2 Article 3(l)`）》与英国 FCA 电信豁免死线（**单笔严禁超过 `€50` 且自然月累计严禁超过 `€300`，严禁拆单绕过**）、以及美国联邦通信委员会（`FCC 47 CFR § 64.2401` Truth-in-Billing）严禁账单塞入未经明示授权的第三方增值扣费（Anti-Cramming）  
 > **阅读对象**：跨国流媒体、手游发行商、应用商店与聚合支付（PSP / DCB Aggregator）架构师、电信运营商（MNO）计费BOSS系统研发负责人、合规法务与反黑产总监  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 229 运营商话费代计费防 WAP 劫持、欧盟 PSD2 `€50/€300` 硬顶防拆单、FCC 防暗扣与 Microsoft Web IQ 电信支付法规核验交互沙盒）](../live-demo.html) · [`assets/svg/231-agentic-telecom-dcb-carrier-billing-psd2-cap-anti-cramming-2026-11-14.svg`](../assets/svg/231-agentic-telecom-dcb-carrier-billing-psd2-cap-anti-cramming-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含运营商话费代计费防 WAP 劫持、欧盟 PSD2 `€50/€300` 硬顶防拆单、FCC 防暗扣与 Microsoft Web IQ 电信支付法规核验交互沙盒）](../live-demo.html) · [`assets/svg/231-agentic-telecom-dcb-carrier-billing-psd2-cap-anti-cramming-2026-11-14.svg`](../assets/svg/231-agentic-telecom-dcb-carrier-billing-psd2-cap-anti-cramming-2026-11-14.svg)
 
 ---
 

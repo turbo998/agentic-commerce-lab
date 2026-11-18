@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（對标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：国际商会电子跟单信用证统一惯例（ICC UCP 600 / eUCP Version 2.1）、联合国贸易法委员会《电子可转让记录示范法》（UNCITRAL MLETR）与英国《2023 电子贸易单证法》（ETDA）、数字集装箱航运协会（DCSA eBL v3.0）排他性控制权转移、SWIFT `MT700` 字段（`45A` 货物描述、`44C` 最迟装运期、`46A` 单据要求、`48` 交单期 `<= 21` 天）镜像一致性校验、UCP 600 第 28 条 CIF 保险单 `>= 110%` 投保底线与防审单不符点（Discrepancy）买方弃货违约  
 > **阅读对象**：跨境大宗商品与外贸供应链架构师、贸易金融（Trade Finance）负责人、国际物流与关务总监、CFO 与企业法务负责人  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 199 电子信用证 eUCP v2.1 零不符点预审、DCSA v3.0 eBL 排他控制权校验与 Microsoft Web IQ 港口滞港费及国别制裁条款核验交互沙盒）](../live-demo.html) · [`assets/svg/201-b2b-eucp-ebl-electronic-letter-of-credit-mletr-2026-11-14.svg`](../assets/svg/201-b2b-eucp-ebl-electronic-letter-of-credit-mletr-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含电子信用证 eUCP v2.1 零不符点预审、DCSA v3.0 eBL 排他控制权校验与 Microsoft Web IQ 港口滞港费及国别制裁条款核验交互沙盒）](../live-demo.html) · [`assets/svg/201-b2b-eucp-ebl-electronic-letter-of-credit-mletr-2026-11-14.svg`](../assets/svg/201-b2b-eucp-ebl-electronic-letter-of-credit-mletr-2026-11-14.svg)
 
 ---
 

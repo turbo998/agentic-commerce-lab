@@ -1,4 +1,4 @@
-# Stage 19: Promo Coupon Stacking Guard, Cryptographic Affiliate Attribution & Loyalty Return Clawback
+# Promo Coupon Stacking Guard, Cryptographic Affiliate Attribution & Loyalty Return Clawback
 
 **Verification Date:** 2026-10-19 (Beijing Time)  
 **Implementation Module:** `lab/loyalty_affiliate_promo_stacking_guard.py`  

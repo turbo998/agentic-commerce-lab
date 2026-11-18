@@ -1,9 +1,9 @@
 # 电商个性化 AI 导购与跨品类搭配转化助手架构选型 FAQ：混合目录检索、实时库存尺码硬过滤、凑单毛利护栏与一键加购状态机实战指南
 
-> **专题定位（零售电商应用落地与架构聚焦 · Round 392）**：面向为服饰时尚、美妆个护、消费电子与家居建材零售商设计增长型 AI Agent 的 **Cloud & AI Solution Architect**，深入剖析电商最核心的营收增长场景——**“个性化 AI 导购与跨品类搭配转化助手（AI Shopping Stylist & Cross-Category Bundle Agent）”**。讲清 **“为什么传统搜索框承接不了场景化穿搭/配齐需求、怎么杜绝大模型推荐断码缺货商品、怎么在帮买家凑单满减时守住商品毛利红线、以及怎么用 UCP/ACP 一键加购状态机把聊天转化率提升 2.5 倍以上”**。  
+> **专题定位（零售电商应用落地与架构聚焦）**：面向为服饰时尚、美妆个护、消费电子与家居建材零售商设计增长型 AI Agent 的 **Cloud & AI Solution Architect**，深入剖析电商最核心的营收增长场景——**“个性化 AI 导购与跨品类搭配转化助手（AI Shopping Stylist & Cross-Category Bundle Agent）”**。讲清 **“为什么传统搜索框承接不了场景化穿搭/配齐需求、怎么杜绝大模型推荐断码缺货商品、怎么在帮买家凑单满减时守住商品毛利红线、以及怎么用 UCP/ACP 一键加购状态机把聊天转化率提升 2.5 倍以上”**。  
 > **文风标杆**：严格对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式结构（核心结论速览、业务方与架构师灵魂拷问 Q&A、Mermaid 决策树/架构对比/时序图、导购检索与加购方案选型矩阵、定量转化率/毛利测算与 7-Card 溯源表、生产上线 Checklist）。  
 > **双语版本**：**[中文版（当前）](ecommerce-ai-shopping-assistant-cross-category-bundle-conversion-architecture-selection-faq.md)** · **[English Version (`ecommerce-ai-shopping-assistant-cross-category-bundle-conversion-architecture-selection-faq.en.md`)](ecommerce-ai-shopping-assistant-cross-category-bundle-conversion-architecture-selection-faq.en.md)**  
-> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：文中 Stripe SFTP `manifest.json` 目录同步、4 秒 Webhook 超时降级与 Microsoft Web IQ 契约引自 `research/daily/2026-11-08-sources.json`（标记为 `official_doc_snapshot`）；混合检索过滤、凑单毛利护栏与一键加购转化率仿真引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；零售商最低毛利阈值（如 `>= 18.0%`）标记为 `synthetic_policy`；外部私有电商店铺生产 A/B 测试标记为 `not_measured`。
+> **数据溯源声明（Provenance & As-Of `2026-11-18`）**：文中 Stripe SFTP `manifest.json` 目录同步、4 秒 Webhook 超时降级与 Microsoft Web IQ 契约引自 `research/sources.json`（标记为 `official_doc_snapshot`）；混合检索过滤、凑单毛利护栏与一键加购转化率仿真引自 `lab/webiq_commerce_demo.py`（标记为 `deterministic_offline_simulation`）；零售商最低毛利阈值（如 `>= 18.0%`）标记为 `synthetic_policy`；外部私有电商店铺生产 A/B 测试标记为 `not_measured`。
 
 ![2026-11-18 电商个性化 AI 导购与跨品类搭配转化助手架构：混合检索、库存尺码锁、凑单毛利护栏与一键加购一图流总结](../assets/svg/394-ecommerce-ai-shopping-assistant-cross-category-bundle-conversion-2026-11-18.svg)
 

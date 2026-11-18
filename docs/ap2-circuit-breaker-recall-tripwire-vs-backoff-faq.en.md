@@ -6,7 +6,7 @@
 > **Last Updated**: 2026-11-08 (Aligned with AP2 / Stripe SPT v2 Token Revocation Semantics, Microsoft Web IQ Regulatory Recall Grounding & Deterministic Circuit Breaker Suite, *as of 2026-11-08*)  
 > **Global Provenance & Evidence Notice**: All quantitative metrics in this guide carry explicit provenance labels: `deterministic_offline_simulation` (reproducible local evaluation in `lab/webiq_commerce_demo.py`), `synthetic_policy` (reference enterprise risk policy thresholds, not universal statutory caps), `official_doc_snapshot` (protocol documentation snapshot *as of 2026-11-08*), and `not_measured` (external live regulatory feeds or uncredentialed third-party APIs).
 
-![2026-11-08 Multi-Agent Runaway Spend Circuit Breaker, Product Recall Tripwire & Velocity Cap Visual Summary](../../assets/svg/18-ap2-circuit-breaker-recall-tripwire-2026-11-08.svg)
+![2026-11-08 Multi-Agent Runaway Spend Circuit Breaker, Product Recall Tripwire & Velocity Cap Visual Summary](../assets/svg/18-ap2-circuit-breaker-recall-tripwire-2026-11-08.svg)
 
 ---
 

@@ -1,4 +1,4 @@
-"""Stage 22: Cross-Protocol Agentic Real-Time Auction / Reverse RFQ Clearing, Consortium Group-Buying Tiered Escrow & Anti-Collusion / Earnest-Bond Slashing Guard.
+"""Cross-Protocol Agentic Real-Time Auction / Reverse RFQ Clearing, Consortium Group-Buying Tiered Escrow & Anti-Collusion / Earnest-Bond Slashing Guard.
 
 Implements three deterministic multi-agent market-clearing invariants:
 1. `evaluate_vickrey_reverse_auction_clearing`:

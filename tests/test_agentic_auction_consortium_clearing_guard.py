@@ -1,4 +1,4 @@
-"""Unit tests for Stage 22 Agentic Auction, Consortium Group-Buying Escrow & Earnest-Bond Slashing Guard."""
+"""Unit tests for Agentic Auction, Consortium Group-Buying Escrow & Earnest-Bond Slashing Guard."""
 
 from __future__ import annotations
 

@@ -3,7 +3,7 @@
 > **文档类型**：架构师选型与第一性原理解析 FAQ（对标 `ib-vs-ethernet-roce-selection-faq.md` 六段式标杆规范）  
 > **核心覆盖领域**：B2B 评估收货结算（Evaluated Receipt Settlement, ERS）与逆向开票（Self-Billing / Autofacturation）、欧盟增值税指令第 224 条（EU VAT Directive 2006/112/EC Art. 224）与英国 HMRC Notice 700/62 逆向开票双边协议（Self-Billing Agreement, SBA `<= 12 个月`有效期）、Peppol BIS Self-Billing 3.0 / ANSI X12 `EDI 861`、仓库收货净重（Net Dock Weight）公差门禁、以及防“供应商重复开票（Duplicate Supplier Invoice on ERS PO）”双倍付款与双倍进项税抵扣稽查  
 > **阅读对象**：汽车主机厂（OEM）与高端制造供应链架构师、零售 VMI/寄售结算负责人、ERP（SAP S/4HANA `MRRL` / Oracle Fusion）财务自动化总监、集团税务总监  
-> **关联 Interactive 交付物**：[`live-demo.html`（含 Round 201 B2B ERS 评估收货逆向开票、防供应商双轨重复开票拦截与 Microsoft Web IQ 欧盟 Art. 224 / HMRC 税务合规核验交互沙盒）](../live-demo.html) · [`assets/svg/203-b2b-ers-self-billing-evaluated-receipt-settlement-2026-11-14.svg`](../assets/svg/203-b2b-ers-self-billing-evaluated-receipt-settlement-2026-11-14.svg)
+> **关联 Interactive 交付物**：[`live-demo.html`（含B2B ERS 评估收货逆向开票、防供应商双轨重复开票拦截与 Microsoft Web IQ 欧盟 Art. 224 / HMRC 税务合规核验交互沙盒）](../live-demo.html) · [`assets/svg/203-b2b-ers-self-billing-evaluated-receipt-settlement-2026-11-14.svg`](../assets/svg/203-b2b-ers-self-billing-evaluated-receipt-settlement-2026-11-14.svg)
 
 ---
 

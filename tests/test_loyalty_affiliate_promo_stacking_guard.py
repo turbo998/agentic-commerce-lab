@@ -1,4 +1,4 @@
-"""Unit tests for Stage 19 Promo Coupon Stacking, Affiliate Attribution & Loyalty Clawback Guard."""
+"""Unit tests for Promo Coupon Stacking, Affiliate Attribution & Loyalty Clawback Guard."""
 
 from __future__ import annotations
 

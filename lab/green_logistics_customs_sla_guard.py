@@ -1,7 +1,7 @@
-"""Cross-Border HS-Code DDP Landed Cost (De-Minimis / CBAM), Cold-Chain IoT Mean Kinetic Temperature (MKT) Escrow Claim & Scope 3 Low-Carbon Pareto Carrier Router (Stage 16).
+"""Cross-Border HS-Code DDP Landed Cost (De-Minimis / CBAM) & Multimodal Carrier SLA Router.
 
-Enforces three deterministic customs, physical IoT fulfillment, and Scope 3
-sustainability invariants for autonomous global supply-chain agents:
+Enforces deterministic customs landed-cost and multimodal carrier routing
+invariants for autonomous global cross-border commerce agents:
 
 1. HS-Code DDP Landed Cost, De-Minimis Structuring & Undervaluation Anti-Fraud Guard
    (`evaluate_hs_code_landed_cost_and_deminimis`):
@@ -12,16 +12,7 @@ sustainability invariants for autonomous global supply-chain agents:
      `declared_fob_minor < 0.70 * reference_fair_value_minor`
      (`CUSTOMS_UNDERVALUATION_FRAUD_BLOCKED`).
 
-2. Cold-Chain IoT Arrhenius Mean Kinetic Temperature (MKT) Escrow Auto-Claim Guard
-   (`evaluate_cold_chain_iot_telemetry_escrow`):
-   - Computes Arrhenius Mean Kinetic Temperature (`MKT`) in Celsius and cumulative
-     excursion duration outside `[min_temp_c, max_temp_c]` (e.g., `2°C - 8°C`).
-   - Automatically freezes final seller payout and releases buyer escrow
-     compensation when `excursion_minutes > max_excursion_minutes` (`15 min`) or
-     `mkt_celsius > max_mkt_celsius` (`8.0°C`,
-     `COLD_CHAIN_SLA_BREACH_ESCROW_CLAIMED`).
-
-3. Scope 3 Carbon Budget & SLA Pareto-Optimal Multimodal Carrier Router
+2. Scope 3 Carbon Budget & SLA Pareto-Optimal Multimodal Carrier Router
    (`optimize_carbon_pareto_carrier_route`):
    - Selects the lowest-carbon multimodal route (`gCO2e/ton-km`) among options
      satisfying customer SLA deadline (`transit_hours <= max_sla_hours`), cost ceiling,
@@ -34,7 +25,6 @@ import argparse
 from dataclasses import dataclass
 from decimal import Decimal, ROUND_HALF_UP
 import json
-import math
 from typing import Any
 
 
@@ -58,20 +48,6 @@ class CustomsLandedCostDecision:
     calculated_ddp_total_minor: int
     de_minimis_cap_minor: int
     undervaluation_ratio: str
-    reasons: tuple[str, ...]
-
-
-@dataclass(frozen=True)
-class ColdChainEscrowDecision:
-    sla_compliant: bool
-    seller_payout_released: bool
-    decision_code: str
-    shipment_id: str
-    mkt_celsius: str
-    excursion_minutes: int
-    escrow_total_minor: int
-    buyer_compensation_minor: int
-    seller_net_release_minor: int
     reasons: tuple[str, ...]
 
 
@@ -186,73 +162,6 @@ def evaluate_hs_code_landed_cost_and_deminimis(
     )
 
 
-def evaluate_cold_chain_iot_telemetry_escrow(
-    telemetry_bundle: dict[str, Any],
-    *,
-    activation_energy_over_r_kelvin: float = 10_000.0,
-) -> ColdChainEscrowDecision:
-    """Compute Arrhenius Mean Kinetic Temperature (MKT) and trigger escrow claim on breach."""
-    reasons: list[str] = []
-
-    shipment_id = str(telemetry_bundle.get("shipment_id", ""))
-    readings_c = [float(t) for t in telemetry_bundle.get("temperature_readings_c", [])]
-    sample_interval_min = int(telemetry_bundle.get("sample_interval_minutes", 5))
-    min_temp_c = float(telemetry_bundle.get("min_allowed_temp_c", 2.0))
-    max_temp_c = float(telemetry_bundle.get("max_allowed_temp_c", 8.0))
-    max_mkt_c = float(telemetry_bundle.get("max_mkt_celsius", 8.0))
-    max_excursion_min = int(telemetry_bundle.get("max_excursion_minutes", 15))
-    escrow_total = int(telemetry_bundle.get("escrow_total_minor", 0))
-    breach_compensation_bps = int(
-        telemetry_bundle.get("breach_compensation_bps", 10_000)
-    )
-
-    if not readings_c:
-        mkt_c = Decimal("0.00")
-        excursion_minutes = 0
-        reasons.append("MISSING_IOT_TELEMETRY_READINGS")
-    else:
-        boltzmann_terms = [
-            math.exp(-activation_energy_over_r_kelvin / (t_c + 273.15))
-            for t_c in readings_c
-        ]
-        mean_exp = sum(boltzmann_terms) / len(boltzmann_terms)
-        mkt_kelvin = -activation_energy_over_r_kelvin / math.log(mean_exp)
-        mkt_c = Decimal(str(mkt_kelvin - 273.15)).quantize(
-            Decimal("0.01"), rounding=ROUND_HALF_UP
-        )
-
-        excursion_samples = sum(
-            1 for t_c in readings_c if (t_c < min_temp_c or t_c > max_temp_c)
-        )
-        excursion_minutes = excursion_samples * sample_interval_min
-
-        if excursion_minutes > max_excursion_min or float(mkt_c) > max_mkt_c:
-            reasons.append("COLD_CHAIN_SLA_BREACH_ESCROW_CLAIMED")
-
-    sla_compliant = len(reasons) == 0
-    if sla_compliant:
-        buyer_comp = 0
-        seller_release = escrow_total
-        decision_code = "COLD_CHAIN_MKT_SLA_VERIFIED_ESCROW_RELEASED"
-    else:
-        buyer_comp = (escrow_total * breach_compensation_bps) // 10_000
-        seller_release = escrow_total - buyer_comp
-        decision_code = reasons[0]
-
-    return ColdChainEscrowDecision(
-        sla_compliant=sla_compliant,
-        seller_payout_released=sla_compliant,
-        decision_code=decision_code,
-        shipment_id=shipment_id,
-        mkt_celsius=str(mkt_c),
-        excursion_minutes=excursion_minutes,
-        escrow_total_minor=escrow_total,
-        buyer_compensation_minor=buyer_comp,
-        seller_net_release_minor=seller_release,
-        reasons=tuple(reasons),
-    )
-
-
 def optimize_carbon_pareto_carrier_route(
     shipment_spec: dict[str, Any],
     carrier_options: list[dict[str, Any]],
@@ -325,7 +234,7 @@ def optimize_carbon_pareto_carrier_route(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Run Stage 16 HS-Code DDP Landed Cost, Cold-Chain MKT Escrow & Scope 3 Carbon Router."
+        description="Run HS-Code DDP Landed Cost & Multimodal Carrier SLA Router."
     )
     parser.parse_args(argv)
 
@@ -345,19 +254,6 @@ def main(argv: list[str] | None = None) -> int:
             "same_consignee_24h_cumulative_minor": 42_000,  # Structuring > €150
         }
     )
-    cold_res = evaluate_cold_chain_iot_telemetry_escrow(
-        {
-            "shipment_id": "shp_biologics_901",
-            "temperature_readings_c": [4.0, 4.5, 5.0, 12.5, 13.0, 12.8, 11.9, 5.2],
-            "sample_interval_minutes": 5,
-            "min_allowed_temp_c": 2.0,
-            "max_allowed_temp_c": 8.0,
-            "max_mkt_celsius": 8.0,
-            "max_excursion_minutes": 15,
-            "escrow_total_minor": 250_000,
-            "breach_compensation_bps": 10_000,
-        }
-    )
     route_res = optimize_carbon_pareto_carrier_route(
         shipment_spec={
             "cargo_weight_tons": "2.5",
@@ -375,12 +271,9 @@ def main(argv: list[str] | None = None) -> int:
     print(
         json.dumps(
             {
-                "stage": "stage16-green-logistics-customs-sla-guard",
+                "module": "green-logistics-customs-sla-guard",
                 "customs_structuring_decision": customs_res.decision_code,
                 "calculated_ddp_total_minor": customs_res.calculated_ddp_total_minor,
-                "cold_chain_decision": cold_res.decision_code,
-                "cold_chain_mkt_celsius": cold_res.mkt_celsius,
-                "cold_chain_buyer_compensation_minor": cold_res.buyer_compensation_minor,
                 "pareto_selected_carrier": route_res.selected_carrier_id,
                 "carbon_savings_vs_air_pct": route_res.carbon_savings_vs_air_pct,
             },

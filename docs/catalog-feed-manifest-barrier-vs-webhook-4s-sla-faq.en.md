@@ -7,7 +7,7 @@
 > - `synthetic_policy`: The cache freshness TTL threshold (`feed_age_seconds <= 900s` required for read-hook fallback; `> 900s` rejected with `HTTP 503`) is an architect reference policy (`synthetic_policy`), **not** a statutory mandate.
 > - `deterministic_offline_simulation`: Sandbox evaluation latencies (`310 ms`, `380 ms`) and 100% partial-catalog / ghost-charge prevention rates come from deterministic local simulation (`evaluate_catalog_feed_and_webhook_sla_policy` in `lab/webiq_commerce_demo.py`). Live merchant ERP/OMS peak-traffic webhook latency is labeled `not_measured`.
 
-![2026-11-08 Merchant Catalog Ingestion & 4,000ms Asymmetric Webhook SLA Visual Summary](../../assets/svg/11-catalog-feed-manifest-vs-4s-webhook-2026-11-08.svg)
+![2026-11-08 Merchant Catalog Ingestion & 4,000ms Asymmetric Webhook SLA Visual Summary](../assets/svg/11-catalog-feed-manifest-vs-4s-webhook-2026-11-08.svg)
 
 ---
 
@@ -187,7 +187,7 @@ We validated all 5 catalog ingestion and 4,000 ms asymmetric webhook boundary sc
 | **`finalize_hook_within_sla_captured`** | `finalize_checkout` | Hook elapsed `380 ms` (`<= 4,000 ms`), `inventory_locked=True` | `finalize_checkout_confirmed_spt_captured` | `200 OK` | **`$149.00` (OMS order locked & SPT payment captured atomically)** |
 
 > 📊 **Interactive Workbench & Provenance Note**:
-> - Open **[`live-demo.en.html`](../../live-demo.en.html)** and jump to **`#catalog-webhook-sla-sandbox` (Merchant Catalog `manifest.json` Barrier & 4,000 ms Asymmetric Webhook Sandbox)** to interactively test all 4 presets.
+> - Open **[`live-demo.en.html`](../live-demo.en.html)** and jump to **`#catalog-webhook-sla-sandbox` (Merchant Catalog `manifest.json` Barrier & 4,000 ms Asymmetric Webhook Sandbox)** to interactively test all 4 presets.
 > - **Provenance Guardrail**: Live merchant ERP/OMS peak-traffic latency depends on merchant infrastructure and remains explicitly labeled `not_measured`.
 
 ---
