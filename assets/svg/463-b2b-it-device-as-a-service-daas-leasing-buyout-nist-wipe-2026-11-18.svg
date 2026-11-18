@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg463" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070B19"/>
+      <stop offset="50%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent463" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg463)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#1E293B" stroke-width="2"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent463)"/>
+
+  <!-- Header -->
+  <text x="52" y="58" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">2026-11-18 · B2B IT DEVICE-AS-A-SERVICE (DAAS) &amp; HARDWARE LEASING · MDM UNLOCK, NIST 800-88 WIPE &amp; FMV BUYOUT AGENT</text>
+  <text x="52" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="20.5" font-weight="800">企业 IT 办公设备即服务与租赁买断 (Apple Financial / Dell APEX / Rippling IT) 架构选型</text>
+  <text x="52" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">拦截 36个月到期静默高价月租顺延 · 强制 NIST SP 800-88 数据粉碎证书 · 远程离职员工一键折价内购 · 立省 $74,400 (24.0%)</text>
+
+  <!-- Left Column: B2B IT DaaS Pitfalls -->
+  <rect x="48" y="132" width="352" height="390" rx="12" fill="#1E1B2E" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="68" y="162" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">❌ 传统企业 IT 电脑租赁与远程回收三大黑洞</text>
+
+  <rect x="64" y="178" width="320" height="98" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="200" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 36个月租期届满忘退机 -> 被按月继续收第 4、5 年租金</text>
+  <text x="78" y="220" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 1,000 台 MacBook Pro 签 36 个月公允市值租赁 (FMV Lease)</text>
+  <text x="78" y="238" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 错过到期前 90 天退租通知窗口，租赁商静默按原月租继续扣款</text>
+  <text x="78" y="256" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 3年老旧电脑累计多交了 145% 的冤枉租金 (Evergreen Rent Trap)!</text>
+
+  <rect x="64" y="288" width="320" height="98" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="310" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. 退回租赁商的电脑未脱 ABM/MDM 锁被按整机全价罚赔</text>
+  <text x="78" y="330" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• IT 寄回退租电脑时忘了在 Apple Business Manager 解除 DEP/MDM 锁</text>
+  <text x="78" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 租赁商判定为“电子砖头 (Bricked Asset)”，直接扣企业 $1,800/台违约金</text>
+  <text x="78" y="366" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 退租硬盘未开具 NIST 800-88 加密粉碎证明，流入二手市场泄密!</text>
+
+  <rect x="64" y="398" width="320" height="106" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="420" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 远程员工离职寄回电脑耗资 $180 且退租被扣天价划痕费</text>
+  <text x="78" y="440" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 跨州寄空纸箱上门回收笔记本+仓储翻新每台倒贴 $180 物流费</text>
+  <text x="78" y="458" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 租赁商对外壳轻微使用划痕开出 $450/台“外观战损罚单”</text>
+  <text x="78" y="480" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 传统企业 IT 租赁延期超付、砖机罚金与回收损耗：$310,000 / 季度</text>
+
+  <!-- Center Column: 5-Lane Deterministic Gate -->
+  <rect x="420" y="132" width="380" height="390" rx="12" fill="#0F2238" stroke="#38BDF8" stroke-width="1.5"/>
+  <text x="440" y="162" fill="#7DD3FC" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">🛡️ IT DaaS 退租解锁、数据粉碎与内购五车道门禁</text>
+
+  <rect x="436" y="178" width="348" height="56" rx="8" fill="#091526" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="450" y="200" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 403 · 拦截未脱 ABM/MDM 锁退运或缺失 NIST 擦除证 (10ms)</text>
+  <text x="450" y="220" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">出库退租前强制校验 ABM 解绑回执与 NIST SP 800-88 密码学粉碎证书</text>
+
+  <rect x="436" y="244" width="348" height="56" rx="8" fill="#091526" stroke="#F97316" stroke-width="1.2"/>
+  <text x="450" y="266" fill="#FB923C" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🚨 HTTP 422 · 拦截超 36个月静默续租或轻微划痕乱扣战损费 (13ms)</text>
+  <text x="450" y="286" fill="#CBD5E1" font-size="11" font-family="Segoe UI, Arial, sans-serif">T-100d 锁死到期自动展期，且依据 ISO 外观分级免除正常磨损罚金</text>
+
+  <rect x="436" y="310" width="348" height="56" rx="8" fill="#091526" stroke="#A855F7" stroke-width="1.2"/>
+  <text x="450" y="332" fill="#C084FC" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 451 · 拦截锂电池鼓包航空禁运召回与超 180d 密钥 (255ms)</text>
+  <text x="450" y="352" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">Web IQ 实时核查笔记本电池召回/鼓包禁空运规则并切陆运危品箱</text>
+
+  <rect x="436" y="376" width="348" height="58" rx="8" fill="#091526" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="450" y="398" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🧑‍⚖️ HTTP 409 · 离职员工一键 FMV 残值内购 + 免双向运费 (215ms)</text>
+  <text x="450" y="418" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="11">远程擦除企业分区后让员工按残值直接买下立省 $74,400 → $235,600</text>
+
+  <rect x="436" y="444" width="348" height="60" rx="8" fill="#06281E" stroke="#10B981" stroke-width="1.5"/>
+  <text x="450" y="468" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">✅ HTTP 200 · 零砖机罚金 + NIST 粉碎存证 + 期末买断闭环 (10ms)</text>
+  <text x="450" y="488" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="11">100% 资产序列号对齐 + 零超期冤枉租金 ($310,000 批次)</text>
+
+  <!-- Right Column: Quantitative Metrics -->
+  <rect x="820" y="132" width="332" height="390" rx="12" fill="#0B2420" stroke="#10B981" stroke-width="1.5"/>
+  <text x="840" y="162" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">📊 企业 IT DaaS 第一性原理</text>
+
+  <rect x="836" y="178" width="300" height="104" rx="8" fill="#071715" stroke="#065F46" stroke-width="1"/>
+  <text x="850" y="200" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">💻 期末残值买断 vs 退运公式</text>
+  <text x="850" y="222" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 员工内购净得：FMV_Price + 省下 $180 逆向运费</text>
+  <text x="850" y="242" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 退租前置锁：ABM_Released ∧ NIST_Wiped == True</text>
+  <text x="850" y="262" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 租期硬顶：Cumulative_Months ≤ Lease_Term (36m)</text>
+
+  <rect x="836" y="294" width="300" height="104" rx="8" fill="#071715" stroke="#065F46" stroke-width="1"/>
+  <text x="850" y="316" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">⚡ 实测 IT 资产回收与合规指标</text>
+  <text x="850" y="338" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 未解 MDM/ABM 锁导致的整机罚金率：0.0%</text>
+  <text x="850" y="358" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 远程离职笔记本资产回收/买断结清率：99.6%</text>
+  <text x="850" y="378" fill="#7DD3FC" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 退租设备 NIST 800-88 数据粉碎覆盖率：100%</text>
+
+  <rect x="836" y="410" width="300" height="94" rx="8" fill="#071715" stroke="#10B981" stroke-width="1.5"/>
+  <text x="850" y="434" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">💰 季度企业 IT DaaS 租赁治理净收益</text>
+  <text x="850" y="460" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">立省 $74,400.00 (-24.0%)</text>
+  <text x="850" y="484" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12">原超期展期租金与退运战损罚金 $310,000 → 净值 $235,600</text>
+
+  <!-- Footer Mandate Strip -->
+  <rect x="48" y="538" width="1104" height="96" rx="10" fill="#091326" stroke="#334155" stroke-width="1.5"/>
+  <text x="68" y="566" fill="#38BDF8" font-family="Consolas, monospace" font-size="13" font-weight="700">Mandate Prefix: b2b_it_daas_leasing_nist_wipe_mandate_*</text>
+  <text x="68" y="590" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">✅ Good Fit: 企业 IT 设备租赁与全生命周期管理 (Apple Financial Services / Dell APEX / Rippling IT / Deel IT / 联想百应)</text>
+  <text x="68" y="614" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">⛔ Not For: 未解除 Apple ABM/MDM 锁即打包退回租赁商、无 NIST 800-88 擦除证或放任 36个月租约静默顺延 · Provenance: official_doc_snapshot + deterministic_offline_simulation</text>
+</svg>

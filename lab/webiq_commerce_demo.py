@@ -16288,6 +16288,80 @@ def evaluate_influencer_seeding_coupon_poaching_policy(
         "reason": "Verified social OAuth identity, server-side Creator Stand-Down Lock, FTC #ad tag, and T+35d net payout.",
     }
 
+
+@dataclass(frozen=True)
+class B2bItDaasLeasingNistWipePolicyInput:
+    quarterly_it_daas_lease_pool_usd: Decimal
+    unreleased_abm_mdm_lock_or_missing_nist_800_88_wipe_cert_detected: bool
+    post_term_evergreen_rent_bleed_or_normal_wear_penalty_detected: bool
+    webiq_battery_swell_air_freight_ban_flag: bool
+    restricted_key_age_days: int
+    remote_employee_fmv_buyout_and_t100_eot_guard_enabled: bool
+
+
+def evaluate_b2b_it_daas_leasing_nist_wipe_policy(
+    policy_input: B2bItDaasLeasingNistWipePolicyInput,
+) -> dict[str, Any]:
+    """Evaluate B2B IT DaaS ABM/MDM Activation-Lock release, NIST SP 800-88 wipe cert, 36m cap & remote employee FMV buyout."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_it_daas_lease_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.unreleased_abm_mdm_lock_or_missing_nist_800_88_wipe_cert_detected:
+        return {
+            "http_status": 403,
+            "decision": "UNRELEASED_ABM_MDM_LOCK_OR_MISSING_NIST_800_88_WIPE_CERT_BLOCKED",
+            "latency_ms": 10,
+            "approved_budget_usd": "0.00",
+            "it_daas_token": None,
+            "reason": "Blocked lessor return shipping label while device remained bound in Apple ABM/MDM or lacked NIST 800-88 wipe cert.",
+        }
+
+    if policy_input.post_term_evergreen_rent_bleed_or_normal_wear_penalty_detected:
+        return {
+            "http_status": 422,
+            "decision": "POST_TERM_EVERGREEN_RENT_BLEED_OR_NORMAL_WEAR_PENALTY_BLOCKED",
+            "latency_ms": 13,
+            "approved_budget_usd": "0.00",
+            "it_daas_token": None,
+            "reason": "Blocked Month 37+ evergreen rent rollover past lease term or predatory cosmetic wear fee on ISO Grade B laptop.",
+        }
+
+    if policy_input.webiq_battery_swell_air_freight_ban_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_BATTERY_SWELL_AIR_FREIGHT_BAN_OR_180D_KEY_HOLD",
+            "latency_ms": 255,
+            "approved_budget_usd": "0.00",
+            "it_daas_token": None,
+            "reason": "Web IQ / MDM detected recalled or swollen lithium-ion battery on air return label (IATA UN3481) or key > 180 days.",
+        }
+
+    if policy_input.remote_employee_fmv_buyout_and_t100_eot_guard_enabled:
+        savings = (gross * Decimal("0.24")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"IT_DAAS_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "REMOTE_EMPLOYEE_FMV_BUYOUT_AND_T100_EOT_NOTICE_CONFIRM",
+            "latency_ms": 215,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "it_daas_token": f"b2b_it_daas_leasing_nist_wipe_mandate_{digest}",
+            "reason": "1-click remote employee FMV buyout, ABM pre-return unlock, and 36-cycle cap reduced fleet TCO by 24.0%.",
+        }
+
+    digest = hashlib.sha256(f"IT_DAAS_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "ABM_RELEASED_NIST_WIPED_AND_36M_CAPPED_LEASE_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "it_daas_token": f"b2b_it_daas_leasing_nist_wipe_mandate_{digest}",
+        "reason": "Verified ABM/MDM release, signed NIST SP 800-88 wipe certificate, and 36-month capped lease settlement.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -21921,6 +21995,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_it_daas_leasing_nist_wipe_guard = {
+        "happy_path": evaluate_b2b_it_daas_leasing_nist_wipe_policy(
+            B2bItDaasLeasingNistWipePolicyInput(
+                quarterly_it_daas_lease_pool_usd=Decimal("310000.00"),
+                unreleased_abm_mdm_lock_or_missing_nist_800_88_wipe_cert_detected=False,
+                post_term_evergreen_rent_bleed_or_normal_wear_penalty_detected=False,
+                webiq_battery_swell_air_freight_ban_flag=False,
+                restricted_key_age_days=30,
+                remote_employee_fmv_buyout_and_t100_eot_guard_enabled=False,
+            )
+        ),
+        "abm_locked_or_missing_nist_block": evaluate_b2b_it_daas_leasing_nist_wipe_policy(
+            B2bItDaasLeasingNistWipePolicyInput(
+                quarterly_it_daas_lease_pool_usd=Decimal("310000.00"),
+                unreleased_abm_mdm_lock_or_missing_nist_800_88_wipe_cert_detected=True,
+                post_term_evergreen_rent_bleed_or_normal_wear_penalty_detected=False,
+                webiq_battery_swell_air_freight_ban_flag=False,
+                restricted_key_age_days=30,
+                remote_employee_fmv_buyout_and_t100_eot_guard_enabled=False,
+            )
+        ),
+        "evergreen_rent_or_wear_penalty_block": evaluate_b2b_it_daas_leasing_nist_wipe_policy(
+            B2bItDaasLeasingNistWipePolicyInput(
+                quarterly_it_daas_lease_pool_usd=Decimal("310000.00"),
+                unreleased_abm_mdm_lock_or_missing_nist_800_88_wipe_cert_detected=False,
+                post_term_evergreen_rent_bleed_or_normal_wear_penalty_detected=True,
+                webiq_battery_swell_air_freight_ban_flag=False,
+                restricted_key_age_days=30,
+                remote_employee_fmv_buyout_and_t100_eot_guard_enabled=False,
+            )
+        ),
+        "webiq_battery_swell_or_key_hold": evaluate_b2b_it_daas_leasing_nist_wipe_policy(
+            B2bItDaasLeasingNistWipePolicyInput(
+                quarterly_it_daas_lease_pool_usd=Decimal("310000.00"),
+                unreleased_abm_mdm_lock_or_missing_nist_800_88_wipe_cert_detected=False,
+                post_term_evergreen_rent_bleed_or_normal_wear_penalty_detected=False,
+                webiq_battery_swell_air_freight_ban_flag=True,
+                restricted_key_age_days=191,
+                remote_employee_fmv_buyout_and_t100_eot_guard_enabled=False,
+            )
+        ),
+        "employee_buyout_and_eot_confirm": evaluate_b2b_it_daas_leasing_nist_wipe_policy(
+            B2bItDaasLeasingNistWipePolicyInput(
+                quarterly_it_daas_lease_pool_usd=Decimal("310000.00"),
+                unreleased_abm_mdm_lock_or_missing_nist_800_88_wipe_cert_detected=False,
+                post_term_evergreen_rent_bleed_or_normal_wear_penalty_detected=False,
+                webiq_battery_swell_air_freight_ban_flag=False,
+                restricted_key_age_days=30,
+                remote_employee_fmv_buyout_and_t100_eot_guard_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -22069,6 +22196,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "home_services_on_demand_repair_escrow_guard": home_services_on_demand_repair_escrow_guard,
         "wedding_bespoke_event_milestone_escrow_guard": wedding_bespoke_event_milestone_escrow_guard,
         "influencer_seeding_coupon_poaching_guard": influencer_seeding_coupon_poaching_guard,
+        "b2b_it_daas_leasing_nist_wipe_guard": b2b_it_daas_leasing_nist_wipe_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -28191,6 +28319,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">创作者防劫持与托管令牌</div>
             <div class="finops-kpi-val" id="inf-seed-token-kpi" style="font-size:10px;color:#A78BFA;">influencer_seeding_coupon_poaching_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive B2B IT Device-as-a-Service (DaaS) & Hardware Leasing (ABM Unlock, NIST 800-88 Wipe & Employee Buyout) Sandbox -->
+      <div class="finops-box" id="b2b-it-daas-leasing-nist-wipe-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">💻 企业 IT 办公设备即服务与租赁买断 (Apple Financial / Dell APEX / Rippling IT) 沙盒</div>
+            <div class="finops-subtitle">实测打印退租面单前强制校验 Apple ABM 解绑防 $1,800 砖机罚单与 NIST 800-88 粉碎证书 (HTTP 403)、36期硬封顶防第4年静默扣租与免正常划痕罚金 (HTTP 422)、电池鼓包禁空运 (HTTP 451) 及远程离职员工一键 FMV 残值内购立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="it-daas-verdict-pill">HTTP 200 · ABM_RELEASED_NIST_WIPED_AND_36M_CAPPED_LEASE_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度企业 IT 电脑租赁与远程回收结算池 ($ USD) <span class="control-val" id="it-daas-gross-label">$310,000</span></label>
+            <input type="range" id="it-daas-gross-slider" min="60000" max="1100000" step="25000" value="310000" oninput="updateB2bItDaasLeasingNistWipeSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">ABM/MDM 激活锁解绑、NIST 800-88 擦除证、36期上限与员工残值买断场景</label>
+            <select id="it-daas-mode-select" onchange="updateB2bItDaasLeasingNistWipeSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ ABM 激活锁已解绑 + NIST 800-88 擦除证 + 36期封顶结清 (HTTP 200)</option>
+              <option value="abm_403">🛑 未解除 Apple ABM/MDM 激活锁即寄回退租 (必罚 $1,800/台) 或 缺失 NIST 擦除证 (HTTP 403)</option>
+              <option value="evergreen_422">🚨 36个月期满后被租赁商静默顺延扣第37期月租 或 轻微使用划痕被乱扣 $450 (HTTP 422)</option>
+              <option value="battery_451">🛑 Web IQ 检出退运笔记本型号存在锂电池鼓包召回/航空禁运或密钥 &gt;180d (HTTP 451)</option>
+              <option value="buyout_409">🧑‍⚖️ 远程擦除企业分区后支持离职员工一键按 FMV 残值内购免 $180 双向运费立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原超期展期租金与退运罚金基线</div>
+            <div class="finops-kpi-val" id="it-daas-gross-kpi">$310,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">员工 FMV 内购与免罚金立省</div>
+            <div class="finops-kpi-val" id="it-daas-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净 IT 硬件租赁 TCO</div>
+            <div class="finops-kpi-val" id="it-daas-net-kpi" style="color:#60A5FA;">$310,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">IT DaaS 解锁与擦除合规令牌</div>
+            <div class="finops-kpi-val" id="it-daas-token-kpi" style="font-size:10px;color:#A78BFA;">b2b_it_daas_leasing_nist_wipe_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -35612,6 +35785,61 @@ function updateInfluencerSeedingCouponPoachingSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'influencer_seeding_coupon_poaching_escrow_mandate_verified';
+  }}
+}}
+
+function updateB2bItDaasLeasingNistWipeSandbox() {{
+  const grossSlider = document.getElementById('it-daas-gross-slider');
+  const modeSelect = document.getElementById('it-daas-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '310000');
+  const mode = modeSelect.value;
+  document.getElementById('it-daas-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('it-daas-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('it-daas-verdict-pill');
+  const savingsKpi = document.getElementById('it-daas-savings-kpi');
+  const netKpi = document.getElementById('it-daas-net-kpi');
+  const tokenKpi = document.getElementById('it-daas-token-kpi');
+
+  if (mode === 'abm_403') {{
+    pill.textContent = 'HTTP 403 · UNRELEASED_ABM_MDM_LOCK_OR_MISSING_NIST_800_88_WIPE_CERT_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_ABM_LOCKED_OR_MISSING_NIST_CERT';
+  }} else if (mode === 'evergreen_422') {{
+    pill.textContent = 'HTTP 422 · POST_TERM_EVERGREEN_RENT_BLEED_OR_NORMAL_WEAR_PENALTY_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_MONTH37_EVERGREEN_OR_WEAR_PENALTY';
+  }} else if (mode === 'battery_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_BATTERY_SWELL_AIR_FREIGHT_BAN_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_SWOLLEN_BATTERY_GROUND_HAZMAT_ONLY';
+  }} else if (mode === 'buyout_409') {{
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · REMOTE_EMPLOYEE_FMV_BUYOUT_AND_T100_EOT_NOTICE_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'b2b_it_daas_leasing_nist_wipe_mandate_saved24pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · ABM_RELEASED_NIST_WIPED_AND_36M_CAPPED_LEASE_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'b2b_it_daas_leasing_nist_wipe_mandate_verified';
   }}
 }}
 

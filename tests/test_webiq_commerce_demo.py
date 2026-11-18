@@ -9708,6 +9708,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("influencer-seeding-coupon-poaching-sandbox", html)
 
+    def test_b2b_it_daas_leasing_nist_wipe_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            B2bItDaasLeasingNistWipePolicyInput,
+            evaluate_b2b_it_daas_leasing_nist_wipe_policy,
+        )
+
+        happy = evaluate_b2b_it_daas_leasing_nist_wipe_policy(
+            B2bItDaasLeasingNistWipePolicyInput(
+                quarterly_it_daas_lease_pool_usd=Decimal("310000.00"),
+                unreleased_abm_mdm_lock_or_missing_nist_800_88_wipe_cert_detected=False,
+                post_term_evergreen_rent_bleed_or_normal_wear_penalty_detected=False,
+                webiq_battery_swell_air_freight_ban_flag=False,
+                restricted_key_age_days=30,
+                remote_employee_fmv_buyout_and_t100_eot_guard_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "ABM_RELEASED_NIST_WIPED_AND_36M_CAPPED_LEASE_AUTHORIZED")
+        self.assertTrue(
+            str(happy["it_daas_token"]).startswith("b2b_it_daas_leasing_nist_wipe_mandate_")
+        )
+
+        abm_block = evaluate_b2b_it_daas_leasing_nist_wipe_policy(
+            B2bItDaasLeasingNistWipePolicyInput(
+                quarterly_it_daas_lease_pool_usd=Decimal("310000.00"),
+                unreleased_abm_mdm_lock_or_missing_nist_800_88_wipe_cert_detected=True,
+                post_term_evergreen_rent_bleed_or_normal_wear_penalty_detected=False,
+                webiq_battery_swell_air_freight_ban_flag=False,
+                restricted_key_age_days=30,
+                remote_employee_fmv_buyout_and_t100_eot_guard_enabled=False,
+            )
+        )
+        self.assertEqual(abm_block["http_status"], 403)
+        self.assertEqual(
+            abm_block["decision"],
+            "UNRELEASED_ABM_MDM_LOCK_OR_MISSING_NIST_800_88_WIPE_CERT_BLOCKED",
+        )
+
+        evergreen_block = evaluate_b2b_it_daas_leasing_nist_wipe_policy(
+            B2bItDaasLeasingNistWipePolicyInput(
+                quarterly_it_daas_lease_pool_usd=Decimal("310000.00"),
+                unreleased_abm_mdm_lock_or_missing_nist_800_88_wipe_cert_detected=False,
+                post_term_evergreen_rent_bleed_or_normal_wear_penalty_detected=True,
+                webiq_battery_swell_air_freight_ban_flag=False,
+                restricted_key_age_days=30,
+                remote_employee_fmv_buyout_and_t100_eot_guard_enabled=False,
+            )
+        )
+        self.assertEqual(evergreen_block["http_status"], 422)
+        self.assertEqual(
+            evergreen_block["decision"],
+            "POST_TERM_EVERGREEN_RENT_BLEED_OR_NORMAL_WEAR_PENALTY_BLOCKED",
+        )
+
+        bat_hold = evaluate_b2b_it_daas_leasing_nist_wipe_policy(
+            B2bItDaasLeasingNistWipePolicyInput(
+                quarterly_it_daas_lease_pool_usd=Decimal("310000.00"),
+                unreleased_abm_mdm_lock_or_missing_nist_800_88_wipe_cert_detected=False,
+                post_term_evergreen_rent_bleed_or_normal_wear_penalty_detected=False,
+                webiq_battery_swell_air_freight_ban_flag=True,
+                restricted_key_age_days=191,
+                remote_employee_fmv_buyout_and_t100_eot_guard_enabled=False,
+            )
+        )
+        self.assertEqual(bat_hold["http_status"], 451)
+        self.assertEqual(
+            bat_hold["decision"],
+            "WEBIQ_BATTERY_SWELL_AIR_FREIGHT_BAN_OR_180D_KEY_HOLD",
+        )
+
+        opt_confirm = evaluate_b2b_it_daas_leasing_nist_wipe_policy(
+            B2bItDaasLeasingNistWipePolicyInput(
+                quarterly_it_daas_lease_pool_usd=Decimal("310000.00"),
+                unreleased_abm_mdm_lock_or_missing_nist_800_88_wipe_cert_detected=False,
+                post_term_evergreen_rent_bleed_or_normal_wear_penalty_detected=False,
+                webiq_battery_swell_air_freight_ban_flag=False,
+                restricted_key_age_days=30,
+                remote_employee_fmv_buyout_and_t100_eot_guard_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "74400.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "235600.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_it_daas_leasing_nist_wipe_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("b2b-it-daas-leasing-nist-wipe-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
