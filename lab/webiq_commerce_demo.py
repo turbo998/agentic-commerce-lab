@@ -15400,6 +15400,80 @@ def evaluate_corporate_tmc_lra_unused_ticket_policy(
         "reason": "Verified Unused Ticket Credit priority drawdown, LRA hotel rate parity, and Room-and-Tax-Only single-use VCN.",
     }
 
+
+@dataclass(frozen=True)
+class FranchiseQsrSupplyRoyaltySplitPolicyInput:
+    quarterly_franchise_commissary_royalty_pool_usd: Decimal
+    outside_unauthorized_sourcing_or_ip_merch_scalping_detected: bool
+    fefo_shelf_life_overorder_or_royalty_split_bypass_detected: bool
+    webiq_ingredient_batch_recall_menu_lock_flag: bool
+    restricted_key_age_days: int
+    weather_fefo_auto_ordering_and_pos_royalty_split_enabled: bool
+
+
+def evaluate_franchise_qsr_supply_royalty_split_policy(
+    policy_input: FranchiseQsrSupplyRoyaltySplitPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Multi-Unit Franchise QSR recipe BOM anti-rogue-sourcing audit, FEFO shelf-life cap & real-time POS royalty split."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_franchise_commissary_royalty_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.outside_unauthorized_sourcing_or_ip_merch_scalping_detected:
+        return {
+            "http_status": 403,
+            "decision": "OUTSIDE_UNAUTHORIZED_SOURCING_OR_IP_MERCH_SCALPING_BLOCKED",
+            "latency_ms": 10,
+            "approved_budget_usd": "0.00",
+            "franchise_qsr_token": None,
+            "reason": "Blocked franchisee with POS recipe BOM consumption exceeding HQ deliveries (rogue sourcing) or viral IP packaging hoarding.",
+        }
+
+    if policy_input.fefo_shelf_life_overorder_or_royalty_split_bypass_detected:
+        return {
+            "http_status": 422,
+            "decision": "FEFO_SHELF_LIFE_OVERORDER_OR_ROYALTY_SPLIT_BYPASS_BLOCKED",
+            "latency_ms": 13,
+            "approved_budget_usd": "0.00",
+            "franchise_qsr_token": None,
+            "reason": "Blocked short-shelf-life dairy order exceeding FEFO remaining shelf-life burn or bypassing real-time POS royalty split.",
+        }
+
+    if policy_input.webiq_ingredient_batch_recall_menu_lock_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_INGREDIENT_BATCH_RECALL_MENU_LOCK_OR_180D_KEY_HOLD",
+            "latency_ms": 255,
+            "approved_budget_usd": "0.00",
+            "franchise_qsr_token": None,
+            "reason": "Web IQ detected upstream ingredient lot recall (triggering POS/delivery menu lock) or restricted key age > 180 days.",
+        }
+
+    if policy_input.weather_fefo_auto_ordering_and_pos_royalty_split_enabled:
+        savings = (gross * Decimal("0.22")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"FRANCHISE_QSR_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "WEATHER_FEFO_AUTO_ORDERING_AND_POS_ROYALTY_SPLIT_CONFIRM",
+            "latency_ms": 215,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "franchise_qsr_token": f"franchise_qsr_supply_royalty_split_mandate_{digest}",
+            "reason": "Weather-elastic FEFO auto-replenishment and real-time POS royalty/commissary split reduced waste & leakage by 22.0%.",
+        }
+
+    digest = hashlib.sha256(f"FRANCHISE_QSR_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "BOM_MASS_BALANCE_AND_FEFO_POS_ROYALTY_SPLIT_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "franchise_qsr_token": f"franchise_qsr_supply_royalty_split_mandate_{digest}",
+        "reason": "Verified recipe BOM mass-balance compliance, FEFO shelf-life cap, and real-time POS royalty split.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -20397,6 +20471,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    franchise_qsr_supply_royalty_split_guard = {
+        "happy_path": evaluate_franchise_qsr_supply_royalty_split_policy(
+            FranchiseQsrSupplyRoyaltySplitPolicyInput(
+                quarterly_franchise_commissary_royalty_pool_usd=Decimal("390000.00"),
+                outside_unauthorized_sourcing_or_ip_merch_scalping_detected=False,
+                fefo_shelf_life_overorder_or_royalty_split_bypass_detected=False,
+                webiq_ingredient_batch_recall_menu_lock_flag=False,
+                restricted_key_age_days=30,
+                weather_fefo_auto_ordering_and_pos_royalty_split_enabled=False,
+            )
+        ),
+        "rogue_sourcing_or_ip_scalping_block": evaluate_franchise_qsr_supply_royalty_split_policy(
+            FranchiseQsrSupplyRoyaltySplitPolicyInput(
+                quarterly_franchise_commissary_royalty_pool_usd=Decimal("390000.00"),
+                outside_unauthorized_sourcing_or_ip_merch_scalping_detected=True,
+                fefo_shelf_life_overorder_or_royalty_split_bypass_detected=False,
+                webiq_ingredient_batch_recall_menu_lock_flag=False,
+                restricted_key_age_days=30,
+                weather_fefo_auto_ordering_and_pos_royalty_split_enabled=False,
+            )
+        ),
+        "fefo_overorder_or_royalty_bypass_block": evaluate_franchise_qsr_supply_royalty_split_policy(
+            FranchiseQsrSupplyRoyaltySplitPolicyInput(
+                quarterly_franchise_commissary_royalty_pool_usd=Decimal("390000.00"),
+                outside_unauthorized_sourcing_or_ip_merch_scalping_detected=False,
+                fefo_shelf_life_overorder_or_royalty_split_bypass_detected=True,
+                webiq_ingredient_batch_recall_menu_lock_flag=False,
+                restricted_key_age_days=30,
+                weather_fefo_auto_ordering_and_pos_royalty_split_enabled=False,
+            )
+        ),
+        "webiq_batch_recall_or_key_hold": evaluate_franchise_qsr_supply_royalty_split_policy(
+            FranchiseQsrSupplyRoyaltySplitPolicyInput(
+                quarterly_franchise_commissary_royalty_pool_usd=Decimal("390000.00"),
+                outside_unauthorized_sourcing_or_ip_merch_scalping_detected=False,
+                fefo_shelf_life_overorder_or_royalty_split_bypass_detected=False,
+                webiq_ingredient_batch_recall_menu_lock_flag=True,
+                restricted_key_age_days=191,
+                weather_fefo_auto_ordering_and_pos_royalty_split_enabled=False,
+            )
+        ),
+        "weather_fefo_and_pos_split_confirm": evaluate_franchise_qsr_supply_royalty_split_policy(
+            FranchiseQsrSupplyRoyaltySplitPolicyInput(
+                quarterly_franchise_commissary_royalty_pool_usd=Decimal("390000.00"),
+                outside_unauthorized_sourcing_or_ip_merch_scalping_detected=False,
+                fefo_shelf_life_overorder_or_royalty_split_bypass_detected=False,
+                webiq_ingredient_batch_recall_menu_lock_flag=False,
+                restricted_key_age_days=30,
+                weather_fefo_auto_ordering_and_pos_royalty_split_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -20533,6 +20660,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "automotive_ev_d2c_checkout_guard": automotive_ev_d2c_checkout_guard,
         "consumer_healthcare_medspa_escrow_guard": consumer_healthcare_medspa_escrow_guard,
         "corporate_tmc_lra_unused_ticket_guard": corporate_tmc_lra_unused_ticket_guard,
+        "franchise_qsr_supply_royalty_split_guard": franchise_qsr_supply_royalty_split_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -26115,6 +26243,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">企业商旅 TMC 治理令牌</div>
             <div class="finops-kpi-val" id="corp-tmc-token-kpi" style="font-size:10px;color:#A78BFA;">corporate_tmc_lra_unused_ticket_credit_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Multi-Unit Franchise QSR Supply Chain (BOM Anti-Rogue-Sourcing, FEFO Cap & POS Royalty Split) Sandbox -->
+      <div class="finops-box" id="franchise-qsr-supply-royalty-split-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🧋 万店连锁餐饮、茶饮咖啡与加盟供应链 (BOM 防私采、FEFO 效期锁与 POS 实时分账) 沙盒</div>
+            <div class="finops-subtitle">实测 POS 杯量配方 BOM 消耗对比拦截体外私采假料与联名包材囤货 (HTTP 403)、短保鲜奶 FEFO 效期消化上限与 POS 实时分账 Royalty (HTTP 422)、Web IQ 食安批次召回秒锁菜单 (HTTP 451) 及气象弹性零人工叫货立省 22% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="fran-qsr-verdict-pill">HTTP 200 · BOM_MASS_BALANCE_AND_FEFO_POS_ROYALTY_SPLIT_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度万店加盟冷链统采与特许权费结算池 ($ USD) <span class="control-val" id="fran-qsr-gross-label">$390,000</span></label>
+            <input type="range" id="fran-qsr-gross-slider" min="80000" max="1500000" step="30000" value="390000" oninput="updateFranchiseQsrSupplyRoyaltySplitSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">配方 BOM 质量守恒防私采、短保 FEFO 效期上限与 POS 实时分账场景</label>
+            <select id="fran-qsr-mode-select" onchange="updateFranchiseQsrSupplyRoyaltySplitSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ BOM 进销存守恒无私采 + FEFO 效期合规 + POS 实时分账 (HTTP 200)</option>
+              <option value="rogue_403">🛑 门店 POS 出品杯量远超统采原料进货量 (体外私采假料) 或 抢囤 IP 联名周边 (HTTP 403)</option>
+              <option value="fefo_422">🚨 短保鲜奶叫货量突破剩余保质期消化上限 (FEFO) 或 逃避 POS 特许费分账 (HTTP 422)</option>
+              <option value="recall_451">🛑 Web IQ 检出上游乳品/果浆批次食安召回通告或受限密钥 &gt;180d (HTTP 451)</option>
+              <option value="weather_409">🧑‍⚖️ 48h 气象弹性 + FEFO 零人工自动叫货 + POS 流水秒分特许费立省 22% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原鲜奶报损、私采与欠费基线</div>
+            <div class="finops-kpi-val" id="fran-qsr-gross-kpi">$390,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">气象 FEFO 降损与分账立省</div>
+            <div class="finops-kpi-val" id="fran-qsr-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净加盟供应链结算成本</div>
+            <div class="finops-kpi-val" id="fran-qsr-net-kpi" style="color:#60A5FA;">$390,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">万店加盟统采与分账令牌</div>
+            <div class="finops-kpi-val" id="fran-qsr-token-kpi" style="font-size:10px;color:#A78BFA;">franchise_qsr_supply_royalty_split_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -32876,6 +33049,61 @@ function updateCorporateTmcLraUnusedTicketSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'corporate_tmc_lra_unused_ticket_credit_mandate_verified';
+  }}
+}}
+
+function updateFranchiseQsrSupplyRoyaltySplitSandbox() {{
+  const grossSlider = document.getElementById('fran-qsr-gross-slider');
+  const modeSelect = document.getElementById('fran-qsr-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '390000');
+  const mode = modeSelect.value;
+  document.getElementById('fran-qsr-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('fran-qsr-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('fran-qsr-verdict-pill');
+  const savingsKpi = document.getElementById('fran-qsr-savings-kpi');
+  const netKpi = document.getElementById('fran-qsr-net-kpi');
+  const tokenKpi = document.getElementById('fran-qsr-token-kpi');
+
+  if (mode === 'rogue_403') {{
+    pill.textContent = 'HTTP 403 · OUTSIDE_UNAUTHORIZED_SOURCING_OR_IP_MERCH_SCALPING_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_ROGUE_SOURCING_OR_IP_SCALPING';
+  }} else if (mode === 'fefo_422') {{
+    pill.textContent = 'HTTP 422 · FEFO_SHELF_LIFE_OVERORDER_OR_ROYALTY_SPLIT_BYPASS_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_FEFO_OVERORDER_OR_ROYALTY_BYPASS';
+  }} else if (mode === 'recall_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_INGREDIENT_BATCH_RECALL_MENU_LOCK_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_BATCH_RECALL_POS_MENU_LOCKED';
+  }} else if (mode === 'weather_409') {{
+    const savings = Math.round(gross * 0.22 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · WEATHER_FEFO_AUTO_ORDERING_AND_POS_ROYALTY_SPLIT_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'franchise_qsr_supply_royalty_split_mandate_saved22pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · BOM_MASS_BALANCE_AND_FEFO_POS_ROYALTY_SPLIT_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'franchise_qsr_supply_royalty_split_mandate_verified';
   }}
 }}
 

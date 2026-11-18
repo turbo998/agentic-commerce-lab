@@ -8643,6 +8643,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("corporate-tmc-lra-unused-ticket-sandbox", html)
 
+    def test_franchise_qsr_supply_royalty_split_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            FranchiseQsrSupplyRoyaltySplitPolicyInput,
+            evaluate_franchise_qsr_supply_royalty_split_policy,
+        )
+
+        happy = evaluate_franchise_qsr_supply_royalty_split_policy(
+            FranchiseQsrSupplyRoyaltySplitPolicyInput(
+                quarterly_franchise_commissary_royalty_pool_usd=Decimal("390000.00"),
+                outside_unauthorized_sourcing_or_ip_merch_scalping_detected=False,
+                fefo_shelf_life_overorder_or_royalty_split_bypass_detected=False,
+                webiq_ingredient_batch_recall_menu_lock_flag=False,
+                restricted_key_age_days=30,
+                weather_fefo_auto_ordering_and_pos_royalty_split_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "BOM_MASS_BALANCE_AND_FEFO_POS_ROYALTY_SPLIT_AUTHORIZED")
+        self.assertTrue(
+            str(happy["franchise_qsr_token"]).startswith("franchise_qsr_supply_royalty_split_mandate_")
+        )
+
+        rogue_block = evaluate_franchise_qsr_supply_royalty_split_policy(
+            FranchiseQsrSupplyRoyaltySplitPolicyInput(
+                quarterly_franchise_commissary_royalty_pool_usd=Decimal("390000.00"),
+                outside_unauthorized_sourcing_or_ip_merch_scalping_detected=True,
+                fefo_shelf_life_overorder_or_royalty_split_bypass_detected=False,
+                webiq_ingredient_batch_recall_menu_lock_flag=False,
+                restricted_key_age_days=30,
+                weather_fefo_auto_ordering_and_pos_royalty_split_enabled=False,
+            )
+        )
+        self.assertEqual(rogue_block["http_status"], 403)
+        self.assertEqual(
+            rogue_block["decision"],
+            "OUTSIDE_UNAUTHORIZED_SOURCING_OR_IP_MERCH_SCALPING_BLOCKED",
+        )
+
+        fefo_block = evaluate_franchise_qsr_supply_royalty_split_policy(
+            FranchiseQsrSupplyRoyaltySplitPolicyInput(
+                quarterly_franchise_commissary_royalty_pool_usd=Decimal("390000.00"),
+                outside_unauthorized_sourcing_or_ip_merch_scalping_detected=False,
+                fefo_shelf_life_overorder_or_royalty_split_bypass_detected=True,
+                webiq_ingredient_batch_recall_menu_lock_flag=False,
+                restricted_key_age_days=30,
+                weather_fefo_auto_ordering_and_pos_royalty_split_enabled=False,
+            )
+        )
+        self.assertEqual(fefo_block["http_status"], 422)
+        self.assertEqual(
+            fefo_block["decision"],
+            "FEFO_SHELF_LIFE_OVERORDER_OR_ROYALTY_SPLIT_BYPASS_BLOCKED",
+        )
+
+        recall_hold = evaluate_franchise_qsr_supply_royalty_split_policy(
+            FranchiseQsrSupplyRoyaltySplitPolicyInput(
+                quarterly_franchise_commissary_royalty_pool_usd=Decimal("390000.00"),
+                outside_unauthorized_sourcing_or_ip_merch_scalping_detected=False,
+                fefo_shelf_life_overorder_or_royalty_split_bypass_detected=False,
+                webiq_ingredient_batch_recall_menu_lock_flag=True,
+                restricted_key_age_days=191,
+                weather_fefo_auto_ordering_and_pos_royalty_split_enabled=False,
+            )
+        )
+        self.assertEqual(recall_hold["http_status"], 451)
+        self.assertEqual(
+            recall_hold["decision"],
+            "WEBIQ_INGREDIENT_BATCH_RECALL_MENU_LOCK_OR_180D_KEY_HOLD",
+        )
+
+        opt_confirm = evaluate_franchise_qsr_supply_royalty_split_policy(
+            FranchiseQsrSupplyRoyaltySplitPolicyInput(
+                quarterly_franchise_commissary_royalty_pool_usd=Decimal("390000.00"),
+                outside_unauthorized_sourcing_or_ip_merch_scalping_detected=False,
+                fefo_shelf_life_overorder_or_royalty_split_bypass_detected=False,
+                webiq_ingredient_batch_recall_menu_lock_flag=False,
+                restricted_key_age_days=30,
+                weather_fefo_auto_ordering_and_pos_royalty_split_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "85800.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "304200.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("franchise_qsr_supply_royalty_split_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("franchise-qsr-supply-royalty-split-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
