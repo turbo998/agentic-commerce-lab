@@ -532,7 +532,7 @@
     <button type="button" class="btn" id="btn-layout-toggle" onclick="toggleLayoutMode()">📱 H5 Mobile View (412px)</button>
     <button type="button" class="btn primary" id="btn-lang-toggle" onclick="toggleLanguage()">🌐 中文 / English</button>
     <a class="btn" id="link-alt-demo" href="live-demo.en.html">🔗 Standalone EN/ZH URL</a>
-    <a class="btn" id="link-card-report" href="benchmark-cards.html">📊 7-Card Report</a>
+    <a class="btn" id="link-card-report" href="index.html">📊 7-Card Report</a>
   </div>
 </header>
 
@@ -3155,6 +3155,1311 @@
         </div>
       </div>
 
+      <!-- Interactive Enterprise Treasury MCP & Supplier Portal AP (Visa x BILL TAP) Sandbox -->
+      <div class="finops-box" id="enterprise-treasury-supplier-portal-ap-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏦 企业智能体司库管理 (Stripe Treasury MCP) 与供应商门户免密付款 (Visa × BILL TAP) 沙盒</div>
+            <div class="finops-subtitle">实测 Visa Agentic Directory + TAP 受托凭证拦截 RPA 共享门户账密 (HTTP 403)、仅付买方 ERP 已批发票与 Stripe Treasury 真实资金移动强制 HITL 确认 (HTTP 422)、Web IQ 供应商门户防钓鱼与 180d 密钥挂起 (HTTP 451) 及单次虚拟卡 L3 返佣+抢占 2/10 早付贴现立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="treasury-portal-verdict-pill">HTTP 200 · VISA_TAP_DIRECTORY_VERIFIED_AND_TREASURY_HITL_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度供应商门户应付账款与司库结算池 ($ USD) <span class="control-val" id="treasury-portal-gross-label">$280,000</span></label>
+            <input type="range" id="treasury-portal-gross-slider" min="50000" max="1000000" step="20000" value="280000" oninput="updateEnterpriseTreasurySupplierPortalApSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">Stripe Treasury MCP 人类确认与 Visa × BILL 门户受托交割场景</label>
+            <select id="treasury-portal-mode-select" onchange="updateEnterpriseTreasurySupplierPortalApSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ Visa TAP 免密门户验签 + 买方已批发票 + 司库 HITL 确认 (HTTP 200)</option>
+              <option value="shared_cred_403">🛑 使用传统 RPA 共享门户明文密码 或 未在 Visa Agentic Directory 注册 (HTTP 403)</option>
+              <option value="unapproved_422">🚨 试图支付未经买方 ERP 核准发票 或 司库资金划拨缺失 HITL 人类确认 (HTTP 422)</option>
+              <option value="spoof_451">🛑 Web IQ 检出供应商 AR 门户域名被仿冒/停机或受限密钥 &gt;180d (HTTP 451)</option>
+              <option value="discount_409">🧑‍⚖️ TAP 门户直通抢占 2/10 Net 30 早付贴现 + 单次虚拟卡 L3 返佣立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原门户应付账款与贴现损耗基线</div>
+            <div class="finops-kpi-val" id="treasury-portal-gross-kpi">$280,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">早付折扣捕获与 L3 返佣立省</div>
+            <div class="finops-kpi-val" id="treasury-portal-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净司库门户实付成本</div>
+            <div class="finops-kpi-val" id="treasury-portal-net-kpi" style="color:#60A5FA;">$280,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">司库与门户受托支付令牌</div>
+            <div class="finops-kpi-val" id="treasury-portal-token-kpi" style="font-size:10px;color:#A78BFA;">enterprise_treasury_supplier_portal_ap_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Social & Search Native Checkout (Google UCP / TikTok Buy Direct / Shopify Fall 26 / Walmart MCP) Sandbox -->
+      <div class="finops-box" id="social-search-native-checkout-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🛍️ 社交与搜索原生直购 (Google UCP / TikTok Buy Direct / Shopify Fall '26 / Walmart MCP) 沙盒</div>
+            <div class="finops-subtitle">实测 Walmart Agent Profile 限额与 Shopify Catalog 安全警告强制披露 (HTTP 403)、TikTok/Google UCP 保留品牌 MoR 与 Liquid/Hydrogen 结账页同等验证 (HTTP 422)、Web IQ 促销价漂移挂起 (HTTP 451) 及跨品牌单一 Shop Pay 合并结账立省 21% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="social-ucp-verdict-pill">HTTP 200 · UCP_BRAND_MOR_AND_CATALOG_SAFETY_WARNING_CHECKOUT_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度社交与搜索原生直购 GMV 池 ($ USD) <span class="control-val" id="social-ucp-gross-label">$340,000</span></label>
+            <input type="range" id="social-ucp-gross-slider" min="60000" max="1200000" step="20000" value="340000" oninput="updateSocialSearchNativeCheckoutSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">UCP 品牌 MoR 主权、Shopify 跨品牌结账与 Walmart Agent Profile 场景</label>
+            <select id="social-ucp-mode-select" onchange="updateSocialSearchNativeCheckoutSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ UCP 品牌 MoR 直购 + Catalog 安全警告披露 + 买家批准闭环 (HTTP 200)</option>
+              <option value="profile_403">🛑 突破 Walmart Agent Profile 单笔限额 或 截断隐藏 Shopify Catalog 安全警告 (HTTP 403)</option>
+              <option value="mor_422">🚨 丢失 TikTok/Google UCP Brand-as-MoR 归属 或 绕过 Storefront 结账校验强提 (HTTP 422)</option>
+              <option value="drift_451">🛑 Web IQ 检出搜索/短视频卡片促销价与源站实时库存失步或密钥 &gt;180d (HTTP 451)</option>
+              <option value="multibrand_409">🧑‍⚖️ Google/TikTok UCP 免跳转直购 + Shopify 跨品牌单一 Shop Pay 合并结账立省 21% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原外链跳失与多店拆单损耗基线</div>
+            <div class="finops-kpi-val" id="social-ucp-gross-kpi">$340,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">UCP 免跳转与跨品牌合并立省</div>
+            <div class="finops-kpi-val" id="social-ucp-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净全渠道履约与获客成本</div>
+            <div class="finops-kpi-val" id="social-ucp-net-kpi" style="color:#60A5FA;">$340,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">跨生态原生直购合规令牌</div>
+            <div class="finops-kpi-val" id="social-ucp-token-kpi" style="font-size:10px;color:#A78BFA;">social_search_native_checkout_ucp_mcp_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Pre-Purchase Anti-Wrong-Buy Verifier (Visa Agentic Commerce Benchmark 54% Guard) Sandbox -->
+      <div class="finops-box" id="ecommerce-pre-purchase-anti-wrong-buy-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🔒 智能体购前确定性防买错护栏 (对标 Visa Benchmark 54% 失败误买漏洞) 沙盒</div>
+            <div class="finops-subtitle">实测 FrozenIntentSpec 拦截缺货时静默换尺码/近似款 (HTTP 403)、含税运全包价超预算与送达晚点拦截 (HTTP 422)、Web IQ 标题与参数表自相矛盾挂起 (HTTP 451) 及缺货零扣款转人工候选卡确认将 54% 误买率清零立省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="pre-verify-verdict-pill">HTTP 200 · FROZEN_INTENT_FOUR_TUPLE_PRE_PURCHASE_VERIFIED_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度智能体受托代购与寻源结算池 ($ USD) <span class="control-val" id="pre-verify-gross-label">$312,000</span></label>
+            <input type="range" id="pre-verify-gross-slider" min="60000" max="1000000" step="20000" value="312000" oninput="updateEcommercePrePurchaseAntiWrongBuySandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">购前四重确定性断言 (规格/全包价/时效/Web IQ 参数表) 场景</label>
+            <select id="pre-verify-mode-select" onchange="updateEcommercePrePurchaseAntiWrongBuySandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ FrozenIntentSpec 规格 100% 匹配 + 含税运全包价合规 + 按时送达 (HTTP 200)</option>
+              <option value="sub_403">🛑 指定尺码/型号缺货时 LLM 擅自换成近似款或副厂件强行下单 (HTTP 403)</option>
+              <option value="landed_422">🚨 商品裸价合规但加完运费/税费后突破预算 或 晚于截止日送达 (HTTP 422)</option>
+              <option value="spec_451">🛑 Web IQ 检出商品标题宣称属性与底层参数表自相矛盾或密钥 &gt;180d (HTTP 451)</option>
+              <option value="card_409">🧑‍⚖️ 缺货 0 元安全暂停 + 呈递 Top-2 合规平替卡片确认立省 25% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原 54% 失败误买与退货拒付基线</div>
+            <div class="finops-kpi-val" id="pre-verify-gross-kpi">$312,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">四重防买错门禁止损立省</div>
+            <div class="finops-kpi-val" id="pre-verify-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净精准履约结算额</div>
+            <div class="finops-kpi-val" id="pre-verify-net-kpi" style="color:#60A5FA;">$312,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">购前四重断言支付令牌</div>
+            <div class="finops-kpi-val" id="pre-verify-token-kpi" style="font-size:10px;color:#A78BFA;">ecommerce_pre_purchase_anti_wrong_buy_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Personal Agent Persistent Intent (Sierra/Meta Poppy v0.1 + MCP Intent Services) Sandbox -->
+      <div class="finops-box" id="personal-agent-persistent-intent-poppy-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🔄 个人购物智能体跨会话持久意图 (Sierra/Meta Poppy v0.1 + MCP Intent Services) 沙盒</div>
+            <div class="finops-subtitle">实测 Poppy DPoP 发送方绑定与已撤销意图拦截 (HTTP 403)、MCP Intent Services 跨会话累计预算守恒与购后作用域隔离 (HTTP 422)、Web IQ 周期复购召回熔断 (HTTP 451) 及购前比价+购中控预算+购后自动退价保差额立省 22% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="poppy-intent-verdict-pill">HTTP 200 · POPPY_DPOP_VERIFIED_AND_MCP_PERSISTENT_INTENT_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度跨会话持久意图与周期补货预算池 ($ USD) <span class="control-val" id="poppy-intent-gross-label">$290,000</span></label>
+            <input type="range" id="poppy-intent-gross-slider" min="50000" max="1000000" step="20000" value="290000" oninput="updatePersonalAgentPersistentIntentPoppySandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">Poppy DPoP 个人/品牌 Agent 握手与 MCP Intent Services 生命周期场景</label>
+            <select id="poppy-intent-mode-select" onchange="updatePersonalAgentPersistentIntentPoppySandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ Poppy DPoP 验签 + 累计预算原子预留 + 购后维权闭环 (HTTP 200)</option>
+              <option value="dpop_403">🛑 调用已被买家吊销/暂停的持久意图 或 检出 Poppy DPoP jti 令牌重放 (HTTP 403)</option>
+              <option value="cum_422">🚨 多会话分批下单突破累计预算上限 或 用购后句柄 (post_tx_scope) 发起新扣款 (HTTP 422)</option>
+              <option value="recall_451">🛑 Web IQ 检出周期性自动补货商品爆发 FDA/CPSC 召回或密钥 &gt;180d (HTTP 451)</option>
+              <option value="match_409">🧑‍⚖️ MCP Intent 跨会话预算防超支 + 购后 14 天自动向 Brand Agent 追回价保立省 22% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原跨会话超支与漏退价保基线</div>
+            <div class="finops-kpi-val" id="poppy-intent-gross-kpi">$290,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">累计控额与购后自动价保立省</div>
+            <div class="finops-kpi-val" id="poppy-intent-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净全周期受托支出</div>
+            <div class="finops-kpi-val" id="poppy-intent-net-kpi" style="color:#60A5FA;">$290,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">Poppy 持久意图受托令牌</div>
+            <div class="finops-kpi-val" id="poppy-intent-token-kpi" style="font-size:10px;color:#A78BFA;">personal_agent_persistent_intent_poppy_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Automotive D2C & EV Checkout (72h Cooling-Off Lock, VIN Subsidy & Split-Rail A2A) Sandbox -->
+      <div class="finops-box" id="automotive-ev-d2c-checkout-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🚗 汽车电商与新能源车直营下定 (72h 犹豫期锁单、VIN 补贴与定金/尾款分轨) 沙盒</div>
+            <div class="finops-subtitle">实测物理禁绝 Agent 代点“放弃 72h 犹豫期转不可退大定”与 FTC CARS Rule 全包价 (HTTP 403)、17位 VIN 国补/IRA 核验与禁止尾款刷高费率信用卡 (HTTP 422)、Web IQ 地方购车补贴池耗尽预警 (HTTP 451) 及区域在途现车 VIN 秒配+尾款 A2A 分轨立省 21% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="auto-ev-verdict-pill">HTTP 200 · COOLING_OFF_DEPOSIT_AND_VIN_SUBSIDY_SPLIT_RAIL_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度新能源车直营下定与尾款交割池 ($ USD) <span class="control-val" id="auto-ev-gross-label">$450,000</span></label>
+            <input type="range" id="auto-ev-gross-slider" min="90000" max="1500000" step="30000" value="450000" oninput="updateAutomotiveEvD2cCheckoutSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">72h 犹豫期防误锁单、17位 VIN 补贴核验与定金 SPT / 尾款 A2A 分轨场景</label>
+            <select id="auto-ev-mode-select" onchange="updateAutomotiveEvD2cCheckoutSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 72h 可退小定 SPT + 17位 VIN 补贴验真 + 尾款 A2A 分轨 (HTTP 200)</option>
+              <option value="lock_403">🛑 AI Agent 企图代客勾选“跳过 72h 犹豫期立即锁死不可退排产大定” (HTTP 403)</option>
+              <option value="vin_422">🚨 未核验 17位 VIN 电池目录即承诺补贴抵扣 或 将 $45k 购车尾款路由至信用卡轨 (HTTP 422)</option>
+              <option value="subsidy_451">🛑 Web IQ 检出当地市政府购车补贴资金池已耗尽停发或远期密钥 &gt;180d (HTTP 451)</option>
+              <option value="match_409">🧑‍⚖️ 区域在途现车 VIN 4天提车秒配 + 定金 SPT / 尾款 Open Banking A2A 分轨立省 21% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原退定纠纷与尾款刷卡费基线</div>
+            <div class="finops-kpi-val" id="auto-ev-gross-kpi">$450,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">在途 VIN 匹配与尾款 A2A 立省</div>
+            <div class="finops-kpi-val" id="auto-ev-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净整车直营交割成本</div>
+            <div class="finops-kpi-val" id="auto-ev-net-kpi" style="color:#60A5FA;">$450,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">整车下定与分轨交割令牌</div>
+            <div class="finops-kpi-val" id="auto-ev-token-kpi" style="font-size:10px;color:#A78BFA;">automotive_ev_d2c_deposit_lock_subsidy_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Consumer Healthcare, Dental & MedSpa (4-Factor UDI Scan, 1/N Session Escrow & Pro-Rata Refund) Sandbox -->
+      <div class="finops-box" id="consumer-healthcare-medspa-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏥 消费医疗、齿科正畸与医美健康 (四验真 UDI 扫码、按次 1/N 存管与随时退) 沙盒</div>
+            <div class="finops-subtitle">实测药械 GS1 UDI 单次扫码即焚防假药掉包与禁诊室代办医美贷 (HTTP 403)、按次 1/N 存管放款与折后均价秒退防霸王倒扣 (HTTP 422)、Web IQ 卫健委停业预警自动退余款 (HTTP 451) 及齿科里程碑+HSA/FSA 免税卡直付立省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="medspa-escrow-verdict-pill">HTTP 200 · FOUR_FACTOR_UDI_VERIFIED_AND_PER_SESSION_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度消费医疗与齿科预付疗程存管池 ($ USD) <span class="control-val" id="medspa-escrow-gross-label">$250,000</span></label>
+            <input type="range" id="medspa-escrow-gross-slider" min="50000" max="900000" step="25000" value="250000" oninput="updateConsumerHealthcareMedspaEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">当面扫码四验真、按次 1/N 存管释放与折后均价秒退场景</label>
+            <select id="medspa-escrow-mode-select" onchange="updateConsumerHealthcareMedspaEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 当面扫码四验真 (NPI + 药械 UDI 首次激活) + 按次 1/N 存管放款 (HTTP 200)</option>
+              <option value="udi_403">🛑 药械 UDI 二维码被空盒重复扫描掉包 或 诊室人员代操作高息医美分期贷 (HTTP 403)</option>
+              <option value="clawback_422">🚨 机构企图首日 T+1 提走全部 10 次未做疗程款 或 退卡按门市原价恶意倒扣 (HTTP 422)</option>
+              <option value="license_451">🛑 Web IQ 检出医疗机构被卫健委停业整顿/跑路风险或密钥 &gt;180d (HTTP 451)</option>
+              <option value="hsa_409">🧑‍⚖️ 按次 1/N 存管零跑路坏账 + 齿科 3D 方案锁 + HSA/FSA 税前卡直付立省 23% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原机构跑路拒付与退卡纠纷基线</div>
+            <div class="finops-kpi-val" id="medspa-escrow-gross-kpi">$250,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">按次存管防坏账与税前卡立省</div>
+            <div class="finops-kpi-val" id="medspa-escrow-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净安全核销存管结算额</div>
+            <div class="finops-kpi-val" id="medspa-escrow-net-kpi" style="color:#60A5FA;">$250,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">消费医疗四验真存管令牌</div>
+            <div class="finops-kpi-val" id="medspa-escrow-token-kpi" style="font-size:10px;color:#A78BFA;">consumer_healthcare_medspa_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Corporate TMC Travel (Unused Ticket Credit UTC Drawdown, Hotel LRA Audit & Room-Only VCN) Sandbox -->
+      <div class="finops-box" id="corporate-tmc-lra-unused-ticket-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">✈️ 企业商旅管理 (Corporate TMC：未用退票积分 UTC 冲抵、LRA 协议价审计与 Room-Only VCN) 沙盒</div>
+            <div class="finops-subtitle">实测出票前强制优先冲抵未用机票退票积分 UTC (HTTP 403)、Web IQ 抓获酒店旺季违约隐瞒 LRA 协议房与单次虚拟卡锁死房费税费 (HTTP 422)、差旅安全预警挂起 (HTTP 451) 及 UTC 回收+员工省钱分成立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="corp-tmc-verdict-pill">HTTP 200 · UTC_CREDIT_APPLIED_AND_LRA_ROOM_ONLY_VCN_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度企业商旅机票与协议酒店结算池 ($ USD) <span class="control-val" id="corp-tmc-gross-label">$320,000</span></label>
+            <input type="range" id="corp-tmc-gross-slider" min="60000" max="1200000" step="20000" value="320000" oninput="updateCorporateTmcLraUnusedTicketSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">航司退票积分 (UTC) 强制冲抵、酒店 LRA 协议房审计与虚拟卡场景</label>
+            <select id="corp-tmc-mode-select" onchange="updateCorporateTmcLraUnusedTicketSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ UTC 退票积分优先冲抵 + LRA 协议价锁房 + Room-Only VCN (HTTP 200)</option>
+              <option value="utc_403">🛑 员工/部门池内有可用未过期机票退票积分 (UTC) 却直接刷企业卡全额买新票 (HTTP 403)</option>
+              <option value="lra_422">🚨 LRA 签约酒店官网仍有基础房却拒给协议价 或 虚拟卡未锁死禁止混刷迷你吧 (HTTP 422)</option>
+              <option value="duty_451">🛑 Web IQ 检出差旅目的地突发机场罢工/安全红警 (Duty of Care) 或密钥 &gt;180d (HTTP 451)</option>
+              <option value="reward_409">🧑‍⚖️ UTC 离职回收冲抵 + Web IQ 追回 LRA 协议价 + 员工省钱分成奖励立省 26% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原退票券过期与 LRA 违约基线</div>
+            <div class="finops-kpi-val" id="corp-tmc-gross-kpi">$320,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">UTC 冲抵与 LRA 追回立省</div>
+            <div class="finops-kpi-val" id="corp-tmc-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净企业商旅实付支出</div>
+            <div class="finops-kpi-val" id="corp-tmc-net-kpi" style="color:#60A5FA;">$320,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">企业商旅 TMC 治理令牌</div>
+            <div class="finops-kpi-val" id="corp-tmc-token-kpi" style="font-size:10px;color:#A78BFA;">corporate_tmc_lra_unused_ticket_credit_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Multi-Unit Franchise QSR Supply Chain (BOM Anti-Rogue-Sourcing, FEFO Cap & POS Royalty Split) Sandbox -->
+      <div class="finops-box" id="franchise-qsr-supply-royalty-split-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🧋 万店连锁餐饮、茶饮咖啡与加盟供应链 (BOM 防私采、FEFO 效期锁与 POS 实时分账) 沙盒</div>
+            <div class="finops-subtitle">实测 POS 杯量配方 BOM 消耗对比拦截体外私采假料与联名包材囤货 (HTTP 403)、短保鲜奶 FEFO 效期消化上限与 POS 实时分账 Royalty (HTTP 422)、Web IQ 食安批次召回秒锁菜单 (HTTP 451) 及气象弹性零人工叫货立省 22% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="fran-qsr-verdict-pill">HTTP 200 · BOM_MASS_BALANCE_AND_FEFO_POS_ROYALTY_SPLIT_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度万店加盟冷链统采与特许权费结算池 ($ USD) <span class="control-val" id="fran-qsr-gross-label">$390,000</span></label>
+            <input type="range" id="fran-qsr-gross-slider" min="80000" max="1500000" step="30000" value="390000" oninput="updateFranchiseQsrSupplyRoyaltySplitSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">配方 BOM 质量守恒防私采、短保 FEFO 效期上限与 POS 实时分账场景</label>
+            <select id="fran-qsr-mode-select" onchange="updateFranchiseQsrSupplyRoyaltySplitSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ BOM 进销存守恒无私采 + FEFO 效期合规 + POS 实时分账 (HTTP 200)</option>
+              <option value="rogue_403">🛑 门店 POS 出品杯量远超统采原料进货量 (体外私采假料) 或 抢囤 IP 联名周边 (HTTP 403)</option>
+              <option value="fefo_422">🚨 短保鲜奶叫货量突破剩余保质期消化上限 (FEFO) 或 逃避 POS 特许费分账 (HTTP 422)</option>
+              <option value="recall_451">🛑 Web IQ 检出上游乳品/果浆批次食安召回通告或受限密钥 &gt;180d (HTTP 451)</option>
+              <option value="weather_409">🧑‍⚖️ 48h 气象弹性 + FEFO 零人工自动叫货 + POS 流水秒分特许费立省 22% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原鲜奶报损、私采与欠费基线</div>
+            <div class="finops-kpi-val" id="fran-qsr-gross-kpi">$390,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">气象 FEFO 降损与分账立省</div>
+            <div class="finops-kpi-val" id="fran-qsr-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净加盟供应链结算成本</div>
+            <div class="finops-kpi-val" id="fran-qsr-net-kpi" style="color:#60A5FA;">$390,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">万店加盟统采与分账令牌</div>
+            <div class="finops-kpi-val" id="fran-qsr-token-kpi" style="font-size:10px;color:#A78BFA;">franchise_qsr_supply_royalty_split_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive E-Commerce Abandoned Cart Recovery (Dual-TZ TCPA, Cross-Device Dedup & Concierge-First RCS) Sandbox -->
+      <div class="finops-box" id="ecommerce-abandoned-cart-recovery-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📱 零售电商弃购智能挽回 (WhatsApp/RCS、TCPA 双时区静音锁与防故意骗券) 沙盒</div>
+            <div class="finops-subtitle">实测区号∩邮编双时区 08:00-20:00 硬锁与自然语言退订秒拦 (HTTP 403)、跨设备已买去重/断码拦截与防故意弃购骗神券 (HTTP 422)、Web IQ 商品召回挂起 (HTTP 451) 及 T+45m 零折扣尺码答疑+RCS 一键付立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="cart-rec-verdict-pill">HTTP 200 · DUAL_TZ_TCPA_COMPLIANT_AND_IN_STOCK_CART_RECOVERY_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度电商弃购挽回与促销折扣毛利池 ($ USD) <span class="control-val" id="cart-rec-gross-label">$290,000</span></label>
+            <input type="range" id="cart-rec-gross-slider" min="50000" max="1000000" step="20000" value="290000" oninput="updateEcommerceAbandonedCartRecoverySandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">TCPA 双时区静音锁、跨端去重与先问诊后发券场景</label>
+            <select id="cart-rec-mode-select" onchange="updateEcommerceAbandonedCartRecoverySandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 双时区白天窗口 + 实时有货未买 + 锁车专属令牌触达 (HTTP 200)</option>
+              <option value="tcpa_403">🛑 处于收件人区号或邮编夜间安静时段 (20:00-08:00) 或 忽略自然语言退订 (HTTP 403)</option>
+              <option value="gaming_422">🚨 买家已在电脑端付款成交 / 尺码已断货 或 惯性骗券党套取通用折扣码 (HTTP 422)</option>
+              <option value="recall_451">🛑 Web IQ 检出车内商品发生安全召回/运营商 10DLC 通道受限或密钥 &gt;180d (HTTP 451)</option>
+              <option value="concierge_409">🧑‍⚖️ T+45m 零折扣尺码/退换问诊挽回 62% 订单 + RCS 对话内一键付立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原无脑发券毛利流失与退差价基线</div>
+            <div class="finops-kpi-val" id="cart-rec-gross-kpi">$290,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">零折扣问诊与防骗券立省</div>
+            <div class="finops-kpi-val" id="cart-rec-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净弃购挽回促销成本</div>
+            <div class="finops-kpi-val" id="cart-rec-net-kpi" style="color:#60A5FA;">$290,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">弃购挽回与 TCPA 合规令牌</div>
+            <div class="finops-kpi-val" id="cart-rec-token-kpi" style="font-size:10px;color:#A78BFA;">ecommerce_abandoned_cart_recovery_rcs_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Digital Pharmacy & Optical Rx (NCPDP eRx/FCLCA Lock, 3-Rail Copay Optimizer & Cold-Chain Cutoff) Sandbox -->
+      <div class="finops-box" id="digital-pharmacy-optical-rx-copay-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">💊 在线医药、慢病续方与配镜视光电商 (eRx/FCLCA 核验、PBM 三轨比价与冷链禁退) 沙盒</div>
+            <div class="finops-subtitle">实测 NCPDP 电子处方效期与隐形眼镜六维参数 (BC/DIA/SPH/PD) 零容差锁 (HTTP 403)、2°C-8°C GLP-1 冷链药周四 14:00 截单避周末与 DDI 禁忌拦截 (HTTP 422)、FDA NDC 批次召回挂起 (HTTP 451) 及医保 Copay/药厂券/现金价三轨自动寻优立省 22% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="pharm-rx-verdict-pill">HTTP 200 · ERX_OPTICAL_PARAMETER_VERIFIED_AND_HIPAA_REDACTED_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度在线医药续方与配镜视光结算池 ($ USD) <span class="control-val" id="pharm-rx-gross-label">$340,000</span></label>
+            <input type="range" id="pharm-rx-gross-slider" min="60000" max="1200000" step="20000" value="340000" oninput="updateDigitalPharmacyOpticalRxCopaySandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">电子处方/验光单核验、2°C-8°C 冷链日历锁与三轨最低价理算场景</label>
+            <select id="pharm-rx-mode-select" onchange="updateDigitalPharmacyOpticalRxCopaySandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ eRx/验光单 100% 核验 + 冷链窗口安全 + HIPAA 脱敏结算 (HTTP 200)</option>
+              <option value="erx_403">🛑 处方过期/剩余续方次数为 0 或 隐形眼镜基弧 (BC)/度数/瞳距 (PD) 不匹配 (HTTP 403)</option>
+              <option value="cold_422">🚨 周四 14:00 后企图跨周末发运 $900 GLP-1/胰岛素冷链件 或 检出严重 DDI 相互作用 (HTTP 422)</option>
+              <option value="ndc_451">🛑 Web IQ 检出 FDA/药监局 NDC 药品批次召回通告或密钥 &gt;180d (HTTP 451)</option>
+              <option value="copay_409">🧑‍⚖️ 并行比对 min(医保 Copay, 药厂补贴券, 现金底价) + 冷链避周末排期立省 22% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原冷链化冰报废与高价弃单基线</div>
+            <div class="finops-kpi-val" id="pharm-rx-gross-kpi">$340,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">三轨比价与冷链零失温立省</div>
+            <div class="finops-kpi-val" id="pharm-rx-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净医药与视光履约成本</div>
+            <div class="finops-kpi-val" id="pharm-rx-net-kpi" style="color:#60A5FA;">$340,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">电子处方与 HIPAA 脱敏令牌</div>
+            <div class="finops-kpi-val" id="pharm-rx-token-kpi" style="font-size:10px;color:#A78BFA;">digital_pharmacy_optical_rx_copay_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive PropTech Residential & Commercial Leasing (Open Banking Payroll, Deposit Escrow, CAM Audit & A2A Rent) Sandbox -->
+      <div class="finops-box" id="proptech-leasing-deposit-cam-ach-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏢 长租公寓与商业地产资管 (Bilt / Yardi：押金专户托管、CAM 审计与余额预检 A2A 收租) 沙盒</div>
+            <div class="finops-subtitle">实测 Open Banking 工资流水拦截 AI 假工资单与押金独立专户隔离 (HTTP 403)、退房剩余寿命折旧公式与商业 CAM 剔除 CapEx 封顶 (HTTP 422)、市政租金管制红线挂起 (HTTP 451) 及余额预检免 2.9% 卡费 A2A 收租立省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="proptech-verdict-pill">HTTP 200 · OPEN_BANKING_PAYROLL_AND_SEGREGATED_DEPOSIT_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度长租公寓与商业地产租金/押金结算池 ($ USD) <span class="control-val" id="proptech-gross-label">$420,000</span></label>
+            <input type="range" id="proptech-gross-slider" min="80000" max="1500000" step="30000" value="420000" oninput="updateProptechLeasingDepositCamAchSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">Open Banking 收入验真、押金折旧公式、商业 CAM 审计与 A2A 收租场景</label>
+            <select id="proptech-mode-select" onchange="updateProptechLeasingDepositCamAchSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ Open Banking 工资验真 + 独立生息押金专户 + 合规 CAM/租金清算 (HTTP 200)</option>
+              <option value="paystub_403">🛑 上传伪造静态 PDF 工资单骗租 或 将租客押金混入物业日常运营账户挪用 (HTTP 403)</option>
+              <option value="wear_422">🚨 退房乱扣正常磨损/未扣资产折旧残值 或 商业 CAM 混入房东 CapEx 资本支出 (HTTP 422)</option>
+              <option value="rentctrl_451">🛑 Web IQ 检出续租涨幅突破市政租金管制 (Rent Control) 红线或密钥 &gt;180d (HTTP 451)</option>
+              <option value="a2a_409">🧑‍⚖️ 扣租前实时余额预检防 R01 退票 + 免 2.9% 刷卡费 A2A 交租送积分立省 23% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原骗租坏账、退押赔偿与刷卡费基线</div>
+            <div class="finops-kpi-val" id="proptech-gross-kpi">$420,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">余额预检 A2A 与防骗租立省</div>
+            <div class="finops-kpi-val" id="proptech-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净资管运营与清结算成本</div>
+            <div class="finops-kpi-val" id="proptech-net-kpi" style="color:#60A5FA;">$420,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">地产押金托管与 CAM 审计令牌</div>
+            <div class="finops-kpi-val" id="proptech-token-kpi" style="font-size:10px;color:#A78BFA;">proptech_leasing_deposit_cam_ach_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive B2B Corporate Gifting & Employee Rewards (Pay-on-Claim 90d Clawback, FCPA/RFP Gate & W-2 Tax) Sandbox -->
+      <div class="finops-box" id="b2b-corporate-gifting-unclaimed-clawback-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎁 企业商务馈赠、员工福利与调研激励 (Tremendous / Snappy：Pay-on-Claim 未领回滚与 FCPA/计税) 沙盒</div>
+            <div class="finops-subtitle">实测拦截向政府官员 (.gov/PEP)/活跃 RFP 评标期客户送礼与假问卷机器人 (HTTP 403)、按领实扣 (Pay-on-Claim) 与员工礼品卡自动回写 W-2 计税 (HTTP 422)、Web IQ 客户公司零收礼准则挂起 (HTTP 451) 及 90天未领 100% 回滚预算池立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="corp-gift-verdict-pill">HTTP 200 · FCPA_CLEAR_AND_PAY_ON_CLAIM_W2_TAX_SYNC_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度企业商务礼赠、员工福利与调研激励池 ($ USD) <span class="control-val" id="corp-gift-gross-label">$220,000</span></label>
+            <input type="range" id="corp-gift-gross-slider" min="40000" max="800000" step="20000" value="220000" oninput="updateB2bCorporateGiftingUnclaimedClawbackSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">FCPA 反贿赂/RFP 静默期、Pay-on-Claim 未领回滚与员工 W-2 计税场景</label>
+            <select id="corp-gift-mode-select" onchange="updateB2bCorporateGiftingUnclaimedClawbackSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ FCPA/RFP 合规 + 按领实扣 (Pay-on-Claim) + 薪资税务同步 (HTTP 200)</option>
+              <option value="fcpa_403">🛑 向政府公职人员 (.gov/PEP)/活跃 RFP 竞标期客户送礼 或 检出假问卷机器人 (HTTP 403)</option>
+              <option value="breakage_422">🚨 采购未领不退的买断式卡密 (22% Breakage) 或 发放员工礼品卡未同步 W-2 计税 (HTTP 422)</option>
+              <option value="policy_451">🛑 Web IQ 检出目标客户公司《行为准则》实行零收礼政策或密钥 &gt;180d (HTTP 451)</option>
+              <option value="clawback_409">🧑‍⚖️ 90天未领 100% 自动回滚预算池 + 收件人自选礼确认地址免退件立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原未领沉没浪费与退件损耗基线</div>
+            <div class="finops-kpi-val" id="corp-gift-gross-kpi">$220,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">90天未领全退与免退件立省</div>
+            <div class="finops-kpi-val" id="corp-gift-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净实际领取有效支出</div>
+            <div class="finops-kpi-val" id="corp-gift-net-kpi" style="color:#60A5FA;">$220,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">企业礼赠按领结算合规令牌</div>
+            <div class="finops-kpi-val" id="corp-gift-token-kpi" style="font-size:10px;color:#A78BFA;">b2b_corporate_gifting_unclaimed_clawback_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Pet E-Commerce, Autoship & Vet Insurance Direct-Pay (Chewy / Trupanion) Sandbox -->
+      <div class="finops-box" id="pet-ecommerce-autoship-vet-direct-pay-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🐾 宠物电商、自动订购粮 (Autoship) 与宠物医保诊所直付 (Chewy / Trupanion) 沙盒</div>
+            <div class="finops-subtitle">实测猫咪/混养家庭硬阻断含氯菊酯 (Permethrin) 犬用滴剂与兽医处方粮验签 (HTTP 403)、幼宠月龄生长超重调档与等待期既往症骗保拦截 (HTTP 422)、FDA 宠粮沙门氏菌召回挂起 (HTTP 451) 及 MER 热量调频+医院前台 5秒直赔立省 29% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="pet-commerce-verdict-pill">HTTP 200 · SPECIES_WEIGHT_SAFE_AND_VET_DIRECT_PAY_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度宠物电商 Autoship 与宠物医保直赔结算池 ($ USD) <span class="control-val" id="pet-commerce-gross-label">$170,000</span></label>
+            <input type="range" id="pet-commerce-gross-slider" min="30000" max="600000" step="10000" value="170000" oninput="updatePetEcommerceAutoshipVetDirectPaySandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">跨物种毒性锁、幼宠生长调档与医院前台 5 秒分账直赔场景</label>
+            <select id="pet-commerce-mode-select" onchange="updatePetEcommerceAutoshipVetDirectPaySandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 物种/体重安全匹配 + 兽医处方核验 + 医院 5s 直赔 (HTTP 200)</option>
+              <option value="toxic_403">🛑 向养猫/猫狗混养家庭推含氯菊酯犬药 或 无兽医签章售卖肾脏处方粮 (HTTP 403)</option>
+              <option value="growth_422">🚨 幼犬长大已突破原驱虫药体重档位 或 等待期内既往症骗保/首单 65 折秒退套利 (HTTP 422)</option>
+              <option value="recall_451">🛑 Web IQ 检出 FDA 宠物食品沙门氏菌批次召回通告或密钥 &gt;180d (HTTP 451)</option>
+              <option value="mer_409">🧑‍⚖️ 按 MER 代谢热量动态算准吃粮周期 + 动物医院前台 5秒免垫资直赔立省 29% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原囤粮退订、首单套利与理赔基线</div>
+            <div class="finops-kpi-val" id="pet-commerce-gross-kpi">$170,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">MER 弹性周期与 5s 直赔立省</div>
+            <div class="finops-kpi-val" id="pet-commerce-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净宠物订阅与直赔成本</div>
+            <div class="finops-kpi-val" id="pet-commerce-net-kpi" style="color:#60A5FA;">$170,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">宠物安全与诊所直赔令牌</div>
+            <div class="finops-kpi-val" id="pet-commerce-token-kpi" style="font-size:10px;color:#A78BFA;">pet_ecommerce_autoship_vet_direct_pay_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Flexible Workspace & Coworking (Badge Telemetry Right-Sizing, 60d Evergreen Guard & 15m Room Release) Sandbox -->
+      <div class="finops-box" id="coworking-flexible-office-rightsizing-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🪪 企业灵活办公与联合办公采购 (WeWork / IWG：门禁遥测缩容、60d 续约屏障与 15m 会议室释放) 沙盒</div>
+            <div class="finops-subtitle">实测 HRIS 离职秒销通行卡与 T-75d 拦截 60天静默翻倍续约 (HTTP 403)、月均刷卡 &lt;8.5天僵尸固定工位自动转按次日卡与会议室爽约拦截 (HTTP 422)、大业主清退预警 (HTTP 451) 及共享点数池+15m 释放退点立省 29% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="cowork-verdict-pill">HTTP 200 · ACTIVE_ROSTER_BADGE_ALIGNED_AND_CAPPED_CREDITS_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度企业灵活办公与联合办公采购结算池 ($ USD) <span class="control-val" id="cowork-gross-label">$240,000</span></label>
+            <input type="range" id="cowork-gross-slider" min="40000" max="900000" step="20000" value="240000" oninput="updateCoworkingFlexibleOfficeRightSizingSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">HRIS 离职联动、60d 自动续约屏障、门禁刷卡盈亏平衡与会议室释放场景</label>
+            <select id="cowork-mode-select" onchange="updateCoworkingFlexibleOfficeRightSizingSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 在册员工核验 + 工位刷卡率达标 + 点数池封顶结算 (HTTP 200)</option>
+              <option value="evergreen_403">🛑 为已离职员工继续扣缴月卡 或 错过 60天通知期按取消折扣挂牌高价静默续约 (HTTP 403)</option>
+              <option value="zombie_422">🚨 月均刷卡 &lt;8.5天的僵尸专属固定工位原样续租 或 无人到场会议室计入超额账单 (HTTP 422)</option>
+              <option value="evict_451">🛑 Web IQ 检出目标联合办公空间面临大房东欠租清退诉讼或密钥 &gt;180d (HTTP 451)</option>
+              <option value="downsize_409">🧑‍⚖️ 门禁遥测将僵尸固定工位转按次热桌 + 会议室 15m 未刷门禁自动释放退点立省 29% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原僵尸工位与会议室超支基线</div>
+            <div class="finops-kpi-val" id="cowork-gross-kpi">$240,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">门禁缩容与 15m 退点立省</div>
+            <div class="finops-kpi-val" id="cowork-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净混合办公采购成本</div>
+            <div class="finops-kpi-val" id="cowork-net-kpi" style="color:#60A5FA;">$240,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">灵活办公门禁缩容令牌</div>
+            <div class="finops-kpi-val" id="cowork-token-kpi" style="font-size:10px;color:#A78BFA;">coworking_flexible_office_rightsizing_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Wealth Robo-Advisor & Cash-Sweep Treasury (IRS 61d Wash-Sale, Reg BI & Multi-Bank FDIC Sweep) Sandbox -->
+      <div class="finops-box" id="wealth-cash-sweep-treasury-wash-sale-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📈 智能投顾与企业现金司库 (Wealthfront / Stripe Treasury：61天洗售拦截与多行 FDIC 扫单) 沙盒</div>
+            <div class="finops-subtitle">实测 SEC Reg BI 客户风险适当性与禁杠杆 ETF (HTTP 403)、跨应税/IRA 账户 61天同指数洗售拦截与单行 &lt;=$245k FDIC 本金上限 (HTTP 422)、合作银行评级降级迁出 (HTTP 451) 及异构指数 TLH+12行扫单生息立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="wealth-sweep-verdict-pill">HTTP 200 · REG_BI_ZERO_WASH_SALE_AND_MULTIBANK_FDIC_SWEEP_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度智能投顾调仓与企业现金司库扫单池 ($ USD) <span class="control-val" id="wealth-sweep-gross-label">$280,000</span></label>
+            <input type="range" id="wealth-sweep-gross-slider" min="50000" max="1000000" step="20000" value="280000" oninput="updateWealthCashSweepTreasuryWashSaleSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">SEC Reg BI 适当性、IRS 61天跨账户洗售锁与多行 FDIC $245k 扫单场景</label>
+            <select id="wealth-sweep-mode-select" onchange="updateWealthCashSweepTreasuryWashSaleSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ Reg BI 合规 + 异构指数零洗售 + 多行 &lt;=$245k FDIC 分拆 (HTTP 200)</option>
+              <option value="regbi_403">🛑 为保守/稳健客户越权买入 3倍杠杆 ETF/期权 违反 SEC Reg BI 适当性 (HTTP 403)</option>
+              <option value="wash_422">🚨 卖出亏损 ETF 后 30天内在 IRA/配偶户买回同底层指数 或 单家银行分配 &gt;$245k (HTTP 422)</option>
+              <option value="bank_451">🛑 Web IQ 检出某合作扫单银行遭信用评级下调/监管警示或密钥 &gt;180d (HTTP 451)</option>
+              <option value="tlh_409">🧑‍⚖️ 异构指数 TLH 税损收割 + 预留 14天工资缓冲跨 12 家银行满额受保生息立省 26% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原洗售抵税作废与活期无息基线</div>
+            <div class="finops-kpi-val" id="wealth-sweep-gross-kpi">$280,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">合规 TLH 节税与多行生息增益</div>
+            <div class="finops-kpi-val" id="wealth-sweep-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净司库与税务优化成本</div>
+            <div class="finops-kpi-val" id="wealth-sweep-net-kpi" style="color:#60A5FA;">$280,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">智能投顾与 FDIC 扫单令牌</div>
+            <div class="finops-kpi-val" id="wealth-sweep-token-kpi" style="font-size:10px;color:#A78BFA;">wealth_cash_sweep_treasury_wash_sale_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Digital Media Paywall & AI Crawler Licensing (Cloudflare Pay-Per-Crawl HTTP 402, Fare-Capping & B2B Upsell) Sandbox -->
+      <div class="finops-box" id="digital-media-paywall-ai-crawler-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📰 数字媒体付费墙、研报微支付与 AI 爬虫按次授权清算 (Cloudflare Pay-Per-Crawl / TollBit) 沙盒</div>
+            <div class="finops-subtitle">实测边缘 Web Bot Auth 拦截未签名野生爬虫与百人共享个人账号 (HTTP 403)、禁止 $0.50 单篇走信用卡倒挂与 $20 月度封顶转包月 (HTTP 422)、W3C TDMRep 禁训练版权锁 (HTTP 451) 及 HTTP 402 AI 按次分润+B2B 团购升舱增收 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="media-402-verdict-pill">HTTP 200 · WEB_BOT_AUTH_VERIFIED_AND_HTTP402_FARE_CAP_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度数字出版订阅与 AI 爬虫授权结算池 ($ USD) <span class="control-val" id="media-402-gross-label">$250,000</span></label>
+            <input type="range" id="media-402-gross-slider" min="50000" max="900000" step="25000" value="250000" oninput="updateDigitalMediaPaywallAiCrawlerSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">Web Bot Auth 边缘验签、HTTP 402 微支付与人类阅读月度封顶场景</label>
+            <select id="media-402-mode-select" onchange="updateDigitalMediaPaywallAiCrawlerSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ Web Bot Auth 验签 + HTTP 402 通道微支付 + $20 月度封顶守护 (HTTP 200)</option>
+              <option value="scraper_403">🛑 未携带 RFC 9421 签名的野生爬虫偷抓全文 或 投行百人并发共用 1个个人账号 (HTTP 403)</option>
+              <option value="fee_422">🚨 将 $0.50 单篇解锁逐笔送入 $0.30 固定费信用卡轨 或 按篇读者扣费突破 $20 包月价 (HTTP 422)</option>
+              <option value="tdm_451">🛑 Web IQ 检出调用方违反 W3C TDMRep 声明将仅限引用内容用于模型训练或密钥 &gt;180d (HTTP 451)</option>
+              <option value="bundle_409">🧑‍⚖️ AI 爬虫 HTTP 402 ($0.015/次) 按次变现 + 人类单篇满 $20 自动转包月 + B2B 升舱立增 25% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原 AI 白嫖流失与微支付卡费基线</div>
+            <div class="finops-kpi-val" id="media-402-gross-kpi">$250,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">402 爬虫授权与封顶转化增益</div>
+            <div class="finops-kpi-val" id="media-402-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净出版与内容清算成本</div>
+            <div class="finops-kpi-val" id="media-402-net-kpi" style="color:#60A5FA;">$250,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">双轨内容授权与封顶令牌</div>
+            <div class="finops-kpi-val" id="media-402-token-kpi" style="font-size:10px;color:#A78BFA;">digital_media_paywall_ai_crawler_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Home Services & On-Demand Repair Marketplace (Price-Book Cap, Dwell Anti-Leakage & 80/20 Escrow) Sandbox -->
+      <div class="finops-box" id="home-services-on-demand-repair-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🔧 上门维修、家电安装与家庭服务撮合平台 (Thumbtack / 京东服务+：防天价刺客与防跳单托管) 沙盒</div>
+            <div class="finops-subtitle">实测特种证核验与官方明码标价配件目录封顶防“30元变3000元”刺客 (HTTP 403)、驻留 &gt;45m 假取消跳单稽核与新旧件同框图 (HTTP 422)、责任险断保挂起 (HTTP 451) 及平台付享 90天质保险+80/20 分阶放款立省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="home-svc-verdict-pill">HTTP 200 · LICENSED_TECH_PRICE_BOOK_CAPPED_AND_80_20_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度上门维修与家庭服务撮合结算池 ($ USD) <span class="control-val" id="home-svc-gross-label">$290,000</span></label>
+            <input type="range" id="home-svc-gross-slider" min="50000" max="1000000" step="20000" value="290000" oninput="updateHomeServicesOnDemandRepairEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">官方配件工时封顶、LBS 驻留防跳单与 80/20 质保托管场景</label>
+            <select id="home-svc-mode-select" onchange="updateHomeServicesOnDemandRepairEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 特种证有效 + 目录封顶计价 + 新旧件验真 + 80/20 质保托管 (HTTP 200)</option>
+              <option value="gouge_403">🛑 派单给无特种作业证人员 或 现场脱离官方配件表自由手填天价维修费 (HTTP 403)</option>
+              <option value="leak_422">🚨 师傅在业主家停留 &gt;45m 却假报未修取消 (诱导私付跳单) 或 无新旧件同框照 (HTTP 422)</option>
+              <option value="ins_451">🛑 Web IQ 检出服务商公众责任险 (GL COI) 已断保失效或受限密钥 &gt;180d (HTTP 451)</option>
+              <option value="warranty_409">🧑‍⚖️ 铭牌 AI 预估封顶 + 平台内付独享 90天质保险将跳单率压至 2.1% 立省 23% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原跳单漏佣与乱加价退赔基线</div>
+            <div class="finops-kpi-val" id="home-svc-gross-kpi">$290,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防跳单锁佣与防刺客立省</div>
+            <div class="finops-kpi-val" id="home-svc-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净上门服务结算成本</div>
+            <div class="finops-kpi-val" id="home-svc-net-kpi" style="color:#60A5FA;">$290,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">家庭服务封顶与质保令牌</div>
+            <div class="finops-kpi-val" id="home-svc-token-kpi" style="font-size:10px;color:#A78BFA;">home_services_on_demand_repair_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Wedding & Bespoke Event Services (5-Vendor 2PC Slot Saga, 30/50/20 Media Escrow & Venue Fee Lock) Sandbox -->
+      <div class="finops-box" id="wedding-bespoke-event-milestone-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">💍 婚庆策划、高端摄影与定制活动服务 (The Knot / 婚礼纪：五方档期 Saga 与 30/50/20 成片托管) 沙盒</div>
+            <div class="finops-subtitle">实测场地+四大金刚全员 Pre-Hold 原子锁档与主创防掉包签到 (HTTP 403)、留存 20% 尾款直至云盘验齐无水印原片/精修与禁收隐形进场费 (HTTP 422)、72h 暴雨自动切室内备厅 (HTTP 451) 及多商协同立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="wedding-esc-verdict-pill">HTTP 200 · ALL_VENDOR_SLOTS_LOCKED_AND_30_50_20_GALLERY_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度婚庆策划与多供应商里程碑托管池 ($ USD) <span class="control-val" id="wedding-esc-gross-label">$280,000</span></label>
+            <input type="range" id="wedding-esc-gross-slider" min="50000" max="1000000" step="20000" value="280000" oninput="updateWeddingBespokeEventMilestoneEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">五方档期 2PC 原子锁、主创防掉包、30/50/20 验片放款与 Rain Plan 场景</label>
+            <select id="wedding-esc-mode-select" onchange="updateWeddingBespokeEventMilestoneEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 五方档期原子共锁 + 主创实名到场 + 30/50/20 云盘验片放款 (HTTP 200)</option>
+              <option value="slot_403">🛑 主场地撞档未锁成却单方实扣摄影不可退定金 或 将签约总监摄影掉包为学徒 (HTTP 403)</option>
+              <option value="media_422">🚨 未上传足额无水印原片/精修即要求婚礼当天提走 100% 全款 或 酒店勒索外聘进场费 (HTTP 422)</option>
+              <option value="storm_451">🛑 Web IQ 检出户外婚礼 72h 暴雨预警未锁室内备选厅 或 单笔 SPT 提前期 &gt;180d (HTTP 451)</option>
+              <option value="saga_409">🧑‍⚖️ 五方档期 2PC 原子共锁 + 20% 交片尾款托管将 30天交片率拉升至 99% 立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原撞档废单、进场费与拖片基线</div>
+            <div class="finops-kpi-val" id="wedding-esc-gross-kpi">$280,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">档期共锁与验片托管立省</div>
+            <div class="finops-kpi-val" id="wedding-esc-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净婚庆多商清算成本</div>
+            <div class="finops-kpi-val" id="wedding-esc-net-kpi" style="color:#60A5FA;">$280,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">婚庆多商里程碑托管令牌</div>
+            <div class="finops-kpi-val" id="wedding-esc-token-kpi" style="font-size:10px;color:#A78BFA;">wedding_bespoke_event_milestone_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Influencer Seeding & Affiliate Coupon-Poaching Defense (Impact / Shopify Collabs) Sandbox -->
+      <div class="finops-box" id="influencer-seeding-coupon-poaching-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎥 网红寄样 (Seeding)、达人带货归因与防优惠券插件劫持 (Impact / Shopify Collabs) 沙盒</div>
+            <div class="finops-subtitle">实测服务端首跳创作者锁拦截结账页插件 (Honey 等) 篡改 Last-Click 偷佣金与 OAuth 防骗样 (HTTP 403)、T+35d 退货期满释放净佣金与 FTC #ad 披露 (HTTP 422)、塌房丑闻断路器 (HTTP 451) 及会话动态折扣立省 28% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="inf-seed-verdict-pill">HTTP 200 · OAUTH_CREATOR_STAND_DOWN_LOCKED_AND_T35_NET_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度网红寄样与联盟带货佣金结算池 ($ USD) <span class="control-val" id="inf-seed-gross-label">$220,000</span></label>
+            <input type="range" id="inf-seed-gross-slider" min="40000" max="800000" step="20000" value="220000" oninput="updateInfluencerSeedingCouponPoachingSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">服务端 Stand-Down 防插件劫持锁、OAuth 领样核身与 T+35d 退货托管场景</label>
+            <select id="inf-seed-mode-select" onchange="updateInfluencerSeedingCouponPoachingSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ OAuth 真身核验 + 服务端创作者归因锁 + T+35d 净额分佣 (HTTP 200)</option>
+              <option value="poach_403">🛑 浏览器比价插件在 /checkout 结账页覆盖原种草博主归因 或 假邮箱骗寄高价样品 (HTTP 403)</option>
+              <option value="return_422">🚨 尚未满 30天退货窗口即提现佣金 (退货骗佣) 或 视频缺失 FTC #ad 商业披露 (HTTP 422)</option>
+              <option value="scandal_451">🛑 Web IQ 检出合作达人突发违法丑闻/虚假宣传处罚或受限密钥 &gt;180d (HTTP 451)</option>
+              <option value="standdown_409">🧑‍⚖️ 服务端 Stand-Down 防插件偷佣 + 免静态码泄露 + 退货期满分账立省 28% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原插件偷佣与假号骗样损耗基线</div>
+            <div class="finops-kpi-val" id="inf-seed-gross-kpi">$220,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防插件劫持与防骗样立省</div>
+            <div class="finops-kpi-val" id="inf-seed-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净真实种草分佣支出</div>
+            <div class="finops-kpi-val" id="inf-seed-net-kpi" style="color:#60A5FA;">$220,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">创作者防劫持与托管令牌</div>
+            <div class="finops-kpi-val" id="inf-seed-token-kpi" style="font-size:10px;color:#A78BFA;">influencer_seeding_coupon_poaching_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive B2B IT Device-as-a-Service (DaaS) & Hardware Leasing (ABM Unlock, NIST 800-88 Wipe & Employee Buyout) Sandbox -->
+      <div class="finops-box" id="b2b-it-daas-leasing-nist-wipe-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">💻 企业 IT 办公设备即服务与租赁买断 (Apple Financial / Dell APEX / Rippling IT) 沙盒</div>
+            <div class="finops-subtitle">实测打印退租面单前强制校验 Apple ABM 解绑防 $1,800 砖机罚单与 NIST 800-88 粉碎证书 (HTTP 403)、36期硬封顶防第4年静默扣租与免正常划痕罚金 (HTTP 422)、电池鼓包禁空运 (HTTP 451) 及远程离职员工一键 FMV 残值内购立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="it-daas-verdict-pill">HTTP 200 · ABM_RELEASED_NIST_WIPED_AND_36M_CAPPED_LEASE_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度企业 IT 电脑租赁与远程回收结算池 ($ USD) <span class="control-val" id="it-daas-gross-label">$310,000</span></label>
+            <input type="range" id="it-daas-gross-slider" min="60000" max="1100000" step="25000" value="310000" oninput="updateB2bItDaasLeasingNistWipeSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">ABM/MDM 激活锁解绑、NIST 800-88 擦除证、36期上限与员工残值买断场景</label>
+            <select id="it-daas-mode-select" onchange="updateB2bItDaasLeasingNistWipeSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ ABM 激活锁已解绑 + NIST 800-88 擦除证 + 36期封顶结清 (HTTP 200)</option>
+              <option value="abm_403">🛑 未解除 Apple ABM/MDM 激活锁即寄回退租 (必罚 $1,800/台) 或 缺失 NIST 擦除证 (HTTP 403)</option>
+              <option value="evergreen_422">🚨 36个月期满后被租赁商静默顺延扣第37期月租 或 轻微使用划痕被乱扣 $450 (HTTP 422)</option>
+              <option value="battery_451">🛑 Web IQ 检出退运笔记本型号存在锂电池鼓包召回/航空禁运或密钥 &gt;180d (HTTP 451)</option>
+              <option value="buyout_409">🧑‍⚖️ 远程擦除企业分区后支持离职员工一键按 FMV 残值内购免 $180 双向运费立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原超期展期租金与退运罚金基线</div>
+            <div class="finops-kpi-val" id="it-daas-gross-kpi">$310,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">员工 FMV 内购与免罚金立省</div>
+            <div class="finops-kpi-val" id="it-daas-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净 IT 硬件租赁 TCO</div>
+            <div class="finops-kpi-val" id="it-daas-net-kpi" style="color:#60A5FA;">$310,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">IT DaaS 解锁与擦除合规令牌</div>
+            <div class="finops-kpi-val" id="it-daas-token-kpi" style="font-size:10px;color:#A78BFA;">b2b_it_daas_leasing_nist_wipe_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Grocery & Perishable Dynamic Markdown (GS1 AI-17 Expiry Lock, ESL Curve & Food-Rescue Tax Credit) Sandbox -->
+      <div class="finops-box" id="grocery-perishable-markdown-gs1-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🥬 生鲜商超与临期动态打折出清 (Instacart Carrot Tags / 盒马 / Too Good To Go / Flashfood) 沙盒</div>
+            <div class="finops-subtitle">实测 GS1 DataBar AI(17) 过期商品收银死锁与防撕标换贴 (HTTP 403)、拦截固定时点正价蚕食与单笔超 3 件黄牛扫货及 ESL 价签失步 (HTTP 422)、FDA 李斯特菌召回批次/冷柜超温熔断 (HTTP 451) 及闭店前 90m 惊喜盲盒+IRC §170(e)(3) 抵税捐赠立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="groc-mkd-verdict-pill">HTTP 200 · GS1_AI17_VALID_ESL_SYNCED_AND_PERISHABLE_CHECKOUT_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度门店生鲜日配临期损耗与出清预算池 ($ USD) <span class="control-val" id="groc-mkd-gross-label">$290,000</span></label>
+            <input type="range" id="groc-mkd-gross-slider" min="50000" max="1000000" step="20000" value="290000" oninput="updateGroceryPerishableMarkdownGs1Sandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">GS1 AI(17) 效期锁、防撕标换贴、ESL 阶梯曲线与闭店盲盒/慈善抵税捐赠场景</label>
+            <select id="groc-mkd-mode-select" onchange="updateGroceryPerishableMarkdownGs1Sandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ GS1 AI(17) 效期有效 + 原 GTIN 称重匹配 + ESL/POS 同价放行 (HTTP 200)</option>
+              <option value="expired_403">🛑 扫到已过 GS1 AI(17) 保质期的冷鲜奶 或 将吐司5折码撕下贴到M9和牛上 (HTTP 403)</option>
+              <option value="hoard_422">🚨 对非临期批次提前打折、黄牛单笔抢购 &gt;3 件临期肉品或 ESL 墨水屏未回传 ACK (HTTP 422)</option>
+              <option value="recall_451">🛑 Web IQ 检出该批次命中 FDA 李斯特菌一级召回 或 冷柜断电超温 &gt;2h (HTTP 451)</option>
+              <option value="rescue_409">🧑‍⚖️ RSL 平滑阶梯调价 + 闭店前90m 拆分惊喜盲盒与 IRC §170(e)(3) 抵税捐赠立省 26% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原粗暴打折与闭店倾倒损耗基线</div>
+            <div class="finops-kpi-val" id="groc-mkd-gross-kpi">$290,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">平滑调价+盲盒回血+抵税立省</div>
+            <div class="finops-kpi-val" id="groc-mkd-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净生鲜损耗成本</div>
+            <div class="finops-kpi-val" id="groc-mkd-net-kpi" style="color:#60A5FA;">$290,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">GS1 效期与食安防损令牌</div>
+            <div class="finops-kpi-val" id="groc-mkd-token-kpi" style="font-size:10px;color:#A78BFA;">grocery_perishable_markdown_gs1_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Global EOR & Cross-Border Contractor Payroll (AB5/IR35 Shield, Deliverable Audit & Local FX) Sandbox -->
+      <div class="finops-box" id="global-eor-contractor-payroll-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🌍 全球名义雇主 (EOR) 与跨境灵活用工结算 (Deel / Rippling Global / Remote / Papaya) 沙盒</div>
+            <div class="finops-subtitle">实测假外包真雇佣 (AB5 / IR35 / 德国伪自雇) 与缺失 W-8BEN/IP 协议硬拦截 (HTTP 403)、多头兼职无交付物幽灵工时与 SWIFT &gt;25bps 汇损拦截 (HTTP 422)、OFAC 制裁区/183天常设机构税务越界熔断 (HTTP 451) 及一键转 EOR 保护伞+SEPA/Pix 批发锁汇立省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="eor-pay-verdict-pill">HTTP 200 · EOR_IC_COMPLIANT_DELIVERABLE_VERIFIED_AND_LOCAL_FX_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度跨境远程研发与全球 EOR 薪酬结算池 ($ USD) <span class="control-val" id="eor-pay-gross-label">$420,000</span></label>
+            <input type="range" id="eor-pay-gross-slider" min="80000" max="1500000" step="30000" value="420000" oninput="updateGlobalEorContractorPayrollSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">AB5/IR35 伪自雇红线、W-8BEN/IP 签署、交付物工时对账与本地清算网锁汇场景</label>
+            <select id="eor-pay-mode-select" onchange="updateGlobalEorContractorPayrollSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 用工分类合规 + W-8BEN/IP 已签 + Git/Jira 交付物匹配 + 本币清算 (HTTP 200)</option>
+              <option value="misclass_403">🛑 连续10个月全职固定排班触犯 AB5/IR35/德国伪自雇法 或 未签双语 IP 转让与 W-8BEN (HTTP 403)</option>
+              <option value="ghost_422">🚨 提交 160h 满工时账单但无 Git/Figma 交付物签收 或 走传统 SWIFT 被收 3.2% 汇差 (HTTP 422)</option>
+              <option value="pe_451">🛑 Web IQ 检出收款人位于 OFAC 制裁区 或 跨国滞留 &gt;183 天触发常设机构(PE)税险 (HTTP 451)</option>
+              <option value="shield_409">🧑‍⚖️ 高危外包一键转 Deel Shield/EOR 保护伞 + SEPA/Pix/FPS 批发锁汇立省 23% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原伪自雇税罚拨备与 SWIFT 汇损基线</div>
+            <div class="finops-kpi-val" id="eor-pay-gross-kpi">$420,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">EOR 合规避险与批发锁汇立省</div>
+            <div class="finops-kpi-val" id="eor-pay-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净全球用工与发薪总成本</div>
+            <div class="finops-kpi-val" id="eor-pay-net-kpi" style="color:#60A5FA;">$420,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">全球用工与锁汇合规令牌</div>
+            <div class="finops-kpi-val" id="eor-pay-token-kpi" style="font-size:10px;color:#A78BFA;">global_eor_contractor_payroll_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Luxury Watch & Fine Jewelry Consignment & B2B Memo Escrow (GIA/Movement Auth, Reserve Floor & NFC Seal) Sandbox -->
+      <div class="finops-box" id="luxury-watch-jewelry-memo-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">⌚ 高端腕表与钻石珠宝寄售及同行借货 (Chrono24 / The RealReal / RapNet / Nivoda) 沙盒</div>
+            <div class="finops-subtitle">实测 Enquirus 失窃库、拼装假机芯 (Frankenwatch) 与培育钻套天然 GIA 腰码硬阻断 (HTTP 403)、防擅自破寄售人底价、B2B Memo 逾期与剪断防拆 NFC 铅封/偷拆金表节退货拦截 (HTTP 422)、冲突钻/AML 熔断 (HTTP 451) 及鉴定仓 NFC 铅封+装甲保价立省 27% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="lux-memo-verdict-pill">HTTP 200 · GIA_MOVEMENT_VERIFIED_RESERVE_PROTECTED_AND_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度高端腕表与天然裸钻寄售/B2B Memo 托管结算池 ($ USD) <span class="control-val" id="lux-memo-gross-label">$480,000</span></label>
+            <input type="range" id="lux-memo-gross-slider" min="80000" max="1600000" step="40000" value="480000" oninput="updateLuxuryWatchJewelryMemoEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">Enquirus/GIA 验真、寄售保底价、一次性防拆 NFC 铅封与 Brink's 装甲保价场景</label>
+            <select id="lux-memo-mode-select" onchange="updateLuxuryWatchJewelryMemoEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ Enquirus 非失窃真品 + 严守货主底价 + NFC 防拆铅封完好放款 (HTTP 200)</option>
+              <option value="franken_403">🛑 命中 Enquirus 失窃表库、真表壳拼装副厂机芯 或 $300 培育钻套刻天然 GIA 编码 (HTTP 403)</option>
+              <option value="reserve_422">🚨 平台打折跌破寄售人保底净价、B2B Memo 逾期未还 或 买家剪断 NFC 铅封/少1节金表带退货 (HTTP 422)</option>
+              <option value="kimberley_451">🛑 Web IQ 检出缺失金伯利进程无冲突钻证书、G7 钻源制裁 或 FinCEN AML 异常 (HTTP 451)</option>
+              <option value="armored_409">🧑‍⚖️ 中立鉴定仓植入防拆 NFC 铅封 + Brink's/Malca-Amit 装甲保价专线立省 27% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原调包坏账与零售保价物流基线</div>
+            <div class="finops-kpi-val" id="lux-memo-gross-kpi">$480,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防白嫖铅封与装甲团体保费立省</div>
+            <div class="finops-kpi-val" id="lux-memo-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净奢品托管与保价总成本</div>
+            <div class="finops-kpi-val" id="lux-memo-net-kpi" style="color:#60A5FA;">$480,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">奢品验真与装甲托管令牌</div>
+            <div class="finops-kpi-val" id="lux-memo-token-kpi" style="font-size:10px;color:#A78BFA;">luxury_watch_jewelry_memo_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Clinical Trial Patient Stipend & Travel Reimbursement (Anti-Duplicate Subject, IRB Cap & HIPAA Tax-Blind) Sandbox -->
+      <div class="finops-box" id="clinical-trial-stipend-ecoa-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🧬 临床试验受试者补贴与差旅结算 (Greenphire ClinCard / Scout Clinical / Medidata / Veeva) 沙盒</div>
+            <div class="finops-subtitle">实测职业试药人跨院重复入组 (CTSdatabase/VCT) 与未完成 eCOA 访视硬阻断 (HTTP 403)、超 IRB 批件不当利诱与差旅混入 $600 1099 应税池拦截 (HTTP 422)、FDA 禁业医生/向药企泄露患者 SSN 熔断 (HTTP 451) 及第三方税务盲墙+免税差旅直付立省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="clin-stip-verdict-pill">HTTP 200 · ECOA_VERIFIED_IRB_CAPPED_AND_TAX_BLIND_STIPEND_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度多中心临床试验受试者招募补贴与异地差旅预算池 ($ USD) <span class="control-val" id="clin-stip-gross-label">$340,000</span></label>
+            <input type="range" id="clin-stip-gross-slider" min="60000" max="1200000" step="20000" value="340000" oninput="updateClinicalTrialStipendEcoaSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">跨院洗脱期查重、eCOA 访视打卡、IRB 批件限额与 HIPAA 1099 税务盲墙场景</label>
+            <select id="clin-stip-mode-select" onchange="updateClinicalTrialStipendEcoaSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ VCT 洗脱期查重通过 + eCOA 访视完成 + IRB 限额合规 + 盲墙发卡 (HTTP 200)</option>
+              <option value="dup_403">🛑 职业试药人 30天洗脱期内在同城另一家医院重复入组 或 未完成 eCOA 服药日记 (HTTP 403)</option>
+              <option value="irb_422">🚨 发放金额超出 IRB 伦理批件上限(构成不当利诱) 或 把实报实销机酒混入 $600 应税收入 (HTTP 422)</option>
+              <option value="hipaa_451">🛑 Web IQ 检出 PI 医生在 FDA 禁业名单 或 药企财务系统试图拉取受试者真名与 SSN (HTTP 451)</option>
+              <option value="blind_409">🧑‍⚖️ 第三方受托盲墙独立代开 1099 + Uber Health/机酒免税直付减少脱落重招立省 25% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原患者脱落重招与试药套利基线</div>
+            <div class="finops-kpi-val" id="clin-stip-gross-kpi">$340,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防跨院骗补与免税护福利降脱落立省</div>
+            <div class="finops-kpi-val" id="clin-stip-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净临床补贴与招募总成本</div>
+            <div class="finops-kpi-val" id="clin-stip-net-kpi" style="color:#60A5FA;">$340,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">临床盲墙与 eCOA 合规令牌</div>
+            <div class="finops-kpi-val" id="clin-stip-token-kpi" style="font-size:10px;color:#A78BFA;">clinical_trial_stipend_ecoa_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Commercial Retail Mall Percentage Rent Audit & TI Allowance Lien Waiver Escrow Sandbox -->
+      <div class="finops-box" id="commercial-cre-percentage-rent-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏬 购物中心与商业地产抽成租金审计及装修补贴 (Yardi Voyager / MRI / Procore / 万象城) 沙盒</div>
+            <div class="finops-subtitle">实测商铺隐瞒外卖/门店自提(BOPIS)逃避抽成与缺失分包商留置权豁免书(Lien Waiver)硬阻断 (HTTP 403)、网购跨店退货(BORIS)超 3% 冲减营业额与可控 CAM 超 5% 封顶拦截 (HTTP 422)、ACORD 25 责任险断保熔断 (HTTP 451) 及超自然断点日清分+留置权直付立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="cre-mall-verdict-pill">HTTP 200 · POS_VERIFIED_LIEN_WAIVED_AND_PERCENTAGE_RENT_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度购物中心提成租金与新铺装修补贴 (TI Allowance) 结算池 ($ USD) <span class="control-val" id="cre-mall-gross-label">$520,000</span></label>
+            <input type="range" id="cre-mall-gross-slider" min="100000" max="1800000" step="40000" value="520000" oninput="updateCommercialCrePercentageRentSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">POS+O2O 全口径归集、分包商留置权豁免书、跨店退货上限与自然断点分账场景</label>
+            <select id="cre-mall-mode-select" onchange="updateCommercialCrePercentageRentSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ POS+外卖全口径入账 + 总包/分包留置权豁免齐套 + COI 有效 (HTTP 200)</option>
+              <option value="skim_403">🛑 商铺隐瞒门店自提/外卖流水逃避8%提成租 或 未收齐分包商留置权豁免书即放装修补贴 (HTTP 403)</option>
+              <option value="boris_422">🚨 将品牌官网网购退货(&gt;3%)塞入商场店冲减分成基数 或 突破 5% 可控物业费封顶 (HTTP 422)</option>
+              <option value="coi_451">🛑 Web IQ 检出餐饮租户 ACORD 25 公众责任险断保/未列业主为附加被保人 或 消防违规 (HTTP 451)</option>
+              <option value="sweep_409">🧑‍⚖️ 突破自然断点后 POS 每日自动清分 8% 提成租 + 数字留置权豁免直付承包商立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原提成租跑单漏收与工程诉讼基线</div>
+            <div class="finops-kpi-val" id="cre-mall-gross-kpi">$520,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">全口径断点追租与防查封立省</div>
+            <div class="finops-kpi-val" id="cre-mall-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净商业地产结算与风控成本</div>
+            <div class="finops-kpi-val" id="cre-mall-net-kpi" style="color:#60A5FA;">$520,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">商业地产抽成与留置权令牌</div>
+            <div class="finops-kpi-val" id="cre-mall-token-kpi" style="font-size:10px;color:#A78BFA;">commercial_cre_percentage_rent_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Childcare, Preschool & Summer Camp Billing (Staff-to-Child Ratio, <=3m Escrow & CCDF/FSA Split) Sandbox -->
+      <div class="finops-box" id="childcare-preschool-camp-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🧸 托育早教、课后托管与夏令营结算 (Brightwheel / Procare / Sawyer / 预收费存管) 沙盒</div>
+            <div class="finops-subtitle">实测实时在岗教师法定师生比 (如婴儿班 1:4) 与疫苗/过敏 EpiPen 档案硬阻断 (HTTP 403)、超 3 个月违规预收学费与过夜夏令营误刷 Dependent Care FSA 免税卡拦截 (HTTP 422)、教师指纹背调/CPR 过期熔断 (HTTP 451) 及政府 CCDF 补贴+FSA+家长 ACH 三轨拆账立省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="child-camp-verdict-pill">HTTP 200 · RATIO_COMPLIANT_IMMUNIZATION_VERIFIED_AND_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度连锁托育园与暑期夏令营学费及政府补贴结算池 ($ USD) <span class="control-val" id="child-camp-gross-label">$260,000</span></label>
+            <input type="range" id="child-camp-gross-slider" min="50000" max="900000" step="20000" value="260000" oninput="updateChildcarePreschoolCampEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">实时在岗师生比、疫苗/接送码、预收费 3 个月上限与 IRS Pub 503 日间营 FSA 拆单场景</label>
+            <select id="child-camp-mode-select" onchange="updateChildcarePreschoolCampEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 在岗持证教师师生比达标 + 疫苗/接送码齐套 + 日间营 FSA 合规入账 (HTTP 200)</option>
+              <option value="ratio_403">🛑 保育员请假导致婴儿班突破 1:4 法定师生比仍违规接临时日托单 或 缺失疫苗/接送 PIN (HTTP 403)</option>
+              <option value="fsa_422">🚨 违规一次性预收超 3 个月/60课时学费 或 将过夜夏令营(Overnight Camp)刷入 FSA 免税卡 (HTTP 422)</option>
+              <option value="bgc_451">🛑 Web IQ 检出带班教职工无犯罪指纹背调/儿科 CPR 急救证过期 或 办学卫生许可挂起 (HTTP 451)</option>
+              <option value="split_409">🧑‍⚖️ 政府 CCDF 托育券 + $5,000 日间营 FSA + 家长 ACH 共付三轨拆账与按月销课立省 23% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原超编罚单、FSA 拒付与欠费基线</div>
+            <div class="finops-kpi-val" id="child-camp-gross-kpi">$260,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">合规三轨拆账与存管防挤兑立省</div>
+            <div class="finops-kpi-val" id="child-camp-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净园区结算与合规总成本</div>
+            <div class="finops-kpi-val" id="child-camp-net-kpi" style="color:#60A5FA;">$260,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">托育师生比与存管合规令牌</div>
+            <div class="finops-kpi-val" id="child-camp-token-kpi" style="font-size:10px;color:#A78BFA;">childcare_preschool_camp_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Shared Powerbank, Smart Grab-and-Go Cooler & Deposit-Free Pre-Auth (Crypto Slot, BLE Return & Mass Conservation) Sandbox -->
+      <div class="finops-box" id="shared-powerbank-smart-vending-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🔋 共享充电宝、智能开门零售柜与信用免押租赁 (美团/怪兽充电 / Amazon Just Walk Out / 微信支付分) 沙盒</div>
+            <div class="finops-subtitle">实测槽位加密芯片防无电芯空壳骗退押与无人柜等重盐水瓶调包拦截 (HTTP 403)、防地下室弱网已还仍扣 $99 买断费与拿放换层误扣款 (HTTP 422)、电芯过热鼓包(>50°C)/冷柜断电锁仓 (HTTP 451) 及信用免押封顶+手机蓝牙(BLE)转发离线归还签名秒结立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="pwr-vend-verdict-pill">HTTP 200 · CRYPTO_SLOT_VERIFIED_VISION_WEIGHT_MATCHED_AND_SETTLE_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度共享租借与无人智能零售柜免押结算池 ($ USD) <span class="control-val" id="pwr-vend-gross-label">$230,000</span></label>
+            <input type="range" id="pwr-vend-gross-slider" min="40000" max="800000" step="20000" value="230000" oninput="updateSharedPowerbankSmartVendingSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">槽位加密芯片握手、机柜硬件 RTC 时间戳、手机蓝牙 BLE 离线中继与无人柜守恒场景</label>
+            <select id="pwr-vend-mode-select" onchange="updateSharedPowerbankSmartVendingSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 槽位加密芯片验真 + 视觉/重力一致 + 免押精准完结扣款 (HTTP 200)</option>
+              <option value="fake_403">🛑 黑产塞入无电芯空塑料壳骗取完结 或 在无人冷柜拿走红牛、放入等重自来水瓶 (HTTP 403)</option>
+              <option value="zombie_422">🚨 地下室机柜 4G 断网未传回执导致已还仍被扣 $99 买断费 或 拿起来看一眼放回隔壁层被误扣 (HTTP 422)</option>
+              <option value="thermal_451">🛑 Web IQ/BMS 检出槽位电芯温度 &gt;50°C/3C召回批次 或 无人鲜食冷柜断电超温 &gt;8°C (HTTP 451)</option>
+              <option value="ble_409">🧑‍⚖️ 信用免押封顶预授权 + 5分钟故障0元撤单 + 手机BLE中继离线机柜归还签名秒结立省 26% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原 $99 误扣拒付、调包与通道费基线</div>
+            <div class="finops-kpi-val" id="pwr-vend-gross-kpi">$230,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">BLE 离线秒结与防调包免押立省</div>
+            <div class="finops-kpi-val" id="pwr-vend-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净无人零售损耗与通道成本</div>
+            <div class="finops-kpi-val" id="pwr-vend-net-kpi" style="color:#60A5FA;">$230,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">加密槽位与 BLE 归还令牌</div>
+            <div class="finops-kpi-val" id="pwr-vend-token-kpi" style="font-size:10px;color:#A78BFA;">shared_powerbank_smart_vending_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Agri-Inputs, Produce PACA Statutory Trust & Crop-Proceeds Waterfall Escrow Sandbox -->
+      <div class="finops-box" id="agri-inputs-produce-paca-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🌾 生鲜产地直采 (PACA 信托)、春耕农资赊销与丰收瀑布分账 (Bushel / John Deere / iTradeNetwork) 沙盒</div>
+            <div class="finops-subtitle">实测跨积温带买错未审定种子、无证购买限用农药(RUP)与超 30 天丧失 PACA 破产优先权硬阻断 (HTTP 403)、防批发商无 24h USDA 官方质检证恶意报损砍价与逃避 EFS 农资留置权拦截 (HTTP 422)、植物检疫疫区禁运熔断 (HTTP 451) 及秋收卖粮瀑布清分+天气险立省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="agri-paca-verdict-pill">HTTP 200 · ZONE_VERIFIED_PACA_TRUST_PROTECTED_AND_WATERFALL_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度生鲜基地直采与春耕种子化肥供应链结算池 ($ USD) <span class="control-val" id="agri-paca-gross-label">$390,000</span></label>
+            <input type="range" id="agri-paca-gross-slider" min="80000" max="1400000" step="30000" value="390000" oninput="updateAgriInputsProducePacaEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">审定品种适种区围栏、PACA &le;30天法定信托、24h USDA 质检定损与秋收卖粮瀑布分账场景</label>
+            <select id="agri-paca-mode-select" onchange="updateAgriInputsProducePacaEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 适种区 GPS 匹配 + RUP 持证合规 + PACA &le;30天法定信托保护放行 (HTTP 200)</option>
+              <option value="zone_403">🛑 向高寒区推荐晚熟种子致绝收风险、无证网购 EPA 限用农药 或 账期 &gt;30天致 PACA 信托作废 (HTTP 403)</option>
+              <option value="spoilage_422">🚨 批发商趁跌价凭私拍照片强扣 35% 烂果费(无 24h USDA 质检证) 或 卖粮绕过 EFS 农资留置权 (HTTP 422)</option>
+              <option value="aphis_451">🛑 Web IQ 检出果品来自 APHIS 柑橘黄龙病/实蝇植物检疫封锁区 或 含禁用高毒农药成分 (HTTP 451)</option>
+              <option value="waterfall_409">🧑‍⚖️ 秋收磅单触发“农资贷款→PACA果农款→农户净利”原子瀑布分账 + 气象指数保险立省 25% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原恶意压车砍价与农资赊销坏账基线</div>
+            <div class="finops-kpi-val" id="agri-paca-gross-kpi">$390,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">24h 官方定损锁与瀑布回款立省</div>
+            <div class="finops-kpi-val" id="agri-paca-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净农业供应链与生鲜结算成本</div>
+            <div class="finops-kpi-val" id="agri-paca-net-kpi" style="color:#60A5FA;">$390,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">PACA 信托与农资瀑布令牌</div>
+            <div class="finops-kpi-val" id="agri-paca-token-kpi" style="font-size:10px;color:#A78BFA;">agri_inputs_produce_paca_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive On-Demand Laundry, Dry Cleaning & Luxury Garment Care (ISO 3758 Care-Label, Defect Sign-Off & UHF RFID) Sandbox -->
+      <div class="finops-box" id="laundry-luxury-care-rfid-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🧥 O2O 洗衣洗护、奢品皮具养护与智能收衣柜 (Rinse / CleanCloud / 丰巢洗护 / 京东洗衣) 沙盒</div>
+            <div class="finops-subtitle">实测 ISO 3758 水洗标视觉拦截羊绒/真丝混入按袋水洗缩水与洗前原破损拍照客户确权锁 (HTTP 403)、万元奢品强制保价精洗与防民宿商用毛巾薅包月套餐 (HTTP 422)、禁用致癌四氯乙烯(PERC)溶剂熔断 (HTTP 451) 及耐水洗 UHF RFID 防错件+智能柜夜间集单立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="laun-rfid-verdict-pill">HTTP 200 · CARE_LABEL_SAFE_DEFECT_SIGNED_AND_RFID_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度 O2O 洗衣与奢品鞋包养护结算及保价池 ($ USD) <span class="control-val" id="laun-rfid-gross-label">$210,000</span></label>
+            <input type="range" id="laun-rfid-gross-slider" min="40000" max="800000" step="15000" value="210000" oninput="updateLaundryLuxuryCareRfidEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">ISO 3758 水洗标视觉分拣、洗前瑕疵拍照确权、商用布草反套利与 UHF RFID 智能柜场景</label>
+            <select id="laun-rfid-mode-select" onchange="updateLaundryLuxuryCareRfidEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ ISO 3758 水洗标安全 + 洗前瑕疵已确认 + UHF RFID 齐套入柜 (HTTP 200)</option>
+              <option value="cashmere_403">🛑 顾客把 $2,500 仅限干洗羊绒衫混入 $39 按袋水洗烘袋 或 洗前袖口烟洞未经顾客点击确认 (HTTP 403)</option>
+              <option value="linen_422">🚨 万元爱马仕/高定按 $15 普洗下单未选保价精洗 或 民宿/理发店塞入 35 条商用白毛巾薅包月 (HTTP 422)</option>
+              <option value="perc_451">🛑 Web IQ 检出外包洗涤厂违规使用 EPA 禁令四氯乙烯(PERC)致癌溶剂 或 医民床品混洗违规 (HTTP 451)</option>
+              <option value="rfid_409">🧑‍⚖️ 耐200次水洗 UHF RFID 零错衣自动合单 + 社区智能柜夜间错峰集单与验衣托管立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原洗坏缩水赔付、错件与专人上门基线</div>
+            <div class="finops-kpi-val" id="laun-rfid-gross-kpi">$210,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">视觉防洗坏与智能柜谷时集单立省</div>
+            <div class="finops-kpi-val" id="laun-rfid-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净洗护履约与保价理赔成本</div>
+            <div class="finops-kpi-val" id="laun-rfid-net-kpi" style="color:#60A5FA;">$210,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">水洗标验真与 RFID 托管令牌</div>
+            <div class="finops-kpi-val" id="laun-rfid-token-kpi" style="font-size:10px;color:#A78BFA;">laundry_luxury_care_rfid_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
       <!-- Interactive Sandbox: Web IQ RBAC/Browse-Passage + Stripe MCP Nov 30 Cutoff + Multi-Rail BNPL SPT -->
       <div class="finops-box" id="stage1756-sandbox" style="margin-top:12px;border-color:#06B6D4;">
         <div class="panel-header" style="margin-bottom:8px;padding-bottom:6px;">
@@ -3675,7 +4980,6 @@ function renderAll() {
   updateStage1756Sandbox();
 }
 
-
 function filterSaSandboxes() {
   var inp = document.getElementById("sa-sandbox-filter");
   var grid = document.getElementById("sa-sandbox-grid");
@@ -3687,7 +4991,6 @@ function filterSaSandboxes() {
     cards[i].style.display = (!q || txt.indexOf(q) !== -1) ? "" : "none";
   }
 }
-
 
 function updateArchitectSelectorSandbox() {
   var scEl = document.getElementById("arch-scenario-select");
@@ -9529,6 +10832,1601 @@ function updateCrossBorderReverseLogisticsDrawbackSandbox() {
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
     tokenKpi.textContent = 'cross_border_reverse_logistics_drawback_mandate_verified';
+  }
+}
+
+function updateEnterpriseTreasurySupplierPortalApSandbox() {
+  const grossSlider = document.getElementById('treasury-portal-gross-slider');
+  const modeSelect = document.getElementById('treasury-portal-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '280000');
+  const mode = modeSelect.value;
+  document.getElementById('treasury-portal-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('treasury-portal-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('treasury-portal-verdict-pill');
+  const savingsKpi = document.getElementById('treasury-portal-savings-kpi');
+  const netKpi = document.getElementById('treasury-portal-net-kpi');
+  const tokenKpi = document.getElementById('treasury-portal-token-kpi');
+
+  if (mode === 'shared_cred_403') {
+    pill.textContent = 'HTTP 403 · SHARED_PORTAL_CREDENTIALS_OR_UNREGISTERED_TAP_AGENT_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_SHARED_PORTAL_LOGIN_OR_UNREGISTERED_TAP';
+  } else if (mode === 'unapproved_422') {
+    pill.textContent = 'HTTP 422 · UNAPPROVED_BUYER_INVOICE_OR_MISSING_TREASURY_HITL_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNAPPROVED_INVOICE_OR_MISSING_HITL';
+  } else if (mode === 'spoof_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_SUPPLIER_PORTAL_DOMAIN_SPOOF_OR_180D_KEY_HOLD (260ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_PORTAL_DOMAIN_SPOOF_OR_180D_KEY';
+  } else if (mode === 'discount_409') {
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · TAP_PORTAL_EARLY_DISCOUNT_AND_L3_SINGLE_USE_VCN_CONFIRM (220ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'enterprise_treasury_supplier_portal_ap_mandate_saved24pct';
+  } else {
+    pill.textContent = 'HTTP 200 · VISA_TAP_DIRECTORY_VERIFIED_AND_TREASURY_HITL_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'enterprise_treasury_supplier_portal_ap_mandate_verified';
+  }
+}
+
+function updateSocialSearchNativeCheckoutSandbox() {
+  const grossSlider = document.getElementById('social-ucp-gross-slider');
+  const modeSelect = document.getElementById('social-ucp-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '340000');
+  const mode = modeSelect.value;
+  document.getElementById('social-ucp-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('social-ucp-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('social-ucp-verdict-pill');
+  const savingsKpi = document.getElementById('social-ucp-savings-kpi');
+  const netKpi = document.getElementById('social-ucp-net-kpi');
+  const tokenKpi = document.getElementById('social-ucp-token-kpi');
+
+  if (mode === 'profile_403') {
+    pill.textContent = 'HTTP 403 · WALMART_AGENT_PROFILE_VIOLATION_OR_MISSING_SAFETY_WARNING_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_AGENT_PROFILE_OR_SAFETY_WARNING';
+  } else if (mode === 'mor_422') {
+    pill.textContent = 'HTTP 422 · UCP_BRAND_MOR_MISMATCH_OR_UNAPPROVED_STOREFRONT_CHECKOUT_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_MOR_LOSS_OR_UNAPPROVED_CHECKOUT';
+  } else if (mode === 'drift_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_UCP_CATALOG_SALE_PRICE_DRIFT_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_UCP_SALE_PRICE_DRIFT_OR_180D_KEY';
+  } else if (mode === 'multibrand_409') {
+    const savings = Math.round(gross * 0.21 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · MULTI_BRAND_SHOP_PAY_AND_UCP_BRAND_MOR_CHECKOUT_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'social_search_native_checkout_ucp_mcp_mandate_saved21pct';
+  } else {
+    pill.textContent = 'HTTP 200 · UCP_BRAND_MOR_AND_CATALOG_SAFETY_WARNING_CHECKOUT_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'social_search_native_checkout_ucp_mcp_mandate_verified';
+  }
+}
+
+function updateEcommercePrePurchaseAntiWrongBuySandbox() {
+  const grossSlider = document.getElementById('pre-verify-gross-slider');
+  const modeSelect = document.getElementById('pre-verify-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '312000');
+  const mode = modeSelect.value;
+  document.getElementById('pre-verify-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('pre-verify-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('pre-verify-verdict-pill');
+  const savingsKpi = document.getElementById('pre-verify-savings-kpi');
+  const netKpi = document.getElementById('pre-verify-net-kpi');
+  const tokenKpi = document.getElementById('pre-verify-token-kpi');
+
+  if (mode === 'sub_403') {
+    pill.textContent = 'HTTP 403 · UNAUTHORIZED_SKU_SUBSTITUTION_OR_ATTRIBUTE_MISMATCH_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_SILENT_SKU_OR_SIZE_SUBSTITUTION';
+  } else if (mode === 'landed_422') {
+    pill.textContent = 'HTTP 422 · ALL_IN_LANDED_BUDGET_EXCEEDED_OR_DELIVERY_DEADLINE_MISSED_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_ALL_IN_BUDGET_OR_DEADLINE_BREACH';
+  } else if (mode === 'spec_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_PRODUCT_SPEC_TABLE_CONTRADICTION_OR_180D_KEY_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_SPEC_TABLE_CONTRADICTION_OR_180D_KEY';
+  } else if (mode === 'card_409') {
+    const savings = Math.round(gross * 0.25 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · FOUR_TUPLE_PRE_PURCHASE_VERIFIER_AND_SUBSTITUTION_CARD_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'ecommerce_pre_purchase_anti_wrong_buy_mandate_saved25pct';
+  } else {
+    pill.textContent = 'HTTP 200 · FROZEN_INTENT_FOUR_TUPLE_PRE_PURCHASE_VERIFIED_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'ecommerce_pre_purchase_anti_wrong_buy_mandate_verified';
+  }
+}
+
+function updatePersonalAgentPersistentIntentPoppySandbox() {
+  const grossSlider = document.getElementById('poppy-intent-gross-slider');
+  const modeSelect = document.getElementById('poppy-intent-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '290000');
+  const mode = modeSelect.value;
+  document.getElementById('poppy-intent-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('poppy-intent-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('poppy-intent-verdict-pill');
+  const savingsKpi = document.getElementById('poppy-intent-savings-kpi');
+  const netKpi = document.getElementById('poppy-intent-net-kpi');
+  const tokenKpi = document.getElementById('poppy-intent-token-kpi');
+
+  if (mode === 'dpop_403') {
+    pill.textContent = 'HTTP 403 · REVOKED_PERSISTENT_INTENT_OR_POPPY_DPOP_REPLAY_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_REVOKED_INTENT_OR_DPOP_REPLAY';
+  } else if (mode === 'cum_422') {
+    pill.textContent = 'HTTP 422 · CUMULATIVE_INTENT_BUDGET_EXCEEDED_OR_POST_TX_SCOPE_VIOLATION_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_CUMULATIVE_CAP_OR_POST_TX_ESCALATION';
+  } else if (mode === 'recall_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_RECURRING_INTENT_RECALL_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_RECURRING_SKU_RECALL_OR_180D_KEY';
+  } else if (mode === 'match_409') {
+    const savings = Math.round(gross * 0.22 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · PERSISTENT_INTENT_CUMULATIVE_GUARD_AND_POST_TX_PRICE_MATCH_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'personal_agent_persistent_intent_poppy_mandate_saved22pct';
+  } else {
+    pill.textContent = 'HTTP 200 · POPPY_DPOP_VERIFIED_AND_MCP_PERSISTENT_INTENT_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'personal_agent_persistent_intent_poppy_mandate_verified';
+  }
+}
+
+function updateAutomotiveEvD2cCheckoutSandbox() {
+  const grossSlider = document.getElementById('auto-ev-gross-slider');
+  const modeSelect = document.getElementById('auto-ev-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '450000');
+  const mode = modeSelect.value;
+  document.getElementById('auto-ev-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('auto-ev-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('auto-ev-verdict-pill');
+  const savingsKpi = document.getElementById('auto-ev-savings-kpi');
+  const netKpi = document.getElementById('auto-ev-net-kpi');
+  const tokenKpi = document.getElementById('auto-ev-token-kpi');
+
+  if (mode === 'lock_403') {
+    pill.textContent = 'HTTP 403 · AGENT_BYPASS_COOLING_OFF_LOCK_OR_HIDDEN_DEALER_ADDON_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_AGENT_ORDER_LOCK_OR_CARS_RULE';
+  } else if (mode === 'vin_422') {
+    pill.textContent = 'HTTP 422 · UNVERIFIED_VIN_EV_SUBSIDY_OR_HIGH_FEE_CARD_FINAL_BALANCE_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNVERIFIED_VIN_OR_CARD_FINAL_BALANCE';
+  } else if (mode === 'subsidy_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_LOCAL_EV_SUBSIDY_POOL_EXHAUSTED_OR_180D_KEY_HOLD (260ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_LOCAL_SUBSIDY_EXHAUSTED_OR_180D_KEY';
+  } else if (mode === 'match_409') {
+    const savings = Math.round(gross * 0.21 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · IN_TRANSIT_VIN_MATCH_AND_SPLIT_RAIL_A2A_FINAL_SETTLEMENT_CONFIRM (220ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'automotive_ev_d2c_deposit_lock_subsidy_mandate_saved21pct';
+  } else {
+    pill.textContent = 'HTTP 200 · COOLING_OFF_DEPOSIT_AND_VIN_SUBSIDY_SPLIT_RAIL_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'automotive_ev_d2c_deposit_lock_subsidy_mandate_verified';
+  }
+}
+
+function updateConsumerHealthcareMedspaEscrowSandbox() {
+  const grossSlider = document.getElementById('medspa-escrow-gross-slider');
+  const modeSelect = document.getElementById('medspa-escrow-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '250000');
+  const mode = modeSelect.value;
+  document.getElementById('medspa-escrow-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('medspa-escrow-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('medspa-escrow-verdict-pill');
+  const savingsKpi = document.getElementById('medspa-escrow-savings-kpi');
+  const netKpi = document.getElementById('medspa-escrow-net-kpi');
+  const tokenKpi = document.getElementById('medspa-escrow-token-kpi');
+
+  if (mode === 'udi_403') {
+    pill.textContent = 'HTTP 403 · DUPLICATE_UDI_COUNTERFEIT_SCAN_OR_COERCED_CLINIC_LOAN_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_REUSED_UDI_OR_COERCED_CLINIC_LOAN';
+  } else if (mode === 'clawback_422') {
+    pill.textContent = 'HTTP 422 · PREMATURE_FULL_PACKAGE_PAYOUT_OR_PUNITIVE_REFUND_DEDUCTION_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_T1_FULL_PAYOUT_OR_WALKIN_CLAWBACK';
+  } else if (mode === 'license_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_CLINIC_LICENSE_SUSPENSION_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_CLINIC_LICENSE_SUSPENDED_AUTO_REFUND';
+  } else if (mode === 'hsa_409') {
+    const savings = Math.round(gross * 0.23 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · PER_SESSION_ESCROW_AND_HSA_FSA_PRETAX_SPLIT_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'consumer_healthcare_medspa_escrow_mandate_saved23pct';
+  } else {
+    pill.textContent = 'HTTP 200 · FOUR_FACTOR_UDI_VERIFIED_AND_PER_SESSION_ESCROW_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'consumer_healthcare_medspa_escrow_mandate_verified';
+  }
+}
+
+function updateCorporateTmcLraUnusedTicketSandbox() {
+  const grossSlider = document.getElementById('corp-tmc-gross-slider');
+  const modeSelect = document.getElementById('corp-tmc-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '320000');
+  const mode = modeSelect.value;
+  document.getElementById('corp-tmc-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('corp-tmc-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('corp-tmc-verdict-pill');
+  const savingsKpi = document.getElementById('corp-tmc-savings-kpi');
+  const netKpi = document.getElementById('corp-tmc-net-kpi');
+  const tokenKpi = document.getElementById('corp-tmc-token-kpi');
+
+  if (mode === 'utc_403') {
+    pill.textContent = 'HTTP 403 · UNAPPLIED_UNUSED_TICKET_CREDIT_NEW_CARD_CHARGE_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNAPPLIED_UTC_ECREDIT';
+  } else if (mode === 'lra_422') {
+    pill.textContent = 'HTTP 422 · HOTEL_LRA_RATE_SQUATTING_OR_UNCAPPED_INCIDENTALS_VCN_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_HOTEL_LRA_SQUATTING_OR_OPEN_VCN';
+  } else if (mode === 'duty_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_TRAVEL_DUTY_OF_CARE_ALERT_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_DUTY_OF_CARE_ALERT_OR_180D_KEY';
+  } else if (mode === 'reward_409') {
+    const savings = Math.round(gross * 0.26 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · UTC_AUTO_DRAWDOWN_AND_LRA_SPEND_LESS_REWARD_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'corporate_tmc_lra_unused_ticket_credit_mandate_saved26pct';
+  } else {
+    pill.textContent = 'HTTP 200 · UTC_CREDIT_APPLIED_AND_LRA_ROOM_ONLY_VCN_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'corporate_tmc_lra_unused_ticket_credit_mandate_verified';
+  }
+}
+
+function updateFranchiseQsrSupplyRoyaltySplitSandbox() {
+  const grossSlider = document.getElementById('fran-qsr-gross-slider');
+  const modeSelect = document.getElementById('fran-qsr-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '390000');
+  const mode = modeSelect.value;
+  document.getElementById('fran-qsr-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('fran-qsr-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('fran-qsr-verdict-pill');
+  const savingsKpi = document.getElementById('fran-qsr-savings-kpi');
+  const netKpi = document.getElementById('fran-qsr-net-kpi');
+  const tokenKpi = document.getElementById('fran-qsr-token-kpi');
+
+  if (mode === 'rogue_403') {
+    pill.textContent = 'HTTP 403 · OUTSIDE_UNAUTHORIZED_SOURCING_OR_IP_MERCH_SCALPING_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_ROGUE_SOURCING_OR_IP_SCALPING';
+  } else if (mode === 'fefo_422') {
+    pill.textContent = 'HTTP 422 · FEFO_SHELF_LIFE_OVERORDER_OR_ROYALTY_SPLIT_BYPASS_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_FEFO_OVERORDER_OR_ROYALTY_BYPASS';
+  } else if (mode === 'recall_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_INGREDIENT_BATCH_RECALL_MENU_LOCK_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_BATCH_RECALL_POS_MENU_LOCKED';
+  } else if (mode === 'weather_409') {
+    const savings = Math.round(gross * 0.22 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · WEATHER_FEFO_AUTO_ORDERING_AND_POS_ROYALTY_SPLIT_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'franchise_qsr_supply_royalty_split_mandate_saved22pct';
+  } else {
+    pill.textContent = 'HTTP 200 · BOM_MASS_BALANCE_AND_FEFO_POS_ROYALTY_SPLIT_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'franchise_qsr_supply_royalty_split_mandate_verified';
+  }
+}
+
+function updateEcommerceAbandonedCartRecoverySandbox() {
+  const grossSlider = document.getElementById('cart-rec-gross-slider');
+  const modeSelect = document.getElementById('cart-rec-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '290000');
+  const mode = modeSelect.value;
+  document.getElementById('cart-rec-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('cart-rec-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('cart-rec-verdict-pill');
+  const savingsKpi = document.getElementById('cart-rec-savings-kpi');
+  const netKpi = document.getElementById('cart-rec-net-kpi');
+  const tokenKpi = document.getElementById('cart-rec-token-kpi');
+
+  if (mode === 'tcpa_403') {
+    pill.textContent = 'HTTP 403 · TCPA_QUIET_HOURS_VIOLATION_OR_REVOKED_OPTIN_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_TCPA_QUIET_HOURS_OR_NL_OPTOUT';
+  } else if (mode === 'gaming_422') {
+    pill.textContent = 'HTTP 422 · ALREADY_PURCHASED_CROSS_DEVICE_OR_COUPON_GAMING_ABUSE_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_CROSS_DEVICE_BOUGHT_OR_COUPON_GAMING';
+  } else if (mode === 'recall_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_PRODUCT_RECALL_OR_MESSAGING_CHANNEL_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_PRODUCT_RECALL_OR_10DLC_THROTTLE';
+  } else if (mode === 'concierge_409') {
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · CONCIERGE_FIRST_AND_CART_BOUND_RCS_ONE_TAP_RECOVERY_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'ecommerce_abandoned_cart_recovery_rcs_mandate_saved24pct';
+  } else {
+    pill.textContent = 'HTTP 200 · DUAL_TZ_TCPA_COMPLIANT_AND_IN_STOCK_CART_RECOVERY_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'ecommerce_abandoned_cart_recovery_rcs_mandate_verified';
+  }
+}
+
+function updateDigitalPharmacyOpticalRxCopaySandbox() {
+  const grossSlider = document.getElementById('pharm-rx-gross-slider');
+  const modeSelect = document.getElementById('pharm-rx-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '340000');
+  const mode = modeSelect.value;
+  document.getElementById('pharm-rx-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('pharm-rx-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('pharm-rx-verdict-pill');
+  const savingsKpi = document.getElementById('pharm-rx-savings-kpi');
+  const netKpi = document.getElementById('pharm-rx-net-kpi');
+  const tokenKpi = document.getElementById('pharm-rx-token-kpi');
+
+  if (mode === 'erx_403') {
+    pill.textContent = 'HTTP 403 · EXPIRED_UNVERIFIED_ERX_OR_OPTICAL_BC_PD_MISMATCH_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_EXPIRED_ERX_OR_BC_MISMATCH';
+  } else if (mode === 'cold_422') {
+    pill.textContent = 'HTTP 422 · COLD_CHAIN_WEEKEND_TRANSIT_BREACH_OR_SEVERE_DDI_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_WEEKEND_COLD_CHAIN_OR_SEVERE_DDI';
+  } else if (mode === 'ndc_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_FDA_NDC_LOT_RECALL_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_FDA_NDC_LOT_RECALL_OR_180D_KEY';
+  } else if (mode === 'copay_409') {
+    const savings = Math.round(gross * 0.22 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · THREE_RAIL_COPAY_EVOUCHER_CASH_OPTIMIZER_AND_COLD_CUTOFF_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'digital_pharmacy_optical_rx_copay_mandate_saved22pct';
+  } else {
+    pill.textContent = 'HTTP 200 · ERX_OPTICAL_PARAMETER_VERIFIED_AND_HIPAA_REDACTED_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'digital_pharmacy_optical_rx_copay_mandate_verified';
+  }
+}
+
+function updateProptechLeasingDepositCamAchSandbox() {
+  const grossSlider = document.getElementById('proptech-gross-slider');
+  const modeSelect = document.getElementById('proptech-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '420000');
+  const mode = modeSelect.value;
+  document.getElementById('proptech-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('proptech-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('proptech-verdict-pill');
+  const savingsKpi = document.getElementById('proptech-savings-kpi');
+  const netKpi = document.getElementById('proptech-net-kpi');
+  const tokenKpi = document.getElementById('proptech-token-kpi');
+
+  if (mode === 'paystub_403') {
+    pill.textContent = 'HTTP 403 · FAKE_PDF_PAYSTUB_FRAUD_OR_COMMINGLED_SECURITY_DEPOSIT_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_FAKE_PAYSTUB_OR_COMMINGLED_DEPOSIT';
+  } else if (mode === 'wear_422') {
+    pill.textContent = 'HTTP 422 · UNDEPRECIATED_WEAR_DEDUCTION_OR_CAM_CAPEX_OVERCHARGE_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNDEPRECIATED_WEAR_OR_CAM_CAPEX';
+  } else if (mode === 'rentctrl_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_MUNICIPAL_RENT_CONTROL_CAP_BREACH_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_MUNICIPAL_RENT_CONTROL_CAP_OR_180D_KEY';
+  } else if (mode === 'a2a_409') {
+    const savings = Math.round(gross * 0.23 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · BALANCE_PREFLIGHT_A2A_RENT_AND_CAM_DEPRECIATION_AUDIT_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'proptech_leasing_deposit_cam_ach_mandate_saved23pct';
+  } else {
+    pill.textContent = 'HTTP 200 · OPEN_BANKING_PAYROLL_AND_SEGREGATED_DEPOSIT_ESCROW_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'proptech_leasing_deposit_cam_ach_mandate_verified';
+  }
+}
+
+function updateB2bCorporateGiftingUnclaimedClawbackSandbox() {
+  const grossSlider = document.getElementById('corp-gift-gross-slider');
+  const modeSelect = document.getElementById('corp-gift-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '220000');
+  const mode = modeSelect.value;
+  document.getElementById('corp-gift-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('corp-gift-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('corp-gift-verdict-pill');
+  const savingsKpi = document.getElementById('corp-gift-savings-kpi');
+  const netKpi = document.getElementById('corp-gift-net-kpi');
+  const tokenKpi = document.getElementById('corp-gift-token-kpi');
+
+  if (mode === 'fcpa_403') {
+    pill.textContent = 'HTTP 403 · FCPA_PUBLIC_OFFICIAL_RFP_BLACKOUT_OR_SURVEY_BOT_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_FCPA_RFP_BLACKOUT_OR_SURVEY_BOT';
+  } else if (mode === 'breakage_422') {
+    pill.textContent = 'HTTP 422 · NON_REFUNDABLE_UPFRONT_GIFT_CARD_OR_UNREPORTED_EMPLOYEE_W2_TAX_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UPFRONT_BREAKAGE_OR_UNREPORTED_W2';
+  } else if (mode === 'policy_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_RECIPIENT_COMPANY_GIFT_POLICY_CAP_OR_180D_KEY_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_PROSPECT_ZERO_GIFT_POLICY_OR_180D_KEY';
+  } else if (mode === 'clawback_409') {
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · PAY_ON_CLAIM_90D_CLAWBACK_AND_ADDRESS_CONFIRMED_CHOICE_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'b2b_corporate_gifting_unclaimed_clawback_mandate_saved24pct';
+  } else {
+    pill.textContent = 'HTTP 200 · FCPA_CLEAR_AND_PAY_ON_CLAIM_W2_TAX_SYNC_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'b2b_corporate_gifting_unclaimed_clawback_mandate_verified';
+  }
+}
+
+function updatePetEcommerceAutoshipVetDirectPaySandbox() {
+  const grossSlider = document.getElementById('pet-commerce-gross-slider');
+  const modeSelect = document.getElementById('pet-commerce-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '170000');
+  const mode = modeSelect.value;
+  document.getElementById('pet-commerce-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('pet-commerce-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('pet-commerce-verdict-pill');
+  const savingsKpi = document.getElementById('pet-commerce-savings-kpi');
+  const netKpi = document.getElementById('pet-commerce-net-kpi');
+  const tokenKpi = document.getElementById('pet-commerce-token-kpi');
+
+  if (mode === 'toxic_403') {
+    pill.textContent = 'HTTP 403 · CROSS_SPECIES_PERMETHRIN_TOXICITY_OR_UNVERIFIED_VET_RX_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_FELINE_PERMETHRIN_OR_UNVERIFIED_RX';
+  } else if (mode === 'growth_422') {
+    pill.textContent = 'HTTP 422 · PUPPY_GROWTH_WEIGHT_BRACKET_DRIFT_OR_PRE_EXISTING_CLAIM_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_OUTGROWN_DOSE_OR_PRE_EXISTING_CLAIM';
+  } else if (mode === 'recall_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_FDA_PET_FOOD_RECALL_OR_180D_KEY_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_FDA_PET_FOOD_RECALL_OR_180D_KEY';
+  } else if (mode === 'mer_409') {
+    const savings = Math.round(gross * 0.29 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · MER_CALORIC_CADENCE_AND_5S_VET_DIRECT_PAY_SPLIT_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'pet_ecommerce_autoship_vet_direct_pay_mandate_saved29pct';
+  } else {
+    pill.textContent = 'HTTP 200 · SPECIES_WEIGHT_SAFE_AND_VET_DIRECT_PAY_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'pet_ecommerce_autoship_vet_direct_pay_mandate_verified';
+  }
+}
+
+function updateCoworkingFlexibleOfficeRightSizingSandbox() {
+  const grossSlider = document.getElementById('cowork-gross-slider');
+  const modeSelect = document.getElementById('cowork-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '240000');
+  const mode = modeSelect.value;
+  document.getElementById('cowork-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('cowork-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('cowork-verdict-pill');
+  const savingsKpi = document.getElementById('cowork-savings-kpi');
+  const netKpi = document.getElementById('cowork-net-kpi');
+  const tokenKpi = document.getElementById('cowork-token-kpi');
+
+  if (mode === 'evergreen_403') {
+    pill.textContent = 'HTTP 403 · ORPHANED_EX_EMPLOYEE_PASS_OR_EVERGREEN_PRICE_HIKE_ROLLOVER_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_EX_EMPLOYEE_PASS_OR_EVERGREEN_HIKE';
+  } else if (mode === 'zombie_422') {
+    pill.textContent = 'HTTP 422 · ZOMBIE_DEDICATED_DESK_RENEWAL_OR_NOSHOW_ROOM_OVERAGE_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_ZOMBIE_DESK_OR_NOSHOW_ROOM_OVERAGE';
+  } else if (mode === 'evict_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_COWORKING_OPERATOR_EVICTION_RISK_OR_180D_KEY_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_OPERATOR_EVICTION_RISK_OR_180D_KEY';
+  } else if (mode === 'downsize_409') {
+    const savings = Math.round(gross * 0.29 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · BADGE_TELEMETRY_DESK_DOWNSIZE_AND_15M_ROOM_RELEASE_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'coworking_flexible_office_rightsizing_mandate_saved29pct';
+  } else {
+    pill.textContent = 'HTTP 200 · ACTIVE_ROSTER_BADGE_ALIGNED_AND_CAPPED_CREDITS_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'coworking_flexible_office_rightsizing_mandate_verified';
+  }
+}
+
+function updateWealthCashSweepTreasuryWashSaleSandbox() {
+  const grossSlider = document.getElementById('wealth-sweep-gross-slider');
+  const modeSelect = document.getElementById('wealth-sweep-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '280000');
+  const mode = modeSelect.value;
+  document.getElementById('wealth-sweep-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('wealth-sweep-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('wealth-sweep-verdict-pill');
+  const savingsKpi = document.getElementById('wealth-sweep-savings-kpi');
+  const netKpi = document.getElementById('wealth-sweep-net-kpi');
+  const tokenKpi = document.getElementById('wealth-sweep-token-kpi');
+
+  if (mode === 'regbi_403') {
+    pill.textContent = 'HTTP 403 · REG_BI_SUITABILITY_BREACH_OR_UNAPPROVED_LEVERAGED_ASSET_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_REG_BI_OR_LEVERAGED_ETF';
+  } else if (mode === 'wash_422') {
+    pill.textContent = 'HTTP 422 · IRS_61D_WASH_SALE_INDEX_COLLISION_OR_FDIC_BANK_CAP_EXCEEDED_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_61D_WASH_SALE_OR_FDIC_CAP_BREACH';
+  } else if (mode === 'bank_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_PARTNER_BANK_RATING_DOWNGRADE_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_PARTNER_BANK_DOWNGRADE_EVICTED';
+  } else if (mode === 'tlh_409') {
+    const savings = Math.round(gross * 0.26 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · ALTERNATE_INDEX_TLH_AND_MULTIBANK_FDIC_SWEEP_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'wealth_cash_sweep_treasury_wash_sale_mandate_saved26pct';
+  } else {
+    pill.textContent = 'HTTP 200 · REG_BI_ZERO_WASH_SALE_AND_MULTIBANK_FDIC_SWEEP_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'wealth_cash_sweep_treasury_wash_sale_mandate_verified';
+  }
+}
+
+function updateDigitalMediaPaywallAiCrawlerSandbox() {
+  const grossSlider = document.getElementById('media-402-gross-slider');
+  const modeSelect = document.getElementById('media-402-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '250000');
+  const mode = modeSelect.value;
+  document.getElementById('media-402-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('media-402-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('media-402-verdict-pill');
+  const savingsKpi = document.getElementById('media-402-savings-kpi');
+  const netKpi = document.getElementById('media-402-net-kpi');
+  const tokenKpi = document.getElementById('media-402-token-kpi');
+
+  if (mode === 'scraper_403') {
+    pill.textContent = 'HTTP 403 · UNSIGNED_SCRAPER_BOT_OR_ENTERPRISE_CREDENTIAL_SHARING_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNSIGNED_SCRAPER_OR_SEAT_SHARING';
+  } else if (mode === 'fee_422') {
+    pill.textContent = 'HTTP 422 · PER_ARTICLE_CARD_FEE_WIPEOUT_OR_MONTHLY_FARE_CAP_EXCEEDED_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_CARD_FEE_WIPEOUT_OR_FARE_CAP_BREACH';
+  } else if (mode === 'tdm_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_TDM_TRAINING_COPYRIGHT_BREACH_OR_180D_KEY_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_W3C_TDM_TRAINING_BAN_OR_180D_KEY';
+  } else if (mode === 'bundle_409') {
+    const savings = Math.round(gross * 0.25 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · HTTP402_AI_CRAWLER_LICENSING_AND_FARE_CAP_BUNDLE_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'digital_media_paywall_ai_crawler_mandate_saved25pct';
+  } else {
+    pill.textContent = 'HTTP 200 · WEB_BOT_AUTH_VERIFIED_AND_HTTP402_FARE_CAP_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'digital_media_paywall_ai_crawler_mandate_verified';
+  }
+}
+
+function updateHomeServicesOnDemandRepairEscrowSandbox() {
+  const grossSlider = document.getElementById('home-svc-gross-slider');
+  const modeSelect = document.getElementById('home-svc-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '290000');
+  const mode = modeSelect.value;
+  document.getElementById('home-svc-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('home-svc-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('home-svc-verdict-pill');
+  const savingsKpi = document.getElementById('home-svc-savings-kpi');
+  const netKpi = document.getElementById('home-svc-net-kpi');
+  const tokenKpi = document.getElementById('home-svc-token-kpi');
+
+  if (mode === 'gouge_403') {
+    pill.textContent = 'HTTP 403 · UNLICENSED_TECHNICIAN_OR_PRICE_BOOK_GOUGING_CAP_BREACH_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNLICENSED_TECH_OR_PRICE_GOUGING';
+  } else if (mode === 'leak_422') {
+    pill.textContent = 'HTTP 422 · LONG_DWELL_FAKE_CANCEL_LEAKAGE_OR_MISSING_PART_SWAP_PROOF_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_OFF_PLATFORM_LEAKAGE_OR_NO_PART_PROOF';
+  } else if (mode === 'ins_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_CONTRACTOR_INSURANCE_LAPSE_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_CONTRACTOR_COI_LAPSED_OR_180D_KEY';
+  } else if (mode === 'warranty_409') {
+    const savings = Math.round(gross * 0.23 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · NAMEPLATE_QUOTE_CAP_AND_80_20_WARRANTY_ESCROW_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'home_services_on_demand_repair_escrow_mandate_saved23pct';
+  } else {
+    pill.textContent = 'HTTP 200 · LICENSED_TECH_PRICE_BOOK_CAPPED_AND_80_20_ESCROW_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'home_services_on_demand_repair_escrow_mandate_verified';
+  }
+}
+
+function updateWeddingBespokeEventMilestoneEscrowSandbox() {
+  const grossSlider = document.getElementById('wedding-esc-gross-slider');
+  const modeSelect = document.getElementById('wedding-esc-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '280000');
+  const mode = modeSelect.value;
+  document.getElementById('wedding-esc-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('wedding-esc-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('wedding-esc-verdict-pill');
+  const savingsKpi = document.getElementById('wedding-esc-savings-kpi');
+  const netKpi = document.getElementById('wedding-esc-net-kpi');
+  const tokenKpi = document.getElementById('wedding-esc-token-kpi');
+
+  if (mode === 'slot_403') {
+    pill.textContent = 'HTTP 403 · PARTIAL_VENDOR_SLOT_CONFLICT_OR_BAIT_SWITCH_CREW_SUBSTITUTION_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_SLOT_CONFLICT_OR_CREW_SWAP';
+  } else if (mode === 'media_422') {
+    pill.textContent = 'HTTP 422 · PREMATURE_100PCT_WEDDING_PAYOUT_OR_HIDDEN_VENUE_VENDOR_FEE_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNUPLOADED_GALLERY_OR_VENUE_LOADIN_FEE';
+  } else if (mode === 'storm_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_OUTDOOR_STORM_NO_RAIN_PLAN_OR_180D_SPT_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_72H_RAIN_PLAN_SWITCH_OR_2_TRANCHE_SPT';
+  } else if (mode === 'saga_409') {
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · FIVE_VENDOR_SLOT_SAGA_AND_30_50_20_MEDIA_ESCROW_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'wedding_bespoke_event_milestone_escrow_mandate_saved24pct';
+  } else {
+    pill.textContent = 'HTTP 200 · ALL_VENDOR_SLOTS_LOCKED_AND_30_50_20_GALLERY_ESCROW_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'wedding_bespoke_event_milestone_escrow_mandate_verified';
+  }
+}
+
+function updateInfluencerSeedingCouponPoachingSandbox() {
+  const grossSlider = document.getElementById('inf-seed-gross-slider');
+  const modeSelect = document.getElementById('inf-seed-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '220000');
+  const mode = modeSelect.value;
+  document.getElementById('inf-seed-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('inf-seed-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('inf-seed-verdict-pill');
+  const savingsKpi = document.getElementById('inf-seed-savings-kpi');
+  const netKpi = document.getElementById('inf-seed-net-kpi');
+  const tokenKpi = document.getElementById('inf-seed-token-kpi');
+
+  if (mode === 'poach_403') {
+    pill.textContent = 'HTTP 403 · COUPON_EXTENSION_LAST_CLICK_POACHING_OR_FAKE_INFLUENCER_SEEDING_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_EXTENSION_POACHING_OR_FAKE_SEEDING';
+  } else if (mode === 'return_422') {
+    pill.textContent = 'HTTP 422 · PREMATURE_COMMISSION_BEFORE_RETURN_WINDOW_OR_MISSING_FTC_AD_TAG_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_PRE_RETURN_WINDOW_OR_MISSING_AD_TAG';
+  } else if (mode === 'scandal_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_CREATOR_BRAND_SAFETY_SCANDAL_OR_180D_KEY_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_CREATOR_BRAND_SAFETY_OR_180D_KEY';
+  } else if (mode === 'standdown_409') {
+    const savings = Math.round(gross * 0.28 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · SERVER_STAND_DOWN_LOCK_AND_T35_NET_COMMISSION_ESCROW_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'influencer_seeding_coupon_poaching_escrow_mandate_saved28pct';
+  } else {
+    pill.textContent = 'HTTP 200 · OAUTH_CREATOR_STAND_DOWN_LOCKED_AND_T35_NET_ESCROW_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'influencer_seeding_coupon_poaching_escrow_mandate_verified';
+  }
+}
+
+function updateB2bItDaasLeasingNistWipeSandbox() {
+  const grossSlider = document.getElementById('it-daas-gross-slider');
+  const modeSelect = document.getElementById('it-daas-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '310000');
+  const mode = modeSelect.value;
+  document.getElementById('it-daas-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('it-daas-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('it-daas-verdict-pill');
+  const savingsKpi = document.getElementById('it-daas-savings-kpi');
+  const netKpi = document.getElementById('it-daas-net-kpi');
+  const tokenKpi = document.getElementById('it-daas-token-kpi');
+
+  if (mode === 'abm_403') {
+    pill.textContent = 'HTTP 403 · UNRELEASED_ABM_MDM_LOCK_OR_MISSING_NIST_800_88_WIPE_CERT_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_ABM_LOCKED_OR_MISSING_NIST_CERT';
+  } else if (mode === 'evergreen_422') {
+    pill.textContent = 'HTTP 422 · POST_TERM_EVERGREEN_RENT_BLEED_OR_NORMAL_WEAR_PENALTY_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_MONTH37_EVERGREEN_OR_WEAR_PENALTY';
+  } else if (mode === 'battery_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_BATTERY_SWELL_AIR_FREIGHT_BAN_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_SWOLLEN_BATTERY_GROUND_HAZMAT_ONLY';
+  } else if (mode === 'buyout_409') {
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · REMOTE_EMPLOYEE_FMV_BUYOUT_AND_T100_EOT_NOTICE_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'b2b_it_daas_leasing_nist_wipe_mandate_saved24pct';
+  } else {
+    pill.textContent = 'HTTP 200 · ABM_RELEASED_NIST_WIPED_AND_36M_CAPPED_LEASE_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'b2b_it_daas_leasing_nist_wipe_mandate_verified';
+  }
+}
+
+function updateGroceryPerishableMarkdownGs1Sandbox() {
+  const grossSlider = document.getElementById('groc-mkd-gross-slider');
+  const modeSelect = document.getElementById('groc-mkd-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '290000');
+  const mode = modeSelect.value;
+  document.getElementById('groc-mkd-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('groc-mkd-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('groc-mkd-verdict-pill');
+  const savingsKpi = document.getElementById('groc-mkd-savings-kpi');
+  const netKpi = document.getElementById('groc-mkd-net-kpi');
+  const tokenKpi = document.getElementById('groc-mkd-token-kpi');
+
+  if (mode === 'expired_403') {
+    pill.textContent = 'HTTP 403 · EXPIRED_LOT_AI17_OR_MARKDOWN_LABEL_SWAP_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_EXPIRED_AI17_OR_STICKER_SWAP';
+  } else if (mode === 'hoard_422') {
+    pill.textContent = 'HTTP 422 · FIXED_HOUR_CANNIBALIZATION_OR_BULK_HOARDING_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_HOARDING_OR_MISSING_ESL_ACK';
+  } else if (mode === 'recall_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_FDA_CLASS1_FOOD_RECALL_OR_COLD_CHAIN_BREACH_HOLD (240ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_FDA_RECALL_LOT_OR_TEMP_BREACH';
+  } else if (mode === 'rescue_409') {
+    const savings = Math.round(gross * 0.26 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · RSL_DYNAMIC_ESL_MARKDOWN_AND_FOOD_RESCUE_TAX_CREDIT_CONFIRM (205ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'grocery_perishable_markdown_gs1_mandate_saved26pct';
+  } else {
+    pill.textContent = 'HTTP 200 · GS1_AI17_VALID_ESL_SYNCED_AND_PERISHABLE_CHECKOUT_AUTHORIZED (9ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'grocery_perishable_markdown_gs1_mandate_verified';
+  }
+}
+
+function updateGlobalEorContractorPayrollSandbox() {
+  const grossSlider = document.getElementById('eor-pay-gross-slider');
+  const modeSelect = document.getElementById('eor-pay-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '420000');
+  const mode = modeSelect.value;
+  document.getElementById('eor-pay-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('eor-pay-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('eor-pay-verdict-pill');
+  const savingsKpi = document.getElementById('eor-pay-savings-kpi');
+  const netKpi = document.getElementById('eor-pay-net-kpi');
+  const tokenKpi = document.getElementById('eor-pay-token-kpi');
+
+  if (mode === 'misclass_403') {
+    pill.textContent = 'HTTP 403 · WORKER_MISCLASSIFICATION_IR35_AB5_OR_MISSING_IP_W8BEN_BLOCKED (11ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_MISCLASSIFICATION_OR_NO_IP';
+  } else if (mode === 'ghost_422') {
+    pill.textContent = 'HTTP 422 · UNVERIFIED_GHOST_TIMESHEET_OR_SWIFT_FX_MARKUP_BLOCKED (14ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_GHOST_HOURS_OR_HIGH_SWIFT_FX';
+  } else if (mode === 'pe_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_SANCTIONED_JURISDICTION_OR_183D_TAX_RESIDENCY_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_OFAC_OR_183D_PE_TAX_RISK';
+  } else if (mode === 'shield_409') {
+    const savings = Math.round(gross * 0.23 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · CONTRACTOR_TO_EOR_SHIELD_AND_WHOLESALE_FX_BATCH_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'global_eor_contractor_payroll_mandate_saved23pct';
+  } else {
+    pill.textContent = 'HTTP 200 · EOR_IC_COMPLIANT_DELIVERABLE_VERIFIED_AND_LOCAL_FX_AUTHORIZED (11ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'global_eor_contractor_payroll_mandate_verified';
+  }
+}
+
+function updateLuxuryWatchJewelryMemoEscrowSandbox() {
+  const grossSlider = document.getElementById('lux-memo-gross-slider');
+  const modeSelect = document.getElementById('lux-memo-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '480000');
+  const mode = modeSelect.value;
+  document.getElementById('lux-memo-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('lux-memo-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('lux-memo-verdict-pill');
+  const savingsKpi = document.getElementById('lux-memo-savings-kpi');
+  const netKpi = document.getElementById('lux-memo-net-kpi');
+  const tokenKpi = document.getElementById('lux-memo-token-kpi');
+
+  if (mode === 'franken_403') {
+    pill.textContent = 'HTTP 403 · STOLEN_WATCH_REGISTER_OR_FRANKENWATCH_SYNTHETIC_GIA_SWAP_BLOCKED (11ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_STOLEN_FRANKENWATCH_OR_CVD_SWAP';
+  } else if (mode === 'reserve_422') {
+    pill.textContent = 'HTTP 422 · BELOW_CONSIGNOR_RESERVE_FLOOR_OR_EXPIRED_MEMO_UNPAID_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_BELOW_RESERVE_OR_CUT_NFC_SEAL';
+  } else if (mode === 'kimberley_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_KIMBERLEY_CONFLICT_DIAMOND_OR_FINCEN_AML_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_KIMBERLEY_CONFLICT_OR_FINCEN_AML';
+  } else if (mode === 'armored_409') {
+    const savings = Math.round(gross * 0.27 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · AUTHENTICATION_HUB_NFC_SEAL_AND_ARMORED_ESCROW_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'luxury_watch_jewelry_memo_escrow_mandate_saved27pct';
+  } else {
+    pill.textContent = 'HTTP 200 · GIA_MOVEMENT_VERIFIED_RESERVE_PROTECTED_AND_ESCROW_AUTHORIZED (11ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'luxury_watch_jewelry_memo_escrow_mandate_verified';
+  }
+}
+
+function updateClinicalTrialStipendEcoaSandbox() {
+  const grossSlider = document.getElementById('clin-stip-gross-slider');
+  const modeSelect = document.getElementById('clin-stip-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '340000');
+  const mode = modeSelect.value;
+  document.getElementById('clin-stip-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('clin-stip-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('clin-stip-verdict-pill');
+  const savingsKpi = document.getElementById('clin-stip-savings-kpi');
+  const netKpi = document.getElementById('clin-stip-net-kpi');
+  const tokenKpi = document.getElementById('clin-stip-token-kpi');
+
+  if (mode === 'dup_403') {
+    pill.textContent = 'HTTP 403 · DUPLICATE_TRIAL_ENROLLMENT_OR_UNCOMPLETED_ECOA_VISIT_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_DUPLICATE_SUBJECT_OR_NO_ECOA';
+  } else if (mode === 'irb_422') {
+    pill.textContent = 'HTTP 422 · IRB_STIPEND_CAP_BREACH_OR_UNRECEIPTED_TRAVEL_REIMBURSEMENT_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_IRB_BREACH_OR_TAX_MIXED_TRAVEL';
+  } else if (mode === 'hipaa_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_FDA_DEBARRED_INVESTIGATOR_OR_HIPAA_SSN_SPONSOR_LEAK_HOLD (245ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_FDA_DEBARRED_OR_HIPAA_SSN_LEAK';
+  } else if (mode === 'blind_409') {
+    const savings = Math.round(gross * 0.25 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · TAX_BLIND_CLINCARD_SPLIT_AND_UBER_HEALTH_VOUCHER_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'clinical_trial_stipend_ecoa_mandate_saved25pct';
+  } else {
+    pill.textContent = 'HTTP 200 · ECOA_VERIFIED_IRB_CAPPED_AND_TAX_BLIND_STIPEND_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'clinical_trial_stipend_ecoa_mandate_verified';
+  }
+}
+
+function updateCommercialCrePercentageRentSandbox() {
+  const grossSlider = document.getElementById('cre-mall-gross-slider');
+  const modeSelect = document.getElementById('cre-mall-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '520000');
+  const mode = modeSelect.value;
+  document.getElementById('cre-mall-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('cre-mall-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('cre-mall-verdict-pill');
+  const savingsKpi = document.getElementById('cre-mall-savings-kpi');
+  const netKpi = document.getElementById('cre-mall-net-kpi');
+  const tokenKpi = document.getElementById('cre-mall-token-kpi');
+
+  if (mode === 'skim_403') {
+    pill.textContent = 'HTTP 403 · MISSING_SUBCONTRACTOR_LIEN_WAIVER_OR_POS_PERCENTAGE_RENT_SKIMMING_BLOCKED (11ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_MISSING_LIEN_WAIVER_OR_POS_SKIM';
+  } else if (mode === 'boris_422') {
+    pill.textContent = 'HTTP 422 · CONTROLLABLE_CAM_CAP_BREACH_OR_CROSS_STORE_RETURN_DEDUCTION_ABUSE_BLOCKED (14ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_BORIS_RETURN_WASH_OR_CAM_BREACH';
+  } else if (mode === 'coi_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_LAPSED_ACORD25_COI_INSURANCE_OR_FIRE_HEALTH_PERMIT_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_LAPSED_ACORD25_COI_OR_FIRE_PERMIT';
+  } else if (mode === 'sweep_409') {
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · POS_BREAKPOINT_AUTO_SWEEP_AND_DIGITAL_LIEN_WAIVER_ESCROW_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'commercial_cre_percentage_rent_mandate_saved24pct';
+  } else {
+    pill.textContent = 'HTTP 200 · POS_VERIFIED_LIEN_WAIVED_AND_PERCENTAGE_RENT_AUTHORIZED (11ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'commercial_cre_percentage_rent_mandate_verified';
+  }
+}
+
+function updateChildcarePreschoolCampEscrowSandbox() {
+  const grossSlider = document.getElementById('child-camp-gross-slider');
+  const modeSelect = document.getElementById('child-camp-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '260000');
+  const mode = modeSelect.value;
+  document.getElementById('child-camp-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('child-camp-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('child-camp-verdict-pill');
+  const savingsKpi = document.getElementById('child-camp-savings-kpi');
+  const netKpi = document.getElementById('child-camp-net-kpi');
+  const tokenKpi = document.getElementById('child-camp-token-kpi');
+
+  if (mode === 'ratio_403') {
+    pill.textContent = 'HTTP 403 · STAFF_CHILD_RATIO_BREACH_OR_MISSING_IMMUNIZATION_PICKUP_AUTH_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_RATIO_BREACH_OR_NO_IMMUNIZATION';
+  } else if (mode === 'fsa_422') {
+    pill.textContent = 'HTTP 422 · PREPAID_TUITION_CAP_BREACH_OR_OVERNIGHT_CAMP_FSA_INELIGIBLE_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_PREPAID_CAP_OR_OVERNIGHT_FSA';
+  } else if (mode === 'bgc_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_EXPIRED_STAFF_BACKGROUND_CHECK_OR_LICENSING_HOLD (240ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_EXPIRED_FINGERPRINT_OR_CPR_CERT';
+  } else if (mode === 'split_409') {
+    const savings = Math.round(gross * 0.23 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · CCDF_FSA_COPAY_SPLIT_AND_MONTHLY_ESCROW_RELEASE_CONFIRM (205ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'childcare_preschool_camp_escrow_mandate_saved23pct';
+  } else {
+    pill.textContent = 'HTTP 200 · RATIO_COMPLIANT_IMMUNIZATION_VERIFIED_AND_ESCROW_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'childcare_preschool_camp_escrow_mandate_verified';
+  }
+}
+
+function updateSharedPowerbankSmartVendingSandbox() {
+  const grossSlider = document.getElementById('pwr-vend-gross-slider');
+  const modeSelect = document.getElementById('pwr-vend-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '230000');
+  const mode = modeSelect.value;
+  document.getElementById('pwr-vend-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('pwr-vend-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('pwr-vend-verdict-pill');
+  const savingsKpi = document.getElementById('pwr-vend-savings-kpi');
+  const netKpi = document.getElementById('pwr-vend-net-kpi');
+  const tokenKpi = document.getElementById('pwr-vend-token-kpi');
+
+  if (mode === 'fake_403') {
+    pill.textContent = 'HTTP 403 · FAKE_POWERBANK_SHELL_INSERTION_OR_SMART_COOLER_WEIGHT_VISION_SPOOF_BLOCKED (8ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_FAKE_SHELL_OR_WATER_BOTTLE_SPOOF';
+  } else if (mode === 'zombie_422') {
+    pill.textContent = 'HTTP 422 · ZOMBIE_SLOT_OFFLINE_OVERBILLING_OR_PICK_UP_PUT_BACK_FALSE_CHARGE_BLOCKED (11ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_ZOMBIE_99_OR_PUTBACK_FALSE_CHARGE';
+  } else if (mode === 'thermal_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_BMS_THERMAL_RUNAWAY_LOCK_OR_COOLER_TEMP_BREACH_HOLD (235ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_BMS_OVERHEAT_OR_COOLER_TEMP_BREACH';
+  } else if (mode === 'ble_409') {
+    const savings = Math.round(gross * 0.26 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · DEPOSIT_FREE_CREDIT_SCORE_HOLD_AND_BLE_INSTANT_RETURN_CONFIRM (195ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'shared_powerbank_smart_vending_mandate_saved26pct';
+  } else {
+    pill.textContent = 'HTTP 200 · CRYPTO_SLOT_VERIFIED_VISION_WEIGHT_MATCHED_AND_SETTLE_AUTHORIZED (8ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'shared_powerbank_smart_vending_mandate_verified';
+  }
+}
+
+function updateAgriInputsProducePacaEscrowSandbox() {
+  const grossSlider = document.getElementById('agri-paca-gross-slider');
+  const modeSelect = document.getElementById('agri-paca-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '390000');
+  const mode = modeSelect.value;
+  document.getElementById('agri-paca-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('agri-paca-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('agri-paca-verdict-pill');
+  const savingsKpi = document.getElementById('agri-paca-savings-kpi');
+  const netKpi = document.getElementById('agri-paca-net-kpi');
+  const tokenKpi = document.getElementById('agri-paca-token-kpi');
+
+  if (mode === 'zone_403') {
+    pill.textContent = 'HTTP 403 · UNAPPROVED_SEED_ZONE_MISMATCH_OR_UNLICENSED_RUP_PESTICIDE_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_SEED_ZONE_OR_PACA_FORFEITURE';
+  } else if (mode === 'spoilage_422') {
+    pill.textContent = 'HTTP 422 · UNVERIFIED_PRODUCE_SPOILAGE_DEDUCTION_OR_EVADED_CROP_LIEN_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNCERTIFIED_SPOILAGE_OR_LIEN_SKIP';
+  } else if (mode === 'aphis_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_APHIS_QUARANTINE_ZONE_OR_BANNED_AGROCHEMICAL_HOLD (245ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_APHIS_QUARANTINE_OR_BANNED_CHEM';
+  } else if (mode === 'waterfall_409') {
+    const savings = Math.round(gross * 0.25 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · PACA_TRUST_WATERFALL_AND_PARAMETRIC_WEATHER_ESCROW_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'agri_inputs_produce_paca_escrow_mandate_saved25pct';
+  } else {
+    pill.textContent = 'HTTP 200 · ZONE_VERIFIED_PACA_TRUST_PROTECTED_AND_WATERFALL_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'agri_inputs_produce_paca_escrow_mandate_verified';
+  }
+}
+
+function updateLaundryLuxuryCareRfidEscrowSandbox() {
+  const grossSlider = document.getElementById('laun-rfid-gross-slider');
+  const modeSelect = document.getElementById('laun-rfid-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '210000');
+  const mode = modeSelect.value;
+  document.getElementById('laun-rfid-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('laun-rfid-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+  const pill = document.getElementById('laun-rfid-verdict-pill');
+  const savingsKpi = document.getElementById('laun-rfid-savings-kpi');
+  const netKpi = document.getElementById('laun-rfid-net-kpi');
+  const tokenKpi = document.getElementById('laun-rfid-token-kpi');
+
+  if (mode === 'cashmere_403') {
+    pill.textContent = 'HTTP 403 · DO_NOT_WASH_CASHMERE_IN_BULK_BAG_OR_UNCONFIRMED_PRE_EXISTING_DAMAGE_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_CASHMERE_IN_WASH_BAG_OR_NO_SIGN';
+  } else if (mode === 'linen_422') {
+    pill.textContent = 'HTTP 422 · UNINSURED_LUXURY_GARMENT_OR_COMMERCIAL_LINEN_SUBSCRIPTION_ABUSE_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNINSURED_COUTURE_OR_AIRBNB_TOWELS';
+  } else if (mode === 'perc_451') {
+    pill.textContent = 'HTTP 451 · WEBIQ_EPA_PERC_SOLVENT_BAN_OR_SANITATION_VIOLATION_HOLD (235ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_EPA_PERC_SOLVENT_BAN_OR_HYGIENE';
+  } else if (mode === 'rfid_409') {
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · RFID_GARMENT_TWIN_AND_OFFPEAK_LOCKER_ESCROW_CONFIRM (200ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'laundry_luxury_care_rfid_escrow_mandate_saved24pct';
+  } else {
+    pill.textContent = 'HTTP 200 · CARE_LABEL_SAFE_DEFECT_SIGNED_AND_RFID_ESCROW_AUTHORIZED (9ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    tokenKpi.textContent = 'laundry_luxury_care_rfid_escrow_mandate_verified';
   }
 }
 
