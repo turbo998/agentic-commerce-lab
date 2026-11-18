@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg452" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070B19"/>
+      <stop offset="50%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent452" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg452)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#1E293B" stroke-width="2"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent452)"/>
+
+  <!-- Header -->
+  <text x="52" y="58" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">2026-11-18 · E-COMMERCE ABANDONED CART RECOVERY · WHATSAPP/RCS, TCPA QUIET-HOURS &amp; ANTI-COUPON-GAMING AGENT</text>
+  <text x="52" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="20.5" font-weight="800">零售电商弃购挽回、WhatsApp/RCS 富媒体触达与防 TCPA 罚款/防骗券 Agent 架构选型</text>
+  <text x="52" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">TCPA 一对一同意与晚 9 点静音锁 ($1,500/条罚款防御) · 拦截故意弃购骗 8 折券 · RCS/WhatsApp 对话内一键付 · 立省 $69,600 (24.0%)</text>
+
+  <!-- Left Column: Abandoned Cart Pitfalls -->
+  <rect x="48" y="132" width="352" height="390" rx="12" fill="#1E1B2E" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="68" y="162" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">❌ 传统电商弃购召回短信与发券三大陷阱</text>
+
+  <rect x="64" y="178" width="320" height="98" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="200" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. 半夜发催付短信触发 TCPA $1,500/条集体诉讼</text>
+  <text x="78" y="220" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 按服务器 UTC 时间定时群发，导致美东买家凌晨 2 点被吵醒</text>
+  <text x="78" y="238" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 用户回复“不想收了”自然语言未被识别为 STOP，继续狂发</text>
+  <text x="78" y="256" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 违反美国 TCPA / 佛州 FTSA 20:00–08:00 禁发令遭天价索赔!</text>
+
+  <rect x="64" y="288" width="320" height="98" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="310" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. “弃购满 2 小时必发 85 折券”被全网当成省钱秘籍</text>
+  <text x="78" y="330" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 本来打算正价买单的老客学会“先加购物车关掉网页等 2 小时”</text>
+  <text x="78" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 甚至向购物车塞已售罄/下架商品骗取通用无门槛折扣码</text>
+  <text x="78" y="366" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 白白损失 15% 纯毛利，且召回链接点进去发现尺码早已断货!</text>
+
+  <rect x="64" y="398" width="320" height="106" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="420" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 用户在另一设备已买完，却仍连收 3 封催付邮件</text>
+  <text x="78" y="440" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 手机端未登录加购，随后在电脑端用同一邮箱完成了付款</text>
+  <text x="78" y="458" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 营销自动化流未做下单实时去重，还发“给您打 9 折”逼客户退差价</text>
+  <text x="78" y="480" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 传统弃购乱发券侵蚀毛利与合规罚款基线：$290,000 / 季度</text>
+
+  <!-- Center Column: 5-Lane Deterministic Gate -->
+  <rect x="420" y="132" width="380" height="390" rx="12" fill="#0F2238" stroke="#38BDF8" stroke-width="1.5"/>
+  <text x="440" y="162" fill="#7DD3FC" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">🛡️ 弃购智能挽回与防骗券五车道确定性门禁</text>
+
+  <rect x="436" y="178" width="348" height="56" rx="8" fill="#091526" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="450" y="200" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 403 · 拦截当地安静时段 (20:00-08:00) 或无 Opt-In (9ms)</text>
+  <text x="450" y="220" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">按收件人邮编/区号双取交集算当地时区，并秒级执行自然语言退订</text>
+
+  <rect x="436" y="244" width="348" height="56" rx="8" fill="#091526" stroke="#F97316" stroke-width="1.2"/>
+  <text x="450" y="266" fill="#FB923C" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🚨 HTTP 422 · 拦截惯性骗券党、已付款订单或断码催付 (12ms)</text>
+  <text x="450" y="286" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">发送前重查 ATP 库存>=1 &amp; 未跨端成单，且对高频弃购号仅做免邮提醒</text>
+
+  <rect x="436" y="310" width="348" height="56" rx="8" fill="#091526" stroke="#A855F7" stroke-width="1.2"/>
+  <text x="450" y="332" fill="#C084FC" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 451 · 拦截运营商通道封禁/召回商品与超期密钥 (250ms)</text>
+  <text x="450" y="352" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">Web IQ 核验 WhatsApp/10DLC 通道健康度与商品召回，锁死超期密钥</text>
+
+  <rect x="436" y="376" width="348" height="58" rx="8" fill="#091526" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="450" y="398" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🧑‍⚖️ HTTP 409 · 先答疑解惑后阶梯发券 + RCS 一键付 (210ms)</text>
+  <text x="450" y="418" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="11">62% 弃购无需打折靠解答尺码/运费即转化，立省 $69,600 → $220,400</text>
+
+  <rect x="436" y="444" width="348" height="60" rx="8" fill="#06281E" stroke="#10B981" stroke-width="1.5"/>
+  <text x="450" y="468" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">✅ HTTP 200 · 合规时段精准触达 + 锁车令牌秒付成交 (10ms)</text>
+  <text x="450" y="488" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="11">零 TCPA 诉讼风险 + 购物车绑定专属折扣令牌 ($290,000 批次)</text>
+
+  <!-- Right Column: Quantitative Metrics -->
+  <rect x="820" y="132" width="332" height="390" rx="12" fill="#0B2420" stroke="#10B981" stroke-width="1.5"/>
+  <text x="840" y="162" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">📊 弃购挽回第一性原理</text>
+
+  <rect x="836" y="178" width="300" height="104" rx="8" fill="#071715" stroke="#065F46" stroke-width="1"/>
+  <text x="850" y="200" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">📱 先问诊、后发券双阶漏斗</text>
+  <text x="850" y="222" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">• T+45m：解答尺码/退换政策 + 恢复购物车卡片</text>
+  <text x="850" y="242" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">• T+24h：仅对高价格敏感新客发 Cart-Bound 券</text>
+  <text x="850" y="262" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 铁律：跨端已买或库存=0 时 100% 撤回消息</text>
+
+  <rect x="836" y="294" width="300" height="104" rx="8" fill="#071715" stroke="#065F46" stroke-width="1"/>
+  <text x="850" y="316" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">⚡ 实测挽回转化与毛利保护</text>
+  <text x="850" y="338" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 弃购订单总挽回转化率：从 4.2% 升至 14.8%</text>
+  <text x="850" y="358" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 无谓折扣毛利流失削减比例：-64.0%</text>
+  <text x="850" y="378" fill="#7DD3FC" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 深夜扰民与退订漏拦违规率：0.0%</text>
+
+  <rect x="836" y="410" width="300" height="94" rx="8" fill="#071715" stroke="#10B981" stroke-width="1.5"/>
+  <text x="850" y="434" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">💰 季度弃购挽回与毛利保护净收益</text>
+  <text x="850" y="460" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">立省 $69,600.00 (-24.0%)</text>
+  <text x="850" y="484" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12">原乱发券侵蚀毛利与退差价损耗 $290,000 → 净值 $220,400</text>
+
+  <!-- Footer Mandate Strip -->
+  <rect x="48" y="538" width="1104" height="96" rx="10" fill="#091326" stroke="#334155" stroke-width="1.5"/>
+  <text x="68" y="566" fill="#38BDF8" font-family="Consolas, monospace" font-size="13" font-weight="700">Mandate Prefix: ecommerce_abandoned_cart_recovery_rcs_mandate_*</text>
+  <text x="68" y="590" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">✅ Good Fit: 品牌 DTC 独立站 (Shopify / Klaviyo / Attentive)、WhatsApp/RCS 富媒体对话导购与弃购智能挽回编排</text>
+  <text x="68" y="614" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">⛔ Not For: 无视收件人时区半夜群发催付短信、无条件逢弃购必发 8 折神券或催付已断码商品 · Provenance: official_doc_snapshot + deterministic_offline_simulation</text>
+</svg>

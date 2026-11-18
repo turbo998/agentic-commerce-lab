@@ -8733,6 +8733,90 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("franchise-qsr-supply-royalty-split-sandbox", html)
 
+    def test_ecommerce_abandoned_cart_recovery_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            EcommerceAbandonedCartRecoveryPolicyInput,
+            evaluate_ecommerce_abandoned_cart_recovery_policy,
+        )
+
+        happy = evaluate_ecommerce_abandoned_cart_recovery_policy(
+            EcommerceAbandonedCartRecoveryPolicyInput(
+                quarterly_abandoned_cart_promo_pool_usd=Decimal("290000.00"),
+                tcpa_quiet_hours_violation_or_revoked_optin_detected=False,
+                already_purchased_cross_device_or_coupon_gaming_abuse_detected=False,
+                webiq_product_recall_or_messaging_channel_flag=False,
+                restricted_key_age_days=30,
+                concierge_first_and_rcs_one_tap_checkout_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "DUAL_TZ_TCPA_COMPLIANT_AND_IN_STOCK_CART_RECOVERY_AUTHORIZED")
+        self.assertTrue(
+            str(happy["abandoned_cart_token"]).startswith("ecommerce_abandoned_cart_recovery_rcs_mandate_")
+        )
+
+        tcpa_block = evaluate_ecommerce_abandoned_cart_recovery_policy(
+            EcommerceAbandonedCartRecoveryPolicyInput(
+                quarterly_abandoned_cart_promo_pool_usd=Decimal("290000.00"),
+                tcpa_quiet_hours_violation_or_revoked_optin_detected=True,
+                already_purchased_cross_device_or_coupon_gaming_abuse_detected=False,
+                webiq_product_recall_or_messaging_channel_flag=False,
+                restricted_key_age_days=30,
+                concierge_first_and_rcs_one_tap_checkout_enabled=False,
+            )
+        )
+        self.assertEqual(tcpa_block["http_status"], 403)
+        self.assertEqual(tcpa_block["decision"], "TCPA_QUIET_HOURS_VIOLATION_OR_REVOKED_OPTIN_BLOCKED")
+
+        gaming_block = evaluate_ecommerce_abandoned_cart_recovery_policy(
+            EcommerceAbandonedCartRecoveryPolicyInput(
+                quarterly_abandoned_cart_promo_pool_usd=Decimal("290000.00"),
+                tcpa_quiet_hours_violation_or_revoked_optin_detected=False,
+                already_purchased_cross_device_or_coupon_gaming_abuse_detected=True,
+                webiq_product_recall_or_messaging_channel_flag=False,
+                restricted_key_age_days=30,
+                concierge_first_and_rcs_one_tap_checkout_enabled=False,
+            )
+        )
+        self.assertEqual(gaming_block["http_status"], 422)
+        self.assertEqual(
+            gaming_block["decision"],
+            "ALREADY_PURCHASED_CROSS_DEVICE_OR_COUPON_GAMING_ABUSE_BLOCKED",
+        )
+
+        recall_hold = evaluate_ecommerce_abandoned_cart_recovery_policy(
+            EcommerceAbandonedCartRecoveryPolicyInput(
+                quarterly_abandoned_cart_promo_pool_usd=Decimal("290000.00"),
+                tcpa_quiet_hours_violation_or_revoked_optin_detected=False,
+                already_purchased_cross_device_or_coupon_gaming_abuse_detected=False,
+                webiq_product_recall_or_messaging_channel_flag=True,
+                restricted_key_age_days=191,
+                concierge_first_and_rcs_one_tap_checkout_enabled=False,
+            )
+        )
+        self.assertEqual(recall_hold["http_status"], 451)
+        self.assertEqual(recall_hold["decision"], "WEBIQ_PRODUCT_RECALL_OR_MESSAGING_CHANNEL_HOLD")
+
+        opt_confirm = evaluate_ecommerce_abandoned_cart_recovery_policy(
+            EcommerceAbandonedCartRecoveryPolicyInput(
+                quarterly_abandoned_cart_promo_pool_usd=Decimal("290000.00"),
+                tcpa_quiet_hours_violation_or_revoked_optin_detected=False,
+                already_purchased_cross_device_or_coupon_gaming_abuse_detected=False,
+                webiq_product_recall_or_messaging_channel_flag=False,
+                restricted_key_age_days=30,
+                concierge_first_and_rcs_one_tap_checkout_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "69600.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "220400.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_abandoned_cart_recovery_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("ecommerce-abandoned-cart-recovery-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
