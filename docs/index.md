@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`143` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`144` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（33 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（34 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（27 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（28 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（13 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（26 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -119,7 +119,7 @@
 | 34 | **高端腕表、钻石珠宝寄售与同行借货备忘单（Luxury Watch & Fine Jewelry Consignment & B2B Memo Escrow：Chrono24 / The RealReal / RapNet / Nivoda）“防拼装假机芯（Frankenwatch）、防培育钻套天然 GIA 证书与同行借货逾期自动转购”Agent 架构选型 FAQ：终结晚宴白嫖掉包与压价贱卖实战指南** | [中文](luxury-watch-jewelry-consignment-gia-authentication-b2b-memo-escrow-agent-selection-faq.md) · [English](luxury-watch-jewelry-consignment-gia-authentication-b2b-memo-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（27 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（28 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -152,6 +152,7 @@
 | 25 | **企业灵活办公、联合办公工位与会议室按需采购（Flexible Workspace & Coworking：WeWork / IWG Regus / 贝壳商办）“门禁刷卡真实活跃度盘点、僵尸专属工位缩容与会议室 15 分钟未签到自动释放”Agent 架构选型 FAQ：防 60 天静默翻倍续约与跨城点数池实战指南** | [中文](coworking-flexible-office-badge-telemetry-desk-rightsizing-agent-selection-faq.md) · [English](coworking-flexible-office-badge-telemetry-desk-rightsizing-agent-selection-faq.en.md) |
 | 26 | **智能投顾、企业闲置现金司库与多银行存款保险自动扫单（Wealth & Cash-Sweep Treasury Agent：Wealthfront / Betterment / Stripe Treasury / Mercury）“30 天洗售规则（Wash-Sale）硬拦截、跨账户税损收割与多行 FDIC 分拆”Agent 架构选型 FAQ：防跨账户抵税作废与存款集中度风险实战指南** | [中文](wealth-cash-sweep-treasury-wash-sale-fdic-routing-agent-selection-faq.md) · [English](wealth-cash-sweep-treasury-wash-sale-fdic-routing-agent-selection-faq.en.md) |
 | 27 | **企业 IT 办公设备即服务与租赁买断（B2B IT Device-as-a-Service `DaaS`：Apple Financial Services / Dell APEX / Rippling IT / 联想百应）“退租前 MDM 解锁、NIST 800-88 数据粉碎证书与离职员工一键残值内购”Agent 架构选型 FAQ：消灭到期静默展期与退机天价战损罚单实战指南** | [中文](b2b-it-device-as-a-service-daas-leasing-buyout-nist-wipe-agent-selection-faq.md) · [English](b2b-it-device-as-a-service-daas-leasing-buyout-nist-wipe-agent-selection-faq.en.md) |
+| 28 | **购物中心与商业地产商铺收银分成审计（Commercial Retail Mall Percentage Rent Audit & TI Allowance Escrow：Yardi Voyager / MRI Software / Procore / 万象城）“防商铺瞒报 POS/外卖提成租金、防跨店退货侵蚀分成基数与装修补贴（TI）留置权豁免锁”Agent 架构选型 FAQ：终结收银跑单与工程查封实战指南** | [中文](commercial-cre-retail-mall-percentage-rent-pos-audit-lien-waiver-agent-selection-faq.md) · [English](commercial-cre-retail-mall-percentage-rent-pos-audit-lien-waiver-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（13 篇）

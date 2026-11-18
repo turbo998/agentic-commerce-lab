@@ -10158,6 +10158,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("clinical-trial-stipend-ecoa-sandbox", html)
 
+    def test_commercial_cre_percentage_rent_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            CommercialCrePercentageRentPolicyInput,
+            evaluate_commercial_cre_percentage_rent_policy,
+        )
+
+        happy = evaluate_commercial_cre_percentage_rent_policy(
+            CommercialCrePercentageRentPolicyInput(
+                quarterly_mall_percentage_rent_ti_pool_usd=Decimal("520000.00"),
+                missing_subcontractor_lien_waiver_or_pos_percentage_rent_skimming_detected=False,
+                controllable_cam_cap_breach_or_cross_store_return_deduction_abuse_detected=False,
+                webiq_lapsed_acord25_coi_insurance_or_fire_health_permit_flag=False,
+                restricted_key_age_days=30,
+                pos_breakpoint_auto_sweep_and_digital_lien_waiver_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "POS_VERIFIED_LIEN_WAIVED_AND_PERCENTAGE_RENT_AUTHORIZED")
+        self.assertTrue(
+            str(happy["cre_percentage_rent_token"]).startswith("commercial_cre_percentage_rent_mandate_")
+        )
+
+        skim_block = evaluate_commercial_cre_percentage_rent_policy(
+            CommercialCrePercentageRentPolicyInput(
+                quarterly_mall_percentage_rent_ti_pool_usd=Decimal("520000.00"),
+                missing_subcontractor_lien_waiver_or_pos_percentage_rent_skimming_detected=True,
+                controllable_cam_cap_breach_or_cross_store_return_deduction_abuse_detected=False,
+                webiq_lapsed_acord25_coi_insurance_or_fire_health_permit_flag=False,
+                restricted_key_age_days=30,
+                pos_breakpoint_auto_sweep_and_digital_lien_waiver_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(skim_block["http_status"], 403)
+        self.assertEqual(
+            skim_block["decision"],
+            "MISSING_SUBCONTRACTOR_LIEN_WAIVER_OR_POS_PERCENTAGE_RENT_SKIMMING_BLOCKED",
+        )
+
+        boris_block = evaluate_commercial_cre_percentage_rent_policy(
+            CommercialCrePercentageRentPolicyInput(
+                quarterly_mall_percentage_rent_ti_pool_usd=Decimal("520000.00"),
+                missing_subcontractor_lien_waiver_or_pos_percentage_rent_skimming_detected=False,
+                controllable_cam_cap_breach_or_cross_store_return_deduction_abuse_detected=True,
+                webiq_lapsed_acord25_coi_insurance_or_fire_health_permit_flag=False,
+                restricted_key_age_days=30,
+                pos_breakpoint_auto_sweep_and_digital_lien_waiver_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(boris_block["http_status"], 422)
+        self.assertEqual(
+            boris_block["decision"],
+            "CONTROLLABLE_CAM_CAP_BREACH_OR_CROSS_STORE_RETURN_DEDUCTION_ABUSE_BLOCKED",
+        )
+
+        coi_hold = evaluate_commercial_cre_percentage_rent_policy(
+            CommercialCrePercentageRentPolicyInput(
+                quarterly_mall_percentage_rent_ti_pool_usd=Decimal("520000.00"),
+                missing_subcontractor_lien_waiver_or_pos_percentage_rent_skimming_detected=False,
+                controllable_cam_cap_breach_or_cross_store_return_deduction_abuse_detected=False,
+                webiq_lapsed_acord25_coi_insurance_or_fire_health_permit_flag=True,
+                restricted_key_age_days=191,
+                pos_breakpoint_auto_sweep_and_digital_lien_waiver_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(coi_hold["http_status"], 451)
+        self.assertEqual(
+            coi_hold["decision"],
+            "WEBIQ_LAPSED_ACORD25_COI_INSURANCE_OR_FIRE_HEALTH_PERMIT_HOLD",
+        )
+
+        opt_confirm = evaluate_commercial_cre_percentage_rent_policy(
+            CommercialCrePercentageRentPolicyInput(
+                quarterly_mall_percentage_rent_ti_pool_usd=Decimal("520000.00"),
+                missing_subcontractor_lien_waiver_or_pos_percentage_rent_skimming_detected=False,
+                controllable_cam_cap_breach_or_cross_store_return_deduction_abuse_detected=False,
+                webiq_lapsed_acord25_coi_insurance_or_fire_health_permit_flag=False,
+                restricted_key_age_days=30,
+                pos_breakpoint_auto_sweep_and_digital_lien_waiver_escrow_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "124800.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "395200.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("commercial_cre_percentage_rent_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("commercial-cre-percentage-rent-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
