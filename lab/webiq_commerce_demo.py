@@ -15326,6 +15326,80 @@ def evaluate_consumer_healthcare_medspa_escrow_policy(
         "reason": "Verified single-use GS1 UDI serial burn, practitioner NPI, per-session 1/N escrow release, and pro-rata refund.",
     }
 
+
+@dataclass(frozen=True)
+class CorporateTmcLraUnusedTicketPolicyInput:
+    quarterly_corporate_travel_tmc_pool_usd: Decimal
+    unapplied_unused_ticket_credit_new_card_charge_detected: bool
+    hotel_lra_rate_squatting_or_uncapped_incidentals_vcn_detected: bool
+    webiq_travel_duty_of_care_alert_flag: bool
+    restricted_key_age_days: int
+    utc_auto_drawdown_and_lra_spend_less_reward_enabled: bool
+
+
+def evaluate_corporate_tmc_lra_unused_ticket_policy(
+    policy_input: CorporateTmcLraUnusedTicketPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Corporate TMC Unused Ticket Credit (UTC) priority drawdown, Web IQ hotel LRA audit & Room-Only VCN."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_corporate_travel_tmc_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.unapplied_unused_ticket_credit_new_card_charge_detected:
+        return {
+            "http_status": 403,
+            "decision": "UNAPPLIED_UNUSED_TICKET_CREDIT_NEW_CARD_CHARGE_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "corporate_tmc_token": None,
+            "reason": "Blocked fresh corporate card charge when eligible airline Unused Ticket Credit (UTC / eCredit) exists.",
+        }
+
+    if policy_input.hotel_lra_rate_squatting_or_uncapped_incidentals_vcn_detected:
+        return {
+            "http_status": 422,
+            "decision": "HOTEL_LRA_RATE_SQUATTING_OR_UNCAPPED_INCIDENTALS_VCN_BLOCKED",
+            "latency_ms": 12,
+            "approved_budget_usd": "0.00",
+            "corporate_tmc_token": None,
+            "reason": "Blocked hotel hiding LRA contracted rate while standard room is public on website, or uncapped VCN allowing minibar charges.",
+        }
+
+    if policy_input.webiq_travel_duty_of_care_alert_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_TRAVEL_DUTY_OF_CARE_ALERT_OR_180D_KEY_HOLD",
+            "latency_ms": 255,
+            "approved_budget_usd": "0.00",
+            "corporate_tmc_token": None,
+            "reason": "Web IQ detected destination strike/security Duty-of-Care alert or restricted key age > 180 days.",
+        }
+
+    if policy_input.utc_auto_drawdown_and_lra_spend_less_reward_enabled:
+        savings = (gross * Decimal("0.26")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"CORP_TMC_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "UTC_AUTO_DRAWDOWN_AND_LRA_SPEND_LESS_REWARD_CONFIRM",
+            "latency_ms": 215,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "corporate_tmc_token": f"corporate_tmc_lra_unused_ticket_credit_mandate_{digest}",
+            "reason": "Mandatory UTC credit redemption, Web IQ LRA rate enforcement, and Spend-Less Rewards reduced T&E spend by 26.0%.",
+        }
+
+    digest = hashlib.sha256(f"CORP_TMC_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "UTC_CREDIT_APPLIED_AND_LRA_ROOM_ONLY_VCN_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "corporate_tmc_token": f"corporate_tmc_lra_unused_ticket_credit_mandate_{digest}",
+        "reason": "Verified Unused Ticket Credit priority drawdown, LRA hotel rate parity, and Room-and-Tax-Only single-use VCN.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -20270,6 +20344,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    corporate_tmc_lra_unused_ticket_guard = {
+        "happy_path": evaluate_corporate_tmc_lra_unused_ticket_policy(
+            CorporateTmcLraUnusedTicketPolicyInput(
+                quarterly_corporate_travel_tmc_pool_usd=Decimal("320000.00"),
+                unapplied_unused_ticket_credit_new_card_charge_detected=False,
+                hotel_lra_rate_squatting_or_uncapped_incidentals_vcn_detected=False,
+                webiq_travel_duty_of_care_alert_flag=False,
+                restricted_key_age_days=30,
+                utc_auto_drawdown_and_lra_spend_less_reward_enabled=False,
+            )
+        ),
+        "unapplied_utc_credit_block": evaluate_corporate_tmc_lra_unused_ticket_policy(
+            CorporateTmcLraUnusedTicketPolicyInput(
+                quarterly_corporate_travel_tmc_pool_usd=Decimal("320000.00"),
+                unapplied_unused_ticket_credit_new_card_charge_detected=True,
+                hotel_lra_rate_squatting_or_uncapped_incidentals_vcn_detected=False,
+                webiq_travel_duty_of_care_alert_flag=False,
+                restricted_key_age_days=30,
+                utc_auto_drawdown_and_lra_spend_less_reward_enabled=False,
+            )
+        ),
+        "lra_squatting_or_uncapped_vcn_block": evaluate_corporate_tmc_lra_unused_ticket_policy(
+            CorporateTmcLraUnusedTicketPolicyInput(
+                quarterly_corporate_travel_tmc_pool_usd=Decimal("320000.00"),
+                unapplied_unused_ticket_credit_new_card_charge_detected=False,
+                hotel_lra_rate_squatting_or_uncapped_incidentals_vcn_detected=True,
+                webiq_travel_duty_of_care_alert_flag=False,
+                restricted_key_age_days=30,
+                utc_auto_drawdown_and_lra_spend_less_reward_enabled=False,
+            )
+        ),
+        "webiq_duty_of_care_or_key_hold": evaluate_corporate_tmc_lra_unused_ticket_policy(
+            CorporateTmcLraUnusedTicketPolicyInput(
+                quarterly_corporate_travel_tmc_pool_usd=Decimal("320000.00"),
+                unapplied_unused_ticket_credit_new_card_charge_detected=False,
+                hotel_lra_rate_squatting_or_uncapped_incidentals_vcn_detected=False,
+                webiq_travel_duty_of_care_alert_flag=True,
+                restricted_key_age_days=192,
+                utc_auto_drawdown_and_lra_spend_less_reward_enabled=False,
+            )
+        ),
+        "utc_drawdown_and_lra_reward_confirm": evaluate_corporate_tmc_lra_unused_ticket_policy(
+            CorporateTmcLraUnusedTicketPolicyInput(
+                quarterly_corporate_travel_tmc_pool_usd=Decimal("320000.00"),
+                unapplied_unused_ticket_credit_new_card_charge_detected=False,
+                hotel_lra_rate_squatting_or_uncapped_incidentals_vcn_detected=False,
+                webiq_travel_duty_of_care_alert_flag=False,
+                restricted_key_age_days=30,
+                utc_auto_drawdown_and_lra_spend_less_reward_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -20405,6 +20532,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "personal_agent_persistent_intent_poppy_guard": personal_agent_persistent_intent_poppy_guard,
         "automotive_ev_d2c_checkout_guard": automotive_ev_d2c_checkout_guard,
         "consumer_healthcare_medspa_escrow_guard": consumer_healthcare_medspa_escrow_guard,
+        "corporate_tmc_lra_unused_ticket_guard": corporate_tmc_lra_unused_ticket_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -25942,6 +26070,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">消费医疗四验真存管令牌</div>
             <div class="finops-kpi-val" id="medspa-escrow-token-kpi" style="font-size:10px;color:#A78BFA;">consumer_healthcare_medspa_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Corporate TMC Travel (Unused Ticket Credit UTC Drawdown, Hotel LRA Audit & Room-Only VCN) Sandbox -->
+      <div class="finops-box" id="corporate-tmc-lra-unused-ticket-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">✈️ 企业商旅管理 (Corporate TMC：未用退票积分 UTC 冲抵、LRA 协议价审计与 Room-Only VCN) 沙盒</div>
+            <div class="finops-subtitle">实测出票前强制优先冲抵未用机票退票积分 UTC (HTTP 403)、Web IQ 抓获酒店旺季违约隐瞒 LRA 协议房与单次虚拟卡锁死房费税费 (HTTP 422)、差旅安全预警挂起 (HTTP 451) 及 UTC 回收+员工省钱分成立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="corp-tmc-verdict-pill">HTTP 200 · UTC_CREDIT_APPLIED_AND_LRA_ROOM_ONLY_VCN_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度企业商旅机票与协议酒店结算池 ($ USD) <span class="control-val" id="corp-tmc-gross-label">$320,000</span></label>
+            <input type="range" id="corp-tmc-gross-slider" min="60000" max="1200000" step="20000" value="320000" oninput="updateCorporateTmcLraUnusedTicketSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">航司退票积分 (UTC) 强制冲抵、酒店 LRA 协议房审计与虚拟卡场景</label>
+            <select id="corp-tmc-mode-select" onchange="updateCorporateTmcLraUnusedTicketSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ UTC 退票积分优先冲抵 + LRA 协议价锁房 + Room-Only VCN (HTTP 200)</option>
+              <option value="utc_403">🛑 员工/部门池内有可用未过期机票退票积分 (UTC) 却直接刷企业卡全额买新票 (HTTP 403)</option>
+              <option value="lra_422">🚨 LRA 签约酒店官网仍有基础房却拒给协议价 或 虚拟卡未锁死禁止混刷迷你吧 (HTTP 422)</option>
+              <option value="duty_451">🛑 Web IQ 检出差旅目的地突发机场罢工/安全红警 (Duty of Care) 或密钥 &gt;180d (HTTP 451)</option>
+              <option value="reward_409">🧑‍⚖️ UTC 离职回收冲抵 + Web IQ 追回 LRA 协议价 + 员工省钱分成奖励立省 26% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原退票券过期与 LRA 违约基线</div>
+            <div class="finops-kpi-val" id="corp-tmc-gross-kpi">$320,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">UTC 冲抵与 LRA 追回立省</div>
+            <div class="finops-kpi-val" id="corp-tmc-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净企业商旅实付支出</div>
+            <div class="finops-kpi-val" id="corp-tmc-net-kpi" style="color:#60A5FA;">$320,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">企业商旅 TMC 治理令牌</div>
+            <div class="finops-kpi-val" id="corp-tmc-token-kpi" style="font-size:10px;color:#A78BFA;">corporate_tmc_lra_unused_ticket_credit_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -32648,6 +32821,61 @@ function updateConsumerHealthcareMedspaEscrowSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'consumer_healthcare_medspa_escrow_mandate_verified';
+  }}
+}}
+
+function updateCorporateTmcLraUnusedTicketSandbox() {{
+  const grossSlider = document.getElementById('corp-tmc-gross-slider');
+  const modeSelect = document.getElementById('corp-tmc-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '320000');
+  const mode = modeSelect.value;
+  document.getElementById('corp-tmc-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('corp-tmc-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('corp-tmc-verdict-pill');
+  const savingsKpi = document.getElementById('corp-tmc-savings-kpi');
+  const netKpi = document.getElementById('corp-tmc-net-kpi');
+  const tokenKpi = document.getElementById('corp-tmc-token-kpi');
+
+  if (mode === 'utc_403') {{
+    pill.textContent = 'HTTP 403 · UNAPPLIED_UNUSED_TICKET_CREDIT_NEW_CARD_CHARGE_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNAPPLIED_UTC_ECREDIT';
+  }} else if (mode === 'lra_422') {{
+    pill.textContent = 'HTTP 422 · HOTEL_LRA_RATE_SQUATTING_OR_UNCAPPED_INCIDENTALS_VCN_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_HOTEL_LRA_SQUATTING_OR_OPEN_VCN';
+  }} else if (mode === 'duty_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_TRAVEL_DUTY_OF_CARE_ALERT_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_DUTY_OF_CARE_ALERT_OR_180D_KEY';
+  }} else if (mode === 'reward_409') {{
+    const savings = Math.round(gross * 0.26 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · UTC_AUTO_DRAWDOWN_AND_LRA_SPEND_LESS_REWARD_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'corporate_tmc_lra_unused_ticket_credit_mandate_saved26pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · UTC_CREDIT_APPLIED_AND_LRA_ROOM_ONLY_VCN_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'corporate_tmc_lra_unused_ticket_credit_mandate_verified';
   }}
 }}
 

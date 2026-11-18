@@ -8559,6 +8559,90 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("consumer-healthcare-medspa-escrow-sandbox", html)
 
+    def test_corporate_tmc_lra_unused_ticket_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            CorporateTmcLraUnusedTicketPolicyInput,
+            evaluate_corporate_tmc_lra_unused_ticket_policy,
+        )
+
+        happy = evaluate_corporate_tmc_lra_unused_ticket_policy(
+            CorporateTmcLraUnusedTicketPolicyInput(
+                quarterly_corporate_travel_tmc_pool_usd=Decimal("320000.00"),
+                unapplied_unused_ticket_credit_new_card_charge_detected=False,
+                hotel_lra_rate_squatting_or_uncapped_incidentals_vcn_detected=False,
+                webiq_travel_duty_of_care_alert_flag=False,
+                restricted_key_age_days=30,
+                utc_auto_drawdown_and_lra_spend_less_reward_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "UTC_CREDIT_APPLIED_AND_LRA_ROOM_ONLY_VCN_AUTHORIZED")
+        self.assertTrue(
+            str(happy["corporate_tmc_token"]).startswith("corporate_tmc_lra_unused_ticket_credit_mandate_")
+        )
+
+        utc_block = evaluate_corporate_tmc_lra_unused_ticket_policy(
+            CorporateTmcLraUnusedTicketPolicyInput(
+                quarterly_corporate_travel_tmc_pool_usd=Decimal("320000.00"),
+                unapplied_unused_ticket_credit_new_card_charge_detected=True,
+                hotel_lra_rate_squatting_or_uncapped_incidentals_vcn_detected=False,
+                webiq_travel_duty_of_care_alert_flag=False,
+                restricted_key_age_days=30,
+                utc_auto_drawdown_and_lra_spend_less_reward_enabled=False,
+            )
+        )
+        self.assertEqual(utc_block["http_status"], 403)
+        self.assertEqual(utc_block["decision"], "UNAPPLIED_UNUSED_TICKET_CREDIT_NEW_CARD_CHARGE_BLOCKED")
+
+        lra_block = evaluate_corporate_tmc_lra_unused_ticket_policy(
+            CorporateTmcLraUnusedTicketPolicyInput(
+                quarterly_corporate_travel_tmc_pool_usd=Decimal("320000.00"),
+                unapplied_unused_ticket_credit_new_card_charge_detected=False,
+                hotel_lra_rate_squatting_or_uncapped_incidentals_vcn_detected=True,
+                webiq_travel_duty_of_care_alert_flag=False,
+                restricted_key_age_days=30,
+                utc_auto_drawdown_and_lra_spend_less_reward_enabled=False,
+            )
+        )
+        self.assertEqual(lra_block["http_status"], 422)
+        self.assertEqual(
+            lra_block["decision"],
+            "HOTEL_LRA_RATE_SQUATTING_OR_UNCAPPED_INCIDENTALS_VCN_BLOCKED",
+        )
+
+        duty_hold = evaluate_corporate_tmc_lra_unused_ticket_policy(
+            CorporateTmcLraUnusedTicketPolicyInput(
+                quarterly_corporate_travel_tmc_pool_usd=Decimal("320000.00"),
+                unapplied_unused_ticket_credit_new_card_charge_detected=False,
+                hotel_lra_rate_squatting_or_uncapped_incidentals_vcn_detected=False,
+                webiq_travel_duty_of_care_alert_flag=True,
+                restricted_key_age_days=192,
+                utc_auto_drawdown_and_lra_spend_less_reward_enabled=False,
+            )
+        )
+        self.assertEqual(duty_hold["http_status"], 451)
+        self.assertEqual(duty_hold["decision"], "WEBIQ_TRAVEL_DUTY_OF_CARE_ALERT_OR_180D_KEY_HOLD")
+
+        opt_confirm = evaluate_corporate_tmc_lra_unused_ticket_policy(
+            CorporateTmcLraUnusedTicketPolicyInput(
+                quarterly_corporate_travel_tmc_pool_usd=Decimal("320000.00"),
+                unapplied_unused_ticket_credit_new_card_charge_detected=False,
+                hotel_lra_rate_squatting_or_uncapped_incidentals_vcn_detected=False,
+                webiq_travel_duty_of_care_alert_flag=False,
+                restricted_key_age_days=30,
+                utc_auto_drawdown_and_lra_spend_less_reward_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "83200.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "236800.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("corporate_tmc_lra_unused_ticket_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("corporate-tmc-lra-unused-ticket-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
