@@ -16880,6 +16880,80 @@ def evaluate_shared_powerbank_smart_vending_policy(
         "reason": "Verified cryptographic slot chip handshake, hardware RTC timestamp, and vision+weight conservation.",
     }
 
+
+@dataclass(frozen=True)
+class AgriInputsProducePacaEscrowPolicyInput:
+    quarterly_agri_produce_paca_pool_usd: Decimal
+    unapproved_seed_zone_mismatch_or_unlicensed_rup_pesticide_detected: bool
+    unverified_produce_spoilage_deduction_or_evaded_crop_lien_detected: bool
+    webiq_aphis_quarantine_zone_or_banned_agrochemical_flag: bool
+    restricted_key_age_days: int
+    paca_trust_waterfall_and_parametric_weather_escrow_enabled: bool
+
+
+def evaluate_agri_inputs_produce_paca_escrow_policy(
+    policy_input: AgriInputsProducePacaEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Agri-Inputs & Produce PACA Statutory Trust seed-zone geo-fence, 24h USDA inspection cert & EFS waterfall."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_agri_produce_paca_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.unapproved_seed_zone_mismatch_or_unlicensed_rup_pesticide_detected:
+        return {
+            "http_status": 403,
+            "decision": "UNAPPROVED_SEED_ZONE_MISMATCH_OR_UNLICENSED_RUP_PESTICIDE_BLOCKED",
+            "latency_ms": 10,
+            "approved_budget_usd": "0.00",
+            "agri_paca_token": None,
+            "reason": "Blocked seed variety outside farm GPS agronomy zone, unlicensed EPA RUP chemical, or >30d PACA-voiding terms.",
+        }
+
+    if policy_input.unverified_produce_spoilage_deduction_or_evaded_crop_lien_detected:
+        return {
+            "http_status": 422,
+            "decision": "UNVERIFIED_PRODUCE_SPOILAGE_DEDUCTION_OR_EVADED_CROP_LIEN_BLOCKED",
+            "latency_ms": 13,
+            "approved_budget_usd": "0.00",
+            "agri_paca_token": None,
+            "reason": "Blocked buyer spoilage deduction lacking 24h USDA AMS inspection certificate or payout bypassing state EFS crop lien.",
+        }
+
+    if policy_input.webiq_aphis_quarantine_zone_or_banned_agrochemical_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_APHIS_QUARANTINE_ZONE_OR_BANNED_AGROCHEMICAL_HOLD",
+            "latency_ms": 245,
+            "approved_budget_usd": "0.00",
+            "agri_paca_token": None,
+            "reason": "Web IQ flagged USDA APHIS plant pest quarantine zone origin, banned agrochemical registration, or key >180 days.",
+        }
+
+    if policy_input.paca_trust_waterfall_and_parametric_weather_escrow_enabled:
+        savings = (gross * Decimal("0.25")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"AGRI_PACA_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "PACA_TRUST_WATERFALL_AND_PARAMETRIC_WEATHER_ESCROW_CONFIRM",
+            "latency_ms": 210,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "agri_paca_token": f"agri_inputs_produce_paca_escrow_mandate_{digest}",
+            "reason": "Scale-ticket EFS input waterfall, <=30d PACA trust lock, and parametric weather hedge cut bad debt and shrink by 25.0%.",
+        }
+
+    digest = hashlib.sha256(f"AGRI_PACA_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "ZONE_VERIFIED_PACA_TRUST_PROTECTED_AND_WATERFALL_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "agri_paca_token": f"agri_inputs_produce_paca_escrow_mandate_{digest}",
+        "reason": "Verified agronomy seed zone, active RUP license, <=30d PACA statutory trust notice, and EFS waterfall settlement.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -22937,6 +23011,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    agri_inputs_produce_paca_escrow_guard = {
+        "happy_path": evaluate_agri_inputs_produce_paca_escrow_policy(
+            AgriInputsProducePacaEscrowPolicyInput(
+                quarterly_agri_produce_paca_pool_usd=Decimal("390000.00"),
+                unapproved_seed_zone_mismatch_or_unlicensed_rup_pesticide_detected=False,
+                unverified_produce_spoilage_deduction_or_evaded_crop_lien_detected=False,
+                webiq_aphis_quarantine_zone_or_banned_agrochemical_flag=False,
+                restricted_key_age_days=30,
+                paca_trust_waterfall_and_parametric_weather_escrow_enabled=False,
+            )
+        ),
+        "seed_zone_or_rup_block": evaluate_agri_inputs_produce_paca_escrow_policy(
+            AgriInputsProducePacaEscrowPolicyInput(
+                quarterly_agri_produce_paca_pool_usd=Decimal("390000.00"),
+                unapproved_seed_zone_mismatch_or_unlicensed_rup_pesticide_detected=True,
+                unverified_produce_spoilage_deduction_or_evaded_crop_lien_detected=False,
+                webiq_aphis_quarantine_zone_or_banned_agrochemical_flag=False,
+                restricted_key_age_days=30,
+                paca_trust_waterfall_and_parametric_weather_escrow_enabled=False,
+            )
+        ),
+        "false_spoilage_or_lien_evasion_block": evaluate_agri_inputs_produce_paca_escrow_policy(
+            AgriInputsProducePacaEscrowPolicyInput(
+                quarterly_agri_produce_paca_pool_usd=Decimal("390000.00"),
+                unapproved_seed_zone_mismatch_or_unlicensed_rup_pesticide_detected=False,
+                unverified_produce_spoilage_deduction_or_evaded_crop_lien_detected=True,
+                webiq_aphis_quarantine_zone_or_banned_agrochemical_flag=False,
+                restricted_key_age_days=30,
+                paca_trust_waterfall_and_parametric_weather_escrow_enabled=False,
+            )
+        ),
+        "webiq_aphis_quarantine_or_ban_hold": evaluate_agri_inputs_produce_paca_escrow_policy(
+            AgriInputsProducePacaEscrowPolicyInput(
+                quarterly_agri_produce_paca_pool_usd=Decimal("390000.00"),
+                unapproved_seed_zone_mismatch_or_unlicensed_rup_pesticide_detected=False,
+                unverified_produce_spoilage_deduction_or_evaded_crop_lien_detected=False,
+                webiq_aphis_quarantine_zone_or_banned_agrochemical_flag=True,
+                restricted_key_age_days=191,
+                paca_trust_waterfall_and_parametric_weather_escrow_enabled=False,
+            )
+        ),
+        "paca_waterfall_and_weather_confirm": evaluate_agri_inputs_produce_paca_escrow_policy(
+            AgriInputsProducePacaEscrowPolicyInput(
+                quarterly_agri_produce_paca_pool_usd=Decimal("390000.00"),
+                unapproved_seed_zone_mismatch_or_unlicensed_rup_pesticide_detected=False,
+                unverified_produce_spoilage_deduction_or_evaded_crop_lien_detected=False,
+                webiq_aphis_quarantine_zone_or_banned_agrochemical_flag=False,
+                restricted_key_age_days=30,
+                paca_trust_waterfall_and_parametric_weather_escrow_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -23093,6 +23220,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "commercial_cre_percentage_rent_guard": commercial_cre_percentage_rent_guard,
         "childcare_preschool_camp_escrow_guard": childcare_preschool_camp_escrow_guard,
         "shared_powerbank_smart_vending_guard": shared_powerbank_smart_vending_guard,
+        "agri_inputs_produce_paca_escrow_guard": agri_inputs_produce_paca_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -29575,6 +29703,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">加密槽位与 BLE 归还令牌</div>
             <div class="finops-kpi-val" id="pwr-vend-token-kpi" style="font-size:10px;color:#A78BFA;">shared_powerbank_smart_vending_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Agri-Inputs, Produce PACA Statutory Trust & Crop-Proceeds Waterfall Escrow Sandbox -->
+      <div class="finops-box" id="agri-inputs-produce-paca-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🌾 生鲜产地直采 (PACA 信托)、春耕农资赊销与丰收瀑布分账 (Bushel / John Deere / iTradeNetwork) 沙盒</div>
+            <div class="finops-subtitle">实测跨积温带买错未审定种子、无证购买限用农药(RUP)与超 30 天丧失 PACA 破产优先权硬阻断 (HTTP 403)、防批发商无 24h USDA 官方质检证恶意报损砍价与逃避 EFS 农资留置权拦截 (HTTP 422)、植物检疫疫区禁运熔断 (HTTP 451) 及秋收卖粮瀑布清分+天气险立省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="agri-paca-verdict-pill">HTTP 200 · ZONE_VERIFIED_PACA_TRUST_PROTECTED_AND_WATERFALL_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度生鲜基地直采与春耕种子化肥供应链结算池 ($ USD) <span class="control-val" id="agri-paca-gross-label">$390,000</span></label>
+            <input type="range" id="agri-paca-gross-slider" min="80000" max="1400000" step="30000" value="390000" oninput="updateAgriInputsProducePacaEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">审定品种适种区围栏、PACA &le;30天法定信托、24h USDA 质检定损与秋收卖粮瀑布分账场景</label>
+            <select id="agri-paca-mode-select" onchange="updateAgriInputsProducePacaEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 适种区 GPS 匹配 + RUP 持证合规 + PACA &le;30天法定信托保护放行 (HTTP 200)</option>
+              <option value="zone_403">🛑 向高寒区推荐晚熟种子致绝收风险、无证网购 EPA 限用农药 或 账期 &gt;30天致 PACA 信托作废 (HTTP 403)</option>
+              <option value="spoilage_422">🚨 批发商趁跌价凭私拍照片强扣 35% 烂果费(无 24h USDA 质检证) 或 卖粮绕过 EFS 农资留置权 (HTTP 422)</option>
+              <option value="aphis_451">🛑 Web IQ 检出果品来自 APHIS 柑橘黄龙病/实蝇植物检疫封锁区 或 含禁用高毒农药成分 (HTTP 451)</option>
+              <option value="waterfall_409">🧑‍⚖️ 秋收磅单触发“农资贷款→PACA果农款→农户净利”原子瀑布分账 + 气象指数保险立省 25% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原恶意压车砍价与农资赊销坏账基线</div>
+            <div class="finops-kpi-val" id="agri-paca-gross-kpi">$390,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">24h 官方定损锁与瀑布回款立省</div>
+            <div class="finops-kpi-val" id="agri-paca-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净农业供应链与生鲜结算成本</div>
+            <div class="finops-kpi-val" id="agri-paca-net-kpi" style="color:#60A5FA;">$390,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">PACA 信托与农资瀑布令牌</div>
+            <div class="finops-kpi-val" id="agri-paca-token-kpi" style="font-size:10px;color:#A78BFA;">agri_inputs_produce_paca_escrow_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -37436,6 +37609,61 @@ function updateSharedPowerbankSmartVendingSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'shared_powerbank_smart_vending_mandate_verified';
+  }}
+}}
+
+function updateAgriInputsProducePacaEscrowSandbox() {{
+  const grossSlider = document.getElementById('agri-paca-gross-slider');
+  const modeSelect = document.getElementById('agri-paca-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '390000');
+  const mode = modeSelect.value;
+  document.getElementById('agri-paca-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('agri-paca-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('agri-paca-verdict-pill');
+  const savingsKpi = document.getElementById('agri-paca-savings-kpi');
+  const netKpi = document.getElementById('agri-paca-net-kpi');
+  const tokenKpi = document.getElementById('agri-paca-token-kpi');
+
+  if (mode === 'zone_403') {{
+    pill.textContent = 'HTTP 403 · UNAPPROVED_SEED_ZONE_MISMATCH_OR_UNLICENSED_RUP_PESTICIDE_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_SEED_ZONE_OR_PACA_FORFEITURE';
+  }} else if (mode === 'spoilage_422') {{
+    pill.textContent = 'HTTP 422 · UNVERIFIED_PRODUCE_SPOILAGE_DEDUCTION_OR_EVADED_CROP_LIEN_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNCERTIFIED_SPOILAGE_OR_LIEN_SKIP';
+  }} else if (mode === 'aphis_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_APHIS_QUARANTINE_ZONE_OR_BANNED_AGROCHEMICAL_HOLD (245ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_APHIS_QUARANTINE_OR_BANNED_CHEM';
+  }} else if (mode === 'waterfall_409') {{
+    const savings = Math.round(gross * 0.25 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · PACA_TRUST_WATERFALL_AND_PARAMETRIC_WEATHER_ESCROW_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'agri_inputs_produce_paca_escrow_mandate_saved25pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · ZONE_VERIFIED_PACA_TRUST_PROTECTED_AND_WATERFALL_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'agri_inputs_produce_paca_escrow_mandate_verified';
   }}
 }}
 

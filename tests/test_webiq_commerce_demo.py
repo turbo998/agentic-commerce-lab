@@ -10428,6 +10428,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("shared-powerbank-smart-vending-sandbox", html)
 
+    def test_agri_inputs_produce_paca_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            AgriInputsProducePacaEscrowPolicyInput,
+            evaluate_agri_inputs_produce_paca_escrow_policy,
+        )
+
+        happy = evaluate_agri_inputs_produce_paca_escrow_policy(
+            AgriInputsProducePacaEscrowPolicyInput(
+                quarterly_agri_produce_paca_pool_usd=Decimal("390000.00"),
+                unapproved_seed_zone_mismatch_or_unlicensed_rup_pesticide_detected=False,
+                unverified_produce_spoilage_deduction_or_evaded_crop_lien_detected=False,
+                webiq_aphis_quarantine_zone_or_banned_agrochemical_flag=False,
+                restricted_key_age_days=30,
+                paca_trust_waterfall_and_parametric_weather_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "ZONE_VERIFIED_PACA_TRUST_PROTECTED_AND_WATERFALL_AUTHORIZED")
+        self.assertTrue(
+            str(happy["agri_paca_token"]).startswith("agri_inputs_produce_paca_escrow_mandate_")
+        )
+
+        zone_block = evaluate_agri_inputs_produce_paca_escrow_policy(
+            AgriInputsProducePacaEscrowPolicyInput(
+                quarterly_agri_produce_paca_pool_usd=Decimal("390000.00"),
+                unapproved_seed_zone_mismatch_or_unlicensed_rup_pesticide_detected=True,
+                unverified_produce_spoilage_deduction_or_evaded_crop_lien_detected=False,
+                webiq_aphis_quarantine_zone_or_banned_agrochemical_flag=False,
+                restricted_key_age_days=30,
+                paca_trust_waterfall_and_parametric_weather_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(zone_block["http_status"], 403)
+        self.assertEqual(
+            zone_block["decision"],
+            "UNAPPROVED_SEED_ZONE_MISMATCH_OR_UNLICENSED_RUP_PESTICIDE_BLOCKED",
+        )
+
+        spoilage_block = evaluate_agri_inputs_produce_paca_escrow_policy(
+            AgriInputsProducePacaEscrowPolicyInput(
+                quarterly_agri_produce_paca_pool_usd=Decimal("390000.00"),
+                unapproved_seed_zone_mismatch_or_unlicensed_rup_pesticide_detected=False,
+                unverified_produce_spoilage_deduction_or_evaded_crop_lien_detected=True,
+                webiq_aphis_quarantine_zone_or_banned_agrochemical_flag=False,
+                restricted_key_age_days=30,
+                paca_trust_waterfall_and_parametric_weather_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(spoilage_block["http_status"], 422)
+        self.assertEqual(
+            spoilage_block["decision"],
+            "UNVERIFIED_PRODUCE_SPOILAGE_DEDUCTION_OR_EVADED_CROP_LIEN_BLOCKED",
+        )
+
+        aphis_hold = evaluate_agri_inputs_produce_paca_escrow_policy(
+            AgriInputsProducePacaEscrowPolicyInput(
+                quarterly_agri_produce_paca_pool_usd=Decimal("390000.00"),
+                unapproved_seed_zone_mismatch_or_unlicensed_rup_pesticide_detected=False,
+                unverified_produce_spoilage_deduction_or_evaded_crop_lien_detected=False,
+                webiq_aphis_quarantine_zone_or_banned_agrochemical_flag=True,
+                restricted_key_age_days=191,
+                paca_trust_waterfall_and_parametric_weather_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(aphis_hold["http_status"], 451)
+        self.assertEqual(
+            aphis_hold["decision"],
+            "WEBIQ_APHIS_QUARANTINE_ZONE_OR_BANNED_AGROCHEMICAL_HOLD",
+        )
+
+        opt_confirm = evaluate_agri_inputs_produce_paca_escrow_policy(
+            AgriInputsProducePacaEscrowPolicyInput(
+                quarterly_agri_produce_paca_pool_usd=Decimal("390000.00"),
+                unapproved_seed_zone_mismatch_or_unlicensed_rup_pesticide_detected=False,
+                unverified_produce_spoilage_deduction_or_evaded_crop_lien_detected=False,
+                webiq_aphis_quarantine_zone_or_banned_agrochemical_flag=False,
+                restricted_key_age_days=30,
+                paca_trust_waterfall_and_parametric_weather_escrow_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "97500.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "292500.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("agri_inputs_produce_paca_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("agri-inputs-produce-paca-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
