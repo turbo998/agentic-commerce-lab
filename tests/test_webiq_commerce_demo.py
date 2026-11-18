@@ -8991,6 +8991,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("proptech-leasing-deposit-cam-ach-sandbox", html)
 
+    def test_b2b_corporate_gifting_unclaimed_clawback_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            B2bCorporateGiftingUnclaimedClawbackPolicyInput,
+            evaluate_b2b_corporate_gifting_unclaimed_clawback_policy,
+        )
+
+        happy = evaluate_b2b_corporate_gifting_unclaimed_clawback_policy(
+            B2bCorporateGiftingUnclaimedClawbackPolicyInput(
+                quarterly_corporate_gifting_rewards_pool_usd=Decimal("220000.00"),
+                fcpa_public_official_rfp_blackout_or_survey_bot_detected=False,
+                non_refundable_upfront_gift_card_or_unreported_employee_w2_tax_detected=False,
+                webiq_recipient_company_gift_policy_cap_flag=False,
+                restricted_key_age_days=30,
+                pay_on_claim_90d_clawback_and_recipient_choice_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "FCPA_CLEAR_AND_PAY_ON_CLAIM_W2_TAX_SYNC_AUTHORIZED")
+        self.assertTrue(
+            str(happy["corporate_gifting_token"]).startswith("b2b_corporate_gifting_unclaimed_clawback_mandate_")
+        )
+
+        fcpa_block = evaluate_b2b_corporate_gifting_unclaimed_clawback_policy(
+            B2bCorporateGiftingUnclaimedClawbackPolicyInput(
+                quarterly_corporate_gifting_rewards_pool_usd=Decimal("220000.00"),
+                fcpa_public_official_rfp_blackout_or_survey_bot_detected=True,
+                non_refundable_upfront_gift_card_or_unreported_employee_w2_tax_detected=False,
+                webiq_recipient_company_gift_policy_cap_flag=False,
+                restricted_key_age_days=30,
+                pay_on_claim_90d_clawback_and_recipient_choice_enabled=False,
+            )
+        )
+        self.assertEqual(fcpa_block["http_status"], 403)
+        self.assertEqual(
+            fcpa_block["decision"],
+            "FCPA_PUBLIC_OFFICIAL_RFP_BLACKOUT_OR_SURVEY_BOT_BLOCKED",
+        )
+
+        breakage_block = evaluate_b2b_corporate_gifting_unclaimed_clawback_policy(
+            B2bCorporateGiftingUnclaimedClawbackPolicyInput(
+                quarterly_corporate_gifting_rewards_pool_usd=Decimal("220000.00"),
+                fcpa_public_official_rfp_blackout_or_survey_bot_detected=False,
+                non_refundable_upfront_gift_card_or_unreported_employee_w2_tax_detected=True,
+                webiq_recipient_company_gift_policy_cap_flag=False,
+                restricted_key_age_days=30,
+                pay_on_claim_90d_clawback_and_recipient_choice_enabled=False,
+            )
+        )
+        self.assertEqual(breakage_block["http_status"], 422)
+        self.assertEqual(
+            breakage_block["decision"],
+            "NON_REFUNDABLE_UPFRONT_GIFT_CARD_OR_UNREPORTED_EMPLOYEE_W2_TAX_BLOCKED",
+        )
+
+        policy_hold = evaluate_b2b_corporate_gifting_unclaimed_clawback_policy(
+            B2bCorporateGiftingUnclaimedClawbackPolicyInput(
+                quarterly_corporate_gifting_rewards_pool_usd=Decimal("220000.00"),
+                fcpa_public_official_rfp_blackout_or_survey_bot_detected=False,
+                non_refundable_upfront_gift_card_or_unreported_employee_w2_tax_detected=False,
+                webiq_recipient_company_gift_policy_cap_flag=True,
+                restricted_key_age_days=191,
+                pay_on_claim_90d_clawback_and_recipient_choice_enabled=False,
+            )
+        )
+        self.assertEqual(policy_hold["http_status"], 451)
+        self.assertEqual(
+            policy_hold["decision"],
+            "WEBIQ_RECIPIENT_COMPANY_GIFT_POLICY_CAP_OR_180D_KEY_HOLD",
+        )
+
+        opt_confirm = evaluate_b2b_corporate_gifting_unclaimed_clawback_policy(
+            B2bCorporateGiftingUnclaimedClawbackPolicyInput(
+                quarterly_corporate_gifting_rewards_pool_usd=Decimal("220000.00"),
+                fcpa_public_official_rfp_blackout_or_survey_bot_detected=False,
+                non_refundable_upfront_gift_card_or_unreported_employee_w2_tax_detected=False,
+                webiq_recipient_company_gift_policy_cap_flag=False,
+                restricted_key_age_days=30,
+                pay_on_claim_90d_clawback_and_recipient_choice_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "52800.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "167200.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_corporate_gifting_unclaimed_clawback_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("b2b-corporate-gifting-unclaimed-clawback-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

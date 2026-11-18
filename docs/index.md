@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`130` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`131` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（33 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（28 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（23 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（24 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（12 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（24 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -113,7 +113,7 @@
 | 28 | **在线医药、慢病续方与配镜视光电商（Digital Pharmacy & Optical Rx：Amazon Pharmacy / Warby Parker / 美团买药）“电子处方/验光单硬核验、医保/商保实时理算（PBM）与冷链禁退”Agent 架构选型 FAQ：防伪造过期处方、三轨自动比价省钱与冷链避周末发货实战指南** | [中文](digital-pharmacy-optical-rx-verification-pbm-copay-coldchain-agent-selection-faq.md) · [English](digital-pharmacy-optical-rx-verification-pbm-copay-coldchain-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（23 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（24 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -142,6 +142,7 @@
 | 21 | **企业级智能体司库管理与供应商门户自动付款选型 FAQ：Stripe Treasury MCP + Issuing 虚拟卡 vs. Visa Intelligent Commerce × BILL 门户代理（TAP）vs. 传统 RPA 抓屏实战指南** | [中文](enterprise-treasury-supplier-portal-ap-payment-stripe-mcp-vs-visa-bill-tap-selection-faq.md) · [English](enterprise-treasury-supplier-portal-ap-payment-stripe-mcp-vs-visa-bill-tap-selection-faq.en.md) |
 | 22 | **连锁餐饮、茶饮咖啡与万店加盟供应链（Multi-Unit Franchise Supply Chain：瑞幸/霸王茶姬/麦当劳/Sysco 门店自动叫货、效期先进先出 FEFO 与总部统采分账）Agent 架构选型 FAQ：防体外私采、防鲜奶临期报损与特许费实时清分实战指南** | [中文](franchise-qsr-foodservice-auto-ordering-fefo-royalty-split-agent-selection-faq.md) · [English](franchise-qsr-foodservice-auto-ordering-fefo-royalty-split-agent-selection-faq.en.md) |
 | 23 | **长租公寓、商业地产招租与物业资管（PropTech & Commercial Real Estate Leasing：Bilt / Yardi / 自如）“押金专户托管、Open Banking 收入验真、物业费（CAM）封顶审计与免刷卡费 A2A 收租”Agent 架构选型 FAQ：防假流水骗租、防退租乱扣折旧费与省 2.9% 通道费实战指南** | [中文](proptech-residential-commercial-leasing-deposit-escrow-cam-ach-agent-selection-faq.md) · [English](proptech-residential-commercial-leasing-deposit-escrow-cam-ach-agent-selection-faq.en.md) |
+| 24 | **企业商务馈赠、员工福利商城与市场调研激励发放（B2B Corporate Gifting & Employee Rewards：Tremendous / Snappy / Sendoso / 京东企业购）“按实际领取结算（Pay-on-Claim）、未领过期 100% 回滚、FCPA 反贿赂红线与 W-2 计税”Agent 架构选型 FAQ：消灭 22% 未拆封礼品卡沉没浪费实战指南** | [中文](b2b-corporate-gifting-employee-rewards-unclaimed-clawback-tax-agent-selection-faq.md) · [English](b2b-corporate-gifting-employee-rewards-unclaimed-clawback-tax-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（12 篇）

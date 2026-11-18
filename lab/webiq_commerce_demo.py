@@ -15696,6 +15696,80 @@ def evaluate_proptech_leasing_deposit_cam_ach_policy(
         "reason": "Verified Open Banking payroll stream, segregated interest-bearing deposit escrow, and compliant CAM/rent settlement.",
     }
 
+
+@dataclass(frozen=True)
+class B2bCorporateGiftingUnclaimedClawbackPolicyInput:
+    quarterly_corporate_gifting_rewards_pool_usd: Decimal
+    fcpa_public_official_rfp_blackout_or_survey_bot_detected: bool
+    non_refundable_upfront_gift_card_or_unreported_employee_w2_tax_detected: bool
+    webiq_recipient_company_gift_policy_cap_flag: bool
+    restricted_key_age_days: int
+    pay_on_claim_90d_clawback_and_recipient_choice_enabled: bool
+
+
+def evaluate_b2b_corporate_gifting_unclaimed_clawback_policy(
+    policy_input: B2bCorporateGiftingUnclaimedClawbackPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate B2B Corporate Gifting Pay-on-Claim 90d unclaimed clawback, FCPA/RFP blackout gate & IRS W-2/§274 tax sync."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_corporate_gifting_rewards_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.fcpa_public_official_rfp_blackout_or_survey_bot_detected:
+        return {
+            "http_status": 403,
+            "decision": "FCPA_PUBLIC_OFFICIAL_RFP_BLACKOUT_OR_SURVEY_BOT_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "corporate_gifting_token": None,
+            "reason": "Blocked gift to .gov/PEP public official, active RFP bidding prospect, or unverified survey-bot farm.",
+        }
+
+    if policy_input.non_refundable_upfront_gift_card_or_unreported_employee_w2_tax_detected:
+        return {
+            "http_status": 422,
+            "decision": "NON_REFUNDABLE_UPFRONT_GIFT_CARD_OR_UNREPORTED_EMPLOYEE_W2_TAX_BLOCKED",
+            "latency_ms": 12,
+            "approved_budget_usd": "0.00",
+            "corporate_gifting_token": None,
+            "reason": "Blocked non-refundable upfront gift-card breakage trap or employee cash-equivalent gift card lacking W-2 payroll tax sync.",
+        }
+
+    if policy_input.webiq_recipient_company_gift_policy_cap_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_RECIPIENT_COMPANY_GIFT_POLICY_CAP_OR_180D_KEY_HOLD",
+            "latency_ms": 250,
+            "approved_budget_usd": "0.00",
+            "corporate_gifting_token": None,
+            "reason": "Web IQ detected recipient company Zero-Gift / ethics policy cap violation or restricted key age > 180 days.",
+        }
+
+    if policy_input.pay_on_claim_90d_clawback_and_recipient_choice_enabled:
+        savings = (gross * Decimal("0.24")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"CORP_GIFT_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "PAY_ON_CLAIM_90D_CLAWBACK_AND_ADDRESS_CONFIRMED_CHOICE_CONFIRM",
+            "latency_ms": 210,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "corporate_gifting_token": f"b2b_corporate_gifting_unclaimed_clawback_mandate_{digest}",
+            "reason": "Pay-on-Claim 90-day 100% unclaimed clawback and recipient address confirmation reduced gifting waste by 24.0%.",
+        }
+
+    digest = hashlib.sha256(f"CORP_GIFT_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "FCPA_CLEAR_AND_PAY_ON_CLAIM_W2_TAX_SYNC_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "corporate_gifting_token": f"b2b_corporate_gifting_unclaimed_clawback_mandate_{digest}",
+        "reason": "Verified FCPA/RFP eligibility, Pay-on-Claim 90d clawback binding, and IRS W-2 / §274 tax routing.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -20905,6 +20979,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_corporate_gifting_unclaimed_clawback_guard = {
+        "happy_path": evaluate_b2b_corporate_gifting_unclaimed_clawback_policy(
+            B2bCorporateGiftingUnclaimedClawbackPolicyInput(
+                quarterly_corporate_gifting_rewards_pool_usd=Decimal("220000.00"),
+                fcpa_public_official_rfp_blackout_or_survey_bot_detected=False,
+                non_refundable_upfront_gift_card_or_unreported_employee_w2_tax_detected=False,
+                webiq_recipient_company_gift_policy_cap_flag=False,
+                restricted_key_age_days=30,
+                pay_on_claim_90d_clawback_and_recipient_choice_enabled=False,
+            )
+        ),
+        "fcpa_or_survey_bot_block": evaluate_b2b_corporate_gifting_unclaimed_clawback_policy(
+            B2bCorporateGiftingUnclaimedClawbackPolicyInput(
+                quarterly_corporate_gifting_rewards_pool_usd=Decimal("220000.00"),
+                fcpa_public_official_rfp_blackout_or_survey_bot_detected=True,
+                non_refundable_upfront_gift_card_or_unreported_employee_w2_tax_detected=False,
+                webiq_recipient_company_gift_policy_cap_flag=False,
+                restricted_key_age_days=30,
+                pay_on_claim_90d_clawback_and_recipient_choice_enabled=False,
+            )
+        ),
+        "upfront_breakage_or_w2_tax_block": evaluate_b2b_corporate_gifting_unclaimed_clawback_policy(
+            B2bCorporateGiftingUnclaimedClawbackPolicyInput(
+                quarterly_corporate_gifting_rewards_pool_usd=Decimal("220000.00"),
+                fcpa_public_official_rfp_blackout_or_survey_bot_detected=False,
+                non_refundable_upfront_gift_card_or_unreported_employee_w2_tax_detected=True,
+                webiq_recipient_company_gift_policy_cap_flag=False,
+                restricted_key_age_days=30,
+                pay_on_claim_90d_clawback_and_recipient_choice_enabled=False,
+            )
+        ),
+        "webiq_gift_policy_cap_or_key_hold": evaluate_b2b_corporate_gifting_unclaimed_clawback_policy(
+            B2bCorporateGiftingUnclaimedClawbackPolicyInput(
+                quarterly_corporate_gifting_rewards_pool_usd=Decimal("220000.00"),
+                fcpa_public_official_rfp_blackout_or_survey_bot_detected=False,
+                non_refundable_upfront_gift_card_or_unreported_employee_w2_tax_detected=False,
+                webiq_recipient_company_gift_policy_cap_flag=True,
+                restricted_key_age_days=191,
+                pay_on_claim_90d_clawback_and_recipient_choice_enabled=False,
+            )
+        ),
+        "pay_on_claim_and_choice_confirm": evaluate_b2b_corporate_gifting_unclaimed_clawback_policy(
+            B2bCorporateGiftingUnclaimedClawbackPolicyInput(
+                quarterly_corporate_gifting_rewards_pool_usd=Decimal("220000.00"),
+                fcpa_public_official_rfp_blackout_or_survey_bot_detected=False,
+                non_refundable_upfront_gift_card_or_unreported_employee_w2_tax_detected=False,
+                webiq_recipient_company_gift_policy_cap_flag=False,
+                restricted_key_age_days=30,
+                pay_on_claim_90d_clawback_and_recipient_choice_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21045,6 +21172,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_abandoned_cart_recovery_guard": ecommerce_abandoned_cart_recovery_guard,
         "digital_pharmacy_optical_rx_copay_guard": digital_pharmacy_optical_rx_copay_guard,
         "proptech_leasing_deposit_cam_ach_guard": proptech_leasing_deposit_cam_ach_guard,
+        "b2b_corporate_gifting_unclaimed_clawback_guard": b2b_corporate_gifting_unclaimed_clawback_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -26807,6 +26935,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">地产押金托管与 CAM 审计令牌</div>
             <div class="finops-kpi-val" id="proptech-token-kpi" style="font-size:10px;color:#A78BFA;">proptech_leasing_deposit_cam_ach_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive B2B Corporate Gifting & Employee Rewards (Pay-on-Claim 90d Clawback, FCPA/RFP Gate & W-2 Tax) Sandbox -->
+      <div class="finops-box" id="b2b-corporate-gifting-unclaimed-clawback-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎁 企业商务馈赠、员工福利与调研激励 (Tremendous / Snappy：Pay-on-Claim 未领回滚与 FCPA/计税) 沙盒</div>
+            <div class="finops-subtitle">实测拦截向政府官员 (.gov/PEP)/活跃 RFP 评标期客户送礼与假问卷机器人 (HTTP 403)、按领实扣 (Pay-on-Claim) 与员工礼品卡自动回写 W-2 计税 (HTTP 422)、Web IQ 客户公司零收礼准则挂起 (HTTP 451) 及 90天未领 100% 回滚预算池立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="corp-gift-verdict-pill">HTTP 200 · FCPA_CLEAR_AND_PAY_ON_CLAIM_W2_TAX_SYNC_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度企业商务礼赠、员工福利与调研激励池 ($ USD) <span class="control-val" id="corp-gift-gross-label">$220,000</span></label>
+            <input type="range" id="corp-gift-gross-slider" min="40000" max="800000" step="20000" value="220000" oninput="updateB2bCorporateGiftingUnclaimedClawbackSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">FCPA 反贿赂/RFP 静默期、Pay-on-Claim 未领回滚与员工 W-2 计税场景</label>
+            <select id="corp-gift-mode-select" onchange="updateB2bCorporateGiftingUnclaimedClawbackSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ FCPA/RFP 合规 + 按领实扣 (Pay-on-Claim) + 薪资税务同步 (HTTP 200)</option>
+              <option value="fcpa_403">🛑 向政府公职人员 (.gov/PEP)/活跃 RFP 竞标期客户送礼 或 检出假问卷机器人 (HTTP 403)</option>
+              <option value="breakage_422">🚨 采购未领不退的买断式卡密 (22% Breakage) 或 发放员工礼品卡未同步 W-2 计税 (HTTP 422)</option>
+              <option value="policy_451">🛑 Web IQ 检出目标客户公司《行为准则》实行零收礼政策或密钥 &gt;180d (HTTP 451)</option>
+              <option value="clawback_409">🧑‍⚖️ 90天未领 100% 自动回滚预算池 + 收件人自选礼确认地址免退件立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原未领沉没浪费与退件损耗基线</div>
+            <div class="finops-kpi-val" id="corp-gift-gross-kpi">$220,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">90天未领全退与免退件立省</div>
+            <div class="finops-kpi-val" id="corp-gift-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净实际领取有效支出</div>
+            <div class="finops-kpi-val" id="corp-gift-net-kpi" style="color:#60A5FA;">$220,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">企业礼赠按领结算合规令牌</div>
+            <div class="finops-kpi-val" id="corp-gift-token-kpi" style="font-size:10px;color:#A78BFA;">b2b_corporate_gifting_unclaimed_clawback_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -33788,6 +33961,61 @@ function updateProptechLeasingDepositCamAchSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'proptech_leasing_deposit_cam_ach_mandate_verified';
+  }}
+}}
+
+function updateB2bCorporateGiftingUnclaimedClawbackSandbox() {{
+  const grossSlider = document.getElementById('corp-gift-gross-slider');
+  const modeSelect = document.getElementById('corp-gift-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '220000');
+  const mode = modeSelect.value;
+  document.getElementById('corp-gift-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('corp-gift-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('corp-gift-verdict-pill');
+  const savingsKpi = document.getElementById('corp-gift-savings-kpi');
+  const netKpi = document.getElementById('corp-gift-net-kpi');
+  const tokenKpi = document.getElementById('corp-gift-token-kpi');
+
+  if (mode === 'fcpa_403') {{
+    pill.textContent = 'HTTP 403 · FCPA_PUBLIC_OFFICIAL_RFP_BLACKOUT_OR_SURVEY_BOT_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_FCPA_RFP_BLACKOUT_OR_SURVEY_BOT';
+  }} else if (mode === 'breakage_422') {{
+    pill.textContent = 'HTTP 422 · NON_REFUNDABLE_UPFRONT_GIFT_CARD_OR_UNREPORTED_EMPLOYEE_W2_TAX_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UPFRONT_BREAKAGE_OR_UNREPORTED_W2';
+  }} else if (mode === 'policy_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_RECIPIENT_COMPANY_GIFT_POLICY_CAP_OR_180D_KEY_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_PROSPECT_ZERO_GIFT_POLICY_OR_180D_KEY';
+  }} else if (mode === 'clawback_409') {{
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · PAY_ON_CLAIM_90D_CLAWBACK_AND_ADDRESS_CONFIRMED_CHOICE_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'b2b_corporate_gifting_unclaimed_clawback_mandate_saved24pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · FCPA_CLEAR_AND_PAY_ON_CLAIM_W2_TAX_SYNC_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'b2b_corporate_gifting_unclaimed_clawback_mandate_verified';
   }}
 }}
 
