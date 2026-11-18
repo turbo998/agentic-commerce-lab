@@ -9798,6 +9798,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("b2b-it-daas-leasing-nist-wipe-sandbox", html)
 
+    def test_grocery_perishable_markdown_gs1_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            GroceryPerishableMarkdownGs1PolicyInput,
+            evaluate_grocery_perishable_markdown_gs1_policy,
+        )
+
+        happy = evaluate_grocery_perishable_markdown_gs1_policy(
+            GroceryPerishableMarkdownGs1PolicyInput(
+                quarterly_perishable_shrink_pool_usd=Decimal("290000.00"),
+                expired_lot_ai17_or_markdown_label_swap_detected=False,
+                fixed_hour_cannibalization_or_bulk_hoarding_detected=False,
+                webiq_fda_class1_food_recall_or_cold_chain_breach_flag=False,
+                restricted_key_age_days=30,
+                rsl_dynamic_esl_markdown_and_food_rescue_tax_credit_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "GS1_AI17_VALID_ESL_SYNCED_AND_PERISHABLE_CHECKOUT_AUTHORIZED")
+        self.assertTrue(
+            str(happy["grocery_markdown_token"]).startswith("grocery_perishable_markdown_gs1_mandate_")
+        )
+
+        exp_block = evaluate_grocery_perishable_markdown_gs1_policy(
+            GroceryPerishableMarkdownGs1PolicyInput(
+                quarterly_perishable_shrink_pool_usd=Decimal("290000.00"),
+                expired_lot_ai17_or_markdown_label_swap_detected=True,
+                fixed_hour_cannibalization_or_bulk_hoarding_detected=False,
+                webiq_fda_class1_food_recall_or_cold_chain_breach_flag=False,
+                restricted_key_age_days=30,
+                rsl_dynamic_esl_markdown_and_food_rescue_tax_credit_enabled=False,
+            )
+        )
+        self.assertEqual(exp_block["http_status"], 403)
+        self.assertEqual(
+            exp_block["decision"],
+            "EXPIRED_LOT_AI17_OR_MARKDOWN_LABEL_SWAP_BLOCKED",
+        )
+
+        hoard_block = evaluate_grocery_perishable_markdown_gs1_policy(
+            GroceryPerishableMarkdownGs1PolicyInput(
+                quarterly_perishable_shrink_pool_usd=Decimal("290000.00"),
+                expired_lot_ai17_or_markdown_label_swap_detected=False,
+                fixed_hour_cannibalization_or_bulk_hoarding_detected=True,
+                webiq_fda_class1_food_recall_or_cold_chain_breach_flag=False,
+                restricted_key_age_days=30,
+                rsl_dynamic_esl_markdown_and_food_rescue_tax_credit_enabled=False,
+            )
+        )
+        self.assertEqual(hoard_block["http_status"], 422)
+        self.assertEqual(
+            hoard_block["decision"],
+            "FIXED_HOUR_CANNIBALIZATION_OR_BULK_HOARDING_BLOCKED",
+        )
+
+        recall_hold = evaluate_grocery_perishable_markdown_gs1_policy(
+            GroceryPerishableMarkdownGs1PolicyInput(
+                quarterly_perishable_shrink_pool_usd=Decimal("290000.00"),
+                expired_lot_ai17_or_markdown_label_swap_detected=False,
+                fixed_hour_cannibalization_or_bulk_hoarding_detected=False,
+                webiq_fda_class1_food_recall_or_cold_chain_breach_flag=True,
+                restricted_key_age_days=191,
+                rsl_dynamic_esl_markdown_and_food_rescue_tax_credit_enabled=False,
+            )
+        )
+        self.assertEqual(recall_hold["http_status"], 451)
+        self.assertEqual(
+            recall_hold["decision"],
+            "WEBIQ_FDA_CLASS1_FOOD_RECALL_OR_COLD_CHAIN_BREACH_HOLD",
+        )
+
+        opt_confirm = evaluate_grocery_perishable_markdown_gs1_policy(
+            GroceryPerishableMarkdownGs1PolicyInput(
+                quarterly_perishable_shrink_pool_usd=Decimal("290000.00"),
+                expired_lot_ai17_or_markdown_label_swap_detected=False,
+                fixed_hour_cannibalization_or_bulk_hoarding_detected=False,
+                webiq_fda_class1_food_recall_or_cold_chain_breach_flag=False,
+                restricted_key_age_days=30,
+                rsl_dynamic_esl_markdown_and_food_rescue_tax_credit_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "75400.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "214600.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("grocery_perishable_markdown_gs1_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("grocery-perishable-markdown-gs1-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

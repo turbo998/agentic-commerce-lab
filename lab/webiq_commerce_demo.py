@@ -16362,6 +16362,80 @@ def evaluate_b2b_it_daas_leasing_nist_wipe_policy(
         "reason": "Verified ABM/MDM release, signed NIST SP 800-88 wipe certificate, and 36-month capped lease settlement.",
     }
 
+
+@dataclass(frozen=True)
+class GroceryPerishableMarkdownGs1PolicyInput:
+    quarterly_perishable_shrink_pool_usd: Decimal
+    expired_lot_ai17_or_markdown_label_swap_detected: bool
+    fixed_hour_cannibalization_or_bulk_hoarding_detected: bool
+    webiq_fda_class1_food_recall_or_cold_chain_breach_flag: bool
+    restricted_key_age_days: int
+    rsl_dynamic_esl_markdown_and_food_rescue_tax_credit_enabled: bool
+
+
+def evaluate_grocery_perishable_markdown_gs1_policy(
+    policy_input: GroceryPerishableMarkdownGs1PolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Grocery & Perishable GS1 AI(17) expiry lock, anti-sticker-swap, ESL RSL curve & IRC 170(e)(3) food-rescue."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_perishable_shrink_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.expired_lot_ai17_or_markdown_label_swap_detected:
+        return {
+            "http_status": 403,
+            "decision": "EXPIRED_LOT_AI17_OR_MARKDOWN_LABEL_SWAP_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "grocery_markdown_token": None,
+            "reason": "Blocked checkout of item past GS1 AI(17) expiration date or clearance sticker swapped onto mismatched GTIN.",
+        }
+
+    if policy_input.fixed_hour_cannibalization_or_bulk_hoarding_detected:
+        return {
+            "http_status": 422,
+            "decision": "FIXED_HOUR_CANNIBALIZATION_OR_BULK_HOARDING_BLOCKED",
+            "latency_ms": 12,
+            "approved_budget_usd": "0.00",
+            "grocery_markdown_token": None,
+            "reason": "Blocked premature discount on fresh lot, cart exceeding 3 markdown units, or unacknowledged ESL display sync.",
+        }
+
+    if policy_input.webiq_fda_class1_food_recall_or_cold_chain_breach_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_FDA_CLASS1_FOOD_RECALL_OR_COLD_CHAIN_BREACH_HOLD",
+            "latency_ms": 240,
+            "approved_budget_usd": "0.00",
+            "grocery_markdown_token": None,
+            "reason": "Web IQ flagged FDA/USDA Class I food recall lot, refrigeration temperature breach >2h, or key >180 days.",
+        }
+
+    if policy_input.rsl_dynamic_esl_markdown_and_food_rescue_tax_credit_enabled:
+        savings = (gross * Decimal("0.26")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"GROC_MKD_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "RSL_DYNAMIC_ESL_MARKDOWN_AND_FOOD_RESCUE_TAX_CREDIT_CONFIRM",
+            "latency_ms": 205,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "grocery_markdown_token": f"grocery_perishable_markdown_gs1_mandate_{digest}",
+            "reason": "Smooth RSL ESL curve, closing-window Surprise Bags, and IRC §170(e)(3) food-bank donation cut net shrink by 26.0%.",
+        }
+
+    digest = hashlib.sha256(f"GROC_MKD_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "GS1_AI17_VALID_ESL_SYNCED_AND_PERISHABLE_CHECKOUT_AUTHORIZED",
+        "latency_ms": 9,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "grocery_markdown_token": f"grocery_perishable_markdown_gs1_mandate_{digest}",
+        "reason": "Verified unexpired GS1 AI(17) lot, original-GTIN weight match, and synchronized ESL/POS price.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -22048,6 +22122,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    grocery_perishable_markdown_gs1_guard = {
+        "happy_path": evaluate_grocery_perishable_markdown_gs1_policy(
+            GroceryPerishableMarkdownGs1PolicyInput(
+                quarterly_perishable_shrink_pool_usd=Decimal("290000.00"),
+                expired_lot_ai17_or_markdown_label_swap_detected=False,
+                fixed_hour_cannibalization_or_bulk_hoarding_detected=False,
+                webiq_fda_class1_food_recall_or_cold_chain_breach_flag=False,
+                restricted_key_age_days=30,
+                rsl_dynamic_esl_markdown_and_food_rescue_tax_credit_enabled=False,
+            )
+        ),
+        "expired_or_swap_block": evaluate_grocery_perishable_markdown_gs1_policy(
+            GroceryPerishableMarkdownGs1PolicyInput(
+                quarterly_perishable_shrink_pool_usd=Decimal("290000.00"),
+                expired_lot_ai17_or_markdown_label_swap_detected=True,
+                fixed_hour_cannibalization_or_bulk_hoarding_detected=False,
+                webiq_fda_class1_food_recall_or_cold_chain_breach_flag=False,
+                restricted_key_age_days=30,
+                rsl_dynamic_esl_markdown_and_food_rescue_tax_credit_enabled=False,
+            )
+        ),
+        "cannibalization_or_hoarding_block": evaluate_grocery_perishable_markdown_gs1_policy(
+            GroceryPerishableMarkdownGs1PolicyInput(
+                quarterly_perishable_shrink_pool_usd=Decimal("290000.00"),
+                expired_lot_ai17_or_markdown_label_swap_detected=False,
+                fixed_hour_cannibalization_or_bulk_hoarding_detected=True,
+                webiq_fda_class1_food_recall_or_cold_chain_breach_flag=False,
+                restricted_key_age_days=30,
+                rsl_dynamic_esl_markdown_and_food_rescue_tax_credit_enabled=False,
+            )
+        ),
+        "webiq_fda_recall_or_cold_chain_hold": evaluate_grocery_perishable_markdown_gs1_policy(
+            GroceryPerishableMarkdownGs1PolicyInput(
+                quarterly_perishable_shrink_pool_usd=Decimal("290000.00"),
+                expired_lot_ai17_or_markdown_label_swap_detected=False,
+                fixed_hour_cannibalization_or_bulk_hoarding_detected=False,
+                webiq_fda_class1_food_recall_or_cold_chain_breach_flag=True,
+                restricted_key_age_days=191,
+                rsl_dynamic_esl_markdown_and_food_rescue_tax_credit_enabled=False,
+            )
+        ),
+        "rsl_markdown_and_food_rescue_confirm": evaluate_grocery_perishable_markdown_gs1_policy(
+            GroceryPerishableMarkdownGs1PolicyInput(
+                quarterly_perishable_shrink_pool_usd=Decimal("290000.00"),
+                expired_lot_ai17_or_markdown_label_swap_detected=False,
+                fixed_hour_cannibalization_or_bulk_hoarding_detected=False,
+                webiq_fda_class1_food_recall_or_cold_chain_breach_flag=False,
+                restricted_key_age_days=30,
+                rsl_dynamic_esl_markdown_and_food_rescue_tax_credit_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -22197,6 +22324,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "wedding_bespoke_event_milestone_escrow_guard": wedding_bespoke_event_milestone_escrow_guard,
         "influencer_seeding_coupon_poaching_guard": influencer_seeding_coupon_poaching_guard,
         "b2b_it_daas_leasing_nist_wipe_guard": b2b_it_daas_leasing_nist_wipe_guard,
+        "grocery_perishable_markdown_gs1_guard": grocery_perishable_markdown_gs1_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -28364,6 +28492,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">IT DaaS 解锁与擦除合规令牌</div>
             <div class="finops-kpi-val" id="it-daas-token-kpi" style="font-size:10px;color:#A78BFA;">b2b_it_daas_leasing_nist_wipe_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Grocery & Perishable Dynamic Markdown (GS1 AI-17 Expiry Lock, ESL Curve & Food-Rescue Tax Credit) Sandbox -->
+      <div class="finops-box" id="grocery-perishable-markdown-gs1-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🥬 生鲜商超与临期动态打折出清 (Instacart Carrot Tags / 盒马 / Too Good To Go / Flashfood) 沙盒</div>
+            <div class="finops-subtitle">实测 GS1 DataBar AI(17) 过期商品收银死锁与防撕标换贴 (HTTP 403)、拦截固定时点正价蚕食与单笔超 3 件黄牛扫货及 ESL 价签失步 (HTTP 422)、FDA 李斯特菌召回批次/冷柜超温熔断 (HTTP 451) 及闭店前 90m 惊喜盲盒+IRC §170(e)(3) 抵税捐赠立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="groc-mkd-verdict-pill">HTTP 200 · GS1_AI17_VALID_ESL_SYNCED_AND_PERISHABLE_CHECKOUT_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度门店生鲜日配临期损耗与出清预算池 ($ USD) <span class="control-val" id="groc-mkd-gross-label">$290,000</span></label>
+            <input type="range" id="groc-mkd-gross-slider" min="50000" max="1000000" step="20000" value="290000" oninput="updateGroceryPerishableMarkdownGs1Sandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">GS1 AI(17) 效期锁、防撕标换贴、ESL 阶梯曲线与闭店盲盒/慈善抵税捐赠场景</label>
+            <select id="groc-mkd-mode-select" onchange="updateGroceryPerishableMarkdownGs1Sandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ GS1 AI(17) 效期有效 + 原 GTIN 称重匹配 + ESL/POS 同价放行 (HTTP 200)</option>
+              <option value="expired_403">🛑 扫到已过 GS1 AI(17) 保质期的冷鲜奶 或 将吐司5折码撕下贴到M9和牛上 (HTTP 403)</option>
+              <option value="hoard_422">🚨 对非临期批次提前打折、黄牛单笔抢购 &gt;3 件临期肉品或 ESL 墨水屏未回传 ACK (HTTP 422)</option>
+              <option value="recall_451">🛑 Web IQ 检出该批次命中 FDA 李斯特菌一级召回 或 冷柜断电超温 &gt;2h (HTTP 451)</option>
+              <option value="rescue_409">🧑‍⚖️ RSL 平滑阶梯调价 + 闭店前90m 拆分惊喜盲盒与 IRC §170(e)(3) 抵税捐赠立省 26% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原粗暴打折与闭店倾倒损耗基线</div>
+            <div class="finops-kpi-val" id="groc-mkd-gross-kpi">$290,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">平滑调价+盲盒回血+抵税立省</div>
+            <div class="finops-kpi-val" id="groc-mkd-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净生鲜损耗成本</div>
+            <div class="finops-kpi-val" id="groc-mkd-net-kpi" style="color:#60A5FA;">$290,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">GS1 效期与食安防损令牌</div>
+            <div class="finops-kpi-val" id="groc-mkd-token-kpi" style="font-size:10px;color:#A78BFA;">grocery_perishable_markdown_gs1_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -35840,6 +36013,61 @@ function updateB2bItDaasLeasingNistWipeSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'b2b_it_daas_leasing_nist_wipe_mandate_verified';
+  }}
+}}
+
+function updateGroceryPerishableMarkdownGs1Sandbox() {{
+  const grossSlider = document.getElementById('groc-mkd-gross-slider');
+  const modeSelect = document.getElementById('groc-mkd-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '290000');
+  const mode = modeSelect.value;
+  document.getElementById('groc-mkd-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('groc-mkd-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('groc-mkd-verdict-pill');
+  const savingsKpi = document.getElementById('groc-mkd-savings-kpi');
+  const netKpi = document.getElementById('groc-mkd-net-kpi');
+  const tokenKpi = document.getElementById('groc-mkd-token-kpi');
+
+  if (mode === 'expired_403') {{
+    pill.textContent = 'HTTP 403 · EXPIRED_LOT_AI17_OR_MARKDOWN_LABEL_SWAP_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_EXPIRED_AI17_OR_STICKER_SWAP';
+  }} else if (mode === 'hoard_422') {{
+    pill.textContent = 'HTTP 422 · FIXED_HOUR_CANNIBALIZATION_OR_BULK_HOARDING_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_HOARDING_OR_MISSING_ESL_ACK';
+  }} else if (mode === 'recall_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_FDA_CLASS1_FOOD_RECALL_OR_COLD_CHAIN_BREACH_HOLD (240ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_FDA_RECALL_LOT_OR_TEMP_BREACH';
+  }} else if (mode === 'rescue_409') {{
+    const savings = Math.round(gross * 0.26 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · RSL_DYNAMIC_ESL_MARKDOWN_AND_FOOD_RESCUE_TAX_CREDIT_CONFIRM (205ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'grocery_perishable_markdown_gs1_mandate_saved26pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · GS1_AI17_VALID_ESL_SYNCED_AND_PERISHABLE_CHECKOUT_AUTHORIZED (9ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'grocery_perishable_markdown_gs1_mandate_verified';
   }}
 }}
 
