@@ -9438,6 +9438,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("digital-media-paywall-ai-crawler-sandbox", html)
 
+    def test_home_services_on_demand_repair_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            HomeServicesOnDemandRepairEscrowPolicyInput,
+            evaluate_home_services_on_demand_repair_escrow_policy,
+        )
+
+        happy = evaluate_home_services_on_demand_repair_escrow_policy(
+            HomeServicesOnDemandRepairEscrowPolicyInput(
+                quarterly_home_services_repair_pool_usd=Decimal("290000.00"),
+                unlicensed_technician_or_price_book_gouging_cap_breach_detected=False,
+                long_dwell_fake_cancel_leakage_or_missing_part_swap_proof_detected=False,
+                webiq_contractor_insurance_lapse_flag=False,
+                restricted_key_age_days=30,
+                nameplate_quote_cap_and_80_20_warranty_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "LICENSED_TECH_PRICE_BOOK_CAPPED_AND_80_20_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["home_services_token"]).startswith("home_services_on_demand_repair_escrow_mandate_")
+        )
+
+        gouge_block = evaluate_home_services_on_demand_repair_escrow_policy(
+            HomeServicesOnDemandRepairEscrowPolicyInput(
+                quarterly_home_services_repair_pool_usd=Decimal("290000.00"),
+                unlicensed_technician_or_price_book_gouging_cap_breach_detected=True,
+                long_dwell_fake_cancel_leakage_or_missing_part_swap_proof_detected=False,
+                webiq_contractor_insurance_lapse_flag=False,
+                restricted_key_age_days=30,
+                nameplate_quote_cap_and_80_20_warranty_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(gouge_block["http_status"], 403)
+        self.assertEqual(
+            gouge_block["decision"],
+            "UNLICENSED_TECHNICIAN_OR_PRICE_BOOK_GOUGING_CAP_BREACH_BLOCKED",
+        )
+
+        leak_block = evaluate_home_services_on_demand_repair_escrow_policy(
+            HomeServicesOnDemandRepairEscrowPolicyInput(
+                quarterly_home_services_repair_pool_usd=Decimal("290000.00"),
+                unlicensed_technician_or_price_book_gouging_cap_breach_detected=False,
+                long_dwell_fake_cancel_leakage_or_missing_part_swap_proof_detected=True,
+                webiq_contractor_insurance_lapse_flag=False,
+                restricted_key_age_days=30,
+                nameplate_quote_cap_and_80_20_warranty_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(leak_block["http_status"], 422)
+        self.assertEqual(
+            leak_block["decision"],
+            "LONG_DWELL_FAKE_CANCEL_LEAKAGE_OR_MISSING_PART_SWAP_PROOF_BLOCKED",
+        )
+
+        ins_hold = evaluate_home_services_on_demand_repair_escrow_policy(
+            HomeServicesOnDemandRepairEscrowPolicyInput(
+                quarterly_home_services_repair_pool_usd=Decimal("290000.00"),
+                unlicensed_technician_or_price_book_gouging_cap_breach_detected=False,
+                long_dwell_fake_cancel_leakage_or_missing_part_swap_proof_detected=False,
+                webiq_contractor_insurance_lapse_flag=True,
+                restricted_key_age_days=191,
+                nameplate_quote_cap_and_80_20_warranty_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(ins_hold["http_status"], 451)
+        self.assertEqual(
+            ins_hold["decision"],
+            "WEBIQ_CONTRACTOR_INSURANCE_LAPSE_OR_180D_KEY_HOLD",
+        )
+
+        opt_confirm = evaluate_home_services_on_demand_repair_escrow_policy(
+            HomeServicesOnDemandRepairEscrowPolicyInput(
+                quarterly_home_services_repair_pool_usd=Decimal("290000.00"),
+                unlicensed_technician_or_price_book_gouging_cap_breach_detected=False,
+                long_dwell_fake_cancel_leakage_or_missing_part_swap_proof_detected=False,
+                webiq_contractor_insurance_lapse_flag=False,
+                restricted_key_age_days=30,
+                nameplate_quote_cap_and_80_20_warranty_escrow_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "66700.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "223300.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("home_services_on_demand_repair_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("home-services-on-demand-repair-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
