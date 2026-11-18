@@ -1,6 +1,6 @@
 # Enterprise Agentic Commerce Lab — 企业智能体商业参考架构与 AI 解决方案架构师决策库
 
-🌐 **语言切换 / Language**: **中文主页 (当前)** | **[English (`README.en.md`)](README.en.md)** | **[📚 SA 决策指南总目录（121 篇双语 FAQ）](docs/index.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](benchmark-cards.html)**
+🌐 **语言切换 / Language**: **中文主页 (当前)** | **[English (`README.en.md`)](README.en.md)** | **[📚 SA 决策指南总目录（122 篇双语 FAQ）](docs/index.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](benchmark-cards.html)**
 
 > **面向 AI Solution Architect（AI 解决方案架构师）的企业级智能体商业工程参考库**
 > 聚焦**零售电商与多商户编排、智能体支付与加密授权协议（AP2 / Stripe SPT / Visa VIC & TAP / Mastercard / x402）、B2B 采购与 ERP 三单匹配、酒旅航司（OTA / IATA NDC）动态预订、SaaS 用量计费与 FinOps、跨境税务（MoR）/ 外汇清结算与 Visa CE 3.0 拒付抗辩**六大核心领域，提供**可复用的六平面参考架构、平台与协议选型对比矩阵、确定性受托控制面（Fiduciary Control Plane）Python 护栏模块及自包含交互式演示台**。
@@ -112,6 +112,7 @@ flowchart TB
    - [Copilot Studio vs Azure AI Foundry + LangGraph vs Agentforce/Shopify 平台选型](docs/agentic-commerce-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-shopify-selection-faq.md) · [EN](docs/agentic-commerce-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-shopify-selection-faq.en.md)
    - [Microsoft Web IQ vs Perplexity Sonar / Tavily / Exa / Firecrawl / Browser-Use 接地选型](docs/agentic-commerce-grounding-webiq-vs-perplexity-sonar-tavily-exa-firecrawl-browseruse-selection-faq.md) · [EN](docs/agentic-commerce-grounding-webiq-vs-perplexity-sonar-tavily-exa-firecrawl-browseruse-selection-faq.en.md)
    - [社交与搜索原生直购：Google UCP vs. TikTok Buy Direct vs. Shopify Fall '26 vs. Walmart MCP](docs/social-search-native-checkout-google-ucp-vs-tiktok-buy-direct-shopify-walmart-mcp-selection-faq.md) · [EN](docs/social-search-native-checkout-google-ucp-vs-tiktok-buy-direct-shopify-walmart-mcp-selection-faq.en.md)
+   - [面向“54% 错误仍误下单”的购前确定性防买错护栏（Visa Benchmark 启示）](docs/ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.md) · [EN](docs/ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.en.md)
    - [智能体身份鉴权：Cloudflare Web Bot Auth & Visa TAP vs 传统 WAF IP 封禁](docs/ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.md) · [EN](docs/ecommerce-agent-identity-web-bot-auth-tap-vs-waf-faq.en.md)
 2. **智能体支付协议、加密授权令牌（Mandates）与强核身**
    - [MCP vs A2A vs ACP / UCP / AP2 / x402 全栈协议分层与互操作选型](docs/agentic-commerce-protocol-stack-mcp-vs-a2a-acp-ucp-ap2-x402-interoperability-selection-faq.md) · [EN](docs/agentic-commerce-protocol-stack-mcp-vs-a2a-acp-ucp-ap2-x402-interoperability-selection-faq.en.md)

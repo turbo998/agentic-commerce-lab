@@ -2,11 +2,11 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`121` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`122` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
-- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（9 篇）](#platform-grounding)
+- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（32 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（23 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（21 篇）](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（9 篇）
+## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）
 
 > 面向企业架构师的平台底座选型（Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify）、搜索接地（Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl）、目录同步屏障、A2UI 渲染隔离与可信 Bot 鉴权。
 
@@ -33,6 +33,7 @@
 | 7 | **AI Agent 网页比价防间接提示词注入（Indirect Prompt Injection）与评论区投毒防御架构：签名结构化商品快照（Signed ACP Feed + 指令/数据隔离沙盒 + 收款商户 DID 锚定）vs 裸 HTML 抓取劫持与隐藏 DOM 篡改收款方选型与原理解析 FAQ** | [中文](indirect-prompt-injection-dom-poisoning-vs-signed-acp-feed-faq.md) · [English](indirect-prompt-injection-dom-poisoning-vs-signed-acp-feed-faq.en.md) |
 | 8 | **Agentic Commerce 实时网页接地选型与原理解析 FAQ：Microsoft Web IQ vs. Exa vs. Bright Data vs. Foundry Bing Grounding 实战指南** | [中文](webiq-vs-exa-brightdata-grounding-selection-faq.md) · [English](webiq-vs-exa-brightdata-grounding-selection-faq.en.md) |
 | 9 | **社交电商与搜索原生直购（Social & Search Native Checkout）架构选型 FAQ：Google AI Mode / Gemini UCP vs. TikTok Buy Direct vs. Shopify Fall '26 跨品牌结账 vs. Walmart Agent Gateway (MCP) 实战指南** | [中文](social-search-native-checkout-google-ucp-vs-tiktok-buy-direct-shopify-walmart-mcp-selection-faq.md) · [English](social-search-native-checkout-google-ucp-vs-tiktok-buy-direct-shopify-walmart-mcp-selection-faq.en.md) |
+| 10 | **面向“54% 错误仍误下单”的智能体购前确定性防买错护栏（Pre-Purchase Verification & Anti-Wrong-Buy Gate）架构选型 FAQ：基于 Visa Agentic Commerce Benchmark（42.8% 失败率）的规格/尺码/预算/确认四重门禁实战指南** | [中文](ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.md) · [English](ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
 ## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（32 篇）

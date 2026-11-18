@@ -8226,6 +8226,87 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("social-search-native-checkout-sandbox", html)
 
+    def test_ecommerce_pre_purchase_anti_wrong_buy_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            EcommercePrePurchaseAntiWrongBuyPolicyInput,
+            evaluate_ecommerce_pre_purchase_anti_wrong_buy_policy,
+        )
+
+        happy = evaluate_ecommerce_pre_purchase_anti_wrong_buy_policy(
+            EcommercePrePurchaseAntiWrongBuyPolicyInput(
+                quarterly_delegated_shopping_pool_usd=Decimal("312000.00"),
+                unauthorized_sku_substitution_or_attribute_mismatch_detected=False,
+                all_in_landed_budget_exceeded_or_delivery_deadline_missed_detected=False,
+                webiq_product_spec_table_contradiction_flag=False,
+                restricted_key_age_days=30,
+                four_tuple_verifier_and_substitution_card_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "FROZEN_INTENT_FOUR_TUPLE_PRE_PURCHASE_VERIFIED_AUTHORIZED")
+        self.assertTrue(
+            str(happy["pre_purchase_verifier_token"]).startswith("ecommerce_pre_purchase_anti_wrong_buy_mandate_")
+        )
+
+        sub_block = evaluate_ecommerce_pre_purchase_anti_wrong_buy_policy(
+            EcommercePrePurchaseAntiWrongBuyPolicyInput(
+                quarterly_delegated_shopping_pool_usd=Decimal("312000.00"),
+                unauthorized_sku_substitution_or_attribute_mismatch_detected=True,
+                all_in_landed_budget_exceeded_or_delivery_deadline_missed_detected=False,
+                webiq_product_spec_table_contradiction_flag=False,
+                restricted_key_age_days=30,
+                four_tuple_verifier_and_substitution_card_enabled=False,
+            )
+        )
+        self.assertEqual(sub_block["http_status"], 403)
+        self.assertEqual(sub_block["decision"], "UNAUTHORIZED_SKU_SUBSTITUTION_OR_ATTRIBUTE_MISMATCH_BLOCKED")
+
+        landed_block = evaluate_ecommerce_pre_purchase_anti_wrong_buy_policy(
+            EcommercePrePurchaseAntiWrongBuyPolicyInput(
+                quarterly_delegated_shopping_pool_usd=Decimal("312000.00"),
+                unauthorized_sku_substitution_or_attribute_mismatch_detected=False,
+                all_in_landed_budget_exceeded_or_delivery_deadline_missed_detected=True,
+                webiq_product_spec_table_contradiction_flag=False,
+                restricted_key_age_days=30,
+                four_tuple_verifier_and_substitution_card_enabled=False,
+            )
+        )
+        self.assertEqual(landed_block["http_status"], 422)
+        self.assertEqual(landed_block["decision"], "ALL_IN_LANDED_BUDGET_EXCEEDED_OR_DELIVERY_DEADLINE_MISSED_BLOCKED")
+
+        spec_hold = evaluate_ecommerce_pre_purchase_anti_wrong_buy_policy(
+            EcommercePrePurchaseAntiWrongBuyPolicyInput(
+                quarterly_delegated_shopping_pool_usd=Decimal("312000.00"),
+                unauthorized_sku_substitution_or_attribute_mismatch_detected=False,
+                all_in_landed_budget_exceeded_or_delivery_deadline_missed_detected=False,
+                webiq_product_spec_table_contradiction_flag=True,
+                restricted_key_age_days=191,
+                four_tuple_verifier_and_substitution_card_enabled=False,
+            )
+        )
+        self.assertEqual(spec_hold["http_status"], 451)
+        self.assertEqual(spec_hold["decision"], "WEBIQ_PRODUCT_SPEC_TABLE_CONTRADICTION_OR_180D_KEY_HOLD")
+
+        opt_confirm = evaluate_ecommerce_pre_purchase_anti_wrong_buy_policy(
+            EcommercePrePurchaseAntiWrongBuyPolicyInput(
+                quarterly_delegated_shopping_pool_usd=Decimal("312000.00"),
+                unauthorized_sku_substitution_or_attribute_mismatch_detected=False,
+                all_in_landed_budget_exceeded_or_delivery_deadline_missed_detected=False,
+                webiq_product_spec_table_contradiction_flag=False,
+                restricted_key_age_days=30,
+                four_tuple_verifier_and_substitution_card_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "78000.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "234000.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_pre_purchase_anti_wrong_buy_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("ecommerce-pre-purchase-anti-wrong-buy-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
