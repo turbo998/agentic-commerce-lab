@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`119` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`120` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (8 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (32 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (23 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (20 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (21 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (12 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (24 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -105,7 +105,7 @@
 | 23 | **Service Booking & Long-Horizon Travel Agent Architecture: 180-Day Deferred SPT Mandate Horizon (`expires_at <= 180d`) vs. `HTTP 409` Slot-Conflict Recovery & Tiered Cancellation Grounding (Microsoft Web IQ) Selection & First-Principles FAQ** | [English](service-booking-180d-spt-ttl-vs-409-slot-conflict-faq.en.md) · [中文](service-booking-180d-spt-ttl-vs-409-slot-conflict-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (20 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (21 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -131,6 +131,7 @@
 | 18 | **Corporate T&E Expense Audit & Commercial Card Reconciliation Agent Architecture FAQ: Folio Line-Item Carve-Out, Card-vs-Cash Double-Dip Prevention, Synthetic Receipt Detection & ERP Auto-Posting** | [English](corporate-expense-audit-receipt-ocr-double-dip-prevention-erp-agent-selection-faq.en.md) · [中文](corporate-expense-audit-receipt-ocr-double-dip-prevention-erp-agent-selection-faq.md) |
 | 19 | **Enterprise ERP / CRM / Commerce Backend (Shopify / Dynamics 365 / SAP / Salesforce) Idempotent Order, Anti-Double-Charge & Saga Compensation Architecture FAQ** | [English](enterprise-erp-crm-shopify-sap-d365-idempotent-order-saga-architecture-selection-faq.en.md) · [中文](enterprise-erp-crm-shopify-sap-d365-idempotent-order-saga-architecture-selection-faq.md) |
 | 20 | **Retail & CPG Demand Forecasting, Autonomous Inventory Replenishment & VMI Agent Architecture FAQ: Anti-Bullwhip In-Transit Deduplication, MOQ Pallet Rounding, Shelf-Life Caps & Recall Circuit Breakers** | [English](retail-cpg-demand-forecasting-autonomous-replenishment-moq-po-agent-selection-faq.en.md) · [中文](retail-cpg-demand-forecasting-autonomous-replenishment-moq-po-agent-selection-faq.md) |
+| 21 | **Enterprise Agentic Treasury & Supplier Portal AP Payment Selection FAQ: Stripe Treasury MCP + Issuing Virtual Cards vs. Visa Intelligent Commerce × BILL Portal Agent (`TAP`) vs. Legacy RPA Scraping** | [English](enterprise-treasury-supplier-portal-ap-payment-stripe-mcp-vs-visa-bill-tap-selection-faq.en.md) · [中文](enterprise-treasury-supplier-portal-ap-payment-stripe-mcp-vs-visa-bill-tap-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (12 Guides)

@@ -1,6 +1,6 @@
 # Enterprise Agentic Commerce Lab — 企业智能体商业参考架构与 AI 解决方案架构师决策库
 
-🌐 **语言切换 / Language**: **中文主页 (当前)** | **[English (`README.en.md`)](README.en.md)** | **[📚 SA 决策指南总目录（119 篇双语 FAQ）](docs/index.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](benchmark-cards.html)**
+🌐 **语言切换 / Language**: **中文主页 (当前)** | **[English (`README.en.md`)](README.en.md)** | **[📚 SA 决策指南总目录（120 篇双语 FAQ）](docs/index.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](benchmark-cards.html)**
 
 > **面向 AI Solution Architect（AI 解决方案架构师）的企业级智能体商业工程参考库**
 > 聚焦**零售电商与多商户编排、智能体支付与加密授权协议（AP2 / Stripe SPT / Visa VIC & TAP / Mastercard / x402）、B2B 采购与 ERP 三单匹配、酒旅航司（OTA / IATA NDC）动态预订、SaaS 用量计费与 FinOps、跨境税务（MoR）/ 外汇清结算与 Visa CE 3.0 拒付抗辩**六大核心领域，提供**可复用的六平面参考架构、平台与协议选型对比矩阵、确定性受托控制面（Fiduciary Control Plane）Python 护栏模块及自包含交互式演示台**。
@@ -123,6 +123,7 @@ flowchart TB
 4. **B2B 企业采购寻源、ERP 三单匹配与供应链金融**
    - [B2B 寻源比价、合同红线审阅与 SAP / Ariba / Coupa 采购智能体集成](docs/b2b-rfq-sourcing-supplier-comparison-contract-redline-erp-copilot-selection-faq.md) · [EN](docs/b2b-rfq-sourcing-supplier-comparison-contract-redline-erp-copilot-selection-faq.en.md)
    - [企业应付账款（AP）三单匹配（PO-GRN-Invoice）与动态现金折扣自动化](docs/enterprise-ap-automation-three-way-match-dynamic-discounting-treasury-agent-selection-faq.md) · [EN](docs/enterprise-ap-automation-three-way-match-dynamic-discounting-treasury-agent-selection-faq.en.md)
+   - [企业智能体司库管理与供应商门户自动付款：Stripe Treasury MCP vs. Visa × BILL (TAP)](docs/enterprise-treasury-supplier-portal-ap-payment-stripe-mcp-vs-visa-bill-tap-selection-faq.md) · [EN](docs/enterprise-treasury-supplier-portal-ap-payment-stripe-mcp-vs-visa-bill-tap-selection-faq.en.md)
    - [供应商准入银行账户变更防 BEC 邮件诈骗与制裁筛查护栏](docs/b2b-vendor-onboarding-bank-account-change-bec-fraud-sanctions-mandate-vs-email-iban-hijack-faq.md) · [EN](docs/b2b-vendor-onboarding-bank-account-change-bec-fraud-sanctions-mandate-vs-email-iban-hijack-faq.en.md)
 5. **SaaS 订阅生命周期、用量计费与机器微支付**
    - [企业 SaaS 席位真实活跃度盘点（True-Up）与防僵尸续费授权](docs/saas-seat-trueup-telemetry-mandate-vs-shelfware-auto-renewal-faq.md) · [EN](docs/saas-seat-trueup-telemetry-mandate-vs-shelfware-auto-renewal-faq.en.md)

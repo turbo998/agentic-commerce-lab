@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg444" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070B19"/>
+      <stop offset="50%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="accent444" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg444)"/>
+  <rect x="24" y="20" width="1152" height="635" rx="16" fill="#0F172A" stroke="#1E293B" stroke-width="2"/>
+  <rect x="24" y="20" width="1152" height="6" rx="3" fill="url(#accent444)"/>
+
+  <!-- Header -->
+  <text x="52" y="58" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="1.2">2026-11-18 · ENTERPRISE TREASURY &amp; SUPPLIER PORTAL AP AGENT · STRIPE TREASURY MCP vs. VISA × BILL (TAP)</text>
+  <text x="52" y="88" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="20.5" font-weight="800">企业智能体司库管理与供应商门户自动付款选型：Stripe Treasury MCP vs. Visa × BILL (TAP)</text>
+  <text x="52" y="112" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="13">废除 RPA 共享门户账密 · Visa Agentic Directory + TAP 受托凭证 · Stripe Treasury MCP 资金划拨人工确认门禁 · 立省 $67,200 (24.0%)</text>
+
+  <!-- Left Column: Legacy RPA & Unconfirmed Treasury Pitfalls -->
+  <rect x="48" y="132" width="352" height="390" rx="12" fill="#1E1B2E" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="68" y="162" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">❌ 传统供应商门户 RPA 与裸调司库三大致命风险</text>
+
+  <rect x="64" y="178" width="320" height="98" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="200" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">1. RPA 共享门户明文账密 &amp; WAF 封禁断连</text>
+  <text x="78" y="220" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 30% B2B 供应商仅支持买方登录自有 Web 门户手工付账单</text>
+  <text x="78" y="238" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 传统 RPA 把企业管理员账密塞给脚本，离职/脱库极易被盗刷</text>
+  <text x="78" y="256" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 供应商门户稍改 DOM 或弹 CAPTCHA 即导致月末批量断付!</text>
+
+  <rect x="64" y="288" width="320" height="98" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="310" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">2. Agent 无人工确认直调 send_money / 付未批发票</text>
+  <text x="78" y="330" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 恶意 PDF 发票夹带隐藏提示词诱导 Agent 直接发起电汇</text>
+  <text x="78" y="348" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 绕过 ERP 已批状态 (Buyer-Approved Invoice) 擅自对外划款</text>
+  <text x="78" y="366" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 违反 Stripe Treasury MCP 真实资金移动默认强制 HITL 铁律!</text>
+
+  <rect x="64" y="398" width="320" height="106" rx="8" fill="#0F172A" stroke="#7F1D1D" stroke-width="1"/>
+  <text x="78" y="420" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">3. 静态部门公卡 (Ghost Card) 暴露与错失早付贴现</text>
+  <text x="78" y="440" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 在供应商门户绑定固定额度企业实体卡，极易被超额重扣</text>
+  <text x="78" y="458" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 手工录单延误 12 天，白白错失 2/10 Net 30 早付折扣与卡返现</text>
+  <text x="78" y="480" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 传统门户 AP 结算与财资损耗基线：$280,000 / 季度</text>
+
+  <!-- Center Column: 5-Lane Deterministic Gate -->
+  <rect x="420" y="132" width="380" height="390" rx="12" fill="#0F2238" stroke="#38BDF8" stroke-width="1.5"/>
+  <text x="440" y="162" fill="#7DD3FC" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">🛡️ 智能体司库与门户 AP 结算五车道确定性门禁</text>
+
+  <rect x="436" y="178" width="348" height="56" rx="8" fill="#091526" stroke="#EF4444" stroke-width="1.2"/>
+  <text x="450" y="200" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 403 · 拦截未注册 Agent 或共享门户账密 (10ms)</text>
+  <text x="450" y="220" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">强制校验 Visa Agentic Directory 签名 (TAP) 并禁绝 RPA 明文密码</text>
+
+  <rect x="436" y="244" width="348" height="56" rx="8" fill="#091526" stroke="#F97316" stroke-width="1.2"/>
+  <text x="450" y="266" fill="#FB923C" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🚨 HTTP 422 · 拦截未批发票或缺失司库 HITL 确认 (13ms)</text>
+  <text x="450" y="286" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">仅执行 ERP 已核准发票，且 Treasury 划款/换汇强制人类二次确认</text>
+
+  <rect x="436" y="310" width="348" height="56" rx="8" fill="#091526" stroke="#A855F7" stroke-width="1.2"/>
+  <text x="450" y="332" fill="#C084FC" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🛑 HTTP 451 · 拦截门户钓鱼域名异常与超 180d 密钥 (260ms)</text>
+  <text x="450" y="352" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="11">Web IQ 实时比对 Billtrust/AR 门户官方 TLS 指纹并锁死超期密钥</text>
+
+  <rect x="436" y="376" width="348" height="58" rx="8" fill="#091526" stroke="#F59E0B" stroke-width="1.2"/>
+  <text x="450" y="398" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">🧑‍⚖️ HTTP 409 · 单次虚拟卡 L3 返佣 + 2/10 早付贴现 (220ms)</text>
+  <text x="450" y="418" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="11">直通门户秒抢早付折扣 + Treasury 活期生息立省 $67,200 → $212,800</text>
+
+  <rect x="436" y="444" width="348" height="60" rx="8" fill="#06281E" stroke="#10B981" stroke-width="1.5"/>
+  <text x="450" y="468" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">✅ HTTP 200 · TAP 门户免密直付 + 司库自动对账闭环 (10ms)</text>
+  <text x="450" y="488" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="11">零共享门户密码 + 单次定额 VIC/Issuing 令牌 ($280,000 批次)</text>
+
+  <!-- Right Column: Quantitative Metrics -->
+  <rect x="820" y="132" width="332" height="390" rx="12" fill="#0B2420" stroke="#10B981" stroke-width="1.5"/>
+  <text x="840" y="162" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">📊 司库与门户支付第一性原理</text>
+
+  <rect x="836" y="178" width="300" height="104" rx="8" fill="#071715" stroke="#065F46" stroke-width="1"/>
+  <text x="850" y="200" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">🏦 双轨互补架构分工</text>
+  <text x="850" y="222" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 查余额/付发票/换汇：Stripe Treasury MCP</text>
+  <text x="850" y="242" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 供应商门户交单：Visa VIC + TAP + Billtrust</text>
+  <text x="850" y="262" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 铁律：仅执行买方已批发票 + 动钱必经 HITL</text>
+
+  <rect x="836" y="294" width="300" height="104" rx="8" fill="#071715" stroke="#065F46" stroke-width="1"/>
+  <text x="850" y="316" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">⚡ 实测门户直通率与风控指标</text>
+  <text x="850" y="338" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 供应商门户免 RPA 账密直付成功率：99.4%</text>
+  <text x="850" y="358" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 未经人类确认的司库资金外流率：0.0%</text>
+  <text x="850" y="378" fill="#7DD3FC" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">• 单次虚拟卡超额/跨商户盗刷率：0.0%</text>
+
+  <rect x="836" y="410" width="300" height="94" rx="8" fill="#071715" stroke="#10B981" stroke-width="1.5"/>
+  <text x="850" y="434" fill="#FBBF24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">💰 季度企业司库与门户 AP 净收益</text>
+  <text x="850" y="460" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="800">立省 $67,200.00 (-24.0%)</text>
+  <text x="850" y="484" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="12">原应付账款与人工/贴现损耗 $280,000 → 净值 $212,800</text>
+
+  <!-- Footer Mandate Strip -->
+  <rect x="48" y="538" width="1104" height="96" rx="10" fill="#091326" stroke="#334155" stroke-width="1.5"/>
+  <text x="68" y="566" fill="#38BDF8" font-family="Consolas, monospace" font-size="13" font-weight="700">Mandate Prefix: enterprise_treasury_supplier_portal_ap_mandate_*</text>
+  <text x="68" y="590" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12">✅ Good Fit: 企业 CFO 司库自动化、应付账款 (AP) 供应商门户交割 (BILL / Billtrust / Coupa / SAP)、虚拟采购卡单次结算</text>
+  <text x="68" y="614" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="12">⛔ Not For: 将管理员门户明文密码交给无头浏览器脚本或允许 LLM 无人类确认直接发起电汇 · Provenance: official_doc_snapshot + deterministic_offline_simulation</text>
+</svg>

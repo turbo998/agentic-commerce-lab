@@ -1,6 +1,6 @@
 # Enterprise Agentic Commerce Lab — Reference Architecture & AI Solution Architect Playbooks
 
-🌐 **Language / 语言切换**: **[中文主页 (`README.md`)](README.md)** | **English (Current)** | **[📚 Full SA Decision Guide Catalog (119 Bilingual FAQs)](docs/index.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](benchmark-cards.en.html)**
+🌐 **Language / 语言切换**: **[中文主页 (`README.md`)](README.md)** | **English (Current)** | **[📚 Full SA Decision Guide Catalog (120 Bilingual FAQs)](docs/index.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](benchmark-cards.en.html)**
 
 > **An Enterprise Engineering & Architecture Reference Hub for AI Solution Architects**
 > Focused exclusively on **Retail & Multi-Merchant E-Commerce, Agent Payment & Cryptographic Mandate Protocols (`Google AP2`, `Stripe SPT`, `Visa VIC & TAP`, `Mastercard Agent Pay`, `PayPal`, `x402`), Enterprise B2B Procurement & ERP 3-Way Match, OTA / Airline (`IATA NDC`) Dynamic Booking, SaaS Usage Metering & FinOps, and Cross-Border Tax (`MoR`) / FX Clearing / `Visa CE 3.0` Chargeback Defense** — pairing executive decision guides with a **6-Plane Reference Architecture, deterministic Python guardrails, and self-contained interactive workbenches**.
@@ -123,6 +123,7 @@ flowchart TB
 4. **Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance**
    - [B2B RFQ Sourcing, Contract Redlining & SAP / Ariba / Coupa Procurement Agents](docs/b2b-rfq-sourcing-supplier-comparison-contract-redline-erp-copilot-selection-faq.en.md) · [中文](docs/b2b-rfq-sourcing-supplier-comparison-contract-redline-erp-copilot-selection-faq.md)
    - [Enterprise AP Automation: PO-GRN-Invoice 3-Way Match & Dynamic Discounting](docs/enterprise-ap-automation-three-way-match-dynamic-discounting-treasury-agent-selection-faq.en.md) · [中文](docs/enterprise-ap-automation-three-way-match-dynamic-discounting-treasury-agent-selection-faq.md)
+   - [Enterprise Treasury & Supplier Portal AP Payment: Stripe Treasury MCP vs. Visa × BILL (`TAP`)](docs/enterprise-treasury-supplier-portal-ap-payment-stripe-mcp-vs-visa-bill-tap-selection-faq.en.md) · [中文](docs/enterprise-treasury-supplier-portal-ap-payment-stripe-mcp-vs-visa-bill-tap-selection-faq.md)
    - [Vendor Onboarding Bank-Change BEC Defense & Sanctions Screening Guardrails](docs/b2b-vendor-onboarding-bank-account-change-bec-fraud-sanctions-mandate-vs-email-iban-hijack-faq.en.md) · [中文](docs/b2b-vendor-onboarding-bank-account-change-bec-fraud-sanctions-mandate-vs-email-iban-hijack-faq.md)
 5. **SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments**
    - [Enterprise SaaS Seat Telemetry True-Up vs Shelfware Auto-Renewal Governance](docs/saas-seat-trueup-telemetry-mandate-vs-shelfware-auto-renewal-faq.en.md) · [中文](docs/saas-seat-trueup-telemetry-mandate-vs-shelfware-auto-renewal-faq.md)

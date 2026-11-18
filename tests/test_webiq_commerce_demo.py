@@ -8064,6 +8064,87 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("cross-border-reverse-logistics-drawback-sandbox", html)
 
+    def test_enterprise_treasury_supplier_portal_ap_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            EnterpriseTreasurySupplierPortalApPolicyInput,
+            evaluate_enterprise_treasury_supplier_portal_ap_policy,
+        )
+
+        happy = evaluate_enterprise_treasury_supplier_portal_ap_policy(
+            EnterpriseTreasurySupplierPortalApPolicyInput(
+                quarterly_treasury_ap_portal_pool_usd=Decimal("280000.00"),
+                shared_portal_credentials_or_unregistered_tap_agent_detected=False,
+                unapproved_buyer_invoice_or_missing_treasury_hitl_detected=False,
+                webiq_supplier_portal_domain_spoof_flag=False,
+                restricted_key_age_days=30,
+                tap_portal_early_discount_and_l3_vcn_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "VISA_TAP_DIRECTORY_VERIFIED_AND_TREASURY_HITL_AUTHORIZED")
+        self.assertTrue(
+            str(happy["treasury_portal_token"]).startswith("enterprise_treasury_supplier_portal_ap_mandate_")
+        )
+
+        cred_block = evaluate_enterprise_treasury_supplier_portal_ap_policy(
+            EnterpriseTreasurySupplierPortalApPolicyInput(
+                quarterly_treasury_ap_portal_pool_usd=Decimal("280000.00"),
+                shared_portal_credentials_or_unregistered_tap_agent_detected=True,
+                unapproved_buyer_invoice_or_missing_treasury_hitl_detected=False,
+                webiq_supplier_portal_domain_spoof_flag=False,
+                restricted_key_age_days=30,
+                tap_portal_early_discount_and_l3_vcn_enabled=False,
+            )
+        )
+        self.assertEqual(cred_block["http_status"], 403)
+        self.assertEqual(cred_block["decision"], "SHARED_PORTAL_CREDENTIALS_OR_UNREGISTERED_TAP_AGENT_BLOCKED")
+
+        hitl_block = evaluate_enterprise_treasury_supplier_portal_ap_policy(
+            EnterpriseTreasurySupplierPortalApPolicyInput(
+                quarterly_treasury_ap_portal_pool_usd=Decimal("280000.00"),
+                shared_portal_credentials_or_unregistered_tap_agent_detected=False,
+                unapproved_buyer_invoice_or_missing_treasury_hitl_detected=True,
+                webiq_supplier_portal_domain_spoof_flag=False,
+                restricted_key_age_days=30,
+                tap_portal_early_discount_and_l3_vcn_enabled=False,
+            )
+        )
+        self.assertEqual(hitl_block["http_status"], 422)
+        self.assertEqual(hitl_block["decision"], "UNAPPROVED_BUYER_INVOICE_OR_MISSING_TREASURY_HITL_BLOCKED")
+
+        spoof_hold = evaluate_enterprise_treasury_supplier_portal_ap_policy(
+            EnterpriseTreasurySupplierPortalApPolicyInput(
+                quarterly_treasury_ap_portal_pool_usd=Decimal("280000.00"),
+                shared_portal_credentials_or_unregistered_tap_agent_detected=False,
+                unapproved_buyer_invoice_or_missing_treasury_hitl_detected=False,
+                webiq_supplier_portal_domain_spoof_flag=True,
+                restricted_key_age_days=195,
+                tap_portal_early_discount_and_l3_vcn_enabled=False,
+            )
+        )
+        self.assertEqual(spoof_hold["http_status"], 451)
+        self.assertEqual(spoof_hold["decision"], "WEBIQ_SUPPLIER_PORTAL_DOMAIN_SPOOF_OR_180D_KEY_HOLD")
+
+        opt_confirm = evaluate_enterprise_treasury_supplier_portal_ap_policy(
+            EnterpriseTreasurySupplierPortalApPolicyInput(
+                quarterly_treasury_ap_portal_pool_usd=Decimal("280000.00"),
+                shared_portal_credentials_or_unregistered_tap_agent_detected=False,
+                unapproved_buyer_invoice_or_missing_treasury_hitl_detected=False,
+                webiq_supplier_portal_domain_spoof_flag=False,
+                restricted_key_age_days=30,
+                tap_portal_early_discount_and_l3_vcn_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "67200.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "212800.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("enterprise_treasury_supplier_portal_ap_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("enterprise-treasury-supplier-portal-ap-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
