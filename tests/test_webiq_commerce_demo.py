@@ -10338,6 +10338,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("childcare-preschool-camp-escrow-sandbox", html)
 
+    def test_shared_powerbank_smart_vending_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            SharedPowerbankSmartVendingPolicyInput,
+            evaluate_shared_powerbank_smart_vending_policy,
+        )
+
+        happy = evaluate_shared_powerbank_smart_vending_policy(
+            SharedPowerbankSmartVendingPolicyInput(
+                quarterly_shared_rental_vending_pool_usd=Decimal("230000.00"),
+                fake_powerbank_shell_insertion_or_smart_cooler_weight_vision_spoof_detected=False,
+                zombie_slot_offline_overbilling_or_pick_up_put_back_false_charge_detected=False,
+                webiq_bms_thermal_runaway_lock_or_cooler_temp_breach_flag=False,
+                restricted_key_age_days=30,
+                deposit_free_credit_score_hold_and_ble_instant_return_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "CRYPTO_SLOT_VERIFIED_VISION_WEIGHT_MATCHED_AND_SETTLE_AUTHORIZED")
+        self.assertTrue(
+            str(happy["shared_vending_token"]).startswith("shared_powerbank_smart_vending_mandate_")
+        )
+
+        fake_block = evaluate_shared_powerbank_smart_vending_policy(
+            SharedPowerbankSmartVendingPolicyInput(
+                quarterly_shared_rental_vending_pool_usd=Decimal("230000.00"),
+                fake_powerbank_shell_insertion_or_smart_cooler_weight_vision_spoof_detected=True,
+                zombie_slot_offline_overbilling_or_pick_up_put_back_false_charge_detected=False,
+                webiq_bms_thermal_runaway_lock_or_cooler_temp_breach_flag=False,
+                restricted_key_age_days=30,
+                deposit_free_credit_score_hold_and_ble_instant_return_enabled=False,
+            )
+        )
+        self.assertEqual(fake_block["http_status"], 403)
+        self.assertEqual(
+            fake_block["decision"],
+            "FAKE_POWERBANK_SHELL_INSERTION_OR_SMART_COOLER_WEIGHT_VISION_SPOOF_BLOCKED",
+        )
+
+        zombie_block = evaluate_shared_powerbank_smart_vending_policy(
+            SharedPowerbankSmartVendingPolicyInput(
+                quarterly_shared_rental_vending_pool_usd=Decimal("230000.00"),
+                fake_powerbank_shell_insertion_or_smart_cooler_weight_vision_spoof_detected=False,
+                zombie_slot_offline_overbilling_or_pick_up_put_back_false_charge_detected=True,
+                webiq_bms_thermal_runaway_lock_or_cooler_temp_breach_flag=False,
+                restricted_key_age_days=30,
+                deposit_free_credit_score_hold_and_ble_instant_return_enabled=False,
+            )
+        )
+        self.assertEqual(zombie_block["http_status"], 422)
+        self.assertEqual(
+            zombie_block["decision"],
+            "ZOMBIE_SLOT_OFFLINE_OVERBILLING_OR_PICK_UP_PUT_BACK_FALSE_CHARGE_BLOCKED",
+        )
+
+        thermal_hold = evaluate_shared_powerbank_smart_vending_policy(
+            SharedPowerbankSmartVendingPolicyInput(
+                quarterly_shared_rental_vending_pool_usd=Decimal("230000.00"),
+                fake_powerbank_shell_insertion_or_smart_cooler_weight_vision_spoof_detected=False,
+                zombie_slot_offline_overbilling_or_pick_up_put_back_false_charge_detected=False,
+                webiq_bms_thermal_runaway_lock_or_cooler_temp_breach_flag=True,
+                restricted_key_age_days=191,
+                deposit_free_credit_score_hold_and_ble_instant_return_enabled=False,
+            )
+        )
+        self.assertEqual(thermal_hold["http_status"], 451)
+        self.assertEqual(
+            thermal_hold["decision"],
+            "WEBIQ_BMS_THERMAL_RUNAWAY_LOCK_OR_COOLER_TEMP_BREACH_HOLD",
+        )
+
+        opt_confirm = evaluate_shared_powerbank_smart_vending_policy(
+            SharedPowerbankSmartVendingPolicyInput(
+                quarterly_shared_rental_vending_pool_usd=Decimal("230000.00"),
+                fake_powerbank_shell_insertion_or_smart_cooler_weight_vision_spoof_detected=False,
+                zombie_slot_offline_overbilling_or_pick_up_put_back_false_charge_detected=False,
+                webiq_bms_thermal_runaway_lock_or_cooler_temp_breach_flag=False,
+                restricted_key_age_days=30,
+                deposit_free_credit_score_hold_and_ble_instant_return_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "59800.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "170200.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("shared_powerbank_smart_vending_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("shared-powerbank-smart-vending-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
