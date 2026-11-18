@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`144` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`145` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -10,7 +10,7 @@
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (33 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (34 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (28 guides)](#b2b-procurement-erp)
-- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (13 guides)](#saas-finops-micropayments)
+- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (14 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (26 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
@@ -155,7 +155,7 @@
 | 28 | **Commercial Retail Mall Percentage Rent Audit & `TI` Allowance Escrow (`Yardi Voyager / MRI Software / Procore / Levelset`) Anti-POS-Skimming, Cross-Store Return Cap & Statutory Lien Waiver Agent Architecture Selection FAQ** | [English](commercial-cre-retail-mall-percentage-rent-pos-audit-lien-waiver-agent-selection-faq.en.md) · [中文](commercial-cre-retail-mall-percentage-rent-pos-audit-lien-waiver-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (13 Guides)
+## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (14 Guides)
 
 > Covers enterprise SaaS seat governance, UUIDv7 usage metering watermarks, FTC Click-to-Cancel & retention guardrails, HTTP 402 (x402 / Stripe MPP Tempo) micropayments, and LLM token FinOps routing.
 
@@ -174,6 +174,7 @@
 | 11 | **Enterprise SaaS Seat True-Up & Active-Telemetry Mandate Architecture: SSO-Driven De-Provisioning Token (`saas_seat_trueup_mandate_...` + Web IQ Public Tier Grounding) vs. Silent Auto-Renewal Traps & Zombie Shelfware Waste Selection FAQ** | [English](saas-seat-trueup-telemetry-mandate-vs-shelfware-auto-renewal-faq.en.md) · [中文](saas-seat-trueup-telemetry-mandate-vs-shelfware-auto-renewal-faq.md) |
 | 12 | **Subscription SaaS Customer Renewal Retention & Intelligent Offer Orchestration Agent Architecture FAQ: Telemetry Triage, Pause/Downgrade First, LTV Margin Floors, Cadence SPTs & FTC Click-to-Cancel Compliance** | [English](saas-subscription-churn-retention-offer-orchestration-billing-agent-selection-faq.en.md) · [中文](saas-subscription-churn-retention-offer-orchestration-billing-agent-selection-faq.md) |
 | 13 | **Digital Media Paywall, Research Micropayments & AI Crawler Licensing (`NYT / Substack / TollBit / Cloudflare Pay-Per-Crawl`) `HTTP 402` Grounding, Fare-Capping & B2B Seat Upgrade Agent Architecture Selection FAQ** | [English](digital-media-paywall-per-article-micropayment-ai-crawler-licensing-agent-selection-faq.en.md) · [中文](digital-media-paywall-per-article-micropayment-ai-crawler-licensing-agent-selection-faq.md) |
+| 14 | **Childcare, Preschool & Summer Camp Billing (`Brightwheel / Procare / Sawyer`) Live Staff-to-Child Licensing Ratio Gate, 3-Month Prepaid Escrow Cap & `CCDF / Dependent Care FSA` Split Agent Architecture Selection FAQ** | [English](childcare-preschool-camp-subsidy-copay-ratio-escrow-agent-selection-faq.en.md) · [中文](childcare-preschool-camp-subsidy-copay-ratio-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (26 Guides)

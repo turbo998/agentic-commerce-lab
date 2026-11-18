@@ -10248,6 +10248,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("commercial-cre-percentage-rent-sandbox", html)
 
+    def test_childcare_preschool_camp_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            ChildcarePreschoolCampEscrowPolicyInput,
+            evaluate_childcare_preschool_camp_escrow_policy,
+        )
+
+        happy = evaluate_childcare_preschool_camp_escrow_policy(
+            ChildcarePreschoolCampEscrowPolicyInput(
+                quarterly_childcare_camp_tuition_pool_usd=Decimal("260000.00"),
+                staff_child_ratio_breach_or_missing_immunization_pickup_auth_detected=False,
+                prepaid_tuition_cap_breach_or_overnight_camp_fsa_ineligible_detected=False,
+                webiq_expired_staff_background_check_or_licensing_flag=False,
+                restricted_key_age_days=30,
+                ccdf_fsa_copay_split_and_monthly_escrow_release_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "RATIO_COMPLIANT_IMMUNIZATION_VERIFIED_AND_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["childcare_camp_token"]).startswith("childcare_preschool_camp_escrow_mandate_")
+        )
+
+        ratio_block = evaluate_childcare_preschool_camp_escrow_policy(
+            ChildcarePreschoolCampEscrowPolicyInput(
+                quarterly_childcare_camp_tuition_pool_usd=Decimal("260000.00"),
+                staff_child_ratio_breach_or_missing_immunization_pickup_auth_detected=True,
+                prepaid_tuition_cap_breach_or_overnight_camp_fsa_ineligible_detected=False,
+                webiq_expired_staff_background_check_or_licensing_flag=False,
+                restricted_key_age_days=30,
+                ccdf_fsa_copay_split_and_monthly_escrow_release_enabled=False,
+            )
+        )
+        self.assertEqual(ratio_block["http_status"], 403)
+        self.assertEqual(
+            ratio_block["decision"],
+            "STAFF_CHILD_RATIO_BREACH_OR_MISSING_IMMUNIZATION_PICKUP_AUTH_BLOCKED",
+        )
+
+        fsa_block = evaluate_childcare_preschool_camp_escrow_policy(
+            ChildcarePreschoolCampEscrowPolicyInput(
+                quarterly_childcare_camp_tuition_pool_usd=Decimal("260000.00"),
+                staff_child_ratio_breach_or_missing_immunization_pickup_auth_detected=False,
+                prepaid_tuition_cap_breach_or_overnight_camp_fsa_ineligible_detected=True,
+                webiq_expired_staff_background_check_or_licensing_flag=False,
+                restricted_key_age_days=30,
+                ccdf_fsa_copay_split_and_monthly_escrow_release_enabled=False,
+            )
+        )
+        self.assertEqual(fsa_block["http_status"], 422)
+        self.assertEqual(
+            fsa_block["decision"],
+            "PREPAID_TUITION_CAP_BREACH_OR_OVERNIGHT_CAMP_FSA_INELIGIBLE_BLOCKED",
+        )
+
+        bgc_hold = evaluate_childcare_preschool_camp_escrow_policy(
+            ChildcarePreschoolCampEscrowPolicyInput(
+                quarterly_childcare_camp_tuition_pool_usd=Decimal("260000.00"),
+                staff_child_ratio_breach_or_missing_immunization_pickup_auth_detected=False,
+                prepaid_tuition_cap_breach_or_overnight_camp_fsa_ineligible_detected=False,
+                webiq_expired_staff_background_check_or_licensing_flag=True,
+                restricted_key_age_days=191,
+                ccdf_fsa_copay_split_and_monthly_escrow_release_enabled=False,
+            )
+        )
+        self.assertEqual(bgc_hold["http_status"], 451)
+        self.assertEqual(
+            bgc_hold["decision"],
+            "WEBIQ_EXPIRED_STAFF_BACKGROUND_CHECK_OR_LICENSING_HOLD",
+        )
+
+        opt_confirm = evaluate_childcare_preschool_camp_escrow_policy(
+            ChildcarePreschoolCampEscrowPolicyInput(
+                quarterly_childcare_camp_tuition_pool_usd=Decimal("260000.00"),
+                staff_child_ratio_breach_or_missing_immunization_pickup_auth_detected=False,
+                prepaid_tuition_cap_breach_or_overnight_camp_fsa_ineligible_detected=False,
+                webiq_expired_staff_background_check_or_licensing_flag=False,
+                restricted_key_age_days=30,
+                ccdf_fsa_copay_split_and_monthly_escrow_release_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "59800.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "200200.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("childcare_preschool_camp_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("childcare-preschool-camp-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
