@@ -15622,6 +15622,80 @@ def evaluate_digital_pharmacy_optical_rx_copay_policy(
         "reason": "Verified NCPDP eRx / FCLCA optical parameters, zero DDI conflict, safe cold-chain window, and HIPAA PHI redaction.",
     }
 
+
+@dataclass(frozen=True)
+class ProptechLeasingDepositCamAchPolicyInput:
+    quarterly_proptech_leasing_rent_pool_usd: Decimal
+    fake_pdf_paystub_fraud_or_commingled_security_deposit_detected: bool
+    undepreciated_wear_deduction_or_cam_capex_overcharge_detected: bool
+    webiq_municipal_rent_control_cap_breach_flag: bool
+    restricted_key_age_days: int
+    balance_preflight_a2a_rent_and_cam_audit_enabled: bool
+
+
+def evaluate_proptech_leasing_deposit_cam_ach_policy(
+    policy_input: ProptechLeasingDepositCamAchPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate PropTech Open Banking payroll underwriting, segregated deposit escrow, CAM cap audit & balance-preflight A2A rent."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_proptech_leasing_rent_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.fake_pdf_paystub_fraud_or_commingled_security_deposit_detected:
+        return {
+            "http_status": 403,
+            "decision": "FAKE_PDF_PAYSTUB_FRAUD_OR_COMMINGLED_SECURITY_DEPOSIT_BLOCKED",
+            "latency_ms": 10,
+            "approved_budget_usd": "0.00",
+            "proptech_leasing_token": None,
+            "reason": "Blocked synthetic PDF paystub application or commingling of tenant security deposit in operating accounts.",
+        }
+
+    if policy_input.undepreciated_wear_deduction_or_cam_capex_overcharge_detected:
+        return {
+            "http_status": 422,
+            "decision": "UNDEPRECIATED_WEAR_DEDUCTION_OR_CAM_CAPEX_OVERCHARGE_BLOCKED",
+            "latency_ms": 13,
+            "approved_budget_usd": "0.00",
+            "proptech_leasing_token": None,
+            "reason": "Blocked move-out deduction lacking useful-life depreciation or commercial CAM true-up passing landlord CapEx.",
+        }
+
+    if policy_input.webiq_municipal_rent_control_cap_breach_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_MUNICIPAL_RENT_CONTROL_CAP_BREACH_OR_180D_KEY_HOLD",
+            "latency_ms": 255,
+            "approved_budget_usd": "0.00",
+            "proptech_leasing_token": None,
+            "reason": "Web IQ detected lease renewal hike exceeding municipal rent-control cap or restricted key age > 180 days.",
+        }
+
+    if policy_input.balance_preflight_a2a_rent_and_cam_audit_enabled:
+        savings = (gross * Decimal("0.23")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"PROPTECH_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "BALANCE_PREFLIGHT_A2A_RENT_AND_CAM_DEPRECIATION_AUDIT_CONFIRM",
+            "latency_ms": 215,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "proptech_leasing_token": f"proptech_leasing_deposit_cam_ach_mandate_{digest}",
+            "reason": "Open Banking balance-preflight A2A rent, CAM CapEx filtering, and segregated deposit escrow reduced losses by 23.0%.",
+        }
+
+    digest = hashlib.sha256(f"PROPTECH_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "OPEN_BANKING_PAYROLL_AND_SEGREGATED_DEPOSIT_ESCROW_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "proptech_leasing_token": f"proptech_leasing_deposit_cam_ach_mandate_{digest}",
+        "reason": "Verified Open Banking payroll stream, segregated interest-bearing deposit escrow, and compliant CAM/rent settlement.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -20778,6 +20852,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    proptech_leasing_deposit_cam_ach_guard = {
+        "happy_path": evaluate_proptech_leasing_deposit_cam_ach_policy(
+            ProptechLeasingDepositCamAchPolicyInput(
+                quarterly_proptech_leasing_rent_pool_usd=Decimal("420000.00"),
+                fake_pdf_paystub_fraud_or_commingled_security_deposit_detected=False,
+                undepreciated_wear_deduction_or_cam_capex_overcharge_detected=False,
+                webiq_municipal_rent_control_cap_breach_flag=False,
+                restricted_key_age_days=30,
+                balance_preflight_a2a_rent_and_cam_audit_enabled=False,
+            )
+        ),
+        "fake_paystub_or_commingled_deposit_block": evaluate_proptech_leasing_deposit_cam_ach_policy(
+            ProptechLeasingDepositCamAchPolicyInput(
+                quarterly_proptech_leasing_rent_pool_usd=Decimal("420000.00"),
+                fake_pdf_paystub_fraud_or_commingled_security_deposit_detected=True,
+                undepreciated_wear_deduction_or_cam_capex_overcharge_detected=False,
+                webiq_municipal_rent_control_cap_breach_flag=False,
+                restricted_key_age_days=30,
+                balance_preflight_a2a_rent_and_cam_audit_enabled=False,
+            )
+        ),
+        "undepreciated_wear_or_cam_capex_block": evaluate_proptech_leasing_deposit_cam_ach_policy(
+            ProptechLeasingDepositCamAchPolicyInput(
+                quarterly_proptech_leasing_rent_pool_usd=Decimal("420000.00"),
+                fake_pdf_paystub_fraud_or_commingled_security_deposit_detected=False,
+                undepreciated_wear_deduction_or_cam_capex_overcharge_detected=True,
+                webiq_municipal_rent_control_cap_breach_flag=False,
+                restricted_key_age_days=30,
+                balance_preflight_a2a_rent_and_cam_audit_enabled=False,
+            )
+        ),
+        "webiq_rent_control_or_key_hold": evaluate_proptech_leasing_deposit_cam_ach_policy(
+            ProptechLeasingDepositCamAchPolicyInput(
+                quarterly_proptech_leasing_rent_pool_usd=Decimal("420000.00"),
+                fake_pdf_paystub_fraud_or_commingled_security_deposit_detected=False,
+                undepreciated_wear_deduction_or_cam_capex_overcharge_detected=False,
+                webiq_municipal_rent_control_cap_breach_flag=True,
+                restricted_key_age_days=191,
+                balance_preflight_a2a_rent_and_cam_audit_enabled=False,
+            )
+        ),
+        "balance_preflight_a2a_and_cam_confirm": evaluate_proptech_leasing_deposit_cam_ach_policy(
+            ProptechLeasingDepositCamAchPolicyInput(
+                quarterly_proptech_leasing_rent_pool_usd=Decimal("420000.00"),
+                fake_pdf_paystub_fraud_or_commingled_security_deposit_detected=False,
+                undepreciated_wear_deduction_or_cam_capex_overcharge_detected=False,
+                webiq_municipal_rent_control_cap_breach_flag=False,
+                restricted_key_age_days=30,
+                balance_preflight_a2a_rent_and_cam_audit_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -20917,6 +21044,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "franchise_qsr_supply_royalty_split_guard": franchise_qsr_supply_royalty_split_guard,
         "ecommerce_abandoned_cart_recovery_guard": ecommerce_abandoned_cart_recovery_guard,
         "digital_pharmacy_optical_rx_copay_guard": digital_pharmacy_optical_rx_copay_guard,
+        "proptech_leasing_deposit_cam_ach_guard": proptech_leasing_deposit_cam_ach_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -26634,6 +26762,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">电子处方与 HIPAA 脱敏令牌</div>
             <div class="finops-kpi-val" id="pharm-rx-token-kpi" style="font-size:10px;color:#A78BFA;">digital_pharmacy_optical_rx_copay_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive PropTech Residential & Commercial Leasing (Open Banking Payroll, Deposit Escrow, CAM Audit & A2A Rent) Sandbox -->
+      <div class="finops-box" id="proptech-leasing-deposit-cam-ach-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏢 长租公寓与商业地产资管 (Bilt / Yardi：押金专户托管、CAM 审计与余额预检 A2A 收租) 沙盒</div>
+            <div class="finops-subtitle">实测 Open Banking 工资流水拦截 AI 假工资单与押金独立专户隔离 (HTTP 403)、退房剩余寿命折旧公式与商业 CAM 剔除 CapEx 封顶 (HTTP 422)、市政租金管制红线挂起 (HTTP 451) 及余额预检免 2.9% 卡费 A2A 收租立省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="proptech-verdict-pill">HTTP 200 · OPEN_BANKING_PAYROLL_AND_SEGREGATED_DEPOSIT_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度长租公寓与商业地产租金/押金结算池 ($ USD) <span class="control-val" id="proptech-gross-label">$420,000</span></label>
+            <input type="range" id="proptech-gross-slider" min="80000" max="1500000" step="30000" value="420000" oninput="updateProptechLeasingDepositCamAchSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">Open Banking 收入验真、押金折旧公式、商业 CAM 审计与 A2A 收租场景</label>
+            <select id="proptech-mode-select" onchange="updateProptechLeasingDepositCamAchSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ Open Banking 工资验真 + 独立生息押金专户 + 合规 CAM/租金清算 (HTTP 200)</option>
+              <option value="paystub_403">🛑 上传伪造静态 PDF 工资单骗租 或 将租客押金混入物业日常运营账户挪用 (HTTP 403)</option>
+              <option value="wear_422">🚨 退房乱扣正常磨损/未扣资产折旧残值 或 商业 CAM 混入房东 CapEx 资本支出 (HTTP 422)</option>
+              <option value="rentctrl_451">🛑 Web IQ 检出续租涨幅突破市政租金管制 (Rent Control) 红线或密钥 &gt;180d (HTTP 451)</option>
+              <option value="a2a_409">🧑‍⚖️ 扣租前实时余额预检防 R01 退票 + 免 2.9% 刷卡费 A2A 交租送积分立省 23% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原骗租坏账、退押赔偿与刷卡费基线</div>
+            <div class="finops-kpi-val" id="proptech-gross-kpi">$420,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">余额预检 A2A 与防骗租立省</div>
+            <div class="finops-kpi-val" id="proptech-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净资管运营与清结算成本</div>
+            <div class="finops-kpi-val" id="proptech-net-kpi" style="color:#60A5FA;">$420,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">地产押金托管与 CAM 审计令牌</div>
+            <div class="finops-kpi-val" id="proptech-token-kpi" style="font-size:10px;color:#A78BFA;">proptech_leasing_deposit_cam_ach_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -33560,6 +33733,61 @@ function updateDigitalPharmacyOpticalRxCopaySandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'digital_pharmacy_optical_rx_copay_mandate_verified';
+  }}
+}}
+
+function updateProptechLeasingDepositCamAchSandbox() {{
+  const grossSlider = document.getElementById('proptech-gross-slider');
+  const modeSelect = document.getElementById('proptech-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '420000');
+  const mode = modeSelect.value;
+  document.getElementById('proptech-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('proptech-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('proptech-verdict-pill');
+  const savingsKpi = document.getElementById('proptech-savings-kpi');
+  const netKpi = document.getElementById('proptech-net-kpi');
+  const tokenKpi = document.getElementById('proptech-token-kpi');
+
+  if (mode === 'paystub_403') {{
+    pill.textContent = 'HTTP 403 · FAKE_PDF_PAYSTUB_FRAUD_OR_COMMINGLED_SECURITY_DEPOSIT_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_FAKE_PAYSTUB_OR_COMMINGLED_DEPOSIT';
+  }} else if (mode === 'wear_422') {{
+    pill.textContent = 'HTTP 422 · UNDEPRECIATED_WEAR_DEDUCTION_OR_CAM_CAPEX_OVERCHARGE_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNDEPRECIATED_WEAR_OR_CAM_CAPEX';
+  }} else if (mode === 'rentctrl_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_MUNICIPAL_RENT_CONTROL_CAP_BREACH_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_MUNICIPAL_RENT_CONTROL_CAP_OR_180D_KEY';
+  }} else if (mode === 'a2a_409') {{
+    const savings = Math.round(gross * 0.23 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · BALANCE_PREFLIGHT_A2A_RENT_AND_CAM_DEPRECIATION_AUDIT_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'proptech_leasing_deposit_cam_ach_mandate_saved23pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · OPEN_BANKING_PAYROLL_AND_SEGREGATED_DEPOSIT_ESCROW_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'proptech_leasing_deposit_cam_ach_mandate_verified';
   }}
 }}
 

@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`129` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`130` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (33 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (28 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (22 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (23 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (12 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (24 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -113,7 +113,7 @@
 | 28 | **Digital Pharmacy, Chronic Auto-Refill & Optical Rx E-Commerce (`Amazon Pharmacy / Warby Parker / 1-800 Contacts`) `eRx / FCLCA` Verification, `PBM` Copay vs. Cash Arbitrage & Cold-Chain Agent Architecture Selection FAQ** | [English](digital-pharmacy-optical-rx-verification-pbm-copay-coldchain-agent-selection-faq.en.md) · [中文](digital-pharmacy-optical-rx-verification-pbm-copay-coldchain-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (22 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (23 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -141,6 +141,7 @@
 | 20 | **Retail & CPG Demand Forecasting, Autonomous Inventory Replenishment & VMI Agent Architecture FAQ: Anti-Bullwhip In-Transit Deduplication, MOQ Pallet Rounding, Shelf-Life Caps & Recall Circuit Breakers** | [English](retail-cpg-demand-forecasting-autonomous-replenishment-moq-po-agent-selection-faq.en.md) · [中文](retail-cpg-demand-forecasting-autonomous-replenishment-moq-po-agent-selection-faq.md) |
 | 21 | **Enterprise Agentic Treasury & Supplier Portal AP Payment Selection FAQ: Stripe Treasury MCP + Issuing Virtual Cards vs. Visa Intelligent Commerce × BILL Portal Agent (`TAP`) vs. Legacy RPA Scraping** | [English](enterprise-treasury-supplier-portal-ap-payment-stripe-mcp-vs-visa-bill-tap-selection-faq.en.md) · [中文](enterprise-treasury-supplier-portal-ap-payment-stripe-mcp-vs-visa-bill-tap-selection-faq.md) |
 | 22 | **Multi-Unit Franchise QSR, Coffee & Beverage Supply-Chain (`Luckin / Starbucks / McDonald's / Sysco`) Zero-Touch Auto-Ordering, `FEFO` Shelf-Life Cap & POS Royalty-Split Agent Architecture Selection FAQ** | [English](franchise-qsr-foodservice-auto-ordering-fefo-royalty-split-agent-selection-faq.en.md) · [中文](franchise-qsr-foodservice-auto-ordering-fefo-royalty-split-agent-selection-faq.md) |
+| 23 | **PropTech Residential & Commercial Real Estate Leasing (`Bilt / Yardi / AppFolio / CBRE`) Security-Deposit Escrow, `CAM` Cap Audit & Balance-Checked `A2A` Rent Agent Architecture Selection FAQ** | [English](proptech-residential-commercial-leasing-deposit-escrow-cam-ach-agent-selection-faq.en.md) · [中文](proptech-residential-commercial-leasing-deposit-escrow-cam-ach-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (12 Guides)

@@ -8901,6 +8901,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("digital-pharmacy-optical-rx-copay-sandbox", html)
 
+    def test_proptech_leasing_deposit_cam_ach_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            ProptechLeasingDepositCamAchPolicyInput,
+            evaluate_proptech_leasing_deposit_cam_ach_policy,
+        )
+
+        happy = evaluate_proptech_leasing_deposit_cam_ach_policy(
+            ProptechLeasingDepositCamAchPolicyInput(
+                quarterly_proptech_leasing_rent_pool_usd=Decimal("420000.00"),
+                fake_pdf_paystub_fraud_or_commingled_security_deposit_detected=False,
+                undepreciated_wear_deduction_or_cam_capex_overcharge_detected=False,
+                webiq_municipal_rent_control_cap_breach_flag=False,
+                restricted_key_age_days=30,
+                balance_preflight_a2a_rent_and_cam_audit_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "OPEN_BANKING_PAYROLL_AND_SEGREGATED_DEPOSIT_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["proptech_leasing_token"]).startswith("proptech_leasing_deposit_cam_ach_mandate_")
+        )
+
+        paystub_block = evaluate_proptech_leasing_deposit_cam_ach_policy(
+            ProptechLeasingDepositCamAchPolicyInput(
+                quarterly_proptech_leasing_rent_pool_usd=Decimal("420000.00"),
+                fake_pdf_paystub_fraud_or_commingled_security_deposit_detected=True,
+                undepreciated_wear_deduction_or_cam_capex_overcharge_detected=False,
+                webiq_municipal_rent_control_cap_breach_flag=False,
+                restricted_key_age_days=30,
+                balance_preflight_a2a_rent_and_cam_audit_enabled=False,
+            )
+        )
+        self.assertEqual(paystub_block["http_status"], 403)
+        self.assertEqual(
+            paystub_block["decision"],
+            "FAKE_PDF_PAYSTUB_FRAUD_OR_COMMINGLED_SECURITY_DEPOSIT_BLOCKED",
+        )
+
+        wear_block = evaluate_proptech_leasing_deposit_cam_ach_policy(
+            ProptechLeasingDepositCamAchPolicyInput(
+                quarterly_proptech_leasing_rent_pool_usd=Decimal("420000.00"),
+                fake_pdf_paystub_fraud_or_commingled_security_deposit_detected=False,
+                undepreciated_wear_deduction_or_cam_capex_overcharge_detected=True,
+                webiq_municipal_rent_control_cap_breach_flag=False,
+                restricted_key_age_days=30,
+                balance_preflight_a2a_rent_and_cam_audit_enabled=False,
+            )
+        )
+        self.assertEqual(wear_block["http_status"], 422)
+        self.assertEqual(
+            wear_block["decision"],
+            "UNDEPRECIATED_WEAR_DEDUCTION_OR_CAM_CAPEX_OVERCHARGE_BLOCKED",
+        )
+
+        rent_hold = evaluate_proptech_leasing_deposit_cam_ach_policy(
+            ProptechLeasingDepositCamAchPolicyInput(
+                quarterly_proptech_leasing_rent_pool_usd=Decimal("420000.00"),
+                fake_pdf_paystub_fraud_or_commingled_security_deposit_detected=False,
+                undepreciated_wear_deduction_or_cam_capex_overcharge_detected=False,
+                webiq_municipal_rent_control_cap_breach_flag=True,
+                restricted_key_age_days=191,
+                balance_preflight_a2a_rent_and_cam_audit_enabled=False,
+            )
+        )
+        self.assertEqual(rent_hold["http_status"], 451)
+        self.assertEqual(
+            rent_hold["decision"],
+            "WEBIQ_MUNICIPAL_RENT_CONTROL_CAP_BREACH_OR_180D_KEY_HOLD",
+        )
+
+        opt_confirm = evaluate_proptech_leasing_deposit_cam_ach_policy(
+            ProptechLeasingDepositCamAchPolicyInput(
+                quarterly_proptech_leasing_rent_pool_usd=Decimal("420000.00"),
+                fake_pdf_paystub_fraud_or_commingled_security_deposit_detected=False,
+                undepreciated_wear_deduction_or_cam_capex_overcharge_detected=False,
+                webiq_municipal_rent_control_cap_breach_flag=False,
+                restricted_key_age_days=30,
+                balance_preflight_a2a_rent_and_cam_audit_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "96600.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "323400.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("proptech_leasing_deposit_cam_ach_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("proptech-leasing-deposit-cam-ach-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
