@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`141` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`142` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（33 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（33 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（34 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（27 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（13 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（25 篇）](#tax-fx-privacy-disputes)
@@ -77,7 +77,7 @@
 | 33 | **个人购物智能体跨会话持久意图（Persistent Intent Services & Poppy v0.1）架构选型 FAQ：Sierra/Meta Poppy 协议 + MCP Intent Services（累计预算/周期复购/售后委托）vs. Google AP2 vs. 无状态会话实战指南** | [中文](personal-agent-persistent-intent-services-poppy-vs-ap2-recurring-budget-selection-faq.md) · [English](personal-agent-persistent-intent-services-poppy-vs-ap2-recurring-budget-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（33 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（34 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -116,6 +116,7 @@
 | 31 | **婚庆策划、高端摄影与定制活动服务（Wedding & Bespoke Event Services：The Knot / Zola / 婚礼纪）“多供应商档期原子协同（场地+四大金刚+花艺）、30/50/20 成片交付托管与防隐形进场费”Agent 架构选型 FAQ：防档期错配废单与防拖延交片实战指南** | [中文](wedding-bespoke-event-multi-vendor-milestone-escrow-agent-selection-faq.md) · [English](wedding-bespoke-event-multi-vendor-milestone-escrow-agent-selection-faq.en.md) |
 | 32 | **跨境独立站网红寄样（Influencer Seeding）、联盟带货分佣与防优惠券浏览器插件劫持（Coupon Extension Poaching Defense：Impact / Shopify Collabs）Agent 架构选型 FAQ：终结结账最后 1 秒被插件偷抢佣金与防骗样跑路实战指南** | [中文](influencer-seeding-affiliate-coupon-poaching-escrow-agent-selection-faq.md) · [English](influencer-seeding-affiliate-coupon-poaching-escrow-agent-selection-faq.en.md) |
 | 33 | **生鲜商超与临期食品动态打折出清（Grocery & Perishable Dynamic Markdown：Instacart Carrot Tags / 盒马 / Too Good To Go / Flashfood）“GS1 DataBar 效期死锁、ESL 阶梯调价与盲盒/慈善抵税捐赠”Agent 架构选型 FAQ：杜绝过期误售与晚间黄牛扫货实战指南** | [中文](grocery-perishable-dynamic-markdown-gs1-expiry-lock-food-rescue-agent-selection-faq.md) · [English](grocery-perishable-dynamic-markdown-gs1-expiry-lock-food-rescue-agent-selection-faq.en.md) |
+| 34 | **高端腕表、钻石珠宝寄售与同行借货备忘单（Luxury Watch & Fine Jewelry Consignment & B2B Memo Escrow：Chrono24 / The RealReal / RapNet / Nivoda）“防拼装假机芯（Frankenwatch）、防培育钻套天然 GIA 证书与同行借货逾期自动转购”Agent 架构选型 FAQ：终结晚宴白嫖掉包与压价贱卖实战指南** | [中文](luxury-watch-jewelry-consignment-gia-authentication-b2b-memo-escrow-agent-selection-faq.md) · [English](luxury-watch-jewelry-consignment-gia-authentication-b2b-memo-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（27 篇）

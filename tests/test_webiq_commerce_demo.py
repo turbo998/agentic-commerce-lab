@@ -9978,6 +9978,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("global-eor-contractor-payroll-sandbox", html)
 
+    def test_luxury_watch_jewelry_memo_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            LuxuryWatchJewelryMemoEscrowPolicyInput,
+            evaluate_luxury_watch_jewelry_memo_escrow_policy,
+        )
+
+        happy = evaluate_luxury_watch_jewelry_memo_escrow_policy(
+            LuxuryWatchJewelryMemoEscrowPolicyInput(
+                quarterly_luxury_consignment_memo_pool_usd=Decimal("480000.00"),
+                stolen_watch_register_or_frankenwatch_synthetic_gia_swap_detected=False,
+                below_consignor_reserve_floor_or_expired_memo_unpaid_detected=False,
+                webiq_kimberley_conflict_diamond_or_fincen_aml_flag=False,
+                restricted_key_age_days=30,
+                authentication_hub_nfc_seal_and_armored_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "GIA_MOVEMENT_VERIFIED_RESERVE_PROTECTED_AND_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["luxury_memo_token"]).startswith("luxury_watch_jewelry_memo_escrow_mandate_")
+        )
+
+        franken_block = evaluate_luxury_watch_jewelry_memo_escrow_policy(
+            LuxuryWatchJewelryMemoEscrowPolicyInput(
+                quarterly_luxury_consignment_memo_pool_usd=Decimal("480000.00"),
+                stolen_watch_register_or_frankenwatch_synthetic_gia_swap_detected=True,
+                below_consignor_reserve_floor_or_expired_memo_unpaid_detected=False,
+                webiq_kimberley_conflict_diamond_or_fincen_aml_flag=False,
+                restricted_key_age_days=30,
+                authentication_hub_nfc_seal_and_armored_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(franken_block["http_status"], 403)
+        self.assertEqual(
+            franken_block["decision"],
+            "STOLEN_WATCH_REGISTER_OR_FRANKENWATCH_SYNTHETIC_GIA_SWAP_BLOCKED",
+        )
+
+        reserve_block = evaluate_luxury_watch_jewelry_memo_escrow_policy(
+            LuxuryWatchJewelryMemoEscrowPolicyInput(
+                quarterly_luxury_consignment_memo_pool_usd=Decimal("480000.00"),
+                stolen_watch_register_or_frankenwatch_synthetic_gia_swap_detected=False,
+                below_consignor_reserve_floor_or_expired_memo_unpaid_detected=True,
+                webiq_kimberley_conflict_diamond_or_fincen_aml_flag=False,
+                restricted_key_age_days=30,
+                authentication_hub_nfc_seal_and_armored_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(reserve_block["http_status"], 422)
+        self.assertEqual(
+            reserve_block["decision"],
+            "BELOW_CONSIGNOR_RESERVE_FLOOR_OR_EXPIRED_MEMO_UNPAID_BLOCKED",
+        )
+
+        aml_hold = evaluate_luxury_watch_jewelry_memo_escrow_policy(
+            LuxuryWatchJewelryMemoEscrowPolicyInput(
+                quarterly_luxury_consignment_memo_pool_usd=Decimal("480000.00"),
+                stolen_watch_register_or_frankenwatch_synthetic_gia_swap_detected=False,
+                below_consignor_reserve_floor_or_expired_memo_unpaid_detected=False,
+                webiq_kimberley_conflict_diamond_or_fincen_aml_flag=True,
+                restricted_key_age_days=191,
+                authentication_hub_nfc_seal_and_armored_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(aml_hold["http_status"], 451)
+        self.assertEqual(
+            aml_hold["decision"],
+            "WEBIQ_KIMBERLEY_CONFLICT_DIAMOND_OR_FINCEN_AML_HOLD",
+        )
+
+        opt_confirm = evaluate_luxury_watch_jewelry_memo_escrow_policy(
+            LuxuryWatchJewelryMemoEscrowPolicyInput(
+                quarterly_luxury_consignment_memo_pool_usd=Decimal("480000.00"),
+                stolen_watch_register_or_frankenwatch_synthetic_gia_swap_detected=False,
+                below_consignor_reserve_floor_or_expired_memo_unpaid_detected=False,
+                webiq_kimberley_conflict_diamond_or_fincen_aml_flag=False,
+                restricted_key_age_days=30,
+                authentication_hub_nfc_seal_and_armored_escrow_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "129600.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "350400.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("luxury_watch_jewelry_memo_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("luxury-watch-jewelry-memo-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

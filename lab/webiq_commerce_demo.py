@@ -16510,6 +16510,80 @@ def evaluate_global_eor_contractor_payroll_policy(
         "reason": "Verified compliant worker classification, signed W-8BEN & IP Assignment, deliverable sign-off, and local-rail FX.",
     }
 
+
+@dataclass(frozen=True)
+class LuxuryWatchJewelryMemoEscrowPolicyInput:
+    quarterly_luxury_consignment_memo_pool_usd: Decimal
+    stolen_watch_register_or_frankenwatch_synthetic_gia_swap_detected: bool
+    below_consignor_reserve_floor_or_expired_memo_unpaid_detected: bool
+    webiq_kimberley_conflict_diamond_or_fincen_aml_flag: bool
+    restricted_key_age_days: int
+    authentication_hub_nfc_seal_and_armored_escrow_enabled: bool
+
+
+def evaluate_luxury_watch_jewelry_memo_escrow_policy(
+    policy_input: LuxuryWatchJewelryMemoEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Luxury Watch & Fine Jewelry Consignment & B2B Memo Enquirus/GIA auth, reserve floor, NFC seal & armored escrow."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_luxury_consignment_memo_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.stolen_watch_register_or_frankenwatch_synthetic_gia_swap_detected:
+        return {
+            "http_status": 403,
+            "decision": "STOLEN_WATCH_REGISTER_OR_FRANKENWATCH_SYNTHETIC_GIA_SWAP_BLOCKED",
+            "latency_ms": 11,
+            "approved_budget_usd": "0.00",
+            "luxury_memo_token": None,
+            "reason": "Blocked item hitting Enquirus/Watch Register stolen database, Frankenwatch clone movement, or CVD synthetic GIA swap.",
+        }
+
+    if policy_input.below_consignor_reserve_floor_or_expired_memo_unpaid_detected:
+        return {
+            "http_status": 422,
+            "decision": "BELOW_CONSIGNOR_RESERVE_FLOOR_OR_EXPIRED_MEMO_UNPAID_BLOCKED",
+            "latency_ms": 13,
+            "approved_budget_usd": "0.00",
+            "luxury_memo_token": None,
+            "reason": "Blocked discount below consignor minimum net reserve, overdue B2B Memo default, or return with cut NFC clasp seal / missing gold link.",
+        }
+
+    if policy_input.webiq_kimberley_conflict_diamond_or_fincen_aml_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_KIMBERLEY_CONFLICT_DIAMOND_OR_FINCEN_AML_HOLD",
+            "latency_ms": 255,
+            "approved_budget_usd": "0.00",
+            "luxury_memo_token": None,
+            "reason": "Web IQ flagged missing Kimberley Process conflict-free certificate, G7 diamond origin restriction, FinCEN AML hit, or key >180 days.",
+        }
+
+    if policy_input.authentication_hub_nfc_seal_and_armored_escrow_enabled:
+        savings = (gross * Decimal("0.27")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"LUX_MEMO_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "AUTHENTICATION_HUB_NFC_SEAL_AND_ARMORED_ESCROW_CONFIRM",
+            "latency_ms": 215,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "luxury_memo_token": f"luxury_watch_jewelry_memo_escrow_mandate_{digest}",
+            "reason": "Auth-Hub NTAG 424 NFC seal, 0.01g weight lock, and Brink's/Malca-Amit armored escrow cut fraud and insurance costs by 27.0%.",
+        }
+
+    digest = hashlib.sha256(f"LUX_MEMO_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "GIA_MOVEMENT_VERIFIED_RESERVE_PROTECTED_AND_ESCROW_AUTHORIZED",
+        "latency_ms": 11,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "luxury_memo_token": f"luxury_watch_jewelry_memo_escrow_mandate_{digest}",
+        "reason": "Verified Enquirus clean serial, authentic movement/GIA spectroscopy, consignor reserve floor, and intact NFC seal.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -22302,6 +22376,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    luxury_watch_jewelry_memo_escrow_guard = {
+        "happy_path": evaluate_luxury_watch_jewelry_memo_escrow_policy(
+            LuxuryWatchJewelryMemoEscrowPolicyInput(
+                quarterly_luxury_consignment_memo_pool_usd=Decimal("480000.00"),
+                stolen_watch_register_or_frankenwatch_synthetic_gia_swap_detected=False,
+                below_consignor_reserve_floor_or_expired_memo_unpaid_detected=False,
+                webiq_kimberley_conflict_diamond_or_fincen_aml_flag=False,
+                restricted_key_age_days=30,
+                authentication_hub_nfc_seal_and_armored_escrow_enabled=False,
+            )
+        ),
+        "stolen_or_frankenwatch_block": evaluate_luxury_watch_jewelry_memo_escrow_policy(
+            LuxuryWatchJewelryMemoEscrowPolicyInput(
+                quarterly_luxury_consignment_memo_pool_usd=Decimal("480000.00"),
+                stolen_watch_register_or_frankenwatch_synthetic_gia_swap_detected=True,
+                below_consignor_reserve_floor_or_expired_memo_unpaid_detected=False,
+                webiq_kimberley_conflict_diamond_or_fincen_aml_flag=False,
+                restricted_key_age_days=30,
+                authentication_hub_nfc_seal_and_armored_escrow_enabled=False,
+            )
+        ),
+        "below_reserve_or_cut_seal_block": evaluate_luxury_watch_jewelry_memo_escrow_policy(
+            LuxuryWatchJewelryMemoEscrowPolicyInput(
+                quarterly_luxury_consignment_memo_pool_usd=Decimal("480000.00"),
+                stolen_watch_register_or_frankenwatch_synthetic_gia_swap_detected=False,
+                below_consignor_reserve_floor_or_expired_memo_unpaid_detected=True,
+                webiq_kimberley_conflict_diamond_or_fincen_aml_flag=False,
+                restricted_key_age_days=30,
+                authentication_hub_nfc_seal_and_armored_escrow_enabled=False,
+            )
+        ),
+        "webiq_kimberley_or_aml_hold": evaluate_luxury_watch_jewelry_memo_escrow_policy(
+            LuxuryWatchJewelryMemoEscrowPolicyInput(
+                quarterly_luxury_consignment_memo_pool_usd=Decimal("480000.00"),
+                stolen_watch_register_or_frankenwatch_synthetic_gia_swap_detected=False,
+                below_consignor_reserve_floor_or_expired_memo_unpaid_detected=False,
+                webiq_kimberley_conflict_diamond_or_fincen_aml_flag=True,
+                restricted_key_age_days=191,
+                authentication_hub_nfc_seal_and_armored_escrow_enabled=False,
+            )
+        ),
+        "nfc_seal_and_armored_escrow_confirm": evaluate_luxury_watch_jewelry_memo_escrow_policy(
+            LuxuryWatchJewelryMemoEscrowPolicyInput(
+                quarterly_luxury_consignment_memo_pool_usd=Decimal("480000.00"),
+                stolen_watch_register_or_frankenwatch_synthetic_gia_swap_detected=False,
+                below_consignor_reserve_floor_or_expired_memo_unpaid_detected=False,
+                webiq_kimberley_conflict_diamond_or_fincen_aml_flag=False,
+                restricted_key_age_days=30,
+                authentication_hub_nfc_seal_and_armored_escrow_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -22453,6 +22580,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_it_daas_leasing_nist_wipe_guard": b2b_it_daas_leasing_nist_wipe_guard,
         "grocery_perishable_markdown_gs1_guard": grocery_perishable_markdown_gs1_guard,
         "global_eor_contractor_payroll_guard": global_eor_contractor_payroll_guard,
+        "luxury_watch_jewelry_memo_escrow_guard": luxury_watch_jewelry_memo_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -28710,6 +28838,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">全球用工与锁汇合规令牌</div>
             <div class="finops-kpi-val" id="eor-pay-token-kpi" style="font-size:10px;color:#A78BFA;">global_eor_contractor_payroll_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Luxury Watch & Fine Jewelry Consignment & B2B Memo Escrow (GIA/Movement Auth, Reserve Floor & NFC Seal) Sandbox -->
+      <div class="finops-box" id="luxury-watch-jewelry-memo-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">⌚ 高端腕表与钻石珠宝寄售及同行借货 (Chrono24 / The RealReal / RapNet / Nivoda) 沙盒</div>
+            <div class="finops-subtitle">实测 Enquirus 失窃库、拼装假机芯 (Frankenwatch) 与培育钻套天然 GIA 腰码硬阻断 (HTTP 403)、防擅自破寄售人底价、B2B Memo 逾期与剪断防拆 NFC 铅封/偷拆金表节退货拦截 (HTTP 422)、冲突钻/AML 熔断 (HTTP 451) 及鉴定仓 NFC 铅封+装甲保价立省 27% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="lux-memo-verdict-pill">HTTP 200 · GIA_MOVEMENT_VERIFIED_RESERVE_PROTECTED_AND_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度高端腕表与天然裸钻寄售/B2B Memo 托管结算池 ($ USD) <span class="control-val" id="lux-memo-gross-label">$480,000</span></label>
+            <input type="range" id="lux-memo-gross-slider" min="80000" max="1600000" step="40000" value="480000" oninput="updateLuxuryWatchJewelryMemoEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">Enquirus/GIA 验真、寄售保底价、一次性防拆 NFC 铅封与 Brink's 装甲保价场景</label>
+            <select id="lux-memo-mode-select" onchange="updateLuxuryWatchJewelryMemoEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ Enquirus 非失窃真品 + 严守货主底价 + NFC 防拆铅封完好放款 (HTTP 200)</option>
+              <option value="franken_403">🛑 命中 Enquirus 失窃表库、真表壳拼装副厂机芯 或 $300 培育钻套刻天然 GIA 编码 (HTTP 403)</option>
+              <option value="reserve_422">🚨 平台打折跌破寄售人保底净价、B2B Memo 逾期未还 或 买家剪断 NFC 铅封/少1节金表带退货 (HTTP 422)</option>
+              <option value="kimberley_451">🛑 Web IQ 检出缺失金伯利进程无冲突钻证书、G7 钻源制裁 或 FinCEN AML 异常 (HTTP 451)</option>
+              <option value="armored_409">🧑‍⚖️ 中立鉴定仓植入防拆 NFC 铅封 + Brink's/Malca-Amit 装甲保价专线立省 27% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原调包坏账与零售保价物流基线</div>
+            <div class="finops-kpi-val" id="lux-memo-gross-kpi">$480,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防白嫖铅封与装甲团体保费立省</div>
+            <div class="finops-kpi-val" id="lux-memo-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净奢品托管与保价总成本</div>
+            <div class="finops-kpi-val" id="lux-memo-net-kpi" style="color:#60A5FA;">$480,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">奢品验真与装甲托管令牌</div>
+            <div class="finops-kpi-val" id="lux-memo-token-kpi" style="font-size:10px;color:#A78BFA;">luxury_watch_jewelry_memo_escrow_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -36296,6 +36469,61 @@ function updateGlobalEorContractorPayrollSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'global_eor_contractor_payroll_mandate_verified';
+  }}
+}}
+
+function updateLuxuryWatchJewelryMemoEscrowSandbox() {{
+  const grossSlider = document.getElementById('lux-memo-gross-slider');
+  const modeSelect = document.getElementById('lux-memo-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '480000');
+  const mode = modeSelect.value;
+  document.getElementById('lux-memo-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('lux-memo-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('lux-memo-verdict-pill');
+  const savingsKpi = document.getElementById('lux-memo-savings-kpi');
+  const netKpi = document.getElementById('lux-memo-net-kpi');
+  const tokenKpi = document.getElementById('lux-memo-token-kpi');
+
+  if (mode === 'franken_403') {{
+    pill.textContent = 'HTTP 403 · STOLEN_WATCH_REGISTER_OR_FRANKENWATCH_SYNTHETIC_GIA_SWAP_BLOCKED (11ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_STOLEN_FRANKENWATCH_OR_CVD_SWAP';
+  }} else if (mode === 'reserve_422') {{
+    pill.textContent = 'HTTP 422 · BELOW_CONSIGNOR_RESERVE_FLOOR_OR_EXPIRED_MEMO_UNPAID_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_BELOW_RESERVE_OR_CUT_NFC_SEAL';
+  }} else if (mode === 'kimberley_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_KIMBERLEY_CONFLICT_DIAMOND_OR_FINCEN_AML_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_KIMBERLEY_CONFLICT_OR_FINCEN_AML';
+  }} else if (mode === 'armored_409') {{
+    const savings = Math.round(gross * 0.27 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · AUTHENTICATION_HUB_NFC_SEAL_AND_ARMORED_ESCROW_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'luxury_watch_jewelry_memo_escrow_mandate_saved27pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · GIA_MOVEMENT_VERIFIED_RESERVE_PROTECTED_AND_ESCROW_AUTHORIZED (11ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'luxury_watch_jewelry_memo_escrow_mandate_verified';
   }}
 }}
 
