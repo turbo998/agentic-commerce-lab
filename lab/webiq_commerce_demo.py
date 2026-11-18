@@ -16584,6 +16584,80 @@ def evaluate_luxury_watch_jewelry_memo_escrow_policy(
         "reason": "Verified Enquirus clean serial, authentic movement/GIA spectroscopy, consignor reserve floor, and intact NFC seal.",
     }
 
+
+@dataclass(frozen=True)
+class ClinicalTrialStipendEcoaPolicyInput:
+    quarterly_clinical_trial_stipend_pool_usd: Decimal
+    duplicate_trial_enrollment_or_uncompleted_ecoa_visit_detected: bool
+    irb_stipend_cap_breach_or_unreceipted_travel_reimbursement_detected: bool
+    webiq_fda_debarred_investigator_or_hipaa_ssn_sponsor_leak_flag: bool
+    restricted_key_age_days: int
+    tax_blind_clincard_split_and_uber_health_voucher_enabled: bool
+
+
+def evaluate_clinical_trial_stipend_ecoa_policy(
+    policy_input: ClinicalTrialStipendEcoaPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Clinical Trial Patient Stipend cross-site duplicate check, eCOA sign-off, IRB cap & HIPAA tax-blind split."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_clinical_trial_stipend_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.duplicate_trial_enrollment_or_uncompleted_ecoa_visit_detected:
+        return {
+            "http_status": 403,
+            "decision": "DUPLICATE_TRIAL_ENROLLMENT_OR_UNCOMPLETED_ECOA_VISIT_BLOCKED",
+            "latency_ms": 10,
+            "approved_budget_usd": "0.00",
+            "clinical_stipend_token": None,
+            "reason": "Blocked professional subject hitting cross-site 30-day washout registry or missing 21 CFR Part 11 eCOA visit sign-off.",
+        }
+
+    if policy_input.irb_stipend_cap_breach_or_unreceipted_travel_reimbursement_detected:
+        return {
+            "http_status": 422,
+            "decision": "IRB_STIPEND_CAP_BREACH_OR_UNRECEIPTED_TRAVEL_REIMBURSEMENT_BLOCKED",
+            "latency_ms": 13,
+            "approved_budget_usd": "0.00",
+            "clinical_stipend_token": None,
+            "reason": "Blocked payout exceeding IRB-approved ICF schedule (undue inducement) or travel expense mixed into 1099 taxable bucket.",
+        }
+
+    if policy_input.webiq_fda_debarred_investigator_or_hipaa_ssn_sponsor_leak_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_FDA_DEBARRED_INVESTIGATOR_OR_HIPAA_SSN_SPONSOR_LEAK_HOLD",
+            "latency_ms": 245,
+            "approved_budget_usd": "0.00",
+            "clinical_stipend_token": None,
+            "reason": "Web IQ flagged FDA Debarment List investigator, raw patient SSN leak toward pharma Sponsor ERP, or key >180 days.",
+        }
+
+    if policy_input.tax_blind_clincard_split_and_uber_health_voucher_enabled:
+        savings = (gross * Decimal("0.25")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"CLIN_STIP_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "TAX_BLIND_CLINCARD_SPLIT_AND_UBER_HEALTH_VOUCHER_CONFIRM",
+            "latency_ms": 210,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "clinical_stipend_token": f"clinical_trial_stipend_ecoa_mandate_{digest}",
+            "reason": "Third-party tax-blind 1099 escrow and tax-free prepaid travel split cut subject dropout and duplicate fraud by 25.0%.",
+        }
+
+    digest = hashlib.sha256(f"CLIN_STIP_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "ECOA_VERIFIED_IRB_CAPPED_AND_TAX_BLIND_STIPEND_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "clinical_stipend_token": f"clinical_trial_stipend_ecoa_mandate_{digest}",
+        "reason": "Verified clean VCT washout hash, signed eCOA visit event, IRB cap compliance, and HIPAA tax-blind ClinCard load.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -22429,6 +22503,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    clinical_trial_stipend_ecoa_guard = {
+        "happy_path": evaluate_clinical_trial_stipend_ecoa_policy(
+            ClinicalTrialStipendEcoaPolicyInput(
+                quarterly_clinical_trial_stipend_pool_usd=Decimal("340000.00"),
+                duplicate_trial_enrollment_or_uncompleted_ecoa_visit_detected=False,
+                irb_stipend_cap_breach_or_unreceipted_travel_reimbursement_detected=False,
+                webiq_fda_debarred_investigator_or_hipaa_ssn_sponsor_leak_flag=False,
+                restricted_key_age_days=30,
+                tax_blind_clincard_split_and_uber_health_voucher_enabled=False,
+            )
+        ),
+        "duplicate_subject_or_no_ecoa_block": evaluate_clinical_trial_stipend_ecoa_policy(
+            ClinicalTrialStipendEcoaPolicyInput(
+                quarterly_clinical_trial_stipend_pool_usd=Decimal("340000.00"),
+                duplicate_trial_enrollment_or_uncompleted_ecoa_visit_detected=True,
+                irb_stipend_cap_breach_or_unreceipted_travel_reimbursement_detected=False,
+                webiq_fda_debarred_investigator_or_hipaa_ssn_sponsor_leak_flag=False,
+                restricted_key_age_days=30,
+                tax_blind_clincard_split_and_uber_health_voucher_enabled=False,
+            )
+        ),
+        "irb_cap_or_tax_mix_block": evaluate_clinical_trial_stipend_ecoa_policy(
+            ClinicalTrialStipendEcoaPolicyInput(
+                quarterly_clinical_trial_stipend_pool_usd=Decimal("340000.00"),
+                duplicate_trial_enrollment_or_uncompleted_ecoa_visit_detected=False,
+                irb_stipend_cap_breach_or_unreceipted_travel_reimbursement_detected=True,
+                webiq_fda_debarred_investigator_or_hipaa_ssn_sponsor_leak_flag=False,
+                restricted_key_age_days=30,
+                tax_blind_clincard_split_and_uber_health_voucher_enabled=False,
+            )
+        ),
+        "webiq_fda_debarred_or_hipaa_leak_hold": evaluate_clinical_trial_stipend_ecoa_policy(
+            ClinicalTrialStipendEcoaPolicyInput(
+                quarterly_clinical_trial_stipend_pool_usd=Decimal("340000.00"),
+                duplicate_trial_enrollment_or_uncompleted_ecoa_visit_detected=False,
+                irb_stipend_cap_breach_or_unreceipted_travel_reimbursement_detected=False,
+                webiq_fda_debarred_investigator_or_hipaa_ssn_sponsor_leak_flag=True,
+                restricted_key_age_days=191,
+                tax_blind_clincard_split_and_uber_health_voucher_enabled=False,
+            )
+        ),
+        "tax_blind_split_and_voucher_confirm": evaluate_clinical_trial_stipend_ecoa_policy(
+            ClinicalTrialStipendEcoaPolicyInput(
+                quarterly_clinical_trial_stipend_pool_usd=Decimal("340000.00"),
+                duplicate_trial_enrollment_or_uncompleted_ecoa_visit_detected=False,
+                irb_stipend_cap_breach_or_unreceipted_travel_reimbursement_detected=False,
+                webiq_fda_debarred_investigator_or_hipaa_ssn_sponsor_leak_flag=False,
+                restricted_key_age_days=30,
+                tax_blind_clincard_split_and_uber_health_voucher_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -22581,6 +22708,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "grocery_perishable_markdown_gs1_guard": grocery_perishable_markdown_gs1_guard,
         "global_eor_contractor_payroll_guard": global_eor_contractor_payroll_guard,
         "luxury_watch_jewelry_memo_escrow_guard": luxury_watch_jewelry_memo_escrow_guard,
+        "clinical_trial_stipend_ecoa_guard": clinical_trial_stipend_ecoa_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -28883,6 +29011,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">奢品验真与装甲托管令牌</div>
             <div class="finops-kpi-val" id="lux-memo-token-kpi" style="font-size:10px;color:#A78BFA;">luxury_watch_jewelry_memo_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Clinical Trial Patient Stipend & Travel Reimbursement (Anti-Duplicate Subject, IRB Cap & HIPAA Tax-Blind) Sandbox -->
+      <div class="finops-box" id="clinical-trial-stipend-ecoa-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🧬 临床试验受试者补贴与差旅结算 (Greenphire ClinCard / Scout Clinical / Medidata / Veeva) 沙盒</div>
+            <div class="finops-subtitle">实测职业试药人跨院重复入组 (CTSdatabase/VCT) 与未完成 eCOA 访视硬阻断 (HTTP 403)、超 IRB 批件不当利诱与差旅混入 $600 1099 应税池拦截 (HTTP 422)、FDA 禁业医生/向药企泄露患者 SSN 熔断 (HTTP 451) 及第三方税务盲墙+免税差旅直付立省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="clin-stip-verdict-pill">HTTP 200 · ECOA_VERIFIED_IRB_CAPPED_AND_TAX_BLIND_STIPEND_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度多中心临床试验受试者招募补贴与异地差旅预算池 ($ USD) <span class="control-val" id="clin-stip-gross-label">$340,000</span></label>
+            <input type="range" id="clin-stip-gross-slider" min="60000" max="1200000" step="20000" value="340000" oninput="updateClinicalTrialStipendEcoaSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">跨院洗脱期查重、eCOA 访视打卡、IRB 批件限额与 HIPAA 1099 税务盲墙场景</label>
+            <select id="clin-stip-mode-select" onchange="updateClinicalTrialStipendEcoaSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ VCT 洗脱期查重通过 + eCOA 访视完成 + IRB 限额合规 + 盲墙发卡 (HTTP 200)</option>
+              <option value="dup_403">🛑 职业试药人 30天洗脱期内在同城另一家医院重复入组 或 未完成 eCOA 服药日记 (HTTP 403)</option>
+              <option value="irb_422">🚨 发放金额超出 IRB 伦理批件上限(构成不当利诱) 或 把实报实销机酒混入 $600 应税收入 (HTTP 422)</option>
+              <option value="hipaa_451">🛑 Web IQ 检出 PI 医生在 FDA 禁业名单 或 药企财务系统试图拉取受试者真名与 SSN (HTTP 451)</option>
+              <option value="blind_409">🧑‍⚖️ 第三方受托盲墙独立代开 1099 + Uber Health/机酒免税直付减少脱落重招立省 25% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原患者脱落重招与试药套利基线</div>
+            <div class="finops-kpi-val" id="clin-stip-gross-kpi">$340,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防跨院骗补与免税护福利降脱落立省</div>
+            <div class="finops-kpi-val" id="clin-stip-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净临床补贴与招募总成本</div>
+            <div class="finops-kpi-val" id="clin-stip-net-kpi" style="color:#60A5FA;">$340,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">临床盲墙与 eCOA 合规令牌</div>
+            <div class="finops-kpi-val" id="clin-stip-token-kpi" style="font-size:10px;color:#A78BFA;">clinical_trial_stipend_ecoa_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -36524,6 +36697,61 @@ function updateLuxuryWatchJewelryMemoEscrowSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'luxury_watch_jewelry_memo_escrow_mandate_verified';
+  }}
+}}
+
+function updateClinicalTrialStipendEcoaSandbox() {{
+  const grossSlider = document.getElementById('clin-stip-gross-slider');
+  const modeSelect = document.getElementById('clin-stip-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '340000');
+  const mode = modeSelect.value;
+  document.getElementById('clin-stip-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('clin-stip-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('clin-stip-verdict-pill');
+  const savingsKpi = document.getElementById('clin-stip-savings-kpi');
+  const netKpi = document.getElementById('clin-stip-net-kpi');
+  const tokenKpi = document.getElementById('clin-stip-token-kpi');
+
+  if (mode === 'dup_403') {{
+    pill.textContent = 'HTTP 403 · DUPLICATE_TRIAL_ENROLLMENT_OR_UNCOMPLETED_ECOA_VISIT_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_DUPLICATE_SUBJECT_OR_NO_ECOA';
+  }} else if (mode === 'irb_422') {{
+    pill.textContent = 'HTTP 422 · IRB_STIPEND_CAP_BREACH_OR_UNRECEIPTED_TRAVEL_REIMBURSEMENT_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_IRB_BREACH_OR_TAX_MIXED_TRAVEL';
+  }} else if (mode === 'hipaa_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_FDA_DEBARRED_INVESTIGATOR_OR_HIPAA_SSN_SPONSOR_LEAK_HOLD (245ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_FDA_DEBARRED_OR_HIPAA_SSN_LEAK';
+  }} else if (mode === 'blind_409') {{
+    const savings = Math.round(gross * 0.25 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · TAX_BLIND_CLINCARD_SPLIT_AND_UBER_HEALTH_VOUCHER_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'clinical_trial_stipend_ecoa_mandate_saved25pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · ECOA_VERIFIED_IRB_CAPPED_AND_TAX_BLIND_STIPEND_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'clinical_trial_stipend_ecoa_mandate_verified';
   }}
 }}
 

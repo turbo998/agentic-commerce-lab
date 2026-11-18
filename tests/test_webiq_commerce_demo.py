@@ -10068,6 +10068,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("luxury-watch-jewelry-memo-escrow-sandbox", html)
 
+    def test_clinical_trial_stipend_ecoa_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            ClinicalTrialStipendEcoaPolicyInput,
+            evaluate_clinical_trial_stipend_ecoa_policy,
+        )
+
+        happy = evaluate_clinical_trial_stipend_ecoa_policy(
+            ClinicalTrialStipendEcoaPolicyInput(
+                quarterly_clinical_trial_stipend_pool_usd=Decimal("340000.00"),
+                duplicate_trial_enrollment_or_uncompleted_ecoa_visit_detected=False,
+                irb_stipend_cap_breach_or_unreceipted_travel_reimbursement_detected=False,
+                webiq_fda_debarred_investigator_or_hipaa_ssn_sponsor_leak_flag=False,
+                restricted_key_age_days=30,
+                tax_blind_clincard_split_and_uber_health_voucher_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "ECOA_VERIFIED_IRB_CAPPED_AND_TAX_BLIND_STIPEND_AUTHORIZED")
+        self.assertTrue(
+            str(happy["clinical_stipend_token"]).startswith("clinical_trial_stipend_ecoa_mandate_")
+        )
+
+        dup_block = evaluate_clinical_trial_stipend_ecoa_policy(
+            ClinicalTrialStipendEcoaPolicyInput(
+                quarterly_clinical_trial_stipend_pool_usd=Decimal("340000.00"),
+                duplicate_trial_enrollment_or_uncompleted_ecoa_visit_detected=True,
+                irb_stipend_cap_breach_or_unreceipted_travel_reimbursement_detected=False,
+                webiq_fda_debarred_investigator_or_hipaa_ssn_sponsor_leak_flag=False,
+                restricted_key_age_days=30,
+                tax_blind_clincard_split_and_uber_health_voucher_enabled=False,
+            )
+        )
+        self.assertEqual(dup_block["http_status"], 403)
+        self.assertEqual(
+            dup_block["decision"],
+            "DUPLICATE_TRIAL_ENROLLMENT_OR_UNCOMPLETED_ECOA_VISIT_BLOCKED",
+        )
+
+        irb_block = evaluate_clinical_trial_stipend_ecoa_policy(
+            ClinicalTrialStipendEcoaPolicyInput(
+                quarterly_clinical_trial_stipend_pool_usd=Decimal("340000.00"),
+                duplicate_trial_enrollment_or_uncompleted_ecoa_visit_detected=False,
+                irb_stipend_cap_breach_or_unreceipted_travel_reimbursement_detected=True,
+                webiq_fda_debarred_investigator_or_hipaa_ssn_sponsor_leak_flag=False,
+                restricted_key_age_days=30,
+                tax_blind_clincard_split_and_uber_health_voucher_enabled=False,
+            )
+        )
+        self.assertEqual(irb_block["http_status"], 422)
+        self.assertEqual(
+            irb_block["decision"],
+            "IRB_STIPEND_CAP_BREACH_OR_UNRECEIPTED_TRAVEL_REIMBURSEMENT_BLOCKED",
+        )
+
+        hipaa_hold = evaluate_clinical_trial_stipend_ecoa_policy(
+            ClinicalTrialStipendEcoaPolicyInput(
+                quarterly_clinical_trial_stipend_pool_usd=Decimal("340000.00"),
+                duplicate_trial_enrollment_or_uncompleted_ecoa_visit_detected=False,
+                irb_stipend_cap_breach_or_unreceipted_travel_reimbursement_detected=False,
+                webiq_fda_debarred_investigator_or_hipaa_ssn_sponsor_leak_flag=True,
+                restricted_key_age_days=191,
+                tax_blind_clincard_split_and_uber_health_voucher_enabled=False,
+            )
+        )
+        self.assertEqual(hipaa_hold["http_status"], 451)
+        self.assertEqual(
+            hipaa_hold["decision"],
+            "WEBIQ_FDA_DEBARRED_INVESTIGATOR_OR_HIPAA_SSN_SPONSOR_LEAK_HOLD",
+        )
+
+        opt_confirm = evaluate_clinical_trial_stipend_ecoa_policy(
+            ClinicalTrialStipendEcoaPolicyInput(
+                quarterly_clinical_trial_stipend_pool_usd=Decimal("340000.00"),
+                duplicate_trial_enrollment_or_uncompleted_ecoa_visit_detected=False,
+                irb_stipend_cap_breach_or_unreceipted_travel_reimbursement_detected=False,
+                webiq_fda_debarred_investigator_or_hipaa_ssn_sponsor_leak_flag=False,
+                restricted_key_age_days=30,
+                tax_blind_clincard_split_and_uber_health_voucher_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "85000.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "255000.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("clinical_trial_stipend_ecoa_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("clinical-trial-stipend-ecoa-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
