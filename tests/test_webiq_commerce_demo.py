@@ -9258,6 +9258,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("coworking-flexible-office-rightsizing-sandbox", html)
 
+    def test_wealth_cash_sweep_treasury_wash_sale_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            WealthCashSweepTreasuryWashSalePolicyInput,
+            evaluate_wealth_cash_sweep_treasury_wash_sale_policy,
+        )
+
+        happy = evaluate_wealth_cash_sweep_treasury_wash_sale_policy(
+            WealthCashSweepTreasuryWashSalePolicyInput(
+                quarterly_wealth_treasury_sweep_pool_usd=Decimal("280000.00"),
+                reg_bi_suitability_breach_or_unapproved_leveraged_asset_detected=False,
+                irs_61d_wash_sale_index_collision_or_fdic_bank_cap_exceeded_detected=False,
+                webiq_partner_bank_rating_downgrade_flag=False,
+                restricted_key_age_days=30,
+                alternate_index_tlh_and_multibank_fdic_sweep_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "REG_BI_ZERO_WASH_SALE_AND_MULTIBANK_FDIC_SWEEP_AUTHORIZED")
+        self.assertTrue(
+            str(happy["wealth_treasury_token"]).startswith("wealth_cash_sweep_treasury_wash_sale_mandate_")
+        )
+
+        regbi_block = evaluate_wealth_cash_sweep_treasury_wash_sale_policy(
+            WealthCashSweepTreasuryWashSalePolicyInput(
+                quarterly_wealth_treasury_sweep_pool_usd=Decimal("280000.00"),
+                reg_bi_suitability_breach_or_unapproved_leveraged_asset_detected=True,
+                irs_61d_wash_sale_index_collision_or_fdic_bank_cap_exceeded_detected=False,
+                webiq_partner_bank_rating_downgrade_flag=False,
+                restricted_key_age_days=30,
+                alternate_index_tlh_and_multibank_fdic_sweep_enabled=False,
+            )
+        )
+        self.assertEqual(regbi_block["http_status"], 403)
+        self.assertEqual(
+            regbi_block["decision"],
+            "REG_BI_SUITABILITY_BREACH_OR_UNAPPROVED_LEVERAGED_ASSET_BLOCKED",
+        )
+
+        wash_block = evaluate_wealth_cash_sweep_treasury_wash_sale_policy(
+            WealthCashSweepTreasuryWashSalePolicyInput(
+                quarterly_wealth_treasury_sweep_pool_usd=Decimal("280000.00"),
+                reg_bi_suitability_breach_or_unapproved_leveraged_asset_detected=False,
+                irs_61d_wash_sale_index_collision_or_fdic_bank_cap_exceeded_detected=True,
+                webiq_partner_bank_rating_downgrade_flag=False,
+                restricted_key_age_days=30,
+                alternate_index_tlh_and_multibank_fdic_sweep_enabled=False,
+            )
+        )
+        self.assertEqual(wash_block["http_status"], 422)
+        self.assertEqual(
+            wash_block["decision"],
+            "IRS_61D_WASH_SALE_INDEX_COLLISION_OR_FDIC_BANK_CAP_EXCEEDED_BLOCKED",
+        )
+
+        bank_hold = evaluate_wealth_cash_sweep_treasury_wash_sale_policy(
+            WealthCashSweepTreasuryWashSalePolicyInput(
+                quarterly_wealth_treasury_sweep_pool_usd=Decimal("280000.00"),
+                reg_bi_suitability_breach_or_unapproved_leveraged_asset_detected=False,
+                irs_61d_wash_sale_index_collision_or_fdic_bank_cap_exceeded_detected=False,
+                webiq_partner_bank_rating_downgrade_flag=True,
+                restricted_key_age_days=191,
+                alternate_index_tlh_and_multibank_fdic_sweep_enabled=False,
+            )
+        )
+        self.assertEqual(bank_hold["http_status"], 451)
+        self.assertEqual(
+            bank_hold["decision"],
+            "WEBIQ_PARTNER_BANK_RATING_DOWNGRADE_OR_180D_KEY_HOLD",
+        )
+
+        opt_confirm = evaluate_wealth_cash_sweep_treasury_wash_sale_policy(
+            WealthCashSweepTreasuryWashSalePolicyInput(
+                quarterly_wealth_treasury_sweep_pool_usd=Decimal("280000.00"),
+                reg_bi_suitability_breach_or_unapproved_leveraged_asset_detected=False,
+                irs_61d_wash_sale_index_collision_or_fdic_bank_cap_exceeded_detected=False,
+                webiq_partner_bank_rating_downgrade_flag=False,
+                restricted_key_age_days=30,
+                alternate_index_tlh_and_multibank_fdic_sweep_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "72800.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "207200.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("wealth_cash_sweep_treasury_wash_sale_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("wealth-cash-sweep-treasury-wash-sale-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

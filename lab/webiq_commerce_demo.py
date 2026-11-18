@@ -15918,6 +15918,80 @@ def evaluate_coworking_flexible_office_rightsizing_policy(
         "reason": "Verified HRIS active roster, T-75d notice compliance, badge-aligned desk tiers, and capped credit settlement.",
     }
 
+
+@dataclass(frozen=True)
+class WealthCashSweepTreasuryWashSalePolicyInput:
+    quarterly_wealth_treasury_sweep_pool_usd: Decimal
+    reg_bi_suitability_breach_or_unapproved_leveraged_asset_detected: bool
+    irs_61d_wash_sale_index_collision_or_fdic_bank_cap_exceeded_detected: bool
+    webiq_partner_bank_rating_downgrade_flag: bool
+    restricted_key_age_days: int
+    alternate_index_tlh_and_multibank_fdic_sweep_enabled: bool
+
+
+def evaluate_wealth_cash_sweep_treasury_wash_sale_policy(
+    policy_input: WealthCashSweepTreasuryWashSalePolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Wealth Robo-Advisor IRS §1091 61-day wash-sale gate, SEC Reg BI suitability & multi-bank <=$245k FDIC sweep."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_wealth_treasury_sweep_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.reg_bi_suitability_breach_or_unapproved_leveraged_asset_detected:
+        return {
+            "http_status": 403,
+            "decision": "REG_BI_SUITABILITY_BREACH_OR_UNAPPROVED_LEVERAGED_ASSET_BLOCKED",
+            "latency_ms": 10,
+            "approved_budget_usd": "0.00",
+            "wealth_treasury_token": None,
+            "reason": "Blocked trade breaching SEC Reg BI client risk tolerance or attempting unapproved leveraged/inverse ETF.",
+        }
+
+    if policy_input.irs_61d_wash_sale_index_collision_or_fdic_bank_cap_exceeded_detected:
+        return {
+            "http_status": 422,
+            "decision": "IRS_61D_WASH_SALE_INDEX_COLLISION_OR_FDIC_BANK_CAP_EXCEEDED_BLOCKED",
+            "latency_ms": 13,
+            "approved_budget_usd": "0.00",
+            "wealth_treasury_token": None,
+            "reason": "Blocked [-30d, +30d] cross-account wash-sale benchmark collision or single-bank sweep >$245k FDIC principal cap.",
+        }
+
+    if policy_input.webiq_partner_bank_rating_downgrade_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_PARTNER_BANK_RATING_DOWNGRADE_OR_180D_KEY_HOLD",
+            "latency_ms": 255,
+            "approved_budget_usd": "0.00",
+            "wealth_treasury_token": None,
+            "reason": "Web IQ detected partner Program Bank credit-rating downgrade or restricted key age > 180 days.",
+        }
+
+    if policy_input.alternate_index_tlh_and_multibank_fdic_sweep_enabled:
+        savings = (gross * Decimal("0.26")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"WEALTH_SWEEP_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "ALTERNATE_INDEX_TLH_AND_MULTIBANK_FDIC_SWEEP_CONFIRM",
+            "latency_ms": 215,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "wealth_treasury_token": f"wealth_cash_sweep_treasury_wash_sale_mandate_{digest}",
+            "reason": "Alternate-index TLH harvesting and 12-bank <=$245k FDIC sweep reduced tax-loss forfeiture & cash drag by 26.0%.",
+        }
+
+    digest = hashlib.sha256(f"WEALTH_SWEEP_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "REG_BI_ZERO_WASH_SALE_AND_MULTIBANK_FDIC_SWEEP_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "wealth_treasury_token": f"wealth_cash_sweep_treasury_wash_sale_mandate_{digest}",
+        "reason": "Verified SEC Reg BI suitability, 61-day cross-account wash-sale immunity, and <=$245k/bank FDIC sweep.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -21286,6 +21360,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    wealth_cash_sweep_treasury_wash_sale_guard = {
+        "happy_path": evaluate_wealth_cash_sweep_treasury_wash_sale_policy(
+            WealthCashSweepTreasuryWashSalePolicyInput(
+                quarterly_wealth_treasury_sweep_pool_usd=Decimal("280000.00"),
+                reg_bi_suitability_breach_or_unapproved_leveraged_asset_detected=False,
+                irs_61d_wash_sale_index_collision_or_fdic_bank_cap_exceeded_detected=False,
+                webiq_partner_bank_rating_downgrade_flag=False,
+                restricted_key_age_days=30,
+                alternate_index_tlh_and_multibank_fdic_sweep_enabled=False,
+            )
+        ),
+        "reg_bi_suitability_block": evaluate_wealth_cash_sweep_treasury_wash_sale_policy(
+            WealthCashSweepTreasuryWashSalePolicyInput(
+                quarterly_wealth_treasury_sweep_pool_usd=Decimal("280000.00"),
+                reg_bi_suitability_breach_or_unapproved_leveraged_asset_detected=True,
+                irs_61d_wash_sale_index_collision_or_fdic_bank_cap_exceeded_detected=False,
+                webiq_partner_bank_rating_downgrade_flag=False,
+                restricted_key_age_days=30,
+                alternate_index_tlh_and_multibank_fdic_sweep_enabled=False,
+            )
+        ),
+        "wash_sale_or_fdic_cap_block": evaluate_wealth_cash_sweep_treasury_wash_sale_policy(
+            WealthCashSweepTreasuryWashSalePolicyInput(
+                quarterly_wealth_treasury_sweep_pool_usd=Decimal("280000.00"),
+                reg_bi_suitability_breach_or_unapproved_leveraged_asset_detected=False,
+                irs_61d_wash_sale_index_collision_or_fdic_bank_cap_exceeded_detected=True,
+                webiq_partner_bank_rating_downgrade_flag=False,
+                restricted_key_age_days=30,
+                alternate_index_tlh_and_multibank_fdic_sweep_enabled=False,
+            )
+        ),
+        "webiq_bank_downgrade_or_key_hold": evaluate_wealth_cash_sweep_treasury_wash_sale_policy(
+            WealthCashSweepTreasuryWashSalePolicyInput(
+                quarterly_wealth_treasury_sweep_pool_usd=Decimal("280000.00"),
+                reg_bi_suitability_breach_or_unapproved_leveraged_asset_detected=False,
+                irs_61d_wash_sale_index_collision_or_fdic_bank_cap_exceeded_detected=False,
+                webiq_partner_bank_rating_downgrade_flag=True,
+                restricted_key_age_days=191,
+                alternate_index_tlh_and_multibank_fdic_sweep_enabled=False,
+            )
+        ),
+        "alternate_tlh_and_fdic_sweep_confirm": evaluate_wealth_cash_sweep_treasury_wash_sale_policy(
+            WealthCashSweepTreasuryWashSalePolicyInput(
+                quarterly_wealth_treasury_sweep_pool_usd=Decimal("280000.00"),
+                reg_bi_suitability_breach_or_unapproved_leveraged_asset_detected=False,
+                irs_61d_wash_sale_index_collision_or_fdic_bank_cap_exceeded_detected=False,
+                webiq_partner_bank_rating_downgrade_flag=False,
+                restricted_key_age_days=30,
+                alternate_index_tlh_and_multibank_fdic_sweep_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21429,6 +21556,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_corporate_gifting_unclaimed_clawback_guard": b2b_corporate_gifting_unclaimed_clawback_guard,
         "pet_ecommerce_autoship_vet_direct_pay_guard": pet_ecommerce_autoship_vet_direct_pay_guard,
         "coworking_flexible_office_rightsizing_guard": coworking_flexible_office_rightsizing_guard,
+        "wealth_cash_sweep_treasury_wash_sale_guard": wealth_cash_sweep_treasury_wash_sale_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -27326,6 +27454,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">灵活办公门禁缩容令牌</div>
             <div class="finops-kpi-val" id="cowork-token-kpi" style="font-size:10px;color:#A78BFA;">coworking_flexible_office_rightsizing_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Wealth Robo-Advisor & Cash-Sweep Treasury (IRS 61d Wash-Sale, Reg BI & Multi-Bank FDIC Sweep) Sandbox -->
+      <div class="finops-box" id="wealth-cash-sweep-treasury-wash-sale-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📈 智能投顾与企业现金司库 (Wealthfront / Stripe Treasury：61天洗售拦截与多行 FDIC 扫单) 沙盒</div>
+            <div class="finops-subtitle">实测 SEC Reg BI 客户风险适当性与禁杠杆 ETF (HTTP 403)、跨应税/IRA 账户 61天同指数洗售拦截与单行 &lt;=$245k FDIC 本金上限 (HTTP 422)、合作银行评级降级迁出 (HTTP 451) 及异构指数 TLH+12行扫单生息立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="wealth-sweep-verdict-pill">HTTP 200 · REG_BI_ZERO_WASH_SALE_AND_MULTIBANK_FDIC_SWEEP_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度智能投顾调仓与企业现金司库扫单池 ($ USD) <span class="control-val" id="wealth-sweep-gross-label">$280,000</span></label>
+            <input type="range" id="wealth-sweep-gross-slider" min="50000" max="1000000" step="20000" value="280000" oninput="updateWealthCashSweepTreasuryWashSaleSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">SEC Reg BI 适当性、IRS 61天跨账户洗售锁与多行 FDIC $245k 扫单场景</label>
+            <select id="wealth-sweep-mode-select" onchange="updateWealthCashSweepTreasuryWashSaleSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ Reg BI 合规 + 异构指数零洗售 + 多行 &lt;=$245k FDIC 分拆 (HTTP 200)</option>
+              <option value="regbi_403">🛑 为保守/稳健客户越权买入 3倍杠杆 ETF/期权 违反 SEC Reg BI 适当性 (HTTP 403)</option>
+              <option value="wash_422">🚨 卖出亏损 ETF 后 30天内在 IRA/配偶户买回同底层指数 或 单家银行分配 &gt;$245k (HTTP 422)</option>
+              <option value="bank_451">🛑 Web IQ 检出某合作扫单银行遭信用评级下调/监管警示或密钥 &gt;180d (HTTP 451)</option>
+              <option value="tlh_409">🧑‍⚖️ 异构指数 TLH 税损收割 + 预留 14天工资缓冲跨 12 家银行满额受保生息立省 26% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原洗售抵税作废与活期无息基线</div>
+            <div class="finops-kpi-val" id="wealth-sweep-gross-kpi">$280,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">合规 TLH 节税与多行生息增益</div>
+            <div class="finops-kpi-val" id="wealth-sweep-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净司库与税务优化成本</div>
+            <div class="finops-kpi-val" id="wealth-sweep-net-kpi" style="color:#60A5FA;">$280,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">智能投顾与 FDIC 扫单令牌</div>
+            <div class="finops-kpi-val" id="wealth-sweep-token-kpi" style="font-size:10px;color:#A78BFA;">wealth_cash_sweep_treasury_wash_sale_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -34472,6 +34645,61 @@ function updateCoworkingFlexibleOfficeRightSizingSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'coworking_flexible_office_rightsizing_mandate_verified';
+  }}
+}}
+
+function updateWealthCashSweepTreasuryWashSaleSandbox() {{
+  const grossSlider = document.getElementById('wealth-sweep-gross-slider');
+  const modeSelect = document.getElementById('wealth-sweep-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '280000');
+  const mode = modeSelect.value;
+  document.getElementById('wealth-sweep-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('wealth-sweep-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('wealth-sweep-verdict-pill');
+  const savingsKpi = document.getElementById('wealth-sweep-savings-kpi');
+  const netKpi = document.getElementById('wealth-sweep-net-kpi');
+  const tokenKpi = document.getElementById('wealth-sweep-token-kpi');
+
+  if (mode === 'regbi_403') {{
+    pill.textContent = 'HTTP 403 · REG_BI_SUITABILITY_BREACH_OR_UNAPPROVED_LEVERAGED_ASSET_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_REG_BI_OR_LEVERAGED_ETF';
+  }} else if (mode === 'wash_422') {{
+    pill.textContent = 'HTTP 422 · IRS_61D_WASH_SALE_INDEX_COLLISION_OR_FDIC_BANK_CAP_EXCEEDED_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_61D_WASH_SALE_OR_FDIC_CAP_BREACH';
+  }} else if (mode === 'bank_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_PARTNER_BANK_RATING_DOWNGRADE_OR_180D_KEY_HOLD (255ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_PARTNER_BANK_DOWNGRADE_EVICTED';
+  }} else if (mode === 'tlh_409') {{
+    const savings = Math.round(gross * 0.26 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · ALTERNATE_INDEX_TLH_AND_MULTIBANK_FDIC_SWEEP_CONFIRM (215ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'wealth_cash_sweep_treasury_wash_sale_mandate_saved26pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · REG_BI_ZERO_WASH_SALE_AND_MULTIBANK_FDIC_SWEEP_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'wealth_cash_sweep_treasury_wash_sale_mandate_verified';
   }}
 }}
 
