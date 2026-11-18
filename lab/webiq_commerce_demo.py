@@ -16436,6 +16436,80 @@ def evaluate_grocery_perishable_markdown_gs1_policy(
         "reason": "Verified unexpired GS1 AI(17) lot, original-GTIN weight match, and synchronized ESL/POS price.",
     }
 
+
+@dataclass(frozen=True)
+class GlobalEorContractorPayrollPolicyInput:
+    quarterly_global_payroll_pool_usd: Decimal
+    worker_misclassification_ir35_ab5_or_missing_ip_w8ben_detected: bool
+    unverified_ghost_timesheet_or_swift_fx_markup_detected: bool
+    webiq_sanctioned_jurisdiction_or_183d_tax_residency_flag: bool
+    restricted_key_age_days: int
+    contractor_to_eor_shield_and_wholesale_fx_batch_enabled: bool
+
+
+def evaluate_global_eor_contractor_payroll_policy(
+    policy_input: GlobalEorContractorPayrollPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Global EOR & Contractor Payroll misclassification (AB5/IR35), W-8BEN/IP vault, deliverable audit & wholesale FX."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_global_payroll_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.worker_misclassification_ir35_ab5_or_missing_ip_w8ben_detected:
+        return {
+            "http_status": 403,
+            "decision": "WORKER_MISCLASSIFICATION_IR35_AB5_OR_MISSING_IP_W8BEN_BLOCKED",
+            "latency_ms": 11,
+            "approved_budget_usd": "0.00",
+            "global_eor_token": None,
+            "reason": "Blocked contractor payout breaching AB5/IR35/Scheinselbstständigkeit thresholds or missing signed W-8BEN/IP Assignment.",
+        }
+
+    if policy_input.unverified_ghost_timesheet_or_swift_fx_markup_detected:
+        return {
+            "http_status": 422,
+            "decision": "UNVERIFIED_GHOST_TIMESHEET_OR_SWIFT_FX_MARKUP_BLOCKED",
+            "latency_ms": 14,
+            "approved_budget_usd": "0.00",
+            "global_eor_token": None,
+            "reason": "Blocked 160h timesheet lacking signed Git/Jira/Figma deliverables or SWIFT wire exceeding 25 bps FX spread.",
+        }
+
+    if policy_input.webiq_sanctioned_jurisdiction_or_183d_tax_residency_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_SANCTIONED_JURISDICTION_OR_183D_TAX_RESIDENCY_HOLD",
+            "latency_ms": 250,
+            "approved_budget_usd": "0.00",
+            "global_eor_token": None,
+            "reason": "Web IQ flagged OFAC sanctioned jurisdiction, >183-day Permanent Establishment tax residency breach, or key >180 days.",
+        }
+
+    if policy_input.contractor_to_eor_shield_and_wholesale_fx_batch_enabled:
+        savings = (gross * Decimal("0.23")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"EOR_PAY_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "CONTRACTOR_TO_EOR_SHIELD_AND_WHOLESALE_FX_BATCH_CONFIRM",
+            "latency_ms": 210,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "global_eor_token": f"global_eor_contractor_payroll_mandate_{digest}",
+            "reason": "Indemnified EOR/Contractor Shield upgrade and local-rail (SEPA/Pix/FPS) wholesale FX batching reduced cost/exposure by 23.0%.",
+        }
+
+    digest = hashlib.sha256(f"EOR_PAY_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "EOR_IC_COMPLIANT_DELIVERABLE_VERIFIED_AND_LOCAL_FX_AUTHORIZED",
+        "latency_ms": 11,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "global_eor_token": f"global_eor_contractor_payroll_mandate_{digest}",
+        "reason": "Verified compliant worker classification, signed W-8BEN & IP Assignment, deliverable sign-off, and local-rail FX.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -22175,6 +22249,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    global_eor_contractor_payroll_guard = {
+        "happy_path": evaluate_global_eor_contractor_payroll_policy(
+            GlobalEorContractorPayrollPolicyInput(
+                quarterly_global_payroll_pool_usd=Decimal("420000.00"),
+                worker_misclassification_ir35_ab5_or_missing_ip_w8ben_detected=False,
+                unverified_ghost_timesheet_or_swift_fx_markup_detected=False,
+                webiq_sanctioned_jurisdiction_or_183d_tax_residency_flag=False,
+                restricted_key_age_days=30,
+                contractor_to_eor_shield_and_wholesale_fx_batch_enabled=False,
+            )
+        ),
+        "misclassification_or_no_ip_block": evaluate_global_eor_contractor_payroll_policy(
+            GlobalEorContractorPayrollPolicyInput(
+                quarterly_global_payroll_pool_usd=Decimal("420000.00"),
+                worker_misclassification_ir35_ab5_or_missing_ip_w8ben_detected=True,
+                unverified_ghost_timesheet_or_swift_fx_markup_detected=False,
+                webiq_sanctioned_jurisdiction_or_183d_tax_residency_flag=False,
+                restricted_key_age_days=30,
+                contractor_to_eor_shield_and_wholesale_fx_batch_enabled=False,
+            )
+        ),
+        "ghost_timesheet_or_swift_fx_block": evaluate_global_eor_contractor_payroll_policy(
+            GlobalEorContractorPayrollPolicyInput(
+                quarterly_global_payroll_pool_usd=Decimal("420000.00"),
+                worker_misclassification_ir35_ab5_or_missing_ip_w8ben_detected=False,
+                unverified_ghost_timesheet_or_swift_fx_markup_detected=True,
+                webiq_sanctioned_jurisdiction_or_183d_tax_residency_flag=False,
+                restricted_key_age_days=30,
+                contractor_to_eor_shield_and_wholesale_fx_batch_enabled=False,
+            )
+        ),
+        "webiq_sanctions_or_183d_pe_hold": evaluate_global_eor_contractor_payroll_policy(
+            GlobalEorContractorPayrollPolicyInput(
+                quarterly_global_payroll_pool_usd=Decimal("420000.00"),
+                worker_misclassification_ir35_ab5_or_missing_ip_w8ben_detected=False,
+                unverified_ghost_timesheet_or_swift_fx_markup_detected=False,
+                webiq_sanctioned_jurisdiction_or_183d_tax_residency_flag=True,
+                restricted_key_age_days=191,
+                contractor_to_eor_shield_and_wholesale_fx_batch_enabled=False,
+            )
+        ),
+        "eor_shield_and_wholesale_fx_confirm": evaluate_global_eor_contractor_payroll_policy(
+            GlobalEorContractorPayrollPolicyInput(
+                quarterly_global_payroll_pool_usd=Decimal("420000.00"),
+                worker_misclassification_ir35_ab5_or_missing_ip_w8ben_detected=False,
+                unverified_ghost_timesheet_or_swift_fx_markup_detected=False,
+                webiq_sanctioned_jurisdiction_or_183d_tax_residency_flag=False,
+                restricted_key_age_days=30,
+                contractor_to_eor_shield_and_wholesale_fx_batch_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -22325,6 +22452,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "influencer_seeding_coupon_poaching_guard": influencer_seeding_coupon_poaching_guard,
         "b2b_it_daas_leasing_nist_wipe_guard": b2b_it_daas_leasing_nist_wipe_guard,
         "grocery_perishable_markdown_gs1_guard": grocery_perishable_markdown_gs1_guard,
+        "global_eor_contractor_payroll_guard": global_eor_contractor_payroll_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -28537,6 +28665,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">GS1 效期与食安防损令牌</div>
             <div class="finops-kpi-val" id="groc-mkd-token-kpi" style="font-size:10px;color:#A78BFA;">grocery_perishable_markdown_gs1_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Global EOR & Cross-Border Contractor Payroll (AB5/IR35 Shield, Deliverable Audit & Local FX) Sandbox -->
+      <div class="finops-box" id="global-eor-contractor-payroll-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🌍 全球名义雇主 (EOR) 与跨境灵活用工结算 (Deel / Rippling Global / Remote / Papaya) 沙盒</div>
+            <div class="finops-subtitle">实测假外包真雇佣 (AB5 / IR35 / 德国伪自雇) 与缺失 W-8BEN/IP 协议硬拦截 (HTTP 403)、多头兼职无交付物幽灵工时与 SWIFT &gt;25bps 汇损拦截 (HTTP 422)、OFAC 制裁区/183天常设机构税务越界熔断 (HTTP 451) 及一键转 EOR 保护伞+SEPA/Pix 批发锁汇立省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="eor-pay-verdict-pill">HTTP 200 · EOR_IC_COMPLIANT_DELIVERABLE_VERIFIED_AND_LOCAL_FX_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度跨境远程研发与全球 EOR 薪酬结算池 ($ USD) <span class="control-val" id="eor-pay-gross-label">$420,000</span></label>
+            <input type="range" id="eor-pay-gross-slider" min="80000" max="1500000" step="30000" value="420000" oninput="updateGlobalEorContractorPayrollSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">AB5/IR35 伪自雇红线、W-8BEN/IP 签署、交付物工时对账与本地清算网锁汇场景</label>
+            <select id="eor-pay-mode-select" onchange="updateGlobalEorContractorPayrollSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 用工分类合规 + W-8BEN/IP 已签 + Git/Jira 交付物匹配 + 本币清算 (HTTP 200)</option>
+              <option value="misclass_403">🛑 连续10个月全职固定排班触犯 AB5/IR35/德国伪自雇法 或 未签双语 IP 转让与 W-8BEN (HTTP 403)</option>
+              <option value="ghost_422">🚨 提交 160h 满工时账单但无 Git/Figma 交付物签收 或 走传统 SWIFT 被收 3.2% 汇差 (HTTP 422)</option>
+              <option value="pe_451">🛑 Web IQ 检出收款人位于 OFAC 制裁区 或 跨国滞留 &gt;183 天触发常设机构(PE)税险 (HTTP 451)</option>
+              <option value="shield_409">🧑‍⚖️ 高危外包一键转 Deel Shield/EOR 保护伞 + SEPA/Pix/FPS 批发锁汇立省 23% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原伪自雇税罚拨备与 SWIFT 汇损基线</div>
+            <div class="finops-kpi-val" id="eor-pay-gross-kpi">$420,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">EOR 合规避险与批发锁汇立省</div>
+            <div class="finops-kpi-val" id="eor-pay-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净全球用工与发薪总成本</div>
+            <div class="finops-kpi-val" id="eor-pay-net-kpi" style="color:#60A5FA;">$420,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">全球用工与锁汇合规令牌</div>
+            <div class="finops-kpi-val" id="eor-pay-token-kpi" style="font-size:10px;color:#A78BFA;">global_eor_contractor_payroll_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -36068,6 +36241,61 @@ function updateGroceryPerishableMarkdownGs1Sandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'grocery_perishable_markdown_gs1_mandate_verified';
+  }}
+}}
+
+function updateGlobalEorContractorPayrollSandbox() {{
+  const grossSlider = document.getElementById('eor-pay-gross-slider');
+  const modeSelect = document.getElementById('eor-pay-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '420000');
+  const mode = modeSelect.value;
+  document.getElementById('eor-pay-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('eor-pay-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('eor-pay-verdict-pill');
+  const savingsKpi = document.getElementById('eor-pay-savings-kpi');
+  const netKpi = document.getElementById('eor-pay-net-kpi');
+  const tokenKpi = document.getElementById('eor-pay-token-kpi');
+
+  if (mode === 'misclass_403') {{
+    pill.textContent = 'HTTP 403 · WORKER_MISCLASSIFICATION_IR35_AB5_OR_MISSING_IP_W8BEN_BLOCKED (11ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_MISCLASSIFICATION_OR_NO_IP';
+  }} else if (mode === 'ghost_422') {{
+    pill.textContent = 'HTTP 422 · UNVERIFIED_GHOST_TIMESHEET_OR_SWIFT_FX_MARKUP_BLOCKED (14ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_GHOST_HOURS_OR_HIGH_SWIFT_FX';
+  }} else if (mode === 'pe_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_SANCTIONED_JURISDICTION_OR_183D_TAX_RESIDENCY_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_OFAC_OR_183D_PE_TAX_RISK';
+  }} else if (mode === 'shield_409') {{
+    const savings = Math.round(gross * 0.23 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · CONTRACTOR_TO_EOR_SHIELD_AND_WHOLESALE_FX_BATCH_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'global_eor_contractor_payroll_mandate_saved23pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · EOR_IC_COMPLIANT_DELIVERABLE_VERIFIED_AND_LOCAL_FX_AUTHORIZED (11ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'global_eor_contractor_payroll_mandate_verified';
   }}
 }}
 

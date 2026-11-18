@@ -9888,6 +9888,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("grocery-perishable-markdown-gs1-sandbox", html)
 
+    def test_global_eor_contractor_payroll_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            GlobalEorContractorPayrollPolicyInput,
+            evaluate_global_eor_contractor_payroll_policy,
+        )
+
+        happy = evaluate_global_eor_contractor_payroll_policy(
+            GlobalEorContractorPayrollPolicyInput(
+                quarterly_global_payroll_pool_usd=Decimal("420000.00"),
+                worker_misclassification_ir35_ab5_or_missing_ip_w8ben_detected=False,
+                unverified_ghost_timesheet_or_swift_fx_markup_detected=False,
+                webiq_sanctioned_jurisdiction_or_183d_tax_residency_flag=False,
+                restricted_key_age_days=30,
+                contractor_to_eor_shield_and_wholesale_fx_batch_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "EOR_IC_COMPLIANT_DELIVERABLE_VERIFIED_AND_LOCAL_FX_AUTHORIZED")
+        self.assertTrue(
+            str(happy["global_eor_token"]).startswith("global_eor_contractor_payroll_mandate_")
+        )
+
+        mis_block = evaluate_global_eor_contractor_payroll_policy(
+            GlobalEorContractorPayrollPolicyInput(
+                quarterly_global_payroll_pool_usd=Decimal("420000.00"),
+                worker_misclassification_ir35_ab5_or_missing_ip_w8ben_detected=True,
+                unverified_ghost_timesheet_or_swift_fx_markup_detected=False,
+                webiq_sanctioned_jurisdiction_or_183d_tax_residency_flag=False,
+                restricted_key_age_days=30,
+                contractor_to_eor_shield_and_wholesale_fx_batch_enabled=False,
+            )
+        )
+        self.assertEqual(mis_block["http_status"], 403)
+        self.assertEqual(
+            mis_block["decision"],
+            "WORKER_MISCLASSIFICATION_IR35_AB5_OR_MISSING_IP_W8BEN_BLOCKED",
+        )
+
+        ghost_block = evaluate_global_eor_contractor_payroll_policy(
+            GlobalEorContractorPayrollPolicyInput(
+                quarterly_global_payroll_pool_usd=Decimal("420000.00"),
+                worker_misclassification_ir35_ab5_or_missing_ip_w8ben_detected=False,
+                unverified_ghost_timesheet_or_swift_fx_markup_detected=True,
+                webiq_sanctioned_jurisdiction_or_183d_tax_residency_flag=False,
+                restricted_key_age_days=30,
+                contractor_to_eor_shield_and_wholesale_fx_batch_enabled=False,
+            )
+        )
+        self.assertEqual(ghost_block["http_status"], 422)
+        self.assertEqual(
+            ghost_block["decision"],
+            "UNVERIFIED_GHOST_TIMESHEET_OR_SWIFT_FX_MARKUP_BLOCKED",
+        )
+
+        pe_hold = evaluate_global_eor_contractor_payroll_policy(
+            GlobalEorContractorPayrollPolicyInput(
+                quarterly_global_payroll_pool_usd=Decimal("420000.00"),
+                worker_misclassification_ir35_ab5_or_missing_ip_w8ben_detected=False,
+                unverified_ghost_timesheet_or_swift_fx_markup_detected=False,
+                webiq_sanctioned_jurisdiction_or_183d_tax_residency_flag=True,
+                restricted_key_age_days=191,
+                contractor_to_eor_shield_and_wholesale_fx_batch_enabled=False,
+            )
+        )
+        self.assertEqual(pe_hold["http_status"], 451)
+        self.assertEqual(
+            pe_hold["decision"],
+            "WEBIQ_SANCTIONED_JURISDICTION_OR_183D_TAX_RESIDENCY_HOLD",
+        )
+
+        opt_confirm = evaluate_global_eor_contractor_payroll_policy(
+            GlobalEorContractorPayrollPolicyInput(
+                quarterly_global_payroll_pool_usd=Decimal("420000.00"),
+                worker_misclassification_ir35_ab5_or_missing_ip_w8ben_detected=False,
+                unverified_ghost_timesheet_or_swift_fx_markup_detected=False,
+                webiq_sanctioned_jurisdiction_or_183d_tax_residency_flag=False,
+                restricted_key_age_days=30,
+                contractor_to_eor_shield_and_wholesale_fx_batch_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "96600.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "323400.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("global_eor_contractor_payroll_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("global-eor-contractor-payroll-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

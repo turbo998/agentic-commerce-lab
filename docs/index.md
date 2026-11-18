@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`140` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`141` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -11,7 +11,7 @@
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（33 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（27 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（13 篇）](#saas-finops-micropayments)
-- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（24 篇）](#tax-fx-privacy-disputes)
+- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（25 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
 
@@ -174,7 +174,7 @@
 | 13 | **数字内容出版、专业研报付费墙与 AI 爬虫按次授权清算（Digital Media Paywall & AI Crawler Licensing：NYT / Substack / TollBit / Cloudflare Pay-Per-Crawl）“单篇 HTTP 402 微支付、累计封顶转包月与防共享盗号”Agent 架构选型 FAQ：终结 AI 白嫖与挽回 95% 路过读者实战指南** | [中文](digital-media-paywall-per-article-micropayment-ai-crawler-licensing-agent-selection-faq.md) · [English](digital-media-paywall-per-article-micropayment-ai-crawler-licensing-agent-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（24 篇）
+## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（25 篇）
 
 > 聚焦 Merchant of Record（MoR）选型、跨境 HS 编码完税价（DDP）与 VAT/Sales Tax 合规、实时锁汇与 ISO 20022 多币种净额轧差、PCI-DSS v4.0.1 / GDPR 加密粉碎，以及 Visa CE 3.0 / VAMP 友好欺诈抗辩证据链。
 
@@ -204,6 +204,7 @@
 | 22 | **PCI-DSS 合规边界与多支付网关（Multi-PSP）路由架构：标准 `PaymentIntent` 免明文消费（`SAQ-A`）vs 外部网关 SPT `Resolve` 解密接口（`PCI AoC` + RSA `encryption_block` 字节切片加密与互斥锁）选型与原理解析 FAQ** | [中文](pci-dss-spt-resolve-aoc-vs-payment-intent-faq.md) · [English](pci-dss-spt-resolve-aoc-vs-payment-intent-faq.en.md) |
 | 23 | **AI Agent 结账隐私合规、收货地址脱敏与提示词注入防泄密架构：双阶地理位置披露与零明文上下文履约令牌（粗粒度税区前缀 `Postal-Prefix` + 隐私金库句柄 `ship_tok_...`）vs 明文 PII 进 Prompt 泄漏与 GDPR 密码学粉碎（Crypto-Shredding）选型与原理解析 FAQ** | [中文](privacy-pii-vaultless-shipping-token-vs-context-leak-faq.md) · [English](privacy-pii-vaultless-shipping-token-vs-context-leak-faq.en.md) |
 | 24 | **机场免税店、离岛免税与旅游零售（Travel Retail：CDFG / Dufry / Lotte）“航班登机口实时联动、海关免税额度核销与防套代购”Agent 架构选型 FAQ：登机牌核验、中转液体防没收与离境提货实战指南** | [中文](travel-retail-duty-free-flight-gate-sync-customs-allowance-agent-selection-faq.md) · [English](travel-retail-duty-free-flight-gate-sync-customs-allowance-agent-selection-faq.en.md) |
+| 25 | **全球名义雇主（EOR）与跨境灵活用工结算（Global EOR & Contractor Payroll：Deel / Rippling Global / Remote / Papaya Global）“假外包真雇佣（Worker Misclassification）硬阻断、防多头兼职幽灵工时与本币锁汇”Agent 架构选型 FAQ：规避海外劳工税罚与 3.5% 电汇汇损实战指南** | [中文](global-eor-contractor-payroll-misclassification-fx-escrow-agent-selection-faq.md) · [English](global-eor-contractor-payroll-misclassification-fx-escrow-agent-selection-faq.en.md) |
 
 <a id="architecture-blueprints"></a>
 ## 七、确定性领域架构蓝图（`docs/architecture/` · 21 份）
