@@ -8391,6 +8391,90 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("personal-agent-persistent-intent-poppy-sandbox", html)
 
+    def test_automotive_ev_d2c_checkout_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            AutomotiveEvD2cCheckoutPolicyInput,
+            evaluate_automotive_ev_d2c_checkout_policy,
+        )
+
+        happy = evaluate_automotive_ev_d2c_checkout_policy(
+            AutomotiveEvD2cCheckoutPolicyInput(
+                quarterly_automotive_ev_d2c_pool_usd=Decimal("450000.00"),
+                agent_bypass_cooling_off_lock_or_hidden_dealer_addon_detected=False,
+                unverified_vin_ev_subsidy_or_high_fee_card_final_balance_detected=False,
+                webiq_local_ev_subsidy_pool_exhausted_flag=False,
+                restricted_key_age_days=30,
+                in_transit_vin_match_and_split_rail_a2a_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "COOLING_OFF_DEPOSIT_AND_VIN_SUBSIDY_SPLIT_RAIL_AUTHORIZED")
+        self.assertTrue(
+            str(happy["automotive_ev_token"]).startswith("automotive_ev_d2c_deposit_lock_subsidy_mandate_")
+        )
+
+        lock_block = evaluate_automotive_ev_d2c_checkout_policy(
+            AutomotiveEvD2cCheckoutPolicyInput(
+                quarterly_automotive_ev_d2c_pool_usd=Decimal("450000.00"),
+                agent_bypass_cooling_off_lock_or_hidden_dealer_addon_detected=True,
+                unverified_vin_ev_subsidy_or_high_fee_card_final_balance_detected=False,
+                webiq_local_ev_subsidy_pool_exhausted_flag=False,
+                restricted_key_age_days=30,
+                in_transit_vin_match_and_split_rail_a2a_enabled=False,
+            )
+        )
+        self.assertEqual(lock_block["http_status"], 403)
+        self.assertEqual(lock_block["decision"], "AGENT_BYPASS_COOLING_OFF_LOCK_OR_HIDDEN_DEALER_ADDON_BLOCKED")
+
+        vin_block = evaluate_automotive_ev_d2c_checkout_policy(
+            AutomotiveEvD2cCheckoutPolicyInput(
+                quarterly_automotive_ev_d2c_pool_usd=Decimal("450000.00"),
+                agent_bypass_cooling_off_lock_or_hidden_dealer_addon_detected=False,
+                unverified_vin_ev_subsidy_or_high_fee_card_final_balance_detected=True,
+                webiq_local_ev_subsidy_pool_exhausted_flag=False,
+                restricted_key_age_days=30,
+                in_transit_vin_match_and_split_rail_a2a_enabled=False,
+            )
+        )
+        self.assertEqual(vin_block["http_status"], 422)
+        self.assertEqual(
+            vin_block["decision"],
+            "UNVERIFIED_VIN_EV_SUBSIDY_OR_HIGH_FEE_CARD_FINAL_BALANCE_BLOCKED",
+        )
+
+        sub_hold = evaluate_automotive_ev_d2c_checkout_policy(
+            AutomotiveEvD2cCheckoutPolicyInput(
+                quarterly_automotive_ev_d2c_pool_usd=Decimal("450000.00"),
+                agent_bypass_cooling_off_lock_or_hidden_dealer_addon_detected=False,
+                unverified_vin_ev_subsidy_or_high_fee_card_final_balance_detected=False,
+                webiq_local_ev_subsidy_pool_exhausted_flag=True,
+                restricted_key_age_days=193,
+                in_transit_vin_match_and_split_rail_a2a_enabled=False,
+            )
+        )
+        self.assertEqual(sub_hold["http_status"], 451)
+        self.assertEqual(sub_hold["decision"], "WEBIQ_LOCAL_EV_SUBSIDY_POOL_EXHAUSTED_OR_180D_KEY_HOLD")
+
+        opt_confirm = evaluate_automotive_ev_d2c_checkout_policy(
+            AutomotiveEvD2cCheckoutPolicyInput(
+                quarterly_automotive_ev_d2c_pool_usd=Decimal("450000.00"),
+                agent_bypass_cooling_off_lock_or_hidden_dealer_addon_detected=False,
+                unverified_vin_ev_subsidy_or_high_fee_card_final_balance_detected=False,
+                webiq_local_ev_subsidy_pool_exhausted_flag=False,
+                restricted_key_age_days=30,
+                in_transit_vin_match_and_split_rail_a2a_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "94500.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "355500.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("automotive_ev_d2c_checkout_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("automotive-ev-d2c-checkout-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
