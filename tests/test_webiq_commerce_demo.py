@@ -8817,6 +8817,90 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("ecommerce-abandoned-cart-recovery-sandbox", html)
 
+    def test_digital_pharmacy_optical_rx_copay_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            DigitalPharmacyOpticalRxCopayPolicyInput,
+            evaluate_digital_pharmacy_optical_rx_copay_policy,
+        )
+
+        happy = evaluate_digital_pharmacy_optical_rx_copay_policy(
+            DigitalPharmacyOpticalRxCopayPolicyInput(
+                quarterly_pharmacy_optical_rx_pool_usd=Decimal("340000.00"),
+                expired_unverified_erx_or_optical_bc_pd_mismatch_detected=False,
+                cold_chain_weekend_transit_breach_or_severe_ddi_detected=False,
+                webiq_fda_ndc_lot_recall_flag=False,
+                restricted_key_age_days=30,
+                three_rail_copay_optimizer_and_cold_chain_cutoff_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "ERX_OPTICAL_PARAMETER_VERIFIED_AND_HIPAA_REDACTED_AUTHORIZED")
+        self.assertTrue(
+            str(happy["pharmacy_optical_token"]).startswith("digital_pharmacy_optical_rx_copay_mandate_")
+        )
+
+        erx_block = evaluate_digital_pharmacy_optical_rx_copay_policy(
+            DigitalPharmacyOpticalRxCopayPolicyInput(
+                quarterly_pharmacy_optical_rx_pool_usd=Decimal("340000.00"),
+                expired_unverified_erx_or_optical_bc_pd_mismatch_detected=True,
+                cold_chain_weekend_transit_breach_or_severe_ddi_detected=False,
+                webiq_fda_ndc_lot_recall_flag=False,
+                restricted_key_age_days=30,
+                three_rail_copay_optimizer_and_cold_chain_cutoff_enabled=False,
+            )
+        )
+        self.assertEqual(erx_block["http_status"], 403)
+        self.assertEqual(erx_block["decision"], "EXPIRED_UNVERIFIED_ERX_OR_OPTICAL_BC_PD_MISMATCH_BLOCKED")
+
+        cold_block = evaluate_digital_pharmacy_optical_rx_copay_policy(
+            DigitalPharmacyOpticalRxCopayPolicyInput(
+                quarterly_pharmacy_optical_rx_pool_usd=Decimal("340000.00"),
+                expired_unverified_erx_or_optical_bc_pd_mismatch_detected=False,
+                cold_chain_weekend_transit_breach_or_severe_ddi_detected=True,
+                webiq_fda_ndc_lot_recall_flag=False,
+                restricted_key_age_days=30,
+                three_rail_copay_optimizer_and_cold_chain_cutoff_enabled=False,
+            )
+        )
+        self.assertEqual(cold_block["http_status"], 422)
+        self.assertEqual(
+            cold_block["decision"],
+            "COLD_CHAIN_WEEKEND_TRANSIT_BREACH_OR_SEVERE_DDI_BLOCKED",
+        )
+
+        ndc_hold = evaluate_digital_pharmacy_optical_rx_copay_policy(
+            DigitalPharmacyOpticalRxCopayPolicyInput(
+                quarterly_pharmacy_optical_rx_pool_usd=Decimal("340000.00"),
+                expired_unverified_erx_or_optical_bc_pd_mismatch_detected=False,
+                cold_chain_weekend_transit_breach_or_severe_ddi_detected=False,
+                webiq_fda_ndc_lot_recall_flag=True,
+                restricted_key_age_days=192,
+                three_rail_copay_optimizer_and_cold_chain_cutoff_enabled=False,
+            )
+        )
+        self.assertEqual(ndc_hold["http_status"], 451)
+        self.assertEqual(ndc_hold["decision"], "WEBIQ_FDA_NDC_LOT_RECALL_OR_180D_KEY_HOLD")
+
+        opt_confirm = evaluate_digital_pharmacy_optical_rx_copay_policy(
+            DigitalPharmacyOpticalRxCopayPolicyInput(
+                quarterly_pharmacy_optical_rx_pool_usd=Decimal("340000.00"),
+                expired_unverified_erx_or_optical_bc_pd_mismatch_detected=False,
+                cold_chain_weekend_transit_breach_or_severe_ddi_detected=False,
+                webiq_fda_ndc_lot_recall_flag=False,
+                restricted_key_age_days=30,
+                three_rail_copay_optimizer_and_cold_chain_cutoff_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "74800.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "265200.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("digital_pharmacy_optical_rx_copay_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("digital-pharmacy-optical-rx-copay-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
