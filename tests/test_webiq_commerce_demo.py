@@ -9168,6 +9168,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("pet-ecommerce-autoship-vet-direct-pay-sandbox", html)
 
+    def test_coworking_flexible_office_rightsizing_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            CoworkingFlexibleOfficeRightSizingPolicyInput,
+            evaluate_coworking_flexible_office_rightsizing_policy,
+        )
+
+        happy = evaluate_coworking_flexible_office_rightsizing_policy(
+            CoworkingFlexibleOfficeRightSizingPolicyInput(
+                quarterly_coworking_workspace_pool_usd=Decimal("240000.00"),
+                orphaned_ex_employee_pass_or_evergreen_price_hike_rollover_detected=False,
+                zombie_dedicated_desk_renewal_or_noshow_room_overage_detected=False,
+                webiq_coworking_operator_eviction_risk_flag=False,
+                restricted_key_age_days=30,
+                badge_telemetry_downsize_and_15m_room_release_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "ACTIVE_ROSTER_BADGE_ALIGNED_AND_CAPPED_CREDITS_AUTHORIZED")
+        self.assertTrue(
+            str(happy["coworking_workspace_token"]).startswith("coworking_flexible_office_rightsizing_mandate_")
+        )
+
+        evergreen_block = evaluate_coworking_flexible_office_rightsizing_policy(
+            CoworkingFlexibleOfficeRightSizingPolicyInput(
+                quarterly_coworking_workspace_pool_usd=Decimal("240000.00"),
+                orphaned_ex_employee_pass_or_evergreen_price_hike_rollover_detected=True,
+                zombie_dedicated_desk_renewal_or_noshow_room_overage_detected=False,
+                webiq_coworking_operator_eviction_risk_flag=False,
+                restricted_key_age_days=30,
+                badge_telemetry_downsize_and_15m_room_release_enabled=False,
+            )
+        )
+        self.assertEqual(evergreen_block["http_status"], 403)
+        self.assertEqual(
+            evergreen_block["decision"],
+            "ORPHANED_EX_EMPLOYEE_PASS_OR_EVERGREEN_PRICE_HIKE_ROLLOVER_BLOCKED",
+        )
+
+        zombie_block = evaluate_coworking_flexible_office_rightsizing_policy(
+            CoworkingFlexibleOfficeRightSizingPolicyInput(
+                quarterly_coworking_workspace_pool_usd=Decimal("240000.00"),
+                orphaned_ex_employee_pass_or_evergreen_price_hike_rollover_detected=False,
+                zombie_dedicated_desk_renewal_or_noshow_room_overage_detected=True,
+                webiq_coworking_operator_eviction_risk_flag=False,
+                restricted_key_age_days=30,
+                badge_telemetry_downsize_and_15m_room_release_enabled=False,
+            )
+        )
+        self.assertEqual(zombie_block["http_status"], 422)
+        self.assertEqual(
+            zombie_block["decision"],
+            "ZOMBIE_DEDICATED_DESK_RENEWAL_OR_NOSHOW_ROOM_OVERAGE_BLOCKED",
+        )
+
+        evict_hold = evaluate_coworking_flexible_office_rightsizing_policy(
+            CoworkingFlexibleOfficeRightSizingPolicyInput(
+                quarterly_coworking_workspace_pool_usd=Decimal("240000.00"),
+                orphaned_ex_employee_pass_or_evergreen_price_hike_rollover_detected=False,
+                zombie_dedicated_desk_renewal_or_noshow_room_overage_detected=False,
+                webiq_coworking_operator_eviction_risk_flag=True,
+                restricted_key_age_days=191,
+                badge_telemetry_downsize_and_15m_room_release_enabled=False,
+            )
+        )
+        self.assertEqual(evict_hold["http_status"], 451)
+        self.assertEqual(
+            evict_hold["decision"],
+            "WEBIQ_COWORKING_OPERATOR_EVICTION_RISK_OR_180D_KEY_HOLD",
+        )
+
+        opt_confirm = evaluate_coworking_flexible_office_rightsizing_policy(
+            CoworkingFlexibleOfficeRightSizingPolicyInput(
+                quarterly_coworking_workspace_pool_usd=Decimal("240000.00"),
+                orphaned_ex_employee_pass_or_evergreen_price_hike_rollover_detected=False,
+                zombie_dedicated_desk_renewal_or_noshow_room_overage_detected=False,
+                webiq_coworking_operator_eviction_risk_flag=False,
+                restricted_key_age_days=30,
+                badge_telemetry_downsize_and_15m_room_release_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "69600.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "170400.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("coworking_flexible_office_rightsizing_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("coworking-flexible-office-rightsizing-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

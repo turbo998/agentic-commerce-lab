@@ -15844,6 +15844,80 @@ def evaluate_pet_ecommerce_autoship_vet_direct_pay_policy(
         "reason": "Verified household species safety, accurate weight bracket, clinic eRx authorization, and 5s vet split checkout.",
     }
 
+
+@dataclass(frozen=True)
+class CoworkingFlexibleOfficeRightSizingPolicyInput:
+    quarterly_coworking_workspace_pool_usd: Decimal
+    orphaned_ex_employee_pass_or_evergreen_price_hike_rollover_detected: bool
+    zombie_dedicated_desk_renewal_or_noshow_room_overage_detected: bool
+    webiq_coworking_operator_eviction_risk_flag: bool
+    restricted_key_age_days: int
+    badge_telemetry_downsize_and_15m_room_release_enabled: bool
+
+
+def evaluate_coworking_flexible_office_rightsizing_policy(
+    policy_input: CoworkingFlexibleOfficeRightSizingPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Flexible Workspace & Coworking HRIS offboarding pass revocation, T-75d evergreen guard, badge right-sizing & 15m room release."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_coworking_workspace_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.orphaned_ex_employee_pass_or_evergreen_price_hike_rollover_detected:
+        return {
+            "http_status": 403,
+            "decision": "ORPHANED_EX_EMPLOYEE_PASS_OR_EVERGREEN_PRICE_HIKE_ROLLOVER_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "coworking_workspace_token": None,
+            "reason": "Blocked active pass billing for terminated HRIS employee or silent 60-day evergreen list-price rollover.",
+        }
+
+    if policy_input.zombie_dedicated_desk_renewal_or_noshow_room_overage_detected:
+        return {
+            "http_status": 422,
+            "decision": "ZOMBIE_DEDICATED_DESK_RENEWAL_OR_NOSHOW_ROOM_OVERAGE_BLOCKED",
+            "latency_ms": 12,
+            "approved_budget_usd": "0.00",
+            "coworking_workspace_token": None,
+            "reason": "Blocked <8.5 day/mo zombie Dedicated Desk renewal without day-pass downgrade or unoccupied meeting-room overage charge.",
+        }
+
+    if policy_input.webiq_coworking_operator_eviction_risk_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_COWORKING_OPERATOR_EVICTION_RISK_OR_180D_KEY_HOLD",
+            "latency_ms": 250,
+            "approved_budget_usd": "0.00",
+            "coworking_workspace_token": None,
+            "reason": "Web IQ detected coworking location master-lease default/eviction notice or restricted key age > 180 days.",
+        }
+
+    if policy_input.badge_telemetry_downsize_and_15m_room_release_enabled:
+        savings = (gross * Decimal("0.29")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"COWORK_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "BADGE_TELEMETRY_DESK_DOWNSIZE_AND_15M_ROOM_RELEASE_CONFIRM",
+            "latency_ms": 210,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "coworking_workspace_token": f"coworking_flexible_office_rightsizing_mandate_{digest}",
+            "reason": "90-day badge break-even desk downsizing and 15-minute no-show room release reduced workspace spend by 29.0%.",
+        }
+
+    digest = hashlib.sha256(f"COWORK_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "ACTIVE_ROSTER_BADGE_ALIGNED_AND_CAPPED_CREDITS_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "coworking_workspace_token": f"coworking_flexible_office_rightsizing_mandate_{digest}",
+        "reason": "Verified HRIS active roster, T-75d notice compliance, badge-aligned desk tiers, and capped credit settlement.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -21159,6 +21233,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    coworking_flexible_office_rightsizing_guard = {
+        "happy_path": evaluate_coworking_flexible_office_rightsizing_policy(
+            CoworkingFlexibleOfficeRightSizingPolicyInput(
+                quarterly_coworking_workspace_pool_usd=Decimal("240000.00"),
+                orphaned_ex_employee_pass_or_evergreen_price_hike_rollover_detected=False,
+                zombie_dedicated_desk_renewal_or_noshow_room_overage_detected=False,
+                webiq_coworking_operator_eviction_risk_flag=False,
+                restricted_key_age_days=30,
+                badge_telemetry_downsize_and_15m_room_release_enabled=False,
+            )
+        ),
+        "orphaned_pass_or_evergreen_rollover_block": evaluate_coworking_flexible_office_rightsizing_policy(
+            CoworkingFlexibleOfficeRightSizingPolicyInput(
+                quarterly_coworking_workspace_pool_usd=Decimal("240000.00"),
+                orphaned_ex_employee_pass_or_evergreen_price_hike_rollover_detected=True,
+                zombie_dedicated_desk_renewal_or_noshow_room_overage_detected=False,
+                webiq_coworking_operator_eviction_risk_flag=False,
+                restricted_key_age_days=30,
+                badge_telemetry_downsize_and_15m_room_release_enabled=False,
+            )
+        ),
+        "zombie_desk_or_noshow_room_block": evaluate_coworking_flexible_office_rightsizing_policy(
+            CoworkingFlexibleOfficeRightSizingPolicyInput(
+                quarterly_coworking_workspace_pool_usd=Decimal("240000.00"),
+                orphaned_ex_employee_pass_or_evergreen_price_hike_rollover_detected=False,
+                zombie_dedicated_desk_renewal_or_noshow_room_overage_detected=True,
+                webiq_coworking_operator_eviction_risk_flag=False,
+                restricted_key_age_days=30,
+                badge_telemetry_downsize_and_15m_room_release_enabled=False,
+            )
+        ),
+        "webiq_operator_eviction_or_key_hold": evaluate_coworking_flexible_office_rightsizing_policy(
+            CoworkingFlexibleOfficeRightSizingPolicyInput(
+                quarterly_coworking_workspace_pool_usd=Decimal("240000.00"),
+                orphaned_ex_employee_pass_or_evergreen_price_hike_rollover_detected=False,
+                zombie_dedicated_desk_renewal_or_noshow_room_overage_detected=False,
+                webiq_coworking_operator_eviction_risk_flag=True,
+                restricted_key_age_days=191,
+                badge_telemetry_downsize_and_15m_room_release_enabled=False,
+            )
+        ),
+        "badge_downsize_and_room_release_confirm": evaluate_coworking_flexible_office_rightsizing_policy(
+            CoworkingFlexibleOfficeRightSizingPolicyInput(
+                quarterly_coworking_workspace_pool_usd=Decimal("240000.00"),
+                orphaned_ex_employee_pass_or_evergreen_price_hike_rollover_detected=False,
+                zombie_dedicated_desk_renewal_or_noshow_room_overage_detected=False,
+                webiq_coworking_operator_eviction_risk_flag=False,
+                restricted_key_age_days=30,
+                badge_telemetry_downsize_and_15m_room_release_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21301,6 +21428,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "proptech_leasing_deposit_cam_ach_guard": proptech_leasing_deposit_cam_ach_guard,
         "b2b_corporate_gifting_unclaimed_clawback_guard": b2b_corporate_gifting_unclaimed_clawback_guard,
         "pet_ecommerce_autoship_vet_direct_pay_guard": pet_ecommerce_autoship_vet_direct_pay_guard,
+        "coworking_flexible_office_rightsizing_guard": coworking_flexible_office_rightsizing_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -27153,6 +27281,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">宠物安全与诊所直赔令牌</div>
             <div class="finops-kpi-val" id="pet-commerce-token-kpi" style="font-size:10px;color:#A78BFA;">pet_ecommerce_autoship_vet_direct_pay_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Flexible Workspace & Coworking (Badge Telemetry Right-Sizing, 60d Evergreen Guard & 15m Room Release) Sandbox -->
+      <div class="finops-box" id="coworking-flexible-office-rightsizing-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🪪 企业灵活办公与联合办公采购 (WeWork / IWG：门禁遥测缩容、60d 续约屏障与 15m 会议室释放) 沙盒</div>
+            <div class="finops-subtitle">实测 HRIS 离职秒销通行卡与 T-75d 拦截 60天静默翻倍续约 (HTTP 403)、月均刷卡 &lt;8.5天僵尸固定工位自动转按次日卡与会议室爽约拦截 (HTTP 422)、大业主清退预警 (HTTP 451) 及共享点数池+15m 释放退点立省 29% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="cowork-verdict-pill">HTTP 200 · ACTIVE_ROSTER_BADGE_ALIGNED_AND_CAPPED_CREDITS_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度企业灵活办公与联合办公采购结算池 ($ USD) <span class="control-val" id="cowork-gross-label">$240,000</span></label>
+            <input type="range" id="cowork-gross-slider" min="40000" max="900000" step="20000" value="240000" oninput="updateCoworkingFlexibleOfficeRightSizingSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">HRIS 离职联动、60d 自动续约屏障、门禁刷卡盈亏平衡与会议室释放场景</label>
+            <select id="cowork-mode-select" onchange="updateCoworkingFlexibleOfficeRightSizingSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 在册员工核验 + 工位刷卡率达标 + 点数池封顶结算 (HTTP 200)</option>
+              <option value="evergreen_403">🛑 为已离职员工继续扣缴月卡 或 错过 60天通知期按取消折扣挂牌高价静默续约 (HTTP 403)</option>
+              <option value="zombie_422">🚨 月均刷卡 &lt;8.5天的僵尸专属固定工位原样续租 或 无人到场会议室计入超额账单 (HTTP 422)</option>
+              <option value="evict_451">🛑 Web IQ 检出目标联合办公空间面临大房东欠租清退诉讼或密钥 &gt;180d (HTTP 451)</option>
+              <option value="downsize_409">🧑‍⚖️ 门禁遥测将僵尸固定工位转按次热桌 + 会议室 15m 未刷门禁自动释放退点立省 29% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原僵尸工位与会议室超支基线</div>
+            <div class="finops-kpi-val" id="cowork-gross-kpi">$240,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">门禁缩容与 15m 退点立省</div>
+            <div class="finops-kpi-val" id="cowork-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净混合办公采购成本</div>
+            <div class="finops-kpi-val" id="cowork-net-kpi" style="color:#60A5FA;">$240,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">灵活办公门禁缩容令牌</div>
+            <div class="finops-kpi-val" id="cowork-token-kpi" style="font-size:10px;color:#A78BFA;">coworking_flexible_office_rightsizing_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -34244,6 +34417,61 @@ function updatePetEcommerceAutoshipVetDirectPaySandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'pet_ecommerce_autoship_vet_direct_pay_mandate_verified';
+  }}
+}}
+
+function updateCoworkingFlexibleOfficeRightSizingSandbox() {{
+  const grossSlider = document.getElementById('cowork-gross-slider');
+  const modeSelect = document.getElementById('cowork-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '240000');
+  const mode = modeSelect.value;
+  document.getElementById('cowork-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('cowork-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('cowork-verdict-pill');
+  const savingsKpi = document.getElementById('cowork-savings-kpi');
+  const netKpi = document.getElementById('cowork-net-kpi');
+  const tokenKpi = document.getElementById('cowork-token-kpi');
+
+  if (mode === 'evergreen_403') {{
+    pill.textContent = 'HTTP 403 · ORPHANED_EX_EMPLOYEE_PASS_OR_EVERGREEN_PRICE_HIKE_ROLLOVER_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_EX_EMPLOYEE_PASS_OR_EVERGREEN_HIKE';
+  }} else if (mode === 'zombie_422') {{
+    pill.textContent = 'HTTP 422 · ZOMBIE_DEDICATED_DESK_RENEWAL_OR_NOSHOW_ROOM_OVERAGE_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_ZOMBIE_DESK_OR_NOSHOW_ROOM_OVERAGE';
+  }} else if (mode === 'evict_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_COWORKING_OPERATOR_EVICTION_RISK_OR_180D_KEY_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_OPERATOR_EVICTION_RISK_OR_180D_KEY';
+  }} else if (mode === 'downsize_409') {{
+    const savings = Math.round(gross * 0.29 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · BADGE_TELEMETRY_DESK_DOWNSIZE_AND_15M_ROOM_RELEASE_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'coworking_flexible_office_rightsizing_mandate_saved29pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · ACTIVE_ROSTER_BADGE_ALIGNED_AND_CAPPED_CREDITS_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'coworking_flexible_office_rightsizing_mandate_verified';
   }}
 }}
 
