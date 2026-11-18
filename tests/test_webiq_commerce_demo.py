@@ -9081,6 +9081,93 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("b2b-corporate-gifting-unclaimed-clawback-sandbox", html)
 
+    def test_pet_ecommerce_autoship_vet_direct_pay_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            PetEcommerceAutoshipVetDirectPayPolicyInput,
+            evaluate_pet_ecommerce_autoship_vet_direct_pay_policy,
+        )
+
+        happy = evaluate_pet_ecommerce_autoship_vet_direct_pay_policy(
+            PetEcommerceAutoshipVetDirectPayPolicyInput(
+                quarterly_pet_autoship_vet_pool_usd=Decimal("170000.00"),
+                cross_species_permethrin_toxicity_or_unverified_vet_rx_detected=False,
+                puppy_growth_weight_bracket_drift_or_pre_existing_claim_detected=False,
+                webiq_fda_pet_food_recall_flag=False,
+                restricted_key_age_days=28,
+                mer_caloric_cadence_and_5s_vet_direct_pay_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "SPECIES_WEIGHT_SAFE_AND_VET_DIRECT_PAY_AUTHORIZED")
+        self.assertTrue(
+            str(happy["pet_commerce_token"]).startswith("pet_ecommerce_autoship_vet_direct_pay_mandate_")
+        )
+
+        toxic_block = evaluate_pet_ecommerce_autoship_vet_direct_pay_policy(
+            PetEcommerceAutoshipVetDirectPayPolicyInput(
+                quarterly_pet_autoship_vet_pool_usd=Decimal("170000.00"),
+                cross_species_permethrin_toxicity_or_unverified_vet_rx_detected=True,
+                puppy_growth_weight_bracket_drift_or_pre_existing_claim_detected=False,
+                webiq_fda_pet_food_recall_flag=False,
+                restricted_key_age_days=28,
+                mer_caloric_cadence_and_5s_vet_direct_pay_enabled=False,
+            )
+        )
+        self.assertEqual(toxic_block["http_status"], 403)
+        self.assertEqual(
+            toxic_block["decision"],
+            "CROSS_SPECIES_PERMETHRIN_TOXICITY_OR_UNVERIFIED_VET_RX_BLOCKED",
+        )
+
+        growth_block = evaluate_pet_ecommerce_autoship_vet_direct_pay_policy(
+            PetEcommerceAutoshipVetDirectPayPolicyInput(
+                quarterly_pet_autoship_vet_pool_usd=Decimal("170000.00"),
+                cross_species_permethrin_toxicity_or_unverified_vet_rx_detected=False,
+                puppy_growth_weight_bracket_drift_or_pre_existing_claim_detected=True,
+                webiq_fda_pet_food_recall_flag=False,
+                restricted_key_age_days=28,
+                mer_caloric_cadence_and_5s_vet_direct_pay_enabled=False,
+            )
+        )
+        self.assertEqual(growth_block["http_status"], 422)
+        self.assertEqual(
+            growth_block["decision"],
+            "PUPPY_GROWTH_WEIGHT_BRACKET_DRIFT_OR_PRE_EXISTING_CLAIM_BLOCKED",
+        )
+
+        recall_hold = evaluate_pet_ecommerce_autoship_vet_direct_pay_policy(
+            PetEcommerceAutoshipVetDirectPayPolicyInput(
+                quarterly_pet_autoship_vet_pool_usd=Decimal("170000.00"),
+                cross_species_permethrin_toxicity_or_unverified_vet_rx_detected=False,
+                puppy_growth_weight_bracket_drift_or_pre_existing_claim_detected=False,
+                webiq_fda_pet_food_recall_flag=True,
+                restricted_key_age_days=191,
+                mer_caloric_cadence_and_5s_vet_direct_pay_enabled=False,
+            )
+        )
+        self.assertEqual(recall_hold["http_status"], 451)
+        self.assertEqual(recall_hold["decision"], "WEBIQ_FDA_PET_FOOD_RECALL_OR_180D_KEY_HOLD")
+
+        opt_confirm = evaluate_pet_ecommerce_autoship_vet_direct_pay_policy(
+            PetEcommerceAutoshipVetDirectPayPolicyInput(
+                quarterly_pet_autoship_vet_pool_usd=Decimal("170000.00"),
+                cross_species_permethrin_toxicity_or_unverified_vet_rx_detected=False,
+                puppy_growth_weight_bracket_drift_or_pre_existing_claim_detected=False,
+                webiq_fda_pet_food_recall_flag=False,
+                restricted_key_age_days=28,
+                mer_caloric_cadence_and_5s_vet_direct_pay_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "49300.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "120700.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("pet_ecommerce_autoship_vet_direct_pay_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("pet-ecommerce-autoship-vet-direct-pay-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
