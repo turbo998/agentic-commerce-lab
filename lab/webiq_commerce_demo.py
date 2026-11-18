@@ -16954,6 +16954,80 @@ def evaluate_agri_inputs_produce_paca_escrow_policy(
         "reason": "Verified agronomy seed zone, active RUP license, <=30d PACA statutory trust notice, and EFS waterfall settlement.",
     }
 
+
+@dataclass(frozen=True)
+class LaundryLuxuryCareRfidEscrowPolicyInput:
+    quarterly_laundry_luxury_care_pool_usd: Decimal
+    do_not_wash_cashmere_in_bulk_bag_or_unconfirmed_pre_existing_damage_detected: bool
+    uninsured_luxury_garment_or_commercial_linen_subscription_abuse_detected: bool
+    webiq_epa_perc_solvent_ban_or_sanitation_violation_flag: bool
+    restricted_key_age_days: int
+    rfid_garment_twin_and_offpeak_locker_escrow_enabled: bool
+
+
+def evaluate_laundry_luxury_care_rfid_escrow_policy(
+    policy_input: LaundryLuxuryCareRfidEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate On-Demand Laundry & Luxury Care ISO 3758 care-label vision, pre-wash defect sign-off & UHF RFID locker escrow."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_laundry_luxury_care_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.do_not_wash_cashmere_in_bulk_bag_or_unconfirmed_pre_existing_damage_detected:
+        return {
+            "http_status": 403,
+            "decision": "DO_NOT_WASH_CASHMERE_IN_BULK_BAG_OR_UNCONFIRMED_PRE_EXISTING_DAMAGE_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "laundry_rfid_token": None,
+            "reason": "Diverted ISO 3758 Dry-Clean-Only cashmere from bulk Wash-and-Fold bag or held garment with unsigned pre-wash defect photo.",
+        }
+
+    if policy_input.uninsured_luxury_garment_or_commercial_linen_subscription_abuse_detected:
+        return {
+            "http_status": 422,
+            "decision": "UNINSURED_LUXURY_GARMENT_OR_COMMERCIAL_LINEN_SUBSCRIPTION_ABUSE_BLOCKED",
+            "latency_ms": 12,
+            "approved_budget_usd": "0.00",
+            "laundry_rfid_token": None,
+            "reason": "Blocked >$500 luxury garment lacking declared-value insurance or bulk Airbnb/salon towels in household subscription bag.",
+        }
+
+    if policy_input.webiq_epa_perc_solvent_ban_or_sanitation_violation_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_EPA_PERC_SOLVENT_BAN_OR_SANITATION_VIOLATION_HOLD",
+            "latency_ms": 235,
+            "approved_budget_usd": "0.00",
+            "laundry_rfid_token": None,
+            "reason": "Web IQ flagged partner plant using banned EPA TSCA perchloroethylene (PERC) solvent, sanitation breach, or key >180 days.",
+        }
+
+    if policy_input.rfid_garment_twin_and_offpeak_locker_escrow_enabled:
+        savings = (gross * Decimal("0.24")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"LAUNDRY_RFID_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "RFID_GARMENT_TWIN_AND_OFFPEAK_LOCKER_ESCROW_CONFIRM",
+            "latency_ms": 200,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "laundry_rfid_token": f"laundry_luxury_care_rfid_escrow_mandate_{digest}",
+            "reason": "Washable UHF RFID digital twin and off-peak smart-locker escrow reduced garment claims and courier costs by 24.0%.",
+        }
+
+    digest = hashlib.sha256(f"LAUNDRY_RFID_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "CARE_LABEL_SAFE_DEFECT_SIGNED_AND_RFID_ESCROW_AUTHORIZED",
+        "latency_ms": 9,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "laundry_rfid_token": f"laundry_luxury_care_rfid_escrow_mandate_{digest}",
+        "reason": "Verified ISO 3758 care-label safety, signed pre-wash inspection, UHF RFID twin, and GreenEarth eco-solvent compliance.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -23064,6 +23138,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    laundry_luxury_care_rfid_escrow_guard = {
+        "happy_path": evaluate_laundry_luxury_care_rfid_escrow_policy(
+            LaundryLuxuryCareRfidEscrowPolicyInput(
+                quarterly_laundry_luxury_care_pool_usd=Decimal("210000.00"),
+                do_not_wash_cashmere_in_bulk_bag_or_unconfirmed_pre_existing_damage_detected=False,
+                uninsured_luxury_garment_or_commercial_linen_subscription_abuse_detected=False,
+                webiq_epa_perc_solvent_ban_or_sanitation_violation_flag=False,
+                restricted_key_age_days=30,
+                rfid_garment_twin_and_offpeak_locker_escrow_enabled=False,
+            )
+        ),
+        "cashmere_in_wash_bag_or_unsigned_defect_block": evaluate_laundry_luxury_care_rfid_escrow_policy(
+            LaundryLuxuryCareRfidEscrowPolicyInput(
+                quarterly_laundry_luxury_care_pool_usd=Decimal("210000.00"),
+                do_not_wash_cashmere_in_bulk_bag_or_unconfirmed_pre_existing_damage_detected=True,
+                uninsured_luxury_garment_or_commercial_linen_subscription_abuse_detected=False,
+                webiq_epa_perc_solvent_ban_or_sanitation_violation_flag=False,
+                restricted_key_age_days=30,
+                rfid_garment_twin_and_offpeak_locker_escrow_enabled=False,
+            )
+        ),
+        "uninsured_luxury_or_linen_abuse_block": evaluate_laundry_luxury_care_rfid_escrow_policy(
+            LaundryLuxuryCareRfidEscrowPolicyInput(
+                quarterly_laundry_luxury_care_pool_usd=Decimal("210000.00"),
+                do_not_wash_cashmere_in_bulk_bag_or_unconfirmed_pre_existing_damage_detected=False,
+                uninsured_luxury_garment_or_commercial_linen_subscription_abuse_detected=True,
+                webiq_epa_perc_solvent_ban_or_sanitation_violation_flag=False,
+                restricted_key_age_days=30,
+                rfid_garment_twin_and_offpeak_locker_escrow_enabled=False,
+            )
+        ),
+        "webiq_epa_perc_ban_or_hygiene_hold": evaluate_laundry_luxury_care_rfid_escrow_policy(
+            LaundryLuxuryCareRfidEscrowPolicyInput(
+                quarterly_laundry_luxury_care_pool_usd=Decimal("210000.00"),
+                do_not_wash_cashmere_in_bulk_bag_or_unconfirmed_pre_existing_damage_detected=False,
+                uninsured_luxury_garment_or_commercial_linen_subscription_abuse_detected=False,
+                webiq_epa_perc_solvent_ban_or_sanitation_violation_flag=True,
+                restricted_key_age_days=191,
+                rfid_garment_twin_and_offpeak_locker_escrow_enabled=False,
+            )
+        ),
+        "rfid_twin_and_locker_escrow_confirm": evaluate_laundry_luxury_care_rfid_escrow_policy(
+            LaundryLuxuryCareRfidEscrowPolicyInput(
+                quarterly_laundry_luxury_care_pool_usd=Decimal("210000.00"),
+                do_not_wash_cashmere_in_bulk_bag_or_unconfirmed_pre_existing_damage_detected=False,
+                uninsured_luxury_garment_or_commercial_linen_subscription_abuse_detected=False,
+                webiq_epa_perc_solvent_ban_or_sanitation_violation_flag=False,
+                restricted_key_age_days=30,
+                rfid_garment_twin_and_offpeak_locker_escrow_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -23221,6 +23348,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "childcare_preschool_camp_escrow_guard": childcare_preschool_camp_escrow_guard,
         "shared_powerbank_smart_vending_guard": shared_powerbank_smart_vending_guard,
         "agri_inputs_produce_paca_escrow_guard": agri_inputs_produce_paca_escrow_guard,
+        "laundry_luxury_care_rfid_escrow_guard": laundry_luxury_care_rfid_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -29748,6 +29876,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">PACA 信托与农资瀑布令牌</div>
             <div class="finops-kpi-val" id="agri-paca-token-kpi" style="font-size:10px;color:#A78BFA;">agri_inputs_produce_paca_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive On-Demand Laundry, Dry Cleaning & Luxury Garment Care (ISO 3758 Care-Label, Defect Sign-Off & UHF RFID) Sandbox -->
+      <div class="finops-box" id="laundry-luxury-care-rfid-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🧥 O2O 洗衣洗护、奢品皮具养护与智能收衣柜 (Rinse / CleanCloud / 丰巢洗护 / 京东洗衣) 沙盒</div>
+            <div class="finops-subtitle">实测 ISO 3758 水洗标视觉拦截羊绒/真丝混入按袋水洗缩水与洗前原破损拍照客户确权锁 (HTTP 403)、万元奢品强制保价精洗与防民宿商用毛巾薅包月套餐 (HTTP 422)、禁用致癌四氯乙烯(PERC)溶剂熔断 (HTTP 451) 及耐水洗 UHF RFID 防错件+智能柜夜间集单立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="laun-rfid-verdict-pill">HTTP 200 · CARE_LABEL_SAFE_DEFECT_SIGNED_AND_RFID_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度 O2O 洗衣与奢品鞋包养护结算及保价池 ($ USD) <span class="control-val" id="laun-rfid-gross-label">$210,000</span></label>
+            <input type="range" id="laun-rfid-gross-slider" min="40000" max="800000" step="15000" value="210000" oninput="updateLaundryLuxuryCareRfidEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">ISO 3758 水洗标视觉分拣、洗前瑕疵拍照确权、商用布草反套利与 UHF RFID 智能柜场景</label>
+            <select id="laun-rfid-mode-select" onchange="updateLaundryLuxuryCareRfidEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ ISO 3758 水洗标安全 + 洗前瑕疵已确认 + UHF RFID 齐套入柜 (HTTP 200)</option>
+              <option value="cashmere_403">🛑 顾客把 $2,500 仅限干洗羊绒衫混入 $39 按袋水洗烘袋 或 洗前袖口烟洞未经顾客点击确认 (HTTP 403)</option>
+              <option value="linen_422">🚨 万元爱马仕/高定按 $15 普洗下单未选保价精洗 或 民宿/理发店塞入 35 条商用白毛巾薅包月 (HTTP 422)</option>
+              <option value="perc_451">🛑 Web IQ 检出外包洗涤厂违规使用 EPA 禁令四氯乙烯(PERC)致癌溶剂 或 医民床品混洗违规 (HTTP 451)</option>
+              <option value="rfid_409">🧑‍⚖️ 耐200次水洗 UHF RFID 零错衣自动合单 + 社区智能柜夜间错峰集单与验衣托管立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原洗坏缩水赔付、错件与专人上门基线</div>
+            <div class="finops-kpi-val" id="laun-rfid-gross-kpi">$210,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">视觉防洗坏与智能柜谷时集单立省</div>
+            <div class="finops-kpi-val" id="laun-rfid-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净洗护履约与保价理赔成本</div>
+            <div class="finops-kpi-val" id="laun-rfid-net-kpi" style="color:#60A5FA;">$210,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">水洗标验真与 RFID 托管令牌</div>
+            <div class="finops-kpi-val" id="laun-rfid-token-kpi" style="font-size:10px;color:#A78BFA;">laundry_luxury_care_rfid_escrow_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -37664,6 +37837,61 @@ function updateAgriInputsProducePacaEscrowSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'agri_inputs_produce_paca_escrow_mandate_verified';
+  }}
+}}
+
+function updateLaundryLuxuryCareRfidEscrowSandbox() {{
+  const grossSlider = document.getElementById('laun-rfid-gross-slider');
+  const modeSelect = document.getElementById('laun-rfid-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '210000');
+  const mode = modeSelect.value;
+  document.getElementById('laun-rfid-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('laun-rfid-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('laun-rfid-verdict-pill');
+  const savingsKpi = document.getElementById('laun-rfid-savings-kpi');
+  const netKpi = document.getElementById('laun-rfid-net-kpi');
+  const tokenKpi = document.getElementById('laun-rfid-token-kpi');
+
+  if (mode === 'cashmere_403') {{
+    pill.textContent = 'HTTP 403 · DO_NOT_WASH_CASHMERE_IN_BULK_BAG_OR_UNCONFIRMED_PRE_EXISTING_DAMAGE_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_CASHMERE_IN_WASH_BAG_OR_NO_SIGN';
+  }} else if (mode === 'linen_422') {{
+    pill.textContent = 'HTTP 422 · UNINSURED_LUXURY_GARMENT_OR_COMMERCIAL_LINEN_SUBSCRIPTION_ABUSE_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_UNINSURED_COUTURE_OR_AIRBNB_TOWELS';
+  }} else if (mode === 'perc_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_EPA_PERC_SOLVENT_BAN_OR_SANITATION_VIOLATION_HOLD (235ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_EPA_PERC_SOLVENT_BAN_OR_HYGIENE';
+  }} else if (mode === 'rfid_409') {{
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · RFID_GARMENT_TWIN_AND_OFFPEAK_LOCKER_ESCROW_CONFIRM (200ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'laundry_luxury_care_rfid_escrow_mandate_saved24pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · CARE_LABEL_SAFE_DEFECT_SIGNED_AND_RFID_ESCROW_AUTHORIZED (9ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'laundry_luxury_care_rfid_escrow_mandate_verified';
   }}
 }}
 

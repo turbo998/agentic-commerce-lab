@@ -10518,6 +10518,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("agri-inputs-produce-paca-escrow-sandbox", html)
 
+    def test_laundry_luxury_care_rfid_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            LaundryLuxuryCareRfidEscrowPolicyInput,
+            evaluate_laundry_luxury_care_rfid_escrow_policy,
+        )
+
+        happy = evaluate_laundry_luxury_care_rfid_escrow_policy(
+            LaundryLuxuryCareRfidEscrowPolicyInput(
+                quarterly_laundry_luxury_care_pool_usd=Decimal("210000.00"),
+                do_not_wash_cashmere_in_bulk_bag_or_unconfirmed_pre_existing_damage_detected=False,
+                uninsured_luxury_garment_or_commercial_linen_subscription_abuse_detected=False,
+                webiq_epa_perc_solvent_ban_or_sanitation_violation_flag=False,
+                restricted_key_age_days=30,
+                rfid_garment_twin_and_offpeak_locker_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "CARE_LABEL_SAFE_DEFECT_SIGNED_AND_RFID_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["laundry_rfid_token"]).startswith("laundry_luxury_care_rfid_escrow_mandate_")
+        )
+
+        cashmere_block = evaluate_laundry_luxury_care_rfid_escrow_policy(
+            LaundryLuxuryCareRfidEscrowPolicyInput(
+                quarterly_laundry_luxury_care_pool_usd=Decimal("210000.00"),
+                do_not_wash_cashmere_in_bulk_bag_or_unconfirmed_pre_existing_damage_detected=True,
+                uninsured_luxury_garment_or_commercial_linen_subscription_abuse_detected=False,
+                webiq_epa_perc_solvent_ban_or_sanitation_violation_flag=False,
+                restricted_key_age_days=30,
+                rfid_garment_twin_and_offpeak_locker_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(cashmere_block["http_status"], 403)
+        self.assertEqual(
+            cashmere_block["decision"],
+            "DO_NOT_WASH_CASHMERE_IN_BULK_BAG_OR_UNCONFIRMED_PRE_EXISTING_DAMAGE_BLOCKED",
+        )
+
+        linen_block = evaluate_laundry_luxury_care_rfid_escrow_policy(
+            LaundryLuxuryCareRfidEscrowPolicyInput(
+                quarterly_laundry_luxury_care_pool_usd=Decimal("210000.00"),
+                do_not_wash_cashmere_in_bulk_bag_or_unconfirmed_pre_existing_damage_detected=False,
+                uninsured_luxury_garment_or_commercial_linen_subscription_abuse_detected=True,
+                webiq_epa_perc_solvent_ban_or_sanitation_violation_flag=False,
+                restricted_key_age_days=30,
+                rfid_garment_twin_and_offpeak_locker_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(linen_block["http_status"], 422)
+        self.assertEqual(
+            linen_block["decision"],
+            "UNINSURED_LUXURY_GARMENT_OR_COMMERCIAL_LINEN_SUBSCRIPTION_ABUSE_BLOCKED",
+        )
+
+        perc_hold = evaluate_laundry_luxury_care_rfid_escrow_policy(
+            LaundryLuxuryCareRfidEscrowPolicyInput(
+                quarterly_laundry_luxury_care_pool_usd=Decimal("210000.00"),
+                do_not_wash_cashmere_in_bulk_bag_or_unconfirmed_pre_existing_damage_detected=False,
+                uninsured_luxury_garment_or_commercial_linen_subscription_abuse_detected=False,
+                webiq_epa_perc_solvent_ban_or_sanitation_violation_flag=True,
+                restricted_key_age_days=191,
+                rfid_garment_twin_and_offpeak_locker_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(perc_hold["http_status"], 451)
+        self.assertEqual(
+            perc_hold["decision"],
+            "WEBIQ_EPA_PERC_SOLVENT_BAN_OR_SANITATION_VIOLATION_HOLD",
+        )
+
+        opt_confirm = evaluate_laundry_luxury_care_rfid_escrow_policy(
+            LaundryLuxuryCareRfidEscrowPolicyInput(
+                quarterly_laundry_luxury_care_pool_usd=Decimal("210000.00"),
+                do_not_wash_cashmere_in_bulk_bag_or_unconfirmed_pre_existing_damage_detected=False,
+                uninsured_luxury_garment_or_commercial_linen_subscription_abuse_detected=False,
+                webiq_epa_perc_solvent_ban_or_sanitation_violation_flag=False,
+                restricted_key_age_days=30,
+                rfid_garment_twin_and_offpeak_locker_escrow_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "50400.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "159600.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("laundry_luxury_care_rfid_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("laundry-luxury-care-rfid-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
