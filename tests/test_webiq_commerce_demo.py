@@ -8307,6 +8307,90 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("ecommerce-pre-purchase-anti-wrong-buy-sandbox", html)
 
+    def test_personal_agent_persistent_intent_poppy_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            PersonalAgentPersistentIntentPoppyPolicyInput,
+            evaluate_personal_agent_persistent_intent_poppy_policy,
+        )
+
+        happy = evaluate_personal_agent_persistent_intent_poppy_policy(
+            PersonalAgentPersistentIntentPoppyPolicyInput(
+                quarterly_persistent_intent_budget_pool_usd=Decimal("290000.00"),
+                revoked_persistent_intent_or_poppy_dpop_replay_detected=False,
+                cumulative_intent_budget_exceeded_or_post_tx_scope_violation_detected=False,
+                webiq_recurring_intent_recall_flag=False,
+                restricted_key_age_days=30,
+                persistent_intent_dip_buy_and_post_tx_price_match_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "POPPY_DPOP_VERIFIED_AND_MCP_PERSISTENT_INTENT_AUTHORIZED")
+        self.assertTrue(
+            str(happy["persistent_intent_token"]).startswith("personal_agent_persistent_intent_poppy_mandate_")
+        )
+
+        dpop_block = evaluate_personal_agent_persistent_intent_poppy_policy(
+            PersonalAgentPersistentIntentPoppyPolicyInput(
+                quarterly_persistent_intent_budget_pool_usd=Decimal("290000.00"),
+                revoked_persistent_intent_or_poppy_dpop_replay_detected=True,
+                cumulative_intent_budget_exceeded_or_post_tx_scope_violation_detected=False,
+                webiq_recurring_intent_recall_flag=False,
+                restricted_key_age_days=30,
+                persistent_intent_dip_buy_and_post_tx_price_match_enabled=False,
+            )
+        )
+        self.assertEqual(dpop_block["http_status"], 403)
+        self.assertEqual(dpop_block["decision"], "REVOKED_PERSISTENT_INTENT_OR_POPPY_DPOP_REPLAY_BLOCKED")
+
+        cum_block = evaluate_personal_agent_persistent_intent_poppy_policy(
+            PersonalAgentPersistentIntentPoppyPolicyInput(
+                quarterly_persistent_intent_budget_pool_usd=Decimal("290000.00"),
+                revoked_persistent_intent_or_poppy_dpop_replay_detected=False,
+                cumulative_intent_budget_exceeded_or_post_tx_scope_violation_detected=True,
+                webiq_recurring_intent_recall_flag=False,
+                restricted_key_age_days=30,
+                persistent_intent_dip_buy_and_post_tx_price_match_enabled=False,
+            )
+        )
+        self.assertEqual(cum_block["http_status"], 422)
+        self.assertEqual(
+            cum_block["decision"],
+            "CUMULATIVE_INTENT_BUDGET_EXCEEDED_OR_POST_TX_SCOPE_VIOLATION_BLOCKED",
+        )
+
+        recall_hold = evaluate_personal_agent_persistent_intent_poppy_policy(
+            PersonalAgentPersistentIntentPoppyPolicyInput(
+                quarterly_persistent_intent_budget_pool_usd=Decimal("290000.00"),
+                revoked_persistent_intent_or_poppy_dpop_replay_detected=False,
+                cumulative_intent_budget_exceeded_or_post_tx_scope_violation_detected=False,
+                webiq_recurring_intent_recall_flag=True,
+                restricted_key_age_days=192,
+                persistent_intent_dip_buy_and_post_tx_price_match_enabled=False,
+            )
+        )
+        self.assertEqual(recall_hold["http_status"], 451)
+        self.assertEqual(recall_hold["decision"], "WEBIQ_RECURRING_INTENT_RECALL_OR_180D_KEY_HOLD")
+
+        opt_confirm = evaluate_personal_agent_persistent_intent_poppy_policy(
+            PersonalAgentPersistentIntentPoppyPolicyInput(
+                quarterly_persistent_intent_budget_pool_usd=Decimal("290000.00"),
+                revoked_persistent_intent_or_poppy_dpop_replay_detected=False,
+                cumulative_intent_budget_exceeded_or_post_tx_scope_violation_detected=False,
+                webiq_recurring_intent_recall_flag=False,
+                restricted_key_age_days=30,
+                persistent_intent_dip_buy_and_post_tx_price_match_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "63800.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "226200.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("personal_agent_persistent_intent_poppy_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("personal-agent-persistent-intent-poppy-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

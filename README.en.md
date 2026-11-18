@@ -1,6 +1,6 @@
 # Enterprise Agentic Commerce Lab — Reference Architecture & AI Solution Architect Playbooks
 
-🌐 **Language / 语言切换**: **[中文主页 (`README.md`)](README.md)** | **English (Current)** | **[📚 Full SA Decision Guide Catalog (122 Bilingual FAQs)](docs/index.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](benchmark-cards.en.html)**
+🌐 **Language / 语言切换**: **[中文主页 (`README.md`)](README.md)** | **English (Current)** | **[📚 Full SA Decision Guide Catalog (123 Bilingual FAQs)](docs/index.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](benchmark-cards.en.html)**
 
 > **An Enterprise Engineering & Architecture Reference Hub for AI Solution Architects**
 > Focused exclusively on **Retail & Multi-Merchant E-Commerce, Agent Payment & Cryptographic Mandate Protocols (`Google AP2`, `Stripe SPT`, `Visa VIC & TAP`, `Mastercard Agent Pay`, `PayPal`, `x402`), Enterprise B2B Procurement & ERP 3-Way Match, OTA / Airline (`IATA NDC`) Dynamic Booking, SaaS Usage Metering & FinOps, and Cross-Border Tax (`MoR`) / FX Clearing / `Visa CE 3.0` Chargeback Defense** — pairing executive decision guides with a **6-Plane Reference Architecture, deterministic Python guardrails, and self-contained interactive workbenches**.
@@ -117,6 +117,7 @@ flowchart TB
 2. **Agent Payment Protocols, Cryptographic Mandates & Strong Authentication**
    - [MCP vs A2A vs ACP / UCP / AP2 / x402 Protocol Layering & Interoperability](docs/agentic-commerce-protocol-stack-mcp-vs-a2a-acp-ucp-ap2-x402-interoperability-selection-faq.en.md) · [中文](docs/agentic-commerce-protocol-stack-mcp-vs-a2a-acp-ucp-ap2-x402-interoperability-selection-faq.md)
    - [Stripe SPT vs Visa VIC vs Mastercard Agent Pay vs PayPal Virtual Card Toolkit](docs/agentic-payment-toolkit-stripe-spt-vs-visa-vic-mastercard-paypal-virtual-card-selection-faq.en.md) · [中文](docs/agentic-payment-toolkit-stripe-spt-vs-visa-vic-mastercard-paypal-virtual-card-selection-faq.md)
+   - [Personal Agent Persistent Intent: Sierra/Meta Poppy v0.1 + MCP Intent Services vs. AP2](docs/personal-agent-persistent-intent-services-poppy-vs-ap2-recurring-budget-selection-faq.en.md) · [中文](docs/personal-agent-persistent-intent-services-poppy-vs-ap2-recurring-budget-selection-faq.md)
    - [3DS2 Decoupled Challenge & FIDO2 / Passkey Biometric Step-Up vs SMS OTP Takeover](docs/agentic-3ds2-fido2-spc-biometric-stepup-mandate-vs-sms-otp-scraping-takeover-faq.en.md) · [中文](docs/agentic-3ds2-fido2-spc-biometric-stepup-mandate-vs-sms-otp-scraping-takeover-faq.md)
 3. **Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC)**
    - [Multi-Merchant Split-Cart Two-Phase Saga vs Single-Platform Connect Settlement](docs/multi-merchant-split-cart-saga-vs-connect-faq.en.md) · [中文](docs/multi-merchant-split-cart-saga-vs-connect-faq.md)

@@ -2,12 +2,12 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`122` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`123` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
-- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（32 篇）](#payments-mandates)
+- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（33 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（23 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（21 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（12 篇）](#saas-finops-micropayments)
@@ -36,7 +36,7 @@
 | 10 | **面向“54% 错误仍误下单”的智能体购前确定性防买错护栏（Pre-Purchase Verification & Anti-Wrong-Buy Gate）架构选型 FAQ：基于 Visa Agentic Commerce Benchmark（42.8% 失败率）的规格/尺码/预算/确认四重门禁实战指南** | [中文](ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.md) · [English](ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
-## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（32 篇）
+## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（33 篇）
 
 > 涵盖 Google AP2、Stripe SPT、Visa VIC / TAP、Mastercard Agent Pay、PayPal、UCP/ACP 协议互操作、3DS2 无浏览器挑战、FIDO2/Passkey 硬件签名及幂等防重扣架构。
 
@@ -74,6 +74,7 @@
 | 30 | **零售媒体程序化广告投放与网红带货分佣（Programmatic Retail Media & Influencer Affiliate IVT Clawback Mandate）架构：SIVT 机器人流量剔除与退货期满释放令牌（`ad_attribution_ivt_mandate_...` + Web IQ 品牌安全与直签刊例核验）vs 传统点击农场盗刷（Click-Farm Drain）与退货骗佣选型与原理解析 FAQ** | [中文](retail-media-ad-spend-ivt-clawback-vs-click-farm-drain-faq.md) · [English](retail-media-ad-spend-ivt-clawback-vs-click-farm-drain-faq.en.md) |
 | 31 | **零售媒体网络（RMN：Amazon Ads / Walmart Connect / Instacart Ads）“智能广告竞价、黄金购物车（Buy Box）与库存联动停投”Agent 架构选型 FAQ：断货秒停、防自然流量自蚕食与净毛利 ROAS 实战指南** | [中文](retail-media-network-rmn-ad-bidding-buybox-stock-pause-roas-agent-selection-faq.md) · [English](retail-media-network-rmn-ad-bidding-buybox-stock-pause-roas-agent-selection-faq.en.md) |
 | 32 | **AI Agent 逆向物流、RMA 退货承运商揽收核验与防“空包/调包”欺诈架构：加密 RMA 揽收称重/序列号认证令牌（`rma_return_escrow_...` + 承运商揽收称重与入库开箱双阶释放）vs 仅凭单号秒退与砖头空包套现选型与原理解析 FAQ** | [中文](return-logistics-reverse-escrow-vs-refund-before-scan-abuse-faq.md) · [English](return-logistics-reverse-escrow-vs-refund-before-scan-abuse-faq.en.md) |
+| 33 | **个人购物智能体跨会话持久意图（Persistent Intent Services & Poppy v0.1）架构选型 FAQ：Sierra/Meta Poppy 协议 + MCP Intent Services（累计预算/周期复购/售后委托）vs. Google AP2 vs. 无状态会话实战指南** | [中文](personal-agent-persistent-intent-services-poppy-vs-ap2-recurring-budget-selection-faq.md) · [English](personal-agent-persistent-intent-services-poppy-vs-ap2-recurring-budget-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（23 篇）
