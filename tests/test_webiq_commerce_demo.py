@@ -9618,6 +9618,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("wedding-bespoke-event-milestone-escrow-sandbox", html)
 
+    def test_influencer_seeding_coupon_poaching_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            InfluencerSeedingCouponPoachingPolicyInput,
+            evaluate_influencer_seeding_coupon_poaching_policy,
+        )
+
+        happy = evaluate_influencer_seeding_coupon_poaching_policy(
+            InfluencerSeedingCouponPoachingPolicyInput(
+                quarterly_influencer_seeding_affiliate_pool_usd=Decimal("220000.00"),
+                coupon_extension_last_click_poaching_or_fake_influencer_seeding_detected=False,
+                premature_commission_before_return_window_or_missing_ftc_ad_tag_detected=False,
+                webiq_creator_brand_safety_scandal_flag=False,
+                restricted_key_age_days=30,
+                stand_down_lock_and_t35_net_commission_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "OAUTH_CREATOR_STAND_DOWN_LOCKED_AND_T35_NET_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["influencer_seeding_token"]).startswith("influencer_seeding_coupon_poaching_escrow_mandate_")
+        )
+
+        poach_block = evaluate_influencer_seeding_coupon_poaching_policy(
+            InfluencerSeedingCouponPoachingPolicyInput(
+                quarterly_influencer_seeding_affiliate_pool_usd=Decimal("220000.00"),
+                coupon_extension_last_click_poaching_or_fake_influencer_seeding_detected=True,
+                premature_commission_before_return_window_or_missing_ftc_ad_tag_detected=False,
+                webiq_creator_brand_safety_scandal_flag=False,
+                restricted_key_age_days=30,
+                stand_down_lock_and_t35_net_commission_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(poach_block["http_status"], 403)
+        self.assertEqual(
+            poach_block["decision"],
+            "COUPON_EXTENSION_LAST_CLICK_POACHING_OR_FAKE_INFLUENCER_SEEDING_BLOCKED",
+        )
+
+        ret_block = evaluate_influencer_seeding_coupon_poaching_policy(
+            InfluencerSeedingCouponPoachingPolicyInput(
+                quarterly_influencer_seeding_affiliate_pool_usd=Decimal("220000.00"),
+                coupon_extension_last_click_poaching_or_fake_influencer_seeding_detected=False,
+                premature_commission_before_return_window_or_missing_ftc_ad_tag_detected=True,
+                webiq_creator_brand_safety_scandal_flag=False,
+                restricted_key_age_days=30,
+                stand_down_lock_and_t35_net_commission_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(ret_block["http_status"], 422)
+        self.assertEqual(
+            ret_block["decision"],
+            "PREMATURE_COMMISSION_BEFORE_RETURN_WINDOW_OR_MISSING_FTC_AD_TAG_BLOCKED",
+        )
+
+        scandal_hold = evaluate_influencer_seeding_coupon_poaching_policy(
+            InfluencerSeedingCouponPoachingPolicyInput(
+                quarterly_influencer_seeding_affiliate_pool_usd=Decimal("220000.00"),
+                coupon_extension_last_click_poaching_or_fake_influencer_seeding_detected=False,
+                premature_commission_before_return_window_or_missing_ftc_ad_tag_detected=False,
+                webiq_creator_brand_safety_scandal_flag=True,
+                restricted_key_age_days=191,
+                stand_down_lock_and_t35_net_commission_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(scandal_hold["http_status"], 451)
+        self.assertEqual(
+            scandal_hold["decision"],
+            "WEBIQ_CREATOR_BRAND_SAFETY_SCANDAL_OR_180D_KEY_HOLD",
+        )
+
+        opt_confirm = evaluate_influencer_seeding_coupon_poaching_policy(
+            InfluencerSeedingCouponPoachingPolicyInput(
+                quarterly_influencer_seeding_affiliate_pool_usd=Decimal("220000.00"),
+                coupon_extension_last_click_poaching_or_fake_influencer_seeding_detected=False,
+                premature_commission_before_return_window_or_missing_ftc_ad_tag_detected=False,
+                webiq_creator_brand_safety_scandal_flag=False,
+                restricted_key_age_days=30,
+                stand_down_lock_and_t35_net_commission_escrow_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "61600.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "158400.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("influencer_seeding_coupon_poaching_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("influencer-seeding-coupon-poaching-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

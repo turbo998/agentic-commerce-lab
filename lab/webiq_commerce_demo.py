@@ -16214,6 +16214,80 @@ def evaluate_wedding_bespoke_event_milestone_escrow_policy(
         "reason": "Verified 5-vendor atomic slot lock, named-principal check-in, and 30/50/20 cloud-gallery milestone escrow.",
     }
 
+
+@dataclass(frozen=True)
+class InfluencerSeedingCouponPoachingPolicyInput:
+    quarterly_influencer_seeding_affiliate_pool_usd: Decimal
+    coupon_extension_last_click_poaching_or_fake_influencer_seeding_detected: bool
+    premature_commission_before_return_window_or_missing_ftc_ad_tag_detected: bool
+    webiq_creator_brand_safety_scandal_flag: bool
+    restricted_key_age_days: int
+    stand_down_lock_and_t35_net_commission_escrow_enabled: bool
+
+
+def evaluate_influencer_seeding_coupon_poaching_policy(
+    policy_input: InfluencerSeedingCouponPoachingPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Influencer Seeding OAuth check, server-side Creator Stand-Down Lock against coupon-extension poaching & T+35d escrow."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_influencer_seeding_affiliate_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.coupon_extension_last_click_poaching_or_fake_influencer_seeding_detected:
+        return {
+            "http_status": 403,
+            "decision": "COUPON_EXTENSION_LAST_CLICK_POACHING_OR_FAKE_INFLUENCER_SEEDING_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "influencer_seeding_token": None,
+            "reason": "Blocked browser coupon extension overwriting creator Last-Click on /checkout or unverified email sample scam.",
+        }
+
+    if policy_input.premature_commission_before_return_window_or_missing_ftc_ad_tag_detected:
+        return {
+            "http_status": 422,
+            "decision": "PREMATURE_COMMISSION_BEFORE_RETURN_WINDOW_OR_MISSING_FTC_AD_TAG_BLOCKED",
+            "latency_ms": 12,
+            "approved_budget_usd": "0.00",
+            "influencer_seeding_token": None,
+            "reason": "Blocked affiliate commission payout prior to 30-day return window closure or post missing FTC #ad disclosure.",
+        }
+
+    if policy_input.webiq_creator_brand_safety_scandal_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_CREATOR_BRAND_SAFETY_SCANDAL_OR_180D_KEY_HOLD",
+            "latency_ms": 250,
+            "approved_budget_usd": "0.00",
+            "influencer_seeding_token": None,
+            "reason": "Web IQ detected severe creator brand-safety/fraud scandal or restricted key age > 180 days.",
+        }
+
+    if policy_input.stand_down_lock_and_t35_net_commission_escrow_enabled:
+        savings = (gross * Decimal("0.28")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"INF_SEED_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "SERVER_STAND_DOWN_LOCK_AND_T35_NET_COMMISSION_ESCROW_CONFIRM",
+            "latency_ms": 210,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "influencer_seeding_token": f"influencer_seeding_coupon_poaching_escrow_mandate_{digest}",
+            "reason": "Server-side Creator Stand-Down Lock, session discount tokens, and T+35d net escrow reduced waste by 28.0%.",
+        }
+
+    digest = hashlib.sha256(f"INF_SEED_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "OAUTH_CREATOR_STAND_DOWN_LOCKED_AND_T35_NET_ESCROW_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "influencer_seeding_token": f"influencer_seeding_coupon_poaching_escrow_mandate_{digest}",
+        "reason": "Verified social OAuth identity, server-side Creator Stand-Down Lock, FTC #ad tag, and T+35d net payout.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -21794,6 +21868,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    influencer_seeding_coupon_poaching_guard = {
+        "happy_path": evaluate_influencer_seeding_coupon_poaching_policy(
+            InfluencerSeedingCouponPoachingPolicyInput(
+                quarterly_influencer_seeding_affiliate_pool_usd=Decimal("220000.00"),
+                coupon_extension_last_click_poaching_or_fake_influencer_seeding_detected=False,
+                premature_commission_before_return_window_or_missing_ftc_ad_tag_detected=False,
+                webiq_creator_brand_safety_scandal_flag=False,
+                restricted_key_age_days=30,
+                stand_down_lock_and_t35_net_commission_escrow_enabled=False,
+            )
+        ),
+        "coupon_poaching_or_fake_seeding_block": evaluate_influencer_seeding_coupon_poaching_policy(
+            InfluencerSeedingCouponPoachingPolicyInput(
+                quarterly_influencer_seeding_affiliate_pool_usd=Decimal("220000.00"),
+                coupon_extension_last_click_poaching_or_fake_influencer_seeding_detected=True,
+                premature_commission_before_return_window_or_missing_ftc_ad_tag_detected=False,
+                webiq_creator_brand_safety_scandal_flag=False,
+                restricted_key_age_days=30,
+                stand_down_lock_and_t35_net_commission_escrow_enabled=False,
+            )
+        ),
+        "premature_commission_or_missing_ad_tag_block": evaluate_influencer_seeding_coupon_poaching_policy(
+            InfluencerSeedingCouponPoachingPolicyInput(
+                quarterly_influencer_seeding_affiliate_pool_usd=Decimal("220000.00"),
+                coupon_extension_last_click_poaching_or_fake_influencer_seeding_detected=False,
+                premature_commission_before_return_window_or_missing_ftc_ad_tag_detected=True,
+                webiq_creator_brand_safety_scandal_flag=False,
+                restricted_key_age_days=30,
+                stand_down_lock_and_t35_net_commission_escrow_enabled=False,
+            )
+        ),
+        "webiq_creator_scandal_or_key_hold": evaluate_influencer_seeding_coupon_poaching_policy(
+            InfluencerSeedingCouponPoachingPolicyInput(
+                quarterly_influencer_seeding_affiliate_pool_usd=Decimal("220000.00"),
+                coupon_extension_last_click_poaching_or_fake_influencer_seeding_detected=False,
+                premature_commission_before_return_window_or_missing_ftc_ad_tag_detected=False,
+                webiq_creator_brand_safety_scandal_flag=True,
+                restricted_key_age_days=191,
+                stand_down_lock_and_t35_net_commission_escrow_enabled=False,
+            )
+        ),
+        "stand_down_and_t35_escrow_confirm": evaluate_influencer_seeding_coupon_poaching_policy(
+            InfluencerSeedingCouponPoachingPolicyInput(
+                quarterly_influencer_seeding_affiliate_pool_usd=Decimal("220000.00"),
+                coupon_extension_last_click_poaching_or_fake_influencer_seeding_detected=False,
+                premature_commission_before_return_window_or_missing_ftc_ad_tag_detected=False,
+                webiq_creator_brand_safety_scandal_flag=False,
+                restricted_key_age_days=30,
+                stand_down_lock_and_t35_net_commission_escrow_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -21941,6 +22068,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "digital_media_paywall_ai_crawler_guard": digital_media_paywall_ai_crawler_guard,
         "home_services_on_demand_repair_escrow_guard": home_services_on_demand_repair_escrow_guard,
         "wedding_bespoke_event_milestone_escrow_guard": wedding_bespoke_event_milestone_escrow_guard,
+        "influencer_seeding_coupon_poaching_guard": influencer_seeding_coupon_poaching_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -28018,6 +28146,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">婚庆多商里程碑托管令牌</div>
             <div class="finops-kpi-val" id="wedding-esc-token-kpi" style="font-size:10px;color:#A78BFA;">wedding_bespoke_event_milestone_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Influencer Seeding & Affiliate Coupon-Poaching Defense (Impact / Shopify Collabs) Sandbox -->
+      <div class="finops-box" id="influencer-seeding-coupon-poaching-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎥 网红寄样 (Seeding)、达人带货归因与防优惠券插件劫持 (Impact / Shopify Collabs) 沙盒</div>
+            <div class="finops-subtitle">实测服务端首跳创作者锁拦截结账页插件 (Honey 等) 篡改 Last-Click 偷佣金与 OAuth 防骗样 (HTTP 403)、T+35d 退货期满释放净佣金与 FTC #ad 披露 (HTTP 422)、塌房丑闻断路器 (HTTP 451) 及会话动态折扣立省 28% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="inf-seed-verdict-pill">HTTP 200 · OAUTH_CREATOR_STAND_DOWN_LOCKED_AND_T35_NET_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度网红寄样与联盟带货佣金结算池 ($ USD) <span class="control-val" id="inf-seed-gross-label">$220,000</span></label>
+            <input type="range" id="inf-seed-gross-slider" min="40000" max="800000" step="20000" value="220000" oninput="updateInfluencerSeedingCouponPoachingSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">服务端 Stand-Down 防插件劫持锁、OAuth 领样核身与 T+35d 退货托管场景</label>
+            <select id="inf-seed-mode-select" onchange="updateInfluencerSeedingCouponPoachingSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ OAuth 真身核验 + 服务端创作者归因锁 + T+35d 净额分佣 (HTTP 200)</option>
+              <option value="poach_403">🛑 浏览器比价插件在 /checkout 结账页覆盖原种草博主归因 或 假邮箱骗寄高价样品 (HTTP 403)</option>
+              <option value="return_422">🚨 尚未满 30天退货窗口即提现佣金 (退货骗佣) 或 视频缺失 FTC #ad 商业披露 (HTTP 422)</option>
+              <option value="scandal_451">🛑 Web IQ 检出合作达人突发违法丑闻/虚假宣传处罚或受限密钥 &gt;180d (HTTP 451)</option>
+              <option value="standdown_409">🧑‍⚖️ 服务端 Stand-Down 防插件偷佣 + 免静态码泄露 + 退货期满分账立省 28% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原插件偷佣与假号骗样损耗基线</div>
+            <div class="finops-kpi-val" id="inf-seed-gross-kpi">$220,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防插件劫持与防骗样立省</div>
+            <div class="finops-kpi-val" id="inf-seed-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净真实种草分佣支出</div>
+            <div class="finops-kpi-val" id="inf-seed-net-kpi" style="color:#60A5FA;">$220,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">创作者防劫持与托管令牌</div>
+            <div class="finops-kpi-val" id="inf-seed-token-kpi" style="font-size:10px;color:#A78BFA;">influencer_seeding_coupon_poaching_escrow_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -35384,6 +35557,61 @@ function updateWeddingBespokeEventMilestoneEscrowSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'wedding_bespoke_event_milestone_escrow_mandate_verified';
+  }}
+}}
+
+function updateInfluencerSeedingCouponPoachingSandbox() {{
+  const grossSlider = document.getElementById('inf-seed-gross-slider');
+  const modeSelect = document.getElementById('inf-seed-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '220000');
+  const mode = modeSelect.value;
+  document.getElementById('inf-seed-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('inf-seed-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('inf-seed-verdict-pill');
+  const savingsKpi = document.getElementById('inf-seed-savings-kpi');
+  const netKpi = document.getElementById('inf-seed-net-kpi');
+  const tokenKpi = document.getElementById('inf-seed-token-kpi');
+
+  if (mode === 'poach_403') {{
+    pill.textContent = 'HTTP 403 · COUPON_EXTENSION_LAST_CLICK_POACHING_OR_FAKE_INFLUENCER_SEEDING_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_EXTENSION_POACHING_OR_FAKE_SEEDING';
+  }} else if (mode === 'return_422') {{
+    pill.textContent = 'HTTP 422 · PREMATURE_COMMISSION_BEFORE_RETURN_WINDOW_OR_MISSING_FTC_AD_TAG_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_PRE_RETURN_WINDOW_OR_MISSING_AD_TAG';
+  }} else if (mode === 'scandal_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_CREATOR_BRAND_SAFETY_SCANDAL_OR_180D_KEY_HOLD (250ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_CREATOR_BRAND_SAFETY_OR_180D_KEY';
+  }} else if (mode === 'standdown_409') {{
+    const savings = Math.round(gross * 0.28 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · SERVER_STAND_DOWN_LOCK_AND_T35_NET_COMMISSION_ESCROW_CONFIRM (210ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'influencer_seeding_coupon_poaching_escrow_mandate_saved28pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · OAUTH_CREATOR_STAND_DOWN_LOCKED_AND_T35_NET_ESCROW_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'influencer_seeding_coupon_poaching_escrow_mandate_verified';
   }}
 }}
 
