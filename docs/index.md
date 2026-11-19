@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`173` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`174` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（37 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（45 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（46 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（35 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（18 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（28 篇）](#tax-fx-privacy-disputes)
@@ -81,7 +81,7 @@
 | 37 | **智慧停车、无感道闸与新能源超充站（Smart Parking, LPR Barrierless Garage & EV Supercharger Billing：Metropolis / ParkMobile / Tesla Supercharger / 捷停车 / 特来电）“防出口跟车漏扫幽灵计费 7 天、防路侧二维码贴纸钓鱼（Quishing）与超时占桩费（Idle Fee）拥堵门槛锁”Agent 架构选型 FAQ：终结充电还要再交停车费与公车电卡私充实战指南** | [中文](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.md) · [English](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（45 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（46 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -132,6 +132,7 @@
 | 43 | **新婚/母婴心愿单众筹与社交送礼（Gift Registry, Group Gifting & Social Gift-Link：Babylist / Zola / Amazon Registry / 微信小店送礼）“防跨平台重复买重样（Duplicate Gift Lock）、收礼人住址隐私盲令牌与退礼静默转储值防洗钱”Agent 架构选型 FAQ：终结收到 3 辆同款婴儿车退货与退礼惊动送礼人尴尬实战指南** | [中文](gift-registry-group-gifting-duplicate-lock-anti-cashout-agent-selection-faq.md) · [English](gift-registry-group-gifting-duplicate-lock-anti-cashout-agent-selection-faq.en.md) |
 | 44 | **出境旅游 eSIM 漫游流量包、邮轮/航空卫星防天价账单与企业差旅通信（Global Travel eSIM, Maritime/In-Flight Bill-Shock Shield & Enterprise Roaming：Airalo / Holafly / Nomad / Gigs / 携程全球 eSIM）“购前有锁机（Carrier-Locked）硬拦截、海事卫星（MCC 901）熔断与 SM-DP+ 零字节未激活秒退”Agent 架构选型 FAQ** | [中文](travel-esim-roaming-carrier-lock-maritime-billshock-escrow-agent-selection-faq.md) · [English](travel-esim-roaming-carrier-lock-maritime-billshock-escrow-agent-selection-faq.en.md) |
 | 45 | **跨城/跨国搬家货运、自助迷你仓订阅与员工异地安家（Moving Van Line, Self-Storage Subscription & Corporate Relocation Escrow：PODS / U-Haul / Public Storage / 货拉拉搬家 / 蓝犀牛）“防装车后半路坐地起价扣押行李（Hostage Load / 49 CFR § 375.403）、防迷你仓入仓后暴涨 300% 租金与现役军人 SCRA 禁拍”Agent 架构选型 FAQ** | [中文](moving-relocation-self-storage-hostage-load-scra-escrow-agent-selection-faq.md) · [English](moving-relocation-self-storage-hostage-load-scra-escrow-agent-selection-faq.en.md) |
+| 46 | **线上配镜、隐形眼镜周期订阅与视力险/FSA 结算（Prescription Eyewear, Contact Lens Subscription & Vision-Benefit Escrow：Warby Parker / Zenni / 1-800 Contacts / VSP / EyeMed / 宝岛眼镜）“防近视正负号填反与瞳距（PD）缺失导致定制镜片报废、FTC 8 工作时被动验方锁与 VSP/FSA 自动拆账”Agent 架构选型 FAQ** | [中文](optical-eyewear-contact-lens-rx-verification-vision-benefit-escrow-agent-selection-faq.md) · [English](optical-eyewear-contact-lens-rx-verification-vision-benefit-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（35 篇）

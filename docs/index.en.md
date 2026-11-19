@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`173` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`174` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (37 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (45 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (46 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (35 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (18 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (28 guides)](#tax-fx-privacy-disputes)
@@ -81,7 +81,7 @@
 | 37 | **Smart Parking, `LPR` Barrierless Garage & `EV` Supercharger Billing (`Metropolis / ParkMobile / Tesla Supercharger / ISO 15118`) Anti-Ghost-Session Spatiotemporal Mutex, Anti-`Quishing`, `>= 50%` Idle-Fee Gate & Fleet `VIN` Escrow Agent Architecture Selection FAQ** | [English](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.en.md) · [中文](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (45 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (46 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -132,6 +132,7 @@
 | 43 | **Gift Registry, Group Gifting & Social Gift-Link (`Babylist / Zola / Amazon Registry / WeChat Gift`) Anti-Duplicate Claim Lock, Blind Shipping Token (`ship_tok_*`), Pre-Ship Variant Swap & Anti-Cash-Out `AML` Escrow Agent Architecture Selection FAQ** | [English](gift-registry-group-gifting-duplicate-lock-anti-cashout-agent-selection-faq.en.md) · [中文](gift-registry-group-gifting-duplicate-lock-anti-cashout-agent-selection-faq.md) |
 | 44 | **Global Travel `eSIM`, Maritime/In-Flight Satellite Bill-Shock Shield & Enterprise Roaming (`Airalo / Holafly / Nomad / Gigs / GSMA SGP.22`) Pre-Purchase Carrier-Unlock Gate, `MCC 901` Satellite Block & `0-Byte CDR` Auto-Refund Agent Architecture Selection FAQ** | [English](travel-esim-roaming-carrier-lock-maritime-billshock-escrow-agent-selection-faq.en.md) · [中文](travel-esim-roaming-carrier-lock-maritime-billshock-escrow-agent-selection-faq.md) |
 | 45 | **Moving Van Line, Self-Storage Subscription & Corporate Relocation Escrow (`PODS / U-Haul / Public Storage / United Van Lines / FMCSA 49 CFR Part 375`) Anti-Hostage-Load Gate, `ECRI` Storage Rate-Hike Cap & `SCRA` Military Lien Lock Agent Architecture Selection FAQ** | [English](moving-relocation-self-storage-hostage-load-scra-escrow-agent-selection-faq.en.md) · [中文](moving-relocation-self-storage-hostage-load-scra-escrow-agent-selection-faq.md) |
+| 46 | **Prescription Eyewear, Contact Lens Subscription & Vision-Benefit Escrow (`Warby Parker / Zenni / 1-800 Contacts / VSP / EyeMed / FTC 16 CFR Part 315 & 456`) Anti-Rx-Inversion `PD` Gate, `8-Business-Hour` Verification Lock & `VSP/FSA` Split Agent Architecture Selection FAQ** | [English](optical-eyewear-contact-lens-rx-verification-vision-benefit-escrow-agent-selection-faq.en.md) · [中文](optical-eyewear-contact-lens-rx-verification-vision-benefit-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (35 Guides)

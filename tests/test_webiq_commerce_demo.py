@@ -12743,6 +12743,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("senior-homecare-nanny-evv-escrow-sandbox", html_zh)
 
+    def test_optical_eyewear_contact_lens_rx_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OpticalEyewearContactLensRxEscrowPolicyInput,
+            evaluate_optical_eyewear_contact_lens_rx_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_optical_eyewear_contact_lens_rx_escrow_policy(
+            OpticalEyewearContactLensRxEscrowPolicyInput(
+                quarterly_optical_eyewear_and_contacts_pool_usd=250000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "OPTICAL_RX_PD_AND_FTC_8HR_VERIFICATION_AUTHORIZED",
+        )
+
+        pd_err = evaluate_optical_eyewear_contact_lens_rx_escrow_policy(
+            OpticalEyewearContactLensRxEscrowPolicyInput(
+                optical_rx_sign_inversion_axis_mismatch_or_missing_pd=True
+            )
+        )
+        self.assertEqual(pd_err["status_code"], 403)
+        self.assertEqual(
+            pd_err["decision"],
+            "OPTICAL_RX_SIGN_INVERSION_AXIS_MISMATCH_OR_MISSING_PUPIL_PD_BLOCKED",
+        )
+
+        ftc = evaluate_optical_eyewear_contact_lens_rx_escrow_policy(
+            OpticalEyewearContactLensRxEscrowPolicyInput(
+                ftc_16cfr315_contact_lens_brand_bc_swap_or_8hr_breach=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 422)
+        self.assertEqual(
+            ftc["decision"],
+            "FTC_16CFR315_CONTACT_LENS_BRAND_BC_SUBSTITUTION_OR_8HR_WINDOW_BREACH_BLOCKED",
+        )
+
+        fda = evaluate_optical_eyewear_contact_lens_rx_escrow_policy(
+            OpticalEyewearContactLensRxEscrowPolicyInput(
+                webiq_expired_optical_prescription_or_fda_ophthalmic_recall_flag=True
+            )
+        )
+        self.assertEqual(fda["status_code"], 451)
+        self.assertEqual(
+            fda["decision"],
+            "WEBIQ_EXPIRED_OPTICAL_PRESCRIPTION_OR_FDA_OPHTHALMIC_RECALL_HOLD",
+        )
+
+        optim = evaluate_optical_eyewear_contact_lens_rx_escrow_policy(
+            OpticalEyewearContactLensRxEscrowPolicyInput(
+                quarterly_optical_eyewear_and_contacts_pool_usd=250000.0,
+                vision_insurance_vsp_allowance_and_fsa_high_index_opt_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 65000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 185000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("optical_eyewear_contact_lens_rx_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("optical-eyewear-contact-lens-rx-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

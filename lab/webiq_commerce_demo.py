@@ -18902,6 +18902,84 @@ def evaluate_senior_homecare_nanny_evv_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class OpticalEyewearContactLensRxEscrowPolicyInput:
+    """Input contract for Prescription Eyewear, Contact Lens & FTC 8-Hour Vision-Benefit Escrow."""
+
+    quarterly_optical_eyewear_and_contacts_pool_usd: float = 250000.0
+    optical_rx_sign_inversion_axis_mismatch_or_missing_pd: bool = False
+    ftc_16cfr315_contact_lens_brand_bc_swap_or_8hr_breach: bool = False
+    webiq_expired_optical_prescription_or_fda_ophthalmic_recall_flag: bool = False
+    mandate_signing_key_age_days: int = 35
+    vision_insurance_vsp_allowance_and_fsa_high_index_opt_ready: bool = False
+
+
+def evaluate_optical_eyewear_contact_lens_rx_escrow_policy(
+    policy_input: OpticalEyewearContactLensRxEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Prescription Eyewear, Contact Lens & Vision-Benefit policy."""
+    gross_pool = max(float(policy_input.quarterly_optical_eyewear_and_contacts_pool_usd), 0.0)
+    if (
+        policy_input.webiq_expired_optical_prescription_or_fda_ophthalmic_recall_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_EXPIRED_OPTICAL_PRESCRIPTION_OR_FDA_OPHTHALMIC_RECALL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.optical_rx_sign_inversion_axis_mismatch_or_missing_pd:
+        return {
+            "status_code": 403,
+            "decision": "OPTICAL_RX_SIGN_INVERSION_AXIS_MISMATCH_OR_MISSING_PUPIL_PD_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ftc_16cfr315_contact_lens_brand_bc_swap_or_8hr_breach:
+        return {
+            "status_code": 422,
+            "decision": "FTC_16CFR315_CONTACT_LENS_BRAND_BC_SUBSTITUTION_OR_8HR_WINDOW_BREACH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.vision_insurance_vsp_allowance_and_fsa_high_index_opt_ready:
+        savings = round(gross_pool * 0.26, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "VISION_INSURANCE_VSP_ALLOWANCE_AND_FSA_HIGH_INDEX_OPTIMIZATION_CONFIRM",
+            "mandate_token": "optical_eyewear_contact_lens_rx_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "OPTICAL_RX_PD_AND_FTC_8HR_VERIFICATION_AUTHORIZED",
+        "mandate_token": "optical_eyewear_contact_lens_rx_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -26251,6 +26329,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    optical_eyewear_contact_lens_rx_escrow_guard = {
+        "authorized_200": evaluate_optical_eyewear_contact_lens_rx_escrow_policy(
+            OpticalEyewearContactLensRxEscrowPolicyInput()
+        ),
+        "rx_sign_or_missing_pd_403": evaluate_optical_eyewear_contact_lens_rx_escrow_policy(
+            OpticalEyewearContactLensRxEscrowPolicyInput(
+                optical_rx_sign_inversion_axis_mismatch_or_missing_pd=True
+            )
+        ),
+        "ftc_315_brand_swap_or_8hr_422": evaluate_optical_eyewear_contact_lens_rx_escrow_policy(
+            OpticalEyewearContactLensRxEscrowPolicyInput(
+                ftc_16cfr315_contact_lens_brand_bc_swap_or_8hr_breach=True
+            )
+        ),
+        "expired_rx_or_fda_recall_451": evaluate_optical_eyewear_contact_lens_rx_escrow_policy(
+            OpticalEyewearContactLensRxEscrowPolicyInput(
+                webiq_expired_optical_prescription_or_fda_ophthalmic_recall_flag=True
+            )
+        ),
+        "vsp_allowance_and_fsa_split_409": evaluate_optical_eyewear_contact_lens_rx_escrow_policy(
+            OpticalEyewearContactLensRxEscrowPolicyInput(
+                vision_insurance_vsp_allowance_and_fsa_high_index_opt_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26434,6 +26538,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "travel_esim_roaming_escrow_guard": travel_esim_roaming_escrow_guard,
         "moving_relocation_self_storage_escrow_guard": moving_relocation_self_storage_escrow_guard,
         "senior_homecare_nanny_evv_escrow_guard": senior_homecare_nanny_evv_escrow_guard,
+        "optical_eyewear_contact_lens_rx_escrow_guard": optical_eyewear_contact_lens_rx_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -34222,6 +34327,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="homecare-evv-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 EMPLOYER_BACKUP_CARE_SUBSIDY_AND_LTC_FSA_SPLIT_BILLING_CONFIRM · Mandate: senior_homecare_nanny_evv_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 55 Prescription Eyewear, Contact Lens & FTC 8-Hour Vision-Benefit Escrow -->
+      <div class="finops-box" id="optical-eyewear-contact-lens-rx-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">👓 线上配镜、隐形眼镜周期订阅与视力险拆账 (Warby Parker / Zenni / 1-800 Contacts / VSP / FTC 16 CFR 315) 防度数抄反报废、8h 被动验方与 FSA 拆账沙盒 (Round 55)</div>
+            <div class="finops-subtitle">实测纸质验光单多模态 OCR 正负号交叉核验与 TrueDepth AR 双瞳距测量防车房镜片报废 (HTTP 403)、FTC 16 CFR Part 315 隐形眼镜品牌/基弧死锁与诊所时区 8 营业工作小时被动核验锁 (HTTP 422)、Web IQ 过期验光单与 FDA 眼科召回熔断 (HTTP 451) 及 VSP 视力险津贴+FSA 免税拆账立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="optical-rx-status-kpi">HTTP 409 · VISION_INSURANCE_VSP_ALLOWANCE_AND_FSA_HIGH_INDEX_OPTIMIZATION_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度配镜电商、隐形眼镜与员工视力险结算池 ($ USD)
+            <input type="range" id="optical-rx-pool-slider" min="40000" max="1500000" step="10000" value="250000" oninput="updateOpticalEyewearContactLensSandbox()" />
+            <span id="optical-rx-pool-val" style="color:#6ee7b7; font-family:monospace;">$250,000</span>
+          </label>
+          <label>
+            验光单 OCR 正负号与 AR 瞳距校验 (HTTP 403)
+            <select id="optical-rx-pd-select" onchange="updateOpticalEyewearContactLensSandbox()">
+              <option value="pass">SPH 正负号与 OCR 一致 + 散光轴位闭环 + AR 双瞳距已测 (放行)</option>
+              <option value="block">近视负号误填为远视正号 或 高度数/渐进片缺失真实瞳距 PD (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            FTC 16 CFR 315 隐形眼镜基弧与 8h 验方校验 (HTTP 422)
+            <select id="optical-rx-ftc-select" onchange="updateOpticalEyewearContactLensSandbox()">
+              <option value="pass">处方品牌/基弧(BC)/直径严格一致 + 满 8 个诊所营业小时 (合规)</option>
+              <option value="block">私自将强生 8.5 基弧换成贴牌 8.6 或 周末未满 8 营业小时抢跑发货 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 验光单效期与 FDA 眼科召回筛查 (HTTP 451)
+            <select id="optical-rx-fda-select" onchange="updateOpticalEyewearContactLensSandbox()">
+              <option value="clear">验光单在 1 年有效期内 + 无 FDA 护理液污染召回 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">隐形眼镜处方超期失效 或 护理液/人工泪液命中 FDA 细菌召回 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            VSP 视力险津贴与 FSA 税前拆账优化 (HTTP 409)
+            <select id="optical-rx-opt-select" onchange="updateOpticalEyewearContactLensSandbox()">
+              <option value="enabled" selected>开启 VSP 镜框津贴 + 原厂盒装返利 + FSA 税前拆账省 26% (HTTP 409)</option>
+              <option value="baseline">常规合规配镜与隐形眼镜车房授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度光学与视力毛池</div>
+            <div class="finops-kpi-val" id="optical-rx-gross-kpi">$250,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">视力险抵扣与防报废后净额</div>
+            <div class="finops-kpi-val" id="optical-rx-net-kpi" style="color:#6ee7b7;">$185,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下报废重磨与福利抵扣</div>
+            <div class="finops-kpi-val" id="optical-rx-savings-kpi" style="color:#38bdf8;">$65,000</div>
+          </div>
+        </div>
+        <div id="optical-rx-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 VISION_INSURANCE_VSP_ALLOWANCE_AND_FSA_HIGH_INDEX_OPTIMIZATION_CONFIRM · Mandate: optical_eyewear_contact_lens_rx_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -43663,6 +43831,80 @@ function updateSeniorHomecareNannyEvvSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 EVV_BLE_VERIFIED_AND_DAILY_VESTING_PLACEMENT_ESCROW_AUTHORIZED · Mandate: senior_homecare_nanny_evv_escrow_mandate_200';
+}}
+
+function updateOpticalEyewearContactLensSandbox() {{
+  const slider = document.getElementById('optical-rx-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '250000');
+  const pdMode = document.getElementById('optical-rx-pd-select').value;
+  const ftcMode = document.getElementById('optical-rx-ftc-select').value;
+  const fdaMode = document.getElementById('optical-rx-fda-select').value;
+  const optMode = document.getElementById('optical-rx-opt-select').value;
+
+  document.getElementById('optical-rx-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('optical-rx-status-kpi');
+  const grossKpi = document.getElementById('optical-rx-gross-kpi');
+  const netKpi = document.getElementById('optical-rx-net-kpi');
+  const savingsKpi = document.getElementById('optical-rx-savings-kpi');
+  const banner = document.getElementById('optical-rx-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fdaMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_EXPIRED_OPTICAL_PRESCRIPTION_OR_FDA_OPHTHALMIC_RECALL_HOLD · Mandate: null';
+    return;
+  }}
+  if (pdMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 OPTICAL_RX_SIGN_INVERSION_AXIS_MISMATCH_OR_MISSING_PUPIL_PD_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (ftcMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FTC_16CFR315_CONTACT_LENS_BRAND_BC_SUBSTITUTION_OR_8HR_WINDOW_BREACH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.26);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 VISION_INSURANCE_VSP_ALLOWANCE_AND_FSA_HIGH_INDEX_OPTIMIZATION_CONFIRM · Mandate: optical_eyewear_contact_lens_rx_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 OPTICAL_RX_PD_AND_FTC_8HR_VERIFICATION_AUTHORIZED · Mandate: optical_eyewear_contact_lens_rx_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
