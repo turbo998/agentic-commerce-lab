@@ -18668,6 +18668,84 @@ def evaluate_creator_economy_patronage_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class TravelEsimRoamingEscrowPolicyInput:
+    """Input contract for Global Travel eSIM, Carrier-Unlock Gate & Maritime Bill-Shock Escrow."""
+
+    quarterly_travel_esim_and_roaming_spend_usd: float = 240000.0
+    carrier_locked_incompatible_device_or_zero_byte_refund_denied: bool = False
+    maritime_satellite_mcc901_billshock_or_undisclosed_fup_throttle: bool = False
+    webiq_destination_telecom_ekyc_mandate_or_host_network_outage_flag: bool = False
+    mandate_signing_key_age_days: int = 35
+    regional_esim_wholesale_pool_and_zero_byte_auto_refund_ready: bool = False
+
+
+def evaluate_travel_esim_roaming_escrow_policy(
+    policy_input: TravelEsimRoamingEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Global Travel eSIM & Corporate Roaming policy."""
+    gross_pool = max(float(policy_input.quarterly_travel_esim_and_roaming_spend_usd), 0.0)
+    if (
+        policy_input.webiq_destination_telecom_ekyc_mandate_or_host_network_outage_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_DESTINATION_TELECOM_EKYC_MANDATE_OR_HOST_NETWORK_OUTAGE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.carrier_locked_incompatible_device_or_zero_byte_refund_denied:
+        return {
+            "status_code": 403,
+            "decision": "CARRIER_LOCKED_INCOMPATIBLE_DEVICE_OR_ZERO_BYTE_REFUND_DENIAL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.maritime_satellite_mcc901_billshock_or_undisclosed_fup_throttle:
+        return {
+            "status_code": 422,
+            "decision": "MARITIME_SATELLITE_MCC901_BILLSHOCK_OR_UNDISCLOSED_FUP_THROTTLE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.regional_esim_wholesale_pool_and_zero_byte_auto_refund_ready:
+        savings = round(gross_pool * 0.27, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "REGIONAL_ESIM_WHOLESALE_POOL_AND_ZERO_BYTE_AUTO_REFUND_CONFIRM",
+            "mandate_token": "travel_esim_roaming_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ESIM_SMDP_PROVISION_AND_TERRESTRIAL_PLMN_LOCK_AUTHORIZED",
+        "mandate_token": "travel_esim_roaming_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -25939,6 +26017,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    travel_esim_roaming_escrow_guard = {
+        "authorized_200": evaluate_travel_esim_roaming_escrow_policy(
+            TravelEsimRoamingEscrowPolicyInput()
+        ),
+        "carrier_locked_or_refund_denied_403": evaluate_travel_esim_roaming_escrow_policy(
+            TravelEsimRoamingEscrowPolicyInput(
+                carrier_locked_incompatible_device_or_zero_byte_refund_denied=True
+            )
+        ),
+        "maritime_mcc901_or_fup_throttle_422": evaluate_travel_esim_roaming_escrow_policy(
+            TravelEsimRoamingEscrowPolicyInput(
+                maritime_satellite_mcc901_billshock_or_undisclosed_fup_throttle=True
+            )
+        ),
+        "destination_ekyc_or_outage_451": evaluate_travel_esim_roaming_escrow_policy(
+            TravelEsimRoamingEscrowPolicyInput(
+                webiq_destination_telecom_ekyc_mandate_or_host_network_outage_flag=True
+            )
+        ),
+        "regional_pool_and_zero_byte_refund_409": evaluate_travel_esim_roaming_escrow_policy(
+            TravelEsimRoamingEscrowPolicyInput(
+                regional_esim_wholesale_pool_and_zero_byte_auto_refund_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26119,6 +26223,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "smart_parking_ev_supercharger_guard": smart_parking_ev_supercharger_guard,
         "gift_registry_group_gifting_escrow_guard": gift_registry_group_gifting_escrow_guard,
         "creator_economy_patronage_escrow_guard": creator_economy_patronage_escrow_guard,
+        "travel_esim_roaming_escrow_guard": travel_esim_roaming_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -33718,6 +33823,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="creator-economy-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 WEB_DIRECT_CHECKOUT_IAP_BYPASS_AND_ANNUAL_ARCHIVE_UNLOCK_CONFIRM · Mandate: creator_economy_patronage_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 52 Global Travel eSIM, Carrier-Unlock Gate & Maritime Bill-Shock Escrow -->
+      <div class="finops-box" id="travel-esim-roaming-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">✈️ 出境游 eSIM 漫游流量包与企业差旅通信 (Airalo / Holafly / Gigs / GSMA SM-DP+) 防有锁机误购、防邮轮卫星 $1,500 刺客与未驻网秒退沙盒 (Round 52)</div>
+            <div class="finops-subtitle">实测购前设备 TAC/eUICC 与运营商无锁预检及 SM-DP+ 零字节未用自动退款 (HTTP 403)、FPLMN 默认屏蔽 MCC 901 公海邮轮/航空卫星天价漫游与虚假无限卡限速拦截 (HTTP 422)、Web IQ 目的地电信实名 eKYC 预检 (HTTP 451) 及企业多国共享流量池替代 $12/天漫游日包立省 27% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="travel-esim-status-kpi">HTTP 409 · REGIONAL_ESIM_WHOLESALE_POOL_AND_ZERO_BYTE_AUTO_REFUND_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业差旅漫游与 OTA 出境 eSIM 采购池 ($ USD)
+            <input type="range" id="travel-esim-pool-slider" min="40000" max="1500000" step="10000" value="240000" oninput="updateTravelEsimRoamingSandbox()" />
+            <span id="travel-esim-pool-val" style="color:#6ee7b7; font-family:monospace;">$240,000</span>
+          </label>
+          <label>
+            终端无锁兼容与零流量退费校验 (HTTP 403)
+            <select id="travel-esim-device-select" onchange="updateTravelEsimRoamingSandbox()">
+              <option value="pass">无锁 eUICC 机型已验真 + SM-DP+ 0-Byte 支持秒退 (放行)</option>
+              <option value="block">合约有锁机/无 eSIM 芯片误购 或 0字节未用订单霸王拒退 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            邮轮卫星屏蔽与 FUP 限速校验 (HTTP 422)
+            <select id="travel-esim-satellite-select" onchange="updateTravelEsimRoamingSandbox()">
+              <option value="pass">FPLMN 已屏蔽 MCC 901 海事卫星 + 高速 FUP 透明 (合规)</option>
+              <option value="block">公海邮轮误连 MCC 901 天价漫游 或 隐瞒 1GB 后 128kbps 断崖限速 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 目的地电信实名 eKYC 筛查 (HTTP 451)
+            <select id="travel-esim-ekyc-select" onchange="updateTravelEsimRoamingSandbox()">
+              <option value="clear">目的地无需实名或已完成护照 eKYC + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">赴港澳/台湾/土耳其未完成强制电信实名 或 宿主网瘫痪 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            多国区域流量池与零字节秒退优化 (HTTP 409)
+            <select id="travel-esim-opt-select" onchange="updateTravelEsimRoamingSandbox()">
+              <option value="enabled" selected>开启多国共享 eSIM 流量池替代 $12/天日包 + 未用自动全退省 27% (HTTP 409)</option>
+              <option value="baseline">常规单国 eSIM 下发与陆地漫游授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度差旅通信毛支出</div>
+            <div class="finops-kpi-val" id="travel-esim-gross-kpi">$240,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">区域共享池优化后净支出</div>
+            <div class="finops-kpi-val" id="travel-esim-net-kpi" style="color:#6ee7b7;">$175,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度漫游降本与防刺客省下</div>
+            <div class="finops-kpi-val" id="travel-esim-savings-kpi" style="color:#38bdf8;">$64,800</div>
+          </div>
+        </div>
+        <div id="travel-esim-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 REGIONAL_ESIM_WHOLESALE_POOL_AND_ZERO_BYTE_AUTO_REFUND_CONFIRM · Mandate: travel_esim_roaming_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -42937,6 +43105,80 @@ function updateCreatorEconomyPatronageSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 CREATOR_TIER_ENTITLEMENT_AND_WATERMARK_AUTHORIZED · Mandate: creator_economy_patronage_escrow_mandate_200';
+}}
+
+function updateTravelEsimRoamingSandbox() {{
+  const slider = document.getElementById('travel-esim-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '240000');
+  const devMode = document.getElementById('travel-esim-device-select').value;
+  const satMode = document.getElementById('travel-esim-satellite-select').value;
+  const ekycMode = document.getElementById('travel-esim-ekyc-select').value;
+  const optMode = document.getElementById('travel-esim-opt-select').value;
+
+  document.getElementById('travel-esim-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('travel-esim-status-kpi');
+  const grossKpi = document.getElementById('travel-esim-gross-kpi');
+  const netKpi = document.getElementById('travel-esim-net-kpi');
+  const savingsKpi = document.getElementById('travel-esim-savings-kpi');
+  const banner = document.getElementById('travel-esim-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ekycMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_DESTINATION_TELECOM_EKYC_MANDATE_OR_HOST_NETWORK_OUTAGE_HOLD · Mandate: null';
+    return;
+  }}
+  if (devMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CARRIER_LOCKED_INCOMPATIBLE_DEVICE_OR_ZERO_BYTE_REFUND_DENIAL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (satMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MARITIME_SATELLITE_MCC901_BILLSHOCK_OR_UNDISCLOSED_FUP_THROTTLE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.27);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 REGIONAL_ESIM_WHOLESALE_POOL_AND_ZERO_BYTE_AUTO_REFUND_CONFIRM · Mandate: travel_esim_roaming_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ESIM_SMDP_PROVISION_AND_TERRESTRIAL_PLMN_LOCK_AUTHORIZED · Mandate: travel_esim_roaming_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

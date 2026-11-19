@@ -12542,6 +12542,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("creator-economy-patronage-escrow-sandbox", html_zh)
 
+    def test_travel_esim_roaming_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            TravelEsimRoamingEscrowPolicyInput,
+            evaluate_travel_esim_roaming_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_travel_esim_roaming_escrow_policy(
+            TravelEsimRoamingEscrowPolicyInput(
+                quarterly_travel_esim_and_roaming_spend_usd=240000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ESIM_SMDP_PROVISION_AND_TERRESTRIAL_PLMN_LOCK_AUTHORIZED",
+        )
+
+        locked = evaluate_travel_esim_roaming_escrow_policy(
+            TravelEsimRoamingEscrowPolicyInput(
+                carrier_locked_incompatible_device_or_zero_byte_refund_denied=True
+            )
+        )
+        self.assertEqual(locked["status_code"], 403)
+        self.assertEqual(
+            locked["decision"],
+            "CARRIER_LOCKED_INCOMPATIBLE_DEVICE_OR_ZERO_BYTE_REFUND_DENIAL_BLOCKED",
+        )
+
+        sat = evaluate_travel_esim_roaming_escrow_policy(
+            TravelEsimRoamingEscrowPolicyInput(
+                maritime_satellite_mcc901_billshock_or_undisclosed_fup_throttle=True
+            )
+        )
+        self.assertEqual(sat["status_code"], 422)
+        self.assertEqual(
+            sat["decision"],
+            "MARITIME_SATELLITE_MCC901_BILLSHOCK_OR_UNDISCLOSED_FUP_THROTTLE_BLOCKED",
+        )
+
+        ekyc = evaluate_travel_esim_roaming_escrow_policy(
+            TravelEsimRoamingEscrowPolicyInput(
+                webiq_destination_telecom_ekyc_mandate_or_host_network_outage_flag=True
+            )
+        )
+        self.assertEqual(ekyc["status_code"], 451)
+        self.assertEqual(
+            ekyc["decision"],
+            "WEBIQ_DESTINATION_TELECOM_EKYC_MANDATE_OR_HOST_NETWORK_OUTAGE_HOLD",
+        )
+
+        optim = evaluate_travel_esim_roaming_escrow_policy(
+            TravelEsimRoamingEscrowPolicyInput(
+                quarterly_travel_esim_and_roaming_spend_usd=240000.0,
+                regional_esim_wholesale_pool_and_zero_byte_auto_refund_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 64800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 175200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("travel_esim_roaming_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("travel-esim-roaming-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
