@@ -12138,6 +12138,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("paid-loyalty-membership-escrow-sandbox", html)
 
+    def test_used_car_odometer_title_lien_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            UsedCarOdometerTitleLienEscrowPolicyInput,
+            evaluate_used_car_odometer_title_lien_escrow_policy,
+        )
+
+        happy = evaluate_used_car_odometer_title_lien_escrow_policy(
+            UsedCarOdometerTitleLienEscrowPolicyInput(
+                quarterly_used_car_auction_pool_usd=Decimal("620000.00"),
+                odometer_ecu_rollback_mismatch_or_undisclosed_frame_damage_detected=False,
+                uncleared_bank_lien_direct_seller_payout_or_missing_title_detected=False,
+                webiq_nmvtis_salvage_flood_title_washing_or_stolen_vin_flag=False,
+                restricted_key_age_days=30,
+                lienholder_payoff_waterfall_and_7day_trial_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "ECU_ODOMETER_VERIFIED_AND_CLEAR_TITLE_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["used_car_escrow_token"]).startswith("used_car_odometer_title_lien_escrow_mandate_")
+        )
+
+        rollback_block = evaluate_used_car_odometer_title_lien_escrow_policy(
+            UsedCarOdometerTitleLienEscrowPolicyInput(
+                quarterly_used_car_auction_pool_usd=Decimal("620000.00"),
+                odometer_ecu_rollback_mismatch_or_undisclosed_frame_damage_detected=True,
+                uncleared_bank_lien_direct_seller_payout_or_missing_title_detected=False,
+                webiq_nmvtis_salvage_flood_title_washing_or_stolen_vin_flag=False,
+                restricted_key_age_days=30,
+                lienholder_payoff_waterfall_and_7day_trial_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(rollback_block["http_status"], 403)
+        self.assertEqual(
+            rollback_block["decision"],
+            "ODOMETER_ECU_ROLLBACK_MISMATCH_OR_UNDISCLOSED_FRAME_DAMAGE_BLOCKED",
+        )
+
+        lien_block = evaluate_used_car_odometer_title_lien_escrow_policy(
+            UsedCarOdometerTitleLienEscrowPolicyInput(
+                quarterly_used_car_auction_pool_usd=Decimal("620000.00"),
+                odometer_ecu_rollback_mismatch_or_undisclosed_frame_damage_detected=False,
+                uncleared_bank_lien_direct_seller_payout_or_missing_title_detected=True,
+                webiq_nmvtis_salvage_flood_title_washing_or_stolen_vin_flag=False,
+                restricted_key_age_days=30,
+                lienholder_payoff_waterfall_and_7day_trial_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(lien_block["http_status"], 422)
+        self.assertEqual(
+            lien_block["decision"],
+            "UNCLEARED_BANK_LIEN_DIRECT_SELLER_PAYOUT_OR_MISSING_TITLE_BLOCKED",
+        )
+
+        flood_hold = evaluate_used_car_odometer_title_lien_escrow_policy(
+            UsedCarOdometerTitleLienEscrowPolicyInput(
+                quarterly_used_car_auction_pool_usd=Decimal("620000.00"),
+                odometer_ecu_rollback_mismatch_or_undisclosed_frame_damage_detected=False,
+                uncleared_bank_lien_direct_seller_payout_or_missing_title_detected=False,
+                webiq_nmvtis_salvage_flood_title_washing_or_stolen_vin_flag=True,
+                restricted_key_age_days=191,
+                lienholder_payoff_waterfall_and_7day_trial_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(flood_hold["http_status"], 451)
+        self.assertEqual(
+            flood_hold["decision"],
+            "WEBIQ_NMVTIS_SALVAGE_FLOOD_TITLE_WASHING_OR_STOLEN_VIN_HOLD",
+        )
+
+        opt_confirm = evaluate_used_car_odometer_title_lien_escrow_policy(
+            UsedCarOdometerTitleLienEscrowPolicyInput(
+                quarterly_used_car_auction_pool_usd=Decimal("620000.00"),
+                odometer_ecu_rollback_mismatch_or_undisclosed_frame_damage_detected=False,
+                uncleared_bank_lien_direct_seller_payout_or_missing_title_detected=False,
+                webiq_nmvtis_salvage_flood_title_washing_or_stolen_vin_flag=False,
+                restricted_key_age_days=30,
+                lienholder_payoff_waterfall_and_7day_trial_escrow_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "136400.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "483600.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("used_car_odometer_title_lien_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("used-car-odometer-title-lien-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
