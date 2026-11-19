@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`154` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`155` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (35 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (36 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (38 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (30 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (15 guides)](#saas-finops-micropayments)
@@ -36,7 +36,7 @@
 | 10 | **Pre-Purchase Verification & Anti-Wrong-Buy Gate Architecture Selection FAQ: Eliminating the "54% of Failed Runs Still Purchase" Vulnerability Identified in the Visa Agentic Commerce Benchmark** | [English](ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.en.md) · [中文](ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (35 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (36 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -77,6 +77,7 @@
 | 33 | **Personal Shopping Agent Persistent Intent Architecture Selection FAQ: Sierra/Meta `Poppy v0.1` + MCP `Intent Services` (Cumulative Budgets, Recurring Replenishment & Post-Transaction Care) vs. Google `AP2` vs. Stateless Sessions** | [English](personal-agent-persistent-intent-services-poppy-vs-ap2-recurring-budget-selection-faq.en.md) · [中文](personal-agent-persistent-intent-services-poppy-vs-ap2-recurring-budget-selection-faq.md) |
 | 34 | **Shared Powerbank, Smart Grab-and-Go Cooler & Deposit-Free Rental (`Meituan / Monster / Amazon Just Walk Out / 365 Retail / Stripe Pre-Auth`) Anti-Fake-Shell, Anti-`$99`-Zombie-Billing & `BLE` Offline Return Agent Architecture Selection FAQ** | [English](shared-powerbank-smart-vending-deposit-free-preauth-cap-agent-selection-faq.en.md) · [中文](shared-powerbank-smart-vending-deposit-free-preauth-cap-agent-selection-faq.md) |
 | 35 | **E-Commerce Try-Before-You-Buy (`TBYB`: Shopify TryNow / Corso / Blackcart) & Apparel Size-Bracketing Agent Architecture Selection FAQ: Delivery-Triggered 7-Day `SPT` Pre-Auth, Prepaid `BIN` Veto, First-Scan Capture Lock & `NFC` Anti-Wardrobing Ribbon** | [English](ecommerce-try-before-you-buy-tbyb-bracketing-preauth-wardrobing-agent-selection-faq.en.md) · [中文](ecommerce-try-before-you-buy-tbyb-bracketing-preauth-wardrobing-agent-selection-faq.md) |
+| 36 | **Extended Warranty, Advanced Exchange `RMA` Collateral & Authorized Repair Claim Audit (`AppleCare+ / Extend / Clyde / Assurant`) Pre-Enrollment Hardware Telemetry Gate, `180d SPT` Cross-Ship Collateral & Core-Return `SN` Parity Agent Architecture Selection FAQ** | [English](warranty-extended-protection-advanced-rma-collateral-claim-audit-agent-selection-faq.en.md) · [中文](warranty-extended-protection-advanced-rma-collateral-claim-audit-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (38 Guides)

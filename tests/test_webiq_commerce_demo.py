@@ -11148,6 +11148,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("local-o2o-voucher-dynamic-escrow-sandbox", html)
 
+    def test_warranty_advanced_rma_collateral_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            WarrantyAdvancedRmaCollateralPolicyInput,
+            evaluate_warranty_advanced_rma_collateral_policy,
+        )
+
+        happy = evaluate_warranty_advanced_rma_collateral_policy(
+            WarrantyAdvancedRmaCollateralPolicyInput(
+                quarterly_warranty_advanced_rma_pool_usd=Decimal("340000.00"),
+                post_purchase_warranty_without_remote_diagnostic_attestation_detected=False,
+                uncollateralized_advanced_rma_or_repair_part_padding_detected=False,
+                webiq_manufacturer_recall_free_repair_precedence_flag=False,
+                restricted_key_age_days=30,
+                collateralized_advanced_rma_and_salvage_replacement_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "DIAGNOSTIC_VERIFIED_AND_COLLATERAL_RMA_AUTHORIZED")
+        self.assertTrue(
+            str(happy["warranty_rma_escrow_token"]).startswith("warranty_advanced_rma_collateral_mandate_")
+        )
+
+        crash_block = evaluate_warranty_advanced_rma_collateral_policy(
+            WarrantyAdvancedRmaCollateralPolicyInput(
+                quarterly_warranty_advanced_rma_pool_usd=Decimal("340000.00"),
+                post_purchase_warranty_without_remote_diagnostic_attestation_detected=True,
+                uncollateralized_advanced_rma_or_repair_part_padding_detected=False,
+                webiq_manufacturer_recall_free_repair_precedence_flag=False,
+                restricted_key_age_days=30,
+                collateralized_advanced_rma_and_salvage_replacement_enabled=False,
+            )
+        )
+        self.assertEqual(crash_block["http_status"], 403)
+        self.assertEqual(
+            crash_block["decision"],
+            "POST_PURCHASE_WARRANTY_WITHOUT_REMOTE_DIAGNOSTIC_ATTESTATION_BLOCKED",
+        )
+
+        pad_block = evaluate_warranty_advanced_rma_collateral_policy(
+            WarrantyAdvancedRmaCollateralPolicyInput(
+                quarterly_warranty_advanced_rma_pool_usd=Decimal("340000.00"),
+                post_purchase_warranty_without_remote_diagnostic_attestation_detected=False,
+                uncollateralized_advanced_rma_or_repair_part_padding_detected=True,
+                webiq_manufacturer_recall_free_repair_precedence_flag=False,
+                restricted_key_age_days=30,
+                collateralized_advanced_rma_and_salvage_replacement_enabled=False,
+            )
+        )
+        self.assertEqual(pad_block["http_status"], 422)
+        self.assertEqual(
+            pad_block["decision"],
+            "UNCOLLATERALIZED_ADVANCED_RMA_OR_REPAIR_PART_PADDING_BLOCKED",
+        )
+
+        recall_hold = evaluate_warranty_advanced_rma_collateral_policy(
+            WarrantyAdvancedRmaCollateralPolicyInput(
+                quarterly_warranty_advanced_rma_pool_usd=Decimal("340000.00"),
+                post_purchase_warranty_without_remote_diagnostic_attestation_detected=False,
+                uncollateralized_advanced_rma_or_repair_part_padding_detected=False,
+                webiq_manufacturer_recall_free_repair_precedence_flag=True,
+                restricted_key_age_days=191,
+                collateralized_advanced_rma_and_salvage_replacement_enabled=False,
+            )
+        )
+        self.assertEqual(recall_hold["http_status"], 451)
+        self.assertEqual(
+            recall_hold["decision"],
+            "WEBIQ_MANUFACTURER_RECALL_FREE_REPAIR_PRECEDENCE_HOLD",
+        )
+
+        opt_confirm = evaluate_warranty_advanced_rma_collateral_policy(
+            WarrantyAdvancedRmaCollateralPolicyInput(
+                quarterly_warranty_advanced_rma_pool_usd=Decimal("340000.00"),
+                post_purchase_warranty_without_remote_diagnostic_attestation_detected=False,
+                uncollateralized_advanced_rma_or_repair_part_padding_detected=False,
+                webiq_manufacturer_recall_free_repair_precedence_flag=False,
+                restricted_key_age_days=30,
+                collateralized_advanced_rma_and_salvage_replacement_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "81600.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "258400.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("warranty_advanced_rma_collateral_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("warranty-advanced-rma-collateral-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

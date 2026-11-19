@@ -2,12 +2,12 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`154` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`155` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
-- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（35 篇）](#payments-mandates)
+- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（36 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（38 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（30 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（15 篇）](#saas-finops-micropayments)
@@ -36,7 +36,7 @@
 | 10 | **面向“54% 错误仍误下单”的智能体购前确定性防买错护栏（Pre-Purchase Verification & Anti-Wrong-Buy Gate）架构选型 FAQ：基于 Visa Agentic Commerce Benchmark（42.8% 失败率）的规格/尺码/预算/确认四重门禁实战指南** | [中文](ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.md) · [English](ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
-## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（35 篇）
+## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（36 篇）
 
 > 涵盖 Google AP2、Stripe SPT、Visa VIC / TAP、Mastercard Agent Pay、PayPal、UCP/ACP 协议互操作、3DS2 无浏览器挑战、FIDO2/Passkey 硬件签名及幂等防重扣架构。
 
@@ -77,6 +77,7 @@
 | 33 | **个人购物智能体跨会话持久意图（Persistent Intent Services & Poppy v0.1）架构选型 FAQ：Sierra/Meta Poppy 协议 + MCP Intent Services（累计预算/周期复购/售后委托）vs. Google AP2 vs. 无状态会话实战指南** | [中文](personal-agent-persistent-intent-services-poppy-vs-ap2-recurring-budget-selection-faq.md) · [English](personal-agent-persistent-intent-services-poppy-vs-ap2-recurring-budget-selection-faq.en.md) |
 | 34 | **共享充电宝、智能开门零售柜与信用免押租赁（Shared Powerbank, Smart Grab-and-Go Cooler & Deposit-Free Rental：美团/怪兽充电 / Amazon Just Walk Out / 微信支付分/芝麻免押）“防空壳假宝调包、防弱网归还后继续扣 $99 刺客与手机蓝牙（BLE）离线秒结”Agent 架构选型 FAQ：终结幽灵计费与拿放误扣实战指南** | [中文](shared-powerbank-smart-vending-deposit-free-preauth-cap-agent-selection-faq.md) · [English](shared-powerbank-smart-vending-deposit-free-preauth-cap-agent-selection-faq.en.md) |
 | 35 | **跨境独立站与品牌 DTC“先试后买（Try-Before-You-Buy：Shopify TryNow / Corso / 顺丰先试后付）与服装多尺码试穿（Bracketing）”Agent 架构选型 FAQ：签收触发 7 天滚动预授权、防虚拟预付卡骗货与防晚宴蹭穿剪标（Wardrobing）实战指南** | [中文](ecommerce-try-before-you-buy-tbyb-bracketing-preauth-wardrobing-agent-selection-faq.md) · [English](ecommerce-try-before-you-buy-tbyb-bracketing-preauth-wardrobing-agent-selection-faq.en.md) |
+| 36 | **消费电子、家电与高端硬件“全生命周期延保（AppleCare+ / 京东全保换新 / Extend / Clyde）、备件先行置换（Advanced RMA）与授权维修网点索赔审计”Agent 架构选型 FAQ：投保前实时硬件自检防“碎屏后再补买保险”、先行发新机全额质押锁与防维修点虚报换主板实战指南** | [中文](warranty-extended-protection-advanced-rma-collateral-claim-audit-agent-selection-faq.md) · [English](warranty-extended-protection-advanced-rma-collateral-claim-audit-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（38 篇）

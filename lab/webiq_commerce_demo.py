@@ -17472,6 +17472,80 @@ def evaluate_local_o2o_voucher_dynamic_escrow_policy(
         "reason": "Verified <=30s TOTP QR, 150m store BLE proximity, active POS table ticket, and CARD Act principal protection.",
     }
 
+
+@dataclass(frozen=True)
+class WarrantyAdvancedRmaCollateralPolicyInput:
+    quarterly_warranty_advanced_rma_pool_usd: Decimal
+    post_purchase_warranty_without_remote_diagnostic_attestation_detected: bool
+    uncollateralized_advanced_rma_or_repair_part_padding_detected: bool
+    webiq_manufacturer_recall_free_repair_precedence_flag: bool
+    restricted_key_age_days: int
+    collateralized_advanced_rma_and_salvage_replacement_enabled: bool
+
+
+def evaluate_warranty_advanced_rma_collateral_policy(
+    policy_input: WarrantyAdvancedRmaCollateralPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Extended Warranty, Advanced Exchange RMA collateral & Authorized Repair BOM serial parity audit."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_warranty_advanced_rma_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.post_purchase_warranty_without_remote_diagnostic_attestation_detected:
+        return {
+            "http_status": 403,
+            "decision": "POST_PURCHASE_WARRANTY_WITHOUT_REMOTE_DIAGNOSTIC_ATTESTATION_BLOCKED",
+            "latency_ms": 10,
+            "approved_budget_usd": "0.00",
+            "warranty_rma_escrow_token": None,
+            "reason": "Blocked post-delivery warranty enrollment lacking on-device digitizer continuity and dynamic mirror QR reflection proof.",
+        }
+
+    if policy_input.uncollateralized_advanced_rma_or_repair_part_padding_detected:
+        return {
+            "http_status": 422,
+            "decision": "UNCOLLATERALIZED_ADVANCED_RMA_OR_REPAIR_PART_PADDING_BLOCKED",
+            "latency_ms": 12,
+            "approved_budget_usd": "0.00",
+            "warranty_rma_escrow_token": None,
+            "reason": "Blocked cross-shipment without replacement-value SPT collateral or ASP logic-board claim failing factory BOM serial parity.",
+        }
+
+    if policy_input.webiq_manufacturer_recall_free_repair_precedence_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_MANUFACTURER_RECALL_FREE_REPAIR_PRECEDENCE_HOLD",
+            "latency_ms": 225,
+            "approved_budget_usd": "0.00",
+            "warranty_rma_escrow_token": None,
+            "reason": "Web IQ flagged active CPSC/OEM statutory free recall covering this serial batch or key >180 days.",
+        }
+
+    if policy_input.collateralized_advanced_rma_and_salvage_replacement_enabled:
+        savings = (gross * Decimal("0.24")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"WARRANTY_RMA_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "COLLATERALIZED_ADVANCED_RMA_AND_SALVAGE_REPLACEMENT_CONFIRM",
+            "latency_ms": 190,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "warranty_rma_escrow_token": f"warranty_advanced_rma_collateral_mandate_{digest}",
+            "reason": "180d SPT cross-ship collateral, BOM core-return audit, and >70% ACV refurb triage reduced warranty loss by 24.0%.",
+        }
+
+    digest = hashlib.sha256(f"WARRANTY_RMA_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "DIAGNOSTIC_VERIFIED_AND_COLLATERAL_RMA_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "warranty_rma_escrow_token": f"warranty_advanced_rma_collateral_mandate_{digest}",
+        "reason": "Verified pre-enrollment hardware telemetry, 180d SPT collateral hold, and factory BOM core-return parity.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -23953,6 +24027,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    warranty_advanced_rma_collateral_guard = {
+        "happy_path": evaluate_warranty_advanced_rma_collateral_policy(
+            WarrantyAdvancedRmaCollateralPolicyInput(
+                quarterly_warranty_advanced_rma_pool_usd=Decimal("340000.00"),
+                post_purchase_warranty_without_remote_diagnostic_attestation_detected=False,
+                uncollateralized_advanced_rma_or_repair_part_padding_detected=False,
+                webiq_manufacturer_recall_free_repair_precedence_flag=False,
+                restricted_key_age_days=30,
+                collateralized_advanced_rma_and_salvage_replacement_enabled=False,
+            )
+        ),
+        "crash_then_insure_without_diag_block": evaluate_warranty_advanced_rma_collateral_policy(
+            WarrantyAdvancedRmaCollateralPolicyInput(
+                quarterly_warranty_advanced_rma_pool_usd=Decimal("340000.00"),
+                post_purchase_warranty_without_remote_diagnostic_attestation_detected=True,
+                uncollateralized_advanced_rma_or_repair_part_padding_detected=False,
+                webiq_manufacturer_recall_free_repair_precedence_flag=False,
+                restricted_key_age_days=30,
+                collateralized_advanced_rma_and_salvage_replacement_enabled=False,
+            )
+        ),
+        "uncollateralized_rma_or_part_padding_block": evaluate_warranty_advanced_rma_collateral_policy(
+            WarrantyAdvancedRmaCollateralPolicyInput(
+                quarterly_warranty_advanced_rma_pool_usd=Decimal("340000.00"),
+                post_purchase_warranty_without_remote_diagnostic_attestation_detected=False,
+                uncollateralized_advanced_rma_or_repair_part_padding_detected=True,
+                webiq_manufacturer_recall_free_repair_precedence_flag=False,
+                restricted_key_age_days=30,
+                collateralized_advanced_rma_and_salvage_replacement_enabled=False,
+            )
+        ),
+        "webiq_oem_recall_precedence_hold": evaluate_warranty_advanced_rma_collateral_policy(
+            WarrantyAdvancedRmaCollateralPolicyInput(
+                quarterly_warranty_advanced_rma_pool_usd=Decimal("340000.00"),
+                post_purchase_warranty_without_remote_diagnostic_attestation_detected=False,
+                uncollateralized_advanced_rma_or_repair_part_padding_detected=False,
+                webiq_manufacturer_recall_free_repair_precedence_flag=True,
+                restricted_key_age_days=191,
+                collateralized_advanced_rma_and_salvage_replacement_enabled=False,
+            )
+        ),
+        "collateral_rma_and_salvage_triage_confirm": evaluate_warranty_advanced_rma_collateral_policy(
+            WarrantyAdvancedRmaCollateralPolicyInput(
+                quarterly_warranty_advanced_rma_pool_usd=Decimal("340000.00"),
+                post_purchase_warranty_without_remote_diagnostic_attestation_detected=False,
+                uncollateralized_advanced_rma_or_repair_part_padding_detected=False,
+                webiq_manufacturer_recall_free_repair_precedence_flag=False,
+                restricted_key_age_days=30,
+                collateralized_advanced_rma_and_salvage_replacement_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -24117,6 +24244,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_tbyb_preauth_wardrobing_guard": ecommerce_tbyb_preauth_wardrobing_guard,
         "b2b_data_marketplace_cleanroom_escrow_guard": b2b_data_marketplace_cleanroom_escrow_guard,
         "local_o2o_voucher_dynamic_escrow_guard": local_o2o_voucher_dynamic_escrow_guard,
+        "warranty_advanced_rma_collateral_guard": warranty_advanced_rma_collateral_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -30959,6 +31087,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">动态核销与按次托管令牌</div>
             <div class="finops-kpi-val" id="o2o-vouch-token-kpi" style="font-size:10px;color:#A78BFA;">local_o2o_voucher_dynamic_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Extended Warranty, Advanced Exchange RMA Collateral & Authorized Repair Audit Sandbox -->
+      <div class="finops-box" id="warranty-advanced-rma-collateral-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🛡️ 3C 家电延保、先行换新 (Advanced RMA) 与维修审计 (AppleCare+ / 京东全保换新 / Extend / Clyde) 沙盒</div>
+            <div class="finops-subtitle">实测购后补买强制本机触控网格与对镜动态二维码验机防碎屏后补买骗保 (HTTP 403)、先行发新机 180d SPT 全额质押与维修点旧主板 BOM 序列号核销防虚报 (HTTP 422)、CPSC 官方召回免费分流 (HTTP 451) 及维修&gt;70%残值转直换+旧件回血立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="warr-rma-verdict-pill">HTTP 200 · DIAGNOSTIC_VERIFIED_AND_COLLATERAL_RMA_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度 3C 数码与高端家电延保理赔及先行换新结算池 ($ USD) <span class="control-val" id="warr-rma-gross-label">$340,000</span></label>
+            <input type="range" id="warr-rma-gross-slider" min="50000" max="1100000" step="20000" value="340000" oninput="updateWarrantyAdvancedRmaCollateralSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">购后补买对镜验机、先行换新全额质押、维修站旧主板 SN 核销与 CPSC 召回场景</label>
+            <select id="warr-rma-mode-select" onchange="updateWarrantyAdvancedRmaCollateralSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 投保硬件自检完好 + 新机 180d SPT 质押已锁 + 旧主板 SN 配对通过 (HTTP 200)</option>
+              <option value="crash_403">🛑 手机屏幕摔碎后才找 AI 补买 $99 意外延保，对镜反射或 64 格触控网格测试失败 (HTTP 403)</option>
+              <option value="padding_422">🚨 无全额质押申请先行寄出 $1,100 新机 或 外包维修站用非本机废主板虚报 $600 换板索赔 (HTTP 422)</option>
+              <option value="recall_451">🛑 Web IQ 检出该批次电池鼓包已列入 CPSC / 原厂免费安全召回计划，严禁扣减商业延保池 (HTTP 451)</option>
+              <option value="salvage_409">🧑‍⚖️ 180d SPT 质押先行换新 + 维修费 &gt;70% 残值自动转官翻机置换 + 原厂旧件拆解回血立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原带病骗保与维修虚报赔付基线</div>
+            <div class="finops-kpi-val" id="warr-rma-gross-kpi">$340,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防逆向骗保与旧件回血立省</div>
+            <div class="finops-kpi-val" id="warr-rma-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净延保理赔与备件结算额</div>
+            <div class="finops-kpi-val" id="warr-rma-net-kpi" style="color:#60A5FA;">$340,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">验机质押与旧件核销令牌</div>
+            <div class="finops-kpi-val" id="warr-rma-token-kpi" style="font-size:10px;color:#A78BFA;">warranty_advanced_rma_collateral_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -39260,6 +39433,61 @@ function updateLocalO2oVoucherDynamicEscrowSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'local_o2o_voucher_dynamic_escrow_mandate_verified';
+  }}
+}}
+
+function updateWarrantyAdvancedRmaCollateralSandbox() {{
+  const grossSlider = document.getElementById('warr-rma-gross-slider');
+  const modeSelect = document.getElementById('warr-rma-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '340000');
+  const mode = modeSelect.value;
+  document.getElementById('warr-rma-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('warr-rma-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('warr-rma-verdict-pill');
+  const savingsKpi = document.getElementById('warr-rma-savings-kpi');
+  const netKpi = document.getElementById('warr-rma-net-kpi');
+  const tokenKpi = document.getElementById('warr-rma-token-kpi');
+
+  if (mode === 'crash_403') {{
+    pill.textContent = 'HTTP 403 · POST_PURCHASE_WARRANTY_WITHOUT_REMOTE_DIAGNOSTIC_ATTESTATION_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_CRASH_THEN_INSURE_NO_MIRROR_DIAG';
+  }} else if (mode === 'padding_422') {{
+    pill.textContent = 'HTTP 422 · UNCOLLATERALIZED_ADVANCED_RMA_OR_REPAIR_PART_PADDING_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_NO_COLLATERAL_OR_FAKE_BOARD_SN';
+  }} else if (mode === 'recall_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_MANUFACTURER_RECALL_FREE_REPAIR_PRECEDENCE_HOLD (225ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_CPSC_OEM_FREE_RECALL_PRECEDENCE';
+  }} else if (mode === 'salvage_409') {{
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · COLLATERALIZED_ADVANCED_RMA_AND_SALVAGE_REPLACEMENT_CONFIRM (190ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'warranty_advanced_rma_collateral_mandate_saved24pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · DIAGNOSTIC_VERIFIED_AND_COLLATERAL_RMA_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'warranty_advanced_rma_collateral_mandate_verified';
   }}
 }}
 
