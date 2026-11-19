@@ -10608,6 +10608,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("laundry-luxury-care-rfid-escrow-sandbox", html)
 
+    def test_car_rental_mobility_toll_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            CarRentalMobilityTollEscrowPolicyInput,
+            evaluate_car_rental_mobility_toll_escrow_policy,
+        )
+
+        happy = evaluate_car_rental_mobility_toll_escrow_policy(
+            CarRentalMobilityTollEscrowPolicyInput(
+                quarterly_car_rental_mobility_pool_usd=Decimal("320000.00"),
+                pre_existing_scratch_diff_mismatch_or_unverified_damage_claim_detected=False,
+                duplicate_cdw_upsell_or_telematics_fuel_soc_parity_breach_detected=False,
+                webiq_nhtsa_vin_recall_or_expired_toll_settlement_window_flag=False,
+                restricted_key_age_days=30,
+                instant_0420_deposit_release_and_bounded_toll_sub_mandate_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "RENTAL_VISION_SOC_PARITY_AND_TOLL_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["car_rental_escrow_token"]).startswith("car_rental_mobility_toll_escrow_mandate_")
+        )
+
+        scratch_block = evaluate_car_rental_mobility_toll_escrow_policy(
+            CarRentalMobilityTollEscrowPolicyInput(
+                quarterly_car_rental_mobility_pool_usd=Decimal("320000.00"),
+                pre_existing_scratch_diff_mismatch_or_unverified_damage_claim_detected=True,
+                duplicate_cdw_upsell_or_telematics_fuel_soc_parity_breach_detected=False,
+                webiq_nhtsa_vin_recall_or_expired_toll_settlement_window_flag=False,
+                restricted_key_age_days=30,
+                instant_0420_deposit_release_and_bounded_toll_sub_mandate_enabled=False,
+            )
+        )
+        self.assertEqual(scratch_block["http_status"], 403)
+        self.assertEqual(
+            scratch_block["decision"],
+            "PRE_EXISTING_SCRATCH_DIFF_MISMATCH_OR_UNVERIFIED_DAMAGE_CLAIM_BLOCKED",
+        )
+
+        cdw_block = evaluate_car_rental_mobility_toll_escrow_policy(
+            CarRentalMobilityTollEscrowPolicyInput(
+                quarterly_car_rental_mobility_pool_usd=Decimal("320000.00"),
+                pre_existing_scratch_diff_mismatch_or_unverified_damage_claim_detected=False,
+                duplicate_cdw_upsell_or_telematics_fuel_soc_parity_breach_detected=True,
+                webiq_nhtsa_vin_recall_or_expired_toll_settlement_window_flag=False,
+                restricted_key_age_days=30,
+                instant_0420_deposit_release_and_bounded_toll_sub_mandate_enabled=False,
+            )
+        )
+        self.assertEqual(cdw_block["http_status"], 422)
+        self.assertEqual(
+            cdw_block["decision"],
+            "DUPLICATE_CDW_UPSELL_OR_TELEMATICS_FUEL_SOC_PARITY_BREACH_BLOCKED",
+        )
+
+        recall_hold = evaluate_car_rental_mobility_toll_escrow_policy(
+            CarRentalMobilityTollEscrowPolicyInput(
+                quarterly_car_rental_mobility_pool_usd=Decimal("320000.00"),
+                pre_existing_scratch_diff_mismatch_or_unverified_damage_claim_detected=False,
+                duplicate_cdw_upsell_or_telematics_fuel_soc_parity_breach_detected=False,
+                webiq_nhtsa_vin_recall_or_expired_toll_settlement_window_flag=True,
+                restricted_key_age_days=191,
+                instant_0420_deposit_release_and_bounded_toll_sub_mandate_enabled=False,
+            )
+        )
+        self.assertEqual(recall_hold["http_status"], 451)
+        self.assertEqual(
+            recall_hold["decision"],
+            "WEBIQ_NHTSA_VIN_RECALL_OR_EXPIRED_TOLL_SETTLEMENT_WINDOW_HOLD",
+        )
+
+        opt_confirm = evaluate_car_rental_mobility_toll_escrow_policy(
+            CarRentalMobilityTollEscrowPolicyInput(
+                quarterly_car_rental_mobility_pool_usd=Decimal("320000.00"),
+                pre_existing_scratch_diff_mismatch_or_unverified_damage_claim_detected=False,
+                duplicate_cdw_upsell_or_telematics_fuel_soc_parity_breach_detected=False,
+                webiq_nhtsa_vin_recall_or_expired_toll_settlement_window_flag=False,
+                restricted_key_age_days=30,
+                instant_0420_deposit_release_and_bounded_toll_sub_mandate_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "73600.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "246400.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("car_rental_mobility_toll_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("car-rental-mobility-toll-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

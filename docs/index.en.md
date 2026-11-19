@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`148` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`149` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (34 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (35 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (36 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (29 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (14 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (26 guides)](#tax-fx-privacy-disputes)
@@ -78,7 +78,7 @@
 | 34 | **Shared Powerbank, Smart Grab-and-Go Cooler & Deposit-Free Rental (`Meituan / Monster / Amazon Just Walk Out / 365 Retail / Stripe Pre-Auth`) Anti-Fake-Shell, Anti-`$99`-Zombie-Billing & `BLE` Offline Return Agent Architecture Selection FAQ** | [English](shared-powerbank-smart-vending-deposit-free-preauth-cap-agent-selection-faq.en.md) · [中文](shared-powerbank-smart-vending-deposit-free-preauth-cap-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (35 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (36 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -119,6 +119,7 @@
 | 33 | **Grocery & Perishable Dynamic Markdown (`Instacart Carrot Tags / Hanshow ESL / Too Good To Go / Flashfood`) `GS1 DataBar` Expiry Lock, `ESL` Curve & Food-Rescue Tax Credit Agent Architecture Selection FAQ** | [English](grocery-perishable-dynamic-markdown-gs1-expiry-lock-food-rescue-agent-selection-faq.en.md) · [中文](grocery-perishable-dynamic-markdown-gs1-expiry-lock-food-rescue-agent-selection-faq.md) |
 | 34 | **Luxury Watch & Fine Jewelry Consignment & B2B Memo Escrow (`Chrono24 / The RealReal / RapNet / Nivoda`) Anti-Frankenwatch, `GIA` Synthetic-Swap Gate & Tamper-Evident `NFC` Seal Agent Architecture Selection FAQ** | [English](luxury-watch-jewelry-consignment-gia-authentication-b2b-memo-escrow-agent-selection-faq.en.md) · [中文](luxury-watch-jewelry-consignment-gia-authentication-b2b-memo-escrow-agent-selection-faq.md) |
 | 35 | **On-Demand Laundry, Dry Cleaning & Luxury Garment Care (`Rinse / CleanCloud / Smart Locker O2O`) `ISO 3758` Care-Label Gate, Pre-Wash Defect Sign-Off & `UHF RFID` Escrow Agent Architecture Selection FAQ** | [English](laundry-dry-cleaning-luxury-care-rfid-damage-escrow-agent-selection-faq.en.md) · [中文](laundry-dry-cleaning-luxury-care-rfid-damage-escrow-agent-selection-faq.md) |
+| 36 | **Car Rental, Peer-to-Peer Mobility & Fleet Toll/EV-Charging Escrow (`Hertz / Enterprise / Avis / Turo / Sixt`) Pre/Post Vision Damage-Diff Gate, Anti-Duplicate-`CDW`, `OBD-II` Fuel/SOC Parity & `ISO 8583 0420` Instant Deposit Release Agent Architecture Selection FAQ** | [English](car-rental-mobility-damage-vision-toll-escrow-ev-fuel-agent-selection-faq.en.md) · [中文](car-rental-mobility-damage-vision-toll-escrow-ev-fuel-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (29 Guides)
