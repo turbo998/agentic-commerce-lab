@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`174` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`175` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（37 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（46 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（35 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（36 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（18 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（28 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -135,7 +135,7 @@
 | 46 | **线上配镜、隐形眼镜周期订阅与视力险/FSA 结算（Prescription Eyewear, Contact Lens Subscription & Vision-Benefit Escrow：Warby Parker / Zenni / 1-800 Contacts / VSP / EyeMed / 宝岛眼镜）“防近视正负号填反与瞳距（PD）缺失导致定制镜片报废、FTC 8 工作时被动验方锁与 VSP/FSA 自动拆账”Agent 架构选型 FAQ** | [中文](optical-eyewear-contact-lens-rx-verification-vision-benefit-escrow-agent-selection-faq.md) · [English](optical-eyewear-contact-lens-rx-verification-vision-benefit-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（35 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（36 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -176,6 +176,7 @@
 | 33 | **企业商业字体、正版图库、生成式 AI 素材与开源组件版权采购（B2B Creative Stock, Commercial Font Licensing, SPDX AGPL Gate & C2PA Indemnity：Monotype / 方正字库 / Adobe Stock / Getty Images）“防 $49 桌面字体打包进百万用户 App 遭天价索赔、防 AGPL 传染性协议污染闭源代码与 C2PA 版权免责”Agent 架构选型 FAQ：终结字体维权敲诈与素材重复购买实战指南** | [中文](b2b-creative-stock-font-licensing-agpl-c2pa-indemnity-agent-selection-faq.md) · [English](b2b-creative-stock-font-licensing-agpl-c2pa-indemnity-agent-selection-faq.en.md) |
 | 34 | **跨境海空运订舱、货代询价与港口免箱期结算（B2B Ocean & Air Freight Forwarding, Spot Booking & Demurrage/Detention Escrow：Flexport / Freightos / 运去哪 / 马士基 Maersk Spot）“防货代零运费拼箱目的港天价拆箱费敲诈（CISF）、防船司超售甩柜（Rolled Cargo）与 FMC OSRA-22 滞箱费停钟审计”Agent 架构选型 FAQ：终结到港赎单与滞港费黑洞实战指南** | [中文](b2b-freight-forwarding-ocean-booking-cisf-demurrage-escrow-agent-selection-faq.md) · [English](b2b-freight-forwarding-ocean-booking-cisf-demurrage-escrow-agent-selection-faq.en.md) |
 | 35 | **企业法务外部律所账单（LEDES 1998B / UTBMS）审计与全球专利年费采购（B2B Legal Spend Management, Law Firm e-Billing Audit & IP Patent Annuity：Brightflag / SimpleLegal / Clarivate CPA Global）“防笼统打包记账（Block Billing）、防 4 名律师陪开会重复收钱与核心专利断缴失权双签锁”Agent 架构选型 FAQ：终结天价律师费灌水与僵尸专利浪费实战指南** | [中文](b2b-legal-spend-ledes-billing-audit-patent-annuity-escrow-agent-selection-faq.md) · [English](b2b-legal-spend-ledes-billing-audit-patent-annuity-escrow-agent-selection-faq.en.md) |
+| 36 | **共享办公、企业灵活工位订阅与会议室按需采购（Flexible Office, Coworking Membership & On-Demand Desk Escrow：WeWork / Regus IWG / Industrious / Desana / Gable）“防退租天价还原费（Restoration Fee）吞押金、防 90 天静默续约锁死全年与门禁刷卡率降配”Agent 架构选型 FAQ** | [中文](coworking-flexible-office-restoration-fee-auto-renewal-escrow-agent-selection-faq.md) · [English](coworking-flexible-office-restoration-fee-auto-renewal-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（18 篇）

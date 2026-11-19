@@ -18980,6 +18980,84 @@ def evaluate_optical_eyewear_contact_lens_rx_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class CoworkingFlexibleOfficeEscrowPolicyInput:
+    """Input contract for Flexible Office, Coworking Deposit Shield & Badge-Swipe Right-Sizing Escrow."""
+
+    quarterly_coworking_and_flexible_office_spend_usd: float = 310000.0
+    move_out_restoration_fee_deposit_grab_or_mandatory_beverage_addon: bool = False
+    evergreen_90d_notice_rollover_trap_or_meeting_room_credit_overage: bool = False
+    webiq_coworking_master_lease_default_eviction_or_snda_missing_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    badge_swipe_hotdesk_rightsizing_and_daypass_pool_ready: bool = False
+
+
+def evaluate_coworking_flexible_office_escrow_policy(
+    policy_input: CoworkingFlexibleOfficeEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Flexible Office, Coworking & Hybrid Desk policy."""
+    gross_pool = max(float(policy_input.quarterly_coworking_and_flexible_office_spend_usd), 0.0)
+    if (
+        policy_input.webiq_coworking_master_lease_default_eviction_or_snda_missing_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_COWORKING_MASTER_LEASE_DEFAULT_EVICTION_OR_SNDA_MISSING_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.move_out_restoration_fee_deposit_grab_or_mandatory_beverage_addon:
+        return {
+            "status_code": 403,
+            "decision": "MOVE_OUT_RESTORATION_FEE_DEPOSIT_GRAB_OR_MANDATORY_BEVERAGE_ADDON_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.evergreen_90d_notice_rollover_trap_or_meeting_room_credit_overage:
+        return {
+            "status_code": 422,
+            "decision": "EVERGREEN_90D_NOTICE_ROLLOVER_TRAP_OR_MEETING_ROOM_CREDIT_OVERAGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.badge_swipe_hotdesk_rightsizing_and_daypass_pool_ready:
+        savings = round(gross_pool * 0.28, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "BADGE_SWIPE_HOTDESK_RIGHTSIZING_AND_DAYPASS_POOL_CONFIRM",
+            "mandate_token": "coworking_flexible_office_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "COWORKING_DESK_AND_CREDIT_CAP_AUTHORIZED",
+        "mandate_token": "coworking_flexible_office_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -26355,6 +26433,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    coworking_flexible_office_escrow_guard = {
+        "authorized_200": evaluate_coworking_flexible_office_escrow_policy(
+            CoworkingFlexibleOfficeEscrowPolicyInput()
+        ),
+        "restoration_fee_or_beverage_addon_403": evaluate_coworking_flexible_office_escrow_policy(
+            CoworkingFlexibleOfficeEscrowPolicyInput(
+                move_out_restoration_fee_deposit_grab_or_mandatory_beverage_addon=True
+            )
+        ),
+        "evergreen_90d_or_room_overage_422": evaluate_coworking_flexible_office_escrow_policy(
+            CoworkingFlexibleOfficeEscrowPolicyInput(
+                evergreen_90d_notice_rollover_trap_or_meeting_room_credit_overage=True
+            )
+        ),
+        "master_lease_default_eviction_451": evaluate_coworking_flexible_office_escrow_policy(
+            CoworkingFlexibleOfficeEscrowPolicyInput(
+                webiq_coworking_master_lease_default_eviction_or_snda_missing_flag=True
+            )
+        ),
+        "badge_swipe_daypass_rightsizing_409": evaluate_coworking_flexible_office_escrow_policy(
+            CoworkingFlexibleOfficeEscrowPolicyInput(
+                badge_swipe_hotdesk_rightsizing_and_daypass_pool_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26539,6 +26643,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "moving_relocation_self_storage_escrow_guard": moving_relocation_self_storage_escrow_guard,
         "senior_homecare_nanny_evv_escrow_guard": senior_homecare_nanny_evv_escrow_guard,
         "optical_eyewear_contact_lens_rx_escrow_guard": optical_eyewear_contact_lens_rx_escrow_guard,
+        "coworking_flexible_office_escrow_guard": coworking_flexible_office_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -34390,6 +34495,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="optical-rx-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 VISION_INSURANCE_VSP_ALLOWANCE_AND_FSA_HIGH_INDEX_OPTIMIZATION_CONFIRM · Mandate: optical_eyewear_contact_lens_rx_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 56 Flexible Office, Coworking Deposit Shield & Badge-Swipe Right-Sizing Escrow -->
+      <div class="finops-box" id="coworking-flexible-office-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏢 共享办公、企业灵活工位与会议室采购 (WeWork / Regus IWG / Industrious / Desana) 防退租还原费吞押金、防 90 天静默续约与刷卡率降配沙盒 (Round 56)</div>
+            <div class="finops-subtitle">实测入驻/退租 3D 视觉验房存证与自然磨损免扣 $150/座 退租还原费 (HTTP 403)、T-105d 自动退租防 90 天通知窗静默续约与会议室积分零超支锁 (HTTP 422)、Web IQ 监测二房东主租约欠租清退风险 (HTTP 451) 及门禁刷卡率 &lt;20% 专属工位自动转 $29 按次日卡立省 28% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="coworking-office-status-kpi">HTTP 409 · BADGE_SWIPE_HOTDESK_RIGHTSIZING_AND_DAYPASS_POOL_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业共享办公与混合工位结算池 ($ USD)
+            <input type="range" id="coworking-office-pool-slider" min="50000" max="1500000" step="10000" value="310000" oninput="updateCoworkingFlexibleOfficeSandbox()" />
+            <span id="coworking-office-pool-val" style="color:#6ee7b7; font-family:monospace;">$310,000</span>
+          </label>
+          <label>
+            退租还原费与押金保护校验 (HTTP 403)
+            <select id="coworking-office-deposit-select" onchange="updateCoworkingFlexibleOfficeSandbox()">
+              <option value="pass">自然磨损免收翻新费条款已签 + 无捆绑茶水费 (放行)</option>
+              <option value="block">退租强扣 $150/工位深度还原与IT重置费吞押金 或 强制收饮品包 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            90天续约窗口与会议室积分超支校验 (HTTP 422)
+            <select id="coworking-office-evergreen-select" onchange="updateCoworkingFlexibleOfficeSandbox()">
+              <option value="pass">T-105d 自动退租保护已开启 + SPT 超支上限为 $0 (合规)</option>
+              <option value="block">利用 90 天通知窗静默续签 12 个月(+14%) 或 会议室超积分扣 $150/h (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 二房东主租约违约筛查 (HTTP 451)
+            <select id="coworking-office-master-select" onchange="updateCoworkingFlexibleOfficeSandbox()">
+              <option value="clear">大楼业主主租约正常履约 + 具备 SNDA 保护 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">共享办公运营商拖欠大厦大业主房租面临锁门清退 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            门禁刷卡率降配与按次日卡优化 (HTTP 409)
+            <select id="coworking-office-opt-select" onchange="updateCoworkingFlexibleOfficeSandbox()">
+              <option value="enabled" selected>开启刷卡率 &lt;20% 僵尸月卡自动转 $29 按次日卡省 28% (HTTP 409)</option>
+              <option value="baseline">常规共享办公专属工位与会议室积分授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度共享办公毛支出</div>
+            <div class="finops-kpi-val" id="coworking-office-gross-kpi">$310,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">按次降配与防超支后净付</div>
+            <div class="finops-kpi-val" id="coworking-office-net-kpi" style="color:#6ee7b7;">$223,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消灭空置工位与护押金省下</div>
+            <div class="finops-kpi-val" id="coworking-office-savings-kpi" style="color:#38bdf8;">$86,800</div>
+          </div>
+        </div>
+        <div id="coworking-office-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 BADGE_SWIPE_HOTDESK_RIGHTSIZING_AND_DAYPASS_POOL_CONFIRM · Mandate: coworking_flexible_office_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -43905,6 +44073,80 @@ function updateOpticalEyewearContactLensSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 OPTICAL_RX_PD_AND_FTC_8HR_VERIFICATION_AUTHORIZED · Mandate: optical_eyewear_contact_lens_rx_escrow_mandate_200';
+}}
+
+function updateCoworkingFlexibleOfficeSandbox() {{
+  const slider = document.getElementById('coworking-office-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '310000');
+  const depMode = document.getElementById('coworking-office-deposit-select').value;
+  const evgMode = document.getElementById('coworking-office-evergreen-select').value;
+  const mstMode = document.getElementById('coworking-office-master-select').value;
+  const optMode = document.getElementById('coworking-office-opt-select').value;
+
+  document.getElementById('coworking-office-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('coworking-office-status-kpi');
+  const grossKpi = document.getElementById('coworking-office-gross-kpi');
+  const netKpi = document.getElementById('coworking-office-net-kpi');
+  const savingsKpi = document.getElementById('coworking-office-savings-kpi');
+  const banner = document.getElementById('coworking-office-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (mstMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_COWORKING_MASTER_LEASE_DEFAULT_EVICTION_OR_SNDA_MISSING_HOLD · Mandate: null';
+    return;
+  }}
+  if (depMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MOVE_OUT_RESTORATION_FEE_DEPOSIT_GRAB_OR_MANDATORY_BEVERAGE_ADDON_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (evgMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 EVERGREEN_90D_NOTICE_ROLLOVER_TRAP_OR_MEETING_ROOM_CREDIT_OVERAGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.28);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 BADGE_SWIPE_HOTDESK_RIGHTSIZING_AND_DAYPASS_POOL_CONFIRM · Mandate: coworking_flexible_office_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 COWORKING_DESK_AND_CREDIT_CAP_AUTHORIZED · Mandate: coworking_flexible_office_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

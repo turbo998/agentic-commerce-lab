@@ -12810,6 +12810,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("optical-eyewear-contact-lens-rx-escrow-sandbox", html_zh)
 
+    def test_coworking_flexible_office_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CoworkingFlexibleOfficeEscrowPolicyInput,
+            evaluate_coworking_flexible_office_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_coworking_flexible_office_escrow_policy(
+            CoworkingFlexibleOfficeEscrowPolicyInput(
+                quarterly_coworking_and_flexible_office_spend_usd=310000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "COWORKING_DESK_AND_CREDIT_CAP_AUTHORIZED",
+        )
+
+        grab = evaluate_coworking_flexible_office_escrow_policy(
+            CoworkingFlexibleOfficeEscrowPolicyInput(
+                move_out_restoration_fee_deposit_grab_or_mandatory_beverage_addon=True
+            )
+        )
+        self.assertEqual(grab["status_code"], 403)
+        self.assertEqual(
+            grab["decision"],
+            "MOVE_OUT_RESTORATION_FEE_DEPOSIT_GRAB_OR_MANDATORY_BEVERAGE_ADDON_BLOCKED",
+        )
+
+        evg = evaluate_coworking_flexible_office_escrow_policy(
+            CoworkingFlexibleOfficeEscrowPolicyInput(
+                evergreen_90d_notice_rollover_trap_or_meeting_room_credit_overage=True
+            )
+        )
+        self.assertEqual(evg["status_code"], 422)
+        self.assertEqual(
+            evg["decision"],
+            "EVERGREEN_90D_NOTICE_ROLLOVER_TRAP_OR_MEETING_ROOM_CREDIT_OVERAGE_BLOCKED",
+        )
+
+        mst = evaluate_coworking_flexible_office_escrow_policy(
+            CoworkingFlexibleOfficeEscrowPolicyInput(
+                webiq_coworking_master_lease_default_eviction_or_snda_missing_flag=True
+            )
+        )
+        self.assertEqual(mst["status_code"], 451)
+        self.assertEqual(
+            mst["decision"],
+            "WEBIQ_COWORKING_MASTER_LEASE_DEFAULT_EVICTION_OR_SNDA_MISSING_HOLD",
+        )
+
+        optim = evaluate_coworking_flexible_office_escrow_policy(
+            CoworkingFlexibleOfficeEscrowPolicyInput(
+                quarterly_coworking_and_flexible_office_spend_usd=310000.0,
+                badge_swipe_hotdesk_rightsizing_and_daypass_pool_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 86800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 223200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("coworking_flexible_office_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("coworking-flexible-office-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

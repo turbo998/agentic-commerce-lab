@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`174` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`175` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (37 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (46 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (35 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (36 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (18 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (28 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -135,7 +135,7 @@
 | 46 | **Prescription Eyewear, Contact Lens Subscription & Vision-Benefit Escrow (`Warby Parker / Zenni / 1-800 Contacts / VSP / EyeMed / FTC 16 CFR Part 315 & 456`) Anti-Rx-Inversion `PD` Gate, `8-Business-Hour` Verification Lock & `VSP/FSA` Split Agent Architecture Selection FAQ** | [English](optical-eyewear-contact-lens-rx-verification-vision-benefit-escrow-agent-selection-faq.en.md) · [中文](optical-eyewear-contact-lens-rx-verification-vision-benefit-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (35 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (36 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -176,6 +176,7 @@
 | 33 | **B2B Creative Stock, Commercial Font Licensing, `SPDX AGPL` Gate & `C2PA` Generative Indemnity (`Monotype / Adobe Stock / Getty Images / GitHub Marketplace`) `EULA` Channel-Scope Gate, Anti-Copyleft Contamination & `DAM` Deduplication Escrow Agent Architecture Selection FAQ** | [English](b2b-creative-stock-font-licensing-agpl-c2pa-indemnity-agent-selection-faq.en.md) · [中文](b2b-creative-stock-font-licensing-agpl-c2pa-indemnity-agent-selection-faq.md) |
 | 34 | **B2B Ocean & Air Freight Forwarding, Spot Booking & `FMC OSRA-22` Demurrage/Detention Escrow (`Flexport / Freightos / Maersk Spot / DCSA v3.0`) Anti-`CISF` `LCL` Bait Gate, Rolled-Cargo SLA & `LCL-to-FCL` Consolidation Agent Architecture Selection FAQ** | [English](b2b-freight-forwarding-ocean-booking-cisf-demurrage-escrow-agent-selection-faq.en.md) · [中文](b2b-freight-forwarding-ocean-booking-cisf-demurrage-escrow-agent-selection-faq.md) |
 | 35 | **B2B Legal Spend Management, Law Firm `LEDES 1998B / UTBMS` Billing Audit & `IP` Patent Annuity Escrow (`Brightflag / SimpleLegal / Clarivate CPA Global`) Anti-Block-Billing Gate, Multi-Attendee Haircut & Active-Litigation Patent Lock Agent Architecture Selection FAQ** | [English](b2b-legal-spend-ledes-billing-audit-patent-annuity-escrow-agent-selection-faq.en.md) · [中文](b2b-legal-spend-ledes-billing-audit-patent-annuity-escrow-agent-selection-faq.md) |
+| 36 | **Flexible Office, Coworking Membership & On-Demand Desk Escrow (`WeWork / Regus IWG / Industrious / Desana / Gable`) Anti-Restoration-Fee Deposit Shield, `90-Day` Evergreen Lock & Badge-Swipe Right-Sizing Agent Architecture Selection FAQ** | [English](coworking-flexible-office-restoration-fee-auto-renewal-escrow-agent-selection-faq.en.md) · [中文](coworking-flexible-office-restoration-fee-auto-renewal-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (18 Guides)
