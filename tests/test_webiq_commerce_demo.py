@@ -12609,6 +12609,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("travel-esim-roaming-escrow-sandbox", html_zh)
 
+    def test_moving_relocation_self_storage_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            MovingRelocationSelfStorageEscrowPolicyInput,
+            evaluate_moving_relocation_self_storage_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_moving_relocation_self_storage_escrow_policy(
+            MovingRelocationSelfStorageEscrowPolicyInput(
+                quarterly_corporate_relocation_and_storage_spend_usd=330000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "BINDING_ESTIMATE_AND_STORAGE_RATE_LOCK_AUTHORIZED",
+        )
+
+        hostage = evaluate_moving_relocation_self_storage_escrow_policy(
+            MovingRelocationSelfStorageEscrowPolicyInput(
+                hostage_load_post_loading_extortion_or_49cfr375_cap_breach=True
+            )
+        )
+        self.assertEqual(hostage["status_code"], 403)
+        self.assertEqual(
+            hostage["decision"],
+            "HOSTAGE_LOAD_POST_LOADING_EXTORTION_OR_49CFR375_DELIVERY_CAP_BREACH_BLOCKED",
+        )
+
+        ecri = evaluate_moving_relocation_self_storage_escrow_policy(
+            MovingRelocationSelfStorageEscrowPolicyInput(
+                self_storage_ecri_bait_rate_hike_or_premature_lien_auction=True
+            )
+        )
+        self.assertEqual(ecri["status_code"], 422)
+        self.assertEqual(
+            ecri["decision"],
+            "SELF_STORAGE_ECRI_BAIT_RATE_HIKE_OR_PREMATURE_LIEN_AUCTION_BLOCKED",
+        )
+
+        scra = evaluate_moving_relocation_self_storage_escrow_policy(
+            MovingRelocationSelfStorageEscrowPolicyInput(
+                webiq_unlicensed_moving_broker_or_scra_military_lien_flag=True
+            )
+        )
+        self.assertEqual(scra["status_code"], 451)
+        self.assertEqual(
+            scra["decision"],
+            "WEBIQ_UNLICENSED_MOVING_BROKER_OR_SCRA_MILITARY_LIEN_AUCTION_HOLD",
+        )
+
+        optim = evaluate_moving_relocation_self_storage_escrow_policy(
+            MovingRelocationSelfStorageEscrowPolicyInput(
+                quarterly_corporate_relocation_and_storage_spend_usd=330000.0,
+                containerized_pod_relocation_and_prorated_storage_vacate_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 75900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 254100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("moving_relocation_self_storage_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("moving-relocation-self-storage-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

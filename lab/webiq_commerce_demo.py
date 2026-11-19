@@ -18746,6 +18746,84 @@ def evaluate_travel_esim_roaming_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class MovingRelocationSelfStorageEscrowPolicyInput:
+    """Input contract for Moving Van Line, Self-Storage Rate-Cap & FMCSA Anti-Hostage-Load Escrow."""
+
+    quarterly_corporate_relocation_and_storage_spend_usd: float = 330000.0
+    hostage_load_post_loading_extortion_or_49cfr375_cap_breach: bool = False
+    self_storage_ecri_bait_rate_hike_or_premature_lien_auction: bool = False
+    webiq_unlicensed_moving_broker_or_scra_military_lien_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    containerized_pod_relocation_and_prorated_storage_vacate_ready: bool = False
+
+
+def evaluate_moving_relocation_self_storage_escrow_policy(
+    policy_input: MovingRelocationSelfStorageEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Moving Van Line, Self-Storage & Corporate Relocation policy."""
+    gross_pool = max(float(policy_input.quarterly_corporate_relocation_and_storage_spend_usd), 0.0)
+    if (
+        policy_input.webiq_unlicensed_moving_broker_or_scra_military_lien_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNLICENSED_MOVING_BROKER_OR_SCRA_MILITARY_LIEN_AUCTION_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hostage_load_post_loading_extortion_or_49cfr375_cap_breach:
+        return {
+            "status_code": 403,
+            "decision": "HOSTAGE_LOAD_POST_LOADING_EXTORTION_OR_49CFR375_DELIVERY_CAP_BREACH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.self_storage_ecri_bait_rate_hike_or_premature_lien_auction:
+        return {
+            "status_code": 422,
+            "decision": "SELF_STORAGE_ECRI_BAIT_RATE_HIKE_OR_PREMATURE_LIEN_AUCTION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.containerized_pod_relocation_and_prorated_storage_vacate_ready:
+        savings = round(gross_pool * 0.23, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CONTAINERIZED_POD_RELOCATION_AND_PRORATED_STORAGE_VACATE_CONFIRM",
+            "mandate_token": "moving_relocation_self_storage_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "BINDING_ESTIMATE_AND_STORAGE_RATE_LOCK_AUTHORIZED",
+        "mandate_token": "moving_relocation_self_storage_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -26043,6 +26121,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    moving_relocation_self_storage_escrow_guard = {
+        "authorized_200": evaluate_moving_relocation_self_storage_escrow_policy(
+            MovingRelocationSelfStorageEscrowPolicyInput()
+        ),
+        "hostage_load_or_cap_breach_403": evaluate_moving_relocation_self_storage_escrow_policy(
+            MovingRelocationSelfStorageEscrowPolicyInput(
+                hostage_load_post_loading_extortion_or_49cfr375_cap_breach=True
+            )
+        ),
+        "ecri_rate_hike_or_lien_422": evaluate_moving_relocation_self_storage_escrow_policy(
+            MovingRelocationSelfStorageEscrowPolicyInput(
+                self_storage_ecri_bait_rate_hike_or_premature_lien_auction=True
+            )
+        ),
+        "unlicensed_broker_or_scra_451": evaluate_moving_relocation_self_storage_escrow_policy(
+            MovingRelocationSelfStorageEscrowPolicyInput(
+                webiq_unlicensed_moving_broker_or_scra_military_lien_flag=True
+            )
+        ),
+        "container_pod_and_prorated_vacate_409": evaluate_moving_relocation_self_storage_escrow_policy(
+            MovingRelocationSelfStorageEscrowPolicyInput(
+                containerized_pod_relocation_and_prorated_storage_vacate_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26224,6 +26328,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "gift_registry_group_gifting_escrow_guard": gift_registry_group_gifting_escrow_guard,
         "creator_economy_patronage_escrow_guard": creator_economy_patronage_escrow_guard,
         "travel_esim_roaming_escrow_guard": travel_esim_roaming_escrow_guard,
+        "moving_relocation_self_storage_escrow_guard": moving_relocation_self_storage_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -33886,6 +33991,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="travel-esim-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 REGIONAL_ESIM_WHOLESALE_POOL_AND_ZERO_BYTE_AUTO_REFUND_CONFIRM · Mandate: travel_esim_roaming_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 53 Moving Van Line, Self-Storage Rate-Cap & FMCSA Anti-Hostage-Load Escrow -->
+      <div class="finops-box" id="moving-relocation-self-storage-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🚚 跨城搬家、员工异地安家与自助迷你仓 (PODS / U-Haul / Public Storage / 货拉拉搬家) 防装车后加价扣货、防迷你仓暴涨租与 SCRA 禁拍沙盒 (Round 53)</div>
+            <div class="finops-subtitle">实测装前 3D 视觉一口价与 FMCSA 49 CFR § 375.403/405 交付最多收 100%/110% 强制卸货法 (HTTP 403)、迷你仓 12 个月租金涨幅上限锁(&lt;=8%/年)防第 4 个月暴涨租金与法定留置通知 (HTTP 422)、Web IQ 核验 USDOT HHG 牌照与 DMDC SCRA 现役军人禁拍锁 (HTTP 451) 及移动货柜拼载+按天退仓立省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="moving-storage-status-kpi">HTTP 409 · CONTAINERIZED_POD_RELOCATION_AND_PRORATED_STORAGE_VACATE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业员工安家搬迁与迷你仓结算池 ($ USD)
+            <input type="range" id="moving-storage-pool-slider" min="50000" max="1500000" step="10000" value="330000" oninput="updateMovingRelocationSelfStorageSandbox()" />
+            <span id="moving-storage-pool-val" style="color:#6ee7b7; font-family:monospace;">$330,000</span>
+          </label>
+          <label>
+            装车前一口价与 49 CFR 375 卸货校验 (HTTP 403)
+            <select id="moving-storage-hostage-select" onchange="updateMovingRelocationSelfStorageSandbox()">
+              <option value="pass">装前 3D 视觉一口价锁定 + 卸货入户验损后放款 (放行)</option>
+              <option value="block">装车后半路坐地起价扣押行李 或 临时索要高额楼层费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            迷你仓涨幅上限与留置拍卖校验 (HTTP 422)
+            <select id="moving-storage-ecri-select" onchange="updateMovingRelocationSelfStorageSandbox()">
+              <option value="pass">12 个月租金涨幅 &lt;=8% 锁死 + 提前退仓按天退差额 (合规)</option>
+              <option value="block">入仓第 4 个月暴涨 80% 租金(ECRI) 或 未满期强行锁仓拍卖 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ FMCSA 牌照与 SCRA 军人保护筛查 (HTTP 451)
+            <select id="moving-storage-scra-select" onchange="updateMovingRelocationSelfStorageSandbox()">
+              <option value="clear">持牌 USDOT HHG 承运商 + 非现役军人无令拍卖 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">无牌照搬家黑中介转单 或 拟拍卖海外执勤现役军人迷你仓 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            移动货柜拼载与按天退仓优化 (HTTP 409)
+            <select id="moving-storage-opt-select" onchange="updateMovingRelocationSelfStorageSandbox()">
+              <option value="enabled" selected>开启 PODS 移动货柜替代专车 + 全额重置险 + 按天退租省 23% (HTTP 409)</option>
+              <option value="baseline">常规持牌搬家与锁价迷你仓授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度搬迁与仓储毛支出</div>
+            <div class="finops-kpi-val" id="moving-storage-gross-kpi">$330,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">货柜与锁租优化后净成本</div>
+            <div class="finops-kpi-val" id="moving-storage-net-kpi" style="color:#6ee7b7;">$254,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度防加价与防涨租省下</div>
+            <div class="finops-kpi-val" id="moving-storage-savings-kpi" style="color:#38bdf8;">$75,900</div>
+          </div>
+        </div>
+        <div id="moving-storage-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CONTAINERIZED_POD_RELOCATION_AND_PRORATED_STORAGE_VACATE_CONFIRM · Mandate: moving_relocation_self_storage_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -43179,6 +43347,80 @@ function updateTravelEsimRoamingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ESIM_SMDP_PROVISION_AND_TERRESTRIAL_PLMN_LOCK_AUTHORIZED · Mandate: travel_esim_roaming_escrow_mandate_200';
+}}
+
+function updateMovingRelocationSelfStorageSandbox() {{
+  const slider = document.getElementById('moving-storage-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '330000');
+  const hostMode = document.getElementById('moving-storage-hostage-select').value;
+  const ecriMode = document.getElementById('moving-storage-ecri-select').value;
+  const scraMode = document.getElementById('moving-storage-scra-select').value;
+  const optMode = document.getElementById('moving-storage-opt-select').value;
+
+  document.getElementById('moving-storage-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('moving-storage-status-kpi');
+  const grossKpi = document.getElementById('moving-storage-gross-kpi');
+  const netKpi = document.getElementById('moving-storage-net-kpi');
+  const savingsKpi = document.getElementById('moving-storage-savings-kpi');
+  const banner = document.getElementById('moving-storage-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (scraMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNLICENSED_MOVING_BROKER_OR_SCRA_MILITARY_LIEN_AUCTION_HOLD · Mandate: null';
+    return;
+  }}
+  if (hostMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 HOSTAGE_LOAD_POST_LOADING_EXTORTION_OR_49CFR375_DELIVERY_CAP_BREACH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (ecriMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SELF_STORAGE_ECRI_BAIT_RATE_HIKE_OR_PREMATURE_LIEN_AUCTION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.23);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CONTAINERIZED_POD_RELOCATION_AND_PRORATED_STORAGE_VACATE_CONFIRM · Mandate: moving_relocation_self_storage_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 BINDING_ESTIMATE_AND_STORAGE_RATE_LOCK_AUTHORIZED · Mandate: moving_relocation_self_storage_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
