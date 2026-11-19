@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`161` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`162` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (36 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (40 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (32 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (33 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (15 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (28 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -128,7 +128,7 @@
 | 40 | **Floral, Bakery & Time-Windowed Gifting Delivery (`1-800-Flowers / FTD / UrbanStems / Meituan Flash`) Pre-Dispatch Vision Stem-Count Gate, Occasion `SLA` Cutoff Auto-Refund & Pet-Safe `ASPCA` Cold-Chain Escrow Agent Architecture Selection FAQ** | [English](floral-gifting-bakery-time-window-substitution-coldchain-agent-selection-faq.en.md) · [中文](floral-gifting-bakery-time-window-substitution-coldchain-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (32 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (33 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -166,6 +166,7 @@
 | 30 | **B2B Custom Packaging, Commercial Print & Branded Merch Supply Chain (`Packlane / Canva Print / Esko / Yuto Packaging`) `ISO 15930 (PDF/X-4)` Preflight Gate, Reusable Die-Tooling Ledger (`±5%` Overrun Cap) & `Delta-E <= 2.0` Gang-Run Escrow Agent Architecture Selection FAQ** | [English](b2b-custom-packaging-print-preflight-pantone-dieline-escrow-agent-selection-faq.en.md) · [中文](b2b-custom-packaging-print-preflight-pantone-dieline-escrow-agent-selection-faq.md) |
 | 31 | **B2B Programmatic Media Buying, Anti-`MFA` Slop & Agency Rebate (`AVB`) Audit (`The Trade Desk / Google DV360 / IAS / DoubleVerify / ANA`) Pre-Bid `MFA` & `ads.txt` Gate, Log-Level Rebate Netting & `MRC vCPM` Escrow Agent Architecture Selection FAQ** | [English](b2b-marketing-media-buying-mfa-block-agency-rebate-audit-agent-selection-faq.en.md) · [中文](b2b-marketing-media-buying-mfa-block-agency-rebate-audit-agent-selection-faq.md) |
 | 32 | **Life Sciences `HCP` Sunshine Act Compliance, MedTech `GPO` Chargeback Rebate (`EDI 844/849`) & Hospital `UDI` Consignment (`Veeva CRM / Model N / Premier GPO / GHX`) State Meal-Cap Gate, Anti-Diversion `UDI` Lock & `OIG LEIE` Escrow Agent Architecture Selection FAQ** | [English](lifesciences-hcp-sunshine-act-medtech-gpo-rebate-consignment-agent-selection-faq.en.md) · [中文](lifesciences-hcp-sunshine-act-medtech-gpo-rebate-consignment-agent-selection-faq.md) |
+| 33 | **B2B Creative Stock, Commercial Font Licensing, `SPDX AGPL` Gate & `C2PA` Generative Indemnity (`Monotype / Adobe Stock / Getty Images / GitHub Marketplace`) `EULA` Channel-Scope Gate, Anti-Copyleft Contamination & `DAM` Deduplication Escrow Agent Architecture Selection FAQ** | [English](b2b-creative-stock-font-licensing-agpl-c2pa-indemnity-agent-selection-faq.en.md) · [中文](b2b-creative-stock-font-licensing-agpl-c2pa-indemnity-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (15 Guides)

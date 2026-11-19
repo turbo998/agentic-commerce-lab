@@ -17990,6 +17990,80 @@ def evaluate_floral_bakery_time_window_escrow_policy(
         "reason": "Verified pre-dispatch stem count, pet-safe botanicals, insulated cold chain, and on-time occasion POD.",
     }
 
+
+@dataclass(frozen=True)
+class B2bCreativeIpSpdxC2paEscrowPolicyInput:
+    quarterly_b2b_creative_ip_licensing_pool_usd: Decimal
+    eula_deployment_channel_mismatch_or_missing_model_release_detected: bool
+    agpl_copyleft_contamination_or_editorial_asset_commercial_misuse_detected: bool
+    webiq_unindemnified_genai_asset_or_dmca_takedown_flag: bool
+    restricted_key_age_days: int
+    enterprise_dam_deduplication_and_sil_ofl_font_substitution_enabled: bool
+
+
+def evaluate_b2b_creative_ip_spdx_c2pa_escrow_policy(
+    policy_input: B2bCreativeIpSpdxC2paEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate B2B Creative Stock, Commercial Font EULA vector gate, SPDX AGPL copyleft lock & C2PA indemnity escrow."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_b2b_creative_ip_licensing_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.eula_deployment_channel_mismatch_or_missing_model_release_detected:
+        return {
+            "http_status": 403,
+            "decision": "EULA_DEPLOYMENT_CHANNEL_MISMATCH_OR_MISSING_MODEL_RELEASE_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "creative_ip_escrow_token": None,
+            "reason": "Blocked Desktop-only font binary embedded in mobile app, exceeded print-run tier, or ad image lacking signed Model Release.",
+        }
+
+    if policy_input.agpl_copyleft_contamination_or_editorial_asset_commercial_misuse_detected:
+        return {
+            "http_status": 422,
+            "decision": "AGPL_COPYLEFT_CONTAMINATION_OR_EDITORIAL_ASSET_COMMERCIAL_MISUSE_BLOCKED",
+            "latency_ms": 11,
+            "approved_budget_usd": "0.00",
+            "creative_ip_escrow_token": None,
+            "reason": "Blocked unlicensed AGPL-3.0/SSPL copyleft merge into proprietary codebase or Editorial-Only photo used in paid ad.",
+        }
+
+    if policy_input.webiq_unindemnified_genai_asset_or_dmca_takedown_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_UNINDEMNIFIED_GENAI_ASSET_OR_DMCA_TAKEDOWN_HOLD",
+            "latency_ms": 220,
+            "approved_budget_usd": "0.00",
+            "creative_ip_escrow_token": None,
+            "reason": "Web IQ flagged generative AI asset lacking C2PA clean-training provenance, <$10k IP indemnity, or key >180 days.",
+        }
+
+    if policy_input.enterprise_dam_deduplication_and_sil_ofl_font_substitution_enabled:
+        savings = (gross * Decimal("0.27")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"CREATIVE_IP_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "ENTERPRISE_DAM_DEDUPLICATION_AND_SIL_OFL_FONT_SUBSTITUTION_CONFIRM",
+            "latency_ms": 185,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "creative_ip_escrow_token": f"b2b_creative_ip_spdx_c2pa_escrow_mandate_{digest}",
+            "reason": "Global DAM pHash asset deduplication and SIL OFL 1.1 open-font substitution reduced IP licensing spend by 27.0%.",
+        }
+
+    digest = hashlib.sha256(f"CREATIVE_IP_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "EULA_SCOPE_SPDX_AND_C2PA_INDEMNITY_AUTHORIZED",
+        "latency_ms": 9,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "creative_ip_escrow_token": f"b2b_creative_ip_spdx_c2pa_escrow_mandate_{digest}",
+        "reason": "Verified EULA deployment vector, signed Model Release, copyleft-free SPDX tree, and C2PA IP indemnification.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -24842,6 +24916,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_creative_ip_spdx_c2pa_escrow_guard = {
+        "happy_path": evaluate_b2b_creative_ip_spdx_c2pa_escrow_policy(
+            B2bCreativeIpSpdxC2paEscrowPolicyInput(
+                quarterly_b2b_creative_ip_licensing_pool_usd=Decimal("270000.00"),
+                eula_deployment_channel_mismatch_or_missing_model_release_detected=False,
+                agpl_copyleft_contamination_or_editorial_asset_commercial_misuse_detected=False,
+                webiq_unindemnified_genai_asset_or_dmca_takedown_flag=False,
+                restricted_key_age_days=30,
+                enterprise_dam_deduplication_and_sil_ofl_font_substitution_enabled=False,
+            )
+        ),
+        "eula_channel_mismatch_or_missing_release_block": evaluate_b2b_creative_ip_spdx_c2pa_escrow_policy(
+            B2bCreativeIpSpdxC2paEscrowPolicyInput(
+                quarterly_b2b_creative_ip_licensing_pool_usd=Decimal("270000.00"),
+                eula_deployment_channel_mismatch_or_missing_model_release_detected=True,
+                agpl_copyleft_contamination_or_editorial_asset_commercial_misuse_detected=False,
+                webiq_unindemnified_genai_asset_or_dmca_takedown_flag=False,
+                restricted_key_age_days=30,
+                enterprise_dam_deduplication_and_sil_ofl_font_substitution_enabled=False,
+            )
+        ),
+        "agpl_copyleft_or_editorial_ad_misuse_block": evaluate_b2b_creative_ip_spdx_c2pa_escrow_policy(
+            B2bCreativeIpSpdxC2paEscrowPolicyInput(
+                quarterly_b2b_creative_ip_licensing_pool_usd=Decimal("270000.00"),
+                eula_deployment_channel_mismatch_or_missing_model_release_detected=False,
+                agpl_copyleft_contamination_or_editorial_asset_commercial_misuse_detected=True,
+                webiq_unindemnified_genai_asset_or_dmca_takedown_flag=False,
+                restricted_key_age_days=30,
+                enterprise_dam_deduplication_and_sil_ofl_font_substitution_enabled=False,
+            )
+        ),
+        "webiq_unindemnified_genai_or_dmca_hold": evaluate_b2b_creative_ip_spdx_c2pa_escrow_policy(
+            B2bCreativeIpSpdxC2paEscrowPolicyInput(
+                quarterly_b2b_creative_ip_licensing_pool_usd=Decimal("270000.00"),
+                eula_deployment_channel_mismatch_or_missing_model_release_detected=False,
+                agpl_copyleft_contamination_or_editorial_asset_commercial_misuse_detected=False,
+                webiq_unindemnified_genai_asset_or_dmca_takedown_flag=True,
+                restricted_key_age_days=191,
+                enterprise_dam_deduplication_and_sil_ofl_font_substitution_enabled=False,
+            )
+        ),
+        "dam_dedup_and_sil_ofl_font_swap_confirm": evaluate_b2b_creative_ip_spdx_c2pa_escrow_policy(
+            B2bCreativeIpSpdxC2paEscrowPolicyInput(
+                quarterly_b2b_creative_ip_licensing_pool_usd=Decimal("270000.00"),
+                eula_deployment_channel_mismatch_or_missing_model_release_detected=False,
+                agpl_copyleft_contamination_or_editorial_asset_commercial_misuse_detected=False,
+                webiq_unindemnified_genai_asset_or_dmca_takedown_flag=False,
+                restricted_key_age_days=30,
+                enterprise_dam_deduplication_and_sil_ofl_font_substitution_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -25013,6 +25140,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "highered_tuition_fx_aml_escrow_guard": highered_tuition_fx_aml_escrow_guard,
         "fintech_credit_regf_hardship_guard": fintech_credit_regf_hardship_guard,
         "floral_bakery_time_window_escrow_guard": floral_bakery_time_window_escrow_guard,
+        "b2b_creative_ip_spdx_c2pa_escrow_guard": b2b_creative_ip_spdx_c2pa_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -32170,6 +32298,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">出店视觉与定时达托管令牌</div>
             <div class="finops-kpi-val" id="floral-gift-token-kpi" style="font-size:10px;color:#A78BFA;">floral_bakery_time_window_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive B2B Creative Stock, Commercial Font Licensing, SPDX AGPL & C2PA Indemnity Sandbox -->
+      <div class="finops-box" id="b2b-creative-ip-spdx-c2pa-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎨 企业商业字体、正版图库与软件 IP 版权采购 (Monotype / 方正字库 / Adobe Stock / Getty) 沙盒</div>
+            <div class="finops-subtitle">实测 CI/CD 字体表头与 EULA 载体核验拦截把 $49 桌面字体打包进移动 App 及缺肖像权投流 (HTTP 403)、SPDX SBOM 阻断 AGPL 强传染协议污染闭源代码与新闻图商用 (HTTP 422)、C2PA 清洁训练与免责保额熔断 (HTTP 451) 及集团 DAM 去重+SIL OFL 开源平替立省 27% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="creat-ip-verdict-pill">HTTP 200 · EULA_SCOPE_SPDX_AND_C2PA_INDEMNITY_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度企业商业字库、正版图库、AIGC 素材与第三方软件许可采购池 ($ USD) <span class="control-val" id="creat-ip-gross-label">$270,000</span></label>
+            <input type="range" id="creat-ip-gross-slider" min="40000" max="900000" step="20000" value="270000" oninput="updateB2bCreativeIpSpdxC2paEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">字体 EULA 载体核验、SPDX AGPL 传染拦截、C2PA 侵权免责与集团 DAM 去重场景</label>
+            <select id="creat-ip-mode-select" onchange="updateB2bCreativeIpSpdxC2paEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ App 嵌入字库授权匹配 + SPDX 零传染 + C2PA 侵权免责完备 (HTTP 200)</option>
+              <option value="eula_403">🛑 把 $49 个人桌面版字体 (.ttf) 打包进 200万用户 iOS/Android 安装包 或 商业广告图缺真人肖像权授权 (HTTP 403)</option>
+              <option value="agpl_422">🚨 编程 Agent 向闭源商业仓库引入未买商业豁免的 AGPL-3.0 组件 或 将 Editorial 新闻纪实图投放到促销广告 (HTTP 422)</option>
+              <option value="c2pa_451">🛑 Web IQ 检出 AIGC 商拍图缺失 C2PA 清洁训练集签名与 &gt;=$10,000 侵权免责保额 或 触发 DMCA 投诉 (HTTP 451)</option>
+              <option value="dam_409">🧑‍⚖️ 集团全球 DAM 视觉哈希 (pHash) 查重复用已购图片 + 通用 UI 字体平替为 SIL OFL 开源商用字库立省 27% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原跨部门重复采购与字体侵权和解基线</div>
+            <div class="finops-kpi-val" id="creat-ip-gross-kpi">$270,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">DAM 去重与 OFL 开源字体平替立省</div>
+            <div class="finops-kpi-val" id="creat-ip-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净创意素材与软件版权结算额</div>
+            <div class="finops-kpi-val" id="creat-ip-net-kpi" style="color:#60A5FA;">$270,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">EULA 载体与 C2PA 免责令牌</div>
+            <div class="finops-kpi-val" id="creat-ip-token-kpi" style="font-size:10px;color:#A78BFA;">b2b_creative_ip_spdx_c2pa_escrow_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -40856,6 +41029,61 @@ function updateFloralBakeryTimeWindowEscrowSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'floral_bakery_time_window_escrow_mandate_verified';
+  }}
+}}
+
+function updateB2bCreativeIpSpdxC2paEscrowSandbox() {{
+  const grossSlider = document.getElementById('creat-ip-gross-slider');
+  const modeSelect = document.getElementById('creat-ip-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '270000');
+  const mode = modeSelect.value;
+  document.getElementById('creat-ip-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('creat-ip-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('creat-ip-verdict-pill');
+  const savingsKpi = document.getElementById('creat-ip-savings-kpi');
+  const netKpi = document.getElementById('creat-ip-net-kpi');
+  const tokenKpi = document.getElementById('creat-ip-token-kpi');
+
+  if (mode === 'eula_403') {{
+    pill.textContent = 'HTTP 403 · EULA_DEPLOYMENT_CHANNEL_MISMATCH_OR_MISSING_MODEL_RELEASE_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_DESKTOP_FONT_IN_APP_OR_NO_RELEASE';
+  }} else if (mode === 'agpl_422') {{
+    pill.textContent = 'HTTP 422 · AGPL_COPYLEFT_CONTAMINATION_OR_EDITORIAL_ASSET_COMMERCIAL_MISUSE_BLOCKED (11ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_AGPL_COPYLEFT_OR_EDITORIAL_AD';
+  }} else if (mode === 'c2pa_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_UNINDEMNIFIED_GENAI_ASSET_OR_DMCA_TAKEDOWN_HOLD (220ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_MISSING_C2PA_OR_IP_INDEMNITY';
+  }} else if (mode === 'dam_409') {{
+    const savings = Math.round(gross * 0.27 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · ENTERPRISE_DAM_DEDUPLICATION_AND_SIL_OFL_FONT_SUBSTITUTION_CONFIRM (185ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'b2b_creative_ip_spdx_c2pa_escrow_mandate_saved27pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · EULA_SCOPE_SPDX_AND_C2PA_INDEMNITY_AUTHORIZED (9ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'b2b_creative_ip_spdx_c2pa_escrow_mandate_verified';
   }}
 }}
 

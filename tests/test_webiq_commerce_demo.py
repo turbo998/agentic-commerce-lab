@@ -11778,6 +11778,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("floral-bakery-time-window-escrow-sandbox", html)
 
+    def test_b2b_creative_ip_spdx_c2pa_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            B2bCreativeIpSpdxC2paEscrowPolicyInput,
+            evaluate_b2b_creative_ip_spdx_c2pa_escrow_policy,
+        )
+
+        happy = evaluate_b2b_creative_ip_spdx_c2pa_escrow_policy(
+            B2bCreativeIpSpdxC2paEscrowPolicyInput(
+                quarterly_b2b_creative_ip_licensing_pool_usd=Decimal("270000.00"),
+                eula_deployment_channel_mismatch_or_missing_model_release_detected=False,
+                agpl_copyleft_contamination_or_editorial_asset_commercial_misuse_detected=False,
+                webiq_unindemnified_genai_asset_or_dmca_takedown_flag=False,
+                restricted_key_age_days=30,
+                enterprise_dam_deduplication_and_sil_ofl_font_substitution_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "EULA_SCOPE_SPDX_AND_C2PA_INDEMNITY_AUTHORIZED")
+        self.assertTrue(
+            str(happy["creative_ip_escrow_token"]).startswith("b2b_creative_ip_spdx_c2pa_escrow_mandate_")
+        )
+
+        eula_block = evaluate_b2b_creative_ip_spdx_c2pa_escrow_policy(
+            B2bCreativeIpSpdxC2paEscrowPolicyInput(
+                quarterly_b2b_creative_ip_licensing_pool_usd=Decimal("270000.00"),
+                eula_deployment_channel_mismatch_or_missing_model_release_detected=True,
+                agpl_copyleft_contamination_or_editorial_asset_commercial_misuse_detected=False,
+                webiq_unindemnified_genai_asset_or_dmca_takedown_flag=False,
+                restricted_key_age_days=30,
+                enterprise_dam_deduplication_and_sil_ofl_font_substitution_enabled=False,
+            )
+        )
+        self.assertEqual(eula_block["http_status"], 403)
+        self.assertEqual(
+            eula_block["decision"],
+            "EULA_DEPLOYMENT_CHANNEL_MISMATCH_OR_MISSING_MODEL_RELEASE_BLOCKED",
+        )
+
+        agpl_block = evaluate_b2b_creative_ip_spdx_c2pa_escrow_policy(
+            B2bCreativeIpSpdxC2paEscrowPolicyInput(
+                quarterly_b2b_creative_ip_licensing_pool_usd=Decimal("270000.00"),
+                eula_deployment_channel_mismatch_or_missing_model_release_detected=False,
+                agpl_copyleft_contamination_or_editorial_asset_commercial_misuse_detected=True,
+                webiq_unindemnified_genai_asset_or_dmca_takedown_flag=False,
+                restricted_key_age_days=30,
+                enterprise_dam_deduplication_and_sil_ofl_font_substitution_enabled=False,
+            )
+        )
+        self.assertEqual(agpl_block["http_status"], 422)
+        self.assertEqual(
+            agpl_block["decision"],
+            "AGPL_COPYLEFT_CONTAMINATION_OR_EDITORIAL_ASSET_COMMERCIAL_MISUSE_BLOCKED",
+        )
+
+        c2pa_hold = evaluate_b2b_creative_ip_spdx_c2pa_escrow_policy(
+            B2bCreativeIpSpdxC2paEscrowPolicyInput(
+                quarterly_b2b_creative_ip_licensing_pool_usd=Decimal("270000.00"),
+                eula_deployment_channel_mismatch_or_missing_model_release_detected=False,
+                agpl_copyleft_contamination_or_editorial_asset_commercial_misuse_detected=False,
+                webiq_unindemnified_genai_asset_or_dmca_takedown_flag=True,
+                restricted_key_age_days=191,
+                enterprise_dam_deduplication_and_sil_ofl_font_substitution_enabled=False,
+            )
+        )
+        self.assertEqual(c2pa_hold["http_status"], 451)
+        self.assertEqual(
+            c2pa_hold["decision"],
+            "WEBIQ_UNINDEMNIFIED_GENAI_ASSET_OR_DMCA_TAKEDOWN_HOLD",
+        )
+
+        opt_confirm = evaluate_b2b_creative_ip_spdx_c2pa_escrow_policy(
+            B2bCreativeIpSpdxC2paEscrowPolicyInput(
+                quarterly_b2b_creative_ip_licensing_pool_usd=Decimal("270000.00"),
+                eula_deployment_channel_mismatch_or_missing_model_release_detected=False,
+                agpl_copyleft_contamination_or_editorial_asset_commercial_misuse_detected=False,
+                webiq_unindemnified_genai_asset_or_dmca_takedown_flag=False,
+                restricted_key_age_days=30,
+                enterprise_dam_deduplication_and_sil_ofl_font_substitution_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "72900.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "197100.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_creative_ip_spdx_c2pa_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("b2b-creative-ip-spdx-c2pa-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
