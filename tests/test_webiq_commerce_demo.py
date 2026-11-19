@@ -12048,6 +12048,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("appointment-salon-coaching-escrow-sandbox", html)
 
+    def test_paid_loyalty_membership_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            PaidLoyaltyMembershipEscrowPolicyInput,
+            evaluate_paid_loyalty_membership_escrow_policy,
+        )
+
+        happy = evaluate_paid_loyalty_membership_escrow_policy(
+            PaidLoyaltyMembershipEscrowPolicyInput(
+                quarterly_paid_membership_perk_pool_usd=Decimal("390000.00"),
+                commercial_reseller_address_sprawl_or_shared_credential_abuse_detected=False,
+                benefit_drain_full_refund_arbitrage_or_unrevoked_partner_perk_detected=False,
+                webiq_ftc_dark_pattern_enrollment_or_missing_pre_renewal_notice_flag=False,
+                restricted_key_age_days=30,
+                savings_guarantee_auto_refund_diff_and_symmetric_cancel_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "HOUSEHOLD_SCOPE_AND_FTC_RENEWAL_MEMBERSHIP_AUTHORIZED")
+        self.assertTrue(
+            str(happy["paid_membership_escrow_token"]).startswith("paid_loyalty_membership_escrow_mandate_")
+        )
+
+        sprawl_block = evaluate_paid_loyalty_membership_escrow_policy(
+            PaidLoyaltyMembershipEscrowPolicyInput(
+                quarterly_paid_membership_perk_pool_usd=Decimal("390000.00"),
+                commercial_reseller_address_sprawl_or_shared_credential_abuse_detected=True,
+                benefit_drain_full_refund_arbitrage_or_unrevoked_partner_perk_detected=False,
+                webiq_ftc_dark_pattern_enrollment_or_missing_pre_renewal_notice_flag=False,
+                restricted_key_age_days=30,
+                savings_guarantee_auto_refund_diff_and_symmetric_cancel_enabled=False,
+            )
+        )
+        self.assertEqual(sprawl_block["http_status"], 403)
+        self.assertEqual(
+            sprawl_block["decision"],
+            "COMMERCIAL_RESELLER_ADDRESS_SPRAWL_OR_SHARED_CREDENTIAL_ABUSE_BLOCKED",
+        )
+
+        perk_block = evaluate_paid_loyalty_membership_escrow_policy(
+            PaidLoyaltyMembershipEscrowPolicyInput(
+                quarterly_paid_membership_perk_pool_usd=Decimal("390000.00"),
+                commercial_reseller_address_sprawl_or_shared_credential_abuse_detected=False,
+                benefit_drain_full_refund_arbitrage_or_unrevoked_partner_perk_detected=True,
+                webiq_ftc_dark_pattern_enrollment_or_missing_pre_renewal_notice_flag=False,
+                restricted_key_age_days=30,
+                savings_guarantee_auto_refund_diff_and_symmetric_cancel_enabled=False,
+            )
+        )
+        self.assertEqual(perk_block["http_status"], 422)
+        self.assertEqual(
+            perk_block["decision"],
+            "BENEFIT_DRAIN_FULL_REFUND_ARBITRAGE_OR_UNREVOKED_PARTNER_PERK_BLOCKED",
+        )
+
+        ftc_hold = evaluate_paid_loyalty_membership_escrow_policy(
+            PaidLoyaltyMembershipEscrowPolicyInput(
+                quarterly_paid_membership_perk_pool_usd=Decimal("390000.00"),
+                commercial_reseller_address_sprawl_or_shared_credential_abuse_detected=False,
+                benefit_drain_full_refund_arbitrage_or_unrevoked_partner_perk_detected=False,
+                webiq_ftc_dark_pattern_enrollment_or_missing_pre_renewal_notice_flag=True,
+                restricted_key_age_days=191,
+                savings_guarantee_auto_refund_diff_and_symmetric_cancel_enabled=False,
+            )
+        )
+        self.assertEqual(ftc_hold["http_status"], 451)
+        self.assertEqual(
+            ftc_hold["decision"],
+            "WEBIQ_FTC_DARK_PATTERN_ENROLLMENT_OR_MISSING_PRE_RENEWAL_NOTICE_HOLD",
+        )
+
+        opt_confirm = evaluate_paid_loyalty_membership_escrow_policy(
+            PaidLoyaltyMembershipEscrowPolicyInput(
+                quarterly_paid_membership_perk_pool_usd=Decimal("390000.00"),
+                commercial_reseller_address_sprawl_or_shared_credential_abuse_detected=False,
+                benefit_drain_full_refund_arbitrage_or_unrevoked_partner_perk_detected=False,
+                webiq_ftc_dark_pattern_enrollment_or_missing_pre_renewal_notice_flag=False,
+                restricted_key_age_days=30,
+                savings_guarantee_auto_refund_diff_and_symmetric_cancel_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "93600.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "296400.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("paid_loyalty_membership_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("paid-loyalty-membership-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
