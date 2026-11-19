@@ -18434,6 +18434,80 @@ def evaluate_b2b_legal_ledes_patent_annuity_policy(
         "reason": "Verified 0.1h itemized LEDES 1998B lines, approved timekeeper rate card, and active-patent annuity renewal.",
     }
 
+
+@dataclass(frozen=True)
+class SmartParkingEvSuperchargerPolicyInput:
+    quarterly_smart_parking_ev_charging_pool_usd: Decimal
+    ghost_parking_session_overcharge_or_qr_quishing_spoof_detected: bool
+    unfair_empty_station_idle_fee_or_fleet_vin_siphoning_detected: bool
+    webiq_uncalibrated_evse_meter_drift_or_rate_gouging_flag: bool
+    restricted_key_age_days: int
+    automatic_charging_parking_waiver_and_offpeak_fleet_dispatch_enabled: bool
+
+
+def evaluate_smart_parking_ev_supercharger_policy(
+    policy_input: SmartParkingEvSuperchargerPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Smart Parking LPR ghost-session mutex, anti-quishing, EV supercharger >=50% idle-fee gate & fleet VIN escrow."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_smart_parking_ev_charging_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.ghost_parking_session_overcharge_or_qr_quishing_spoof_detected:
+        return {
+            "http_status": 403,
+            "decision": "GHOST_PARKING_SESSION_OVERCHARGE_OR_QR_QUISHING_SPOOF_BLOCKED",
+            "latency_ms": 8,
+            "approved_budget_usd": "0.00",
+            "smart_parking_ev_token": None,
+            "reason": "Blocked multi-day LPR ghost parking bill after vehicle GPS exited geofence or blocked unsigned curbside QR sticker.",
+        }
+
+    if policy_input.unfair_empty_station_idle_fee_or_fleet_vin_siphoning_detected:
+        return {
+            "http_status": 422,
+            "decision": "UNFAIR_EMPTY_STATION_IDLE_FEE_OR_FLEET_VIN_SIPHONING_BLOCKED",
+            "latency_ms": 10,
+            "approved_budget_usd": "0.00",
+            "smart_parking_ev_token": None,
+            "reason": "Blocked EV overstay idle fee at <50% occupied station or corporate fleet charge on non-whitelisted personal VIN.",
+        }
+
+    if policy_input.webiq_uncalibrated_evse_meter_drift_or_rate_gouging_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_UNCALIBRATED_EVSE_METER_DRIFT_OR_RATE_GOUGING_HOLD",
+            "latency_ms": 210,
+            "approved_budget_usd": "0.00",
+            "smart_parking_ev_token": None,
+            "reason": "Web IQ flagged uncalibrated EVSE charger over-reporting kWh >8.0% vs vehicle BMS or key >180 days.",
+        }
+
+    if policy_input.automatic_charging_parking_waiver_and_offpeak_fleet_dispatch_enabled:
+        savings = (gross * Decimal("0.24")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"PARK_EV_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "AUTOMATIC_CHARGING_PARKING_WAIVER_AND_OFFPEAK_FLEET_DISPATCH_CONFIRM",
+            "latency_ms": 180,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "smart_parking_ev_token": f"smart_parking_ev_supercharger_mandate_{digest}",
+            "reason": "Automated charger-to-garage 2h parking waiver and off-peak TOU fleet dispatch reduced mobility spend by 24.0%.",
+        }
+
+    digest = hashlib.sha256(f"PARK_EV_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "PLUG_AND_CHARGE_VIN_AND_LPR_EXIT_AUTHORIZED",
+        "latency_ms": 8,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "smart_parking_ev_token": f"smart_parking_ev_supercharger_mandate_{digest}",
+        "reason": "Verified ISO 15118 VIN certificate, GPS-paired LPR exit, BMS kWh parity, and parking waiver.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -25604,6 +25678,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    smart_parking_ev_supercharger_guard = {
+        "happy_path": evaluate_smart_parking_ev_supercharger_policy(
+            SmartParkingEvSuperchargerPolicyInput(
+                quarterly_smart_parking_ev_charging_pool_usd=Decimal("280000.00"),
+                ghost_parking_session_overcharge_or_qr_quishing_spoof_detected=False,
+                unfair_empty_station_idle_fee_or_fleet_vin_siphoning_detected=False,
+                webiq_uncalibrated_evse_meter_drift_or_rate_gouging_flag=False,
+                restricted_key_age_days=30,
+                automatic_charging_parking_waiver_and_offpeak_fleet_dispatch_enabled=False,
+            )
+        ),
+        "ghost_parking_or_qr_quishing_block": evaluate_smart_parking_ev_supercharger_policy(
+            SmartParkingEvSuperchargerPolicyInput(
+                quarterly_smart_parking_ev_charging_pool_usd=Decimal("280000.00"),
+                ghost_parking_session_overcharge_or_qr_quishing_spoof_detected=True,
+                unfair_empty_station_idle_fee_or_fleet_vin_siphoning_detected=False,
+                webiq_uncalibrated_evse_meter_drift_or_rate_gouging_flag=False,
+                restricted_key_age_days=30,
+                automatic_charging_parking_waiver_and_offpeak_fleet_dispatch_enabled=False,
+            )
+        ),
+        "empty_station_idle_fee_or_vin_siphoning_block": evaluate_smart_parking_ev_supercharger_policy(
+            SmartParkingEvSuperchargerPolicyInput(
+                quarterly_smart_parking_ev_charging_pool_usd=Decimal("280000.00"),
+                ghost_parking_session_overcharge_or_qr_quishing_spoof_detected=False,
+                unfair_empty_station_idle_fee_or_fleet_vin_siphoning_detected=True,
+                webiq_uncalibrated_evse_meter_drift_or_rate_gouging_flag=False,
+                restricted_key_age_days=30,
+                automatic_charging_parking_waiver_and_offpeak_fleet_dispatch_enabled=False,
+            )
+        ),
+        "webiq_uncalibrated_meter_or_gouging_hold": evaluate_smart_parking_ev_supercharger_policy(
+            SmartParkingEvSuperchargerPolicyInput(
+                quarterly_smart_parking_ev_charging_pool_usd=Decimal("280000.00"),
+                ghost_parking_session_overcharge_or_qr_quishing_spoof_detected=False,
+                unfair_empty_station_idle_fee_or_fleet_vin_siphoning_detected=False,
+                webiq_uncalibrated_evse_meter_drift_or_rate_gouging_flag=True,
+                restricted_key_age_days=191,
+                automatic_charging_parking_waiver_and_offpeak_fleet_dispatch_enabled=False,
+            )
+        ),
+        "auto_parking_waiver_and_offpeak_confirm": evaluate_smart_parking_ev_supercharger_policy(
+            SmartParkingEvSuperchargerPolicyInput(
+                quarterly_smart_parking_ev_charging_pool_usd=Decimal("280000.00"),
+                ghost_parking_session_overcharge_or_qr_quishing_spoof_detected=False,
+                unfair_empty_station_idle_fee_or_fleet_vin_siphoning_detected=False,
+                webiq_uncalibrated_evse_meter_drift_or_rate_gouging_flag=False,
+                restricted_key_age_days=30,
+                automatic_charging_parking_waiver_and_offpeak_fleet_dispatch_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -25781,6 +25908,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "paid_loyalty_membership_escrow_guard": paid_loyalty_membership_escrow_guard,
         "used_car_odometer_title_lien_escrow_guard": used_car_odometer_title_lien_escrow_guard,
         "b2b_legal_ledes_patent_annuity_guard": b2b_legal_ledes_patent_annuity_guard,
+        "smart_parking_ev_supercharger_guard": smart_parking_ev_supercharger_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -33208,6 +33336,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">LEDES 审计与专利保活令牌</div>
             <div class="finops-kpi-val" id="legal-pat-token-kpi" style="font-size:10px;color:#A78BFA;">b2b_legal_ledes_patent_annuity_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Smart Parking, LPR Barrierless Garage & EV Supercharger Billing Sandbox -->
+      <div class="finops-box" id="smart-parking-ev-supercharger-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">⚡ 智慧停车、无感道闸与新能源超充站 (Metropolis / ParkMobile / Tesla Supercharger / 捷停车) 沙盒</div>
+            <div class="finops-subtitle">实测车载 GPS 与跨场入库互斥锁自动截断跟车漏拍 5 天幽灵停车单及防假贴纸码钓鱼 (HTTP 403)、空闲场站(&lt;50%占用)禁收超时占桩费与插枪 VIN 校验防公卡充私车 (HTTP 422)、电表虚标 &gt;8% 熔断 (HTTP 451) 及拔枪自动免 2 小时停车费+谷电调度立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="park-ev-verdict-pill">HTTP 200 · PLUG_AND_CHARGE_VIN_AND_LPR_EXIT_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度商业停车、公共超充与企业新能源车队补能结算池 ($ USD) <span class="control-val" id="park-ev-gross-label">$280,000</span></label>
+            <input type="range" id="park-ev-gross-slider" min="40000" max="1000000" step="20000" value="280000" oninput="updateSmartParkingEvSuperchargerSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">跟车漏拍幽灵单截断、假二维码贴纸拦截、占桩费拥堵门槛与车队 VIN 防私充场景</label>
+            <select id="park-ev-mode-select" onchange="updateSmartParkingEvSuperchargerSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ ISO 15118 车桩 VIN 握手匹配 + 进出场闭环 + 充电免停抵扣 (HTTP 200)</option>
+              <option value="ghost_403">🛑 周日出口跟车太近漏扫车牌，周五商场试图扣取 120 小时 ($240) 幽灵停车费 或 扫到柱子假贴纸码 (HTTP 403)</option>
+              <option value="idle_422">🚨 深夜超充站 80% 桩位空闲却强收 $1/min 超时占桩罚金 或 司机拿公车账户给非白名单私家车充电 (HTTP 422)</option>
+              <option value="meter_451">🛑 Web IQ 检出劣质直流桩未过法制计量检定，计费度数比车载 BMS 实际入池电量虚高 18% (HTTP 451)</option>
+              <option value="waiver_409">🧑‍⚖️ 充够 15 度拔枪当秒自动向车场道闸写入 2 小时免停车费白名单 + 车队夜间谷电调度立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原幽灵扣费与公车私充损耗基线</div>
+            <div class="finops-kpi-val" id="park-ev-gross-kpi">$280,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">自动免停与谷电防私充立省</div>
+            <div class="finops-kpi-val" id="park-ev-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净停车与超充补能结算额</div>
+            <div class="finops-kpi-val" id="park-ev-net-kpi" style="color:#60A5FA;">$280,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">车桩 VIN 与时空互斥令牌</div>
+            <div class="finops-kpi-val" id="park-ev-token-kpi" style="font-size:10px;color:#A78BFA;">smart_parking_ev_supercharger_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -42224,6 +42397,61 @@ function updateB2bLegalLedesPatentAnnuitySandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'b2b_legal_ledes_patent_annuity_mandate_verified';
+  }}
+}}
+
+function updateSmartParkingEvSuperchargerSandbox() {{
+  const grossSlider = document.getElementById('park-ev-gross-slider');
+  const modeSelect = document.getElementById('park-ev-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '280000');
+  const mode = modeSelect.value;
+  document.getElementById('park-ev-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('park-ev-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('park-ev-verdict-pill');
+  const savingsKpi = document.getElementById('park-ev-savings-kpi');
+  const netKpi = document.getElementById('park-ev-net-kpi');
+  const tokenKpi = document.getElementById('park-ev-token-kpi');
+
+  if (mode === 'ghost_403') {{
+    pill.textContent = 'HTTP 403 · GHOST_PARKING_SESSION_OVERCHARGE_OR_QR_QUISHING_SPOOF_BLOCKED (8ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_GHOST_PARKING_OR_FAKE_QR';
+  }} else if (mode === 'idle_422') {{
+    pill.textContent = 'HTTP 422 · UNFAIR_EMPTY_STATION_IDLE_FEE_OR_FLEET_VIN_SIPHONING_BLOCKED (10ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_EMPTY_IDLE_FEE_OR_VIN_SIPHON';
+  }} else if (mode === 'meter_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_UNCALIBRATED_EVSE_METER_DRIFT_OR_RATE_GOUGING_HOLD (210ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_EVSE_METER_DRIFT_OVER_8PCT';
+  }} else if (mode === 'waiver_409') {{
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · AUTOMATIC_CHARGING_PARKING_WAIVER_AND_OFFPEAK_FLEET_DISPATCH_CONFIRM (180ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'smart_parking_ev_supercharger_mandate_saved24pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · PLUG_AND_CHARGE_VIN_AND_LPR_EXIT_AUTHORIZED (8ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'smart_parking_ev_supercharger_mandate_verified';
   }}
 }}
 

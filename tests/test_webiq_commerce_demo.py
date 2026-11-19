@@ -12318,6 +12318,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("b2b-legal-ledes-patent-annuity-sandbox", html)
 
+    def test_smart_parking_ev_supercharger_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            SmartParkingEvSuperchargerPolicyInput,
+            evaluate_smart_parking_ev_supercharger_policy,
+        )
+
+        happy = evaluate_smart_parking_ev_supercharger_policy(
+            SmartParkingEvSuperchargerPolicyInput(
+                quarterly_smart_parking_ev_charging_pool_usd=Decimal("280000.00"),
+                ghost_parking_session_overcharge_or_qr_quishing_spoof_detected=False,
+                unfair_empty_station_idle_fee_or_fleet_vin_siphoning_detected=False,
+                webiq_uncalibrated_evse_meter_drift_or_rate_gouging_flag=False,
+                restricted_key_age_days=30,
+                automatic_charging_parking_waiver_and_offpeak_fleet_dispatch_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "PLUG_AND_CHARGE_VIN_AND_LPR_EXIT_AUTHORIZED")
+        self.assertTrue(
+            str(happy["smart_parking_ev_token"]).startswith("smart_parking_ev_supercharger_mandate_")
+        )
+
+        ghost_block = evaluate_smart_parking_ev_supercharger_policy(
+            SmartParkingEvSuperchargerPolicyInput(
+                quarterly_smart_parking_ev_charging_pool_usd=Decimal("280000.00"),
+                ghost_parking_session_overcharge_or_qr_quishing_spoof_detected=True,
+                unfair_empty_station_idle_fee_or_fleet_vin_siphoning_detected=False,
+                webiq_uncalibrated_evse_meter_drift_or_rate_gouging_flag=False,
+                restricted_key_age_days=30,
+                automatic_charging_parking_waiver_and_offpeak_fleet_dispatch_enabled=False,
+            )
+        )
+        self.assertEqual(ghost_block["http_status"], 403)
+        self.assertEqual(
+            ghost_block["decision"],
+            "GHOST_PARKING_SESSION_OVERCHARGE_OR_QR_QUISHING_SPOOF_BLOCKED",
+        )
+
+        idle_block = evaluate_smart_parking_ev_supercharger_policy(
+            SmartParkingEvSuperchargerPolicyInput(
+                quarterly_smart_parking_ev_charging_pool_usd=Decimal("280000.00"),
+                ghost_parking_session_overcharge_or_qr_quishing_spoof_detected=False,
+                unfair_empty_station_idle_fee_or_fleet_vin_siphoning_detected=True,
+                webiq_uncalibrated_evse_meter_drift_or_rate_gouging_flag=False,
+                restricted_key_age_days=30,
+                automatic_charging_parking_waiver_and_offpeak_fleet_dispatch_enabled=False,
+            )
+        )
+        self.assertEqual(idle_block["http_status"], 422)
+        self.assertEqual(
+            idle_block["decision"],
+            "UNFAIR_EMPTY_STATION_IDLE_FEE_OR_FLEET_VIN_SIPHONING_BLOCKED",
+        )
+
+        meter_hold = evaluate_smart_parking_ev_supercharger_policy(
+            SmartParkingEvSuperchargerPolicyInput(
+                quarterly_smart_parking_ev_charging_pool_usd=Decimal("280000.00"),
+                ghost_parking_session_overcharge_or_qr_quishing_spoof_detected=False,
+                unfair_empty_station_idle_fee_or_fleet_vin_siphoning_detected=False,
+                webiq_uncalibrated_evse_meter_drift_or_rate_gouging_flag=True,
+                restricted_key_age_days=191,
+                automatic_charging_parking_waiver_and_offpeak_fleet_dispatch_enabled=False,
+            )
+        )
+        self.assertEqual(meter_hold["http_status"], 451)
+        self.assertEqual(
+            meter_hold["decision"],
+            "WEBIQ_UNCALIBRATED_EVSE_METER_DRIFT_OR_RATE_GOUGING_HOLD",
+        )
+
+        opt_confirm = evaluate_smart_parking_ev_supercharger_policy(
+            SmartParkingEvSuperchargerPolicyInput(
+                quarterly_smart_parking_ev_charging_pool_usd=Decimal("280000.00"),
+                ghost_parking_session_overcharge_or_qr_quishing_spoof_detected=False,
+                unfair_empty_station_idle_fee_or_fleet_vin_siphoning_detected=False,
+                webiq_uncalibrated_evse_meter_drift_or_rate_gouging_flag=False,
+                restricted_key_age_days=30,
+                automatic_charging_parking_waiver_and_offpeak_fleet_dispatch_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "67200.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "212800.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("smart_parking_ev_supercharger_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("smart-parking-ev-supercharger-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
