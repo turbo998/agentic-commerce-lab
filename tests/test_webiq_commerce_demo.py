@@ -12944,6 +12944,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ski-resort-golf-teetime-escrow-sandbox", html_zh)
 
+    def test_corporate_catering_office_meal_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CorporateCateringOfficeMealEscrowPolicyInput,
+            evaluate_corporate_catering_office_meal_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_corporate_catering_office_meal_escrow_policy(
+            CorporateCateringOfficeMealEscrowPolicyInput(
+                quarterly_corporate_catering_and_meal_stipend_pool_usd=280000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ATTENDANCE_SYNCED_AND_ALLERGEN_SAFE_CATERING_AUTHORIZED",
+        )
+
+        ghost = evaluate_corporate_catering_office_meal_escrow_policy(
+            CorporateCateringOfficeMealEscrowPolicyInput(
+                ghost_headcount_catering_overorder_or_offsite_home_delivery=True
+            )
+        )
+        self.assertEqual(ghost["status_code"], 403)
+        self.assertEqual(
+            ghost["decision"],
+            "GHOST_HEADCOUNT_CATERING_OVERORDER_OR_OFFSITE_HOME_DELIVERY_BLOCKED",
+        )
+
+        sku = evaluate_corporate_catering_office_meal_escrow_policy(
+            CorporateCateringOfficeMealEscrowPolicyInput(
+                stipend_alcohol_giftcard_abuse_or_late_catering_sla_breach=True
+            )
+        )
+        self.assertEqual(sku["status_code"], 422)
+        self.assertEqual(
+            sku["decision"],
+            "STIPEND_ALCOHOL_GIFTCARD_ABUSE_OR_LATE_CATERING_SLA_BREACH_BLOCKED",
+        )
+
+        alg = evaluate_corporate_catering_office_meal_escrow_policy(
+            CorporateCateringOfficeMealEscrowPolicyInput(
+                webiq_severe_allergen_cross_contamination_or_health_grade_flag=True
+            )
+        )
+        self.assertEqual(alg["status_code"], 451)
+        self.assertEqual(
+            alg["decision"],
+            "WEBIQ_SEVERE_ALLERGEN_CROSS_CONTAMINATION_OR_HEALTH_GRADE_HOLD",
+        )
+
+        optim = evaluate_corporate_catering_office_meal_escrow_policy(
+            CorporateCateringOfficeMealEscrowPolicyInput(
+                quarterly_corporate_catering_and_meal_stipend_pool_usd=280000.0,
+                consolidated_locker_drop_and_attendance_rightsizing_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 72800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 207200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("corporate_catering_office_meal_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("corporate-catering-office-meal-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

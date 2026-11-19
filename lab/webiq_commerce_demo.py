@@ -19136,6 +19136,84 @@ def evaluate_ski_resort_golf_teetime_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class CorporateCateringOfficeMealEscrowPolicyInput:
+    """Input contract for Corporate Catering, Group Office Meal & Per-Diem Allergen Escrow."""
+
+    quarterly_corporate_catering_and_meal_stipend_pool_usd: float = 280000.0
+    ghost_headcount_catering_overorder_or_offsite_home_delivery: bool = False
+    stipend_alcohol_giftcard_abuse_or_late_catering_sla_breach: bool = False
+    webiq_severe_allergen_cross_contamination_or_health_grade_flag: bool = False
+    mandate_signing_key_age_days: int = 25
+    consolidated_locker_drop_and_attendance_rightsizing_ready: bool = False
+
+
+def evaluate_corporate_catering_office_meal_escrow_policy(
+    policy_input: CorporateCateringOfficeMealEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Corporate Catering, Office Meal & Per-Diem Stipend policy."""
+    gross_pool = max(float(policy_input.quarterly_corporate_catering_and_meal_stipend_pool_usd), 0.0)
+    if (
+        policy_input.webiq_severe_allergen_cross_contamination_or_health_grade_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_SEVERE_ALLERGEN_CROSS_CONTAMINATION_OR_HEALTH_GRADE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ghost_headcount_catering_overorder_or_offsite_home_delivery:
+        return {
+            "status_code": 403,
+            "decision": "GHOST_HEADCOUNT_CATERING_OVERORDER_OR_OFFSITE_HOME_DELIVERY_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stipend_alcohol_giftcard_abuse_or_late_catering_sla_breach:
+        return {
+            "status_code": 422,
+            "decision": "STIPEND_ALCOHOL_GIFTCARD_ABUSE_OR_LATE_CATERING_SLA_BREACH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.consolidated_locker_drop_and_attendance_rightsizing_ready:
+        savings = round(gross_pool * 0.26, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CONSOLIDATED_LOCKER_DROP_AND_ATTENDANCE_RIGHTSIZING_CONFIRM",
+            "mandate_token": "corporate_catering_office_meal_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ATTENDANCE_SYNCED_AND_ALLERGEN_SAFE_CATERING_AUTHORIZED",
+        "mandate_token": "corporate_catering_office_meal_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -26563,6 +26641,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    corporate_catering_office_meal_escrow_guard = {
+        "authorized_200": evaluate_corporate_catering_office_meal_escrow_policy(
+            CorporateCateringOfficeMealEscrowPolicyInput()
+        ),
+        "ghost_headcount_or_offsite_403": evaluate_corporate_catering_office_meal_escrow_policy(
+            CorporateCateringOfficeMealEscrowPolicyInput(
+                ghost_headcount_catering_overorder_or_offsite_home_delivery=True
+            )
+        ),
+        "alcohol_giftcard_or_late_sla_422": evaluate_corporate_catering_office_meal_escrow_policy(
+            CorporateCateringOfficeMealEscrowPolicyInput(
+                stipend_alcohol_giftcard_abuse_or_late_catering_sla_breach=True
+            )
+        ),
+        "severe_allergen_or_health_grade_451": evaluate_corporate_catering_office_meal_escrow_policy(
+            CorporateCateringOfficeMealEscrowPolicyInput(
+                webiq_severe_allergen_cross_contamination_or_health_grade_flag=True
+            )
+        ),
+        "consolidated_locker_and_attendance_409": evaluate_corporate_catering_office_meal_escrow_policy(
+            CorporateCateringOfficeMealEscrowPolicyInput(
+                consolidated_locker_drop_and_attendance_rightsizing_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26749,6 +26853,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "optical_eyewear_contact_lens_rx_escrow_guard": optical_eyewear_contact_lens_rx_escrow_guard,
         "coworking_flexible_office_escrow_guard": coworking_flexible_office_escrow_guard,
         "ski_resort_golf_teetime_escrow_guard": ski_resort_golf_teetime_escrow_guard,
+        "corporate_catering_office_meal_escrow_guard": corporate_catering_office_meal_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -34726,6 +34831,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ski-golf-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DAY_TICKET_TO_SEASON_PASS_FARE_CAPPING_AND_TWILIGHT_GOLF_CONFIRM · Mandate: ski_resort_golf_teetime_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 58 Corporate Catering, Group Office Meal & Per-Diem Allergen Escrow -->
+      <div class="finops-box" id="corporate-catering-office-meal-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🍱 企业团餐、商务会议茶歇与加班餐补 (ezCater / DoorDash for Work / Forkable / 美团企业版) 防虚报人数倒饭、防买购物卡套现与过敏原熔断沙盒 (Round 58)</div>
+            <div class="finops-subtitle">实测上午 09:45 门禁/Wi-Fi 实到人数动态削减防混合办公倒掉 40% 盒饭与禁宅家蹭加班餐 (HTTP 403)、Level-3 SKU 行项目屏蔽烟酒/超市礼品卡与宴席迟到 &gt;20m 阶梯扣款 (HTTP 422)、Web IQ 餐厅食药监 A 级与严重花生过敏独立封签熔断 (HTTP 451) 及智能餐柜整楼集单免 30% 运费立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="corporate-catering-status-kpi">HTTP 409 · CONSOLIDATED_LOCKER_DROP_AND_ATTENDANCE_RIGHTSIZING_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业工作餐、加班餐补与会议茶歇结算池 ($ USD)
+            <input type="range" id="corporate-catering-pool-slider" min="40000" max="1500000" step="10000" value="280000" oninput="updateCorporateCateringOfficeMealSandbox()" />
+            <span id="corporate-catering-pool-val" style="color:#6ee7b7; font-family:monospace;">$280,000</span>
+          </label>
+          <label>
+            09:45 门禁实到人数与办公楼收货围栏校验 (HTTP 403)
+            <select id="corporate-catering-attendance-select" onchange="updateCorporateCateringOfficeMealSandbox()">
+              <option value="pass">订餐份数与门禁/Wi-Fi 实到人数对齐 + 办公楼围栏内收货 (放行)</option>
+              <option value="block">周五按 150 人盲订但仅 65 人刷卡到岗 或 宅家把加班餐点回私宅 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            Level-3 SKU 反套现与宴席准点 SLA 校验 (HTTP 422)
+            <select id="corporate-catering-sku-select" onchange="updateCorporateCateringOfficeMealSandbox()">
+              <option value="pass">纯正餐熟食 SKU + 会议开场前准点送达布台 (合规)</option>
+              <option value="block">用加班餐补买红酒/香烟/超市购物卡套现 或 午宴迟到 45 分钟散会 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 餐厅卫生评级与致命过敏原筛查 (HTTP 451)
+            <select id="corporate-catering-allergen-select" onchange="updateCorporateCateringOfficeMealSandbox()">
+              <option value="clear">食药监卫生 A 级门店 + 重度过敏餐盒 100% 独立密封贴标 (正常)</option>
+              <option value="hold">参会人花生过敏却点大盘混装菜 或 餐厅卫生评级降至 C 级 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            智能餐柜整楼集单与出勤削减优化 (HTTP 409)
+            <select id="corporate-catering-opt-select" onchange="updateCorporateCateringOfficeMealSandbox()">
+              <option value="enabled" selected>开启智能保温餐柜批次集单免散单运费 + 09:45 实到削减省 26% (HTTP 409)</option>
+              <option value="baseline">常规合规团餐与加班餐补授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业餐饮毛支出</div>
+            <div class="finops-kpi-val" id="corporate-catering-gross-kpi">$280,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">集单与实到削减后净额</div>
+            <div class="finops-kpi-val" id="corporate-catering-net-kpi" style="color:#6ee7b7;">$207,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消灭剩饭与免散单运费省下</div>
+            <div class="finops-kpi-val" id="corporate-catering-savings-kpi" style="color:#38bdf8;">$72,800</div>
+          </div>
+        </div>
+        <div id="corporate-catering-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CONSOLIDATED_LOCKER_DROP_AND_ATTENDANCE_RIGHTSIZING_CONFIRM · Mandate: corporate_catering_office_meal_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -44389,6 +44557,80 @@ function updateSkiResortGolfTeetimeSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 TEE_TIME_IDENTITY_AND_LIFT_RFID_AUTHORIZED · Mandate: ski_resort_golf_teetime_escrow_mandate_200';
+}}
+
+function updateCorporateCateringOfficeMealSandbox() {{
+  const slider = document.getElementById('corporate-catering-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '280000');
+  const attMode = document.getElementById('corporate-catering-attendance-select').value;
+  const skuMode = document.getElementById('corporate-catering-sku-select').value;
+  const algMode = document.getElementById('corporate-catering-allergen-select').value;
+  const optMode = document.getElementById('corporate-catering-opt-select').value;
+
+  document.getElementById('corporate-catering-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('corporate-catering-status-kpi');
+  const grossKpi = document.getElementById('corporate-catering-gross-kpi');
+  const netKpi = document.getElementById('corporate-catering-net-kpi');
+  const savingsKpi = document.getElementById('corporate-catering-savings-kpi');
+  const banner = document.getElementById('corporate-catering-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (algMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_SEVERE_ALLERGEN_CROSS_CONTAMINATION_OR_HEALTH_GRADE_HOLD · Mandate: null';
+    return;
+  }}
+  if (attMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 GHOST_HEADCOUNT_CATERING_OVERORDER_OR_OFFSITE_HOME_DELIVERY_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (skuMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 STIPEND_ALCOHOL_GIFTCARD_ABUSE_OR_LATE_CATERING_SLA_BREACH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.26);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CONSOLIDATED_LOCKER_DROP_AND_ATTENDANCE_RIGHTSIZING_CONFIRM · Mandate: corporate_catering_office_meal_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ATTENDANCE_SYNCED_AND_ALLERGEN_SAFE_CATERING_AUTHORIZED · Mandate: corporate_catering_office_meal_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
