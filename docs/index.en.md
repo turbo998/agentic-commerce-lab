@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`169` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`170` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -10,7 +10,7 @@
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (37 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (43 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (35 guides)](#b2b-procurement-erp)
-- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (16 guides)](#saas-finops-micropayments)
+- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (17 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (28 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
@@ -175,7 +175,7 @@
 | 35 | **B2B Legal Spend Management, Law Firm `LEDES 1998B / UTBMS` Billing Audit & `IP` Patent Annuity Escrow (`Brightflag / SimpleLegal / Clarivate CPA Global`) Anti-Block-Billing Gate, Multi-Attendee Haircut & Active-Litigation Patent Lock Agent Architecture Selection FAQ** | [English](b2b-legal-spend-ledes-billing-audit-patent-annuity-escrow-agent-selection-faq.en.md) · [中文](b2b-legal-spend-ledes-billing-audit-patent-annuity-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (16 Guides)
+## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (17 Guides)
 
 > Covers enterprise SaaS seat governance, UUIDv7 usage metering watermarks, FTC Click-to-Cancel & retention guardrails, HTTP 402 (x402 / Stripe MPP Tempo) micropayments, and LLM token FinOps routing.
 
@@ -197,6 +197,7 @@
 | 14 | **Childcare, Preschool & Summer Camp Billing (`Brightwheel / Procare / Sawyer`) Live Staff-to-Child Licensing Ratio Gate, 3-Month Prepaid Escrow Cap & `CCDF / Dependent Care FSA` Split Agent Architecture Selection FAQ** | [English](childcare-preschool-camp-subsidy-copay-ratio-escrow-agent-selection-faq.en.md) · [中文](childcare-preschool-camp-subsidy-copay-ratio-escrow-agent-selection-faq.md) |
 | 15 | **B2B Data Marketplace, Financial Terminal & API Monetization (`Snowflake Marketplace / AWS Data Exchange / Bloomberg / S&P Capital IQ`) Zero-Copy Clean-Room Sample Gate, Anti-Full-Scan Bill Shock, Redistribution License Guard & `SEC MNPI` Escrow Agent Architecture Selection FAQ** | [English](b2b-data-marketplace-api-monetization-sample-gate-mnpi-escrow-agent-selection-faq.en.md) · [中文](b2b-data-marketplace-api-monetization-sample-gate-mnpi-escrow-agent-selection-faq.md) |
 | 16 | **Paid Retail Membership (`Amazon Prime / Costco / Sam's Club / 88VIP`) Anti-Reseller Address-Sprawl Gate, Partner-Perk Clawback, `FTC Negative Option` Renewal Lock & Savings-Guarantee Top-Up Escrow Agent Architecture Selection FAQ** | [English](paid-loyalty-membership-prime-costco-benefit-sharing-ftc-agent-selection-faq.en.md) · [中文](paid-loyalty-membership-prime-costco-benefit-sharing-ftc-agent-selection-faq.md) |
+| 17 | **Creator Economy, Paid Newsletter, Discord/Patreon Tier & Tipping Escrow (`Patreon / Substack / Whop / YouTube Memberships`) Anti-Archive-Scraping Drip Lock, Dynamic Blind Watermark, Anti-Wash-Tipping `AML` & Web-vs-`IAP` Routing Agent Architecture Selection FAQ** | [English](creator-economy-patreon-substack-archive-scraping-iap-escrow-agent-selection-faq.en.md) · [中文](creator-economy-patreon-substack-archive-scraping-iap-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (28 Guides)

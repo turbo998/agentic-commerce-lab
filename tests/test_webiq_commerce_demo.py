@@ -12475,6 +12475,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("gift-registry-group-gifting-escrow-sandbox", html_zh)
 
+    def test_creator_economy_patronage_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CreatorEconomyPatronageEscrowPolicyInput,
+            evaluate_creator_economy_patronage_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_creator_economy_patronage_escrow_policy(
+            CreatorEconomyPatronageEscrowPolicyInput(
+                quarterly_creator_membership_and_tipping_pool_usd=260000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "CREATOR_TIER_ENTITLEMENT_AND_WATERMARK_AUTHORIZED",
+        )
+
+        scrape = evaluate_creator_economy_patronage_escrow_policy(
+            CreatorEconomyPatronageEscrowPolicyInput(
+                archive_hit_and_run_bulk_scraping_or_private_rss_token_sharing=True
+            )
+        )
+        self.assertEqual(scrape["status_code"], 403)
+        self.assertEqual(
+            scrape["decision"],
+            "ARCHIVE_HIT_AND_RUN_BULK_SCRAPING_OR_PRIVATE_RSS_TOKEN_SHARING_BLOCKED",
+        )
+
+        aml = evaluate_creator_economy_patronage_escrow_policy(
+            CreatorEconomyPatronageEscrowPolicyInput(
+                self_tipping_aml_laundering_or_unshipped_merch_tier_payout=True
+            )
+        )
+        self.assertEqual(aml["status_code"], 422)
+        self.assertEqual(
+            aml["decision"],
+            "SELF_TIPPING_AML_LAUNDERING_OR_UNSHIPPED_MERCH_TIER_PAYOUT_BLOCKED",
+        )
+
+        fin = evaluate_creator_economy_patronage_escrow_policy(
+            CreatorEconomyPatronageEscrowPolicyInput(
+                webiq_unlicensed_finfluencer_stock_pump_or_illegal_content_flag=True
+            )
+        )
+        self.assertEqual(fin["status_code"], 451)
+        self.assertEqual(
+            fin["decision"],
+            "WEBIQ_UNLICENSED_FINFLUENCER_STOCK_PUMP_OR_ILLEGAL_CONTENT_HOLD",
+        )
+
+        optim = evaluate_creator_economy_patronage_escrow_policy(
+            CreatorEconomyPatronageEscrowPolicyInput(
+                quarterly_creator_membership_and_tipping_pool_usd=260000.0,
+                web_direct_checkout_iap_bypass_and_annual_archive_unlock_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 62400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 197600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("creator_economy_patronage_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("creator-economy-patronage-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

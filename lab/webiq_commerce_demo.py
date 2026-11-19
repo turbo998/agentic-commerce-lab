@@ -18590,6 +18590,84 @@ def evaluate_gift_registry_group_gifting_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class CreatorEconomyPatronageEscrowPolicyInput:
+    """Input contract for Creator Economy, Paid Newsletter & Patronage Anti-Scrape & Web-Checkout Escrow."""
+
+    quarterly_creator_membership_and_tipping_pool_usd: float = 260000.0
+    archive_hit_and_run_bulk_scraping_or_private_rss_token_sharing: bool = False
+    self_tipping_aml_laundering_or_unshipped_merch_tier_payout: bool = False
+    webiq_unlicensed_finfluencer_stock_pump_or_illegal_content_flag: bool = False
+    mandate_signing_key_age_days: int = 40
+    web_direct_checkout_iap_bypass_and_annual_archive_unlock_ready: bool = False
+
+
+def evaluate_creator_economy_patronage_escrow_policy(
+    policy_input: CreatorEconomyPatronageEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Creator Economy, Paid Newsletter & Patronage policy."""
+    gross_pool = max(float(policy_input.quarterly_creator_membership_and_tipping_pool_usd), 0.0)
+    if (
+        policy_input.webiq_unlicensed_finfluencer_stock_pump_or_illegal_content_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNLICENSED_FINFLUENCER_STOCK_PUMP_OR_ILLEGAL_CONTENT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.archive_hit_and_run_bulk_scraping_or_private_rss_token_sharing:
+        return {
+            "status_code": 403,
+            "decision": "ARCHIVE_HIT_AND_RUN_BULK_SCRAPING_OR_PRIVATE_RSS_TOKEN_SHARING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.self_tipping_aml_laundering_or_unshipped_merch_tier_payout:
+        return {
+            "status_code": 422,
+            "decision": "SELF_TIPPING_AML_LAUNDERING_OR_UNSHIPPED_MERCH_TIER_PAYOUT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.web_direct_checkout_iap_bypass_and_annual_archive_unlock_ready:
+        savings = round(gross_pool * 0.24, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "WEB_DIRECT_CHECKOUT_IAP_BYPASS_AND_ANNUAL_ARCHIVE_UNLOCK_CONFIRM",
+            "mandate_token": "creator_economy_patronage_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "CREATOR_TIER_ENTITLEMENT_AND_WATERMARK_AUTHORIZED",
+        "mandate_token": "creator_economy_patronage_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -25835,6 +25913,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    creator_economy_patronage_escrow_guard = {
+        "authorized_200": evaluate_creator_economy_patronage_escrow_policy(
+            CreatorEconomyPatronageEscrowPolicyInput()
+        ),
+        "archive_scrape_or_rss_share_403": evaluate_creator_economy_patronage_escrow_policy(
+            CreatorEconomyPatronageEscrowPolicyInput(
+                archive_hit_and_run_bulk_scraping_or_private_rss_token_sharing=True
+            )
+        ),
+        "self_tip_aml_or_unshipped_merch_422": evaluate_creator_economy_patronage_escrow_policy(
+            CreatorEconomyPatronageEscrowPolicyInput(
+                self_tipping_aml_laundering_or_unshipped_merch_tier_payout=True
+            )
+        ),
+        "unlicensed_finfluencer_451": evaluate_creator_economy_patronage_escrow_policy(
+            CreatorEconomyPatronageEscrowPolicyInput(
+                webiq_unlicensed_finfluencer_stock_pump_or_illegal_content_flag=True
+            )
+        ),
+        "web_direct_checkout_iap_bypass_409": evaluate_creator_economy_patronage_escrow_policy(
+            CreatorEconomyPatronageEscrowPolicyInput(
+                web_direct_checkout_iap_bypass_and_annual_archive_unlock_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26014,6 +26118,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_legal_ledes_patent_annuity_guard": b2b_legal_ledes_patent_annuity_guard,
         "smart_parking_ev_supercharger_guard": smart_parking_ev_supercharger_guard,
         "gift_registry_group_gifting_escrow_guard": gift_registry_group_gifting_escrow_guard,
+        "creator_economy_patronage_escrow_guard": creator_economy_patronage_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -33550,6 +33655,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="gift-registry-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 GROUP_GIFT_PENNY_CONSERVATION_AND_PRE_SHIP_VARIANT_SELECTION_CONFIRM · Mandate: gift_registry_group_gifting_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 51 Creator Economy, Paid Newsletter & Patronage Anti-Scrape & Web-Checkout Escrow -->
+      <div class="finops-box" id="creator-economy-patronage-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎨 创作者付费专栏、私域社群与打赏周边 (Patreon / Substack / Whop / 知识星球) 防首月扒全库拒付、打赏反洗钱与免 30% 苹果税沙盒 (Round 51)</div>
+            <div class="finops-subtitle">实测月付新户历史库滴灌配额锁防 $10 首月爬虫搬空 5 年全集后秒拒付及私密 RSS 限 &lt;=3 IP (HTTP 403)、空壳创作者自打赏 T+14 反洗钱冻结与实物周边凭物流单解冻 (HTTP 422)、Web IQ 无牌照荐股带单群封禁 (HTTP 451) 及合规 Web 直连结账免 30% 苹果税立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="creator-economy-status-kpi">HTTP 409 · WEB_DIRECT_CHECKOUT_IAP_BYPASS_AND_ANNUAL_ARCHIVE_UNLOCK_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度创作者专栏、社群与打赏结算池 ($ USD)
+            <input type="range" id="creator-economy-pool-slider" min="40000" max="1500000" step="10000" value="260000" oninput="updateCreatorEconomyPatronageSandbox()" />
+            <span id="creator-economy-pool-val" style="color:#6ee7b7; font-family:monospace;">$260,000</span>
+          </label>
+          <label>
+            历史库防爬与私密 RSS 校验 (HTTP 403)
+            <select id="creator-economy-scrape-select" onchange="updateCreatorEconomyPatronageSandbox()">
+              <option value="pass">月付滴灌配额合规 + 动态盲水印 + 私密 RSS &lt;=3 IP (放行)</option>
+              <option value="block">首月新户爬虫批量扒取 5 年全库 或 私密 RSS 跨群共享 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            打赏反洗钱与周边发货校验 (HTTP 422)
+            <select id="creator-economy-aml-select" onchange="updateCreatorEconomyPatronageSandbox()">
+              <option value="pass">真实粉丝互动打赏 + 实物周边已回传快递单 + 退订秒踢群 (合规)</option>
+              <option value="block">空壳号刷大额打赏 T+0 提现洗钱 或 实物周边未发货强行分账 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 金融带单与违规内容筛查 (HTTP 451)
+            <select id="creator-economy-finfluencer-select" onchange="updateCreatorEconomyPatronageSandbox()">
+              <option value="clear">合规技术/研究/艺术社群 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">无牌照非法荐股带单群 或 密钥超期 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            Web 直连免苹果税与年付解锁优化 (HTTP 409)
+            <select id="creator-economy-opt-select" onchange="updateCreatorEconomyPatronageSandbox()">
+              <option value="enabled" selected>开启合规 Web 结账免 30% IAP 苹果税 + 年付全库解锁省 24% (HTTP 409)</option>
+              <option value="baseline">常规创作者会员与盲水印授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度创作者毛收入池</div>
+            <div class="finops-kpi-val" id="creator-economy-gross-kpi">$260,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">免苹果税与防盗后净留存</div>
+            <div class="finops-kpi-val" id="creator-economy-net-kpi" style="color:#6ee7b7;">$197,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下渠道税与防盗拒付</div>
+            <div class="finops-kpi-val" id="creator-economy-savings-kpi" style="color:#38bdf8;">$62,400</div>
+          </div>
+        </div>
+        <div id="creator-economy-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 WEB_DIRECT_CHECKOUT_IAP_BYPASS_AND_ANNUAL_ARCHIVE_UNLOCK_CONFIRM · Mandate: creator_economy_patronage_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -42695,6 +42863,80 @@ function updateGiftRegistryGroupGiftingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 REGISTRY_CLAIM_LOCK_AND_BLIND_SHIPPING_TOKEN_AUTHORIZED · Mandate: gift_registry_group_gifting_escrow_mandate_200';
+}}
+
+function updateCreatorEconomyPatronageSandbox() {{
+  const slider = document.getElementById('creator-economy-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '260000');
+  const scrapeMode = document.getElementById('creator-economy-scrape-select').value;
+  const amlMode = document.getElementById('creator-economy-aml-select').value;
+  const finMode = document.getElementById('creator-economy-finfluencer-select').value;
+  const optMode = document.getElementById('creator-economy-opt-select').value;
+
+  document.getElementById('creator-economy-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('creator-economy-status-kpi');
+  const grossKpi = document.getElementById('creator-economy-gross-kpi');
+  const netKpi = document.getElementById('creator-economy-net-kpi');
+  const savingsKpi = document.getElementById('creator-economy-savings-kpi');
+  const banner = document.getElementById('creator-economy-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (finMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNLICENSED_FINFLUENCER_STOCK_PUMP_OR_ILLEGAL_CONTENT_HOLD · Mandate: null';
+    return;
+  }}
+  if (scrapeMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ARCHIVE_HIT_AND_RUN_BULK_SCRAPING_OR_PRIVATE_RSS_TOKEN_SHARING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (amlMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SELF_TIPPING_AML_LAUNDERING_OR_UNSHIPPED_MERCH_TIER_PAYOUT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.24);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 WEB_DIRECT_CHECKOUT_IAP_BYPASS_AND_ANNUAL_ARCHIVE_UNLOCK_CONFIRM · Mandate: creator_economy_patronage_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 CREATOR_TIER_ENTITLEMENT_AND_WATERMARK_AUTHORIZED · Mandate: creator_economy_patronage_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
