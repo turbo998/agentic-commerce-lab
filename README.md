@@ -155,13 +155,13 @@ agentic-commerce-lab/
 ├── lab/                              # 零第三方依赖的确定性受托控制面 Python 实现与基准生成器
 ├── src/agentic_commerce/             # Microsoft Web IQ × Agentic Commerce 核心评估引擎
 ├── reports/                          # 密封的基准评测报告包（JSON 数据源 + HTML 视觉卡片）
-└── tests/                            # 覆盖全部协议门禁、美分守恒与幂等恢复的 997 项单元测试
+└── tests/                            # 覆盖全部协议门禁、美分守恒与幂等恢复的 1056 项单元测试
 ```
 
 ### 快速运行与验证（仅依赖 Python 3.11+ 标准库）
 
 ```bash
-# 1. 运行全量确定性单元测试套件（69 个测试模块 / 997 项断言）
+# 1. 运行全量确定性单元测试套件（69 个测试模块 / 1056 项断言）
 python -m unittest discover -s tests
 
 # 2. 运行离线受托结账与幂等重放基线演示（默认无外部网络调用、零真实扣款）

@@ -2175,6 +2175,1406 @@
       "reason": "Washable UHF RFID digital twin and off-peak smart-locker escrow reduced garment claims and courier costs by 24.0%."
     }
   },
+  "car_rental_mobility_toll_escrow_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "RENTAL_VISION_SOC_PARITY_AND_TOLL_ESCROW_AUTHORIZED",
+      "latency_ms": 10,
+      "approved_budget_usd": "320000.00",
+      "savings_usd": "0.00",
+      "car_rental_escrow_token": "car_rental_mobility_toll_escrow_mandate_ab3509e4fd8d3e",
+      "reason": "Verified pre/post 3D vision parity, OBD-II fuel/SOC reading, recall-free VIN, and instant deposit release."
+    },
+    "pre_existing_scratch_or_unpaired_claim_block": {
+      "http_status": 403,
+      "decision": "PRE_EXISTING_SCRATCH_DIFF_MISMATCH_OR_UNVERIFIED_DAMAGE_CLAIM_BLOCKED",
+      "latency_ms": 10,
+      "approved_budget_usd": "0.00",
+      "car_rental_escrow_token": null,
+      "reason": "Blocked post-return gantry damage claim matching pre-pickup baseline scuff or lacking paired pre/post vision proof."
+    },
+    "duplicate_cdw_or_fake_fuel_penalty_block": {
+      "http_status": 422,
+      "decision": "DUPLICATE_CDW_UPSELL_OR_TELEMATICS_FUEL_SOC_PARITY_BREACH_BLOCKED",
+      "latency_ms": 12,
+      "approved_budget_usd": "0.00",
+      "car_rental_escrow_token": null,
+      "reason": "Blocked counter-added duplicate CDW/LDW covered by corporate CDP or refueling penalty contradicting OBD-II full-tank telemetry."
+    },
+    "webiq_nhtsa_vin_recall_or_late_toll_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_NHTSA_VIN_RECALL_OR_EXPIRED_TOLL_SETTLEMENT_WINDOW_HOLD",
+      "latency_ms": 230,
+      "approved_budget_usd": "0.00",
+      "car_rental_escrow_token": null,
+      "reason": "Web IQ flagged open NHTSA safety recall on assigned VIN, toll claim >30 days post-return, or key >180 days."
+    },
+    "instant_0420_release_and_toll_slice_confirm": {
+      "http_status": 409,
+      "decision": "INSTANT_0420_DEPOSIT_RELEASE_AND_BOUNDED_TOLL_SUB_MANDATE_CONFIRM",
+      "latency_ms": 195,
+      "approved_budget_usd": "246400.00",
+      "savings_usd": "73600.00",
+      "car_rental_escrow_token": "car_rental_mobility_toll_escrow_mandate_e772753de502b7",
+      "reason": "ISO 8583 0420 instant deposit release, 14-day bounded toll sub-mandate, and CDW deduplication reduced rental leakage by 23.0%."
+    }
+  },
+  "home_remodeling_cad_milestone_escrow_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "LIDAR_CAD_BOQ_COMPLETE_AND_MILESTONE_ESCROW_AUTHORIZED",
+      "latency_ms": 11,
+      "approved_budget_usd": "420000.00",
+      "savings_usd": "0.00",
+      "home_remodeling_escrow_token": "home_remodeling_cad_milestone_escrow_mandate_ac092435f13563",
+      "reason": "Verified post-tile LiDAR ±2mm fit, complete BoQ scope, signed supplier lien waiver, and 4-stage inspection escrow."
+    },
+    "unverified_lidar_or_mep_clash_block": {
+      "http_status": 403,
+      "decision": "UNVERIFIED_LIDAR_CAD_OR_MEP_COLLISION_CUSTOM_MILLWORK_BLOCKED",
+      "latency_ms": 11,
+      "approved_budget_usd": "0.00",
+      "home_remodeling_escrow_token": null,
+      "reason": "Blocked custom cabinetry CNC fabrication lacking post-tile LiDAR point-cloud verification or having MEP fixture clashes."
+    },
+    "incomplete_boq_or_change_order_bait_block": {
+      "http_status": 422,
+      "decision": "PREDATORY_CHANGE_ORDER_SURCHARGE_OR_INCOMPLETE_BOQ_BAIT_BLOCKED",
+      "latency_ms": 13,
+      "approved_budget_usd": "0.00",
+      "home_remodeling_escrow_token": null,
+      "reason": "Blocked contractor quote omitting mandatory waterproofing/demolition BoQ items or mid-project change order >5.0%."
+    },
+    "webiq_license_lapse_or_lien_waiver_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_CONTRACTOR_LICENSE_LAPSE_OR_UNWAIVED_SUPPLIER_LIEN_HOLD",
+      "latency_ms": 240,
+      "approved_budget_usd": "0.00",
+      "home_remodeling_escrow_token": null,
+      "reason": "Web IQ flagged suspended contractor license, lapsed workers' comp, missing supplier mechanics' lien waiver, or key >180 days."
+    },
+    "stage_gated_escrow_and_factory_split_confirm": {
+      "http_status": 409,
+      "decision": "STAGE_GATED_30_30_30_10_ESCROW_AND_FACTORY_DIRECT_SPLIT_CONFIRM",
+      "latency_ms": 205,
+      "approved_budget_usd": "327600.00",
+      "savings_usd": "92400.00",
+      "home_remodeling_escrow_token": "home_remodeling_cad_milestone_escrow_mandate_3ef7cc8cdbc267",
+      "reason": "Post-tile LiDAR CNC lock, 30/30/30/10 inspection escrow, and direct-to-factory material split reduced scrap and overruns by 22.0%."
+    }
+  },
+  "b2b_packaging_print_preflight_escrow_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "PDFX4_PREFLIGHT_DIELINE_AND_COLOR_ESCROW_AUTHORIZED",
+      "latency_ms": 9,
+      "approved_budget_usd": "290000.00",
+      "savings_usd": "0.00",
+      "packaging_print_escrow_token": "b2b_packaging_print_preflight_escrow_mandate_155c43d3f65f41",
+      "reason": "Verified ISO 15930 PDF/X-4 preflight, signed 3D dieline proof, active FSC CoC, and Delta-E <= 2.0 color parity."
+    },
+    "pdfx4_bleed_or_unsigned_proof_block": {
+      "http_status": 403,
+      "decision": "PDFX4_PREFLIGHT_BLEED_DPI_FAIL_OR_UNSIGNED_3D_DIELINE_PROOF_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "packaging_print_escrow_token": null,
+      "reason": "Blocked CTP plate burning due to <300 PPI raster, missing 3mm bleed, barcode crease clash, or unsigned 3D dieline proof."
+    },
+    "duplicate_die_or_overrun_breach_block": {
+      "http_status": 422,
+      "decision": "DUPLICATE_DIELINE_TOOLING_CHARGE_OR_OVERRUN_TOLERANCE_BREACH_BLOCKED",
+      "latency_ms": 12,
+      "approved_budget_usd": "0.00",
+      "packaging_print_escrow_token": null,
+      "reason": "Blocked repeat cutting-die setup fee for active in-plant tooling or invoice overrun exceeding +5.0% tolerance."
+    },
+    "webiq_food_ink_or_fsc_revocation_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_FOOD_CONTACT_INK_HAZARD_OR_FSC_CERT_REVOCATION_HOLD",
+      "latency_ms": 230,
+      "approved_budget_usd": "0.00",
+      "packaging_print_escrow_token": null,
+      "reason": "Web IQ flagged mineral-oil (MOSH/MOAH) food-contact ink migration hazard, revoked FSC CoC certificate, or key >180 days."
+    },
+    "gang_run_and_delta_e_escrow_confirm": {
+      "http_status": 409,
+      "decision": "GANG_RUN_IMPOSITION_AND_SPECTROPHOTOMETER_DELTA_E_ESCROW_CONFIRM",
+      "latency_ms": 195,
+      "approved_budget_usd": "229100.00",
+      "savings_usd": "60900.00",
+      "packaging_print_escrow_token": "b2b_packaging_print_preflight_escrow_mandate_58ad87c51841e8",
+      "reason": "Multi-SKU gang-run sheet imposition, tooling reuse, and Delta-E <= 2.0 escrow reduced packaging spend and scrap by 21.0%."
+    }
+  },
+  "ecommerce_tbyb_preauth_wardrobing_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "TBYB_PREAUTH_AND_PARTIAL_KEEP_CAPTURE_AUTHORIZED",
+      "latency_ms": 9,
+      "approved_budget_usd": "260000.00",
+      "savings_usd": "0.00",
+      "tbyb_trial_escrow_token": "ecommerce_tbyb_preauth_wardrobing_mandate_3b4eff93a7c9c4",
+      "reason": "Verified credit BIN, <=2 adjacent sizes, intact NFC ribbon on return, and exact kept-item partial capture."
+    },
+    "prepaid_bin_or_size_bracketing_block": {
+      "http_status": 403,
+      "decision": "PREPAID_BIN_TBYB_ABUSE_OR_EXCESSIVE_SIZE_BRACKETING_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "tbyb_trial_escrow_token": null,
+      "reason": "Blocked $0 TBYB checkout using disposable prepaid card BIN or bracketing >2 adjacent sizes of the same SKU."
+    },
+    "post_dropoff_capture_or_broken_ribbon_block": {
+      "http_status": 422,
+      "decision": "POST_DROPOFF_SCAN_CAPTURE_RACE_OR_BROKEN_SECURITY_RIBBON_BLOCKED",
+      "latency_ms": 11,
+      "approved_budget_usd": "0.00",
+      "tbyb_trial_escrow_token": null,
+      "reason": "Blocked auto-capture after carrier return drop-off scan or rejected return with severed exterior NFC security ribbon."
+    },
+    "expired_auth_or_pre_delivery_hold": {
+      "http_status": 451,
+      "decision": "EXPIRED_CARD_AUTH_WINDOW_OR_MISSING_CARRIER_SCAN_HOLD",
+      "latency_ms": 215,
+      "approved_budget_usd": "0.00",
+      "tbyb_trial_escrow_token": null,
+      "reason": "Held trial clock prior to carrier DELIVERED confirmation, expiring 7-day card auth window, or key >180 days."
+    },
+    "delivery_spt_and_keep_incentive_confirm": {
+      "http_status": 409,
+      "decision": "DELIVERY_TRIGGERED_SPT_AUTH_AND_KEEP_BUNDLE_INCENTIVE_CONFIRM",
+      "latency_ms": 190,
+      "approved_budget_usd": "195000.00",
+      "savings_usd": "65000.00",
+      "tbyb_trial_escrow_token": "ecommerce_tbyb_preauth_wardrobing_mandate_77226a8ff1454c",
+      "reason": "Delivery-triggered 7-day SPT pre-auth, Web IQ size narrowing, and keep-2 incentive reduced trial loss by 25.0%."
+    }
+  },
+  "b2b_data_marketplace_cleanroom_escrow_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "CLEANROOM_SAMPLE_VERIFIED_AND_DELTA_API_AUTHORIZED",
+      "latency_ms": 10,
+      "approved_budget_usd": "380000.00",
+      "savings_usd": "0.00",
+      "data_marketplace_escrow_token": "b2b_data_marketplace_cleanroom_mandate_a99156fbf58630",
+      "reason": "Verified <=1% null rate, >=85% entity join overlap, enterprise redistribution license, and MNPI-clean attestation."
+    },
+    "high_null_or_low_join_sample_block": {
+      "http_status": 403,
+      "decision": "UNVERIFIED_DATA_SAMPLE_COMPLETENESS_OR_STALE_TIMESTAMP_BLOCKED",
+      "latency_ms": 10,
+      "approved_budget_usd": "0.00",
+      "data_marketplace_escrow_token": null,
+      "reason": "Blocked dataset subscription failing clean-room statistical preflight (null_rate > 1%, join_rate < 85%, or stale partition)."
+    },
+    "unbounded_scan_or_redistribution_breach_block": {
+      "http_status": 422,
+      "decision": "UNBOUNDED_QUERY_ROW_EXPLOSION_OR_REDISTRIBUTION_LICENSE_BREACH_BLOCKED",
+      "latency_ms": 12,
+      "approved_budget_usd": "0.00",
+      "data_marketplace_escrow_token": null,
+      "reason": "Blocked un-watermarked full-table SELECT * query or single-seat desktop terminal feed piped into shared enterprise RAG."
+    },
+    "webiq_mnpi_or_unconsented_pii_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_SEC_MNPI_COMPLIANCE_RISK_OR_UNCONSENTED_PII_DATA_HOLD",
+      "latency_ms": 235,
+      "approved_budget_usd": "0.00",
+      "data_marketplace_escrow_token": null,
+      "reason": "Web IQ flagged alternative-data vendor for SEC MNPI insider risk, un-scrubbed GDPR/CCPA PII, or key >180 days."
+    },
+    "cleanroom_and_x402_delta_metering_confirm": {
+      "http_status": 409,
+      "decision": "ZERO_COPY_CLEANROOM_AND_X402_DELTA_ROW_METERING_CONFIRM",
+      "latency_ms": 195,
+      "approved_budget_usd": "273600.00",
+      "savings_usd": "106400.00",
+      "data_marketplace_escrow_token": "b2b_data_marketplace_cleanroom_mandate_13e20d8259791f",
+      "reason": "Zero-copy clean-room preflight, delta watermark caching, and x402 per-row metering reduced data spend by 28.0%."
+    }
+  },
+  "local_o2o_voucher_dynamic_escrow_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "DYNAMIC_TOTP_LBS_AND_POS_REDEMPTION_AUTHORIZED",
+      "latency_ms": 8,
+      "approved_budget_usd": "310000.00",
+      "savings_usd": "0.00",
+      "local_o2o_voucher_token": "local_o2o_voucher_dynamic_escrow_mandate_3780fec98326f1",
+      "reason": "Verified <=30s TOTP QR, 150m store BLE proximity, active POS table ticket, and CARD Act principal protection."
+    },
+    "static_screenshot_or_blackout_block": {
+      "http_status": 403,
+      "decision": "STATIC_VOUCHER_SCREENSHOT_REPLAY_OR_PEAK_BLACKOUT_MISMATCH_BLOCKED",
+      "latency_ms": 8,
+      "approved_budget_usd": "0.00",
+      "local_o2o_voucher_token": null,
+      "reason": "Blocked expired >30s static QR screenshot replay, off-site redemption outside 150m BLE geofence, or peak blackout conflict."
+    },
+    "merchant_wash_redemption_fraud_block": {
+      "http_status": 422,
+      "decision": "MERCHANT_WASH_REDEMPTION_SUBSIDY_FRAUD_OR_BUNDLED_SURCHARGE_BLOCKED",
+      "latency_ms": 11,
+      "approved_budget_usd": "0.00",
+      "local_o2o_voucher_token": null,
+      "reason": "Blocked midnight merchant self-scanning subsidy wash without POS kitchen ticket or undisclosed on-site cover surcharge."
+    },
+    "webiq_health_closure_or_reserve_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_HEALTH_INSPECTION_CLOSURE_OR_ESCROW_RESERVE_DEFICIT_HOLD",
+      "latency_ms": 220,
+      "approved_budget_usd": "0.00",
+      "local_o2o_voucher_token": null,
+      "reason": "Web IQ flagged municipal health-department restaurant suspension, prepaid escrow reserve deficit, or key >180 days."
+    },
+    "per_punch_escrow_and_auto_refund_confirm": {
+      "http_status": 409,
+      "decision": "PER_PUNCH_ESCROW_RELEASE_AND_EXPIRED_AUTO_REFUND_CONFIRM",
+      "latency_ms": 185,
+      "approved_budget_usd": "241800.00",
+      "savings_usd": "68200.00",
+      "local_o2o_voucher_token": "local_o2o_voucher_dynamic_escrow_mandate_b03bee55a9b2e4",
+      "reason": "Per-punch 1/N fractional escrow release, POS subsidy verification, and 100% expired auto-refund reduced leakage by 22.0%."
+    }
+  },
+  "warranty_advanced_rma_collateral_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "DIAGNOSTIC_VERIFIED_AND_COLLATERAL_RMA_AUTHORIZED",
+      "latency_ms": 10,
+      "approved_budget_usd": "340000.00",
+      "savings_usd": "0.00",
+      "warranty_rma_escrow_token": "warranty_advanced_rma_collateral_mandate_7f80934308aaad",
+      "reason": "Verified pre-enrollment hardware telemetry, 180d SPT collateral hold, and factory BOM core-return parity."
+    },
+    "crash_then_insure_without_diag_block": {
+      "http_status": 403,
+      "decision": "POST_PURCHASE_WARRANTY_WITHOUT_REMOTE_DIAGNOSTIC_ATTESTATION_BLOCKED",
+      "latency_ms": 10,
+      "approved_budget_usd": "0.00",
+      "warranty_rma_escrow_token": null,
+      "reason": "Blocked post-delivery warranty enrollment lacking on-device digitizer continuity and dynamic mirror QR reflection proof."
+    },
+    "uncollateralized_rma_or_part_padding_block": {
+      "http_status": 422,
+      "decision": "UNCOLLATERALIZED_ADVANCED_RMA_OR_REPAIR_PART_PADDING_BLOCKED",
+      "latency_ms": 12,
+      "approved_budget_usd": "0.00",
+      "warranty_rma_escrow_token": null,
+      "reason": "Blocked cross-shipment without replacement-value SPT collateral or ASP logic-board claim failing factory BOM serial parity."
+    },
+    "webiq_oem_recall_precedence_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_MANUFACTURER_RECALL_FREE_REPAIR_PRECEDENCE_HOLD",
+      "latency_ms": 225,
+      "approved_budget_usd": "0.00",
+      "warranty_rma_escrow_token": null,
+      "reason": "Web IQ flagged active CPSC/OEM statutory free recall covering this serial batch or key >180 days."
+    },
+    "collateral_rma_and_salvage_triage_confirm": {
+      "http_status": 409,
+      "decision": "COLLATERALIZED_ADVANCED_RMA_AND_SALVAGE_REPLACEMENT_CONFIRM",
+      "latency_ms": 190,
+      "approved_budget_usd": "258400.00",
+      "savings_usd": "81600.00",
+      "warranty_rma_escrow_token": "warranty_advanced_rma_collateral_mandate_c0727e3a0415b7",
+      "reason": "180d SPT cross-ship collateral, BOM core-return audit, and >70% ACV refurb triage reduced warranty loss by 24.0%."
+    }
+  },
+  "ecommerce_preorder_ftc_escrow_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "BATCH_ALLOCATED_AND_FTC_PREORDER_ESCROW_AUTHORIZED",
+      "latency_ms": 9,
+      "approved_budget_usd": "350000.00",
+      "savings_usd": "0.00",
+      "preorder_ftc_escrow_token": "preorder_ftc_mail_order_escrow_mandate_fb41b520740fc9",
+      "reason": "Verified inbound PO batch quota, split mixed cart, FTC 16 CFR 435 compliance, and 180d SPT allocation capture."
+    },
+    "batch_capacity_exceeded_same_eta_block": {
+      "http_status": 403,
+      "decision": "PREORDER_BATCH_CAPACITY_EXCEEDED_WITHOUT_DELIVERY_DATE_STEP_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "preorder_ftc_escrow_token": null,
+      "reason": "Blocked pre-order checkout promising exhausted Batch #1 ship date instead of stepping forward to Batch #2 ETA."
+    },
+    "ftc_delay_no_optin_or_mixed_cart_block": {
+      "http_status": 422,
+      "decision": "FTC_MAIL_ORDER_DELAY_WITHOUT_EXPLICIT_BUYER_OPTIN_OR_AUTO_REFUND_BLOCKED",
+      "latency_ms": 11,
+      "approved_budget_usd": "0.00",
+      "preorder_ftc_escrow_token": null,
+      "reason": "Blocked unconsented FTC 16 CFR Part 435 shipping delay retention or unsplit mixed in-stock/pre-order cart."
+    },
+    "upfront_capture_reserve_risk_hold": {
+      "http_status": 451,
+      "decision": "PREORDER_UPFRONT_CAPTURE_CHARGEBACK_RESERVE_RISK_HOLD",
+      "latency_ms": 220,
+      "approved_budget_usd": "0.00",
+      "preorder_ftc_escrow_token": null,
+      "reason": "Held >30-day pre-order attempting upfront full card capture (25% PSP rolling-reserve risk) or key >180 days."
+    },
+    "vaulted_180d_spt_alloc_capture_confirm": {
+      "http_status": 409,
+      "decision": "VAULTED_180D_SPT_CAPTURE_AT_WAREHOUSE_ALLOCATION_CONFIRM",
+      "latency_ms": 185,
+      "approved_budget_usd": "259000.00",
+      "savings_usd": "91000.00",
+      "preorder_ftc_escrow_token": "preorder_ftc_mail_order_escrow_mandate_64b8e66774909e",
+      "reason": "Vaulted 180d SPT capture at WMS allocation, PO batch stepping, and FTC delay compliance reduced losses by 26.0%."
+    }
+  },
+  "b2b_media_buying_mfa_rebate_escrow_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "MRC_VIEWABLE_AND_NET_REBATE_MEDIA_ESCROW_AUTHORIZED",
+      "latency_ms": 9,
+      "approved_budget_usd": "450000.00",
+      "savings_usd": "0.00",
+      "media_buying_escrow_token": "b2b_media_buying_mfa_rebate_escrow_mandate_f4f1fdcb14dd5c",
+      "reason": "Verified ads.txt DIRECT path, MRC viewability parity, GARM brand safety, and full agency AVB rebate pass-through."
+    },
+    "mfa_slop_or_adstxt_spoofing_block": {
+      "http_status": 403,
+      "decision": "MFA_SLOP_INVENTORY_OR_ADSTXT_SPOOFING_PLACEMENT_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "media_buying_escrow_token": null,
+      "reason": "Blocked programmatic bid targeting Made-for-Advertising (MFA) auto-refresh slop site or non-DIRECT ads.txt path."
+    },
+    "undisclosed_rebate_or_non_viewable_block": {
+      "http_status": 422,
+      "decision": "UNDISCLOSED_AGENCY_REBATE_OR_UNVERIFIED_IMPRESSION_BILLING_BLOCKED",
+      "latency_ms": 12,
+      "approved_budget_usd": "0.00",
+      "media_buying_escrow_token": null,
+      "reason": "Blocked agency invoice hiding principal-media markup, unremitted AVB rebates, or billing non-MRC viewable impressions."
+    },
+    "webiq_brand_safety_garm_crisis_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_BRAND_SAFETY_CRISIS_OR_REGULATORY_AD_COMPLIANCE_HOLD",
+      "latency_ms": 225,
+      "approved_budget_usd": "0.00",
+      "media_buying_escrow_token": null,
+      "reason": "Web IQ flagged breaking GARM brand-safety crisis adjacency, regulatory ad violation, or key >180 days."
+    },
+    "spo_direct_and_rebate_netting_confirm": {
+      "http_status": 409,
+      "decision": "SPO_DIRECT_PATH_PRUNING_AND_NET_OF_REBATE_ESCROW_CONFIRM",
+      "latency_ms": 190,
+      "approved_budget_usd": "346500.00",
+      "savings_usd": "103500.00",
+      "media_buying_escrow_token": "b2b_media_buying_mfa_rebate_escrow_mandate_7ade732a0d85b9",
+      "reason": "Pre-bid MFA exclusion, SPO direct-SSP pruning, and log-level AVB rebate netting recovered 23.0% of media spend."
+    }
+  },
+  "lifesciences_sunshine_gpo_udi_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "SUNSHINE_NPI_VERIFIED_AND_GPO_UDI_REBATE_AUTHORIZED",
+      "latency_ms": 10,
+      "approved_budget_usd": "480000.00",
+      "savings_usd": "0.00",
+      "lifesciences_gpo_token": "lifesciences_sunshine_gpo_udi_mandate_c67a170de9f78e",
+      "reason": "Verified NPI state meal caps, OIG LEIE clearance, active GPO HIN membership, and OR GS1 UDI consumption parity."
+    },
+    "hcp_meal_cap_or_missing_npi_block": {
+      "http_status": 403,
+      "decision": "HCP_MEAL_CAP_BREACH_OR_MISSING_NPI_SUNSHINE_ACT_ATTESTATION_BLOCKED",
+      "latency_ms": 10,
+      "approved_budget_usd": "0.00",
+      "lifesciences_gpo_token": null,
+      "reason": "Blocked HCP event exceeding strictest state-of-licensure meal cap (e.g., NJ $15) or lacking 10-digit physician NPIs."
+    },
+    "gpo_diversion_or_unverified_udi_block": {
+      "http_status": 422,
+      "decision": "GPO_CONTRACT_DIVERSION_OR_UNVERIFIED_UDI_CONSUMPTION_REBATE_BLOCKED",
+      "latency_ms": 12,
+      "approved_budget_usd": "0.00",
+      "lifesciences_gpo_token": null,
+      "reason": "Blocked EDI 844 GPO chargeback rebate for non-member HIN clinic diversion or unverified OR GS1 UDI implant serial."
+    },
+    "webiq_oig_leie_or_fda_recall_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_OIG_LEIE_EXCLUSION_OR_FDA_DEVICE_RECALL_HOLD",
+      "latency_ms": 230,
+      "approved_budget_usd": "0.00",
+      "lifesciences_gpo_token": null,
+      "reason": "Web IQ flagged speaker/vendor on HHS OIG LEIE exclusion list, FDA Class I recall on consignment lot, or key >180 days."
+    },
+    "or_rfid_udi_and_edi849_netting_confirm": {
+      "http_status": 409,
+      "decision": "OR_RFID_UDI_CONSIGNMENT_BILLING_AND_EDI849_REBATE_NETTING_CONFIRM",
+      "latency_ms": 195,
+      "approved_budget_usd": "379200.00",
+      "savings_usd": "100800.00",
+      "lifesciences_gpo_token": "lifesciences_sunshine_gpo_udi_mandate_fdd7416e66d32b",
+      "reason": "OR RFID/UDI point-of-use consignment billing and EDI 844/849 UDI rebate netting reduced leakage by 21.0%."
+    }
+  },
+  "highered_tuition_fx_aml_escrow_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "STUDENT_KYC_FX_AND_529_QHEE_TUITION_AUTHORIZED",
+      "latency_ms": 10,
+      "approved_budget_usd": "520000.00",
+      "savings_usd": "0.00",
+      "highered_tuition_token": "highered_tuition_fx_aml_escrow_mandate_9c0d9ec3e5a23f",
+      "reason": "Verified authorized payer KYC, exact-cent bursar posting, IRS §529 QHEE eligibility, and Return-to-Source binding."
+    },
+    "third_party_proxy_card_fraud_block": {
+      "http_status": 403,
+      "decision": "THIRD_PARTY_UNVERIFIED_CARD_TUITION_PROXY_FRAUD_BLOCKED",
+      "latency_ms": 10,
+      "approved_budget_usd": "0.00",
+      "highered_tuition_token": null,
+      "reason": "Blocked unverified third-party multi-card tuition proxy payment lacking family KYC linkage and 3DS2 proof."
+    },
+    "non_source_refund_or_529_misuse_block": {
+      "http_status": 422,
+      "decision": "NON_SOURCE_REFUND_LAUNDERING_OR_INELIGIBLE_529_EXPENSE_BLOCKED",
+      "latency_ms": 12,
+      "approved_budget_usd": "0.00",
+      "highered_tuition_token": null,
+      "reason": "Blocked drop-class credit refund to non-originating domestic bank account or IRS §529 payment on non-QHEE fine/ticket."
+    },
+    "webiq_title_iv_r2t4_or_fx_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_FX_DECLARATION_OR_TITLE_IV_R2T4_STATUTORY_HOLD",
+      "latency_ms": 225,
+      "approved_budget_usd": "0.00",
+      "highered_tuition_token": null,
+      "reason": "Web IQ flagged unsettled 45-day Title IV R2T4 unearned aid return, missing I-20/CAS FX documentation, or key >180 days."
+    },
+    "wholesale_fx_and_return_to_source_confirm": {
+      "http_status": 409,
+      "decision": "STUDENT_ID_BOUND_WHOLESALE_FX_AND_RETURN_TO_SOURCE_CONFIRM",
+      "latency_ms": 185,
+      "approved_budget_usd": "416000.00",
+      "savings_usd": "104000.00",
+      "highered_tuition_token": "highered_tuition_fx_aml_escrow_mandate_f78f0c84bc6851",
+      "reason": "Student-ID bound local-rail wholesale FX, $0 card fee, and Return-to-Source AML lock reduced tuition leakage by 20.0%."
+    }
+  },
+  "fintech_credit_regf_hardship_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "ECOA_FAIR_CREDIT_AND_REGF_SERVICING_AUTHORIZED",
+      "latency_ms": 10,
+      "approved_budget_usd": "560000.00",
+      "savings_usd": "0.00",
+      "fintech_credit_token": "fintech_credit_regf_hardship_mandate_ed244253492f08",
+      "reason": "Verified monotonic ECOA attribution, eCBSV synthetic-ID clearance, Reg F 7-in-7 compliance, and SCRA parity."
+    },
+    "ecoa_proxy_or_synthetic_bustout_block": {
+      "http_status": 403,
+      "decision": "ECOA_PROHIBITED_PROXY_FEATURE_OR_SYNTHETIC_BUSTOUT_CYCLING_BLOCKED",
+      "latency_ms": 10,
+      "approved_budget_usd": "0.00",
+      "fintech_credit_token": null,
+      "reason": "Blocked credit decision using prohibited ECOA proxy features, lacking Adverse Action codes, or exhibiting synthetic credit cycling."
+    },
+    "cfpb_reg_f_7in7_or_bankruptcy_stay_block": {
+      "http_status": 422,
+      "decision": "CFPB_REG_F_7IN7_FREQUENCY_BREACH_OR_BANKRUPTCY_STAY_VIOLATION_BLOCKED",
+      "latency_ms": 11,
+      "approved_budget_usd": "0.00",
+      "fintech_credit_token": null,
+      "reason": "Blocked collection outreach exceeding CFPB Reg F 7-in-7 call cap, outside 8am-9pm local time, or under Chapter 7/13 Automatic Stay."
+    },
+    "webiq_scra_6pct_or_fema_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_SCRA_6PCT_CAP_OR_FEMA_DISASTER_FORBEARANCE_HOLD",
+      "latency_ms": 230,
+      "approved_budget_usd": "0.00",
+      "fintech_credit_token": null,
+      "reason": "Web IQ flagged active-duty military borrower requiring SCRA <=6.0% APR cap, FEMA disaster moratorium, or key >180 days."
+    },
+    "open_banking_sweep_and_hardship_confirm": {
+      "http_status": 409,
+      "decision": "OPEN_BANKING_REVENUE_SWEEP_AND_ZERO_FEE_HARDSHIP_RESTRUCTURE_CONFIRM",
+      "latency_ms": 190,
+      "approved_budget_usd": "420000.00",
+      "savings_usd": "140000.00",
+      "fintech_credit_token": "fintech_credit_regf_hardship_mandate_96d69a118bf8f5",
+      "reason": "Open-Banking payday revenue sweep and self-service zero-fee hardship workout reduced credit charge-offs by 25.0%."
+    }
+  },
+  "floral_bakery_time_window_escrow_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "PRE_DISPATCH_VISION_AND_OCCASION_SLA_ESCROW_AUTHORIZED",
+      "latency_ms": 9,
+      "approved_budget_usd": "230000.00",
+      "savings_usd": "0.00",
+      "floral_bakery_escrow_token": "floral_bakery_time_window_escrow_mandate_b6a9966886337f",
+      "reason": "Verified pre-dispatch stem count, pet-safe botanicals, insulated cold chain, and on-time occasion POD."
+    },
+    "stem_downgrade_or_missing_photo_block": {
+      "http_status": 403,
+      "decision": "UNAUTHORIZED_STEM_DOWNGRADE_SUBSTITUTION_OR_MISSING_PRE_DISPATCH_PHOTO_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "floral_bakery_escrow_token": null,
+      "reason": "Blocked courier dispatch due to unapproved primary stem downgrade or missing pre-dispatch vision photo."
+    },
+    "occasion_sla_miss_or_fake_pod_block": {
+      "http_status": 422,
+      "decision": "OCCASION_TIME_WINDOW_SLA_BREACH_OR_FAKE_COURIER_POD_BLOCKED",
+      "latency_ms": 11,
+      "approved_budget_usd": "0.00",
+      "floral_bakery_escrow_token": null,
+      "reason": "Blocked merchant payout due to delivery past occasion SLA cutoff or off-site courier POD spoofing."
+    },
+    "webiq_feline_lily_or_cake_melt_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_FELINE_TOXIC_LILY_HAZARD_OR_AMBIENT_CREAM_CAKE_MELT_HOLD",
+      "latency_ms": 215,
+      "approved_budget_usd": "0.00",
+      "floral_bakery_escrow_token": null,
+      "reason": "Web IQ flagged feline-lethal Lilium stems for cat-owning recipient, >28°C unchilled dairy cake, or key >180 days."
+    },
+    "capacity_slot_and_vision_escrow_confirm": {
+      "http_status": 409,
+      "decision": "HOURLY_FLORIST_CAPACITY_SLOT_AND_PRE_DISPATCH_VISION_ESCROW_CONFIRM",
+      "latency_ms": 185,
+      "approved_budget_usd": "174800.00",
+      "savings_usd": "55200.00",
+      "floral_bakery_escrow_token": "floral_bakery_time_window_escrow_mandate_a9ea5b3902154c",
+      "reason": "Pre-dispatch vision stem verification, hourly florist capacity locks, and cold-chain SLA escrow reduced losses by 24.0%."
+    }
+  },
+  "b2b_creative_ip_spdx_c2pa_escrow_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "EULA_SCOPE_SPDX_AND_C2PA_INDEMNITY_AUTHORIZED",
+      "latency_ms": 9,
+      "approved_budget_usd": "270000.00",
+      "savings_usd": "0.00",
+      "creative_ip_escrow_token": "b2b_creative_ip_spdx_c2pa_escrow_mandate_a26091a11616dd",
+      "reason": "Verified EULA deployment vector, signed Model Release, copyleft-free SPDX tree, and C2PA IP indemnification."
+    },
+    "eula_channel_mismatch_or_missing_release_block": {
+      "http_status": 403,
+      "decision": "EULA_DEPLOYMENT_CHANNEL_MISMATCH_OR_MISSING_MODEL_RELEASE_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "creative_ip_escrow_token": null,
+      "reason": "Blocked Desktop-only font binary embedded in mobile app, exceeded print-run tier, or ad image lacking signed Model Release."
+    },
+    "agpl_copyleft_or_editorial_ad_misuse_block": {
+      "http_status": 422,
+      "decision": "AGPL_COPYLEFT_CONTAMINATION_OR_EDITORIAL_ASSET_COMMERCIAL_MISUSE_BLOCKED",
+      "latency_ms": 11,
+      "approved_budget_usd": "0.00",
+      "creative_ip_escrow_token": null,
+      "reason": "Blocked unlicensed AGPL-3.0/SSPL copyleft merge into proprietary codebase or Editorial-Only photo used in paid ad."
+    },
+    "webiq_unindemnified_genai_or_dmca_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_UNINDEMNIFIED_GENAI_ASSET_OR_DMCA_TAKEDOWN_HOLD",
+      "latency_ms": 220,
+      "approved_budget_usd": "0.00",
+      "creative_ip_escrow_token": null,
+      "reason": "Web IQ flagged generative AI asset lacking C2PA clean-training provenance, <$10k IP indemnity, or key >180 days."
+    },
+    "dam_dedup_and_sil_ofl_font_swap_confirm": {
+      "http_status": 409,
+      "decision": "ENTERPRISE_DAM_DEDUPLICATION_AND_SIL_OFL_FONT_SUBSTITUTION_CONFIRM",
+      "latency_ms": 185,
+      "approved_budget_usd": "197100.00",
+      "savings_usd": "72900.00",
+      "creative_ip_escrow_token": "b2b_creative_ip_spdx_c2pa_escrow_mandate_2bb00accd9b2a0",
+      "reason": "Global DAM pHash asset deduplication and SIL OFL 1.1 open-font substitution reduced IP licensing spend by 27.0%."
+    }
+  },
+  "b2b_freight_booking_cisf_demurrage_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "ALL_IN_DCSA_BOOKING_AND_OSRA_DEMURRAGE_AUTHORIZED",
+      "latency_ms": 10,
+      "approved_budget_usd": "510000.00",
+      "savings_usd": "0.00",
+      "freight_booking_escrow_token": "b2b_freight_booking_cisf_demurrage_mandate_d927df2496761b",
+      "reason": "Verified all-in landed tariff cap, IMDG UN38.3 compliance, DCSA load guarantee, and FMC OSRA-22 D&D audit."
+    },
+    "predatory_lcl_cisf_bait_block": {
+      "http_status": 403,
+      "decision": "PREDATORY_LCL_ZERO_FREIGHT_CISF_BAIT_OR_UNCAPPED_DESTINATION_FEE_BLOCKED",
+      "latency_ms": 10,
+      "approved_budget_usd": "0.00",
+      "freight_booking_escrow_token": null,
+      "reason": "Blocked predatory $0/negative origin LCL quote lacking binding destination CISF/CFS/DO fee ceiling."
+    },
+    "invalid_osra_demurrage_or_rolled_cargo_block": {
+      "http_status": 422,
+      "decision": "INVALID_FMC_OSRA_DEMURRAGE_BILLING_OR_UNCOMPENSATED_ROLLED_CARGO_BLOCKED",
+      "latency_ms": 12,
+      "approved_budget_usd": "0.00",
+      "freight_booking_escrow_token": null,
+      "reason": "Blocked D&D charge assessed during zero terminal appointment slots (FMC OSRA-22 violation) or uncredited rolled cargo."
+    },
+    "webiq_undeclared_hazmat_or_strike_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_UNDECLARED_IMDG_HAZMAT_OR_PORT_STRIKE_FORCE_MAJEURE_HOLD",
+      "latency_ms": 230,
+      "approved_budget_usd": "0.00",
+      "freight_booking_escrow_token": null,
+      "reason": "Web IQ flagged undeclared UN3480 lithium battery hazmat lacking UN38.3/MSDS, port labor strike, or key >180 days."
+    },
+    "lcl_to_fcl_and_osra_stop_clock_confirm": {
+      "http_status": 409,
+      "decision": "LCL_TO_FCL_BREAKEVEN_CONSOLIDATION_AND_OSRA_STOP_CLOCK_CONFIRM",
+      "latency_ms": 195,
+      "approved_budget_usd": "392700.00",
+      "savings_usd": "117300.00",
+      "freight_booking_escrow_token": "b2b_freight_booking_cisf_demurrage_mandate_095a8cf0efa91b",
+      "reason": ">=14 CBM LCL-to-20GP FCL consolidation, DCSA load guarantee, and FMC OSRA-22 D&D stop-clock saved 23.0%."
+    }
+  },
+  "appointment_salon_coaching_escrow_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "BILATERAL_DURATION_VERIFIED_AND_SESSION_ESCROW_AUTHORIZED",
+      "latency_ms": 9,
+      "approved_budget_usd": "250000.00",
+      "savings_usd": "0.00",
+      "appointment_coaching_token": "appointment_salon_coaching_escrow_mandate_b45906bae512a9",
+      "reason": "Verified bilateral attendance duration, active state licensure, 48h patch test, and 1/N session release."
+    },
+    "backfilled_double_dip_or_hoarding_block": {
+      "http_status": 403,
+      "decision": "BACKFILLED_SLOT_DOUBLE_DIP_NOSHOW_FEE_OR_BURNER_CARD_HOARDING_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "appointment_coaching_token": null,
+      "reason": "Blocked late-cancellation fee capture on slot already backfilled by waitlist or blocked burner-card slot hoarding."
+    },
+    "short_session_or_trainer_churn_penalty_block": {
+      "http_status": 422,
+      "decision": "PROVIDER_SHORT_DURATION_FULL_CHARGE_OR_KEY_TRAINER_CHURN_PENALTY_BLOCKED",
+      "latency_ms": 11,
+      "approved_budget_usd": "0.00",
+      "appointment_coaching_token": null,
+      "reason": "Blocked full-hour billing on provider-shortened session (<90% duration) or exit penalty after named trainer resigned."
+    },
+    "webiq_unlicensed_state_or_patch_test_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_UNLICENSED_CROSS_STATE_PRACTICE_OR_MISSING_ALLERGY_PATCH_TEST_HOLD",
+      "latency_ms": 215,
+      "approved_budget_usd": "0.00",
+      "appointment_coaching_token": null,
+      "reason": "Web IQ flagged out-of-state tele-consultation lacking PSYPACT/state license, missing 48h PPD dye patch test, or key >180 days."
+    },
+    "waitlist_backfill_and_package_escrow_confirm": {
+      "http_status": 409,
+      "decision": "WAITLIST_FLASH_BACKFILL_AND_PER_SESSION_PACKAGE_ESCROW_CONFIRM",
+      "latency_ms": 185,
+      "approved_budget_usd": "192500.00",
+      "savings_usd": "57500.00",
+      "appointment_coaching_token": "appointment_salon_coaching_escrow_mandate_a43f979dee3d82",
+      "reason": "AI flash-waitlist backfill, backfill fee waiver, and 1/N per-session escrow reduced spoilage and disputes by 23.0%."
+    }
+  },
+  "paid_loyalty_membership_escrow_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "HOUSEHOLD_SCOPE_AND_FTC_RENEWAL_MEMBERSHIP_AUTHORIZED",
+      "latency_ms": 9,
+      "approved_budget_usd": "390000.00",
+      "savings_usd": "0.00",
+      "paid_membership_escrow_token": "paid_loyalty_membership_escrow_mandate_23e82dfdc8c17f",
+      "reason": "Verified <=12 household addresses, FTC 30-day renewal notice, symmetric 1-click cancel, and partner perk parity."
+    },
+    "reseller_address_sprawl_or_sharing_block": {
+      "http_status": 403,
+      "decision": "COMMERCIAL_RESELLER_ADDRESS_SPRAWL_OR_SHARED_CREDENTIAL_ABUSE_BLOCKED",
+      "latency_ms": 9,
+      "approved_budget_usd": "0.00",
+      "paid_membership_escrow_token": null,
+      "reason": "Blocked member free-shipping/discount subsidy on >12 distinct drop-ship addresses/yr or shared entry screenshot."
+    },
+    "perk_drain_full_refund_arbitrage_block": {
+      "http_status": 422,
+      "decision": "BENEFIT_DRAIN_FULL_REFUND_ARBITRAGE_OR_UNREVOKED_PARTNER_PERK_BLOCKED",
+      "latency_ms": 11,
+      "approved_budget_usd": "0.00",
+      "paid_membership_escrow_token": null,
+      "reason": "Blocked 100% membership fee refund after consuming bundled partner perks without deducting perk value and revoking pass."
+    },
+    "webiq_ftc_dark_pattern_or_renewal_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_FTC_DARK_PATTERN_ENROLLMENT_OR_MISSING_PRE_RENEWAL_NOTICE_HOLD",
+      "latency_ms": 215,
+      "approved_budget_usd": "0.00",
+      "paid_membership_escrow_token": null,
+      "reason": "Held membership renewal lacking 30-day advance FTC 16 CFR Part 425 reminder, non-consensual dark pattern, or key >180 days."
+    },
+    "savings_guarantee_and_clean_exit_confirm": {
+      "http_status": 409,
+      "decision": "SAVINGS_GUARANTEE_AUTO_REFUND_DIFF_AND_SYMMETRIC_CANCEL_CONFIRM",
+      "latency_ms": 185,
+      "approved_budget_usd": "296400.00",
+      "savings_usd": "93600.00",
+      "paid_membership_escrow_token": "paid_loyalty_membership_escrow_mandate_87000fa73375c5",
+      "reason": "Household address cap, net-of-perk refund saga, and automatic savings-guarantee top-up reduced leakage by 24.0%."
+    }
+  },
+  "used_car_odometer_title_lien_escrow_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "ECU_ODOMETER_VERIFIED_AND_CLEAR_TITLE_ESCROW_AUTHORIZED",
+      "latency_ms": 11,
+      "approved_budget_usd": "620000.00",
+      "savings_usd": "0.00",
+      "used_car_escrow_token": "used_car_odometer_title_lien_escrow_mandate_4b6c82c0d9db30",
+      "reason": "Verified multi-ECU odometer parity, NMVTIS clean title, direct lender payoff, and ELT transfer."
+    },
+    "ecu_odometer_rollback_or_frame_block": {
+      "http_status": 403,
+      "decision": "ODOMETER_ECU_ROLLBACK_MISMATCH_OR_UNDISCLOSED_FRAME_DAMAGE_BLOCKED",
+      "latency_ms": 11,
+      "approved_budget_usd": "0.00",
+      "used_car_escrow_token": null,
+      "reason": "Blocked vehicle with dashboard mileage lower than internal TCU/ABS/BMS counters or undisclosed structural frame welds."
+    },
+    "uncleared_lien_direct_seller_payout_block": {
+      "http_status": 422,
+      "decision": "UNCLEARED_BANK_LIEN_DIRECT_SELLER_PAYOUT_OR_MISSING_TITLE_BLOCKED",
+      "latency_ms": 12,
+      "approved_budget_usd": "0.00",
+      "used_car_escrow_token": null,
+      "reason": "Blocked direct-to-seller full payout on vehicle with active bank auto loan or floorplan lien requiring direct lender payoff."
+    },
+    "webiq_nmvtis_salvage_flood_wash_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_NMVTIS_SALVAGE_FLOOD_TITLE_WASHING_OR_STOLEN_VIN_HOLD",
+      "latency_ms": 235,
+      "approved_budget_usd": "0.00",
+      "used_car_escrow_token": null,
+      "reason": "Web IQ flagged interstate NMVTIS flood/salvage title washing, Copart total-loss history, or key >180 days."
+    },
+    "lienholder_waterfall_and_7d_trial_confirm": {
+      "http_status": 409,
+      "decision": "LIENHOLDER_PAYOFF_WATERFALL_AND_7DAY_TRIAL_ESCROW_CONFIRM",
+      "latency_ms": 195,
+      "approved_budget_usd": "483600.00",
+      "savings_usd": "136400.00",
+      "used_car_escrow_token": "used_car_odometer_title_lien_escrow_mandate_18a8bfd670e88f",
+      "reason": "Direct lender payoff waterfall, ELT title release gate, and 7-day trial escrow reduced buyback and lien losses by 22.0%."
+    }
+  },
+  "b2b_legal_ledes_patent_annuity_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "LEDES_UTBMS_OCG_AND_PATENT_RENEWAL_AUTHORIZED",
+      "latency_ms": 10,
+      "approved_budget_usd": "540000.00",
+      "savings_usd": "0.00",
+      "legal_patent_escrow_token": "b2b_legal_ledes_patent_annuity_mandate_7556e8b16dc249",
+      "reason": "Verified 0.1h itemized LEDES 1998B lines, approved timekeeper rate card, and active-patent annuity renewal."
+    },
+    "block_billing_or_clerical_padding_block": {
+      "http_status": 403,
+      "decision": "LEDES_BLOCK_BILLING_OR_PARTNER_RATE_ON_CLERICAL_TASK_BLOCKED",
+      "latency_ms": 10,
+      "approved_budget_usd": "0.00",
+      "legal_patent_escrow_token": null,
+      "reason": "Blocked LEDES invoice containing multi-task block-billed lines or $1,100/hr partner rates on clerical indexing."
+    },
+    "multi_attendee_or_unapproved_timekeeper_block": {
+      "http_status": 422,
+      "decision": "MULTI_ATTENDEE_CONFERENCE_PADDING_OR_UNAPPROVED_TIMEKEEPER_BLOCKED",
+      "latency_ms": 12,
+      "approved_budget_usd": "0.00",
+      "legal_patent_escrow_token": null,
+      "reason": "Blocked duplicate billing for multiple attorneys on the same call (OCG violation) or unapproved timekeeper rate."
+    },
+    "webiq_litigation_patent_drop_or_conflict_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_ACTIVE_LITIGATION_PATENT_ABANDONMENT_OR_CONFLICT_HOLD",
+      "latency_ms": 230,
+      "approved_budget_usd": "0.00",
+      "legal_patent_escrow_token": null,
+      "reason": "Web IQ flagged proposed abandonment of patent in active USPTO PTAB/court litigation, collateral lien, or key >180 days."
+    },
+    "ocg_haircut_and_zombie_patent_prune_confirm": {
+      "http_status": 409,
+      "decision": "AUTOMATED_OCG_LINE_HAIRCUT_AND_ZOMBIE_PATENT_PRUNING_CONFIRM",
+      "latency_ms": 195,
+      "approved_budget_usd": "426600.00",
+      "savings_usd": "113400.00",
+      "legal_patent_escrow_token": "b2b_legal_ledes_patent_annuity_mandate_09b7a1856c54f2",
+      "reason": "Automated OCG line-item haircuts and discontinued zombie-patent annuity pruning reduced legal/IP spend by 21.0%."
+    }
+  },
+  "smart_parking_ev_supercharger_guard": {
+    "happy_path": {
+      "http_status": 200,
+      "decision": "PLUG_AND_CHARGE_VIN_AND_LPR_EXIT_AUTHORIZED",
+      "latency_ms": 8,
+      "approved_budget_usd": "280000.00",
+      "savings_usd": "0.00",
+      "smart_parking_ev_token": "smart_parking_ev_supercharger_mandate_ba11eb5904b6b4",
+      "reason": "Verified ISO 15118 VIN certificate, GPS-paired LPR exit, BMS kWh parity, and parking waiver."
+    },
+    "ghost_parking_or_qr_quishing_block": {
+      "http_status": 403,
+      "decision": "GHOST_PARKING_SESSION_OVERCHARGE_OR_QR_QUISHING_SPOOF_BLOCKED",
+      "latency_ms": 8,
+      "approved_budget_usd": "0.00",
+      "smart_parking_ev_token": null,
+      "reason": "Blocked multi-day LPR ghost parking bill after vehicle GPS exited geofence or blocked unsigned curbside QR sticker."
+    },
+    "empty_station_idle_fee_or_vin_siphoning_block": {
+      "http_status": 422,
+      "decision": "UNFAIR_EMPTY_STATION_IDLE_FEE_OR_FLEET_VIN_SIPHONING_BLOCKED",
+      "latency_ms": 10,
+      "approved_budget_usd": "0.00",
+      "smart_parking_ev_token": null,
+      "reason": "Blocked EV overstay idle fee at <50% occupied station or corporate fleet charge on non-whitelisted personal VIN."
+    },
+    "webiq_uncalibrated_meter_or_gouging_hold": {
+      "http_status": 451,
+      "decision": "WEBIQ_UNCALIBRATED_EVSE_METER_DRIFT_OR_RATE_GOUGING_HOLD",
+      "latency_ms": 210,
+      "approved_budget_usd": "0.00",
+      "smart_parking_ev_token": null,
+      "reason": "Web IQ flagged uncalibrated EVSE charger over-reporting kWh >8.0% vs vehicle BMS or key >180 days."
+    },
+    "auto_parking_waiver_and_offpeak_confirm": {
+      "http_status": 409,
+      "decision": "AUTOMATIC_CHARGING_PARKING_WAIVER_AND_OFFPEAK_FLEET_DISPATCH_CONFIRM",
+      "latency_ms": 180,
+      "approved_budget_usd": "212800.00",
+      "savings_usd": "67200.00",
+      "smart_parking_ev_token": "smart_parking_ev_supercharger_mandate_e4110e2375537e",
+      "reason": "Automated charger-to-garage 2h parking waiver and off-peak TOU fleet dispatch reduced mobility spend by 24.0%."
+    }
+  },
+  "gift_registry_group_gifting_escrow_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "REGISTRY_CLAIM_LOCK_AND_BLIND_SHIPPING_TOKEN_AUTHORIZED",
+      "mandate_token": "gift_registry_group_gifting_escrow_mandate_200",
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 290000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "duplicate_gift_or_address_leak_403": {
+      "status_code": 403,
+      "decision": "REGISTRY_DUPLICATE_GIFT_COLLISION_OR_RECIPIENT_PII_ADDRESS_LEAK_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 290000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "cash_out_or_sender_alert_422": {
+      "status_code": 422,
+      "decision": "RECIPIENT_GIFT_CASH_OUT_LAUNDERING_OR_SENDER_RETURN_NOTIFICATION_LEAK_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 290000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "cpsc_infant_recall_451": {
+      "status_code": 451,
+      "decision": "WEBIQ_CPSC_INFANT_PRODUCT_RECALL_OR_EXPIRED_GIFT_LINK_HOLD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 290000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "group_gift_and_pre_ship_swap_409": {
+      "status_code": 409,
+      "decision": "GROUP_GIFT_PENNY_CONSERVATION_AND_PRE_SHIP_VARIANT_SELECTION_CONFIRM",
+      "mandate_token": "gift_registry_group_gifting_escrow_mandate_optim_409",
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 217500.0,
+      "quarterly_savings_usd": 72500.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "creator_economy_patronage_escrow_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "CREATOR_TIER_ENTITLEMENT_AND_WATERMARK_AUTHORIZED",
+      "mandate_token": "creator_economy_patronage_escrow_mandate_200",
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "archive_scrape_or_rss_share_403": {
+      "status_code": 403,
+      "decision": "ARCHIVE_HIT_AND_RUN_BULK_SCRAPING_OR_PRIVATE_RSS_TOKEN_SHARING_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "self_tip_aml_or_unshipped_merch_422": {
+      "status_code": 422,
+      "decision": "SELF_TIPPING_AML_LAUNDERING_OR_UNSHIPPED_MERCH_TIER_PAYOUT_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "unlicensed_finfluencer_451": {
+      "status_code": 451,
+      "decision": "WEBIQ_UNLICENSED_FINFLUENCER_STOCK_PUMP_OR_ILLEGAL_CONTENT_HOLD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "web_direct_checkout_iap_bypass_409": {
+      "status_code": 409,
+      "decision": "WEB_DIRECT_CHECKOUT_IAP_BYPASS_AND_ANNUAL_ARCHIVE_UNLOCK_CONFIRM",
+      "mandate_token": "creator_economy_patronage_escrow_mandate_optim_409",
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 197600.0,
+      "quarterly_savings_usd": 62400.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "travel_esim_roaming_escrow_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "ESIM_SMDP_PROVISION_AND_TERRESTRIAL_PLMN_LOCK_AUTHORIZED",
+      "mandate_token": "travel_esim_roaming_escrow_mandate_200",
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "carrier_locked_or_refund_denied_403": {
+      "status_code": 403,
+      "decision": "CARRIER_LOCKED_INCOMPATIBLE_DEVICE_OR_ZERO_BYTE_REFUND_DENIAL_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "maritime_mcc901_or_fup_throttle_422": {
+      "status_code": 422,
+      "decision": "MARITIME_SATELLITE_MCC901_BILLSHOCK_OR_UNDISCLOSED_FUP_THROTTLE_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "destination_ekyc_or_outage_451": {
+      "status_code": 451,
+      "decision": "WEBIQ_DESTINATION_TELECOM_EKYC_MANDATE_OR_HOST_NETWORK_OUTAGE_HOLD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "regional_pool_and_zero_byte_refund_409": {
+      "status_code": 409,
+      "decision": "REGIONAL_ESIM_WHOLESALE_POOL_AND_ZERO_BYTE_AUTO_REFUND_CONFIRM",
+      "mandate_token": "travel_esim_roaming_escrow_mandate_optim_409",
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 175200.0,
+      "quarterly_savings_usd": 64800.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "moving_relocation_self_storage_escrow_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "BINDING_ESTIMATE_AND_STORAGE_RATE_LOCK_AUTHORIZED",
+      "mandate_token": "moving_relocation_self_storage_escrow_mandate_200",
+      "gross_quarterly_pool_usd": 330000.0,
+      "net_Execution_cost_usd": 330000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "hostage_load_or_cap_breach_403": {
+      "status_code": 403,
+      "decision": "HOSTAGE_LOAD_POST_LOADING_EXTORTION_OR_49CFR375_DELIVERY_CAP_BREACH_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 330000.0,
+      "net_Execution_cost_usd": 330000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "ecri_rate_hike_or_lien_422": {
+      "status_code": 422,
+      "decision": "SELF_STORAGE_ECRI_BAIT_RATE_HIKE_OR_PREMATURE_LIEN_AUCTION_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 330000.0,
+      "net_Execution_cost_usd": 330000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "unlicensed_broker_or_scra_451": {
+      "status_code": 451,
+      "decision": "WEBIQ_UNLICENSED_MOVING_BROKER_OR_SCRA_MILITARY_LIEN_AUCTION_HOLD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 330000.0,
+      "net_Execution_cost_usd": 330000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "container_pod_and_prorated_vacate_409": {
+      "status_code": 409,
+      "decision": "CONTAINERIZED_POD_RELOCATION_AND_PRORATED_STORAGE_VACATE_CONFIRM",
+      "mandate_token": "moving_relocation_self_storage_escrow_mandate_optim_409",
+      "gross_quarterly_pool_usd": 330000.0,
+      "net_Execution_cost_usd": 254100.0,
+      "quarterly_savings_usd": 75900.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "senior_homecare_nanny_evv_escrow_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "EVV_BLE_VERIFIED_AND_DAILY_VESTING_PLACEMENT_ESCROW_AUTHORIZED",
+      "mandate_token": "senior_homecare_nanny_evv_escrow_mandate_200",
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "ghost_evv_or_shift_overlap_403": {
+      "status_code": 403,
+      "decision": "GHOST_EVV_MOCK_GPS_SPOOFING_OR_CONCURRENT_SHIFT_OVERLAP_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "nanny_churn_fee_retention_422": {
+      "status_code": 422,
+      "decision": "NANNY_PLACEMENT_CHURN_UNREFUNDED_AGENCY_FEE_OR_REPLACEMENT_SLA_BREACH_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "oig_elder_abuse_or_health_451": {
+      "status_code": 451,
+      "decision": "WEBIQ_OIG_ELDER_ABUSE_REGISTRY_HIT_OR_EXPIRED_MATERNAL_HEALTH_SCREEN_HOLD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "employer_backup_care_and_ltc_split_409": {
+      "status_code": 409,
+      "decision": "EMPLOYER_BACKUP_CARE_SUBSIDY_AND_LTC_FSA_SPLIT_BILLING_CONFIRM",
+      "mandate_token": "senior_homecare_nanny_evv_escrow_mandate_optim_409",
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 205200.0,
+      "quarterly_savings_usd": 64800.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "optical_eyewear_contact_lens_rx_escrow_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "OPTICAL_RX_PD_AND_FTC_8HR_VERIFICATION_AUTHORIZED",
+      "mandate_token": "optical_eyewear_contact_lens_rx_escrow_mandate_200",
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "rx_sign_or_missing_pd_403": {
+      "status_code": 403,
+      "decision": "OPTICAL_RX_SIGN_INVERSION_AXIS_MISMATCH_OR_MISSING_PUPIL_PD_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "ftc_315_brand_swap_or_8hr_422": {
+      "status_code": 422,
+      "decision": "FTC_16CFR315_CONTACT_LENS_BRAND_BC_SUBSTITUTION_OR_8HR_WINDOW_BREACH_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "expired_rx_or_fda_recall_451": {
+      "status_code": 451,
+      "decision": "WEBIQ_EXPIRED_OPTICAL_PRESCRIPTION_OR_FDA_OPHTHALMIC_RECALL_HOLD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "vsp_allowance_and_fsa_split_409": {
+      "status_code": 409,
+      "decision": "VISION_INSURANCE_VSP_ALLOWANCE_AND_FSA_HIGH_INDEX_OPTIMIZATION_CONFIRM",
+      "mandate_token": "optical_eyewear_contact_lens_rx_escrow_mandate_optim_409",
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 185000.0,
+      "quarterly_savings_usd": 65000.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "coworking_flexible_office_escrow_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "COWORKING_DESK_AND_CREDIT_CAP_AUTHORIZED",
+      "mandate_token": "coworking_flexible_office_escrow_mandate_200",
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "restoration_fee_or_beverage_addon_403": {
+      "status_code": 403,
+      "decision": "MOVE_OUT_RESTORATION_FEE_DEPOSIT_GRAB_OR_MANDATORY_BEVERAGE_ADDON_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "evergreen_90d_or_room_overage_422": {
+      "status_code": 422,
+      "decision": "EVERGREEN_90D_NOTICE_ROLLOVER_TRAP_OR_MEETING_ROOM_CREDIT_OVERAGE_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "master_lease_default_eviction_451": {
+      "status_code": 451,
+      "decision": "WEBIQ_COWORKING_MASTER_LEASE_DEFAULT_EVICTION_OR_SNDA_MISSING_HOLD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "badge_swipe_daypass_rightsizing_409": {
+      "status_code": 409,
+      "decision": "BADGE_SWIPE_HOTDESK_RIGHTSIZING_AND_DAYPASS_POOL_CONFIRM",
+      "mandate_token": "coworking_flexible_office_escrow_mandate_optim_409",
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 223200.0,
+      "quarterly_savings_usd": 86800.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "ski_resort_golf_teetime_escrow_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "TEE_TIME_IDENTITY_AND_LIFT_RFID_AUTHORIZED",
+      "mandate_token": "ski_resort_golf_teetime_escrow_mandate_200",
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "scalper_bot_or_pass_sharing_403": {
+      "status_code": 403,
+      "decision": "SCALPER_BOT_TEETIME_RESALE_SWAP_OR_RFID_SEASON_PASS_SHARING_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "wind_hold_or_raincheck_denied_422": {
+      "status_code": 422,
+      "decision": "LIFT_WIND_HOLD_CLOSURE_OR_GOLF_THUNDERSTORM_RAINCHECK_DENIAL_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "avalanche_or_iso11088_din_451": {
+      "status_code": 451,
+      "decision": "WEBIQ_AVALANCHE_EXTREME_WARNING_OR_UNVERIFIED_ISO11088_DIN_BINDING_HOLD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "day_to_pass_cap_and_twilight_409": {
+      "status_code": 409,
+      "decision": "DAY_TICKET_TO_SEASON_PASS_FARE_CAPPING_AND_TWILIGHT_GOLF_CONFIRM",
+      "mandate_token": "ski_resort_golf_teetime_escrow_mandate_optim_409",
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 195000.0,
+      "quarterly_savings_usd": 65000.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "corporate_catering_office_meal_escrow_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "ATTENDANCE_SYNCED_AND_ALLERGEN_SAFE_CATERING_AUTHORIZED",
+      "mandate_token": "corporate_catering_office_meal_escrow_mandate_200",
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "ghost_headcount_or_offsite_403": {
+      "status_code": 403,
+      "decision": "GHOST_HEADCOUNT_CATERING_OVERORDER_OR_OFFSITE_HOME_DELIVERY_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "alcohol_giftcard_or_late_sla_422": {
+      "status_code": 422,
+      "decision": "STIPEND_ALCOHOL_GIFTCARD_ABUSE_OR_LATE_CATERING_SLA_BREACH_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "severe_allergen_or_health_grade_451": {
+      "status_code": 451,
+      "decision": "WEBIQ_SEVERE_ALLERGEN_CROSS_CONTAMINATION_OR_HEALTH_GRADE_HOLD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "consolidated_locker_and_attendance_409": {
+      "status_code": 409,
+      "decision": "CONSOLIDATED_LOCKER_DROP_AND_ATTENDANCE_RIGHTSIZING_CONFIRM",
+      "mandate_token": "corporate_catering_office_meal_escrow_mandate_optim_409",
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 207200.0,
+      "quarterly_savings_usd": 72800.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "bridal_bespoke_tailoring_escrow_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "DYE_LOT_LOCKED_AND_T14D_FIT_WINDOW_AUTHORIZED",
+      "mandate_token": "bridal_bespoke_tailoring_escrow_mandate_200",
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "alteration_extortion_or_dye_lot_403": {
+      "status_code": 403,
+      "decision": "ALTERATION_FEE_EXTORTION_OR_BRIDESMAID_DYE_LOT_MISMATCH_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "t14d_sla_or_fabric_swap_422": {
+      "status_code": 422,
+      "decision": "WEDDING_T14D_DELIVERY_SLA_BREACH_OR_FABRIC_MILL_AUTHENTICITY_BLOCKED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "retailer_insolvency_or_shutdown_451": {
+      "status_code": 451,
+      "decision": "WEBIQ_BRIDAL_RETAILER_INSOLVENCY_OR_FACTORY_SHUTDOWN_HOLD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "factory_custom_and_groomsmen_comp_409": {
+      "status_code": 409,
+      "decision": "FACTORY_CUSTOM_SIZING_AND_GROOMSMEN_GROUP_COMP_CONFIRM",
+      "mandate_token": "bridal_bespoke_tailoring_escrow_mandate_optim_409",
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 174800.0,
+      "quarterly_savings_usd": 55200.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
   "scenarios": [
     {
       "id": "W01",

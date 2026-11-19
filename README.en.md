@@ -155,13 +155,13 @@ agentic-commerce-lab/
 ├── lab/                              # Zero-dependency Python fiduciary control-plane guards & bench builders
 ├── src/agentic_commerce/             # Microsoft Web IQ × Agentic Commerce evaluation engine
 ├── reports/                          # Sealed benchmark report bundles (JSON data + self-contained HTML)
-└── tests/                            # 997 deterministic unit tests across 69 test modules
+└── tests/                            # 1056 deterministic unit tests across 69 test modules
 ```
 
 ### Quickstart (Python 3.11+ Standard Library Only)
 
 ```bash
-# 1. Run the complete deterministic test suite (69 test modules / 997 assertions)
+# 1. Run the complete deterministic test suite (69 test modules / 1056 assertions)
 python -m unittest discover -s tests
 
 # 2. Run the offline final-cart approval, idempotency & tamper-block baseline demo
