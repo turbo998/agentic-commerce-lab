@@ -17694,6 +17694,80 @@ def evaluate_b2b_media_buying_mfa_rebate_escrow_policy(
         "reason": "Verified ads.txt DIRECT path, MRC viewability parity, GARM brand safety, and full agency AVB rebate pass-through.",
     }
 
+
+@dataclass(frozen=True)
+class LifesciencesSunshineGpoUdiPolicyInput:
+    quarterly_lifesciences_gpo_rebate_pool_usd: Decimal
+    hcp_meal_cap_breach_or_missing_npi_sunshine_act_attestation_detected: bool
+    gpo_contract_diversion_or_unverified_udi_consumption_rebate_detected: bool
+    webiq_oig_leie_exclusion_or_fda_device_recall_flag: bool
+    restricted_key_age_days: int
+    or_rfid_udi_consignment_billing_and_edi849_rebate_netting_enabled: bool
+
+
+def evaluate_lifesciences_sunshine_gpo_udi_policy(
+    policy_input: LifesciencesSunshineGpoUdiPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Life Sciences HCP Sunshine Act NPI meal cap, MedTech EDI 844 GPO diversion & OR UDI consignment billing."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_lifesciences_gpo_rebate_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.hcp_meal_cap_breach_or_missing_npi_sunshine_act_attestation_detected:
+        return {
+            "http_status": 403,
+            "decision": "HCP_MEAL_CAP_BREACH_OR_MISSING_NPI_SUNSHINE_ACT_ATTESTATION_BLOCKED",
+            "latency_ms": 10,
+            "approved_budget_usd": "0.00",
+            "lifesciences_gpo_token": None,
+            "reason": "Blocked HCP event exceeding strictest state-of-licensure meal cap (e.g., NJ $15) or lacking 10-digit physician NPIs.",
+        }
+
+    if policy_input.gpo_contract_diversion_or_unverified_udi_consumption_rebate_detected:
+        return {
+            "http_status": 422,
+            "decision": "GPO_CONTRACT_DIVERSION_OR_UNVERIFIED_UDI_CONSUMPTION_REBATE_BLOCKED",
+            "latency_ms": 12,
+            "approved_budget_usd": "0.00",
+            "lifesciences_gpo_token": None,
+            "reason": "Blocked EDI 844 GPO chargeback rebate for non-member HIN clinic diversion or unverified OR GS1 UDI implant serial.",
+        }
+
+    if policy_input.webiq_oig_leie_exclusion_or_fda_device_recall_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_OIG_LEIE_EXCLUSION_OR_FDA_DEVICE_RECALL_HOLD",
+            "latency_ms": 230,
+            "approved_budget_usd": "0.00",
+            "lifesciences_gpo_token": None,
+            "reason": "Web IQ flagged speaker/vendor on HHS OIG LEIE exclusion list, FDA Class I recall on consignment lot, or key >180 days.",
+        }
+
+    if policy_input.or_rfid_udi_consignment_billing_and_edi849_rebate_netting_enabled:
+        savings = (gross * Decimal("0.21")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"LIFESCI_GPO_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "OR_RFID_UDI_CONSIGNMENT_BILLING_AND_EDI849_REBATE_NETTING_CONFIRM",
+            "latency_ms": 195,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "lifesciences_gpo_token": f"lifesciences_sunshine_gpo_udi_mandate_{digest}",
+            "reason": "OR RFID/UDI point-of-use consignment billing and EDI 844/849 UDI rebate netting reduced leakage by 21.0%.",
+        }
+
+    digest = hashlib.sha256(f"LIFESCI_GPO_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "SUNSHINE_NPI_VERIFIED_AND_GPO_UDI_REBATE_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "lifesciences_gpo_token": f"lifesciences_sunshine_gpo_udi_mandate_{digest}",
+        "reason": "Verified NPI state meal caps, OIG LEIE clearance, active GPO HIN membership, and OR GS1 UDI consumption parity.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -24334,6 +24408,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    lifesciences_sunshine_gpo_udi_guard = {
+        "happy_path": evaluate_lifesciences_sunshine_gpo_udi_policy(
+            LifesciencesSunshineGpoUdiPolicyInput(
+                quarterly_lifesciences_gpo_rebate_pool_usd=Decimal("480000.00"),
+                hcp_meal_cap_breach_or_missing_npi_sunshine_act_attestation_detected=False,
+                gpo_contract_diversion_or_unverified_udi_consumption_rebate_detected=False,
+                webiq_oig_leie_exclusion_or_fda_device_recall_flag=False,
+                restricted_key_age_days=30,
+                or_rfid_udi_consignment_billing_and_edi849_rebate_netting_enabled=False,
+            )
+        ),
+        "hcp_meal_cap_or_missing_npi_block": evaluate_lifesciences_sunshine_gpo_udi_policy(
+            LifesciencesSunshineGpoUdiPolicyInput(
+                quarterly_lifesciences_gpo_rebate_pool_usd=Decimal("480000.00"),
+                hcp_meal_cap_breach_or_missing_npi_sunshine_act_attestation_detected=True,
+                gpo_contract_diversion_or_unverified_udi_consumption_rebate_detected=False,
+                webiq_oig_leie_exclusion_or_fda_device_recall_flag=False,
+                restricted_key_age_days=30,
+                or_rfid_udi_consignment_billing_and_edi849_rebate_netting_enabled=False,
+            )
+        ),
+        "gpo_diversion_or_unverified_udi_block": evaluate_lifesciences_sunshine_gpo_udi_policy(
+            LifesciencesSunshineGpoUdiPolicyInput(
+                quarterly_lifesciences_gpo_rebate_pool_usd=Decimal("480000.00"),
+                hcp_meal_cap_breach_or_missing_npi_sunshine_act_attestation_detected=False,
+                gpo_contract_diversion_or_unverified_udi_consumption_rebate_detected=True,
+                webiq_oig_leie_exclusion_or_fda_device_recall_flag=False,
+                restricted_key_age_days=30,
+                or_rfid_udi_consignment_billing_and_edi849_rebate_netting_enabled=False,
+            )
+        ),
+        "webiq_oig_leie_or_fda_recall_hold": evaluate_lifesciences_sunshine_gpo_udi_policy(
+            LifesciencesSunshineGpoUdiPolicyInput(
+                quarterly_lifesciences_gpo_rebate_pool_usd=Decimal("480000.00"),
+                hcp_meal_cap_breach_or_missing_npi_sunshine_act_attestation_detected=False,
+                gpo_contract_diversion_or_unverified_udi_consumption_rebate_detected=False,
+                webiq_oig_leie_exclusion_or_fda_device_recall_flag=True,
+                restricted_key_age_days=191,
+                or_rfid_udi_consignment_billing_and_edi849_rebate_netting_enabled=False,
+            )
+        ),
+        "or_rfid_udi_and_edi849_netting_confirm": evaluate_lifesciences_sunshine_gpo_udi_policy(
+            LifesciencesSunshineGpoUdiPolicyInput(
+                quarterly_lifesciences_gpo_rebate_pool_usd=Decimal("480000.00"),
+                hcp_meal_cap_breach_or_missing_npi_sunshine_act_attestation_detected=False,
+                gpo_contract_diversion_or_unverified_udi_consumption_rebate_detected=False,
+                webiq_oig_leie_exclusion_or_fda_device_recall_flag=False,
+                restricted_key_age_days=30,
+                or_rfid_udi_consignment_billing_and_edi849_rebate_netting_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -24501,6 +24628,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "warranty_advanced_rma_collateral_guard": warranty_advanced_rma_collateral_guard,
         "ecommerce_preorder_ftc_escrow_guard": ecommerce_preorder_ftc_escrow_guard,
         "b2b_media_buying_mfa_rebate_escrow_guard": b2b_media_buying_mfa_rebate_escrow_guard,
+        "lifesciences_sunshine_gpo_udi_guard": lifesciences_sunshine_gpo_udi_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -31478,6 +31606,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">日志级对账与 SPO 托管令牌</div>
             <div class="finops-kpi-val" id="media-buy-token-kpi" style="font-size:10px;color:#A78BFA;">b2b_media_buying_mfa_rebate_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Life Sciences HCP Sunshine Act, MedTech GPO Rebate & OR UDI Consignment Sandbox -->
+      <div class="finops-box" id="lifesciences-sunshine-gpo-udi-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🩺 医药学术合规、器械 GPO 集采返利与手术室寄售 (Veeva CRM / Model N / Premier GPO) 沙盒</div>
+            <div class="finops-subtitle">实测参会医生 NPI 多州执照最严餐标硬锁 (如 NJ $15) 与阳光法案分摊防反回扣重罚 (HTTP 403)、经销商 EDI 844 集采返利穿透校验医院 HIN 与手术室 GS1 UDI 消耗防串货骗补 (HTTP 422)、OIG LEIE 医保禁入与 FDA 一级召回熔断 (HTTP 451) 及智能耗材柜实消秒结立省 21% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="lifesci-gpo-verdict-pill">HTTP 200 · SUNSHINE_NPI_VERIFIED_AND_GPO_UDI_REBATE_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度药企学术会议、器械 GPO 集采返利与手术室寄售结算池 ($ USD) <span class="control-val" id="lifesci-gpo-gross-label">$480,000</span></label>
+            <input type="range" id="lifesci-gpo-gross-slider" min="80000" max="1500000" step="30000" value="480000" oninput="updateLifesciencesSunshineGpoUdiSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">医生 NPI 州餐标红线、EDI 844 集采串货核查、OIG 禁入名单与手术室 UDI 实消场景</label>
+            <select id="lifesci-gpo-mode-select" onchange="updateLifesciencesSunshineGpoUdiSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 医生 NPI 州餐标合规 + GPO 成员医院 HIN 激活 + 手术室 UDI 扫码对账 (HTTP 200)</option>
+              <option value="npi_403">🛑 科室会含新泽西州(NJ $15上限)执业医生却预订 $150/人晚宴 或 未录入参会医生 10位 NPI (HTTP 403)</option>
+              <option value="gpo_422">🚨 经销商通过 EDI 844 虚报向三甲 GPO 医院售出 500 套支架骗 35% 返利，实则倒卖给院外私立诊所 (HTTP 422)</option>
+              <option value="oig_451">🛑 Web IQ 检出拟聘讲者命中美国卫生部 OIG LEIE 联邦医保禁入黑名单 或 寄售骨科耗材触发 FDA 召回 (HTTP 451)</option>
+              <option value="udi_409">🧑‍⚖️ 手术室智能高值耗材柜 RFID/UDI 植入即结 + EDI 849 自动剔除串货异常返利立省 21% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原串货冒领返利与寄售呆账基线</div>
+            <div class="finops-kpi-val" id="lifesci-gpo-gross-kpi">$480,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防串货骗补与 UDI 实消立省</div>
+            <div class="finops-kpi-val" id="lifesci-gpo-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净药械合规与返利结算额</div>
+            <div class="finops-kpi-val" id="lifesci-gpo-net-kpi" style="color:#60A5FA;">$480,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">阳光法案与 UDI 返利令牌</div>
+            <div class="finops-kpi-val" id="lifesci-gpo-token-kpi" style="font-size:10px;color:#A78BFA;">lifesciences_sunshine_gpo_udi_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -39944,6 +40117,61 @@ function updateB2bMediaBuyingMfaRebateEscrowSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'b2b_media_buying_mfa_rebate_escrow_mandate_verified';
+  }}
+}}
+
+function updateLifesciencesSunshineGpoUdiSandbox() {{
+  const grossSlider = document.getElementById('lifesci-gpo-gross-slider');
+  const modeSelect = document.getElementById('lifesci-gpo-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '480000');
+  const mode = modeSelect.value;
+  document.getElementById('lifesci-gpo-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('lifesci-gpo-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('lifesci-gpo-verdict-pill');
+  const savingsKpi = document.getElementById('lifesci-gpo-savings-kpi');
+  const netKpi = document.getElementById('lifesci-gpo-net-kpi');
+  const tokenKpi = document.getElementById('lifesci-gpo-token-kpi');
+
+  if (mode === 'npi_403') {{
+    pill.textContent = 'HTTP 403 · HCP_MEAL_CAP_BREACH_OR_MISSING_NPI_SUNSHINE_ACT_ATTESTATION_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_HCP_MEAL_CAP_OR_MISSING_NPI';
+  }} else if (mode === 'gpo_422') {{
+    pill.textContent = 'HTTP 422 · GPO_CONTRACT_DIVERSION_OR_UNVERIFIED_UDI_CONSUMPTION_REBATE_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_GPO_DIVERSION_OR_UNVERIFIED_UDI';
+  }} else if (mode === 'oig_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_OIG_LEIE_EXCLUSION_OR_FDA_DEVICE_RECALL_HOLD (230ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_OIG_LEIE_EXCLUDED_OR_FDA_RECALL';
+  }} else if (mode === 'udi_409') {{
+    const savings = Math.round(gross * 0.21 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · OR_RFID_UDI_CONSIGNMENT_BILLING_AND_EDI849_REBATE_NETTING_CONFIRM (195ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'lifesciences_sunshine_gpo_udi_mandate_saved21pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · SUNSHINE_NPI_VERIFIED_AND_GPO_UDI_REBATE_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'lifesciences_sunshine_gpo_udi_mandate_verified';
   }}
 }}
 

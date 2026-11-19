@@ -11418,6 +11418,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("b2b-media-buying-mfa-rebate-escrow-sandbox", html)
 
+    def test_lifesciences_sunshine_gpo_udi_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            LifesciencesSunshineGpoUdiPolicyInput,
+            evaluate_lifesciences_sunshine_gpo_udi_policy,
+        )
+
+        happy = evaluate_lifesciences_sunshine_gpo_udi_policy(
+            LifesciencesSunshineGpoUdiPolicyInput(
+                quarterly_lifesciences_gpo_rebate_pool_usd=Decimal("480000.00"),
+                hcp_meal_cap_breach_or_missing_npi_sunshine_act_attestation_detected=False,
+                gpo_contract_diversion_or_unverified_udi_consumption_rebate_detected=False,
+                webiq_oig_leie_exclusion_or_fda_device_recall_flag=False,
+                restricted_key_age_days=30,
+                or_rfid_udi_consignment_billing_and_edi849_rebate_netting_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "SUNSHINE_NPI_VERIFIED_AND_GPO_UDI_REBATE_AUTHORIZED")
+        self.assertTrue(
+            str(happy["lifesciences_gpo_token"]).startswith("lifesciences_sunshine_gpo_udi_mandate_")
+        )
+
+        npi_block = evaluate_lifesciences_sunshine_gpo_udi_policy(
+            LifesciencesSunshineGpoUdiPolicyInput(
+                quarterly_lifesciences_gpo_rebate_pool_usd=Decimal("480000.00"),
+                hcp_meal_cap_breach_or_missing_npi_sunshine_act_attestation_detected=True,
+                gpo_contract_diversion_or_unverified_udi_consumption_rebate_detected=False,
+                webiq_oig_leie_exclusion_or_fda_device_recall_flag=False,
+                restricted_key_age_days=30,
+                or_rfid_udi_consignment_billing_and_edi849_rebate_netting_enabled=False,
+            )
+        )
+        self.assertEqual(npi_block["http_status"], 403)
+        self.assertEqual(
+            npi_block["decision"],
+            "HCP_MEAL_CAP_BREACH_OR_MISSING_NPI_SUNSHINE_ACT_ATTESTATION_BLOCKED",
+        )
+
+        gpo_block = evaluate_lifesciences_sunshine_gpo_udi_policy(
+            LifesciencesSunshineGpoUdiPolicyInput(
+                quarterly_lifesciences_gpo_rebate_pool_usd=Decimal("480000.00"),
+                hcp_meal_cap_breach_or_missing_npi_sunshine_act_attestation_detected=False,
+                gpo_contract_diversion_or_unverified_udi_consumption_rebate_detected=True,
+                webiq_oig_leie_exclusion_or_fda_device_recall_flag=False,
+                restricted_key_age_days=30,
+                or_rfid_udi_consignment_billing_and_edi849_rebate_netting_enabled=False,
+            )
+        )
+        self.assertEqual(gpo_block["http_status"], 422)
+        self.assertEqual(
+            gpo_block["decision"],
+            "GPO_CONTRACT_DIVERSION_OR_UNVERIFIED_UDI_CONSUMPTION_REBATE_BLOCKED",
+        )
+
+        oig_hold = evaluate_lifesciences_sunshine_gpo_udi_policy(
+            LifesciencesSunshineGpoUdiPolicyInput(
+                quarterly_lifesciences_gpo_rebate_pool_usd=Decimal("480000.00"),
+                hcp_meal_cap_breach_or_missing_npi_sunshine_act_attestation_detected=False,
+                gpo_contract_diversion_or_unverified_udi_consumption_rebate_detected=False,
+                webiq_oig_leie_exclusion_or_fda_device_recall_flag=True,
+                restricted_key_age_days=191,
+                or_rfid_udi_consignment_billing_and_edi849_rebate_netting_enabled=False,
+            )
+        )
+        self.assertEqual(oig_hold["http_status"], 451)
+        self.assertEqual(
+            oig_hold["decision"],
+            "WEBIQ_OIG_LEIE_EXCLUSION_OR_FDA_DEVICE_RECALL_HOLD",
+        )
+
+        opt_confirm = evaluate_lifesciences_sunshine_gpo_udi_policy(
+            LifesciencesSunshineGpoUdiPolicyInput(
+                quarterly_lifesciences_gpo_rebate_pool_usd=Decimal("480000.00"),
+                hcp_meal_cap_breach_or_missing_npi_sunshine_act_attestation_detected=False,
+                gpo_contract_diversion_or_unverified_udi_consumption_rebate_detected=False,
+                webiq_oig_leie_exclusion_or_fda_device_recall_flag=False,
+                restricted_key_age_days=30,
+                or_rfid_udi_consignment_billing_and_edi849_rebate_netting_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "100800.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "379200.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("lifesciences_sunshine_gpo_udi_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("lifesciences-sunshine-gpo-udi-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
