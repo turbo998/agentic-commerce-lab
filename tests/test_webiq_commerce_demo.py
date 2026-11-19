@@ -10878,6 +10878,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("b2b-packaging-print-preflight-escrow-sandbox", html)
 
+    def test_ecommerce_tbyb_preauth_wardrobing_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            EcommerceTbybPreauthWardrobingPolicyInput,
+            evaluate_ecommerce_tbyb_preauth_wardrobing_policy,
+        )
+
+        happy = evaluate_ecommerce_tbyb_preauth_wardrobing_policy(
+            EcommerceTbybPreauthWardrobingPolicyInput(
+                quarterly_ecommerce_tbyb_trial_pool_usd=Decimal("260000.00"),
+                prepaid_bin_tbyb_abuse_or_excessive_size_bracketing_detected=False,
+                post_dropoff_scan_capture_race_or_broken_security_ribbon_detected=False,
+                expired_card_auth_window_or_missing_carrier_scan_flag=False,
+                restricted_key_age_days=30,
+                delivery_triggered_spt_auth_and_keep_bundle_incentive_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "TBYB_PREAUTH_AND_PARTIAL_KEEP_CAPTURE_AUTHORIZED")
+        self.assertTrue(
+            str(happy["tbyb_trial_escrow_token"]).startswith("ecommerce_tbyb_preauth_wardrobing_mandate_")
+        )
+
+        bin_block = evaluate_ecommerce_tbyb_preauth_wardrobing_policy(
+            EcommerceTbybPreauthWardrobingPolicyInput(
+                quarterly_ecommerce_tbyb_trial_pool_usd=Decimal("260000.00"),
+                prepaid_bin_tbyb_abuse_or_excessive_size_bracketing_detected=True,
+                post_dropoff_scan_capture_race_or_broken_security_ribbon_detected=False,
+                expired_card_auth_window_or_missing_carrier_scan_flag=False,
+                restricted_key_age_days=30,
+                delivery_triggered_spt_auth_and_keep_bundle_incentive_enabled=False,
+            )
+        )
+        self.assertEqual(bin_block["http_status"], 403)
+        self.assertEqual(
+            bin_block["decision"],
+            "PREPAID_BIN_TBYB_ABUSE_OR_EXCESSIVE_SIZE_BRACKETING_BLOCKED",
+        )
+
+        ribbon_block = evaluate_ecommerce_tbyb_preauth_wardrobing_policy(
+            EcommerceTbybPreauthWardrobingPolicyInput(
+                quarterly_ecommerce_tbyb_trial_pool_usd=Decimal("260000.00"),
+                prepaid_bin_tbyb_abuse_or_excessive_size_bracketing_detected=False,
+                post_dropoff_scan_capture_race_or_broken_security_ribbon_detected=True,
+                expired_card_auth_window_or_missing_carrier_scan_flag=False,
+                restricted_key_age_days=30,
+                delivery_triggered_spt_auth_and_keep_bundle_incentive_enabled=False,
+            )
+        )
+        self.assertEqual(ribbon_block["http_status"], 422)
+        self.assertEqual(
+            ribbon_block["decision"],
+            "POST_DROPOFF_SCAN_CAPTURE_RACE_OR_BROKEN_SECURITY_RIBBON_BLOCKED",
+        )
+
+        expiry_hold = evaluate_ecommerce_tbyb_preauth_wardrobing_policy(
+            EcommerceTbybPreauthWardrobingPolicyInput(
+                quarterly_ecommerce_tbyb_trial_pool_usd=Decimal("260000.00"),
+                prepaid_bin_tbyb_abuse_or_excessive_size_bracketing_detected=False,
+                post_dropoff_scan_capture_race_or_broken_security_ribbon_detected=False,
+                expired_card_auth_window_or_missing_carrier_scan_flag=True,
+                restricted_key_age_days=191,
+                delivery_triggered_spt_auth_and_keep_bundle_incentive_enabled=False,
+            )
+        )
+        self.assertEqual(expiry_hold["http_status"], 451)
+        self.assertEqual(
+            expiry_hold["decision"],
+            "EXPIRED_CARD_AUTH_WINDOW_OR_MISSING_CARRIER_SCAN_HOLD",
+        )
+
+        opt_confirm = evaluate_ecommerce_tbyb_preauth_wardrobing_policy(
+            EcommerceTbybPreauthWardrobingPolicyInput(
+                quarterly_ecommerce_tbyb_trial_pool_usd=Decimal("260000.00"),
+                prepaid_bin_tbyb_abuse_or_excessive_size_bracketing_detected=False,
+                post_dropoff_scan_capture_race_or_broken_security_ribbon_detected=False,
+                expired_card_auth_window_or_missing_carrier_scan_flag=False,
+                restricted_key_age_days=30,
+                delivery_triggered_spt_auth_and_keep_bundle_incentive_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "65000.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "195000.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_tbyb_preauth_wardrobing_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("ecommerce-tbyb-preauth-wardrobing-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

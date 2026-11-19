@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg476" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#07111E" />
+      <stop offset="50%" stop-color="#102138" />
+      <stop offset="100%" stop-color="#081322" />
+    </linearGradient>
+    <linearGradient id="accent476" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="50%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg476)" />
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent476)" />
+
+  <!-- Header -->
+  <text x="44" y="48" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.4">ROUND 33 · E-COMMERCE TRY-BEFORE-YOU-BUY (TBYB), ANTI-BRACKETING &amp; WARDROBING PRE-AUTH ESCROW</text>
+  <text x="44" y="82" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">电商先试后买（TBYB）与服装试穿：防虚拟预付卡骗货、防买三退三与防蹭穿剪标</text>
+  <text x="44" y="108" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Shopify TryNow / Corso vs Amazon Try Before You Buy vs Stripe SPT Rolling Auth vs Azure Foundry + NFC Tag Gate</text>
+
+  <!-- Left Panel: 3 Core TBYB & Apparel Bracketing Risks -->
+  <rect x="44" y="132" width="350" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="64" y="164" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🚨 服装先试后买（TBYB）三大资损黑洞</text>
+
+  <rect x="62" y="182" width="314" height="132" rx="8" fill="#1E293B" stroke="#EF4444" stroke-width="1" />
+  <text x="76" y="206" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">1. 虚拟预付卡 $0 骗走 6 件礼服与盲目买四码</text>
+  <text x="76" y="228" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 黑产用一次性预付礼品卡过初审骗走 $2,000 衣物后</text>
+  <text x="76" y="248" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  锁卡扣款失败，或同款连定 S/M/L/XL 四码致断货</text>
+  <text x="76" y="268" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：发卡行 BIN 剔除预付卡 + 同 SKU 限 2 相邻</text>
+  <text x="76" y="288" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  尺码硬门禁 (HTTP 403 拦截恶意试穿)</text>
+
+  <rect x="62" y="328" width="314" height="132" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1" />
+  <text x="76" y="352" fill="#FCD34D" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">2. 穿去参加晚宴再退货(Wardrobing)与揽收误扣</text>
+  <text x="76" y="374" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 买家剪掉吊牌穿去聚会后申请全退，或已在第 7 天</text>
+  <text x="76" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  交寄快递但系统仍按期满自动扣全款引发拒付投诉</text>
+  <text x="76" y="414" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：一次性防拆 NFC 丝带封签核验 + 快递揽收</text>
+  <text x="76" y="434" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  首扫立即冻结自动扣款锁 (HTTP 422 拦截)</text>
+
+  <rect x="62" y="474" width="314" height="134" rx="8" fill="#1E293B" stroke="#A855F7" stroke-width="1" />
+  <text x="76" y="498" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">3. 7天卡预授权自然过期导致试穿结束扣不出钱</text>
+  <text x="76" y="520" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 普通信用卡预授权仅 7 天有效，而物流+试穿需 12 天</text>
+  <text x="76" y="540" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：签收起算试穿期 + 预授权到期熔断 (HTTP 451)</text>
+  <text x="76" y="560" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Stripe SPT 签收才启预授权 + 多留阶梯折扣激励</text>
+  <text x="76" y="582" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  提高留存并压降逆向运费立省 25% (HTTP 409)</text>
+
+  <!-- Center Panel: 5-Lane Deterministic Gate -->
+  <rect x="414" y="132" width="402" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="434" y="164" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🛡️ 先试后买（TBYB）与防蹭穿五车道状态机</text>
+
+  <rect x="434" y="184" width="362" height="72" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="450" y="208" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 200 · TBYB_PREAUTH_AND_KEEP_CAPTURE_AUTHORIZED</text>
+  <text x="450" y="228" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">贷记卡BIN通过 + 尺码合规 + 按实留件数精准清分 (9ms)</text>
+  <text x="450" y="245" font-family="Consolas, monospace" font-size="11" fill="#A7F3D0">ecommerce_tbyb_preauth_wardrobing_mandate_*</text>
+
+  <rect x="434" y="268" width="362" height="72" rx="8" fill="#450A0A" stroke="#EF4444" stroke-width="1.5" />
+  <text x="450" y="292" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 403 · PREPAID_BIN_OR_EXCESSIVE_BRACKETING_BLOCKED</text>
+  <text x="450" y="312" fill="#FEE2E2" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截一次性虚拟预付卡下单 TBYB 或同款连拍 &gt;2 个尺码占库</text>
+  <text x="450" y="329" fill="#FCA5A5" font-family="Consolas, monospace" font-size="11">card_funding = prepaid | same_sku_sizes &gt; 2</text>
+
+  <rect x="434" y="352" width="362" height="72" rx="8" fill="#431407" stroke="#F97316" stroke-width="1.5" />
+  <text x="450" y="376" fill="#FDBA74" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 422 · BROKEN_RIBBON_OR_POST_SCAN_CAPTURE_BLOCKED</text>
+  <text x="450" y="396" fill="#FFEDD5" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截剪断防蹭穿封签退货或包裹已由快递揽收仍触发期满扣款</text>
+  <text x="450" y="413" fill="#FDBA74" font-family="Consolas, monospace" font-size="11">nfc_ribbon_intact = false | carrier_scan_active = true</text>
+
+  <rect x="434" y="436" width="362" height="72" rx="8" fill="#3B0764" stroke="#A855F7" stroke-width="1.5" />
+  <text x="450" y="460" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 451 · EXPIRED_AUTH_WINDOW_OR_NO_DELIVERY_HOLD</text>
+  <text x="450" y="480" fill="#F3E8FF" font-family="Segoe UI, Arial, sans-serif" font-size="12">预授权窗口即将到期未续期或快递尚未投递签收严禁起算试穿期</text>
+  <text x="450" y="497" fill="#D8B4FE" font-family="Consolas, monospace" font-size="11">auth_ttl_hours &lt; 24 | delivery_confirmed = false</text>
+
+  <rect x="434" y="520" width="362" height="88" rx="8" fill="#422006" stroke="#F59E0B" stroke-width="1.5" />
+  <text x="450" y="544" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 409 · DELIVERY_TRIGGERED_SPT_AND_KEEP_BONUS_CONFIRM</text>
+  <text x="450" y="564" fill="#FEF3C7" font-family="Segoe UI, Arial, sans-serif" font-size="12">签收触发预授权 + Web IQ 尺码预筛 + 留2件9折激励省 25%</text>
+  <text x="450" y="584" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">季度品牌 TBYB 试穿结算池 $260,000 → 净结算与履约优化 $195,000 (省 $65,000)</text>
+
+  <!-- Right Panel: Platform Selection Matrix -->
+  <rect x="836" y="132" width="320" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="856" y="164" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🧭 先试后买（TBYB）平台选型</text>
+
+  <rect x="854" y="184" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="206" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">TryNow / Corso / 顺丰先试后付 (Shopify 插件)</text>
+  <text x="868" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 一键在 Shopify 独立站增加“$0 试穿 7 天”按钮</text>
+  <text x="868" y="246" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 痛点：长物流周期下 7 天预授权易过期脱保</text>
+  <text x="868" y="266" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：DTC 时尚女装、运动鞋靴与眼镜品牌独立站</text>
+
+  <rect x="854" y="298" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="320" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Klarna Pay in 30 / 支付宝芝麻先享 (信用账期)</text>
+  <text x="868" y="340" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 由金融机构承担坏账风险，支持 30 天内退货免付</text>
+  <text x="868" y="360" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 痛点：商户需支付 4%–6% 高昂贴息通道费</text>
+  <text x="868" y="380" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：客单价适中、不愿自担坏账的大众服饰零售</text>
+
+  <rect x="854" y="412" width="284" height="196" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="868" y="436" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">★ 推荐：Foundry + 签收激活 SPT &amp; 防蹭穿网关</text>
+  <text x="868" y="458" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">1. BIN 过滤虚拟预付卡 + 限同款最多 2 尺码</text>
+  <text x="868" y="480" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">2. 快递签收当秒才激活 7 天卡预授权防过期</text>
+  <text x="868" y="502" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">3. 退货快递首扫自动冻结期满扣款防拒付</text>
+  <text x="868" y="524" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">4. 显眼位置 NFC 防拆封签防晚宴蹭穿省 25%</text>
+  <rect x="868" y="542" width="256" height="50" rx="6" fill="#022C22" />
+  <text x="880" y="563" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">审计标签：provenance = synthetic</text>
+  <text x="880" y="581" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="11">independently_reproduced = false</text>
+</svg>

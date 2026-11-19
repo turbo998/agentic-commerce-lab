@@ -17250,6 +17250,80 @@ def evaluate_b2b_packaging_print_preflight_escrow_policy(
         "reason": "Verified ISO 15930 PDF/X-4 preflight, signed 3D dieline proof, active FSC CoC, and Delta-E <= 2.0 color parity.",
     }
 
+
+@dataclass(frozen=True)
+class EcommerceTbybPreauthWardrobingPolicyInput:
+    quarterly_ecommerce_tbyb_trial_pool_usd: Decimal
+    prepaid_bin_tbyb_abuse_or_excessive_size_bracketing_detected: bool
+    post_dropoff_scan_capture_race_or_broken_security_ribbon_detected: bool
+    expired_card_auth_window_or_missing_carrier_scan_flag: bool
+    restricted_key_age_days: int
+    delivery_triggered_spt_auth_and_keep_bundle_incentive_enabled: bool
+
+
+def evaluate_ecommerce_tbyb_preauth_wardrobing_policy(
+    policy_input: EcommerceTbybPreauthWardrobingPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate E-Commerce Try-Before-You-Buy (TBYB) prepaid BIN veto, <=2 size bracketing, NFC anti-wardrobing & delivery SPT."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_ecommerce_tbyb_trial_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.prepaid_bin_tbyb_abuse_or_excessive_size_bracketing_detected:
+        return {
+            "http_status": 403,
+            "decision": "PREPAID_BIN_TBYB_ABUSE_OR_EXCESSIVE_SIZE_BRACKETING_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "tbyb_trial_escrow_token": None,
+            "reason": "Blocked $0 TBYB checkout using disposable prepaid card BIN or bracketing >2 adjacent sizes of the same SKU.",
+        }
+
+    if policy_input.post_dropoff_scan_capture_race_or_broken_security_ribbon_detected:
+        return {
+            "http_status": 422,
+            "decision": "POST_DROPOFF_SCAN_CAPTURE_RACE_OR_BROKEN_SECURITY_RIBBON_BLOCKED",
+            "latency_ms": 11,
+            "approved_budget_usd": "0.00",
+            "tbyb_trial_escrow_token": None,
+            "reason": "Blocked auto-capture after carrier return drop-off scan or rejected return with severed exterior NFC security ribbon.",
+        }
+
+    if policy_input.expired_card_auth_window_or_missing_carrier_scan_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "EXPIRED_CARD_AUTH_WINDOW_OR_MISSING_CARRIER_SCAN_HOLD",
+            "latency_ms": 215,
+            "approved_budget_usd": "0.00",
+            "tbyb_trial_escrow_token": None,
+            "reason": "Held trial clock prior to carrier DELIVERED confirmation, expiring 7-day card auth window, or key >180 days.",
+        }
+
+    if policy_input.delivery_triggered_spt_auth_and_keep_bundle_incentive_enabled:
+        savings = (gross * Decimal("0.25")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"TBYB_TRIAL_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "DELIVERY_TRIGGERED_SPT_AUTH_AND_KEEP_BUNDLE_INCENTIVE_CONFIRM",
+            "latency_ms": 190,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "tbyb_trial_escrow_token": f"ecommerce_tbyb_preauth_wardrobing_mandate_{digest}",
+            "reason": "Delivery-triggered 7-day SPT pre-auth, Web IQ size narrowing, and keep-2 incentive reduced trial loss by 25.0%.",
+        }
+
+    digest = hashlib.sha256(f"TBYB_TRIAL_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "TBYB_PREAUTH_AND_PARTIAL_KEEP_CAPTURE_AUTHORIZED",
+        "latency_ms": 9,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "tbyb_trial_escrow_token": f"ecommerce_tbyb_preauth_wardrobing_mandate_{digest}",
+        "reason": "Verified credit BIN, <=2 adjacent sizes, intact NFC ribbon on return, and exact kept-item partial capture.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -23572,6 +23646,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_tbyb_preauth_wardrobing_guard = {
+        "happy_path": evaluate_ecommerce_tbyb_preauth_wardrobing_policy(
+            EcommerceTbybPreauthWardrobingPolicyInput(
+                quarterly_ecommerce_tbyb_trial_pool_usd=Decimal("260000.00"),
+                prepaid_bin_tbyb_abuse_or_excessive_size_bracketing_detected=False,
+                post_dropoff_scan_capture_race_or_broken_security_ribbon_detected=False,
+                expired_card_auth_window_or_missing_carrier_scan_flag=False,
+                restricted_key_age_days=30,
+                delivery_triggered_spt_auth_and_keep_bundle_incentive_enabled=False,
+            )
+        ),
+        "prepaid_bin_or_size_bracketing_block": evaluate_ecommerce_tbyb_preauth_wardrobing_policy(
+            EcommerceTbybPreauthWardrobingPolicyInput(
+                quarterly_ecommerce_tbyb_trial_pool_usd=Decimal("260000.00"),
+                prepaid_bin_tbyb_abuse_or_excessive_size_bracketing_detected=True,
+                post_dropoff_scan_capture_race_or_broken_security_ribbon_detected=False,
+                expired_card_auth_window_or_missing_carrier_scan_flag=False,
+                restricted_key_age_days=30,
+                delivery_triggered_spt_auth_and_keep_bundle_incentive_enabled=False,
+            )
+        ),
+        "post_dropoff_capture_or_broken_ribbon_block": evaluate_ecommerce_tbyb_preauth_wardrobing_policy(
+            EcommerceTbybPreauthWardrobingPolicyInput(
+                quarterly_ecommerce_tbyb_trial_pool_usd=Decimal("260000.00"),
+                prepaid_bin_tbyb_abuse_or_excessive_size_bracketing_detected=False,
+                post_dropoff_scan_capture_race_or_broken_security_ribbon_detected=True,
+                expired_card_auth_window_or_missing_carrier_scan_flag=False,
+                restricted_key_age_days=30,
+                delivery_triggered_spt_auth_and_keep_bundle_incentive_enabled=False,
+            )
+        ),
+        "expired_auth_or_pre_delivery_hold": evaluate_ecommerce_tbyb_preauth_wardrobing_policy(
+            EcommerceTbybPreauthWardrobingPolicyInput(
+                quarterly_ecommerce_tbyb_trial_pool_usd=Decimal("260000.00"),
+                prepaid_bin_tbyb_abuse_or_excessive_size_bracketing_detected=False,
+                post_dropoff_scan_capture_race_or_broken_security_ribbon_detected=False,
+                expired_card_auth_window_or_missing_carrier_scan_flag=True,
+                restricted_key_age_days=191,
+                delivery_triggered_spt_auth_and_keep_bundle_incentive_enabled=False,
+            )
+        ),
+        "delivery_spt_and_keep_incentive_confirm": evaluate_ecommerce_tbyb_preauth_wardrobing_policy(
+            EcommerceTbybPreauthWardrobingPolicyInput(
+                quarterly_ecommerce_tbyb_trial_pool_usd=Decimal("260000.00"),
+                prepaid_bin_tbyb_abuse_or_excessive_size_bracketing_detected=False,
+                post_dropoff_scan_capture_race_or_broken_security_ribbon_detected=False,
+                expired_card_auth_window_or_missing_carrier_scan_flag=False,
+                restricted_key_age_days=30,
+                delivery_triggered_spt_auth_and_keep_bundle_incentive_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -23733,6 +23860,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "car_rental_mobility_toll_escrow_guard": car_rental_mobility_toll_escrow_guard,
         "home_remodeling_cad_milestone_escrow_guard": home_remodeling_cad_milestone_escrow_guard,
         "b2b_packaging_print_preflight_escrow_guard": b2b_packaging_print_preflight_escrow_guard,
+        "ecommerce_tbyb_preauth_wardrobing_guard": ecommerce_tbyb_preauth_wardrobing_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -30440,6 +30568,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">印前预检与色差托管令牌</div>
             <div class="finops-kpi-val" id="print-pack-token-kpi" style="font-size:10px;color:#A78BFA;">b2b_packaging_print_preflight_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive E-Commerce Try-Before-You-Buy (TBYB), Size-Bracketing & Anti-Wardrobing Sandbox -->
+      <div class="finops-box" id="ecommerce-tbyb-preauth-wardrobing-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">👗 电商先试后买 (TBYB)、多尺码试穿与防蹭穿托管 (Shopify TryNow / Corso / 顺丰先试后付) 沙盒</div>
+            <div class="finops-subtitle">实测发卡行 BIN 剔除一次性预付礼品卡与同款限 &lt;=2 相邻尺码防占库 (HTTP 403)、显眼 NFC 防拆丝带核验与快递揽收首扫秒级冻结自动扣款 (HTTP 422)、未签收禁启倒计时与预授权过期保护 (HTTP 451) 及签收激活 7 天 SPT+留2件激励立省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="tbyb-trial-verdict-pill">HTTP 200 · TBYB_PREAUTH_AND_PARTIAL_KEEP_CAPTURE_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度品牌独立站先试后买 (TBYB) 试穿与逆向物流结算池 ($ USD) <span class="control-val" id="tbyb-trial-gross-label">$260,000</span></label>
+            <input type="range" id="tbyb-trial-gross-slider" min="40000" max="900000" step="20000" value="260000" oninput="updateEcommerceTbybPreauthWardrobingSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">预付卡 BIN 拦截、相邻尺码限制、NFC 防蹭穿封签与快递签收激活预授权场景</label>
+            <select id="tbyb-trial-mode-select" onchange="updateEcommerceTbybPreauthWardrobingSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 贷记卡 BIN 合规 + 试穿 2 相邻尺码 + 按实留件数精准扣款 (HTTP 200)</option>
+              <option value="bin_403">🛑 黑产用一次性预付礼品卡 $0 骗走 6 件礼服 或 同款连拍 S/M/L/XL 四个尺码占空库存 (HTTP 403)</option>
+              <option value="ribbon_422">🚨 买家剪断胸口 NFC 防蹭穿丝带穿去晚宴后退货 或 已在快递柜完成退货首扫仍触发期满扣款 (HTTP 422)</option>
+              <option value="expiry_451">🛑 包裹尚未投递签收即违规起算 7 天试穿倒计时 或 跨省物流慢件致银行预授权临近过期 (HTTP 451)</option>
+              <option value="spt_409">🧑‍⚖️ 快递签收当秒激活 7 天 Stripe SPT 预授权 + Web IQ 尺码预筛 + 留2件9折激励立省 25% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原预授权脱保坏账与退货物流基线</div>
+            <div class="finops-kpi-val" id="tbyb-trial-gross-kpi">$260,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">签收锁款与精准荐码立省</div>
+            <div class="finops-kpi-val" id="tbyb-trial-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净 TBYB 结算与履约成本</div>
+            <div class="finops-kpi-val" id="tbyb-trial-net-kpi" style="color:#60A5FA;">$260,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">签收预授权与防蹭穿令牌</div>
+            <div class="finops-kpi-val" id="tbyb-trial-token-kpi" style="font-size:10px;color:#A78BFA;">ecommerce_tbyb_preauth_wardrobing_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -38576,6 +38749,61 @@ function updateB2bPackagingPrintPreflightEscrowSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'b2b_packaging_print_preflight_escrow_mandate_verified';
+  }}
+}}
+
+function updateEcommerceTbybPreauthWardrobingSandbox() {{
+  const grossSlider = document.getElementById('tbyb-trial-gross-slider');
+  const modeSelect = document.getElementById('tbyb-trial-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '260000');
+  const mode = modeSelect.value;
+  document.getElementById('tbyb-trial-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('tbyb-trial-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('tbyb-trial-verdict-pill');
+  const savingsKpi = document.getElementById('tbyb-trial-savings-kpi');
+  const netKpi = document.getElementById('tbyb-trial-net-kpi');
+  const tokenKpi = document.getElementById('tbyb-trial-token-kpi');
+
+  if (mode === 'bin_403') {{
+    pill.textContent = 'HTTP 403 · PREPAID_BIN_TBYB_ABUSE_OR_EXCESSIVE_SIZE_BRACKETING_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_PREPAID_BIN_OR_4SIZE_BRACKETING';
+  }} else if (mode === 'ribbon_422') {{
+    pill.textContent = 'HTTP 422 · POST_DROPOFF_SCAN_CAPTURE_RACE_OR_BROKEN_SECURITY_RIBBON_BLOCKED (11ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_BROKEN_NFC_RIBBON_OR_POST_SCAN_CAPTURE';
+  }} else if (mode === 'expiry_451') {{
+    pill.textContent = 'HTTP 451 · EXPIRED_CARD_AUTH_WINDOW_OR_MISSING_CARRIER_SCAN_HOLD (215ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_PRE_DELIVERY_CLOCK_OR_AUTH_EXPIRY';
+  }} else if (mode === 'spt_409') {{
+    const savings = Math.round(gross * 0.25 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · DELIVERY_TRIGGERED_SPT_AUTH_AND_KEEP_BUNDLE_INCENTIVE_CONFIRM (190ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'ecommerce_tbyb_preauth_wardrobing_mandate_saved25pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · TBYB_PREAUTH_AND_PARTIAL_KEEP_CAPTURE_AUTHORIZED (9ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'ecommerce_tbyb_preauth_wardrobing_mandate_verified';
   }}
 }}
 
