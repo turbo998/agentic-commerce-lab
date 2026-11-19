@@ -11598,6 +11598,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("highered-tuition-fx-aml-escrow-sandbox", html)
 
+    def test_fintech_credit_regf_hardship_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            FintechCreditRegfHardshipPolicyInput,
+            evaluate_fintech_credit_regf_hardship_policy,
+        )
+
+        happy = evaluate_fintech_credit_regf_hardship_policy(
+            FintechCreditRegfHardshipPolicyInput(
+                quarterly_fintech_credit_portfolio_pool_usd=Decimal("560000.00"),
+                ecoa_prohibited_proxy_feature_or_synthetic_bustout_cycling_detected=False,
+                cfpb_reg_f_7in7_frequency_breach_or_bankruptcy_stay_violation_detected=False,
+                webiq_scra_6pct_cap_or_fema_disaster_forbearance_flag=False,
+                restricted_key_age_days=30,
+                open_banking_revenue_sweep_and_zero_fee_hardship_restructure_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "ECOA_FAIR_CREDIT_AND_REGF_SERVICING_AUTHORIZED")
+        self.assertTrue(
+            str(happy["fintech_credit_token"]).startswith("fintech_credit_regf_hardship_mandate_")
+        )
+
+        ecoa_block = evaluate_fintech_credit_regf_hardship_policy(
+            FintechCreditRegfHardshipPolicyInput(
+                quarterly_fintech_credit_portfolio_pool_usd=Decimal("560000.00"),
+                ecoa_prohibited_proxy_feature_or_synthetic_bustout_cycling_detected=True,
+                cfpb_reg_f_7in7_frequency_breach_or_bankruptcy_stay_violation_detected=False,
+                webiq_scra_6pct_cap_or_fema_disaster_forbearance_flag=False,
+                restricted_key_age_days=30,
+                open_banking_revenue_sweep_and_zero_fee_hardship_restructure_enabled=False,
+            )
+        )
+        self.assertEqual(ecoa_block["http_status"], 403)
+        self.assertEqual(
+            ecoa_block["decision"],
+            "ECOA_PROHIBITED_PROXY_FEATURE_OR_SYNTHETIC_BUSTOUT_CYCLING_BLOCKED",
+        )
+
+        regf_block = evaluate_fintech_credit_regf_hardship_policy(
+            FintechCreditRegfHardshipPolicyInput(
+                quarterly_fintech_credit_portfolio_pool_usd=Decimal("560000.00"),
+                ecoa_prohibited_proxy_feature_or_synthetic_bustout_cycling_detected=False,
+                cfpb_reg_f_7in7_frequency_breach_or_bankruptcy_stay_violation_detected=True,
+                webiq_scra_6pct_cap_or_fema_disaster_forbearance_flag=False,
+                restricted_key_age_days=30,
+                open_banking_revenue_sweep_and_zero_fee_hardship_restructure_enabled=False,
+            )
+        )
+        self.assertEqual(regf_block["http_status"], 422)
+        self.assertEqual(
+            regf_block["decision"],
+            "CFPB_REG_F_7IN7_FREQUENCY_BREACH_OR_BANKRUPTCY_STAY_VIOLATION_BLOCKED",
+        )
+
+        scra_hold = evaluate_fintech_credit_regf_hardship_policy(
+            FintechCreditRegfHardshipPolicyInput(
+                quarterly_fintech_credit_portfolio_pool_usd=Decimal("560000.00"),
+                ecoa_prohibited_proxy_feature_or_synthetic_bustout_cycling_detected=False,
+                cfpb_reg_f_7in7_frequency_breach_or_bankruptcy_stay_violation_detected=False,
+                webiq_scra_6pct_cap_or_fema_disaster_forbearance_flag=True,
+                restricted_key_age_days=191,
+                open_banking_revenue_sweep_and_zero_fee_hardship_restructure_enabled=False,
+            )
+        )
+        self.assertEqual(scra_hold["http_status"], 451)
+        self.assertEqual(
+            scra_hold["decision"],
+            "WEBIQ_SCRA_6PCT_CAP_OR_FEMA_DISASTER_FORBEARANCE_HOLD",
+        )
+
+        opt_confirm = evaluate_fintech_credit_regf_hardship_policy(
+            FintechCreditRegfHardshipPolicyInput(
+                quarterly_fintech_credit_portfolio_pool_usd=Decimal("560000.00"),
+                ecoa_prohibited_proxy_feature_or_synthetic_bustout_cycling_detected=False,
+                cfpb_reg_f_7in7_frequency_breach_or_bankruptcy_stay_violation_detected=False,
+                webiq_scra_6pct_cap_or_fema_disaster_forbearance_flag=False,
+                restricted_key_age_days=30,
+                open_banking_revenue_sweep_and_zero_fee_hardship_restructure_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "140000.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "420000.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("fintech_credit_regf_hardship_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("fintech-credit-regf-hardship-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
