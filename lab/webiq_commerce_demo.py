@@ -17102,6 +17102,80 @@ def evaluate_car_rental_mobility_toll_escrow_policy(
         "reason": "Verified pre/post 3D vision parity, OBD-II fuel/SOC reading, recall-free VIN, and instant deposit release.",
     }
 
+
+@dataclass(frozen=True)
+class HomeRemodelingCadMilestoneEscrowPolicyInput:
+    quarterly_home_remodeling_cabinetry_pool_usd: Decimal
+    unverified_lidar_cad_or_mep_collision_custom_millwork_detected: bool
+    predatory_change_order_surcharge_or_incomplete_boq_bait_detected: bool
+    webiq_contractor_license_lapse_or_unwaived_supplier_lien_flag: bool
+    restricted_key_age_days: int
+    stage_gated_30_30_30_10_escrow_and_factory_direct_split_enabled: bool
+
+
+def evaluate_home_remodeling_cad_milestone_escrow_policy(
+    policy_input: HomeRemodelingCadMilestoneEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Custom Home Remodeling & Cabinetry post-tile LiDAR CAD gate, anti-change-order bait & 30/30/30/10 escrow."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_home_remodeling_cabinetry_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.unverified_lidar_cad_or_mep_collision_custom_millwork_detected:
+        return {
+            "http_status": 403,
+            "decision": "UNVERIFIED_LIDAR_CAD_OR_MEP_COLLISION_CUSTOM_MILLWORK_BLOCKED",
+            "latency_ms": 11,
+            "approved_budget_usd": "0.00",
+            "home_remodeling_escrow_token": None,
+            "reason": "Blocked custom cabinetry CNC fabrication lacking post-tile LiDAR point-cloud verification or having MEP fixture clashes.",
+        }
+
+    if policy_input.predatory_change_order_surcharge_or_incomplete_boq_bait_detected:
+        return {
+            "http_status": 422,
+            "decision": "PREDATORY_CHANGE_ORDER_SURCHARGE_OR_INCOMPLETE_BOQ_BAIT_BLOCKED",
+            "latency_ms": 13,
+            "approved_budget_usd": "0.00",
+            "home_remodeling_escrow_token": None,
+            "reason": "Blocked contractor quote omitting mandatory waterproofing/demolition BoQ items or mid-project change order >5.0%.",
+        }
+
+    if policy_input.webiq_contractor_license_lapse_or_unwaived_supplier_lien_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_CONTRACTOR_LICENSE_LAPSE_OR_UNWAIVED_SUPPLIER_LIEN_HOLD",
+            "latency_ms": 240,
+            "approved_budget_usd": "0.00",
+            "home_remodeling_escrow_token": None,
+            "reason": "Web IQ flagged suspended contractor license, lapsed workers' comp, missing supplier mechanics' lien waiver, or key >180 days.",
+        }
+
+    if policy_input.stage_gated_30_30_30_10_escrow_and_factory_direct_split_enabled:
+        savings = (gross * Decimal("0.22")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"REMODEL_CAD_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "STAGE_GATED_30_30_30_10_ESCROW_AND_FACTORY_DIRECT_SPLIT_CONFIRM",
+            "latency_ms": 205,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "home_remodeling_escrow_token": f"home_remodeling_cad_milestone_escrow_mandate_{digest}",
+            "reason": "Post-tile LiDAR CNC lock, 30/30/30/10 inspection escrow, and direct-to-factory material split reduced scrap and overruns by 22.0%.",
+        }
+
+    digest = hashlib.sha256(f"REMODEL_CAD_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "LIDAR_CAD_BOQ_COMPLETE_AND_MILESTONE_ESCROW_AUTHORIZED",
+        "latency_ms": 11,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "home_remodeling_escrow_token": f"home_remodeling_cad_milestone_escrow_mandate_{digest}",
+        "reason": "Verified post-tile LiDAR ±2mm fit, complete BoQ scope, signed supplier lien waiver, and 4-stage inspection escrow.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -23318,6 +23392,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    home_remodeling_cad_milestone_escrow_guard = {
+        "happy_path": evaluate_home_remodeling_cad_milestone_escrow_policy(
+            HomeRemodelingCadMilestoneEscrowPolicyInput(
+                quarterly_home_remodeling_cabinetry_pool_usd=Decimal("420000.00"),
+                unverified_lidar_cad_or_mep_collision_custom_millwork_detected=False,
+                predatory_change_order_surcharge_or_incomplete_boq_bait_detected=False,
+                webiq_contractor_license_lapse_or_unwaived_supplier_lien_flag=False,
+                restricted_key_age_days=30,
+                stage_gated_30_30_30_10_escrow_and_factory_direct_split_enabled=False,
+            )
+        ),
+        "unverified_lidar_or_mep_clash_block": evaluate_home_remodeling_cad_milestone_escrow_policy(
+            HomeRemodelingCadMilestoneEscrowPolicyInput(
+                quarterly_home_remodeling_cabinetry_pool_usd=Decimal("420000.00"),
+                unverified_lidar_cad_or_mep_collision_custom_millwork_detected=True,
+                predatory_change_order_surcharge_or_incomplete_boq_bait_detected=False,
+                webiq_contractor_license_lapse_or_unwaived_supplier_lien_flag=False,
+                restricted_key_age_days=30,
+                stage_gated_30_30_30_10_escrow_and_factory_direct_split_enabled=False,
+            )
+        ),
+        "incomplete_boq_or_change_order_bait_block": evaluate_home_remodeling_cad_milestone_escrow_policy(
+            HomeRemodelingCadMilestoneEscrowPolicyInput(
+                quarterly_home_remodeling_cabinetry_pool_usd=Decimal("420000.00"),
+                unverified_lidar_cad_or_mep_collision_custom_millwork_detected=False,
+                predatory_change_order_surcharge_or_incomplete_boq_bait_detected=True,
+                webiq_contractor_license_lapse_or_unwaived_supplier_lien_flag=False,
+                restricted_key_age_days=30,
+                stage_gated_30_30_30_10_escrow_and_factory_direct_split_enabled=False,
+            )
+        ),
+        "webiq_license_lapse_or_lien_waiver_hold": evaluate_home_remodeling_cad_milestone_escrow_policy(
+            HomeRemodelingCadMilestoneEscrowPolicyInput(
+                quarterly_home_remodeling_cabinetry_pool_usd=Decimal("420000.00"),
+                unverified_lidar_cad_or_mep_collision_custom_millwork_detected=False,
+                predatory_change_order_surcharge_or_incomplete_boq_bait_detected=False,
+                webiq_contractor_license_lapse_or_unwaived_supplier_lien_flag=True,
+                restricted_key_age_days=191,
+                stage_gated_30_30_30_10_escrow_and_factory_direct_split_enabled=False,
+            )
+        ),
+        "stage_gated_escrow_and_factory_split_confirm": evaluate_home_remodeling_cad_milestone_escrow_policy(
+            HomeRemodelingCadMilestoneEscrowPolicyInput(
+                quarterly_home_remodeling_cabinetry_pool_usd=Decimal("420000.00"),
+                unverified_lidar_cad_or_mep_collision_custom_millwork_detected=False,
+                predatory_change_order_surcharge_or_incomplete_boq_bait_detected=False,
+                webiq_contractor_license_lapse_or_unwaived_supplier_lien_flag=False,
+                restricted_key_age_days=30,
+                stage_gated_30_30_30_10_escrow_and_factory_direct_split_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -23477,6 +23604,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agri_inputs_produce_paca_escrow_guard": agri_inputs_produce_paca_escrow_guard,
         "laundry_luxury_care_rfid_escrow_guard": laundry_luxury_care_rfid_escrow_guard,
         "car_rental_mobility_toll_escrow_guard": car_rental_mobility_toll_escrow_guard,
+        "home_remodeling_cad_milestone_escrow_guard": home_remodeling_cad_milestone_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -30094,6 +30222,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">车损差分与 ETC 托管子令牌</div>
             <div class="finops-kpi-val" id="car-rent-token-kpi" style="font-size:10px;color:#A78BFA;">car_rental_mobility_toll_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Custom Home Remodeling, Kitchen Cabinetry LiDAR CAD & Milestone Escrow Sandbox -->
+      <div class="finops-box" id="home-remodeling-cad-milestone-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏠 家装厨卫定制、全屋整装与四阶质检托管 (Home Depot Pro / IKEA Kitchen / 贝壳被窝家装 / 土巴兔) 沙盒</div>
+            <div class="finops-subtitle">实测瓦工贴砖后 LiDAR 点云复尺(±2mm)与水电煤管线防碰撞锁防 $6,000 定制柜报废 (HTTP 403)、BoQ 必含工序防漏审计与非业主增项 &lt;=5% 硬封顶 (HTTP 422)、承包商执照与建材商留置权豁免核验 (HTTP 451) 及 30/30/30/10 质检托管+板材工厂直付立省 22% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="remod-cad-verdict-pill">HTTP 200 · LIDAR_CAD_BOQ_COMPLETE_AND_MILESTONE_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度全屋定制、厨卫翻新与装修工程托管结算池 ($ USD) <span class="control-val" id="remod-cad-gross-label">$420,000</span></label>
+            <input type="range" id="remod-cad-gross-slider" min="60000" max="1500000" step="30000" value="420000" oninput="updateHomeRemodelingCadMilestoneEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">贴砖后 LiDAR 点云复尺、BoQ 漏项钓鱼审计、建材留置权豁免与 30/30/30/10 质检托管场景</label>
+            <select id="remod-cad-mode-select" onchange="updateHomeRemodelingCadMilestoneEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 贴砖后 LiDAR 复尺 ±2mm 合规 + BoQ 零漏项 + 4阶验收放款 (HTTP 200)</option>
+              <option value="lidar_403">🛑 未完成贴砖后 LiDAR 点云复尺直接拿毛坯初尺下达定制橱柜开料 或 抽屉与燃气表/角阀碰撞 (HTTP 403)</option>
+              <option value="boq_422">🚨 装修队低价钓鱼报价故意漏报卫生间防水/拆旧清运 或 砸墙后强行追加 35% 恶意增项单 (HTTP 422)</option>
+              <option value="lien_451">🛑 Web IQ 检出承包商执业牌照吊销/工伤险断缴 或 上游瓷砖/板材厂未签留置权豁免书 (HTTP 451)</option>
+              <option value="escrow_409">🧑‍⚖️ 30/30/30/10 四阶独立质检托管 + 定制板材款穿透直付源头工厂防挪用立省 22% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原错尺报废与恶意增项超支基线</div>
+            <div class="finops-kpi-val" id="remod-cad-gross-kpi">$420,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">激光防撞尺与零增项托管立省</div>
+            <div class="finops-kpi-val" id="remod-cad-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净整装与定制家居结算额</div>
+            <div class="finops-kpi-val" id="remod-cad-net-kpi" style="color:#60A5FA;">$420,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">点云复尺与四阶托管令牌</div>
+            <div class="finops-kpi-val" id="remod-cad-token-kpi" style="font-size:10px;color:#A78BFA;">home_remodeling_cad_milestone_escrow_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -38120,6 +38293,61 @@ function updateCarRentalMobilityTollEscrowSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'car_rental_mobility_toll_escrow_mandate_verified';
+  }}
+}}
+
+function updateHomeRemodelingCadMilestoneEscrowSandbox() {{
+  const grossSlider = document.getElementById('remod-cad-gross-slider');
+  const modeSelect = document.getElementById('remod-cad-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '420000');
+  const mode = modeSelect.value;
+  document.getElementById('remod-cad-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('remod-cad-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('remod-cad-verdict-pill');
+  const savingsKpi = document.getElementById('remod-cad-savings-kpi');
+  const netKpi = document.getElementById('remod-cad-net-kpi');
+  const tokenKpi = document.getElementById('remod-cad-token-kpi');
+
+  if (mode === 'lidar_403') {{
+    pill.textContent = 'HTTP 403 · UNVERIFIED_LIDAR_CAD_OR_MEP_COLLISION_CUSTOM_MILLWORK_BLOCKED (11ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_PRE_TILE_CNC_OR_MEP_CLASH';
+  }} else if (mode === 'boq_422') {{
+    pill.textContent = 'HTTP 422 · PREDATORY_CHANGE_ORDER_SURCHARGE_OR_INCOMPLETE_BOQ_BAIT_BLOCKED (13ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_INCOMPLETE_BOQ_OR_CHANGE_ORDER_BAIT';
+  }} else if (mode === 'lien_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_CONTRACTOR_LICENSE_LAPSE_OR_UNWAIVED_SUPPLIER_LIEN_HOLD (240ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_LICENSE_LAPSE_OR_UNWAIVED_LIEN';
+  }} else if (mode === 'escrow_409') {{
+    const savings = Math.round(gross * 0.22 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · STAGE_GATED_30_30_30_10_ESCROW_AND_FACTORY_DIRECT_SPLIT_CONFIRM (205ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'home_remodeling_cad_milestone_escrow_mandate_saved22pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · LIDAR_CAD_BOQ_COMPLETE_AND_MILESTONE_ESCROW_AUTHORIZED (11ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'home_remodeling_cad_milestone_escrow_mandate_verified';
   }}
 }}
 

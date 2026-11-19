@@ -10698,6 +10698,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("car-rental-mobility-toll-escrow-sandbox", html)
 
+    def test_home_remodeling_cad_milestone_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            HomeRemodelingCadMilestoneEscrowPolicyInput,
+            evaluate_home_remodeling_cad_milestone_escrow_policy,
+        )
+
+        happy = evaluate_home_remodeling_cad_milestone_escrow_policy(
+            HomeRemodelingCadMilestoneEscrowPolicyInput(
+                quarterly_home_remodeling_cabinetry_pool_usd=Decimal("420000.00"),
+                unverified_lidar_cad_or_mep_collision_custom_millwork_detected=False,
+                predatory_change_order_surcharge_or_incomplete_boq_bait_detected=False,
+                webiq_contractor_license_lapse_or_unwaived_supplier_lien_flag=False,
+                restricted_key_age_days=30,
+                stage_gated_30_30_30_10_escrow_and_factory_direct_split_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "LIDAR_CAD_BOQ_COMPLETE_AND_MILESTONE_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["home_remodeling_escrow_token"]).startswith("home_remodeling_cad_milestone_escrow_mandate_")
+        )
+
+        lidar_block = evaluate_home_remodeling_cad_milestone_escrow_policy(
+            HomeRemodelingCadMilestoneEscrowPolicyInput(
+                quarterly_home_remodeling_cabinetry_pool_usd=Decimal("420000.00"),
+                unverified_lidar_cad_or_mep_collision_custom_millwork_detected=True,
+                predatory_change_order_surcharge_or_incomplete_boq_bait_detected=False,
+                webiq_contractor_license_lapse_or_unwaived_supplier_lien_flag=False,
+                restricted_key_age_days=30,
+                stage_gated_30_30_30_10_escrow_and_factory_direct_split_enabled=False,
+            )
+        )
+        self.assertEqual(lidar_block["http_status"], 403)
+        self.assertEqual(
+            lidar_block["decision"],
+            "UNVERIFIED_LIDAR_CAD_OR_MEP_COLLISION_CUSTOM_MILLWORK_BLOCKED",
+        )
+
+        boq_block = evaluate_home_remodeling_cad_milestone_escrow_policy(
+            HomeRemodelingCadMilestoneEscrowPolicyInput(
+                quarterly_home_remodeling_cabinetry_pool_usd=Decimal("420000.00"),
+                unverified_lidar_cad_or_mep_collision_custom_millwork_detected=False,
+                predatory_change_order_surcharge_or_incomplete_boq_bait_detected=True,
+                webiq_contractor_license_lapse_or_unwaived_supplier_lien_flag=False,
+                restricted_key_age_days=30,
+                stage_gated_30_30_30_10_escrow_and_factory_direct_split_enabled=False,
+            )
+        )
+        self.assertEqual(boq_block["http_status"], 422)
+        self.assertEqual(
+            boq_block["decision"],
+            "PREDATORY_CHANGE_ORDER_SURCHARGE_OR_INCOMPLETE_BOQ_BAIT_BLOCKED",
+        )
+
+        lien_hold = evaluate_home_remodeling_cad_milestone_escrow_policy(
+            HomeRemodelingCadMilestoneEscrowPolicyInput(
+                quarterly_home_remodeling_cabinetry_pool_usd=Decimal("420000.00"),
+                unverified_lidar_cad_or_mep_collision_custom_millwork_detected=False,
+                predatory_change_order_surcharge_or_incomplete_boq_bait_detected=False,
+                webiq_contractor_license_lapse_or_unwaived_supplier_lien_flag=True,
+                restricted_key_age_days=191,
+                stage_gated_30_30_30_10_escrow_and_factory_direct_split_enabled=False,
+            )
+        )
+        self.assertEqual(lien_hold["http_status"], 451)
+        self.assertEqual(
+            lien_hold["decision"],
+            "WEBIQ_CONTRACTOR_LICENSE_LAPSE_OR_UNWAIVED_SUPPLIER_LIEN_HOLD",
+        )
+
+        opt_confirm = evaluate_home_remodeling_cad_milestone_escrow_policy(
+            HomeRemodelingCadMilestoneEscrowPolicyInput(
+                quarterly_home_remodeling_cabinetry_pool_usd=Decimal("420000.00"),
+                unverified_lidar_cad_or_mep_collision_custom_millwork_detected=False,
+                predatory_change_order_surcharge_or_incomplete_boq_bait_detected=False,
+                webiq_contractor_license_lapse_or_unwaived_supplier_lien_flag=False,
+                restricted_key_age_days=30,
+                stage_gated_30_30_30_10_escrow_and_factory_direct_split_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "92400.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "327600.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("home_remodeling_cad_milestone_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("home-remodeling-cad-milestone-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
