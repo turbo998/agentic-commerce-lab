@@ -11058,6 +11058,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("b2b-data-marketplace-cleanroom-escrow-sandbox", html)
 
+    def test_local_o2o_voucher_dynamic_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            LocalO2oVoucherDynamicEscrowPolicyInput,
+            evaluate_local_o2o_voucher_dynamic_escrow_policy,
+        )
+
+        happy = evaluate_local_o2o_voucher_dynamic_escrow_policy(
+            LocalO2oVoucherDynamicEscrowPolicyInput(
+                quarterly_local_o2o_voucher_pool_usd=Decimal("310000.00"),
+                static_voucher_screenshot_replay_or_peak_blackout_mismatch_detected=False,
+                merchant_wash_redemption_subsidy_fraud_or_bundled_surcharge_detected=False,
+                webiq_health_inspection_closure_or_escrow_reserve_deficit_flag=False,
+                restricted_key_age_days=30,
+                per_punch_escrow_release_and_expired_auto_refund_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "DYNAMIC_TOTP_LBS_AND_POS_REDEMPTION_AUTHORIZED")
+        self.assertTrue(
+            str(happy["local_o2o_voucher_token"]).startswith("local_o2o_voucher_dynamic_escrow_mandate_")
+        )
+
+        screenshot_block = evaluate_local_o2o_voucher_dynamic_escrow_policy(
+            LocalO2oVoucherDynamicEscrowPolicyInput(
+                quarterly_local_o2o_voucher_pool_usd=Decimal("310000.00"),
+                static_voucher_screenshot_replay_or_peak_blackout_mismatch_detected=True,
+                merchant_wash_redemption_subsidy_fraud_or_bundled_surcharge_detected=False,
+                webiq_health_inspection_closure_or_escrow_reserve_deficit_flag=False,
+                restricted_key_age_days=30,
+                per_punch_escrow_release_and_expired_auto_refund_enabled=False,
+            )
+        )
+        self.assertEqual(screenshot_block["http_status"], 403)
+        self.assertEqual(
+            screenshot_block["decision"],
+            "STATIC_VOUCHER_SCREENSHOT_REPLAY_OR_PEAK_BLACKOUT_MISMATCH_BLOCKED",
+        )
+
+        wash_block = evaluate_local_o2o_voucher_dynamic_escrow_policy(
+            LocalO2oVoucherDynamicEscrowPolicyInput(
+                quarterly_local_o2o_voucher_pool_usd=Decimal("310000.00"),
+                static_voucher_screenshot_replay_or_peak_blackout_mismatch_detected=False,
+                merchant_wash_redemption_subsidy_fraud_or_bundled_surcharge_detected=True,
+                webiq_health_inspection_closure_or_escrow_reserve_deficit_flag=False,
+                restricted_key_age_days=30,
+                per_punch_escrow_release_and_expired_auto_refund_enabled=False,
+            )
+        )
+        self.assertEqual(wash_block["http_status"], 422)
+        self.assertEqual(
+            wash_block["decision"],
+            "MERCHANT_WASH_REDEMPTION_SUBSIDY_FRAUD_OR_BUNDLED_SURCHARGE_BLOCKED",
+        )
+
+        health_hold = evaluate_local_o2o_voucher_dynamic_escrow_policy(
+            LocalO2oVoucherDynamicEscrowPolicyInput(
+                quarterly_local_o2o_voucher_pool_usd=Decimal("310000.00"),
+                static_voucher_screenshot_replay_or_peak_blackout_mismatch_detected=False,
+                merchant_wash_redemption_subsidy_fraud_or_bundled_surcharge_detected=False,
+                webiq_health_inspection_closure_or_escrow_reserve_deficit_flag=True,
+                restricted_key_age_days=191,
+                per_punch_escrow_release_and_expired_auto_refund_enabled=False,
+            )
+        )
+        self.assertEqual(health_hold["http_status"], 451)
+        self.assertEqual(
+            health_hold["decision"],
+            "WEBIQ_HEALTH_INSPECTION_CLOSURE_OR_ESCROW_RESERVE_DEFICIT_HOLD",
+        )
+
+        opt_confirm = evaluate_local_o2o_voucher_dynamic_escrow_policy(
+            LocalO2oVoucherDynamicEscrowPolicyInput(
+                quarterly_local_o2o_voucher_pool_usd=Decimal("310000.00"),
+                static_voucher_screenshot_replay_or_peak_blackout_mismatch_detected=False,
+                merchant_wash_redemption_subsidy_fraud_or_bundled_surcharge_detected=False,
+                webiq_health_inspection_closure_or_escrow_reserve_deficit_flag=False,
+                restricted_key_age_days=30,
+                per_punch_escrow_release_and_expired_auto_refund_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "68200.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "241800.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("local_o2o_voucher_dynamic_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("local-o2o-voucher-dynamic-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

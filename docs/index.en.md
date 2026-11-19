@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`153` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`154` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (35 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (37 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (38 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (30 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (15 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (26 guides)](#tax-fx-privacy-disputes)
@@ -79,7 +79,7 @@
 | 35 | **E-Commerce Try-Before-You-Buy (`TBYB`: Shopify TryNow / Corso / Blackcart) & Apparel Size-Bracketing Agent Architecture Selection FAQ: Delivery-Triggered 7-Day `SPT` Pre-Auth, Prepaid `BIN` Veto, First-Scan Capture Lock & `NFC` Anti-Wardrobing Ribbon** | [English](ecommerce-try-before-you-buy-tbyb-bracketing-preauth-wardrobing-agent-selection-faq.en.md) · [中文](ecommerce-try-before-you-buy-tbyb-bracketing-preauth-wardrobing-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (37 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (38 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -122,6 +122,7 @@
 | 35 | **On-Demand Laundry, Dry Cleaning & Luxury Garment Care (`Rinse / CleanCloud / Smart Locker O2O`) `ISO 3758` Care-Label Gate, Pre-Wash Defect Sign-Off & `UHF RFID` Escrow Agent Architecture Selection FAQ** | [English](laundry-dry-cleaning-luxury-care-rfid-damage-escrow-agent-selection-faq.en.md) · [中文](laundry-dry-cleaning-luxury-care-rfid-damage-escrow-agent-selection-faq.md) |
 | 36 | **Car Rental, Peer-to-Peer Mobility & Fleet Toll/EV-Charging Escrow (`Hertz / Enterprise / Avis / Turo / Sixt`) Pre/Post Vision Damage-Diff Gate, Anti-Duplicate-`CDW`, `OBD-II` Fuel/SOC Parity & `ISO 8583 0420` Instant Deposit Release Agent Architecture Selection FAQ** | [English](car-rental-mobility-damage-vision-toll-escrow-ev-fuel-agent-selection-faq.en.md) · [中文](car-rental-mobility-damage-vision-toll-escrow-ev-fuel-agent-selection-faq.md) |
 | 37 | **Custom Home Remodeling, Kitchen & Bath Cabinetry & Contractor Milestone Escrow (`Home Depot Pro / IKEA Kitchen Planner / Houzz Pro / Beike Home`) Post-Tile `LiDAR` CAD Gate, Anti-Change-Order Bait (`<= 5%` Cap) & `30/30/30/10` Inspection Escrow Agent Architecture Selection FAQ** | [English](home-remodeling-custom-cabinetry-lidar-cad-milestone-escrow-agent-selection-faq.en.md) · [中文](home-remodeling-custom-cabinetry-lidar-cad-milestone-escrow-agent-selection-faq.md) |
+| 38 | **Local Services O2O Voucher, Prepaid Punch-Card & Deal Redemption (`Meituan / TikTok Local / Groupon / Toast / Square`) 30s `TOTP` Dynamic QR Gate, Anti-Wash-Redemption Subsidy Guard & `CARD Act` Expired Auto-Refund Escrow Agent Architecture Selection FAQ** | [English](local-services-o2o-voucher-dynamic-qr-escrow-expired-refund-agent-selection-faq.en.md) · [中文](local-services-o2o-voucher-dynamic-qr-escrow-expired-refund-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (30 Guides)
