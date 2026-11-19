@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`158` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`159` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -11,7 +11,7 @@
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (39 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (32 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (15 guides)](#saas-finops-micropayments)
-- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (26 guides)](#tax-fx-privacy-disputes)
+- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (27 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
 
@@ -190,7 +190,7 @@
 | 15 | **B2B Data Marketplace, Financial Terminal & API Monetization (`Snowflake Marketplace / AWS Data Exchange / Bloomberg / S&P Capital IQ`) Zero-Copy Clean-Room Sample Gate, Anti-Full-Scan Bill Shock, Redistribution License Guard & `SEC MNPI` Escrow Agent Architecture Selection FAQ** | [English](b2b-data-marketplace-api-monetization-sample-gate-mnpi-escrow-agent-selection-faq.en.md) · [中文](b2b-data-marketplace-api-monetization-sample-gate-mnpi-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (26 Guides)
+## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (27 Guides)
 
 > Covers Merchant of Record (MoR) vs DIY PSP, HS-code DDP landed cost & VAT/Sales Tax nexus, FX quote collars & ISO 20022 netting, ZK eligibility / PCI redaction / GDPR crypto-shredding, and Visa CE 3.0 / VAMP dispute defense.
 
@@ -222,6 +222,7 @@
 | 24 | **Travel Retail & Airport Duty-Free (`CDFG / Dufry / Lotte`) Flight-Gate Sync, Customs Allowance & Anti-Smuggling Agent Architecture FAQ: 5-Way Identity Lock, Transit Liquid (`LAGs`) Guard & Airside Capture** | [English](travel-retail-duty-free-flight-gate-sync-customs-allowance-agent-selection-faq.en.md) · [中文](travel-retail-duty-free-flight-gate-sync-customs-allowance-agent-selection-faq.md) |
 | 25 | **Global EOR & Cross-Border Contractor Payroll (`Deel / Rippling Global / Remote / Papaya Global`) Worker Misclassification Shield (`AB5 / IR35`), Anti-Ghost-Timesheet & Wholesale Local-FX Agent Architecture Selection FAQ** | [English](global-eor-contractor-payroll-misclassification-fx-escrow-agent-selection-faq.en.md) · [中文](global-eor-contractor-payroll-misclassification-fx-escrow-agent-selection-faq.md) |
 | 26 | **Clinical Trial Patient Stipend & Travel Reimbursement (`Greenphire ClinCard / Scout Clinical / Medidata / Veeva`) Anti-Duplicate-Enrollment, `IRB` Cap & `HIPAA` Tax-Blind Escrow Agent Architecture Selection FAQ** | [English](clinical-trial-patient-stipend-dtp-ecoa-privacy-tax-agent-selection-faq.en.md) · [中文](clinical-trial-patient-stipend-dtp-ecoa-privacy-tax-agent-selection-faq.md) |
+| 27 | **Higher-Ed Tuition Payment, International Student `FX`, `IRS §529` Plan & `Title IV R2T4` Refund `AML` (`Flywire / TouchNet / Nelnet / Transact Campus`) Anti-Proxy-Card Fraud Gate, `QHEE` Line-Item Split & Strict `Return-to-Source` Escrow Agent Architecture Selection FAQ** | [English](highered-tuition-international-fx-529-refund-aml-escrow-agent-selection-faq.en.md) · [中文](highered-tuition-international-fx-529-refund-aml-escrow-agent-selection-faq.md) |
 
 <a id="architecture-blueprints"></a>
 ## 7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 Specs)

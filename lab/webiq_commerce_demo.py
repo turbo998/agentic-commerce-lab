@@ -17768,6 +17768,80 @@ def evaluate_lifesciences_sunshine_gpo_udi_policy(
         "reason": "Verified NPI state meal caps, OIG LEIE clearance, active GPO HIN membership, and OR GS1 UDI consumption parity.",
     }
 
+
+@dataclass(frozen=True)
+class HigheredTuitionFxAmlEscrowPolicyInput:
+    quarterly_highered_tuition_fx_pool_usd: Decimal
+    third_party_unverified_card_tuition_proxy_fraud_detected: bool
+    non_source_refund_laundering_or_ineligible_529_expense_detected: bool
+    webiq_fx_declaration_or_title_iv_r2t4_statutory_flag: bool
+    restricted_key_age_days: int
+    student_id_bound_wholesale_fx_and_return_to_source_enabled: bool
+
+
+def evaluate_highered_tuition_fx_aml_escrow_policy(
+    policy_input: HigheredTuitionFxAmlEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Higher-Ed Tuition international FX, anti-proxy-card scam KYC, IRS §529 QHEE split & Return-to-Source AML."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_highered_tuition_fx_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.third_party_unverified_card_tuition_proxy_fraud_detected:
+        return {
+            "http_status": 403,
+            "decision": "THIRD_PARTY_UNVERIFIED_CARD_TUITION_PROXY_FRAUD_BLOCKED",
+            "latency_ms": 10,
+            "approved_budget_usd": "0.00",
+            "highered_tuition_token": None,
+            "reason": "Blocked unverified third-party multi-card tuition proxy payment lacking family KYC linkage and 3DS2 proof.",
+        }
+
+    if policy_input.non_source_refund_laundering_or_ineligible_529_expense_detected:
+        return {
+            "http_status": 422,
+            "decision": "NON_SOURCE_REFUND_LAUNDERING_OR_INELIGIBLE_529_EXPENSE_BLOCKED",
+            "latency_ms": 12,
+            "approved_budget_usd": "0.00",
+            "highered_tuition_token": None,
+            "reason": "Blocked drop-class credit refund to non-originating domestic bank account or IRS §529 payment on non-QHEE fine/ticket.",
+        }
+
+    if policy_input.webiq_fx_declaration_or_title_iv_r2t4_statutory_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_FX_DECLARATION_OR_TITLE_IV_R2T4_STATUTORY_HOLD",
+            "latency_ms": 225,
+            "approved_budget_usd": "0.00",
+            "highered_tuition_token": None,
+            "reason": "Web IQ flagged unsettled 45-day Title IV R2T4 unearned aid return, missing I-20/CAS FX documentation, or key >180 days.",
+        }
+
+    if policy_input.student_id_bound_wholesale_fx_and_return_to_source_enabled:
+        savings = (gross * Decimal("0.20")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"HIGHERED_FX_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "STUDENT_ID_BOUND_WHOLESALE_FX_AND_RETURN_TO_SOURCE_CONFIRM",
+            "latency_ms": 185,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "highered_tuition_token": f"highered_tuition_fx_aml_escrow_mandate_{digest}",
+            "reason": "Student-ID bound local-rail wholesale FX, $0 card fee, and Return-to-Source AML lock reduced tuition leakage by 20.0%.",
+        }
+
+    digest = hashlib.sha256(f"HIGHERED_FX_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "STUDENT_KYC_FX_AND_529_QHEE_TUITION_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "highered_tuition_token": f"highered_tuition_fx_aml_escrow_mandate_{digest}",
+        "reason": "Verified authorized payer KYC, exact-cent bursar posting, IRS §529 QHEE eligibility, and Return-to-Source binding.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -24461,6 +24535,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    highered_tuition_fx_aml_escrow_guard = {
+        "happy_path": evaluate_highered_tuition_fx_aml_escrow_policy(
+            HigheredTuitionFxAmlEscrowPolicyInput(
+                quarterly_highered_tuition_fx_pool_usd=Decimal("520000.00"),
+                third_party_unverified_card_tuition_proxy_fraud_detected=False,
+                non_source_refund_laundering_or_ineligible_529_expense_detected=False,
+                webiq_fx_declaration_or_title_iv_r2t4_statutory_flag=False,
+                restricted_key_age_days=30,
+                student_id_bound_wholesale_fx_and_return_to_source_enabled=False,
+            )
+        ),
+        "third_party_proxy_card_fraud_block": evaluate_highered_tuition_fx_aml_escrow_policy(
+            HigheredTuitionFxAmlEscrowPolicyInput(
+                quarterly_highered_tuition_fx_pool_usd=Decimal("520000.00"),
+                third_party_unverified_card_tuition_proxy_fraud_detected=True,
+                non_source_refund_laundering_or_ineligible_529_expense_detected=False,
+                webiq_fx_declaration_or_title_iv_r2t4_statutory_flag=False,
+                restricted_key_age_days=30,
+                student_id_bound_wholesale_fx_and_return_to_source_enabled=False,
+            )
+        ),
+        "non_source_refund_or_529_misuse_block": evaluate_highered_tuition_fx_aml_escrow_policy(
+            HigheredTuitionFxAmlEscrowPolicyInput(
+                quarterly_highered_tuition_fx_pool_usd=Decimal("520000.00"),
+                third_party_unverified_card_tuition_proxy_fraud_detected=False,
+                non_source_refund_laundering_or_ineligible_529_expense_detected=True,
+                webiq_fx_declaration_or_title_iv_r2t4_statutory_flag=False,
+                restricted_key_age_days=30,
+                student_id_bound_wholesale_fx_and_return_to_source_enabled=False,
+            )
+        ),
+        "webiq_title_iv_r2t4_or_fx_hold": evaluate_highered_tuition_fx_aml_escrow_policy(
+            HigheredTuitionFxAmlEscrowPolicyInput(
+                quarterly_highered_tuition_fx_pool_usd=Decimal("520000.00"),
+                third_party_unverified_card_tuition_proxy_fraud_detected=False,
+                non_source_refund_laundering_or_ineligible_529_expense_detected=False,
+                webiq_fx_declaration_or_title_iv_r2t4_statutory_flag=True,
+                restricted_key_age_days=191,
+                student_id_bound_wholesale_fx_and_return_to_source_enabled=False,
+            )
+        ),
+        "wholesale_fx_and_return_to_source_confirm": evaluate_highered_tuition_fx_aml_escrow_policy(
+            HigheredTuitionFxAmlEscrowPolicyInput(
+                quarterly_highered_tuition_fx_pool_usd=Decimal("520000.00"),
+                third_party_unverified_card_tuition_proxy_fraud_detected=False,
+                non_source_refund_laundering_or_ineligible_529_expense_detected=False,
+                webiq_fx_declaration_or_title_iv_r2t4_statutory_flag=False,
+                restricted_key_age_days=30,
+                student_id_bound_wholesale_fx_and_return_to_source_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -24629,6 +24756,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_preorder_ftc_escrow_guard": ecommerce_preorder_ftc_escrow_guard,
         "b2b_media_buying_mfa_rebate_escrow_guard": b2b_media_buying_mfa_rebate_escrow_guard,
         "lifesciences_sunshine_gpo_udi_guard": lifesciences_sunshine_gpo_udi_guard,
+        "highered_tuition_fx_aml_escrow_guard": highered_tuition_fx_aml_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -31651,6 +31779,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">阳光法案与 UDI 返利令牌</div>
             <div class="finops-kpi-val" id="lifesci-gpo-token-kpi" style="font-size:10px;color:#A78BFA;">lifesciences_sunshine_gpo_udi_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Higher-Ed Tuition Payment, International Student FX, 529 Plan & Return-to-Source AML Sandbox -->
+      <div class="finops-box" id="highered-tuition-fx-aml-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎓 高校留学缴费、529 教育专户与退课反洗钱 (Flywire / TouchNet / Nelnet / 大学财务处) 沙盒</div>
+            <div class="finops-subtitle">实测付款人亲属 KYC 与多卡拆分阻断防“85折黑产盗刷代缴”致开除学籍 (HTTP 403)、100% Return-to-Source 原路退回锁死退课提现洗钱与 IRS §529 剥离非合格费用 (HTTP 422)、联邦助学金 Title IV R2T4 45天退算熔断 (HTTP 451) 及本币直联免 2.85% 刷卡费立省 20% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="highed-fx-verdict-pill">HTTP 200 · STUDENT_KYC_FX_AND_529_QHEE_TUITION_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度高校国际留学学费、住宿账单与 529 计划清算池 ($ USD) <span class="control-val" id="highed-fx-gross-label">$520,000</span></label>
+            <input type="range" id="highed-fx-gross-slider" min="80000" max="1800000" step="40000" value="520000" oninput="updateHigheredTuitionFxAmlEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">防 85 折黑产盗刷代缴、退课原路退回反洗钱、IRS §529 合格科目拆单与本币锁汇场景</label>
+            <select id="highed-fx-mode-select" onchange="updateHigheredTuitionFxAmlEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 亲属付款人 KYC 通过 + 学号本币足额到账 + 529 合格学杂费核销 (HTTP 200)</option>
+              <option value="proxy_403">🛑 轻信微信群“85折代缴学费”，陌生异地 IP 用 4 张被盗信用卡拼凑代刷 $25,000 学费 (HTTP 403)</option>
+              <option value="aml_422">🚨 境外电汇超付 $40,000 后首周退课申请提现到本地私人支票卡洗钱 或 用 529 免税户付球票/罚单 (HTTP 422)</option>
+              <option value="titleiv_451">🛑 休学学生未在法定 45 天内优先退算教育部联邦助学金 (Title IV R2T4) 或 跨境购汇缺 I-20 核验 (HTTP 451)</option>
+              <option value="fx_409">🧑‍⚖️ 学号绑定 Flywire/本币直联锁汇 (免 2.85% 刷卡费与 $45 电汇扣费缺口) + 原路退反洗钱立省 20% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原代缴盗刷坏账与刷卡汇损基线</div>
+            <div class="finops-kpi-val" id="highed-fx-gross-kpi">$520,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防代缴拒付与免刷卡费立省</div>
+            <div class="finops-kpi-val" id="highed-fx-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净校园学费与助学金清算额</div>
+            <div class="finops-kpi-val" id="highed-fx-net-kpi" style="color:#60A5FA;">$520,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">学号锁汇与原路退反洗钱令牌</div>
+            <div class="finops-kpi-val" id="highed-fx-token-kpi" style="font-size:10px;color:#A78BFA;">highered_tuition_fx_aml_escrow_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -40172,6 +40345,61 @@ function updateLifesciencesSunshineGpoUdiSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'lifesciences_sunshine_gpo_udi_mandate_verified';
+  }}
+}}
+
+function updateHigheredTuitionFxAmlEscrowSandbox() {{
+  const grossSlider = document.getElementById('highed-fx-gross-slider');
+  const modeSelect = document.getElementById('highed-fx-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '520000');
+  const mode = modeSelect.value;
+  document.getElementById('highed-fx-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('highed-fx-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('highed-fx-verdict-pill');
+  const savingsKpi = document.getElementById('highed-fx-savings-kpi');
+  const netKpi = document.getElementById('highed-fx-net-kpi');
+  const tokenKpi = document.getElementById('highed-fx-token-kpi');
+
+  if (mode === 'proxy_403') {{
+    pill.textContent = 'HTTP 403 · THIRD_PARTY_UNVERIFIED_CARD_TUITION_PROXY_FRAUD_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_85PCT_PROXY_CARD_SCAM';
+  }} else if (mode === 'aml_422') {{
+    pill.textContent = 'HTTP 422 · NON_SOURCE_REFUND_LAUNDERING_OR_INELIGIBLE_529_EXPENSE_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_DROP_CLASS_AML_OR_NON_QHEE_529';
+  }} else if (mode === 'titleiv_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_FX_DECLARATION_OR_TITLE_IV_R2T4_STATUTORY_HOLD (225ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_TITLE_IV_R2T4_45D_WATERFALL';
+  }} else if (mode === 'fx_409') {{
+    const savings = Math.round(gross * 0.20 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · STUDENT_ID_BOUND_WHOLESALE_FX_AND_RETURN_TO_SOURCE_CONFIRM (185ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'highered_tuition_fx_aml_escrow_mandate_saved20pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · STUDENT_KYC_FX_AND_529_QHEE_TUITION_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'highered_tuition_fx_aml_escrow_mandate_verified';
   }}
 }}
 

@@ -11508,6 +11508,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("lifesciences-sunshine-gpo-udi-sandbox", html)
 
+    def test_highered_tuition_fx_aml_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            HigheredTuitionFxAmlEscrowPolicyInput,
+            evaluate_highered_tuition_fx_aml_escrow_policy,
+        )
+
+        happy = evaluate_highered_tuition_fx_aml_escrow_policy(
+            HigheredTuitionFxAmlEscrowPolicyInput(
+                quarterly_highered_tuition_fx_pool_usd=Decimal("520000.00"),
+                third_party_unverified_card_tuition_proxy_fraud_detected=False,
+                non_source_refund_laundering_or_ineligible_529_expense_detected=False,
+                webiq_fx_declaration_or_title_iv_r2t4_statutory_flag=False,
+                restricted_key_age_days=30,
+                student_id_bound_wholesale_fx_and_return_to_source_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "STUDENT_KYC_FX_AND_529_QHEE_TUITION_AUTHORIZED")
+        self.assertTrue(
+            str(happy["highered_tuition_token"]).startswith("highered_tuition_fx_aml_escrow_mandate_")
+        )
+
+        proxy_block = evaluate_highered_tuition_fx_aml_escrow_policy(
+            HigheredTuitionFxAmlEscrowPolicyInput(
+                quarterly_highered_tuition_fx_pool_usd=Decimal("520000.00"),
+                third_party_unverified_card_tuition_proxy_fraud_detected=True,
+                non_source_refund_laundering_or_ineligible_529_expense_detected=False,
+                webiq_fx_declaration_or_title_iv_r2t4_statutory_flag=False,
+                restricted_key_age_days=30,
+                student_id_bound_wholesale_fx_and_return_to_source_enabled=False,
+            )
+        )
+        self.assertEqual(proxy_block["http_status"], 403)
+        self.assertEqual(
+            proxy_block["decision"],
+            "THIRD_PARTY_UNVERIFIED_CARD_TUITION_PROXY_FRAUD_BLOCKED",
+        )
+
+        aml_block = evaluate_highered_tuition_fx_aml_escrow_policy(
+            HigheredTuitionFxAmlEscrowPolicyInput(
+                quarterly_highered_tuition_fx_pool_usd=Decimal("520000.00"),
+                third_party_unverified_card_tuition_proxy_fraud_detected=False,
+                non_source_refund_laundering_or_ineligible_529_expense_detected=True,
+                webiq_fx_declaration_or_title_iv_r2t4_statutory_flag=False,
+                restricted_key_age_days=30,
+                student_id_bound_wholesale_fx_and_return_to_source_enabled=False,
+            )
+        )
+        self.assertEqual(aml_block["http_status"], 422)
+        self.assertEqual(
+            aml_block["decision"],
+            "NON_SOURCE_REFUND_LAUNDERING_OR_INELIGIBLE_529_EXPENSE_BLOCKED",
+        )
+
+        titleiv_hold = evaluate_highered_tuition_fx_aml_escrow_policy(
+            HigheredTuitionFxAmlEscrowPolicyInput(
+                quarterly_highered_tuition_fx_pool_usd=Decimal("520000.00"),
+                third_party_unverified_card_tuition_proxy_fraud_detected=False,
+                non_source_refund_laundering_or_ineligible_529_expense_detected=False,
+                webiq_fx_declaration_or_title_iv_r2t4_statutory_flag=True,
+                restricted_key_age_days=191,
+                student_id_bound_wholesale_fx_and_return_to_source_enabled=False,
+            )
+        )
+        self.assertEqual(titleiv_hold["http_status"], 451)
+        self.assertEqual(
+            titleiv_hold["decision"],
+            "WEBIQ_FX_DECLARATION_OR_TITLE_IV_R2T4_STATUTORY_HOLD",
+        )
+
+        opt_confirm = evaluate_highered_tuition_fx_aml_escrow_policy(
+            HigheredTuitionFxAmlEscrowPolicyInput(
+                quarterly_highered_tuition_fx_pool_usd=Decimal("520000.00"),
+                third_party_unverified_card_tuition_proxy_fraud_detected=False,
+                non_source_refund_laundering_or_ineligible_529_expense_detected=False,
+                webiq_fx_declaration_or_title_iv_r2t4_statutory_flag=False,
+                restricted_key_age_days=30,
+                student_id_bound_wholesale_fx_and_return_to_source_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "104000.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "416000.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("highered_tuition_fx_aml_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("highered-tuition-fx-aml-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
