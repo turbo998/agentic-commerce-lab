@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`163` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`164` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (36 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (40 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (41 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (34 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (15 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (28 guides)](#tax-fx-privacy-disputes)
@@ -80,7 +80,7 @@
 | 36 | **Extended Warranty, Advanced Exchange `RMA` Collateral & Authorized Repair Claim Audit (`AppleCare+ / Extend / Clyde / Assurant`) Pre-Enrollment Hardware Telemetry Gate, `180d SPT` Cross-Ship Collateral & Core-Return `SN` Parity Agent Architecture Selection FAQ** | [English](warranty-extended-protection-advanced-rma-collateral-claim-audit-agent-selection-faq.en.md) · [中文](warranty-extended-protection-advanced-rma-collateral-claim-audit-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (40 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (41 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -126,6 +126,7 @@
 | 38 | **Local Services O2O Voucher, Prepaid Punch-Card & Deal Redemption (`Meituan / TikTok Local / Groupon / Toast / Square`) 30s `TOTP` Dynamic QR Gate, Anti-Wash-Redemption Subsidy Guard & `CARD Act` Expired Auto-Refund Escrow Agent Architecture Selection FAQ** | [English](local-services-o2o-voucher-dynamic-qr-escrow-expired-refund-agent-selection-faq.en.md) · [中文](local-services-o2o-voucher-dynamic-qr-escrow-expired-refund-agent-selection-faq.md) |
 | 39 | **E-Commerce Pre-Order, Crowdfunding & Made-to-Order Drop (`Purple Dot / Shopify Pre-Order / Kickstarter`) `PO` Batch Allocation Gate, `FTC 16 CFR Part 435` Delay Opt-In Rule & `180d SPT` Charge-on-Allocation Escrow Agent Architecture Selection FAQ** | [English](ecommerce-preorder-made-to-order-ftc-shipping-delay-escrow-agent-selection-faq.en.md) · [中文](ecommerce-preorder-made-to-order-ftc-shipping-delay-escrow-agent-selection-faq.md) |
 | 40 | **Floral, Bakery & Time-Windowed Gifting Delivery (`1-800-Flowers / FTD / UrbanStems / Meituan Flash`) Pre-Dispatch Vision Stem-Count Gate, Occasion `SLA` Cutoff Auto-Refund & Pet-Safe `ASPCA` Cold-Chain Escrow Agent Architecture Selection FAQ** | [English](floral-gifting-bakery-time-window-substitution-coldchain-agent-selection-faq.en.md) · [中文](floral-gifting-bakery-time-window-substitution-coldchain-agent-selection-faq.md) |
+| 41 | **Appointment-Based Personal Services, Salon/Spa, Personal Training & Expert Consultation (`Booksy / Boulevard / Mindbody / Calendly Pay`) Waitlist-Backfill Fee Waiver, Provider Late-Start Proration & Named-Trainer Churn Escrow Agent Architecture Selection FAQ** | [English](appointment-salon-coaching-noshow-preauth-trainer-churn-escrow-agent-selection-faq.en.md) · [中文](appointment-salon-coaching-noshow-preauth-trainer-churn-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (34 Guides)

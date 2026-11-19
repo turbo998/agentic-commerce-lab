@@ -11958,6 +11958,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("b2b-freight-booking-cisf-demurrage-sandbox", html)
 
+    def test_appointment_salon_coaching_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            AppointmentSalonCoachingEscrowPolicyInput,
+            evaluate_appointment_salon_coaching_escrow_policy,
+        )
+
+        happy = evaluate_appointment_salon_coaching_escrow_policy(
+            AppointmentSalonCoachingEscrowPolicyInput(
+                quarterly_appointment_coaching_pool_usd=Decimal("250000.00"),
+                backfilled_slot_double_dip_noshow_fee_or_burner_card_hoarding_detected=False,
+                provider_short_duration_full_charge_or_key_trainer_churn_penalty_detected=False,
+                webiq_unlicensed_cross_state_practice_or_missing_allergy_patch_test_flag=False,
+                restricted_key_age_days=30,
+                waitlist_flash_backfill_and_per_session_package_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "BILATERAL_DURATION_VERIFIED_AND_SESSION_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["appointment_coaching_token"]).startswith("appointment_salon_coaching_escrow_mandate_")
+        )
+
+        double_block = evaluate_appointment_salon_coaching_escrow_policy(
+            AppointmentSalonCoachingEscrowPolicyInput(
+                quarterly_appointment_coaching_pool_usd=Decimal("250000.00"),
+                backfilled_slot_double_dip_noshow_fee_or_burner_card_hoarding_detected=True,
+                provider_short_duration_full_charge_or_key_trainer_churn_penalty_detected=False,
+                webiq_unlicensed_cross_state_practice_or_missing_allergy_patch_test_flag=False,
+                restricted_key_age_days=30,
+                waitlist_flash_backfill_and_per_session_package_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(double_block["http_status"], 403)
+        self.assertEqual(
+            double_block["decision"],
+            "BACKFILLED_SLOT_DOUBLE_DIP_NOSHOW_FEE_OR_BURNER_CARD_HOARDING_BLOCKED",
+        )
+
+        churn_block = evaluate_appointment_salon_coaching_escrow_policy(
+            AppointmentSalonCoachingEscrowPolicyInput(
+                quarterly_appointment_coaching_pool_usd=Decimal("250000.00"),
+                backfilled_slot_double_dip_noshow_fee_or_burner_card_hoarding_detected=False,
+                provider_short_duration_full_charge_or_key_trainer_churn_penalty_detected=True,
+                webiq_unlicensed_cross_state_practice_or_missing_allergy_patch_test_flag=False,
+                restricted_key_age_days=30,
+                waitlist_flash_backfill_and_per_session_package_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(churn_block["http_status"], 422)
+        self.assertEqual(
+            churn_block["decision"],
+            "PROVIDER_SHORT_DURATION_FULL_CHARGE_OR_KEY_TRAINER_CHURN_PENALTY_BLOCKED",
+        )
+
+        lic_hold = evaluate_appointment_salon_coaching_escrow_policy(
+            AppointmentSalonCoachingEscrowPolicyInput(
+                quarterly_appointment_coaching_pool_usd=Decimal("250000.00"),
+                backfilled_slot_double_dip_noshow_fee_or_burner_card_hoarding_detected=False,
+                provider_short_duration_full_charge_or_key_trainer_churn_penalty_detected=False,
+                webiq_unlicensed_cross_state_practice_or_missing_allergy_patch_test_flag=True,
+                restricted_key_age_days=191,
+                waitlist_flash_backfill_and_per_session_package_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(lic_hold["http_status"], 451)
+        self.assertEqual(
+            lic_hold["decision"],
+            "WEBIQ_UNLICENSED_CROSS_STATE_PRACTICE_OR_MISSING_ALLERGY_PATCH_TEST_HOLD",
+        )
+
+        opt_confirm = evaluate_appointment_salon_coaching_escrow_policy(
+            AppointmentSalonCoachingEscrowPolicyInput(
+                quarterly_appointment_coaching_pool_usd=Decimal("250000.00"),
+                backfilled_slot_double_dip_noshow_fee_or_burner_card_hoarding_detected=False,
+                provider_short_duration_full_charge_or_key_trainer_churn_penalty_detected=False,
+                webiq_unlicensed_cross_state_practice_or_missing_allergy_patch_test_flag=False,
+                restricted_key_age_days=30,
+                waitlist_flash_backfill_and_per_session_package_escrow_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "57500.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "192500.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("appointment_salon_coaching_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("appointment-salon-coaching-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
