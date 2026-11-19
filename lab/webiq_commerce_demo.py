@@ -18360,6 +18360,80 @@ def evaluate_used_car_odometer_title_lien_escrow_policy(
         "reason": "Verified multi-ECU odometer parity, NMVTIS clean title, direct lender payoff, and ELT transfer.",
     }
 
+
+@dataclass(frozen=True)
+class B2bLegalLedesPatentAnnuityPolicyInput:
+    quarterly_b2b_legal_patent_spend_pool_usd: Decimal
+    ledes_block_billing_or_partner_rate_on_clerical_task_detected: bool
+    multi_attendee_conference_padding_or_unapproved_timekeeper_detected: bool
+    webiq_active_litigation_patent_abandonment_or_conflict_flag: bool
+    restricted_key_age_days: int
+    automated_ocg_line_haircut_and_zombie_patent_pruning_enabled: bool
+
+
+def evaluate_b2b_legal_ledes_patent_annuity_policy(
+    policy_input: B2bLegalLedesPatentAnnuityPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate B2B Legal Spend LEDES 1998B anti-block-billing gate, OCG multi-attendee haircut & patent annuity escrow."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_b2b_legal_patent_spend_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.ledes_block_billing_or_partner_rate_on_clerical_task_detected:
+        return {
+            "http_status": 403,
+            "decision": "LEDES_BLOCK_BILLING_OR_PARTNER_RATE_ON_CLERICAL_TASK_BLOCKED",
+            "latency_ms": 10,
+            "approved_budget_usd": "0.00",
+            "legal_patent_escrow_token": None,
+            "reason": "Blocked LEDES invoice containing multi-task block-billed lines or $1,100/hr partner rates on clerical indexing.",
+        }
+
+    if policy_input.multi_attendee_conference_padding_or_unapproved_timekeeper_detected:
+        return {
+            "http_status": 422,
+            "decision": "MULTI_ATTENDEE_CONFERENCE_PADDING_OR_UNAPPROVED_TIMEKEEPER_BLOCKED",
+            "latency_ms": 12,
+            "approved_budget_usd": "0.00",
+            "legal_patent_escrow_token": None,
+            "reason": "Blocked duplicate billing for multiple attorneys on the same call (OCG violation) or unapproved timekeeper rate.",
+        }
+
+    if policy_input.webiq_active_litigation_patent_abandonment_or_conflict_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_ACTIVE_LITIGATION_PATENT_ABANDONMENT_OR_CONFLICT_HOLD",
+            "latency_ms": 230,
+            "approved_budget_usd": "0.00",
+            "legal_patent_escrow_token": None,
+            "reason": "Web IQ flagged proposed abandonment of patent in active USPTO PTAB/court litigation, collateral lien, or key >180 days.",
+        }
+
+    if policy_input.automated_ocg_line_haircut_and_zombie_patent_pruning_enabled:
+        savings = (gross * Decimal("0.21")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"LEGAL_PAT_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "AUTOMATED_OCG_LINE_HAIRCUT_AND_ZOMBIE_PATENT_PRUNING_CONFIRM",
+            "latency_ms": 195,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "legal_patent_escrow_token": f"b2b_legal_ledes_patent_annuity_mandate_{digest}",
+            "reason": "Automated OCG line-item haircuts and discontinued zombie-patent annuity pruning reduced legal/IP spend by 21.0%.",
+        }
+
+    digest = hashlib.sha256(f"LEGAL_PAT_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "LEDES_UTBMS_OCG_AND_PATENT_RENEWAL_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "legal_patent_escrow_token": f"b2b_legal_ledes_patent_annuity_mandate_{digest}",
+        "reason": "Verified 0.1h itemized LEDES 1998B lines, approved timekeeper rate card, and active-patent annuity renewal.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -25477,6 +25551,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_legal_ledes_patent_annuity_guard = {
+        "happy_path": evaluate_b2b_legal_ledes_patent_annuity_policy(
+            B2bLegalLedesPatentAnnuityPolicyInput(
+                quarterly_b2b_legal_patent_spend_pool_usd=Decimal("540000.00"),
+                ledes_block_billing_or_partner_rate_on_clerical_task_detected=False,
+                multi_attendee_conference_padding_or_unapproved_timekeeper_detected=False,
+                webiq_active_litigation_patent_abandonment_or_conflict_flag=False,
+                restricted_key_age_days=30,
+                automated_ocg_line_haircut_and_zombie_patent_pruning_enabled=False,
+            )
+        ),
+        "block_billing_or_clerical_padding_block": evaluate_b2b_legal_ledes_patent_annuity_policy(
+            B2bLegalLedesPatentAnnuityPolicyInput(
+                quarterly_b2b_legal_patent_spend_pool_usd=Decimal("540000.00"),
+                ledes_block_billing_or_partner_rate_on_clerical_task_detected=True,
+                multi_attendee_conference_padding_or_unapproved_timekeeper_detected=False,
+                webiq_active_litigation_patent_abandonment_or_conflict_flag=False,
+                restricted_key_age_days=30,
+                automated_ocg_line_haircut_and_zombie_patent_pruning_enabled=False,
+            )
+        ),
+        "multi_attendee_or_unapproved_timekeeper_block": evaluate_b2b_legal_ledes_patent_annuity_policy(
+            B2bLegalLedesPatentAnnuityPolicyInput(
+                quarterly_b2b_legal_patent_spend_pool_usd=Decimal("540000.00"),
+                ledes_block_billing_or_partner_rate_on_clerical_task_detected=False,
+                multi_attendee_conference_padding_or_unapproved_timekeeper_detected=True,
+                webiq_active_litigation_patent_abandonment_or_conflict_flag=False,
+                restricted_key_age_days=30,
+                automated_ocg_line_haircut_and_zombie_patent_pruning_enabled=False,
+            )
+        ),
+        "webiq_litigation_patent_drop_or_conflict_hold": evaluate_b2b_legal_ledes_patent_annuity_policy(
+            B2bLegalLedesPatentAnnuityPolicyInput(
+                quarterly_b2b_legal_patent_spend_pool_usd=Decimal("540000.00"),
+                ledes_block_billing_or_partner_rate_on_clerical_task_detected=False,
+                multi_attendee_conference_padding_or_unapproved_timekeeper_detected=False,
+                webiq_active_litigation_patent_abandonment_or_conflict_flag=True,
+                restricted_key_age_days=191,
+                automated_ocg_line_haircut_and_zombie_patent_pruning_enabled=False,
+            )
+        ),
+        "ocg_haircut_and_zombie_patent_prune_confirm": evaluate_b2b_legal_ledes_patent_annuity_policy(
+            B2bLegalLedesPatentAnnuityPolicyInput(
+                quarterly_b2b_legal_patent_spend_pool_usd=Decimal("540000.00"),
+                ledes_block_billing_or_partner_rate_on_clerical_task_detected=False,
+                multi_attendee_conference_padding_or_unapproved_timekeeper_detected=False,
+                webiq_active_litigation_patent_abandonment_or_conflict_flag=False,
+                restricted_key_age_days=30,
+                automated_ocg_line_haircut_and_zombie_patent_pruning_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -25653,6 +25780,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "appointment_salon_coaching_escrow_guard": appointment_salon_coaching_escrow_guard,
         "paid_loyalty_membership_escrow_guard": paid_loyalty_membership_escrow_guard,
         "used_car_odometer_title_lien_escrow_guard": used_car_odometer_title_lien_escrow_guard,
+        "b2b_legal_ledes_patent_annuity_guard": b2b_legal_ledes_patent_annuity_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -33035,6 +33163,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">ECU 防调表与解押瀑布令牌</div>
             <div class="finops-kpi-val" id="used-car-token-kpi" style="font-size:10px;color:#A78BFA;">used_car_odometer_title_lien_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive B2B Legal Spend Management, Law Firm LEDES 1998B Audit & Patent Annuity Sandbox -->
+      <div class="finops-box" id="b2b-legal-ledes-patent-annuity-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">⚖️ 企业法务律所账单 (LEDES) 审计与全球专利年费采购 (Brightflag / SimpleLegal / CPA Global) 沙盒</div>
+            <div class="finops-subtitle">实测 LEDES 1998B 语法解析拦截多任务揉成一行的笼统记账 (Block Billing) 与 $1,100/h 合伙人干行政杂活 (HTTP 403)、单场会议 4 名律师陪听重复计费与未备案计时员剔除 (HTTP 422)、涉诉核心专利防误弃熔断 (HTTP 451) 及 OCG 自动剃头+僵尸专利修剪立省 21% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="legal-pat-verdict-pill">HTTP 200 · LEDES_UTBMS_OCG_AND_PATENT_RENEWAL_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度企业外部诉讼律所账单与全球发明专利维持年费结算池 ($ USD) <span class="control-val" id="legal-pat-gross-label">$540,000</span></label>
+            <input type="range" id="legal-pat-gross-slider" min="80000" max="1800000" step="30000" value="540000" oninput="updateB2bLegalLedesPatentAnnuitySandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">LEDES 反笼统记账、OCG 单会议单人计费、涉诉专利防误弃与僵尸专利修剪场景</label>
+            <select id="legal-pat-mode-select" onchange="updateB2bLegalLedesPatentAnnuitySandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ LEDES 0.1h 逐项明细合规 + 备案费率卡匹配 + 有效专利续展 (HTTP 200)</option>
+              <option value="block_403">🛑 律所将 5 项工作揉成一行笼统记账 8.5 小时 ($9,350 Block Billing) 或 $1,100/h 合伙人申报整理卷宗目录 (HTTP 403)</option>
+              <option value="attend_422">🚨 1 场 2 小时电话会律所派 4 名律师同时旁听收 8 小时钱 或 塞入不在案前白名单的陌生计时员 (HTTP 422)</option>
+              <option value="patent_451">🛑 Web IQ 检出拟放弃年费的第 12 号专利正处于 USPTO PTAB 侵权诉讼期或银行质押期，严禁断供 (HTTP 451)</option>
+              <option value="haircut_409">🧑‍⚖️ OCG 规则自动核减律所陪会水分工时 + 停产线零引用僵尸专利修剪与透明锁汇立省 21% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原含工时灌水与僵尸专利年费基线</div>
+            <div class="finops-kpi-val" id="legal-pat-gross-kpi">$540,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">OCG 自动剃头与僵尸专利修剪立省</div>
+            <div class="finops-kpi-val" id="legal-pat-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净外部法务与专利年费结算额</div>
+            <div class="finops-kpi-val" id="legal-pat-net-kpi" style="color:#60A5FA;">$540,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">LEDES 审计与专利保活令牌</div>
+            <div class="finops-kpi-val" id="legal-pat-token-kpi" style="font-size:10px;color:#A78BFA;">b2b_legal_ledes_patent_annuity_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -41996,6 +42169,61 @@ function updateUsedCarOdometerTitleLienEscrowSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'used_car_odometer_title_lien_escrow_mandate_verified';
+  }}
+}}
+
+function updateB2bLegalLedesPatentAnnuitySandbox() {{
+  const grossSlider = document.getElementById('legal-pat-gross-slider');
+  const modeSelect = document.getElementById('legal-pat-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '540000');
+  const mode = modeSelect.value;
+  document.getElementById('legal-pat-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('legal-pat-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('legal-pat-verdict-pill');
+  const savingsKpi = document.getElementById('legal-pat-savings-kpi');
+  const netKpi = document.getElementById('legal-pat-net-kpi');
+  const tokenKpi = document.getElementById('legal-pat-token-kpi');
+
+  if (mode === 'block_403') {{
+    pill.textContent = 'HTTP 403 · LEDES_BLOCK_BILLING_OR_PARTNER_RATE_ON_CLERICAL_TASK_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_LEDES_BLOCK_BILLING_OR_CLERICAL';
+  }} else if (mode === 'attend_422') {{
+    pill.textContent = 'HTTP 422 · MULTI_ATTENDEE_CONFERENCE_PADDING_OR_UNAPPROVED_TIMEKEEPER_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_4LAWYER_CALL_PADDING_OR_TRANSIENT';
+  }} else if (mode === 'patent_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_ACTIVE_LITIGATION_PATENT_ABANDONMENT_OR_CONFLICT_HOLD (230ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_ACTIVE_LITIGATION_PATENT_PROTECTED';
+  }} else if (mode === 'haircut_409') {{
+    const savings = Math.round(gross * 0.21 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · AUTOMATED_OCG_LINE_HAIRCUT_AND_ZOMBIE_PATENT_PRUNING_CONFIRM (195ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'b2b_legal_ledes_patent_annuity_mandate_saved21pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · LEDES_UTBMS_OCG_AND_PATENT_RENEWAL_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'b2b_legal_ledes_patent_annuity_mandate_verified';
   }}
 }}
 

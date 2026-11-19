@@ -12228,6 +12228,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("used-car-odometer-title-lien-escrow-sandbox", html)
 
+    def test_b2b_legal_ledes_patent_annuity_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            B2bLegalLedesPatentAnnuityPolicyInput,
+            evaluate_b2b_legal_ledes_patent_annuity_policy,
+        )
+
+        happy = evaluate_b2b_legal_ledes_patent_annuity_policy(
+            B2bLegalLedesPatentAnnuityPolicyInput(
+                quarterly_b2b_legal_patent_spend_pool_usd=Decimal("540000.00"),
+                ledes_block_billing_or_partner_rate_on_clerical_task_detected=False,
+                multi_attendee_conference_padding_or_unapproved_timekeeper_detected=False,
+                webiq_active_litigation_patent_abandonment_or_conflict_flag=False,
+                restricted_key_age_days=30,
+                automated_ocg_line_haircut_and_zombie_patent_pruning_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "LEDES_UTBMS_OCG_AND_PATENT_RENEWAL_AUTHORIZED")
+        self.assertTrue(
+            str(happy["legal_patent_escrow_token"]).startswith("b2b_legal_ledes_patent_annuity_mandate_")
+        )
+
+        block_bill = evaluate_b2b_legal_ledes_patent_annuity_policy(
+            B2bLegalLedesPatentAnnuityPolicyInput(
+                quarterly_b2b_legal_patent_spend_pool_usd=Decimal("540000.00"),
+                ledes_block_billing_or_partner_rate_on_clerical_task_detected=True,
+                multi_attendee_conference_padding_or_unapproved_timekeeper_detected=False,
+                webiq_active_litigation_patent_abandonment_or_conflict_flag=False,
+                restricted_key_age_days=30,
+                automated_ocg_line_haircut_and_zombie_patent_pruning_enabled=False,
+            )
+        )
+        self.assertEqual(block_bill["http_status"], 403)
+        self.assertEqual(
+            block_bill["decision"],
+            "LEDES_BLOCK_BILLING_OR_PARTNER_RATE_ON_CLERICAL_TASK_BLOCKED",
+        )
+
+        attend_block = evaluate_b2b_legal_ledes_patent_annuity_policy(
+            B2bLegalLedesPatentAnnuityPolicyInput(
+                quarterly_b2b_legal_patent_spend_pool_usd=Decimal("540000.00"),
+                ledes_block_billing_or_partner_rate_on_clerical_task_detected=False,
+                multi_attendee_conference_padding_or_unapproved_timekeeper_detected=True,
+                webiq_active_litigation_patent_abandonment_or_conflict_flag=False,
+                restricted_key_age_days=30,
+                automated_ocg_line_haircut_and_zombie_patent_pruning_enabled=False,
+            )
+        )
+        self.assertEqual(attend_block["http_status"], 422)
+        self.assertEqual(
+            attend_block["decision"],
+            "MULTI_ATTENDEE_CONFERENCE_PADDING_OR_UNAPPROVED_TIMEKEEPER_BLOCKED",
+        )
+
+        pat_hold = evaluate_b2b_legal_ledes_patent_annuity_policy(
+            B2bLegalLedesPatentAnnuityPolicyInput(
+                quarterly_b2b_legal_patent_spend_pool_usd=Decimal("540000.00"),
+                ledes_block_billing_or_partner_rate_on_clerical_task_detected=False,
+                multi_attendee_conference_padding_or_unapproved_timekeeper_detected=False,
+                webiq_active_litigation_patent_abandonment_or_conflict_flag=True,
+                restricted_key_age_days=191,
+                automated_ocg_line_haircut_and_zombie_patent_pruning_enabled=False,
+            )
+        )
+        self.assertEqual(pat_hold["http_status"], 451)
+        self.assertEqual(
+            pat_hold["decision"],
+            "WEBIQ_ACTIVE_LITIGATION_PATENT_ABANDONMENT_OR_CONFLICT_HOLD",
+        )
+
+        opt_confirm = evaluate_b2b_legal_ledes_patent_annuity_policy(
+            B2bLegalLedesPatentAnnuityPolicyInput(
+                quarterly_b2b_legal_patent_spend_pool_usd=Decimal("540000.00"),
+                ledes_block_billing_or_partner_rate_on_clerical_task_detected=False,
+                multi_attendee_conference_padding_or_unapproved_timekeeper_detected=False,
+                webiq_active_litigation_patent_abandonment_or_conflict_flag=False,
+                restricted_key_age_days=30,
+                automated_ocg_line_haircut_and_zombie_patent_pruning_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "113400.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "426600.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_legal_ledes_patent_annuity_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("b2b-legal-ledes-patent-annuity-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
