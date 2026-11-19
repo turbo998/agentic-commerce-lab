@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`155` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`156` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（36 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（38 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（39 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（30 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（15 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（26 篇）](#tax-fx-privacy-disputes)
@@ -80,7 +80,7 @@
 | 36 | **消费电子、家电与高端硬件“全生命周期延保（AppleCare+ / 京东全保换新 / Extend / Clyde）、备件先行置换（Advanced RMA）与授权维修网点索赔审计”Agent 架构选型 FAQ：投保前实时硬件自检防“碎屏后再补买保险”、先行发新机全额质押锁与防维修点虚报换主板实战指南** | [中文](warranty-extended-protection-advanced-rma-collateral-claim-audit-agent-selection-faq.md) · [English](warranty-extended-protection-advanced-rma-collateral-claim-audit-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（38 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（39 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -124,6 +124,7 @@
 | 36 | **汽车租赁、共享出行与商旅租车（Car Rental, P2P Mobility & Fleet Toll/EV-Charging Escrow：Hertz / Enterprise / Turo / 携程租车）“防还车后 AI 误判历史划痕乱扣 `$800` 战损费、防柜台诱导重复买碰撞险（CDW）与 ETC 过路费 14 天定额子令牌”Agent 架构选型 FAQ：终结油电差价刺客与押金死锁实战指南** | [中文](car-rental-mobility-damage-vision-toll-escrow-ev-fuel-agent-selection-faq.md) · [English](car-rental-mobility-damage-vision-toll-escrow-ev-fuel-agent-selection-faq.en.md) |
 | 37 | **家装厨卫定制、全屋整装与泛家居建材撮合（Custom Home Remodeling, Kitchen & Bath Cabinetry & Contractor Milestone Escrow：Home Depot Pro / IKEA Kitchen Planner / 贝壳被窝家装 / 土巴兔）“激光量房 CAD 毫米级防撞尺、恶意漏项低价切入（Change-Order Bait）硬封顶与水电/泥木/竣工四阶质检托管”Agent 架构选型 FAQ：终结定制橱柜返工报废与砸墙后坐地起价实战指南** | [中文](home-remodeling-custom-cabinetry-lidar-cad-milestone-escrow-agent-selection-faq.md) · [English](home-remodeling-custom-cabinetry-lidar-cad-milestone-escrow-agent-selection-faq.en.md) |
 | 38 | **餐饮酒旅与本地生活“团购代金券、储值次卡与到店核销”（Local Services O2O Voucher, Prepaid Punch-Card & Deal Redemption：美团到店 / 抖音生活服务 / Groupon / Toast / Square）“防黄牛静态二维码截图盗刷、防门店自买自核刷单套取平台补贴与过期未核销 100% 原路自动退”Agent 架构选型 FAQ：终结虚假核销骗补与关店跑路实战指南** | [中文](local-services-o2o-voucher-dynamic-qr-escrow-expired-refund-agent-selection-faq.md) · [English](local-services-o2o-voucher-dynamic-qr-escrow-expired-refund-agent-selection-faq.en.md) |
+| 39 | **跨境独立站与全渠道零售“预售众筹、C2M 柔性按需生产与限量先行预定”（E-Commerce Pre-Order, Crowdfunding & Made-to-Order Drop：Purple Dot / Shopify Pre-Order / Kickstarter / 泡泡玛特抽盒预售）“FTC 30天发货规则（16 CFR Part 435）延期必经二次确权、阶梯批次产能交期锁与 180 天远期 SPT 出库才实扣”Agent 架构选型 FAQ：终结预售跳票群诉与收单行 25% 资金池冻结实战指南** | [中文](ecommerce-preorder-made-to-order-ftc-shipping-delay-escrow-agent-selection-faq.md) · [English](ecommerce-preorder-made-to-order-ftc-shipping-delay-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（30 篇）

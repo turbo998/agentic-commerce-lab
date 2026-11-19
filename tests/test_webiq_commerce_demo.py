@@ -11238,6 +11238,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("warranty-advanced-rma-collateral-sandbox", html)
 
+    def test_ecommerce_preorder_ftc_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            EcommercePreorderFtcEscrowPolicyInput,
+            evaluate_ecommerce_preorder_ftc_escrow_policy,
+        )
+
+        happy = evaluate_ecommerce_preorder_ftc_escrow_policy(
+            EcommercePreorderFtcEscrowPolicyInput(
+                quarterly_ecommerce_preorder_pool_usd=Decimal("350000.00"),
+                preorder_batch_capacity_exceeded_without_delivery_date_step_detected=False,
+                ftc_mail_order_delay_without_explicit_buyer_optin_or_auto_refund_detected=False,
+                preorder_upfront_capture_chargeback_reserve_risk_flag=False,
+                restricted_key_age_days=30,
+                vaulted_180d_spt_capture_at_warehouse_allocation_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "BATCH_ALLOCATED_AND_FTC_PREORDER_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["preorder_ftc_escrow_token"]).startswith("preorder_ftc_mail_order_escrow_mandate_")
+        )
+
+        batch_block = evaluate_ecommerce_preorder_ftc_escrow_policy(
+            EcommercePreorderFtcEscrowPolicyInput(
+                quarterly_ecommerce_preorder_pool_usd=Decimal("350000.00"),
+                preorder_batch_capacity_exceeded_without_delivery_date_step_detected=True,
+                ftc_mail_order_delay_without_explicit_buyer_optin_or_auto_refund_detected=False,
+                preorder_upfront_capture_chargeback_reserve_risk_flag=False,
+                restricted_key_age_days=30,
+                vaulted_180d_spt_capture_at_warehouse_allocation_enabled=False,
+            )
+        )
+        self.assertEqual(batch_block["http_status"], 403)
+        self.assertEqual(
+            batch_block["decision"],
+            "PREORDER_BATCH_CAPACITY_EXCEEDED_WITHOUT_DELIVERY_DATE_STEP_BLOCKED",
+        )
+
+        ftc_block = evaluate_ecommerce_preorder_ftc_escrow_policy(
+            EcommercePreorderFtcEscrowPolicyInput(
+                quarterly_ecommerce_preorder_pool_usd=Decimal("350000.00"),
+                preorder_batch_capacity_exceeded_without_delivery_date_step_detected=False,
+                ftc_mail_order_delay_without_explicit_buyer_optin_or_auto_refund_detected=True,
+                preorder_upfront_capture_chargeback_reserve_risk_flag=False,
+                restricted_key_age_days=30,
+                vaulted_180d_spt_capture_at_warehouse_allocation_enabled=False,
+            )
+        )
+        self.assertEqual(ftc_block["http_status"], 422)
+        self.assertEqual(
+            ftc_block["decision"],
+            "FTC_MAIL_ORDER_DELAY_WITHOUT_EXPLICIT_BUYER_OPTIN_OR_AUTO_REFUND_BLOCKED",
+        )
+
+        reserve_hold = evaluate_ecommerce_preorder_ftc_escrow_policy(
+            EcommercePreorderFtcEscrowPolicyInput(
+                quarterly_ecommerce_preorder_pool_usd=Decimal("350000.00"),
+                preorder_batch_capacity_exceeded_without_delivery_date_step_detected=False,
+                ftc_mail_order_delay_without_explicit_buyer_optin_or_auto_refund_detected=False,
+                preorder_upfront_capture_chargeback_reserve_risk_flag=True,
+                restricted_key_age_days=191,
+                vaulted_180d_spt_capture_at_warehouse_allocation_enabled=False,
+            )
+        )
+        self.assertEqual(reserve_hold["http_status"], 451)
+        self.assertEqual(
+            reserve_hold["decision"],
+            "PREORDER_UPFRONT_CAPTURE_CHARGEBACK_RESERVE_RISK_HOLD",
+        )
+
+        opt_confirm = evaluate_ecommerce_preorder_ftc_escrow_policy(
+            EcommercePreorderFtcEscrowPolicyInput(
+                quarterly_ecommerce_preorder_pool_usd=Decimal("350000.00"),
+                preorder_batch_capacity_exceeded_without_delivery_date_step_detected=False,
+                ftc_mail_order_delay_without_explicit_buyer_optin_or_auto_refund_detected=False,
+                preorder_upfront_capture_chargeback_reserve_risk_flag=False,
+                restricted_key_age_days=30,
+                vaulted_180d_spt_capture_at_warehouse_allocation_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "91000.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "259000.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_preorder_ftc_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("ecommerce-preorder-ftc-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
