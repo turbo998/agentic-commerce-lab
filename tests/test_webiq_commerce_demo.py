@@ -10968,6 +10968,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("ecommerce-tbyb-preauth-wardrobing-sandbox", html)
 
+    def test_b2b_data_marketplace_cleanroom_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            B2bDataMarketplaceCleanroomEscrowPolicyInput,
+            evaluate_b2b_data_marketplace_cleanroom_escrow_policy,
+        )
+
+        happy = evaluate_b2b_data_marketplace_cleanroom_escrow_policy(
+            B2bDataMarketplaceCleanroomEscrowPolicyInput(
+                quarterly_b2b_data_marketplace_pool_usd=Decimal("380000.00"),
+                unverified_data_sample_completeness_or_stale_timestamp_detected=False,
+                unbounded_query_row_explosion_or_redistribution_license_breach_detected=False,
+                webiq_sec_mnpi_compliance_risk_or_unconsented_pii_data_flag=False,
+                restricted_key_age_days=30,
+                zero_copy_cleanroom_and_x402_delta_row_metering_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "CLEANROOM_SAMPLE_VERIFIED_AND_DELTA_API_AUTHORIZED")
+        self.assertTrue(
+            str(happy["data_marketplace_escrow_token"]).startswith("b2b_data_marketplace_cleanroom_mandate_")
+        )
+
+        sample_block = evaluate_b2b_data_marketplace_cleanroom_escrow_policy(
+            B2bDataMarketplaceCleanroomEscrowPolicyInput(
+                quarterly_b2b_data_marketplace_pool_usd=Decimal("380000.00"),
+                unverified_data_sample_completeness_or_stale_timestamp_detected=True,
+                unbounded_query_row_explosion_or_redistribution_license_breach_detected=False,
+                webiq_sec_mnpi_compliance_risk_or_unconsented_pii_data_flag=False,
+                restricted_key_age_days=30,
+                zero_copy_cleanroom_and_x402_delta_row_metering_enabled=False,
+            )
+        )
+        self.assertEqual(sample_block["http_status"], 403)
+        self.assertEqual(
+            sample_block["decision"],
+            "UNVERIFIED_DATA_SAMPLE_COMPLETENESS_OR_STALE_TIMESTAMP_BLOCKED",
+        )
+
+        scan_block = evaluate_b2b_data_marketplace_cleanroom_escrow_policy(
+            B2bDataMarketplaceCleanroomEscrowPolicyInput(
+                quarterly_b2b_data_marketplace_pool_usd=Decimal("380000.00"),
+                unverified_data_sample_completeness_or_stale_timestamp_detected=False,
+                unbounded_query_row_explosion_or_redistribution_license_breach_detected=True,
+                webiq_sec_mnpi_compliance_risk_or_unconsented_pii_data_flag=False,
+                restricted_key_age_days=30,
+                zero_copy_cleanroom_and_x402_delta_row_metering_enabled=False,
+            )
+        )
+        self.assertEqual(scan_block["http_status"], 422)
+        self.assertEqual(
+            scan_block["decision"],
+            "UNBOUNDED_QUERY_ROW_EXPLOSION_OR_REDISTRIBUTION_LICENSE_BREACH_BLOCKED",
+        )
+
+        mnpi_hold = evaluate_b2b_data_marketplace_cleanroom_escrow_policy(
+            B2bDataMarketplaceCleanroomEscrowPolicyInput(
+                quarterly_b2b_data_marketplace_pool_usd=Decimal("380000.00"),
+                unverified_data_sample_completeness_or_stale_timestamp_detected=False,
+                unbounded_query_row_explosion_or_redistribution_license_breach_detected=False,
+                webiq_sec_mnpi_compliance_risk_or_unconsented_pii_data_flag=True,
+                restricted_key_age_days=191,
+                zero_copy_cleanroom_and_x402_delta_row_metering_enabled=False,
+            )
+        )
+        self.assertEqual(mnpi_hold["http_status"], 451)
+        self.assertEqual(
+            mnpi_hold["decision"],
+            "WEBIQ_SEC_MNPI_COMPLIANCE_RISK_OR_UNCONSENTED_PII_DATA_HOLD",
+        )
+
+        opt_confirm = evaluate_b2b_data_marketplace_cleanroom_escrow_policy(
+            B2bDataMarketplaceCleanroomEscrowPolicyInput(
+                quarterly_b2b_data_marketplace_pool_usd=Decimal("380000.00"),
+                unverified_data_sample_completeness_or_stale_timestamp_detected=False,
+                unbounded_query_row_explosion_or_redistribution_license_breach_detected=False,
+                webiq_sec_mnpi_compliance_risk_or_unconsented_pii_data_flag=False,
+                restricted_key_age_days=30,
+                zero_copy_cleanroom_and_x402_delta_row_metering_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "106400.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "273600.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_data_marketplace_cleanroom_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("b2b-data-marketplace-cleanroom-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
