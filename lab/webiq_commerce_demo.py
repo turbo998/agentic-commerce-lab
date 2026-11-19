@@ -18512,6 +18512,84 @@ def evaluate_smart_parking_ev_supercharger_policy(
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
 
+@dataclass(frozen=True)
+class GiftRegistryGroupGiftingEscrowPolicyInput:
+    """Input contract for Gift Registry, Group Gifting & Social Gift-Link Anti-Duplicate & AML Escrow."""
+
+    quarterly_gift_registry_social_gifting_pool_usd: float = 290000.0
+    registry_item_already_claimed_or_recipient_raw_address_exposed: bool = False
+    recipient_gift_cash_out_to_bank_or_sender_return_alert_leaked: bool = False
+    webiq_cpsc_infant_product_recall_or_expired_gift_link_flag: bool = False
+    mandate_signing_key_age_days: int = 45
+    group_gift_penny_conservation_and_pre_ship_variant_selection_ready: bool = False
+
+
+def evaluate_gift_registry_group_gifting_escrow_policy(
+    policy_input: GiftRegistryGroupGiftingEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Gift Registry, Group Gifting & Social Gift-Link policy."""
+    gross_pool = max(float(policy_input.quarterly_gift_registry_social_gifting_pool_usd), 0.0)
+    if (
+        policy_input.webiq_cpsc_infant_product_recall_or_expired_gift_link_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_CPSC_INFANT_PRODUCT_RECALL_OR_EXPIRED_GIFT_LINK_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.registry_item_already_claimed_or_recipient_raw_address_exposed:
+        return {
+            "status_code": 403,
+            "decision": "REGISTRY_DUPLICATE_GIFT_COLLISION_OR_RECIPIENT_PII_ADDRESS_LEAK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.recipient_gift_cash_out_to_bank_or_sender_return_alert_leaked:
+        return {
+            "status_code": 422,
+            "decision": "RECIPIENT_GIFT_CASH_OUT_LAUNDERING_OR_SENDER_RETURN_NOTIFICATION_LEAK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.group_gift_penny_conservation_and_pre_ship_variant_selection_ready:
+        savings = round(gross_pool * 0.25, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "GROUP_GIFT_PENNY_CONSERVATION_AND_PRE_SHIP_VARIANT_SELECTION_CONFIRM",
+            "mandate_token": "gift_registry_group_gifting_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "REGISTRY_CLAIM_LOCK_AND_BLIND_SHIPPING_TOKEN_AUTHORIZED",
+        "mandate_token": "gift_registry_group_gifting_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -25731,6 +25809,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    gift_registry_group_gifting_escrow_guard = {
+        "authorized_200": evaluate_gift_registry_group_gifting_escrow_policy(
+            GiftRegistryGroupGiftingEscrowPolicyInput()
+        ),
+        "duplicate_gift_or_address_leak_403": evaluate_gift_registry_group_gifting_escrow_policy(
+            GiftRegistryGroupGiftingEscrowPolicyInput(
+                registry_item_already_claimed_or_recipient_raw_address_exposed=True
+            )
+        ),
+        "cash_out_or_sender_alert_422": evaluate_gift_registry_group_gifting_escrow_policy(
+            GiftRegistryGroupGiftingEscrowPolicyInput(
+                recipient_gift_cash_out_to_bank_or_sender_return_alert_leaked=True
+            )
+        ),
+        "cpsc_infant_recall_451": evaluate_gift_registry_group_gifting_escrow_policy(
+            GiftRegistryGroupGiftingEscrowPolicyInput(
+                webiq_cpsc_infant_product_recall_or_expired_gift_link_flag=True
+            )
+        ),
+        "group_gift_and_pre_ship_swap_409": evaluate_gift_registry_group_gifting_escrow_policy(
+            GiftRegistryGroupGiftingEscrowPolicyInput(
+                group_gift_penny_conservation_and_pre_ship_variant_selection_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -25909,6 +26013,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "used_car_odometer_title_lien_escrow_guard": used_car_odometer_title_lien_escrow_guard,
         "b2b_legal_ledes_patent_annuity_guard": b2b_legal_ledes_patent_annuity_guard,
         "smart_parking_ev_supercharger_guard": smart_parking_ev_supercharger_guard,
+        "gift_registry_group_gifting_escrow_guard": gift_registry_group_gifting_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -33382,6 +33487,69 @@ def render_webiq_live_demo_html(
             <div class="finops-kpi-label">车桩 VIN 与时空互斥令牌</div>
             <div class="finops-kpi-val" id="park-ev-token-kpi" style="font-size:10px;color:#A78BFA;">smart_parking_ev_supercharger_mandate_verified</div>
           </div>
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 50 Gift Registry, Group Gifting & Social Gift-Link Anti-Duplicate & AML Escrow -->
+      <div class="finops-box" id="gift-registry-group-gifting-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎁 新婚/母婴心愿单众筹与微信送礼 (Babylist / Zola / 微信小店送礼) 防撞单买重、盲地址隐私与退礼静默转储值防洗钱沙盒 (Round 50)</div>
+            <div class="finops-subtitle">实测跨站心愿单 30 分钟原子认领租约锁防 3 位亲友买重同款婴儿车与收礼人盲地址令牌 ship_tok_* (HTTP 403)、静默退礼仅转商城储值卡防尴尬与严禁收礼人提现到银行卡洗钱 (HTTP 422)、Web IQ 实时 CPSC 婴童用品召回熔断 (HTTP 451) 及出库前收礼人在线自选尺码+多人众筹美分守恒立省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="gift-registry-status-kpi">HTTP 409 · GROUP_GIFT_PENNY_CONSERVATION_AND_PRE_SHIP_VARIANT_SELECTION_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度心愿单众筹与社交送礼结算池 ($ USD)
+            <input type="range" id="gift-registry-pool-slider" min="40000" max="1500000" step="10000" value="290000" oninput="updateGiftRegistryGroupGiftingSandbox()" />
+            <span id="gift-registry-pool-val" style="color:#6ee7b7; font-family:monospace;">$290,000</span>
+          </label>
+          <label>
+            心愿单撞单与地址隐私校验 (HTTP 403)
+            <select id="gift-registry-duplicate-select" onchange="updateGiftRegistryGroupGiftingSandbox()">
+              <option value="pass">名额已原子锁定 + 盲令牌 ship_tok_* 隐藏住址 (放行)</option>
+              <option value="block">心愿单已被他人认领买重 或 暴露收礼人明文住址 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            退礼静默储值与反洗钱校验 (HTTP 422)
+            <select id="gift-registry-aml-select" onchange="updateGiftRegistryGroupGiftingSandbox()">
+              <option value="pass">静默转收礼人闭环商城储值金 + 屏蔽送礼人通知 (合规)</option>
+              <option value="block">收礼人退现至个人银行卡洗钱 或 退货短信惊动送礼人 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ CPSC 婴童用品召回筛查 (HTTP 451)
+            <select id="gift-registry-cpsc-select" onchange="updateGiftRegistryGroupGiftingSandbox()">
+              <option value="clear">母婴礼单无 CPSC 安全召回记录 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">婴儿摇篮命中 CPSC 窒息召回 或 密钥超期 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            出库前收礼人改码与多人众筹优化 (HTTP 409)
+            <select id="gift-registry-opt-select" onchange="updateGiftRegistryGroupGiftingSandbox()">
+              <option value="enabled" selected>开启发货前收礼人自选尺码 + 众筹余额封顶省 25% (HTTP 409)</option>
+              <option value="baseline">常规心愿单与盲地址直发授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度礼赠毛池</div>
+            <div class="finops-kpi-val" id="gift-registry-gross-kpi">$290,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防撞单与改码后净成本</div>
+            <div class="finops-kpi-val" id="gift-registry-net-kpi" style="color:#6ee7b7;">$217,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度防退货与反洗钱省下</div>
+            <div class="finops-kpi-val" id="gift-registry-savings-kpi" style="color:#38bdf8;">$72,500</div>
+          </div>
+        </div>
+        <div id="gift-registry-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 GROUP_GIFT_PENNY_CONSERVATION_AND_PRE_SHIP_VARIANT_SELECTION_CONFIRM · Mandate: gift_registry_group_gifting_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -42453,6 +42621,80 @@ function updateSmartParkingEvSuperchargerSandbox() {{
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'smart_parking_ev_supercharger_mandate_verified';
   }}
+}}
+
+function updateGiftRegistryGroupGiftingSandbox() {{
+  const slider = document.getElementById('gift-registry-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '290000');
+  const dupMode = document.getElementById('gift-registry-duplicate-select').value;
+  const amlMode = document.getElementById('gift-registry-aml-select').value;
+  const cpscMode = document.getElementById('gift-registry-cpsc-select').value;
+  const optMode = document.getElementById('gift-registry-opt-select').value;
+
+  document.getElementById('gift-registry-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('gift-registry-status-kpi');
+  const grossKpi = document.getElementById('gift-registry-gross-kpi');
+  const netKpi = document.getElementById('gift-registry-net-kpi');
+  const savingsKpi = document.getElementById('gift-registry-savings-kpi');
+  const banner = document.getElementById('gift-registry-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (cpscMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_CPSC_INFANT_PRODUCT_RECALL_OR_EXPIRED_GIFT_LINK_HOLD · Mandate: null';
+    return;
+  }}
+  if (dupMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 REGISTRY_DUPLICATE_GIFT_COLLISION_OR_RECIPIENT_PII_ADDRESS_LEAK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (amlMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 RECIPIENT_GIFT_CASH_OUT_LAUNDERING_OR_SENDER_RETURN_NOTIFICATION_LEAK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.25);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 GROUP_GIFT_PENNY_CONSERVATION_AND_PRE_SHIP_VARIANT_SELECTION_CONFIRM · Mandate: gift_registry_group_gifting_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 REGISTRY_CLAIM_LOCK_AND_BLIND_SHIPPING_TOKEN_AUTHORIZED · Mandate: gift_registry_group_gifting_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -12408,6 +12408,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("smart-parking-ev-supercharger-sandbox", html)
 
+    def test_gift_registry_group_gifting_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            GiftRegistryGroupGiftingEscrowPolicyInput,
+            evaluate_gift_registry_group_gifting_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_gift_registry_group_gifting_escrow_policy(
+            GiftRegistryGroupGiftingEscrowPolicyInput(
+                quarterly_gift_registry_social_gifting_pool_usd=290000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "REGISTRY_CLAIM_LOCK_AND_BLIND_SHIPPING_TOKEN_AUTHORIZED",
+        )
+
+        dup = evaluate_gift_registry_group_gifting_escrow_policy(
+            GiftRegistryGroupGiftingEscrowPolicyInput(
+                registry_item_already_claimed_or_recipient_raw_address_exposed=True
+            )
+        )
+        self.assertEqual(dup["status_code"], 403)
+        self.assertEqual(
+            dup["decision"],
+            "REGISTRY_DUPLICATE_GIFT_COLLISION_OR_RECIPIENT_PII_ADDRESS_LEAK_BLOCKED",
+        )
+
+        aml = evaluate_gift_registry_group_gifting_escrow_policy(
+            GiftRegistryGroupGiftingEscrowPolicyInput(
+                recipient_gift_cash_out_to_bank_or_sender_return_alert_leaked=True
+            )
+        )
+        self.assertEqual(aml["status_code"], 422)
+        self.assertEqual(
+            aml["decision"],
+            "RECIPIENT_GIFT_CASH_OUT_LAUNDERING_OR_SENDER_RETURN_NOTIFICATION_LEAK_BLOCKED",
+        )
+
+        cpsc = evaluate_gift_registry_group_gifting_escrow_policy(
+            GiftRegistryGroupGiftingEscrowPolicyInput(
+                webiq_cpsc_infant_product_recall_or_expired_gift_link_flag=True
+            )
+        )
+        self.assertEqual(cpsc["status_code"], 451)
+        self.assertEqual(
+            cpsc["decision"],
+            "WEBIQ_CPSC_INFANT_PRODUCT_RECALL_OR_EXPIRED_GIFT_LINK_HOLD",
+        )
+
+        optim = evaluate_gift_registry_group_gifting_escrow_policy(
+            GiftRegistryGroupGiftingEscrowPolicyInput(
+                quarterly_gift_registry_social_gifting_pool_usd=290000.0,
+                group_gift_penny_conservation_and_pre_ship_variant_selection_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 72500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 217500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("gift_registry_group_gifting_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("gift-registry-group-gifting-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
