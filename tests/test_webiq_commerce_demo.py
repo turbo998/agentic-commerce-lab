@@ -11688,6 +11688,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("fintech-credit-regf-hardship-sandbox", html)
 
+    def test_floral_bakery_time_window_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            FloralBakeryTimeWindowEscrowPolicyInput,
+            evaluate_floral_bakery_time_window_escrow_policy,
+        )
+
+        happy = evaluate_floral_bakery_time_window_escrow_policy(
+            FloralBakeryTimeWindowEscrowPolicyInput(
+                quarterly_floral_bakery_gifting_pool_usd=Decimal("230000.00"),
+                unauthorized_stem_downgrade_substitution_or_missing_pre_dispatch_photo_detected=False,
+                occasion_time_window_sla_breach_or_fake_courier_pod_detected=False,
+                webiq_feline_toxic_lily_hazard_or_ambient_cream_cake_melt_flag=False,
+                restricted_key_age_days=30,
+                hourly_florist_capacity_slot_and_pre_dispatch_vision_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "PRE_DISPATCH_VISION_AND_OCCASION_SLA_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["floral_bakery_escrow_token"]).startswith("floral_bakery_time_window_escrow_mandate_")
+        )
+
+        stem_block = evaluate_floral_bakery_time_window_escrow_policy(
+            FloralBakeryTimeWindowEscrowPolicyInput(
+                quarterly_floral_bakery_gifting_pool_usd=Decimal("230000.00"),
+                unauthorized_stem_downgrade_substitution_or_missing_pre_dispatch_photo_detected=True,
+                occasion_time_window_sla_breach_or_fake_courier_pod_detected=False,
+                webiq_feline_toxic_lily_hazard_or_ambient_cream_cake_melt_flag=False,
+                restricted_key_age_days=30,
+                hourly_florist_capacity_slot_and_pre_dispatch_vision_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(stem_block["http_status"], 403)
+        self.assertEqual(
+            stem_block["decision"],
+            "UNAUTHORIZED_STEM_DOWNGRADE_SUBSTITUTION_OR_MISSING_PRE_DISPATCH_PHOTO_BLOCKED",
+        )
+
+        sla_block = evaluate_floral_bakery_time_window_escrow_policy(
+            FloralBakeryTimeWindowEscrowPolicyInput(
+                quarterly_floral_bakery_gifting_pool_usd=Decimal("230000.00"),
+                unauthorized_stem_downgrade_substitution_or_missing_pre_dispatch_photo_detected=False,
+                occasion_time_window_sla_breach_or_fake_courier_pod_detected=True,
+                webiq_feline_toxic_lily_hazard_or_ambient_cream_cake_melt_flag=False,
+                restricted_key_age_days=30,
+                hourly_florist_capacity_slot_and_pre_dispatch_vision_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(sla_block["http_status"], 422)
+        self.assertEqual(
+            sla_block["decision"],
+            "OCCASION_TIME_WINDOW_SLA_BREACH_OR_FAKE_COURIER_POD_BLOCKED",
+        )
+
+        lily_hold = evaluate_floral_bakery_time_window_escrow_policy(
+            FloralBakeryTimeWindowEscrowPolicyInput(
+                quarterly_floral_bakery_gifting_pool_usd=Decimal("230000.00"),
+                unauthorized_stem_downgrade_substitution_or_missing_pre_dispatch_photo_detected=False,
+                occasion_time_window_sla_breach_or_fake_courier_pod_detected=False,
+                webiq_feline_toxic_lily_hazard_or_ambient_cream_cake_melt_flag=True,
+                restricted_key_age_days=191,
+                hourly_florist_capacity_slot_and_pre_dispatch_vision_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(lily_hold["http_status"], 451)
+        self.assertEqual(
+            lily_hold["decision"],
+            "WEBIQ_FELINE_TOXIC_LILY_HAZARD_OR_AMBIENT_CREAM_CAKE_MELT_HOLD",
+        )
+
+        opt_confirm = evaluate_floral_bakery_time_window_escrow_policy(
+            FloralBakeryTimeWindowEscrowPolicyInput(
+                quarterly_floral_bakery_gifting_pool_usd=Decimal("230000.00"),
+                unauthorized_stem_downgrade_substitution_or_missing_pre_dispatch_photo_detected=False,
+                occasion_time_window_sla_breach_or_fake_courier_pod_detected=False,
+                webiq_feline_toxic_lily_hazard_or_ambient_cream_cake_melt_flag=False,
+                restricted_key_age_days=30,
+                hourly_florist_capacity_slot_and_pre_dispatch_vision_escrow_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "55200.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "174800.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("floral_bakery_time_window_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("floral-bakery-time-window-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

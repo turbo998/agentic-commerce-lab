@@ -17916,6 +17916,80 @@ def evaluate_fintech_credit_regf_hardship_policy(
         "reason": "Verified monotonic ECOA attribution, eCBSV synthetic-ID clearance, Reg F 7-in-7 compliance, and SCRA parity.",
     }
 
+
+@dataclass(frozen=True)
+class FloralBakeryTimeWindowEscrowPolicyInput:
+    quarterly_floral_bakery_gifting_pool_usd: Decimal
+    unauthorized_stem_downgrade_substitution_or_missing_pre_dispatch_photo_detected: bool
+    occasion_time_window_sla_breach_or_fake_courier_pod_detected: bool
+    webiq_feline_toxic_lily_hazard_or_ambient_cream_cake_melt_flag: bool
+    restricted_key_age_days: int
+    hourly_florist_capacity_slot_and_pre_dispatch_vision_escrow_enabled: bool
+
+
+def evaluate_floral_bakery_time_window_escrow_policy(
+    policy_input: FloralBakeryTimeWindowEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate Floral, Bakery & Time-Windowed Gifting pre-dispatch vision stem count, occasion SLA cutoff & ASPCA pet-safe escrow."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_floral_bakery_gifting_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.unauthorized_stem_downgrade_substitution_or_missing_pre_dispatch_photo_detected:
+        return {
+            "http_status": 403,
+            "decision": "UNAUTHORIZED_STEM_DOWNGRADE_SUBSTITUTION_OR_MISSING_PRE_DISPATCH_PHOTO_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "floral_bakery_escrow_token": None,
+            "reason": "Blocked courier dispatch due to unapproved primary stem downgrade or missing pre-dispatch vision photo.",
+        }
+
+    if policy_input.occasion_time_window_sla_breach_or_fake_courier_pod_detected:
+        return {
+            "http_status": 422,
+            "decision": "OCCASION_TIME_WINDOW_SLA_BREACH_OR_FAKE_COURIER_POD_BLOCKED",
+            "latency_ms": 11,
+            "approved_budget_usd": "0.00",
+            "floral_bakery_escrow_token": None,
+            "reason": "Blocked merchant payout due to delivery past occasion SLA cutoff or off-site courier POD spoofing.",
+        }
+
+    if policy_input.webiq_feline_toxic_lily_hazard_or_ambient_cream_cake_melt_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_FELINE_TOXIC_LILY_HAZARD_OR_AMBIENT_CREAM_CAKE_MELT_HOLD",
+            "latency_ms": 215,
+            "approved_budget_usd": "0.00",
+            "floral_bakery_escrow_token": None,
+            "reason": "Web IQ flagged feline-lethal Lilium stems for cat-owning recipient, >28°C unchilled dairy cake, or key >180 days.",
+        }
+
+    if policy_input.hourly_florist_capacity_slot_and_pre_dispatch_vision_escrow_enabled:
+        savings = (gross * Decimal("0.24")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"FLORAL_GIFT_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "HOURLY_FLORIST_CAPACITY_SLOT_AND_PRE_DISPATCH_VISION_ESCROW_CONFIRM",
+            "latency_ms": 185,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "floral_bakery_escrow_token": f"floral_bakery_time_window_escrow_mandate_{digest}",
+            "reason": "Pre-dispatch vision stem verification, hourly florist capacity locks, and cold-chain SLA escrow reduced losses by 24.0%.",
+        }
+
+    digest = hashlib.sha256(f"FLORAL_GIFT_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "PRE_DISPATCH_VISION_AND_OCCASION_SLA_ESCROW_AUTHORIZED",
+        "latency_ms": 9,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "floral_bakery_escrow_token": f"floral_bakery_time_window_escrow_mandate_{digest}",
+        "reason": "Verified pre-dispatch stem count, pet-safe botanicals, insulated cold chain, and on-time occasion POD.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -24715,6 +24789,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    floral_bakery_time_window_escrow_guard = {
+        "happy_path": evaluate_floral_bakery_time_window_escrow_policy(
+            FloralBakeryTimeWindowEscrowPolicyInput(
+                quarterly_floral_bakery_gifting_pool_usd=Decimal("230000.00"),
+                unauthorized_stem_downgrade_substitution_or_missing_pre_dispatch_photo_detected=False,
+                occasion_time_window_sla_breach_or_fake_courier_pod_detected=False,
+                webiq_feline_toxic_lily_hazard_or_ambient_cream_cake_melt_flag=False,
+                restricted_key_age_days=30,
+                hourly_florist_capacity_slot_and_pre_dispatch_vision_escrow_enabled=False,
+            )
+        ),
+        "stem_downgrade_or_missing_photo_block": evaluate_floral_bakery_time_window_escrow_policy(
+            FloralBakeryTimeWindowEscrowPolicyInput(
+                quarterly_floral_bakery_gifting_pool_usd=Decimal("230000.00"),
+                unauthorized_stem_downgrade_substitution_or_missing_pre_dispatch_photo_detected=True,
+                occasion_time_window_sla_breach_or_fake_courier_pod_detected=False,
+                webiq_feline_toxic_lily_hazard_or_ambient_cream_cake_melt_flag=False,
+                restricted_key_age_days=30,
+                hourly_florist_capacity_slot_and_pre_dispatch_vision_escrow_enabled=False,
+            )
+        ),
+        "occasion_sla_miss_or_fake_pod_block": evaluate_floral_bakery_time_window_escrow_policy(
+            FloralBakeryTimeWindowEscrowPolicyInput(
+                quarterly_floral_bakery_gifting_pool_usd=Decimal("230000.00"),
+                unauthorized_stem_downgrade_substitution_or_missing_pre_dispatch_photo_detected=False,
+                occasion_time_window_sla_breach_or_fake_courier_pod_detected=True,
+                webiq_feline_toxic_lily_hazard_or_ambient_cream_cake_melt_flag=False,
+                restricted_key_age_days=30,
+                hourly_florist_capacity_slot_and_pre_dispatch_vision_escrow_enabled=False,
+            )
+        ),
+        "webiq_feline_lily_or_cake_melt_hold": evaluate_floral_bakery_time_window_escrow_policy(
+            FloralBakeryTimeWindowEscrowPolicyInput(
+                quarterly_floral_bakery_gifting_pool_usd=Decimal("230000.00"),
+                unauthorized_stem_downgrade_substitution_or_missing_pre_dispatch_photo_detected=False,
+                occasion_time_window_sla_breach_or_fake_courier_pod_detected=False,
+                webiq_feline_toxic_lily_hazard_or_ambient_cream_cake_melt_flag=True,
+                restricted_key_age_days=191,
+                hourly_florist_capacity_slot_and_pre_dispatch_vision_escrow_enabled=False,
+            )
+        ),
+        "capacity_slot_and_vision_escrow_confirm": evaluate_floral_bakery_time_window_escrow_policy(
+            FloralBakeryTimeWindowEscrowPolicyInput(
+                quarterly_floral_bakery_gifting_pool_usd=Decimal("230000.00"),
+                unauthorized_stem_downgrade_substitution_or_missing_pre_dispatch_photo_detected=False,
+                occasion_time_window_sla_breach_or_fake_courier_pod_detected=False,
+                webiq_feline_toxic_lily_hazard_or_ambient_cream_cake_melt_flag=False,
+                restricted_key_age_days=30,
+                hourly_florist_capacity_slot_and_pre_dispatch_vision_escrow_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -24885,6 +25012,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "lifesciences_sunshine_gpo_udi_guard": lifesciences_sunshine_gpo_udi_guard,
         "highered_tuition_fx_aml_escrow_guard": highered_tuition_fx_aml_escrow_guard,
         "fintech_credit_regf_hardship_guard": fintech_credit_regf_hardship_guard,
+        "floral_bakery_time_window_escrow_guard": floral_bakery_time_window_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -31997,6 +32125,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">ECOA 核保与 Reg F 重组令牌</div>
             <div class="finops-kpi-val" id="fintech-cred-token-kpi" style="font-size:10px;color:#A78BFA;">fintech_credit_regf_hardship_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Floral, Bakery & Time-Windowed Gifting Delivery Escrow Sandbox -->
+      <div class="finops-box" id="floral-bakery-time-window-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">💐 鲜花礼盒、节日蛋糕与同城定时达 (1-800-Flowers / 美团闪购鲜花 / 好利来) 沙盒</div>
+            <div class="finops-subtitle">实测出店前成品实拍视觉点数拦截情人节花材擅自降级替品 (HTTP 403)、生日/纪念日时间窗超时阶梯退全款与防骑手异地假妥投 (HTTP 422)、养猫家庭剧毒百合花过滤与高温动物奶油冷媒熔断 (HTTP 451) 及花艺师小时产能锁立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="floral-gift-verdict-pill">HTTP 200 · PRE_DISPATCH_VISION_AND_OCCASION_SLA_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度同城鲜花速递、生日蛋糕与节日礼赠结算池 ($ USD) <span class="control-val" id="floral-gift-gross-label">$230,000</span></label>
+            <input type="range" id="floral-gift-gross-slider" min="40000" max="800000" step="15000" value="230000" oninput="updateFloralBakeryTimeWindowEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">出店实拍视觉点数、仪式时间窗 SLA、养猫百合毒性过滤与花艺师小时产能槽位场景</label>
+            <select id="floral-gift-mode-select" onchange="updateFloralBakeryTimeWindowEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 出店实拍 33 朵红玫瑰验真 + 准时妥投核销 + 冷媒完好 (HTTP 200)</option>
+              <option value="stem_403">🛑 花店将 33 朵厄瓜多尔玫瑰擅自减为 19 朵廉价康乃馨 或 未上传出店实拍图即呼叫骑手 (HTTP 403)</option>
+              <option value="sla_422">🚨 生日宴散场后 22:00 蛋糕才送到失去仪式意义 或 骑手距写字楼 2km 提前点虚假送达 (HTTP 422)</option>
+              <option value="lily_451">🛑 Web IQ 检出收礼人为养猫家庭却选购含剧毒百合(Lilium)花束 或 34°C 高温配送动物奶油蛋糕无干冰 (HTTP 451)</option>
+              <option value="slot_409">🧑‍⚖️ 花艺师每小时包花产能上限锁防爆单 + 出餐实拍先推给送礼人查阅确认立省 24% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原节日爆仓退单与货不对板基线</div>
+            <div class="finops-kpi-val" id="floral-gift-gross-kpi">$230,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">实拍验花与产能锁单立省</div>
+            <div class="finops-kpi-val" id="floral-gift-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净鲜花烘焙礼赠结算额</div>
+            <div class="finops-kpi-val" id="floral-gift-net-kpi" style="color:#60A5FA;">$230,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">出店视觉与定时达托管令牌</div>
+            <div class="finops-kpi-val" id="floral-gift-token-kpi" style="font-size:10px;color:#A78BFA;">floral_bakery_time_window_escrow_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -40628,6 +40801,61 @@ function updateFintechCreditRegfHardshipSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'fintech_credit_regf_hardship_mandate_verified';
+  }}
+}}
+
+function updateFloralBakeryTimeWindowEscrowSandbox() {{
+  const grossSlider = document.getElementById('floral-gift-gross-slider');
+  const modeSelect = document.getElementById('floral-gift-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '230000');
+  const mode = modeSelect.value;
+  document.getElementById('floral-gift-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('floral-gift-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('floral-gift-verdict-pill');
+  const savingsKpi = document.getElementById('floral-gift-savings-kpi');
+  const netKpi = document.getElementById('floral-gift-net-kpi');
+  const tokenKpi = document.getElementById('floral-gift-token-kpi');
+
+  if (mode === 'stem_403') {{
+    pill.textContent = 'HTTP 403 · UNAUTHORIZED_STEM_DOWNGRADE_SUBSTITUTION_OR_MISSING_PRE_DISPATCH_PHOTO_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_STEM_DOWNGRADE_OR_NO_PHOTO';
+  }} else if (mode === 'sla_422') {{
+    pill.textContent = 'HTTP 422 · OCCASION_TIME_WINDOW_SLA_BREACH_OR_FAKE_COURIER_POD_BLOCKED (11ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_MISSED_OCCASION_OR_FAKE_POD';
+  }} else if (mode === 'lily_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_FELINE_TOXIC_LILY_HAZARD_OR_AMBIENT_CREAM_CAKE_MELT_HOLD (215ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_FELINE_TOXIC_LILY_OR_MELT_RISK';
+  }} else if (mode === 'slot_409') {{
+    const savings = Math.round(gross * 0.24 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · HOURLY_FLORIST_CAPACITY_SLOT_AND_PRE_DISPATCH_VISION_ESCROW_CONFIRM (185ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'floral_bakery_time_window_escrow_mandate_saved24pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · PRE_DISPATCH_VISION_AND_OCCASION_SLA_ESCROW_AUTHORIZED (9ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'floral_bakery_time_window_escrow_mandate_verified';
   }}
 }}
 
