@@ -13011,6 +13011,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("corporate-catering-office-meal-escrow-sandbox", html_zh)
 
+    def test_bridal_bespoke_tailoring_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            BridalBespokeTailoringEscrowPolicyInput,
+            evaluate_bridal_bespoke_tailoring_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_bridal_bespoke_tailoring_escrow_policy(
+            BridalBespokeTailoringEscrowPolicyInput(
+                quarterly_bridal_and_bespoke_formalwear_pool_usd=230000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "DYE_LOT_LOCKED_AND_T14D_FIT_WINDOW_AUTHORIZED",
+        )
+
+        dye = evaluate_bridal_bespoke_tailoring_escrow_policy(
+            BridalBespokeTailoringEscrowPolicyInput(
+                alteration_fee_extortion_or_bridesmaid_dye_lot_mismatch=True
+            )
+        )
+        self.assertEqual(dye["status_code"], 403)
+        self.assertEqual(
+            dye["decision"],
+            "ALTERATION_FEE_EXTORTION_OR_BRIDESMAID_DYE_LOT_MISMATCH_BLOCKED",
+        )
+
+        sla = evaluate_bridal_bespoke_tailoring_escrow_policy(
+            BridalBespokeTailoringEscrowPolicyInput(
+                wedding_t14d_delivery_sla_breach_or_fabric_mill_unverified=True
+            )
+        )
+        self.assertEqual(sla["status_code"], 422)
+        self.assertEqual(
+            sla["decision"],
+            "WEDDING_T14D_DELIVERY_SLA_BREACH_OR_FABRIC_MILL_AUTHENTICITY_BLOCKED",
+        )
+
+        ins = evaluate_bridal_bespoke_tailoring_escrow_policy(
+            BridalBespokeTailoringEscrowPolicyInput(
+                webiq_bridal_retailer_insolvency_or_factory_shutdown_flag=True
+            )
+        )
+        self.assertEqual(ins["status_code"], 451)
+        self.assertEqual(
+            ins["decision"],
+            "WEBIQ_BRIDAL_RETAILER_INSOLVENCY_OR_FACTORY_SHUTDOWN_HOLD",
+        )
+
+        optim = evaluate_bridal_bespoke_tailoring_escrow_policy(
+            BridalBespokeTailoringEscrowPolicyInput(
+                quarterly_bridal_and_bespoke_formalwear_pool_usd=230000.0,
+                factory_custom_sizing_and_groomsmen_group_comp_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 55200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 174800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("bridal_bespoke_tailoring_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("wedding-bridal-bespoke-tailoring-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

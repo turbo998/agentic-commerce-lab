@@ -19214,6 +19214,84 @@ def evaluate_corporate_catering_office_meal_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class BridalBespokeTailoringEscrowPolicyInput:
+    """Input contract for Bridal Gown, Bespoke Suit Tailoring & Alteration-Cap Escrow."""
+
+    quarterly_bridal_and_bespoke_formalwear_pool_usd: float = 230000.0
+    alteration_fee_extortion_or_bridesmaid_dye_lot_mismatch: bool = False
+    wedding_t14d_delivery_sla_breach_or_fabric_mill_unverified: bool = False
+    webiq_bridal_retailer_insolvency_or_factory_shutdown_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    factory_custom_sizing_and_groomsmen_group_comp_ready: bool = False
+
+
+def evaluate_bridal_bespoke_tailoring_escrow_policy(
+    policy_input: BridalBespokeTailoringEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Bridal Gown, Bespoke Suit Tailoring & Formalwear Rental policy."""
+    gross_pool = max(float(policy_input.quarterly_bridal_and_bespoke_formalwear_pool_usd), 0.0)
+    if (
+        policy_input.webiq_bridal_retailer_insolvency_or_factory_shutdown_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_BRIDAL_RETAILER_INSOLVENCY_OR_FACTORY_SHUTDOWN_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.alteration_fee_extortion_or_bridesmaid_dye_lot_mismatch:
+        return {
+            "status_code": 403,
+            "decision": "ALTERATION_FEE_EXTORTION_OR_BRIDESMAID_DYE_LOT_MISMATCH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.wedding_t14d_delivery_sla_breach_or_fabric_mill_unverified:
+        return {
+            "status_code": 422,
+            "decision": "WEDDING_T14D_DELIVERY_SLA_BREACH_OR_FABRIC_MILL_AUTHENTICITY_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.factory_custom_sizing_and_groomsmen_group_comp_ready:
+        savings = round(gross_pool * 0.24, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FACTORY_CUSTOM_SIZING_AND_GROOMSMEN_GROUP_COMP_CONFIRM",
+            "mandate_token": "bridal_bespoke_tailoring_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "DYE_LOT_LOCKED_AND_T14D_FIT_WINDOW_AUTHORIZED",
+        "mandate_token": "bridal_bespoke_tailoring_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -26667,6 +26745,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    bridal_bespoke_tailoring_escrow_guard = {
+        "authorized_200": evaluate_bridal_bespoke_tailoring_escrow_policy(
+            BridalBespokeTailoringEscrowPolicyInput()
+        ),
+        "alteration_extortion_or_dye_lot_403": evaluate_bridal_bespoke_tailoring_escrow_policy(
+            BridalBespokeTailoringEscrowPolicyInput(
+                alteration_fee_extortion_or_bridesmaid_dye_lot_mismatch=True
+            )
+        ),
+        "t14d_sla_or_fabric_swap_422": evaluate_bridal_bespoke_tailoring_escrow_policy(
+            BridalBespokeTailoringEscrowPolicyInput(
+                wedding_t14d_delivery_sla_breach_or_fabric_mill_unverified=True
+            )
+        ),
+        "retailer_insolvency_or_shutdown_451": evaluate_bridal_bespoke_tailoring_escrow_policy(
+            BridalBespokeTailoringEscrowPolicyInput(
+                webiq_bridal_retailer_insolvency_or_factory_shutdown_flag=True
+            )
+        ),
+        "factory_custom_and_groomsmen_comp_409": evaluate_bridal_bespoke_tailoring_escrow_policy(
+            BridalBespokeTailoringEscrowPolicyInput(
+                factory_custom_sizing_and_groomsmen_group_comp_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26854,6 +26958,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "coworking_flexible_office_escrow_guard": coworking_flexible_office_escrow_guard,
         "ski_resort_golf_teetime_escrow_guard": ski_resort_golf_teetime_escrow_guard,
         "corporate_catering_office_meal_escrow_guard": corporate_catering_office_meal_escrow_guard,
+        "bridal_bespoke_tailoring_escrow_guard": bridal_bespoke_tailoring_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -34894,6 +34999,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="corporate-catering-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CONSOLIDATED_LOCKER_DROP_AND_ATTENDANCE_RIGHTSIZING_CONFIRM · Mandate: corporate_catering_office_meal_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 59 Bridal Gown, Bespoke Suit Tailoring & Alteration-Cap Escrow -->
+      <div class="finops-box" id="wedding-bridal-bespoke-tailoring-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">👰 高定婚纱、MTM 西装定制与伴郎伴娘礼服 (Kleinfeld / Azazie / SuitSupply / The Black Tux) 防天价改衣费、同缸染色锁与 T-14d 试穿沙盒 (Round 59)</div>
+            <div class="finops-subtitle">实测出厂按三围/鞋高直裁与店内改衣费硬封顶(&lt;=20%)及伴娘团全员集齐锁定单一染缸布卷号防阴阳色差 (HTTP 403)、婚礼前 T-14d 强制寄达试穿缓冲期与意大利 VBC/Zegna 羊毛织唛验真 (HTTP 422)、Web IQ 婚纱连锁店破产重整信托隔离 (HTTP 451) 及出厂直裁+伴郎团满5免1立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="bridal-tailor-status-kpi">HTTP 409 · FACTORY_CUSTOM_SIZING_AND_GROOMSMEN_GROUP_COMP_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度高定婚纱、西装定制与伴郎伴娘礼服结算池 ($ USD)
+            <input type="range" id="bridal-tailor-pool-slider" min="40000" max="1500000" step="10000" value="230000" oninput="updateBridalBespokeTailoringSandbox()" />
+            <span id="bridal-tailor-pool-val" style="color:#6ee7b7; font-family:monospace;">$230,000</span>
+          </label>
+          <label>
+            改衣费封顶与伴娘团同缸染色校验 (HTTP 403)
+            <select id="bridal-tailor-dye-select" onchange="updateBridalBespokeTailoringSandbox()">
+              <option value="pass">改衣费 &lt;=20% 硬封顶 + 伴娘团全员锁定同一染缸批次 (放行)</option>
+              <option value="block">故意订大码敲诈 $1,000 改衣费(&gt;25%) 或 伴娘裙跨染缸分批染出阴阳色 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            婚礼前 T-14d 试穿死线与原厂面料校验 (HTTP 422)
+            <select id="bridal-tailor-sla-select" onchange="updateBridalBespokeTailoringSandbox()">
+              <option value="pass">婚期前至少 14 天寄达试穿 + VBC/Zegna 羊毛织唛已验 (合规)</option>
+              <option value="block">婚礼前 2 天才寄到无暇换码 或 化纤混纺冒充 130支纯羊毛 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 婚纱连锁品牌破产风险筛查 (HTTP 451)
+            <select id="bridal-tailor-insolvency-select" onchange="updateBridalBespokeTailoringSandbox()">
+              <option value="clear">商户经营正常 + 50/30/20 信托托管 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">婚纱连锁店申请 Chapter 11 破产关店且无独立信托保护 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            出厂直裁免改衣与伴郎团免单优化 (HTTP 409)
+            <select id="bridal-tailor-opt-select" onchange="updateBridalBespokeTailoringSandbox()">
+              <option value="enabled" selected>开启出厂 Hollow-to-Hem 直裁免改衣费 + 伴郎团满5免1省 24% (HTTP 409)</option>
+              <option value="baseline">常规同缸锁布与 T-14d 礼服托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度婚庆置装毛池</div>
+            <div class="finops-kpi-val" id="bridal-tailor-gross-kpi">$230,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">直裁免改与免单后净额</div>
+            <div class="finops-kpi-val" id="bridal-tailor-net-kpi" style="color:#6ee7b7;">$174,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下改衣费与组团优惠</div>
+            <div class="finops-kpi-val" id="bridal-tailor-savings-kpi" style="color:#38bdf8;">$55,200</div>
+          </div>
+        </div>
+        <div id="bridal-tailor-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FACTORY_CUSTOM_SIZING_AND_GROOMSMEN_GROUP_COMP_CONFIRM · Mandate: bridal_bespoke_tailoring_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -44631,6 +44799,80 @@ function updateCorporateCateringOfficeMealSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ATTENDANCE_SYNCED_AND_ALLERGEN_SAFE_CATERING_AUTHORIZED · Mandate: corporate_catering_office_meal_escrow_mandate_200';
+}}
+
+function updateBridalBespokeTailoringSandbox() {{
+  const slider = document.getElementById('bridal-tailor-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '230000');
+  const dyeMode = document.getElementById('bridal-tailor-dye-select').value;
+  const slaMode = document.getElementById('bridal-tailor-sla-select').value;
+  const insMode = document.getElementById('bridal-tailor-insolvency-select').value;
+  const optMode = document.getElementById('bridal-tailor-opt-select').value;
+
+  document.getElementById('bridal-tailor-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('bridal-tailor-status-kpi');
+  const grossKpi = document.getElementById('bridal-tailor-gross-kpi');
+  const netKpi = document.getElementById('bridal-tailor-net-kpi');
+  const savingsKpi = document.getElementById('bridal-tailor-savings-kpi');
+  const banner = document.getElementById('bridal-tailor-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (insMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_BRIDAL_RETAILER_INSOLVENCY_OR_FACTORY_SHUTDOWN_HOLD · Mandate: null';
+    return;
+  }}
+  if (dyeMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ALTERATION_FEE_EXTORTION_OR_BRIDESMAID_DYE_LOT_MISMATCH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (slaMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 WEDDING_T14D_DELIVERY_SLA_BREACH_OR_FABRIC_MILL_AUTHENTICITY_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.24);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FACTORY_CUSTOM_SIZING_AND_GROOMSMEN_GROUP_COMP_CONFIRM · Mandate: bridal_bespoke_tailoring_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 DYE_LOT_LOCKED_AND_T14D_FIT_WINDOW_AUTHORIZED · Mandate: bridal_bespoke_tailoring_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
