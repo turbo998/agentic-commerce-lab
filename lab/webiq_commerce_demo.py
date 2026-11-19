@@ -17176,6 +17176,80 @@ def evaluate_home_remodeling_cad_milestone_escrow_policy(
         "reason": "Verified post-tile LiDAR ±2mm fit, complete BoQ scope, signed supplier lien waiver, and 4-stage inspection escrow.",
     }
 
+
+@dataclass(frozen=True)
+class B2bPackagingPrintPreflightEscrowPolicyInput:
+    quarterly_b2b_packaging_print_pool_usd: Decimal
+    pdfx4_preflight_bleed_dpi_fail_or_unsigned_3d_dieline_proof_detected: bool
+    duplicate_dieline_tooling_charge_or_overrun_tolerance_breach_detected: bool
+    webiq_food_contact_ink_hazard_or_fsc_cert_revocation_flag: bool
+    restricted_key_age_days: int
+    gang_run_imposition_and_spectrophotometer_delta_e_escrow_enabled: bool
+
+
+def evaluate_b2b_packaging_print_preflight_escrow_policy(
+    policy_input: B2bPackagingPrintPreflightEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate B2B Custom Packaging & Print ISO 15930 PDF/X-4 preflight, die-tooling deduplication & gang-run Delta-E escrow."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_b2b_packaging_print_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.pdfx4_preflight_bleed_dpi_fail_or_unsigned_3d_dieline_proof_detected:
+        return {
+            "http_status": 403,
+            "decision": "PDFX4_PREFLIGHT_BLEED_DPI_FAIL_OR_UNSIGNED_3D_DIELINE_PROOF_BLOCKED",
+            "latency_ms": 9,
+            "approved_budget_usd": "0.00",
+            "packaging_print_escrow_token": None,
+            "reason": "Blocked CTP plate burning due to <300 PPI raster, missing 3mm bleed, barcode crease clash, or unsigned 3D dieline proof.",
+        }
+
+    if policy_input.duplicate_dieline_tooling_charge_or_overrun_tolerance_breach_detected:
+        return {
+            "http_status": 422,
+            "decision": "DUPLICATE_DIELINE_TOOLING_CHARGE_OR_OVERRUN_TOLERANCE_BREACH_BLOCKED",
+            "latency_ms": 12,
+            "approved_budget_usd": "0.00",
+            "packaging_print_escrow_token": None,
+            "reason": "Blocked repeat cutting-die setup fee for active in-plant tooling or invoice overrun exceeding +5.0% tolerance.",
+        }
+
+    if policy_input.webiq_food_contact_ink_hazard_or_fsc_cert_revocation_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_FOOD_CONTACT_INK_HAZARD_OR_FSC_CERT_REVOCATION_HOLD",
+            "latency_ms": 230,
+            "approved_budget_usd": "0.00",
+            "packaging_print_escrow_token": None,
+            "reason": "Web IQ flagged mineral-oil (MOSH/MOAH) food-contact ink migration hazard, revoked FSC CoC certificate, or key >180 days.",
+        }
+
+    if policy_input.gang_run_imposition_and_spectrophotometer_delta_e_escrow_enabled:
+        savings = (gross * Decimal("0.21")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"PRINT_PACK_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "GANG_RUN_IMPOSITION_AND_SPECTROPHOTOMETER_DELTA_E_ESCROW_CONFIRM",
+            "latency_ms": 195,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "packaging_print_escrow_token": f"b2b_packaging_print_preflight_escrow_mandate_{digest}",
+            "reason": "Multi-SKU gang-run sheet imposition, tooling reuse, and Delta-E <= 2.0 escrow reduced packaging spend and scrap by 21.0%.",
+        }
+
+    digest = hashlib.sha256(f"PRINT_PACK_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "PDFX4_PREFLIGHT_DIELINE_AND_COLOR_ESCROW_AUTHORIZED",
+        "latency_ms": 9,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "packaging_print_escrow_token": f"b2b_packaging_print_preflight_escrow_mandate_{digest}",
+        "reason": "Verified ISO 15930 PDF/X-4 preflight, signed 3D dieline proof, active FSC CoC, and Delta-E <= 2.0 color parity.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -23445,6 +23519,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_packaging_print_preflight_escrow_guard = {
+        "happy_path": evaluate_b2b_packaging_print_preflight_escrow_policy(
+            B2bPackagingPrintPreflightEscrowPolicyInput(
+                quarterly_b2b_packaging_print_pool_usd=Decimal("290000.00"),
+                pdfx4_preflight_bleed_dpi_fail_or_unsigned_3d_dieline_proof_detected=False,
+                duplicate_dieline_tooling_charge_or_overrun_tolerance_breach_detected=False,
+                webiq_food_contact_ink_hazard_or_fsc_cert_revocation_flag=False,
+                restricted_key_age_days=30,
+                gang_run_imposition_and_spectrophotometer_delta_e_escrow_enabled=False,
+            )
+        ),
+        "pdfx4_bleed_or_unsigned_proof_block": evaluate_b2b_packaging_print_preflight_escrow_policy(
+            B2bPackagingPrintPreflightEscrowPolicyInput(
+                quarterly_b2b_packaging_print_pool_usd=Decimal("290000.00"),
+                pdfx4_preflight_bleed_dpi_fail_or_unsigned_3d_dieline_proof_detected=True,
+                duplicate_dieline_tooling_charge_or_overrun_tolerance_breach_detected=False,
+                webiq_food_contact_ink_hazard_or_fsc_cert_revocation_flag=False,
+                restricted_key_age_days=30,
+                gang_run_imposition_and_spectrophotometer_delta_e_escrow_enabled=False,
+            )
+        ),
+        "duplicate_die_or_overrun_breach_block": evaluate_b2b_packaging_print_preflight_escrow_policy(
+            B2bPackagingPrintPreflightEscrowPolicyInput(
+                quarterly_b2b_packaging_print_pool_usd=Decimal("290000.00"),
+                pdfx4_preflight_bleed_dpi_fail_or_unsigned_3d_dieline_proof_detected=False,
+                duplicate_dieline_tooling_charge_or_overrun_tolerance_breach_detected=True,
+                webiq_food_contact_ink_hazard_or_fsc_cert_revocation_flag=False,
+                restricted_key_age_days=30,
+                gang_run_imposition_and_spectrophotometer_delta_e_escrow_enabled=False,
+            )
+        ),
+        "webiq_food_ink_or_fsc_revocation_hold": evaluate_b2b_packaging_print_preflight_escrow_policy(
+            B2bPackagingPrintPreflightEscrowPolicyInput(
+                quarterly_b2b_packaging_print_pool_usd=Decimal("290000.00"),
+                pdfx4_preflight_bleed_dpi_fail_or_unsigned_3d_dieline_proof_detected=False,
+                duplicate_dieline_tooling_charge_or_overrun_tolerance_breach_detected=False,
+                webiq_food_contact_ink_hazard_or_fsc_cert_revocation_flag=True,
+                restricted_key_age_days=191,
+                gang_run_imposition_and_spectrophotometer_delta_e_escrow_enabled=False,
+            )
+        ),
+        "gang_run_and_delta_e_escrow_confirm": evaluate_b2b_packaging_print_preflight_escrow_policy(
+            B2bPackagingPrintPreflightEscrowPolicyInput(
+                quarterly_b2b_packaging_print_pool_usd=Decimal("290000.00"),
+                pdfx4_preflight_bleed_dpi_fail_or_unsigned_3d_dieline_proof_detected=False,
+                duplicate_dieline_tooling_charge_or_overrun_tolerance_breach_detected=False,
+                webiq_food_contact_ink_hazard_or_fsc_cert_revocation_flag=False,
+                restricted_key_age_days=30,
+                gang_run_imposition_and_spectrophotometer_delta_e_escrow_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -23605,6 +23732,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "laundry_luxury_care_rfid_escrow_guard": laundry_luxury_care_rfid_escrow_guard,
         "car_rental_mobility_toll_escrow_guard": car_rental_mobility_toll_escrow_guard,
         "home_remodeling_cad_milestone_escrow_guard": home_remodeling_cad_milestone_escrow_guard,
+        "b2b_packaging_print_preflight_escrow_guard": b2b_packaging_print_preflight_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -30267,6 +30395,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">点云复尺与四阶托管令牌</div>
             <div class="finops-kpi-val" id="remod-cad-token-kpi" style="font-size:10px;color:#A78BFA;">home_remodeling_cad_milestone_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive B2B Custom Packaging, Commercial Print Preflight (PDF/X-4) & Dieline Escrow Sandbox -->
+      <div class="finops-box" id="b2b-packaging-print-preflight-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📦 企业定制包装、大宗商业印刷与刀模复用托管 (Packlane / Canva Print / 裕同科技 / 云印) 沙盒</div>
+            <div class="finops-subtitle">实测 ISO 15930 (PDF/X-4) 300DPI/3mm出血位与 3D 刀模打样双签锁防印废 5 万只彩盒 (HTTP 403)、在库刀版模具台账去重与 ±5% 溢短装封顶 (HTTP 422)、FDA 食品接触低迁移油墨与 FSC 认证核查 (HTTP 451) 及多 SKU 联版拼印+分光光度计 Delta-E&lt;=2.0 锁款立省 21% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="print-pack-verdict-pill">HTTP 200 · PDFX4_PREFLIGHT_DIELINE_AND_COLOR_ESCROW_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度企业定制彩盒、瓦楞外箱与商业印刷采购池 ($ USD) <span class="control-val" id="print-pack-gross-label">$290,000</span></label>
+            <input type="range" id="print-pack-gross-slider" min="40000" max="1000000" step="20000" value="290000" oninput="updateB2bPackagingPrintPreflightEscrowSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">PDF/X-4 印前出血预检、在库刀模费去重、FDA/FSC 合规与多 SKU 联版拼印场景</label>
+            <select id="print-pack-mode-select" onchange="updateB2bPackagingPrintPreflightEscrowSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ PDF/X-4 300DPI/3mm出血合规 + 3D 刀模已签 + 色差 Delta-E&lt;=2.0 (HTTP 200)</option>
+              <option value="pdfx4_403">🛑 设计稿为 72DPI RGB 缺 3mm 出血位、条码压折痕线 或 未签署 3D 刀模打样直接下发 CTP 制版 (HTTP 403)</option>
+              <option value="die_422">🚨 老盒型翻单被印厂重复收取 $1,200 在库刀版模具费 或 强行要求结算 +15% 超印尾货 (HTTP 422)</option>
+              <option value="fsc_451">🛑 Web IQ 检出食品内包材含矿物油(MOSH/MOAH)迁移风险 或 供应商 FSC 森林认证已吊销 (HTTP 451)</option>
+              <option value="gang_409">🧑‍⚖️ 跨 SKU 同克重白卡纸联版拼印 (Gang-Run) + 在库刀模复用 + 首件色差锁款立省 21% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原印废返工与重复开模采购基线</div>
+            <div class="finops-kpi-val" id="print-pack-gross-kpi">$290,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">印前防废与联版拼印立省</div>
+            <div class="finops-kpi-val" id="print-pack-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净包装与印刷采购结算额</div>
+            <div class="finops-kpi-val" id="print-pack-net-kpi" style="color:#60A5FA;">$290,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">印前预检与色差托管令牌</div>
+            <div class="finops-kpi-val" id="print-pack-token-kpi" style="font-size:10px;color:#A78BFA;">b2b_packaging_print_preflight_escrow_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -38348,6 +38521,61 @@ function updateHomeRemodelingCadMilestoneEscrowSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'home_remodeling_cad_milestone_escrow_mandate_verified';
+  }}
+}}
+
+function updateB2bPackagingPrintPreflightEscrowSandbox() {{
+  const grossSlider = document.getElementById('print-pack-gross-slider');
+  const modeSelect = document.getElementById('print-pack-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '290000');
+  const mode = modeSelect.value;
+  document.getElementById('print-pack-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('print-pack-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('print-pack-verdict-pill');
+  const savingsKpi = document.getElementById('print-pack-savings-kpi');
+  const netKpi = document.getElementById('print-pack-net-kpi');
+  const tokenKpi = document.getElementById('print-pack-token-kpi');
+
+  if (mode === 'pdfx4_403') {{
+    pill.textContent = 'HTTP 403 · PDFX4_PREFLIGHT_BLEED_DPI_FAIL_OR_UNSIGNED_3D_DIELINE_PROOF_BLOCKED (9ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_PDFX4_BLEED_OR_UNSIGNED_DIELINE';
+  }} else if (mode === 'die_422') {{
+    pill.textContent = 'HTTP 422 · DUPLICATE_DIELINE_TOOLING_CHARGE_OR_OVERRUN_TOLERANCE_BREACH_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_REPEAT_DIE_FEE_OR_OVERRUN';
+  }} else if (mode === 'fsc_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_FOOD_CONTACT_INK_HAZARD_OR_FSC_CERT_REVOCATION_HOLD (230ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_FOOD_INK_MIGRATION_OR_FSC_REVOKED';
+  }} else if (mode === 'gang_409') {{
+    const savings = Math.round(gross * 0.21 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · GANG_RUN_IMPOSITION_AND_SPECTROPHOTOMETER_DELTA_E_ESCROW_CONFIRM (195ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'b2b_packaging_print_preflight_escrow_mandate_saved21pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · PDFX4_PREFLIGHT_DIELINE_AND_COLOR_ESCROW_AUTHORIZED (9ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'b2b_packaging_print_preflight_escrow_mandate_verified';
   }}
 }}
 

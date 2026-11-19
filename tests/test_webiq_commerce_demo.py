@@ -10788,6 +10788,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("home-remodeling-cad-milestone-escrow-sandbox", html)
 
+    def test_b2b_packaging_print_preflight_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            B2bPackagingPrintPreflightEscrowPolicyInput,
+            evaluate_b2b_packaging_print_preflight_escrow_policy,
+        )
+
+        happy = evaluate_b2b_packaging_print_preflight_escrow_policy(
+            B2bPackagingPrintPreflightEscrowPolicyInput(
+                quarterly_b2b_packaging_print_pool_usd=Decimal("290000.00"),
+                pdfx4_preflight_bleed_dpi_fail_or_unsigned_3d_dieline_proof_detected=False,
+                duplicate_dieline_tooling_charge_or_overrun_tolerance_breach_detected=False,
+                webiq_food_contact_ink_hazard_or_fsc_cert_revocation_flag=False,
+                restricted_key_age_days=30,
+                gang_run_imposition_and_spectrophotometer_delta_e_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "PDFX4_PREFLIGHT_DIELINE_AND_COLOR_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["packaging_print_escrow_token"]).startswith("b2b_packaging_print_preflight_escrow_mandate_")
+        )
+
+        pdf_block = evaluate_b2b_packaging_print_preflight_escrow_policy(
+            B2bPackagingPrintPreflightEscrowPolicyInput(
+                quarterly_b2b_packaging_print_pool_usd=Decimal("290000.00"),
+                pdfx4_preflight_bleed_dpi_fail_or_unsigned_3d_dieline_proof_detected=True,
+                duplicate_dieline_tooling_charge_or_overrun_tolerance_breach_detected=False,
+                webiq_food_contact_ink_hazard_or_fsc_cert_revocation_flag=False,
+                restricted_key_age_days=30,
+                gang_run_imposition_and_spectrophotometer_delta_e_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(pdf_block["http_status"], 403)
+        self.assertEqual(
+            pdf_block["decision"],
+            "PDFX4_PREFLIGHT_BLEED_DPI_FAIL_OR_UNSIGNED_3D_DIELINE_PROOF_BLOCKED",
+        )
+
+        die_block = evaluate_b2b_packaging_print_preflight_escrow_policy(
+            B2bPackagingPrintPreflightEscrowPolicyInput(
+                quarterly_b2b_packaging_print_pool_usd=Decimal("290000.00"),
+                pdfx4_preflight_bleed_dpi_fail_or_unsigned_3d_dieline_proof_detected=False,
+                duplicate_dieline_tooling_charge_or_overrun_tolerance_breach_detected=True,
+                webiq_food_contact_ink_hazard_or_fsc_cert_revocation_flag=False,
+                restricted_key_age_days=30,
+                gang_run_imposition_and_spectrophotometer_delta_e_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(die_block["http_status"], 422)
+        self.assertEqual(
+            die_block["decision"],
+            "DUPLICATE_DIELINE_TOOLING_CHARGE_OR_OVERRUN_TOLERANCE_BREACH_BLOCKED",
+        )
+
+        fsc_hold = evaluate_b2b_packaging_print_preflight_escrow_policy(
+            B2bPackagingPrintPreflightEscrowPolicyInput(
+                quarterly_b2b_packaging_print_pool_usd=Decimal("290000.00"),
+                pdfx4_preflight_bleed_dpi_fail_or_unsigned_3d_dieline_proof_detected=False,
+                duplicate_dieline_tooling_charge_or_overrun_tolerance_breach_detected=False,
+                webiq_food_contact_ink_hazard_or_fsc_cert_revocation_flag=True,
+                restricted_key_age_days=191,
+                gang_run_imposition_and_spectrophotometer_delta_e_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(fsc_hold["http_status"], 451)
+        self.assertEqual(
+            fsc_hold["decision"],
+            "WEBIQ_FOOD_CONTACT_INK_HAZARD_OR_FSC_CERT_REVOCATION_HOLD",
+        )
+
+        opt_confirm = evaluate_b2b_packaging_print_preflight_escrow_policy(
+            B2bPackagingPrintPreflightEscrowPolicyInput(
+                quarterly_b2b_packaging_print_pool_usd=Decimal("290000.00"),
+                pdfx4_preflight_bleed_dpi_fail_or_unsigned_3d_dieline_proof_detected=False,
+                duplicate_dieline_tooling_charge_or_overrun_tolerance_breach_detected=False,
+                webiq_food_contact_ink_hazard_or_fsc_cert_revocation_flag=False,
+                restricted_key_age_days=30,
+                gang_run_imposition_and_spectrophotometer_delta_e_escrow_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "60900.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "229100.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_packaging_print_preflight_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("b2b-packaging-print-preflight-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
