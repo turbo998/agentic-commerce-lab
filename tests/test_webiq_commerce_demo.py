@@ -11868,6 +11868,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("b2b-creative-ip-spdx-c2pa-escrow-sandbox", html)
 
+    def test_b2b_freight_booking_cisf_demurrage_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            B2bFreightBookingCisfDemurragePolicyInput,
+            evaluate_b2b_freight_booking_cisf_demurrage_policy,
+        )
+
+        happy = evaluate_b2b_freight_booking_cisf_demurrage_policy(
+            B2bFreightBookingCisfDemurragePolicyInput(
+                quarterly_b2b_freight_forwarding_pool_usd=Decimal("510000.00"),
+                predatory_lcl_zero_freight_cisf_bait_or_uncapped_destination_fee_detected=False,
+                invalid_fmc_osra_demurrage_billing_or_uncompensated_rolled_cargo_detected=False,
+                webiq_undeclared_imdg_hazmat_or_port_strike_force_majeure_flag=False,
+                restricted_key_age_days=30,
+                lcl_to_fcl_breakeven_consolidation_and_osra_stop_clock_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "ALL_IN_DCSA_BOOKING_AND_OSRA_DEMURRAGE_AUTHORIZED")
+        self.assertTrue(
+            str(happy["freight_booking_escrow_token"]).startswith("b2b_freight_booking_cisf_demurrage_mandate_")
+        )
+
+        cisf_block = evaluate_b2b_freight_booking_cisf_demurrage_policy(
+            B2bFreightBookingCisfDemurragePolicyInput(
+                quarterly_b2b_freight_forwarding_pool_usd=Decimal("510000.00"),
+                predatory_lcl_zero_freight_cisf_bait_or_uncapped_destination_fee_detected=True,
+                invalid_fmc_osra_demurrage_billing_or_uncompensated_rolled_cargo_detected=False,
+                webiq_undeclared_imdg_hazmat_or_port_strike_force_majeure_flag=False,
+                restricted_key_age_days=30,
+                lcl_to_fcl_breakeven_consolidation_and_osra_stop_clock_enabled=False,
+            )
+        )
+        self.assertEqual(cisf_block["http_status"], 403)
+        self.assertEqual(
+            cisf_block["decision"],
+            "PREDATORY_LCL_ZERO_FREIGHT_CISF_BAIT_OR_UNCAPPED_DESTINATION_FEE_BLOCKED",
+        )
+
+        osra_block = evaluate_b2b_freight_booking_cisf_demurrage_policy(
+            B2bFreightBookingCisfDemurragePolicyInput(
+                quarterly_b2b_freight_forwarding_pool_usd=Decimal("510000.00"),
+                predatory_lcl_zero_freight_cisf_bait_or_uncapped_destination_fee_detected=False,
+                invalid_fmc_osra_demurrage_billing_or_uncompensated_rolled_cargo_detected=True,
+                webiq_undeclared_imdg_hazmat_or_port_strike_force_majeure_flag=False,
+                restricted_key_age_days=30,
+                lcl_to_fcl_breakeven_consolidation_and_osra_stop_clock_enabled=False,
+            )
+        )
+        self.assertEqual(osra_block["http_status"], 422)
+        self.assertEqual(
+            osra_block["decision"],
+            "INVALID_FMC_OSRA_DEMURRAGE_BILLING_OR_UNCOMPENSATED_ROLLED_CARGO_BLOCKED",
+        )
+
+        hazmat_hold = evaluate_b2b_freight_booking_cisf_demurrage_policy(
+            B2bFreightBookingCisfDemurragePolicyInput(
+                quarterly_b2b_freight_forwarding_pool_usd=Decimal("510000.00"),
+                predatory_lcl_zero_freight_cisf_bait_or_uncapped_destination_fee_detected=False,
+                invalid_fmc_osra_demurrage_billing_or_uncompensated_rolled_cargo_detected=False,
+                webiq_undeclared_imdg_hazmat_or_port_strike_force_majeure_flag=True,
+                restricted_key_age_days=191,
+                lcl_to_fcl_breakeven_consolidation_and_osra_stop_clock_enabled=False,
+            )
+        )
+        self.assertEqual(hazmat_hold["http_status"], 451)
+        self.assertEqual(
+            hazmat_hold["decision"],
+            "WEBIQ_UNDECLARED_IMDG_HAZMAT_OR_PORT_STRIKE_FORCE_MAJEURE_HOLD",
+        )
+
+        opt_confirm = evaluate_b2b_freight_booking_cisf_demurrage_policy(
+            B2bFreightBookingCisfDemurragePolicyInput(
+                quarterly_b2b_freight_forwarding_pool_usd=Decimal("510000.00"),
+                predatory_lcl_zero_freight_cisf_bait_or_uncapped_destination_fee_detected=False,
+                invalid_fmc_osra_demurrage_billing_or_uncompensated_rolled_cargo_detected=False,
+                webiq_undeclared_imdg_hazmat_or_port_strike_force_majeure_flag=False,
+                restricted_key_age_days=30,
+                lcl_to_fcl_breakeven_consolidation_and_osra_stop_clock_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "117300.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "392700.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_freight_booking_cisf_demurrage_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("b2b-freight-booking-cisf-demurrage-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()

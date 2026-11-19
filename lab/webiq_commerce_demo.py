@@ -18064,6 +18064,80 @@ def evaluate_b2b_creative_ip_spdx_c2pa_escrow_policy(
         "reason": "Verified EULA deployment vector, signed Model Release, copyleft-free SPDX tree, and C2PA IP indemnification.",
     }
 
+
+@dataclass(frozen=True)
+class B2bFreightBookingCisfDemurragePolicyInput:
+    quarterly_b2b_freight_forwarding_pool_usd: Decimal
+    predatory_lcl_zero_freight_cisf_bait_or_uncapped_destination_fee_detected: bool
+    invalid_fmc_osra_demurrage_billing_or_uncompensated_rolled_cargo_detected: bool
+    webiq_undeclared_imdg_hazmat_or_port_strike_force_majeure_flag: bool
+    restricted_key_age_days: int
+    lcl_to_fcl_breakeven_consolidation_and_osra_stop_clock_enabled: bool
+
+
+def evaluate_b2b_freight_booking_cisf_demurrage_policy(
+    policy_input: B2bFreightBookingCisfDemurragePolicyInput,
+) -> dict[str, Any]:
+    """Evaluate B2B Ocean & Air Freight anti-CISF LCL bait gate, FMC OSRA-22 demurrage stop-clock & LCL-to-FCL consolidation."""
+    from decimal import ROUND_HALF_UP
+
+    gross = policy_input.quarterly_b2b_freight_forwarding_pool_usd.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+
+    if policy_input.predatory_lcl_zero_freight_cisf_bait_or_uncapped_destination_fee_detected:
+        return {
+            "http_status": 403,
+            "decision": "PREDATORY_LCL_ZERO_FREIGHT_CISF_BAIT_OR_UNCAPPED_DESTINATION_FEE_BLOCKED",
+            "latency_ms": 10,
+            "approved_budget_usd": "0.00",
+            "freight_booking_escrow_token": None,
+            "reason": "Blocked predatory $0/negative origin LCL quote lacking binding destination CISF/CFS/DO fee ceiling.",
+        }
+
+    if policy_input.invalid_fmc_osra_demurrage_billing_or_uncompensated_rolled_cargo_detected:
+        return {
+            "http_status": 422,
+            "decision": "INVALID_FMC_OSRA_DEMURRAGE_BILLING_OR_UNCOMPENSATED_ROLLED_CARGO_BLOCKED",
+            "latency_ms": 12,
+            "approved_budget_usd": "0.00",
+            "freight_booking_escrow_token": None,
+            "reason": "Blocked D&D charge assessed during zero terminal appointment slots (FMC OSRA-22 violation) or uncredited rolled cargo.",
+        }
+
+    if policy_input.webiq_undeclared_imdg_hazmat_or_port_strike_force_majeure_flag or policy_input.restricted_key_age_days > 180:
+        return {
+            "http_status": 451,
+            "decision": "WEBIQ_UNDECLARED_IMDG_HAZMAT_OR_PORT_STRIKE_FORCE_MAJEURE_HOLD",
+            "latency_ms": 230,
+            "approved_budget_usd": "0.00",
+            "freight_booking_escrow_token": None,
+            "reason": "Web IQ flagged undeclared UN3480 lithium battery hazmat lacking UN38.3/MSDS, port labor strike, or key >180 days.",
+        }
+
+    if policy_input.lcl_to_fcl_breakeven_consolidation_and_osra_stop_clock_enabled:
+        savings = (gross * Decimal("0.23")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        net_total = (gross - savings).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        digest = hashlib.sha256(f"FREIGHT_OSRA_OPT|{gross}|{net_total}".encode("utf-8")).hexdigest()[:14]
+        return {
+            "http_status": 409,
+            "decision": "LCL_TO_FCL_BREAKEVEN_CONSOLIDATION_AND_OSRA_STOP_CLOCK_CONFIRM",
+            "latency_ms": 195,
+            "approved_budget_usd": str(net_total),
+            "savings_usd": str(savings),
+            "freight_booking_escrow_token": f"b2b_freight_booking_cisf_demurrage_mandate_{digest}",
+            "reason": ">=14 CBM LCL-to-20GP FCL consolidation, DCSA load guarantee, and FMC OSRA-22 D&D stop-clock saved 23.0%.",
+        }
+
+    digest = hashlib.sha256(f"FREIGHT_OSRA_OK|{gross}".encode("utf-8")).hexdigest()[:14]
+    return {
+        "http_status": 200,
+        "decision": "ALL_IN_DCSA_BOOKING_AND_OSRA_DEMURRAGE_AUTHORIZED",
+        "latency_ms": 10,
+        "approved_budget_usd": str(gross),
+        "savings_usd": "0.00",
+        "freight_booking_escrow_token": f"b2b_freight_booking_cisf_demurrage_mandate_{digest}",
+        "reason": "Verified all-in landed tariff cap, IMDG UN38.3 compliance, DCSA load guarantee, and FMC OSRA-22 D&D audit.",
+    }
+
 # ---------------------------------------------------------------------------
 # 12-Scenario Evaluation Matrix & 7-Card 4:5 Visual Benchmark Report Generator
 # ---------------------------------------------------------------------------
@@ -24969,6 +25043,59 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_freight_booking_cisf_demurrage_guard = {
+        "happy_path": evaluate_b2b_freight_booking_cisf_demurrage_policy(
+            B2bFreightBookingCisfDemurragePolicyInput(
+                quarterly_b2b_freight_forwarding_pool_usd=Decimal("510000.00"),
+                predatory_lcl_zero_freight_cisf_bait_or_uncapped_destination_fee_detected=False,
+                invalid_fmc_osra_demurrage_billing_or_uncompensated_rolled_cargo_detected=False,
+                webiq_undeclared_imdg_hazmat_or_port_strike_force_majeure_flag=False,
+                restricted_key_age_days=30,
+                lcl_to_fcl_breakeven_consolidation_and_osra_stop_clock_enabled=False,
+            )
+        ),
+        "predatory_lcl_cisf_bait_block": evaluate_b2b_freight_booking_cisf_demurrage_policy(
+            B2bFreightBookingCisfDemurragePolicyInput(
+                quarterly_b2b_freight_forwarding_pool_usd=Decimal("510000.00"),
+                predatory_lcl_zero_freight_cisf_bait_or_uncapped_destination_fee_detected=True,
+                invalid_fmc_osra_demurrage_billing_or_uncompensated_rolled_cargo_detected=False,
+                webiq_undeclared_imdg_hazmat_or_port_strike_force_majeure_flag=False,
+                restricted_key_age_days=30,
+                lcl_to_fcl_breakeven_consolidation_and_osra_stop_clock_enabled=False,
+            )
+        ),
+        "invalid_osra_demurrage_or_rolled_cargo_block": evaluate_b2b_freight_booking_cisf_demurrage_policy(
+            B2bFreightBookingCisfDemurragePolicyInput(
+                quarterly_b2b_freight_forwarding_pool_usd=Decimal("510000.00"),
+                predatory_lcl_zero_freight_cisf_bait_or_uncapped_destination_fee_detected=False,
+                invalid_fmc_osra_demurrage_billing_or_uncompensated_rolled_cargo_detected=True,
+                webiq_undeclared_imdg_hazmat_or_port_strike_force_majeure_flag=False,
+                restricted_key_age_days=30,
+                lcl_to_fcl_breakeven_consolidation_and_osra_stop_clock_enabled=False,
+            )
+        ),
+        "webiq_undeclared_hazmat_or_strike_hold": evaluate_b2b_freight_booking_cisf_demurrage_policy(
+            B2bFreightBookingCisfDemurragePolicyInput(
+                quarterly_b2b_freight_forwarding_pool_usd=Decimal("510000.00"),
+                predatory_lcl_zero_freight_cisf_bait_or_uncapped_destination_fee_detected=False,
+                invalid_fmc_osra_demurrage_billing_or_uncompensated_rolled_cargo_detected=False,
+                webiq_undeclared_imdg_hazmat_or_port_strike_force_majeure_flag=True,
+                restricted_key_age_days=191,
+                lcl_to_fcl_breakeven_consolidation_and_osra_stop_clock_enabled=False,
+            )
+        ),
+        "lcl_to_fcl_and_osra_stop_clock_confirm": evaluate_b2b_freight_booking_cisf_demurrage_policy(
+            B2bFreightBookingCisfDemurragePolicyInput(
+                quarterly_b2b_freight_forwarding_pool_usd=Decimal("510000.00"),
+                predatory_lcl_zero_freight_cisf_bait_or_uncapped_destination_fee_detected=False,
+                invalid_fmc_osra_demurrage_billing_or_uncompensated_rolled_cargo_detected=False,
+                webiq_undeclared_imdg_hazmat_or_port_strike_force_majeure_flag=False,
+                restricted_key_age_days=30,
+                lcl_to_fcl_breakeven_consolidation_and_osra_stop_clock_enabled=True,
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -25141,6 +25268,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "fintech_credit_regf_hardship_guard": fintech_credit_regf_hardship_guard,
         "floral_bakery_time_window_escrow_guard": floral_bakery_time_window_escrow_guard,
         "b2b_creative_ip_spdx_c2pa_escrow_guard": b2b_creative_ip_spdx_c2pa_escrow_guard,
+        "b2b_freight_booking_cisf_demurrage_guard": b2b_freight_booking_cisf_demurrage_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -32343,6 +32471,51 @@ def render_webiq_live_demo_html(
           <div class="finops-kpi">
             <div class="finops-kpi-label">EULA 载体与 C2PA 免责令牌</div>
             <div class="finops-kpi-val" id="creat-ip-token-kpi" style="font-size:10px;color:#A78BFA;">b2b_creative_ip_spdx_c2pa_escrow_mandate_verified</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive B2B Ocean & Air Freight Forwarding, Anti-CISF Bait & FMC OSRA-22 Demurrage Sandbox -->
+      <div class="finops-box" id="b2b-freight-booking-cisf-demurrage-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🚢 跨境海空运订舱、防目的港 CISF 敲诈与滞箱费审计 (Flexport / Freightos / Maersk Spot / 运去哪) 沙盒</div>
+            <div class="finops-subtitle">实测门到门全包价归一化拦截“$0海运费+目的港天价拆箱费(CISF)扣单敲诈” (HTTP 403)、美国 FMC OSRA-22 码头无预约槽位自动停钟拒付滞箱费与甩柜索赔 (HTTP 422)、UN3480 锂电池危品瞒报拦截 (HTTP 451) 及 &gt;14 CBM 拼箱自动转整柜立省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="freight-osra-verdict-pill">HTTP 200 · ALL_IN_DCSA_BOOKING_AND_OSRA_DEMURRAGE_AUTHORIZED</span>
+        </div>
+        <div class="finops-controls">
+          <div class="control-group">
+            <label class="control-label">季度跨境海空运头程、目的港清关与集装箱结算池 ($ USD) <span class="control-val" id="freight-osra-gross-label">$510,000</span></label>
+            <input type="range" id="freight-osra-gross-slider" min="80000" max="1800000" step="30000" value="510000" oninput="updateB2bFreightBookingCisfDemurrageSandbox()" />
+          </div>
+          <div class="control-group">
+            <label class="control-label">零运费拼箱 CISF 敲诈拦截、FMC OSRA-22 滞箱费停钟、锂电危品核验与拼转整寻优场景</label>
+            <select id="freight-osra-mode-select" onchange="updateB2bFreightBookingCisfDemurrageSandbox()" style="background:#0F172A;color:#F8FAFC;border:1px solid #334155;border-radius:6px;padding:6px;font-size:11px;">
+              <option value="happy_200" selected>✅ 门到门全包锁价 + Maersk Spot 保舱 + 免费用箱期合规 (HTTP 200)</option>
+              <option value="cisf_403">🛑 货代报出“$1/CBM 零运费拼箱”钓鱼抢单，拒绝锁定洛杉矶目的港 $1,800 CISF 拆箱杂费上限 (HTTP 403)</option>
+              <option value="osra_422">🚨 码头连续 3 天无还空箱预约槽位仍被船司强收 $750 滞箱费 (违反 FMC OSRA-22) 或 旺季超售无赔甩柜 (HTTP 422)</option>
+              <option value="hazmat_451">🛑 Web IQ 检出含 UN3480 锂电池货物未挂载 UN38.3/MSDS 危包证试图瞒报冲普货 或 目的港罢工停航 (HTTP 451)</option>
+              <option value="fcl_409">🧑‍⚖️ &gt;14 CBM 散货拼箱自动合并升级为 20GP 保舱整柜 + FMC 停钟核减违规滞港费立省 23% (HTTP 409)</option>
+            </select>
+          </div>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原含目的港被宰与违规滞箱费基线</div>
+            <div class="finops-kpi-val" id="freight-osra-gross-kpi">$510,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">拼转整与 OSRA 停钟核减立省</div>
+            <div class="finops-kpi-val" id="freight-osra-savings-kpi" style="color:#34D399;">$0.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净国际海空运结算额</div>
+            <div class="finops-kpi-val" id="freight-osra-net-kpi" style="color:#60A5FA;">$510,000.00</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">全包锁价与滞箱费审计令牌</div>
+            <div class="finops-kpi-val" id="freight-osra-token-kpi" style="font-size:10px;color:#A78BFA;">b2b_freight_booking_cisf_demurrage_mandate_verified</div>
           </div>
         </div>
       </div>
@@ -41084,6 +41257,61 @@ function updateB2bCreativeIpSpdxC2paEscrowSandbox() {{
     savingsKpi.textContent = '$0.00';
     netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
     tokenKpi.textContent = 'b2b_creative_ip_spdx_c2pa_escrow_mandate_verified';
+  }}
+}}
+
+function updateB2bFreightBookingCisfDemurrageSandbox() {{
+  const grossSlider = document.getElementById('freight-osra-gross-slider');
+  const modeSelect = document.getElementById('freight-osra-mode-select');
+  if (!grossSlider || !modeSelect) return;
+
+  const gross = parseFloat(grossSlider.value || '510000');
+  const mode = modeSelect.value;
+  document.getElementById('freight-osra-gross-label').textContent = '$' + gross.toLocaleString('en-US');
+  document.getElementById('freight-osra-gross-kpi').textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+
+  const pill = document.getElementById('freight-osra-verdict-pill');
+  const savingsKpi = document.getElementById('freight-osra-savings-kpi');
+  const netKpi = document.getElementById('freight-osra-net-kpi');
+  const tokenKpi = document.getElementById('freight-osra-token-kpi');
+
+  if (mode === 'cisf_403') {{
+    pill.textContent = 'HTTP 403 · PREDATORY_LCL_ZERO_FREIGHT_CISF_BAIT_OR_UNCAPPED_DESTINATION_FEE_BLOCKED (10ms)';
+    pill.style.background = 'rgba(239, 68, 68, 0.2)';
+    pill.style.color = '#F87171';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_ZERO_FREIGHT_LCL_CISF_BAIT';
+  }} else if (mode === 'osra_422') {{
+    pill.textContent = 'HTTP 422 · INVALID_FMC_OSRA_DEMURRAGE_BILLING_OR_UNCOMPENSATED_ROLLED_CARGO_BLOCKED (12ms)';
+    pill.style.background = 'rgba(249, 115, 22, 0.2)';
+    pill.style.color = '#FB923C';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'BLOCKED_NO_SLOT_OSRA_DEMURRAGE_OR_ROLL';
+  }} else if (mode === 'hazmat_451') {{
+    pill.textContent = 'HTTP 451 · WEBIQ_UNDECLARED_IMDG_HAZMAT_OR_PORT_STRIKE_FORCE_MAJEURE_HOLD (230ms)';
+    pill.style.background = 'rgba(168, 85, 247, 0.2)';
+    pill.style.color = '#C084FC';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$0.00';
+    tokenKpi.textContent = 'HOLD_UNDECLARED_UN3480_BATTERY_OR_STRIKE';
+  }} else if (mode === 'fcl_409') {{
+    const savings = Math.round(gross * 0.23 * 100) / 100;
+    const netVal = Math.round((gross - savings) * 100) / 100;
+    pill.textContent = 'HTTP 409 · LCL_TO_FCL_BREAKEVEN_CONSOLIDATION_AND_OSRA_STOP_CLOCK_CONFIRM (195ms)';
+    pill.style.background = 'rgba(245, 158, 11, 0.2)';
+    pill.style.color = '#FBBF24';
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    netKpi.textContent = '$' + netVal.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'b2b_freight_booking_cisf_demurrage_mandate_saved23pct';
+  }} else {{
+    pill.textContent = 'HTTP 200 · ALL_IN_DCSA_BOOKING_AND_OSRA_DEMURRAGE_AUTHORIZED (10ms)';
+    pill.style.background = 'rgba(16, 185, 129, 0.18)';
+    pill.style.color = '#34D399';
+    savingsKpi.textContent = '$0.00';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US', {{minimumFractionDigits: 2, maximumFractionDigits: 2}});
+    tokenKpi.textContent = 'b2b_freight_booking_cisf_demurrage_mandate_verified';
   }}
 }}
 
