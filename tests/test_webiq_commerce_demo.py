@@ -11328,6 +11328,96 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html = render_webiq_live_demo_html(suite)
         self.assertIn("ecommerce-preorder-ftc-escrow-sandbox", html)
 
+    def test_b2b_media_buying_mfa_rebate_escrow_selection(self) -> None:
+        from decimal import Decimal
+        from lab.webiq_commerce_demo import (
+            B2bMediaBuyingMfaRebateEscrowPolicyInput,
+            evaluate_b2b_media_buying_mfa_rebate_escrow_policy,
+        )
+
+        happy = evaluate_b2b_media_buying_mfa_rebate_escrow_policy(
+            B2bMediaBuyingMfaRebateEscrowPolicyInput(
+                quarterly_b2b_media_buying_pool_usd=Decimal("450000.00"),
+                mfa_slop_inventory_or_adstxt_spoofing_placement_detected=False,
+                undisclosed_agency_rebate_or_unverified_impression_billing_detected=False,
+                webiq_brand_safety_crisis_or_regulatory_ad_compliance_flag=False,
+                restricted_key_age_days=30,
+                spo_direct_path_pruning_and_net_of_rebate_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(happy["http_status"], 200)
+        self.assertEqual(happy["decision"], "MRC_VIEWABLE_AND_NET_REBATE_MEDIA_ESCROW_AUTHORIZED")
+        self.assertTrue(
+            str(happy["media_buying_escrow_token"]).startswith("b2b_media_buying_mfa_rebate_escrow_mandate_")
+        )
+
+        mfa_block = evaluate_b2b_media_buying_mfa_rebate_escrow_policy(
+            B2bMediaBuyingMfaRebateEscrowPolicyInput(
+                quarterly_b2b_media_buying_pool_usd=Decimal("450000.00"),
+                mfa_slop_inventory_or_adstxt_spoofing_placement_detected=True,
+                undisclosed_agency_rebate_or_unverified_impression_billing_detected=False,
+                webiq_brand_safety_crisis_or_regulatory_ad_compliance_flag=False,
+                restricted_key_age_days=30,
+                spo_direct_path_pruning_and_net_of_rebate_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(mfa_block["http_status"], 403)
+        self.assertEqual(
+            mfa_block["decision"],
+            "MFA_SLOP_INVENTORY_OR_ADSTXT_SPOOFING_PLACEMENT_BLOCKED",
+        )
+
+        rebate_block = evaluate_b2b_media_buying_mfa_rebate_escrow_policy(
+            B2bMediaBuyingMfaRebateEscrowPolicyInput(
+                quarterly_b2b_media_buying_pool_usd=Decimal("450000.00"),
+                mfa_slop_inventory_or_adstxt_spoofing_placement_detected=False,
+                undisclosed_agency_rebate_or_unverified_impression_billing_detected=True,
+                webiq_brand_safety_crisis_or_regulatory_ad_compliance_flag=False,
+                restricted_key_age_days=30,
+                spo_direct_path_pruning_and_net_of_rebate_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(rebate_block["http_status"], 422)
+        self.assertEqual(
+            rebate_block["decision"],
+            "UNDISCLOSED_AGENCY_REBATE_OR_UNVERIFIED_IMPRESSION_BILLING_BLOCKED",
+        )
+
+        garm_hold = evaluate_b2b_media_buying_mfa_rebate_escrow_policy(
+            B2bMediaBuyingMfaRebateEscrowPolicyInput(
+                quarterly_b2b_media_buying_pool_usd=Decimal("450000.00"),
+                mfa_slop_inventory_or_adstxt_spoofing_placement_detected=False,
+                undisclosed_agency_rebate_or_unverified_impression_billing_detected=False,
+                webiq_brand_safety_crisis_or_regulatory_ad_compliance_flag=True,
+                restricted_key_age_days=191,
+                spo_direct_path_pruning_and_net_of_rebate_escrow_enabled=False,
+            )
+        )
+        self.assertEqual(garm_hold["http_status"], 451)
+        self.assertEqual(
+            garm_hold["decision"],
+            "WEBIQ_BRAND_SAFETY_CRISIS_OR_REGULATORY_AD_COMPLIANCE_HOLD",
+        )
+
+        opt_confirm = evaluate_b2b_media_buying_mfa_rebate_escrow_policy(
+            B2bMediaBuyingMfaRebateEscrowPolicyInput(
+                quarterly_b2b_media_buying_pool_usd=Decimal("450000.00"),
+                mfa_slop_inventory_or_adstxt_spoofing_placement_detected=False,
+                undisclosed_agency_rebate_or_unverified_impression_billing_detected=False,
+                webiq_brand_safety_crisis_or_regulatory_ad_compliance_flag=False,
+                restricted_key_age_days=30,
+                spo_direct_path_pruning_and_net_of_rebate_escrow_enabled=True,
+            )
+        )
+        self.assertEqual(opt_confirm["http_status"], 409)
+        self.assertEqual(opt_confirm["savings_usd"], "103500.00")
+        self.assertEqual(opt_confirm["approved_budget_usd"], "346500.00")
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_media_buying_mfa_rebate_escrow_guard", suite)
+        html = render_webiq_live_demo_html(suite)
+        self.assertIn("b2b-media-buying-mfa-rebate-escrow-sandbox", html)
+
 
 if __name__ == "__main__":
     unittest.main()
