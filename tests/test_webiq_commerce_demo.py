@@ -12877,6 +12877,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("coworking-flexible-office-escrow-sandbox", html_zh)
 
+    def test_ski_resort_golf_teetime_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SkiResortGolfTeetimeEscrowPolicyInput,
+            evaluate_ski_resort_golf_teetime_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ski_resort_golf_teetime_escrow_policy(
+            SkiResortGolfTeetimeEscrowPolicyInput(
+                quarterly_ski_resort_and_golf_booking_pool_usd=260000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "TEE_TIME_IDENTITY_AND_LIFT_RFID_AUTHORIZED",
+        )
+
+        scalp = evaluate_ski_resort_golf_teetime_escrow_policy(
+            SkiResortGolfTeetimeEscrowPolicyInput(
+                scalper_bot_teetime_resale_swap_or_rfid_season_pass_sharing=True
+            )
+        )
+        self.assertEqual(scalp["status_code"], 403)
+        self.assertEqual(
+            scalp["decision"],
+            "SCALPER_BOT_TEETIME_RESALE_SWAP_OR_RFID_SEASON_PASS_SHARING_BLOCKED",
+        )
+
+        wind = evaluate_ski_resort_golf_teetime_escrow_policy(
+            SkiResortGolfTeetimeEscrowPolicyInput(
+                lift_wind_hold_closure_or_golf_thunderstorm_raincheck_denied=True
+            )
+        )
+        self.assertEqual(wind["status_code"], 422)
+        self.assertEqual(
+            wind["decision"],
+            "LIFT_WIND_HOLD_CLOSURE_OR_GOLF_THUNDERSTORM_RAINCHECK_DENIAL_BLOCKED",
+        )
+
+        din = evaluate_ski_resort_golf_teetime_escrow_policy(
+            SkiResortGolfTeetimeEscrowPolicyInput(
+                webiq_avalanche_extreme_warning_or_unverified_iso11088_din_flag=True
+            )
+        )
+        self.assertEqual(din["status_code"], 451)
+        self.assertEqual(
+            din["decision"],
+            "WEBIQ_AVALANCHE_EXTREME_WARNING_OR_UNVERIFIED_ISO11088_DIN_BINDING_HOLD",
+        )
+
+        optim = evaluate_ski_resort_golf_teetime_escrow_policy(
+            SkiResortGolfTeetimeEscrowPolicyInput(
+                quarterly_ski_resort_and_golf_booking_pool_usd=260000.0,
+                day_ticket_to_season_pass_fare_capping_and_twilight_golf_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 65000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 195000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ski_resort_golf_teetime_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ski-resort-golf-teetime-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

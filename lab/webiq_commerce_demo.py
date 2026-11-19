@@ -19058,6 +19058,84 @@ def evaluate_coworking_flexible_office_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class SkiResortGolfTeetimeEscrowPolicyInput:
+    """Input contract for Ski Resort Pass, Golf Tee-Time Anti-Scalper & Weather-Closure Escrow."""
+
+    quarterly_ski_resort_and_golf_booking_pool_usd: float = 260000.0
+    scalper_bot_teetime_resale_swap_or_rfid_season_pass_sharing: bool = False
+    lift_wind_hold_closure_or_golf_thunderstorm_raincheck_denied: bool = False
+    webiq_avalanche_extreme_warning_or_unverified_iso11088_din_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    day_ticket_to_season_pass_fare_capping_and_twilight_golf_ready: bool = False
+
+
+def evaluate_ski_resort_golf_teetime_escrow_policy(
+    policy_input: SkiResortGolfTeetimeEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Ski Resort Pass, Golf Tee-Time & Equipment Rental policy."""
+    gross_pool = max(float(policy_input.quarterly_ski_resort_and_golf_booking_pool_usd), 0.0)
+    if (
+        policy_input.webiq_avalanche_extreme_warning_or_unverified_iso11088_din_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_AVALANCHE_EXTREME_WARNING_OR_UNVERIFIED_ISO11088_DIN_BINDING_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.scalper_bot_teetime_resale_swap_or_rfid_season_pass_sharing:
+        return {
+            "status_code": 403,
+            "decision": "SCALPER_BOT_TEETIME_RESALE_SWAP_OR_RFID_SEASON_PASS_SHARING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.lift_wind_hold_closure_or_golf_thunderstorm_raincheck_denied:
+        return {
+            "status_code": 422,
+            "decision": "LIFT_WIND_HOLD_CLOSURE_OR_GOLF_THUNDERSTORM_RAINCHECK_DENIAL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.day_ticket_to_season_pass_fare_capping_and_twilight_golf_ready:
+        savings = round(gross_pool * 0.25, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DAY_TICKET_TO_SEASON_PASS_FARE_CAPPING_AND_TWILIGHT_GOLF_CONFIRM",
+            "mandate_token": "ski_resort_golf_teetime_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "TEE_TIME_IDENTITY_AND_LIFT_RFID_AUTHORIZED",
+        "mandate_token": "ski_resort_golf_teetime_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -26459,6 +26537,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ski_resort_golf_teetime_escrow_guard = {
+        "authorized_200": evaluate_ski_resort_golf_teetime_escrow_policy(
+            SkiResortGolfTeetimeEscrowPolicyInput()
+        ),
+        "scalper_bot_or_pass_sharing_403": evaluate_ski_resort_golf_teetime_escrow_policy(
+            SkiResortGolfTeetimeEscrowPolicyInput(
+                scalper_bot_teetime_resale_swap_or_rfid_season_pass_sharing=True
+            )
+        ),
+        "wind_hold_or_raincheck_denied_422": evaluate_ski_resort_golf_teetime_escrow_policy(
+            SkiResortGolfTeetimeEscrowPolicyInput(
+                lift_wind_hold_closure_or_golf_thunderstorm_raincheck_denied=True
+            )
+        ),
+        "avalanche_or_iso11088_din_451": evaluate_ski_resort_golf_teetime_escrow_policy(
+            SkiResortGolfTeetimeEscrowPolicyInput(
+                webiq_avalanche_extreme_warning_or_unverified_iso11088_din_flag=True
+            )
+        ),
+        "day_to_pass_cap_and_twilight_409": evaluate_ski_resort_golf_teetime_escrow_policy(
+            SkiResortGolfTeetimeEscrowPolicyInput(
+                day_ticket_to_season_pass_fare_capping_and_twilight_golf_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26644,6 +26748,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "senior_homecare_nanny_evv_escrow_guard": senior_homecare_nanny_evv_escrow_guard,
         "optical_eyewear_contact_lens_rx_escrow_guard": optical_eyewear_contact_lens_rx_escrow_guard,
         "coworking_flexible_office_escrow_guard": coworking_flexible_office_escrow_guard,
+        "ski_resort_golf_teetime_escrow_guard": ski_resort_golf_teetime_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -34558,6 +34663,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="coworking-office-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 BADGE_SWIPE_HOTDESK_RIGHTSIZING_AND_DAYPASS_POOL_CONFIRM · Mandate: coworking_flexible_office_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 57 Ski Resort Pass, Golf Tee-Time Anti-Scalper & Weather-Closure Escrow -->
+      <div class="finops-box" id="ski-resort-golf-teetime-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎿 滑雪季卡、高尔夫球场订场与雪具租赁 (Vail Epic / Alterra Ikon / GolfNow / 滑呗) 防黄牛抢果岭、大风封山自动退费与 DIN 安全锁沙盒 (Round 57)</div>
+            <div class="finops-subtitle">实测实名 GHIN 不可改名锁与退票 15-45m 随机冷却池防黄牛脚本倒卖球位及 RFID 闸机防借卡 (HTTP 403)、大风主缆车停运 &gt;=50% 或高尔夫雷暴未满 9 洞自动按比例退费 (HTTP 422)、Web IQ 高山雪崩预警与雪板 ISO 11088 DIN 脱离扭矩安全锁 (HTTP 451) 及单日票自动封顶转季卡立省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="ski-golf-status-kpi">HTTP 409 · DAY_TICKET_TO_SEASON_PASS_FARE_CAPPING_AND_TWILIGHT_GOLF_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度滑雪度假与商务高尔夫预订结算池 ($ USD)
+            <input type="range" id="ski-golf-pool-slider" min="40000" max="1500000" step="10000" value="260000" oninput="updateSkiResortGolfTeetimeSandbox()" />
+            <span id="ski-golf-pool-val" style="color:#6ee7b7; font-family:monospace;">$260,000</span>
+          </label>
+          <label>
+            果岭实名防黄牛与雪场 RFID 闸机校验 (HTTP 403)
+            <select id="ski-golf-scalper-select" onchange="updateSkiResortGolfTeetimeSandbox()">
+              <option value="pass">实名 GHIN 已锁定 + 退票进随机冷却池 + 本人刷闸 (放行)</option>
+              <option value="block">黄牛脚本囤票改名加价倒卖 或 亲友借穿雪服混刷他人季卡 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            大风缆车停运与雷暴封场退费校验 (HTTP 422)
+            <select id="ski-golf-weather-select" onchange="updateSkiResortGolfTeetimeSandbox()">
+              <option value="pass">缆车运力正常开启 或 已触发停运/雷暴自动按比例退费 (合规)</option>
+              <option value="block">大风主缆车停运 &gt;=50% 拒退 $289 日票 或 雷暴打4洞清场拒退果岭费 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 雪崩预警与 ISO 11088 雪板安全筛查 (HTTP 451)
+            <select id="ski-golf-din-select" onchange="updateSkiResortGolfTeetimeSandbox()">
+              <option value="clear">雪道安全开放 + 租赁雪板已完成 ISO 11088 DIN 扭矩整定 (正常)</option>
+              <option value="hold">高山雪崩 4-5 级封禁 或 租板未按体重/BSL 校准 DIN 值易断韧带 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            单日票封顶升季卡与果岭尾单优化 (HTTP 409)
+            <select id="ski-golf-opt-select" onchange="updateSkiResortGolfTeetimeSandbox()">
+              <option value="enabled" selected>开启单日票累计自动冲抵升季卡 + 果岭 Twilight 尾单省 25% (HTTP 409)</option>
+              <option value="baseline">常规实名订场与合规雪票授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度滑雪与高尔夫毛支出</div>
+            <div class="finops-kpi-val" id="ski-golf-gross-kpi">$260,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">日票封顶与防坑后净额</div>
+            <div class="finops-kpi-val" id="ski-golf-net-kpi" style="color:#6ee7b7;">$195,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度季卡冲抵与防黄牛省下</div>
+            <div class="finops-kpi-val" id="ski-golf-savings-kpi" style="color:#38bdf8;">$65,000</div>
+          </div>
+        </div>
+        <div id="ski-golf-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DAY_TICKET_TO_SEASON_PASS_FARE_CAPPING_AND_TWILIGHT_GOLF_CONFIRM · Mandate: ski_resort_golf_teetime_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -44147,6 +44315,80 @@ function updateCoworkingFlexibleOfficeSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 COWORKING_DESK_AND_CREDIT_CAP_AUTHORIZED · Mandate: coworking_flexible_office_escrow_mandate_200';
+}}
+
+function updateSkiResortGolfTeetimeSandbox() {{
+  const slider = document.getElementById('ski-golf-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '260000');
+  const scpMode = document.getElementById('ski-golf-scalper-select').value;
+  const wthMode = document.getElementById('ski-golf-weather-select').value;
+  const dinMode = document.getElementById('ski-golf-din-select').value;
+  const optMode = document.getElementById('ski-golf-opt-select').value;
+
+  document.getElementById('ski-golf-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('ski-golf-status-kpi');
+  const grossKpi = document.getElementById('ski-golf-gross-kpi');
+  const netKpi = document.getElementById('ski-golf-net-kpi');
+  const savingsKpi = document.getElementById('ski-golf-savings-kpi');
+  const banner = document.getElementById('ski-golf-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dinMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_AVALANCHE_EXTREME_WARNING_OR_UNVERIFIED_ISO11088_DIN_BINDING_HOLD · Mandate: null';
+    return;
+  }}
+  if (scpMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SCALPER_BOT_TEETIME_RESALE_SWAP_OR_RFID_SEASON_PASS_SHARING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (wthMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 LIFT_WIND_HOLD_CLOSURE_OR_GOLF_THUNDERSTORM_RAINCHECK_DENIAL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.25);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DAY_TICKET_TO_SEASON_PASS_FARE_CAPPING_AND_TWILIGHT_GOLF_CONFIRM · Mandate: ski_resort_golf_teetime_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 TEE_TIME_IDENTITY_AND_LIFT_RFID_AUTHORIZED · Mandate: ski_resort_golf_teetime_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
