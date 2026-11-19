@@ -18824,6 +18824,84 @@ def evaluate_moving_relocation_self_storage_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class SeniorHomecareNannyEvvEscrowPolicyInput:
+    """Input contract for Senior Home Care, Nanny Placement Churn & 21st Century Cures Act EVV Escrow."""
+
+    quarterly_homecare_and_domestic_placement_pool_usd: float = 270000.0
+    ghost_evv_mock_gps_spoofing_or_concurrent_shift_overlap: bool = False
+    nanny_placement_churn_unrefunded_agency_fee_or_sla_breach: bool = False
+    webiq_oig_elder_abuse_registry_hit_or_expired_health_screen_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    employer_backup_care_subsidy_and_ltc_fsa_split_billing_ready: bool = False
+
+
+def evaluate_senior_homecare_nanny_evv_escrow_policy(
+    policy_input: SeniorHomecareNannyEvvEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Senior Home Care, Nanny Placement & EVV policy."""
+    gross_pool = max(float(policy_input.quarterly_homecare_and_domestic_placement_pool_usd), 0.0)
+    if (
+        policy_input.webiq_oig_elder_abuse_registry_hit_or_expired_health_screen_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_OIG_ELDER_ABUSE_REGISTRY_HIT_OR_EXPIRED_MATERNAL_HEALTH_SCREEN_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ghost_evv_mock_gps_spoofing_or_concurrent_shift_overlap:
+        return {
+            "status_code": 403,
+            "decision": "GHOST_EVV_MOCK_GPS_SPOOFING_OR_CONCURRENT_SHIFT_OVERLAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.nanny_placement_churn_unrefunded_agency_fee_or_sla_breach:
+        return {
+            "status_code": 422,
+            "decision": "NANNY_PLACEMENT_CHURN_UNREFUNDED_AGENCY_FEE_OR_REPLACEMENT_SLA_BREACH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.employer_backup_care_subsidy_and_ltc_fsa_split_billing_ready:
+        savings = round(gross_pool * 0.24, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "EMPLOYER_BACKUP_CARE_SUBSIDY_AND_LTC_FSA_SPLIT_BILLING_CONFIRM",
+            "mandate_token": "senior_homecare_nanny_evv_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "EVV_BLE_VERIFIED_AND_DAILY_VESTING_PLACEMENT_ESCROW_AUTHORIZED",
+        "mandate_token": "senior_homecare_nanny_evv_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -26147,6 +26225,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    senior_homecare_nanny_evv_escrow_guard = {
+        "authorized_200": evaluate_senior_homecare_nanny_evv_escrow_policy(
+            SeniorHomecareNannyEvvEscrowPolicyInput()
+        ),
+        "ghost_evv_or_shift_overlap_403": evaluate_senior_homecare_nanny_evv_escrow_policy(
+            SeniorHomecareNannyEvvEscrowPolicyInput(
+                ghost_evv_mock_gps_spoofing_or_concurrent_shift_overlap=True
+            )
+        ),
+        "nanny_churn_fee_retention_422": evaluate_senior_homecare_nanny_evv_escrow_policy(
+            SeniorHomecareNannyEvvEscrowPolicyInput(
+                nanny_placement_churn_unrefunded_agency_fee_or_sla_breach=True
+            )
+        ),
+        "oig_elder_abuse_or_health_451": evaluate_senior_homecare_nanny_evv_escrow_policy(
+            SeniorHomecareNannyEvvEscrowPolicyInput(
+                webiq_oig_elder_abuse_registry_hit_or_expired_health_screen_flag=True
+            )
+        ),
+        "employer_backup_care_and_ltc_split_409": evaluate_senior_homecare_nanny_evv_escrow_policy(
+            SeniorHomecareNannyEvvEscrowPolicyInput(
+                employer_backup_care_subsidy_and_ltc_fsa_split_billing_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26329,6 +26433,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "creator_economy_patronage_escrow_guard": creator_economy_patronage_escrow_guard,
         "travel_esim_roaming_escrow_guard": travel_esim_roaming_escrow_guard,
         "moving_relocation_self_storage_escrow_guard": moving_relocation_self_storage_escrow_guard,
+        "senior_homecare_nanny_evv_escrow_guard": senior_homecare_nanny_evv_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -34054,6 +34159,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="moving-storage-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CONTAINERIZED_POD_RELOCATION_AND_PRORATED_STORAGE_VACATE_CONFIRM · Mandate: moving_relocation_self_storage_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 54 Senior Home Care, Nanny Placement Churn & 21st Century Cures Act EVV Escrow -->
+      <div class="finops-box" id="senior-homecare-nanny-evv-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">👵 居家养老护理、月嫂家政与企业看护福利 (Care.com / Papa / Honor / Cures Act EVV / 天鹅到家) 防空挂打卡、防闪辞吞中介费与 OIG 熔断沙盒 (Round 54)</div>
+            <div class="finops-subtitle">实测 21st Century Cures Act EVV 六要素与客厅 BLE 蓝牙信标防虚拟 GPS 空挂工时 (HTTP 403)、家政中介服务费 90 天按在岗日线性释放防保姆干 4 天闪辞不退钱 (HTTP 422)、Web IQ OIG 虐老黑名单与母婴传染病健康证熔断 (HTTP 451) 及雇主 Backup Care 应急看护补贴+长护险拆账立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="homecare-evv-status-kpi">HTTP 409 · EMPLOYER_BACKUP_CARE_SUBSIDY_AND_LTC_FSA_SPLIT_BILLING_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度居家养老护理与企业员工家政看护结算池 ($ USD)
+            <input type="range" id="homecare-evv-pool-slider" min="40000" max="1500000" step="10000" value="270000" oninput="updateSeniorHomecareNannyEvvSandbox()" />
+            <span id="homecare-evv-pool-val" style="color:#6ee7b7; font-family:monospace;">$270,000</span>
+          </label>
+          <label>
+            室内 BLE EVV 打卡与跨家重叠校验 (HTTP 403)
+            <select id="homecare-evv-ble-select" onchange="updateSeniorHomecareNannyEvvSandbox()">
+              <option value="pass">客厅 BLE 动态信标握手成功 + 无同时段重叠班次 (放行)</option>
+              <option value="block">护工未上门用虚拟 GPS 空挂打卡 或 同时段双家计费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            家政中介费 90 天按日托管校验 (HTTP 422)
+            <select id="homecare-evv-churn-select" onchange="updateSeniorHomecareNannyEvvSandbox()">
+              <option value="pass">中介费按在岗日线性释放 + 闪辞自动退还剩余天数 (合规)</option>
+              <option value="block">保姆干 4 天闪辞且 72h 未换人，中介强吞 $2,000 介绍费 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ OIG 虐老库与母婴健康证筛查 (HTTP 451)
+            <select id="homecare-evv-oig-select" onchange="updateSeniorHomecareNannyEvvSandbox()">
+              <option value="clear">OIG/失信背调清白 + 6个月内母婴体检有效 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">护工命中 OIG 禁入/虐老记录 或 幽门螺杆菌/乙肝体检过期 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            企业看护补贴与长护险拆账优化 (HTTP 409)
+            <select id="homecare-evv-opt-select" onchange="updateSeniorHomecareNannyEvvSandbox()">
+              <option value="enabled" selected>开启雇主 Backup Care 补贴 + 长护险/FSA 税前拆账省 24% (HTTP 409)</option>
+              <option value="baseline">常规居家护理 EVV 与按日托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度养老与家政毛支出</div>
+            <div class="finops-kpi-val" id="homecare-evv-gross-kpi">$270,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">福利抵扣与防空挂后净付</div>
+            <div class="finops-kpi-val" id="homecare-evv-net-kpi" style="color:#6ee7b7;">$205,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度补贴抵扣与防坑省下</div>
+            <div class="finops-kpi-val" id="homecare-evv-savings-kpi" style="color:#38bdf8;">$64,800</div>
+          </div>
+        </div>
+        <div id="homecare-evv-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 EMPLOYER_BACKUP_CARE_SUBSIDY_AND_LTC_FSA_SPLIT_BILLING_CONFIRM · Mandate: senior_homecare_nanny_evv_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -43421,6 +43589,80 @@ function updateMovingRelocationSelfStorageSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 BINDING_ESTIMATE_AND_STORAGE_RATE_LOCK_AUTHORIZED · Mandate: moving_relocation_self_storage_escrow_mandate_200';
+}}
+
+function updateSeniorHomecareNannyEvvSandbox() {{
+  const slider = document.getElementById('homecare-evv-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '270000');
+  const bleMode = document.getElementById('homecare-evv-ble-select').value;
+  const churnMode = document.getElementById('homecare-evv-churn-select').value;
+  const oigMode = document.getElementById('homecare-evv-oig-select').value;
+  const optMode = document.getElementById('homecare-evv-opt-select').value;
+
+  document.getElementById('homecare-evv-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('homecare-evv-status-kpi');
+  const grossKpi = document.getElementById('homecare-evv-gross-kpi');
+  const netKpi = document.getElementById('homecare-evv-net-kpi');
+  const savingsKpi = document.getElementById('homecare-evv-savings-kpi');
+  const banner = document.getElementById('homecare-evv-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (oigMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_OIG_ELDER_ABUSE_REGISTRY_HIT_OR_EXPIRED_MATERNAL_HEALTH_SCREEN_HOLD · Mandate: null';
+    return;
+  }}
+  if (bleMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 GHOST_EVV_MOCK_GPS_SPOOFING_OR_CONCURRENT_SHIFT_OVERLAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (churnMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 NANNY_PLACEMENT_CHURN_UNREFUNDED_AGENCY_FEE_OR_REPLACEMENT_SLA_BREACH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.24);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 EMPLOYER_BACKUP_CARE_SUBSIDY_AND_LTC_FSA_SPLIT_BILLING_CONFIRM · Mandate: senior_homecare_nanny_evv_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 EVV_BLE_VERIFIED_AND_DAILY_VESTING_PLACEMENT_ESCROW_AUTHORIZED · Mandate: senior_homecare_nanny_evv_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

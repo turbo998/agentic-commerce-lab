@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg497" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#07111E" />
+      <stop offset="50%" stop-color="#0F2138" />
+      <stop offset="100%" stop-color="#081322" />
+    </linearGradient>
+    <linearGradient id="accent497" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="50%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg497)" />
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent497)" />
+
+  <!-- Header -->
+  <text x="44" y="48" fill="#10B981" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.4">ROUND 54 · SENIOR HOME CARE, NANNY PLACEMENT CHURN ESCROW &amp; 21ST CENTURY CURES ACT EVV</text>
+  <text x="44" y="82" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">居家养老护理与月嫂家政：防护工空挂打卡骗保、防保姆闪辞坑中介费与无证熔断</text>
+  <text x="44" y="108" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Care.com / Papa / Honor / 天鹅到家 vs 21st Century Cures Act EVV 蓝牙打卡 vs 中介费按日托管 vs OIG 筛查</text>
+
+  <!-- Left Panel: 3 Core Home-Care & Domestic Placement Risks -->
+  <rect x="44" y="132" width="350" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="64" y="164" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🚨 居家养老与月嫂家政三大资金黑洞</text>
+
+  <rect x="62" y="182" width="314" height="132" rx="8" fill="#1E293B" stroke="#EF4444" stroke-width="1" />
+  <text x="76" y="206" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">1. 护工根本没上门，用虚拟定位在家打卡骗取长护险</text>
+  <text x="76" y="228" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护工在 10 公里外用 Mock GPS 插件伪造在独居老人</text>
+  <text x="76" y="248" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  家护理 4 小时，骗取家属与长护险/Medicaid 补贴</text>
+  <text x="76" y="268" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：Cures Act EVV 六要素 + 老人家中 BLE 蓝牙信</text>
+  <text x="76" y="288" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  标/固话 IVR 双因子在场强核验 (HTTP 403)</text>
+
+  <rect x="62" y="328" width="314" height="132" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1" />
+  <text x="76" y="352" fill="#FCD34D" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">2. 交了 $2,000 月嫂中介费，阿姨干 4 天就借故闪辞</text>
+  <text x="76" y="374" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 传统家政一次性收全年 $2,000 介绍费，保姆上户第</text>
+  <text x="76" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  4 天故意怠工离职去接下家，中介拖延不换人也不退钱</text>
+  <text x="76" y="414" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：中介服务费 90 天按在岗日线性释放托管 +</text>
+  <text x="76" y="434" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  72h 无法补齐同级阿姨自动按天原路退费 (HTTP 422)</text>
+
+  <rect x="62" y="474" width="314" height="134" rx="8" fill="#1E293B" stroke="#A855F7" stroke-width="1" />
+  <text x="76" y="498" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">3. 护工涉虐老黑名单/传染病漏检与福利补贴拆账</text>
+  <text x="76" y="520" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护工命中 OIG LEIE 医疗禁入名单或幽门螺杆菌/乙肝</text>
+  <text x="76" y="540" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  体检过期；护栏：Web IQ 背调与健康证实时熔断 (451)</text>
+  <text x="76" y="560" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 企业 Backup Care 应急看护补贴 + 长护险/FSA</text>
+  <text x="76" y="582" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  税前抵扣自动三轨拆账立省 24% (HTTP 409)</text>
+
+  <!-- Center Panel: 5-Lane Deterministic Gate -->
+  <rect x="414" y="132" width="402" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="434" y="164" fill="#10B981" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🛡️ 居家养老与家政撮合五车道受托状态机</text>
+
+  <rect x="434" y="184" width="362" height="72" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="450" y="208" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 200 · EVV_BLE_VERIFIED_AND_PLACEMENT_ESCROW_OK</text>
+  <text x="450" y="228" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">EVV 室内蓝牙打卡已核验 + 背调健康证有效 + 按日托管 (9ms)</text>
+  <text x="450" y="245" fill="#A7F3D0" font-family="Consolas, monospace" font-size="11">senior_homecare_nanny_evv_escrow_mandate_*</text>
+
+  <rect x="434" y="268" width="362" height="72" rx="8" fill="#450A0A" stroke="#EF4444" stroke-width="1.5" />
+  <text x="450" y="292" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 403 · GHOST_EVV_MOCK_GPS_OR_OFFSITE_CLOCKIN</text>
+  <text x="450" y="312" fill="#FEE2E2" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截护工未进门伪造 GPS 空挂工时或同一护工同时段双家计费</text>
+  <text x="450" y="329" fill="#FCA5A5" font-family="Consolas, monospace" font-size="11">ble_home_beacon_verified = false | mock_gps_detected = true</text>
+
+  <rect x="434" y="352" width="362" height="72" rx="8" fill="#431407" stroke="#F97316" stroke-width="1.5" />
+  <text x="450" y="376" fill="#FDBA74" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 422 · NANNY_CHURN_AGENCY_FEE_RETENTION_BLOCKED</text>
+  <text x="450" y="396" fill="#FFEDD5" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截保姆闪辞后中介强吞全额介绍费或私下撬单跳单扣款</text>
+  <text x="450" y="413" fill="#FDBA74" font-family="Consolas, monospace" font-size="11">early_nanny_churn_unrefunded = true | replacement_sla &gt; 72h</text>
+
+  <rect x="434" y="436" width="362" height="72" rx="8" fill="#3B0764" stroke="#A855F7" stroke-width="1.5" />
+  <text x="450" y="460" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 451 · WEBIQ_OIG_ABUSE_REGISTRY_OR_HEALTH_HOLD</text>
+  <text x="450" y="480" fill="#F3E8FF" font-family="Segoe UI, Arial, sans-serif" font-size="12">Web IQ 检出护工命中 OIG 禁入/虐老失信黑名单或母婴体检过期</text>
+  <text x="450" y="497" fill="#D8B4FE" font-family="Consolas, monospace" font-size="11">oig_elder_abuse_hit = true | health_screen_expired = true</text>
+
+  <rect x="434" y="520" width="362" height="88" rx="8" fill="#422006" stroke="#F59E0B" stroke-width="1.5" />
+  <text x="450" y="544" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 409 · EMPLOYER_BACKUP_CARE_AND_LTC_SPLIT_CONFIRM</text>
+  <text x="450" y="564" fill="#FEF3C7" font-family="Segoe UI, Arial, sans-serif" font-size="12">雇主应急看护津贴 + 长护险/FSA 税前拆账 + 按日托管省 24%</text>
+  <text x="450" y="584" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">季度居家养老护理与家政结算池 $270,000 → 补贴抵扣与防空挂后净付 $205,200 (省 $64,800)</text>
+
+  <!-- Right Panel: Platform Selection Matrix -->
+  <rect x="836" y="132" width="320" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="856" y="164" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🧭 居家护理与家政平台选型</text>
+
+  <rect x="854" y="184" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="206" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Honor / Papa / HHAeXchange (合规长护 EVV)</text>
+  <text x="868" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 原生符合美国 21st Century Cures Act 电子上门核验</text>
+  <text x="868" y="246" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  (EVV) 六要素标准，直连 Medicaid 与商业长护险理赔</text>
+  <text x="868" y="266" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：失能老人居家照护、术后康复与长护险定点</text>
+
+  <rect x="854" y="298" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="320" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Care.com / Bright Horizons / 天鹅到家 (家政福利)</text>
+  <text x="868" y="340" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 支持企业雇主 Backup Care 员工看护福利抵扣、</text>
+  <text x="868" y="360" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  月嫂育儿嫂线上筛选、背景调查与家庭雇主责任险</text>
+  <text x="868" y="380" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：双职工家庭育儿、月嫂服务与企业员工福利</text>
+
+  <rect x="854" y="412" width="284" height="196" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="868" y="436" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">★ 推荐：Foundry + EVV &amp; 中介费托管网关</text>
+  <text x="868" y="458" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">1. 室内 BLE 信标 + EVV 杜绝护工空挂假工时</text>
+  <text x="868" y="480" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">2. 中介费 90 天按日释放，保姆闪辞秒退未满期费</text>
+  <text x="868" y="502" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">3. Web IQ OIG 失信与母婴传染病体检硬熔断</text>
+  <text x="868" y="524" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">4. 雇主福利 + 长护险/FSA 拆账立省 24%</text>
+  <rect x="868" y="542" width="256" height="50" rx="6" fill="#022C22" />
+  <text x="880" y="563" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">审计标签：provenance = synthetic</text>
+  <text x="880" y="581" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="11">independently_reproduced = false</text>
+</svg>

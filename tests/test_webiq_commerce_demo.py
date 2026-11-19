@@ -12676,6 +12676,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("moving-relocation-self-storage-escrow-sandbox", html_zh)
 
+    def test_senior_homecare_nanny_evv_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SeniorHomecareNannyEvvEscrowPolicyInput,
+            evaluate_senior_homecare_nanny_evv_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_senior_homecare_nanny_evv_escrow_policy(
+            SeniorHomecareNannyEvvEscrowPolicyInput(
+                quarterly_homecare_and_domestic_placement_pool_usd=270000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "EVV_BLE_VERIFIED_AND_DAILY_VESTING_PLACEMENT_ESCROW_AUTHORIZED",
+        )
+
+        ghost = evaluate_senior_homecare_nanny_evv_escrow_policy(
+            SeniorHomecareNannyEvvEscrowPolicyInput(
+                ghost_evv_mock_gps_spoofing_or_concurrent_shift_overlap=True
+            )
+        )
+        self.assertEqual(ghost["status_code"], 403)
+        self.assertEqual(
+            ghost["decision"],
+            "GHOST_EVV_MOCK_GPS_SPOOFING_OR_CONCURRENT_SHIFT_OVERLAP_BLOCKED",
+        )
+
+        churn = evaluate_senior_homecare_nanny_evv_escrow_policy(
+            SeniorHomecareNannyEvvEscrowPolicyInput(
+                nanny_placement_churn_unrefunded_agency_fee_or_sla_breach=True
+            )
+        )
+        self.assertEqual(churn["status_code"], 422)
+        self.assertEqual(
+            churn["decision"],
+            "NANNY_PLACEMENT_CHURN_UNREFUNDED_AGENCY_FEE_OR_REPLACEMENT_SLA_BREACH_BLOCKED",
+        )
+
+        oig = evaluate_senior_homecare_nanny_evv_escrow_policy(
+            SeniorHomecareNannyEvvEscrowPolicyInput(
+                webiq_oig_elder_abuse_registry_hit_or_expired_health_screen_flag=True
+            )
+        )
+        self.assertEqual(oig["status_code"], 451)
+        self.assertEqual(
+            oig["decision"],
+            "WEBIQ_OIG_ELDER_ABUSE_REGISTRY_HIT_OR_EXPIRED_MATERNAL_HEALTH_SCREEN_HOLD",
+        )
+
+        optim = evaluate_senior_homecare_nanny_evv_escrow_policy(
+            SeniorHomecareNannyEvvEscrowPolicyInput(
+                quarterly_homecare_and_domestic_placement_pool_usd=270000.0,
+                employer_backup_care_subsidy_and_ltc_fsa_split_billing_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 64800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 205200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("senior_homecare_nanny_evv_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("senior-homecare-nanny-evv-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
