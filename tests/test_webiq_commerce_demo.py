@@ -14284,6 +14284,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("music-festival-stadium-cashless-rfid-escrow-sandbox", html_zh)
 
+    def test_fertility_ivf_egg_freezing_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            FertilityIvfEggFreezingEscrowPolicyInput,
+            evaluate_fertility_ivf_egg_freezing_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_fertility_ivf_egg_freezing_escrow_policy(
+            FertilityIvfEggFreezingEscrowPolicyInput(
+                quarterly_fertility_ivf_and_egg_freezing_pool_usd=265000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "SMART_CYCLE_MILESTONE_AND_SART_AUTHORIZED",
+        )
+
+        tco = evaluate_fertility_ivf_egg_freezing_escrow_policy(
+            FertilityIvfEggFreezingEscrowPolicyInput(
+                undisclosed_gonadotropin_pgta_bait_or_forced_10yr_storage=True
+            )
+        )
+        self.assertEqual(tco["status_code"], 403)
+        self.assertEqual(
+            tco["decision"],
+            "UNDISCLOSED_GONADOTROPIN_PGTA_BAIT_OR_FORCED_10YR_STORAGE_BLOCKED",
+        )
+
+        stg = evaluate_fertility_ivf_egg_freezing_escrow_policy(
+            FertilityIvfEggFreezingEscrowPolicyInput(
+                cancelled_cycle_unperformed_lab_transfer_retention=True
+            )
+        )
+        self.assertEqual(stg["status_code"], 422)
+        self.assertEqual(
+            stg["decision"],
+            "CANCELLED_CYCLE_UNPERFORMED_LAB_TRANSFER_RETENTION_BLOCKED",
+        )
+
+        lab = evaluate_fertility_ivf_egg_freezing_escrow_policy(
+            FertilityIvfEggFreezingEscrowPolicyInput(
+                webiq_unaccredited_embryo_lab_or_uninsured_cryo_tank_flag=True
+            )
+        )
+        self.assertEqual(lab["status_code"], 451)
+        self.assertEqual(
+            lab["decision"],
+            "WEBIQ_UNACCREDITED_EMBRYO_LAB_OR_UNINSURED_CRYO_TANK_HOLD",
+        )
+
+        optim = evaluate_fertility_ivf_egg_freezing_escrow_policy(
+            FertilityIvfEggFreezingEscrowPolicyInput(
+                quarterly_fertility_ivf_and_egg_freezing_pool_usd=265000.0,
+                jit_split_fill_fertility_rx_and_shared_risk_bundle_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 68900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 196100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("fertility_ivf_egg_freezing_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("fertility-ivf-egg-freezing-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

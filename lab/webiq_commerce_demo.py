@@ -20750,6 +20750,87 @@ def evaluate_festival_stadium_cashless_rfid_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class FertilityIvfEggFreezingEscrowPolicyInput:
+    """Input contract for Fertility Benefits, Egg Freezing & Multi-Cycle IVF Shared-Risk Escrow."""
+
+    quarterly_fertility_ivf_and_egg_freezing_pool_usd: float = 265000.0
+    undisclosed_gonadotropin_pgta_bait_or_forced_10yr_storage: bool = False
+    cancelled_cycle_unperformed_lab_transfer_retention: bool = False
+    webiq_unaccredited_embryo_lab_or_uninsured_cryo_tank_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    jit_split_fill_fertility_rx_and_shared_risk_bundle_ready: bool = False
+
+
+def evaluate_fertility_ivf_egg_freezing_escrow_policy(
+    policy_input: FertilityIvfEggFreezingEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Fertility Benefits, Egg Freezing & Multi-Cycle IVF Shared-Risk policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_fertility_ivf_and_egg_freezing_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unaccredited_embryo_lab_or_uninsured_cryo_tank_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNACCREDITED_EMBRYO_LAB_OR_UNINSURED_CRYO_TANK_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.undisclosed_gonadotropin_pgta_bait_or_forced_10yr_storage:
+        return {
+            "status_code": 403,
+            "decision": "UNDISCLOSED_GONADOTROPIN_PGTA_BAIT_OR_FORCED_10YR_STORAGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cancelled_cycle_unperformed_lab_transfer_retention:
+        return {
+            "status_code": 422,
+            "decision": "CANCELLED_CYCLE_UNPERFORMED_LAB_TRANSFER_RETENTION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.jit_split_fill_fertility_rx_and_shared_risk_bundle_ready:
+        savings = round(gross_pool * 0.26, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "JIT_SPLIT_FILL_FERTILITY_RX_AND_SHARED_RISK_BUNDLE_CONFIRM",
+            "mandate_token": "fertility_ivf_egg_freezing_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "SMART_CYCLE_MILESTONE_AND_SART_AUTHORIZED",
+        "mandate_token": "fertility_ivf_egg_freezing_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -28697,6 +28778,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    fertility_ivf_egg_freezing_escrow_guard = {
+        "authorized_200": evaluate_fertility_ivf_egg_freezing_escrow_policy(
+            FertilityIvfEggFreezingEscrowPolicyInput()
+        ),
+        "undisclosed_pgta_or_10yr_storage_403": evaluate_fertility_ivf_egg_freezing_escrow_policy(
+            FertilityIvfEggFreezingEscrowPolicyInput(
+                undisclosed_gonadotropin_pgta_bait_or_forced_10yr_storage=True
+            )
+        ),
+        "cancelled_cycle_retention_422": evaluate_fertility_ivf_egg_freezing_escrow_policy(
+            FertilityIvfEggFreezingEscrowPolicyInput(
+                cancelled_cycle_unperformed_lab_transfer_retention=True
+            )
+        ),
+        "unaccredited_lab_or_cryo_risk_451": evaluate_fertility_ivf_egg_freezing_escrow_policy(
+            FertilityIvfEggFreezingEscrowPolicyInput(
+                webiq_unaccredited_embryo_lab_or_uninsured_cryo_tank_flag=True
+            )
+        ),
+        "jit_rx_and_shared_risk_409": evaluate_fertility_ivf_egg_freezing_escrow_policy(
+            FertilityIvfEggFreezingEscrowPolicyInput(
+                jit_split_fill_fertility_rx_and_shared_risk_bundle_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -28903,6 +29010,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "bespoke_diamond_gold_jewelry_escrow_guard": bespoke_diamond_gold_jewelry_escrow_guard,
         "livestream_pitfee_net_gmv_escrow_guard": livestream_pitfee_net_gmv_escrow_guard,
         "festival_stadium_cashless_rfid_escrow_guard": festival_stadium_cashless_rfid_escrow_guard,
+        "fertility_ivf_egg_freezing_escrow_guard": fertility_ivf_egg_freezing_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -38140,6 +38248,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="fest-rfid-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ZERO_PRELOAD_CARD_LINK_AND_SPONSOR_CASHBACK_CONFIRM · Mandate: festival_stadium_cashless_rfid_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 78 Fertility Benefits, Egg Freezing & Multi-Cycle IVF Shared-Risk Escrow -->
+      <div class="finops-box" id="fertility-ivf-egg-freezing-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🧬 辅助生殖(IVF)、企业冻卵福利与胚胎筛查分期托管 (Progyny / Carrot Fertility / Kindbody / 锦欣生殖) 全周期TCO锁、四阶里程碑与特药拆包沙盒 (Round 78)</div>
+            <div class="finops-subtitle">实测全周期 TCO 披露锁防“$9,500 试管套餐”隐瞒 $4,800 促排药与 $3,800 三代 PGT-A 基因筛查费 (HTTP 403)、促排20%/取卵35%/养囊25%/移植20% 四阶段里程碑防中途取消仍吞全款 (HTTP 422)、Web IQ 胚胎室 CAP 认证与液氮罐双电路灾备险熔断 (HTTP 451) 及促排冷链特药 6+3天 JIT 动态拆包配送立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="fertility-ivf-status-kpi">HTTP 409 · JIT_SPLIT_FILL_FERTILITY_RX_AND_SHARED_RISK_BUNDLE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业生育福利与家庭辅助生殖结算池 ($ USD)
+            <input type="range" id="fertility-ivf-pool-slider" min="50000" max="1500000" step="10000" value="265000" oninput="updateFertilityIvfEggFreezingSandbox()" />
+            <span id="fertility-ivf-pool-val" style="color:#6ee7b7; font-family:monospace;">$265,000</span>
+          </label>
+          <label>
+            全周期 TCO (促排药+ICSI+PGT-A) 披露与保管年限校验 (HTTP 403)
+            <select id="fertility-ivf-tco-select" onchange="updateFertilityIvfEggFreezingSandbox()">
+              <option value="pass">已完整披露促排药/ICSI/PGT-A 上限 + 液氮保管按年续缴 (放行)</option>
+              <option value="block">$9,500 引流套餐隐瞒 $8,300 药费与 PGT-A 筛查费 或 强绑 10 年保管费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            20/35/25/20 四阶段临床里程碑与中断退费校验 (HTTP 422)
+            <select id="fertility-ivf-stage-select" onchange="updateFertilityIvfEggFreezingSandbox()">
+              <option value="pass">凭取卵/养囊/移植 EMR 记录分阶释放 + 中途取消秒退未发生阶段款 (合规)</option>
+              <option value="block">促排第 7 天卵泡不达标取消取卵，诊所仍强吞 80% 手术与移植费 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 胚胎室 CAP/CLIA 认证与液氮罐灾备险筛查 (HTTP 451)
+            <select id="fertility-ivf-lab-select" onchange="updateFertilityIvfEggFreezingSandbox()">
+              <option value="clear">CDC SART 同龄活产率已核 + CAP 认证 + $250k 液氮罐保险 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">胚胎实验室无 CAP 认证 或 液氮冷冻罐无双路报警且签免责霸王条款 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            促排特药 6+3 天 JIT 动态拆包与风险共担包 (HTTP 409)
+            <select id="fertility-ivf-opt-select" onchange="updateFertilityIvfEggFreezingSandbox()">
+              <option value="enabled" selected>开启促排针剂按卵泡 B 超 JIT 分批配送(0剩药浪费) + 风险共担包省 26% (HTTP 409)</option>
+              <option value="baseline">常规四阶段里程碑托管与标准整周期配药授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度辅助生殖毛池</div>
+            <div class="finops-kpi-val" id="fertility-ivf-gross-kpi">$265,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">JIT拆包与共担后净额</div>
+            <div class="finops-kpi-val" id="fertility-ivf-net-kpi" style="color:#6ee7b7;">$196,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下剩药与未做阶段</div>
+            <div class="finops-kpi-val" id="fertility-ivf-savings-kpi" style="color:#38bdf8;">$68,900</div>
+          </div>
+        </div>
+        <div id="fertility-ivf-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 JIT_SPLIT_FILL_FERTILITY_RX_AND_SHARED_RISK_BUNDLE_CONFIRM · Mandate: fertility_ivf_egg_freezing_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -49283,6 +49454,80 @@ function updateFestivalStadiumCashlessRfidSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 DIRECT_RFID_LINK_AND_TIP_CAP_AUTHORIZED · Mandate: festival_stadium_cashless_rfid_escrow_mandate_200';
+}}
+
+function updateFertilityIvfEggFreezingSandbox() {{
+  const slider = document.getElementById('fertility-ivf-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '265000');
+  const tcoMode = document.getElementById('fertility-ivf-tco-select').value;
+  const stgMode = document.getElementById('fertility-ivf-stage-select').value;
+  const labMode = document.getElementById('fertility-ivf-lab-select').value;
+  const optMode = document.getElementById('fertility-ivf-opt-select').value;
+
+  document.getElementById('fertility-ivf-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('fertility-ivf-status-kpi');
+  const grossKpi = document.getElementById('fertility-ivf-gross-kpi');
+  const netKpi = document.getElementById('fertility-ivf-net-kpi');
+  const savingsKpi = document.getElementById('fertility-ivf-savings-kpi');
+  const banner = document.getElementById('fertility-ivf-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (labMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNACCREDITED_EMBRYO_LAB_OR_UNINSURED_CRYO_TANK_HOLD · Mandate: null';
+    return;
+  }}
+  if (tcoMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNDISCLOSED_GONADOTROPIN_PGTA_BAIT_OR_FORCED_10YR_STORAGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (stgMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CANCELLED_CYCLE_UNPERFORMED_LAB_TRANSFER_RETENTION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.26);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 JIT_SPLIT_FILL_FERTILITY_RX_AND_SHARED_RISK_BUNDLE_CONFIRM · Mandate: fertility_ivf_egg_freezing_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 SMART_CYCLE_MILESTONE_AND_SART_AUTHORIZED · Mandate: fertility_ivf_egg_freezing_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
