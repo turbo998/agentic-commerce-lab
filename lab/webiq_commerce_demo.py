@@ -19697,6 +19697,87 @@ def evaluate_pet_boarding_walking_grooming_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class PodcastDaiMusicRoyaltyEscrowPolicyInput:
+    """Input contract for Podcast Dynamic Ad Insertion (DAI), Host-Read Sponsorship & Music Royalty Split Escrow."""
+
+    quarterly_podcast_sponsorship_and_music_royalty_pool_usd: float = 195000.0
+    silent_ingame_rss_drain_or_bot_stream_farm_detected: bool = False
+    asr_aircheck_promo_miss_or_competitor_exclusivity_breach: bool = False
+    webiq_unauthorized_ai_voice_clone_or_brand_safety_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    back_catalog_dai_arbitrage_and_split_sheet_auto_ready: bool = False
+
+
+def evaluate_podcast_dai_music_royalty_escrow_policy(
+    policy_input: PodcastDaiMusicRoyaltyEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Podcast Dynamic Ad Insertion, Host-Read Sponsorship & Music Royalty policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_podcast_sponsorship_and_music_royalty_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unauthorized_ai_voice_clone_or_brand_safety_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNAUTHORIZED_AI_VOICE_CLONE_OR_BRAND_SAFETY_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.silent_ingame_rss_drain_or_bot_stream_farm_detected:
+        return {
+            "status_code": 403,
+            "decision": "SILENT_INGAME_RSS_DRAIN_OR_BOT_STREAM_FARM_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.asr_aircheck_promo_miss_or_competitor_exclusivity_breach:
+        return {
+            "status_code": 422,
+            "decision": "ASR_AIRCHECK_PROMO_MISS_OR_COMPETITOR_EXCLUSIVITY_BREACH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.back_catalog_dai_arbitrage_and_split_sheet_auto_ready:
+        savings = round(gross_pool * 0.26, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "BACK_CATALOG_DAI_ARBITRAGE_AND_SPLIT_SHEET_AUTO_CONFIRM",
+            "mandate_token": "podcast_dai_music_royalty_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "IAB_V22_AND_ASR_AIRCHECK_AUTHORIZED",
+        "mandate_token": "podcast_dai_music_royalty_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -27306,6 +27387,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    podcast_dai_music_royalty_escrow_guard = {
+        "authorized_200": evaluate_podcast_dai_music_royalty_escrow_policy(
+            PodcastDaiMusicRoyaltyEscrowPolicyInput()
+        ),
+        "silent_ingame_or_bot_stream_403": evaluate_podcast_dai_music_royalty_escrow_policy(
+            PodcastDaiMusicRoyaltyEscrowPolicyInput(
+                silent_ingame_rss_drain_or_bot_stream_farm_detected=True
+            )
+        ),
+        "asr_promo_miss_or_competitor_422": evaluate_podcast_dai_music_royalty_escrow_policy(
+            PodcastDaiMusicRoyaltyEscrowPolicyInput(
+                asr_aircheck_promo_miss_or_competitor_exclusivity_breach=True
+            )
+        ),
+        "voice_clone_or_brand_safety_451": evaluate_podcast_dai_music_royalty_escrow_policy(
+            PodcastDaiMusicRoyaltyEscrowPolicyInput(
+                webiq_unauthorized_ai_voice_clone_or_brand_safety_flag=True
+            )
+        ),
+        "back_catalog_dai_and_split_409": evaluate_podcast_dai_music_royalty_escrow_policy(
+            PodcastDaiMusicRoyaltyEscrowPolicyInput(
+                back_catalog_dai_arbitrage_and_split_sheet_auto_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -27499,6 +27606,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "micro_drama_webnovel_cap_escrow_guard": micro_drama_webnovel_cap_escrow_guard,
         "b2b_expert_network_research_escrow_guard": b2b_expert_network_research_escrow_guard,
         "pet_boarding_walking_grooming_escrow_guard": pet_boarding_walking_grooming_escrow_guard,
+        "podcast_dai_music_royalty_escrow_guard": podcast_dai_music_royalty_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -35917,6 +36025,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="pet-board-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MULTI_PET_SHARED_SUITE_AND_WEEKDAY_GROOM_SPT_CONFIRM · Mandate: pet_boarding_walking_grooming_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 65 Podcast Dynamic Ad Insertion (DAI), Host-Read Sponsorship & Music Royalty Split Escrow -->
+      <div class="finops-box" id="podcast-dai-music-royalty-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎙️ 播客动态广告插入(DAI)、主播口播赞助与音乐流媒体版税分账 (Spotify Megaphone / Acast / Gumball / 小宇宙商业化 / DistroKid) 防静音刷下载、ASR审片与ISRC分账沙盒 (Round 65)</div>
+            <div class="finops-subtitle">实测 IAB v2.2 剔除手游内嵌静音 WebView 伪造 RSS 下载与 31 秒机器刷流媒体假歌 (HTTP 403)、Whisper ASR 自动核验中插口播位置(15%-65%)、优惠码与竞品排他期 (HTTP 422)、Web IQ 未授权 AI 克隆歌手声纹与 GARM 品牌安全熔断 (HTTP 451) 及常青老节目(Back-Catalog) DAI 回填+Split-Sheet 自动分账立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="podcast-dai-status-kpi">HTTP 409 · BACK_CATALOG_DAI_ARBITRAGE_AND_SPLIT_SHEET_AUTO_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度播客赞助投放与音乐流媒体版税结算池 ($ USD)
+            <input type="range" id="podcast-dai-pool-slider" min="40000" max="1500000" step="10000" value="195000" oninput="updatePodcastDaiMusicRoyaltySandbox()" />
+            <span id="podcast-dai-pool-val" style="color:#6ee7b7; font-family:monospace;">$195,000</span>
+          </label>
+          <label>
+            IAB v2.2 原生客户端与防静音刷量校验 (HTTP 403)
+            <select id="podcast-dai-iab-select" onchange="updatePodcastDaiMusicRoyaltySandbox()">
+              <option value="pass">原生播客播放器 User-Agent + 真实解码播放 &gt;=60s (放行)</option>
+              <option value="block">休闲手游内嵌静音 WebView 偷刷 RSS 下载 或 31 秒机器人刷歌 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            Whisper ASR 口播自动审片与竞品排他校验 (HTTP 422)
+            <select id="podcast-dai-asr-select" onchange="updatePodcastDaiMusicRoyaltySandbox()">
+              <option value="pass">中插黄金区间(15%-65%) + 优惠码发音准确 + Shownotes 链接有效 (合规)</option>
+              <option value="block">主播把中插口播塞到片尾 96% 处 / 漏念优惠码 或 同集植入竞品 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 声纹版权 (ELVIS Act) 与 GARM 品牌安全筛查 (HTTP 451)
+            <select id="podcast-dai-voice-select" onchange="updatePodcastDaiMusicRoyaltySandbox()">
+              <option value="clear">原创实名声纹授权 + GARM 品牌安全达标 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">检出未授权 AI 克隆知名歌手声纹侵权 或 节目触碰极端言论红线 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            往期常青节目 (Back-Catalog) DAI 与 Split-Sheet 分账 (HTTP 409)
+            <select id="podcast-dai-opt-select" onchange="updatePodcastDaiMusicRoyaltySandbox()">
+              <option value="enabled" selected>开启往期常青老节目 DAI 动态回填 + ISRC 多方自动拆账省 26% (HTTP 409)</option>
+              <option value="baseline">常规新发单集口播与人工对账结算授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度音频商业毛池</div>
+            <div class="finops-kpi-val" id="podcast-dai-gross-kpi">$195,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">常青DAI与清分后净额</div>
+            <div class="finops-kpi-val" id="podcast-dai-net-kpi" style="color:#6ee7b7;">$144,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下假量与溢价</div>
+            <div class="finops-kpi-val" id="podcast-dai-savings-kpi" style="color:#38bdf8;">$50,700</div>
+          </div>
+        </div>
+        <div id="podcast-dai-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 BACK_CATALOG_DAI_ARBITRAGE_AND_SPLIT_SHEET_AUTO_CONFIRM · Mandate: podcast_dai_music_royalty_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -46098,6 +46269,80 @@ function updatePetBoardingWalkingGroomingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 GPS_WALK_AND_VACCINE_VERIFIED_AUTHORIZED · Mandate: pet_boarding_walking_grooming_escrow_mandate_200';
+}}
+
+function updatePodcastDaiMusicRoyaltySandbox() {{
+  const slider = document.getElementById('podcast-dai-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '195000');
+  const iabMode = document.getElementById('podcast-dai-iab-select').value;
+  const asrMode = document.getElementById('podcast-dai-asr-select').value;
+  const voiceMode = document.getElementById('podcast-dai-voice-select').value;
+  const optMode = document.getElementById('podcast-dai-opt-select').value;
+
+  document.getElementById('podcast-dai-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('podcast-dai-status-kpi');
+  const grossKpi = document.getElementById('podcast-dai-gross-kpi');
+  const netKpi = document.getElementById('podcast-dai-net-kpi');
+  const savingsKpi = document.getElementById('podcast-dai-savings-kpi');
+  const banner = document.getElementById('podcast-dai-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (voiceMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNAUTHORIZED_AI_VOICE_CLONE_OR_BRAND_SAFETY_HOLD · Mandate: null';
+    return;
+  }}
+  if (iabMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SILENT_INGAME_RSS_DRAIN_OR_BOT_STREAM_FARM_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (asrMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 ASR_AIRCHECK_PROMO_MISS_OR_COMPETITOR_EXCLUSIVITY_BREACH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.26);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 BACK_CATALOG_DAI_ARBITRAGE_AND_SPLIT_SHEET_AUTO_CONFIRM · Mandate: podcast_dai_music_royalty_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 IAB_V22_AND_ASR_AIRCHECK_AUTHORIZED · Mandate: podcast_dai_music_royalty_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

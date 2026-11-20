@@ -13413,6 +13413,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("pet-boarding-walking-grooming-escrow-sandbox", html_zh)
 
+    def test_podcast_dai_music_royalty_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            PodcastDaiMusicRoyaltyEscrowPolicyInput,
+            evaluate_podcast_dai_music_royalty_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_podcast_dai_music_royalty_escrow_policy(
+            PodcastDaiMusicRoyaltyEscrowPolicyInput(
+                quarterly_podcast_sponsorship_and_music_royalty_pool_usd=195000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "IAB_V22_AND_ASR_AIRCHECK_AUTHORIZED",
+        )
+
+        iab = evaluate_podcast_dai_music_royalty_escrow_policy(
+            PodcastDaiMusicRoyaltyEscrowPolicyInput(
+                silent_ingame_rss_drain_or_bot_stream_farm_detected=True
+            )
+        )
+        self.assertEqual(iab["status_code"], 403)
+        self.assertEqual(
+            iab["decision"],
+            "SILENT_INGAME_RSS_DRAIN_OR_BOT_STREAM_FARM_BLOCKED",
+        )
+
+        asr = evaluate_podcast_dai_music_royalty_escrow_policy(
+            PodcastDaiMusicRoyaltyEscrowPolicyInput(
+                asr_aircheck_promo_miss_or_competitor_exclusivity_breach=True
+            )
+        )
+        self.assertEqual(asr["status_code"], 422)
+        self.assertEqual(
+            asr["decision"],
+            "ASR_AIRCHECK_PROMO_MISS_OR_COMPETITOR_EXCLUSIVITY_BREACH_BLOCKED",
+        )
+
+        voice = evaluate_podcast_dai_music_royalty_escrow_policy(
+            PodcastDaiMusicRoyaltyEscrowPolicyInput(
+                webiq_unauthorized_ai_voice_clone_or_brand_safety_flag=True
+            )
+        )
+        self.assertEqual(voice["status_code"], 451)
+        self.assertEqual(
+            voice["decision"],
+            "WEBIQ_UNAUTHORIZED_AI_VOICE_CLONE_OR_BRAND_SAFETY_HOLD",
+        )
+
+        optim = evaluate_podcast_dai_music_royalty_escrow_policy(
+            PodcastDaiMusicRoyaltyEscrowPolicyInput(
+                quarterly_podcast_sponsorship_and_music_royalty_pool_usd=195000.0,
+                back_catalog_dai_arbitrage_and_split_sheet_auto_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 50700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 144300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("podcast_dai_music_royalty_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("podcast-dai-music-royalty-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

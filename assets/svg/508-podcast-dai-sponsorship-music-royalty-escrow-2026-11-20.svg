@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg508" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#07111E" />
+      <stop offset="50%" stop-color="#111F38" />
+      <stop offset="100%" stop-color="#081322" />
+    </linearGradient>
+    <linearGradient id="accent508" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="50%" stop-color="#A855F7" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg508)" />
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent508)" />
+
+  <!-- Header -->
+  <text x="44" y="48" fill="#10B981" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.4">ROUND 65 · PODCAST DYNAMIC AD INSERTION (DAI), HOST-READ SPONSORSHIP &amp; MUSIC ROYALTY ESCROW</text>
+  <text x="44" y="82" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">播客动态广告(DAI)、主播口播赞助与音乐版税分账：防静音刷下载、ASR审词与ISRC分账</text>
+  <text x="44" y="108" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Spotify Megaphone / Acast / Gumball / 小宇宙商业化 / DistroKid vs IAB v2.2 核验 vs ASR 口播验真 vs 剩余库存套利省 26%</text>
+
+  <!-- Left Panel: 3 Core Podcast Advertising & Music Royalty Risks -->
+  <rect x="44" y="132" width="350" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="64" y="164" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🚨 播客商业化与音乐版税三大跑冒滴漏</text>
+
+  <rect x="62" y="182" width="314" height="132" rx="8" fill="#1E293B" stroke="#EF4444" stroke-width="1" />
+  <text x="76" y="206" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">1. 休闲手游后台静音拉取 RSS，伪造百万下载骗 $35 CPM</text>
+  <text x="76" y="228" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 流量黑产在免费小游戏里内嵌静音播放器后台自动下载</text>
+  <text x="76" y="248" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  播客音频，或 Apple Podcasts 自动预载但用户根本没点开听</text>
+  <text x="76" y="268" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：IAB Podcast v2.2 过滤非标准 User-Agent</text>
+  <text x="76" y="288" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  + 强制 60 秒真实流式播放字节确认锁 (HTTP 403)</text>
+
+  <rect x="62" y="328" width="314" height="132" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1" />
+  <text x="76" y="352" fill="#FCD34D" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">2. 主播中插口播漏念折扣码或前后脚接竞品广告</text>
+  <text x="76" y="374" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 花 $15,000 定制 60s 主播口播(Host-Read)，结果主播把</text>
+  <text x="76" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  专属优惠码念错、Shownotes 漏挂链接，或同集塞入竞品</text>
+  <text x="76" y="414" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：Whisper ASR 音频转写核验必含词/时长(&gt;=60s)</text>
+  <text x="76" y="434" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  + 同品类排他期与保底播放补播对赌锁 (HTTP 422)</text>
+
+  <rect x="62" y="474" width="314" height="134" rx="8" fill="#1E293B" stroke="#A855F7" stroke-width="1" />
+  <text x="76" y="498" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">3. AI 克隆歌手假歌洗劫流媒体版税池与长尾寻优</text>
+  <text x="76" y="520" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 黑产批量上传 31 秒 AI 白噪音假歌挂机刷播放盗取版税池</text>
+  <text x="76" y="540" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：Web IQ 声纹版权与刷量流媒体农场熔断 (451)</text>
+  <text x="76" y="560" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 动态插入(DAI)回填过往常青老节目(Back-Catalog)</text>
+  <text x="76" y="582" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  + 联合词曲制作 Split-Sheet 秒级分账省 26% (HTTP 409)</text>
+
+  <!-- Center Panel: 5-Lane Deterministic Gate -->
+  <rect x="414" y="132" width="402" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="434" y="164" fill="#10B981" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🛡️ 播客广告与音乐版税五车道受托状态机</text>
+
+  <rect x="434" y="184" width="362" height="72" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="450" y="208" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 200 · IAB_V22_AND_ASR_AIRCHECK_AUTHORIZED</text>
+  <text x="450" y="228" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">IAB v2.2 真实收听已验 + ASR 口播词达标 + ISRC 分账 (8ms)</text>
+  <text x="450" y="245" fill="#A7F3D0" font-family="Consolas, monospace" font-size="11">podcast_dai_music_royalty_escrow_mandate_*</text>
+
+  <rect x="434" y="268" width="362" height="72" rx="8" fill="#450A0A" stroke="#EF4444" stroke-width="1.5" />
+  <text x="450" y="292" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 403 · SILENT_IN_GAME_RSS_DRAIN_OR_BOT_STREAM</text>
+  <text x="450" y="312" fill="#FEE2E2" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截手游内嵌静音播放器伪造 RSS 下载或 31 秒机器刷流媒体播放</text>
+  <text x="450" y="329" fill="#FCA5A5" font-family="Consolas, monospace" font-size="11">iab_v22_certified_ua = false | silent_webview_embed = true</text>
+
+  <rect x="434" y="352" width="362" height="72" rx="8" fill="#431407" stroke="#F97316" stroke-width="1.5" />
+  <text x="450" y="376" fill="#FDBA74" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 422 · ASR_PROMO_CODE_MISS_OR_COMPETITOR_CLASH</text>
+  <text x="450" y="396" fill="#FFEDD5" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截主播口播漏念品牌词/优惠码、Shownotes无链接或同集塞入竞品</text>
+  <text x="450" y="413" fill="#FDBA74" font-family="Consolas, monospace" font-size="11">asr_promo_code_verified = false | category_exclusivity_breach = true</text>
+
+  <rect x="434" y="436" width="362" height="72" rx="8" fill="#3B0764" stroke="#A855F7" stroke-width="1.5" />
+  <text x="450" y="460" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 451 · WEBIQ_AI_VOICE_CLONE_OR_BRAND_SAFETY_HOLD</text>
+  <text x="450" y="480" fill="#F3E8FF" font-family="Segoe UI, Arial, sans-serif" font-size="12">Web IQ 检出未授权 AI 克隆知名歌手声纹侵权或节目涉极端言论</text>
+  <text x="450" y="497" fill="#D8B4FE" font-family="Consolas, monospace" font-size="11">unauthorized_voice_clone_ip = true | garm_brand_safety_fail = true</text>
+
+  <rect x="434" y="520" width="362" height="88" rx="8" fill="#422006" stroke="#F59E0B" stroke-width="1.5" />
+  <text x="450" y="544" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 409 · BACK_CATALOG_DAI_AND_MAKEGOOD_AUTO_CAP</text>
+  <text x="450" y="564" fill="#FEF3C7" font-family="Segoe UI, Arial, sans-serif" font-size="12">常青往期节目(Back-Catalog)动态插播 + 保底补播对赌省 26%</text>
+  <text x="450" y="584" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">季度播客赞助与音乐流媒体分账池 $195,000 → 净结算额 $144,300 (省 $50,700)</text>
+
+  <!-- Right Panel: Platform Selection Matrix -->
+  <rect x="836" y="132" width="320" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="856" y="164" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🧭 播客商业化与音乐分账选型</text>
+
+  <rect x="854" y="184" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="206" fill="#10B981" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Spotify Megaphone / Acast / Gumball (播客广告)</text>
+  <text x="868" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 通过 IAB Tech Lab v2.2 认证，支持动态广告插入</text>
+  <text x="868" y="246" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  (DAI)精准定投地域/人群，并由 Podscribe/Podsights 归因</text>
+  <text x="868" y="266" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：DTC 品牌播客口播投放、B2B 科技播客赞助</text>
+
+  <rect x="854" y="298" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="320" fill="#A855F7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">小宇宙商业化 / DistroKid / Stem (播客与音乐分账)</text>
+  <text x="868" y="340" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 小宇宙提供真实完播率与评论区品牌置顶跳转；</text>
+  <text x="868" y="360" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  DistroKid/Stem 支持按 ISRC 自动向词曲/编曲/歌手拆账</text>
+  <text x="868" y="380" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：中文精品播客品牌植入、独立音乐人全球发行分账</text>
+
+  <rect x="854" y="412" width="284" height="196" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="868" y="436" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">★ 推荐：Foundry + IAB/ASR 验真与分账网关</text>
+  <text x="868" y="458" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">1. IAB v2.2 过滤手游静音嵌入与后台预加载假量</text>
+  <text x="868" y="480" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">2. Whisper ASR 自动审听中插口播词与优惠码</text>
+  <text x="868" y="502" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">3. 拦截 AI 盗版克隆歌手声纹与 GARM 风险节目</text>
+  <text x="868" y="524" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">4. 往期常青节目 DAI 捡漏立省 26%</text>
+  <rect x="868" y="542" width="256" height="50" rx="6" fill="#022C22" />
+  <text x="880" y="563" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">审计标签：provenance = synthetic</text>
+  <text x="880" y="581" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="11">independently_reproduced = false</text>
+</svg>
