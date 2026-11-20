@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`205` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`206` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (38 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (63 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (64 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (45 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
@@ -82,7 +82,7 @@
 | 38 | **Music Festival & Stadium Cashless `RFID` Wristband, Anti-Tip-Creep & Auto-Refund Escrow (`Coachella / Tomorrowland / Intellitix / Front Gate`) Zero-Breakage Auto-Refund, `0%–10%` Tip Cap & `45s` Double-Tap Idempotency Agent Architecture Selection FAQ** | [English](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.en.md) · [中文](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (63 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (64 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -151,6 +151,7 @@
 | 61 | **Solar, Battery Energy Storage (`ESS`), Virtual Power Plant (`VPP`) & `25-Year` `PPA` Escalator Escrow (`Sunrun / Enphase / Tesla Energy / Aurora Solar`) `0%` Escalator Lock, `1m LiDAR` Shade Audit & Utility `PTO` Milestone Agent Architecture Selection FAQ** | [English](solar-ess-vpp-ppa-escalator-pto-escrow-agent-selection-faq.en.md) · [中文](solar-ess-vpp-ppa-escalator-pto-escrow-agent-selection-faq.md) |
 | 62 | **Golf Tee-Time Booking, Country Club F&B Minimums & Rain-Check Escrow (`GolfNow / Supreme Golf / Invited Clubs / BaiGolf`) All-In Cart/Caddie Lock, Greens Aerification Radar & Cash Rain-Check Agent Architecture Selection FAQ** | [English](golf-teetime-country-club-aerification-raincheck-escrow-agent-selection-faq.en.md) · [中文](golf-teetime-country-club-aerification-raincheck-escrow-agent-selection-faq.md) |
 | 63 | **Senior Living, Assisted-Living Level-of-Care Tier Lock & Home-Care `EVV` Escrow (`A Place for Mom / Care.com / Honor / Taikang Home`) `12m ADL` Rate Cap, `BLE+GPS EVV` & `LTC` Claim Sync Agent Architecture Selection FAQ** | [English](senior-living-assisted-care-evv-ltc-escrow-agent-selection-faq.en.md) · [中文](senior-living-assisted-care-evv-ltc-escrow-agent-selection-faq.md) |
+| 64 | **Online Grocery, Catch-Weight Pre-Auth & Cold-Chain Substitution Escrow (`Instacart / Amazon Fresh / Weee! / Hema`) `<=10%` Weight Cap, Substitution Lock & `0%`-Markup Parity Agent Architecture Selection FAQ** | [English](online-grocery-catch-weight-substitution-coldchain-escrow-agent-selection-faq.en.md) · [中文](online-grocery-catch-weight-substitution-coldchain-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (45 Guides)

@@ -21479,6 +21479,87 @@ def evaluate_b2b_tradeshow_drayage_booth_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class OnlineGroceryCatchWeightColdchainPolicyInput:
+    """Input contract for Online Grocery, Catch-Weight Pre-Auth & Cold-Chain Substitution Escrow."""
+
+    quarterly_online_grocery_and_pantry_pool_usd: float = 85000.0
+    unapproved_premium_substitution_or_catch_weight_overage: bool = False
+    hidden_instore_markup_exceeded_or_cold_chain_batch_thaw: bool = False
+    webiq_fda_usda_class1_food_recall_lot_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    in_store_parity_merchant_routing_and_private_label_swap_ready: bool = False
+
+
+def evaluate_online_grocery_catch_weight_coldchain_policy(
+    policy_input: OnlineGroceryCatchWeightColdchainPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Online Grocery, Catch-Weight Pre-Auth & Cold-Chain Substitution Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_online_grocery_and_pantry_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_fda_usda_class1_food_recall_lot_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_FDA_USDA_CLASS1_FOOD_RECALL_LOT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unapproved_premium_substitution_or_catch_weight_overage:
+        return {
+            "status_code": 403,
+            "decision": "UNAPPROVED_PREMIUM_SUBSTITUTION_OR_CATCH_WEIGHT_OVERAGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hidden_instore_markup_exceeded_or_cold_chain_batch_thaw:
+        return {
+            "status_code": 422,
+            "decision": "HIDDEN_INSTORE_MARKUP_EXCEEDED_OR_COLD_CHAIN_BATCH_THAW_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.in_store_parity_merchant_routing_and_private_label_swap_ready:
+        savings = round(gross_pool * 0.22, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "IN_STORE_PARITY_MERCHANT_ROUTING_AND_PRIVATE_LABEL_SWAP_CONFIRM",
+            "mandate_token": "online_grocery_coldchain_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "CATCH_WEIGHT_CAP_AND_COLD_CHAIN_TTI_AUTHORIZED",
+        "mandate_token": "online_grocery_coldchain_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -29660,6 +29741,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    online_grocery_catch_weight_coldchain_guard = {
+        "authorized_200": evaluate_online_grocery_catch_weight_coldchain_policy(
+            OnlineGroceryCatchWeightColdchainPolicyInput()
+        ),
+        "sub_upsell_or_weight_overage_403": evaluate_online_grocery_catch_weight_coldchain_policy(
+            OnlineGroceryCatchWeightColdchainPolicyInput(
+                unapproved_premium_substitution_or_catch_weight_overage=True
+            )
+        ),
+        "shelf_markup_or_cold_chain_thaw_422": evaluate_online_grocery_catch_weight_coldchain_policy(
+            OnlineGroceryCatchWeightColdchainPolicyInput(
+                hidden_instore_markup_exceeded_or_cold_chain_batch_thaw=True
+            )
+        ),
+        "fda_usda_class1_recall_451": evaluate_online_grocery_catch_weight_coldchain_policy(
+            OnlineGroceryCatchWeightColdchainPolicyInput(
+                webiq_fda_usda_class1_food_recall_lot_flag=True
+            )
+        ),
+        "parity_grocer_and_private_label_409": evaluate_online_grocery_catch_weight_coldchain_policy(
+            OnlineGroceryCatchWeightColdchainPolicyInput(
+                in_store_parity_merchant_routing_and_private_label_swap_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29875,6 +29982,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "golf_teetime_country_club_escrow_guard": golf_teetime_country_club_escrow_guard,
         "senior_living_homecare_evv_escrow_guard": senior_living_homecare_evv_escrow_guard,
         "b2b_tradeshow_drayage_booth_escrow_guard": b2b_tradeshow_drayage_booth_escrow_guard,
+        "online_grocery_catch_weight_coldchain_guard": online_grocery_catch_weight_coldchain_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -39679,6 +39787,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="tradeshow-expo-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MODULAR_LIGHTWEIGHT_ALUMINUM_EXTRUSION_AND_UNIVERSAL_LEAD_CAPTURE_CONFIRM · Mandate: b2b_tradeshow_drayage_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 87 Online Grocery, Catch-Weight Pre-Auth & Cold-Chain Substitution Escrow -->
+      <div class="finops-box" id="online-grocery-catch-weight-coldchain-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🥩 生鲜即时零售、水产肉类称重预授权 (Catch-Weight) 与缺货贵价替换防坑托管 (Instacart / Amazon Fresh / Weee! / 盒马鲜生 / 小象超市) 称重封顶与冷链同价沙盒 (Round 87)</div>
+            <div class="finops-subtitle">实测固定金额小费锁与替换单价&lt;=1.05x 防拣货员故意换贵货多赚百分比小费及生鲜称重预授权&lt;=1.10x 防多抓 50% 吃满预授权 (HTTP 403)、比价过滤 App 暗涨 20% 菜价并强制刺身冻品&lt;=45 分钟蓄冷箱 TTI&lt;=4°C 直送防三单拼送化冻 (HTTP 422)、Web IQ 命中 FDA/USDA 一级李斯特菌召回批号熔断 (HTTP 451) 及 0% 门店同价商超+自有品牌平替净省 22% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="online-grocery-status-kpi">HTTP 409 · IN_STORE_PARITY_MERCHANT_ROUTING_AND_PRIVATE_LABEL_SWAP_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度家庭与企业行政茶水间生鲜日百采购池 ($ USD)
+            <input type="range" id="online-grocery-pool-slider" min="15000" max="500000" step="5000" value="85000" oninput="updateOnlineGroceryCatchWeightColdchainSandbox()" />
+            <span id="online-grocery-pool-val" style="color:#6ee7b7; font-family:monospace;">$85,000</span>
+          </label>
+          <label>
+            固定金额小费、替换单价 (&lt;=1.05x) 与称重 (&lt;=1.10x) 核验 (HTTP 403)
+            <select id="online-grocery-sub-select" onchange="updateOnlineGroceryCatchWeightColdchainSandbox()">
+              <option value="pass">固定金额小费 + 缺货替换单价&lt;=1.05x + 生鲜称重&lt;=1.10x 下单重量 (放行)</option>
+              <option value="block">拣货员将 $4.99 缺货换成 $11.99 礼盒套小费 或 1.5 磅三文鱼故意抓 2.35 磅多扣 35% (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            门店货架同价 (0% 加价) 与 &lt;=45 分钟冷链 TTI 核验 (HTTP 422)
+            <select id="online-grocery-cold-select" onchange="updateOnlineGroceryCatchWeightColdchainSandbox()">
+              <option value="pass">0% 门店货架同价 + 刺身冻品&lt;=45 分钟蓄冷箱 TTI&lt;=4°C 保鲜直达 (合规)</option>
+              <option value="block">App 菜价比门店货架暗涨 20% 扣留小票 或 3 单拼送后备箱 85 分钟化冻 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ FDA / USDA 一级食品召回批号 (GS1-128) 核验 (HTTP 451)
+            <select id="online-grocery-recall-select" onchange="updateOnlineGroceryCatchWeightColdchainSandbox()">
+              <option value="clear">全篮 GTIN 与生产批次零召回命中 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">冷切熟食、袋装果蔬或乳制品批号命中 FDA 李斯特菌/沙门氏菌一级召回 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            0% 加价同价商超路由与商超自有品牌自动平替 (HTTP 409)
+            <select id="online-grocery-opt-select" onchange="updateOnlineGroceryCatchWeightColdchainSandbox()">
+              <option value="enabled" selected>路由至 0% 菜价加价直营商超 + 缺货自动切换 Kirkland/365/日日鲜平替省 22% (HTTP 409)</option>
+              <option value="baseline">常规称重预授权封顶与冷链保鲜托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度生鲜日百采购总池</div>
+            <div class="finops-kpi-val" id="online-grocery-gross-kpi">$85,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">同价商超与平替后净支出</div>
+            <div class="finops-kpi-val" id="online-grocery-net-kpi" style="color:#6ee7b7;">$66,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除加价与称重损耗净额</div>
+            <div class="finops-kpi-val" id="online-grocery-savings-kpi" style="color:#38bdf8;">$18,700</div>
+          </div>
+        </div>
+        <div id="online-grocery-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 IN_STORE_PARITY_MERCHANT_ROUTING_AND_PRIVATE_LABEL_SWAP_CONFIRM · Mandate: online_grocery_coldchain_mandate_optim_409
         </div>
       </div>
 
@@ -51488,6 +51659,80 @@ function updateB2BTradeshowDrayageBoothEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 CWT_SCALE_VERIFIED_AND_EARLY_BIRD_BOOTH_AUTHORIZED · Mandate: b2b_tradeshow_drayage_escrow_mandate_200';
+}}
+
+function updateOnlineGroceryCatchWeightColdchainSandbox() {{
+  const slider = document.getElementById('online-grocery-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '85000');
+  const subMode = document.getElementById('online-grocery-sub-select').value;
+  const coldMode = document.getElementById('online-grocery-cold-select').value;
+  const recMode = document.getElementById('online-grocery-recall-select').value;
+  const optMode = document.getElementById('online-grocery-opt-select').value;
+
+  document.getElementById('online-grocery-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('online-grocery-status-kpi');
+  const grossKpi = document.getElementById('online-grocery-gross-kpi');
+  const netKpi = document.getElementById('online-grocery-net-kpi');
+  const savingsKpi = document.getElementById('online-grocery-savings-kpi');
+  const banner = document.getElementById('online-grocery-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (recMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_FDA_USDA_CLASS1_FOOD_RECALL_LOT_HOLD · Mandate: null';
+    return;
+  }}
+  if (subMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNAPPROVED_PREMIUM_SUBSTITUTION_OR_CATCH_WEIGHT_OVERAGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (coldMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 HIDDEN_INSTORE_MARKUP_EXCEEDED_OR_COLD_CHAIN_BATCH_THAW_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.22);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 IN_STORE_PARITY_MERCHANT_ROUTING_AND_PRIVATE_LABEL_SWAP_CONFIRM · Mandate: online_grocery_coldchain_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 CATCH_WEIGHT_CAP_AND_COLD_CHAIN_TTI_AUTHORIZED · Mandate: online_grocery_coldchain_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

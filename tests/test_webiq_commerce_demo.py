@@ -14887,6 +14887,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-tradeshow-drayage-booth-escrow-sandbox", html_zh)
 
+    def test_online_grocery_catch_weight_coldchain_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OnlineGroceryCatchWeightColdchainPolicyInput,
+            evaluate_online_grocery_catch_weight_coldchain_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_online_grocery_catch_weight_coldchain_policy(
+            OnlineGroceryCatchWeightColdchainPolicyInput(
+                quarterly_online_grocery_and_pantry_pool_usd=85000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "CATCH_WEIGHT_CAP_AND_COLD_CHAIN_TTI_AUTHORIZED",
+        )
+
+        sub = evaluate_online_grocery_catch_weight_coldchain_policy(
+            OnlineGroceryCatchWeightColdchainPolicyInput(
+                unapproved_premium_substitution_or_catch_weight_overage=True
+            )
+        )
+        self.assertEqual(sub["status_code"], 403)
+        self.assertEqual(
+            sub["decision"],
+            "UNAPPROVED_PREMIUM_SUBSTITUTION_OR_CATCH_WEIGHT_OVERAGE_BLOCKED",
+        )
+
+        cold = evaluate_online_grocery_catch_weight_coldchain_policy(
+            OnlineGroceryCatchWeightColdchainPolicyInput(
+                hidden_instore_markup_exceeded_or_cold_chain_batch_thaw=True
+            )
+        )
+        self.assertEqual(cold["status_code"], 422)
+        self.assertEqual(
+            cold["decision"],
+            "HIDDEN_INSTORE_MARKUP_EXCEEDED_OR_COLD_CHAIN_BATCH_THAW_BLOCKED",
+        )
+
+        rec = evaluate_online_grocery_catch_weight_coldchain_policy(
+            OnlineGroceryCatchWeightColdchainPolicyInput(
+                webiq_fda_usda_class1_food_recall_lot_flag=True
+            )
+        )
+        self.assertEqual(rec["status_code"], 451)
+        self.assertEqual(
+            rec["decision"],
+            "WEBIQ_FDA_USDA_CLASS1_FOOD_RECALL_LOT_HOLD",
+        )
+
+        optim = evaluate_online_grocery_catch_weight_coldchain_policy(
+            OnlineGroceryCatchWeightColdchainPolicyInput(
+                quarterly_online_grocery_and_pantry_pool_usd=85000.0,
+                in_store_parity_merchant_routing_and_private_label_swap_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 18700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 66300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("online_grocery_catch_weight_coldchain_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("online-grocery-catch-weight-coldchain-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
