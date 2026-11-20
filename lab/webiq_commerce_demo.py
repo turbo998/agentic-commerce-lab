@@ -21155,6 +21155,87 @@ def evaluate_solar_ess_vpp_ppa_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BLocalizationTmLqaDubbingEscrowPolicyInput:
+    """Input contract for B2B Localization (L10n), Translation Memory (TM) & AI Dubbing Escrow."""
+
+    quarterly_b2b_localization_and_dubbing_pool_usd: float = 170000.0
+    tm_exact_fuzzy_match_full_rate_double_billing_or_raw_mt_fraud: bool = False
+    icu_placeholder_syntax_error_or_pixel_width_overflow: bool = False
+    webiq_non_zdr_public_mt_leak_or_unlicensed_voice_clone_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    glossary_locked_llm_mtpe_hybrid_and_tm_dedup_ready: bool = False
+
+
+def evaluate_b2b_localization_tm_lqa_dubbing_escrow_policy(
+    policy_input: B2BLocalizationTmLqaDubbingEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Localization (L10n), Translation Memory (TM) & AI Dubbing Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_localization_and_dubbing_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_non_zdr_public_mt_leak_or_unlicensed_voice_clone_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_NON_ZDR_PUBLIC_MT_LEAK_OR_UNLICENSED_VOICE_CLONE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tm_exact_fuzzy_match_full_rate_double_billing_or_raw_mt_fraud:
+        return {
+            "status_code": 403,
+            "decision": "TM_EXACT_FUZZY_MATCH_FULL_RATE_DOUBLE_BILLING_OR_RAW_MT_FRAUD_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.icu_placeholder_syntax_error_or_pixel_width_overflow:
+        return {
+            "status_code": 422,
+            "decision": "ICU_PLACEHOLDER_SYNTAX_ERROR_OR_PIXEL_WIDTH_OVERFLOW_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.glossary_locked_llm_mtpe_hybrid_and_tm_dedup_ready:
+        savings = round(gross_pool * 0.32, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "GLOSSARY_LOCKED_LLM_MTPE_HYBRID_AND_TM_DEDUP_CONFIRM",
+            "mandate_token": "b2b_localization_tm_lqa_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "TM_LEVERAGE_AND_ICU_LQA_AUTHORIZED",
+        "mandate_token": "b2b_localization_tm_lqa_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -29232,6 +29313,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_localization_tm_lqa_dubbing_escrow_guard = {
+        "authorized_200": evaluate_b2b_localization_tm_lqa_dubbing_escrow_policy(
+            B2BLocalizationTmLqaDubbingEscrowPolicyInput()
+        ),
+        "tm_double_bill_or_raw_mt_403": evaluate_b2b_localization_tm_lqa_dubbing_escrow_policy(
+            B2BLocalizationTmLqaDubbingEscrowPolicyInput(
+                tm_exact_fuzzy_match_full_rate_double_billing_or_raw_mt_fraud=True
+            )
+        ),
+        "placeholder_or_pixel_overflow_422": evaluate_b2b_localization_tm_lqa_dubbing_escrow_policy(
+            B2BLocalizationTmLqaDubbingEscrowPolicyInput(
+                icu_placeholder_syntax_error_or_pixel_width_overflow=True
+            )
+        ),
+        "non_zdr_leak_or_voice_clone_451": evaluate_b2b_localization_tm_lqa_dubbing_escrow_policy(
+            B2BLocalizationTmLqaDubbingEscrowPolicyInput(
+                webiq_non_zdr_public_mt_leak_or_unlicensed_voice_clone_flag=True
+            )
+        ),
+        "glossary_llm_mtpe_and_tm_dedup_409": evaluate_b2b_localization_tm_lqa_dubbing_escrow_policy(
+            B2BLocalizationTmLqaDubbingEscrowPolicyInput(
+                glossary_locked_llm_mtpe_hybrid_and_tm_dedup_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29443,6 +29550,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "luxury_handbag_buyback_consignment_guard": luxury_handbag_buyback_consignment_guard,
         "b2b_mice_offsite_room_block_av_escrow_guard": b2b_mice_offsite_room_block_av_escrow_guard,
         "solar_ess_vpp_ppa_escrow_guard": solar_ess_vpp_ppa_escrow_guard,
+        "b2b_localization_tm_lqa_dubbing_escrow_guard": b2b_localization_tm_lqa_dubbing_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -38995,6 +39103,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="solar-ess-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CASH_CREDIT_UNION_HELOC_AND_VPP_GRID_ARBITRAGE_CONFIRM · Mandate: solar_ess_vpp_ppa_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 83 B2B Localization (L10n), Translation Memory (TM) & AI Dubbing Escrow -->
+      <div class="finops-box" id="b2b-localization-tm-lqa-dubbing-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🌐 企业多语种本地化 (L10n)、翻译记忆库 (TM) 模糊匹配计费与游戏/短剧 AI 配音托管 (Phrase / Lokalise / Smartling / TransPerfect) .tmx 阶梯折扣与 ICU 编译门禁沙盒 (Round 83)</div>
+            <div class="finops-subtitle">实测网关前置 .tmx 阶梯折扣矩阵(101% 匹配与重复词条 $0)及 TER 编辑距离核验防机翻生肉冒充人工精校 TEP (HTTP 403)、合入前 ICU AST {{占位符}} 变量语法编译与 Figma 真实字体像素宽度防超长爆框崩溃 (HTTP 422)、Web IQ 零数据留存 (ZDR) 沙箱与 SAG-AFTRA 声纹授权熔断 (HTTP 451) 及术语库锁定 LLM-MTPE 路由净省 32% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="b2b-l10n-status-kpi">HTTP 409 · GLOSSARY_LOCKED_LLM_MTPE_HYBRID_AND_TM_DEDUP_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度多语种软件/电商本地化与 AI 配音预算池 ($ USD)
+            <input type="range" id="b2b-l10n-pool-slider" min="30000" max="1000000" step="10000" value="170000" oninput="updateB2BLocalizationTmLqaDubbingEscrowSandbox()" />
+            <span id="b2b-l10n-pool-val" style="color:#6ee7b7; font-family:monospace;">$170,000</span>
+          </label>
+          <label>
+            .tmx 翻译记忆库阶梯折扣与 TER 编辑距离核验 (HTTP 403)
+            <select id="b2b-l10n-tm-select" onchange="updateB2BLocalizationTmLqaDubbingEscrowSandbox()">
+              <option value="pass">101% 上下文/重复词 $0 + 100% 匹配&lt;=20% 费率 + 人工精校 TER 编辑率达标 (放行)</option>
+              <option value="block">对 45% 历史 100% 重复句照收 $0.22/词全价 或 直接交机翻生肉套取人工 TEP 费率 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            ICU {{占位符}} 语法编译与 Figma 像素容器宽度门禁 (HTTP 422)
+            <select id="b2b-l10n-icu-select" onchange="updateB2BLocalizationTmLqaDubbingEscrowSandbox()">
+              <option value="pass">ICU AST 变量与复数 100% 编译通过 + 像素宽度&lt;=100% 容器 + MQM&gt;=98.5% (合规)</option>
+              <option value="block">漏译 {{price}} 变量引发客户端闪退 或 德语/俄语膨胀 +40% 溢出按钮边界 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 零数据留存 (ZDR) 沙箱与配音演员声纹版权核验 (HTTP 451)
+            <select id="b2b-l10n-zdr-select" onchange="updateB2BLocalizationTmLqaDubbingEscrowSandbox()">
+              <option value="clear">全链路 ZDR 加密沙箱隔离 + 配音演员 SAG-AFTRA 声纹授权完备 (正常)</option>
+              <option value="hold">译员将未发布剧情粘贴至非 ZDR 免费翻译器泄密 或 私自克隆演员声纹 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            术语库锁定 (.tbx) LLM-MTPE 混合路由与 TM 预去重 (HTTP 409)
+            <select id="b2b-l10n-opt-select" onchange="updateB2BLocalizationTmLqaDubbingEscrowSandbox()">
+              <option value="enabled" selected>开启 .tbx 术语库锁定 LLM + 母语轻审 (MTPE) + TM 预去重净省 32% (HTTP 409)</option>
+              <option value="baseline">常规 .tmx 阶梯折扣人工 TEP 与 ICU 编译验收授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度多语种本地化预算池</div>
+            <div class="finops-kpi-val" id="b2b-l10n-gross-kpi">$170,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">TM 去重与 LLM-MTPE 后净支出</div>
+            <div class="finops-kpi-val" id="b2b-l10n-net-kpi" style="color:#6ee7b7;">$115,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除重复计费与降本净额</div>
+            <div class="finops-kpi-val" id="b2b-l10n-savings-kpi" style="color:#38bdf8;">$54,400</div>
+          </div>
+        </div>
+        <div id="b2b-l10n-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 GLOSSARY_LOCKED_LLM_MTPE_HYBRID_AND_TM_DEDUP_CONFIRM · Mandate: b2b_localization_tm_lqa_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -50508,6 +50679,80 @@ function updateSolarEssVppPpaEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 LIDAR_VERIFIED_AND_UTILITY_PTO_MILESTONE_AUTHORIZED · Mandate: solar_ess_vpp_ppa_escrow_mandate_200';
+}}
+
+function updateB2BLocalizationTmLqaDubbingEscrowSandbox() {{
+  const slider = document.getElementById('b2b-l10n-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '170000');
+  const tmMode = document.getElementById('b2b-l10n-tm-select').value;
+  const icuMode = document.getElementById('b2b-l10n-icu-select').value;
+  const zdrMode = document.getElementById('b2b-l10n-zdr-select').value;
+  const optMode = document.getElementById('b2b-l10n-opt-select').value;
+
+  document.getElementById('b2b-l10n-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('b2b-l10n-status-kpi');
+  const grossKpi = document.getElementById('b2b-l10n-gross-kpi');
+  const netKpi = document.getElementById('b2b-l10n-net-kpi');
+  const savingsKpi = document.getElementById('b2b-l10n-savings-kpi');
+  const banner = document.getElementById('b2b-l10n-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (zdrMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_NON_ZDR_PUBLIC_MT_LEAK_OR_UNLICENSED_VOICE_CLONE_HOLD · Mandate: null';
+    return;
+  }}
+  if (tmMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 TM_EXACT_FUZZY_MATCH_FULL_RATE_DOUBLE_BILLING_OR_RAW_MT_FRAUD_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (icuMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 ICU_PLACEHOLDER_SYNTAX_ERROR_OR_PIXEL_WIDTH_OVERFLOW_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.32);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 GLOSSARY_LOCKED_LLM_MTPE_HYBRID_AND_TM_DEDUP_CONFIRM · Mandate: b2b_localization_tm_lqa_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 TM_LEVERAGE_AND_ICU_LQA_AUTHORIZED · Mandate: b2b_localization_tm_lqa_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

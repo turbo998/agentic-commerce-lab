@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg526" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090d18"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="accent526" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg526)"/>
+  <rect x="28" y="24" width="1144" height="627" rx="18" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <rect x="28" y="24" width="1144" height="6" rx="3" fill="url(#accent526)"/>
+
+  <!-- Header -->
+  <text x="56" y="68" fill="#818cf8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">ROUND 83 · SVG 526 · B2B LOCALIZATION (L10N), TRANSLATION MEMORY (TM) &amp; AI DUBBING ESCROW</text>
+  <text x="56" y="100" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="800">L10n &amp; Dubbing Agent: TM Fuzzy-Match Matrix, ICU/Pixel-Width Gate &amp; ZDR Lock</text>
+  <text x="56" y="126" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Phrase / Lokalise / Smartling / TransPerfect — Blocking 100% TM Double-Billing, Raw MT Fraud &amp; Broken {Placeholders}</text>
+  <rect x="960" y="54" width="184" height="36" rx="18" fill="#064e3b" stroke="#10b981" stroke-width="1.2"/>
+  <text x="1052" y="77" fill="#6ee7b7" font-family="Consolas, monospace" font-size="13" font-weight="700" text-anchor="middle">32% L10N TCO SAVED</text>
+
+  <!-- Left Panel: 3 Commercial Traps -->
+  <rect x="52" y="150" width="345" height="475" rx="14" fill="#111827" stroke="#ef4444" stroke-width="1.2"/>
+  <text x="72" y="182" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">1. Enterprise Localization Traps</text>
+
+  <rect x="70" y="200" width="309" height="126" rx="10" fill="#1f2937" stroke="#dc2626" stroke-width="1"/>
+  <text x="84" y="224" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap A: TM Double-Bill &amp; Raw MT Fraud</text>
+  <text x="84" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• LSP bills $0.22/w full rate on 45% 100%/ICE</text>
+  <text x="84" y="266" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  Translation Memory (.tmx) matches &amp; repeats</text>
+  <text x="84" y="286" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Dumps unedited raw MT billed as human TEP</text>
+  <text x="84" y="306" fill="#fca5a5" font-family="Consolas, monospace" font-size="11">Guard: HTTP 403 TM_MATRIX_AND_TER_EDIT_GATE</text>
+
+  <rect x="70" y="340" width="309" height="126" rx="10" fill="#1f2937" stroke="#f97316" stroke-width="1"/>
+  <text x="84" y="364" fill="#fed7aa" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap B: Broken {Variables} &amp; UI Overflow</text>
+  <text x="84" y="386" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Deleted {price} / ICU plural syntax crashes</text>
+  <text x="84" y="406" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  iOS/Android checkout builds in production</text>
+  <text x="84" y="426" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• German +35% string expansion overflows UI box</text>
+  <text x="84" y="446" fill="#fdba74" font-family="Consolas, monospace" font-size="11">Guard: HTTP 422 ICU_AST_AND_PIXEL_BBOX_LOCK</text>
+
+  <rect x="70" y="480" width="309" height="124" rx="10" fill="#1f2937" stroke="#a855f7" stroke-width="1"/>
+  <text x="84" y="504" fill="#e9d5ff" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap C: Public MT Leak &amp; Voice Piracy</text>
+  <text x="84" y="526" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Unreleased product/game script pasted into</text>
+  <text x="84" y="546" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  non-ZDR public MT training corpus</text>
+  <text x="84" y="566" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Unlicensed AI voice clone (no SAG-AFTRA token)</text>
+  <text x="84" y="586" fill="#d8b4fe" font-family="Consolas, monospace" font-size="11">Guard: HTTP 451 WEBIQ_ZDR_AND_VOICE_IP_HOLD</text>
+
+  <!-- Center Panel: Deterministic Control Plane -->
+  <rect x="419" y="150" width="362" height="475" rx="14" fill="#111827" stroke="#818cf8" stroke-width="1.4"/>
+  <text x="439" y="182" fill="#a5b4fc" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">2. Deterministic L10n &amp; LQA Escrow Engine</text>
+
+  <rect x="439" y="202" width="322" height="82" rx="10" fill="#0f172a" stroke="#818cf8" stroke-width="1"/>
+  <text x="455" y="226" fill="#a5b4fc" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 1 · .TMX LEVERAGE MATRIX AUDITOR</text>
+  <text x="455" y="248" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">101% ICE/Repeats = $0 · 100% Match &lt;= 20% rate</text>
+  <text x="455" y="268" fill="#6ee7b7" font-family="Consolas, monospace" font-size="12">75-94% Fuzzy &lt;= 50% rate + TER Post-Edit check</text>
+
+  <rect x="439" y="298" width="322" height="86" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="455" y="322" fill="#38bdf8" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 2 · ICU AST &amp; PIXEL BOUNDING-BOX GATE</text>
+  <text x="455" y="344" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Compiles ICU plural/variable ASTs &amp; measures</text>
+  <text x="455" y="364" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Figma/iOS rendered pixel width (&lt;=100% box)</text>
+
+  <rect x="439" y="398" width="322" height="90" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+  <text x="455" y="422" fill="#6ee7b7" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 3 · MQM &gt;= 98.5% &amp; ZDR SANDBOX LOCK</text>
+  <text x="455" y="444" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Verifies Multidimensional Quality Metrics (MQM)</text>
+  <text x="455" y="464" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">&amp; Zero-Data-Retention (ZDR) API enclave logs</text>
+
+  <rect x="439" y="502" width="322" height="102" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="455" y="526" fill="#fcd34d" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 4 · GLOSSARY LLM MTPE + TM DEDUP (409)</text>
+  <text x="455" y="548" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Routes catalog/UI strings to Termbase-Locked</text>
+  <text x="455" y="568" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">LLM + Human Post-Edit (MTPE) + TM pre-dedup</text>
+  <text x="455" y="588" fill="#fde68a" font-family="Consolas, monospace" font-size="12">Quarterly Savings: $54,400 / $170,000 (32.0%)</text>
+
+  <!-- Right Panel: 5-Lane HTTP Verdicts & Platform Matrix -->
+  <rect x="803" y="150" width="345" height="475" rx="14" fill="#111827" stroke="#10b981" stroke-width="1.2"/>
+  <text x="823" y="182" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">3. 5-Lane Verdicts &amp; Platform Matrix</text>
+
+  <rect x="821" y="200" width="309" height="46" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+  <text x="835" y="220" fill="#a7f3d0" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 200 · TM_LEVERAGE_AND_LQA_AUTHORIZED</text>
+  <text x="835" y="237" fill="#d1fae5" font-family="Segoe UI, Arial, sans-serif" font-size="11">Mandate: b2b_localization_tm_lqa_escrow_mandate_200</text>
+
+  <rect x="821" y="254" width="309" height="46" rx="8" fill="#450a0a" stroke="#ef4444" stroke-width="1"/>
+  <text x="835" y="274" fill="#fecaca" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 403 · TM_DOUBLE_BILL_OR_RAW_MT_BLOCKED</text>
+  <text x="835" y="291" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11">Blocks 100% TM full-rate billing &amp; unedited MT</text>
+
+  <rect x="821" y="308" width="309" height="46" rx="8" fill="#431407" stroke="#f97316" stroke-width="1"/>
+  <text x="835" y="328" fill="#fed7aa" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 422 · PLACEHOLDER_OR_OVERFLOW_BLOCKED</text>
+  <text x="835" y="345" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="11">Blocks broken {tags} &amp; UI pixel-box overflow</text>
+
+  <rect x="821" y="362" width="309" height="46" rx="8" fill="#3b0764" stroke="#a855f7" stroke-width="1"/>
+  <text x="835" y="382" fill="#e9d5ff" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 451 · WEBIQ_NON_ZDR_LEAK_OR_VOICE_HOLD</text>
+  <text x="835" y="399" fill="#d8b4fe" font-family="Segoe UI, Arial, sans-serif" font-size="11">Holds escrow on public MT leak or voice piracy</text>
+
+  <rect x="821" y="416" width="309" height="50" rx="8" fill="#451a03" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="835" y="436" fill="#fde68a" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 409 · GLOSSARY_LLM_MTPE_AND_TM_DEDUP</text>
+  <text x="835" y="455" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="11">Termbase-locked LLM MTPE + TM dedup (-32% TCO)</text>
+
+  <!-- Platform Summary -->
+  <rect x="821" y="478" width="309" height="126" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="835" y="500" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">Platform Selection Matrix:</text>
+  <text x="835" y="520" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Phrase TMS / Smartling: Enterprise TM &amp; Visual Context</text>
+  <text x="835" y="538" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Lokalise / Crowdin: Git PR sync &amp; Figma pixel-box check</text>
+  <text x="835" y="556" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• TransPerfect / RWS Trados: ISO 17100 regulated L10n</text>
+  <text x="835" y="574" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• ElevenLabs Enterprise: Licensed SAG-AFTRA dubbing</text>
+  <text x="835" y="592" fill="#6ee7b7" font-family="Consolas, monospace" font-size="11">Provenance: synthetic · reproduced=False</text>
+</svg>

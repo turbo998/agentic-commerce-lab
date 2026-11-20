@@ -14619,6 +14619,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("solar-ess-vpp-ppa-escrow-sandbox", html_zh)
 
+    def test_b2b_localization_tm_lqa_dubbing_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BLocalizationTmLqaDubbingEscrowPolicyInput,
+            evaluate_b2b_localization_tm_lqa_dubbing_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_localization_tm_lqa_dubbing_escrow_policy(
+            B2BLocalizationTmLqaDubbingEscrowPolicyInput(
+                quarterly_b2b_localization_and_dubbing_pool_usd=170000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "TM_LEVERAGE_AND_ICU_LQA_AUTHORIZED",
+        )
+
+        tm = evaluate_b2b_localization_tm_lqa_dubbing_escrow_policy(
+            B2BLocalizationTmLqaDubbingEscrowPolicyInput(
+                tm_exact_fuzzy_match_full_rate_double_billing_or_raw_mt_fraud=True
+            )
+        )
+        self.assertEqual(tm["status_code"], 403)
+        self.assertEqual(
+            tm["decision"],
+            "TM_EXACT_FUZZY_MATCH_FULL_RATE_DOUBLE_BILLING_OR_RAW_MT_FRAUD_BLOCKED",
+        )
+
+        icu = evaluate_b2b_localization_tm_lqa_dubbing_escrow_policy(
+            B2BLocalizationTmLqaDubbingEscrowPolicyInput(
+                icu_placeholder_syntax_error_or_pixel_width_overflow=True
+            )
+        )
+        self.assertEqual(icu["status_code"], 422)
+        self.assertEqual(
+            icu["decision"],
+            "ICU_PLACEHOLDER_SYNTAX_ERROR_OR_PIXEL_WIDTH_OVERFLOW_BLOCKED",
+        )
+
+        zdr = evaluate_b2b_localization_tm_lqa_dubbing_escrow_policy(
+            B2BLocalizationTmLqaDubbingEscrowPolicyInput(
+                webiq_non_zdr_public_mt_leak_or_unlicensed_voice_clone_flag=True
+            )
+        )
+        self.assertEqual(zdr["status_code"], 451)
+        self.assertEqual(
+            zdr["decision"],
+            "WEBIQ_NON_ZDR_PUBLIC_MT_LEAK_OR_UNLICENSED_VOICE_CLONE_HOLD",
+        )
+
+        optim = evaluate_b2b_localization_tm_lqa_dubbing_escrow_policy(
+            B2BLocalizationTmLqaDubbingEscrowPolicyInput(
+                quarterly_b2b_localization_and_dubbing_pool_usd=170000.0,
+                glossary_locked_llm_mtpe_hybrid_and_tm_dedup_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 54400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 115600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_localization_tm_lqa_dubbing_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-localization-tm-lqa-dubbing-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`201` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`202` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（38 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（61 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（43 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（44 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（29 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -151,7 +151,7 @@
 | 61 | **户用/工商业屋顶光伏（Solar）、储能电池（ESS）、虚拟电厂（VPP）与 25 年购电协议（PPA）托管（Solar, Battery Storage, VPP & PPA Escalator Escrow：Sunrun / Enphase / Tesla Energy / Aurora Solar / 天合富家）“防 2.9% 复利涨价 PPA 与卖房留置权锁死、防 28% 金融经销商暗费及未获并网许可（PTO）骗尾款”Agent 架构选型 FAQ** | [中文](solar-ess-vpp-ppa-escalator-pto-escrow-agent-selection-faq.md) · [English](solar-ess-vpp-ppa-escalator-pto-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（43 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（44 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -200,6 +200,7 @@
 | 41 | **B2B 服装买手订货会、品牌批发选品与 Net-60 首单免费退货托管（B2B Wholesale Fashion Showroom, Boutique Buying & Net-60 Return Escrow：Faire / JOOR / NuORDER / 1688 严选 / 深圳南油订货会）“防档口抽走 M/L 黄金码只发断码尾货、防换季晚交货沦为死库存与防品牌直播间 3 折倾销背刺买手店”Agent 架构选型 FAQ** | [中文](b2b-wholesale-fashion-showroom-faire-joor-size-curve-escrow-agent-selection-faq.md) · [English](b2b-wholesale-fashion-showroom-faire-joor-size-curve-escrow-agent-selection-faq.en.md) |
 | 42 | **餐饮零售 POS 收银系统采购、刷卡收单费率（MDR）防暗涨与商户流水贷（MCA）清结算（Restaurant & Retail POS SaaS, Interchange-Plus Acquiring & Merchant Cash Advance Escrow：Toast / Square / Clover / Adyen Terminal / 美团收银）“防 48 个月不可撤销天价收银机租约、防收单代理商半年后偷偷上调刷卡费率与防多头流水贷抽干现金流”Agent 架构选型 FAQ** | [中文](restaurant-pos-acquiring-interchange-plus-mca-escrow-agent-selection-faq.md) · [English](restaurant-pos-acquiring-interchange-plus-mca-escrow-agent-selection-faq.en.md) |
 | 43 | **企业写字楼物业保洁、商场商业清洁与卫浴耗材采购（B2B Commercial Janitorial, Facility Hygiene SLA & Washroom Consumable Escrow：ABM / ISS World / OpenWorks / Tork Essity / 万物梁行）“防夜班保洁买通门卫代打卡吃空饷、防虚报更换 600 箱擦手纸倒卖耗材与混合办公按人流动态保洁”Agent 架构选型 FAQ** | [中文](b2b-commercial-janitorial-facility-hygiene-consumable-escrow-agent-selection-faq.md) · [English](b2b-commercial-janitorial-facility-hygiene-consumable-escrow-agent-selection-faq.en.md) |
+| 44 | **企业级多语种本地化（L10n）、翻译记忆库（TM）模糊匹配计费与出海游戏/短剧 AI 配音托管（B2B Localization, Translation Memory Fuzzy-Match & AI Dubbing Escrow：Phrase / Lokalise / Smartling / TransPerfect / RWS Trados）“防 TM 100% 重复句全价重收、防机翻生肉冒充人工精校与 `{占位符}` 损坏闪退”Agent 架构选型 FAQ** | [中文](b2b-localization-translation-memory-lqa-dubbing-escrow-agent-selection-faq.md) · [English](b2b-localization-translation-memory-lqa-dubbing-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）
