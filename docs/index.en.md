@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`225` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`226` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (38 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (73 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (55 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (56 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -163,7 +163,7 @@
 | 73 | **Musical Instrument Rent-to-Own, School-Band Spec & Piano Moving/Humidity Escrow (`Music & Arts / Sweetwater / Steinway / Yamaha / Parsons Music`) `100%` Street-MAP Equity, `MENC` Luthier Setup & `RPT` Pinblock/Humidity Agent Architecture Selection FAQ** | [English](musical-instrument-rent-to-own-piano-humidity-escrow-agent-selection-faq.en.md) · [中文](musical-instrument-rent-to-own-piano-humidity-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (55 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (56 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -224,6 +224,7 @@
 | 53 | **Specialty Coffee Green-Bean Sourcing, `CQI Q-Grader` Cupping & Water-Activity (`a_w`) / `EUDR` Escrow (`Algrano / Cropster Hub / Sustainable Harvest / Yunnan Coffee Exchange`) `PSS` Cupping Parity, `<=0.60 a_w` `GrainPro` & `EUDR` Polygon Agent Architecture Selection FAQ** | [English](specialty-coffee-green-bean-qgrader-moisture-eudr-escrow-agent-selection-faq.en.md) · [中文](specialty-coffee-green-bean-qgrader-moisture-eudr-escrow-agent-selection-faq.md) |
 | 54 | **B2B Document Shredding, `NAID AAA` & `NIST 800-88` `SSD / ITAD` Escrow (`Iron Mountain / Shred-it / Sims Lifecycle / Blancco`) On-Site `DIN P-4` Truck, `<=2mm SSD` Serial Lock & Bin Sensor Agent Architecture Selection FAQ** | [English](b2b-document-shredding-naid-nist80088-itad-escrow-agent-selection-faq.en.md) · [中文](b2b-document-shredding-naid-nist80088-itad-escrow-agent-selection-faq.md) |
 | 55 | **B2B Office Coffee Service (`OCS`), Water-Cooler Lock-In & Micro-Market Pantry Escrow (`Aramark / Canteen / Culligan Quench / Bevi / Luckin Enterprise`) Anti-`DRM`-Pod Gate, Filter `NFC + TDS` Audit & Open-Bean Conversion Agent Architecture Selection FAQ** | [English](b2b-office-coffee-service-water-filtration-micromarket-escrow-agent-selection-faq.en.md) · [中文](b2b-office-coffee-service-water-filtration-micromarket-escrow-agent-selection-faq.md) |
+| 56 | **B2B Office Plant Lease, Biophilic Living Wall & Zero-Dead-Plant Replacement Escrow (`Ambius / Planterra / Rentokil Initial / ForestBox`) `100%` Free 5-Day Swap, Planter `NFC + Lux` Audit & `CapEx` Sub-Irrigation Agent Architecture Selection FAQ** | [English](b2b-office-plant-lease-biophilic-wall-replacement-escrow-agent-selection-faq.en.md) · [中文](b2b-office-plant-lease-biophilic-wall-replacement-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 Guides)

@@ -16227,6 +16227,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("musical-instrument-piano-escrow-sandbox", html_zh)
 
+    def test_b2b_office_plant_biophilic_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BOfficePlantBiophilicEscrowPolicyInput,
+            evaluate_b2b_office_plant_biophilic_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_office_plant_biophilic_escrow_policy(
+            B2BOfficePlantBiophilicEscrowPolicyInput(
+                quarterly_b2b_office_plant_and_living_wall_pool_usd=38000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "BIOPHILIC_LUX_MATCHED_AND_FREE_SWAP_AUTHORIZED",
+        )
+
+        swap = evaluate_b2b_office_plant_biophilic_escrow_policy(
+            B2BOfficePlantBiophilicEscrowPolicyInput(
+                dead_plant_replacement_surcharge_or_36m_evergreen_lease=True
+            )
+        )
+        self.assertEqual(swap["status_code"], 403)
+        self.assertEqual(
+            swap["decision"],
+            "DEAD_PLANT_REPLACEMENT_SURCHARGE_OR_36M_EVERGREEN_LEASE_BLOCKED",
+        )
+
+        nfc = evaluate_b2b_office_plant_biophilic_escrow_policy(
+            B2BOfficePlantBiophilicEscrowPolicyInput(
+                unscanned_planter_nfc_or_wilted_foliage_gnat_outbreak=True
+            )
+        )
+        self.assertEqual(nfc["status_code"], 422)
+        self.assertEqual(
+            nfc["decision"],
+            "UNSCANNED_PLANTER_NFC_OR_WILTED_FOLIAGE_GNAT_OUTBREAK_BLOCKED",
+        )
+
+        fire = evaluate_b2b_office_plant_biophilic_escrow_policy(
+            B2BOfficePlantBiophilicEscrowPolicyInput(
+                webiq_non_flame_retardant_moss_wall_or_irrigation_flood_hazard_flag=True
+            )
+        )
+        self.assertEqual(fire["status_code"], 451)
+        self.assertEqual(
+            fire["decision"],
+            "WEBIQ_NON_FLAME_RETARDANT_MOSS_WALL_OR_IRRIGATION_FLOOD_HAZARD_HOLD",
+        )
+
+        optim = evaluate_b2b_office_plant_biophilic_escrow_policy(
+            B2BOfficePlantBiophilicEscrowPolicyInput(
+                quarterly_b2b_office_plant_and_living_wall_pool_usd=38000.0,
+                capex_subirrigation_planter_and_biweekly_maintenance_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 13680.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 24320.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_office_plant_biophilic_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-office-plant-biophilic-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

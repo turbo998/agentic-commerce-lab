@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`225` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`226` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（38 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（73 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（55 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（56 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（29 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -163,7 +163,7 @@
 | 73 | **乐器先租后买（Rent-to-Own）、学校管弦乐团指定型号防坑与钢琴恒温搬运/音板湿度托管（Musical Instrument Rent-to-Own, School-Band Spec & Piano Humidity Escrow：Music & Arts / Sweetwater / Steinway / Yamaha / 柏斯琴行）“防 $119 劣质不可调音玩具小提琴（VSO）被乐团老师退回、防换大尺寸提琴清零历史租金本金及搬琴到楼下按台阶每步坐地起价 $25”Agent 架构选型 FAQ** | [中文](musical-instrument-rent-to-own-piano-humidity-escrow-agent-selection-faq.md) · [English](musical-instrument-rent-to-own-piano-humidity-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（55 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（56 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -224,6 +224,7 @@
 | 53 | **精品咖啡生豆（Specialty Green Coffee）寻源、`SCA` 杯测评分对赌与水活度（`a_w`）/欧盟零毁林（`EUDR`）托管（Algrano / Cropster Hub / Sustainable Harvest / 云南咖啡交易中心）“防寄来 86.5 分样豆大货到港掺陈年木味豆跌至 80 分、防含水率 >12.5% 卖水发霉与克扣咖农溢价”Agent 架构选型 FAQ** | [中文](specialty-coffee-green-bean-qgrader-moisture-eudr-escrow-agent-selection-faq.md) · [English](specialty-coffee-green-bean-qgrader-moisture-eudr-escrow-agent-selection-faq.en.md) |
 | 54 | **企业涉密文件粉碎（Document Shredding）、固态硬盘（SSD）`NIST 800-88` 颗粒级销毁与 `NAID AAA` 托管（B2B Document Shredding, NAID AAA & NIST 800-88 ITAD Escrow：Iron Mountain 铁山 / Shred-it / Sims Lifecycle / 京东企服）“防空箱上门照收 $125 起步费与 28% 燃油杂费、防拿 30mm 机械硬盘冲孔机处理 SSD 导致芯片完好泄密”Agent 架构选型 FAQ** | [中文](b2b-document-shredding-naid-nist80088-itad-escrow-agent-selection-faq.md) · [English](b2b-document-shredding-naid-nist80088-itad-escrow-agent-selection-faq.en.md) |
 | 55 | **企业办公咖啡茶饮机租赁（OCS）、直饮水机耗材防锁死与茶水间无人货柜补货托管（B2B Office Coffee Service, Water-Cooler Lock-In & Micro-Market Escrow：Aramark / Canteen / Culligan Quench / Bevi / 瑞幸企业团餐）“防‘免机器月租’暗绑 $1.45/颗加密胶囊与 60 个月水机长租、防只按 Reset 键不换 RO 膜及开放式微超 18% 盗损转嫁”Agent 架构选型 FAQ** | [中文](b2b-office-coffee-service-water-filtration-micromarket-escrow-agent-selection-faq.md) · [English](b2b-office-coffee-service-water-filtration-micromarket-escrow-agent-selection-faq.en.md) |
+| 56 | **企业室内绿植租摆（B2B Office Plant Lease）、生态绿植墙（Biophilic Living Wall）与枯死秒换托管（Ambius / Planterra / Rentokil Initial / 森林盒子）“防枯死植物拖 3 周不换还甩锅‘办公室空调太冷’强收 $185 补苗费、防花盆 36 个月长租暴利及表土积水招惹满屋小黑飞（蕈蚊）”Agent 架构选型 FAQ** | [中文](b2b-office-plant-lease-biophilic-wall-replacement-escrow-agent-selection-faq.md) · [English](b2b-office-plant-lease-biophilic-wall-replacement-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）

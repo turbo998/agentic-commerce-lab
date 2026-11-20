@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg550" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="50%" stop-color="#0f2926"/>
+      <stop offset="100%" stop-color="#091326"/>
+    </linearGradient>
+    <linearGradient id="accent550" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg550)"/>
+  <rect x="28" y="24" width="1144" height="627" rx="18" fill="none" stroke="url(#accent550)" stroke-width="2" opacity="0.5"/>
+  <text x="54" y="66" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">ROUND 107 · B2B WORKPLACE BIOPHILIC &amp; INTERIOR LANDSCAPING · SVG 550</text>
+  <text x="54" y="100" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">B2B Office Plant Lease, Living Green Wall &amp; Dead-Plant SLA Escrow</text>
+  <text x="54" y="128" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Ambius / Planterra / Rentokil Initial · 100% Free Replacement Guarantee (HTTP 403) · Pot NFC + PAR Lux &amp; Moisture Gate (HTTP 422)</text>
+
+  <!-- Lane 1: Contract & Free Replacement Guarantee -->
+  <rect x="54" y="152" width="345" height="465" rx="14" fill="#111827" stroke="#ef4444" stroke-width="1.6"/>
+  <rect x="54" y="152" width="345" height="42" rx="14" fill="#7f1d1d"/>
+  <text x="72" y="179" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">1. Zero-Replacement-Fee Lock (HTTP 403)</text>
+  <text x="72" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Unconditional Free Plant Replacement</text>
+  <text x="72" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Blocks vendors blaming 'office HVAC draft</text>
+  <text x="72" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  or low light' to bill $185/pot dead-plant</text>
+  <text x="72" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  replacement fees under full-service leases</text>
+  <rect x="72" y="298" width="309" height="82" rx="9" fill="#1e293b" stroke="#f87171" stroke-width="1"/>
+  <text x="86" y="321" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">36m Evergreen &amp; Holiday Storage Veto</text>
+  <text x="86" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Caps lease at &lt;=12m; blocks hidden</text>
+  <text x="86" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  off-season holiday decor storage lock-ins</text>
+  <text x="72" y="408" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">5-Business-Day Wilted Swap SLA</text>
+  <text x="72" y="430" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Any plant with &gt;15% yellowing/brown</text>
+  <text x="72" y="450" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  foliage must be swapped free within 5</text>
+  <text x="72" y="470" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  business days or monthly rent auto-credits</text>
+  <rect x="72" y="502" width="309" height="92" rx="9" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="86" y="526" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 403 Deterministic Verdict</text>
+  <text x="86" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">DEAD_PLANT_REPLACEMENT_SURCHARGE_OR</text>
+  <text x="86" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_36M_EVERGREEN_LEASE_BLOCKED</text>
+
+  <!-- Lane 2: Planter NFC & Lux/Moisture Telemetry -->
+  <rect x="426" y="152" width="348" height="465" rx="14" fill="#111827" stroke="#f59e0b" stroke-width="1.6"/>
+  <rect x="426" y="152" width="348" height="42" rx="14" fill="#78350f"/>
+  <text x="444" y="179" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">2. Pot NFC &amp; Foliage CV (HTTP 422)</text>
+  <text x="444" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Planter NFC Tag &amp; Soil Moisture Audit</text>
+  <text x="444" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Requires technician to tap hidden pot-rim</text>
+  <text x="444" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  NFC tags (&gt;=95% pots visited) + verify</text>
+  <text x="444" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  VWC soil moisture (20%–45%, zero root rot)</text>
+  <rect x="444" y="298" width="312" height="82" rx="9" fill="#1e293b" stroke="#fbbf24" stroke-width="1"/>
+  <text x="458" y="321" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">Pre-Install PAR Light Lux Matching</text>
+  <text x="458" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Blocks placing high-light Ficus in &lt;400</text>
+  <text x="458" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  lux interior zones (matches Aglaonema/ZZ)</text>
+  <text x="444" y="408" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Sub-Irrigation Preventative Gnat Control</text>
+  <text x="444" y="430" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Mandates LECA/hydro-culture top-dressing</text>
+  <text x="444" y="450" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  &amp; Bti biological drench to eliminate</text>
+  <text x="444" y="470" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  desk-area fungus gnat infestations</text>
+  <rect x="444" y="502" width="312" height="92" rx="9" fill="#0f172a" stroke="#f59e0b" stroke-width="1"/>
+  <text x="458" y="526" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 422 Deterministic Verdict</text>
+  <text x="458" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">UNSCANNED_PLANTER_NFC_OR_WILTED</text>
+  <text x="458" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_FOLIAGE_GNAT_OUTBREAK_BLOCKED</text>
+
+  <!-- Lane 3: NFPA 701 Fire & CapEx Planter FinOps -->
+  <rect x="801" y="152" width="345" height="465" rx="14" fill="#111827" stroke="#10b981" stroke-width="1.6"/>
+  <rect x="801" y="152" width="345" height="42" rx="14" fill="#064e3b"/>
+  <text x="819" y="179" fill="#a7f3d0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">3. NFPA-701 &amp; FinOps (451/409)</text>
+  <text x="819" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Web IQ NFPA 701 &amp; Drip-Pan Flood Gate (451)</text>
+  <text x="819" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Blocks non-flame-retardant preserved moss</text>
+  <text x="819" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  walls (NFPA 701 / ASTM E84) or unvalved</text>
+  <text x="819" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  living-wall irrigation over raised floors</text>
+  <rect x="819" y="298" width="309" height="96" rx="9" fill="#1e293b" stroke="#34d399" stroke-width="1"/>
+  <text x="833" y="321" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">FinOps CapEx Hardware + Bi-Weekly (409)</text>
+  <text x="833" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Buys decorative planters + Mona sub-</text>
+  <text x="833" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  irrigation tanks outright (cuts 14-day</text>
+  <text x="833" y="381" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  service labor by 45%): -36% Net Spend</text>
+  <text x="819" y="420" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Preserved Moss Wall in Dark Zones</text>
+  <text x="819" y="442" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Swaps high-mortality dark-corridor live</text>
+  <text x="819" y="462" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  walls to zero-water ASTM E84 Nordgröna moss</text>
+  <rect x="819" y="502" width="309" height="92" rx="9" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+  <text x="833" y="526" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 409 / 451 Deterministic Verdict</text>
+  <text x="833" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">CAPEX_SUBIRRIGATION_PLANTER_AND</text>
+  <text x="833" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_BIWEEKLY_MAINTENANCE_CONFIRM (-36%)</text>
+</svg>

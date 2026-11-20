@@ -23099,6 +23099,87 @@ def evaluate_musical_instrument_piano_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BOfficePlantBiophilicEscrowPolicyInput:
+    """Input contract for B2B Office Plant Lease, Living Wall & Dead-Plant Replacement Escrow."""
+
+    quarterly_b2b_office_plant_and_living_wall_pool_usd: float = 38000.0
+    dead_plant_replacement_surcharge_or_36m_evergreen_lease: bool = False
+    unscanned_planter_nfc_or_wilted_foliage_gnat_outbreak: bool = False
+    webiq_non_flame_retardant_moss_wall_or_irrigation_flood_hazard_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    capex_subirrigation_planter_and_biweekly_maintenance_ready: bool = False
+
+
+def evaluate_b2b_office_plant_biophilic_escrow_policy(
+    policy_input: B2BOfficePlantBiophilicEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Office Plant Lease, Living Wall & Dead-Plant Replacement Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_office_plant_and_living_wall_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_non_flame_retardant_moss_wall_or_irrigation_flood_hazard_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_NON_FLAME_RETARDANT_MOSS_WALL_OR_IRRIGATION_FLOOD_HAZARD_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dead_plant_replacement_surcharge_or_36m_evergreen_lease:
+        return {
+            "status_code": 403,
+            "decision": "DEAD_PLANT_REPLACEMENT_SURCHARGE_OR_36M_EVERGREEN_LEASE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unscanned_planter_nfc_or_wilted_foliage_gnat_outbreak:
+        return {
+            "status_code": 422,
+            "decision": "UNSCANNED_PLANTER_NFC_OR_WILTED_FOLIAGE_GNAT_OUTBREAK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.capex_subirrigation_planter_and_biweekly_maintenance_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CAPEX_SUBIRRIGATION_PLANTER_AND_BIWEEKLY_MAINTENANCE_CONFIRM",
+            "mandate_token": "b2b_office_plant_biophilic_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "BIOPHILIC_LUX_MATCHED_AND_FREE_SWAP_AUTHORIZED",
+        "mandate_token": "b2b_office_plant_biophilic_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -31800,6 +31881,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_office_plant_biophilic_escrow_guard = {
+        "authorized_200": evaluate_b2b_office_plant_biophilic_escrow_policy(
+            B2BOfficePlantBiophilicEscrowPolicyInput()
+        ),
+        "dead_plant_surcharge_or_36m_lease_403": evaluate_b2b_office_plant_biophilic_escrow_policy(
+            B2BOfficePlantBiophilicEscrowPolicyInput(
+                dead_plant_replacement_surcharge_or_36m_evergreen_lease=True
+            )
+        ),
+        "unscanned_nfc_or_gnat_outbreak_422": evaluate_b2b_office_plant_biophilic_escrow_policy(
+            B2BOfficePlantBiophilicEscrowPolicyInput(
+                unscanned_planter_nfc_or_wilted_foliage_gnat_outbreak=True
+            )
+        ),
+        "non_flame_moss_or_flood_hazard_451": evaluate_b2b_office_plant_biophilic_escrow_policy(
+            B2BOfficePlantBiophilicEscrowPolicyInput(
+                webiq_non_flame_retardant_moss_wall_or_irrigation_flood_hazard_flag=True
+            )
+        ),
+        "capex_subirrigation_and_biweekly_409": evaluate_b2b_office_plant_biophilic_escrow_policy(
+            B2BOfficePlantBiophilicEscrowPolicyInput(
+                capex_subirrigation_planter_and_biweekly_maintenance_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -32035,6 +32142,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pet_insurance_vet_directpay_escrow_guard": pet_insurance_vet_directpay_escrow_guard,
         "b2b_office_coffee_pantry_escrow_guard": b2b_office_coffee_pantry_escrow_guard,
         "musical_instrument_piano_escrow_guard": musical_instrument_piano_escrow_guard,
+        "b2b_office_plant_biophilic_escrow_guard": b2b_office_plant_biophilic_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -43099,6 +43207,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="music-piano-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 EARLY_BUYOUT_DISCOUNT_AND_CERTIFIED_JUPA_REFURB_CONFIRM · Mandate: musical_instrument_piano_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 107 B2B Office Plant Lease, Living Wall & Dead-Plant Replacement Escrow -->
+      <div class="finops-box" id="b2b-office-plant-biophilic-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🪴 企业室内绿植租摆 (B2B Office Plant Lease)、生态绿植墙 (Biophilic Living Wall) 与枯死秒换托管 (Ambius / Planterra / Rentokil Initial / 森林盒子) 巡检与解绑沙盒 (Round 107)</div>
+            <div class="finops-subtitle">实测 100% 无条件免费换死株(&lt;=5 工作日)+&lt;=12m 短约防供应商甩锅“办公室空调太冷”强收 $185 补苗费 (HTTP 403)、花盆内壁 NFC 巡检打卡(&gt;=95%)+暗区(&lt;400 Lux) 耐阴选品+底部自吸水陶粒封层防小黑飞蕈蚊 (HTTP 422)、Web IQ 永生苔藓 ASTM E84 阻燃与活体墙漏水关断电磁阀核验 (HTTP 451) 及一次性买断花器+Mona 自吸水内胆转双周养护净省 36% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="plant-lease-status-kpi">HTTP 409 · CAPEX_SUBIRRIGATION_PLANTER_AND_BIWEEKLY_MAINTENANCE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业多职场室内绿植租摆与生态墙预算池 ($ USD)
+            <input type="range" id="plant-lease-pool-slider" min="5000" max="200000" step="2000" value="38000" oninput="updateB2BOfficePlantBiophilicEscrowSandbox()" />
+            <span id="plant-lease-pool-val" style="color:#6ee7b7; font-family:monospace;">$38,000</span>
+          </label>
+          <label>
+            100% 免费换死株担保、租期与节庆美陈仓储费审计 (HTTP 403)
+            <select id="plant-lease-swap-select" onchange="updateB2BOfficePlantBiophilicEscrowSandbox()">
+              <option value="pass">100% 免费换新(&lt;=5 工作日 SLA) + &lt;=12m 灵活租期 + 节庆圣诞树/年宵花含撤场一口价 (放行)</option>
+              <option value="block">以周末关空调/光照差为由加收 $185/盆死株补苗费 或 36m 自动续签长租/捆绑节庆异地仓储费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            花盆内壁 NFC 巡检打卡(&gt;=95%)、照度选品与零小黑飞门禁 (HTTP 422)
+            <select id="plant-lease-nfc-select" onchange="updateB2BOfficePlantBiophilicEscrowSandbox()">
+              <option value="pass">逐盆 NFC 打卡率&gt;=95% + &lt;400 Lux 暗区配耐阴品种 + 底部供水陶粒封层零小黑飞蕈蚊 (合规)</option>
+              <option value="block">养护工只签前台名漏浇 30% 内区花盆/暗室乱放琴叶榕黄叶 或 表土积水爆发满屋小黑飞 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ ASTM E84 / NFPA 701 消防阻燃与活体墙防漏电磁阀核验 (HTTP 451)
+            <select id="plant-lease-fire-select" onchange="updateB2BOfficePlantBiophilicEscrowSandbox()">
+              <option value="clear">永生苔藓具备 ASTM E84 Class-A 阻燃认证 + 活体滴灌墙标配漏水自动关断电磁阀 (正常)</option>
+              <option value="hold">苔藓/仿真墙无消防阻燃证被物业勒令拆除 或 活体墙缺断水阀漏水泡坏架空地板机房 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            一次性买断花器 (CapEx Planter) + Mona 自吸水内胆与双周养护解绑 (HTTP 409)
+            <select id="plant-lease-opt-select" onchange="updateB2BOfficePlantBiophilicEscrowSandbox()">
+              <option value="enabled" selected>一次性买断高颜花器 + Mona 毛细管自吸水内胆切换为 14 天双周精养合同净省 36% (HTTP 409)</option>
+              <option value="baseline">常规照度匹配与 100% 免费换死株标准租摆授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业绿植租摆总池</div>
+            <div class="finops-kpi-val" id="plant-lease-gross-kpi">$38,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">买断花器与自吸水双周养护净支出</div>
+            <div class="finops-kpi-val" id="plant-lease-net-kpi" style="color:#6ee7b7;">$24,320</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除花盆长租溢价与冗余工时</div>
+            <div class="finops-kpi-val" id="plant-lease-savings-kpi" style="color:#38bdf8;">$13,680</div>
+          </div>
+        </div>
+        <div id="plant-lease-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CAPEX_SUBIRRIGATION_PLANTER_AND_BIWEEKLY_MAINTENANCE_CONFIRM · Mandate: b2b_office_plant_biophilic_mandate_optim_409
         </div>
       </div>
 
@@ -56388,6 +56559,80 @@ function updateMusicalInstrumentPianoEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 LUTHIER_SETUP_AND_FULL_EQUITY_RENTAL_AUTHORIZED · Mandate: musical_instrument_piano_mandate_200';
+}}
+
+function updateB2BOfficePlantBiophilicEscrowSandbox() {{
+  const slider = document.getElementById('plant-lease-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '38000');
+  const swapMode = document.getElementById('plant-lease-swap-select').value;
+  const nfcMode = document.getElementById('plant-lease-nfc-select').value;
+  const fireMode = document.getElementById('plant-lease-fire-select').value;
+  const optMode = document.getElementById('plant-lease-opt-select').value;
+
+  document.getElementById('plant-lease-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('plant-lease-status-kpi');
+  const grossKpi = document.getElementById('plant-lease-gross-kpi');
+  const netKpi = document.getElementById('plant-lease-net-kpi');
+  const savingsKpi = document.getElementById('plant-lease-savings-kpi');
+  const banner = document.getElementById('plant-lease-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fireMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_NON_FLAME_RETARDANT_MOSS_WALL_OR_IRRIGATION_FLOOD_HAZARD_HOLD · Mandate: null';
+    return;
+  }}
+  if (swapMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DEAD_PLANT_REPLACEMENT_SURCHARGE_OR_36M_EVERGREEN_LEASE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (nfcMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNSCANNED_PLANTER_NFC_OR_WILTED_FOLIAGE_GNAT_OUTBREAK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CAPEX_SUBIRRIGATION_PLANTER_AND_BIWEEKLY_MAINTENANCE_CONFIRM · Mandate: b2b_office_plant_biophilic_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 BIOPHILIC_LUX_MATCHED_AND_FREE_SWAP_AUTHORIZED · Mandate: b2b_office_plant_biophilic_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
