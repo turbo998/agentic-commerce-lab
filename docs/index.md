@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`214` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`215` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（38 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（68 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（49 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（50 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（29 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -158,7 +158,7 @@
 | 68 | **名庄期酒（En Primeur）、保税酒窖确权（Bonded Cellar）与液面高度/原装木箱（OWC）防伪托管（Fine Wine En Primeur, Bonded Cellar & Ullage Provenance Escrow：Liv-ex / Berry Bros. & Rudd / Octavian / Sotheby's Wine）“防酒商挪用期酒资金不落个人独立保税户、防散瓶冒充原木箱（OWC）与海运高温顶塞变质酒”Agent 架构选型 FAQ** | [中文](fine-wine-en-primeur-bonded-cellar-livex-ullage-escrow-agent-selection-faq.md) · [English](fine-wine-en-primeur-bonded-cellar-livex-ullage-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（49 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（50 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -213,6 +213,7 @@
 | 47 | **企业商务礼品（B2B Corporate Gifting）、员工福利礼盒（Swag Box）与反商业贿赂（FCPA）合规托管（Sendoso / Reachdesk / Snappy / Goody / 京东企业购礼盒）“防 35% 未领取礼品卡被平台吞没（Breakage）、防 $14/盒天价拆装仓储费与向政府/招标期客户违规送礼”Agent 架构选型 FAQ** | [中文](b2b-corporate-gifting-swag-fcpa-zero-breakage-escrow-agent-selection-faq.md) · [English](b2b-corporate-gifting-swag-fcpa-zero-breakage-escrow-agent-selection-faq.en.md) |
 | 48 | **连锁餐饮/酒店工服布草租洗、地垫耗材与 `UHF RFID` 防丢账单托管（B2B Corporate Uniform, Linen & Facility Rental Escrow：Cintas / UniFirst / Vestis / 洁神洗涤）“防 60 个月自动续签霸王长约、防洗涤厂丢毛巾反扣 3 倍赔偿费与离职员工幽灵工服计费”Agent 架构选型 FAQ** | [中文](b2b-uniform-linen-rental-rfid-evergreen-escrow-agent-selection-faq.md) · [English](b2b-uniform-linen-rental-rfid-evergreen-escrow-agent-selection-faq.en.md) |
 | 49 | **连锁餐饮/商超有害生物防制（Pest Control）、`HACCP` 鼠饵站巡检与物联网捕鼠器托管（B2B Commercial Pest Control, HACCP IPM & IoT Smart-Trap Escrow：Ecolab 艺康 / Rentokil 能多洁 / Orkin / Bell Sensing iQ）“防技师到店 3 分钟签字走人漏检 80% 诱饵盒、防虚报白蚁/臭虫恐吓推销 $4,500 熏蒸与后厨违规投毒”Agent 架构选型 FAQ** | [中文](b2b-commercial-pest-control-haccp-iot-trap-escrow-agent-selection-faq.md) · [English](b2b-commercial-pest-control-haccp-iot-trap-escrow-agent-selection-faq.en.md) |
+| 50 | **企业写字楼停车位包月、车牌识别（LPR）漏拍天价误扣与混合办公弹性共享车位池托管（B2B Corporate Parking, LPR Overstay & Hybrid Commuter Pool Escrow：Metropolis / FlashParking / SpotHero for Business / 捷顺智慧停车）“防无杆车牌识别漏拍出场误扣 $180 封顶费、防演唱会夜向企业访客强收 $75 高价与混合办公闲置包月车位空扣”Agent 架构选型 FAQ** | [中文](b2b-corporate-parking-lpr-overstay-commuter-escrow-agent-selection-faq.md) · [English](b2b-corporate-parking-lpr-overstay-commuter-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）

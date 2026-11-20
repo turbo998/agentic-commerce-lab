@@ -15490,6 +15490,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("fine-wine-en-primeur-cellar-escrow-sandbox", html_zh)
 
+    def test_b2b_corporate_parking_lpr_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BCorporateParkingLprEscrowPolicyInput,
+            evaluate_b2b_corporate_parking_lpr_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_corporate_parking_lpr_escrow_policy(
+            B2BCorporateParkingLprEscrowPolicyInput(
+                quarterly_b2b_corporate_parking_and_commuter_pool_usd=120000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "BADGE_SYNCED_LPR_AND_ATTENDANCE_VERIFIED_PARKING_AUTHORIZED",
+        )
+
+        lpr = evaluate_b2b_corporate_parking_lpr_escrow_policy(
+            B2BCorporateParkingLprEscrowPolicyInput(
+                missed_exit_lpr_phantom_overstay_or_event_surge_override=True
+            )
+        )
+        self.assertEqual(lpr["status_code"], 403)
+        self.assertEqual(
+            lpr["decision"],
+            "MISSED_EXIT_LPR_PHANTOM_OVERSTAY_OR_EVENT_SURGE_OVERRIDE_BLOCKED",
+        )
+
+        hyb = evaluate_b2b_corporate_parking_lpr_escrow_policy(
+            B2BCorporateParkingLprEscrowPolicyInput(
+                hybrid_low_attendance_monthly_permit_waste_or_valet_entry_arch_missing=True
+            )
+        )
+        self.assertEqual(hyb["status_code"], 422)
+        self.assertEqual(
+            hyb["decision"],
+            "HYBRID_LOW_ATTENDANCE_MONTHLY_PERMIT_WASTE_OR_VALET_ENTRY_ARCH_MISSING_BLOCKED",
+        )
+
+        gkll = evaluate_b2b_corporate_parking_lpr_escrow_policy(
+            B2BCorporateParkingLprEscrowPolicyInput(
+                webiq_garage_structural_closure_or_uninsured_valet_operator_flag=True
+            )
+        )
+        self.assertEqual(gkll["status_code"], 451)
+        self.assertEqual(
+            gkll["decision"],
+            "WEBIQ_GARAGE_STRUCTURAL_CLOSURE_OR_UNINSURED_VALET_OPERATOR_HOLD",
+        )
+
+        optim = evaluate_b2b_corporate_parking_lpr_escrow_policy(
+            B2BCorporateParkingLprEscrowPolicyInput(
+                quarterly_b2b_corporate_parking_and_commuter_pool_usd=120000.0,
+                flex_daily_badge_parking_pool_and_pretax_irs_section132_deduction_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 42000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 78000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_corporate_parking_lpr_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-corporate-parking-lpr-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

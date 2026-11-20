@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`214` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`215` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (38 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (68 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (49 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (50 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -158,7 +158,7 @@
 | 68 | **Fine Wine En Primeur (`Bordeaux Futures`), Bonded Cellar Storage (`Liv-ex / Octavian`) & Ullage Provenance Escrow (`Liv-ex / Berry Bros. & Rudd BBX / Octavian / Sotheby's Wine`) `LWIN18` Price Cap, Segregated Title & `Into-Neck` Ullage Agent Architecture Selection FAQ** | [English](fine-wine-en-primeur-bonded-cellar-livex-ullage-escrow-agent-selection-faq.en.md) · [中文](fine-wine-en-primeur-bonded-cellar-livex-ullage-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (49 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (50 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -213,6 +213,7 @@
 | 47 | **B2B Corporate Gifting, Swag Box Fulfillment & Anti-Bribery (`FCPA / UKBA`) Compliance Escrow (`Sendoso / Reachdesk / Snappy / Goody / JD Enterprise`) Zero-Breakage Pay-on-Claim, `FCPA` Cap & On-Demand Swag Agent Architecture Selection FAQ** | [English](b2b-corporate-gifting-swag-fcpa-zero-breakage-escrow-agent-selection-faq.en.md) · [中文](b2b-corporate-gifting-swag-fcpa-zero-breakage-escrow-agent-selection-faq.md) |
 | 48 | **B2B Corporate Uniform, Linen & Facility Rental (`Mat / Towel`) `UHF-RFID` Escrow (`Cintas / UniFirst / Vestis / Lands' End Business`) Soil-Bag `RFID` Audit, `HRIS` Sync & Anti-`60m`-Evergreen Agent Architecture Selection FAQ** | [English](b2b-uniform-linen-rental-rfid-evergreen-escrow-agent-selection-faq.en.md) · [中文](b2b-uniform-linen-rental-rfid-evergreen-escrow-agent-selection-faq.md) |
 | 49 | **B2B Commercial Pest Control, `HACCP / AIB` Integrated Pest Management (`IPM`) & IoT Smart-Trap Escrow (`Ecolab Pest / Rentokil Terminix / Orkin / Bell Sensing iQ`) Inside-Lid `NFC` Scan, `ACE` Proof & `IoT` Trap Agent Architecture Selection FAQ** | [English](b2b-commercial-pest-control-haccp-iot-trap-escrow-agent-selection-faq.en.md) · [中文](b2b-commercial-pest-control-haccp-iot-trap-escrow-agent-selection-faq.md) |
+| 50 | **B2B Corporate Parking, `LPR` Overstay & Hybrid Commuter Pool Escrow (`Metropolis / FlashParking / SpotHero for Business / Jieshun`) `LPR`-to-Badge Exit Sync, Flex Daily Pool & `IRS Sec. 132(f)` Agent Architecture Selection FAQ** | [English](b2b-corporate-parking-lpr-overstay-commuter-escrow-agent-selection-faq.en.md) · [中文](b2b-corporate-parking-lpr-overstay-commuter-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 Guides)

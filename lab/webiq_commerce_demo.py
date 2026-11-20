@@ -22208,6 +22208,87 @@ def evaluate_fine_wine_en_primeur_cellar_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BCorporateParkingLprEscrowPolicyInput:
+    """Input contract for B2B Corporate Parking, LPR Overstay & Hybrid Commuter Pool Escrow."""
+
+    quarterly_b2b_corporate_parking_and_commuter_pool_usd: float = 120000.0
+    missed_exit_lpr_phantom_overstay_or_event_surge_override: bool = False
+    hybrid_low_attendance_monthly_permit_waste_or_valet_entry_arch_missing: bool = False
+    webiq_garage_structural_closure_or_uninsured_valet_operator_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    flex_daily_badge_parking_pool_and_pretax_irs_section132_deduction_ready: bool = False
+
+
+def evaluate_b2b_corporate_parking_lpr_escrow_policy(
+    policy_input: B2BCorporateParkingLprEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Corporate Parking, LPR Overstay & Hybrid Commuter Pool Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_corporate_parking_and_commuter_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_garage_structural_closure_or_uninsured_valet_operator_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_GARAGE_STRUCTURAL_CLOSURE_OR_UNINSURED_VALET_OPERATOR_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missed_exit_lpr_phantom_overstay_or_event_surge_override:
+        return {
+            "status_code": 403,
+            "decision": "MISSED_EXIT_LPR_PHANTOM_OVERSTAY_OR_EVENT_SURGE_OVERRIDE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hybrid_low_attendance_monthly_permit_waste_or_valet_entry_arch_missing:
+        return {
+            "status_code": 422,
+            "decision": "HYBRID_LOW_ATTENDANCE_MONTHLY_PERMIT_WASTE_OR_VALET_ENTRY_ARCH_MISSING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.flex_daily_badge_parking_pool_and_pretax_irs_section132_deduction_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FLEX_DAILY_BADGE_PARKING_POOL_AND_PRETAX_IRS_SECTION132_DEDUCTION_CONFIRM",
+            "mandate_token": "b2b_corporate_parking_lpr_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "BADGE_SYNCED_LPR_AND_ATTENDANCE_VERIFIED_PARKING_AUTHORIZED",
+        "mandate_token": "b2b_corporate_parking_lpr_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -30623,6 +30704,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_corporate_parking_lpr_escrow_guard = {
+        "authorized_200": evaluate_b2b_corporate_parking_lpr_escrow_policy(
+            B2BCorporateParkingLprEscrowPolicyInput()
+        ),
+        "missed_lpr_or_event_surge_403": evaluate_b2b_corporate_parking_lpr_escrow_policy(
+            B2BCorporateParkingLprEscrowPolicyInput(
+                missed_exit_lpr_phantom_overstay_or_event_surge_override=True
+            )
+        ),
+        "hybrid_permit_waste_or_valet_arch_422": evaluate_b2b_corporate_parking_lpr_escrow_policy(
+            B2BCorporateParkingLprEscrowPolicyInput(
+                hybrid_low_attendance_monthly_permit_waste_or_valet_entry_arch_missing=True
+            )
+        ),
+        "uninsured_valet_or_closure_451": evaluate_b2b_corporate_parking_lpr_escrow_policy(
+            B2BCorporateParkingLprEscrowPolicyInput(
+                webiq_garage_structural_closure_or_uninsured_valet_operator_flag=True
+            )
+        ),
+        "flex_daily_pool_and_sec132f_409": evaluate_b2b_corporate_parking_lpr_escrow_policy(
+            B2BCorporateParkingLprEscrowPolicyInput(
+                flex_daily_badge_parking_pool_and_pretax_irs_section132_deduction_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -30847,6 +30954,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "yacht_marina_berth_haulout_escrow_guard": yacht_marina_berth_haulout_escrow_guard,
         "b2b_commercial_pest_control_escrow_guard": b2b_commercial_pest_control_escrow_guard,
         "fine_wine_en_primeur_cellar_escrow_guard": fine_wine_en_primeur_cellar_escrow_guard,
+        "b2b_corporate_parking_lpr_escrow_guard": b2b_corporate_parking_lpr_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -41218,6 +41326,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="fine-wine-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DIRECT_LIVEX_INBOND_EXCHANGE_EXECUTION_AND_FIXED_CASE_STORAGE_CONFIRM · Mandate: fine_wine_bonded_cellar_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 96 B2B Corporate Parking, LPR Overstay & Hybrid Commuter Pool Escrow -->
+      <div class="finops-box" id="b2b-corporate-parking-lpr-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🅿️ 企业写字楼停车位包月、车牌识别 (LPR) 漏拍误扣与混合办公弹性共享车位池托管 (Metropolis / FlashParking / SpotHero for Business / 捷顺智慧停车) 门禁离场同步与按日池沙盒 (Round 96)</div>
+            <div class="finops-subtitle">实测写字楼门禁下班打卡 (Badge-Out) 时间戳自动闭合无杆 LPR 漏拍出场订单防误扣 $180 隔夜封顶费+$75 违约金及访客车牌预白名单防球赛夜强收 $75 活动高价 (HTTP 403)、拦截为月均到岗&lt;12 天混合办公员工续费 $320 固定包月卡 (HTTP 422)、Web IQ 车库保管人责任险 (GKLL) 核验 (HTTP 451) 及切换 $16/天按实到岗共享池+IRS Sec. 132(f) 税前抵扣净省 35% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="corp-park-status-kpi">HTTP 409 · FLEX_DAILY_BADGE_PARKING_POOL_AND_PRETAX_IRS_SECTION132_DEDUCTION_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业写字楼通勤包月与访客停车预算池 ($ USD)
+            <input type="range" id="corp-park-pool-slider" min="20000" max="700000" step="5000" value="120000" oninput="updateB2BCorporateParkingLprEscrowSandbox()" />
+            <span id="corp-park-pool-val" style="color:#6ee7b7; font-family:monospace;">$120,000</span>
+          </label>
+          <label>
+            门禁下班打卡闭合漏拍 LPR 与访客协议价核验 (HTTP 403)
+            <select id="corp-park-lpr-select" onchange="updateB2BCorporateParkingLprEscrowSandbox()">
+              <option value="pass">门禁 Badge-Out 时间戳校准离场 + 访客车牌全天候锁定 $18 协议价 (放行)</option>
+              <option value="block">无杆车库漏拍出场当成连停 3 天强扣 $180+$75 罚金 或 演唱会夜向访客强收 $75 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            混合办公月到岗 (&gt;=12 天) 盈亏平衡与代客泊车 360° 拱门核验 (HTTP 422)
+            <select id="corp-park-hybrid-select" onchange="updateB2BCorporateParkingLprEscrowSandbox()">
+              <option value="pass">固定包月仅限月到岗&gt;=12 天员工 + 代客泊车具备 360° 入场视频留证 (合规)</option>
+              <option value="block">员工每周仅来 2 天(月均 8 天)仍续费 $320 固定包月卡空置浪费 56% (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 车库保管人责任险 ($2M GKLL) 与结构安全核验 (HTTP 451)
+            <select id="corp-park-gkll-select" onchange="updateB2BCorporateParkingLprEscrowSandbox()">
+              <option value="clear">$2M 车库保管人责任险 (GKLL) 有效 + 结构安全验收合规 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">代客泊车运营商缺乏 GKLL 责任险保单 或 车库因结构剥落被勒令整改 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            按日共享车位池 (Flex Daily Pool) 与 IRS Sec. 132(f) 税前抵扣 (HTTP 409)
+            <select id="corp-park-opt-select" onchange="updateB2BCorporateParkingLprEscrowSandbox()">
+              <option value="enabled" selected>切换 $16/天按门禁实际到岗扣费池 + IRS Sec. 132(f) 税前工资抵扣净省 35% (HTTP 409)</option>
+              <option value="baseline">常规门禁校准 LPR 与出勤达标包月停车托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业停车预算总池</div>
+            <div class="finops-kpi-val" id="corp-park-gross-kpi">$120,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">按日共享池与税前抵扣后净额</div>
+            <div class="finops-kpi-val" id="corp-park-net-kpi" style="color:#6ee7b7;">$78,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除空置月卡与漏拍误扣</div>
+            <div class="finops-kpi-val" id="corp-park-savings-kpi" style="color:#38bdf8;">$42,000</div>
+          </div>
+        </div>
+        <div id="corp-park-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FLEX_DAILY_BADGE_PARKING_POOL_AND_PRETAX_IRS_SECTION132_DEDUCTION_CONFIRM · Mandate: b2b_corporate_parking_lpr_mandate_optim_409
         </div>
       </div>
 
@@ -53693,6 +53864,80 @@ function updateFineWineEnPrimeurCellarEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 LWIN18_BENCHMARK_AND_SEGREGATED_INBOND_TITLE_AUTHORIZED · Mandate: fine_wine_bonded_cellar_mandate_200';
+}}
+
+function updateB2BCorporateParkingLprEscrowSandbox() {{
+  const slider = document.getElementById('corp-park-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '120000');
+  const lprMode = document.getElementById('corp-park-lpr-select').value;
+  const hybMode = document.getElementById('corp-park-hybrid-select').value;
+  const gkllMode = document.getElementById('corp-park-gkll-select').value;
+  const optMode = document.getElementById('corp-park-opt-select').value;
+
+  document.getElementById('corp-park-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('corp-park-status-kpi');
+  const grossKpi = document.getElementById('corp-park-gross-kpi');
+  const netKpi = document.getElementById('corp-park-net-kpi');
+  const savingsKpi = document.getElementById('corp-park-savings-kpi');
+  const banner = document.getElementById('corp-park-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (gkllMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_GARAGE_STRUCTURAL_CLOSURE_OR_UNINSURED_VALET_OPERATOR_HOLD · Mandate: null';
+    return;
+  }}
+  if (lprMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MISSED_EXIT_LPR_PHANTOM_OVERSTAY_OR_EVENT_SURGE_OVERRIDE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (hybMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 HYBRID_LOW_ATTENDANCE_MONTHLY_PERMIT_WASTE_OR_VALET_ENTRY_ARCH_MISSING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FLEX_DAILY_BADGE_PARKING_POOL_AND_PRETAX_IRS_SECTION132_DEDUCTION_CONFIRM · Mandate: b2b_corporate_parking_lpr_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 BADGE_SYNCED_LPR_AND_ATTENDANCE_VERIFIED_PARKING_AUTHORIZED · Mandate: b2b_corporate_parking_lpr_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
