@@ -19940,6 +19940,87 @@ def evaluate_crossborder_parcel_consolidation_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class PhotoStudioCameraGearEscrowPolicyInput:
+    """Input contract for Photo/Film Studio Booking, Camera Gear Rental & CMOS Sensor Escrow."""
+
+    quarterly_photo_studio_and_camera_gear_rental_pool_usd: float = 165000.0
+    preexisting_cmos_laser_defect_or_unhashed_lens_scratch_claim: bool = False
+    full_day_overtime_penalty_gouge_or_hidden_cyc_hvac_fee: bool = False
+    webiq_unpermitted_residential_film_zone_or_stolen_gear_sn_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    weekend_one_day_rental_arbitrage_and_coi_deposit_waiver_ready: bool = False
+
+
+def evaluate_photo_studio_camera_gear_escrow_policy(
+    policy_input: PhotoStudioCameraGearEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Photo/Film Studio Booking, Camera Gear Rental & CMOS Sensor policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_photo_studio_and_camera_gear_rental_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unpermitted_residential_film_zone_or_stolen_gear_sn_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNPERMITTED_RESIDENTIAL_FILM_ZONE_OR_STOLEN_GEAR_SN_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.preexisting_cmos_laser_defect_or_unhashed_lens_scratch_claim:
+        return {
+            "status_code": 403,
+            "decision": "PREEXISTING_CMOS_LASER_DEFECT_OR_UNHASHED_LENS_SCRATCH_CLAIM_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.full_day_overtime_penalty_gouge_or_hidden_cyc_hvac_fee:
+        return {
+            "status_code": 422,
+            "decision": "FULL_DAY_OVERTIME_PENALTY_GOUGE_OR_HIDDEN_CYC_HVAC_FEE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.weekend_one_day_rental_arbitrage_and_coi_deposit_waiver_ready:
+        savings = round(gross_pool * 0.26, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "WEEKEND_ONE_DAY_RENTAL_ARBITRAGE_AND_COI_DEPOSIT_WAIVER_CONFIRM",
+            "mandate_token": "photo_studio_camera_gear_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "CMOS_HASH_AND_STUDIO_SCOPE_AUTHORIZED",
+        "mandate_token": "photo_studio_camera_gear_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -27627,6 +27708,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    photo_studio_camera_gear_escrow_guard = {
+        "authorized_200": evaluate_photo_studio_camera_gear_escrow_policy(
+            PhotoStudioCameraGearEscrowPolicyInput()
+        ),
+        "preexisting_cmos_or_scratch_403": evaluate_photo_studio_camera_gear_escrow_policy(
+            PhotoStudioCameraGearEscrowPolicyInput(
+                preexisting_cmos_laser_defect_or_unhashed_lens_scratch_claim=True
+            )
+        ),
+        "overtime_gouge_or_cyc_fee_422": evaluate_photo_studio_camera_gear_escrow_policy(
+            PhotoStudioCameraGearEscrowPolicyInput(
+                full_day_overtime_penalty_gouge_or_hidden_cyc_hvac_fee=True
+            )
+        ),
+        "unpermitted_film_or_stolen_sn_451": evaluate_photo_studio_camera_gear_escrow_policy(
+            PhotoStudioCameraGearEscrowPolicyInput(
+                webiq_unpermitted_residential_film_zone_or_stolen_gear_sn_flag=True
+            )
+        ),
+        "weekend_one_day_and_coi_409": evaluate_photo_studio_camera_gear_escrow_policy(
+            PhotoStudioCameraGearEscrowPolicyInput(
+                weekend_one_day_rental_arbitrage_and_coi_deposit_waiver_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -27823,6 +27930,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "podcast_dai_music_royalty_escrow_guard": podcast_dai_music_royalty_escrow_guard,
         "b2b_recruiting_headhunter_fcra_escrow_guard": b2b_recruiting_headhunter_fcra_escrow_guard,
         "crossborder_parcel_consolidation_escrow_guard": crossborder_parcel_consolidation_escrow_guard,
+        "photo_studio_camera_gear_escrow_guard": photo_studio_camera_gear_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -36430,6 +36538,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="parcel-consol-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 REHEARSAL_VACUUM_COMPRESSION_AND_ACTUAL_WEIGHT_LINE_CONFIRM · Mandate: crossborder_parcel_consolidation_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 68 Photo/Film Studio Booking, Camera Gear Rental & CMOS Sensor Escrow -->
+      <div class="finops-box" id="photo-studio-camera-gear-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📷 摄影棚预订、影视相机镜头免押租赁与商业外拍场地撮合 (Peerspace / ShareGrid / Lensrentals / 兰拓相机租赁) 防CMOS坏点栽赃、超时封顶与周末1日计费沙盒 (Round 68)</div>
+            <div class="finops-subtitle">实测出库绑定机身序列号 EXIF 的 f/22 纯白测试图像素差分防历史 CMOS 激光坏点/旧划痕栽赃敲诈 $1,800 (HTTP 403)、影棚 15 分钟免费撤场缓冲与无影墙重刷费&lt;=$75硬封顶 (HTTP 422)、Web IQ 市政商业外拍许可与 Lenstag 被盗序列号熔断 (HTTP 451) 及周末跨3天按1天计费+COI商业保单免押立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="studio-gear-status-kpi">HTTP 409 · WEEKEND_ONE_DAY_RENTAL_ARBITRAGE_AND_COI_DEPOSIT_WAIVER_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度商业摄影棚预订与影视器材租赁池 ($ USD)
+            <input type="range" id="studio-gear-pool-slider" min="30000" max="1200000" step="5000" value="165000" oninput="updatePhotoStudioCameraGearSandbox()" />
+            <span id="studio-gear-pool-val" style="color:#6ee7b7; font-family:monospace;">$165,000</span>
+          </label>
+          <label>
+            出库 f/22 CMOS 坏点图 EXIF 哈希与镜片划痕比对 (HTTP 403)
+            <select id="studio-gear-cmos-select" onchange="updatePhotoStudioCameraGearSandbox()">
+              <option value="pass">出库已绑定同机身序列号 f/22 RAW 基线图 + 归还 0 新增坏点 (放行)</option>
+              <option value="block">把出库已存在的 CMOS 激光坏点/镜片旧划痕栽赃租客索赔 $1,800 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            影棚 15m 免费撤场缓冲与无影墙重刷费封顶校验 (HTTP 422)
+            <select id="studio-gear-overtime-select" onchange="updatePhotoStudioCameraGearSandbox()">
+              <option value="pass">15m 免费撤场缓冲 + 半小时 1.5x 阶梯加班 + 刷墙费&lt;=$75 (合规)</option>
+              <option value="block">撤场超时 11 分钟强扣 $900 全天罚金 或 临时加收 $250 刷墙费 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 市政外拍许可证与 Lenstag 被盗器材筛查 (HTTP 451)
+            <select id="studio-gear-permit-select" onchange="updatePhotoStudioCameraGearSandbox()">
+              <option value="clear">场地具备合法商业拍摄许可 + 器材非被盗序列号 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">20人剧组误订禁拍住宅区别墅 或 P2P 镜头命中 Lenstag 被盗库 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            周末跨 3 天按 1 天计费与 COI 保单免押金 (HTTP 409)
+            <select id="studio-gear-opt-select" onchange="updatePhotoStudioCameraGearSandbox()">
+              <option value="enabled" selected>开启周五下午取周一上午还按1天计费 + COI保单免 $15k 押金省 26% (HTTP 409)</option>
+              <option value="baseline">常规工作日按自然日计费与标准预授权押金 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度影棚器材毛池</div>
+            <div class="finops-kpi-val" id="studio-gear-gross-kpi">$165,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">周末1日与免押后净额</div>
+            <div class="finops-kpi-val" id="studio-gear-net-kpi" style="color:#6ee7b7;">$122,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下周末租期与碰瓷</div>
+            <div class="finops-kpi-val" id="studio-gear-savings-kpi" style="color:#38bdf8;">$42,900</div>
+          </div>
+        </div>
+        <div id="studio-gear-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 WEEKEND_ONE_DAY_RENTAL_ARBITRAGE_AND_COI_DEPOSIT_WAIVER_CONFIRM · Mandate: photo_studio_camera_gear_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -46833,6 +47004,80 @@ function updateCrossborderParcelConsolidationSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 DIM_WEIGHT_CAPPED_AND_PACK_VIDEO_AUTHORIZED · Mandate: crossborder_parcel_consolidation_escrow_mandate_200';
+}}
+
+function updatePhotoStudioCameraGearSandbox() {{
+  const slider = document.getElementById('studio-gear-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '165000');
+  const cmosMode = document.getElementById('studio-gear-cmos-select').value;
+  const overMode = document.getElementById('studio-gear-overtime-select').value;
+  const permMode = document.getElementById('studio-gear-permit-select').value;
+  const optMode = document.getElementById('studio-gear-opt-select').value;
+
+  document.getElementById('studio-gear-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('studio-gear-status-kpi');
+  const grossKpi = document.getElementById('studio-gear-gross-kpi');
+  const netKpi = document.getElementById('studio-gear-net-kpi');
+  const savingsKpi = document.getElementById('studio-gear-savings-kpi');
+  const banner = document.getElementById('studio-gear-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (permMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNPERMITTED_RESIDENTIAL_FILM_ZONE_OR_STOLEN_GEAR_SN_HOLD · Mandate: null';
+    return;
+  }}
+  if (cmosMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PREEXISTING_CMOS_LASER_DEFECT_OR_UNHASHED_LENS_SCRATCH_CLAIM_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (overMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FULL_DAY_OVERTIME_PENALTY_GOUGE_OR_HIDDEN_CYC_HVAC_FEE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.26);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 WEEKEND_ONE_DAY_RENTAL_ARBITRAGE_AND_COI_DEPOSIT_WAIVER_CONFIRM · Mandate: photo_studio_camera_gear_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 CMOS_HASH_AND_STUDIO_SCOPE_AUTHORIZED · Mandate: photo_studio_camera_gear_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

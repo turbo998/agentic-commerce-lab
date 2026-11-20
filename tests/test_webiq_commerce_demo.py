@@ -13614,6 +13614,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("crossborder-parcel-consolidation-escrow-sandbox", html_zh)
 
+    def test_photo_studio_camera_gear_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            PhotoStudioCameraGearEscrowPolicyInput,
+            evaluate_photo_studio_camera_gear_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_photo_studio_camera_gear_escrow_policy(
+            PhotoStudioCameraGearEscrowPolicyInput(
+                quarterly_photo_studio_and_camera_gear_rental_pool_usd=165000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "CMOS_HASH_AND_STUDIO_SCOPE_AUTHORIZED",
+        )
+
+        cmos = evaluate_photo_studio_camera_gear_escrow_policy(
+            PhotoStudioCameraGearEscrowPolicyInput(
+                preexisting_cmos_laser_defect_or_unhashed_lens_scratch_claim=True
+            )
+        )
+        self.assertEqual(cmos["status_code"], 403)
+        self.assertEqual(
+            cmos["decision"],
+            "PREEXISTING_CMOS_LASER_DEFECT_OR_UNHASHED_LENS_SCRATCH_CLAIM_BLOCKED",
+        )
+
+        over = evaluate_photo_studio_camera_gear_escrow_policy(
+            PhotoStudioCameraGearEscrowPolicyInput(
+                full_day_overtime_penalty_gouge_or_hidden_cyc_hvac_fee=True
+            )
+        )
+        self.assertEqual(over["status_code"], 422)
+        self.assertEqual(
+            over["decision"],
+            "FULL_DAY_OVERTIME_PENALTY_GOUGE_OR_HIDDEN_CYC_HVAC_FEE_BLOCKED",
+        )
+
+        perm = evaluate_photo_studio_camera_gear_escrow_policy(
+            PhotoStudioCameraGearEscrowPolicyInput(
+                webiq_unpermitted_residential_film_zone_or_stolen_gear_sn_flag=True
+            )
+        )
+        self.assertEqual(perm["status_code"], 451)
+        self.assertEqual(
+            perm["decision"],
+            "WEBIQ_UNPERMITTED_RESIDENTIAL_FILM_ZONE_OR_STOLEN_GEAR_SN_HOLD",
+        )
+
+        optim = evaluate_photo_studio_camera_gear_escrow_policy(
+            PhotoStudioCameraGearEscrowPolicyInput(
+                quarterly_photo_studio_and_camera_gear_rental_pool_usd=165000.0,
+                weekend_one_day_rental_arbitrage_and_coi_deposit_waiver_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 42900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 122100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("photo_studio_camera_gear_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("photo-studio-camera-gear-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
