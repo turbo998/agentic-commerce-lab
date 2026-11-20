@@ -19292,6 +19292,87 @@ def evaluate_bridal_bespoke_tailoring_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class CorporateRidehailingGroundTransportEscrowPolicyInput:
+    """Input contract for Corporate Ride-Hailing, Airport Chauffeur & Overtime Commuter Voucher Escrow."""
+
+    quarterly_corporate_ridehailing_and_ground_transport_pool_usd: float = 210000.0
+    proxy_ride_out_of_geofence_or_unauthorized_detour: bool = False
+    phantom_toll_padding_or_unsynced_flight_delay_noshow_fee: bool = False
+    webiq_unlicensed_livery_fleet_or_lapsed_commercial_insurance_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    multi_provider_fare_arbitrage_and_shared_commute_ready: bool = False
+
+
+def evaluate_corporate_ridehailing_ground_transport_escrow_policy(
+    policy_input: CorporateRidehailingGroundTransportEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Corporate Ride-Hailing, Airport Chauffeur & Commuter Voucher policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_corporate_ridehailing_and_ground_transport_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unlicensed_livery_fleet_or_lapsed_commercial_insurance_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNLICENSED_FLEET_OR_LAPSED_LIVERY_INSURANCE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.proxy_ride_out_of_geofence_or_unauthorized_detour:
+        return {
+            "status_code": 403,
+            "decision": "PROXY_RIDE_OR_GEOFENCE_DETOUR_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.phantom_toll_padding_or_unsynced_flight_delay_noshow_fee:
+        return {
+            "status_code": 422,
+            "decision": "PHANTOM_TOLL_PADDING_OR_UNSYNCED_FLIGHT_NOSHOW_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.multi_provider_fare_arbitrage_and_shared_commute_ready:
+        savings = round(gross_pool * 0.22, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MULTI_PROVIDER_FARE_ARBITRAGE_AND_SHARED_COMMUTE_CONFIRM",
+            "mandate_token": "corporate_ridehailing_ground_transport_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "GEOFENCE_AND_FLIGHT_SYNC_RIDE_AUTHORIZED",
+        "mandate_token": "corporate_ridehailing_ground_transport_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -26771,6 +26852,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    corporate_ridehailing_ground_transport_escrow_guard = {
+        "authorized_200": evaluate_corporate_ridehailing_ground_transport_escrow_policy(
+            CorporateRidehailingGroundTransportEscrowPolicyInput()
+        ),
+        "proxy_ride_or_detour_403": evaluate_corporate_ridehailing_ground_transport_escrow_policy(
+            CorporateRidehailingGroundTransportEscrowPolicyInput(
+                proxy_ride_out_of_geofence_or_unauthorized_detour=True
+            )
+        ),
+        "phantom_toll_or_flight_noshow_422": evaluate_corporate_ridehailing_ground_transport_escrow_policy(
+            CorporateRidehailingGroundTransportEscrowPolicyInput(
+                phantom_toll_padding_or_unsynced_flight_delay_noshow_fee=True
+            )
+        ),
+        "unlicensed_fleet_or_insurance_451": evaluate_corporate_ridehailing_ground_transport_escrow_policy(
+            CorporateRidehailingGroundTransportEscrowPolicyInput(
+                webiq_unlicensed_livery_fleet_or_lapsed_commercial_insurance_flag=True
+            )
+        ),
+        "multi_provider_and_shared_commute_409": evaluate_corporate_ridehailing_ground_transport_escrow_policy(
+            CorporateRidehailingGroundTransportEscrowPolicyInput(
+                multi_provider_fare_arbitrage_and_shared_commute_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -26959,6 +27066,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ski_resort_golf_teetime_escrow_guard": ski_resort_golf_teetime_escrow_guard,
         "corporate_catering_office_meal_escrow_guard": corporate_catering_office_meal_escrow_guard,
         "bridal_bespoke_tailoring_escrow_guard": bridal_bespoke_tailoring_escrow_guard,
+        "corporate_ridehailing_ground_transport_escrow_guard": corporate_ridehailing_ground_transport_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -35062,6 +35170,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="bridal-tailor-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FACTORY_CUSTOM_SIZING_AND_GROOMSMEN_GROUP_COMP_CONFIRM · Mandate: bridal_bespoke_tailoring_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 60 Corporate Ride-Hailing, Airport Chauffeur & Overtime Commuter Voucher Escrow -->
+      <div class="finops-box" id="corporate-ridehailing-ground-transport-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🚕 企业差旅打车、网约车企业版与加班出行结算 (Uber for Business / Lyft Business / 滴滴企业版 / 高德企业用车) 门禁围栏锁、航变联动与过路费审计沙盒 (Round 60)</div>
+            <div class="finops-subtitle">实测办公楼门禁出闸与上车点&lt;=500m围栏防异地帮亲友代叫车/绕路办私事 (HTTP 403)、机场接机绑定航班实际落地时间(ATA)免延误爽约费与高速ETC轨迹核验防手填假过路费 (HTTP 422)、Web IQ 无证黑车与商业客运险断保熔断 (HTTP 451) 及多运力实时比价+同向顺路合乘立省 22% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="corp-ride-status-kpi">HTTP 409 · MULTI_PROVIDER_FARE_ARBITRAGE_AND_SHARED_COMMUTE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业加班打车与差旅接送机结算池 ($ USD)
+            <input type="range" id="corp-ride-pool-slider" min="40000" max="1500000" step="10000" value="210000" oninput="updateCorporateRidehailingGroundTransportSandbox()" />
+            <span id="corp-ride-pool-val" style="color:#6ee7b7; font-family:monospace;">$210,000</span>
+          </label>
+          <label>
+            办公楼门禁出闸与起止点地理围栏校验 (HTTP 403)
+            <select id="corp-ride-geofence-select" onchange="updateCorporateRidehailingGroundTransportSandbox()">
+              <option value="pass">已刷办公楼门禁出闸 + 上车点&lt;=500m + 终点匹配备案住址 (放行)</option>
+              <option value="block">异地替亲友代叫车 / 未刷门禁在家叫车 或 途中绕路去酒吧 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            高速 ETC 轨迹过路费与航班延误联动校验 (HTTP 422)
+            <select id="corp-ride-toll-select" onchange="updateCorporateRidehailingGroundTransportSandbox()">
+              <option value="pass">过路费匹配高速 ETC 龙门架 + 接机绑定航班实际落地时间 (合规)</option>
+              <option value="block">司机手填 $38 无轨迹假高速费 或 航班延误强扣 $95 空驶爽约费 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 车队营运资质与商业客运险筛查 (HTTP 451)
+            <select id="corp-ride-fleet-select" onchange="updateCorporateRidehailingGroundTransportSandbox()">
+              <option value="clear">网约车运输证有效 + $1M 商业客运险在保 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">混入无证黑车或车队商业承运人责任险过期失效 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            多平台聚合运力比价与深夜同向顺路合乘 (HTTP 409)
+            <select id="corp-ride-opt-select" onchange="updateCorporateRidehailingGroundTransportSandbox()">
+              <option value="enabled" selected>开启多运力实时比价 + 晚间同向顺路拼车 + 专票抵扣省 22% (HTTP 409)</option>
+              <option value="baseline">常规门禁围栏与航班联动单人专车授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业用车毛池</div>
+            <div class="finops-kpi-val" id="corp-ride-gross-kpi">$210,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">聚合比价与拼车后净额</div>
+            <div class="finops-kpi-val" id="corp-ride-net-kpi" style="color:#6ee7b7;">$163,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度节省车费与税盾收益</div>
+            <div class="finops-kpi-val" id="corp-ride-savings-kpi" style="color:#38bdf8;">$46,200</div>
+          </div>
+        </div>
+        <div id="corp-ride-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MULTI_PROVIDER_FARE_ARBITRAGE_AND_SHARED_COMMUTE_CONFIRM · Mandate: corporate_ridehailing_ground_transport_mandate_optim_409
         </div>
       </div>
 
@@ -44873,6 +45044,80 @@ function updateBridalBespokeTailoringSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 DYE_LOT_LOCKED_AND_T14D_FIT_WINDOW_AUTHORIZED · Mandate: bridal_bespoke_tailoring_escrow_mandate_200';
+}}
+
+function updateCorporateRidehailingGroundTransportSandbox() {{
+  const slider = document.getElementById('corp-ride-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '210000');
+  const geoMode = document.getElementById('corp-ride-geofence-select').value;
+  const tollMode = document.getElementById('corp-ride-toll-select').value;
+  const fleetMode = document.getElementById('corp-ride-fleet-select').value;
+  const optMode = document.getElementById('corp-ride-opt-select').value;
+
+  document.getElementById('corp-ride-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('corp-ride-status-kpi');
+  const grossKpi = document.getElementById('corp-ride-gross-kpi');
+  const netKpi = document.getElementById('corp-ride-net-kpi');
+  const savingsKpi = document.getElementById('corp-ride-savings-kpi');
+  const banner = document.getElementById('corp-ride-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fleetMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNLICENSED_FLEET_OR_LAPSED_LIVERY_INSURANCE_HOLD · Mandate: null';
+    return;
+  }}
+  if (geoMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PROXY_RIDE_OR_GEOFENCE_DETOUR_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (tollMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PHANTOM_TOLL_PADDING_OR_UNSYNCED_FLIGHT_NOSHOW_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.22);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MULTI_PROVIDER_FARE_ARBITRAGE_AND_SHARED_COMMUTE_CONFIRM · Mandate: corporate_ridehailing_ground_transport_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 GEOFENCE_AND_FLIGHT_SYNC_RIDE_AUTHORIZED · Mandate: corporate_ridehailing_ground_transport_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

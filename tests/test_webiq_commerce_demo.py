@@ -13078,6 +13078,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("wedding-bridal-bespoke-tailoring-escrow-sandbox", html_zh)
 
+    def test_corporate_ridehailing_ground_transport_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CorporateRidehailingGroundTransportEscrowPolicyInput,
+            evaluate_corporate_ridehailing_ground_transport_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_corporate_ridehailing_ground_transport_escrow_policy(
+            CorporateRidehailingGroundTransportEscrowPolicyInput(
+                quarterly_corporate_ridehailing_and_ground_transport_pool_usd=210000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "GEOFENCE_AND_FLIGHT_SYNC_RIDE_AUTHORIZED",
+        )
+
+        geo = evaluate_corporate_ridehailing_ground_transport_escrow_policy(
+            CorporateRidehailingGroundTransportEscrowPolicyInput(
+                proxy_ride_out_of_geofence_or_unauthorized_detour=True
+            )
+        )
+        self.assertEqual(geo["status_code"], 403)
+        self.assertEqual(
+            geo["decision"],
+            "PROXY_RIDE_OR_GEOFENCE_DETOUR_BLOCKED",
+        )
+
+        toll = evaluate_corporate_ridehailing_ground_transport_escrow_policy(
+            CorporateRidehailingGroundTransportEscrowPolicyInput(
+                phantom_toll_padding_or_unsynced_flight_delay_noshow_fee=True
+            )
+        )
+        self.assertEqual(toll["status_code"], 422)
+        self.assertEqual(
+            toll["decision"],
+            "PHANTOM_TOLL_PADDING_OR_UNSYNCED_FLIGHT_NOSHOW_BLOCKED",
+        )
+
+        fleet = evaluate_corporate_ridehailing_ground_transport_escrow_policy(
+            CorporateRidehailingGroundTransportEscrowPolicyInput(
+                webiq_unlicensed_livery_fleet_or_lapsed_commercial_insurance_flag=True
+            )
+        )
+        self.assertEqual(fleet["status_code"], 451)
+        self.assertEqual(
+            fleet["decision"],
+            "WEBIQ_UNLICENSED_FLEET_OR_LAPSED_LIVERY_INSURANCE_HOLD",
+        )
+
+        optim = evaluate_corporate_ridehailing_ground_transport_escrow_policy(
+            CorporateRidehailingGroundTransportEscrowPolicyInput(
+                quarterly_corporate_ridehailing_and_ground_transport_pool_usd=210000.0,
+                multi_provider_fare_arbitrage_and_shared_commute_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 46200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 163800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("corporate_ridehailing_ground_transport_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("corporate-ridehailing-ground-transport-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
