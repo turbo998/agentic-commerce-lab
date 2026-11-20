@@ -21803,6 +21803,87 @@ def evaluate_b2b_corporate_gifting_swag_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EvDcfcChargingOcpiEscrowPolicyInput:
+    """Input contract for EV DC Fast-Charging (DCFC), OCPI Roaming & Idle-Penalty Escrow."""
+
+    quarterly_ev_dcfc_charging_and_fleet_pool_usd: float = 75000.0
+    idle_fee_under_50pct_station_occupancy_or_roaming_ocpi_markup: bool = False
+    per_minute_derated_kw_billing_or_eichrecht_bms_kwh_variance: bool = False
+    webiq_qr_quishing_domain_mismatch_or_charger_cable_recall_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    tou_off_peak_supercharger_routing_and_fleet_membership_arbitrage_ready: bool = False
+
+
+def evaluate_ev_dcfc_charging_ocpi_escrow_policy(
+    policy_input: EvDcfcChargingOcpiEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane EV DC Fast-Charging (DCFC), OCPI Roaming & Idle-Penalty Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_ev_dcfc_charging_and_fleet_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_qr_quishing_domain_mismatch_or_charger_cable_recall_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_QR_QUISHING_DOMAIN_MISMATCH_OR_CHARGER_CABLE_RECALL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.idle_fee_under_50pct_station_occupancy_or_roaming_ocpi_markup:
+        return {
+            "status_code": 403,
+            "decision": "IDLE_FEE_UNDER_50PCT_STATION_OCCUPANCY_OR_ROAMING_OCPI_MARKUP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.per_minute_derated_kw_billing_or_eichrecht_bms_kwh_variance:
+        return {
+            "status_code": 422,
+            "decision": "PER_MINUTE_DERATED_KW_BILLING_OR_EICHRECHT_BMS_KWH_VARIANCE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tou_off_peak_supercharger_routing_and_fleet_membership_arbitrage_ready:
+        savings = round(gross_pool * 0.33, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TOU_OFF_PEAK_SUPERCHARGER_ROUTING_AND_FLEET_MEMBERSHIP_ARBITRAGE_CONFIRM",
+            "mandate_token": "ev_dcfc_charging_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ISO15118_BMS_VERIFIED_AND_DIRECT_CPO_TARIFF_AUTHORIZED",
+        "mandate_token": "ev_dcfc_charging_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -30088,6 +30169,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ev_dcfc_charging_ocpi_escrow_guard = {
+        "authorized_200": evaluate_ev_dcfc_charging_ocpi_escrow_policy(
+            EvDcfcChargingOcpiEscrowPolicyInput()
+        ),
+        "idle_trap_or_ocpi_markup_403": evaluate_ev_dcfc_charging_ocpi_escrow_policy(
+            EvDcfcChargingOcpiEscrowPolicyInput(
+                idle_fee_under_50pct_station_occupancy_or_roaming_ocpi_markup=True
+            )
+        ),
+        "derated_min_or_bms_loss_422": evaluate_ev_dcfc_charging_ocpi_escrow_policy(
+            EvDcfcChargingOcpiEscrowPolicyInput(
+                per_minute_derated_kw_billing_or_eichrecht_bms_kwh_variance=True
+            )
+        ),
+        "quishing_or_cable_recall_451": evaluate_ev_dcfc_charging_ocpi_escrow_policy(
+            EvDcfcChargingOcpiEscrowPolicyInput(
+                webiq_qr_quishing_domain_mismatch_or_charger_cable_recall_flag=True
+            )
+        ),
+        "off_peak_tou_and_membership_409": evaluate_ev_dcfc_charging_ocpi_escrow_policy(
+            EvDcfcChargingOcpiEscrowPolicyInput(
+                tou_off_peak_supercharger_routing_and_fleet_membership_arbitrage_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -30307,6 +30414,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_ooh_dooh_billboard_escrow_guard": b2b_ooh_dooh_billboard_escrow_guard,
         "ski_pass_resort_rental_escrow_guard": ski_pass_resort_rental_escrow_guard,
         "b2b_corporate_gifting_swag_escrow_guard": b2b_corporate_gifting_swag_escrow_guard,
+        "ev_dcfc_charging_ocpi_escrow_guard": ev_dcfc_charging_ocpi_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -40363,6 +40471,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="corp-gift-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 RECIPIENT_CHOICE_ZERO_INVENTORY_GIFT_LINK_AND_LOCAL_FULFILLMENT_CONFIRM · Mandate: b2b_corporate_gifting_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 91 EV DC Fast-Charging (DCFC), OCPI Roaming & Idle-Penalty Escrow -->
+      <div class="finops-box" id="ev-dcfc-charging-ocpi-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">⚡ 新能源汽车公共超充 (DCFC)、跨网漫游 (OCPI) 加价与超时占位费防坑托管 (Tesla Supercharger / Electrify America / 特来电 / 星星充电) BMS 对账与谷电调度沙盒 (Round 91)</div>
+            <div class="finops-subtitle">实测场站占用率&lt;50% 强制免收 $1.00/分钟超时占位费及直连 CPO 原生电价防 OCPI 漫游暗加 35% 溢价 (HTTP 403)、车载 CAN-Bus BMS 与桩端 Eichrecht 电表&lt;=8% 损耗对账防转嫁 24% 发热线损及拒付 38kW 慢速按 350kW 分钟档计费 (HTTP 422)、Web IQ 拦截桩体假二维码贴纸钓鱼 (Quishing) 与高压枪线召回 (HTTP 451) 及错峰谷电 ($0.21/kWh)+自动 Pass+ 会员净省 33% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="ev-dcfc-status-kpi">HTTP 409 · TOU_OFF_PEAK_SUPERCHARGER_ROUTING_AND_FLEET_MEMBERSHIP_ARBITRAGE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业新能源车队与智能座舱超充补能池 ($ USD)
+            <input type="range" id="ev-dcfc-pool-slider" min="15000" max="500000" step="5000" value="75000" oninput="updateEvDcfcChargingOcpiEscrowSandbox()" />
+            <span id="ev-dcfc-pool-val" style="color:#6ee7b7; font-family:monospace;">$75,000</span>
+          </label>
+          <label>
+            场站占用率 (&lt;50% 免收占位费) 与原生 CPO 电价核验 (HTTP 403)
+            <select id="ev-dcfc-idle-select" onchange="updateEvDcfcChargingOcpiEscrowSandbox()">
+              <option value="pass">直连 CPO 原生电价(&lt;=5% 漫游费) + 场站占用&lt;50% 免收超时占位费 (放行)</option>
+              <option value="block">空着 9 个车位仍强扣 $1.00/分钟 ($60/h) 超时占位费 或 漫游 App 暗加 35% 电价差 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            车载 CAN-Bus BMS 实收电量 (&lt;=8% 线损) 与功率分档核验 (HTTP 422)
+            <select id="ev-dcfc-bms-select" onchange="updateEvDcfcChargingOcpiEscrowSandbox()">
+              <option value="pass">桩端 Eichrecht 签名度数与车载 BMS 偏差&lt;=8% + 按真实 kWh 结算 (合规)</option>
+              <option value="block">充入电池 66 度却按 82 度扣款(24%发热损耗转嫁) 或 350kW 桩只给 38kW 仍按顶格分钟收费 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 桩体二维码防钓鱼 (Anti-Quishing) 与枪线召回核验 (HTTP 451)
+            <select id="ev-dcfc-quish-select" onchange="updateEvDcfcChargingOcpiEscrowSandbox()">
+              <option value="clear">ISO 15118-20 硬件 TLS 双向握手无感启动 + 液冷枪线零召回 (正常)</option>
+              <option value="hold">检测到桩体粘贴假二维码跳转钓鱼网站 (Quishing) 或 液冷枪线触发短路召回 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            错峰谷电 (Off-Peak TOU) 导航与车队 Pass+ 会员自动激活 (HTTP 409)
+            <select id="ev-dcfc-opt-select" onchange="updateEvDcfcChargingOcpiEscrowSandbox()">
+              <option value="enabled" selected>调度至谷电时段 ($0.21/kWh vs $0.56 尖峰) + 月满 120 度自动开 Pass+ 会员净省 33% (HTTP 409)</option>
+              <option value="baseline">常规 ISO 15118 即插即充与 BMS 对账标准结算授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度车队超充补能总池</div>
+            <div class="finops-kpi-val" id="ev-dcfc-gross-kpi">$75,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">谷电调度与会员折后净电费</div>
+            <div class="finops-kpi-val" id="ev-dcfc-net-kpi" style="color:#6ee7b7;">$50,250</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除漫游加价与峰谷套利</div>
+            <div class="finops-kpi-val" id="ev-dcfc-savings-kpi" style="color:#38bdf8;">$24,750</div>
+          </div>
+        </div>
+        <div id="ev-dcfc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TOU_OFF_PEAK_SUPERCHARGER_ROUTING_AND_FLEET_MEMBERSHIP_ARBITRAGE_CONFIRM · Mandate: ev_dcfc_charging_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -52468,6 +52639,80 @@ function updateB2BCorporateGiftingSwagEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 PAY_ON_CLAIM_AND_FCPA_COMPLIANT_GIFT_AUTHORIZED · Mandate: b2b_corporate_gifting_escrow_mandate_200';
+}}
+
+function updateEvDcfcChargingOcpiEscrowSandbox() {{
+  const slider = document.getElementById('ev-dcfc-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '75000');
+  const idleMode = document.getElementById('ev-dcfc-idle-select').value;
+  const bmsMode = document.getElementById('ev-dcfc-bms-select').value;
+  const quishMode = document.getElementById('ev-dcfc-quish-select').value;
+  const optMode = document.getElementById('ev-dcfc-opt-select').value;
+
+  document.getElementById('ev-dcfc-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('ev-dcfc-status-kpi');
+  const grossKpi = document.getElementById('ev-dcfc-gross-kpi');
+  const netKpi = document.getElementById('ev-dcfc-net-kpi');
+  const savingsKpi = document.getElementById('ev-dcfc-savings-kpi');
+  const banner = document.getElementById('ev-dcfc-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (quishMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_QR_QUISHING_DOMAIN_MISMATCH_OR_CHARGER_CABLE_RECALL_HOLD · Mandate: null';
+    return;
+  }}
+  if (idleMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 IDLE_FEE_UNDER_50PCT_STATION_OCCUPANCY_OR_ROAMING_OCPI_MARKUP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (bmsMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PER_MINUTE_DERATED_KW_BILLING_OR_EICHRECHT_BMS_KWH_VARIANCE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.33);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TOU_OFF_PEAK_SUPERCHARGER_ROUTING_AND_FLEET_MEMBERSHIP_ARBITRAGE_CONFIRM · Mandate: ev_dcfc_charging_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ISO15118_BMS_VERIFIED_AND_DIRECT_CPO_TARIFF_AUTHORIZED · Mandate: ev_dcfc_charging_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

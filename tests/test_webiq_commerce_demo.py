@@ -15155,6 +15155,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-corporate-gifting-swag-escrow-sandbox", html_zh)
 
+    def test_ev_dcfc_charging_ocpi_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EvDcfcChargingOcpiEscrowPolicyInput,
+            evaluate_ev_dcfc_charging_ocpi_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ev_dcfc_charging_ocpi_escrow_policy(
+            EvDcfcChargingOcpiEscrowPolicyInput(
+                quarterly_ev_dcfc_charging_and_fleet_pool_usd=75000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ISO15118_BMS_VERIFIED_AND_DIRECT_CPO_TARIFF_AUTHORIZED",
+        )
+
+        idle = evaluate_ev_dcfc_charging_ocpi_escrow_policy(
+            EvDcfcChargingOcpiEscrowPolicyInput(
+                idle_fee_under_50pct_station_occupancy_or_roaming_ocpi_markup=True
+            )
+        )
+        self.assertEqual(idle["status_code"], 403)
+        self.assertEqual(
+            idle["decision"],
+            "IDLE_FEE_UNDER_50PCT_STATION_OCCUPANCY_OR_ROAMING_OCPI_MARKUP_BLOCKED",
+        )
+
+        bms = evaluate_ev_dcfc_charging_ocpi_escrow_policy(
+            EvDcfcChargingOcpiEscrowPolicyInput(
+                per_minute_derated_kw_billing_or_eichrecht_bms_kwh_variance=True
+            )
+        )
+        self.assertEqual(bms["status_code"], 422)
+        self.assertEqual(
+            bms["decision"],
+            "PER_MINUTE_DERATED_KW_BILLING_OR_EICHRECHT_BMS_KWH_VARIANCE_BLOCKED",
+        )
+
+        quish = evaluate_ev_dcfc_charging_ocpi_escrow_policy(
+            EvDcfcChargingOcpiEscrowPolicyInput(
+                webiq_qr_quishing_domain_mismatch_or_charger_cable_recall_flag=True
+            )
+        )
+        self.assertEqual(quish["status_code"], 451)
+        self.assertEqual(
+            quish["decision"],
+            "WEBIQ_QR_QUISHING_DOMAIN_MISMATCH_OR_CHARGER_CABLE_RECALL_HOLD",
+        )
+
+        optim = evaluate_ev_dcfc_charging_ocpi_escrow_policy(
+            EvDcfcChargingOcpiEscrowPolicyInput(
+                quarterly_ev_dcfc_charging_and_fleet_pool_usd=75000.0,
+                tou_off_peak_supercharger_routing_and_fleet_membership_arbitrage_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 24750.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 50250.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ev_dcfc_charging_ocpi_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ev-dcfc-charging-ocpi-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

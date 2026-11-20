@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`209` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`210` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（38 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（65 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（66 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（47 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（29 篇）](#tax-fx-privacy-disputes)
@@ -82,7 +82,7 @@
 | 38 | **音乐节与体育场馆无现金 RFID 手环充值、防默认 25% 小费刺客与余额零手续费秒退（Music Festival & Stadium Cashless RFID Wristband, Anti-Tip-Creep & Auto-Refund Escrow：Coachella / Tomorrowland / Intellitix / 草莓音乐节）“防散场剩 $19 收 $5 退费手续费吞没沉淀款、防买瓶水 POS 屏默认勾 25% 小费与直绑免充值”Agent 架构选型 FAQ** | [中文](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.md) · [English](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（65 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（66 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -153,6 +153,7 @@
 | 63 | **养老社区（CCRC / 协助生活）、护理等级跳档防坑与居家护工电子签到（EVV）托管（Senior Living, Assisted-Care Tier Lock & Home-Care EVV Escrow：A Place for Mom / Care.com / Honor / 泰康之家）“防入住 60 天后护理积分跳档暴涨 45%、防居家护工异地代打卡吃空饷与 $18,000 私签违约金”Agent 架构选型 FAQ** | [中文](senior-living-assisted-care-evv-ltc-escrow-agent-selection-faq.md) · [English](senior-living-assisted-care-evv-ltc-escrow-agent-selection-faq.en.md) |
 | 64 | **生鲜即时零售、水产肉类称重预授权（Catch-Weight）与缺货贵价替换防坑托管（Online Grocery, Catch-Weight Pre-Auth & Cold-Chain Substitution Escrow：Instacart / Amazon Fresh / Weee! / 盒马鲜生 / 小象超市）“防拣货员故意换贵货多赚百分比小费、防称重海鲜多抓 50% 吃满预授权与 App 暗涨 20% 菜价”Agent 架构选型 FAQ** | [中文](online-grocery-catch-weight-substitution-coldchain-escrow-agent-selection-faq.md) · [English](online-grocery-catch-weight-substitution-coldchain-escrow-agent-selection-faq.en.md) |
 | 65 | **滑雪场通滑季卡（Epic / Ikon）、动态缆车票与雪具租赁押金防坑托管（Ski Pass, Multi-Resort Lift Ticket & Equipment Rental Escrow：Vail Epic / Alterra Ikon / Black Tie Ski / 滑呗）“防节假日禁滑期（Blackout）到场被宰 $299/天雪票、防大风封山仅开魔毯不退费与退板底划痕讹 $350 押金”Agent 架构选型 FAQ** | [中文](ski-pass-resort-lift-ticket-equipment-rental-escrow-agent-selection-faq.md) · [English](ski-pass-resort-lift-ticket-equipment-rental-escrow-agent-selection-faq.en.md) |
+| 66 | **新能源汽车公共超充（DCFC）、跨网漫游（OCPI）加价与超时占位费防坑托管（EV DC Fast-Charging, OCPI Roaming & Idle-Penalty Escrow：Tesla Supercharger / Electrify America / 特来电 / 星星充电）“防空场强扣 $1/分钟超时占位费、防慢充按 350kW 分钟费率计价与贴纸二维码钓鱼（Quishing）”Agent 架构选型 FAQ** | [中文](ev-dcfc-charging-roaming-ocpi-idle-fee-escrow-agent-selection-faq.md) · [English](ev-dcfc-charging-roaming-ocpi-idle-fee-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（47 篇）

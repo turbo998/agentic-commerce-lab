@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg534" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#06141b"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="accent534" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg534)"/>
+  <rect x="28" y="24" width="1144" height="627" rx="18" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <rect x="28" y="24" width="1144" height="6" rx="3" fill="url(#accent534)"/>
+
+  <!-- Header -->
+  <text x="56" y="68" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">ROUND 91 · SVG 534 · EV DC FAST-CHARGING (DCFC), OCPI ROAMING &amp; IDLE-FEE ESCROW</text>
+  <text x="56" y="100" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="800">EV Charging Agent: ISO 15118 BMS Parity, Idle-Fee Gate &amp; Off-Peak TOU Routing</text>
+  <text x="56" y="126" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Tesla Supercharger / Electrify America / ChargePoint / TELD (特来电) — Blocking $1/m Idle Traps, OCPI Markups &amp; QR Quishing</text>
+  <rect x="960" y="54" width="184" height="36" rx="18" fill="#064e3b" stroke="#10b981" stroke-width="1.2"/>
+  <text x="1052" y="77" fill="#6ee7b7" font-family="Consolas, monospace" font-size="13" font-weight="700" text-anchor="middle">33% EV CHARGE SAVED</text>
+
+  <!-- Left Panel: 3 Commercial Traps -->
+  <rect x="52" y="150" width="345" height="475" rx="14" fill="#111827" stroke="#ef4444" stroke-width="1.2"/>
+  <text x="72" y="182" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">1. EV DC Fast-Charging Traps</text>
+
+  <rect x="70" y="200" width="309" height="126" rx="10" fill="#1f2937" stroke="#dc2626" stroke-width="1"/>
+  <text x="84" y="224" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap A: $1/m Idle Fee &amp; 35% OCPI Markup</text>
+  <text x="84" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Roaming app marks $0.42/kWh up to $0.61/kWh;</text>
+  <text x="84" y="266" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  charges $1.00/m ($60/h) idle fee on empty lot</text>
+  <text x="84" y="286" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  or when jammed latch / dead modem blocks alert</text>
+  <text x="84" y="306" fill="#fca5a5" font-family="Consolas, monospace" font-size="11">Guard: HTTP 403 OCCUPANCY_50PCT_AND_DIRECT_CPO</text>
+
+  <rect x="70" y="340" width="309" height="126" rx="10" fill="#1f2937" stroke="#f97316" stroke-width="1"/>
+  <text x="84" y="364" fill="#fed7aa" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap B: Derated kW &amp; 24% Meter Loss</text>
+  <text x="84" y="386" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• "350kW" stall delivers only 38kW while billing</text>
+  <text x="84" y="406" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  top-tier $0.48/min rate; bills 82kWh when</text>
+  <text x="84" y="426" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  vehicle BMS only received 66kWh (&gt;8% loss)</text>
+  <text x="84" y="446" fill="#fdba74" font-family="Consolas, monospace" font-size="11">Guard: HTTP 422 EICHRECHT_BMS_8PCT_PARITY</text>
+
+  <rect x="70" y="480" width="309" height="124" rx="10" fill="#1f2937" stroke="#a855f7" stroke-width="1"/>
+  <text x="84" y="504" fill="#e9d5ff" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap C: Fake QR Sticker ("Quishing")</text>
+  <text x="84" y="526" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Fraudulent QR sticker pasted over charger screen</text>
+  <text x="84" y="546" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  routes payment to phishing page; cable recall</text>
+  <text x="84" y="566" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Stale mandate signing key (&gt;180 days)</text>
+  <text x="84" y="586" fill="#d8b4fe" font-family="Consolas, monospace" font-size="11">Guard: HTTP 451 WEBIQ_ISO15118_TLS_AND_QR_HOLD</text>
+
+  <!-- Center Panel: Deterministic Control Plane -->
+  <rect x="419" y="150" width="362" height="475" rx="14" fill="#111827" stroke="#10b981" stroke-width="1.4"/>
+  <text x="439" y="182" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">2. Deterministic EV Charging Escrow</text>
+
+  <rect x="439" y="202" width="322" height="82" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+  <text x="455" y="226" fill="#6ee7b7" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 1 · ISO 15118 PLUG-AND-CHARGE &amp; IDLE</text>
+  <text x="455" y="248" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Direct CPO tariff (&lt;=5% fee) + $0 idle fee if</text>
+  <text x="455" y="268" fill="#38bdf8" font-family="Consolas, monospace" font-size="12">station &lt;50% full or push alert unacknowledged</text>
+
+  <rect x="439" y="298" width="322" height="86" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="455" y="322" fill="#38bdf8" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 2 · CAN-BUS BMS vs EICHRECHT METER</text>
+  <text x="455" y="344" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Reconciles signed DC meter kWh vs vehicle BMS</text>
+  <text x="455" y="364" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">kWh (&lt;=8% thermal loss) + blocks per-min derate</text>
+
+  <rect x="439" y="398" width="322" height="90" rx="10" fill="#0f172a" stroke="#818cf8" stroke-width="1"/>
+  <text x="455" y="422" fill="#a5b4fc" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 3 · ANTI-QUISHING &amp; CABLE THERMAL LOCK</text>
+  <text x="455" y="444" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Bans physical QR scan in favor of cryptographic</text>
+  <text x="455" y="464" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">ISO 15118-20 TLS handshake &amp; NHTSA recall check</text>
+
+  <rect x="439" y="502" width="322" height="102" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="455" y="526" fill="#fcd34d" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 4 · OFF-PEAK TOU &amp; PASS+ SYNC (409)</text>
+  <text x="455" y="548" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Routes fleet to Off-Peak TOU ($0.21 vs $0.56/kWh)</text>
+  <text x="455" y="568" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">+ auto-enables $7 Pass+ tier at &gt;=120 kWh/mo</text>
+  <text x="455" y="588" fill="#fde68a" font-family="Consolas, monospace" font-size="12">Quarterly Savings: $24,750 / $75,000 (33.0%)</text>
+
+  <!-- Right Panel: 5-Lane HTTP Verdicts & Platform Matrix -->
+  <rect x="803" y="150" width="345" height="475" rx="14" fill="#111827" stroke="#10b981" stroke-width="1.2"/>
+  <text x="823" y="182" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">3. 5-Lane Verdicts &amp; Platform Matrix</text>
+
+  <rect x="821" y="200" width="309" height="46" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+  <text x="835" y="220" fill="#a7f3d0" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 200 · ISO15118_BMS_AND_TARIFF_AUTHORIZED</text>
+  <text x="835" y="237" fill="#d1fae5" font-family="Segoe UI, Arial, sans-serif" font-size="11">Mandate: ev_dcfc_charging_escrow_mandate_200</text>
+
+  <rect x="821" y="254" width="309" height="46" rx="8" fill="#450a0a" stroke="#ef4444" stroke-width="1"/>
+  <text x="835" y="274" fill="#fecaca" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 403 · IDLE_TRAP_OR_OCPI_MARKUP_BLOCKED</text>
+  <text x="835" y="291" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11">Blocks &lt;50%-lot idle fees &amp; 35% roaming markup</text>
+
+  <rect x="821" y="308" width="309" height="46" rx="8" fill="#431407" stroke="#f97316" stroke-width="1"/>
+  <text x="835" y="328" fill="#fed7aa" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 422 · DERATED_MIN_OR_KWH_LOSS_BLOCKED</text>
+  <text x="835" y="345" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="11">Blocks 38kW per-min billing &amp; &gt;8% BMS kWh loss</text>
+
+  <rect x="821" y="362" width="309" height="46" rx="8" fill="#3b0764" stroke="#a855f7" stroke-width="1"/>
+  <text x="835" y="382" fill="#e9d5ff" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 451 · WEBIQ_QUISHING_OR_CABLE_HOLD</text>
+  <text x="835" y="399" fill="#d8b4fe" font-family="Segoe UI, Arial, sans-serif" font-size="11">Holds session on fake QR URL or liquid-cable recall</text>
+
+  <rect x="821" y="416" width="309" height="50" rx="8" fill="#451a03" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="835" y="436" fill="#fde68a" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 409 · OFF_PEAK_TOU_AND_PASS_MEMBERSHIP</text>
+  <text x="835" y="455" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="11">Off-peak $0.21/kWh + Pass+ discount (-33% TCO)</text>
+
+  <!-- Platform Summary -->
+  <rect x="821" y="478" width="309" height="126" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="835" y="500" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">Platform Selection Matrix:</text>
+  <text x="835" y="520" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Tesla Supercharger (NACS): ISO 15118 &amp; TOU rates</text>
+  <text x="835" y="538" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Electrify America / IONITY: Pass+ -25% kWh tier</text>
+  <text x="835" y="556" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Hubject / ChargePoint OCPI: Watch roaming spread</text>
+  <text x="835" y="574" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• TELD / StarCharge (特来电/星星): Valley TOU</text>
+  <text x="835" y="592" fill="#6ee7b7" font-family="Consolas, monospace" font-size="11">Provenance: synthetic · reproduced=False</text>
+</svg>
