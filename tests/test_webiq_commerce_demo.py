@@ -13212,6 +13212,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("home-cleaning-maid-moveout-escrow-sandbox", html_zh)
 
+    def test_micro_drama_webnovel_cap_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            MicroDramaWebnovelCapEscrowPolicyInput,
+            evaluate_micro_drama_webnovel_cap_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_micro_drama_webnovel_cap_escrow_policy(
+            MicroDramaWebnovelCapEscrowPolicyInput(
+                quarterly_micro_drama_and_webnovel_iap_pool_usd=260000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "SERIES_CAP_LOCKED_AND_TRANSPARENT_EPISODE_UNLOCK_AUTHORIZED",
+        )
+
+        wk = evaluate_micro_drama_webnovel_cap_escrow_policy(
+            MicroDramaWebnovelCapEscrowPolicyInput(
+                predatory_weekly_autorenew_dark_pattern_or_minor_curfew_spend=True
+            )
+        )
+        self.assertEqual(wk["status_code"], 403)
+        self.assertEqual(
+            wk["decision"],
+            "PREDATORY_WEEKLY_AUTOREW_DARK_PATTERN_OR_MINOR_SPEND_BLOCKED",
+        )
+
+        cap = evaluate_micro_drama_webnovel_cap_escrow_policy(
+            MicroDramaWebnovelCapEscrowPolicyInput(
+                uncapped_per_episode_drain_or_unfinished_hiatus_trap=True
+            )
+        )
+        self.assertEqual(cap["status_code"], 422)
+        self.assertEqual(
+            cap["decision"],
+            "UNCAPPED_PER_EPISODE_DRAIN_OR_UNFINISHED_HIATUS_TRAP_BLOCKED",
+        )
+
+        dmca = evaluate_micro_drama_webnovel_cap_escrow_policy(
+            MicroDramaWebnovelCapEscrowPolicyInput(
+                webiq_pirated_drama_dmca_strike_or_vamp_chargeback_flag=True
+            )
+        )
+        self.assertEqual(dmca["status_code"], 451)
+        self.assertEqual(
+            dmca["decision"],
+            "WEBIQ_PIRATED_DRAMA_DMCA_STRIKE_OR_VAMP_CHARGEBACK_HOLD",
+        )
+
+        optim = evaluate_micro_drama_webnovel_cap_escrow_policy(
+            MicroDramaWebnovelCapEscrowPolicyInput(
+                quarterly_micro_drama_and_webnovel_iap_pool_usd=260000.0,
+                web2app_direct_topup_and_series_buyout_cap_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 70200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 189800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("micro_drama_webnovel_cap_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("micro-drama-webnovel-cap-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

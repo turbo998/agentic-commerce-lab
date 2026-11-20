@@ -19454,6 +19454,87 @@ def evaluate_home_cleaning_maid_moveout_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class MicroDramaWebnovelCapEscrowPolicyInput:
+    """Input contract for Micro-Drama IAP, Web-Novel Pay-Per-Chapter & Series Buyout Cap Escrow."""
+
+    quarterly_micro_drama_and_webnovel_iap_pool_usd: float = 260000.0
+    predatory_weekly_autorenew_dark_pattern_or_minor_curfew_spend: bool = False
+    uncapped_per_episode_drain_or_unfinished_hiatus_trap: bool = False
+    webiq_pirated_drama_dmca_strike_or_vamp_chargeback_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    web2app_direct_topup_and_series_buyout_cap_ready: bool = False
+
+
+def evaluate_micro_drama_webnovel_cap_escrow_policy(
+    policy_input: MicroDramaWebnovelCapEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Micro-Drama IAP, Web-Novel Pay-Per-Chapter & Series Buyout Cap policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_micro_drama_and_webnovel_iap_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_pirated_drama_dmca_strike_or_vamp_chargeback_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_PIRATED_DRAMA_DMCA_STRIKE_OR_VAMP_CHARGEBACK_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.predatory_weekly_autorenew_dark_pattern_or_minor_curfew_spend:
+        return {
+            "status_code": 403,
+            "decision": "PREDATORY_WEEKLY_AUTOREW_DARK_PATTERN_OR_MINOR_SPEND_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncapped_per_episode_drain_or_unfinished_hiatus_trap:
+        return {
+            "status_code": 422,
+            "decision": "UNCAPPED_PER_EPISODE_DRAIN_OR_UNFINISHED_HIATUS_TRAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.web2app_direct_topup_and_series_buyout_cap_ready:
+        savings = round(gross_pool * 0.27, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "WEB2APP_DIRECT_TOPUP_AND_SERIES_BUYOUT_CAP_CONFIRM",
+            "mandate_token": "micro_drama_webnovel_cap_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "SERIES_CAP_LOCKED_AND_TRANSPARENT_EPISODE_UNLOCK_AUTHORIZED",
+        "mandate_token": "micro_drama_webnovel_cap_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -26985,6 +27066,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    micro_drama_webnovel_cap_escrow_guard = {
+        "authorized_200": evaluate_micro_drama_webnovel_cap_escrow_policy(
+            MicroDramaWebnovelCapEscrowPolicyInput()
+        ),
+        "weekly_dark_pattern_or_minor_403": evaluate_micro_drama_webnovel_cap_escrow_policy(
+            MicroDramaWebnovelCapEscrowPolicyInput(
+                predatory_weekly_autorenew_dark_pattern_or_minor_curfew_spend=True
+            )
+        ),
+        "uncapped_episode_or_hiatus_422": evaluate_micro_drama_webnovel_cap_escrow_policy(
+            MicroDramaWebnovelCapEscrowPolicyInput(
+                uncapped_per_episode_drain_or_unfinished_hiatus_trap=True
+            )
+        ),
+        "piracy_dmca_or_vamp_451": evaluate_micro_drama_webnovel_cap_escrow_policy(
+            MicroDramaWebnovelCapEscrowPolicyInput(
+                webiq_pirated_drama_dmca_strike_or_vamp_chargeback_flag=True
+            )
+        ),
+        "web2app_direct_and_series_cap_409": evaluate_micro_drama_webnovel_cap_escrow_policy(
+            MicroDramaWebnovelCapEscrowPolicyInput(
+                web2app_direct_topup_and_series_buyout_cap_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -27175,6 +27282,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "bridal_bespoke_tailoring_escrow_guard": bridal_bespoke_tailoring_escrow_guard,
         "corporate_ridehailing_ground_transport_escrow_guard": corporate_ridehailing_ground_transport_escrow_guard,
         "home_cleaning_maid_moveout_escrow_guard": home_cleaning_maid_moveout_escrow_guard,
+        "micro_drama_webnovel_cap_escrow_guard": micro_drama_webnovel_cap_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -35404,6 +35512,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="home-clean-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 OFFPEAK_BIWEEKLY_CADENCE_AND_PAY_PER_VISIT_SPT_CONFIRM · Mandate: home_cleaning_maid_moveout_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 62 Micro-Drama IAP, Web-Novel Pay-Per-Chapter & Series Buyout Cap Escrow -->
+      <div class="finops-box" id="micro-drama-webnovel-cap-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎬 短剧出海充值、网文按章解锁与互动影游微支付 (ReelShort / DramaBox / ShortMax / 番茄小说 / 起点中文网) 禁周卡暗扣、整剧封顶与 H5 直充沙盒 (Round 62)</div>
+            <div class="finops-subtitle">实测 FTC ROSCA 拦截“$0.99 解锁捆绑 $39.99/周自动续费”暗扣与未成年夜间连刷 (HTTP 403)、单部短剧按集累计消费满 $14.99 自动转整部买断防 $80 吞币与断更退币 (HTTP 422)、Web IQ 盗版 AI 换脸 DMCA 与 VAMP 拒付率熔断 (HTTP 451) 及 Web2App H5 直充免 30% 苹果税立省 27% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="micro-drama-status-kpi">HTTP 409 · WEB2APP_DIRECT_TOPUP_AND_SERIES_BUYOUT_CAP_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度短剧充值与网文订阅结算池 ($ USD)
+            <input type="range" id="micro-drama-pool-slider" min="50000" max="1500000" step="10000" value="260000" oninput="updateMicroDramaWebnovelCapSandbox()" />
+            <span id="micro-drama-pool-val" style="color:#6ee7b7; font-family:monospace;">$260,000</span>
+          </label>
+          <label>
+            高额周卡自动续费暗扣与未成年夜间防沉迷校验 (HTTP 403)
+            <select id="micro-drama-weekly-select" onchange="updateMicroDramaWebnovelCapSandbox()">
+              <option value="pass">无捆绑自动续费暗扣 + 显式透明一口价 + 非未成年宵禁时段 (放行)</option>
+              <option value="block">$0.99 单集解锁默认勾选 $39.99/周自动续费暗扣 或 深夜未成年连刷 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            单剧累计消费 $14.99 封顶买断与完结状态校验 (HTTP 422)
+            <select id="micro-drama-cap-select" onchange="updateMicroDramaWebnovelCapSandbox()">
+              <option value="pass">单剧累计满 $14.99 自动免费解锁全集 + 完结剧库校验通过 (合规)</option>
+              <option value="block">100 集短剧按集无上限扣走 $85 或 连载断更 30 天拒退剩余金币 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 短剧版权链与 Visa VAMP 拒付率筛查 (HTTP 451)
+            <select id="micro-drama-dmca-select" onchange="updateMicroDramaWebnovelCapSandbox()">
+              <option value="clear">正版发行备案有效 + 拒付率 &lt;0.9% (VAMP安全) + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">检出 AI 换脸盗版搬运遭 DMCA 下架投诉 或 拒付率突破 0.9% 红线 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            Web2App H5 网页直充免苹果税与整剧封顶包 (HTTP 409)
+            <select id="micro-drama-opt-select" onchange="updateMicroDramaWebnovelCapSandbox()">
+              <option value="enabled" selected>开启 Web2App H5 直充免 30% 渠道税 + 整剧买断封顶包省 27% (HTTP 409)</option>
+              <option value="baseline">常规单剧封顶保护与透明单章解锁授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度短剧网文毛池</div>
+            <div class="finops-kpi-val" id="micro-drama-gross-kpi">$260,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">H5直充与封顶后净额</div>
+            <div class="finops-kpi-val" id="micro-drama-net-kpi" style="color:#6ee7b7;">$189,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下渠道税与防超支</div>
+            <div class="finops-kpi-val" id="micro-drama-savings-kpi" style="color:#38bdf8;">$70,200</div>
+          </div>
+        </div>
+        <div id="micro-drama-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 WEB2APP_DIRECT_TOPUP_AND_SERIES_BUYOUT_CAP_CONFIRM · Mandate: micro_drama_webnovel_cap_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -45363,6 +45534,80 @@ function updateHomeCleaningMaidMoveoutSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 FLAT_SCOPE_AND_MOVEOUT_CHECKLIST_AUTHORIZED · Mandate: home_cleaning_maid_moveout_escrow_mandate_200';
+}}
+
+function updateMicroDramaWebnovelCapSandbox() {{
+  const slider = document.getElementById('micro-drama-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '260000');
+  const wkMode = document.getElementById('micro-drama-weekly-select').value;
+  const capMode = document.getElementById('micro-drama-cap-select').value;
+  const dmcaMode = document.getElementById('micro-drama-dmca-select').value;
+  const optMode = document.getElementById('micro-drama-opt-select').value;
+
+  document.getElementById('micro-drama-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('micro-drama-status-kpi');
+  const grossKpi = document.getElementById('micro-drama-gross-kpi');
+  const netKpi = document.getElementById('micro-drama-net-kpi');
+  const savingsKpi = document.getElementById('micro-drama-savings-kpi');
+  const banner = document.getElementById('micro-drama-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dmcaMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_PIRATED_DRAMA_DMCA_STRIKE_OR_VAMP_CHARGEBACK_HOLD · Mandate: null';
+    return;
+  }}
+  if (wkMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PREDATORY_WEEKLY_AUTOREW_DARK_PATTERN_OR_MINOR_SPEND_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (capMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCAPPED_PER_EPISODE_DRAIN_OR_UNFINISHED_HIATUS_TRAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.27);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 WEB2APP_DIRECT_TOPUP_AND_SERIES_BUYOUT_CAP_CONFIRM · Mandate: micro_drama_webnovel_cap_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 SERIES_CAP_LOCKED_AND_TRANSPARENT_EPISODE_UNLOCK_AUTHORIZED · Mandate: micro_drama_webnovel_cap_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`180` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`181` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -10,7 +10,7 @@
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（37 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（49 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（38 篇）](#b2b-procurement-erp)
-- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（18 篇）](#saas-finops-micropayments)
+- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（19 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（28 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
@@ -184,7 +184,7 @@
 | 38 | **企业差旅打车、网约车企业版与加班出行结算（Corporate Ride-Hailing, Executive Ground Transport & Commuter Voucher Escrow：Uber for Business / Lyft Business / 滴滴企业版 / 高德企业用车）“防员工拿加班打车券异地代人叫车/绕路办私事、防机场专车虚报高速过路费与航班延误自动同步接机免空驶费”Agent 架构选型 FAQ** | [中文](corporate-ridehailing-ground-transport-geofence-flight-sync-escrow-agent-selection-faq.md) · [English](corporate-ridehailing-ground-transport-geofence-flight-sync-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（18 篇）
+## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（19 篇）
 
 > 涵盖企业 SaaS 席位与影子 IT 治理、高频 Token/API 用量水位线幂等计费、FTC 一键退订（Click-to-Cancel）与挽留护栏、HTTP 402（x402 / Stripe MPP Tempo）亚美分流式微支付及推理 FinOps 成本路由。
 
@@ -208,6 +208,7 @@
 | 16 | **品牌零售商与电商平台“付费会员体系（Paid Membership：Amazon Prime / Costco / 山姆会员店 / 88VIP / 京东 PLUS）与高价值权益防黑产撸毛”Agent 架构选型 FAQ：防闲鱼代下单发往 400 个地址、防领完联名年卡秒退会费与“没省够会费自动退差额”实战指南** | [中文](paid-loyalty-membership-prime-costco-benefit-sharing-ftc-agent-selection-faq.md) · [English](paid-loyalty-membership-prime-costco-benefit-sharing-ftc-agent-selection-faq.en.md) |
 | 17 | **创作者经济、付费专栏/私域社群与粉丝打赏周边（Creator Economy, Paid Newsletter, Discord/Patreon Tier & Tipping Escrow：Patreon / Substack / Whop / 知识星球 / 爱发电）“防付 1 个月钱扒光 5 年历史付费全集后秒退订拒付（Hit-and-Run Archive Scraping）、防空壳打赏洗钱与 Web 直连免 30% 苹果税”Agent 架构选型 FAQ** | [中文](creator-economy-patreon-substack-archive-scraping-iap-escrow-agent-selection-faq.md) · [English](creator-economy-patreon-substack-archive-scraping-iap-escrow-agent-selection-faq.en.md) |
 | 18 | **居家养老护理、月嫂家政撮合与长护险/企业看护福利结算（Senior Home Care, Postpartum Nanny & Elder-Care EVV Escrow：Care.com / Papa / Honor / 21st Century Cures Act EVV / 天鹅到家 / 京东家政）“防护工虚拟定位空挂工时骗保（Ghost EVV Visit）、防保姆闪辞中介拒退信息费与 OIG 虐老黑名单熔断”Agent 架构选型 FAQ** | [中文](senior-homecare-nanny-evv-geofence-placement-escrow-agent-selection-faq.md) · [English](senior-homecare-nanny-evv-geofence-placement-escrow-agent-selection-faq.en.md) |
+| 19 | **短剧出海充值、网络小说按章解锁与互动影游微支付（Micro-Drama IAP, Web-Novel Pay-Per-Chapter & Interactive Video Subscription Escrow：ReelShort / DramaBox / ShortMax / 番茄小说 / 起点中文网）“防‘$0.99 解锁大结局’夹带 $39.99/周自动续费暗扣、防按集零买贵过整剧买断 5 倍与 H5 网页直充免 30% 苹果税”Agent 架构选型 FAQ** | [中文](micro-drama-webnovel-pay-per-episode-cap-weekly-sub-escrow-agent-selection-faq.md) · [English](micro-drama-webnovel-pay-per-episode-cap-weekly-sub-escrow-agent-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（28 篇）
