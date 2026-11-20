@@ -21641,6 +21641,87 @@ def evaluate_b2b_ooh_dooh_billboard_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class SkiPassResortRentalEscrowPolicyInput:
+    """Input contract for Ski Pass, Multi-Resort Lift Ticket & Equipment Rental Escrow."""
+
+    quarterly_ski_pass_and_resort_rental_pool_usd: float = 110000.0
+    holiday_blackout_date_mismatch_or_silent_season_pass_autorenew: bool = False
+    gondola_wind_hold_terrain_below_50pct_or_base_scratch_deposit_extortion: bool = False
+    webiq_avalanche_highway_closure_or_uncalibrated_din_binding_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    preseason_multi_day_pack_arbitrage_and_off_mountain_demo_rental_ready: bool = False
+
+
+def evaluate_ski_pass_resort_rental_escrow_policy(
+    policy_input: SkiPassResortRentalEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Ski Pass, Multi-Resort Lift Ticket & Equipment Rental Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_ski_pass_and_resort_rental_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_avalanche_highway_closure_or_uncalibrated_din_binding_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_AVALANCHE_HIGHWAY_CLOSURE_OR_UNCALIBRATED_DIN_BINDING_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.holiday_blackout_date_mismatch_or_silent_season_pass_autorenew:
+        return {
+            "status_code": 403,
+            "decision": "HOLIDAY_BLACKOUT_DATE_MISMATCH_OR_SILENT_SEASON_PASS_AUTORENEW_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.gondola_wind_hold_terrain_below_50pct_or_base_scratch_deposit_extortion:
+        return {
+            "status_code": 422,
+            "decision": "GONDOLA_WIND_HOLD_TERRAIN_BELOW_50PCT_OR_BASE_SCRATCH_DEPOSIT_EXTORTION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.preseason_multi_day_pack_arbitrage_and_off_mountain_demo_rental_ready:
+        savings = round(gross_pool * 0.28, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PRESEASON_MULTI_DAY_PACK_ARBITRAGE_AND_OFF_MOUNTAIN_DEMO_RENTAL_CONFIRM",
+            "mandate_token": "ski_pass_resort_rental_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "BLACKOUT_VERIFIED_AND_DIN_CALIBRATED_SKI_AUTHORIZED",
+        "mandate_token": "ski_pass_resort_rental_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -29874,6 +29955,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ski_pass_resort_rental_escrow_guard = {
+        "authorized_200": evaluate_ski_pass_resort_rental_escrow_policy(
+            SkiPassResortRentalEscrowPolicyInput()
+        ),
+        "blackout_mismatch_or_autorenew_403": evaluate_ski_pass_resort_rental_escrow_policy(
+            SkiPassResortRentalEscrowPolicyInput(
+                holiday_blackout_date_mismatch_or_silent_season_pass_autorenew=True
+            )
+        ),
+        "wind_hold_or_ptex_extortion_422": evaluate_ski_pass_resort_rental_escrow_policy(
+            SkiPassResortRentalEscrowPolicyInput(
+                gondola_wind_hold_terrain_below_50pct_or_base_scratch_deposit_extortion=True
+            )
+        ),
+        "avalanche_closure_or_din_fault_451": evaluate_ski_pass_resort_rental_escrow_policy(
+            SkiPassResortRentalEscrowPolicyInput(
+                webiq_avalanche_highway_closure_or_uncalibrated_din_binding_flag=True
+            )
+        ),
+        "preseason_pack_and_chalet_gear_409": evaluate_ski_pass_resort_rental_escrow_policy(
+            SkiPassResortRentalEscrowPolicyInput(
+                preseason_multi_day_pack_arbitrage_and_off_mountain_demo_rental_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -30091,6 +30198,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_tradeshow_drayage_booth_escrow_guard": b2b_tradeshow_drayage_booth_escrow_guard,
         "online_grocery_catch_weight_coldchain_guard": online_grocery_catch_weight_coldchain_guard,
         "b2b_ooh_dooh_billboard_escrow_guard": b2b_ooh_dooh_billboard_escrow_guard,
+        "ski_pass_resort_rental_escrow_guard": ski_pass_resort_rental_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -40021,6 +40129,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ooh-dooh-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PROGRAMMATIC_PDOOH_DAYPART_WEATHER_TRIGGER_AND_REMNANT_BID_CONFIRM · Mandate: b2b_ooh_dooh_billboard_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 89 Ski Pass, Multi-Resort Lift Ticket & Equipment Rental Escrow -->
+      <div class="finops-box" id="ski-pass-resort-rental-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎿 滑雪场通滑季卡 (Epic / Ikon)、动态缆车票与雪具租赁押金防坑托管 (Vail Epic / Alterra Ikon / Black Tie Ski / 滑呗) 禁滑对齐与缆车风控沙盒 (Round 89)</div>
+            <div class="finops-subtitle">实测机酒日期与季卡节假日禁滑期 (Blackout Dates) 100% 原子对齐防到场被宰 $299/天窗口票及单季虚拟卡防次年春季自动续费 (HTTP 403)、早 08:30 缆车开放率(&gt;=50%)闸机防误刷保护与必含 $0 免赔底板石子划痕险 (P-Tex Waiver) 防扣 $350 押金 (HTTP 422)、Web IQ 雪崩封路与 ISO 11088 DIN 扭力单熔断 (HTTP 451) 及季前 4-Day 次卡 ($98/天)+送板进酒店净省 28% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="ski-pass-status-kpi">HTTP 409 · PRESEASON_MULTI_DAY_PACK_ARBITRAGE_AND_OFF_MOUNTAIN_DEMO_RENTAL_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度冬季滑雪团建与家庭冰雪度假预算池 ($ USD)
+            <input type="range" id="ski-pass-pool-slider" min="20000" max="600000" step="5000" value="110000" oninput="updateSkiPassResortRentalEscrowSandbox()" />
+            <span id="ski-pass-pool-val" style="color:#6ee7b7; font-family:monospace;">$110,000</span>
+          </label>
+          <label>
+            酒店日期与季卡禁滑期 (Blackout) 对齐及防续费核验 (HTTP 403)
+            <select id="ski-pass-blackout-select" onchange="updateSkiPassResortRentalEscrowSandbox()">
+              <option value="pass">出行日期 100% 避开禁滑黑名单 + 已锁上山预约名额 + 单季虚拟卡禁自动续费 (放行)</option>
+              <option value="block">圣诞/总统日撞上 Base 卡禁滑期被迫买 $299/天窗口票 或 3月静默自动续费 $1,050 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            早 08:30 缆车开放率 (&gt;=50%) 与底板划痕免赔险核验 (HTTP 422)
+            <select id="ski-pass-lift-select" onchange="updateSkiPassResortRentalEscrowSandbox()">
+              <option value="pass">山顶主缆车开放&gt;=50% 运力 + 租板含 $0 免赔 P-Tex 底板石子划痕豁免险 (合规)</option>
+              <option value="block">8级大风封山仅开 10% 魔毯仍强扣雪票 或 还板指着底板小划痕强扣 $350 押金 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 雪崩封路与 ISO 11088 固定器脱落值 (DIN) 核验 (HTTP 451)
+            <select id="ski-pass-din-select" onchange="updateSkiPassResortRentalEscrowSandbox()">
+              <option value="clear">进山公路畅通 + 雪道开放&gt;=20% + 已出具体重/靴底长匹配的 DIN 扭力测试条 (正常)</option>
+              <option value="hold">进山高速因雪崩管制封路/暖冬草皮裸露 或 雪具未做 ISO 11088 DIN 扭力校验 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            季前多日灵活次卡 (4-Day Pack) 与送板进酒店服务 (HTTP 409)
+            <select id="ski-pass-opt-select" onchange="updateSkiPassResortRentalEscrowSandbox()">
+              <option value="enabled" selected>锁定季前 $98/天 4-Pack 次卡 (替 $299 窗口票) + Ski Butlers 送板进房含全险省 28% (HTTP 409)</option>
+              <option value="baseline">常规无禁滑冲突雪票与 DIN 校验雪具托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度滑雪度假与团建总池</div>
+            <div class="finops-kpi-val" id="ski-pass-gross-kpi">$110,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">早鸟次卡与上门送板后净支出</div>
+            <div class="finops-kpi-val" id="ski-pass-net-kpi" style="color:#6ee7b7;">$79,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除窗口高价与押金损失</div>
+            <div class="finops-kpi-val" id="ski-pass-savings-kpi" style="color:#38bdf8;">$30,800</div>
+          </div>
+        </div>
+        <div id="ski-pass-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PRESEASON_MULTI_DAY_PACK_ARBITRAGE_AND_OFF_MOUNTAIN_DEMO_RENTAL_CONFIRM · Mandate: ski_pass_resort_rental_mandate_optim_409
         </div>
       </div>
 
@@ -51978,6 +52149,80 @@ function updateB2BOohDoohBillboardEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 GEOPATH_VAI_AND_DASHCAM_LOS_AUTHORIZED · Mandate: b2b_ooh_dooh_billboard_mandate_200';
+}}
+
+function updateSkiPassResortRentalEscrowSandbox() {{
+  const slider = document.getElementById('ski-pass-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '110000');
+  const blkMode = document.getElementById('ski-pass-blackout-select').value;
+  const liftMode = document.getElementById('ski-pass-lift-select').value;
+  const dinMode = document.getElementById('ski-pass-din-select').value;
+  const optMode = document.getElementById('ski-pass-opt-select').value;
+
+  document.getElementById('ski-pass-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('ski-pass-status-kpi');
+  const grossKpi = document.getElementById('ski-pass-gross-kpi');
+  const netKpi = document.getElementById('ski-pass-net-kpi');
+  const savingsKpi = document.getElementById('ski-pass-savings-kpi');
+  const banner = document.getElementById('ski-pass-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dinMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_AVALANCHE_HIGHWAY_CLOSURE_OR_UNCALIBRATED_DIN_BINDING_HOLD · Mandate: null';
+    return;
+  }}
+  if (blkMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 HOLIDAY_BLACKOUT_DATE_MISMATCH_OR_SILENT_SEASON_PASS_AUTORENEW_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (liftMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 GONDOLA_WIND_HOLD_TERRAIN_BELOW_50PCT_OR_BASE_SCRATCH_DEPOSIT_EXTORTION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.28);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PRESEASON_MULTI_DAY_PACK_ARBITRAGE_AND_OFF_MOUNTAIN_DEMO_RENTAL_CONFIRM · Mandate: ski_pass_resort_rental_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 BLACKOUT_VERIFIED_AND_DIN_CALIBRATED_SKI_AUTHORIZED · Mandate: ski_pass_resort_rental_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

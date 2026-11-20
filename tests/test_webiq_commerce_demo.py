@@ -15021,6 +15021,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-ooh-dooh-billboard-escrow-sandbox", html_zh)
 
+    def test_ski_pass_resort_rental_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SkiPassResortRentalEscrowPolicyInput,
+            evaluate_ski_pass_resort_rental_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ski_pass_resort_rental_escrow_policy(
+            SkiPassResortRentalEscrowPolicyInput(
+                quarterly_ski_pass_and_resort_rental_pool_usd=110000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "BLACKOUT_VERIFIED_AND_DIN_CALIBRATED_SKI_AUTHORIZED",
+        )
+
+        blk = evaluate_ski_pass_resort_rental_escrow_policy(
+            SkiPassResortRentalEscrowPolicyInput(
+                holiday_blackout_date_mismatch_or_silent_season_pass_autorenew=True
+            )
+        )
+        self.assertEqual(blk["status_code"], 403)
+        self.assertEqual(
+            blk["decision"],
+            "HOLIDAY_BLACKOUT_DATE_MISMATCH_OR_SILENT_SEASON_PASS_AUTORENEW_BLOCKED",
+        )
+
+        lift = evaluate_ski_pass_resort_rental_escrow_policy(
+            SkiPassResortRentalEscrowPolicyInput(
+                gondola_wind_hold_terrain_below_50pct_or_base_scratch_deposit_extortion=True
+            )
+        )
+        self.assertEqual(lift["status_code"], 422)
+        self.assertEqual(
+            lift["decision"],
+            "GONDOLA_WIND_HOLD_TERRAIN_BELOW_50PCT_OR_BASE_SCRATCH_DEPOSIT_EXTORTION_BLOCKED",
+        )
+
+        din = evaluate_ski_pass_resort_rental_escrow_policy(
+            SkiPassResortRentalEscrowPolicyInput(
+                webiq_avalanche_highway_closure_or_uncalibrated_din_binding_flag=True
+            )
+        )
+        self.assertEqual(din["status_code"], 451)
+        self.assertEqual(
+            din["decision"],
+            "WEBIQ_AVALANCHE_HIGHWAY_CLOSURE_OR_UNCALIBRATED_DIN_BINDING_HOLD",
+        )
+
+        optim = evaluate_ski_pass_resort_rental_escrow_policy(
+            SkiPassResortRentalEscrowPolicyInput(
+                quarterly_ski_pass_and_resort_rental_pool_usd=110000.0,
+                preseason_multi_day_pack_arbitrage_and_off_mountain_demo_rental_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 30800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 79200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ski_pass_resort_rental_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ski-pass-resort-rental-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
