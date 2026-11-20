@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg513" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#07111E" />
+      <stop offset="50%" stop-color="#0E223A" />
+      <stop offset="100%" stop-color="#081322" />
+    </linearGradient>
+    <linearGradient id="accent513" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#06B6D4" />
+      <stop offset="50%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg513)" />
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent513)" />
+
+  <!-- Header -->
+  <text x="44" y="48" fill="#06B6D4" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.4">ROUND 70 · ELECTIVE DENTAL IMPLANT, LASIK VISION CORRECTION &amp; SURGERY ESCROW</text>
+  <text x="44" y="82" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">口腔种植牙、近视激光(LASIK/ICL)与自费专科手术：防拆分牙冠加价、禁追溯高息与UDI溯源</text>
+  <text x="44" y="108" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="14">ClearChoice / 爱尔眼科 / 通策医疗 / 瑞尔齿科 / Sunbit vs 植体+基台+全瓷冠全包锁 vs 禁29.99%追溯罚息 vs 集采+HSA省 27%</text>
+
+  <!-- Left Panel: 3 Core Dental Implant & LASIK Surgery Risks -->
+  <rect x="44" y="132" width="350" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="64" y="164" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🚨 种植牙与近视手术三大消费陷阱</text>
+
+  <rect x="62" y="182" width="314" height="132" rx="8" fill="#1E293B" stroke="#EF4444" stroke-width="1" />
+  <text x="76" y="206" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">1. “$999 种一颗牙”只含螺丝，拔牙后加收 $2,800</text>
+  <text x="76" y="228" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 低价广告只包种植体螺钉，等患者躺上手术台拔完牙，</text>
+  <text x="76" y="248" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  才告知个性化基台($900)、全瓷牙冠($1,200)和骨粉($700)另算</text>
+  <text x="76" y="268" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：强制 CBCT 拍片后锁死“植体+基台+牙冠+骨粉”</text>
+  <text x="76" y="288" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  全包一口价合同(All-Inclusive Bundle) (HTTP 403)</text>
+
+  <rect x="62" y="328" width="314" height="132" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1" />
+  <text x="76" y="352" fill="#FCD34D" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">2. 免息医疗分期差 $10 没还清，倒追 29.99% 全年利息</text>
+  <text x="76" y="374" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 诊所推销 12 个月“0息医疗信用卡(Deferred Interest)”，第</text>
+  <text x="76" y="394" fill="#CBD5E1" font-size="12">  365 天哪怕只剩 $10 尾款未清，从第 1 天起按 29.99% 倒算全额罚息</text>
+  <text x="76" y="414" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：硬拦截追溯计息陷阱，强制 True 0% APR 等额</text>
+  <text x="76" y="434" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  摊还 + 植入物原厂 UDI 条码拆封验真 (HTTP 422)</text>
+
+  <rect x="62" y="474" width="314" height="134" rx="8" fill="#1E293B" stroke="#A855F7" stroke-width="1" />
+  <text x="76" y="498" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">3. 角膜厚度不足强行做 LASIK 致圆锥角膜与集采寻优</text>
+  <text x="76" y="520" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 术后残余角膜基质床 &lt;280μm 仍违规推激光手术引发医疗事故</text>
+  <text x="76" y="540" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：Web IQ 医疗禁忌症(角膜/骨密度)与资质熔断(451)</text>
+  <text x="76" y="560" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 口腔种植体集采阳光挂网价对齐 + HSA/FSA 免税账户</text>
+  <text x="76" y="582" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  自动跨年拆单抵税立省 27% (HTTP 409)</text>
+
+  <!-- Center Panel: 5-Lane Deterministic Gate -->
+  <rect x="414" y="132" width="402" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="434" y="164" fill="#06B6D4" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🛡️ 种植牙与近视手术五车道受托状态机</text>
+
+  <rect x="434" y="184" width="362" height="72" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="450" y="208" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 200 · ALL_INCLUSIVE_BUNDLE_AND_UDI_AUTHORIZED</text>
+  <text x="450" y="228" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">植体+基台+全瓷冠全包锁死 + 士卓曼/ICL 原厂UDI已核 (8ms)</text>
+  <text x="450" y="245" fill="#A7F3D0" font-family="Consolas, monospace" font-size="11">dental_implant_lasik_surgery_escrow_mandate_*</text>
+
+  <rect x="434" y="268" width="362" height="72" rx="8" fill="#450A0A" stroke="#EF4444" stroke-width="1.5" />
+  <text x="450" y="292" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 403 · UNBUNDLED_CROWN_ABUTMENT_BAIT_BLOCKED</text>
+  <text x="450" y="312" fill="#FEE2E2" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截只报种植钉隐瞒基台/牙冠/骨粉费，或术中躺手术台坐地起价</text>
+  <text x="450" y="329" fill="#FCA5A5" font-family="Consolas, monospace" font-size="11">crown_and_abutment_included = false | mid_surgery_upsell = true</text>
+
+  <rect x="434" y="352" width="362" height="72" rx="8" fill="#431407" stroke="#F97316" stroke-width="1.5" />
+  <text x="450" y="376" fill="#FDBA74" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 422 · DEFERRED_INTEREST_TRAP_OR_FAKE_IMPLANT_UDI</text>
+  <text x="450" y="396" fill="#FFEDD5" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截 29.99% 追溯高息医疗贷(Deferred Interest)或杂牌顶替瑞士植体</text>
+  <text x="450" y="413" fill="#FDBA74" font-family="Consolas, monospace" font-size="11">retroactive_deferred_interest = true | straumann_nobel_udi = null</text>
+
+  <rect x="434" y="436" width="362" height="72" rx="8" fill="#3B0764" stroke="#A855F7" stroke-width="1.5" />
+  <text x="450" y="460" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 451 · WEBIQ_CORNEAL_ECTASIA_OR_CLINIC_SAFETY_HOLD</text>
+  <text x="450" y="480" fill="#F3E8FF" font-family="Segoe UI, Arial, sans-serif" font-size="12">Web IQ 检出角膜残余基质厚度不足(&lt;280μm)禁忌症或无证行医黑名单</text>
+  <text x="450" y="497" fill="#D8B4FE" font-family="Consolas, monospace" font-size="11">residual_stromal_bed_um &lt; 280 | clinic_malpractice_suspend = true</text>
+
+  <rect x="434" y="520" width="362" height="88" rx="8" fill="#422006" stroke="#F59E0B" stroke-width="1.5" />
+  <text x="450" y="544" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 409 · VBP_BENCHMARK_CAP_AND_HSA_FSA_SPLIT_STAGE</text>
+  <text x="450" y="564" fill="#FEF3C7" font-family="Segoe UI, Arial, sans-serif" font-size="12">对齐种植牙集采全流程限价 + I期/II期跨年双倍 HSA 免税抵扣省 27%</text>
+  <text x="450" y="584" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">季度种植牙与眼科专科手术池 $275,000 → 净结算额 $200,750 (省 $74,250)</text>
+
+  <!-- Right Panel: Platform Selection Matrix -->
+  <rect x="836" y="132" width="320" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="856" y="164" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🧭 专科医疗与分期平台选型</text>
+
+  <rect x="854" y="184" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="206" fill="#06B6D4" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">爱尔眼科 / 通策医疗 / 瑞尔齿科 (上市连锁专科)</text>
+  <text x="868" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 全面响应口腔种植体系统集采与医疗服务费全流程</text>
+  <text x="868" y="246" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  限价，瑞士 Straumann/瑞典 Nobel/瑞士 STAAR ICL 一物一码</text>
+  <text x="868" y="266" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：单颗/半口种植牙、全飞秒 SMILE 与 ICL 晶体植入</text>
+
+  <rect x="854" y="298" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="320" fill="#10B981" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">ClearChoice / Sunbit / Cherry (透明打包与真免息)</text>
+  <text x="868" y="340" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• ClearChoice 提供拔牙+植体+牙冠全包一口价保证；</text>
+  <text x="868" y="360" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  Sunbit/Cherry 承诺零追溯罚息(No Deferred Interest Trap)</text>
+  <text x="868" y="380" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：大额自费齿科修复、视力矫正与合规医疗分期</text>
+
+  <rect x="854" y="412" width="284" height="196" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="868" y="436" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">★ 推荐：Foundry + 全包锁价与 UDI 托管网关</text>
+  <text x="868" y="458" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">1. 强制“植体+基台+全瓷冠”全包一口价杜绝拆项宰客</text>
+  <text x="868" y="480" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">2. 封杀 29.99% 追溯高息医疗贷 + 原厂 UDI 扫码</text>
+  <text x="868" y="502" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">3. 角膜基质床 &lt;280μm 硬性熔断激光手术防失明</text>
+  <text x="868" y="524" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">4. 对齐集采挂网价 + HSA/FSA 免税拆单省 27%</text>
+  <rect x="868" y="542" width="256" height="50" rx="6" fill="#022C22" />
+  <text x="880" y="563" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">审计标签：provenance = synthetic</text>
+  <text x="880" y="581" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="11">independently_reproduced = false</text>
+</svg>

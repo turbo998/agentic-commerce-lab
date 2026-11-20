@@ -13748,6 +13748,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ip-licensing-anime-merch-escrow-sandbox", html_zh)
 
+    def test_dental_implant_lasik_surgery_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            DentalImplantLasikSurgeryEscrowPolicyInput,
+            evaluate_dental_implant_lasik_surgery_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_dental_implant_lasik_surgery_escrow_policy(
+            DentalImplantLasikSurgeryEscrowPolicyInput(
+                quarterly_dental_implant_and_lasik_surgery_pool_usd=275000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ALL_INCLUSIVE_BUNDLE_AND_UDI_AUTHORIZED",
+        )
+
+        bnd = evaluate_dental_implant_lasik_surgery_escrow_policy(
+            DentalImplantLasikSurgeryEscrowPolicyInput(
+                unbundled_abutment_crown_bait_or_midsurgery_upsell=True
+            )
+        )
+        self.assertEqual(bnd["status_code"], 403)
+        self.assertEqual(
+            bnd["decision"],
+            "UNBUNDLED_ABUTMENT_CROWN_BAIT_OR_MIDSURGERY_UPSELL_BLOCKED",
+        )
+
+        udi = evaluate_dental_implant_lasik_surgery_escrow_policy(
+            DentalImplantLasikSurgeryEscrowPolicyInput(
+                retroactive_deferred_interest_trap_or_unverified_implant_udi=True
+            )
+        )
+        self.assertEqual(udi["status_code"], 422)
+        self.assertEqual(
+            udi["decision"],
+            "RETROACTIVE_DEFERRED_INTEREST_TRAP_OR_UNVERIFIED_IMPLANT_UDI_BLOCKED",
+        )
+
+        cor = evaluate_dental_implant_lasik_surgery_escrow_policy(
+            DentalImplantLasikSurgeryEscrowPolicyInput(
+                webiq_corneal_ectasia_contraindication_or_clinic_malpractice_flag=True
+            )
+        )
+        self.assertEqual(cor["status_code"], 451)
+        self.assertEqual(
+            cor["decision"],
+            "WEBIQ_CORNEAL_ECTASIA_CONTRAINDICATION_OR_CLINIC_MALPRACTICE_HOLD",
+        )
+
+        optim = evaluate_dental_implant_lasik_surgery_escrow_policy(
+            DentalImplantLasikSurgeryEscrowPolicyInput(
+                quarterly_dental_implant_and_lasik_surgery_pool_usd=275000.0,
+                vbp_price_benchmark_and_hsa_fsa_tax_free_split_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 74250.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 200750.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("dental_implant_lasik_surgery_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("dental-implant-lasik-surgery-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

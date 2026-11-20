@@ -20102,6 +20102,87 @@ def evaluate_ip_licensing_anime_merch_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class DentalImplantLasikSurgeryEscrowPolicyInput:
+    """Input contract for Elective Dental Implant, LASIK Vision Correction & Bundled Surgery Escrow."""
+
+    quarterly_dental_implant_and_lasik_surgery_pool_usd: float = 275000.0
+    unbundled_abutment_crown_bait_or_midsurgery_upsell: bool = False
+    retroactive_deferred_interest_trap_or_unverified_implant_udi: bool = False
+    webiq_corneal_ectasia_contraindication_or_clinic_malpractice_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    vbp_price_benchmark_and_hsa_fsa_tax_free_split_ready: bool = False
+
+
+def evaluate_dental_implant_lasik_surgery_escrow_policy(
+    policy_input: DentalImplantLasikSurgeryEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Elective Dental Implant, LASIK Vision Correction & Bundled Surgery policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_dental_implant_and_lasik_surgery_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_corneal_ectasia_contraindication_or_clinic_malpractice_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_CORNEAL_ECTASIA_CONTRAINDICATION_OR_CLINIC_MALPRACTICE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unbundled_abutment_crown_bait_or_midsurgery_upsell:
+        return {
+            "status_code": 403,
+            "decision": "UNBUNDLED_ABUTMENT_CROWN_BAIT_OR_MIDSURGERY_UPSELL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.retroactive_deferred_interest_trap_or_unverified_implant_udi:
+        return {
+            "status_code": 422,
+            "decision": "RETROACTIVE_DEFERRED_INTEREST_TRAP_OR_UNVERIFIED_IMPLANT_UDI_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.vbp_price_benchmark_and_hsa_fsa_tax_free_split_ready:
+        savings = round(gross_pool * 0.27, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "VBP_PRICE_BENCHMARK_AND_HSA_FSA_TAX_FREE_SPLIT_CONFIRM",
+            "mandate_token": "dental_implant_lasik_surgery_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ALL_INCLUSIVE_BUNDLE_AND_UDI_AUTHORIZED",
+        "mandate_token": "dental_implant_lasik_surgery_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -27841,6 +27922,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    dental_implant_lasik_surgery_escrow_guard = {
+        "authorized_200": evaluate_dental_implant_lasik_surgery_escrow_policy(
+            DentalImplantLasikSurgeryEscrowPolicyInput()
+        ),
+        "unbundled_crown_or_upsell_403": evaluate_dental_implant_lasik_surgery_escrow_policy(
+            DentalImplantLasikSurgeryEscrowPolicyInput(
+                unbundled_abutment_crown_bait_or_midsurgery_upsell=True
+            )
+        ),
+        "deferred_interest_or_fake_udi_422": evaluate_dental_implant_lasik_surgery_escrow_policy(
+            DentalImplantLasikSurgeryEscrowPolicyInput(
+                retroactive_deferred_interest_trap_or_unverified_implant_udi=True
+            )
+        ),
+        "corneal_ectasia_or_malpractice_451": evaluate_dental_implant_lasik_surgery_escrow_policy(
+            DentalImplantLasikSurgeryEscrowPolicyInput(
+                webiq_corneal_ectasia_contraindication_or_clinic_malpractice_flag=True
+            )
+        ),
+        "vbp_benchmark_and_hsa_split_409": evaluate_dental_implant_lasik_surgery_escrow_policy(
+            DentalImplantLasikSurgeryEscrowPolicyInput(
+                vbp_price_benchmark_and_hsa_fsa_tax_free_split_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -28039,6 +28146,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "crossborder_parcel_consolidation_escrow_guard": crossborder_parcel_consolidation_escrow_guard,
         "photo_studio_camera_gear_escrow_guard": photo_studio_camera_gear_escrow_guard,
         "ip_licensing_anime_merch_escrow_guard": ip_licensing_anime_merch_escrow_guard,
+        "dental_implant_lasik_surgery_escrow_guard": dental_implant_lasik_surgery_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -36772,6 +36880,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ip-merch-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TIERED_MG_AND_MADE_TO_ORDER_HOLOGRAM_BATCH_CONFIRM · Mandate: ip_licensing_anime_merch_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 70 Elective Dental Implant, LASIK Vision Correction & Bundled Surgery Escrow -->
+      <div class="finops-box" id="dental-implant-lasik-surgery-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🦷 口腔种植牙、眼科飞秒激光(LASIK/ICL)与自费专科手术分期托管 (ClearChoice / 爱尔眼科 / 通策医疗 / 瑞尔齿科 / Sunbit) 全包锁价、禁追溯高息与UDI溯源沙盒 (Round 70)</div>
+            <div class="finops-subtitle">实测“植体+原厂基台+全瓷牙冠”三位一体全包锁价防 $999 螺丝引流拔完牙加收 $2,800 (HTTP 403)、封杀差 $10 倒追全年 29.99% 罚息的递延医疗贷(Deferred Interest)与士卓曼/ICL 原厂 UDI 扫码 (HTTP 422)、Web IQ 残余角膜基质床&lt;280μm 激光手术熔断 (HTTP 451) 及对齐集采挂网价+跨年双倍 HSA/FSA 免税拆单立省 27% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="dental-lasik-status-kpi">HTTP 409 · VBP_PRICE_BENCHMARK_AND_HSA_FSA_TAX_FREE_SPLIT_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度口腔种植牙与屈光近视手术结算池 ($ USD)
+            <input type="range" id="dental-lasik-pool-slider" min="50000" max="1500000" step="10000" value="275000" oninput="updateDentalImplantLasikSurgerySandbox()" />
+            <span id="dental-lasik-pool-val" style="color:#6ee7b7; font-family:monospace;">$275,000</span>
+          </label>
+          <label>
+            植体+基台+全瓷冠全包锁价与禁术中加价校验 (HTTP 403)
+            <select id="dental-lasik-bundle-select" onchange="updateDentalImplantLasikSurgerySandbox()">
+              <option value="pass">已锁死植体(D6010)+基台(D6056)+全瓷冠(D6058)全包一口价 + 零术中加项 (放行)</option>
+              <option value="block">$999 只报种植钉隐瞒基台/牙冠费 或 躺上手术台拔完牙强加 $1,800 骨粉 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            反 29.99% 追溯高息医疗贷与原厂 UDI 条码校验 (HTTP 422)
+            <select id="dental-lasik-udi-select" onchange="updateDentalImplantLasikSurgerySandbox()">
+              <option value="pass">True 0% APR 等额免息 + 士卓曼/Nobel/EVO ICL 原厂 UDI 已扫 (合规)</option>
+              <option value="block">夹带差 $1 倒追全年 29.99% 利息的 Deferred Interest 条款 或 无原厂 UDI (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            残余角膜基质床 (&gt;=280μm) 禁忌症与诊所安全筛查 (HTTP 451)
+            <select id="dental-lasik-cornea-select" onchange="updateDentalImplantLasikSurgerySandbox()">
+              <option value="clear">预计残余角膜基质床 &gt;=280μm + 执业资质完备 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">残余角膜 &lt;280μm 仍违规排期 LASIK 致圆锥角膜风险 或 诊所涉事故黑名单 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            集采阳光挂网价对齐与 50/50 跨年 HSA/FSA 免税拆单 (HTTP 409)
+            <select id="dental-lasik-opt-select" onchange="updateDentalImplantLasikSurgerySandbox()">
+              <option value="enabled" selected>开启口腔种植集采限价对齐 + 一期/二期跨年双倍 HSA/FSA 免税拆单省 27% (HTTP 409)</option>
+              <option value="baseline">常规全包一口价与标准 50/50 骨结合托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度专科手术毛池</div>
+            <div class="finops-kpi-val" id="dental-lasik-gross-kpi">$275,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">集采与免税拆单后净额</div>
+            <div class="finops-kpi-val" id="dental-lasik-net-kpi" style="color:#6ee7b7;">$200,750</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下拆项溢价与税盾</div>
+            <div class="finops-kpi-val" id="dental-lasik-savings-kpi" style="color:#38bdf8;">$74,250</div>
+          </div>
+        </div>
+        <div id="dental-lasik-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 VBP_PRICE_BENCHMARK_AND_HSA_FSA_TAX_FREE_SPLIT_CONFIRM · Mandate: dental_implant_lasik_surgery_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -47323,6 +47494,80 @@ function updateIpLicensingAnimeMerchSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 HOLOGRAM_QUOTA_AND_MG_RECOUP_AUTHORIZED · Mandate: ip_licensing_anime_merch_escrow_mandate_200';
+}}
+
+function updateDentalImplantLasikSurgerySandbox() {{
+  const slider = document.getElementById('dental-lasik-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '275000');
+  const bndMode = document.getElementById('dental-lasik-bundle-select').value;
+  const udiMode = document.getElementById('dental-lasik-udi-select').value;
+  const corMode = document.getElementById('dental-lasik-cornea-select').value;
+  const optMode = document.getElementById('dental-lasik-opt-select').value;
+
+  document.getElementById('dental-lasik-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('dental-lasik-status-kpi');
+  const grossKpi = document.getElementById('dental-lasik-gross-kpi');
+  const netKpi = document.getElementById('dental-lasik-net-kpi');
+  const savingsKpi = document.getElementById('dental-lasik-savings-kpi');
+  const banner = document.getElementById('dental-lasik-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (corMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_CORNEAL_ECTASIA_CONTRAINDICATION_OR_CLINIC_MALPRACTICE_HOLD · Mandate: null';
+    return;
+  }}
+  if (bndMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNBUNDLED_ABUTMENT_CROWN_BAIT_OR_MIDSURGERY_UPSELL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (udiMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 RETROACTIVE_DEFERRED_INTEREST_TRAP_OR_UNVERIFIED_IMPLANT_UDI_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.27);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 VBP_PRICE_BENCHMARK_AND_HSA_FSA_TAX_FREE_SPLIT_CONFIRM · Mandate: dental_implant_lasik_surgery_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ALL_INCLUSIVE_BUNDLE_AND_UDI_AUTHORIZED · Mandate: dental_implant_lasik_surgery_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

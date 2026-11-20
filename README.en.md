@@ -1,6 +1,6 @@
 # Enterprise Agentic Commerce Lab — Reference Architecture & AI Solution Architect Playbooks
 
-🌐 **Language / 语言切换**: **[中文主页 (`README.md`)](README.md)** | **English (Current)** | **[📚 Full SA Decision Guide Catalog (188 Bilingual FAQs)](docs/index.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](benchmark-cards.en.html)**
+🌐 **Language / 语言切换**: **[中文主页 (`README.md`)](README.md)** | **English (Current)** | **[📚 Full SA Decision Guide Catalog (189 Bilingual FAQs)](docs/index.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](benchmark-cards.en.html)**
 
 > **An Enterprise Engineering & Architecture Reference Hub for AI Solution Architects**
 > Focused exclusively on **Retail & Multi-Merchant E-Commerce, Agent Payment & Cryptographic Mandate Protocols (`Google AP2`, `Stripe SPT`, `Visa VIC & TAP`, `Mastercard Agent Pay`, `PayPal`, `x402`), Enterprise B2B Procurement & ERP 3-Way Match, OTA / Airline (`IATA NDC`) Dynamic Booking, SaaS Usage Metering & FinOps, and Cross-Border Tax (`MoR`) / FX Clearing / `Visa CE 3.0` Chargeback Defense** — pairing executive decision guides with a **6-Plane Reference Architecture, deterministic Python guardrails, and self-contained interactive workbenches**.
@@ -104,9 +104,9 @@ flowchart TB
 
 ---
 
-## 5. Six Enterprise Pillars & Flagship SA Playbooks (188 Bilingual Guides)
+## 5. Six Enterprise Pillars & Flagship SA Playbooks (189 Bilingual Guides)
 
-> 📚 **Browse the Complete Catalog**: [**English Full Catalog (188 Bilingual FAQs + 21 Blueprints)**](docs/index.en.md) ｜ [**中文总目录 (`docs/index.md`)**](docs/index.md)
+> 📚 **Browse the Complete Catalog**: [**English Full Catalog (189 Bilingual FAQs + 21 Blueprints)**](docs/index.en.md) ｜ [**中文总目录 (`docs/index.md`)**](docs/index.md)
 
 1. **Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance**
    - [Copilot Studio vs Azure AI Foundry + LangGraph vs Agentforce/Shopify Selection](docs/agentic-commerce-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-shopify-selection-faq.en.md) · [中文](docs/agentic-commerce-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-shopify-selection-faq.md)
@@ -147,7 +147,7 @@ agentic-commerce-lab/
 ├── live-demo.html / live-demo.en.html # Self-contained H5 interactive SA workbenches (ZH / EN)
 ├── benchmark-cards.html / .en.html   # 7-Card 4:5 visual benchmark decks (ZH / EN)
 ├── docs/
-│   ├── index.md / index.en.md        # Categorized catalog of all 188 bilingual SA Decision Guides
+│   ├── index.md / index.en.md        # Categorized catalog of all 189 bilingual SA Decision Guides
 │   ├── *-faq.md / *-faq.en.md        # Scenario FAQs with Mermaid architecture diagrams & checklists
 │   ├── architecture/                 # 21 deterministic domain state-machine & conservation blueprints
 │   └── research/                     # Full-stack 6-plane blueprint, Web IQ competitive matrix & trend reports
