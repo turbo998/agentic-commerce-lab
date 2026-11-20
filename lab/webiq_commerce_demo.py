@@ -19778,6 +19778,87 @@ def evaluate_podcast_dai_music_royalty_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BRecruitingHeadhunterFcraEscrowPolicyInput:
+    """Input contract for B2B Executive Search, Headhunter Contingency Fee & FCRA Background Check Escrow."""
+
+    quarterly_headhunter_contingency_and_bgcheck_pool_usd: float = 280000.0
+    day1_unescrowed_payout_or_probation_churn_refund_denied: bool = False
+    ats_duplicate_candidate_collision_or_missing_rtr_consent: bool = False
+    webiq_fcra_adverse_action_violation_or_handsoff_poaching_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    base_salary_only_cap_and_bounty_marketplace_ready: bool = False
+
+
+def evaluate_b2b_recruiting_headhunter_fcra_escrow_policy(
+    policy_input: B2BRecruitingHeadhunterFcraEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Executive Search, Headhunter Contingency & FCRA Background Check policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_headhunter_contingency_and_bgcheck_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_fcra_adverse_action_violation_or_handsoff_poaching_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_FCRA_ADVERSE_ACTION_VIOLATION_OR_HANDSOFF_POACHING_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.day1_unescrowed_payout_or_probation_churn_refund_denied:
+        return {
+            "status_code": 403,
+            "decision": "DAY1_UNESCROWED_PAYOUT_OR_PROBATION_CHURN_REFUND_DENIED_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ats_duplicate_candidate_collision_or_missing_rtr_consent:
+        return {
+            "status_code": 422,
+            "decision": "ATS_DUPLICATE_CANDIDATE_COLLISION_OR_MISSING_RTR_CONSENT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.base_salary_only_cap_and_bounty_marketplace_ready:
+        savings = round(gross_pool * 0.25, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "BASE_SALARY_ONLY_CAP_AND_BOUNTY_MARKETPLACE_CONFIRM",
+            "mandate_token": "b2b_recruiting_headhunter_fcra_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "RTR_LOCKED_AND_90D_PROBATION_VESTING_AUTHORIZED",
+        "mandate_token": "b2b_recruiting_headhunter_fcra_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -27413,6 +27494,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_recruiting_headhunter_fcra_escrow_guard = {
+        "authorized_200": evaluate_b2b_recruiting_headhunter_fcra_escrow_policy(
+            B2BRecruitingHeadhunterFcraEscrowPolicyInput()
+        ),
+        "day1_payout_or_churn_denied_403": evaluate_b2b_recruiting_headhunter_fcra_escrow_policy(
+            B2BRecruitingHeadhunterFcraEscrowPolicyInput(
+                day1_unescrowed_payout_or_probation_churn_refund_denied=True
+            )
+        ),
+        "ats_collision_or_missing_rtr_422": evaluate_b2b_recruiting_headhunter_fcra_escrow_policy(
+            B2BRecruitingHeadhunterFcraEscrowPolicyInput(
+                ats_duplicate_candidate_collision_or_missing_rtr_consent=True
+            )
+        ),
+        "fcra_violation_or_poaching_451": evaluate_b2b_recruiting_headhunter_fcra_escrow_policy(
+            B2BRecruitingHeadhunterFcraEscrowPolicyInput(
+                webiq_fcra_adverse_action_violation_or_handsoff_poaching_flag=True
+            )
+        ),
+        "base_only_and_bounty_409": evaluate_b2b_recruiting_headhunter_fcra_escrow_policy(
+            B2BRecruitingHeadhunterFcraEscrowPolicyInput(
+                base_salary_only_cap_and_bounty_marketplace_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -27607,6 +27714,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_expert_network_research_escrow_guard": b2b_expert_network_research_escrow_guard,
         "pet_boarding_walking_grooming_escrow_guard": pet_boarding_walking_grooming_escrow_guard,
         "podcast_dai_music_royalty_escrow_guard": podcast_dai_music_royalty_escrow_guard,
+        "b2b_recruiting_headhunter_fcra_escrow_guard": b2b_recruiting_headhunter_fcra_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -36088,6 +36196,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="podcast-dai-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 BACK_CATALOG_DAI_ARBITRAGE_AND_SPLIT_SHEET_AUTO_CONFIRM · Mandate: podcast_dai_music_royalty_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 66 B2B Executive Search, Headhunter Contingency Fee & FCRA Background Check Escrow -->
+      <div class="finops-box" id="b2b-recruiting-headhunter-fcra-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">👔 企业猎头招聘、RPO 批量招聘与背景调查服务采购 (Korn Ferry / Paraform / Greenhouse / Checkr / 猎聘) 90天过保托管、ATS查重与FCRA合规沙盒 (Round 66)</div>
+            <div class="finops-subtitle">实测 HRIS 联动 30d/90d 试用期在职分阶托管防候选人 30 天闪辞猎头拒退 $45k 佣金 (HTTP 403)、ATS 180天存量人才库查重与候选人本人签署独家推荐权(RTR)防多猎头抢单 (HTTP 422)、Web IQ FCRA 5日预拒录等待期与禁挖客户(Hands-Off)熔断 (HTTP 451) 及仅按基本工资(剔除RSU期权)计佣+悬赏竞价立省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="b2b-recruit-status-kpi">HTTP 409 · BASE_SALARY_ONLY_CAP_AND_BOUNTY_MARKETPLACE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业猎头佣金与雇前背景调查采购池 ($ USD)
+            <input type="range" id="b2b-recruit-pool-slider" min="50000" max="1500000" step="10000" value="280000" oninput="updateB2BRecruitingHeadhunterFcraSandbox()" />
+            <span id="b2b-recruit-pool-val" style="color:#6ee7b7; font-family:monospace;">$280,000</span>
+          </label>
+          <label>
+            90天试用期在职分阶托管与闪辞退费校验 (HTTP 403)
+            <select id="b2b-recruit-vest-select" onchange="updateB2BRecruitingHeadhunterFcraSandbox()">
+              <option value="pass">30d/90d (50/50) 绑定 HRIS 在职状态分阶释放 + 闪辞自动退回 (放行)</option>
+              <option value="block">要求入职首日无托管全额打款 或 候选人第 28 天闪辞猎头拒退现金 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            ATS 180天人才库查重与候选人 RTR 授权校验 (HTTP 422)
+            <select id="b2b-recruit-rtr-select" onchange="updateB2BRecruitingHeadhunterFcraSandbox()">
+              <option value="pass">ATS 查重无冲突 + 候选人本人 2FA 签署独家推荐权 RTR (合规)</option>
+              <option value="block">候选人已在内推库/其他猎头保护期内 或 猎头未经本人同意盲投简历 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            FCRA 背调预拒录 5 日等待期与禁挖客户筛查 (HTTP 451)
+            <select id="b2b-recruit-fcra-select" onchange="updateB2BRecruitingHeadhunterFcraSandbox()">
+              <option value="clear">FCRA 独立披露已签 + 5工作日申诉等待期 + 零反挖违约 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">未发 Offer 违规查犯罪记录/跳过 5 天申诉直接秒拒 或 猎头反挖本司员工 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            剥离股票期权 (Base Salary Only) 与悬赏竞价寻优 (HTTP 409)
+            <select id="b2b-recruit-opt-select" onchange="updateB2BRecruitingHeadhunterFcraSandbox()">
+              <option value="enabled" selected>开启仅按首年基本工资计佣(剥离RSU/签字费) + Paraform 悬赏竞价省 25% (HTTP 409)</option>
+              <option value="baseline">常规 90 天过保托管与标准猎头费率授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度猎头背调毛池</div>
+            <div class="finops-kpi-val" id="b2b-recruit-gross-kpi">$280,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">剥离期权与竞价后净额</div>
+            <div class="finops-kpi-val" id="b2b-recruit-net-kpi" style="color:#6ee7b7;">$210,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下虚增佣金与坏账</div>
+            <div class="finops-kpi-val" id="b2b-recruit-savings-kpi" style="color:#38bdf8;">$70,000</div>
+          </div>
+        </div>
+        <div id="b2b-recruit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 BASE_SALARY_ONLY_CAP_AND_BOUNTY_MARKETPLACE_CONFIRM · Mandate: b2b_recruiting_headhunter_fcra_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -46343,6 +46514,80 @@ function updatePodcastDaiMusicRoyaltySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 IAB_V22_AND_ASR_AIRCHECK_AUTHORIZED · Mandate: podcast_dai_music_royalty_escrow_mandate_200';
+}}
+
+function updateB2BRecruitingHeadhunterFcraSandbox() {{
+  const slider = document.getElementById('b2b-recruit-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '280000');
+  const vestMode = document.getElementById('b2b-recruit-vest-select').value;
+  const rtrMode = document.getElementById('b2b-recruit-rtr-select').value;
+  const fcraMode = document.getElementById('b2b-recruit-fcra-select').value;
+  const optMode = document.getElementById('b2b-recruit-opt-select').value;
+
+  document.getElementById('b2b-recruit-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('b2b-recruit-status-kpi');
+  const grossKpi = document.getElementById('b2b-recruit-gross-kpi');
+  const netKpi = document.getElementById('b2b-recruit-net-kpi');
+  const savingsKpi = document.getElementById('b2b-recruit-savings-kpi');
+  const banner = document.getElementById('b2b-recruit-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fcraMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_FCRA_ADVERSE_ACTION_VIOLATION_OR_HANDSOFF_POACHING_HOLD · Mandate: null';
+    return;
+  }}
+  if (vestMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DAY1_UNESCROWED_PAYOUT_OR_PROBATION_CHURN_REFUND_DENIED_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (rtrMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 ATS_DUPLICATE_CANDIDATE_COLLISION_OR_MISSING_RTR_CONSENT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.25);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 BASE_SALARY_ONLY_CAP_AND_BOUNTY_MARKETPLACE_CONFIRM · Mandate: b2b_recruiting_headhunter_fcra_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 RTR_LOCKED_AND_90D_PROBATION_VESTING_AUTHORIZED · Mandate: b2b_recruiting_headhunter_fcra_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

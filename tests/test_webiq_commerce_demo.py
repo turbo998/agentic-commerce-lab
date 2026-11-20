@@ -13480,6 +13480,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("podcast-dai-music-royalty-escrow-sandbox", html_zh)
 
+    def test_b2b_recruiting_headhunter_fcra_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BRecruitingHeadhunterFcraEscrowPolicyInput,
+            evaluate_b2b_recruiting_headhunter_fcra_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_recruiting_headhunter_fcra_escrow_policy(
+            B2BRecruitingHeadhunterFcraEscrowPolicyInput(
+                quarterly_headhunter_contingency_and_bgcheck_pool_usd=280000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "RTR_LOCKED_AND_90D_PROBATION_VESTING_AUTHORIZED",
+        )
+
+        vest = evaluate_b2b_recruiting_headhunter_fcra_escrow_policy(
+            B2BRecruitingHeadhunterFcraEscrowPolicyInput(
+                day1_unescrowed_payout_or_probation_churn_refund_denied=True
+            )
+        )
+        self.assertEqual(vest["status_code"], 403)
+        self.assertEqual(
+            vest["decision"],
+            "DAY1_UNESCROWED_PAYOUT_OR_PROBATION_CHURN_REFUND_DENIED_BLOCKED",
+        )
+
+        rtr = evaluate_b2b_recruiting_headhunter_fcra_escrow_policy(
+            B2BRecruitingHeadhunterFcraEscrowPolicyInput(
+                ats_duplicate_candidate_collision_or_missing_rtr_consent=True
+            )
+        )
+        self.assertEqual(rtr["status_code"], 422)
+        self.assertEqual(
+            rtr["decision"],
+            "ATS_DUPLICATE_CANDIDATE_COLLISION_OR_MISSING_RTR_CONSENT_BLOCKED",
+        )
+
+        fcra = evaluate_b2b_recruiting_headhunter_fcra_escrow_policy(
+            B2BRecruitingHeadhunterFcraEscrowPolicyInput(
+                webiq_fcra_adverse_action_violation_or_handsoff_poaching_flag=True
+            )
+        )
+        self.assertEqual(fcra["status_code"], 451)
+        self.assertEqual(
+            fcra["decision"],
+            "WEBIQ_FCRA_ADVERSE_ACTION_VIOLATION_OR_HANDSOFF_POACHING_HOLD",
+        )
+
+        optim = evaluate_b2b_recruiting_headhunter_fcra_escrow_policy(
+            B2BRecruitingHeadhunterFcraEscrowPolicyInput(
+                quarterly_headhunter_contingency_and_bgcheck_pool_usd=280000.0,
+                base_salary_only_cap_and_bounty_marketplace_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 70000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 210000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_recruiting_headhunter_fcra_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-recruiting-headhunter-fcra-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
