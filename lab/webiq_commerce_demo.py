@@ -22937,6 +22937,87 @@ def evaluate_pet_insurance_vet_directpay_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BOfficeCoffeePantryEscrowPolicyInput:
+    """Input contract for B2B Office Coffee Service (OCS), Water-Cooler Lock-In & Micro-Market Escrow."""
+
+    quarterly_b2b_office_coffee_and_pantry_pool_usd: float = 55000.0
+    proprietary_pod_minimum_or_60m_cooler_evergreen_lockin: bool = False
+    unverified_filter_nfc_tds_or_phantom_bean_restock: bool = False
+    webiq_unapproved_nsf53_filter_or_water_leak_shutoff_hazard_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    open_bean_superauto_and_pou_water_conversion_ready: bool = False
+
+
+def evaluate_b2b_office_coffee_pantry_escrow_policy(
+    policy_input: B2BOfficeCoffeePantryEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Office Coffee Service (OCS), Water-Cooler Lock-In & Micro-Market Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_office_coffee_and_pantry_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unapproved_nsf53_filter_or_water_leak_shutoff_hazard_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNAPPROVED_NSF53_FILTER_OR_WATER_LEAK_SHUTOFF_HAZARD_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.proprietary_pod_minimum_or_60m_cooler_evergreen_lockin:
+        return {
+            "status_code": 403,
+            "decision": "PROPRIETARY_POD_MINIMUM_OR_60M_COOLER_EVERGREEN_LOCKIN_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unverified_filter_nfc_tds_or_phantom_bean_restock:
+        return {
+            "status_code": 422,
+            "decision": "UNVERIFIED_FILTER_NFC_TDS_OR_PHANTOM_BEAN_RESTOCK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.open_bean_superauto_and_pou_water_conversion_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "OPEN_BEAN_SUPERAUTO_AND_POU_WATER_CONVERSION_CONFIRM",
+            "mandate_token": "b2b_office_coffee_pantry_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "OPEN_BEAN_AND_VERIFIED_TDS_PANTRY_AUTHORIZED",
+        "mandate_token": "b2b_office_coffee_pantry_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -31586,6 +31667,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_office_coffee_pantry_escrow_guard = {
+        "authorized_200": evaluate_b2b_office_coffee_pantry_escrow_policy(
+            B2BOfficeCoffeePantryEscrowPolicyInput()
+        ),
+        "pod_lockin_or_60m_cooler_lease_403": evaluate_b2b_office_coffee_pantry_escrow_policy(
+            B2BOfficeCoffeePantryEscrowPolicyInput(
+                proprietary_pod_minimum_or_60m_cooler_evergreen_lockin=True
+            )
+        ),
+        "unverified_filter_or_phantom_beans_422": evaluate_b2b_office_coffee_pantry_escrow_policy(
+            B2BOfficeCoffeePantryEscrowPolicyInput(
+                unverified_filter_nfc_tds_or_phantom_bean_restock=True
+            )
+        ),
+        "unapproved_nsf53_or_leak_hazard_451": evaluate_b2b_office_coffee_pantry_escrow_policy(
+            B2BOfficeCoffeePantryEscrowPolicyInput(
+                webiq_unapproved_nsf53_filter_or_water_leak_shutoff_hazard_flag=True
+            )
+        ),
+        "open_bean_and_pou_water_409": evaluate_b2b_office_coffee_pantry_escrow_policy(
+            B2BOfficeCoffeePantryEscrowPolicyInput(
+                open_bean_superauto_and_pou_water_conversion_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -31819,6 +31926,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "bespoke_suit_mtm_escrow_guard": bespoke_suit_mtm_escrow_guard,
         "b2b_document_shredding_itad_escrow_guard": b2b_document_shredding_itad_escrow_guard,
         "pet_insurance_vet_directpay_escrow_guard": pet_insurance_vet_directpay_escrow_guard,
+        "b2b_office_coffee_pantry_escrow_guard": b2b_office_coffee_pantry_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -42757,6 +42865,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="pet-ins-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ISSUE_AGE_HIGH_DEDUCTIBLE_AND_CHEWY_RX_ARBITRAGE_CONFIRM · Mandate: pet_insurance_directpay_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 105 B2B Office Coffee Service (OCS), Water-Cooler Lock-In & Micro-Market Escrow -->
+      <div class="finops-box" id="b2b-office-coffee-pantry-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">☕ 企业办公咖啡茶饮机租赁 (OCS)、直饮水机耗材防锁死与茶水间无人货柜补货托管 (Aramark / Canteen / Culligan Quench / Bevi / 瑞幸企服) 对账沙盒 (Round 105)</div>
+            <div class="finops-subtitle">实测废除 $1.45 加密胶囊 (DRM Pod) 保底消费+饮水机 60m 自动续签+开放式微超 18% 盗损转嫁 (HTTP 403)、新滤芯 NFC 扫码+出水 TDS&lt;=35ppm 遥测+咖啡机出杯数 (Shot Counter) 克重对账防假换芯与虚报送豆 (HTTP 422)、Web IQ NSF/ANSI 53 与防泡楼自动断水电磁阀核验 (HTTP 451) 及开放式现磨豆机 ($0.24/杯)+无桶直饮机 (POU) 切换净省 38% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="ocs-pantry-status-kpi">HTTP 409 · OPEN_BEAN_SUPERAUTO_AND_POU_WATER_CONVERSION_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业茶水间咖啡、直饮水与无人微超预算池 ($ USD)
+            <input type="range" id="ocs-pantry-pool-slider" min="10000" max="300000" step="2500" value="55000" oninput="updateB2BOfficeCoffeePantryEscrowSandbox()" />
+            <span id="ocs-pantry-pool-val" style="color:#6ee7b7; font-family:monospace;">$55,000</span>
+          </label>
+          <label>
+            专有加密胶囊 (DRM Pod)、饮水机租期与微超盗损条款审计 (HTTP 403)
+            <select id="ocs-pantry-lock-select" onchange="updateB2BOfficeCoffeePantryEscrowSandbox()">
+              <option value="pass">&lt;=12m 短租或买断 + 开放通用豆仓/标准滤芯 + 零最低消费 + 工卡闭门智能柜(&lt;=2% 损耗上限) (放行)</option>
+              <option value="block">绑定 $1.45/颗加密胶囊+$1,500 月保底 或 60m 自动续期水机租约/开放货架 18% 盗损全由企业补差 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            滤芯 NFC + 出水 TDS&lt;=35ppm 与咖啡机 Shot Counter 对账 (HTTP 422)
+            <select id="ocs-pantry-tds-select" onchange="updateB2BOfficeCoffeePantryEscrowSandbox()">
+              <option value="pass">新滤芯 NFC 扫码 + 冲洗后在线 TDS&lt;=35ppm + 机器出杯数*10g 与送豆重量一致 + 保质期&gt;=60天 (合规)</option>
+              <option value="block">只按 Reset 键不换 RO 膜 (TDS&gt;150ppm) 或 路线司机虚报 35% 咖啡豆箱数/塞入临期牛奶零食 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ NSF/ANSI 53 除铅认证与防漏水自动切断电磁阀核验 (HTTP 451)
+            <select id="ocs-pantry-nsf-select" onchange="updateB2BOfficeCoffeePantryEscrowSandbox()">
+              <option value="clear">NSF/ANSI 53 除铅认证有效 + 标配防漏水自动关断电磁阀 + 无 FDA 召回批次 (正常)</option>
+              <option value="hold">水机缺自动断水阀存在夜间爆管泡楼风险 或 滤芯无 NSF-53 认证/零食命中召回 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            开放式现磨豆机 (Bean-to-Cup) 与管线直饮机 (POU) 切换寻优 (HTTP 409)
+            <select id="ocs-pantry-opt-select" onchange="updateB2BOfficeCoffeePantryEscrowSandbox()">
+              <option value="enabled" selected>将 $1.35 胶囊机换为开放现磨豆机 ($0.24/杯) + 停掉 5 加仑桶装水改 POU 直饮净省 38% (HTTP 409)</option>
+              <option value="baseline">常规开放式豆仓与在线 TDS 验收标准结算授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业茶水间总池</div>
+            <div class="finops-kpi-val" id="ocs-pantry-gross-kpi">$55,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">开放豆仓与 POU 直饮转换后净支出</div>
+            <div class="finops-kpi-val" id="ocs-pantry-net-kpi" style="color:#6ee7b7;">$34,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除胶囊溢价与桶装水配送费</div>
+            <div class="finops-kpi-val" id="ocs-pantry-savings-kpi" style="color:#38bdf8;">$20,900</div>
+          </div>
+        </div>
+        <div id="ocs-pantry-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 OPEN_BEAN_SUPERAUTO_AND_POU_WATER_CONVERSION_CONFIRM · Mandate: b2b_office_coffee_pantry_mandate_optim_409
         </div>
       </div>
 
@@ -55898,6 +56069,80 @@ function updatePetInsuranceVetDirectPayEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 BILATERAL_COVERED_AND_VET_DIRECT_PAY_AUTHORIZED · Mandate: pet_insurance_directpay_mandate_200';
+}}
+
+function updateB2BOfficeCoffeePantryEscrowSandbox() {{
+  const slider = document.getElementById('ocs-pantry-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '55000');
+  const lockMode = document.getElementById('ocs-pantry-lock-select').value;
+  const tdsMode = document.getElementById('ocs-pantry-tds-select').value;
+  const nsfMode = document.getElementById('ocs-pantry-nsf-select').value;
+  const optMode = document.getElementById('ocs-pantry-opt-select').value;
+
+  document.getElementById('ocs-pantry-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('ocs-pantry-status-kpi');
+  const grossKpi = document.getElementById('ocs-pantry-gross-kpi');
+  const netKpi = document.getElementById('ocs-pantry-net-kpi');
+  const savingsKpi = document.getElementById('ocs-pantry-savings-kpi');
+  const banner = document.getElementById('ocs-pantry-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (nsfMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNAPPROVED_NSF53_FILTER_OR_WATER_LEAK_SHUTOFF_HAZARD_HOLD · Mandate: null';
+    return;
+  }}
+  if (lockMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PROPRIETARY_POD_MINIMUM_OR_60M_COOLER_EVERGREEN_LOCKIN_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (tdsMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNVERIFIED_FILTER_NFC_TDS_OR_PHANTOM_BEAN_RESTOCK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 OPEN_BEAN_SUPERAUTO_AND_POU_WATER_CONVERSION_CONFIRM · Mandate: b2b_office_coffee_pantry_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 OPEN_BEAN_AND_VERIFIED_TDS_PANTRY_AUTHORIZED · Mandate: b2b_office_coffee_pantry_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

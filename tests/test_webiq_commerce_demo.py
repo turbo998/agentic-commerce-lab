@@ -16093,6 +16093,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("pet-insurance-vet-directpay-escrow-sandbox", html_zh)
 
+    def test_b2b_office_coffee_pantry_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BOfficeCoffeePantryEscrowPolicyInput,
+            evaluate_b2b_office_coffee_pantry_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_office_coffee_pantry_escrow_policy(
+            B2BOfficeCoffeePantryEscrowPolicyInput(
+                quarterly_b2b_office_coffee_and_pantry_pool_usd=55000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "OPEN_BEAN_AND_VERIFIED_TDS_PANTRY_AUTHORIZED",
+        )
+
+        lock = evaluate_b2b_office_coffee_pantry_escrow_policy(
+            B2BOfficeCoffeePantryEscrowPolicyInput(
+                proprietary_pod_minimum_or_60m_cooler_evergreen_lockin=True
+            )
+        )
+        self.assertEqual(lock["status_code"], 403)
+        self.assertEqual(
+            lock["decision"],
+            "PROPRIETARY_POD_MINIMUM_OR_60M_COOLER_EVERGREEN_LOCKIN_BLOCKED",
+        )
+
+        tds = evaluate_b2b_office_coffee_pantry_escrow_policy(
+            B2BOfficeCoffeePantryEscrowPolicyInput(
+                unverified_filter_nfc_tds_or_phantom_bean_restock=True
+            )
+        )
+        self.assertEqual(tds["status_code"], 422)
+        self.assertEqual(
+            tds["decision"],
+            "UNVERIFIED_FILTER_NFC_TDS_OR_PHANTOM_BEAN_RESTOCK_BLOCKED",
+        )
+
+        nsf = evaluate_b2b_office_coffee_pantry_escrow_policy(
+            B2BOfficeCoffeePantryEscrowPolicyInput(
+                webiq_unapproved_nsf53_filter_or_water_leak_shutoff_hazard_flag=True
+            )
+        )
+        self.assertEqual(nsf["status_code"], 451)
+        self.assertEqual(
+            nsf["decision"],
+            "WEBIQ_UNAPPROVED_NSF53_FILTER_OR_WATER_LEAK_SHUTOFF_HAZARD_HOLD",
+        )
+
+        optim = evaluate_b2b_office_coffee_pantry_escrow_policy(
+            B2BOfficeCoffeePantryEscrowPolicyInput(
+                quarterly_b2b_office_coffee_and_pantry_pool_usd=55000.0,
+                open_bean_superauto_and_pou_water_conversion_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 20900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 34100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_office_coffee_pantry_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-office-coffee-pantry-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
