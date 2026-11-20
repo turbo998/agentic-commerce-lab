@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`226` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`227` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（38 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（73 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（74 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（56 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（29 篇）](#tax-fx-privacy-disputes)
@@ -82,7 +82,7 @@
 | 38 | **音乐节与体育场馆无现金 RFID 手环充值、防默认 25% 小费刺客与余额零手续费秒退（Music Festival & Stadium Cashless RFID Wristband, Anti-Tip-Creep & Auto-Refund Escrow：Coachella / Tomorrowland / Intellitix / 草莓音乐节）“防散场剩 $19 收 $5 退费手续费吞没沉淀款、防买瓶水 POS 屏默认勾 25% 小费与直绑免充值”Agent 架构选型 FAQ** | [中文](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.md) · [English](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（73 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（74 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -161,6 +161,7 @@
 | 71 | **高定西装（Bespoke Suit）、度身定制（MTM）全麻衬工艺与顶级面料布边（Selvedge）防伪托管（Bespoke Suit, MTM Menswear & Fabric Selvedge Escrow：SuitSupply / Savile Row / Loro Piana / 报喜鸟衣邦人）“防 $35 热熔粘合衬冒充 $2,200 手工全麻衬、防假冒 Loro Piana 织唛调包与未试身先剪破真袖叉导致无法改袖长”Agent 架构选型 FAQ** | [中文](bespoke-suit-mtm-full-canvas-fabric-selvedge-escrow-agent-selection-faq.md) · [English](bespoke-suit-mtm-full-canvas-fabric-selvedge-escrow-agent-selection-faq.en.md) |
 | 72 | **宠物医疗保险（Pet Health Insurance）、双侧十字韧带拒赔拦截与急诊医院直付托管（Pet Insurance, Bilateral Exclusion & Vet Direct-Pay Escrow：Trupanion / Lemonade Pet / Nationwide / Fetch / 支付宝宠物险）“防左腿十字韧带手术理赔后右腿被算作‘既往症’永久拒赔、防 $6,500 宠物 ICU 急诊先全额垫付及老年犬生日涨价翻倍”Agent 架构选型 FAQ** | [中文](pet-insurance-bilateral-exclusion-vet-directpay-escrow-agent-selection-faq.md) · [English](pet-insurance-bilateral-exclusion-vet-directpay-escrow-agent-selection-faq.en.md) |
 | 73 | **乐器先租后买（Rent-to-Own）、学校管弦乐团指定型号防坑与钢琴恒温搬运/音板湿度托管（Musical Instrument Rent-to-Own, School-Band Spec & Piano Humidity Escrow：Music & Arts / Sweetwater / Steinway / Yamaha / 柏斯琴行）“防 $119 劣质不可调音玩具小提琴（VSO）被乐团老师退回、防换大尺寸提琴清零历史租金本金及搬琴到楼下按台阶每步坐地起价 $25”Agent 架构选型 FAQ** | [中文](musical-instrument-rent-to-own-piano-humidity-escrow-agent-selection-faq.md) · [English](musical-instrument-rent-to-own-piano-humidity-escrow-agent-selection-faq.en.md) |
+| 74 | **泳池水质养护包月（Pool Service Subscription）、氰尿酸“氯锁死（CYA Chlorine-Lock）”防坑与变频水泵节能托管（Leslie's / Poolwerx / Pentair / 别墅与酒店泳池管家）“防常年只扔三氯缓释片致 CYA>150ppm 氯锁死爆绿藻再敲诈 $950 换水费、防 90 秒泼水就跑及强酸片蚀穿 $4,200 热泵铜管”Agent 架构选型 FAQ** | [中文](pool-maintenance-subscription-cya-chlorine-lock-lsi-escrow-agent-selection-faq.md) · [English](pool-maintenance-subscription-cya-chlorine-lock-lsi-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（56 篇）

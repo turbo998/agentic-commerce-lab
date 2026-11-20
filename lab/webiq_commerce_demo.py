@@ -23180,6 +23180,87 @@ def evaluate_b2b_office_plant_biophilic_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class PoolServiceCyaLsiEscrowPolicyInput:
+    """Input contract for Pool Service Subscription, CYA Chlorine-Lock & Variable-Speed Pump Escrow."""
+
+    quarterly_pool_service_and_energy_pool_usd: float = 32000.0
+    trichlor_cya_overdose_or_algae_shock_surcharge: bool = False
+    splash_and_dash_visit_or_corrosive_lsi_water_imbalance: bool = False
+    webiq_unsafe_vgb_drain_cover_or_unbonded_gfci_hazard_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    variable_speed_pump_affinity_and_saltwater_swg_ready: bool = False
+
+
+def evaluate_pool_service_cya_lsi_escrow_policy(
+    policy_input: PoolServiceCyaLsiEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Pool Service Subscription, CYA Chlorine-Lock & Variable-Speed Pump Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_pool_service_and_energy_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unsafe_vgb_drain_cover_or_unbonded_gfci_hazard_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNSAFE_VGB_DRAIN_COVER_OR_UNBONDED_GFCI_HAZARD_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.trichlor_cya_overdose_or_algae_shock_surcharge:
+        return {
+            "status_code": 403,
+            "decision": "TRICHLOR_CYA_OVERDOSE_OR_ALGAE_SHOCK_SURCHARGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.splash_and_dash_visit_or_corrosive_lsi_water_imbalance:
+        return {
+            "status_code": 422,
+            "decision": "SPLASH_AND_DASH_VISIT_OR_CORROSIVE_LSI_WATER_IMBALANCE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.variable_speed_pump_affinity_and_saltwater_swg_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "VARIABLE_SPEED_PUMP_AFFINITY_AND_SALTWATER_SWG_CONFIRM",
+            "mandate_token": "pool_service_cya_lsi_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "LSI_BALANCED_AND_20MIN_BRUSH_SERVICE_AUTHORIZED",
+        "mandate_token": "pool_service_cya_lsi_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -31907,6 +31988,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    pool_service_cya_lsi_escrow_guard = {
+        "authorized_200": evaluate_pool_service_cya_lsi_escrow_policy(
+            PoolServiceCyaLsiEscrowPolicyInput()
+        ),
+        "trichlor_cya_overdose_or_algae_fee_403": evaluate_pool_service_cya_lsi_escrow_policy(
+            PoolServiceCyaLsiEscrowPolicyInput(
+                trichlor_cya_overdose_or_algae_shock_surcharge=True
+            )
+        ),
+        "splash_and_dash_or_corrosive_lsi_422": evaluate_pool_service_cya_lsi_escrow_policy(
+            PoolServiceCyaLsiEscrowPolicyInput(
+                splash_and_dash_visit_or_corrosive_lsi_water_imbalance=True
+            )
+        ),
+        "unsafe_vgb_drain_or_unbonded_gfci_451": evaluate_pool_service_cya_lsi_escrow_policy(
+            PoolServiceCyaLsiEscrowPolicyInput(
+                webiq_unsafe_vgb_drain_cover_or_unbonded_gfci_hazard_flag=True
+            )
+        ),
+        "vsp_pump_and_saltwater_swg_409": evaluate_pool_service_cya_lsi_escrow_policy(
+            PoolServiceCyaLsiEscrowPolicyInput(
+                variable_speed_pump_affinity_and_saltwater_swg_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -32143,6 +32250,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_office_coffee_pantry_escrow_guard": b2b_office_coffee_pantry_escrow_guard,
         "musical_instrument_piano_escrow_guard": musical_instrument_piano_escrow_guard,
         "b2b_office_plant_biophilic_escrow_guard": b2b_office_plant_biophilic_escrow_guard,
+        "pool_service_cya_lsi_escrow_guard": pool_service_cya_lsi_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -43270,6 +43378,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="plant-lease-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CAPEX_SUBIRRIGATION_PLANTER_AND_BIWEEKLY_MAINTENANCE_CONFIRM · Mandate: b2b_office_plant_biophilic_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 108 Pool Service Subscription, CYA Chlorine-Lock & Variable-Speed Pump Escrow -->
+      <div class="finops-box" id="pool-service-cya-lsi-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏊 泳池水质养护包月 (Pool Service Subscription)、氰尿酸“氯锁死 (CYA Lock)”防坑与变频水泵节能托管 (Leslie's / Poolwerx / Pentair / 别墅与酒店泳池管家) 验水与节能沙盒 (Round 108)</div>
+            <div class="finops-subtitle">实测禁滥投三氯片硬控 CYA&lt;=60ppm+爆藻 $0 免费治理防夏季绿池被敲诈 $950 换水费 (HTTP 403)、LaMotte Spin-Touch 光度计 LSI(-0.3~+0.3) 平衡+禁 Skimmer 投酸片蚀穿 $4,200 热泵+&gt;=20 分钟刷池驻留防 90 秒泼水就跑 (HTTP 422)、Web IQ VGB 防吸人底排盖与 GFCI 核验 (HTTP 451) 及变频水泵 (VSP 泵亲和定律降耗 72%)+盐氯机 (SWG) 改造净省 37% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="pool-svc-status-kpi">HTTP 409 · VARIABLE_SPEED_PUMP_AFFINITY_AND_SALTWATER_SWG_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度社区/度假酒店与别墅泳池养护、药剂及电费总池 ($ USD)
+            <input type="range" id="pool-svc-pool-slider" min="5000" max="180000" step="2000" value="32000" oninput="updatePoolServiceCyaLsiEscrowSandbox()" />
+            <span id="pool-svc-pool-val" style="color:#6ee7b7; font-family:monospace;">$32,000</span>
+          </label>
+          <label>
+            氰尿酸 (CYA&lt;=60ppm) 氯锁死防范与爆藻/除磷附加费审计 (HTTP 403)
+            <select id="pool-svc-cya-select" onchange="updatePoolServiceCyaLsiEscrowSandbox()">
+              <option value="pass">CYA&lt;=60ppm 达标即切换液氯/盐氯 + 周保期爆藻 $0 免费救治 + 零除磷剂乱收费 (放行)</option>
+              <option value="block">常年只扔三氯缓释片致 CYA&gt;140ppm 氯锁死爆绿藻再敲诈 $950 换水费 或 强收 $185 除磷剂费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            Spin-Touch 光度计 LSI 平衡、禁 Skimmer 投酸片与 &gt;=20m 刷池驻留 (HTTP 422)
+            <select id="pool-svc-lsi-select" onchange="updatePoolServiceCyaLsiEscrowSandbox()">
+              <option value="pass">蓝牙光度计 FC&gt;=7.5% CYA + LSI 处于 ±0.3 + 铜离子 0ppm + &gt;=20 分钟驻留刷壁清篮照片 (合规)</option>
+              <option value="block">90 秒泼水就跑(&lt;20m 驻留) 或 往 Skimmer 丢 pH 2.8 酸片/LSI&lt;-0.5 蚀穿 $4,200 热泵铜管 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ VGB 防负压吸人底排盖与 GFCI 等电位接地核验 (HTTP 451)
+            <select id="pool-svc-vgb-select" onchange="updatePoolServiceCyaLsiEscrowSandbox()">
+              <option value="clear">双主排配备有效期内 VGB 防吸人安全盖 + 水泵/水下灯 GFCI 等电位接地合规 (正常)</option>
+              <option value="hold">主排水口缺 VGB 防吸人安全盖/超 5 年服役期 或 水下灯 GFCI 漏电接地失效 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            变频水泵 (VSP 泵亲和定律) 与盐氯发生器 (SWG) 改造寻优 (HTTP 409)
+            <select id="pool-svc-opt-select" onchange="updatePoolServiceCyaLsiEscrowSandbox()">
+              <option value="enabled" selected>升级 ENERGY STAR 变频泵 (1,400 RPM 谷电慢滤降电耗 72%) + 盐氯机制氯净省 37% (HTTP 409)</option>
+              <option value="baseline">常规 LSI 平衡与 20 分钟刷池标准周保结算授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度泳池养护与循环电费总池</div>
+            <div class="finops-kpi-val" id="pool-svc-gross-kpi">$32,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">变频泵与盐氯改造后净支出</div>
+            <div class="finops-kpi-val" id="pool-svc-net-kpi" style="color:#6ee7b7;">$20,160</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除单速泵电耗与买氯溢价</div>
+            <div class="finops-kpi-val" id="pool-svc-savings-kpi" style="color:#38bdf8;">$11,840</div>
+          </div>
+        </div>
+        <div id="pool-svc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 VARIABLE_SPEED_PUMP_AFFINITY_AND_SALTWATER_SWG_CONFIRM · Mandate: pool_service_cya_lsi_mandate_optim_409
         </div>
       </div>
 
@@ -56633,6 +56804,80 @@ function updateB2BOfficePlantBiophilicEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 BIOPHILIC_LUX_MATCHED_AND_FREE_SWAP_AUTHORIZED · Mandate: b2b_office_plant_biophilic_mandate_200';
+}}
+
+function updatePoolServiceCyaLsiEscrowSandbox() {{
+  const slider = document.getElementById('pool-svc-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '32000');
+  const cyaMode = document.getElementById('pool-svc-cya-select').value;
+  const lsiMode = document.getElementById('pool-svc-lsi-select').value;
+  const vgbMode = document.getElementById('pool-svc-vgb-select').value;
+  const optMode = document.getElementById('pool-svc-opt-select').value;
+
+  document.getElementById('pool-svc-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('pool-svc-status-kpi');
+  const grossKpi = document.getElementById('pool-svc-gross-kpi');
+  const netKpi = document.getElementById('pool-svc-net-kpi');
+  const savingsKpi = document.getElementById('pool-svc-savings-kpi');
+  const banner = document.getElementById('pool-svc-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vgbMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNSAFE_VGB_DRAIN_COVER_OR_UNBONDED_GFCI_HAZARD_HOLD · Mandate: null';
+    return;
+  }}
+  if (cyaMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 TRICHLOR_CYA_OVERDOSE_OR_ALGAE_SHOCK_SURCHARGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (lsiMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SPLASH_AND_DASH_VISIT_OR_CORROSIVE_LSI_WATER_IMBALANCE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 VARIABLE_SPEED_PUMP_AFFINITY_AND_SALTWATER_SWG_CONFIRM · Mandate: pool_service_cya_lsi_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 LSI_BALANCED_AND_20MIN_BRUSH_SERVICE_AUTHORIZED · Mandate: pool_service_cya_lsi_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

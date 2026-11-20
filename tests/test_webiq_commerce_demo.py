@@ -16294,6 +16294,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-office-plant-biophilic-escrow-sandbox", html_zh)
 
+    def test_pool_service_cya_lsi_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            PoolServiceCyaLsiEscrowPolicyInput,
+            evaluate_pool_service_cya_lsi_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_pool_service_cya_lsi_escrow_policy(
+            PoolServiceCyaLsiEscrowPolicyInput(
+                quarterly_pool_service_and_energy_pool_usd=32000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "LSI_BALANCED_AND_20MIN_BRUSH_SERVICE_AUTHORIZED",
+        )
+
+        cya = evaluate_pool_service_cya_lsi_escrow_policy(
+            PoolServiceCyaLsiEscrowPolicyInput(
+                trichlor_cya_overdose_or_algae_shock_surcharge=True
+            )
+        )
+        self.assertEqual(cya["status_code"], 403)
+        self.assertEqual(
+            cya["decision"],
+            "TRICHLOR_CYA_OVERDOSE_OR_ALGAE_SHOCK_SURCHARGE_BLOCKED",
+        )
+
+        lsi = evaluate_pool_service_cya_lsi_escrow_policy(
+            PoolServiceCyaLsiEscrowPolicyInput(
+                splash_and_dash_visit_or_corrosive_lsi_water_imbalance=True
+            )
+        )
+        self.assertEqual(lsi["status_code"], 422)
+        self.assertEqual(
+            lsi["decision"],
+            "SPLASH_AND_DASH_VISIT_OR_CORROSIVE_LSI_WATER_IMBALANCE_BLOCKED",
+        )
+
+        vgb = evaluate_pool_service_cya_lsi_escrow_policy(
+            PoolServiceCyaLsiEscrowPolicyInput(
+                webiq_unsafe_vgb_drain_cover_or_unbonded_gfci_hazard_flag=True
+            )
+        )
+        self.assertEqual(vgb["status_code"], 451)
+        self.assertEqual(
+            vgb["decision"],
+            "WEBIQ_UNSAFE_VGB_DRAIN_COVER_OR_UNBONDED_GFCI_HAZARD_HOLD",
+        )
+
+        optim = evaluate_pool_service_cya_lsi_escrow_policy(
+            PoolServiceCyaLsiEscrowPolicyInput(
+                quarterly_pool_service_and_energy_pool_usd=32000.0,
+                variable_speed_pump_affinity_and_saltwater_swg_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 11840.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 20160.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("pool_service_cya_lsi_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("pool-service-cya-lsi-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
