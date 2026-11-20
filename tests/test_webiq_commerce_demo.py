@@ -14485,6 +14485,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("luxury-handbag-buyback-consignment-escrow-sandbox", html_zh)
 
+    def test_b2b_mice_offsite_room_block_av_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BMiceOffsiteRoomBlockAvEscrowPolicyInput,
+            evaluate_b2b_mice_offsite_room_block_av_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_mice_offsite_room_block_av_escrow_policy(
+            B2BMiceOffsiteRoomBlockAvEscrowPolicyInput(
+                quarterly_corporate_mice_offsite_and_venue_pool_usd=280000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "RESALE_CREDITED_ATTRITION_AND_AV_RIDER_AUTHORIZED",
+        )
+
+        att = evaluate_b2b_mice_offsite_room_block_av_escrow_policy(
+            B2BMiceOffsiteRoomBlockAvEscrowPolicyInput(
+                attrition_double_dip_uncredited_resale_or_plus_plus_compound=True
+            )
+        )
+        self.assertEqual(att["status_code"], 403)
+        self.assertEqual(
+            att["decision"],
+            "ATTRITION_DOUBLE_DIP_UNCREDITED_RESALE_OR_PLUS_PLUS_COMPOUND_BLOCKED",
+        )
+
+        av = evaluate_b2b_mice_offsite_room_block_av_escrow_policy(
+            B2BMiceOffsiteRoomBlockAvEscrowPolicyInput(
+                inhouse_av_wifi_extortion_or_outside_vendor_patch_fee=True
+            )
+        )
+        self.assertEqual(av["status_code"], 422)
+        self.assertEqual(
+            av["decision"],
+            "INHOUSE_AV_WIFI_EXTORTION_OR_OUTSIDE_VENDOR_PATCH_FEE_BLOCKED",
+        )
+
+        strike = evaluate_b2b_mice_offsite_room_block_av_escrow_policy(
+            B2BMiceOffsiteRoomBlockAvEscrowPolicyInput(
+                webiq_hotel_labor_strike_or_fire_marshal_permit_flag=True
+            )
+        )
+        self.assertEqual(strike["status_code"], 451)
+        self.assertEqual(
+            strike["decision"],
+            "WEBIQ_HOTEL_LABOR_STRIKE_OR_FIRE_MARSHAL_PERMIT_HOLD",
+        )
+
+        optim = evaluate_b2b_mice_offsite_room_block_av_escrow_policy(
+            B2BMiceOffsiteRoomBlockAvEscrowPolicyInput(
+                quarterly_corporate_mice_offsite_and_venue_pool_usd=280000.0,
+                shoulder_date_shift_and_peer_group_room_transfer_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 70000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 210000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_mice_offsite_room_block_av_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-mice-offsite-room-block-av-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

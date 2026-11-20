@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg524" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="accent524" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg524)"/>
+  <rect x="28" y="24" width="1144" height="627" rx="18" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <rect x="28" y="24" width="1144" height="6" rx="3" fill="url(#accent524)"/>
+
+  <!-- Header -->
+  <text x="56" y="68" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">ROUND 81 · SVG 524 · B2B CORPORATE OFFSITE, MICE VENUE ROOM-BLOCK ATTRITION &amp; AV ESCROW</text>
+  <text x="56" y="100" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="800">MICE Venue Agent: Resale-Credited Attrition, $0 Outside-AV Rider &amp; All-In F&amp;B Lock</text>
+  <text x="56" y="126" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Cvent / Bizzabo / Navan Events / Ctrip MICE — Blocking Attrition Double-Dips, $1,800/d Wi-Fi Gouging &amp; 22%++ F&amp;B Traps</text>
+  <rect x="960" y="54" width="184" height="36" rx="18" fill="#064e3b" stroke="#10b981" stroke-width="1.2"/>
+  <text x="1052" y="77" fill="#6ee7b7" font-family="Consolas, monospace" font-size="13" font-weight="700" text-anchor="middle">25% MICE TCO SAVED</text>
+
+  <!-- Left Panel: 3 Commercial Traps -->
+  <rect x="52" y="150" width="345" height="475" rx="14" fill="#111827" stroke="#ef4444" stroke-width="1.2"/>
+  <text x="72" y="182" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">1. Corporate MICE &amp; Offsite Traps</text>
+
+  <rect x="70" y="200" width="309" height="126" rx="10" fill="#1f2937" stroke="#dc2626" stroke-width="1"/>
+  <text x="84" y="224" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap A: 80% Attrition Double-Dip &amp; 22%++</text>
+  <text x="84" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 30 unpicked room-nights billed $9,000 penalty</text>
+  <text x="84" y="266" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  even when hotel resold all 30 rooms at $420/nt</text>
+  <text x="84" y="286" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• "$100++ F&amp;B" compounds 24% Service + 10% Tax</text>
+  <text x="84" y="306" fill="#fca5a5" font-family="Consolas, monospace" font-size="11">Guard: HTTP 403 RESALE_CREDIT_AND_OTD_LOCK</text>
+
+  <rect x="70" y="340" width="309" height="126" rx="10" fill="#1f2937" stroke="#f97316" stroke-width="1"/>
+  <text x="84" y="364" fill="#fed7aa" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap B: In-House AV &amp; $1,800/d Wi-Fi</text>
+  <text x="84" y="386" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Encore/PSAV bills $1,800/d for 50Mbps Wi-Fi &amp;</text>
+  <text x="84" y="406" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  $450/d per 20-Amp power strip after deposit</text>
+  <text x="84" y="426" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Charges 25% "Patch-In Fee" on outside AV crew</text>
+  <text x="84" y="446" fill="#fdba74" font-family="Consolas, monospace" font-size="11">Guard: HTTP 422 ZERO_PATCH_FEE_AV_RIDER_LOCK</text>
+
+  <rect x="70" y="480" width="309" height="124" rx="10" fill="#1f2937" stroke="#a855f7" stroke-width="1"/>
+  <text x="84" y="504" fill="#e9d5ff" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap C: Hotel Strike &amp; Ballroom Overbook</text>
+  <text x="84" y="526" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Active UNITE HERE labor strike picket line or</text>
+  <text x="84" y="546" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  double-booked ballroom / fire-code suspension</text>
+  <text x="84" y="566" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Stale mandate signing key (&gt;180 days)</text>
+  <text x="84" y="586" fill="#d8b4fe" font-family="Consolas, monospace" font-size="11">Guard: HTTP 451 WEBIQ_STRIKE_OR_PERMIT_HOLD</text>
+
+  <!-- Center Panel: Deterministic Control Plane -->
+  <rect x="419" y="150" width="362" height="475" rx="14" fill="#111827" stroke="#38bdf8" stroke-width="1.4"/>
+  <text x="439" y="182" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">2. Deterministic MICE Escrow Engine</text>
+
+  <rect x="439" y="202" width="322" height="82" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="455" y="226" fill="#38bdf8" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 1 · STR OCCUPANCY RESALE MITIGATION</text>
+  <text x="455" y="248" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Audits hotel Property Management System (PMS):</text>
+  <text x="455" y="268" fill="#6ee7b7" font-family="Consolas, monospace" font-size="12">Net Attrition = max(0, Shortfall - Resold Rooms)</text>
+
+  <rect x="439" y="298" width="322" height="86" rx="10" fill="#0f172a" stroke="#818cf8" stroke-width="1"/>
+  <text x="455" y="322" fill="#a5b4fc" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 2 · PRE-DEPOSIT AV &amp; WIFI RIDER LOCK</text>
+  <text x="455" y="344" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Blocks venue deposit until $0 Outside-AV Fee &amp;</text>
+  <text x="455" y="364" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">dedicated &gt;=200Mbps VLAN (&lt;=$250/d) are signed</text>
+
+  <rect x="439" y="398" width="322" height="90" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+  <text x="455" y="422" fill="#6ee7b7" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 3 · BEO ALL-IN OTD &amp; BADGE RECONCILE</text>
+  <text x="455" y="444" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Matches Banquet Event Order (BEO) headcount</text>
+  <text x="455" y="464" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">to 72h-prior RSVP lock + All-In OTD tax cap</text>
+
+  <rect x="439" y="502" width="322" height="102" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="455" y="526" fill="#fcd34d" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 4 · SHOULDER-DATE &amp; BLOCK SWAP (409)</text>
+  <text x="455" y="548" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Shifts Tue–Thu peak to Sun–Tue shoulder dates +</text>
+  <text x="455" y="568" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">transfers surplus rooms on Cvent Block Exchange</text>
+  <text x="455" y="588" fill="#fde68a" font-family="Consolas, monospace" font-size="12">Quarterly Savings: $70,000 / $280,000 (25.0%)</text>
+
+  <!-- Right Panel: 5-Lane HTTP Verdicts & Platform Matrix -->
+  <rect x="803" y="150" width="345" height="475" rx="14" fill="#111827" stroke="#10b981" stroke-width="1.2"/>
+  <text x="823" y="182" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">3. 5-Lane Verdicts &amp; Platform Matrix</text>
+
+  <rect x="821" y="200" width="309" height="46" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+  <text x="835" y="220" fill="#a7f3d0" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 200 · RESALE_ATTRITION_AND_AV_RIDER_OK</text>
+  <text x="835" y="237" fill="#d1fae5" font-family="Segoe UI, Arial, sans-serif" font-size="11">Mandate: b2b_mice_offsite_escrow_mandate_200</text>
+
+  <rect x="821" y="254" width="309" height="46" rx="8" fill="#450a0a" stroke="#ef4444" stroke-width="1"/>
+  <text x="835" y="274" fill="#fecaca" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 403 · ATTRITION_DOUBLE_DIP_BLOCKED</text>
+  <text x="835" y="291" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11">Blocks uncredited room resale &amp; 22%++ compounding</text>
+
+  <rect x="821" y="308" width="309" height="46" rx="8" fill="#431407" stroke="#f97316" stroke-width="1"/>
+  <text x="835" y="328" fill="#fed7aa" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 422 · INHOUSE_AV_WIFI_GOUGING_BLOCKED</text>
+  <text x="835" y="345" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="11">Blocks $1,800/d Wi-Fi &amp; 25% outside AV patch fee</text>
+
+  <rect x="821" y="362" width="309" height="46" rx="8" fill="#3b0764" stroke="#a855f7" stroke-width="1"/>
+  <text x="835" y="382" fill="#e9d5ff" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 451 · WEBIQ_HOTEL_LABOR_STRIKE_HOLD</text>
+  <text x="835" y="399" fill="#d8b4fe" font-family="Segoe UI, Arial, sans-serif" font-size="11">Holds deposit on strike picket or fire-marshal ban</text>
+
+  <rect x="821" y="416" width="309" height="50" rx="8" fill="#451a03" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="835" y="436" fill="#fde68a" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 409 · SHOULDER_DATE_AND_BLOCK_SWAP</text>
+  <text x="835" y="455" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="11">Sun-Tue shift + Room-block exchange (-25% TCO)</text>
+
+  <!-- Platform Summary -->
+  <rect x="821" y="478" width="309" height="126" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="835" y="500" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">Platform Selection Matrix:</text>
+  <text x="835" y="520" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Cvent + Passkey: Enterprise RFP &amp; room-block sync</text>
+  <text x="835" y="538" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Navan Events / Troop: Automated flight+hotel TCO</text>
+  <text x="835" y="556" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Bizzabo: Badge-scan BEO F&amp;B headcount telemetry</text>
+  <text x="835" y="574" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Ctrip / Meituan MICE: China VAT fapiao &amp; DMCs</text>
+  <text x="835" y="592" fill="#6ee7b7" font-family="Consolas, monospace" font-size="11">Provenance: synthetic · reproduced=False</text>
+</svg>

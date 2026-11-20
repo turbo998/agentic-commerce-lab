@@ -20993,6 +20993,87 @@ def evaluate_luxury_handbag_buyback_consignment_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BMiceOffsiteRoomBlockAvEscrowPolicyInput:
+    """Input contract for B2B Corporate Offsite, MICE Venue Room-Block Attrition & AV Escrow."""
+
+    quarterly_corporate_mice_offsite_and_venue_pool_usd: float = 280000.0
+    attrition_double_dip_uncredited_resale_or_plus_plus_compound: bool = False
+    inhouse_av_wifi_extortion_or_outside_vendor_patch_fee: bool = False
+    webiq_hotel_labor_strike_or_fire_marshal_permit_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    shoulder_date_shift_and_peer_group_room_transfer_ready: bool = False
+
+
+def evaluate_b2b_mice_offsite_room_block_av_escrow_policy(
+    policy_input: B2BMiceOffsiteRoomBlockAvEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Corporate Offsite, MICE Venue Room-Block Attrition & AV Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_corporate_mice_offsite_and_venue_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_hotel_labor_strike_or_fire_marshal_permit_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_HOTEL_LABOR_STRIKE_OR_FIRE_MARSHAL_PERMIT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.attrition_double_dip_uncredited_resale_or_plus_plus_compound:
+        return {
+            "status_code": 403,
+            "decision": "ATTRITION_DOUBLE_DIP_UNCREDITED_RESALE_OR_PLUS_PLUS_COMPOUND_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.inhouse_av_wifi_extortion_or_outside_vendor_patch_fee:
+        return {
+            "status_code": 422,
+            "decision": "INHOUSE_AV_WIFI_EXTORTION_OR_OUTSIDE_VENDOR_PATCH_FEE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.shoulder_date_shift_and_peer_group_room_transfer_ready:
+        savings = round(gross_pool * 0.25, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SHOULDER_DATE_SHIFT_AND_PEER_GROUP_ROOM_TRANSFER_CONFIRM",
+            "mandate_token": "b2b_mice_offsite_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "RESALE_CREDITED_ATTRITION_AND_AV_RIDER_AUTHORIZED",
+        "mandate_token": "b2b_mice_offsite_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -29018,6 +29099,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_mice_offsite_room_block_av_escrow_guard = {
+        "authorized_200": evaluate_b2b_mice_offsite_room_block_av_escrow_policy(
+            B2BMiceOffsiteRoomBlockAvEscrowPolicyInput()
+        ),
+        "attrition_double_dip_or_plus_plus_403": evaluate_b2b_mice_offsite_room_block_av_escrow_policy(
+            B2BMiceOffsiteRoomBlockAvEscrowPolicyInput(
+                attrition_double_dip_uncredited_resale_or_plus_plus_compound=True
+            )
+        ),
+        "inhouse_av_wifi_or_patch_fee_422": evaluate_b2b_mice_offsite_room_block_av_escrow_policy(
+            B2BMiceOffsiteRoomBlockAvEscrowPolicyInput(
+                inhouse_av_wifi_extortion_or_outside_vendor_patch_fee=True
+            )
+        ),
+        "hotel_strike_or_fire_permit_451": evaluate_b2b_mice_offsite_room_block_av_escrow_policy(
+            B2BMiceOffsiteRoomBlockAvEscrowPolicyInput(
+                webiq_hotel_labor_strike_or_fire_marshal_permit_flag=True
+            )
+        ),
+        "shoulder_date_and_room_swap_409": evaluate_b2b_mice_offsite_room_block_av_escrow_policy(
+            B2BMiceOffsiteRoomBlockAvEscrowPolicyInput(
+                shoulder_date_shift_and_peer_group_room_transfer_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29227,6 +29334,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "fertility_ivf_egg_freezing_escrow_guard": fertility_ivf_egg_freezing_escrow_guard,
         "b2b_commercial_janitorial_hygiene_escrow_guard": b2b_commercial_janitorial_hygiene_escrow_guard,
         "luxury_handbag_buyback_consignment_guard": luxury_handbag_buyback_consignment_guard,
+        "b2b_mice_offsite_room_block_av_escrow_guard": b2b_mice_offsite_room_block_av_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -38653,6 +38761,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="lux-bag-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MULTI_DESK_CLAIR_ARBITRAGE_AND_TRADEIN_UPLIFT_CONFIRM · Mandate: luxury_handbag_buyback_consignment_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 81 B2B Corporate Offsite, MICE Venue Room-Block Attrition & AV Escrow -->
+      <div class="finops-box" id="b2b-mice-offsite-room-block-av-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏨 企业全员年会、MICE 会奖场地包房保底违约金与驻场 AV 垄断防坑托管 (Cvent / Bizzabo / Navan Events / 携程商旅会奖) 二次转售冲抵与 $0 外带 AV 协议沙盒 (Round 81)</div>
+            <div class="finops-subtitle">实测酒店 PMS 全店满房二次转售 100% 冲抵 80% 退房违约金及餐饮 All-In OTD 防 22%++ 复利计税 (HTTP 403)、定金释放前强制签署 $0 外带 AV 进场费与 &lt;=$250/天专线 VLAN 防 Encore 垄断溢价 (HTTP 422)、Web IQ 酒店罢工与消防熔断 (HTTP 451) 及周日-周二错峰办会+同城余房互换省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="mice-offsite-status-kpi">HTTP 409 · SHOULDER_DATE_SHIFT_AND_PEER_GROUP_ROOM_TRANSFER_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业 MICE 会奖、年会与包房总预算池 ($ USD)
+            <input type="range" id="mice-offsite-pool-slider" min="50000" max="1500000" step="10000" value="280000" oninput="updateB2BMiceOffsiteRoomBlockAvEscrowSandbox()" />
+            <span id="mice-offsite-pool-val" style="color:#6ee7b7; font-family:monospace;">$280,000</span>
+          </label>
+          <label>
+            PMS 二次转售冲抵违约金与 All-In OTD 餐饮计税校验 (HTTP 403)
+            <select id="mice-offsite-attrition-select" onchange="updateB2BMiceOffsiteRoomBlockAvEscrowSandbox()">
+              <option value="pass">散客转售 100% 冲抵未住满缺口 + 餐饮 All-In OTD 含税封顶 (放行)</option>
+              <option value="block">酒店 100% 满房仍强扣 80% 空房违约金(一房两吃) 或 餐饮 $120++ 复利加税 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            定金前 $0 外带 AV 进场协议与会场 Wi-Fi 封顶校验 (HTTP 422)
+            <select id="mice-offsite-av-select" onchange="updateB2BMiceOffsiteRoomBlockAvEscrowSandbox()">
+              <option value="pass">已签 $0 外部搭建进场管理费 + &gt;=200Mbps 专线 VLAN &lt;=$250/天 (合规)</option>
+              <option value="block">驻场 Encore 强收 $1,800/天普通 Wi-Fi 或 对外部搭建加收 25% 进场接电费 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 酒店工会罢工与宴会厅消防许可核验 (HTTP 451)
+            <select id="mice-offsite-strike-select" onchange="updateB2BMiceOffsiteRoomBlockAvEscrowSandbox()">
+              <option value="clear">酒店运营正常零罢工纠察 + 消防验收合规 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">监测到酒店爆发工会罢工 (UNITE HERE) 或 宴会厅消防超员停业令 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            周日–周二错峰平移与 Cvent 同城余房互换 (HTTP 409)
+            <select id="mice-offsite-opt-select" onchange="updateB2BMiceOffsiteRoomBlockAvEscrowSandbox()">
+              <option value="enabled" selected>开启周日–周二错峰会期 (-18%) + 友商余房互换转让净省 25% (HTTP 409)</option>
+              <option value="baseline">常规周二–周四会期与标准包房托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度 MICE 会奖总预算</div>
+            <div class="finops-kpi-val" id="mice-offsite-gross-kpi">$280,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">消除违约金与错峰后净支出</div>
+            <div class="finops-kpi-val" id="mice-offsite-net-kpi" style="color:#6ee7b7;">$210,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度节省场地与包房成本</div>
+            <div class="finops-kpi-val" id="mice-offsite-savings-kpi" style="color:#38bdf8;">$70,000</div>
+          </div>
+        </div>
+        <div id="mice-offsite-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SHOULDER_DATE_SHIFT_AND_PEER_GROUP_ROOM_TRANSFER_CONFIRM · Mandate: b2b_mice_offsite_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -50018,6 +50189,80 @@ function updateLuxuryHandbagBuybackConsignmentSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 LOCKED_BUYOUT_AND_NFC_SEAL_AUTHORIZED · Mandate: luxury_handbag_buyback_consignment_mandate_200';
+}}
+
+function updateB2BMiceOffsiteRoomBlockAvEscrowSandbox() {{
+  const slider = document.getElementById('mice-offsite-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '280000');
+  const attMode = document.getElementById('mice-offsite-attrition-select').value;
+  const avMode = document.getElementById('mice-offsite-av-select').value;
+  const strikeMode = document.getElementById('mice-offsite-strike-select').value;
+  const optMode = document.getElementById('mice-offsite-opt-select').value;
+
+  document.getElementById('mice-offsite-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('mice-offsite-status-kpi');
+  const grossKpi = document.getElementById('mice-offsite-gross-kpi');
+  const netKpi = document.getElementById('mice-offsite-net-kpi');
+  const savingsKpi = document.getElementById('mice-offsite-savings-kpi');
+  const banner = document.getElementById('mice-offsite-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (strikeMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_HOTEL_LABOR_STRIKE_OR_FIRE_MARSHAL_PERMIT_HOLD · Mandate: null';
+    return;
+  }}
+  if (attMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ATTRITION_DOUBLE_DIP_UNCREDITED_RESALE_OR_PLUS_PLUS_COMPOUND_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (avMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 INHOUSE_AV_WIFI_EXTORTION_OR_OUTSIDE_VENDOR_PATCH_FEE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.25);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SHOULDER_DATE_SHIFT_AND_PEER_GROUP_ROOM_TRANSFER_CONFIRM · Mandate: b2b_mice_offsite_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 RESALE_CREDITED_ATTRITION_AND_AV_RIDER_AUTHORIZED · Mandate: b2b_mice_offsite_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
