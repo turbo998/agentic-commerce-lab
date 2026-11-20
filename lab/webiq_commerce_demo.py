@@ -19859,6 +19859,87 @@ def evaluate_b2b_recruiting_headhunter_fcra_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossborderParcelConsolidationEscrowPolicyInput:
+    """Input contract for Cross-Border Parcel Consolidation, Reverse-Haul Forwarding & Volumetric Weight Escrow."""
+
+    quarterly_crossborder_parcel_consolidation_pool_usd: float = 175000.0
+    volumetric_box_padding_fraud_or_unstripped_outer_box: bool = False
+    missing_subparcel_video_scan_or_consolidation_weight_drift: bool = False
+    webiq_iata_dgr_battery_liquid_misrouting_or_ipr_customs_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    rehearsal_vacuum_compression_and_actual_weight_line_ready: bool = False
+
+
+def evaluate_crossborder_parcel_consolidation_escrow_policy(
+    policy_input: CrossborderParcelConsolidationEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Cross-Border Parcel Consolidation, Volumetric Weight & Repack Video policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_crossborder_parcel_consolidation_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_iata_dgr_battery_liquid_misrouting_or_ipr_customs_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_IATA_DGR_BATTERY_LIQUID_MISROUTING_OR_IPR_CUSTOMS_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.volumetric_box_padding_fraud_or_unstripped_outer_box:
+        return {
+            "status_code": 403,
+            "decision": "VOLUMETRIC_BOX_PADDING_FRAUD_OR_UNSTRIPPED_OUTER_BOX_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missing_subparcel_video_scan_or_consolidation_weight_drift:
+        return {
+            "status_code": 422,
+            "decision": "MISSING_SUBPARCEL_VIDEO_SCAN_OR_CONSOLIDATION_WEIGHT_DRIFT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.rehearsal_vacuum_compression_and_actual_weight_line_ready:
+        savings = round(gross_pool * 0.28, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "REHEARSAL_VACUUM_COMPRESSION_AND_ACTUAL_WEIGHT_LINE_CONFIRM",
+            "mandate_token": "crossborder_parcel_consolidation_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "DIM_WEIGHT_CAPPED_AND_PACK_VIDEO_AUTHORIZED",
+        "mandate_token": "crossborder_parcel_consolidation_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -27520,6 +27601,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    crossborder_parcel_consolidation_escrow_guard = {
+        "authorized_200": evaluate_crossborder_parcel_consolidation_escrow_policy(
+            CrossborderParcelConsolidationEscrowPolicyInput()
+        ),
+        "volumetric_padding_or_unstripped_403": evaluate_crossborder_parcel_consolidation_escrow_policy(
+            CrossborderParcelConsolidationEscrowPolicyInput(
+                volumetric_box_padding_fraud_or_unstripped_outer_box=True
+            )
+        ),
+        "missing_scan_or_weight_drift_422": evaluate_crossborder_parcel_consolidation_escrow_policy(
+            CrossborderParcelConsolidationEscrowPolicyInput(
+                missing_subparcel_video_scan_or_consolidation_weight_drift=True
+            )
+        ),
+        "iata_battery_or_ipr_customs_451": evaluate_crossborder_parcel_consolidation_escrow_policy(
+            CrossborderParcelConsolidationEscrowPolicyInput(
+                webiq_iata_dgr_battery_liquid_misrouting_or_ipr_customs_flag=True
+            )
+        ),
+        "rehearsal_vacuum_and_actual_weight_409": evaluate_crossborder_parcel_consolidation_escrow_policy(
+            CrossborderParcelConsolidationEscrowPolicyInput(
+                rehearsal_vacuum_compression_and_actual_weight_line_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -27715,6 +27822,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pet_boarding_walking_grooming_escrow_guard": pet_boarding_walking_grooming_escrow_guard,
         "podcast_dai_music_royalty_escrow_guard": podcast_dai_music_royalty_escrow_guard,
         "b2b_recruiting_headhunter_fcra_escrow_guard": b2b_recruiting_headhunter_fcra_escrow_guard,
+        "crossborder_parcel_consolidation_escrow_guard": crossborder_parcel_consolidation_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -36259,6 +36367,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="b2b-recruit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 BASE_SALARY_ONLY_CAP_AND_BOUNTY_MARKETPLACE_CONFIRM · Mandate: b2b_recruiting_headhunter_fcra_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 67 Cross-Border Parcel Consolidation, Reverse-Haul Forwarding & Volumetric Weight Escrow -->
+      <div class="finops-box" id="crossborder-parcel-consolidation-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📦 跨境集运、海外华人转运仓与海淘合箱清结算 (菜鸟国际集运 / Superbuy / Buyee / MyUS / 顺丰集运) 防大箱充气骗体积重、封箱视频锁与敏感货分流沙盒 (Round 67)</div>
+            <div class="finops-subtitle">实测 3D 装箱填充率(&gt;=65%)与去外盒裁边防故意用超大纸箱塞气泡膜虚增 2.5 倍体积重 (HTTP 403)、封箱工位顶置镜头逐件扫码录像与出入库重量守恒(&lt;=150g)防合箱漏件 (HTTP 422)、Web IQ 锂电池/液体美妆自动拆箱防误冲航空普货退运 (HTTP 451) 及预演包装抽真空+免泡重实重包税专线立省 28% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="parcel-consol-status-kpi">HTTP 409 · REHEARSAL_VACUUM_COMPRESSION_AND_ACTUAL_WEIGHT_LINE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度跨境集运与海外转运仓结算池 ($ USD)
+            <input type="range" id="parcel-consol-pool-slider" min="30000" max="1200000" step="5000" value="175000" oninput="updateCrossborderParcelConsolidationSandbox()" />
+            <span id="parcel-consol-pool-val" style="color:#6ee7b7; font-family:monospace;">$175,000</span>
+          </label>
+          <label>
+            3D 装箱体积利用率与去外层鞋盒校验 (HTTP 403)
+            <select id="parcel-consol-dim-select" onchange="updateCrossborderParcelConsolidationSandbox()">
+              <option value="pass">箱内填充率 &gt;=65% + 已拆除外层快递盒/裁低纸箱高度 (放行)</option>
+              <option value="block">3kg衣服塞进超大箱充气按 9.5kg 体积重收费 或 拒拆外层大鞋盒 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            封箱工位顶置逐件扫码录像与重量守恒校验 (HTTP 422)
+            <select id="parcel-consol-scan-select" onchange="updateCrossborderParcelConsolidationSandbox()">
+              <option value="pass">全部子包裹在顶置视频中扫码入箱 + 出入库重量偏差 &lt;=150g (合规)</option>
+              <option value="block">合箱漏扫第 12 号子包裹条码 或 封箱总重比子件累加轻 380g (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 航空危险品 (IATA DGR) 与海关侵权筛查 (HTTP 451)
+            <select id="parcel-consol-dgr-select" onchange="updateCrossborderParcelConsolidationSandbox()">
+              <option value="clear">带电/液体已自动分入特货线 + 零海关IPR侵权 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">将蓝牙耳机(UN3481锂电)/香水混入航空普货大箱致整箱退运风险 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            预演抽真空压缩与免体积重包税专线 (HTTP 409)
+            <select id="parcel-consol-opt-select" onchange="updateCrossborderParcelConsolidationSandbox()">
+              <option value="enabled" selected>开启 $2 预演包装(去鞋盒+羽绒服抽真空) + 免泡重实重包税专线省 28% (HTTP 409)</option>
+              <option value="baseline">常规 3D 量方合规合箱与标准航空干线授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度跨境集运毛池</div>
+            <div class="finops-kpi-val" id="parcel-consol-gross-kpi">$175,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">抽真空与免泡重后净额</div>
+            <div class="finops-kpi-val" id="parcel-consol-net-kpi" style="color:#6ee7b7;">$126,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下泡重与退运费</div>
+            <div class="finops-kpi-val" id="parcel-consol-savings-kpi" style="color:#38bdf8;">$49,000</div>
+          </div>
+        </div>
+        <div id="parcel-consol-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 REHEARSAL_VACUUM_COMPRESSION_AND_ACTUAL_WEIGHT_LINE_CONFIRM · Mandate: crossborder_parcel_consolidation_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -46588,6 +46759,80 @@ function updateB2BRecruitingHeadhunterFcraSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 RTR_LOCKED_AND_90D_PROBATION_VESTING_AUTHORIZED · Mandate: b2b_recruiting_headhunter_fcra_escrow_mandate_200';
+}}
+
+function updateCrossborderParcelConsolidationSandbox() {{
+  const slider = document.getElementById('parcel-consol-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '175000');
+  const dimMode = document.getElementById('parcel-consol-dim-select').value;
+  const scanMode = document.getElementById('parcel-consol-scan-select').value;
+  const dgrMode = document.getElementById('parcel-consol-dgr-select').value;
+  const optMode = document.getElementById('parcel-consol-opt-select').value;
+
+  document.getElementById('parcel-consol-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('parcel-consol-status-kpi');
+  const grossKpi = document.getElementById('parcel-consol-gross-kpi');
+  const netKpi = document.getElementById('parcel-consol-net-kpi');
+  const savingsKpi = document.getElementById('parcel-consol-savings-kpi');
+  const banner = document.getElementById('parcel-consol-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dgrMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_IATA_DGR_BATTERY_LIQUID_MISROUTING_OR_IPR_CUSTOMS_HOLD · Mandate: null';
+    return;
+  }}
+  if (dimMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 VOLUMETRIC_BOX_PADDING_FRAUD_OR_UNSTRIPPED_OUTER_BOX_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (scanMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MISSING_SUBPARCEL_VIDEO_SCAN_OR_CONSOLIDATION_WEIGHT_DRIFT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.28);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 REHEARSAL_VACUUM_COMPRESSION_AND_ACTUAL_WEIGHT_LINE_CONFIRM · Mandate: crossborder_parcel_consolidation_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 DIM_WEIGHT_CAPPED_AND_PACK_VIDEO_AUTHORIZED · Mandate: crossborder_parcel_consolidation_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

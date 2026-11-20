@@ -13547,6 +13547,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-recruiting-headhunter-fcra-escrow-sandbox", html_zh)
 
+    def test_crossborder_parcel_consolidation_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossborderParcelConsolidationEscrowPolicyInput,
+            evaluate_crossborder_parcel_consolidation_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_crossborder_parcel_consolidation_escrow_policy(
+            CrossborderParcelConsolidationEscrowPolicyInput(
+                quarterly_crossborder_parcel_consolidation_pool_usd=175000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "DIM_WEIGHT_CAPPED_AND_PACK_VIDEO_AUTHORIZED",
+        )
+
+        dim = evaluate_crossborder_parcel_consolidation_escrow_policy(
+            CrossborderParcelConsolidationEscrowPolicyInput(
+                volumetric_box_padding_fraud_or_unstripped_outer_box=True
+            )
+        )
+        self.assertEqual(dim["status_code"], 403)
+        self.assertEqual(
+            dim["decision"],
+            "VOLUMETRIC_BOX_PADDING_FRAUD_OR_UNSTRIPPED_OUTER_BOX_BLOCKED",
+        )
+
+        scan = evaluate_crossborder_parcel_consolidation_escrow_policy(
+            CrossborderParcelConsolidationEscrowPolicyInput(
+                missing_subparcel_video_scan_or_consolidation_weight_drift=True
+            )
+        )
+        self.assertEqual(scan["status_code"], 422)
+        self.assertEqual(
+            scan["decision"],
+            "MISSING_SUBPARCEL_VIDEO_SCAN_OR_CONSOLIDATION_WEIGHT_DRIFT_BLOCKED",
+        )
+
+        dgr = evaluate_crossborder_parcel_consolidation_escrow_policy(
+            CrossborderParcelConsolidationEscrowPolicyInput(
+                webiq_iata_dgr_battery_liquid_misrouting_or_ipr_customs_flag=True
+            )
+        )
+        self.assertEqual(dgr["status_code"], 451)
+        self.assertEqual(
+            dgr["decision"],
+            "WEBIQ_IATA_DGR_BATTERY_LIQUID_MISROUTING_OR_IPR_CUSTOMS_HOLD",
+        )
+
+        optim = evaluate_crossborder_parcel_consolidation_escrow_policy(
+            CrossborderParcelConsolidationEscrowPolicyInput(
+                quarterly_crossborder_parcel_consolidation_pool_usd=175000.0,
+                rehearsal_vacuum_compression_and_actual_weight_line_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 49000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 126000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("crossborder_parcel_consolidation_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("crossborder-parcel-consolidation-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
