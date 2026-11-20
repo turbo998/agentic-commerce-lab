@@ -14820,6 +14820,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("senior-living-homecare-evv-escrow-sandbox", html_zh)
 
+    def test_b2b_tradeshow_drayage_booth_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BTradeshowDrayageBoothEscrowPolicyInput,
+            evaluate_b2b_tradeshow_drayage_booth_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_tradeshow_drayage_booth_escrow_policy(
+            B2BTradeshowDrayageBoothEscrowPolicyInput(
+                quarterly_b2b_tradeshow_and_drayage_pool_usd=210000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "CWT_SCALE_VERIFIED_AND_EARLY_BIRD_BOOTH_AUTHORIZED",
+        )
+
+        dray = evaluate_b2b_tradeshow_drayage_booth_escrow_policy(
+            B2BTradeshowDrayageBoothEscrowPolicyInput(
+                drayage_cwt_minimum_split_shipment_or_unfair_overtime_surge=True
+            )
+        )
+        self.assertEqual(dray["status_code"], 403)
+        self.assertEqual(
+            dray["decision"],
+            "DRAYAGE_CWT_MINIMUM_SPLIT_SHIPMENT_OR_UNFAIR_OVERTIME_SURGE_BLOCKED",
+        )
+
+        nfpa = evaluate_b2b_tradeshow_drayage_booth_escrow_policy(
+            B2BTradeshowDrayageBoothEscrowPolicyInput(
+                proprietary_badge_api_ransom_or_missing_nfpa701_coi=True
+            )
+        )
+        self.assertEqual(nfpa["status_code"], 422)
+        self.assertEqual(
+            nfpa["decision"],
+            "PROPRIETARY_BADGE_API_RANSOM_OR_MISSING_NFPA701_COI_BLOCKED",
+        )
+
+        pe = evaluate_b2b_tradeshow_drayage_booth_escrow_policy(
+            B2BTradeshowDrayageBoothEscrowPolicyInput(
+                webiq_expo_cancellation_or_unstamped_double_deck_truss_flag=True
+            )
+        )
+        self.assertEqual(pe["status_code"], 451)
+        self.assertEqual(
+            pe["decision"],
+            "WEBIQ_EXPO_CANCELLATION_OR_UNSTAMPED_DOUBLE_DECK_TRUSS_HOLD",
+        )
+
+        optim = evaluate_b2b_tradeshow_drayage_booth_escrow_policy(
+            B2BTradeshowDrayageBoothEscrowPolicyInput(
+                quarterly_b2b_tradeshow_and_drayage_pool_usd=210000.0,
+                modular_lightweight_aluminum_extrusion_and_universal_lead_capture_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 65100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 144900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_tradeshow_drayage_booth_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-tradeshow-drayage-booth-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

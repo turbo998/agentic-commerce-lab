@@ -21398,6 +21398,87 @@ def evaluate_senior_living_homecare_evv_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BTradeshowDrayageBoothEscrowPolicyInput:
+    """Input contract for B2B Trade-Show Booth, Exhibition Drayage (CWT) & Lead-Retrieval Escrow."""
+
+    quarterly_b2b_tradeshow_and_drayage_pool_usd: float = 210000.0
+    drayage_cwt_minimum_split_shipment_or_unfair_overtime_surge: bool = False
+    proprietary_badge_api_ransom_or_missing_nfpa701_coi: bool = False
+    webiq_expo_cancellation_or_unstamped_double_deck_truss_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    modular_lightweight_aluminum_extrusion_and_universal_lead_capture_ready: bool = False
+
+
+def evaluate_b2b_tradeshow_drayage_booth_escrow_policy(
+    policy_input: B2BTradeshowDrayageBoothEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Trade-Show Booth, Exhibition Drayage (CWT) & Lead-Retrieval Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_tradeshow_and_drayage_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_expo_cancellation_or_unstamped_double_deck_truss_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_EXPO_CANCELLATION_OR_UNSTAMPED_DOUBLE_DECK_TRUSS_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.drayage_cwt_minimum_split_shipment_or_unfair_overtime_surge:
+        return {
+            "status_code": 403,
+            "decision": "DRAYAGE_CWT_MINIMUM_SPLIT_SHIPMENT_OR_UNFAIR_OVERTIME_SURGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.proprietary_badge_api_ransom_or_missing_nfpa701_coi:
+        return {
+            "status_code": 422,
+            "decision": "PROPRIETARY_BADGE_API_RANSOM_OR_MISSING_NFPA701_COI_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.modular_lightweight_aluminum_extrusion_and_universal_lead_capture_ready:
+        savings = round(gross_pool * 0.31, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MODULAR_LIGHTWEIGHT_ALUMINUM_EXTRUSION_AND_UNIVERSAL_LEAD_CAPTURE_CONFIRM",
+            "mandate_token": "b2b_tradeshow_drayage_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "CWT_SCALE_VERIFIED_AND_EARLY_BIRD_BOOTH_AUTHORIZED",
+        "mandate_token": "b2b_tradeshow_drayage_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -29553,6 +29634,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_tradeshow_drayage_booth_escrow_guard = {
+        "authorized_200": evaluate_b2b_tradeshow_drayage_booth_escrow_policy(
+            B2BTradeshowDrayageBoothEscrowPolicyInput()
+        ),
+        "cwt_min_or_unfair_overtime_403": evaluate_b2b_tradeshow_drayage_booth_escrow_policy(
+            B2BTradeshowDrayageBoothEscrowPolicyInput(
+                drayage_cwt_minimum_split_shipment_or_unfair_overtime_surge=True
+            )
+        ),
+        "lead_api_ransom_or_missing_nfpa_422": evaluate_b2b_tradeshow_drayage_booth_escrow_policy(
+            B2BTradeshowDrayageBoothEscrowPolicyInput(
+                proprietary_badge_api_ransom_or_missing_nfpa701_coi=True
+            )
+        ),
+        "expo_cancel_or_unstamped_truss_451": evaluate_b2b_tradeshow_drayage_booth_escrow_policy(
+            B2BTradeshowDrayageBoothEscrowPolicyInput(
+                webiq_expo_cancellation_or_unstamped_double_deck_truss_flag=True
+            )
+        ),
+        "modular_aluminum_and_universal_ocr_409": evaluate_b2b_tradeshow_drayage_booth_escrow_policy(
+            B2BTradeshowDrayageBoothEscrowPolicyInput(
+                modular_lightweight_aluminum_extrusion_and_universal_lead_capture_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29767,6 +29874,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_localization_tm_lqa_dubbing_escrow_guard": b2b_localization_tm_lqa_dubbing_escrow_guard,
         "golf_teetime_country_club_escrow_guard": golf_teetime_country_club_escrow_guard,
         "senior_living_homecare_evv_escrow_guard": senior_living_homecare_evv_escrow_guard,
+        "b2b_tradeshow_drayage_booth_escrow_guard": b2b_tradeshow_drayage_booth_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -39508,6 +39616,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="senior-care-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 LTC_INSURANCE_ADL_CLAIM_AUTOMATION_AND_DIRECT_CARE_MATCH_CONFIRM · Mandate: senior_living_evv_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 86 B2B Trade-Show Booth, Exhibition Drayage (CWT) & Lead-Retrieval Escrow -->
+      <div class="finops-box" id="b2b-tradeshow-drayage-booth-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎪 B2B 展会特装搭建、展馆场内搬运费 (Drayage / CWT) 与扫码获客设备托管 (Freeman / GES / BeMatrix / Popl Teams / 广交会特装) 单票合托减重与零赎金获客沙盒 (Round 86)</div>
+            <div class="finops-subtitle">实测前置仓单票 Master BOL 合托防零散快件 200 磅 (2 CWT) 起步天价叉车费及调度场 GPS 准点签到防被动 50% 加班费 (HTTP 403)、拦截 $895/场主办方扫码枪 API 导出赎金并强制 T-30d 提交 NFPA 701 阻燃证与 $2M COI 保单 (HTTP 422)、Web IQ 双层桁架无 PE 结构章熔断 (HTTP 451) 及 BeMatrix 轻质铝框减重 76% + 通用胸卡 OCR 净省 31% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="tradeshow-expo-status-kpi">HTTP 409 · MODULAR_LIGHTWEIGHT_ALUMINUM_EXTRUSION_AND_UNIVERSAL_LEAD_CAPTURE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度全球 B2B 展会特装、场内搬运 (Drayage) 与获客预算池 ($ USD)
+            <input type="range" id="tradeshow-expo-pool-slider" min="40000" max="1200000" step="10000" value="210000" oninput="updateB2BTradeshowDrayageBoothEscrowSandbox()" />
+            <span id="tradeshow-expo-pool-val" style="color:#6ee7b7; font-family:monospace;">$210,000</span>
+          </label>
+          <label>
+            前置仓单票合托 (Single-BOL) 与调度场平价工时核验 (HTTP 403)
+            <select id="tradeshow-expo-drayage-select" onchange="updateB2BTradeshowDrayageBoothEscrowSandbox()">
+              <option value="pass">单票 Master BOL 附 CAT 地磅单 + 12:00 前签到免加班费 + T-30d 早鸟水电价 (放行)</option>
+              <option value="block">3 个 12 磅散件快递被按 600 磅 (6 CWT) 收 $1,200 搬运费 或 准点到车被强收 50% 加班费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            零赎金通用胸卡 OCR 与 NFPA 701 阻燃/保险核验 (HTTP 422)
+            <select id="tradeshow-expo-nfpa-select" onchange="updateB2BTradeshowDrayageBoothEscrowSandbox()">
+              <option value="pass">已交 NFPA 701 阻燃证书 + $2M EAC 保单 + 零单场 API 赎金 (合规)</option>
+              <option value="block">官方扫码枪强收 $895 CRM API 激活费 或 展台软膜缺 NFPA 701 阻燃报告 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 双层展台/空中吊点 PE 结构工程师签章核验 (HTTP 451)
+            <select id="tradeshow-expo-pe-select" onchange="updateB2BTradeshowDrayageBoothEscrowSandbox()">
+              <option value="clear">注册结构工程师 PE 荷载签章完备 + 展会正常举办 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">双层展台或悬挂桁架无 PE 安全签章被消防查封 或 展会停办 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            BeMatrix 轻质铝框减重 (-76% CWT) 与通用胸卡秒级获客 (HTTP 409)
+            <select id="tradeshow-expo-opt-select" onchange="updateB2BTradeshowDrayageBoothEscrowSandbox()">
+              <option value="enabled" selected>替换 580 磅 BeMatrix 铝框 (-76% 叉车费) + Popl 视觉胸卡 15 秒入 CRM 净省 31% (HTTP 409)</option>
+              <option value="baseline">常规 CAT 地磅核验与早鸟水电标准展台托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度全球参展总预算池</div>
+            <div class="finops-kpi-val" id="tradeshow-expo-gross-kpi">$210,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">轻量化减重与免赎金后净支出</div>
+            <div class="finops-kpi-val" id="tradeshow-expo-net-kpi" style="color:#6ee7b7;">$144,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度节省叉车搬运费与扫码成本</div>
+            <div class="finops-kpi-val" id="tradeshow-expo-savings-kpi" style="color:#38bdf8;">$65,100</div>
+          </div>
+        </div>
+        <div id="tradeshow-expo-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MODULAR_LIGHTWEIGHT_ALUMINUM_EXTRUSION_AND_UNIVERSAL_LEAD_CAPTURE_CONFIRM · Mandate: b2b_tradeshow_drayage_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -51243,6 +51414,80 @@ function updateSeniorLivingHomecareEvvEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ADL_RATE_LOCK_AND_BLE_EVV_SHIFT_AUTHORIZED · Mandate: senior_living_evv_escrow_mandate_200';
+}}
+
+function updateB2BTradeshowDrayageBoothEscrowSandbox() {{
+  const slider = document.getElementById('tradeshow-expo-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '210000');
+  const drayMode = document.getElementById('tradeshow-expo-drayage-select').value;
+  const nfpaMode = document.getElementById('tradeshow-expo-nfpa-select').value;
+  const peMode = document.getElementById('tradeshow-expo-pe-select').value;
+  const optMode = document.getElementById('tradeshow-expo-opt-select').value;
+
+  document.getElementById('tradeshow-expo-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('tradeshow-expo-status-kpi');
+  const grossKpi = document.getElementById('tradeshow-expo-gross-kpi');
+  const netKpi = document.getElementById('tradeshow-expo-net-kpi');
+  const savingsKpi = document.getElementById('tradeshow-expo-savings-kpi');
+  const banner = document.getElementById('tradeshow-expo-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (peMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_EXPO_CANCELLATION_OR_UNSTAMPED_DOUBLE_DECK_TRUSS_HOLD · Mandate: null';
+    return;
+  }}
+  if (drayMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DRAYAGE_CWT_MINIMUM_SPLIT_SHIPMENT_OR_UNFAIR_OVERTIME_SURGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (nfpaMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PROPRIETARY_BADGE_API_RANSOM_OR_MISSING_NFPA701_COI_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.31);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MODULAR_LIGHTWEIGHT_ALUMINUM_EXTRUSION_AND_UNIVERSAL_LEAD_CAPTURE_CONFIRM · Mandate: b2b_tradeshow_drayage_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 CWT_SCALE_VERIFIED_AND_EARLY_BIRD_BOOTH_AUTHORIZED · Mandate: b2b_tradeshow_drayage_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
