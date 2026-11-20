@@ -15758,6 +15758,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("rooftop-replacement-ul2218-escrow-sandbox", html_zh)
 
+    def test_b2b_coworking_daypass_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BCoworkingDaypassEscrowPolicyInput,
+            evaluate_b2b_coworking_daypass_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_coworking_daypass_escrow_policy(
+            B2BCoworkingDaypassEscrowPolicyInput(
+                quarterly_b2b_coworking_and_daypass_pool_usd=160000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ALL_IN_WORKSPACE_AND_PRIVATE_VLAN_AUTHORIZED",
+        )
+
+        exit_fee = evaluate_b2b_coworking_daypass_escrow_policy(
+            B2BCoworkingDaypassEscrowPolicyInput(
+                auto_renewal_stepup_ratchet_or_per_desk_exit_restoration_fee=True
+            )
+        )
+        self.assertEqual(exit_fee["status_code"], 403)
+        self.assertEqual(
+            exit_fee["decision"],
+            "AUTO_RENEWAL_STEPUP_RATCHET_OR_PER_DESK_EXIT_RESTORATION_FEE_BLOCKED",
+        )
+
+        cred = evaluate_b2b_coworking_daypass_escrow_policy(
+            B2BCoworkingDaypassEscrowPolicyInput(
+                expiring_meeting_room_credit_overage_or_unbadged_all_access_seat=True
+            )
+        )
+        self.assertEqual(cred["status_code"], 422)
+        self.assertEqual(
+            cred["decision"],
+            "EXPIRING_MEETING_ROOM_CREDIT_OVERAGE_OR_UNBADGED_ALL_ACCESS_SEAT_BLOCKED",
+        )
+
+        vlan = evaluate_b2b_coworking_daypass_escrow_policy(
+            B2BCoworkingDaypassEscrowPolicyInput(
+                webiq_master_lease_default_lockout_or_shared_wifi_no_wpa3_enterprise_flag=True
+            )
+        )
+        self.assertEqual(vlan["status_code"], 451)
+        self.assertEqual(
+            vlan["decision"],
+            "WEBIQ_MASTER_LEASE_DEFAULT_LOCKOUT_OR_SHARED_WIFI_NO_WPA3_ENTERPRISE_HOLD",
+        )
+
+        optim = evaluate_b2b_coworking_daypass_escrow_policy(
+            B2BCoworkingDaypassEscrowPolicyInput(
+                quarterly_b2b_coworking_and_daypass_pool_usd=160000.0,
+                pay_per_badge_on_demand_pass_pool_and_liquidspace_meeting_arbitrage_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 57600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 102400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_coworking_daypass_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-coworking-daypass-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

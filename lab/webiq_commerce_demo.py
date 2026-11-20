@@ -22532,6 +22532,87 @@ def evaluate_rooftop_replacement_ul2218_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BCoworkingDaypassEscrowPolicyInput:
+    """Input contract for B2B Coworking, On-Demand Day-Pass & Meeting-Credit Escrow."""
+
+    quarterly_b2b_coworking_and_daypass_pool_usd: float = 160000.0
+    auto_renewal_stepup_ratchet_or_per_desk_exit_restoration_fee: bool = False
+    expiring_meeting_room_credit_overage_or_unbadged_all_access_seat: bool = False
+    webiq_master_lease_default_lockout_or_shared_wifi_no_wpa3_enterprise_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    pay_per_badge_on_demand_pass_pool_and_liquidspace_meeting_arbitrage_ready: bool = False
+
+
+def evaluate_b2b_coworking_daypass_escrow_policy(
+    policy_input: B2BCoworkingDaypassEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Coworking, On-Demand Day-Pass & Meeting-Credit Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_coworking_and_daypass_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_master_lease_default_lockout_or_shared_wifi_no_wpa3_enterprise_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_MASTER_LEASE_DEFAULT_LOCKOUT_OR_SHARED_WIFI_NO_WPA3_ENTERPRISE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.auto_renewal_stepup_ratchet_or_per_desk_exit_restoration_fee:
+        return {
+            "status_code": 403,
+            "decision": "AUTO_RENEWAL_STEPUP_RATCHET_OR_PER_DESK_EXIT_RESTORATION_FEE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.expiring_meeting_room_credit_overage_or_unbadged_all_access_seat:
+        return {
+            "status_code": 422,
+            "decision": "EXPIRING_MEETING_ROOM_CREDIT_OVERAGE_OR_UNBADGED_ALL_ACCESS_SEAT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pay_per_badge_on_demand_pass_pool_and_liquidspace_meeting_arbitrage_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PAY_PER_BADGE_ON_DEMAND_PASS_POOL_AND_LIQUIDSPACE_MEETING_ARBITRAGE_CONFIRM",
+            "mandate_token": "b2b_coworking_daypass_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ALL_IN_WORKSPACE_AND_PRIVATE_VLAN_AUTHORIZED",
+        "mandate_token": "b2b_coworking_daypass_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -31051,6 +31132,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_coworking_daypass_escrow_guard = {
+        "authorized_200": evaluate_b2b_coworking_daypass_escrow_policy(
+            B2BCoworkingDaypassEscrowPolicyInput()
+        ),
+        "exit_restoration_or_stepup_403": evaluate_b2b_coworking_daypass_escrow_policy(
+            B2BCoworkingDaypassEscrowPolicyInput(
+                auto_renewal_stepup_ratchet_or_per_desk_exit_restoration_fee=True
+            )
+        ),
+        "room_overage_or_ghost_pass_422": evaluate_b2b_coworking_daypass_escrow_policy(
+            B2BCoworkingDaypassEscrowPolicyInput(
+                expiring_meeting_room_credit_overage_or_unbadged_all_access_seat=True
+            )
+        ),
+        "master_lease_default_or_open_wifi_451": evaluate_b2b_coworking_daypass_escrow_policy(
+            B2BCoworkingDaypassEscrowPolicyInput(
+                webiq_master_lease_default_lockout_or_shared_wifi_no_wpa3_enterprise_flag=True
+            )
+        ),
+        "pay_on_tap_pool_and_liquidspace_409": evaluate_b2b_coworking_daypass_escrow_policy(
+            B2BCoworkingDaypassEscrowPolicyInput(
+                pay_per_badge_on_demand_pass_pool_and_liquidspace_meeting_arbitrage_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -31279,6 +31386,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "online_flower_bouquet_escrow_guard": online_flower_bouquet_escrow_guard,
         "b2b_corporate_catering_escrow_guard": b2b_corporate_catering_escrow_guard,
         "rooftop_replacement_ul2218_escrow_guard": rooftop_replacement_ul2218_escrow_guard,
+        "b2b_coworking_daypass_escrow_guard": b2b_coworking_daypass_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -41902,6 +42010,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="roof-ul2218-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 UL2218_CLASS4_IMPACT_SHINGLE_UPGRADE_AND_INSURER_PREMIUM_DISCOUNT_CONFIRM · Mandate: rooftop_replacement_ul2218_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 100 B2B Coworking, On-Demand Day-Pass & Meeting-Credit Escrow -->
+      <div class="finops-box" id="b2b-coworking-daypass-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏢 共享办公空间 (Coworking)、按次灵活工位卡 (On-Demand Day-Pass) 与会议室积分清零防坑托管 (WeWork / Regus IWG / Industrious / LiquidSpace / Gable) 零退出杂费与按次日卡池沙盒 (Round 100 · 百轮里程碑)</div>
+            <div class="finops-subtitle">实测免除 $150/工位退租刷墙清洁复原费及强制 $79/人咖啡茶水包与 30 天滚动解约防 +18% 自动续租暴涨 (HTTP 403)、拦截月打卡&lt;5 次员工的 $299 全通月卡空耗及会议室积分月底作废后 $85/小时天价超额扣费 (HTTP 422)、Web IQ 二房东欠租大业主锁楼与 802.1X WPA3 私有 VLAN 隔离核验 (HTTP 451) 及切换 $29 按实刷卡日卡池+周二按日包大会议室净省 36% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="cowork-pass-status-kpi">HTTP 409 · PAY_PER_BADGE_ON_DEMAND_PASS_POOL_AND_LIQUIDSPACE_MEETING_ARBITRAGE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度分布式团队共享办公套间、漫游月卡与会议室预算池 ($ USD)
+            <input type="range" id="cowork-pass-pool-slider" min="30000" max="1000000" step="10000" value="160000" oninput="updateB2BCoworkingDaypassEscrowSandbox()" />
+            <span id="cowork-pass-pool-val" style="color:#6ee7b7; font-family:monospace;">$160,000</span>
+          </label>
+          <label>
+            零退租刷墙复原费 ($0 Exit Fee) 与 30 天滚动解约核验 (HTTP 403)
+            <select id="cowork-pass-exit-select" onchange="updateB2BCoworkingDaypassEscrowSandbox()">
+              <option value="pass">$0 正常磨损退租复原费 + 免强制 $79 茶水包 + 30 天滚动通知解约 (放行)</option>
+              <option value="block">退租强扣 $150/工位刷墙与 $95 网线注销费 或 错过 90 天通知自动涨价 18% 续约 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            低频漫游月卡 (&lt;5 天/月) 自动降级与会议室超额费核验 (HTTP 422)
+            <select id="cowork-pass-credit-select" onchange="updateB2BCoworkingDaypassEscrowSandbox()">
+              <option value="pass">月打卡&lt;5 次自动转 $29 按次日卡 + 会议室积分 90 天共享池(&lt;=$45/h 外部比价) (合规)</option>
+              <option value="block">员工每月仅去 2 天仍白交 $299 固定月卡 或 积分月底清零后强收 $85/小时会议室超额费 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 二房东主租约稳定性 (SNDA) 与私有 VLAN 隔离核验 (HTTP 451)
+            <select id="cowork-pass-vlan-select" onchange="updateB2BCoworkingDaypassEscrowSandbox()">
+              <option value="clear">大业主 SNDA 不干扰保障 + 802.1X WPA3-Enterprise 独立 VLAN 加密 (正常)</option>
+              <option value="hold">二房东拖欠大厦主租金面临锁楼没收押金风险 或 全场共用无隔离明文 Wi-Fi (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            按实刷卡计费日卡池 (Gable/Desana) 与按日包会议室套利 (HTTP 409)
+            <select id="cowork-pass-opt-select" onchange="updateB2BCoworkingDaypassEscrowSandbox()">
+              <option value="enabled" selected>退掉空置固定房间与低频月卡，切换 $29 按刷卡日卡池 + 周二按日包大会议室净省 36% (HTTP 409)</option>
+              <option value="baseline">常规零退出杂费与私有 VLAN 标准共享办公托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度灵活办公预算总池</div>
+            <div class="finops-kpi-val" id="cowork-pass-gross-kpi">$160,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">按实刷卡日卡池后净支出</div>
+            <div class="finops-kpi-val" id="cowork-pass-net-kpi" style="color:#6ee7b7;">$102,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除空置月卡与退出费</div>
+            <div class="finops-kpi-val" id="cowork-pass-savings-kpi" style="color:#38bdf8;">$57,600</div>
+          </div>
+        </div>
+        <div id="cowork-pass-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PAY_PER_BADGE_ON_DEMAND_PASS_POOL_AND_LIQUIDSPACE_MEETING_ARBITRAGE_CONFIRM · Mandate: b2b_coworking_daypass_mandate_optim_409
         </div>
       </div>
 
@@ -54673,6 +54844,80 @@ function updateRooftopReplacementUl2218EscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 EAGLEVIEW_VERIFIED_AND_LIEN_WAIVED_ROOF_AUTHORIZED · Mandate: rooftop_replacement_ul2218_mandate_200';
+}}
+
+function updateB2BCoworkingDaypassEscrowSandbox() {{
+  const slider = document.getElementById('cowork-pass-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '160000');
+  const exitMode = document.getElementById('cowork-pass-exit-select').value;
+  const credMode = document.getElementById('cowork-pass-credit-select').value;
+  const vlanMode = document.getElementById('cowork-pass-vlan-select').value;
+  const optMode = document.getElementById('cowork-pass-opt-select').value;
+
+  document.getElementById('cowork-pass-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('cowork-pass-status-kpi');
+  const grossKpi = document.getElementById('cowork-pass-gross-kpi');
+  const netKpi = document.getElementById('cowork-pass-net-kpi');
+  const savingsKpi = document.getElementById('cowork-pass-savings-kpi');
+  const banner = document.getElementById('cowork-pass-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vlanMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_MASTER_LEASE_DEFAULT_LOCKOUT_OR_SHARED_WIFI_NO_WPA3_ENTERPRISE_HOLD · Mandate: null';
+    return;
+  }}
+  if (exitMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 AUTO_RENEWAL_STEPUP_RATCHET_OR_PER_DESK_EXIT_RESTORATION_FEE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (credMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 EXPIRING_MEETING_ROOM_CREDIT_OVERAGE_OR_UNBADGED_ALL_ACCESS_SEAT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PAY_PER_BADGE_ON_DEMAND_PASS_POOL_AND_LIQUIDSPACE_MEETING_ARBITRAGE_CONFIRM · Mandate: b2b_coworking_daypass_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ALL_IN_WORKSPACE_AND_PRIVATE_VLAN_AUTHORIZED · Mandate: b2b_coworking_daypass_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
