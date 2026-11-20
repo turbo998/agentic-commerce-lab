@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`189` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`190` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (37 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (53 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (40 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (41 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -142,7 +142,7 @@
 | 53 | **Elective Dental Implant, `LASIK / ICL` Vision Correction & Bundled Surgery Escrow (`ClearChoice / Aier Eye / Topchoice / Sunbit`) All-Inclusive Crown/Abutment Lock, Anti-Deferred-Interest Gate & `UDI` Implant Traceability Agent Architecture Selection FAQ** | [English](dental-implant-lasik-elective-surgery-udi-financing-escrow-agent-selection-faq.en.md) · [中文](dental-implant-lasik-elective-surgery-udi-financing-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (40 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (41 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -188,6 +188,7 @@
 | 38 | **Corporate Ride-Hailing, Executive Ground Transport & Commuter Voucher Escrow (`Uber for Business / Lyft Business / Didi Enterprise / Blacklane`) Anti-Proxy-Ride Geofence, Flight-Delay Auto-Sync & `ETC` Toll Audit Agent Architecture Selection FAQ** | [English](corporate-ridehailing-ground-transport-geofence-flight-sync-escrow-agent-selection-faq.en.md) · [中文](corporate-ridehailing-ground-transport-geofence-flight-sync-escrow-agent-selection-faq.md) |
 | 39 | **B2B Expert Network, Market Research Respondent Panel & Survey Incentive Escrow (`GLG / AlphaSights / Tegus / Qualtrics / Prolific`) Anti-Bot Survey Farm Gate, `10-Minute` Bailout Grace & `SEC MNPI` Blackout Agent Architecture Selection FAQ** | [English](b2b-expert-network-market-research-survey-bot-mnpi-escrow-agent-selection-faq.en.md) · [中文](b2b-expert-network-market-research-survey-bot-mnpi-escrow-agent-selection-faq.md) |
 | 40 | **B2B Executive Search, Headhunter Contingency Fee & `FCRA` Background Check Escrow (`Korn Ferry / Paraform / Greenhouse / Checkr`) 90-Day Probation Vesting, `ATS` Right-to-Represent Lock & Base-Salary-Only Cap Agent Architecture Selection FAQ** | [English](b2b-recruiting-headhunter-contingency-clawback-fcra-escrow-agent-selection-faq.en.md) · [中文](b2b-recruiting-headhunter-contingency-clawback-fcra-escrow-agent-selection-faq.md) |
+| 41 | **B2B Wholesale Fashion Showroom, Boutique Buying & `Net-60` Return Escrow (`Faire / JOOR / NuORDER / Ankorstore`) Size-Curve Parity Lock, `Cancel-After Date` Auto-Void & Anti-`DTC`-Undercut Agent Architecture Selection FAQ** | [English](b2b-wholesale-fashion-showroom-faire-joor-size-curve-escrow-agent-selection-faq.en.md) · [中文](b2b-wholesale-fashion-showroom-faire-joor-size-curve-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 Guides)

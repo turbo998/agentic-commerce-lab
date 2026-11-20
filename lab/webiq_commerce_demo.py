@@ -20183,6 +20183,87 @@ def evaluate_dental_implant_lasik_surgery_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BWholesaleFashionShowroomEscrowPolicyInput:
+    """Input contract for B2B Wholesale Fashion Showroom, Boutique Buying & Net-60 Return Escrow."""
+
+    quarterly_b2b_wholesale_fashion_showroom_pool_usd: float = 220000.0
+    broken_size_curve_dumping_or_unauthorized_colorway_swap: bool = False
+    past_cancel_after_date_late_ship_or_territory_zip_collision: bool = False
+    webiq_brand_dtc_price_undercut_or_care_label_fraud_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    opening_order_free_return_and_net60_float_ready: bool = False
+
+
+def evaluate_b2b_wholesale_fashion_showroom_escrow_policy(
+    policy_input: B2BWholesaleFashionShowroomEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Wholesale Fashion Showroom, Size-Curve Parity & Net-60 Return policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_wholesale_fashion_showroom_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_brand_dtc_price_undercut_or_care_label_fraud_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_BRAND_DTC_PRICE_UNDERCUT_OR_CARE_LABEL_FRAUD_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.broken_size_curve_dumping_or_unauthorized_colorway_swap:
+        return {
+            "status_code": 403,
+            "decision": "BROKEN_SIZE_CURVE_DUMPING_OR_UNAUTHORIZED_COLORWAY_SWAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.past_cancel_after_date_late_ship_or_territory_zip_collision:
+        return {
+            "status_code": 422,
+            "decision": "PAST_CANCEL_AFTER_DATE_LATE_SHIP_OR_TERRITORY_ZIP_COLLISION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.opening_order_free_return_and_net60_float_ready:
+        savings = round(gross_pool * 0.24, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "OPENING_ORDER_FREE_RETURN_AND_NET60_FLOAT_CONFIRM",
+            "mandate_token": "b2b_wholesale_fashion_showroom_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "SIZE_CURVE_AND_CANCEL_WINDOW_AUTHORIZED",
+        "mandate_token": "b2b_wholesale_fashion_showroom_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -27948,6 +28029,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_wholesale_fashion_showroom_escrow_guard = {
+        "authorized_200": evaluate_b2b_wholesale_fashion_showroom_escrow_policy(
+            B2BWholesaleFashionShowroomEscrowPolicyInput()
+        ),
+        "broken_size_curve_or_color_swap_403": evaluate_b2b_wholesale_fashion_showroom_escrow_policy(
+            B2BWholesaleFashionShowroomEscrowPolicyInput(
+                broken_size_curve_dumping_or_unauthorized_colorway_swap=True
+            )
+        ),
+        "past_cancel_date_or_zip_clash_422": evaluate_b2b_wholesale_fashion_showroom_escrow_policy(
+            B2BWholesaleFashionShowroomEscrowPolicyInput(
+                past_cancel_after_date_late_ship_or_territory_zip_collision=True
+            )
+        ),
+        "dtc_undercut_or_label_fraud_451": evaluate_b2b_wholesale_fashion_showroom_escrow_policy(
+            B2BWholesaleFashionShowroomEscrowPolicyInput(
+                webiq_brand_dtc_price_undercut_or_care_label_fraud_flag=True
+            )
+        ),
+        "free_opening_return_and_net60_409": evaluate_b2b_wholesale_fashion_showroom_escrow_policy(
+            B2BWholesaleFashionShowroomEscrowPolicyInput(
+                opening_order_free_return_and_net60_float_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -28147,6 +28254,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "photo_studio_camera_gear_escrow_guard": photo_studio_camera_gear_escrow_guard,
         "ip_licensing_anime_merch_escrow_guard": ip_licensing_anime_merch_escrow_guard,
         "dental_implant_lasik_surgery_escrow_guard": dental_implant_lasik_surgery_escrow_guard,
+        "b2b_wholesale_fashion_showroom_escrow_guard": b2b_wholesale_fashion_showroom_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -36943,6 +37051,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="dental-lasik-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 VBP_PRICE_BENCHMARK_AND_HSA_FSA_TAX_FREE_SPLIT_CONFIRM · Mandate: dental_implant_lasik_surgery_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 71 B2B Wholesale Fashion Showroom, Boutique Buying & Net-60 Return Escrow -->
+      <div class="finops-box" id="b2b-wholesale-fashion-showroom-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">👗 B2B 服装买手订货会、品牌批发选品与 Net-60 首单免退托管 (Faire / JOOR / NuORDER / 1688 严选) 尺码曲线锁、晚交撤单与防直播背刺沙盒 (Round 71)</div>
+            <div class="finops-subtitle">实测装箱单(ASN)核心 M/L 黄金码占比(&gt;=55%)防档口只发 XS/XXL 断码尾货 (HTTP 403)、最晚交货死线(Cancel-After Date)逾期自动撤单退定金与 1km 商圈排他保护 (HTTP 422)、Web IQ 品牌官方直播间 3 折倾销背刺买手店熔断 (HTTP 451) 及新品牌首单滞销免费退货+Net-60 账期立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="wholesale-show-status-kpi">HTTP 409 · OPENING_ORDER_FREE_RETURN_AND_NET60_FLOAT_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度买手店订货会与服装批发采购池 ($ USD)
+            <input type="range" id="wholesale-show-pool-slider" min="40000" max="1500000" step="10000" value="220000" oninput="updateB2BWholesaleFashionShowroomSandbox()" />
+            <span id="wholesale-show-pool-val" style="color:#6ee7b7; font-family:monospace;">$220,000</span>
+          </label>
+          <label>
+            ASN 尺码正态曲线完整性与颜色锁定校验 (HTTP 403)
+            <select id="wholesale-show-curve-select" onchange="updateB2BWholesaleFashionShowroomSandbox()">
+              <option value="pass">S:M:L:XL 整手尺码齐备 (核心M/L&gt;=55%) + 颜色面料零篡改 (放行)</option>
+              <option value="block">批发商抽走畅销 M/L 码只发 XS/XXL 断码尾货 或 擅自换滞销色 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            Cancel-After 最晚交货死线与 1km 商圈排他校验 (HTTP 422)
+            <select id="wholesale-show-cancel-select" onchange="updateB2BWholesaleFashionShowroomSandbox()">
+              <option value="pass">在 Cancel-After Date 前按时发货 + 半径 1km 无竞品店撞款 (合规)</option>
+              <option value="block">秋冬羽绒服逾期 36 天过季强行发货拒退定金 或 卖给隔壁 50m 竞品店 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 品牌官方直播间破价背刺与材质筛查 (HTTP 451)
+            <select id="wholesale-show-dtc-select" onchange="updateB2BWholesaleFashionShowroomSandbox()">
+              <option value="clear">品牌全网严守最低限价(MAP) + 水洗标羊绒真丝达标 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">品牌官方直播间按低于买手批发拿货价全网狂甩背刺渠道 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            新品牌首单滞销免费退货与 Net-60 免息账期 (HTTP 409)
+            <select id="wholesale-show-opt-select" onchange="updateB2BWholesaleFashionShowroomSandbox()">
+              <option value="enabled" selected>开启 Faire 新品牌首单 60 天免费退货 + Net-60 卖完再付省 24% (HTTP 409)</option>
+              <option value="baseline">常规尺码曲线与交期窗口合格批发授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度批发拿货毛池</div>
+            <div class="finops-kpi-val" id="wholesale-show-gross-kpi">$220,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">首单免退与Net60后净额</div>
+            <div class="finops-kpi-val" id="wholesale-show-net-kpi" style="color:#6ee7b7;">$167,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下死库存与周转费</div>
+            <div class="finops-kpi-val" id="wholesale-show-savings-kpi" style="color:#38bdf8;">$52,800</div>
+          </div>
+        </div>
+        <div id="wholesale-show-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 OPENING_ORDER_FREE_RETURN_AND_NET60_FLOAT_CONFIRM · Mandate: b2b_wholesale_fashion_showroom_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -47568,6 +47739,80 @@ function updateDentalImplantLasikSurgerySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ALL_INCLUSIVE_BUNDLE_AND_UDI_AUTHORIZED · Mandate: dental_implant_lasik_surgery_escrow_mandate_200';
+}}
+
+function updateB2BWholesaleFashionShowroomSandbox() {{
+  const slider = document.getElementById('wholesale-show-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '220000');
+  const crvMode = document.getElementById('wholesale-show-curve-select').value;
+  const canMode = document.getElementById('wholesale-show-cancel-select').value;
+  const dtcMode = document.getElementById('wholesale-show-dtc-select').value;
+  const optMode = document.getElementById('wholesale-show-opt-select').value;
+
+  document.getElementById('wholesale-show-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('wholesale-show-status-kpi');
+  const grossKpi = document.getElementById('wholesale-show-gross-kpi');
+  const netKpi = document.getElementById('wholesale-show-net-kpi');
+  const savingsKpi = document.getElementById('wholesale-show-savings-kpi');
+  const banner = document.getElementById('wholesale-show-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dtcMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_BRAND_DTC_PRICE_UNDERCUT_OR_CARE_LABEL_FRAUD_HOLD · Mandate: null';
+    return;
+  }}
+  if (crvMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BROKEN_SIZE_CURVE_DUMPING_OR_UNAUTHORIZED_COLORWAY_SWAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (canMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PAST_CANCEL_AFTER_DATE_LATE_SHIP_OR_TERRITORY_ZIP_COLLISION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.24);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 OPENING_ORDER_FREE_RETURN_AND_NET60_FLOAT_CONFIRM · Mandate: b2b_wholesale_fashion_showroom_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 SIZE_CURVE_AND_CANCEL_WINDOW_AUTHORIZED · Mandate: b2b_wholesale_fashion_showroom_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

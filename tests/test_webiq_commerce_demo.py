@@ -13815,6 +13815,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("dental-implant-lasik-surgery-escrow-sandbox", html_zh)
 
+    def test_b2b_wholesale_fashion_showroom_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BWholesaleFashionShowroomEscrowPolicyInput,
+            evaluate_b2b_wholesale_fashion_showroom_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_wholesale_fashion_showroom_escrow_policy(
+            B2BWholesaleFashionShowroomEscrowPolicyInput(
+                quarterly_b2b_wholesale_fashion_showroom_pool_usd=220000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "SIZE_CURVE_AND_CANCEL_WINDOW_AUTHORIZED",
+        )
+
+        crv = evaluate_b2b_wholesale_fashion_showroom_escrow_policy(
+            B2BWholesaleFashionShowroomEscrowPolicyInput(
+                broken_size_curve_dumping_or_unauthorized_colorway_swap=True
+            )
+        )
+        self.assertEqual(crv["status_code"], 403)
+        self.assertEqual(
+            crv["decision"],
+            "BROKEN_SIZE_CURVE_DUMPING_OR_UNAUTHORIZED_COLORWAY_SWAP_BLOCKED",
+        )
+
+        can = evaluate_b2b_wholesale_fashion_showroom_escrow_policy(
+            B2BWholesaleFashionShowroomEscrowPolicyInput(
+                past_cancel_after_date_late_ship_or_territory_zip_collision=True
+            )
+        )
+        self.assertEqual(can["status_code"], 422)
+        self.assertEqual(
+            can["decision"],
+            "PAST_CANCEL_AFTER_DATE_LATE_SHIP_OR_TERRITORY_ZIP_COLLISION_BLOCKED",
+        )
+
+        dtc = evaluate_b2b_wholesale_fashion_showroom_escrow_policy(
+            B2BWholesaleFashionShowroomEscrowPolicyInput(
+                webiq_brand_dtc_price_undercut_or_care_label_fraud_flag=True
+            )
+        )
+        self.assertEqual(dtc["status_code"], 451)
+        self.assertEqual(
+            dtc["decision"],
+            "WEBIQ_BRAND_DTC_PRICE_UNDERCUT_OR_CARE_LABEL_FRAUD_HOLD",
+        )
+
+        optim = evaluate_b2b_wholesale_fashion_showroom_escrow_policy(
+            B2BWholesaleFashionShowroomEscrowPolicyInput(
+                quarterly_b2b_wholesale_fashion_showroom_pool_usd=220000.0,
+                opening_order_free_return_and_net60_float_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 52800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 167200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_wholesale_fashion_showroom_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-wholesale-fashion-showroom-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
