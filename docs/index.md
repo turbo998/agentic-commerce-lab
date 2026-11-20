@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`202` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`203` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（38 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（61 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（62 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（44 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（29 篇）](#tax-fx-privacy-disputes)
@@ -82,7 +82,7 @@
 | 38 | **音乐节与体育场馆无现金 RFID 手环充值、防默认 25% 小费刺客与余额零手续费秒退（Music Festival & Stadium Cashless RFID Wristband, Anti-Tip-Creep & Auto-Refund Escrow：Coachella / Tomorrowland / Intellitix / 草莓音乐节）“防散场剩 $19 收 $5 退费手续费吞没沉淀款、防买瓶水 POS 屏默认勾 25% 小费与直绑免充值”Agent 架构选型 FAQ** | [中文](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.md) · [English](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（61 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（62 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -149,6 +149,7 @@
 | 59 | **二手奢侈品箱包回收、典当寄卖估价与防“到手刀”恶意压价托管（Luxury Handbag Buyback, Consignment Appraisal & Anti-Bait-and-Switch Escrow：Fashionphile / Rebag / 妃鱼 / 红布林 / 胖虎）“防线上高报 $3,500 诱骗寄包后到手刀砍至 $1,900、防退包掉包原装配件与寄卖底价死锁”Agent 架构选型 FAQ** | [中文](luxury-handbag-buyback-consignment-anti-lowball-escrow-agent-selection-faq.md) · [English](luxury-handbag-buyback-consignment-anti-lowball-escrow-agent-selection-faq.en.md) |
 | 60 | **企业全员年会、MICE 会奖场地包房（Room Block）保底违约金与驻场 AV 垄断防坑托管（B2B Corporate Offsite, MICE Venue Room-Block Attrition & AV Escrow：Cvent / Bizzabo / Navan Events / 携程商旅会奖）“防满房二次转售仍扣 80% 退房违约金、防 $1,800/天会场 Wi-Fi 刺客与 22%++ 复利服务费”Agent 架构选型 FAQ** | [中文](b2b-corporate-offsite-mice-room-block-attrition-av-escrow-agent-selection-faq.md) · [English](b2b-corporate-offsite-mice-room-block-attrition-av-escrow-agent-selection-faq.en.md) |
 | 61 | **户用/工商业屋顶光伏（Solar）、储能电池（ESS）、虚拟电厂（VPP）与 25 年购电协议（PPA）托管（Solar, Battery Storage, VPP & PPA Escalator Escrow：Sunrun / Enphase / Tesla Energy / Aurora Solar / 天合富家）“防 2.9% 复利涨价 PPA 与卖房留置权锁死、防 28% 金融经销商暗费及未获并网许可（PTO）骗尾款”Agent 架构选型 FAQ** | [中文](solar-ess-vpp-ppa-escalator-pto-escrow-agent-selection-faq.md) · [English](solar-ess-vpp-ppa-escalator-pto-escrow-agent-selection-faq.en.md) |
+| 62 | **高尔夫球场开球时间预订（Tee-Time）、商务会籍餐饮低消与果岭打孔/雷雨退费托管（Golf Tee-Time, Country Club F&B Minimum & Rain-Check Escrow：GolfNow / Supreme Golf / Invited Clubs / 百高高尔夫）“防抢号机器人加价 300% 倒卖、防隐瞒果岭打孔铺沙与雷暴封场只退 30 天代金券”Agent 架构选型 FAQ** | [中文](golf-teetime-country-club-aerification-raincheck-escrow-agent-selection-faq.md) · [English](golf-teetime-country-club-aerification-raincheck-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（44 篇）

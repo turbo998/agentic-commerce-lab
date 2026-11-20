@@ -14686,6 +14686,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-localization-tm-lqa-dubbing-escrow-sandbox", html_zh)
 
+    def test_golf_teetime_country_club_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            GolfTeetimeCountryClubEscrowPolicyInput,
+            evaluate_golf_teetime_country_club_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_golf_teetime_country_club_escrow_policy(
+            GolfTeetimeCountryClubEscrowPolicyInput(
+                quarterly_corporate_golf_and_club_membership_pool_usd=95000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ALL_IN_TEETIME_AND_AGRONOMY_VERIFIED_AUTHORIZED",
+        )
+
+        scalp = evaluate_golf_teetime_country_club_escrow_policy(
+            GolfTeetimeCountryClubEscrowPolicyInput(
+                scalper_tee_time_markup_or_mandatory_cart_caddie_surcharge=True
+            )
+        )
+        self.assertEqual(scalp["status_code"], 403)
+        self.assertEqual(
+            scalp["decision"],
+            "SCALPER_TEE_TIME_MARKUP_OR_MANDATORY_CART_CADDIE_SURCHARGE_BLOCKED",
+        )
+
+        aer = evaluate_golf_teetime_country_club_escrow_policy(
+            GolfTeetimeCountryClubEscrowPolicyInput(
+                unannounced_greens_aerification_or_paper_raincheck_trap=True
+            )
+        )
+        self.assertEqual(aer["status_code"], 422)
+        self.assertEqual(
+            aer["decision"],
+            "UNANNOUNCED_GREENS_AERIFICATION_OR_PAPER_RAINCHECK_TRAP_BLOCKED",
+        )
+
+        close = evaluate_golf_teetime_country_club_escrow_policy(
+            GolfTeetimeCountryClubEscrowPolicyInput(
+                webiq_course_tournament_closure_or_turf_quarantine_flag=True
+            )
+        )
+        self.assertEqual(close["status_code"], 451)
+        self.assertEqual(
+            close["decision"],
+            "WEBIQ_COURSE_TOURNAMENT_CLOSURE_OR_TURF_QUARANTINE_HOLD",
+        )
+
+        optim = evaluate_golf_teetime_country_club_escrow_policy(
+            GolfTeetimeCountryClubEscrowPolicyInput(
+                quarterly_corporate_golf_and_club_membership_pool_usd=95000.0,
+                twilight_hot_deal_arbitrage_and_club_fb_minimum_auto_sweep_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 22800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 72200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("golf_teetime_country_club_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("golf-teetime-country-club-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

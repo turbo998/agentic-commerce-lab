@@ -21236,6 +21236,87 @@ def evaluate_b2b_localization_tm_lqa_dubbing_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class GolfTeetimeCountryClubEscrowPolicyInput:
+    """Input contract for Golf Tee-Time, Country Club F&B Minimum & Rain-Check Escrow."""
+
+    quarterly_corporate_golf_and_club_membership_pool_usd: float = 95000.0
+    scalper_tee_time_markup_or_mandatory_cart_caddie_surcharge: bool = False
+    unannounced_greens_aerification_or_paper_raincheck_trap: bool = False
+    webiq_course_tournament_closure_or_turf_quarantine_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    twilight_hot_deal_arbitrage_and_club_fb_minimum_auto_sweep_ready: bool = False
+
+
+def evaluate_golf_teetime_country_club_escrow_policy(
+    policy_input: GolfTeetimeCountryClubEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Golf Tee-Time, Country Club F&B Minimum & Rain-Check Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_corporate_golf_and_club_membership_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_course_tournament_closure_or_turf_quarantine_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_COURSE_TOURNAMENT_CLOSURE_OR_TURF_QUARANTINE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.scalper_tee_time_markup_or_mandatory_cart_caddie_surcharge:
+        return {
+            "status_code": 403,
+            "decision": "SCALPER_TEE_TIME_MARKUP_OR_MANDATORY_CART_CADDIE_SURCHARGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unannounced_greens_aerification_or_paper_raincheck_trap:
+        return {
+            "status_code": 422,
+            "decision": "UNANNOUNCED_GREENS_AERIFICATION_OR_PAPER_RAINCHECK_TRAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.twilight_hot_deal_arbitrage_and_club_fb_minimum_auto_sweep_ready:
+        savings = round(gross_pool * 0.24, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TWILIGHT_HOT_DEAL_ARBITRAGE_AND_CLUB_FB_MINIMUM_AUTO_SWEEP_CONFIRM",
+            "mandate_token": "golf_teetime_club_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ALL_IN_TEETIME_AND_AGRONOMY_VERIFIED_AUTHORIZED",
+        "mandate_token": "golf_teetime_club_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -29339,6 +29420,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    golf_teetime_country_club_escrow_guard = {
+        "authorized_200": evaluate_golf_teetime_country_club_escrow_policy(
+            GolfTeetimeCountryClubEscrowPolicyInput()
+        ),
+        "scalper_or_cart_caddie_surcharge_403": evaluate_golf_teetime_country_club_escrow_policy(
+            GolfTeetimeCountryClubEscrowPolicyInput(
+                scalper_tee_time_markup_or_mandatory_cart_caddie_surcharge=True
+            )
+        ),
+        "aerification_or_paper_raincheck_422": evaluate_golf_teetime_country_club_escrow_policy(
+            GolfTeetimeCountryClubEscrowPolicyInput(
+                unannounced_greens_aerification_or_paper_raincheck_trap=True
+            )
+        ),
+        "tournament_closure_or_turf_quarantine_451": evaluate_golf_teetime_country_club_escrow_policy(
+            GolfTeetimeCountryClubEscrowPolicyInput(
+                webiq_course_tournament_closure_or_turf_quarantine_flag=True
+            )
+        ),
+        "direct_teetime_and_fb_sweep_409": evaluate_golf_teetime_country_club_escrow_policy(
+            GolfTeetimeCountryClubEscrowPolicyInput(
+                twilight_hot_deal_arbitrage_and_club_fb_minimum_auto_sweep_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29551,6 +29658,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_mice_offsite_room_block_av_escrow_guard": b2b_mice_offsite_room_block_av_escrow_guard,
         "solar_ess_vpp_ppa_escrow_guard": solar_ess_vpp_ppa_escrow_guard,
         "b2b_localization_tm_lqa_dubbing_escrow_guard": b2b_localization_tm_lqa_dubbing_escrow_guard,
+        "golf_teetime_country_club_escrow_guard": golf_teetime_country_club_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -39166,6 +39274,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="b2b-l10n-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 GLOSSARY_LOCKED_LLM_MTPE_HYBRID_AND_TM_DEDUP_CONFIRM · Mandate: b2b_localization_tm_lqa_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 84 Golf Tee-Time, Country Club F&B Minimum & Rain-Check Escrow -->
+      <div class="finops-box" id="golf-teetime-country-club-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">⛳ 高尔夫球场开球时间预订 (Tee-Time)、商务会籍餐饮低消与果岭打孔/雷雨退费托管 (GolfNow / Supreme Golf / Invited Clubs / 百高高尔夫) 全包锁价与低消清扫沙盒 (Round 84)</div>
+            <div class="finops-subtitle">实测实名差点号绑定防黄牛抢号加价 300% 倒卖及 18 洞全包落地价防隐藏 $125 球车球童强制费与缺 1 人罚整组 (HTTP 403)、预订前 14 天果岭打孔铺沙维护雷达与雷暴封场按未打洞数原路退回信用卡防 30 天过期纸质雨票 (HTTP 422)、Web IQ 慈善包场封场熔断 (HTTP 451) 及官网直连免佣+季末会籍餐饮低消自动购酒冲抵净省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="golf-club-status-kpi">HTTP 409 · TWILIGHT_HOT_DEAL_ARBITRAGE_AND_CLUB_FB_MINIMUM_AUTO_SWEEP_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度商务高尔夫招待与乡村俱乐部会籍预算池 ($ USD)
+            <input type="range" id="golf-club-pool-slider" min="20000" max="600000" step="5000" value="95000" oninput="updateGolfTeetimeCountryClubEscrowSandbox()" />
+            <span id="golf-club-pool-val" style="color:#6ee7b7; font-family:monospace;">$95,000</span>
+          </label>
+          <label>
+            18 洞果岭+球车+球童全包价与单人减员免责校验 (HTTP 403)
+            <select id="golf-club-scalper-select" onchange="updateGolfTeetimeCountryClubEscrowSandbox()">
+              <option value="pass">实名差点号 GHIN 绑定 + 18洞果岭球车球童全包 OTD + 提前 24h 单人免费减员 (放行)</option>
+              <option value="block">黄牛加价 3 倍倒卖黄金开球时间 或 $79 裸果岭费到场强收 $125 球车球童费/缺1人罚整组 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            近 14 天果岭打孔铺沙预警与雷暴按洞退现核验 (HTTP 422)
+            <select id="golf-club-aerification-select" onchange="updateGolfTeetimeCountryClubEscrowSandbox()">
+              <option value="pass">果岭平整无打孔铺沙 + 雷暴停赛按未打完洞数原路退回信用卡 (合规)</option>
+              <option value="block">隐瞒果岭刚打孔铺沙全是沙洞照收全价 或 雷暴封场只退 30 天过期纸质雨票 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 球场临时包场封场与草坪农药检疫核验 (HTTP 451)
+            <select id="golf-club-closure-select" onchange="updateGolfTeetimeCountryClubEscrowSandbox()">
+              <option value="clear">开球表正常无包场冲突 + 草坪环保合规 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">监测到球场临时接慈善赛包场封场 或 草坪农药超标检疫停业 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            官网直连免通道费与季度末会籍餐饮低消自动冲抵 (HTTP 409)
+            <select id="golf-club-opt-select" onchange="updateGolfTeetimeCountryClubEscrowSandbox()">
+              <option value="enabled" selected>切换 $0 手续费球场直连 + 季末 T-72h 自动将剩余餐饮低消转购红酒/ProV1 礼盒省 24% (HTTP 409)</option>
+              <option value="baseline">常规 18 洞全包预订与标准雷暴退费保障授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度高尔夫与会籍预算池</div>
+            <div class="finops-kpi-val" id="golf-club-gross-kpi">$95,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">直连免佣与低消冲抵后净支出</div>
+            <div class="finops-kpi-val" id="golf-club-net-kpi" style="color:#6ee7b7;">$72,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度挽回低消作废与暗费净额</div>
+            <div class="finops-kpi-val" id="golf-club-savings-kpi" style="color:#38bdf8;">$22,800</div>
+          </div>
+        </div>
+        <div id="golf-club-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TWILIGHT_HOT_DEAL_ARBITRAGE_AND_CLUB_FB_MINIMUM_AUTO_SWEEP_CONFIRM · Mandate: golf_teetime_club_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -50753,6 +50924,80 @@ function updateB2BLocalizationTmLqaDubbingEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 TM_LEVERAGE_AND_ICU_LQA_AUTHORIZED · Mandate: b2b_localization_tm_lqa_escrow_mandate_200';
+}}
+
+function updateGolfTeetimeCountryClubEscrowSandbox() {{
+  const slider = document.getElementById('golf-club-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '95000');
+  const scalpMode = document.getElementById('golf-club-scalper-select').value;
+  const aerMode = document.getElementById('golf-club-aerification-select').value;
+  const closeMode = document.getElementById('golf-club-closure-select').value;
+  const optMode = document.getElementById('golf-club-opt-select').value;
+
+  document.getElementById('golf-club-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('golf-club-status-kpi');
+  const grossKpi = document.getElementById('golf-club-gross-kpi');
+  const netKpi = document.getElementById('golf-club-net-kpi');
+  const savingsKpi = document.getElementById('golf-club-savings-kpi');
+  const banner = document.getElementById('golf-club-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (closeMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_COURSE_TOURNAMENT_CLOSURE_OR_TURF_QUARANTINE_HOLD · Mandate: null';
+    return;
+  }}
+  if (scalpMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SCALPER_TEE_TIME_MARKUP_OR_MANDATORY_CART_CADDIE_SURCHARGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (aerMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNANNOUNCED_GREENS_AERIFICATION_OR_PAPER_RAINCHECK_TRAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.24);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TWILIGHT_HOT_DEAL_ARBITRAGE_AND_CLUB_FB_MINIMUM_AUTO_SWEEP_CONFIRM · Mandate: golf_teetime_club_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ALL_IN_TEETIME_AND_AGRONOMY_VERIFIED_AUTHORIZED · Mandate: golf_teetime_club_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
