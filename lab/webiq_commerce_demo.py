@@ -20507,6 +20507,87 @@ def evaluate_restaurant_pos_acquiring_mca_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class BespokeDiamondGoldJewelryEscrowPolicyInput:
+    """Input contract for Bespoke Engagement Ring, GIA/IGI Loose Diamond Sourcing & Gold Gram-Weight Escrow."""
+
+    quarterly_bespoke_diamond_and_gold_jewelry_pool_usd: float = 240000.0
+    bgm_milky_brown_diamond_or_hidden_gram_fixed_price_gold: bool = False
+    occluded_girdle_laser_code_or_synthetic_clone_swap: bool = False
+    webiq_undisclosed_clarity_color_treatment_or_kimberley_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    gia_cert_cross_site_arbitrage_and_spot_gold_craft_ready: bool = False
+
+
+def evaluate_bespoke_diamond_gold_jewelry_escrow_policy(
+    policy_input: BespokeDiamondGoldJewelryEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Bespoke Engagement Ring, GIA/IGI Loose Diamond & Gold Gram-Weight policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_bespoke_diamond_and_gold_jewelry_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_undisclosed_clarity_color_treatment_or_kimberley_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNDISCLOSED_CLARITY_COLOR_TREATMENT_OR_KIMBERLEY_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bgm_milky_brown_diamond_or_hidden_gram_fixed_price_gold:
+        return {
+            "status_code": 403,
+            "decision": "BGM_MILKY_BROWN_DIAMOND_OR_HIDDEN_GRAM_FIXED_PRICE_GOLD_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.occluded_girdle_laser_code_or_synthetic_clone_swap:
+        return {
+            "status_code": 422,
+            "decision": "OCCLUDED_GIRDLE_LASER_CODE_OR_SYNTHETIC_CLONE_SWAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.gia_cert_cross_site_arbitrage_and_spot_gold_craft_ready:
+        savings = round(gross_pool * 0.29, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "GIA_CERT_CROSS_SITE_ARBITRAGE_AND_SPOT_GOLD_CRAFT_CONFIRM",
+            "mandate_token": "bespoke_diamond_gold_jewelry_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "GIA_GIRDLE_AND_GOLD_GRAM_AUTHORIZED",
+        "mandate_token": "bespoke_diamond_gold_jewelry_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -28376,6 +28457,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    bespoke_diamond_gold_jewelry_escrow_guard = {
+        "authorized_200": evaluate_bespoke_diamond_gold_jewelry_escrow_policy(
+            BespokeDiamondGoldJewelryEscrowPolicyInput()
+        ),
+        "bgm_milky_or_fixed_gold_403": evaluate_bespoke_diamond_gold_jewelry_escrow_policy(
+            BespokeDiamondGoldJewelryEscrowPolicyInput(
+                bgm_milky_brown_diamond_or_hidden_gram_fixed_price_gold=True
+            )
+        ),
+        "occluded_girdle_or_clone_swap_422": evaluate_bespoke_diamond_gold_jewelry_escrow_policy(
+            BespokeDiamondGoldJewelryEscrowPolicyInput(
+                occluded_girdle_laser_code_or_synthetic_clone_swap=True
+            )
+        ),
+        "undisclosed_treatment_or_kimberley_451": evaluate_bespoke_diamond_gold_jewelry_escrow_policy(
+            BespokeDiamondGoldJewelryEscrowPolicyInput(
+                webiq_undisclosed_clarity_color_treatment_or_kimberley_flag=True
+            )
+        ),
+        "gia_arbitrage_and_spot_gold_409": evaluate_bespoke_diamond_gold_jewelry_escrow_policy(
+            BespokeDiamondGoldJewelryEscrowPolicyInput(
+                gia_cert_cross_site_arbitrage_and_spot_gold_craft_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -28579,6 +28686,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "game_skin_steam_tradehold_escrow_guard": game_skin_steam_tradehold_escrow_guard,
         "private_jet_yacht_charter_apa_escrow_guard": private_jet_yacht_charter_apa_escrow_guard,
         "restaurant_pos_acquiring_mca_escrow_guard": restaurant_pos_acquiring_mca_escrow_guard,
+        "bespoke_diamond_gold_jewelry_escrow_guard": bespoke_diamond_gold_jewelry_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -37627,6 +37735,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="rest-pos-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 INTERCHANGE_PLUS_SWITCH_AND_DURBIN_DEBIT_ROUTING_CONFIRM · Mandate: restaurant_pos_acquiring_mca_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 75 Bespoke Engagement Ring, GIA/IGI Loose Diamond Sourcing & Gold Gram-Weight Escrow -->
+      <div class="finops-box" id="bespoke-diamond-gold-jewelry-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">💍 求婚钻戒定制、裸钻寻源与黄金首饰按克结算 (Blue Nile / James Allen / Rare Carat / 周大福 / 深圳水贝定制) 防奶咖钻、同号GIA比价与腰码复检沙盒 (Round 75)</div>
+            <div class="finops-subtitle">实测上游 Zero-BGM 硬过滤防买到发乌无火彩的“奶咖绿”废钻与隐瞒克重溢价2倍的“一口价硬金” (HTTP 403)、戒爪避让腰棱编码与成品 NGTC/GIA 红外光谱复检防培育钻套真证掉包 (HTTP 422)、Web IQ 官网核验 HPHT 人工改色与填充裂隙钻熔断 (HTTP 451) 及按唯一 GIA 证书号跨站反查底价+按克计价黄金立省 29% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="diamond-gold-status-kpi">HTTP 409 · GIA_CERT_CROSS_SITE_ARBITRAGE_AND_SPOT_GOLD_CRAFT_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度求婚钻戒定制与婚庆黄金采购池 ($ USD)
+            <input type="range" id="diamond-gold-pool-slider" min="50000" max="1500000" step="10000" value="240000" oninput="updateBespokeDiamondGoldJewelrySandbox()" />
+            <span id="diamond-gold-pool-val" style="color:#6ee7b7; font-family:monospace;">$240,000</span>
+          </label>
+          <label>
+            Zero-BGM 零奶咖绿与黄金按克透明计价校验 (HTTP 403)
+            <select id="diamond-gold-bgm-select" onchange="updateBespokeDiamondGoldJewelrySandbox()">
+              <option value="pass">上游 BGM=None 无奶无咖 + 足金明码标示精确克重与工费 (放行)</option>
+              <option value="block">裸钻带严重奶雾/咖啡色调(BGM) 或 不标克重“一口价硬金”贵2.5倍 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            镶嵌后露明腰棱编码与 FTIR 光谱天然复检校验 (HTTP 422)
+            <select id="diamond-gold-girdle-select" onchange="updateBespokeDiamondGoldJewelrySandbox()">
+              <option value="pass">60倍镜下腰棱 GIA 码无遮挡 + 成品红外光谱复检确认为原石 (合规)</option>
+              <option value="block">戒爪故意挡住腰棱编码 或 用刻假码的 $200 CVD 培育钻掉包天然钻 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ GIA 官网人工改色 (HPHT Treated) 与填充筛查 (HTTP 451)
+            <select id="diamond-gold-treat-select" onchange="updateBespokeDiamondGoldJewelrySandbox()">
+              <option value="clear">GIA 官网核验无改色/无填充 + 符合金伯利进程 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">证书备注栏含未披露高温高压改色(HPHT Processed)或激光打孔填充 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            唯一 GIA 证书号跨站虚拟库存比价与按克金价 (HTTP 409)
+            <select id="diamond-gold-opt-select" onchange="updateBespokeDiamondGoldJewelrySandbox()">
+              <option value="enabled" selected>开启同本 GIA 证书跨站反查源头底价 + 黄金按大盘金价+透明克工费省 29% (HTTP 409)</option>
+              <option value="baseline">常规无奶咖裸钻与标准成品复检托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度钻戒黄金毛池</div>
+            <div class="finops-kpi-val" id="diamond-gold-gross-kpi">$240,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">同证比价与按克后净额</div>
+            <div class="finops-kpi-val" id="diamond-gold-net-kpi" style="color:#6ee7b7;">$170,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下跨站加价与硬金坑</div>
+            <div class="finops-kpi-val" id="diamond-gold-savings-kpi" style="color:#38bdf8;">$69,600</div>
+          </div>
+        </div>
+        <div id="diamond-gold-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 GIA_CERT_CROSS_SITE_ARBITRAGE_AND_SPOT_GOLD_CRAFT_CONFIRM · Mandate: bespoke_diamond_gold_jewelry_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -48548,6 +48719,80 @@ function updateRestaurantPosAcquiringMcaSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 INTERCHANGE_PLUS_AND_POS_OWNERSHIP_AUTHORIZED · Mandate: restaurant_pos_acquiring_mca_escrow_mandate_200';
+}}
+
+function updateBespokeDiamondGoldJewelrySandbox() {{
+  const slider = document.getElementById('diamond-gold-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '240000');
+  const bgmMode = document.getElementById('diamond-gold-bgm-select').value;
+  const girMode = document.getElementById('diamond-gold-girdle-select').value;
+  const trtMode = document.getElementById('diamond-gold-treat-select').value;
+  const optMode = document.getElementById('diamond-gold-opt-select').value;
+
+  document.getElementById('diamond-gold-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('diamond-gold-status-kpi');
+  const grossKpi = document.getElementById('diamond-gold-gross-kpi');
+  const netKpi = document.getElementById('diamond-gold-net-kpi');
+  const savingsKpi = document.getElementById('diamond-gold-savings-kpi');
+  const banner = document.getElementById('diamond-gold-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (trtMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNDISCLOSED_CLARITY_COLOR_TREATMENT_OR_KIMBERLEY_HOLD · Mandate: null';
+    return;
+  }}
+  if (bgmMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BGM_MILKY_BROWN_DIAMOND_OR_HIDDEN_GRAM_FIXED_PRICE_GOLD_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (girMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 OCCLUDED_GIRDLE_LASER_CODE_OR_SYNTHETIC_CLONE_SWAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.29);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 GIA_CERT_CROSS_SITE_ARBITRAGE_AND_SPOT_GOLD_CRAFT_CONFIRM · Mandate: bespoke_diamond_gold_jewelry_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 GIA_GIRDLE_AND_GOLD_GRAM_AUTHORIZED · Mandate: bespoke_diamond_gold_jewelry_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

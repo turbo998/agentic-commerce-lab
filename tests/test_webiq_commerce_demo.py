@@ -14083,6 +14083,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("restaurant-pos-acquiring-mca-escrow-sandbox", html_zh)
 
+    def test_bespoke_diamond_gold_jewelry_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            BespokeDiamondGoldJewelryEscrowPolicyInput,
+            evaluate_bespoke_diamond_gold_jewelry_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_bespoke_diamond_gold_jewelry_escrow_policy(
+            BespokeDiamondGoldJewelryEscrowPolicyInput(
+                quarterly_bespoke_diamond_and_gold_jewelry_pool_usd=240000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "GIA_GIRDLE_AND_GOLD_GRAM_AUTHORIZED",
+        )
+
+        bgm = evaluate_bespoke_diamond_gold_jewelry_escrow_policy(
+            BespokeDiamondGoldJewelryEscrowPolicyInput(
+                bgm_milky_brown_diamond_or_hidden_gram_fixed_price_gold=True
+            )
+        )
+        self.assertEqual(bgm["status_code"], 403)
+        self.assertEqual(
+            bgm["decision"],
+            "BGM_MILKY_BROWN_DIAMOND_OR_HIDDEN_GRAM_FIXED_PRICE_GOLD_BLOCKED",
+        )
+
+        gir = evaluate_bespoke_diamond_gold_jewelry_escrow_policy(
+            BespokeDiamondGoldJewelryEscrowPolicyInput(
+                occluded_girdle_laser_code_or_synthetic_clone_swap=True
+            )
+        )
+        self.assertEqual(gir["status_code"], 422)
+        self.assertEqual(
+            gir["decision"],
+            "OCCLUDED_GIRDLE_LASER_CODE_OR_SYNTHETIC_CLONE_SWAP_BLOCKED",
+        )
+
+        trt = evaluate_bespoke_diamond_gold_jewelry_escrow_policy(
+            BespokeDiamondGoldJewelryEscrowPolicyInput(
+                webiq_undisclosed_clarity_color_treatment_or_kimberley_flag=True
+            )
+        )
+        self.assertEqual(trt["status_code"], 451)
+        self.assertEqual(
+            trt["decision"],
+            "WEBIQ_UNDISCLOSED_CLARITY_COLOR_TREATMENT_OR_KIMBERLEY_HOLD",
+        )
+
+        optim = evaluate_bespoke_diamond_gold_jewelry_escrow_policy(
+            BespokeDiamondGoldJewelryEscrowPolicyInput(
+                quarterly_bespoke_diamond_and_gold_jewelry_pool_usd=240000.0,
+                gia_cert_cross_site_arbitrage_and_spot_gold_craft_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 69600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 170400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("bespoke_diamond_gold_jewelry_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("bespoke-diamond-gold-jewelry-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

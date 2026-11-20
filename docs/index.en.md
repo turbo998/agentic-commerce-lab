@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`193` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`194` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (37 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (55 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (56 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (42 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
@@ -81,7 +81,7 @@
 | 37 | **Smart Parking, `LPR` Barrierless Garage & `EV` Supercharger Billing (`Metropolis / ParkMobile / Tesla Supercharger / ISO 15118`) Anti-Ghost-Session Spatiotemporal Mutex, Anti-`Quishing`, `>= 50%` Idle-Fee Gate & Fleet `VIN` Escrow Agent Architecture Selection FAQ** | [English](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.en.md) · [中文](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (55 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (56 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -142,6 +142,7 @@
 | 53 | **Elective Dental Implant, `LASIK / ICL` Vision Correction & Bundled Surgery Escrow (`ClearChoice / Aier Eye / Topchoice / Sunbit`) All-Inclusive Crown/Abutment Lock, Anti-Deferred-Interest Gate & `UDI` Implant Traceability Agent Architecture Selection FAQ** | [English](dental-implant-lasik-elective-surgery-udi-financing-escrow-agent-selection-faq.en.md) · [中文](dental-implant-lasik-elective-surgery-udi-financing-escrow-agent-selection-faq.md) |
 | 54 | **Game Skin Marketplace, `Steam P2P` Trade-Hold Escrow & Esports Coaching (`BUFF163 / CSFloat / Youpin898 / Skinport`) Anti-`API-Key` Hijack Gate, `T+8d` Reversal Lock & Duo-Queue `VAC` Shield Agent Architecture Selection FAQ** | [English](game-skin-marketplace-steam-tradehold-esports-escrow-agent-selection-faq.en.md) · [中文](game-skin-marketplace-steam-tradehold-esports-escrow-agent-selection-faq.md) |
 | 55 | **Private Jet Charter, Empty-Leg Arbitrage & `MYBA` Yacht `APA` Escrow (`VistaJet / NetJets / Wheels Up / Burgess Yachts`) Anti-`$8,500` De-Icing Shock, `APA` Fuel-Receipt Reconciliation & `FAA Part 135` Tail-Number Gate Agent Architecture Selection FAQ** | [English](private-jet-yacht-charter-apa-deicing-part135-escrow-agent-selection-faq.en.md) · [中文](private-jet-yacht-charter-apa-deicing-part135-escrow-agent-selection-faq.md) |
+| 56 | **Bespoke Engagement Ring, `GIA / IGI` Loose Diamond Sourcing & Gold Gram-Weight Escrow (`Blue Nile / James Allen / Rare Carat / Chow Tai Fook`) Cross-Site Certificate Arbitrage, `Zero-BGM` Gate & Post-Setting `FTIR` Verification Agent Architecture Selection FAQ** | [English](bespoke-diamond-ring-gold-jewelry-gia-girdle-escrow-agent-selection-faq.en.md) · [中文](bespoke-diamond-ring-gold-jewelry-gia-girdle-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (42 Guides)
