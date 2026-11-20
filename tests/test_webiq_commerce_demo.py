@@ -15557,6 +15557,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-corporate-parking-lpr-escrow-sandbox", html_zh)
 
+    def test_online_flower_bouquet_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OnlineFlowerBouquetEscrowPolicyInput,
+            evaluate_online_flower_bouquet_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_online_flower_bouquet_escrow_policy(
+            OnlineFlowerBouquetEscrowPolicyInput(
+                quarterly_online_flower_and_bouquet_pool_usd=75000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "BENCH_PHOTO_VERIFIED_AND_PET_SAFE_BOUQUET_AUTHORIZED",
+        )
+
+        wire = evaluate_online_flower_bouquet_escrow_policy(
+            OnlineFlowerBouquetEscrowPolicyInput(
+                wire_service_35pct_skim_stem_shrinkflation_or_checkout_handling_fee=True
+            )
+        )
+        self.assertEqual(wire["status_code"], 403)
+        self.assertEqual(
+            wire["decision"],
+            "WIRE_SERVICE_35PCT_SKIM_STEM_SHRINKFLATION_OR_CHECKOUT_HANDLING_FEE_BLOCKED",
+        )
+
+        bench = evaluate_online_flower_bouquet_escrow_policy(
+            OnlineFlowerBouquetEscrowPolicyInput(
+                pre_dispatch_bench_photo_stem_count_mismatch_or_cardboard_diy_box=True
+            )
+        )
+        self.assertEqual(bench["status_code"], 422)
+        self.assertEqual(
+            bench["decision"],
+            "PRE_DISPATCH_BENCH_PHOTO_STEM_COUNT_MISMATCH_OR_CARDBOARD_DIY_BOX_BLOCKED",
+        )
+
+        pet = evaluate_online_flower_bouquet_escrow_policy(
+            OnlineFlowerBouquetEscrowPolicyInput(
+                webiq_feline_toxic_lily_pet_safety_or_usda_aphis_quarantine_flag=True
+            )
+        )
+        self.assertEqual(pet["status_code"], 451)
+        self.assertEqual(
+            pet["decision"],
+            "WEBIQ_FELINE_TOXIC_LILY_PET_SAFETY_OR_USDA_APHIS_QUARANTINE_HOLD",
+        )
+
+        optim = evaluate_online_flower_bouquet_escrow_policy(
+            OnlineFlowerBouquetEscrowPolicyInput(
+                quarterly_online_flower_and_bouquet_pool_usd=75000.0,
+                direct_local_studio_florist_and_farm_to_table_subscription_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 21000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 54000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("online_flower_bouquet_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("online-flower-bouquet-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -22289,6 +22289,87 @@ def evaluate_b2b_corporate_parking_lpr_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class OnlineFlowerBouquetEscrowPolicyInput:
+    """Input contract for Online Flower, Holiday Bouquet & Stem-Count Vision Escrow."""
+
+    quarterly_online_flower_and_bouquet_pool_usd: float = 75000.0
+    wire_service_35pct_skim_stem_shrinkflation_or_checkout_handling_fee: bool = False
+    pre_dispatch_bench_photo_stem_count_mismatch_or_cardboard_diy_box: bool = False
+    webiq_feline_toxic_lily_pet_safety_or_usda_aphis_quarantine_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    direct_local_studio_florist_and_farm_to_table_subscription_ready: bool = False
+
+
+def evaluate_online_flower_bouquet_escrow_policy(
+    policy_input: OnlineFlowerBouquetEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Online Flower, Holiday Bouquet & Stem-Count Vision Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_online_flower_and_bouquet_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_feline_toxic_lily_pet_safety_or_usda_aphis_quarantine_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_FELINE_TOXIC_LILY_PET_SAFETY_OR_USDA_APHIS_QUARANTINE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.wire_service_35pct_skim_stem_shrinkflation_or_checkout_handling_fee:
+        return {
+            "status_code": 403,
+            "decision": "WIRE_SERVICE_35PCT_SKIM_STEM_SHRINKFLATION_OR_CHECKOUT_HANDLING_FEE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pre_dispatch_bench_photo_stem_count_mismatch_or_cardboard_diy_box:
+        return {
+            "status_code": 422,
+            "decision": "PRE_DISPATCH_BENCH_PHOTO_STEM_COUNT_MISMATCH_OR_CARDBOARD_DIY_BOX_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.direct_local_studio_florist_and_farm_to_table_subscription_ready:
+        savings = round(gross_pool * 0.28, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DIRECT_LOCAL_STUDIO_FLORIST_AND_FARM_TO_TABLE_SUBSCRIPTION_CONFIRM",
+            "mandate_token": "online_flower_bouquet_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "BENCH_PHOTO_VERIFIED_AND_PET_SAFE_BOUQUET_AUTHORIZED",
+        "mandate_token": "online_flower_bouquet_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -30730,6 +30811,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    online_flower_bouquet_escrow_guard = {
+        "authorized_200": evaluate_online_flower_bouquet_escrow_policy(
+            OnlineFlowerBouquetEscrowPolicyInput()
+        ),
+        "wire_skim_or_handling_fee_403": evaluate_online_flower_bouquet_escrow_policy(
+            OnlineFlowerBouquetEscrowPolicyInput(
+                wire_service_35pct_skim_stem_shrinkflation_or_checkout_handling_fee=True
+            )
+        ),
+        "stem_shortage_or_diy_box_422": evaluate_online_flower_bouquet_escrow_policy(
+            OnlineFlowerBouquetEscrowPolicyInput(
+                pre_dispatch_bench_photo_stem_count_mismatch_or_cardboard_diy_box=True
+            )
+        ),
+        "toxic_lily_or_aphis_hold_451": evaluate_online_flower_bouquet_escrow_policy(
+            OnlineFlowerBouquetEscrowPolicyInput(
+                webiq_feline_toxic_lily_pet_safety_or_usda_aphis_quarantine_flag=True
+            )
+        ),
+        "direct_studio_and_farm_sub_409": evaluate_online_flower_bouquet_escrow_policy(
+            OnlineFlowerBouquetEscrowPolicyInput(
+                direct_local_studio_florist_and_farm_to_table_subscription_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -30955,6 +31062,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_pest_control_escrow_guard": b2b_commercial_pest_control_escrow_guard,
         "fine_wine_en_primeur_cellar_escrow_guard": fine_wine_en_primeur_cellar_escrow_guard,
         "b2b_corporate_parking_lpr_escrow_guard": b2b_corporate_parking_lpr_escrow_guard,
+        "online_flower_bouquet_escrow_guard": online_flower_bouquet_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -41389,6 +41497,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="corp-park-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FLEX_DAILY_BADGE_PARKING_POOL_AND_PRETAX_IRS_SECTION132_DEDUCTION_CONFIRM · Mandate: b2b_corporate_parking_lpr_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 97 Online Flower, Holiday Bouquet & Stem-Count Vision Escrow -->
+      <div class="finops-box" id="online-flower-bouquet-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">💐 鲜花同城速递、节日花束主花枝数视觉验真与宠物无毒花材托管 (BloomNation / Floom / 1-800-Flowers / Roseonly / 美团买花) 工作台实拍点数与防毒沙盒 (Round 97)</div>
+            <div class="finops-subtitle">实测切断 35% 转单联盟抽成(&gt;=85% 资金落本地花房)及全包一口价防结账页跳出 $28 配送养护杂费与写字楼&lt;=16:00 送达死锁 (HTTP 403)、骑手取件前花艺台成品实拍图 CV 点数(&gt;=24 朵主花)防拿康乃馨顶替玫瑰及拒收干纸箱散装 DIY 生花杆 (HTTP 422)、Web IQ 拦截向养猫家庭误送剧毒百合 (Lilium) (HTTP 451) 及本地独立花房直连+农场冷链订阅净省 28% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="flower-gift-status-kpi">HTTP 409 · DIRECT_LOCAL_STUDIO_FLORIST_AND_FARM_TO_TABLE_SUBSCRIPTION_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业 VIP 鲜花礼赠与大堂花艺采购池 ($ USD)
+            <input type="range" id="flower-gift-pool-slider" min="15000" max="500000" step="5000" value="75000" oninput="updateOnlineFlowerBouquetEscrowSandbox()" />
+            <span id="flower-gift-pool-val" style="color:#6ee7b7; font-family:monospace;">$75,000</span>
+          </label>
+          <label>
+            花店实得率 (&gt;=85%)、全包一口价与写字楼 16:00 送达核验 (HTTP 403)
+            <select id="flower-gift-wire-select" onchange="updateOnlineFlowerBouquetEscrowSandbox()">
+              <option value="pass">&gt;=85% 货款直达花房 + 零隐藏养护手续费 + 写字楼地址 16:00 前准点送达 (放行)</option>
+              <option value="block">转单网抽走 35% 差价只给花店 $58 或 结账最后一步加收 $27.98 配送养护费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            骑手取件前工作台实拍主花朵数 (&gt;=24) 与花瓶成品核验 (HTTP 422)
+            <select id="flower-gift-bench-select" onchange="updateOnlineFlowerBouquetEscrowSandbox()">
+              <option value="pass">取件前实拍 CV 核验&gt;=24 朵 A 级玫瑰 + 主花占比&gt;=70% + 带水花瓶成品专送 (合规)</option>
+              <option value="block">用 12 枝廉价康乃馨+配叶充数缩水 50% 或 用快递干纸箱寄未修剪散装生花杆 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ ASPCA 养宠家庭无毒花材 (禁百合) 与检疫核验 (HTTP 451)
+            <select id="flower-gift-pet-select" onchange="updateOnlineFlowerBouquetEscrowSandbox()">
+              <option value="clear">100% ASPCA 宠物安全花材(纯玫瑰/蝴蝶兰/洋桔梗) + 植物检疫合格 (正常)</option>
+              <option value="hold">向养猫客户家庭寄送含剧毒百合花 (Lilium) 引发猫咪急性肾衰竭风险 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            收件地独立花艺工作室直连与农场冷链周期订阅 (HTTP 409)
+            <select id="flower-gift-opt-select" onchange="updateOnlineFlowerBouquetEscrowSandbox()">
+              <option value="enabled" selected>直连收件人 3km 内独立花房 (BloomNation/Floom) + 农场周花订阅净省 28% (HTTP 409)</option>
+              <option value="baseline">常规出库实拍点数与宠物无毒鲜花托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度鲜花礼赠与花艺总池</div>
+            <div class="finops-kpi-val" id="flower-gift-gross-kpi">$75,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">花房直连与农场订阅后净支出</div>
+            <div class="finops-kpi-val" id="flower-gift-net-kpi" style="color:#6ee7b7;">$54,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度剥离转单抽成与隐形杂费</div>
+            <div class="finops-kpi-val" id="flower-gift-savings-kpi" style="color:#38bdf8;">$21,000</div>
+          </div>
+        </div>
+        <div id="flower-gift-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DIRECT_LOCAL_STUDIO_FLORIST_AND_FARM_TO_TABLE_SUBSCRIPTION_CONFIRM · Mandate: online_flower_bouquet_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -53938,6 +54109,80 @@ function updateB2BCorporateParkingLprEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 BADGE_SYNCED_LPR_AND_ATTENDANCE_VERIFIED_PARKING_AUTHORIZED · Mandate: b2b_corporate_parking_lpr_mandate_200';
+}}
+
+function updateOnlineFlowerBouquetEscrowSandbox() {{
+  const slider = document.getElementById('flower-gift-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '75000');
+  const wireMode = document.getElementById('flower-gift-wire-select').value;
+  const benchMode = document.getElementById('flower-gift-bench-select').value;
+  const petMode = document.getElementById('flower-gift-pet-select').value;
+  const optMode = document.getElementById('flower-gift-opt-select').value;
+
+  document.getElementById('flower-gift-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('flower-gift-status-kpi');
+  const grossKpi = document.getElementById('flower-gift-gross-kpi');
+  const netKpi = document.getElementById('flower-gift-net-kpi');
+  const savingsKpi = document.getElementById('flower-gift-savings-kpi');
+  const banner = document.getElementById('flower-gift-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (petMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_FELINE_TOXIC_LILY_PET_SAFETY_OR_USDA_APHIS_QUARANTINE_HOLD · Mandate: null';
+    return;
+  }}
+  if (wireMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 WIRE_SERVICE_35PCT_SKIM_STEM_SHRINKFLATION_OR_CHECKOUT_HANDLING_FEE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (benchMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PRE_DISPATCH_BENCH_PHOTO_STEM_COUNT_MISMATCH_OR_CARDBOARD_DIY_BOX_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.28);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DIRECT_LOCAL_STUDIO_FLORIST_AND_FARM_TO_TABLE_SUBSCRIPTION_CONFIRM · Mandate: online_flower_bouquet_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 BENCH_PHOTO_VERIFIED_AND_PET_SAFE_BOUQUET_AUTHORIZED · Mandate: online_flower_bouquet_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
