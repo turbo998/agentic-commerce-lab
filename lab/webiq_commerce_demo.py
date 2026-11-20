@@ -22046,6 +22046,87 @@ def evaluate_yacht_marina_berth_haulout_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BCommercialPestControlEscrowPolicyInput:
+    """Input contract for B2B Commercial Pest Control, HACCP IPM & IoT Smart-Trap Escrow."""
+
+    quarterly_b2b_commercial_pest_control_pool_usd: float = 95000.0
+    fear_upsell_fumigation_without_macro_proof_or_retreat_only_warranty: bool = False
+    barcode_trap_scan_under_95pct_or_3min_ghost_visit_dwell: bool = False
+    webiq_epa_banned_rodenticide_in_food_zone_or_expired_applicator_license_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    connected_iot_smart_trap_telemetry_and_regional_ipm_consolidation_ready: bool = False
+
+
+def evaluate_b2b_commercial_pest_control_escrow_policy(
+    policy_input: B2BCommercialPestControlEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Commercial Pest Control, HACCP IPM & IoT Smart-Trap Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_commercial_pest_control_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_epa_banned_rodenticide_in_food_zone_or_expired_applicator_license_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_EPA_BANNED_RODENTICIDE_IN_FOOD_ZONE_OR_EXPIRED_APPLICATOR_LICENSE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.fear_upsell_fumigation_without_macro_proof_or_retreat_only_warranty:
+        return {
+            "status_code": 403,
+            "decision": "FEAR_UPSELL_FUMIGATION_WITHOUT_MACRO_PROOF_OR_RETREAT_ONLY_WARRANTY_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.barcode_trap_scan_under_95pct_or_3min_ghost_visit_dwell:
+        return {
+            "status_code": 422,
+            "decision": "BARCODE_TRAP_SCAN_UNDER_95PCT_OR_3MIN_GHOST_VISIT_DWELL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.connected_iot_smart_trap_telemetry_and_regional_ipm_consolidation_ready:
+        savings = round(gross_pool * 0.29, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CONNECTED_IOT_SMART_TRAP_TELEMETRY_AND_REGIONAL_IPM_CONSOLIDATION_CONFIRM",
+            "mandate_token": "b2b_commercial_pest_ipm_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "INSIDE_LID_NFC_VERIFIED_AND_HACCP_SAFE_IPM_AUTHORIZED",
+        "mandate_token": "b2b_commercial_pest_ipm_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -30409,6 +30490,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_commercial_pest_control_escrow_guard = {
+        "authorized_200": evaluate_b2b_commercial_pest_control_escrow_policy(
+            B2BCommercialPestControlEscrowPolicyInput()
+        ),
+        "scare_fumigation_or_warranty_403": evaluate_b2b_commercial_pest_control_escrow_policy(
+            B2BCommercialPestControlEscrowPolicyInput(
+                fear_upsell_fumigation_without_macro_proof_or_retreat_only_warranty=True
+            )
+        ),
+        "unchecked_traps_or_ghost_visit_422": evaluate_b2b_commercial_pest_control_escrow_policy(
+            B2BCommercialPestControlEscrowPolicyInput(
+                barcode_trap_scan_under_95pct_or_3min_ghost_visit_dwell=True
+            )
+        ),
+        "food_zone_toxin_or_lapsed_license_451": evaluate_b2b_commercial_pest_control_escrow_policy(
+            B2BCommercialPestControlEscrowPolicyInput(
+                webiq_epa_banned_rodenticide_in_food_zone_or_expired_applicator_license_flag=True
+            )
+        ),
+        "iot_smart_trap_and_exclusion_409": evaluate_b2b_commercial_pest_control_escrow_policy(
+            B2BCommercialPestControlEscrowPolicyInput(
+                connected_iot_smart_trap_telemetry_and_regional_ipm_consolidation_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -30631,6 +30738,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ev_dcfc_charging_ocpi_escrow_guard": ev_dcfc_charging_ocpi_escrow_guard,
         "b2b_uniform_linen_rental_escrow_guard": b2b_uniform_linen_rental_escrow_guard,
         "yacht_marina_berth_haulout_escrow_guard": yacht_marina_berth_haulout_escrow_guard,
+        "b2b_commercial_pest_control_escrow_guard": b2b_commercial_pest_control_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -40876,6 +40984,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="yacht-marina-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MUNICIPAL_MOORING_BALL_HYBRID_AND_OFFSEASON_HAULOUT_BUNDLE_CONFIRM · Mandate: yacht_marina_haulout_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 94 B2B Commercial Pest Control, HACCP IPM & IoT Smart-Trap Escrow -->
+      <div class="finops-box" id="b2b-commercial-pest-control-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🐀 连锁餐饮/商超有害生物防制 (Pest Control)、HACCP 鼠饵站巡检与物联网捕鼠器托管 (Ecolab 艺康 / Rentokil 能多洁 / Orkin / Bell Sensing iQ) 盒盖内侧 NFC 扫码与 ACE 鉴虫沙盒 (Round 94)</div>
+            <div class="finops-subtitle">实测一镜到底原位微距视频+独立昆虫学家 (ACE) 签字防虚报臭虫/白蚁恐吓推销 $4,500 高温熏蒸单 (HTTP 403)、诱饵盒盒盖内侧 (Inside-Lid) NFC 扫码率&gt;=95% 与在店&gt;=25m 防技师 3 分钟走过场假巡检 (HTTP 422)、Web IQ 后厨食品区违规喷洒高毒农药或散投抗凝血鼠药 (SGAR) 熔断 (HTTP 451) 及部署 24/7 LoRaWAN IoT 智能鼠夹+门缝物理封堵净省 29% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="pest-ipm-status-kpi">HTTP 409 · CONNECTED_IOT_SMART_TRAP_TELEMETRY_AND_REGIONAL_IPM_CONSOLIDATION_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度连锁门店商业虫控 (IPM) 与食安消杀预算池 ($ USD)
+            <input type="range" id="pest-ipm-pool-slider" min="15000" max="600000" step="5000" value="95000" oninput="updateB2BCommercialPestControlEscrowSandbox()" />
+            <span id="pest-ipm-pool-val" style="color:#6ee7b7; font-family:monospace;">$95,000</span>
+          </label>
+          <label>
+            原位微距活虫 + 独立昆虫学家 (ACE) 增项与 AIB 保过核验 (HTTP 403)
+            <select id="pest-ipm-scare-select" onchange="updateB2BCommercialPestControlEscrowSandbox()">
+              <option value="pass">专项增项附 ACE 专家签字与活虫微距铁证 + 年涨幅&lt;=3% + AIB 食安审计保过 (放行)</option>
+              <option value="block">指着棉絮/旧木屑恐吓店长强推 $4,500 臭虫/白蚁熏蒸单 或 合同年涨价 12% (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            诱饵盒“盒盖内侧” NFC 扫码率 (&gt;=95%) 与在店时长核验 (HTTP 422)
+            <select id="pest-ipm-nfc-select" onchange="updateB2BCommercialPestControlEscrowSandbox()">
+              <option value="pass">44 个点位开盒内侧 NFC 扫码&gt;=95% + 在店驻留&gt;=25m + 粘虫板手写当日日期同框照 (合规)</option>
+              <option value="block">技师进店 3 分钟只找店长签字(28 个室外鼠饵盒半年未开盖) 或 灭蝇灯粘满苍蝇未换 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 后厨食品区 (HACCP) 药剂白名单与持证核验 (HTTP 451)
+            <select id="pest-ipm-epa-select" onchange="updateB2BCommercialPestControlEscrowSandbox()">
+              <option value="clear">食品区 100% 物理粘捕无化学鼠药 + EPA 农药登记号合规 + 技师持证有效 (正常)</option>
+              <option value="hold">在后厨加工区违规投放禁用抗凝血鼠药 (SGAR) 或喷洒高残留气雾剂 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            24/7 物联网智能传感鼠夹 (IoT Smart Traps) 与门缝物理封堵 (HTTP 409)
+            <select id="pest-ipm-opt-select" onchange="updateB2BCommercialPestControlEscrowSandbox()">
+              <option value="enabled" selected>部署 Bell iQ / Anticimex 联网智能鼠夹 + 门底防鼠毛刷物理封堵净省 29% (HTTP 409)</option>
+              <option value="baseline">常规盒内 NFC 扫码核验与 HACCP 合规人工巡检授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度商业虫控预算总池</div>
+            <div class="finops-kpi-val" id="pest-ipm-gross-kpi">$95,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">IoT 智能传感与集采后净支出</div>
+            <div class="finops-kpi-val" id="pest-ipm-net-kpi" style="color:#6ee7b7;">$67,450</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除假巡检与恐吓增项</div>
+            <div class="finops-kpi-val" id="pest-ipm-savings-kpi" style="color:#38bdf8;">$27,550</div>
+          </div>
+        </div>
+        <div id="pest-ipm-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CONNECTED_IOT_SMART_TRAP_TELEMETRY_AND_REGIONAL_IPM_CONSOLIDATION_CONFIRM · Mandate: b2b_commercial_pest_ipm_mandate_optim_409
         </div>
       </div>
 
@@ -53203,6 +53374,80 @@ function updateYachtMarinaBerthHauloutEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 EXACT_LOA_BERTH_AND_SURVEYED_HAULOUT_AUTHORIZED · Mandate: yacht_marina_haulout_escrow_mandate_200';
+}}
+
+function updateB2BCommercialPestControlEscrowSandbox() {{
+  const slider = document.getElementById('pest-ipm-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '95000');
+  const scareMode = document.getElementById('pest-ipm-scare-select').value;
+  const nfcMode = document.getElementById('pest-ipm-nfc-select').value;
+  const epaMode = document.getElementById('pest-ipm-epa-select').value;
+  const optMode = document.getElementById('pest-ipm-opt-select').value;
+
+  document.getElementById('pest-ipm-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('pest-ipm-status-kpi');
+  const grossKpi = document.getElementById('pest-ipm-gross-kpi');
+  const netKpi = document.getElementById('pest-ipm-net-kpi');
+  const savingsKpi = document.getElementById('pest-ipm-savings-kpi');
+  const banner = document.getElementById('pest-ipm-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (epaMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_EPA_BANNED_RODENTICIDE_IN_FOOD_ZONE_OR_EXPIRED_APPLICATOR_LICENSE_HOLD · Mandate: null';
+    return;
+  }}
+  if (scareMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 FEAR_UPSELL_FUMIGATION_WITHOUT_MACRO_PROOF_OR_RETREAT_ONLY_WARRANTY_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (nfcMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BARCODE_TRAP_SCAN_UNDER_95PCT_OR_3MIN_GHOST_VISIT_DWELL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.29);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CONNECTED_IOT_SMART_TRAP_TELEMETRY_AND_REGIONAL_IPM_CONSOLIDATION_CONFIRM · Mandate: b2b_commercial_pest_ipm_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 INSIDE_LID_NFC_VERIFIED_AND_HACCP_SAFE_IPM_AUTHORIZED · Mandate: b2b_commercial_pest_ipm_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

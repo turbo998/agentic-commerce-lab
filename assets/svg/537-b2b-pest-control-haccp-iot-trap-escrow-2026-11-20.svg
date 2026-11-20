@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg537" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#071510"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="accent537" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg537)"/>
+  <rect x="28" y="24" width="1144" height="627" rx="18" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <rect x="28" y="24" width="1144" height="6" rx="3" fill="url(#accent537)"/>
+
+  <!-- Header -->
+  <text x="56" y="68" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">ROUND 94 · SVG 537 · B2B COMMERCIAL PEST CONTROL, HACCP IPM &amp; IOT TRAP ESCROW</text>
+  <text x="56" y="100" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="800">Commercial IPM Agent: Inside-Lid NFC Trap Scan, ACE Proof &amp; IoT Smart Traps</text>
+  <text x="56" y="126" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Ecolab Pest / Rentokil Terminix / Orkin / Bell Sensing iQ — Blocking 3-Min Ghost Visits, Fake $4.5k Fumigation &amp; Food-Zone Toxin</text>
+  <rect x="960" y="54" width="184" height="36" rx="18" fill="#064e3b" stroke="#10b981" stroke-width="1.2"/>
+  <text x="1052" y="77" fill="#6ee7b7" font-family="Consolas, monospace" font-size="13" font-weight="700" text-anchor="middle">29% IPM TCO SAVED</text>
+
+  <!-- Left Panel: 3 Commercial Traps -->
+  <rect x="52" y="150" width="345" height="475" rx="14" fill="#111827" stroke="#ef4444" stroke-width="1.2"/>
+  <text x="72" y="182" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">1. Commercial Pest Control Traps</text>
+
+  <rect x="70" y="200" width="309" height="126" rx="10" fill="#1f2937" stroke="#dc2626" stroke-width="1"/>
+  <text x="84" y="224" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap A: $4.5k Scare Upsell &amp; Fine Print</text>
+  <text x="84" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Rep claims "active bed-bugs/termites" without</text>
+  <text x="84" y="266" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  specimen proof to sell $4,500 heat/fumigation</text>
+  <text x="84" y="286" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 12%/yr auto-hike + "retreatment-only" warranty</text>
+  <text x="84" y="306" fill="#fca5a5" font-family="Consolas, monospace" font-size="11">Guard: HTTP 403 ACE_SPECIMEN_AND_3PCT_CAP_LOCK</text>
+
+  <rect x="70" y="340" width="309" height="126" rx="10" fill="#1f2937" stroke="#f97316" stroke-width="1"/>
+  <text x="84" y="364" fill="#fed7aa" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap B: 3-Min Ghost Visit &amp; Unchecked Traps</text>
+  <text x="84" y="386" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Tech signs kitchen clipboard in 3 minutes</text>
+  <text x="84" y="406" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  without opening 28 exterior rodent bait boxes</text>
+  <text x="84" y="426" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  or changing full UV fly-light glue boards</text>
+  <text x="84" y="446" fill="#fdba74" font-family="Consolas, monospace" font-size="11">Guard: HTTP 422 INSIDE_LID_NFC_95PCT_SCAN_GATE</text>
+
+  <rect x="70" y="480" width="309" height="124" rx="10" fill="#1f2937" stroke="#a855f7" stroke-width="1"/>
+  <text x="84" y="504" fill="#e9d5ff" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap C: Food-Zone Toxin &amp; Lapsed License</text>
+  <text x="84" y="526" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Restricted SGAR rodenticide or liquid spray</text>
+  <text x="84" y="546" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  applied inside HACCP food-prep zone (AIB fail)</text>
+  <text x="84" y="566" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Stale mandate signing key (&gt;180 days)</text>
+  <text x="84" y="586" fill="#d8b4fe" font-family="Consolas, monospace" font-size="11">Guard: HTTP 451 WEBIQ_EPA_FOOD_ZONE_TOXIN_HOLD</text>
+
+  <!-- Center Panel: Deterministic Control Plane -->
+  <rect x="419" y="150" width="362" height="475" rx="14" fill="#111827" stroke="#10b981" stroke-width="1.4"/>
+  <text x="439" y="182" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">2. Deterministic IPM &amp; HACCP Escrow Engine</text>
+
+  <rect x="439" y="202" width="322" height="82" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+  <text x="455" y="226" fill="#6ee7b7" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 1 · ACE ENTOMOLOGIST &amp; qPCR PROOF</text>
+  <text x="455" y="248" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Blocks emergency fumigation (&gt;$500) without</text>
+  <text x="455" y="268" fill="#38bdf8" font-family="Consolas, monospace" font-size="12">macro specimen + ACE sign-off + AIB fine indemnity</text>
+
+  <rect x="439" y="298" width="322" height="86" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="455" y="322" fill="#38bdf8" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 2 · INSIDE-LID NFC &amp; DWELL-TIME GATE</text>
+  <text x="455" y="344" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Requires &gt;=95% inside-box NFC/barcode scans,</text>
+  <text x="455" y="364" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">&gt;=25m GPS dwell &amp; glue-board date-stamp photo</text>
+
+  <rect x="439" y="398" width="322" height="90" rx="10" fill="#0f172a" stroke="#818cf8" stroke-width="1"/>
+  <text x="455" y="422" fill="#a5b4fc" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 3 · EPA / HACCP SDS CHEMICAL FILTER</text>
+  <text x="455" y="444" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Verifies EPA Reg. No. &amp; bans toxic rodenticides</text>
+  <text x="455" y="464" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">(SGARs) inside food-contact &amp; kitchen zones</text>
+
+  <rect x="439" y="502" width="322" height="102" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="455" y="526" fill="#fcd34d" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 4 · IOT SMART TRAPS &amp; EXCLUSION (409)</text>
+  <text x="455" y="548" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Deploys 24/7 LoRaWAN IoT traps (Bell Sensing iQ</text>
+  <text x="455" y="568" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">/ Anticimex) + door-sweep physical exclusion</text>
+  <text x="455" y="588" fill="#fde68a" font-family="Consolas, monospace" font-size="12">Quarterly Savings: $27,550 / $95,000 (29.0%)</text>
+
+  <!-- Right Panel: 5-Lane HTTP Verdicts & Platform Matrix -->
+  <rect x="803" y="150" width="345" height="475" rx="14" fill="#111827" stroke="#10b981" stroke-width="1.2"/>
+  <text x="823" y="182" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">3. 5-Lane Verdicts &amp; Platform Matrix</text>
+
+  <rect x="821" y="200" width="309" height="46" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+  <text x="835" y="220" fill="#a7f3d0" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 200 · NFC_TRAP_SCAN_AND_HACCP_AUTHORIZED</text>
+  <text x="835" y="237" fill="#d1fae5" font-family="Segoe UI, Arial, sans-serif" font-size="11">Mandate: b2b_commercial_pest_ipm_mandate_200</text>
+
+  <rect x="821" y="254" width="309" height="46" rx="8" fill="#450a0a" stroke="#ef4444" stroke-width="1"/>
+  <text x="835" y="274" fill="#fecaca" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 403 · SCARE_FUMIGATION_UPSELL_BLOCKED</text>
+  <text x="835" y="291" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11">Blocks unverified $4.5k fumigation &amp; &gt;3% hike</text>
+
+  <rect x="821" y="308" width="309" height="46" rx="8" fill="#431407" stroke="#f97316" stroke-width="1"/>
+  <text x="835" y="328" fill="#fed7aa" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 422 · UNCHECKED_TRAPS_OR_3MIN_VISIT_BLK</text>
+  <text x="835" y="345" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="11">Blocks &lt;95% inside-lid NFC scans &amp; &lt;25m dwell</text>
+
+  <rect x="821" y="362" width="309" height="46" rx="8" fill="#3b0764" stroke="#a855f7" stroke-width="1"/>
+  <text x="835" y="382" fill="#e9d5ff" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 451 · WEBIQ_FOOD_ZONE_TOXIN_HOLD</text>
+  <text x="835" y="399" fill="#d8b4fe" font-family="Segoe UI, Arial, sans-serif" font-size="11">Holds escrow on banned SGARs in food-prep zone</text>
+
+  <rect x="821" y="416" width="309" height="50" rx="8" fill="#451a03" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="835" y="436" fill="#fde68a" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 409 · IOT_SMART_TRAP_AND_EXCLUSION</text>
+  <text x="835" y="455" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="11">24/7 IoT traps + national SLA bundle (-29% TCO)</text>
+
+  <!-- Platform Summary -->
+  <rect x="821" y="478" width="309" height="126" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="835" y="500" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">Platform Selection Matrix:</text>
+  <text x="835" y="520" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Ecolab Pest Elimination: Food/HACCP &amp; AIB audit</text>
+  <text x="835" y="538" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Rentokil Terminix / Orkin: PestConnect IoT</text>
+  <text x="835" y="556" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Anticimex SMART / Bell iQ: 24/7 non-toxic IoT</text>
+  <text x="835" y="574" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Rollins / Regional IPM: Multi-site retail SLA</text>
+  <text x="835" y="592" fill="#6ee7b7" font-family="Consolas, monospace" font-size="11">Provenance: synthetic · reproduced=False</text>
+</svg>

@@ -15356,6 +15356,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("yacht-marina-berth-haulout-escrow-sandbox", html_zh)
 
+    def test_b2b_commercial_pest_control_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BCommercialPestControlEscrowPolicyInput,
+            evaluate_b2b_commercial_pest_control_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_commercial_pest_control_escrow_policy(
+            B2BCommercialPestControlEscrowPolicyInput(
+                quarterly_b2b_commercial_pest_control_pool_usd=95000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "INSIDE_LID_NFC_VERIFIED_AND_HACCP_SAFE_IPM_AUTHORIZED",
+        )
+
+        scare = evaluate_b2b_commercial_pest_control_escrow_policy(
+            B2BCommercialPestControlEscrowPolicyInput(
+                fear_upsell_fumigation_without_macro_proof_or_retreat_only_warranty=True
+            )
+        )
+        self.assertEqual(scare["status_code"], 403)
+        self.assertEqual(
+            scare["decision"],
+            "FEAR_UPSELL_FUMIGATION_WITHOUT_MACRO_PROOF_OR_RETREAT_ONLY_WARRANTY_BLOCKED",
+        )
+
+        nfc = evaluate_b2b_commercial_pest_control_escrow_policy(
+            B2BCommercialPestControlEscrowPolicyInput(
+                barcode_trap_scan_under_95pct_or_3min_ghost_visit_dwell=True
+            )
+        )
+        self.assertEqual(nfc["status_code"], 422)
+        self.assertEqual(
+            nfc["decision"],
+            "BARCODE_TRAP_SCAN_UNDER_95PCT_OR_3MIN_GHOST_VISIT_DWELL_BLOCKED",
+        )
+
+        epa = evaluate_b2b_commercial_pest_control_escrow_policy(
+            B2BCommercialPestControlEscrowPolicyInput(
+                webiq_epa_banned_rodenticide_in_food_zone_or_expired_applicator_license_flag=True
+            )
+        )
+        self.assertEqual(epa["status_code"], 451)
+        self.assertEqual(
+            epa["decision"],
+            "WEBIQ_EPA_BANNED_RODENTICIDE_IN_FOOD_ZONE_OR_EXPIRED_APPLICATOR_LICENSE_HOLD",
+        )
+
+        optim = evaluate_b2b_commercial_pest_control_escrow_policy(
+            B2BCommercialPestControlEscrowPolicyInput(
+                quarterly_b2b_commercial_pest_control_pool_usd=95000.0,
+                connected_iot_smart_trap_telemetry_and_regional_ipm_consolidation_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 27550.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 67450.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_commercial_pest_control_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-pest-control-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
