@@ -13949,6 +13949,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("game-skin-steam-tradehold-escrow-sandbox", html_zh)
 
+    def test_private_jet_yacht_charter_apa_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            PrivateJetYachtCharterApaEscrowPolicyInput,
+            evaluate_private_jet_yacht_charter_apa_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_private_jet_yacht_charter_apa_escrow_policy(
+            PrivateJetYachtCharterApaEscrowPolicyInput(
+                quarterly_private_jet_and_yacht_charter_pool_usd=310000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "PART135_VERIFIED_AND_APA_ESCROW_AUTHORIZED",
+        )
+
+        deice = evaluate_private_jet_yacht_charter_apa_escrow_policy(
+            PrivateJetYachtCharterApaEscrowPolicyInput(
+                post_flight_deicing_shock_or_unbundled_fbo_surcharge=True
+            )
+        )
+        self.assertEqual(deice["status_code"], 403)
+        self.assertEqual(
+            deice["decision"],
+            "POST_FLIGHT_DEICING_SHOCK_OR_UNBUNDLED_FBO_SURCHARGE_BLOCKED",
+        )
+
+        apa = evaluate_private_jet_yacht_charter_apa_escrow_policy(
+            PrivateJetYachtCharterApaEscrowPolicyInput(
+                unreceipted_yacht_apa_drain_or_aog_recovery_upcharge=True
+            )
+        )
+        self.assertEqual(apa["status_code"], 422)
+        self.assertEqual(
+            apa["decision"],
+            "UNRECEIPTED_YACHT_APA_DRAIN_OR_AOG_RECOVERY_UPCHARGE_BLOCKED",
+        )
+
+        p135 = evaluate_private_jet_yacht_charter_apa_escrow_policy(
+            PrivateJetYachtCharterApaEscrowPolicyInput(
+                webiq_illegal_part91_gray_charter_or_safety_audit_fail_flag=True
+            )
+        )
+        self.assertEqual(p135["status_code"], 451)
+        self.assertEqual(
+            p135["decision"],
+            "WEBIQ_ILLEGAL_PART91_GRAY_CHARTER_OR_SAFETY_AUDIT_FAIL_HOLD",
+        )
+
+        optim = evaluate_private_jet_yacht_charter_apa_escrow_policy(
+            PrivateJetYachtCharterApaEscrowPolicyInput(
+                quarterly_private_jet_and_yacht_charter_pool_usd=310000.0,
+                guaranteed_empty_leg_match_and_apa_audit_refund_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 86800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 223200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("private_jet_yacht_charter_apa_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("private-jet-yacht-charter-apa-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

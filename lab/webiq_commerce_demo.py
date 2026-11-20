@@ -20345,6 +20345,87 @@ def evaluate_game_skin_steam_tradehold_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class PrivateJetYachtCharterApaEscrowPolicyInput:
+    """Input contract for Private Jet Charter, Empty-Leg Arbitrage & MYBA Yacht APA Escrow."""
+
+    quarterly_private_jet_and_yacht_charter_pool_usd: float = 310000.0
+    post_flight_deicing_shock_or_unbundled_fbo_surcharge: bool = False
+    unreceipted_yacht_apa_drain_or_aog_recovery_upcharge: bool = False
+    webiq_illegal_part91_gray_charter_or_safety_audit_fail_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    guaranteed_empty_leg_match_and_apa_audit_refund_ready: bool = False
+
+
+def evaluate_private_jet_yacht_charter_apa_escrow_policy(
+    policy_input: PrivateJetYachtCharterApaEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Private Jet Charter, Empty-Leg Arbitrage & MYBA Yacht APA policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_private_jet_and_yacht_charter_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_illegal_part91_gray_charter_or_safety_audit_fail_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_ILLEGAL_PART91_GRAY_CHARTER_OR_SAFETY_AUDIT_FAIL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.post_flight_deicing_shock_or_unbundled_fbo_surcharge:
+        return {
+            "status_code": 403,
+            "decision": "POST_FLIGHT_DEICING_SHOCK_OR_UNBUNDLED_FBO_SURCHARGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unreceipted_yacht_apa_drain_or_aog_recovery_upcharge:
+        return {
+            "status_code": 422,
+            "decision": "UNRECEIPTED_YACHT_APA_DRAIN_OR_AOG_RECOVERY_UPCHARGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.guaranteed_empty_leg_match_and_apa_audit_refund_ready:
+        savings = round(gross_pool * 0.28, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "GUARANTEED_EMPTY_LEG_MATCH_AND_APA_AUDIT_REFUND_CONFIRM",
+            "mandate_token": "private_jet_yacht_charter_apa_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "PART135_VERIFIED_AND_APA_ESCROW_AUTHORIZED",
+        "mandate_token": "private_jet_yacht_charter_apa_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -28162,6 +28243,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    private_jet_yacht_charter_apa_escrow_guard = {
+        "authorized_200": evaluate_private_jet_yacht_charter_apa_escrow_policy(
+            PrivateJetYachtCharterApaEscrowPolicyInput()
+        ),
+        "post_flight_deicing_or_fbo_403": evaluate_private_jet_yacht_charter_apa_escrow_policy(
+            PrivateJetYachtCharterApaEscrowPolicyInput(
+                post_flight_deicing_shock_or_unbundled_fbo_surcharge=True
+            )
+        ),
+        "unreceipted_apa_or_aog_upcharge_422": evaluate_private_jet_yacht_charter_apa_escrow_policy(
+            PrivateJetYachtCharterApaEscrowPolicyInput(
+                unreceipted_yacht_apa_drain_or_aog_recovery_upcharge=True
+            )
+        ),
+        "illegal_part91_or_safety_fail_451": evaluate_private_jet_yacht_charter_apa_escrow_policy(
+            PrivateJetYachtCharterApaEscrowPolicyInput(
+                webiq_illegal_part91_gray_charter_or_safety_audit_fail_flag=True
+            )
+        ),
+        "guaranteed_empty_leg_and_apa_refund_409": evaluate_private_jet_yacht_charter_apa_escrow_policy(
+            PrivateJetYachtCharterApaEscrowPolicyInput(
+                guaranteed_empty_leg_match_and_apa_audit_refund_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -28363,6 +28470,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "dental_implant_lasik_surgery_escrow_guard": dental_implant_lasik_surgery_escrow_guard,
         "b2b_wholesale_fashion_showroom_escrow_guard": b2b_wholesale_fashion_showroom_escrow_guard,
         "game_skin_steam_tradehold_escrow_guard": game_skin_steam_tradehold_escrow_guard,
+        "private_jet_yacht_charter_apa_escrow_guard": private_jet_yacht_charter_apa_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -37285,6 +37393,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="game-skin-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 P2P_DIRECT_2PCT_FEE_AND_CREDIT_DEPOSIT_FREE_RENTAL_CONFIRM · Mandate: game_skin_steam_tradehold_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 73 Private Jet Charter, Empty-Leg Arbitrage & MYBA Yacht APA Escrow -->
+      <div class="finops-box" id="private-jet-yacht-charter-apa-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🛩️ 公务机包机、调机空腿与超级游艇租赁清结算 (VistaJet / NetJets / Wheels Up / XO / Burgess Yachts) 防除冰费刺客、APA凭票核销与Part 135安全锁沙盒 (Round 73)</div>
+            <div class="finops-subtitle">实测前置打包除冰免责险(De-Icing Waiver)与闭口合同防落地后追收 $8,500 除冰费与高空 Wi-Fi 刺客 (HTTP 403)、游艇 30% 预付准备金(APA)引擎小时耗油核对与原始税票实扣及飞机故障(AOG)零加价替飞 (HTTP 422)、Web IQ 执飞尾号 FAA Part 135 核验防非法黑包机拒保 (HTTP 451) 及机队保障调机空腿+APA余款秒退立省 28% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="jet-yacht-status-kpi">HTTP 409 · GUARANTEED_EMPTY_LEG_MATCH_AND_APA_AUDIT_REFUND_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业高管公务机与游艇包租结算池 ($ USD)
+            <input type="range" id="jet-yacht-pool-slider" min="60000" max="2000000" step="10000" value="310000" oninput="updatePrivateJetYachtCharterApaSandbox()" />
+            <span id="jet-yacht-pool-val" style="color:#6ee7b7; font-family:monospace;">$310,000</span>
+          </label>
+          <label>
+            前置除冰免责险与全包闭口总价校验 (HTTP 403)
+            <select id="jet-yacht-deice-select" onchange="updatePrivateJetYachtCharterApaSandbox()">
+              <option value="pass">All-In 闭口总价 + 含 $500 冬季除冰免责险 + 零事后补扣 (放行)</option>
+              <option value="block">落地后事后追收 $8,500 除冰液费 或 强刷 $2,400 未披露 FBO/Wi-Fi 费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            游艇 30% APA 燃油原票核销与 AOG 替飞校验 (HTTP 422)
+            <select id="jet-yacht-apa-select" onchange="updatePrivateJetYachtCharterApaSandbox()">
+              <option value="pass">APA 按引擎小时耗油与港口原票实扣 + 机械故障(AOG)免费替飞 (合规)</option>
+              <option value="block">船长无油商流量计税票吞掉 $16k APA 结余 或 飞机故障要客人补 $22k 换机 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 执飞尾号 FAA Part 135 与安全评级筛查 (HTTP 451)
+            <select id="jet-yacht-part135-select" onchange="updatePrivateJetYachtCharterApaSandbox()">
+              <option value="clear">尾号具合法 FAA Part 135 商业资质 + ARGUS/Wyvern 达标 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">中介偷换仅具私人自用资质(Part 91)的非法黑包机导致航空险拒保 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            机队保障顺向调机空腿 (Empty-Leg) 与 APA 结余秒退 (HTTP 409)
+            <select id="jet-yacht-opt-select" onchange="updatePrivateJetYachtCharterApaSandbox()">
+              <option value="enabled" selected>开启带 AOG 替飞保障的顺向调机空腿 + 游艇 APA 结余自动追回省 28% (HTTP 409)</option>
+              <option value="baseline">常规正价单程包机与标准游艇 APA 托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度包机游艇毛池</div>
+            <div class="finops-kpi-val" id="jet-yacht-gross-kpi">$310,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">空腿套利与退余后净额</div>
+            <div class="finops-kpi-val" id="jet-yacht-net-kpi" style="color:#6ee7b7;">$223,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下空跑与APA黑洞</div>
+            <div class="finops-kpi-val" id="jet-yacht-savings-kpi" style="color:#38bdf8;">$86,800</div>
+          </div>
+        </div>
+        <div id="jet-yacht-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 GUARANTEED_EMPTY_LEG_MATCH_AND_APA_AUDIT_REFUND_CONFIRM · Mandate: private_jet_yacht_charter_apa_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -48058,6 +48229,80 @@ function updateGameSkinSteamTradeholdSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 STEAMID64_LOCKED_AND_T8D_ESCROW_AUTHORIZED · Mandate: game_skin_steam_tradehold_escrow_mandate_200';
+}}
+
+function updatePrivateJetYachtCharterApaSandbox() {{
+  const slider = document.getElementById('jet-yacht-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '310000');
+  const deiceMode = document.getElementById('jet-yacht-deice-select').value;
+  const apaMode = document.getElementById('jet-yacht-apa-select').value;
+  const p135Mode = document.getElementById('jet-yacht-part135-select').value;
+  const optMode = document.getElementById('jet-yacht-opt-select').value;
+
+  document.getElementById('jet-yacht-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('jet-yacht-status-kpi');
+  const grossKpi = document.getElementById('jet-yacht-gross-kpi');
+  const netKpi = document.getElementById('jet-yacht-net-kpi');
+  const savingsKpi = document.getElementById('jet-yacht-savings-kpi');
+  const banner = document.getElementById('jet-yacht-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (p135Mode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_ILLEGAL_PART91_GRAY_CHARTER_OR_SAFETY_AUDIT_FAIL_HOLD · Mandate: null';
+    return;
+  }}
+  if (deiceMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 POST_FLIGHT_DEICING_SHOCK_OR_UNBUNDLED_FBO_SURCHARGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (apaMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNRECEIPTED_YACHT_APA_DRAIN_OR_AOG_RECOVERY_UPCHARGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.28);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 GUARANTEED_EMPTY_LEG_MATCH_AND_APA_AUDIT_REFUND_CONFIRM · Mandate: private_jet_yacht_charter_apa_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 PART135_VERIFIED_AND_APA_ESCROW_AUTHORIZED · Mandate: private_jet_yacht_charter_apa_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
