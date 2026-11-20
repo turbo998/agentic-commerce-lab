@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`220` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`221` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (38 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (70 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (71 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (53 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
@@ -82,7 +82,7 @@
 | 38 | **Music Festival & Stadium Cashless `RFID` Wristband, Anti-Tip-Creep & Auto-Refund Escrow (`Coachella / Tomorrowland / Intellitix / Front Gate`) Zero-Breakage Auto-Refund, `0%–10%` Tip Cap & `45s` Double-Tap Idempotency Agent Architecture Selection FAQ** | [English](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.en.md) · [中文](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (70 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (71 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -158,6 +158,7 @@
 | 68 | **Fine Wine En Primeur (`Bordeaux Futures`), Bonded Cellar Storage (`Liv-ex / Octavian`) & Ullage Provenance Escrow (`Liv-ex / Berry Bros. & Rudd BBX / Octavian / Sotheby's Wine`) `LWIN18` Price Cap, Segregated Title & `Into-Neck` Ullage Agent Architecture Selection FAQ** | [English](fine-wine-en-primeur-bonded-cellar-livex-ullage-escrow-agent-selection-faq.en.md) · [中文](fine-wine-en-primeur-bonded-cellar-livex-ullage-escrow-agent-selection-faq.md) |
 | 69 | **Online Flower, Holiday Bouquet & Stem-Count Vision Escrow (`BloomNation / Floom / 1-800-Flowers / The Bouqs / Roseonly`) Bench-Photo Stem Count, Direct-Studio Routing & Pet-Safe Gate Agent Architecture Selection FAQ** | [English](online-flower-bouquet-wire-skim-stem-count-escrow-agent-selection-faq.en.md) · [中文](online-flower-bouquet-wire-skim-stem-count-escrow-agent-selection-faq.md) |
 | 70 | **Residential & Commercial Rooftop Replacement, Anti-`AOB` Storm-Chaser & `UL 2218 Class-4` Shingle Escrow (`GAF Master Elite / Owens Corning / EagleView / Hover 3D`) Anti-`AOB` Lock, Tear-Off Layer Vision & `Class-4` Insurer Discount Agent Architecture Selection FAQ** | [English](rooftop-replacement-storm-chaser-aob-ul2218-escrow-agent-selection-faq.en.md) · [中文](rooftop-replacement-storm-chaser-aob-ul2218-escrow-agent-selection-faq.md) |
+| 71 | **Tailored Bespoke Suit, Made-to-Measure (`MTM`) Menswear & Fabric Selvedge Escrow (`SuitSupply / Savile Row / Loro Piana / Zegna`) Mill Selvedge `QR`, Basted Full-Canvas Gate & Uncut Cuff Lock Agent Architecture Selection FAQ** | [English](bespoke-suit-mtm-full-canvas-fabric-selvedge-escrow-agent-selection-faq.en.md) · [中文](bespoke-suit-mtm-full-canvas-fabric-selvedge-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (53 Guides)

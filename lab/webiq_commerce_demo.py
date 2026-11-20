@@ -22694,6 +22694,87 @@ def evaluate_specialty_coffee_green_bean_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class BespokeSuitMtmEscrowPolicyInput:
+    """Input contract for Tailored Bespoke Suit, MTM Menswear & Fabric Selvedge Escrow."""
+
+    quarterly_bespoke_suit_and_mtm_wardrobe_pool_usd: float = 85000.0
+    fused_glue_interlining_fraud_or_fake_loro_piana_selvedge_serial: bool = False
+    final_garment_tolerance_over_1cm_or_surgeon_cuff_pre_fit_lock: bool = False
+    webiq_counterfeit_fabric_mill_qr_or_azo_dye_lining_recall_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    direct_mill_cut_length_cmt_separation_and_half_canvas_mtm_optimization_ready: bool = False
+
+
+def evaluate_bespoke_suit_mtm_escrow_policy(
+    policy_input: BespokeSuitMtmEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Tailored Bespoke Suit, MTM Menswear & Fabric Selvedge Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_bespoke_suit_and_mtm_wardrobe_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_counterfeit_fabric_mill_qr_or_azo_dye_lining_recall_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_COUNTERFEIT_FABRIC_MILL_QR_OR_AZO_DYE_LINING_RECALL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.fused_glue_interlining_fraud_or_fake_loro_piana_selvedge_serial:
+        return {
+            "status_code": 403,
+            "decision": "FUSED_GLUE_INTERLINING_FRAUD_OR_FAKE_LORO_PIANA_SELVEDGE_SERIAL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.final_garment_tolerance_over_1cm_or_surgeon_cuff_pre_fit_lock:
+        return {
+            "status_code": 422,
+            "decision": "FINAL_GARMENT_TOLERANCE_OVER_1CM_OR_SURGEON_CUFF_PRE_FIT_LOCK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.direct_mill_cut_length_cmt_separation_and_half_canvas_mtm_optimization_ready:
+        savings = round(gross_pool * 0.29, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DIRECT_MILL_CUT_LENGTH_CMT_SEPARATION_AND_HALF_CANVAS_MTM_OPTIMIZATION_CONFIRM",
+            "mandate_token": "bespoke_suit_mtm_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "FULL_CANVAS_BASTED_AND_MILL_SELVEDGE_AUTHORIZED",
+        "mandate_token": "bespoke_suit_mtm_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -31265,6 +31346,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    bespoke_suit_mtm_escrow_guard = {
+        "authorized_200": evaluate_bespoke_suit_mtm_escrow_policy(
+            BespokeSuitMtmEscrowPolicyInput()
+        ),
+        "fused_glue_or_fake_selvedge_403": evaluate_bespoke_suit_mtm_escrow_policy(
+            BespokeSuitMtmEscrowPolicyInput(
+                fused_glue_interlining_fraud_or_fake_loro_piana_selvedge_serial=True
+            )
+        ),
+        "fit_error_or_precut_cuff_422": evaluate_bespoke_suit_mtm_escrow_policy(
+            BespokeSuitMtmEscrowPolicyInput(
+                final_garment_tolerance_over_1cm_or_surgeon_cuff_pre_fit_lock=True
+            )
+        ),
+        "fake_mill_qr_or_azo_dye_451": evaluate_bespoke_suit_mtm_escrow_policy(
+            BespokeSuitMtmEscrowPolicyInput(
+                webiq_counterfeit_fabric_mill_qr_or_azo_dye_lining_recall_flag=True
+            )
+        ),
+        "cmt_mill_unbundle_and_vbc_mtm_409": evaluate_bespoke_suit_mtm_escrow_policy(
+            BespokeSuitMtmEscrowPolicyInput(
+                direct_mill_cut_length_cmt_separation_and_half_canvas_mtm_optimization_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -31495,6 +31602,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "rooftop_replacement_ul2218_escrow_guard": rooftop_replacement_ul2218_escrow_guard,
         "b2b_coworking_daypass_escrow_guard": b2b_coworking_daypass_escrow_guard,
         "specialty_coffee_green_bean_escrow_guard": specialty_coffee_green_bean_escrow_guard,
+        "bespoke_suit_mtm_escrow_guard": bespoke_suit_mtm_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -42244,6 +42352,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="coffee-bean-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DIRECT_ALGRANO_PRODUCER_POOL_AND_C_MARKET_DIFFERENTIAL_FIXATION_CONFIRM · Mandate: specialty_coffee_green_bean_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 102 Tailored Bespoke Suit, MTM Menswear & Fabric Selvedge Escrow -->
+      <div class="finops-box" id="bespoke-suit-mtm-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🤵 高定西装 (Bespoke Suit)、度身定制 (MTM) 全麻衬工艺与顶级面料布边 (Selvedge) 防伪托管 (SuitSupply / Savile Row / Loro Piana / 报喜鸟衣邦人) 白坯毛样验衬与 CMT 拆单沙盒 (Round 102)</div>
+            <div class="finops-subtitle">实测白坯毛样试身 (Basted Fitting) 裸露马尾毛全麻衬拍照核验防 $35 热熔胶粘合衬冒充及随衣附 15cm 原厂织字布边防假 Loro Piana 商标调包 (HTTP 403)、初试确认袖长前严禁剪破真扣眼活袖叉 (Uncut Basted Cuff) 防改袖长报废及尺寸偏差&lt;=1.0cm 门禁 (HTTP 422)、Web IQ 面料厂零剪 Certilogo 防伪与宾霸生态里布核验 (HTTP 451) 及原厂零剪直采+CMT 工料分离净省 29% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="bespoke-suit-status-kpi">HTTP 409 · DIRECT_MILL_CUT_LENGTH_CMT_SEPARATION_AND_HALF_CANVAS_MTM_OPTIMIZATION_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度高管商务高定西装与礼宾制服预算池 ($ USD)
+            <input type="range" id="bespoke-suit-pool-slider" min="15000" max="500000" step="5000" value="85000" oninput="updateBespokeSuitMtmEscrowSandbox()" />
+            <span id="bespoke-suit-pool-val" style="color:#6ee7b7; font-family:monospace;">$85,000</span>
+          </label>
+          <label>
+            白坯毛样全麻衬核验与 15cm 原厂织字布边核验 (HTTP 403)
+            <select id="bespoke-suit-canvas-select" onchange="updateBespokeSuitMtmEscrowSandbox()">
+              <option value="pass">毛样试身裸露马尾毛全麻衬八字针 + 随衣附 15cm 原厂织字布边与零剪单号 (放行)</option>
+              <option value="block">用 $35 热熔胶粘合衬冒充 $2,200 手工全麻衬 或 剪掉布边将面料调包为国产混纺 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            初试未开扣眼平袖 (Uncut Cuff) 与成衣公差 (&lt;=1.0cm) 核验 (HTTP 422)
+            <select id="bespoke-suit-cuff-select" onchange="updateBespokeSuitMtmEscrowSandbox()">
+              <option value="pass">初试保持未开洞平袖确认袖长 + 尺寸偏差&lt;=1.0cm + 预留 $250 大师改衣保障金 (合规)</option>
+              <option value="block">未试身先剪通活袖叉导致袖长偏差 3cm 无法修改 或 后领脱空拒赔改衣费 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 意大利面料厂零剪防伪码 (Certilogo) 与宾霸里布核验 (HTTP 451)
+            <select id="bespoke-suit-mill-select" onchange="updateBespokeSuitMtmEscrowSandbox()">
+              <option value="clear">Loro Piana/Zegna/VBC 官方零剪序列号匹配 + 朝日化成宾霸 OEKO-TEX 里布 (正常)</option>
+              <option value="hold">面料批次防伪二维码校验失败系假冒名厂料 或 里布检出致癌偶氮染料超标 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            原厂 3.5m 零剪直采 + CMT 工料分离与差旅支数分级 (HTTP 409)
+            <select id="bespoke-suit-opt-select" onchange="updateBespokeSuitMtmEscrowSandbox()">
+              <option value="enabled" selected>批发直采 3.5m 原厂面料 + 透明 CMT 裁缝工费分离 + 差旅装切 VBC Super 120s 净省 29% (HTTP 409)</option>
+              <option value="baseline">常规白坯毛样验衬与原厂布边防伪标准定制授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度高定与正装采购总池</div>
+            <div class="finops-kpi-val" id="bespoke-suit-gross-kpi">$85,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">CMT 工料分离后净支出</div>
+            <div class="finops-kpi-val" id="bespoke-suit-net-kpi" style="color:#6ee7b7;">$60,350</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度剥离 3 倍面料加价与报废</div>
+            <div class="finops-kpi-val" id="bespoke-suit-savings-kpi" style="color:#38bdf8;">$24,650</div>
+          </div>
+        </div>
+        <div id="bespoke-suit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DIRECT_MILL_CUT_LENGTH_CMT_SEPARATION_AND_HALF_CANVAS_MTM_OPTIMIZATION_CONFIRM · Mandate: bespoke_suit_mtm_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -55163,6 +55334,80 @@ function updateSpecialtyCoffeeGreenBeanEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 QGRADER_CUPPING_AND_GRAINPRO_AW_AUTHORIZED · Mandate: specialty_coffee_green_bean_mandate_200';
+}}
+
+function updateBespokeSuitMtmEscrowSandbox() {{
+  const slider = document.getElementById('bespoke-suit-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '85000');
+  const canMode = document.getElementById('bespoke-suit-canvas-select').value;
+  const cuffMode = document.getElementById('bespoke-suit-cuff-select').value;
+  const millMode = document.getElementById('bespoke-suit-mill-select').value;
+  const optMode = document.getElementById('bespoke-suit-opt-select').value;
+
+  document.getElementById('bespoke-suit-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('bespoke-suit-status-kpi');
+  const grossKpi = document.getElementById('bespoke-suit-gross-kpi');
+  const netKpi = document.getElementById('bespoke-suit-net-kpi');
+  const savingsKpi = document.getElementById('bespoke-suit-savings-kpi');
+  const banner = document.getElementById('bespoke-suit-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (millMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_COUNTERFEIT_FABRIC_MILL_QR_OR_AZO_DYE_LINING_RECALL_HOLD · Mandate: null';
+    return;
+  }}
+  if (canMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 FUSED_GLUE_INTERLINING_FRAUD_OR_FAKE_LORO_PIANA_SELVEDGE_SERIAL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (cuffMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FINAL_GARMENT_TOLERANCE_OVER_1CM_OR_SURGEON_CUFF_PRE_FIT_LOCK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.29);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DIRECT_MILL_CUT_LENGTH_CMT_SEPARATION_AND_HALF_CANVAS_MTM_OPTIMIZATION_CONFIRM · Mandate: bespoke_suit_mtm_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 FULL_CANVAS_BASTED_AND_MILL_SELVEDGE_AUTHORIZED · Mandate: bespoke_suit_mtm_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -15892,6 +15892,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("specialty-coffee-green-bean-escrow-sandbox", html_zh)
 
+    def test_bespoke_suit_mtm_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            BespokeSuitMtmEscrowPolicyInput,
+            evaluate_bespoke_suit_mtm_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_bespoke_suit_mtm_escrow_policy(
+            BespokeSuitMtmEscrowPolicyInput(
+                quarterly_bespoke_suit_and_mtm_wardrobe_pool_usd=85000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "FULL_CANVAS_BASTED_AND_MILL_SELVEDGE_AUTHORIZED",
+        )
+
+        glue = evaluate_bespoke_suit_mtm_escrow_policy(
+            BespokeSuitMtmEscrowPolicyInput(
+                fused_glue_interlining_fraud_or_fake_loro_piana_selvedge_serial=True
+            )
+        )
+        self.assertEqual(glue["status_code"], 403)
+        self.assertEqual(
+            glue["decision"],
+            "FUSED_GLUE_INTERLINING_FRAUD_OR_FAKE_LORO_PIANA_SELVEDGE_SERIAL_BLOCKED",
+        )
+
+        cuff = evaluate_bespoke_suit_mtm_escrow_policy(
+            BespokeSuitMtmEscrowPolicyInput(
+                final_garment_tolerance_over_1cm_or_surgeon_cuff_pre_fit_lock=True
+            )
+        )
+        self.assertEqual(cuff["status_code"], 422)
+        self.assertEqual(
+            cuff["decision"],
+            "FINAL_GARMENT_TOLERANCE_OVER_1CM_OR_SURGEON_CUFF_PRE_FIT_LOCK_BLOCKED",
+        )
+
+        mill = evaluate_bespoke_suit_mtm_escrow_policy(
+            BespokeSuitMtmEscrowPolicyInput(
+                webiq_counterfeit_fabric_mill_qr_or_azo_dye_lining_recall_flag=True
+            )
+        )
+        self.assertEqual(mill["status_code"], 451)
+        self.assertEqual(
+            mill["decision"],
+            "WEBIQ_COUNTERFEIT_FABRIC_MILL_QR_OR_AZO_DYE_LINING_RECALL_HOLD",
+        )
+
+        optim = evaluate_bespoke_suit_mtm_escrow_policy(
+            BespokeSuitMtmEscrowPolicyInput(
+                quarterly_bespoke_suit_and_mtm_wardrobe_pool_usd=85000.0,
+                direct_mill_cut_length_cmt_separation_and_half_canvas_mtm_optimization_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 24650.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 60350.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("bespoke_suit_mtm_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("bespoke-suit-mtm-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

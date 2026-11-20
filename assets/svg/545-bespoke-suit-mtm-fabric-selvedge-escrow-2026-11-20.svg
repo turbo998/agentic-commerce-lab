@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg545" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="accent545" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg545)"/>
+  <rect x="28" y="24" width="1144" height="627" rx="18" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <rect x="28" y="24" width="1144" height="6" rx="3" fill="url(#accent545)"/>
+
+  <!-- Header -->
+  <text x="56" y="68" fill="#fbbf24" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">ROUND 102 · SVG 545 · BESPOKE SUIT, MTM MENSWEAR &amp; FABRIC SELVEDGE ESCROW</text>
+  <text x="56" y="100" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="800">Bespoke &amp; MTM Agent: Mill Selvedge QR, Basted Full-Canvas Gate &amp; Uncut Cuff Lock</text>
+  <text x="56" y="126" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">SuitSupply / Savile Row / Loro Piana / Zegna — Blocking Fused-Glue Canvas Fraud, Fake Mill Labels &amp; Unalterable Surgeon Cuffs</text>
+  <rect x="960" y="54" width="184" height="36" rx="18" fill="#064e3b" stroke="#10b981" stroke-width="1.2"/>
+  <text x="1052" y="77" fill="#6ee7b7" font-family="Consolas, monospace" font-size="13" font-weight="700" text-anchor="middle">29% BESPOKE SAVED</text>
+
+  <!-- Left Panel: 3 Commercial Traps -->
+  <rect x="52" y="150" width="345" height="475" rx="14" fill="#111827" stroke="#ef4444" stroke-width="1.2"/>
+  <text x="72" y="182" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">1. Bespoke &amp; MTM Tailoring Traps</text>
+
+  <rect x="70" y="200" width="309" height="126" rx="10" fill="#1f2937" stroke="#dc2626" stroke-width="1"/>
+  <text x="84" y="224" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap A: Fused Glue &amp; Fake Loro Piana</text>
+  <text x="84" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Bills $2,200 for "Full-Canvas Hand-Basted"</text>
+  <text x="84" y="266" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  but uses $35 fused glue interlining (bubbles!)</text>
+  <text x="84" y="286" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Sews fake Loro Piana label onto poly-blend</text>
+  <text x="84" y="306" fill="#fca5a5" font-family="Consolas, monospace" font-size="11">Guard: HTTP 403 BASTED_CANVAS_AND_MILL_QR_LOCK</text>
+
+  <rect x="70" y="340" width="309" height="126" rx="10" fill="#1f2937" stroke="#f97316" stroke-width="1"/>
+  <text x="84" y="364" fill="#fed7aa" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap B: Pre-Cut Surgeon Cuff &amp; 3cm Error</text>
+  <text x="84" y="386" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Cuts functional sleeve buttonholes BEFORE</text>
+  <text x="84" y="406" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  first fitting -&gt; impossible to alter sleeve!</text>
+  <text x="84" y="426" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Refuses refund on &gt;2.5cm shoulder/collar gap</text>
+  <text x="84" y="446" fill="#fdba74" font-family="Consolas, monospace" font-size="11">Guard: HTTP 422 UNCUT_CUFF_AND_1CM_LASER_GATE</text>
+
+  <rect x="70" y="480" width="309" height="124" rx="10" fill="#1f2937" stroke="#a855f7" stroke-width="1"/>
+  <text x="84" y="504" fill="#e9d5ff" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700"> Trap C: Counterfeit Bolt &amp; Azo-Dye Lining</text>
+  <text x="84" y="526" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Failed Certilogo/NFC mill serial verification</text>
+  <text x="84" y="546" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  or carcinogenic Azo-dye cupro lining recall</text>
+  <text x="84" y="566" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Stale mandate signing key (&gt;180 days)</text>
+  <text x="84" y="586" fill="#d8b4fe" font-family="Consolas, monospace" font-size="11">Guard: HTTP 451 WEBIQ_CERTILOGO_OR_AZO_HOLD</text>
+
+  <!-- Center Panel: Deterministic Control Plane -->
+  <rect x="419" y="150" width="362" height="475" rx="14" fill="#111827" stroke="#f59e0b" stroke-width="1.4"/>
+  <text x="439" y="182" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">2. Deterministic Sartorial Escrow Engine</text>
+
+  <rect x="439" y="202" width="322" height="82" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="1"/>
+  <text x="455" y="226" fill="#fbbf24" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 1 · BASTED FITTING &amp; SELVEDGE LOCK</text>
+  <text x="455" y="248" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Verifies exposed horsehair full-canvas at basted</text>
+  <text x="455" y="268" fill="#6ee7b7" font-family="Consolas, monospace" font-size="12">fitting + woven mill selvedge &amp; cut-length ID</text>
+
+  <rect x="439" y="298" width="322" height="86" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="455" y="322" fill="#38bdf8" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 2 · UNCUT CUFF &amp; &lt;=1.0CM LASER GATE</text>
+  <text x="455" y="344" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Mandates basted uncut sleeves until fitting #1</text>
+  <text x="455" y="364" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">+ &lt;=1.0cm spec parity &amp; $250 local tailor escrow</text>
+
+  <rect x="439" y="398" width="322" height="90" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+  <text x="455" y="422" fill="#6ee7b7" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 3 · CERTILOGO NFC &amp; OEKO-TEX LOCK</text>
+  <text x="455" y="444" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Verifies Loro Piana / Zegna / Scabal NFC bolt</text>
+  <text x="455" y="464" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">token &amp; OEKO-TEX Standard 100 Bemberg lining</text>
+
+  <rect x="439" y="502" width="322" height="102" rx="10" fill="#0f172a" stroke="#818cf8" stroke-width="1.2"/>
+  <text x="455" y="526" fill="#a5b4fc" font-family="Consolas, monospace" font-size="13" font-weight="700">STEP 4 · CMT MILL UNBUNDLING &amp; VBC (409)</text>
+  <text x="455" y="548" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">Unbundles 3.5m mill cut-length from CMT labor +</text>
+  <text x="455" y="568" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">routes travel suits to VBC Super 120s Half-Canvas</text>
+  <text x="455" y="588" fill="#fde68a" font-family="Consolas, monospace" font-size="12">Quarterly Savings: $24,650 / $85,000 (29.0%)</text>
+
+  <!-- Right Panel: 5-Lane HTTP Verdicts & Platform Matrix -->
+  <rect x="803" y="150" width="345" height="475" rx="14" fill="#111827" stroke="#10b981" stroke-width="1.2"/>
+  <text x="823" y="182" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">3. 5-Lane Verdicts &amp; Platform Matrix</text>
+
+  <rect x="821" y="200" width="309" height="46" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+  <text x="835" y="220" fill="#a7f3d0" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 200 · FULL_CANVAS_AND_SELVEDGE_OK</text>
+  <text x="835" y="237" fill="#d1fae5" font-family="Segoe UI, Arial, sans-serif" font-size="11">Mandate: bespoke_suit_mtm_escrow_mandate_200</text>
+
+  <rect x="821" y="254" width="309" height="46" rx="8" fill="#450a0a" stroke="#ef4444" stroke-width="1"/>
+  <text x="835" y="274" fill="#fecaca" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 403 · FUSED_GLUE_OR_FAKE_SELVEDGE_BLK</text>
+  <text x="835" y="291" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11">Blocks glued interlining &amp; fake Loro Piana tags</text>
+
+  <rect x="821" y="308" width="309" height="46" rx="8" fill="#431407" stroke="#f97316" stroke-width="1"/>
+  <text x="835" y="328" fill="#fed7aa" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 422 · FIT_ERROR_OR_PRECUT_CUFF_BLOCKED</text>
+  <text x="835" y="345" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="11">Blocks &gt;1cm size drift &amp; pre-cut surgeon cuffs</text>
+
+  <rect x="821" y="362" width="309" height="46" rx="8" fill="#3b0764" stroke="#a855f7" stroke-width="1"/>
+  <text x="835" y="382" fill="#e9d5ff" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 451 · WEBIQ_FAKE_MILL_QR_OR_AZO_HOLD</text>
+  <text x="835" y="399" fill="#d8b4fe" font-family="Segoe UI, Arial, sans-serif" font-size="11">Holds escrow on failed mill QR or Azo-dye lining</text>
+
+  <rect x="821" y="416" width="309" height="50" rx="8" fill="#451a03" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="835" y="436" fill="#fde68a" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 409 · CMT_MILL_UNBUNDLE_AND_VBC_MTM</text>
+  <text x="835" y="455" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="11">Direct mill cut-length + CMT split (-29% TCO)</text>
+
+  <!-- Platform Summary -->
+  <rect x="821" y="478" width="309" height="126" rx="10" fill="#0f172a" stroke="#334155" stroke-width="1"/>
+  <text x="835" y="500" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">Platform Selection Matrix:</text>
+  <text x="835" y="520" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• SuitSupply Custom: Transparent VBC/Zegna MTM</text>
+  <text x="835" y="538" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Savile Row / WW Chan: True hand-basted bespoke</text>
+  <text x="835" y="556" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Indochino / Hockerty: Entry MTM (watch cuff cut)</text>
+  <text x="835" y="574" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11">• Loro Piana / Scabal / VBC: Mill cut-length QR</text>
+  <text x="835" y="592" fill="#6ee7b7" font-family="Consolas, monospace" font-size="11">Provenance: synthetic · reproduced=False</text>
+</svg>
