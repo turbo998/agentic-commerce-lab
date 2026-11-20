@@ -23342,6 +23342,87 @@ def evaluate_b2b_security_guard_gsoc_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class LuxuryWatchMovementEscrowPolicyInput:
+    """Input contract for Luxury Watch Escrow, Frankenwatch Movement Audit & Armored Transit."""
+
+    quarterly_luxury_watch_acquisition_pool_usd: float = 180000.0
+    unowned_ghost_listing_or_missing_bracelet_links_papers: bool = False
+    frankenwatch_aftermarket_parts_or_low_amplitude_timegrapher: bool = False
+    webiq_stolen_watch_register_hit_or_uninsured_parcel_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    watchcharts_comp_bid_and_parcel_pro_armored_escrow_ready: bool = False
+
+
+def evaluate_luxury_watch_movement_escrow_policy(
+    policy_input: LuxuryWatchMovementEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Luxury Watch Escrow, Frankenwatch Movement Audit & Armored Transit policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_luxury_watch_acquisition_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_stolen_watch_register_hit_or_uninsured_parcel_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_STOLEN_WATCH_REGISTER_HIT_OR_UNINSURED_PARCEL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unowned_ghost_listing_or_missing_bracelet_links_papers:
+        return {
+            "status_code": 403,
+            "decision": "UNOWNED_GHOST_LISTING_OR_MISSING_BRACELET_LINKS_PAPERS_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.frankenwatch_aftermarket_parts_or_low_amplitude_timegrapher:
+        return {
+            "status_code": 422,
+            "decision": "FRANKENWATCH_AFTERMARKET_PARTS_OR_LOW_AMPLITUDE_TIMEGRAPHER_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.watchcharts_comp_bid_and_parcel_pro_armored_escrow_ready:
+        savings = round(gross_pool * 0.24, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "WATCHCHARTS_COMP_BID_AND_PARCEL_PRO_ARMORED_ESCROW_CONFIRM",
+            "mandate_token": "luxury_watch_movement_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "AUTHENTICATED_CALIBER_AND_INSURED_VAULT_SHIP_AUTHORIZED",
+        "mandate_token": "luxury_watch_movement_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -32121,6 +32202,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    luxury_watch_movement_escrow_guard = {
+        "authorized_200": evaluate_luxury_watch_movement_escrow_policy(
+            LuxuryWatchMovementEscrowPolicyInput()
+        ),
+        "ghost_listing_or_missing_links_403": evaluate_luxury_watch_movement_escrow_policy(
+            LuxuryWatchMovementEscrowPolicyInput(
+                unowned_ghost_listing_or_missing_bracelet_links_papers=True
+            )
+        ),
+        "frankenwatch_or_low_amplitude_422": evaluate_luxury_watch_movement_escrow_policy(
+            LuxuryWatchMovementEscrowPolicyInput(
+                frankenwatch_aftermarket_parts_or_low_amplitude_timegrapher=True
+            )
+        ),
+        "stolen_register_or_uninsured_parcel_451": evaluate_luxury_watch_movement_escrow_policy(
+            LuxuryWatchMovementEscrowPolicyInput(
+                webiq_stolen_watch_register_hit_or_uninsured_parcel_flag=True
+            )
+        ),
+        "watchcharts_comp_and_parcel_pro_409": evaluate_luxury_watch_movement_escrow_policy(
+            LuxuryWatchMovementEscrowPolicyInput(
+                watchcharts_comp_bid_and_parcel_pro_armored_escrow_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -32359,6 +32466,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_office_plant_biophilic_escrow_guard": b2b_office_plant_biophilic_escrow_guard,
         "pool_service_cya_lsi_escrow_guard": pool_service_cya_lsi_escrow_guard,
         "b2b_security_guard_gsoc_escrow_guard": b2b_security_guard_gsoc_escrow_guard,
+        "luxury_watch_movement_escrow_guard": luxury_watch_movement_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -43612,6 +43720,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="sec-guard-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 REMOTE_AI_VIDEO_GSOC_TALKDOWN_AND_ROVING_PATROL_CONFIRM · Mandate: b2b_security_guard_gsoc_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 110 Luxury Watch Escrow, Frankenwatch Movement Audit & Armored Transit -->
+      <div class="finops-box" id="luxury-watch-movement-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">⌚ 高端名表二级市场交易 (Luxury Watch Escrow)、“拼装表 (Frankenwatch)”开盖机芯验真与全额装甲特运托管 (Chrono24 / Bezel / WatchBox / 保利名表) 鉴定与竞价沙盒 (Round 110)</div>
+            <div class="finops-subtitle">实测随机时间拨针微距视频+10% 卖家保证金+满表节核对防无货空挂 (Ghost Listing) 与拆走 18K 金表节 (HTTP 403)、中立 CW21 制表师开底盖查验无卡度摆轮/Witschi 校表仪摆幅(&gt;=270°)+超声波/XRF 测金防副厂拼装表与钨钢配重假金表 (HTTP 422)、Web IQ The Watch Register 全球被盗库与 Parcel Pro 劳合社全保核验 (HTTP 451) 及 WatchCharts 近30天真实成交均值竞价净省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="lux-watch-status-kpi">HTTP 409 · WATCHCHARTS_COMP_BID_AND_PARCEL_PRO_ARMORED_ESCROW_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度高净值名表二级市场采购与保险特运总池 ($ USD)
+            <input type="range" id="lux-watch-pool-slider" min="25000" max="800000" step="5000" value="180000" oninput="updateLuxuryWatchMovementEscrowSandbox()" />
+            <span id="lux-watch-pool-val" style="color:#6ee7b7; font-family:monospace;">$180,000</span>
+          </label>
+          <label>
+            反“无货空挂 (Ghost Listing)”随机拨针挑战与原厂满表节审计 (HTTP 403)
+            <select id="lux-watch-ghost-select" onchange="updateLuxuryWatchMovementEscrowSandbox()">
+              <option value="pass">30m 内上传指定时间拨针+内圈序列号微距视频 + 10% 卖家保证金 + 满节 18K 金/钢表节 (放行)</option>
+              <option value="block">无货空挂拒拍拨针视频收钱后找货毁约 或 少 3 节 18K 金表节($1,350)/后镶钻圈冒充原厂 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            CW21 开盖机芯摆轮验真、Witschi 摆幅(&gt;=270°) 与 XRF 测金门禁 (HTTP 422)
+            <select id="lux-watch-caliber-select" onchange="updateLuxuryWatchMovementEscrowSandbox()">
+              <option value="pass">开盖核验原厂无卡度游丝摆轮/字盘 + Witschi 摆幅&gt;=270° + 超声波/XRF 真金 + 10Bar 防水复测 (合规)</option>
+              <option value="block">真壳内拆换副厂字盘齿轮(Frankenwatch)/钨钢包金克隆表 或 摆幅&lt;230°油泥干涸/未过防水压测 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ The Watch Register / Enquirus 被盗库与 Parcel Pro 全保核验 (HTTP 451)
+            <select id="lux-watch-theft-select" onchange="updateLuxuryWatchMovementEscrowSandbox()">
+              <option value="clear">表壳与机芯双序列号零被盗记录 + Parcel Pro / Malca-Amit 100% 劳合社全额承保特运 (正常)</option>
+              <option value="hold">序列号命中全球被盗赃物表库(送劳服即被扣) 或 发普通快递触发 $1,000 珠宝免责上限裸奔 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            WatchCharts 30 天真实成交底价竞价与中立托管特运寻优 (HTTP 409)
+            <select id="lux-watch-opt-select" onchange="updateLuxuryWatchMovementEscrowSandbox()">
+              <option value="enabled" selected>按 WatchCharts 近30天净成交中位数自动砍去挂牌水分 + Parcel Pro 特运托管净省 24% (HTTP 409)</option>
+              <option value="baseline">常规 CW21 开盖验芯与全额保险金库特运标准结算授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度名表采购与物流总池</div>
+            <div class="finops-kpi-val" id="lux-watch-gross-kpi">$180,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">WatchCharts 净成交议价后净支出</div>
+            <div class="finops-kpi-val" id="lux-watch-net-kpi" style="color:#6ee7b7;">$136,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除二级挂牌溢价与大修坑</div>
+            <div class="finops-kpi-val" id="lux-watch-savings-kpi" style="color:#38bdf8;">$43,200</div>
+          </div>
+        </div>
+        <div id="lux-watch-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 WATCHCHARTS_COMP_BID_AND_PARCEL_PRO_ARMORED_ESCROW_CONFIRM · Mandate: luxury_watch_movement_mandate_optim_409
         </div>
       </div>
 
@@ -57123,6 +57294,80 @@ function updateB2BSecurityGuardGsocEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 BIOMETRIC_VERIFIED_GUARD_AND_BLE_PATROL_AUTHORIZED · Mandate: b2b_security_guard_gsoc_mandate_200';
+}}
+
+function updateLuxuryWatchMovementEscrowSandbox() {{
+  const slider = document.getElementById('lux-watch-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '180000');
+  const ghostMode = document.getElementById('lux-watch-ghost-select').value;
+  const caliberMode = document.getElementById('lux-watch-caliber-select').value;
+  const theftMode = document.getElementById('lux-watch-theft-select').value;
+  const optMode = document.getElementById('lux-watch-opt-select').value;
+
+  document.getElementById('lux-watch-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('lux-watch-status-kpi');
+  const grossKpi = document.getElementById('lux-watch-gross-kpi');
+  const netKpi = document.getElementById('lux-watch-net-kpi');
+  const savingsKpi = document.getElementById('lux-watch-savings-kpi');
+  const banner = document.getElementById('lux-watch-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (theftMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_STOLEN_WATCH_REGISTER_HIT_OR_UNINSURED_PARCEL_HOLD · Mandate: null';
+    return;
+  }}
+  if (ghostMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNOWNED_GHOST_LISTING_OR_MISSING_BRACELET_LINKS_PAPERS_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (caliberMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FRANKENWATCH_AFTERMARKET_PARTS_OR_LOW_AMPLITUDE_TIMEGRAPHER_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.24);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 WATCHCHARTS_COMP_BID_AND_PARCEL_PRO_ARMORED_ESCROW_CONFIRM · Mandate: luxury_watch_movement_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 AUTHENTICATED_CALIBER_AND_INSURED_VAULT_SHIP_AUTHORIZED · Mandate: luxury_watch_movement_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

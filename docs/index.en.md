@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`228` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`229` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (38 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (74 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (75 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (57 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
@@ -82,7 +82,7 @@
 | 38 | **Music Festival & Stadium Cashless `RFID` Wristband, Anti-Tip-Creep & Auto-Refund Escrow (`Coachella / Tomorrowland / Intellitix / Front Gate`) Zero-Breakage Auto-Refund, `0%–10%` Tip Cap & `45s` Double-Tap Idempotency Agent Architecture Selection FAQ** | [English](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.en.md) · [中文](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (74 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (75 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -162,6 +162,7 @@
 | 72 | **Pet Health Insurance, Bilateral Cruciate Exclusion & Vet Direct-Pay Escrow (`Trupanion / Lemonade Pet / Nationwide / Fetch / Alipay Pet Insurance`) Bilateral-Exclusion Lock, Day-1 `SOAP` Baseline & 60-Second `PIMS` Direct-Pay Agent Architecture Selection FAQ** | [English](pet-insurance-bilateral-exclusion-vet-directpay-escrow-agent-selection-faq.en.md) · [中文](pet-insurance-bilateral-exclusion-vet-directpay-escrow-agent-selection-faq.md) |
 | 73 | **Musical Instrument Rent-to-Own, School-Band Spec & Piano Moving/Humidity Escrow (`Music & Arts / Sweetwater / Steinway / Yamaha / Parsons Music`) `100%` Street-MAP Equity, `MENC` Luthier Setup & `RPT` Pinblock/Humidity Agent Architecture Selection FAQ** | [English](musical-instrument-rent-to-own-piano-humidity-escrow-agent-selection-faq.en.md) · [中文](musical-instrument-rent-to-own-piano-humidity-escrow-agent-selection-faq.md) |
 | 74 | **Pool Service Subscription, `CYA` Chlorine-Lock & Variable-Speed Pump Escrow (`Leslie's / Poolwerx / Pentair / Hayward`) `CYA <= 60ppm` Lock, `Spin-Touch LSI` Audit & `VSP` Affinity Law Agent Architecture Selection FAQ** | [English](pool-maintenance-subscription-cya-chlorine-lock-lsi-escrow-agent-selection-faq.en.md) · [中文](pool-maintenance-subscription-cya-chlorine-lock-lsi-escrow-agent-selection-faq.md) |
+| 75 | **Luxury Watch Secondary Market Escrow, Anti-`Frankenwatch` Movement Audit & Armored Transit (`Chrono24 / Bezel / WatchBox / Hodinkee`) Random Time-Set Liveness, `CW21` Movement/`Witschi` Gate & `Parcel Pro` Specie Agent Architecture Selection FAQ** | [English](luxury-watch-secondary-market-frankenwatch-movement-escrow-agent-selection-faq.en.md) · [中文](luxury-watch-secondary-market-frankenwatch-movement-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (57 Guides)

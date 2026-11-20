@@ -16428,6 +16428,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-security-guard-gsoc-escrow-sandbox", html_zh)
 
+    def test_luxury_watch_movement_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            LuxuryWatchMovementEscrowPolicyInput,
+            evaluate_luxury_watch_movement_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_luxury_watch_movement_escrow_policy(
+            LuxuryWatchMovementEscrowPolicyInput(
+                quarterly_luxury_watch_acquisition_pool_usd=180000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "AUTHENTICATED_CALIBER_AND_INSURED_VAULT_SHIP_AUTHORIZED",
+        )
+
+        ghost = evaluate_luxury_watch_movement_escrow_policy(
+            LuxuryWatchMovementEscrowPolicyInput(
+                unowned_ghost_listing_or_missing_bracelet_links_papers=True
+            )
+        )
+        self.assertEqual(ghost["status_code"], 403)
+        self.assertEqual(
+            ghost["decision"],
+            "UNOWNED_GHOST_LISTING_OR_MISSING_BRACELET_LINKS_PAPERS_BLOCKED",
+        )
+
+        franken = evaluate_luxury_watch_movement_escrow_policy(
+            LuxuryWatchMovementEscrowPolicyInput(
+                frankenwatch_aftermarket_parts_or_low_amplitude_timegrapher=True
+            )
+        )
+        self.assertEqual(franken["status_code"], 422)
+        self.assertEqual(
+            franken["decision"],
+            "FRANKENWATCH_AFTERMARKET_PARTS_OR_LOW_AMPLITUDE_TIMEGRAPHER_BLOCKED",
+        )
+
+        stolen = evaluate_luxury_watch_movement_escrow_policy(
+            LuxuryWatchMovementEscrowPolicyInput(
+                webiq_stolen_watch_register_hit_or_uninsured_parcel_flag=True
+            )
+        )
+        self.assertEqual(stolen["status_code"], 451)
+        self.assertEqual(
+            stolen["decision"],
+            "WEBIQ_STOLEN_WATCH_REGISTER_HIT_OR_UNINSURED_PARCEL_HOLD",
+        )
+
+        optim = evaluate_luxury_watch_movement_escrow_policy(
+            LuxuryWatchMovementEscrowPolicyInput(
+                quarterly_luxury_watch_acquisition_pool_usd=180000.0,
+                watchcharts_comp_bid_and_parcel_pro_armored_escrow_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 43200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 136800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("luxury_watch_movement_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("luxury-watch-movement-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
