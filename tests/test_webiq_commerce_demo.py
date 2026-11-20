@@ -15423,6 +15423,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-pest-control-escrow-sandbox", html_zh)
 
+    def test_fine_wine_en_primeur_cellar_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            FineWineEnPrimeurCellarEscrowPolicyInput,
+            evaluate_fine_wine_en_primeur_cellar_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_fine_wine_en_primeur_cellar_escrow_policy(
+            FineWineEnPrimeurCellarEscrowPolicyInput(
+                quarterly_fine_wine_and_bonded_cellar_pool_usd=160000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "LWIN18_BENCHMARK_AND_SEGREGATED_INBOND_TITLE_AUTHORIZED",
+        )
+
+        om = evaluate_fine_wine_en_primeur_cellar_escrow_policy(
+            FineWineEnPrimeurCellarEscrowPolicyInput(
+                livex_market_price_spread_over_6pct_or_commingled_omnibus_cellar=True
+            )
+        )
+        self.assertEqual(om["status_code"], 403)
+        self.assertEqual(
+            om["decision"],
+            "LIVEX_MARKET_PRICE_SPREAD_OVER_6PCT_OR_COMMINGLED_OMNIBUS_CELLAR_BLOCKED",
+        )
+
+        owc = evaluate_fine_wine_en_primeur_cellar_escrow_policy(
+            FineWineEnPrimeurCellarEscrowPolicyInput(
+                broken_owc_seal_or_ullage_below_into_neck_or_heat_damage=True
+            )
+        )
+        self.assertEqual(owc["status_code"], 422)
+        self.assertEqual(
+            owc["decision"],
+            "BROKEN_OWC_SEAL_OR_ULLAGE_BELOW_INTO_NECK_OR_HEAT_DAMAGE_BLOCKED",
+        )
+
+        proof = evaluate_fine_wine_en_primeur_cellar_escrow_policy(
+            FineWineEnPrimeurCellarEscrowPolicyInput(
+                webiq_counterfeit_nfc_provenance_fail_or_premature_bond_excise_break_flag=True
+            )
+        )
+        self.assertEqual(proof["status_code"], 451)
+        self.assertEqual(
+            proof["decision"],
+            "WEBIQ_COUNTERFEIT_NFC_PROVENANCE_FAIL_OR_PREMATURE_BOND_EXCISE_BREAK_HOLD",
+        )
+
+        optim = evaluate_fine_wine_en_primeur_cellar_escrow_policy(
+            FineWineEnPrimeurCellarEscrowPolicyInput(
+                quarterly_fine_wine_and_bonded_cellar_pool_usd=160000.0,
+                direct_livex_inbond_exchange_execution_and_fixed_case_storage_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 40000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 120000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("fine_wine_en_primeur_cellar_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("fine-wine-en-primeur-cellar-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

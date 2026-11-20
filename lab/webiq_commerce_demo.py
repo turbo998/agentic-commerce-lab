@@ -22127,6 +22127,87 @@ def evaluate_b2b_commercial_pest_control_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class FineWineEnPrimeurCellarEscrowPolicyInput:
+    """Input contract for Fine Wine En Primeur, Bonded Cellar & Ullage Provenance Escrow."""
+
+    quarterly_fine_wine_and_bonded_cellar_pool_usd: float = 160000.0
+    livex_market_price_spread_over_6pct_or_commingled_omnibus_cellar: bool = False
+    broken_owc_seal_or_ullage_below_into_neck_or_heat_damage: bool = False
+    webiq_counterfeit_nfc_provenance_fail_or_premature_bond_excise_break_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    direct_livex_inbond_exchange_execution_and_fixed_case_storage_ready: bool = False
+
+
+def evaluate_fine_wine_en_primeur_cellar_escrow_policy(
+    policy_input: FineWineEnPrimeurCellarEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Fine Wine En Primeur, Bonded Cellar & Ullage Provenance Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_fine_wine_and_bonded_cellar_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_counterfeit_nfc_provenance_fail_or_premature_bond_excise_break_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_COUNTERFEIT_NFC_PROVENANCE_FAIL_OR_PREMATURE_BOND_EXCISE_BREAK_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.livex_market_price_spread_over_6pct_or_commingled_omnibus_cellar:
+        return {
+            "status_code": 403,
+            "decision": "LIVEX_MARKET_PRICE_SPREAD_OVER_6PCT_OR_COMMINGLED_OMNIBUS_CELLAR_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.broken_owc_seal_or_ullage_below_into_neck_or_heat_damage:
+        return {
+            "status_code": 422,
+            "decision": "BROKEN_OWC_SEAL_OR_ULLAGE_BELOW_INTO_NECK_OR_HEAT_DAMAGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.direct_livex_inbond_exchange_execution_and_fixed_case_storage_ready:
+        savings = round(gross_pool * 0.25, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DIRECT_LIVEX_INBOND_EXCHANGE_EXECUTION_AND_FIXED_CASE_STORAGE_CONFIRM",
+            "mandate_token": "fine_wine_bonded_cellar_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "LWIN18_BENCHMARK_AND_SEGREGATED_INBOND_TITLE_AUTHORIZED",
+        "mandate_token": "fine_wine_bonded_cellar_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -30516,6 +30597,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    fine_wine_en_primeur_cellar_escrow_guard = {
+        "authorized_200": evaluate_fine_wine_en_primeur_cellar_escrow_policy(
+            FineWineEnPrimeurCellarEscrowPolicyInput()
+        ),
+        "omnibus_cellar_or_spread_403": evaluate_fine_wine_en_primeur_cellar_escrow_policy(
+            FineWineEnPrimeurCellarEscrowPolicyInput(
+                livex_market_price_spread_over_6pct_or_commingled_omnibus_cellar=True
+            )
+        ),
+        "broken_owc_or_low_ullage_422": evaluate_fine_wine_en_primeur_cellar_escrow_policy(
+            FineWineEnPrimeurCellarEscrowPolicyInput(
+                broken_owc_seal_or_ullage_below_into_neck_or_heat_damage=True
+            )
+        ),
+        "fake_prooftag_or_broken_bond_451": evaluate_fine_wine_en_primeur_cellar_escrow_policy(
+            FineWineEnPrimeurCellarEscrowPolicyInput(
+                webiq_counterfeit_nfc_provenance_fail_or_premature_bond_excise_break_flag=True
+            )
+        ),
+        "direct_livex_and_flat_storage_409": evaluate_fine_wine_en_primeur_cellar_escrow_policy(
+            FineWineEnPrimeurCellarEscrowPolicyInput(
+                direct_livex_inbond_exchange_execution_and_fixed_case_storage_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -30739,6 +30846,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_uniform_linen_rental_escrow_guard": b2b_uniform_linen_rental_escrow_guard,
         "yacht_marina_berth_haulout_escrow_guard": yacht_marina_berth_haulout_escrow_guard,
         "b2b_commercial_pest_control_escrow_guard": b2b_commercial_pest_control_escrow_guard,
+        "fine_wine_en_primeur_cellar_escrow_guard": fine_wine_en_primeur_cellar_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -41047,6 +41155,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="pest-ipm-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CONNECTED_IOT_SMART_TRAP_TELEMETRY_AND_REGIONAL_IPM_CONSOLIDATION_CONFIRM · Mandate: b2b_commercial_pest_ipm_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 95 Fine Wine En Primeur, Bonded Cellar & Ullage Provenance Escrow -->
+      <div class="finops-box" id="fine-wine-en-primeur-cellar-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🍷 名庄期酒 (En Primeur)、保税酒窖确权 (Bonded Cellar) 与液面高度/原装木箱 (OWC) 防伪托管 (Liv-ex / Berry Bros. &amp; Rudd / Octavian) LWIN18 锁价与独立保税户沙盒 (Round 95)</div>
+            <div class="finops-subtitle">实测 Liv-ex LWIN18 批发行情基准锁(&lt;=6% 价差)与 Octavian/LCB 买家个人独立保税户过户防酒商大锅饭账户挪用暴雷 (HTTP 403)、入库微距核验原装木箱 (OWC)、瓶颈液面 (Into-Neck Ullage) 与 13°C 冷链记录防散瓶拼箱及海运高温顶塞变质酸酒 (HTTP 422)、Web IQ 酒庄 Prooftag NFC 防伪与海关 EMCS 免税链路核验 (HTTP 451) 及直连 BBX 交易板+$15/箱/年固定仓租净省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="fine-wine-status-kpi">HTTP 409 · DIRECT_LIVEX_INBOND_EXCHANGE_EXECUTION_AND_FIXED_CASE_STORAGE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度名庄期酒、老年份配额与保税酒窖托管预算池 ($ USD)
+            <input type="range" id="fine-wine-pool-slider" min="30000" max="1000000" step="10000" value="160000" oninput="updateFineWineEnPrimeurCellarEscrowSandbox()" />
+            <span id="fine-wine-pool-val" style="color:#6ee7b7; font-family:monospace;">$160,000</span>
+          </label>
+          <label>
+            Liv-ex LWIN18 行情价差 (&lt;=6%) 与独立保税仓产权核验 (HTTP 403)
+            <select id="fine-wine-omnibus-select" onchange="updateFineWineEnPrimeurCellarEscrowSandbox()">
+              <option value="pass">LWIN18 价差&lt;=6% + 过户至买家独立 LCB/Octavian 保税账号 + 按箱固定年租 (放行)</option>
+              <option value="block">混存在酒商公司大锅饭账户面临破产查封 或 比 Liv-ex 贵 25% 且收 2.5%/年市值管理费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            原装木箱 (Sealed OWC)、瓶颈液面 (Into-Neck) 与 13°C 冷链核验 (HTTP 422)
+            <select id="fine-wine-owc-select" onchange="updateFineWineEnPrimeurCellarEscrowSandbox()">
+              <option value="pass">原装木箱封条完好 + 液面处于瓶颈内 (Into-Neck) + 全程 12-14°C 恒温冷链记录 (合规)</option>
+              <option value="block">拿无木箱散瓶冒充整箱 OWC (-18% 贬值) 或 液面低至中肩氧化/海运高温顶塞漏酒 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 酒庄原厂 Prooftag NFC 防伪与海关 EMCS 保税核验 (HTTP 451)
+            <select id="fine-wine-prooftag-select" onchange="updateFineWineEnPrimeurCellarEscrowSandbox()">
+              <option value="clear">Prooftag 气泡印章与加密 NFC 签名匹配 + 全程海关 EMCS 保税监管运输 (正常)</option>
+              <option value="hold">勃艮第名庄防伪芯片校验失败疑似假酒灌装 或 非保税车运输触发 20% 破保税罚款 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            直连 Liv-ex / BBX 交易板竞价与 $15/箱/年固定保税仓直租 (HTTP 409)
+            <select id="fine-wine-opt-select" onchange="updateFineWineEnPrimeurCellarEscrowSandbox()">
+              <option value="enabled" selected>直连 BBX/Liv-ex 盘口 (3% 佣金) + 划入 $15/箱/年固定仓租替代 2.5% 管理费净省 25% (HTTP 409)</option>
+              <option value="baseline">常规 LWIN18 锁价与独立保税户确权交割授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度名庄酒采购与托管池</div>
+            <div class="finops-kpi-val" id="fine-wine-gross-kpi">$160,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">交易所直买与固定仓租净成本</div>
+            <div class="finops-kpi-val" id="fine-wine-net-kpi" style="color:#6ee7b7;">$120,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度剥离经纪加价与管理费</div>
+            <div class="finops-kpi-val" id="fine-wine-savings-kpi" style="color:#38bdf8;">$40,000</div>
+          </div>
+        </div>
+        <div id="fine-wine-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DIRECT_LIVEX_INBOND_EXCHANGE_EXECUTION_AND_FIXED_CASE_STORAGE_CONFIRM · Mandate: fine_wine_bonded_cellar_mandate_optim_409
         </div>
       </div>
 
@@ -53448,6 +53619,80 @@ function updateB2BCommercialPestControlEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 INSIDE_LID_NFC_VERIFIED_AND_HACCP_SAFE_IPM_AUTHORIZED · Mandate: b2b_commercial_pest_ipm_mandate_200';
+}}
+
+function updateFineWineEnPrimeurCellarEscrowSandbox() {{
+  const slider = document.getElementById('fine-wine-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '160000');
+  const omMode = document.getElementById('fine-wine-omnibus-select').value;
+  const owcMode = document.getElementById('fine-wine-owc-select').value;
+  const proofMode = document.getElementById('fine-wine-prooftag-select').value;
+  const optMode = document.getElementById('fine-wine-opt-select').value;
+
+  document.getElementById('fine-wine-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('fine-wine-status-kpi');
+  const grossKpi = document.getElementById('fine-wine-gross-kpi');
+  const netKpi = document.getElementById('fine-wine-net-kpi');
+  const savingsKpi = document.getElementById('fine-wine-savings-kpi');
+  const banner = document.getElementById('fine-wine-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (proofMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_COUNTERFEIT_NFC_PROVENANCE_FAIL_OR_PREMATURE_BOND_EXCISE_BREAK_HOLD · Mandate: null';
+    return;
+  }}
+  if (omMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 LIVEX_MARKET_PRICE_SPREAD_OVER_6PCT_OR_COMMINGLED_OMNIBUS_CELLAR_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (owcMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BROKEN_OWC_SEAL_OR_ULLAGE_BELOW_INTO_NECK_OR_HEAT_DAMAGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.25);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DIRECT_LIVEX_INBOND_EXCHANGE_EXECUTION_AND_FIXED_CASE_STORAGE_CONFIRM · Mandate: fine_wine_bonded_cellar_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 LWIN18_BENCHMARK_AND_SEGREGATED_INBOND_TITLE_AUTHORIZED · Mandate: fine_wine_bonded_cellar_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
