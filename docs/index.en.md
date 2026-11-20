@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`192` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`193` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (37 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (55 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (41 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (42 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -144,7 +144,7 @@
 | 55 | **Private Jet Charter, Empty-Leg Arbitrage & `MYBA` Yacht `APA` Escrow (`VistaJet / NetJets / Wheels Up / Burgess Yachts`) Anti-`$8,500` De-Icing Shock, `APA` Fuel-Receipt Reconciliation & `FAA Part 135` Tail-Number Gate Agent Architecture Selection FAQ** | [English](private-jet-yacht-charter-apa-deicing-part135-escrow-agent-selection-faq.en.md) · [中文](private-jet-yacht-charter-apa-deicing-part135-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (41 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (42 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -191,6 +191,7 @@
 | 39 | **B2B Expert Network, Market Research Respondent Panel & Survey Incentive Escrow (`GLG / AlphaSights / Tegus / Qualtrics / Prolific`) Anti-Bot Survey Farm Gate, `10-Minute` Bailout Grace & `SEC MNPI` Blackout Agent Architecture Selection FAQ** | [English](b2b-expert-network-market-research-survey-bot-mnpi-escrow-agent-selection-faq.en.md) · [中文](b2b-expert-network-market-research-survey-bot-mnpi-escrow-agent-selection-faq.md) |
 | 40 | **B2B Executive Search, Headhunter Contingency Fee & `FCRA` Background Check Escrow (`Korn Ferry / Paraform / Greenhouse / Checkr`) 90-Day Probation Vesting, `ATS` Right-to-Represent Lock & Base-Salary-Only Cap Agent Architecture Selection FAQ** | [English](b2b-recruiting-headhunter-contingency-clawback-fcra-escrow-agent-selection-faq.en.md) · [中文](b2b-recruiting-headhunter-contingency-clawback-fcra-escrow-agent-selection-faq.md) |
 | 41 | **B2B Wholesale Fashion Showroom, Boutique Buying & `Net-60` Return Escrow (`Faire / JOOR / NuORDER / Ankorstore`) Size-Curve Parity Lock, `Cancel-After Date` Auto-Void & Anti-`DTC`-Undercut Agent Architecture Selection FAQ** | [English](b2b-wholesale-fashion-showroom-faire-joor-size-curve-escrow-agent-selection-faq.en.md) · [中文](b2b-wholesale-fashion-showroom-faire-joor-size-curve-escrow-agent-selection-faq.md) |
+| 42 | **Restaurant & Retail `POS` SaaS, `Interchange-Plus` Acquiring & Merchant Cash Advance (`MCA`) Escrow (`Toast / Square / Clover / Adyen Terminal`) Anti-`48m` Equipment-Lease Gate, `MDR` Rate-Creep Audit & `<=12%` `MCA` Holdback Cap Agent Architecture Selection FAQ** | [English](restaurant-pos-acquiring-interchange-plus-mca-escrow-agent-selection-faq.en.md) · [中文](restaurant-pos-acquiring-interchange-plus-mca-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 Guides)

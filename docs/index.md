@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`192` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`193` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（37 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（55 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（41 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（42 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（29 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -144,7 +144,7 @@
 | 55 | **公务机包机、调机空腿（Empty Leg）与超级游艇租赁清结算（Private Jet Charter, Empty-Leg Arbitrage & MYBA Yacht APA Escrow：VistaJet / NetJets / Wheels Up / XO / Burgess Yachts）“防落地后被追收 $8,500 冬季除冰费刺客、防游艇船长花光 30% 预付准备金（APA）不退与非法黑包机（Part 91）熔断”Agent 架构选型 FAQ** | [中文](private-jet-yacht-charter-apa-deicing-part135-escrow-agent-selection-faq.md) · [English](private-jet-yacht-charter-apa-deicing-part135-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（41 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（42 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -191,6 +191,7 @@
 | 39 | **企业市场调研、专家访谈网络与消费者问卷样本采购（B2B Expert Network, Market Research Respondent Panel & Survey Incentive Escrow：GLG / AlphaSights / Qualtrics / Prolific / 凯盛融英）“防 AI 脚本批量伪造问卷骗取调研激励金、防遇上冒牌水货专家前 10 分钟挂断仍扣 $1,200 与内幕信息（MNPI）合规熔断”Agent 架构选型 FAQ** | [中文](b2b-expert-network-market-research-survey-bot-mnpi-escrow-agent-selection-faq.md) · [English](b2b-expert-network-market-research-survey-bot-mnpi-escrow-agent-selection-faq.en.md) |
 | 40 | **企业猎头招聘、RPO 批量招聘与背景调查服务采购（B2B Executive Search, Headhunter Contingency Fee & FCRA Background Check Escrow：Korn Ferry / Paraform / Greenhouse / Checkr / 猎聘 / Boss直聘猎头）“防候选人入职 30 天闪辞猎头拒退 $45k 佣金、防多猎头盲投同一简历抢单与 FCRA 背调合规锁”Agent 架构选型 FAQ** | [中文](b2b-recruiting-headhunter-contingency-clawback-fcra-escrow-agent-selection-faq.md) · [English](b2b-recruiting-headhunter-contingency-clawback-fcra-escrow-agent-selection-faq.en.md) |
 | 41 | **B2B 服装买手订货会、品牌批发选品与 Net-60 首单免费退货托管（B2B Wholesale Fashion Showroom, Boutique Buying & Net-60 Return Escrow：Faire / JOOR / NuORDER / 1688 严选 / 深圳南油订货会）“防档口抽走 M/L 黄金码只发断码尾货、防换季晚交货沦为死库存与防品牌直播间 3 折倾销背刺买手店”Agent 架构选型 FAQ** | [中文](b2b-wholesale-fashion-showroom-faire-joor-size-curve-escrow-agent-selection-faq.md) · [English](b2b-wholesale-fashion-showroom-faire-joor-size-curve-escrow-agent-selection-faq.en.md) |
+| 42 | **餐饮零售 POS 收银系统采购、刷卡收单费率（MDR）防暗涨与商户流水贷（MCA）清结算（Restaurant & Retail POS SaaS, Interchange-Plus Acquiring & Merchant Cash Advance Escrow：Toast / Square / Clover / Adyen Terminal / 美团收银）“防 48 个月不可撤销天价收银机租约、防收单代理商半年后偷偷上调刷卡费率与防多头流水贷抽干现金流”Agent 架构选型 FAQ** | [中文](restaurant-pos-acquiring-interchange-plus-mca-escrow-agent-selection-faq.md) · [English](restaurant-pos-acquiring-interchange-plus-mca-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）

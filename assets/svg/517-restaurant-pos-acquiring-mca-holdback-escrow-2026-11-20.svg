@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg517" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#07111E" />
+      <stop offset="50%" stop-color="#10213A" />
+      <stop offset="100%" stop-color="#081322" />
+    </linearGradient>
+    <linearGradient id="accent517" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="50%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg517)" />
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent517)" />
+
+  <!-- Header -->
+  <text x="44" y="48" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.4">ROUND 74 · RESTAURANT/RETAIL POS SAAS, INTERCHANGE-PLUS &amp; MERCHANT CASH ADVANCE ESCROW</text>
+  <text x="44" y="82" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">餐饮零售 POS 收银采购、刷卡费率防暗涨与商户流水贷(MCA)：防48个月霸王租约与费率偷涨</text>
+  <text x="44" y="108" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Toast / Square / Clover / Lightspeed / 美团收银 vs 禁不可撤销硬件租约 vs Interchange-Plus 透明成本 vs 费率寻优省 25%</text>
+
+  <!-- Left Panel: 3 Core POS & Merchant Acquiring Risks -->
+  <rect x="44" y="132" width="350" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="64" y="164" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🚨 门店 POS 与收单流水贷三大吸血坑</text>
+
+  <rect x="62" y="182" width="314" height="132" rx="8" fill="#1E293B" stroke="#EF4444" stroke-width="1" />
+  <text x="76" y="206" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">1. 成本 $400 的安卓收银机，签下 48 个月 $150/月死租约</text>
+  <text x="76" y="228" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 收单推销员谎称“免费升级触摸屏 POS”，实则夹带第三方</text>
+  <text x="76" y="248" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  融资租赁公司 48 个月不可撤销合同(总计 $7,200)，关店也得照赔</text>
+  <text x="76" y="268" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：硬拦截不可撤销硬件租约(Non-Cancellable Lease)</text>
+  <text x="76" y="288" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  + 强制硬件一口价买断或随时可退月租 (HTTP 403)</text>
+
+  <rect x="62" y="328" width="314" height="132" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1" />
+  <text x="76" y="352" fill="#FCD34D" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">2. 签约时承诺 1.79% 费率，半年后偷调至 3.4% 综合扣率</text>
+  <text x="76" y="374" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 采用不透明三档定价(Tiered Pricing)，把普通积分信用卡全归入</text>
+  <text x="76" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  最贵的“不合格卡(Non-Qualified 3.49%)”，每月多扣数千美元手续费</text>
+  <text x="76" y="414" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：强制 Interchange-Plus (发卡行成本+固定基点)</text>
+  <text x="76" y="434" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  + 自动审计收单加点漂移(&gt;25 bps 熔断) (HTTP 422)</text>
+
+  <rect x="62" y="474" width="314" height="134" rx="8" fill="#1E293B" stroke="#A855F7" stroke-width="1" />
+  <text x="76" y="498" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">3. 多头商户流水贷(MCA Stacking)日扣 35% 抽干餐厅</text>
+  <text x="76" y="520" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 叠加 2 笔高息每日分成贷款(Factor Rate 1.45)，每天营业额</text>
+  <text x="76" y="540" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  被强划走 35% 连房租菜钱都付不起；护栏：MCA 单一扣率封顶&lt;=12%(451)</text>
+  <text x="76" y="560" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 借记卡走低成本 PIN/Durbin 路由 + 小额免密芯片拍卡</text>
+  <text x="76" y="582" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  (Card-Present EMV)降低通道费率立省 25% (HTTP 409)</text>
+
+  <!-- Center Panel: 5-Lane Deterministic Gate -->
+  <rect x="414" y="132" width="402" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="434" y="164" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🛡️ 门店 POS 与收单清分五车道受托状态机</text>
+
+  <rect x="434" y="184" width="362" height="72" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="450" y="208" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 200 · INTERCHANGE_PLUS_AND_POS_OWNERSHIP_AUTHORIZED</text>
+  <text x="450" y="228" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">硬件买断无死租约 + IC+ 固定加点(&lt;=20bps) + MCA 封顶 (8ms)</text>
+  <text x="450" y="245" fill="#A7F3D0" font-family="Consolas, monospace" font-size="11">restaurant_pos_acquiring_mca_escrow_mandate_*</text>
+
+  <rect x="434" y="268" width="362" height="72" rx="8" fill="#450A0A" stroke="#EF4444" stroke-width="1.5" />
+  <text x="450" y="292" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 403 · PREDATORY_48M_EQUIPMENT_LEASE_OR_ETF_LOCK</text>
+  <text x="450" y="312" fill="#FEE2E2" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截 48 个月不可撤销天价收银机融资租赁合同或 $1,500 解约违约金</text>
+  <text x="450" y="329" fill="#FCA5A5" font-family="Consolas, monospace" font-size="11">non_cancellable_equipment_lease = true | early_termination_fee &gt; 0</text>
+
+  <rect x="434" y="352" width="362" height="72" rx="8" fill="#431407" stroke="#F97316" stroke-width="1.5" />
+  <text x="450" y="376" fill="#FDBA74" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 422 · TIERED_MDR_RATE_CREEP_OR_PCI_NONCOMPLIANCE</text>
+  <text x="450" y="396" fill="#FFEDD5" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截收单行静默上调刷卡加点、滥收 Non-Qualified 罚金或 $99/月假PCI费</text>
+  <text x="450" y="413" fill="#FDBA74" font-family="Consolas, monospace" font-size="11">processor_markup_bps &gt; contracted_bps | junk_pci_monthly_fee &gt; 0</text>
+
+  <rect x="434" y="436" width="362" height="72" rx="8" fill="#3B0764" stroke="#A855F7" stroke-width="1.5" />
+  <text x="450" y="460" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 451 · WEBIQ_PREDATORY_MCA_STACKING_DRAIN_HOLD</text>
+  <text x="450" y="480" fill="#F3E8FF" font-family="Segoe UI, Arial, sans-serif" font-size="12">Web IQ 检出多头商户流水贷叠加(MCA Stacking)每日划扣超营业额 15%</text>
+  <text x="450" y="497" fill="#D8B4FE" font-family="Consolas, monospace" font-size="11">daily_mca_holdback_ratio &gt; 0.15 | confession_of_judgment = true</text>
+
+  <rect x="434" y="520" width="362" height="88" rx="8" fill="#422006" stroke="#F59E0B" stroke-width="1.5" />
+  <text x="450" y="544" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 409 · INTERCHANGE_PLUS_AND_DURBIN_DEBIT_ROUTING</text>
+  <text x="450" y="564" fill="#FEF3C7" font-family="Segoe UI, Arial, sans-serif" font-size="12">切换 Interchange-Plus 透明成本 + 借记卡 Durbin 低费率路由省 25%</text>
+  <text x="450" y="584" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">季度连锁餐饮 POS 与收单手续费池 $185,000 → 净结算额 $138,750 (省 $46,250)</text>
+
+  <!-- Right Panel: Platform Selection Matrix -->
+  <rect x="836" y="132" width="320" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="856" y="164" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🧭 餐饮零售 POS 与收单选型</text>
+
+  <rect x="854" y="184" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="206" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Toast / Square / Lightspeed (现代云端餐饮零售 POS)</text>
+  <text x="868" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 硬件明码标价买断(无第三方融资租赁死合同)，连锁大客</text>
+  <text x="868" y="246" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  支持谈判 Interchange-Plus 透明费率，内嵌合规 Square Loans</text>
+  <text x="868" y="266" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：连锁餐饮、精品咖啡馆、多门店全渠道零售收银</text>
+
+  <rect x="854" y="298" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="320" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Adyen for Platforms / Stripe Terminal (自研集成)</text>
+  <text x="868" y="340" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 原生 Interchange++ 透明成本透传，自动选择最低</text>
+  <text x="868" y="360" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  成本借记卡网络(Durbin Amendment $0.21+0.05%)，P2PE免PCI费</text>
+  <text x="868" y="380" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：大型连锁集团、加盟品牌统管收银与分账</text>
+
+  <rect x="854" y="412" width="284" height="196" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="868" y="436" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">★ 推荐：Foundry + IC+费率锁与MCA网关</text>
+  <text x="868" y="458" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">1. 硬拦截 48 个月不可撤销 POS 硬件融资租赁陷阱</text>
+  <text x="868" y="480" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">2. 强制 Interchange-Plus 透明定价拦截静默涨费率</text>
+  <text x="868" y="502" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">3. 商户流水贷(MCA)每日分账扣率硬封顶 &lt;=12%</text>
+  <text x="868" y="524" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">4. 借记卡 Durbin 路由 + 免垃圾费立省 25%</text>
+  <rect x="868" y="542" width="256" height="50" rx="6" fill="#022C22" />
+  <text x="880" y="563" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">审计标签：provenance = synthetic</text>
+  <text x="880" y="581" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="11">independently_reproduced = false</text>
+</svg>

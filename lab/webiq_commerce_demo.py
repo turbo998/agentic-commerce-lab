@@ -20426,6 +20426,87 @@ def evaluate_private_jet_yacht_charter_apa_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class RestaurantPosAcquiringMcaEscrowPolicyInput:
+    """Input contract for Restaurant & Retail POS SaaS, Interchange-Plus Acquiring & MCA Escrow."""
+
+    quarterly_restaurant_pos_and_acquiring_fee_pool_usd: float = 185000.0
+    predatory_48m_equipment_lease_or_early_termination_fee: bool = False
+    tiered_mdr_rate_creep_or_junk_pci_fee_padding: bool = False
+    webiq_predatory_mca_stacking_or_confession_of_judgment_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    interchange_plus_switch_and_durbin_debit_routing_ready: bool = False
+
+
+def evaluate_restaurant_pos_acquiring_mca_escrow_policy(
+    policy_input: RestaurantPosAcquiringMcaEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Restaurant & Retail POS SaaS, Interchange-Plus Acquiring & MCA policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_restaurant_pos_and_acquiring_fee_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_predatory_mca_stacking_or_confession_of_judgment_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_PREDATORY_MCA_STACKING_OR_CONFESSION_OF_JUDGMENT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.predatory_48m_equipment_lease_or_early_termination_fee:
+        return {
+            "status_code": 403,
+            "decision": "PREDATORY_48M_EQUIPMENT_LEASE_OR_EARLY_TERMINATION_FEE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tiered_mdr_rate_creep_or_junk_pci_fee_padding:
+        return {
+            "status_code": 422,
+            "decision": "TIERED_MDR_RATE_CREEP_OR_JUNK_PCI_FEE_PADDING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.interchange_plus_switch_and_durbin_debit_routing_ready:
+        savings = round(gross_pool * 0.25, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "INTERCHANGE_PLUS_SWITCH_AND_DURBIN_DEBIT_ROUTING_CONFIRM",
+            "mandate_token": "restaurant_pos_acquiring_mca_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "INTERCHANGE_PLUS_AND_POS_OWNERSHIP_AUTHORIZED",
+        "mandate_token": "restaurant_pos_acquiring_mca_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -28269,6 +28350,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    restaurant_pos_acquiring_mca_escrow_guard = {
+        "authorized_200": evaluate_restaurant_pos_acquiring_mca_escrow_policy(
+            RestaurantPosAcquiringMcaEscrowPolicyInput()
+        ),
+        "predatory_48m_lease_or_etf_403": evaluate_restaurant_pos_acquiring_mca_escrow_policy(
+            RestaurantPosAcquiringMcaEscrowPolicyInput(
+                predatory_48m_equipment_lease_or_early_termination_fee=True
+            )
+        ),
+        "mdr_rate_creep_or_junk_pci_422": evaluate_restaurant_pos_acquiring_mca_escrow_policy(
+            RestaurantPosAcquiringMcaEscrowPolicyInput(
+                tiered_mdr_rate_creep_or_junk_pci_fee_padding=True
+            )
+        ),
+        "mca_stacking_or_coj_451": evaluate_restaurant_pos_acquiring_mca_escrow_policy(
+            RestaurantPosAcquiringMcaEscrowPolicyInput(
+                webiq_predatory_mca_stacking_or_confession_of_judgment_flag=True
+            )
+        ),
+        "ic_plus_and_durbin_debit_409": evaluate_restaurant_pos_acquiring_mca_escrow_policy(
+            RestaurantPosAcquiringMcaEscrowPolicyInput(
+                interchange_plus_switch_and_durbin_debit_routing_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -28471,6 +28578,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_wholesale_fashion_showroom_escrow_guard": b2b_wholesale_fashion_showroom_escrow_guard,
         "game_skin_steam_tradehold_escrow_guard": game_skin_steam_tradehold_escrow_guard,
         "private_jet_yacht_charter_apa_escrow_guard": private_jet_yacht_charter_apa_escrow_guard,
+        "restaurant_pos_acquiring_mca_escrow_guard": restaurant_pos_acquiring_mca_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -37456,6 +37564,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="jet-yacht-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 GUARANTEED_EMPTY_LEG_MATCH_AND_APA_AUDIT_REFUND_CONFIRM · Mandate: private_jet_yacht_charter_apa_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 74 Restaurant & Retail POS SaaS, Interchange-Plus Acquiring & MCA Escrow -->
+      <div class="finops-box" id="restaurant-pos-acquiring-mca-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🖥️ 餐饮零售 POS 收银系统采购、收单费率防暗涨与商户流水贷 (Toast / Square / Clover / Adyen Terminal / 美团收银) 防48个月死租约、IC+审计与MCA封顶沙盒 (Round 74)</div>
+            <div class="finops-subtitle">实测硬拦截“免费送收银机”背后的 48 个月不可撤销 $7,200 第三方融资租赁死合同与高额解约金 (HTTP 403)、强制 Interchange-Plus 透明成本模型防半年后静默涨费率与 $99/月假 PCI 罚金 (HTTP 422)、Web IQ 多头商户流水贷(MCA Stacking)日扣超 15% 熔断 (HTTP 451) 及切换 IC+ 与借记卡 Durbin 路由立省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="rest-pos-status-kpi">HTTP 409 · INTERCHANGE_PLUS_SWITCH_AND_DURBIN_DEBIT_ROUTING_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度连锁门店 POS 软硬件与刷卡收单手续费池 ($ USD)
+            <input type="range" id="rest-pos-pool-slider" min="40000" max="1500000" step="10000" value="185000" oninput="updateRestaurantPosAcquiringMcaSandbox()" />
+            <span id="rest-pos-pool-val" style="color:#6ee7b7; font-family:monospace;">$185,000</span>
+          </label>
+          <label>
+            POS 硬件产权与提前解约违约金 (ETF) 校验 (HTTP 403)
+            <select id="rest-pos-lease-select" onchange="updateRestaurantPosAcquiringMcaSandbox()">
+              <option value="pass">硬件 $499 明码买断 + 按月可退订阅 ($0 解约违约金) (放行)</option>
+              <option value="block">捆绑 48 个月不可撤销 $150/月融资租赁合同 或 关店强收 $1,500 违约金 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            Interchange-Plus 基点防漂移与假 PCI 罚金校验 (HTTP 422)
+            <select id="rest-pos-mdr-select" onchange="updateRestaurantPosAcquiringMcaSandbox()">
+              <option value="pass">发卡行真实成本 + 固定 15 bps 加点 (零漂移) + P2PE 免 PCI 费 (合规)</option>
+              <option value="block">半年后静默将加点调高至 55 bps (Rate Creep) 或 乱收 $99/月假 PCI 罚金 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 商户流水贷 (MCA) 每日截留率与多头借贷筛查 (HTTP 451)
+            <select id="rest-pos-mca-select" onchange="updateRestaurantPosAcquiringMcaSandbox()">
+              <option value="clear">单一顺位嵌入式贷款 + 每日随流水浮动截留 &lt;=12% + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">多头高息流水贷叠加(MCA Stacking)每日强抽 35% 营业额 或 含认诺判决书 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            切换 Interchange-Plus 与借记卡 Durbin 封顶路由 (HTTP 409)
+            <select id="rest-pos-opt-select" onchange="updateRestaurantPosAcquiringMcaSandbox()">
+              <option value="enabled" selected>开启 Interchange-Plus 透明成本 + 借记卡 Durbin (0.05%+$0.21) 路由省 25% (HTTP 409)</option>
+              <option value="baseline">常规合规收银硬件买断与标准费率授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度POS收单毛池</div>
+            <div class="finops-kpi-val" id="rest-pos-gross-kpi">$185,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">IC+与Durbin路由净额</div>
+            <div class="finops-kpi-val" id="rest-pos-net-kpi" style="color:#6ee7b7;">$138,750</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下刷卡费与租约坑</div>
+            <div class="finops-kpi-val" id="rest-pos-savings-kpi" style="color:#38bdf8;">$46,250</div>
+          </div>
+        </div>
+        <div id="rest-pos-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 INTERCHANGE_PLUS_SWITCH_AND_DURBIN_DEBIT_ROUTING_CONFIRM · Mandate: restaurant_pos_acquiring_mca_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -48303,6 +48474,80 @@ function updatePrivateJetYachtCharterApaSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 PART135_VERIFIED_AND_APA_ESCROW_AUTHORIZED · Mandate: private_jet_yacht_charter_apa_escrow_mandate_200';
+}}
+
+function updateRestaurantPosAcquiringMcaSandbox() {{
+  const slider = document.getElementById('rest-pos-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '185000');
+  const leaseMode = document.getElementById('rest-pos-lease-select').value;
+  const mdrMode = document.getElementById('rest-pos-mdr-select').value;
+  const mcaMode = document.getElementById('rest-pos-mca-select').value;
+  const optMode = document.getElementById('rest-pos-opt-select').value;
+
+  document.getElementById('rest-pos-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('rest-pos-status-kpi');
+  const grossKpi = document.getElementById('rest-pos-gross-kpi');
+  const netKpi = document.getElementById('rest-pos-net-kpi');
+  const savingsKpi = document.getElementById('rest-pos-savings-kpi');
+  const banner = document.getElementById('rest-pos-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (mcaMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_PREDATORY_MCA_STACKING_OR_CONFESSION_OF_JUDGMENT_HOLD · Mandate: null';
+    return;
+  }}
+  if (leaseMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PREDATORY_48M_EQUIPMENT_LEASE_OR_EARLY_TERMINATION_FEE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (mdrMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 TIERED_MDR_RATE_CREEP_OR_JUNK_PCI_FEE_PADDING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.25);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 INTERCHANGE_PLUS_SWITCH_AND_DURBIN_DEBIT_ROUTING_CONFIRM · Mandate: restaurant_pos_acquiring_mca_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 INTERCHANGE_PLUS_AND_POS_OWNERSHIP_AUTHORIZED · Mandate: restaurant_pos_acquiring_mca_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

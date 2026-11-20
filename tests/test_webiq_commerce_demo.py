@@ -14016,6 +14016,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("private-jet-yacht-charter-apa-escrow-sandbox", html_zh)
 
+    def test_restaurant_pos_acquiring_mca_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            RestaurantPosAcquiringMcaEscrowPolicyInput,
+            evaluate_restaurant_pos_acquiring_mca_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_restaurant_pos_acquiring_mca_escrow_policy(
+            RestaurantPosAcquiringMcaEscrowPolicyInput(
+                quarterly_restaurant_pos_and_acquiring_fee_pool_usd=185000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "INTERCHANGE_PLUS_AND_POS_OWNERSHIP_AUTHORIZED",
+        )
+
+        lease = evaluate_restaurant_pos_acquiring_mca_escrow_policy(
+            RestaurantPosAcquiringMcaEscrowPolicyInput(
+                predatory_48m_equipment_lease_or_early_termination_fee=True
+            )
+        )
+        self.assertEqual(lease["status_code"], 403)
+        self.assertEqual(
+            lease["decision"],
+            "PREDATORY_48M_EQUIPMENT_LEASE_OR_EARLY_TERMINATION_FEE_BLOCKED",
+        )
+
+        mdr = evaluate_restaurant_pos_acquiring_mca_escrow_policy(
+            RestaurantPosAcquiringMcaEscrowPolicyInput(
+                tiered_mdr_rate_creep_or_junk_pci_fee_padding=True
+            )
+        )
+        self.assertEqual(mdr["status_code"], 422)
+        self.assertEqual(
+            mdr["decision"],
+            "TIERED_MDR_RATE_CREEP_OR_JUNK_PCI_FEE_PADDING_BLOCKED",
+        )
+
+        mca = evaluate_restaurant_pos_acquiring_mca_escrow_policy(
+            RestaurantPosAcquiringMcaEscrowPolicyInput(
+                webiq_predatory_mca_stacking_or_confession_of_judgment_flag=True
+            )
+        )
+        self.assertEqual(mca["status_code"], 451)
+        self.assertEqual(
+            mca["decision"],
+            "WEBIQ_PREDATORY_MCA_STACKING_OR_CONFESSION_OF_JUDGMENT_HOLD",
+        )
+
+        optim = evaluate_restaurant_pos_acquiring_mca_escrow_policy(
+            RestaurantPosAcquiringMcaEscrowPolicyInput(
+                quarterly_restaurant_pos_and_acquiring_fee_pool_usd=185000.0,
+                interchange_plus_switch_and_durbin_debit_routing_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 46250.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 138750.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("restaurant_pos_acquiring_mca_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("restaurant-pos-acquiring-mca-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
