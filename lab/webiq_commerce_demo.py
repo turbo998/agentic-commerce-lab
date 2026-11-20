@@ -19616,6 +19616,87 @@ def evaluate_b2b_expert_network_research_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class PetBoardingWalkingGroomingEscrowPolicyInput:
+    """Input contract for Pet Boarding Hotel, GPS Dog-Walking Telemetry & Grooming Salon Escrow."""
+
+    quarterly_pet_boarding_walking_and_grooming_pool_usd: float = 140000.0
+    stationary_fake_walk_or_predatory_dematting_surcharge: bool = False
+    expired_bordetella_rabies_vaccine_or_uncapped_vet_bill: bool = False
+    webiq_brachycephalic_cage_dryer_hazard_or_safety_blacklist_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    multi_pet_shared_suite_and_weekday_groom_spt_ready: bool = False
+
+
+def evaluate_pet_boarding_walking_grooming_escrow_policy(
+    policy_input: PetBoardingWalkingGroomingEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Pet Boarding Hotel, GPS Dog-Walking & Grooming Salon policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_pet_boarding_walking_and_grooming_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_brachycephalic_cage_dryer_hazard_or_safety_blacklist_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_BRACHYCEPHALIC_CAGE_DRYER_HAZARD_OR_SAFETY_BLACKLIST_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stationary_fake_walk_or_predatory_dematting_surcharge:
+        return {
+            "status_code": 403,
+            "decision": "STATIONARY_FAKE_WALK_OR_PREDATORY_DEMATTING_SURCHARGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.expired_bordetella_rabies_vaccine_or_uncapped_vet_bill:
+        return {
+            "status_code": 422,
+            "decision": "EXPIRED_BORDETELLA_RABIES_VACCINE_OR_UNCAPPED_VET_BILL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.multi_pet_shared_suite_and_weekday_groom_spt_ready:
+        savings = round(gross_pool * 0.23, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MULTI_PET_SHARED_SUITE_AND_WEEKDAY_GROOM_SPT_CONFIRM",
+            "mandate_token": "pet_boarding_walking_grooming_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "GPS_WALK_AND_VACCINE_VERIFIED_AUTHORIZED",
+        "mandate_token": "pet_boarding_walking_grooming_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -27199,6 +27280,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    pet_boarding_walking_grooming_escrow_guard = {
+        "authorized_200": evaluate_pet_boarding_walking_grooming_escrow_policy(
+            PetBoardingWalkingGroomingEscrowPolicyInput()
+        ),
+        "fake_walk_or_dematting_403": evaluate_pet_boarding_walking_grooming_escrow_policy(
+            PetBoardingWalkingGroomingEscrowPolicyInput(
+                stationary_fake_walk_or_predatory_dematting_surcharge=True
+            )
+        ),
+        "expired_vaccine_or_vet_bill_422": evaluate_pet_boarding_walking_grooming_escrow_policy(
+            PetBoardingWalkingGroomingEscrowPolicyInput(
+                expired_bordetella_rabies_vaccine_or_uncapped_vet_bill=True
+            )
+        ),
+        "brachycephalic_dryer_or_safety_451": evaluate_pet_boarding_walking_grooming_escrow_policy(
+            PetBoardingWalkingGroomingEscrowPolicyInput(
+                webiq_brachycephalic_cage_dryer_hazard_or_safety_blacklist_flag=True
+            )
+        ),
+        "shared_suite_and_weekday_groom_409": evaluate_pet_boarding_walking_grooming_escrow_policy(
+            PetBoardingWalkingGroomingEscrowPolicyInput(
+                multi_pet_shared_suite_and_weekday_groom_spt_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -27391,6 +27498,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "home_cleaning_maid_moveout_escrow_guard": home_cleaning_maid_moveout_escrow_guard,
         "micro_drama_webnovel_cap_escrow_guard": micro_drama_webnovel_cap_escrow_guard,
         "b2b_expert_network_research_escrow_guard": b2b_expert_network_research_escrow_guard,
+        "pet_boarding_walking_grooming_escrow_guard": pet_boarding_walking_grooming_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -35746,6 +35854,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="expert-res-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TRANSCRIPT_LIBRARY_REUSE_AND_30MIN_MICRO_CONSULT_CONFIRM · Mandate: b2b_expert_network_research_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 64 Pet Boarding Hotel, GPS Dog-Walking Telemetry & Grooming Salon Escrow -->
+      <div class="finops-box" id="pet-boarding-walking-grooming-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🐾 宠物寄养酒店、上门喂猫遛狗与美容洗护托管 (Rover / Wag! / 宠物家 Pet'em / 小佩宠物) 防原地假遛、疫苗门禁与短鼻安全锁沙盒 (Round 64)</div>
+            <div class="finops-subtitle">实测 GPS 空间多边形有效位移(&gt;=2.0km)防摇步器原地假遛与美容开结费&lt;=$20硬封顶 (HTTP 403)、狂犬/联苗/犬窝咳(Bordetella)三苗有效期核验与 $300 兽医急诊预授权子令牌 (HTTP 422)、Web IQ 法斗/加菲猫等短鼻品种禁入高温烘干箱熔断 (HTTP 451) 及多宠同屋半价+周中按次洗护立省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="pet-board-status-kpi">HTTP 409 · MULTI_PET_SHARED_SUITE_AND_WEEKDAY_GROOM_SPT_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度宠物寄养、上门遛宠与洗护结算池 ($ USD)
+            <input type="range" id="pet-board-pool-slider" min="30000" max="1000000" step="5000" value="140000" oninput="updatePetBoardingWalkingGroomingSandbox()" />
+            <span id="pet-board-pool-val" style="color:#6ee7b7; font-family:monospace;">$140,000</span>
+          </label>
+          <label>
+            GPS 真实空间位移与美容开结费封顶校验 (HTTP 403)
+            <select id="pet-board-walk-select" onchange="updatePetBoardingWalkingGroomingSandbox()">
+              <option value="pass">GPS 跨街区移动 &gt;=2.0km + 排便打卡 + 开结费封顶 &lt;=$20 (放行)</option>
+              <option value="block">拴树下抽烟摇步器假遛(&lt;0.2km) 或 淋湿后强收 $85 开结费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            狂犬/犬窝咳疫苗有效期与突发急诊限额校验 (HTTP 422)
+            <select id="pet-board-vaccine-select" onchange="updatePetBoardingWalkingGroomingSandbox()">
+              <option value="pass">三联/狂犬/犬窝咳疫苗在有效期 + 兽医急诊绑定 $300 免批子令牌 (合规)</option>
+              <option value="block">犬窝咳疫苗过期混养致交叉感染 或 诊所未经视频确权刷 $1,500 体检 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            短鼻品种禁入高温烘干箱与门店安全筛查 (HTTP 451)
+            <select id="pet-board-dryer-select" onchange="updatePetBoardingWalkingGroomingSandbox()">
+              <option value="clear">法斗/巴哥/加菲猫强制人工低温手吹 + 门店零安全事故 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">将短鼻犬猫关进封闭高温烘干箱致热射病风险 或 门店涉虐宠黑名单 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            同家庭多宠同房寄养折扣与周中按次洗护 SPT (HTTP 409)
+            <select id="pet-board-opt-select" onchange="updatePetBoardingWalkingGroomingSandbox()">
+              <option value="enabled" selected>开启同家庭第2只宠物同屋寄养半价 + 周中按次洗护免充卡省 23% (HTTP 409)</option>
+              <option value="baseline">常规单宠独立寄养与标准洗护授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度宠物服务毛池</div>
+            <div class="finops-kpi-val" id="pet-board-gross-kpi">$140,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">多宠同屋与错峰净额</div>
+            <div class="finops-kpi-val" id="pet-board-net-kpi" style="color:#6ee7b7;">$107,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下房费与防宰客</div>
+            <div class="finops-kpi-val" id="pet-board-savings-kpi" style="color:#38bdf8;">$32,200</div>
+          </div>
+        </div>
+        <div id="pet-board-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MULTI_PET_SHARED_SUITE_AND_WEEKDAY_GROOM_SPT_CONFIRM · Mandate: pet_boarding_walking_grooming_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -45853,6 +46024,80 @@ function updateB2BExpertNetworkResearchSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_PANEL_AND_PRORATED_CONSULT_AUTHORIZED · Mandate: b2b_expert_network_research_escrow_mandate_200';
+}}
+
+function updatePetBoardingWalkingGroomingSandbox() {{
+  const slider = document.getElementById('pet-board-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '140000');
+  const walkMode = document.getElementById('pet-board-walk-select').value;
+  const vacMode = document.getElementById('pet-board-vaccine-select').value;
+  const dryMode = document.getElementById('pet-board-dryer-select').value;
+  const optMode = document.getElementById('pet-board-opt-select').value;
+
+  document.getElementById('pet-board-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('pet-board-status-kpi');
+  const grossKpi = document.getElementById('pet-board-gross-kpi');
+  const netKpi = document.getElementById('pet-board-net-kpi');
+  const savingsKpi = document.getElementById('pet-board-savings-kpi');
+  const banner = document.getElementById('pet-board-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dryMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_BRACHYCEPHALIC_CAGE_DRYER_HAZARD_OR_SAFETY_BLACKLIST_HOLD · Mandate: null';
+    return;
+  }}
+  if (walkMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 STATIONARY_FAKE_WALK_OR_PREDATORY_DEMATTING_SURCHARGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (vacMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 EXPIRED_BORDETELLA_RABIES_VACCINE_OR_UNCAPPED_VET_BILL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.23);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MULTI_PET_SHARED_SUITE_AND_WEEKDAY_GROOM_SPT_CONFIRM · Mandate: pet_boarding_walking_grooming_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 GPS_WALK_AND_VACCINE_VERIFIED_AUTHORIZED · Mandate: pet_boarding_walking_grooming_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

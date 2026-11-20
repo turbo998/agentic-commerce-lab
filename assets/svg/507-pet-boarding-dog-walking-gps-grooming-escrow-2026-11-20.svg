@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg507" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#07111E" />
+      <stop offset="50%" stop-color="#12213A" />
+      <stop offset="100%" stop-color="#081322" />
+    </linearGradient>
+    <linearGradient id="accent507" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="50%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg507)" />
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent507)" />
+
+  <!-- Header -->
+  <text x="44" y="48" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.4">ROUND 64 · PET BOARDING HOTEL, GPS DOG-WALKING TELEMETRY &amp; GROOMING SALON ESCROW</text>
+  <text x="44" y="82" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">宠物寄养酒店、上门遛狗喂猫与美容洗护：防原地假遛、疫苗硬门禁与急诊预授权锁</text>
+  <text x="44" y="108" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Rover / Wag! / 宠物家 Pet'em / 小佩宠物 vs 项圈 GPS 轨迹锁 vs 犬窝咳/狂犬疫苗门禁 vs 多宠同屋寄养省 23%</text>
+
+  <!-- Left Panel: 3 Core Pet Boarding & Dog Walking Risks -->
+  <rect x="44" y="132" width="350" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="64" y="164" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🚨 宠物寄养与上门遛宠三大痛点黑洞</text>
+
+  <rect x="62" y="182" width="314" height="132" rx="8" fill="#1E293B" stroke="#EF4444" stroke-width="1" />
+  <text x="76" y="206" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">1. 购买 60 分钟上门遛狗，拴树下抽烟 45 分钟假遛</text>
+  <text x="76" y="228" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 遛狗员接单后把狗拴在小区长椅旁玩手机，用摇步器伪造</text>
+  <text x="76" y="248" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  步数；或宠物美容店进店后借口“毛发打结”强加 $85 开结费</text>
+  <text x="76" y="268" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：GPS 有效移动里程(&gt;=2.5km) + 排便拍照打卡</text>
+  <text x="76" y="288" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  + 开结费封顶(&lt;=$20)硬门禁 (HTTP 403)</text>
+
+  <rect x="62" y="328" width="314" height="132" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1" />
+  <text x="76" y="352" fill="#FCD34D" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">2. 未验犬窝咳疫苗致全店交叉感染与乱开 $2,000 急诊单</text>
+  <text x="76" y="374" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 寄养酒店混收未打支气管败血波氏杆菌(Bordetella)疫苗犬只</text>
+  <text x="76" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  爆发犬窝咳；或夜间轻微软便擅自送合作医院刷 $2,000 检查</text>
+  <text x="76" y="414" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：入店强制核验狂犬/联苗/犬窝咳有效期</text>
+  <text x="76" y="434" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  + 突发急诊 $300 免批预授权子令牌 (HTTP 422)</text>
+
+  <rect x="62" y="474" width="314" height="134" rx="8" fill="#1E293B" stroke="#A855F7" stroke-width="1" />
+  <text x="76" y="498" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">3. 短鼻犬高温烘干窒息事故黑名单与多宠同屋寻优</text>
+  <text x="76" y="520" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 法斗/加菲猫等短鼻品种被关进全封闭高温烘干箱致热射病</text>
+  <text x="76" y="540" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：Web IQ 虐宠涉诉黑名单与短鼻禁入烘干箱锁(451)</text>
+  <text x="76" y="560" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 同家庭第 2 只宠物同房寄养半价 + 工作日洗护次卡</text>
+  <text x="76" y="582" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  按次SPT释放免办大额储值卡立省 23% (HTTP 409)</text>
+
+  <!-- Center Panel: 5-Lane Deterministic Gate -->
+  <rect x="414" y="132" width="402" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="434" y="164" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🛡️ 宠物寄养、遛宠与洗护五车道受托状态机</text>
+
+  <rect x="434" y="184" width="362" height="72" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="450" y="208" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 200 · GPS_WALK_AND_VACCINE_VERIFIED_AUTHORIZED</text>
+  <text x="450" y="228" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">三联/狂犬/犬窝咳疫苗有效 + GPS 轨迹达标 + 急诊限额锁 (8ms)</text>
+  <text x="450" y="245" fill="#A7F3D0" font-family="Consolas, monospace" font-size="11">pet_boarding_walking_grooming_escrow_mandate_*</text>
+
+  <rect x="434" y="268" width="362" height="72" rx="8" fill="#450A0A" stroke="#EF4444" stroke-width="1.5" />
+  <text x="450" y="292" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 403 · STATIONARY_FAKE_WALK_OR_DEMATTING_GOUGE</text>
+  <text x="450" y="312" fill="#FEE2E2" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截遛狗原地挂机里程不足(&lt;2km)或美容店临时强收天价开结费</text>
+  <text x="450" y="329" fill="#FCA5A5" font-family="Consolas, monospace" font-size="11">gps_active_distance_km &lt; 2.0 | unquoted_dematting_fee &gt; 20</text>
+
+  <rect x="434" y="352" width="362" height="72" rx="8" fill="#431407" stroke="#F97316" stroke-width="1.5" />
+  <text x="450" y="376" fill="#FDBA74" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 422 · EXPIRED_BORDETELLA_VACCINE_OR_UNCAPPED_VET</text>
+  <text x="450" y="396" fill="#FFEDD5" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截狂犬/犬窝咳疫苗过期混养或未经主人视频确权刷超额医疗费</text>
+  <text x="450" y="413" fill="#FDBA74" font-family="Consolas, monospace" font-size="11">bordetella_rabies_valid = false | vet_bill &gt; emergency_cap</text>
+
+  <rect x="434" y="436" width="362" height="72" rx="8" fill="#3B0764" stroke="#A855F7" stroke-width="1.5" />
+  <text x="450" y="460" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 451 · WEBIQ_BRACHYCEPHALIC_CAGE_DRYER_SAFETY_HOLD</text>
+  <text x="450" y="480" fill="#F3E8FF" font-family="Segoe UI, Arial, sans-serif" font-size="12">Web IQ 检出门店曾发生活体热射病事故或对短鼻犬用封闭烘干箱</text>
+  <text x="450" y="497" fill="#D8B4FE" font-family="Consolas, monospace" font-size="11">brachycephalic_cage_dryer_risk = true | key_age &gt; 180d</text>
+
+  <rect x="434" y="520" width="362" height="88" rx="8" fill="#422006" stroke="#F59E0B" stroke-width="1.5" />
+  <text x="450" y="544" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 409 · MULTI_PET_SHARED_SUITE_AND_WEEKDAY_GROOM</text>
+  <text x="450" y="564" fill="#FEF3C7" font-family="Segoe UI, Arial, sans-serif" font-size="12">同家庭第2只宠物同房寄养5折 + 周中错峰洗护按次SPT立省 23%</text>
+  <text x="450" y="584" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">季度宠物寄养、上门喂遛与洗护池 $140,000 → 净结算额 $107,800 (省 $32,200)</text>
+
+  <!-- Right Panel: Platform Selection Matrix -->
+  <rect x="836" y="132" width="320" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="856" y="164" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🧭 宠物寄养与洗护平台选型</text>
+
+  <rect x="854" y="184" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="206" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Rover / Wag! (全球家庭寄养与 GPS 遛狗平台)</text>
+  <text x="868" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 内置 Rover Card 实时记录遛狗 GPS 路线图、排尿</text>
+  <text x="868" y="246" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  排便打点与喂食照片，自带 $25,000 寄养意外兽医险</text>
+  <text x="868" y="266" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：节假日出游家庭式寄养、工作日上门遛狗喂猫</text>
+
+  <rect x="854" y="298" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="320" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">宠物家 Pet'em / 小佩宠物 (直营洗护与智能寄养)</text>
+  <text x="868" y="340" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 全透明玻璃洗护间 360 度直播，按体重与犬种标准化</text>
+  <text x="868" y="360" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  计价，寄养单间配新风系统与 24h 红外摄像头随时回看</text>
+  <text x="868" y="380" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：定期美容修毛、SPA 洗护与春节恒温独立房寄养</text>
+
+  <rect x="854" y="412" width="284" height="196" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="868" y="436" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">★ 推荐：Foundry + 轨迹疫苗与短鼻安全网关</text>
+  <text x="868" y="458" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">1. GPS 闭环路线核验杜绝原地挂机假遛与乱收开结费</text>
+  <text x="868" y="480" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">2. 强制核验狂犬/联苗/犬窝咳有效期防交叉感染</text>
+  <text x="868" y="502" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">3. 法斗/波斯猫等短鼻品种硬性禁用封闭高温烘干箱</text>
+  <text x="868" y="524" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">4. 同屋二宠半价 + 错峰按次洗护省 23%</text>
+  <rect x="868" y="542" width="256" height="50" rx="6" fill="#022C22" />
+  <text x="880" y="563" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">审计标签：provenance = synthetic</text>
+  <text x="880" y="581" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="11">independently_reproduced = false</text>
+</svg>

@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`182` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`183` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（37 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（49 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（50 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（39 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（19 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（28 篇）](#tax-fx-privacy-disputes)
@@ -81,7 +81,7 @@
 | 37 | **智慧停车、无感道闸与新能源超充站（Smart Parking, LPR Barrierless Garage & EV Supercharger Billing：Metropolis / ParkMobile / Tesla Supercharger / 捷停车 / 特来电）“防出口跟车漏扫幽灵计费 7 天、防路侧二维码贴纸钓鱼（Quishing）与超时占桩费（Idle Fee）拥堵门槛锁”Agent 架构选型 FAQ：终结充电还要再交停车费与公车电卡私充实战指南** | [中文](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.md) · [English](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（49 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（50 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -136,6 +136,7 @@
 | 47 | **滑雪度假村季卡、高尔夫球场订场与户外雪具租赁（Ski Resort Pass, Golf Tee-Time Booking & Equipment Rental Escrow：Vail Epic / Alterra Ikon / GolfNow / 滑呗 / 热雪奇迹）“防黄牛脚本秒空周末果岭加价倒卖、大风封山缆车停运自动退费与雪板固定器 ISO 11088 安全锁”Agent 架构选型 FAQ** | [中文](ski-resort-pass-golf-tee-time-bot-scalper-weather-escrow-agent-selection-faq.md) · [English](ski-resort-pass-golf-tee-time-bot-scalper-weather-escrow-agent-selection-faq.en.md) |
 | 48 | **高定婚纱、MTM 西装定制与伴郎伴娘团礼服租赁（Bridal Gown, Bespoke Suit Tailoring & Wedding-Party Formalwear Escrow：Kleinfeld / Azazie / SuitSupply / The Black Tux / 虎丘婚纱高定）“防故意订大码敲诈千元改衣费、防伴娘服异地分批下单染出阴阳色差与婚期前 14 天试穿死线锁”Agent 架构选型 FAQ** | [中文](wedding-bridal-gown-bespoke-tailoring-alteration-cap-escrow-agent-selection-faq.md) · [English](wedding-bridal-gown-bespoke-tailoring-alteration-cap-escrow-agent-selection-faq.en.md) |
 | 49 | **家政保洁、钟点工周期包月与退租深度开荒保洁（Residential House Cleaning, Recurring Maid Subscription & Move-Out Deep-Clean Escrow：Handy / Thumbtack / 天鹅到家 / 自如家服 / 轻喜到家）“防退租保洁上门后以‘重度油污’坐地起价翻 3 倍、防 4 小时服务干 2 小时早退缩水与房东退租验收不过关免费返工托管”Agent 架构选型 FAQ** | [中文](home-cleaning-maid-subscription-moveout-inspection-escrow-agent-selection-faq.md) · [English](home-cleaning-maid-subscription-moveout-inspection-escrow-agent-selection-faq.en.md) |
+| 50 | **宠物寄养酒店、上门喂猫遛狗与宠物洗护美容托管（Pet Boarding Hotel, GPS Dog-Walking Telemetry & Grooming Salon Escrow：Rover / Wag! / 宠物家 Pet'em / 小佩宠物）“防遛狗员挂摇步器原地抽烟假遛、防未验犬窝咳疫苗交叉感染与短鼻犬禁用高温烘干箱安全锁”Agent 架构选型 FAQ** | [中文](pet-boarding-dog-walking-gps-vaccine-vet-escrow-agent-selection-faq.md) · [English](pet-boarding-dog-walking-gps-vaccine-vet-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（39 篇）

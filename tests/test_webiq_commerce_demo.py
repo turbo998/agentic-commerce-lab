@@ -13346,6 +13346,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-expert-network-research-escrow-sandbox", html_zh)
 
+    def test_pet_boarding_walking_grooming_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            PetBoardingWalkingGroomingEscrowPolicyInput,
+            evaluate_pet_boarding_walking_grooming_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_pet_boarding_walking_grooming_escrow_policy(
+            PetBoardingWalkingGroomingEscrowPolicyInput(
+                quarterly_pet_boarding_walking_and_grooming_pool_usd=140000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "GPS_WALK_AND_VACCINE_VERIFIED_AUTHORIZED",
+        )
+
+        walk = evaluate_pet_boarding_walking_grooming_escrow_policy(
+            PetBoardingWalkingGroomingEscrowPolicyInput(
+                stationary_fake_walk_or_predatory_dematting_surcharge=True
+            )
+        )
+        self.assertEqual(walk["status_code"], 403)
+        self.assertEqual(
+            walk["decision"],
+            "STATIONARY_FAKE_WALK_OR_PREDATORY_DEMATTING_SURCHARGE_BLOCKED",
+        )
+
+        vac = evaluate_pet_boarding_walking_grooming_escrow_policy(
+            PetBoardingWalkingGroomingEscrowPolicyInput(
+                expired_bordetella_rabies_vaccine_or_uncapped_vet_bill=True
+            )
+        )
+        self.assertEqual(vac["status_code"], 422)
+        self.assertEqual(
+            vac["decision"],
+            "EXPIRED_BORDETELLA_RABIES_VACCINE_OR_UNCAPPED_VET_BILL_BLOCKED",
+        )
+
+        dryer = evaluate_pet_boarding_walking_grooming_escrow_policy(
+            PetBoardingWalkingGroomingEscrowPolicyInput(
+                webiq_brachycephalic_cage_dryer_hazard_or_safety_blacklist_flag=True
+            )
+        )
+        self.assertEqual(dryer["status_code"], 451)
+        self.assertEqual(
+            dryer["decision"],
+            "WEBIQ_BRACHYCEPHALIC_CAGE_DRYER_HAZARD_OR_SAFETY_BLACKLIST_HOLD",
+        )
+
+        optim = evaluate_pet_boarding_walking_grooming_escrow_policy(
+            PetBoardingWalkingGroomingEscrowPolicyInput(
+                quarterly_pet_boarding_walking_and_grooming_pool_usd=140000.0,
+                multi_pet_shared_suite_and_weekday_groom_spt_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 32200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 107800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("pet_boarding_walking_grooming_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("pet-boarding-walking-grooming-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
