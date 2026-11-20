@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`195` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`196` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (37 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (38 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (57 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (42 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
@@ -36,7 +36,7 @@
 | 10 | **Pre-Purchase Verification & Anti-Wrong-Buy Gate Architecture Selection FAQ: Eliminating the "54% of Failed Runs Still Purchase" Vulnerability Identified in the Visa Agentic Commerce Benchmark** | [English](ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.en.md) · [中文](ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (37 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (38 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -79,6 +79,7 @@
 | 35 | **E-Commerce Try-Before-You-Buy (`TBYB`: Shopify TryNow / Corso / Blackcart) & Apparel Size-Bracketing Agent Architecture Selection FAQ: Delivery-Triggered 7-Day `SPT` Pre-Auth, Prepaid `BIN` Veto, First-Scan Capture Lock & `NFC` Anti-Wardrobing Ribbon** | [English](ecommerce-try-before-you-buy-tbyb-bracketing-preauth-wardrobing-agent-selection-faq.en.md) · [中文](ecommerce-try-before-you-buy-tbyb-bracketing-preauth-wardrobing-agent-selection-faq.md) |
 | 36 | **Extended Warranty, Advanced Exchange `RMA` Collateral & Authorized Repair Claim Audit (`AppleCare+ / Extend / Clyde / Assurant`) Pre-Enrollment Hardware Telemetry Gate, `180d SPT` Cross-Ship Collateral & Core-Return `SN` Parity Agent Architecture Selection FAQ** | [English](warranty-extended-protection-advanced-rma-collateral-claim-audit-agent-selection-faq.en.md) · [中文](warranty-extended-protection-advanced-rma-collateral-claim-audit-agent-selection-faq.md) |
 | 37 | **Smart Parking, `LPR` Barrierless Garage & `EV` Supercharger Billing (`Metropolis / ParkMobile / Tesla Supercharger / ISO 15118`) Anti-Ghost-Session Spatiotemporal Mutex, Anti-`Quishing`, `>= 50%` Idle-Fee Gate & Fleet `VIN` Escrow Agent Architecture Selection FAQ** | [English](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.en.md) · [中文](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.md) |
+| 38 | **Music Festival & Stadium Cashless `RFID` Wristband, Anti-Tip-Creep & Auto-Refund Escrow (`Coachella / Tomorrowland / Intellitix / Front Gate`) Zero-Breakage Auto-Refund, `0%–10%` Tip Cap & `45s` Double-Tap Idempotency Agent Architecture Selection FAQ** | [English](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.en.md) · [中文](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (57 Guides)

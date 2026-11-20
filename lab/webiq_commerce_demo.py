@@ -20669,6 +20669,87 @@ def evaluate_livestream_pitfee_net_gmv_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class FestivalStadiumCashlessRfidEscrowPolicyInput:
+    """Input contract for Music Festival & Stadium Cashless RFID Wristband, Anti-Tip-Creep & Auto-Refund Escrow."""
+
+    quarterly_festival_and_stadium_cashless_rfid_pool_usd: float = 160000.0
+    breakage_refund_fee_extortion_or_forced_token_trap: bool = False
+    predatory_25pct_default_tip_or_duplicate_rfid_tap: bool = False
+    webiq_weather_day_cancellation_voucher_only_refusal_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    zero_preload_card_link_and_sponsor_cashback_ready: bool = False
+
+
+def evaluate_festival_stadium_cashless_rfid_escrow_policy(
+    policy_input: FestivalStadiumCashlessRfidEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Music Festival & Stadium Cashless RFID Wristband policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_festival_and_stadium_cashless_rfid_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_weather_day_cancellation_voucher_only_refusal_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_WEATHER_DAY_CANCELLATION_VOUCHER_ONLY_REFUSAL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.breakage_refund_fee_extortion_or_forced_token_trap:
+        return {
+            "status_code": 403,
+            "decision": "BREAKAGE_REFUND_FEE_EXTORTION_OR_FORCED_TOKEN_TRAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.predatory_25pct_default_tip_or_duplicate_rfid_tap:
+        return {
+            "status_code": 422,
+            "decision": "PREDATORY_25PCT_DEFAULT_TIP_OR_DUPLICATE_RFID_TAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.zero_preload_card_link_and_sponsor_cashback_ready:
+        savings = round(gross_pool * 0.23, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ZERO_PRELOAD_CARD_LINK_AND_SPONSOR_CASHBACK_CONFIRM",
+            "mandate_token": "festival_stadium_cashless_rfid_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "DIRECT_RFID_LINK_AND_TIP_CAP_AUTHORIZED",
+        "mandate_token": "festival_stadium_cashless_rfid_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -28590,6 +28671,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    festival_stadium_cashless_rfid_escrow_guard = {
+        "authorized_200": evaluate_festival_stadium_cashless_rfid_escrow_policy(
+            FestivalStadiumCashlessRfidEscrowPolicyInput()
+        ),
+        "breakage_fee_or_token_trap_403": evaluate_festival_stadium_cashless_rfid_escrow_policy(
+            FestivalStadiumCashlessRfidEscrowPolicyInput(
+                breakage_refund_fee_extortion_or_forced_token_trap=True
+            )
+        ),
+        "predatory_tip_or_double_tap_422": evaluate_festival_stadium_cashless_rfid_escrow_policy(
+            FestivalStadiumCashlessRfidEscrowPolicyInput(
+                predatory_25pct_default_tip_or_duplicate_rfid_tap=True
+            )
+        ),
+        "weather_cancel_voucher_only_451": evaluate_festival_stadium_cashless_rfid_escrow_policy(
+            FestivalStadiumCashlessRfidEscrowPolicyInput(
+                webiq_weather_day_cancellation_voucher_only_refusal_flag=True
+            )
+        ),
+        "zero_preload_and_sponsor_cashback_409": evaluate_festival_stadium_cashless_rfid_escrow_policy(
+            FestivalStadiumCashlessRfidEscrowPolicyInput(
+                zero_preload_card_link_and_sponsor_cashback_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -28795,6 +28902,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "restaurant_pos_acquiring_mca_escrow_guard": restaurant_pos_acquiring_mca_escrow_guard,
         "bespoke_diamond_gold_jewelry_escrow_guard": bespoke_diamond_gold_jewelry_escrow_guard,
         "livestream_pitfee_net_gmv_escrow_guard": livestream_pitfee_net_gmv_escrow_guard,
+        "festival_stadium_cashless_rfid_escrow_guard": festival_stadium_cashless_rfid_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -37969,6 +38077,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="live-pitfee-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PURE_CPS_TIERED_COMMISSION_AND_CLIP_WHITELIST_CONFIRM · Mandate: livestream_pitfee_net_gmv_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 77 Music Festival & Stadium Cashless RFID Wristband, Anti-Tip-Creep & Auto-Refund Escrow -->
+      <div class="finops-box" id="music-festival-stadium-cashless-rfid-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">⌚ 音乐节与体育场馆无现金 RFID 手环充值、防25%默认小费与余额零手续费秒退 (Coachella / Tomorrowland / Intellitix / 草莓音乐节) 零沉淀、小费封顶与防重刷沙盒 (Round 77)</div>
+            <div class="finops-subtitle">实测散场 T+24h 剩余预充值 $0 手续费自动原路退回防“扣 $5 提现费/72h过期吞没沉淀款” (HTTP 403)、钱包侧预设小费上限(自助买水0%)拦截 POS 屏 25% 诱导暗扣与 45s 重复拍手环双扣 (HTTP 422)、Web IQ 雷暴停演按天比例自动退现 (HTTP 451) 及手环直绑SPT免预充+冠名银行卡15%返现立省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="fest-rfid-status-kpi">HTTP 409 · ZERO_PRELOAD_CARD_LINK_AND_SPONSOR_CASHBACK_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度音乐节手环与体育场馆餐饮周边结算池 ($ USD)
+            <input type="range" id="fest-rfid-pool-slider" min="30000" max="1200000" step="5000" value="160000" oninput="updateFestivalStadiumCashlessRfidSandbox()" />
+            <span id="fest-rfid-pool-val" style="color:#6ee7b7; font-family:monospace;">$160,000</span>
+          </label>
+          <label>
+            散场剩余余额 $0 手续费自动退与法币计价校验 (HTTP 403)
+            <select id="fest-rfid-breakage-select" onchange="updateFestivalStadiumCashlessRfidSandbox()">
+              <option value="pass">散场 T+24h 余额 $0 手续费自动原路退 + 明码显示真实法币价格 (放行)</option>
+              <option value="block">散场退剩余 $19 强收 $5 手续费 / 72h 未填表没收余额 或 奇葩汇率代币 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            钱包侧预设小费上限与 45s 贴卡幂等去重校验 (HTTP 422)
+            <select id="fest-rfid-tip-select" onchange="updateFestivalStadiumCashlessRfidSandbox()">
+              <option value="pass">罐装水0%小费/吧台&lt;=10%封顶 + 45s同终端重复贴卡自动去重 (合规)</option>
+              <option value="block">买瓶装水 POS 屏幕默认勾选 25% 小费暗扣 或 弱网 8 秒内连刷两次手环 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 恶劣天气单日停演按比例退还现金筛查 (HTTP 451)
+            <select id="fest-rfid-weather-select" onchange="updateFestivalStadiumCashlessRfidSandbox()">
+              <option value="clear">演出正常举行或停演日按比例原路退现 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">雷暴大风取消周日压轴演出，主办方拒退日票现金强塞明年抵用券 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            Card-Linked 零预充值手环直刷与冠名赞助卡返现 (HTTP 409)
+            <select id="fest-rfid-opt-select" onchange="updateFestivalStadiumCashlessRfidSandbox()">
+              <option value="enabled" selected>开启手环 UID 直绑 SPT 免预充沉淀 + 冠名银行卡(Amex/Chase) 15% 返现省 23% (HTTP 409)</option>
+              <option value="baseline">常规零手续费自动退储值手环与小费保护授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度场馆消费毛池</div>
+            <div class="finops-kpi-val" id="fest-rfid-gross-kpi">$160,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">免预充与返现后净额</div>
+            <div class="finops-kpi-val" id="fest-rfid-net-kpi" style="color:#6ee7b7;">$123,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下沉淀零头与小费</div>
+            <div class="finops-kpi-val" id="fest-rfid-savings-kpi" style="color:#38bdf8;">$36,800</div>
+          </div>
+        </div>
+        <div id="fest-rfid-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ZERO_PRELOAD_CARD_LINK_AND_SPONSOR_CASHBACK_CONFIRM · Mandate: festival_stadium_cashless_rfid_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -49038,6 +49209,80 @@ function updateLivestreamPitfeeNetGmvSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 T14D_NET_GMV_AND_PRIME_SLOT_AUTHORIZED · Mandate: livestream_pitfee_net_gmv_escrow_mandate_200';
+}}
+
+function updateFestivalStadiumCashlessRfidSandbox() {{
+  const slider = document.getElementById('fest-rfid-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '160000');
+  const brkMode = document.getElementById('fest-rfid-breakage-select').value;
+  const tipMode = document.getElementById('fest-rfid-tip-select').value;
+  const wthMode = document.getElementById('fest-rfid-weather-select').value;
+  const optMode = document.getElementById('fest-rfid-opt-select').value;
+
+  document.getElementById('fest-rfid-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('fest-rfid-status-kpi');
+  const grossKpi = document.getElementById('fest-rfid-gross-kpi');
+  const netKpi = document.getElementById('fest-rfid-net-kpi');
+  const savingsKpi = document.getElementById('fest-rfid-savings-kpi');
+  const banner = document.getElementById('fest-rfid-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (wthMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_WEATHER_DAY_CANCELLATION_VOUCHER_ONLY_REFUSAL_HOLD · Mandate: null';
+    return;
+  }}
+  if (brkMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BREAKAGE_REFUND_FEE_EXTORTION_OR_FORCED_TOKEN_TRAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (tipMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PREDATORY_25PCT_DEFAULT_TIP_OR_DUPLICATE_RFID_TAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.23);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ZERO_PRELOAD_CARD_LINK_AND_SPONSOR_CASHBACK_CONFIRM · Mandate: festival_stadium_cashless_rfid_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 DIRECT_RFID_LINK_AND_TIP_CAP_AUTHORIZED · Mandate: festival_stadium_cashless_rfid_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

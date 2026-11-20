@@ -14217,6 +14217,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("livestream-pitfee-net-gmv-escrow-sandbox", html_zh)
 
+    def test_festival_stadium_cashless_rfid_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            FestivalStadiumCashlessRfidEscrowPolicyInput,
+            evaluate_festival_stadium_cashless_rfid_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_festival_stadium_cashless_rfid_escrow_policy(
+            FestivalStadiumCashlessRfidEscrowPolicyInput(
+                quarterly_festival_and_stadium_cashless_rfid_pool_usd=160000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "DIRECT_RFID_LINK_AND_TIP_CAP_AUTHORIZED",
+        )
+
+        brk = evaluate_festival_stadium_cashless_rfid_escrow_policy(
+            FestivalStadiumCashlessRfidEscrowPolicyInput(
+                breakage_refund_fee_extortion_or_forced_token_trap=True
+            )
+        )
+        self.assertEqual(brk["status_code"], 403)
+        self.assertEqual(
+            brk["decision"],
+            "BREAKAGE_REFUND_FEE_EXTORTION_OR_FORCED_TOKEN_TRAP_BLOCKED",
+        )
+
+        tip = evaluate_festival_stadium_cashless_rfid_escrow_policy(
+            FestivalStadiumCashlessRfidEscrowPolicyInput(
+                predatory_25pct_default_tip_or_duplicate_rfid_tap=True
+            )
+        )
+        self.assertEqual(tip["status_code"], 422)
+        self.assertEqual(
+            tip["decision"],
+            "PREDATORY_25PCT_DEFAULT_TIP_OR_DUPLICATE_RFID_TAP_BLOCKED",
+        )
+
+        wth = evaluate_festival_stadium_cashless_rfid_escrow_policy(
+            FestivalStadiumCashlessRfidEscrowPolicyInput(
+                webiq_weather_day_cancellation_voucher_only_refusal_flag=True
+            )
+        )
+        self.assertEqual(wth["status_code"], 451)
+        self.assertEqual(
+            wth["decision"],
+            "WEBIQ_WEATHER_DAY_CANCELLATION_VOUCHER_ONLY_REFUSAL_HOLD",
+        )
+
+        optim = evaluate_festival_stadium_cashless_rfid_escrow_policy(
+            FestivalStadiumCashlessRfidEscrowPolicyInput(
+                quarterly_festival_and_stadium_cashless_rfid_pool_usd=160000.0,
+                zero_preload_card_link_and_sponsor_cashback_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 36800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 123200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("festival_stadium_cashless_rfid_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("music-festival-stadium-cashless-rfid-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
