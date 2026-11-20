@@ -13882,6 +13882,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-wholesale-fashion-showroom-escrow-sandbox", html_zh)
 
+    def test_game_skin_steam_tradehold_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            GameSkinSteamTradeholdEscrowPolicyInput,
+            evaluate_game_skin_steam_tradehold_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_game_skin_steam_tradehold_escrow_policy(
+            GameSkinSteamTradeholdEscrowPolicyInput(
+                quarterly_game_skin_marketplace_and_esports_pool_usd=235000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "STEAMID64_LOCKED_AND_T8D_ESCROW_AUTHORIZED",
+        )
+
+        hij = evaluate_game_skin_steam_tradehold_escrow_policy(
+            GameSkinSteamTradeholdEscrowPolicyInput(
+                api_key_imposter_trade_hijack_or_sticker_scrape=True
+            )
+        )
+        self.assertEqual(hij["status_code"], 403)
+        self.assertEqual(
+            hij["decision"],
+            "API_KEY_IMPOSTER_TRADE_HIJACK_OR_STICKER_SCRAPE_BLOCKED",
+        )
+
+        cd = evaluate_game_skin_steam_tradehold_escrow_policy(
+            GameSkinSteamTradeholdEscrowPolicyInput(
+                pre_t8d_cooldown_payout_or_trade_reversal_pullback=True
+            )
+        )
+        self.assertEqual(cd["status_code"], 422)
+        self.assertEqual(
+            cd["decision"],
+            "PRE_T8D_COOLDOWN_PAYOUT_OR_TRADE_REVERSAL_PULLBACK_BLOCKED",
+        )
+
+        vac = evaluate_game_skin_steam_tradehold_escrow_policy(
+            GameSkinSteamTradeholdEscrowPolicyInput(
+                webiq_credential_sharing_vac_ban_risk_or_wash_trading_flag=True
+            )
+        )
+        self.assertEqual(vac["status_code"], 451)
+        self.assertEqual(
+            vac["decision"],
+            "WEBIQ_CREDENTIAL_SHARING_VAC_BAN_RISK_OR_WASH_TRADING_HOLD",
+        )
+
+        optim = evaluate_game_skin_steam_tradehold_escrow_policy(
+            GameSkinSteamTradeholdEscrowPolicyInput(
+                quarterly_game_skin_marketplace_and_esports_pool_usd=235000.0,
+                p2p_direct_2pct_fee_and_credit_deposit_free_rental_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 61100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 173900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("game_skin_steam_tradehold_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("game-skin-steam-tradehold-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -20264,6 +20264,87 @@ def evaluate_b2b_wholesale_fashion_showroom_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class GameSkinSteamTradeholdEscrowPolicyInput:
+    """Input contract for Game Skin Marketplace, Steam P2P Trade-Hold Escrow & Esports Coaching."""
+
+    quarterly_game_skin_marketplace_and_esports_pool_usd: float = 235000.0
+    api_key_imposter_trade_hijack_or_sticker_scrape: bool = False
+    pre_t8d_cooldown_payout_or_trade_reversal_pullback: bool = False
+    webiq_credential_sharing_vac_ban_risk_or_wash_trading_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    p2p_direct_2pct_fee_and_credit_deposit_free_rental_ready: bool = False
+
+
+def evaluate_game_skin_steam_tradehold_escrow_policy(
+    policy_input: GameSkinSteamTradeholdEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Game Skin Marketplace, Steam P2P Trade-Hold & Esports Coaching policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_game_skin_marketplace_and_esports_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_credential_sharing_vac_ban_risk_or_wash_trading_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_CREDENTIAL_SHARING_VAC_BAN_RISK_OR_WASH_TRADING_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.api_key_imposter_trade_hijack_or_sticker_scrape:
+        return {
+            "status_code": 403,
+            "decision": "API_KEY_IMPOSTER_TRADE_HIJACK_OR_STICKER_SCRAPE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pre_t8d_cooldown_payout_or_trade_reversal_pullback:
+        return {
+            "status_code": 422,
+            "decision": "PRE_T8D_COOLDOWN_PAYOUT_OR_TRADE_REVERSAL_PULLBACK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.p2p_direct_2pct_fee_and_credit_deposit_free_rental_ready:
+        savings = round(gross_pool * 0.26, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "P2P_DIRECT_2PCT_FEE_AND_CREDIT_DEPOSIT_FREE_RENTAL_CONFIRM",
+            "mandate_token": "game_skin_steam_tradehold_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "STEAMID64_LOCKED_AND_T8D_ESCROW_AUTHORIZED",
+        "mandate_token": "game_skin_steam_tradehold_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -28055,6 +28136,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    game_skin_steam_tradehold_escrow_guard = {
+        "authorized_200": evaluate_game_skin_steam_tradehold_escrow_policy(
+            GameSkinSteamTradeholdEscrowPolicyInput()
+        ),
+        "api_hijack_or_sticker_scrape_403": evaluate_game_skin_steam_tradehold_escrow_policy(
+            GameSkinSteamTradeholdEscrowPolicyInput(
+                api_key_imposter_trade_hijack_or_sticker_scrape=True
+            )
+        ),
+        "pre_t8d_payout_or_pullback_422": evaluate_game_skin_steam_tradehold_escrow_policy(
+            GameSkinSteamTradeholdEscrowPolicyInput(
+                pre_t8d_cooldown_payout_or_trade_reversal_pullback=True
+            )
+        ),
+        "vac_ban_risk_or_wash_trade_451": evaluate_game_skin_steam_tradehold_escrow_policy(
+            GameSkinSteamTradeholdEscrowPolicyInput(
+                webiq_credential_sharing_vac_ban_risk_or_wash_trading_flag=True
+            )
+        ),
+        "p2p_2pct_and_deposit_free_rental_409": evaluate_game_skin_steam_tradehold_escrow_policy(
+            GameSkinSteamTradeholdEscrowPolicyInput(
+                p2p_direct_2pct_fee_and_credit_deposit_free_rental_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -28255,6 +28362,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ip_licensing_anime_merch_escrow_guard": ip_licensing_anime_merch_escrow_guard,
         "dental_implant_lasik_surgery_escrow_guard": dental_implant_lasik_surgery_escrow_guard,
         "b2b_wholesale_fashion_showroom_escrow_guard": b2b_wholesale_fashion_showroom_escrow_guard,
+        "game_skin_steam_tradehold_escrow_guard": game_skin_steam_tradehold_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -37114,6 +37222,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="wholesale-show-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 OPENING_ORDER_FREE_RETURN_AND_NET60_FLOAT_CONFIRM · Mandate: b2b_wholesale_fashion_showroom_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 72 Game Skin Marketplace, Steam P2P Trade-Hold Escrow & Esports Coaching -->
+      <div class="finops-box" id="game-skin-steam-tradehold-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎮 游戏饰品皮肤交易、Steam/CS2 报价托管与电竞陪练清结算 (网易 BUFF / 悠悠有品 / CSFloat / Skinport / 比心) 防 API 劫持骗刀、T+8d 冷却锁与防外挂封号沙盒 (Round 72)</div>
+            <div class="finops-subtitle">实测底层 64位 SteamID64 强绑定防 API Key 劫持秒换同名高仿假号骗刀与交割前刮四连全息贴纸 (HTTP 403)、T+8d (192h) 不可逆交易冷却期满才释放卖家资金防恶意回滚找回 (HTTP 422)、Web IQ 禁交出账号密码代练防百万库存 VAC 封禁 (HTTP 451) 及 P2P 直发 2% 低费率+信用免押租刀立省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="game-skin-status-kpi">HTTP 409 · P2P_DIRECT_2PCT_FEE_AND_CREDIT_DEPOSIT_FREE_RENTAL_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度游戏饰品皮肤交易与电竞陪练结算池 ($ USD)
+            <input type="range" id="game-skin-pool-slider" min="40000" max="1500000" step="10000" value="235000" oninput="updateGameSkinSteamTradeholdSandbox()" />
+            <span id="game-skin-pool-val" style="color:#6ee7b7; font-family:monospace;">$235,000</span>
+          </label>
+          <label>
+            64位 SteamID64 防劫持与四连贴纸完好度校验 (HTTP 403)
+            <select id="game-skin-hijack-select" onchange="updateGameSkinSteamTradeholdSandbox()">
+              <option value="pass">recipient_steamid64 精确匹配 + Float磨损与4槽贴纸 0 刮损 (放行)</option>
+              <option value="block">API Key 被劫持 0.4秒取消真报价换同名假号 或 发货前刮毁全息贴纸 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            T+8d (192h) 交易保护冷却期满与防撤回校验 (HTTP 422)
+            <select id="game-skin-cooldown-select" onchange="updateGameSkinSteamTradeholdSandbox()">
+              <option value="pass">已满 192 小时不可逆冷却期 + 复核饰品仍在买家库存 (合规)</option>
+              <option value="block">交割仅 48h 要求提前提现 或 卖家触发 7 天官方交易回滚追回饰品 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 禁交号代练 (防 VAC 封禁) 与反洗钱筛查 (HTTP 451)
+            <select id="game-skin-vac-select" onchange="updateGameSkinSteamTradeholdSandbox()">
+              <option value="clear">组队双排语音教学(零密码交接) + 价格指数正常 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">代练索要主号密码异地开挂致百万库存 VAC 封禁风险 或 黑卡买涂鸦洗钱 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            P2P 直发 (2% 费率 vs 15% 官方税) 与信用免押租刀 (HTTP 409)
+            <select id="game-skin-opt-select" onchange="updateGameSkinSteamTradeholdSandbox()">
+              <option value="enabled" selected>开启 P2P 玩家直发免 15% 社区税 + 芝麻信用免押金按周租刀省 26% (HTTP 409)</option>
+              <option value="baseline">常规 T+8d 托管与全款买断饰品交易授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度游戏资产毛池</div>
+            <div class="finops-kpi-val" id="game-skin-gross-kpi">$235,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">P2P直发与免押租刀净额</div>
+            <div class="finops-kpi-val" id="game-skin-net-kpi" style="color:#6ee7b7;">$173,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下社区税与贬值</div>
+            <div class="finops-kpi-val" id="game-skin-savings-kpi" style="color:#38bdf8;">$61,100</div>
+          </div>
+        </div>
+        <div id="game-skin-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 P2P_DIRECT_2PCT_FEE_AND_CREDIT_DEPOSIT_FREE_RENTAL_CONFIRM · Mandate: game_skin_steam_tradehold_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -47813,6 +47984,80 @@ function updateB2BWholesaleFashionShowroomSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 SIZE_CURVE_AND_CANCEL_WINDOW_AUTHORIZED · Mandate: b2b_wholesale_fashion_showroom_escrow_mandate_200';
+}}
+
+function updateGameSkinSteamTradeholdSandbox() {{
+  const slider = document.getElementById('game-skin-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '235000');
+  const hijMode = document.getElementById('game-skin-hijack-select').value;
+  const cdMode = document.getElementById('game-skin-cooldown-select').value;
+  const vacMode = document.getElementById('game-skin-vac-select').value;
+  const optMode = document.getElementById('game-skin-opt-select').value;
+
+  document.getElementById('game-skin-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('game-skin-status-kpi');
+  const grossKpi = document.getElementById('game-skin-gross-kpi');
+  const netKpi = document.getElementById('game-skin-net-kpi');
+  const savingsKpi = document.getElementById('game-skin-savings-kpi');
+  const banner = document.getElementById('game-skin-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vacMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_CREDENTIAL_SHARING_VAC_BAN_RISK_OR_WASH_TRADING_HOLD · Mandate: null';
+    return;
+  }}
+  if (hijMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 API_KEY_IMPOSTER_TRADE_HIJACK_OR_STICKER_SCRAPE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (cdMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PRE_T8D_COOLDOWN_PAYOUT_OR_TRADE_REVERSAL_PULLBACK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.26);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 P2P_DIRECT_2PCT_FEE_AND_CREDIT_DEPOSIT_FREE_RENTAL_CONFIRM · Mandate: game_skin_steam_tradehold_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 STEAMID64_LOCKED_AND_T8D_ESCROW_AUTHORIZED · Mandate: game_skin_steam_tradehold_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

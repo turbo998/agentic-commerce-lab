@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`190` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`191` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (37 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (53 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (54 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (41 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
@@ -81,7 +81,7 @@
 | 37 | **Smart Parking, `LPR` Barrierless Garage & `EV` Supercharger Billing (`Metropolis / ParkMobile / Tesla Supercharger / ISO 15118`) Anti-Ghost-Session Spatiotemporal Mutex, Anti-`Quishing`, `>= 50%` Idle-Fee Gate & Fleet `VIN` Escrow Agent Architecture Selection FAQ** | [English](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.en.md) · [中文](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (53 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (54 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -140,6 +140,7 @@
 | 51 | **Photo/Film Studio Booking, Camera Gear Rental & `CMOS` Sensor Escrow (`Peerspace / ShareGrid / Lensrentals`) Outbound `f/22 EXIF` Sensor Hash, `15-Minute` Load-Out Grace & Weekend `1-Day` Rate Agent Architecture Selection FAQ** | [English](photo-studio-camera-gear-rental-cmos-check-overtime-escrow-agent-selection-faq.en.md) · [中文](photo-studio-camera-gear-rental-cmos-check-overtime-escrow-agent-selection-faq.md) |
 | 52 | **Brand `IP` Licensing, Anime Merch ("Guzi") Minimum Guarantee (`MG`) & Serialized Royalty Escrow (`Sanrio / Disney / Bandai Namco / Pop Mart / Alifish`) Hologram Tax-Stamp Quota, `MG` Recoupment Waterfall & `Sell-Off` Floor Agent Architecture Selection FAQ** | [English](ip-licensing-anime-merch-mg-royalty-hologram-escrow-agent-selection-faq.en.md) · [中文](ip-licensing-anime-merch-mg-royalty-hologram-escrow-agent-selection-faq.md) |
 | 53 | **Elective Dental Implant, `LASIK / ICL` Vision Correction & Bundled Surgery Escrow (`ClearChoice / Aier Eye / Topchoice / Sunbit`) All-Inclusive Crown/Abutment Lock, Anti-Deferred-Interest Gate & `UDI` Implant Traceability Agent Architecture Selection FAQ** | [English](dental-implant-lasik-elective-surgery-udi-financing-escrow-agent-selection-faq.en.md) · [中文](dental-implant-lasik-elective-surgery-udi-financing-escrow-agent-selection-faq.md) |
+| 54 | **Game Skin Marketplace, `Steam P2P` Trade-Hold Escrow & Esports Coaching (`BUFF163 / CSFloat / Youpin898 / Skinport`) Anti-`API-Key` Hijack Gate, `T+8d` Reversal Lock & Duo-Queue `VAC` Shield Agent Architecture Selection FAQ** | [English](game-skin-marketplace-steam-tradehold-esports-escrow-agent-selection-faq.en.md) · [中文](game-skin-marketplace-steam-tradehold-esports-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (41 Guides)
