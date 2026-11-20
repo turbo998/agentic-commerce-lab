@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`219` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`220` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（38 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（70 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（52 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（53 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（29 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -160,7 +160,7 @@
 | 70 | **住宅与商业屋顶翻新（Roofing）、防冰雹风暴游击队理赔转让（AOB）绑架与 `UL 2218 Class-4` 抗冲击瓦托管（Rooftop Replacement, Anti-AOB Storm-Chaser & UL 2218 Shingle Escrow：GAF Master Elite / Owens Corning / EagleView / 东方雨虹）“防风暴游击队诱签保险理赔转让书（AOB）、防掀开屋顶后坐地起价 $120/张木基层与建材商留置权催收”Agent 架构选型 FAQ** | [中文](rooftop-replacement-storm-chaser-aob-ul2218-escrow-agent-selection-faq.md) · [English](rooftop-replacement-storm-chaser-aob-ul2218-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（52 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（53 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -218,6 +218,7 @@
 | 50 | **企业写字楼停车位包月、车牌识别（LPR）漏拍天价误扣与混合办公弹性共享车位池托管（B2B Corporate Parking, LPR Overstay & Hybrid Commuter Pool Escrow：Metropolis / FlashParking / SpotHero for Business / 捷顺智慧停车）“防无杆车牌识别漏拍出场误扣 $180 封顶费、防演唱会夜向企业访客强收 $75 高价与混合办公闲置包月车位空扣”Agent 架构选型 FAQ** | [中文](b2b-corporate-parking-lpr-overstay-commuter-escrow-agent-selection-faq.md) · [English](b2b-corporate-parking-lpr-overstay-commuter-escrow-agent-selection-faq.en.md) |
 | 51 | **企业员工工作餐团餐（Corporate Catering）、混合办公幽灵份数防浪费与过敏原（FALCPA）托管（B2B Corporate Catering, Office Lunch & Allergen Escrow：ezCater / Forkable / ZeroCater / Sharebite / 美团企业版）“防 48h 锁死人数遇雨天 35% 员工居家导致盒饭全扔、防平台与餐厅叠加 63% 包装小费刺客与过敏原漏标”Agent 架构选型 FAQ** | [中文](b2b-corporate-catering-office-lunch-headcount-allergen-escrow-agent-selection-faq.md) · [English](b2b-corporate-catering-office-lunch-headcount-allergen-escrow-agent-selection-faq.en.md) |
 | 52 | **共享办公空间（Coworking）、按次灵活工位卡（On-Demand Day-Pass）与会议室积分清零防坑托管（B2B Coworking, On-Demand Day-Pass & Meeting-Credit Escrow：WeWork / Regus IWG / Industrious / LiquidSpace / Gable）“防退租强扣 $150/工位刷墙复原费、防会议室积分月底作废加收 $85/小时超额费与低频员工 $299 月卡空耗”Agent 架构选型 FAQ** | [中文](b2b-coworking-ondemand-daypass-meeting-credit-escrow-agent-selection-faq.md) · [English](b2b-coworking-ondemand-daypass-meeting-credit-escrow-agent-selection-faq.en.md) |
+| 53 | **精品咖啡生豆（Specialty Green Coffee）寻源、`SCA` 杯测评分对赌与水活度（`a_w`）/欧盟零毁林（`EUDR`）托管（Algrano / Cropster Hub / Sustainable Harvest / 云南咖啡交易中心）“防寄来 86.5 分样豆大货到港掺陈年木味豆跌至 80 分、防含水率 >12.5% 卖水发霉与克扣咖农溢价”Agent 架构选型 FAQ** | [中文](specialty-coffee-green-bean-qgrader-moisture-eudr-escrow-agent-selection-faq.md) · [English](specialty-coffee-green-bean-qgrader-moisture-eudr-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）

@@ -15825,6 +15825,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-coworking-daypass-escrow-sandbox", html_zh)
 
+    def test_specialty_coffee_green_bean_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SpecialtyCoffeeGreenBeanEscrowPolicyInput,
+            evaluate_specialty_coffee_green_bean_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_specialty_coffee_green_bean_escrow_policy(
+            SpecialtyCoffeeGreenBeanEscrowPolicyInput(
+                quarterly_specialty_coffee_green_bean_pool_usd=180000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "QGRADER_CUPPING_AND_GRAINPRO_AW_AUTHORIZED",
+        )
+
+        cup = evaluate_specialty_coffee_green_bean_escrow_policy(
+            SpecialtyCoffeeGreenBeanEscrowPolicyInput(
+                landed_sca_cupping_drop_over_1pt_or_opaque_farmgate_fob_skim=True
+            )
+        )
+        self.assertEqual(cup["status_code"], 403)
+        self.assertEqual(
+            cup["decision"],
+            "LANDED_SCA_CUPPING_DROP_OVER_1PT_OR_OPAQUE_FARMGATE_FOB_SKIM_BLOCKED",
+        )
+
+        moist = evaluate_specialty_coffee_green_bean_escrow_policy(
+            SpecialtyCoffeeGreenBeanEscrowPolicyInput(
+                moisture_over_11_8pct_or_water_activity_over_0_60aw_or_no_grainpro=True
+            )
+        )
+        self.assertEqual(moist["status_code"], 422)
+        self.assertEqual(
+            moist["decision"],
+            "MOISTURE_OVER_11_8PCT_OR_WATER_ACTIVITY_OVER_0_60AW_OR_NO_GRAINPRO_BLOCKED",
+        )
+
+        eudr = evaluate_specialty_coffee_green_bean_escrow_policy(
+            SpecialtyCoffeeGreenBeanEscrowPolicyInput(
+                webiq_eudr_deforestation_polygon_missing_or_ochratoxin_mrl_flag=True
+            )
+        )
+        self.assertEqual(eudr["status_code"], 451)
+        self.assertEqual(
+            eudr["decision"],
+            "WEBIQ_EUDR_DEFORESTATION_POLYGON_MISSING_OR_OCHRATOXIN_MRL_HOLD",
+        )
+
+        optim = evaluate_specialty_coffee_green_bean_escrow_policy(
+            SpecialtyCoffeeGreenBeanEscrowPolicyInput(
+                quarterly_specialty_coffee_green_bean_pool_usd=180000.0,
+                direct_algrano_producer_pool_and_c_market_differential_fixation_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 41400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 138600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("specialty_coffee_green_bean_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("specialty-coffee-green-bean-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

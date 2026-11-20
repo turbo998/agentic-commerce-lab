@@ -22613,6 +22613,87 @@ def evaluate_b2b_coworking_daypass_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class SpecialtyCoffeeGreenBeanEscrowPolicyInput:
+    """Input contract for Specialty Coffee Green-Bean, Q-Grader Cupping & EUDR Escrow."""
+
+    quarterly_specialty_coffee_green_bean_pool_usd: float = 180000.0
+    landed_sca_cupping_drop_over_1pt_or_opaque_farmgate_fob_skim: bool = False
+    moisture_over_11_8pct_or_water_activity_over_0_60aw_or_no_grainpro: bool = False
+    webiq_eudr_deforestation_polygon_missing_or_ochratoxin_mrl_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    direct_algrano_producer_pool_and_c_market_differential_fixation_ready: bool = False
+
+
+def evaluate_specialty_coffee_green_bean_escrow_policy(
+    policy_input: SpecialtyCoffeeGreenBeanEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Specialty Coffee Green-Bean, Q-Grader Cupping & EUDR Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_specialty_coffee_green_bean_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_eudr_deforestation_polygon_missing_or_ochratoxin_mrl_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_EUDR_DEFORESTATION_POLYGON_MISSING_OR_OCHRATOXIN_MRL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.landed_sca_cupping_drop_over_1pt_or_opaque_farmgate_fob_skim:
+        return {
+            "status_code": 403,
+            "decision": "LANDED_SCA_CUPPING_DROP_OVER_1PT_OR_OPAQUE_FARMGATE_FOB_SKIM_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.moisture_over_11_8pct_or_water_activity_over_0_60aw_or_no_grainpro:
+        return {
+            "status_code": 422,
+            "decision": "MOISTURE_OVER_11_8PCT_OR_WATER_ACTIVITY_OVER_0_60AW_OR_NO_GRAINPRO_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.direct_algrano_producer_pool_and_c_market_differential_fixation_ready:
+        savings = round(gross_pool * 0.23, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DIRECT_ALGRANO_PRODUCER_POOL_AND_C_MARKET_DIFFERENTIAL_FIXATION_CONFIRM",
+            "mandate_token": "specialty_coffee_green_bean_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "QGRADER_CUPPING_AND_GRAINPRO_AW_AUTHORIZED",
+        "mandate_token": "specialty_coffee_green_bean_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -31158,6 +31239,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    specialty_coffee_green_bean_escrow_guard = {
+        "authorized_200": evaluate_specialty_coffee_green_bean_escrow_policy(
+            SpecialtyCoffeeGreenBeanEscrowPolicyInput()
+        ),
+        "cupping_drop_or_fob_skim_403": evaluate_specialty_coffee_green_bean_escrow_policy(
+            SpecialtyCoffeeGreenBeanEscrowPolicyInput(
+                landed_sca_cupping_drop_over_1pt_or_opaque_farmgate_fob_skim=True
+            )
+        ),
+        "high_moisture_or_no_grainpro_422": evaluate_specialty_coffee_green_bean_escrow_policy(
+            SpecialtyCoffeeGreenBeanEscrowPolicyInput(
+                moisture_over_11_8pct_or_water_activity_over_0_60aw_or_no_grainpro=True
+            )
+        ),
+        "missing_eudr_or_ochratoxin_451": evaluate_specialty_coffee_green_bean_escrow_policy(
+            SpecialtyCoffeeGreenBeanEscrowPolicyInput(
+                webiq_eudr_deforestation_polygon_missing_or_ochratoxin_mrl_flag=True
+            )
+        ),
+        "algrano_fcl_pool_and_c_fixation_409": evaluate_specialty_coffee_green_bean_escrow_policy(
+            SpecialtyCoffeeGreenBeanEscrowPolicyInput(
+                direct_algrano_producer_pool_and_c_market_differential_fixation_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -31387,6 +31494,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_corporate_catering_escrow_guard": b2b_corporate_catering_escrow_guard,
         "rooftop_replacement_ul2218_escrow_guard": rooftop_replacement_ul2218_escrow_guard,
         "b2b_coworking_daypass_escrow_guard": b2b_coworking_daypass_escrow_guard,
+        "specialty_coffee_green_bean_escrow_guard": specialty_coffee_green_bean_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -42073,6 +42181,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="cowork-pass-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PAY_PER_BADGE_ON_DEMAND_PASS_POOL_AND_LIQUIDSPACE_MEETING_ARBITRAGE_CONFIRM · Mandate: b2b_coworking_daypass_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 101 Specialty Coffee Green-Bean, Q-Grader Cupping & EUDR Escrow -->
+      <div class="finops-box" id="specialty-coffee-green-bean-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">☕ 精品咖啡生豆 (Specialty Green Coffee) 寻源、SCA 杯测评分对赌与水活度 (a_w)/欧盟零毁林 (EUDR) 托管 (Algrano / Cropster Hub / Sustainable Harvest / 云南咖啡交易中心) 三阶杯测与拼柜沙盒 (Round 101)</div>
+            <div class="finops-subtitle">实测装船前样 (PSS) 与到港样独立 CQI Q-Grader 双盲杯测对赌(分差&lt;=1.0 分)防大货掺隔年陈豆及披露咖农实收价(&gt;=75% FOB) (HTTP 403)、ISO 6673 含水率(9.5%-11.8%)与 Rotronic 水活度 (a_w&lt;=0.60) 叠加 GrainPro 气密内袋防海运发霉卖水 (HTTP 422)、Web IQ 欧盟 EUDR 零毁林多边形与赭曲霉毒素 (OTA&lt;=5ppb) 核验 (HTTP 451) 及 Algrano 产区直拼整柜净省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="coffee-bean-status-kpi">HTTP 409 · DIRECT_ALGRANO_PRODUCER_POOL_AND_C_MARKET_DIFFERENTIAL_FIXATION_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度精品咖啡烘焙工厂生豆寻源预算池 ($ USD)
+            <input type="range" id="coffee-bean-pool-slider" min="30000" max="1000000" step="10000" value="180000" oninput="updateSpecialtyCoffeeGreenBeanEscrowSandbox()" />
+            <span id="coffee-bean-pool-val" style="color:#6ee7b7; font-family:monospace;">$180,000</span>
+          </label>
+          <label>
+            到港 Q-Grader 杯测分差 (&lt;=1.0 分) 与咖农实收价核验 (HTTP 403)
+            <select id="coffee-bean-cupping-select" onchange="updateSpecialtyCoffeeGreenBeanEscrowSandbox()">
+              <option value="pass">到港样与 PSS 分差&lt;=1.0 分(零一级瑕疵/无酚味) + 咖农实收&gt;=75% FOB (放行)</option>
+              <option value="block">寄来 86.5 分空运样豆但大货掺陈豆跌至 80.5 分木味 或 贸易商克扣 75% 咖农溢价 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            生豆含水率 (9.5%-11.8%)、水活度 (a_w&lt;=0.60) 与 GrainPro 核验 (HTTP 422)
+            <select id="coffee-bean-moisture-select" onchange="updateSpecialtyCoffeeGreenBeanEscrowSandbox()">
+              <option value="pass">含水率 10.8% + 水活度 a_w=0.55 + 全数内衬 GrainPro/Ecotact 高阻隔气密袋 (合规)</option>
+              <option value="block">含水率 13.5% 多卖 450kg 水 或 水活度 a_w=0.65 无内袋海运白化发霉 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 欧盟 EUDR 零毁林坐标与赭曲霉毒素 (OTA&lt;=5ppb) 核验 (HTTP 451)
+            <select id="coffee-bean-eudr-select" onchange="updateSpecialtyCoffeeGreenBeanEscrowSandbox()">
+              <option value="clear">庄园地块具备 2020 年后零毁林 GeoJSON 边界 + OTA&lt;2ppb 农残达标 (正常)</option>
+              <option value="hold">缺失欧盟 EUDR 农场多边形 GPS 坐标 或 检出赭曲霉毒素 A &gt;5ppb/毒死蜱超标 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            Algrano 产区直连拼整柜 (Shared FCL) 与 C-Market 锁基差 (HTTP 409)
+            <select id="coffee-bean-opt-select" onchange="updateSpecialtyCoffeeGreenBeanEscrowSandbox()">
+              <option value="enabled" selected>合并微批次走 Algrano 产区共享 20 尺整柜 (省 $0.65/lb 现货差价) + 锁基差净省 23% (HTTP 409)</option>
+              <option value="baseline">常规 Q-Grader 杯测与 GrainPro 锁鲜标准生豆交割授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度精品生豆采购总池</div>
+            <div class="finops-kpi-val" id="coffee-bean-gross-kpi">$180,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">产区拼柜与锁基差后净支出</div>
+            <div class="finops-kpi-val" id="coffee-bean-net-kpi" style="color:#6ee7b7;">$138,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除现货加价与水分损耗</div>
+            <div class="finops-kpi-val" id="coffee-bean-savings-kpi" style="color:#38bdf8;">$41,400</div>
+          </div>
+        </div>
+        <div id="coffee-bean-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DIRECT_ALGRANO_PRODUCER_POOL_AND_C_MARKET_DIFFERENTIAL_FIXATION_CONFIRM · Mandate: specialty_coffee_green_bean_mandate_optim_409
         </div>
       </div>
 
@@ -54918,6 +55089,80 @@ function updateB2BCoworkingDaypassEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ALL_IN_WORKSPACE_AND_PRIVATE_VLAN_AUTHORIZED · Mandate: b2b_coworking_daypass_mandate_200';
+}}
+
+function updateSpecialtyCoffeeGreenBeanEscrowSandbox() {{
+  const slider = document.getElementById('coffee-bean-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '180000');
+  const cupMode = document.getElementById('coffee-bean-cupping-select').value;
+  const moistMode = document.getElementById('coffee-bean-moisture-select').value;
+  const eudrMode = document.getElementById('coffee-bean-eudr-select').value;
+  const optMode = document.getElementById('coffee-bean-opt-select').value;
+
+  document.getElementById('coffee-bean-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('coffee-bean-status-kpi');
+  const grossKpi = document.getElementById('coffee-bean-gross-kpi');
+  const netKpi = document.getElementById('coffee-bean-net-kpi');
+  const savingsKpi = document.getElementById('coffee-bean-savings-kpi');
+  const banner = document.getElementById('coffee-bean-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (eudrMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_EUDR_DEFORESTATION_POLYGON_MISSING_OR_OCHRATOXIN_MRL_HOLD · Mandate: null';
+    return;
+  }}
+  if (cupMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 LANDED_SCA_CUPPING_DROP_OVER_1PT_OR_OPAQUE_FARMGATE_FOB_SKIM_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (moistMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MOISTURE_OVER_11_8PCT_OR_WATER_ACTIVITY_OVER_0_60AW_OR_NO_GRAINPRO_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.23);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DIRECT_ALGRANO_PRODUCER_POOL_AND_C_MARKET_DIFFERENTIAL_FIXATION_CONFIRM · Mandate: specialty_coffee_green_bean_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 QGRADER_CUPPING_AND_GRAINPRO_AW_AUTHORIZED · Mandate: specialty_coffee_green_bean_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`219` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`220` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (38 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (70 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (52 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (53 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -160,7 +160,7 @@
 | 70 | **Residential & Commercial Rooftop Replacement, Anti-`AOB` Storm-Chaser & `UL 2218 Class-4` Shingle Escrow (`GAF Master Elite / Owens Corning / EagleView / Hover 3D`) Anti-`AOB` Lock, Tear-Off Layer Vision & `Class-4` Insurer Discount Agent Architecture Selection FAQ** | [English](rooftop-replacement-storm-chaser-aob-ul2218-escrow-agent-selection-faq.en.md) · [中文](rooftop-replacement-storm-chaser-aob-ul2218-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (52 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (53 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -218,6 +218,7 @@
 | 50 | **B2B Corporate Parking, `LPR` Overstay & Hybrid Commuter Pool Escrow (`Metropolis / FlashParking / SpotHero for Business / Jieshun`) `LPR`-to-Badge Exit Sync, Flex Daily Pool & `IRS Sec. 132(f)` Agent Architecture Selection FAQ** | [English](b2b-corporate-parking-lpr-overstay-commuter-escrow-agent-selection-faq.en.md) · [中文](b2b-corporate-parking-lpr-overstay-commuter-escrow-agent-selection-faq.md) |
 | 51 | **B2B Corporate Catering, Office Daily Lunch Program & Allergen Escrow (`ezCater / Forkable / ZeroCater / Sharebite / Meituan Enterprise`) `09:45 AM` Opt-In Lock, `<=18%` Fee Cap & `FALCPA` Allergen Agent Architecture Selection FAQ** | [English](b2b-corporate-catering-office-lunch-headcount-allergen-escrow-agent-selection-faq.en.md) · [中文](b2b-corporate-catering-office-lunch-headcount-allergen-escrow-agent-selection-faq.md) |
 | 52 | **B2B Coworking, On-Demand Day-Pass & Meeting-Credit Escrow (`WeWork / Regus IWG / Industrious / LiquidSpace / Gable`) Zero Exit-Fee Lock, Credit Rollover & Pay-on-Tap Pool Agent Architecture Selection FAQ** | [English](b2b-coworking-ondemand-daypass-meeting-credit-escrow-agent-selection-faq.en.md) · [中文](b2b-coworking-ondemand-daypass-meeting-credit-escrow-agent-selection-faq.md) |
+| 53 | **Specialty Coffee Green-Bean Sourcing, `CQI Q-Grader` Cupping & Water-Activity (`a_w`) / `EUDR` Escrow (`Algrano / Cropster Hub / Sustainable Harvest / Yunnan Coffee Exchange`) `PSS` Cupping Parity, `<=0.60 a_w` `GrainPro` & `EUDR` Polygon Agent Architecture Selection FAQ** | [English](specialty-coffee-green-bean-qgrader-moisture-eudr-escrow-agent-selection-faq.en.md) · [中文](specialty-coffee-green-bean-qgrader-moisture-eudr-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 Guides)
