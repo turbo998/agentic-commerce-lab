@@ -22370,6 +22370,87 @@ def evaluate_online_flower_bouquet_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BCorporateCateringEscrowPolicyInput:
+    """Input contract for B2B Corporate Catering, Office Lunch & FALCPA Allergen Escrow."""
+
+    quarterly_b2b_corporate_catering_and_lunch_pool_usd: float = 130000.0
+    double_catering_admin_fee_or_post_tax_tip_compounding: bool = False
+    unconfirmed_wfh_ghost_headcount_or_missing_falcpa_allergen_tag: bool = False
+    webiq_kitchen_health_closure_or_anaphylaxis_allergen_breach_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    same_day_0945_optin_individual_pod_and_tax_irc119_optimization_ready: bool = False
+
+
+def evaluate_b2b_corporate_catering_escrow_policy(
+    policy_input: B2BCorporateCateringEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Corporate Catering, Office Lunch & FALCPA Allergen Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_corporate_catering_and_lunch_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_kitchen_health_closure_or_anaphylaxis_allergen_breach_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_KITCHEN_HEALTH_CLOSURE_OR_ANAPHYLAXIS_ALLERGEN_BREACH_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.double_catering_admin_fee_or_post_tax_tip_compounding:
+        return {
+            "status_code": 403,
+            "decision": "DOUBLE_CATERING_ADMIN_FEE_OR_POST_TAX_TIP_COMPOUNDING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unconfirmed_wfh_ghost_headcount_or_missing_falcpa_allergen_tag:
+        return {
+            "status_code": 422,
+            "decision": "UNCONFIRMED_WFH_GHOST_HEADCOUNT_OR_MISSING_FALCPA_ALLERGEN_TAG_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.same_day_0945_optin_individual_pod_and_tax_irc119_optimization_ready:
+        savings = round(gross_pool * 0.32, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SAME_DAY_0945_OPTIN_INDIVIDUAL_POD_AND_TAX_IRC119_OPTIMIZATION_CONFIRM",
+            "mandate_token": "b2b_corporate_catering_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "OPTIN_HEADCOUNT_AND_FALCPA_ALLERGEN_AUTHORIZED",
+        "mandate_token": "b2b_corporate_catering_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -30837,6 +30918,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_corporate_catering_escrow_guard = {
+        "authorized_200": evaluate_b2b_corporate_catering_escrow_policy(
+            B2BCorporateCateringEscrowPolicyInput()
+        ),
+        "double_admin_fee_or_tip_tax_403": evaluate_b2b_corporate_catering_escrow_policy(
+            B2BCorporateCateringEscrowPolicyInput(
+                double_catering_admin_fee_or_post_tax_tip_compounding=True
+            )
+        ),
+        "wfh_ghost_meal_or_missing_tag_422": evaluate_b2b_corporate_catering_escrow_policy(
+            B2BCorporateCateringEscrowPolicyInput(
+                unconfirmed_wfh_ghost_headcount_or_missing_falcpa_allergen_tag=True
+            )
+        ),
+        "kitchen_closure_or_allergen_breach_451": evaluate_b2b_corporate_catering_escrow_policy(
+            B2BCorporateCateringEscrowPolicyInput(
+                webiq_kitchen_health_closure_or_anaphylaxis_allergen_breach_flag=True
+            )
+        ),
+        "sameday_0945_pod_and_batch_409": evaluate_b2b_corporate_catering_escrow_policy(
+            B2BCorporateCateringEscrowPolicyInput(
+                same_day_0945_optin_individual_pod_and_tax_irc119_optimization_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -31063,6 +31170,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "fine_wine_en_primeur_cellar_escrow_guard": fine_wine_en_primeur_cellar_escrow_guard,
         "b2b_corporate_parking_lpr_escrow_guard": b2b_corporate_parking_lpr_escrow_guard,
         "online_flower_bouquet_escrow_guard": online_flower_bouquet_escrow_guard,
+        "b2b_corporate_catering_escrow_guard": b2b_corporate_catering_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -41560,6 +41668,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="flower-gift-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DIRECT_LOCAL_STUDIO_FLORIST_AND_FARM_TO_TABLE_SUBSCRIPTION_CONFIRM · Mandate: online_flower_bouquet_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 98 B2B Corporate Catering, Office Lunch & FALCPA Allergen Escrow -->
+      <div class="finops-box" id="b2b-corporate-catering-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🍱 企业员工工作餐团餐 (Corporate Catering)、混合办公幽灵份数防浪费与过敏原 (FALCPA) 托管 (ezCater / Forkable / ZeroCater / Sharebite / 美团企航) 09:45 实到点餐与智能柜沙盒 (Round 98)</div>
+            <div class="finops-subtitle">实测堂食同价与配送+税前小费总和&lt;=18% 封顶防餐厅 15% 假打包费+12% 平台费+含税复利小费叠加 63% 溢价 (HTTP 403)、当日早 09:45 AM 门禁/Slack 实到确认防 48h 盲订遇雨天 35% 员工居家导致 28 份盒饭全扔及单盒 FALCPA 9 大过敏原强标签 (HTTP 422)、Web IQ 致命花生/麸质过敏原隔离与卫生 A 级证核验 (HTTP 451) 及集中智能保温柜专送净省 32% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="corp-cater-status-kpi">HTTP 409 · SAME_DAY_0945_OPTIN_INDIVIDUAL_POD_AND_TAX_IRC119_OPTIMIZATION_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业员工工作餐与会务团餐预算池 ($ USD)
+            <input type="range" id="corp-cater-pool-slider" min="20000" max="800000" step="5000" value="130000" oninput="updateB2BCorporateCateringEscrowSandbox()" />
+            <span id="corp-cater-pool-val" style="color:#6ee7b7; font-family:monospace;">$130,000</span>
+          </label>
+          <label>
+            堂食同价与总履约费/税前小费封顶 (&lt;=18%) 核验 (HTTP 403)
+            <select id="corp-cater-fee-select" onchange="updateB2BCorporateCateringEscrowSandbox()">
+              <option value="pass">0% 菜单加价 + 配送与税前小费总和&lt;=18% + 热食&gt;=60°C 准点送达 (放行)</option>
+              <option value="block">叠加 15% 非司机打包行政费+12% 平台费+对税费复利收 20% 小费暴涨 63% (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            当日早 09:45 AM 在岗确认与单盒 FALCPA 过敏原签核验 (HTTP 422)
+            <select id="corp-cater-optin-select" onchange="updateB2BCorporateCateringEscrowSandbox()">
+              <option value="pass">09:45 门禁/Slack 实到确认点餐(0 幽灵餐) + 逐盒打印姓名与 9 大过敏原标签 (合规)</option>
+              <option value="block">提前 48h 盲锁 80 人遇雨天 28 人居家白扔 $650 盒饭 或 大盘菜无过敏原标识 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 供餐厨房卫生评级 (Grade-A) 与致命过敏原隔离核验 (HTTP 451)
+            <select id="corp-cater-allergen-select" onchange="updateB2BCorporateCateringEscrowSandbox()">
+              <option value="clear">厨房市场监管卫生 A 级 + 重度花生/麸质过敏员工餐盒紫标防拆独立封装 (正常)</option>
+              <option value="hold">供餐厨房因卫生违规降为 C 级 或 花生重度过敏员工餐食未物理隔离 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            当日 09:45 截单集中智能保温柜配送 (Smart-Pod Batch) (HTTP 409)
+            <select id="corp-cater-opt-select" onchange="updateB2BCorporateCateringEscrowSandbox()">
+              <option value="enabled" selected>切换个人自选+09:45 截单 1 趟专车集中送入保温柜 (替 48h 自助餐/散点外卖) 净省 32% (HTTP 409)</option>
+              <option value="baseline">常规实到人数确认与过敏原合规团餐托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业工作餐预算池</div>
+            <div class="finops-kpi-val" id="corp-cater-gross-kpi">$130,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">09:45 实到拼送后净支出</div>
+            <div class="finops-kpi-val" id="corp-cater-net-kpi" style="color:#6ee7b7;">$88,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消灭居家剩饭与叠加杂费</div>
+            <div class="finops-kpi-val" id="corp-cater-savings-kpi" style="color:#38bdf8;">$41,600</div>
+          </div>
+        </div>
+        <div id="corp-cater-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SAME_DAY_0945_OPTIN_INDIVIDUAL_POD_AND_TAX_IRC119_OPTIMIZATION_CONFIRM · Mandate: b2b_corporate_catering_mandate_optim_409
         </div>
       </div>
 
@@ -54183,6 +54354,80 @@ function updateOnlineFlowerBouquetEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 BENCH_PHOTO_VERIFIED_AND_PET_SAFE_BOUQUET_AUTHORIZED · Mandate: online_flower_bouquet_escrow_mandate_200';
+}}
+
+function updateB2BCorporateCateringEscrowSandbox() {{
+  const slider = document.getElementById('corp-cater-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '130000');
+  const feeMode = document.getElementById('corp-cater-fee-select').value;
+  const optinMode = document.getElementById('corp-cater-optin-select').value;
+  const algMode = document.getElementById('corp-cater-allergen-select').value;
+  const optMode = document.getElementById('corp-cater-opt-select').value;
+
+  document.getElementById('corp-cater-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('corp-cater-status-kpi');
+  const grossKpi = document.getElementById('corp-cater-gross-kpi');
+  const netKpi = document.getElementById('corp-cater-net-kpi');
+  const savingsKpi = document.getElementById('corp-cater-savings-kpi');
+  const banner = document.getElementById('corp-cater-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (algMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_KITCHEN_HEALTH_CLOSURE_OR_ANAPHYLAXIS_ALLERGEN_BREACH_HOLD · Mandate: null';
+    return;
+  }}
+  if (feeMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DOUBLE_CATERING_ADMIN_FEE_OR_POST_TAX_TIP_COMPOUNDING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optinMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCONFIRMED_WFH_GHOST_HEADCOUNT_OR_MISSING_FALCPA_ALLERGEN_TAG_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.32);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SAME_DAY_0945_OPTIN_INDIVIDUAL_POD_AND_TAX_IRC119_OPTIMIZATION_CONFIRM · Mandate: b2b_corporate_catering_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 OPTIN_HEADCOUNT_AND_FALCPA_ALLERGEN_AUTHORIZED · Mandate: b2b_corporate_catering_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

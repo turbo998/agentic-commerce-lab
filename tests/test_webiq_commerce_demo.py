@@ -15624,6 +15624,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("online-flower-bouquet-escrow-sandbox", html_zh)
 
+    def test_b2b_corporate_catering_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BCorporateCateringEscrowPolicyInput,
+            evaluate_b2b_corporate_catering_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_corporate_catering_escrow_policy(
+            B2BCorporateCateringEscrowPolicyInput(
+                quarterly_b2b_corporate_catering_and_lunch_pool_usd=130000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "OPTIN_HEADCOUNT_AND_FALCPA_ALLERGEN_AUTHORIZED",
+        )
+
+        fee = evaluate_b2b_corporate_catering_escrow_policy(
+            B2BCorporateCateringEscrowPolicyInput(
+                double_catering_admin_fee_or_post_tax_tip_compounding=True
+            )
+        )
+        self.assertEqual(fee["status_code"], 403)
+        self.assertEqual(
+            fee["decision"],
+            "DOUBLE_CATERING_ADMIN_FEE_OR_POST_TAX_TIP_COMPOUNDING_BLOCKED",
+        )
+
+        optin = evaluate_b2b_corporate_catering_escrow_policy(
+            B2BCorporateCateringEscrowPolicyInput(
+                unconfirmed_wfh_ghost_headcount_or_missing_falcpa_allergen_tag=True
+            )
+        )
+        self.assertEqual(optin["status_code"], 422)
+        self.assertEqual(
+            optin["decision"],
+            "UNCONFIRMED_WFH_GHOST_HEADCOUNT_OR_MISSING_FALCPA_ALLERGEN_TAG_BLOCKED",
+        )
+
+        alg = evaluate_b2b_corporate_catering_escrow_policy(
+            B2BCorporateCateringEscrowPolicyInput(
+                webiq_kitchen_health_closure_or_anaphylaxis_allergen_breach_flag=True
+            )
+        )
+        self.assertEqual(alg["status_code"], 451)
+        self.assertEqual(
+            alg["decision"],
+            "WEBIQ_KITCHEN_HEALTH_CLOSURE_OR_ANAPHYLAXIS_ALLERGEN_BREACH_HOLD",
+        )
+
+        optim = evaluate_b2b_corporate_catering_escrow_policy(
+            B2BCorporateCateringEscrowPolicyInput(
+                quarterly_b2b_corporate_catering_and_lunch_pool_usd=130000.0,
+                same_day_0945_optin_individual_pod_and_tax_irc119_optimization_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 41600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 88400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_corporate_catering_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-corporate-catering-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
