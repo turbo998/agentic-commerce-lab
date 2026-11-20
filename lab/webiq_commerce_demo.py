@@ -21722,6 +21722,87 @@ def evaluate_ski_pass_resort_rental_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BCorporateGiftingSwagEscrowPolicyInput:
+    """Input contract for B2B Corporate Gifting, Swag Box Fulfillment & FCPA Compliance Escrow."""
+
+    quarterly_b2b_corporate_gifting_and_swag_pool_usd: float = 130000.0
+    unclaimed_gift_breakage_confiscation_or_excessive_kitting_markup: bool = False
+    fcpa_sunshine_act_gift_cap_breach_or_active_rfp_blackout: bool = False
+    webiq_unul2056_lithium_swag_recall_or_sanctioned_recipient_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    recipient_choice_zero_inventory_gift_link_and_local_fulfillment_ready: bool = False
+
+
+def evaluate_b2b_corporate_gifting_swag_escrow_policy(
+    policy_input: B2BCorporateGiftingSwagEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Corporate Gifting, Swag Box Fulfillment & FCPA Compliance Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_corporate_gifting_and_swag_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unul2056_lithium_swag_recall_or_sanctioned_recipient_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNUL2056_LITHIUM_SWAG_RECALL_OR_SANCTIONED_RECIPIENT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unclaimed_gift_breakage_confiscation_or_excessive_kitting_markup:
+        return {
+            "status_code": 403,
+            "decision": "UNCLAIMED_GIFT_BREAKAGE_CONFISCATION_OR_EXCESSIVE_KITTING_MARKUP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.fcpa_sunshine_act_gift_cap_breach_or_active_rfp_blackout:
+        return {
+            "status_code": 422,
+            "decision": "FCPA_SUNSHINE_ACT_GIFT_CAP_BREACH_OR_ACTIVE_RFP_BLACKOUT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.recipient_choice_zero_inventory_gift_link_and_local_fulfillment_ready:
+        savings = round(gross_pool * 0.30, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "RECIPIENT_CHOICE_ZERO_INVENTORY_GIFT_LINK_AND_LOCAL_FULFILLMENT_CONFIRM",
+            "mandate_token": "b2b_corporate_gifting_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "PAY_ON_CLAIM_AND_FCPA_COMPLIANT_GIFT_AUTHORIZED",
+        "mandate_token": "b2b_corporate_gifting_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -29981,6 +30062,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_corporate_gifting_swag_escrow_guard = {
+        "authorized_200": evaluate_b2b_corporate_gifting_swag_escrow_policy(
+            B2BCorporateGiftingSwagEscrowPolicyInput()
+        ),
+        "unclaimed_breakage_or_kitting_403": evaluate_b2b_corporate_gifting_swag_escrow_policy(
+            B2BCorporateGiftingSwagEscrowPolicyInput(
+                unclaimed_gift_breakage_confiscation_or_excessive_kitting_markup=True
+            )
+        ),
+        "fcpa_cap_or_rfp_blackout_422": evaluate_b2b_corporate_gifting_swag_escrow_policy(
+            B2BCorporateGiftingSwagEscrowPolicyInput(
+                fcpa_sunshine_act_gift_cap_breach_or_active_rfp_blackout=True
+            )
+        ),
+        "unul2056_battery_or_sanction_451": evaluate_b2b_corporate_gifting_swag_escrow_policy(
+            B2BCorporateGiftingSwagEscrowPolicyInput(
+                webiq_unul2056_lithium_swag_recall_or_sanctioned_recipient_flag=True
+            )
+        ),
+        "on_demand_choice_and_local_hub_409": evaluate_b2b_corporate_gifting_swag_escrow_policy(
+            B2BCorporateGiftingSwagEscrowPolicyInput(
+                recipient_choice_zero_inventory_gift_link_and_local_fulfillment_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -30199,6 +30306,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "online_grocery_catch_weight_coldchain_guard": online_grocery_catch_weight_coldchain_guard,
         "b2b_ooh_dooh_billboard_escrow_guard": b2b_ooh_dooh_billboard_escrow_guard,
         "ski_pass_resort_rental_escrow_guard": ski_pass_resort_rental_escrow_guard,
+        "b2b_corporate_gifting_swag_escrow_guard": b2b_corporate_gifting_swag_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -40192,6 +40300,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ski-pass-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PRESEASON_MULTI_DAY_PACK_ARBITRAGE_AND_OFF_MOUNTAIN_DEMO_RENTAL_CONFIRM · Mandate: ski_pass_resort_rental_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 90 B2B Corporate Gifting, Swag Box Fulfillment & FCPA Compliance Escrow -->
+      <div class="finops-box" id="b2b-corporate-gifting-swag-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎁 企业商务礼品 (B2B Corporate Gifting)、员工福利礼盒 (Swag Box) 与反商业贿赂 (FCPA) 合规托管 (Sendoso / Reachdesk / Snappy / Goody / 京东企业购) 实领结算与按需自选沙盒 (Round 90)</div>
+            <div class="finops-subtitle">实测客户确认地址后扣款 (Pay-on-Claim) 防 35% 未领取礼品卡被平台吞没 (Breakage) 及组装费&lt;=$3.50/盒防 $14 天价拆装费 (HTTP 403)、自动联查 .gov 公职人员(&lt;=$20)、医疗阳光法案 NPI、个人年度 $100 上限与 CRM 招投标静默期 (Active RFP Blackout) 防贿赂暴雷 (HTTP 422)、Web IQ 充电宝缺 UL 2056 认证熔断 (HTTP 451) 及零库存按需自选礼链+目的国本地直发净省 30% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="corp-gift-status-kpi">HTTP 409 · RECIPIENT_CHOICE_ZERO_INVENTORY_GIFT_LINK_AND_LOCAL_FULFILLMENT_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度 B2B 客户营销礼品与全球员工福利 Swag 预算池 ($ USD)
+            <input type="range" id="corp-gift-pool-slider" min="20000" max="800000" step="5000" value="130000" oninput="updateB2BCorporateGiftingSwagEscrowSandbox()" />
+            <span id="corp-gift-pool-val" style="color:#6ee7b7; font-family:monospace;">$130,000</span>
+          </label>
+          <label>
+            确认领取后扣款 (Pay-on-Claim) 与组装打包费核验 (HTTP 403)
+            <select id="corp-gift-breakage-select" onchange="updateB2BCorporateGiftingSwagEscrowSandbox()">
+              <option value="pass">客户填完地址才扣款(14天未领 100% 退现) + 组装费&lt;=$3.50/盒 + 运费0%加成 (放行)</option>
+              <option value="block">发出链接即扣全款(35%未领资金被平台吞没) 或 强收 $14/盒打包费+28%运费加价 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            FCPA 公职人员 (.gov&lt;=$20)、年度 $100 上限与招标静默期核验 (HTTP 422)
+            <select id="corp-gift-fcpa-select" onchange="updateB2BCorporateGiftingSwagEscrowSandbox()">
+              <option value="pass">非公职敏感收件人 + 单人年度累计&lt;=$100 + 客户未处于 RFP 招投标评标期 (合规)</option>
+              <option value="block">向 .gov 官员或正在 RFP 评标的甲方采购发送 $250 耳机触发反商业贿赂红线 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ UL 2056 带电礼品安全认证与制裁名单核验 (HTTP 451)
+            <select id="corp-gift-ul-select" onchange="updateB2BCorporateGiftingSwagEscrowSandbox()">
+              <option value="clear">数码周边具备 UL 2056 / 3C 航空认证 + 收件方零制裁命中 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">定制充电宝缺少 UL 2056 认证被航空安检扣留 或 收件方命中制裁名录 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            零库存收件人自选礼链 (On-Demand Choice) 与目的国本地直发 (HTTP 409)
+            <select id="corp-gift-opt-select" onchange="updateB2BCorporateGiftingSwagEscrowSandbox()">
+              <option value="enabled" selected>切换零库存自选款式尺码礼链 + 目的国本地仓免税直发净省 30% (HTTP 409)</option>
+              <option value="baseline">常规 Pay-on-Claim 实领结算与 FCPA 合规托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度商务礼品与福利总池</div>
+            <div class="finops-kpi-val" id="corp-gift-gross-kpi">$130,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">实领结算与按需直发后净支出</div>
+            <div class="finops-kpi-val" id="corp-gift-net-kpi" style="color:#6ee7b7;">$91,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度挽回未领损耗与仓储净额</div>
+            <div class="finops-kpi-val" id="corp-gift-savings-kpi" style="color:#38bdf8;">$39,000</div>
+          </div>
+        </div>
+        <div id="corp-gift-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 RECIPIENT_CHOICE_ZERO_INVENTORY_GIFT_LINK_AND_LOCAL_FULFILLMENT_CONFIRM · Mandate: b2b_corporate_gifting_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -52223,6 +52394,80 @@ function updateSkiPassResortRentalEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 BLACKOUT_VERIFIED_AND_DIN_CALIBRATED_SKI_AUTHORIZED · Mandate: ski_pass_resort_rental_mandate_200';
+}}
+
+function updateB2BCorporateGiftingSwagEscrowSandbox() {{
+  const slider = document.getElementById('corp-gift-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '130000');
+  const brkMode = document.getElementById('corp-gift-breakage-select').value;
+  const fcpaMode = document.getElementById('corp-gift-fcpa-select').value;
+  const ulMode = document.getElementById('corp-gift-ul-select').value;
+  const optMode = document.getElementById('corp-gift-opt-select').value;
+
+  document.getElementById('corp-gift-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('corp-gift-status-kpi');
+  const grossKpi = document.getElementById('corp-gift-gross-kpi');
+  const netKpi = document.getElementById('corp-gift-net-kpi');
+  const savingsKpi = document.getElementById('corp-gift-savings-kpi');
+  const banner = document.getElementById('corp-gift-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ulMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNUL2056_LITHIUM_SWAG_RECALL_OR_SANCTIONED_RECIPIENT_HOLD · Mandate: null';
+    return;
+  }}
+  if (brkMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNCLAIMED_GIFT_BREAKAGE_CONFISCATION_OR_EXCESSIVE_KITTING_MARKUP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (fcpaMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FCPA_SUNSHINE_ACT_GIFT_CAP_BREACH_OR_ACTIVE_RFP_BLACKOUT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.30);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 RECIPIENT_CHOICE_ZERO_INVENTORY_GIFT_LINK_AND_LOCAL_FULFILLMENT_CONFIRM · Mandate: b2b_corporate_gifting_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 PAY_ON_CLAIM_AND_FCPA_COMPLIANT_GIFT_AUTHORIZED · Mandate: b2b_corporate_gifting_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

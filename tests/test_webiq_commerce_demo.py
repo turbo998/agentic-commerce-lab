@@ -15088,6 +15088,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ski-pass-resort-rental-escrow-sandbox", html_zh)
 
+    def test_b2b_corporate_gifting_swag_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BCorporateGiftingSwagEscrowPolicyInput,
+            evaluate_b2b_corporate_gifting_swag_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_corporate_gifting_swag_escrow_policy(
+            B2BCorporateGiftingSwagEscrowPolicyInput(
+                quarterly_b2b_corporate_gifting_and_swag_pool_usd=130000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "PAY_ON_CLAIM_AND_FCPA_COMPLIANT_GIFT_AUTHORIZED",
+        )
+
+        brk = evaluate_b2b_corporate_gifting_swag_escrow_policy(
+            B2BCorporateGiftingSwagEscrowPolicyInput(
+                unclaimed_gift_breakage_confiscation_or_excessive_kitting_markup=True
+            )
+        )
+        self.assertEqual(brk["status_code"], 403)
+        self.assertEqual(
+            brk["decision"],
+            "UNCLAIMED_GIFT_BREAKAGE_CONFISCATION_OR_EXCESSIVE_KITTING_MARKUP_BLOCKED",
+        )
+
+        fcpa = evaluate_b2b_corporate_gifting_swag_escrow_policy(
+            B2BCorporateGiftingSwagEscrowPolicyInput(
+                fcpa_sunshine_act_gift_cap_breach_or_active_rfp_blackout=True
+            )
+        )
+        self.assertEqual(fcpa["status_code"], 422)
+        self.assertEqual(
+            fcpa["decision"],
+            "FCPA_SUNSHINE_ACT_GIFT_CAP_BREACH_OR_ACTIVE_RFP_BLACKOUT_BLOCKED",
+        )
+
+        ul = evaluate_b2b_corporate_gifting_swag_escrow_policy(
+            B2BCorporateGiftingSwagEscrowPolicyInput(
+                webiq_unul2056_lithium_swag_recall_or_sanctioned_recipient_flag=True
+            )
+        )
+        self.assertEqual(ul["status_code"], 451)
+        self.assertEqual(
+            ul["decision"],
+            "WEBIQ_UNUL2056_LITHIUM_SWAG_RECALL_OR_SANCTIONED_RECIPIENT_HOLD",
+        )
+
+        optim = evaluate_b2b_corporate_gifting_swag_escrow_policy(
+            B2BCorporateGiftingSwagEscrowPolicyInput(
+                quarterly_b2b_corporate_gifting_and_swag_pool_usd=130000.0,
+                recipient_choice_zero_inventory_gift_link_and_local_fulfillment_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 39000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 91000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_corporate_gifting_swag_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-corporate-gifting-swag-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`208` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`209` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（38 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（65 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（46 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（47 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（29 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -155,7 +155,7 @@
 | 65 | **滑雪场通滑季卡（Epic / Ikon）、动态缆车票与雪具租赁押金防坑托管（Ski Pass, Multi-Resort Lift Ticket & Equipment Rental Escrow：Vail Epic / Alterra Ikon / Black Tie Ski / 滑呗）“防节假日禁滑期（Blackout）到场被宰 $299/天雪票、防大风封山仅开魔毯不退费与退板底划痕讹 $350 押金”Agent 架构选型 FAQ** | [中文](ski-pass-resort-lift-ticket-equipment-rental-escrow-agent-selection-faq.md) · [English](ski-pass-resort-lift-ticket-equipment-rental-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（46 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（47 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -207,6 +207,7 @@
 | 44 | **企业级多语种本地化（L10n）、翻译记忆库（TM）模糊匹配计费与出海游戏/短剧 AI 配音托管（B2B Localization, Translation Memory Fuzzy-Match & AI Dubbing Escrow：Phrase / Lokalise / Smartling / TransPerfect / RWS Trados）“防 TM 100% 重复句全价重收、防机翻生肉冒充人工精校与 `{占位符}` 损坏闪退”Agent 架构选型 FAQ** | [中文](b2b-localization-translation-memory-lqa-dubbing-escrow-agent-selection-faq.md) · [English](b2b-localization-translation-memory-lqa-dubbing-escrow-agent-selection-faq.en.md) |
 | 45 | **B2B 展会特装搭建、展馆场内搬运费（Drayage / CWT）与扫码获客设备托管（B2B Trade-Show Booth, Exhibition Drayage & Lead-Retrieval Escrow：Freeman / GES / BeMatrix / Popl Teams / 广交会特装）“防 200 磅起步天价叉车搬运费、防 $895 胸卡扫码 API 导出赎金与超时加班费刺客”Agent 架构选型 FAQ** | [中文](b2b-tradeshow-booth-drayage-lead-retrieval-escrow-agent-selection-faq.md) · [English](b2b-tradeshow-booth-drayage-lead-retrieval-escrow-agent-selection-faq.en.md) |
 | 46 | **户外广告大牌（OOH）、程序化数字户外（pDOOH）与电梯楼宇媒体验真托管（B2B OOH Billboard, Programmatic DOOH & Transit Media Escrow：JCDecaux / Clear Channel / Vistar Media / 分众传媒）“防轮播屏超卖稀释曝光频次、防行道树遮挡 40% 画面与半夜无人车流充数”Agent 架构选型 FAQ** | [中文](b2b-ooh-dooh-billboard-geopath-pop-escrow-agent-selection-faq.md) · [English](b2b-ooh-dooh-billboard-geopath-pop-escrow-agent-selection-faq.en.md) |
+| 47 | **企业商务礼品（B2B Corporate Gifting）、员工福利礼盒（Swag Box）与反商业贿赂（FCPA）合规托管（Sendoso / Reachdesk / Snappy / Goody / 京东企业购礼盒）“防 35% 未领取礼品卡被平台吞没（Breakage）、防 $14/盒天价拆装仓储费与向政府/招标期客户违规送礼”Agent 架构选型 FAQ** | [中文](b2b-corporate-gifting-swag-fcpa-zero-breakage-escrow-agent-selection-faq.md) · [English](b2b-corporate-gifting-swag-fcpa-zero-breakage-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（20 篇）
