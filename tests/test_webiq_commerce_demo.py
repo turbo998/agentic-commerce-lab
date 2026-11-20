@@ -13279,6 +13279,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("micro-drama-webnovel-cap-escrow-sandbox", html_zh)
 
+    def test_b2b_expert_network_research_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BExpertNetworkResearchEscrowPolicyInput,
+            evaluate_b2b_expert_network_research_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_expert_network_research_escrow_policy(
+            B2BExpertNetworkResearchEscrowPolicyInput(
+                quarterly_expert_network_and_market_research_pool_usd=245000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_PANEL_AND_PRORATED_CONSULT_AUTHORIZED",
+        )
+
+        bot = evaluate_b2b_expert_network_research_escrow_policy(
+            B2BExpertNetworkResearchEscrowPolicyInput(
+                bot_survey_farm_or_imposter_respondent_detected=True
+            )
+        )
+        self.assertEqual(bot["status_code"], 403)
+        self.assertEqual(
+            bot["decision"],
+            "BOT_SURVEY_FARM_OR_IMPOSTER_RESPONDENT_INCENTIVE_BLOCKED",
+        )
+
+        bail = evaluate_b2b_expert_network_research_escrow_policy(
+            B2BExpertNetworkResearchEscrowPolicyInput(
+                ten_minute_bailout_denied_or_unprorated_hour_roundup=True
+            )
+        )
+        self.assertEqual(bail["status_code"], 422)
+        self.assertEqual(
+            bail["decision"],
+            "TEN_MINUTE_BAILOUT_DENIED_OR_UNPRORATED_HOUR_ROUNDUP_BLOCKED",
+        )
+
+        mnpi = evaluate_b2b_expert_network_research_escrow_policy(
+            B2BExpertNetworkResearchEscrowPolicyInput(
+                webiq_mnpi_insider_blackout_or_sensitive_sector_flag=True
+            )
+        )
+        self.assertEqual(mnpi["status_code"], 451)
+        self.assertEqual(
+            mnpi["decision"],
+            "WEBIQ_MNPI_INSIDER_BLACKOUT_OR_SENSITIVE_SECTOR_HOLD",
+        )
+
+        optim = evaluate_b2b_expert_network_research_escrow_policy(
+            B2BExpertNetworkResearchEscrowPolicyInput(
+                quarterly_expert_network_and_market_research_pool_usd=245000.0,
+                transcript_library_reuse_and_30min_micro_consult_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 71050.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 173950.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_expert_network_research_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-expert-network-research-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

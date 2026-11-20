@@ -19535,6 +19535,87 @@ def evaluate_micro_drama_webnovel_cap_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BExpertNetworkResearchEscrowPolicyInput:
+    """Input contract for B2B Expert Network, Market Research Respondent Panel & Survey Incentive Escrow."""
+
+    quarterly_expert_network_and_market_research_pool_usd: float = 245000.0
+    bot_survey_farm_or_imposter_respondent_detected: bool = False
+    ten_minute_bailout_denied_or_unprorated_hour_roundup: bool = False
+    webiq_mnpi_insider_blackout_or_sensitive_sector_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    transcript_library_reuse_and_30min_micro_consult_ready: bool = False
+
+
+def evaluate_b2b_expert_network_research_escrow_policy(
+    policy_input: B2BExpertNetworkResearchEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Expert Network, Market Research Respondent Panel & Survey Incentive policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_expert_network_and_market_research_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_mnpi_insider_blackout_or_sensitive_sector_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_MNPI_INSIDER_BLACKOUT_OR_SENSITIVE_SECTOR_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bot_survey_farm_or_imposter_respondent_detected:
+        return {
+            "status_code": 403,
+            "decision": "BOT_SURVEY_FARM_OR_IMPOSTER_RESPONDENT_INCENTIVE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ten_minute_bailout_denied_or_unprorated_hour_roundup:
+        return {
+            "status_code": 422,
+            "decision": "TEN_MINUTE_BAILOUT_DENIED_OR_UNPRORATED_HOUR_ROUNDUP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.transcript_library_reuse_and_30min_micro_consult_ready:
+        savings = round(gross_pool * 0.29, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TRANSCRIPT_LIBRARY_REUSE_AND_30MIN_MICRO_CONSULT_CONFIRM",
+            "mandate_token": "b2b_expert_network_research_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_PANEL_AND_PRORATED_CONSULT_AUTHORIZED",
+        "mandate_token": "b2b_expert_network_research_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -27092,6 +27173,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_expert_network_research_escrow_guard = {
+        "authorized_200": evaluate_b2b_expert_network_research_escrow_policy(
+            B2BExpertNetworkResearchEscrowPolicyInput()
+        ),
+        "bot_survey_farm_or_imposter_403": evaluate_b2b_expert_network_research_escrow_policy(
+            B2BExpertNetworkResearchEscrowPolicyInput(
+                bot_survey_farm_or_imposter_respondent_detected=True
+            )
+        ),
+        "bailout_denied_or_roundup_422": evaluate_b2b_expert_network_research_escrow_policy(
+            B2BExpertNetworkResearchEscrowPolicyInput(
+                ten_minute_bailout_denied_or_unprorated_hour_roundup=True
+            )
+        ),
+        "mnpi_blackout_or_sensitive_451": evaluate_b2b_expert_network_research_escrow_policy(
+            B2BExpertNetworkResearchEscrowPolicyInput(
+                webiq_mnpi_insider_blackout_or_sensitive_sector_flag=True
+            )
+        ),
+        "transcript_library_and_30m_consult_409": evaluate_b2b_expert_network_research_escrow_policy(
+            B2BExpertNetworkResearchEscrowPolicyInput(
+                transcript_library_reuse_and_30min_micro_consult_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -27283,6 +27390,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "corporate_ridehailing_ground_transport_escrow_guard": corporate_ridehailing_ground_transport_escrow_guard,
         "home_cleaning_maid_moveout_escrow_guard": home_cleaning_maid_moveout_escrow_guard,
         "micro_drama_webnovel_cap_escrow_guard": micro_drama_webnovel_cap_escrow_guard,
+        "b2b_expert_network_research_escrow_guard": b2b_expert_network_research_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -35575,6 +35683,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="micro-drama-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 WEB2APP_DIRECT_TOPUP_AND_SERIES_BUYOUT_CAP_CONFIRM · Mandate: micro_drama_webnovel_cap_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 63 B2B Expert Network, Market Research Respondent Panel & Survey Incentive Escrow -->
+      <div class="finops-box" id="b2b-expert-network-research-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🔬 企业市场调研、专家访谈网络与消费者问卷样本采购 (GLG / AlphaSights / Tegus / Qualtrics / Prolific / 凯盛融英) 防 AI 假问卷农场、10分钟免责挂断与 MNPI 合规沙盒 (Round 63)</div>
+            <div class="finops-subtitle">实测按键动力学禁粘贴+虚构品牌陷阱题拦截 AI 脚本农场秒刷 $50 调研激励金与冒牌专家 (HTTP 403)、访谈前 10 分钟发现水货专家零费用挂断(10-Min Bailout)与按实际分钟计费防整点凑整 (HTTP 422)、Web IQ 目标上市公司在职高管 MNPI 内幕静默期熔断 (HTTP 451) 及历史脱敏纪要库查重复用+30分钟微访谈立省 29% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="expert-res-status-kpi">HTTP 409 · TRANSCRIPT_LIBRARY_REUSE_AND_30MIN_MICRO_CONSULT_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度专家网络访谈与市场调研样本采购池 ($ USD)
+            <input type="range" id="expert-res-pool-slider" min="50000" max="1500000" step="10000" value="245000" oninput="updateB2BExpertNetworkResearchSandbox()" />
+            <span id="expert-res-pool-val" style="color:#6ee7b7; font-family:monospace;">$245,000</span>
+          </label>
+          <label>
+            反 AI 脚本假问卷农场与受访者职业履历核验 (HTTP 403)
+            <select id="expert-res-bot-select" onchange="updateB2BExpertNetworkResearchSandbox()">
+              <option value="pass">真人击键无粘贴 + 虚构品牌陷阱题通过 + 领英/NPI执业证已验 (放行)</option>
+              <option value="block">AI 脚本批量粘贴秒填问卷 / 勾选虚构假品牌 或 冒充大厂总监 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            专家访谈前 10 分钟免责挂断与按实际分钟折算校验 (HTTP 422)
+            <select id="expert-res-bailout-select" onchange="updateB2BExpertNetworkResearchSandbox()">
+              <option value="pass">开场 &lt;=10m 不匹配享 $0 挂断 + 超 15m 按实际分钟精确折算 (合规)</option>
+              <option value="block">聊 7 分钟发现水货专家挂断仍强扣 $1,200 或 32 分钟按 60 分钟收费 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 上市公司 MNPI 内幕静默期与涉敏筛查 (HTTP 451)
+            <select id="expert-res-mnpi-select" onchange="updateB2BExpertNetworkResearchSandbox()">
+              <option value="clear">非标的公司在职员工 + 离职冷却期满 6 个月 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">约谈拟并购/静默期上市公司现任高管触发 SEC MNPI 内幕交易风险 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            存量脱敏纪要库优先查重与 30 分钟聚焦微访谈 (HTTP 409)
+            <select id="expert-res-opt-select" onchange="updateB2BExpertNetworkResearchSandbox()">
+              <option value="enabled" selected>开启 Tegus/AlphaSense 历史纪要库复用 + 30分钟微访谈省 29% (HTTP 409)</option>
+              <option value="baseline">常规实名样本质检与标准专家访谈授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度专家调研毛池</div>
+            <div class="finops-kpi-val" id="expert-res-gross-kpi">$245,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">纪要复用与微访谈净额</div>
+            <div class="finops-kpi-val" id="expert-res-net-kpi" style="color:#6ee7b7;">$173,950</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下重复约谈与假样本</div>
+            <div class="finops-kpi-val" id="expert-res-savings-kpi" style="color:#38bdf8;">$71,050</div>
+          </div>
+        </div>
+        <div id="expert-res-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TRANSCRIPT_LIBRARY_REUSE_AND_30MIN_MICRO_CONSULT_CONFIRM · Mandate: b2b_expert_network_research_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -45608,6 +45779,80 @@ function updateMicroDramaWebnovelCapSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 SERIES_CAP_LOCKED_AND_TRANSPARENT_EPISODE_UNLOCK_AUTHORIZED · Mandate: micro_drama_webnovel_cap_escrow_mandate_200';
+}}
+
+function updateB2BExpertNetworkResearchSandbox() {{
+  const slider = document.getElementById('expert-res-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '245000');
+  const botMode = document.getElementById('expert-res-bot-select').value;
+  const bailMode = document.getElementById('expert-res-bailout-select').value;
+  const mnpiMode = document.getElementById('expert-res-mnpi-select').value;
+  const optMode = document.getElementById('expert-res-opt-select').value;
+
+  document.getElementById('expert-res-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('expert-res-status-kpi');
+  const grossKpi = document.getElementById('expert-res-gross-kpi');
+  const netKpi = document.getElementById('expert-res-net-kpi');
+  const savingsKpi = document.getElementById('expert-res-savings-kpi');
+  const banner = document.getElementById('expert-res-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (mnpiMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_MNPI_INSIDER_BLACKOUT_OR_SENSITIVE_SECTOR_HOLD · Mandate: null';
+    return;
+  }}
+  if (botMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BOT_SURVEY_FARM_OR_IMPOSTER_RESPONDENT_INCENTIVE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (bailMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 TEN_MINUTE_BAILOUT_DENIED_OR_UNPRORATED_HOUR_ROUNDUP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.29);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TRANSCRIPT_LIBRARY_REUSE_AND_30MIN_MICRO_CONSULT_CONFIRM · Mandate: b2b_expert_network_research_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_PANEL_AND_PRORATED_CONSULT_AUTHORIZED · Mandate: b2b_expert_network_research_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
