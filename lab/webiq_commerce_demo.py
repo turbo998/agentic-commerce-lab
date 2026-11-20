@@ -20021,6 +20021,87 @@ def evaluate_photo_studio_camera_gear_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class IpLicensingAnimeMerchEscrowPolicyInput:
+    """Input contract for Brand IP Licensing, Anime Merch ('Guzi') Minimum Guarantee & Royalty Escrow."""
+
+    quarterly_ip_licensing_and_anime_merch_royalty_pool_usd: float = 250000.0
+    ghost_shift_unauthorized_overrun_or_unlabeled_merch: bool = False
+    sell_off_period_dumping_or_unrecouped_mg_double_charge: bool = False
+    webiq_unapproved_character_art_or_territory_export_breach_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    tiered_mg_and_made_to_order_hologram_batch_ready: bool = False
+
+
+def evaluate_ip_licensing_anime_merch_escrow_policy(
+    policy_input: IpLicensingAnimeMerchEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Brand IP Licensing, Anime Merch Minimum Guarantee & Royalty policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_ip_licensing_and_anime_merch_royalty_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unapproved_character_art_or_territory_export_breach_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNAPPROVED_CHARACTER_ART_OR_TERRITORY_EXPORT_BREACH_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ghost_shift_unauthorized_overrun_or_unlabeled_merch:
+        return {
+            "status_code": 403,
+            "decision": "GHOST_SHIFT_UNAUTHORIZED_OVERRUN_OR_UNLABELED_MERCH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sell_off_period_dumping_or_unrecouped_mg_double_charge:
+        return {
+            "status_code": 422,
+            "decision": "SELL_OFF_PERIOD_DUMPING_OR_UNRECOUPED_MG_DOUBLE_CHARGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tiered_mg_and_made_to_order_hologram_batch_ready:
+        savings = round(gross_pool * 0.25, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TIERED_MG_AND_MADE_TO_ORDER_HOLOGRAM_BATCH_CONFIRM",
+            "mandate_token": "ip_licensing_anime_merch_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "HOLOGRAM_QUOTA_AND_MG_RECOUP_AUTHORIZED",
+        "mandate_token": "ip_licensing_anime_merch_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -27734,6 +27815,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ip_licensing_anime_merch_escrow_guard = {
+        "authorized_200": evaluate_ip_licensing_anime_merch_escrow_policy(
+            IpLicensingAnimeMerchEscrowPolicyInput()
+        ),
+        "ghost_shift_or_unlabeled_403": evaluate_ip_licensing_anime_merch_escrow_policy(
+            IpLicensingAnimeMerchEscrowPolicyInput(
+                ghost_shift_unauthorized_overrun_or_unlabeled_merch=True
+            )
+        ),
+        "sell_off_dumping_or_mg_double_422": evaluate_ip_licensing_anime_merch_escrow_policy(
+            IpLicensingAnimeMerchEscrowPolicyInput(
+                sell_off_period_dumping_or_unrecouped_mg_double_charge=True
+            )
+        ),
+        "unapproved_art_or_territory_451": evaluate_ip_licensing_anime_merch_escrow_policy(
+            IpLicensingAnimeMerchEscrowPolicyInput(
+                webiq_unapproved_character_art_or_territory_export_breach_flag=True
+            )
+        ),
+        "tiered_mg_and_mto_batch_409": evaluate_ip_licensing_anime_merch_escrow_policy(
+            IpLicensingAnimeMerchEscrowPolicyInput(
+                tiered_mg_and_made_to_order_hologram_batch_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -27931,6 +28038,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_recruiting_headhunter_fcra_escrow_guard": b2b_recruiting_headhunter_fcra_escrow_guard,
         "crossborder_parcel_consolidation_escrow_guard": crossborder_parcel_consolidation_escrow_guard,
         "photo_studio_camera_gear_escrow_guard": photo_studio_camera_gear_escrow_guard,
+        "ip_licensing_anime_merch_escrow_guard": ip_licensing_anime_merch_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -36601,6 +36709,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="studio-gear-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 WEEKEND_ONE_DAY_RENTAL_ARBITRAGE_AND_COI_DEPOSIT_WAIVER_CONFIRM · Mandate: photo_studio_camera_gear_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 69 Brand IP Licensing, Anime Merch ('Guzi') Minimum Guarantee & Royalty Escrow -->
+      <div class="finops-box" id="ip-licensing-anime-merch-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎌 品牌 IP 联名授权、谷子经济(二次元周边)保底分成与防盗版清算 (Sanrio / Disney / 万代南梦宫 / 泡泡玛特 / 名创优品 / 阿里鱼) 全息配额锁、MG冲抵与监修沙盒 (Round 69)</div>
+            <div class="finops-subtitle">实测一物一码加密全息防伪证纸配额锁防代工厂夜班偷印 10 万件散货瞒报版税 (HTTP 403)、预付保底金(MG)自动冲抵水位线防双重收费与 90 天清仓期禁破 7 折砸盘 (HTTP 422)、Web IQ 版权委员会三审监修哈希与防跨国越区窜货熔断 (HTTP 451) 及低保底+受注生产(以销定产)立省 25% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="ip-merch-status-kpi">HTTP 409 · TIERED_MG_AND_MADE_TO_ORDER_HOLOGRAM_BATCH_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度品牌 IP 联名保底金与周边版税结算池 ($ USD)
+            <input type="range" id="ip-merch-pool-slider" min="50000" max="1500000" step="10000" value="250000" oninput="updateIpLicensingAnimeMerchSandbox()" />
+            <span id="ip-merch-pool-val" style="color:#6ee7b7; font-family:monospace;">$250,000</span>
+          </label>
+          <label>
+            一物一码全息防伪证纸配额与出库核验 (HTTP 403)
+            <select id="ip-merch-hologram-select" onchange="updateIpLicensingAnimeMerchSandbox()">
+              <option value="pass">出库件数 100% 绑定官方全息防伪标配额 + 零无标散货 (放行)</option>
+              <option value="block">代工厂夜班超配额偷印 3.5 万个无防伪标徽章倒卖逃避版税 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            MG 保底金冲抵水位线与 90 天清仓期地板价校验 (HTTP 422)
+            <select id="ip-merch-mg-select" onchange="updateIpLicensingAnimeMerchSandbox()">
+              <option value="pass">应计版税优先冲抵已付 MG 余额 + 清仓期折扣 &lt;=30% Off (合规)</option>
+              <option value="block">未冲抵完已付 $80k 保底金又重复扣提成 或 清仓期 1 折甩卖砸盘 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            版权委员会终审监修哈希与授权地域筛查 (HTTP 451)
+            <select id="ip-merch-style-select" onchange="updateIpLicensingAnimeMerchSandbox()">
+              <option value="clear">已获 Mediabox/OPA 终审监修签章 + 严守授权销售区 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">未过日本版权方三审监修擅自开机印制 或 仅限国内授权窜货欧美 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            分阶低保底与受注生产 (Made-to-Order) 按需申领 (HTTP 409)
+            <select id="ip-merch-opt-select" onchange="updateIpLicensingAnimeMerchSandbox()">
+              <option value="enabled" selected>开启分阶低保底 + 14天粉丝定金预售(受注生产)按需申领防伪标省 25% (HTTP 409)</option>
+              <option value="baseline">常规固定保底金与标准现货防伪标批次授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度IP授权周边毛池</div>
+            <div class="finops-kpi-val" id="ip-merch-gross-kpi">$250,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">受注预售与冲抵后净额</div>
+            <div class="finops-kpi-val" id="ip-merch-net-kpi" style="color:#6ee7b7;">$187,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下死库存与双扣</div>
+            <div class="finops-kpi-val" id="ip-merch-savings-kpi" style="color:#38bdf8;">$62,500</div>
+          </div>
+        </div>
+        <div id="ip-merch-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TIERED_MG_AND_MADE_TO_ORDER_HOLOGRAM_BATCH_CONFIRM · Mandate: ip_licensing_anime_merch_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -47078,6 +47249,80 @@ function updatePhotoStudioCameraGearSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 CMOS_HASH_AND_STUDIO_SCOPE_AUTHORIZED · Mandate: photo_studio_camera_gear_escrow_mandate_200';
+}}
+
+function updateIpLicensingAnimeMerchSandbox() {{
+  const slider = document.getElementById('ip-merch-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '250000');
+  const holMode = document.getElementById('ip-merch-hologram-select').value;
+  const mgMode = document.getElementById('ip-merch-mg-select').value;
+  const styMode = document.getElementById('ip-merch-style-select').value;
+  const optMode = document.getElementById('ip-merch-opt-select').value;
+
+  document.getElementById('ip-merch-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('ip-merch-status-kpi');
+  const grossKpi = document.getElementById('ip-merch-gross-kpi');
+  const netKpi = document.getElementById('ip-merch-net-kpi');
+  const savingsKpi = document.getElementById('ip-merch-savings-kpi');
+  const banner = document.getElementById('ip-merch-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (styMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNAPPROVED_CHARACTER_ART_OR_TERRITORY_EXPORT_BREACH_HOLD · Mandate: null';
+    return;
+  }}
+  if (holMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 GHOST_SHIFT_UNAUTHORIZED_OVERRUN_OR_UNLABELED_MERCH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (mgMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SELL_OFF_PERIOD_DUMPING_OR_UNRECOUPED_MG_DOUBLE_CHARGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.25);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TIERED_MG_AND_MADE_TO_ORDER_HOLOGRAM_BATCH_CONFIRM · Mandate: ip_licensing_anime_merch_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 HOLOGRAM_QUOTA_AND_MG_RECOUP_AUTHORIZED · Mandate: ip_licensing_anime_merch_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

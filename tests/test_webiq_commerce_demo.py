@@ -13681,6 +13681,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("photo-studio-camera-gear-escrow-sandbox", html_zh)
 
+    def test_ip_licensing_anime_merch_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            IpLicensingAnimeMerchEscrowPolicyInput,
+            evaluate_ip_licensing_anime_merch_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ip_licensing_anime_merch_escrow_policy(
+            IpLicensingAnimeMerchEscrowPolicyInput(
+                quarterly_ip_licensing_and_anime_merch_royalty_pool_usd=250000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "HOLOGRAM_QUOTA_AND_MG_RECOUP_AUTHORIZED",
+        )
+
+        hol = evaluate_ip_licensing_anime_merch_escrow_policy(
+            IpLicensingAnimeMerchEscrowPolicyInput(
+                ghost_shift_unauthorized_overrun_or_unlabeled_merch=True
+            )
+        )
+        self.assertEqual(hol["status_code"], 403)
+        self.assertEqual(
+            hol["decision"],
+            "GHOST_SHIFT_UNAUTHORIZED_OVERRUN_OR_UNLABELED_MERCH_BLOCKED",
+        )
+
+        mg = evaluate_ip_licensing_anime_merch_escrow_policy(
+            IpLicensingAnimeMerchEscrowPolicyInput(
+                sell_off_period_dumping_or_unrecouped_mg_double_charge=True
+            )
+        )
+        self.assertEqual(mg["status_code"], 422)
+        self.assertEqual(
+            mg["decision"],
+            "SELL_OFF_PERIOD_DUMPING_OR_UNRECOUPED_MG_DOUBLE_CHARGE_BLOCKED",
+        )
+
+        sty = evaluate_ip_licensing_anime_merch_escrow_policy(
+            IpLicensingAnimeMerchEscrowPolicyInput(
+                webiq_unapproved_character_art_or_territory_export_breach_flag=True
+            )
+        )
+        self.assertEqual(sty["status_code"], 451)
+        self.assertEqual(
+            sty["decision"],
+            "WEBIQ_UNAPPROVED_CHARACTER_ART_OR_TERRITORY_EXPORT_BREACH_HOLD",
+        )
+
+        optim = evaluate_ip_licensing_anime_merch_escrow_policy(
+            IpLicensingAnimeMerchEscrowPolicyInput(
+                quarterly_ip_licensing_and_anime_merch_royalty_pool_usd=250000.0,
+                tiered_mg_and_made_to_order_hologram_batch_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 62500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 187500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ip_licensing_anime_merch_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ip-licensing-anime-merch-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
