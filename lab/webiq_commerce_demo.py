@@ -20831,6 +20831,87 @@ def evaluate_fertility_ivf_egg_freezing_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BCommercialJanitorialHygieneEscrowPolicyInput:
+    """Input contract for B2B Commercial Janitorial, Facility Hygiene SLA & Washroom Consumable Escrow."""
+
+    quarterly_commercial_janitorial_and_hygiene_pool_usd: float = 205000.0
+    ghost_night_crew_headcount_shortfall_or_skipped_floor: bool = False
+    washroom_consumable_invoice_padding_or_premature_refill: bool = False
+    webiq_unauthorized_subcontract_wage_theft_or_toxic_chemical_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    occupancy_driven_dynamic_roster_and_direct_consumable_ready: bool = False
+
+
+def evaluate_b2b_commercial_janitorial_hygiene_escrow_policy(
+    policy_input: B2BCommercialJanitorialHygieneEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Commercial Janitorial, Facility Hygiene SLA & Washroom Consumable policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_commercial_janitorial_and_hygiene_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unauthorized_subcontract_wage_theft_or_toxic_chemical_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNAUTHORIZED_SUBCONTRACT_WAGE_THEFT_OR_TOXIC_CHEMICAL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ghost_night_crew_headcount_shortfall_or_skipped_floor:
+        return {
+            "status_code": 403,
+            "decision": "GHOST_NIGHT_CREW_HEADCOUNT_SHORTFALL_OR_SKIPPED_FLOOR_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.washroom_consumable_invoice_padding_or_premature_refill:
+        return {
+            "status_code": 422,
+            "decision": "WASHROOM_CONSUMABLE_INVOICE_PADDING_OR_PREMATURE_REFILL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.occupancy_driven_dynamic_roster_and_direct_consumable_ready:
+        savings = round(gross_pool * 0.24, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "OCCUPANCY_DRIVEN_DYNAMIC_ROSTER_AND_DIRECT_CONSUMABLE_CONFIRM",
+            "mandate_token": "b2b_commercial_janitorial_hygiene_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "NFC_PATROL_AND_DISPENSER_USAGE_AUTHORIZED",
+        "mandate_token": "b2b_commercial_janitorial_hygiene_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -28804,6 +28885,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_commercial_janitorial_hygiene_escrow_guard = {
+        "authorized_200": evaluate_b2b_commercial_janitorial_hygiene_escrow_policy(
+            B2BCommercialJanitorialHygieneEscrowPolicyInput()
+        ),
+        "ghost_night_crew_or_skipped_floor_403": evaluate_b2b_commercial_janitorial_hygiene_escrow_policy(
+            B2BCommercialJanitorialHygieneEscrowPolicyInput(
+                ghost_night_crew_headcount_shortfall_or_skipped_floor=True
+            )
+        ),
+        "consumable_padding_or_premature_refill_422": evaluate_b2b_commercial_janitorial_hygiene_escrow_policy(
+            B2BCommercialJanitorialHygieneEscrowPolicyInput(
+                washroom_consumable_invoice_padding_or_premature_refill=True
+            )
+        ),
+        "subcontract_wage_theft_or_toxic_451": evaluate_b2b_commercial_janitorial_hygiene_escrow_policy(
+            B2BCommercialJanitorialHygieneEscrowPolicyInput(
+                webiq_unauthorized_subcontract_wage_theft_or_toxic_chemical_flag=True
+            )
+        ),
+        "occupancy_dynamic_and_direct_oem_409": evaluate_b2b_commercial_janitorial_hygiene_escrow_policy(
+            B2BCommercialJanitorialHygieneEscrowPolicyInput(
+                occupancy_driven_dynamic_roster_and_direct_consumable_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29011,6 +29118,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "livestream_pitfee_net_gmv_escrow_guard": livestream_pitfee_net_gmv_escrow_guard,
         "festival_stadium_cashless_rfid_escrow_guard": festival_stadium_cashless_rfid_escrow_guard,
         "fertility_ivf_egg_freezing_escrow_guard": fertility_ivf_egg_freezing_escrow_guard,
+        "b2b_commercial_janitorial_hygiene_escrow_guard": b2b_commercial_janitorial_hygiene_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -38311,6 +38419,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="fertility-ivf-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 JIT_SPLIT_FILL_FERTILITY_RX_AND_SHARED_RISK_BUNDLE_CONFIRM · Mandate: fertility_ivf_egg_freezing_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 79 B2B Commercial Janitorial, Facility Hygiene SLA & Washroom Consumable Escrow -->
+      <div class="finops-box" id="b2b-commercial-janitorial-hygiene-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏢 企业写字楼物业保洁、商场商业清洁与卫浴耗材采购 (ABM / ISS World / OpenWorks / Tork Essity / 万物梁行) 防夜班吃空饷、耗材人流定额与按需排班沙盒 (Round 79)</div>
+            <div class="finops-subtitle">实测大楼人脸闸机唯一入场计数与各楼层加密 NFC 驻留时长(&gt;=25m)防夜班 5 人代刷 12 人卡吃空饷 (HTTP 403)、卫浴耗材账单对齐大厦真实刷卡出勤人次定额与智能纸盒余量锁防虚报倒卖 (HTTP 422)、Web IQ 非法转包欠薪与无 SDS 有毒清洁剂熔断 (HTTP 451) 及混合办公楼层热力图按需保洁+原厂耗材直采立省 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="b2b-janitor-status-kpi">HTTP 409 · OCCUPANCY_DRIVEN_DYNAMIC_ROSTER_AND_DIRECT_CONSUMABLE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业办公楼保洁外包与卫浴耗材采购池 ($ USD)
+            <input type="range" id="b2b-janitor-pool-slider" min="40000" max="1500000" step="10000" value="205000" oninput="updateB2BCommercialJanitorialHygieneSandbox()" />
+            <span id="b2b-janitor-pool-val" style="color:#6ee7b7; font-family:monospace;">$205,000</span>
+          </label>
+          <label>
+            人脸闸机实到人数与楼层 NFC 驻留时长校验 (HTTP 403)
+            <select id="b2b-janitor-crew-select" onchange="updateB2BCommercialJanitorialHygieneSandbox()">
+              <option value="pass">夜班 12 名保洁全员实名入闸 + 各层 NFC 驻留 &gt;=25m (放行)</option>
+              <option value="block">包工头派 5 人代刷 12 张考勤卡吃空饷 或 跳层漏扫未刷 NFC (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            卫浴耗材绑定大厦出勤人次定额与纸盒余量校验 (HTTP 422)
+            <select id="b2b-janitor-paper-select" onchange="updateB2BCommercialJanitorialHygieneSandbox()">
+              <option value="pass">擦手纸/洗手液匹配当月刷卡出勤人次 + Tork 纸盒剩&lt;15%才换卷 (合规)</option>
+              <option value="block">虚报更换 500 箱擦手纸超出人流定额 2 倍 或 半卷大盘纸直接扔掉 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 保洁直雇劳工合规与 OSHA SDS 绿标筛查 (HTTP 451)
+            <select id="b2b-janitor-sds-select" onchange="updateB2BCommercialJanitorialHygieneSandbox()">
+              <option value="clear">全员直签社保无违法转包 + Green Seal 低 VOC 清洁剂 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">违法层层转包给黑中介引发欠薪追索 或 使用高腐蚀无 SDS 药剂 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            混合办公楼层热力图按需保洁与原厂耗材直采 (HTTP 409)
+            <select id="b2b-janitor-opt-select" onchange="updateB2BCommercialJanitorialHygieneSandbox()">
+              <option value="enabled" selected>开启周一/周五低出勤楼层动态减频 + 擦手纸脱离外包原厂直采省 24% (HTTP 409)</option>
+              <option value="baseline">常规全楼固定排班与耗材实报实销授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度行政保洁毛池</div>
+            <div class="finops-kpi-val" id="b2b-janitor-gross-kpi">$205,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">按需排班与直采后净额</div>
+            <div class="finops-kpi-val" id="b2b-janitor-net-kpi" style="color:#6ee7b7;">$155,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下空饷与耗材水分</div>
+            <div class="finops-kpi-val" id="b2b-janitor-savings-kpi" style="color:#38bdf8;">$49,200</div>
+          </div>
+        </div>
+        <div id="b2b-janitor-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 OCCUPANCY_DRIVEN_DYNAMIC_ROSTER_AND_DIRECT_CONSUMABLE_CONFIRM · Mandate: b2b_commercial_janitorial_hygiene_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -49528,6 +49699,80 @@ function updateFertilityIvfEggFreezingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 SMART_CYCLE_MILESTONE_AND_SART_AUTHORIZED · Mandate: fertility_ivf_egg_freezing_escrow_mandate_200';
+}}
+
+function updateB2BCommercialJanitorialHygieneSandbox() {{
+  const slider = document.getElementById('b2b-janitor-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '205000');
+  const crewMode = document.getElementById('b2b-janitor-crew-select').value;
+  const papMode = document.getElementById('b2b-janitor-paper-select').value;
+  const sdsMode = document.getElementById('b2b-janitor-sds-select').value;
+  const optMode = document.getElementById('b2b-janitor-opt-select').value;
+
+  document.getElementById('b2b-janitor-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('b2b-janitor-status-kpi');
+  const grossKpi = document.getElementById('b2b-janitor-gross-kpi');
+  const netKpi = document.getElementById('b2b-janitor-net-kpi');
+  const savingsKpi = document.getElementById('b2b-janitor-savings-kpi');
+  const banner = document.getElementById('b2b-janitor-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (sdsMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNAUTHORIZED_SUBCONTRACT_WAGE_THEFT_OR_TOXIC_CHEMICAL_HOLD · Mandate: null';
+    return;
+  }}
+  if (crewMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 GHOST_NIGHT_CREW_HEADCOUNT_SHORTFALL_OR_SKIPPED_FLOOR_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (papMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 WASHROOM_CONSUMABLE_INVOICE_PADDING_OR_PREMATURE_REFILL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.24);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 OCCUPANCY_DRIVEN_DYNAMIC_ROSTER_AND_DIRECT_CONSUMABLE_CONFIRM · Mandate: b2b_commercial_janitorial_hygiene_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 NFC_PATROL_AND_DISPENSER_USAGE_AUTHORIZED · Mandate: b2b_commercial_janitorial_hygiene_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

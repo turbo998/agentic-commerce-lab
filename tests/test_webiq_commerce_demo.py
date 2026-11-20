@@ -14351,6 +14351,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("fertility-ivf-egg-freezing-escrow-sandbox", html_zh)
 
+    def test_b2b_commercial_janitorial_hygiene_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BCommercialJanitorialHygieneEscrowPolicyInput,
+            evaluate_b2b_commercial_janitorial_hygiene_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_commercial_janitorial_hygiene_escrow_policy(
+            B2BCommercialJanitorialHygieneEscrowPolicyInput(
+                quarterly_commercial_janitorial_and_hygiene_pool_usd=205000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "NFC_PATROL_AND_DISPENSER_USAGE_AUTHORIZED",
+        )
+
+        crew = evaluate_b2b_commercial_janitorial_hygiene_escrow_policy(
+            B2BCommercialJanitorialHygieneEscrowPolicyInput(
+                ghost_night_crew_headcount_shortfall_or_skipped_floor=True
+            )
+        )
+        self.assertEqual(crew["status_code"], 403)
+        self.assertEqual(
+            crew["decision"],
+            "GHOST_NIGHT_CREW_HEADCOUNT_SHORTFALL_OR_SKIPPED_FLOOR_BLOCKED",
+        )
+
+        pap = evaluate_b2b_commercial_janitorial_hygiene_escrow_policy(
+            B2BCommercialJanitorialHygieneEscrowPolicyInput(
+                washroom_consumable_invoice_padding_or_premature_refill=True
+            )
+        )
+        self.assertEqual(pap["status_code"], 422)
+        self.assertEqual(
+            pap["decision"],
+            "WASHROOM_CONSUMABLE_INVOICE_PADDING_OR_PREMATURE_REFILL_BLOCKED",
+        )
+
+        sds = evaluate_b2b_commercial_janitorial_hygiene_escrow_policy(
+            B2BCommercialJanitorialHygieneEscrowPolicyInput(
+                webiq_unauthorized_subcontract_wage_theft_or_toxic_chemical_flag=True
+            )
+        )
+        self.assertEqual(sds["status_code"], 451)
+        self.assertEqual(
+            sds["decision"],
+            "WEBIQ_UNAUTHORIZED_SUBCONTRACT_WAGE_THEFT_OR_TOXIC_CHEMICAL_HOLD",
+        )
+
+        optim = evaluate_b2b_commercial_janitorial_hygiene_escrow_policy(
+            B2BCommercialJanitorialHygieneEscrowPolicyInput(
+                quarterly_commercial_janitorial_and_hygiene_pool_usd=205000.0,
+                occupancy_driven_dynamic_roster_and_direct_consumable_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 49200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 155800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_commercial_janitorial_hygiene_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-commercial-janitorial-hygiene-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

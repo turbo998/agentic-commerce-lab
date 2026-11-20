@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`197` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`198` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (38 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (58 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (42 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (43 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -148,7 +148,7 @@
 | 58 | **Fertility Benefits, Egg Freezing & Multi-Cycle `IVF` Shared-Risk Escrow (`Progyny / Carrot Fertility / Kindbody / Shady Grove`) `20/35/25/20` Milestone Gate, `JIT` Specialty `Rx` Split-Fill & `CAP / SART` Lab Lock Agent Architecture Selection FAQ** | [English](fertility-ivf-egg-freezing-shared-risk-pgta-escrow-agent-selection-faq.en.md) · [中文](fertility-ivf-egg-freezing-shared-risk-pgta-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (42 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (43 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -196,6 +196,7 @@
 | 40 | **B2B Executive Search, Headhunter Contingency Fee & `FCRA` Background Check Escrow (`Korn Ferry / Paraform / Greenhouse / Checkr`) 90-Day Probation Vesting, `ATS` Right-to-Represent Lock & Base-Salary-Only Cap Agent Architecture Selection FAQ** | [English](b2b-recruiting-headhunter-contingency-clawback-fcra-escrow-agent-selection-faq.en.md) · [中文](b2b-recruiting-headhunter-contingency-clawback-fcra-escrow-agent-selection-faq.md) |
 | 41 | **B2B Wholesale Fashion Showroom, Boutique Buying & `Net-60` Return Escrow (`Faire / JOOR / NuORDER / Ankorstore`) Size-Curve Parity Lock, `Cancel-After Date` Auto-Void & Anti-`DTC`-Undercut Agent Architecture Selection FAQ** | [English](b2b-wholesale-fashion-showroom-faire-joor-size-curve-escrow-agent-selection-faq.en.md) · [中文](b2b-wholesale-fashion-showroom-faire-joor-size-curve-escrow-agent-selection-faq.md) |
 | 42 | **Restaurant & Retail `POS` SaaS, `Interchange-Plus` Acquiring & Merchant Cash Advance (`MCA`) Escrow (`Toast / Square / Clover / Adyen Terminal`) Anti-`48m` Equipment-Lease Gate, `MDR` Rate-Creep Audit & `<=12%` `MCA` Holdback Cap Agent Architecture Selection FAQ** | [English](restaurant-pos-acquiring-interchange-plus-mca-escrow-agent-selection-faq.en.md) · [中文](restaurant-pos-acquiring-interchange-plus-mca-escrow-agent-selection-faq.md) |
+| 43 | **B2B Commercial Janitorial, Facility Hygiene `SLA` & Washroom Consumable Escrow (`ABM / ISS World / OpenWorks / Tork Essity`) Anti-Ghost-Night-Crew Turnstile Gate, Per-Attendee Consumable Cap & Occupancy-Driven Cleaning Agent Architecture Selection FAQ** | [English](b2b-commercial-janitorial-facility-hygiene-consumable-escrow-agent-selection-faq.en.md) · [中文](b2b-commercial-janitorial-facility-hygiene-consumable-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 Guides)
