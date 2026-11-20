@@ -22775,6 +22775,87 @@ def evaluate_bespoke_suit_mtm_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BDocumentShreddingItadEscrowPolicyInput:
+    """Input contract for B2B Document Shredding, NAID AAA & NIST 800-88 SSD/ITAD Escrow."""
+
+    quarterly_b2b_document_shredding_and_itad_pool_usd: float = 90000.0
+    evergreen_60m_shred_lockin_or_fuel_environmental_surcharge: bool = False
+    offsite_unshredded_custody_gap_or_unserialized_nist80088_ssd_shred: bool = False
+    webiq_lapsed_naid_aaa_certification_or_lithium_shred_hazard_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    ultrasonic_bin_fill_sensor_on_demand_dispatch_and_itad_value_recovery_ready: bool = False
+
+
+def evaluate_b2b_document_shredding_itad_escrow_policy(
+    policy_input: B2BDocumentShreddingItadEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Document Shredding, NAID AAA & NIST 800-88 SSD/ITAD Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_document_shredding_and_itad_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_lapsed_naid_aaa_certification_or_lithium_shred_hazard_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_LAPSED_NAID_AAA_CERTIFICATION_OR_LITHIUM_SHRED_HAZARD_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.evergreen_60m_shred_lockin_or_fuel_environmental_surcharge:
+        return {
+            "status_code": 403,
+            "decision": "EVERGREEN_60M_SHRED_LOCKIN_OR_FUEL_ENVIRONMENTAL_SURCHARGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.offsite_unshredded_custody_gap_or_unserialized_nist80088_ssd_shred:
+        return {
+            "status_code": 422,
+            "decision": "OFFSITE_UNSHREDDED_CUSTODY_GAP_OR_UNSERIALIZED_NIST80088_SSD_SHRED_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ultrasonic_bin_fill_sensor_on_demand_dispatch_and_itad_value_recovery_ready:
+        savings = round(gross_pool * 0.34, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ULTRASONIC_BIN_FILL_SENSOR_ON_DEMAND_DISPATCH_AND_ITAD_VALUE_RECOVERY_CONFIRM",
+            "mandate_token": "b2b_document_shredding_itad_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ONSITE_DIN_P4_AND_SERIALIZED_NIST80088_AUTHORIZED",
+        "mandate_token": "b2b_document_shredding_itad_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -31372,6 +31453,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_document_shredding_itad_escrow_guard = {
+        "authorized_200": evaluate_b2b_document_shredding_itad_escrow_policy(
+            B2BDocumentShreddingItadEscrowPolicyInput()
+        ),
+        "evergreen_or_fuel_surcharge_403": evaluate_b2b_document_shredding_itad_escrow_policy(
+            B2BDocumentShreddingItadEscrowPolicyInput(
+                evergreen_60m_shred_lockin_or_fuel_environmental_surcharge=True
+            )
+        ),
+        "offsite_gap_or_unserialized_ssd_422": evaluate_b2b_document_shredding_itad_escrow_policy(
+            B2BDocumentShreddingItadEscrowPolicyInput(
+                offsite_unshredded_custody_gap_or_unserialized_nist80088_ssd_shred=True
+            )
+        ),
+        "lapsed_naid_or_lithium_fire_451": evaluate_b2b_document_shredding_itad_escrow_policy(
+            B2BDocumentShreddingItadEscrowPolicyInput(
+                webiq_lapsed_naid_aaa_certification_or_lithium_shred_hazard_flag=True
+            )
+        ),
+        "bin_sensor_and_blancco_recovery_409": evaluate_b2b_document_shredding_itad_escrow_policy(
+            B2BDocumentShreddingItadEscrowPolicyInput(
+                ultrasonic_bin_fill_sensor_on_demand_dispatch_and_itad_value_recovery_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -31603,6 +31710,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_coworking_daypass_escrow_guard": b2b_coworking_daypass_escrow_guard,
         "specialty_coffee_green_bean_escrow_guard": specialty_coffee_green_bean_escrow_guard,
         "bespoke_suit_mtm_escrow_guard": bespoke_suit_mtm_escrow_guard,
+        "b2b_document_shredding_itad_escrow_guard": b2b_document_shredding_itad_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -42415,6 +42523,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="bespoke-suit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DIRECT_MILL_CUT_LENGTH_CMT_SEPARATION_AND_HALF_CANVAS_MTM_OPTIMIZATION_CONFIRM · Mandate: bespoke_suit_mtm_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 103 B2B Document Shredding, NAID AAA & NIST 800-88 SSD/ITAD Escrow -->
+      <div class="finops-box" id="b2b-document-shredding-itad-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📄 企业涉密文件粉碎 (Document Shredding)、固态硬盘 (SSD) NIST 800-88 颗粒销毁与 NAID AAA 托管 (Iron Mountain 铁山 / Shred-it / Sims Lifecycle / 京东企服) 现场粉碎与逐盘扫码沙盒 (Round 103)</div>
+            <div class="finops-subtitle">实测废除 60 个月长约(&lt;=12m)与全包一口价防空桶照收 $125 起步费+28% 燃油环保杂费+$45/桶撤桶费 (HTTP 403)、楼下移动粉碎车 DIN P-4 当场碎纸及 SSD 固态盘&lt;=2mm 微粒粉碎+逐盘序列号 (S/N) 扫码防 30mm 刀距漏掉 NAND 芯片泄密 (HTTP 422)、Web IQ 供应商 NAID AAA 认证与锂电拆解核验 (HTTP 451) 及保密柜&gt;=80% 满溢传感派车+Blancco 认证擦除残值回购净省 34% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="shred-itad-status-kpi">HTTP 409 · ULTRASONIC_BIN_FILL_SENSOR_ON_DEMAND_DISPATCH_AND_ITAD_VALUE_RECOVERY_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业涉密文件粉碎与退役硬盘 (ITAD) 预算池 ($ USD)
+            <input type="range" id="shred-itad-pool-slider" min="15000" max="500000" step="5000" value="90000" oninput="updateB2BDocumentShreddingItadEscrowSandbox()" />
+            <span id="shred-itad-pool-val" style="color:#6ee7b7; font-family:monospace;">$90,000</span>
+          </label>
+          <label>
+            &lt;=12m 短约、零燃油/撤桶杂费与 SOP #37 白纸浆返利核验 (HTTP 403)
+            <select id="shred-itad-fee-select" onchange="updateB2BDocumentShreddingItadEscrowSandbox()">
+              <option value="pass">&lt;=12m 灵活期 + 零燃油环保附加费 + $0 撤桶费 + SOP #37 白纸浆回收返利 (放行)</option>
+              <option value="block">70% 空桶照收 $125 最低出车费+28% 燃油环保杂费 或 60m 自动续签+$45/桶撤桶赎金 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            车载 DIN P-4 当场碎纸与 SSD &lt;=2mm 逐盘 S/N 扫码核验 (HTTP 422)
+            <select id="shred-itad-ssd-select" onchange="updateB2BDocumentShreddingItadEscrowSandbox()">
+              <option value="pass">车载当场粉碎视频 + SSD &lt;=2mm 微粒粉碎 + 100% 匹配 CMDB 逐盘序列号 S/N (合规)</option>
+              <option value="block">原纸装敞口布袋异地拉走 或 拿 30mm 机械盘刀头切 SSD 漏掉闪存芯片/只开笼统证明 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ i-SIGMA NAID AAA 车载认证与锂电池拆解核验 (HTTP 451)
+            <select id="shred-itad-naid-select" onchange="updateB2BDocumentShreddingItadEscrowSandbox()">
+              <option value="clear">i-SIGMA NAID AAA 认证有效 + R2v3 环保合规 + 已先行剥离锂电池 (正常)</option>
+              <option value="hold">供应商丧失 NAID AAA 飞检资质/操作员无背调 或 带锂电池直接混碎引发爆燃 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            保密柜 &gt;=80% 满溢传感派车与 Blancco 擦除残值回购 (HTTP 409)
+            <select id="shred-itad-opt-select" onchange="updateB2BDocumentShreddingItadEscrowSandbox()">
+              <option value="enabled" selected>开启保密柜&gt;=80% 满溢传感派车 (-45% 空跑) + 3 年内设备 Blancco 擦除回购净省 34% (HTTP 409)</option>
+              <option value="baseline">常规车载当场粉碎与逐盘 S/N 对齐标准销毁授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度涉密粉碎与 ITAD 总池</div>
+            <div class="finops-kpi-val" id="shred-itad-gross-kpi">$90,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">满溢派车与残值冲抵后净支出</div>
+            <div class="finops-kpi-val" id="shred-itad-net-kpi" style="color:#6ee7b7;">$59,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除空桶费与硬件残值回血</div>
+            <div class="finops-kpi-val" id="shred-itad-savings-kpi" style="color:#38bdf8;">$30,600</div>
+          </div>
+        </div>
+        <div id="shred-itad-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ULTRASONIC_BIN_FILL_SENSOR_ON_DEMAND_DISPATCH_AND_ITAD_VALUE_RECOVERY_CONFIRM · Mandate: b2b_document_shredding_itad_mandate_optim_409
         </div>
       </div>
 
@@ -55408,6 +55579,80 @@ function updateBespokeSuitMtmEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 FULL_CANVAS_BASTED_AND_MILL_SELVEDGE_AUTHORIZED · Mandate: bespoke_suit_mtm_escrow_mandate_200';
+}}
+
+function updateB2BDocumentShreddingItadEscrowSandbox() {{
+  const slider = document.getElementById('shred-itad-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '90000');
+  const feeMode = document.getElementById('shred-itad-fee-select').value;
+  const ssdMode = document.getElementById('shred-itad-ssd-select').value;
+  const naidMode = document.getElementById('shred-itad-naid-select').value;
+  const optMode = document.getElementById('shred-itad-opt-select').value;
+
+  document.getElementById('shred-itad-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('shred-itad-status-kpi');
+  const grossKpi = document.getElementById('shred-itad-gross-kpi');
+  const netKpi = document.getElementById('shred-itad-net-kpi');
+  const savingsKpi = document.getElementById('shred-itad-savings-kpi');
+  const banner = document.getElementById('shred-itad-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (naidMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_LAPSED_NAID_AAA_CERTIFICATION_OR_LITHIUM_SHRED_HAZARD_HOLD · Mandate: null';
+    return;
+  }}
+  if (feeMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 EVERGREEN_60M_SHRED_LOCKIN_OR_FUEL_ENVIRONMENTAL_SURCHARGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (ssdMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 OFFSITE_UNSHREDDED_CUSTODY_GAP_OR_UNSERIALIZED_NIST80088_SSD_SHRED_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.34);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ULTRASONIC_BIN_FILL_SENSOR_ON_DEMAND_DISPATCH_AND_ITAD_VALUE_RECOVERY_CONFIRM · Mandate: b2b_document_shredding_itad_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ONSITE_DIN_P4_AND_SERIALIZED_NIST80088_AUTHORIZED · Mandate: b2b_document_shredding_itad_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

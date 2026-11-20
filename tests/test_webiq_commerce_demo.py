@@ -15959,6 +15959,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("bespoke-suit-mtm-escrow-sandbox", html_zh)
 
+    def test_b2b_document_shredding_itad_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BDocumentShreddingItadEscrowPolicyInput,
+            evaluate_b2b_document_shredding_itad_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_document_shredding_itad_escrow_policy(
+            B2BDocumentShreddingItadEscrowPolicyInput(
+                quarterly_b2b_document_shredding_and_itad_pool_usd=90000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ONSITE_DIN_P4_AND_SERIALIZED_NIST80088_AUTHORIZED",
+        )
+
+        fee = evaluate_b2b_document_shredding_itad_escrow_policy(
+            B2BDocumentShreddingItadEscrowPolicyInput(
+                evergreen_60m_shred_lockin_or_fuel_environmental_surcharge=True
+            )
+        )
+        self.assertEqual(fee["status_code"], 403)
+        self.assertEqual(
+            fee["decision"],
+            "EVERGREEN_60M_SHRED_LOCKIN_OR_FUEL_ENVIRONMENTAL_SURCHARGE_BLOCKED",
+        )
+
+        ssd = evaluate_b2b_document_shredding_itad_escrow_policy(
+            B2BDocumentShreddingItadEscrowPolicyInput(
+                offsite_unshredded_custody_gap_or_unserialized_nist80088_ssd_shred=True
+            )
+        )
+        self.assertEqual(ssd["status_code"], 422)
+        self.assertEqual(
+            ssd["decision"],
+            "OFFSITE_UNSHREDDED_CUSTODY_GAP_OR_UNSERIALIZED_NIST80088_SSD_SHRED_BLOCKED",
+        )
+
+        naid = evaluate_b2b_document_shredding_itad_escrow_policy(
+            B2BDocumentShreddingItadEscrowPolicyInput(
+                webiq_lapsed_naid_aaa_certification_or_lithium_shred_hazard_flag=True
+            )
+        )
+        self.assertEqual(naid["status_code"], 451)
+        self.assertEqual(
+            naid["decision"],
+            "WEBIQ_LAPSED_NAID_AAA_CERTIFICATION_OR_LITHIUM_SHRED_HAZARD_HOLD",
+        )
+
+        optim = evaluate_b2b_document_shredding_itad_escrow_policy(
+            B2BDocumentShreddingItadEscrowPolicyInput(
+                quarterly_b2b_document_shredding_and_itad_pool_usd=90000.0,
+                ultrasonic_bin_fill_sensor_on_demand_dispatch_and_itad_value_recovery_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 30600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 59400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_document_shredding_itad_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-document-shredding-itad-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
