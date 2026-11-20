@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg523" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#07111E" />
+      <stop offset="50%" stop-color="#141E38" />
+      <stop offset="100%" stop-color="#081322" />
+    </linearGradient>
+    <linearGradient id="accent523" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="50%" stop-color="#EC4899" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg523)" />
+  <rect x="0" y="0" width="1200" height="6" fill="url(#accent523)" />
+
+  <!-- Header -->
+  <text x="44" y="48" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.4">ROUND 80 · LUXURY HANDBAG BUYBACK, CONSIGNMENT APPRAISAL &amp; ANTI-BAIT-AND-SWITCH ESCROW</text>
+  <text x="44" y="82" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">二奢箱包回收、寄卖估价与防“到手刀”压价托管：防高报低收、防掉包锁与底价买断</text>
+  <text x="44" y="108" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Fashionphile / Rebag / 妃鱼 / 红布林 / 胖虎 vs 寄前 Entrupy 锁价(&lt;=10%浮动) vs 防拆 NFC 铅封锁 vs 寄卖转买断省 24%</text>
+
+  <!-- Left Panel: 3 Core Luxury Handbag Buyback & Consignment Risks -->
+  <rect x="44" y="132" width="350" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="64" y="164" fill="#F87171" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🚨 二奢箱包回收与寄卖三大套路黑洞</text>
+
+  <rect x="62" y="182" width="314" height="132" rx="8" fill="#1E293B" stroke="#EF4444" stroke-width="1" />
+  <text x="76" y="206" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">1. 线上看图报价 $3,500 诱骗寄包，收到后砍到 $1,900</text>
+  <text x="76" y="228" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 回收商故意用虚高报价骗卖家把香奈儿 CF 寄过去，到货后</text>
+  <text x="76" y="248" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  拿放大镜挑“边角微磨/五金氧化”狠砍 45%(到手刀)，不卖就收 $80 鉴定退运费</text>
+  <text x="76" y="268" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：寄前四角度微距视频定级锁价(最大折让&lt;=10%)</text>
+  <text x="76" y="288" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  + 拒卖 100% 免鉴定费顺丰保价退回 (HTTP 403)</text>
+
+  <rect x="62" y="328" width="314" height="132" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1" />
+  <text x="76" y="352" fill="#FCD34D" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">2. 拒卖退回时真肩带/锁头被掉包，或被偷偷打折贱卖</text>
+  <text x="76" y="374" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 卖家不同意压价要求退回，结果收到的爱马仕锁头或香奈儿</text>
+  <text x="76" y="394" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  芯片卡被掉包成高仿件；或寄卖平台未经同意擅自打 5 折清仓</text>
+  <text x="76" y="414" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：寄出前绑定一次性防拆 NFC 铅封与内胆芯片号</text>
+  <text x="76" y="434" fill="#38BDF8" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  + 寄卖最低到手保底价(Reserve Floor)死锁 (HTTP 422)</text>
+
+  <rect x="62" y="474" width="314" height="134" rx="8" fill="#1E293B" stroke="#A855F7" stroke-width="1" />
+  <text x="76" y="498" fill="#D8B4FE" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">3. 寄卖平台资金链断裂挪用货款与跨平台比价寻优</text>
+  <text x="76" y="520" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 包已经卖出去了，二奢平台却压着货款 60 天不打给卖家</text>
+  <text x="76" y="540" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 护栏：Web IQ 平台挪用资金涉诉与销赃黑名单熔断(451)</text>
+  <text x="76" y="560" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 一键并发询价 Rebag Clair / Fashionphile / 红布林三大库</text>
+  <text x="76" y="582" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">  + 置换新包额外 +15% 储值奖励溢价增益 24% (HTTP 409)</text>
+
+  <!-- Center Panel: 5-Lane Deterministic Gate -->
+  <rect x="414" y="132" width="402" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="434" y="164" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🛡️ 二奢箱包回收与寄卖五车道受托状态机</text>
+
+  <rect x="434" y="184" width="362" height="72" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="450" y="208" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 200 · LOCKED_BUYOUT_AND_NFC_SEAL_AUTHORIZED</text>
+  <text x="450" y="228" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">寄前锁价无到手刀 + 防拆铅封完整 + 签收 T+0 秒打款 (8ms)</text>
+  <text x="450" y="245" fill="#A7F3D0" font-family="Consolas, monospace" font-size="11">luxury_handbag_buyback_consignment_mandate_*</text>
+
+  <rect x="434" y="268" width="362" height="72" rx="8" fill="#450A0A" stroke="#EF4444" stroke-width="1.5" />
+  <text x="450" y="292" fill="#FCA5A5" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 403 · BAIT_AND_SWITCH_LOWBALL_OR_RETURN_FEE</text>
+  <text x="450" y="312" fill="#FEE2E2" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截到货后借故微瑕砍价超10%(到手刀)或拒卖退回强收鉴定/退运费</text>
+  <text x="450" y="329" fill="#FCA5A5" font-family="Consolas, monospace" font-size="11">post_arrival_haircut_pct &gt; 0.10 | return_appraisal_fee &gt; 0</text>
+
+  <rect x="434" y="352" width="362" height="72" rx="8" fill="#431407" stroke="#F97316" stroke-width="1.5" />
+  <text x="450" y="376" fill="#FDBA74" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 422 · BELOW_RESERVE_DISCOUNT_OR_ACCESSORY_SWAP</text>
+  <text x="450" y="396" fill="#FFEDD5" font-family="Segoe UI, Arial, sans-serif" font-size="12">拦截未经卖家同意击穿寄卖保底价打折或退包缺失原装锁头/身份卡</text>
+  <text x="450" y="413" fill="#FDBA74" font-family="Consolas, monospace" font-size="11">sale_net_payout &lt; seller_reserve_floor | nfc_seal_matched = false</text>
+
+  <rect x="434" y="436" width="362" height="72" rx="8" fill="#3B0764" stroke="#A855F7" stroke-width="1.5" />
+  <text x="450" y="460" fill="#E9D5FF" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 451 · WEBIQ_PAYOUT_DEFAULT_OR_STOLEN_CHIP_HOLD</text>
+  <text x="450" y="480" fill="#F3E8FF" font-family="Segoe UI, Arial, sans-serif" font-size="12">Web IQ 检出寄卖商拖欠卖家回款涉诉风险或箱包内嵌芯片报失涉盗抢</text>
+  <text x="450" y="497" fill="#D8B4FE" font-family="Consolas, monospace" font-size="11">consignment_platform_insolvency = true | stolen_microchip = true</text>
+
+  <rect x="434" y="520" width="362" height="88" rx="8" fill="#422006" stroke="#F59E0B" stroke-width="1.5" />
+  <text x="450" y="544" fill="#FDE68A" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">HTTP 409 · MULTI_DESK_CLAIR_INDEX_AND_TRADE_IN_BOOST</text>
+  <text x="450" y="564" fill="#FEF3C7" font-family="Segoe UI, Arial, sans-serif" font-size="12">跨平台实时买断指数竞价 + 置换授信(Trade-In +15%)增益 24%</text>
+  <text x="450" y="584" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">季度二奢箱包回收与寄卖周转池 $215,000 → 净回收折损优化 $163,400 (增收 $51,600)</text>
+
+  <!-- Right Panel: Platform Selection Matrix -->
+  <rect x="836" y="132" width="320" height="495" rx="12" fill="#111C2D" stroke="#334155" stroke-width="1.5" />
+  <text x="856" y="164" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🧭 二奢回收与寄卖平台选型</text>
+
+  <rect x="854" y="184" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="206" fill="#F59E0B" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">Rebag (CLAIR 指数) / Fashionphile (一口价秒买断)</text>
+  <text x="868" y="226" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 公开透明 CLAIR 实时行情指数，上传照片即给绑定</text>
+  <text x="868" y="246" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  买断报价(Direct Buyout)，到店/签收验真后 T+1 直接打款</text>
+  <text x="868" y="266" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：急需快速回笼现金、经典保值款(Hermes/Chanel)出手</text>
+
+  <rect x="854" y="298" width="284" height="100" rx="8" fill="#1E293B" />
+  <text x="868" y="320" fill="#EC4899" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">红布林 Plum / 妃鱼 / Vestiaire (直播高价寄卖)</text>
+  <text x="868" y="340" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">• 直播间高客单价代卖比一刀切回收多拿 15%–25%，</text>
+  <text x="868" y="360" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="12">  支持中检/Entrupy 显微镜鉴定，需严控自动调价保底线</text>
+  <text x="868" y="380" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="11">适合：成色极佳限量款、不急用钱追求最高到手净额</text>
+
+  <rect x="854" y="412" width="284" height="196" rx="8" fill="#064E3B" stroke="#10B981" stroke-width="1.5" />
+  <text x="868" y="436" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">★ 推荐：Foundry + 防到手刀与铅封网关</text>
+  <text x="868" y="458" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">1. 寄前八图微距锁死成色，到货砍价&gt;10%免责包邮退</text>
+  <text x="868" y="480" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">2. 手柄挂一次性防拆 NFC 铅封杜绝退包调包锁头配件</text>
+  <text x="868" y="502" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">3. 寄卖强制绑定最低到手底价(Reserve Price)禁乱打折</text>
+  <text x="868" y="524" fill="#D1FAE5" font-family="Segoe UI, Arial, sans-serif" font-size="12">4. 跨平台比价 + 置换奖励净多拿 24%</text>
+  <rect x="868" y="542" width="256" height="50" rx="6" fill="#022C22" />
+  <text x="880" y="563" fill="#34D399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">审计标签：provenance = synthetic</text>
+  <text x="880" y="581" fill="#A7F3D0" font-family="Segoe UI, Arial, sans-serif" font-size="11">independently_reproduced = false</text>
+</svg>

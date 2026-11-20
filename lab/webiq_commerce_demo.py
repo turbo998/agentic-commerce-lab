@@ -20912,6 +20912,87 @@ def evaluate_b2b_commercial_janitorial_hygiene_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class LuxuryHandbagBuybackConsignmentPolicyInput:
+    """Input contract for Luxury Handbag Buyback, Consignment Appraisal & Anti-Bait-and-Switch Escrow."""
+
+    quarterly_luxury_handbag_buyback_and_consignment_pool_usd: float = 215000.0
+    bait_and_switch_arrival_lowball_or_return_fee_extortion: bool = False
+    below_reserve_floor_unauthorized_markdown_or_seal_tamper: bool = False
+    webiq_consignment_platform_insolvency_or_stolen_microchip_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    multi_desk_clair_arbitrage_and_tradein_uplift_ready: bool = False
+
+
+def evaluate_luxury_handbag_buyback_consignment_policy(
+    policy_input: LuxuryHandbagBuybackConsignmentPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Luxury Handbag Buyback, Consignment Appraisal & Anti-Lowball policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_luxury_handbag_buyback_and_consignment_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_consignment_platform_insolvency_or_stolen_microchip_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_CONSIGNMENT_PLATFORM_INSOLVENCY_OR_STOLEN_MICROCHIP_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bait_and_switch_arrival_lowball_or_return_fee_extortion:
+        return {
+            "status_code": 403,
+            "decision": "BAIT_AND_SWITCH_ARRIVAL_LOWBALL_OR_RETURN_FEE_EXTORTION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.below_reserve_floor_unauthorized_markdown_or_seal_tamper:
+        return {
+            "status_code": 422,
+            "decision": "BELOW_RESERVE_FLOOR_UNAUTHORIZED_MARKDOWN_OR_SEAL_TAMPER_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.multi_desk_clair_arbitrage_and_tradein_uplift_ready:
+        savings = round(gross_pool * 0.24, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MULTI_DESK_CLAIR_ARBITRAGE_AND_TRADEIN_UPLIFT_CONFIRM",
+            "mandate_token": "luxury_handbag_buyback_consignment_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "LOCKED_BUYOUT_AND_NFC_SEAL_AUTHORIZED",
+        "mandate_token": "luxury_handbag_buyback_consignment_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -28911,6 +28992,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    luxury_handbag_buyback_consignment_guard = {
+        "authorized_200": evaluate_luxury_handbag_buyback_consignment_policy(
+            LuxuryHandbagBuybackConsignmentPolicyInput()
+        ),
+        "arrival_lowball_or_return_fee_403": evaluate_luxury_handbag_buyback_consignment_policy(
+            LuxuryHandbagBuybackConsignmentPolicyInput(
+                bait_and_switch_arrival_lowball_or_return_fee_extortion=True
+            )
+        ),
+        "below_reserve_or_seal_tamper_422": evaluate_luxury_handbag_buyback_consignment_policy(
+            LuxuryHandbagBuybackConsignmentPolicyInput(
+                below_reserve_floor_unauthorized_markdown_or_seal_tamper=True
+            )
+        ),
+        "platform_insolvency_or_stolen_chip_451": evaluate_luxury_handbag_buyback_consignment_policy(
+            LuxuryHandbagBuybackConsignmentPolicyInput(
+                webiq_consignment_platform_insolvency_or_stolen_microchip_flag=True
+            )
+        ),
+        "multi_desk_clair_and_tradein_409": evaluate_luxury_handbag_buyback_consignment_policy(
+            LuxuryHandbagBuybackConsignmentPolicyInput(
+                multi_desk_clair_arbitrage_and_tradein_uplift_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29119,6 +29226,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "festival_stadium_cashless_rfid_escrow_guard": festival_stadium_cashless_rfid_escrow_guard,
         "fertility_ivf_egg_freezing_escrow_guard": fertility_ivf_egg_freezing_escrow_guard,
         "b2b_commercial_janitorial_hygiene_escrow_guard": b2b_commercial_janitorial_hygiene_escrow_guard,
+        "luxury_handbag_buyback_consignment_guard": luxury_handbag_buyback_consignment_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -38482,6 +38590,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="b2b-janitor-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 OCCUPANCY_DRIVEN_DYNAMIC_ROSTER_AND_DIRECT_CONSUMABLE_CONFIRM · Mandate: b2b_commercial_janitorial_hygiene_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 80 Luxury Handbag Buyback, Consignment Appraisal & Anti-Bait-and-Switch Escrow -->
+      <div class="finops-box" id="luxury-handbag-buyback-consignment-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">👜 二手奢侈品箱包回收、典当寄卖估价与防“到手刀”压价托管 (Fashionphile / Rebag / 妃鱼 / 红布林 / 胖虎) 寄前锁价、NFC铅封防掉包与底价死锁沙盒 (Round 80)</div>
+            <div class="finops-subtitle">实测寄前九宫格 4K 微距视频定级锁价(到货折让&lt;=10%)防高报 $3,500 诱骗寄包后到手刀砍至 $1,900 及拒卖免鉴定费包邮退回 (HTTP 403)、手柄一次性防拆 NFC 铅封防掉包锁头配件与寄卖最低到手净额底线死锁 (HTTP 422)、Web IQ 平台挪用资金池涉诉熔断 (HTTP 451) 及跨平台 CLAIR 指数竞价+置换补贴增益 24% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="lux-bag-status-kpi">HTTP 409 · MULTI_DESK_CLAIR_ARBITRAGE_AND_TRADEIN_UPLIFT_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度二手奢侈品箱包回收与寄卖周转池 ($ USD)
+            <input type="range" id="lux-bag-pool-slider" min="40000" max="1500000" step="10000" value="215000" oninput="updateLuxuryHandbagBuybackConsignmentSandbox()" />
+            <span id="lux-bag-pool-val" style="color:#6ee7b7; font-family:monospace;">$215,000</span>
+          </label>
+          <label>
+            寄前 4K 微距锁价 (&lt;=10% 折让) 与免退运费校验 (HTTP 403)
+            <select id="lux-bag-lowball-select" onchange="updateLuxuryHandbagBuybackConsignmentSandbox()">
+              <option value="pass">到货复检折让 &lt;=10% + 拒卖 $0 费用顺丰全额保价退回 (放行)</option>
+              <option value="block">线上高报 $3,500 收到后借故微瑕砍至 $1,900(到手刀) 或 拒卖强收 $80 鉴定费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            手柄防拆 NFC 铅封完好度与寄卖最低净得底价校验 (HTTP 422)
+            <select id="lux-bag-seal-select" onchange="updateLuxuryHandbagBuybackConsignmentSandbox()">
+              <option value="pass">一次性 NFC 防拆铅封完好 + 实收净额 &gt;= 卖家保底线 (合规)</option>
+              <option value="block">未经同意打 5 折贱卖击穿保底净额 或 退包时防拆铅封被剪断/掉包锁头 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 寄卖平台资金池涉诉与被盗芯片筛查 (HTTP 451)
+            <select id="lux-bag-insolvency-select" onchange="updateLuxuryHandbagBuybackConsignmentSandbox()">
+              <option value="clear">银行分账专户秒级直清 + 原厂芯片零报失 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">寄卖平台拖欠回款超 30 天涉资金挪用风险 或 内置芯片命中被盗库 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            跨平台 CLAIR 指数竞价与以旧换新 (+15%) 补贴 (HTTP 409)
+            <select id="lux-bag-opt-select" onchange="updateLuxuryHandbagBuybackConsignmentSandbox()">
+              <option value="enabled" selected>开启多平台 CLAIR 买断指数最高价竞价 + 置换新包 +15% 奖励增收 24% (HTTP 409)</option>
+              <option value="baseline">常规单一平台锁价买断与标准铅封托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度二奢回收周转池</div>
+            <div class="finops-kpi-val" id="lux-bag-gross-kpi">$215,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">消除压价折损后净值</div>
+            <div class="finops-kpi-val" id="lux-bag-net-kpi" style="color:#6ee7b7;">$163,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度挽回到手刀与置换增收</div>
+            <div class="finops-kpi-val" id="lux-bag-savings-kpi" style="color:#38bdf8;">$51,600</div>
+          </div>
+        </div>
+        <div id="lux-bag-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MULTI_DESK_CLAIR_ARBITRAGE_AND_TRADEIN_UPLIFT_CONFIRM · Mandate: luxury_handbag_buyback_consignment_mandate_optim_409
         </div>
       </div>
 
@@ -49773,6 +49944,80 @@ function updateB2BCommercialJanitorialHygieneSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 NFC_PATROL_AND_DISPENSER_USAGE_AUTHORIZED · Mandate: b2b_commercial_janitorial_hygiene_escrow_mandate_200';
+}}
+
+function updateLuxuryHandbagBuybackConsignmentSandbox() {{
+  const slider = document.getElementById('lux-bag-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '215000');
+  const lowMode = document.getElementById('lux-bag-lowball-select').value;
+  const sealMode = document.getElementById('lux-bag-seal-select').value;
+  const insMode = document.getElementById('lux-bag-insolvency-select').value;
+  const optMode = document.getElementById('lux-bag-opt-select').value;
+
+  document.getElementById('lux-bag-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('lux-bag-status-kpi');
+  const grossKpi = document.getElementById('lux-bag-gross-kpi');
+  const netKpi = document.getElementById('lux-bag-net-kpi');
+  const savingsKpi = document.getElementById('lux-bag-savings-kpi');
+  const banner = document.getElementById('lux-bag-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (insMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_CONSIGNMENT_PLATFORM_INSOLVENCY_OR_STOLEN_MICROCHIP_HOLD · Mandate: null';
+    return;
+  }}
+  if (lowMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BAIT_AND_SWITCH_ARRIVAL_LOWBALL_OR_RETURN_FEE_EXTORTION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (sealMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BELOW_RESERVE_FLOOR_UNAUTHORIZED_MARKDOWN_OR_SEAL_TAMPER_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.24);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MULTI_DESK_CLAIR_ARBITRAGE_AND_TRADEIN_UPLIFT_CONFIRM · Mandate: luxury_handbag_buyback_consignment_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 LOCKED_BUYOUT_AND_NFC_SEAL_AUTHORIZED · Mandate: luxury_handbag_buyback_consignment_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

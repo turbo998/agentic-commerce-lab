@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`198` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`199` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (38 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (58 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (59 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (43 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
@@ -82,7 +82,7 @@
 | 38 | **Music Festival & Stadium Cashless `RFID` Wristband, Anti-Tip-Creep & Auto-Refund Escrow (`Coachella / Tomorrowland / Intellitix / Front Gate`) Zero-Breakage Auto-Refund, `0%–10%` Tip Cap & `45s` Double-Tap Idempotency Agent Architecture Selection FAQ** | [English](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.en.md) · [中文](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (58 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (59 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -146,6 +146,7 @@
 | 56 | **Bespoke Engagement Ring, `GIA / IGI` Loose Diamond Sourcing & Gold Gram-Weight Escrow (`Blue Nile / James Allen / Rare Carat / Chow Tai Fook`) Cross-Site Certificate Arbitrage, `Zero-BGM` Gate & Post-Setting `FTIR` Verification Agent Architecture Selection FAQ** | [English](bespoke-diamond-ring-gold-jewelry-gia-girdle-escrow-agent-selection-faq.en.md) · [中文](bespoke-diamond-ring-gold-jewelry-gia-girdle-escrow-agent-selection-faq.md) |
 | 57 | **Livestream Shopping Pit-Fee (`Slot Fee`) Guarantee, Influencer `MCN` Escrow & `T+14d` `Net-GMV` Settlement (`TikTok Shop / Douyin StarMap / Taobao Live`) Pro-Rata Shortfall Refund, Anti-Brushing Return Gate & Clip Whitelisting Agent Architecture Selection FAQ** | [English](livestream-shopping-pitfee-net-gmv-anti-brushing-escrow-agent-selection-faq.en.md) · [中文](livestream-shopping-pitfee-net-gmv-anti-brushing-escrow-agent-selection-faq.md) |
 | 58 | **Fertility Benefits, Egg Freezing & Multi-Cycle `IVF` Shared-Risk Escrow (`Progyny / Carrot Fertility / Kindbody / Shady Grove`) `20/35/25/20` Milestone Gate, `JIT` Specialty `Rx` Split-Fill & `CAP / SART` Lab Lock Agent Architecture Selection FAQ** | [English](fertility-ivf-egg-freezing-shared-risk-pgta-escrow-agent-selection-faq.en.md) · [中文](fertility-ivf-egg-freezing-shared-risk-pgta-escrow-agent-selection-faq.md) |
+| 59 | **Luxury Handbag Buyback, Consignment Appraisal & Anti-Bait-and-Switch Escrow (`Fashionphile / Rebag / Vestiaire / Plum`) Pre-Ship `<=10%` Haircut Cap, Tamper-Evident `NFC` Seal & Net-Reserve Floor Agent Architecture Selection FAQ** | [English](luxury-handbag-buyback-consignment-anti-lowball-escrow-agent-selection-faq.en.md) · [中文](luxury-handbag-buyback-consignment-anti-lowball-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (43 Guides)

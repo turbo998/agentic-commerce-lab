@@ -14418,6 +14418,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-commercial-janitorial-hygiene-escrow-sandbox", html_zh)
 
+    def test_luxury_handbag_buyback_consignment_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            LuxuryHandbagBuybackConsignmentPolicyInput,
+            evaluate_luxury_handbag_buyback_consignment_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_luxury_handbag_buyback_consignment_policy(
+            LuxuryHandbagBuybackConsignmentPolicyInput(
+                quarterly_luxury_handbag_buyback_and_consignment_pool_usd=215000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "LOCKED_BUYOUT_AND_NFC_SEAL_AUTHORIZED",
+        )
+
+        low = evaluate_luxury_handbag_buyback_consignment_policy(
+            LuxuryHandbagBuybackConsignmentPolicyInput(
+                bait_and_switch_arrival_lowball_or_return_fee_extortion=True
+            )
+        )
+        self.assertEqual(low["status_code"], 403)
+        self.assertEqual(
+            low["decision"],
+            "BAIT_AND_SWITCH_ARRIVAL_LOWBALL_OR_RETURN_FEE_EXTORTION_BLOCKED",
+        )
+
+        seal = evaluate_luxury_handbag_buyback_consignment_policy(
+            LuxuryHandbagBuybackConsignmentPolicyInput(
+                below_reserve_floor_unauthorized_markdown_or_seal_tamper=True
+            )
+        )
+        self.assertEqual(seal["status_code"], 422)
+        self.assertEqual(
+            seal["decision"],
+            "BELOW_RESERVE_FLOOR_UNAUTHORIZED_MARKDOWN_OR_SEAL_TAMPER_BLOCKED",
+        )
+
+        ins = evaluate_luxury_handbag_buyback_consignment_policy(
+            LuxuryHandbagBuybackConsignmentPolicyInput(
+                webiq_consignment_platform_insolvency_or_stolen_microchip_flag=True
+            )
+        )
+        self.assertEqual(ins["status_code"], 451)
+        self.assertEqual(
+            ins["decision"],
+            "WEBIQ_CONSIGNMENT_PLATFORM_INSOLVENCY_OR_STOLEN_MICROCHIP_HOLD",
+        )
+
+        optim = evaluate_luxury_handbag_buyback_consignment_policy(
+            LuxuryHandbagBuybackConsignmentPolicyInput(
+                quarterly_luxury_handbag_buyback_and_consignment_pool_usd=215000.0,
+                multi_desk_clair_arbitrage_and_tradein_uplift_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 51600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 163400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("luxury_handbag_buyback_consignment_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("luxury-handbag-buyback-consignment-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
