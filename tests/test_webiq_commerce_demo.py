@@ -14552,6 +14552,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-mice-offsite-room-block-av-escrow-sandbox", html_zh)
 
+    def test_solar_ess_vpp_ppa_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SolarEssVppPpaEscrowPolicyInput,
+            evaluate_solar_ess_vpp_ppa_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_solar_ess_vpp_ppa_escrow_policy(
+            SolarEssVppPpaEscrowPolicyInput(
+                quarterly_solar_ess_and_vpp_portfolio_pool_usd=190000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "LIDAR_VERIFIED_AND_UTILITY_PTO_MILESTONE_AUTHORIZED",
+        )
+
+        ppa = evaluate_solar_ess_vpp_ppa_escrow_policy(
+            SolarEssVppPpaEscrowPolicyInput(
+                ppa_compound_escalator_or_financing_dealer_fee_markup=True
+            )
+        )
+        self.assertEqual(ppa["status_code"], 403)
+        self.assertEqual(
+            ppa["decision"],
+            "PPA_COMPOUND_ESCALATOR_OR_FINANCING_DEALER_FEE_MARKUP_BLOCKED",
+        )
+
+        lidar = evaluate_solar_ess_vpp_ppa_escrow_policy(
+            SolarEssVppPpaEscrowPolicyInput(
+                lidar_shade_production_overstatement_or_pre_pto_final_draw=True
+            )
+        )
+        self.assertEqual(lidar["status_code"], 422)
+        self.assertEqual(
+            lidar["decision"],
+            "LIDAR_SHADE_PRODUCTION_OVERSTATEMENT_OR_PRE_PTO_FINAL_DRAW_BLOCKED",
+        )
+
+        ins = evaluate_solar_ess_vpp_ppa_escrow_policy(
+            SolarEssVppPpaEscrowPolicyInput(
+                webiq_solar_installer_insolvency_or_ul9540a_battery_recall_flag=True
+            )
+        )
+        self.assertEqual(ins["status_code"], 451)
+        self.assertEqual(
+            ins["decision"],
+            "WEBIQ_SOLAR_INSTALLER_INSOLVENCY_OR_UL9540A_BATTERY_RECALL_HOLD",
+        )
+
+        optim = evaluate_solar_ess_vpp_ppa_escrow_policy(
+            SolarEssVppPpaEscrowPolicyInput(
+                quarterly_solar_ess_and_vpp_portfolio_pool_usd=190000.0,
+                cash_credit_union_heloc_and_vpp_grid_arbitrage_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 53200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 136800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("solar_ess_vpp_ppa_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("solar-ess-vpp-ppa-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

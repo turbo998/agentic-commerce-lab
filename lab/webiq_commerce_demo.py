@@ -21074,6 +21074,87 @@ def evaluate_b2b_mice_offsite_room_block_av_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class SolarEssVppPpaEscrowPolicyInput:
+    """Input contract for Solar, Battery Storage (ESS), VPP & PPA Escalator Escrow."""
+
+    quarterly_solar_ess_and_vpp_portfolio_pool_usd: float = 190000.0
+    ppa_compound_escalator_or_financing_dealer_fee_markup: bool = False
+    lidar_shade_production_overstatement_or_pre_pto_final_draw: bool = False
+    webiq_solar_installer_insolvency_or_ul9540a_battery_recall_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    cash_credit_union_heloc_and_vpp_grid_arbitrage_ready: bool = False
+
+
+def evaluate_solar_ess_vpp_ppa_escrow_policy(
+    policy_input: SolarEssVppPpaEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Solar, Battery Storage (ESS), VPP & PPA Escalator Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_solar_ess_and_vpp_portfolio_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_solar_installer_insolvency_or_ul9540a_battery_recall_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_SOLAR_INSTALLER_INSOLVENCY_OR_UL9540A_BATTERY_RECALL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ppa_compound_escalator_or_financing_dealer_fee_markup:
+        return {
+            "status_code": 403,
+            "decision": "PPA_COMPOUND_ESCALATOR_OR_FINANCING_DEALER_FEE_MARKUP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.lidar_shade_production_overstatement_or_pre_pto_final_draw:
+        return {
+            "status_code": 422,
+            "decision": "LIDAR_SHADE_PRODUCTION_OVERSTATEMENT_OR_PRE_PTO_FINAL_DRAW_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cash_credit_union_heloc_and_vpp_grid_arbitrage_ready:
+        savings = round(gross_pool * 0.28, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CASH_CREDIT_UNION_HELOC_AND_VPP_GRID_ARBITRAGE_CONFIRM",
+            "mandate_token": "solar_ess_vpp_ppa_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "LIDAR_VERIFIED_AND_UTILITY_PTO_MILESTONE_AUTHORIZED",
+        "mandate_token": "solar_ess_vpp_ppa_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -29125,6 +29206,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    solar_ess_vpp_ppa_escrow_guard = {
+        "authorized_200": evaluate_solar_ess_vpp_ppa_escrow_policy(
+            SolarEssVppPpaEscrowPolicyInput()
+        ),
+        "ppa_escalator_or_dealer_fee_403": evaluate_solar_ess_vpp_ppa_escrow_policy(
+            SolarEssVppPpaEscrowPolicyInput(
+                ppa_compound_escalator_or_financing_dealer_fee_markup=True
+            )
+        ),
+        "shade_inflation_or_pre_pto_422": evaluate_solar_ess_vpp_ppa_escrow_policy(
+            SolarEssVppPpaEscrowPolicyInput(
+                lidar_shade_production_overstatement_or_pre_pto_final_draw=True
+            )
+        ),
+        "epc_insolvency_or_battery_recall_451": evaluate_solar_ess_vpp_ppa_escrow_policy(
+            SolarEssVppPpaEscrowPolicyInput(
+                webiq_solar_installer_insolvency_or_ul9540a_battery_recall_flag=True
+            )
+        ),
+        "cash_heloc_and_vpp_arbitrage_409": evaluate_solar_ess_vpp_ppa_escrow_policy(
+            SolarEssVppPpaEscrowPolicyInput(
+                cash_credit_union_heloc_and_vpp_grid_arbitrage_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29335,6 +29442,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_commercial_janitorial_hygiene_escrow_guard": b2b_commercial_janitorial_hygiene_escrow_guard,
         "luxury_handbag_buyback_consignment_guard": luxury_handbag_buyback_consignment_guard,
         "b2b_mice_offsite_room_block_av_escrow_guard": b2b_mice_offsite_room_block_av_escrow_guard,
+        "solar_ess_vpp_ppa_escrow_guard": solar_ess_vpp_ppa_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -38824,6 +38932,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="mice-offsite-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SHOULDER_DATE_SHIFT_AND_PEER_GROUP_ROOM_TRANSFER_CONFIRM · Mandate: b2b_mice_offsite_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 82 Solar, Battery Storage (ESS), VPP & PPA Escalator Escrow -->
+      <div class="finops-box" id="solar-ess-vpp-ppa-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">☀️ 户用/工商业屋顶光伏 (Solar)、储能电池 (ESS)、虚拟电厂 (VPP) 与 25 年购电协议 (PPA) 托管 (Sunrun / Enphase / Tesla Energy / Aurora Solar) 零暗费与 PTO 并网锁沙盒 (Round 82)</div>
+            <div class="finops-subtitle">实测强制 0.0% 固定费率 PPA 防 2.9% 年复利翻倍刺客及同现金价核验防 28%($11.6k) 贷款经销商买断暗费 (HTTP 403)、Aurora 1m LiDAR 独立树冠阴影验算防删树虚报 35% 发电量与 40% 尾款死锁电力局 PTO 并网许可 (HTTP 422)、Web IQ 安装商破产与 UL 9540A 召回熔断 (HTTP 451) 及零手续费 HELOC+VPP 尖峰放电补贴净省 28% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="solar-ess-status-kpi">HTTP 409 · CASH_CREDIT_UNION_HELOC_AND_VPP_GRID_ARBITRAGE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度屋顶光伏与储能电池 (Solar + ESS) 采购池 ($ USD)
+            <input type="range" id="solar-ess-pool-slider" min="30000" max="1200000" step="10000" value="190000" oninput="updateSolarEssVppPpaEscrowSandbox()" />
+            <span id="solar-ess-pool-val" style="color:#6ee7b7; font-family:monospace;">$190,000</span>
+          </label>
+          <label>
+            0.0% PPA 涨幅与同现金价贷款本金核验 (HTTP 403)
+            <select id="solar-ess-ppa-select" onchange="updateSolarEssVppPpaEscrowSandbox()">
+              <option value="pass">0.0% 固定费率 + 贷款本金与现金同价(&lt;=3%) + UCC-1 自动次级化 (放行)</option>
+              <option value="block">2.9%/年复利递增 PPA 锁死房产 或 3.99% 光伏贷暗加 28%($11,666) 经销商手续费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            Aurora 1m LiDAR 树荫发电验算与 40% PTO 尾款锁 (HTTP 422)
+            <select id="solar-ess-lidar-select" onchange="updateSolarEssVppPpaEscrowSandbox()">
+              <option value="pass">1m LiDAR 阴影偏差&lt;=8% + 上游建材留置权豁免 + 获电力局 PTO 后付清尾款 (合规)</option>
+              <option value="block">销售抹除树荫虚报发电量 35% 或 未获电力局 PTO 并网许可即要求划走 100% 尾款 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 安装商破产预警与 UL 9540A 电芯召回核验 (HTTP 451)
+            <select id="solar-ess-insolvency-select" onchange="updateSolarEssVppPpaEscrowSandbox()">
+              <option value="clear">EPC 资质完好 + 30 年 Solar Insure 兜底保单 + 电芯零召回 (正常)</option>
+              <option value="hold">监测到光伏安装商破产停业预警 或 储能电池触发 UL 9540A 热失控召回 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            零暗费信用社 HELOC 置换与 VPP 虚拟电厂尖峰放电 (HTTP 409)
+            <select id="solar-ess-opt-select" onchange="updateSolarEssVppPpaEscrowSandbox()">
+              <option value="enabled" selected>剥离 28% 经销商贷款手续费 + LFP 储能接入 VPP 尖峰放电补贴净省 28% (HTTP 409)</option>
+              <option value="baseline">常规现金直采与 20/40/40 PTO 并网里程碑托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度光储项目预算池</div>
+            <div class="finops-kpi-val" id="solar-ess-gross-kpi">$190,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">剥离暗费与 VPP 补贴后净成本</div>
+            <div class="finops-kpi-val" id="solar-ess-net-kpi" style="color:#6ee7b7;">$136,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度节省利息水分与放电收益</div>
+            <div class="finops-kpi-val" id="solar-ess-savings-kpi" style="color:#38bdf8;">$53,200</div>
+          </div>
+        </div>
+        <div id="solar-ess-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CASH_CREDIT_UNION_HELOC_AND_VPP_GRID_ARBITRAGE_CONFIRM · Mandate: solar_ess_vpp_ppa_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -50263,6 +50434,80 @@ function updateB2BMiceOffsiteRoomBlockAvEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 RESALE_CREDITED_ATTRITION_AND_AV_RIDER_AUTHORIZED · Mandate: b2b_mice_offsite_escrow_mandate_200';
+}}
+
+function updateSolarEssVppPpaEscrowSandbox() {{
+  const slider = document.getElementById('solar-ess-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '190000');
+  const ppaMode = document.getElementById('solar-ess-ppa-select').value;
+  const lidarMode = document.getElementById('solar-ess-lidar-select').value;
+  const insMode = document.getElementById('solar-ess-insolvency-select').value;
+  const optMode = document.getElementById('solar-ess-opt-select').value;
+
+  document.getElementById('solar-ess-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('solar-ess-status-kpi');
+  const grossKpi = document.getElementById('solar-ess-gross-kpi');
+  const netKpi = document.getElementById('solar-ess-net-kpi');
+  const savingsKpi = document.getElementById('solar-ess-savings-kpi');
+  const banner = document.getElementById('solar-ess-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (insMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_SOLAR_INSTALLER_INSOLVENCY_OR_UL9540A_BATTERY_RECALL_HOLD · Mandate: null';
+    return;
+  }}
+  if (ppaMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PPA_COMPOUND_ESCALATOR_OR_FINANCING_DEALER_FEE_MARKUP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (lidarMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 LIDAR_SHADE_PRODUCTION_OVERSTATEMENT_OR_PRE_PTO_FINAL_DRAW_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.28);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CASH_CREDIT_UNION_HELOC_AND_VPP_GRID_ARBITRAGE_CONFIRM · Mandate: solar_ess_vpp_ppa_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 LIDAR_VERIFIED_AND_UTILITY_PTO_MILESTONE_AUTHORIZED · Mandate: solar_ess_vpp_ppa_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
