@@ -21317,6 +21317,87 @@ def evaluate_golf_teetime_country_club_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class SeniorLivingHomecareEvvEscrowPolicyInput:
+    """Input contract for Senior Living, Assisted-Care Tier Lock & Home-Care EVV Escrow."""
+
+    quarterly_senior_living_and_homecare_pool_usd: float = 140000.0
+    care_level_bait_and_switch_surge_or_non_refundable_community_fee: bool = False
+    gps_ble_evv_checkin_mismatch_or_caregiver_continuity_breach: bool = False
+    webiq_cms_elder_neglect_citation_or_unbonded_caregiver_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    ltc_insurance_adl_claim_automation_and_direct_care_match_ready: bool = False
+
+
+def evaluate_senior_living_homecare_evv_escrow_policy(
+    policy_input: SeniorLivingHomecareEvvEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Senior Living, Assisted-Care Tier Lock & Home-Care EVV Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_senior_living_and_homecare_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_cms_elder_neglect_citation_or_unbonded_caregiver_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_CMS_ELDER_NEGLECT_CITATION_OR_UNBONDED_CAREGIVER_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.care_level_bait_and_switch_surge_or_non_refundable_community_fee:
+        return {
+            "status_code": 403,
+            "decision": "CARE_LEVEL_BAIT_AND_SWITCH_SURGE_OR_NON_REFUNDABLE_COMMUNITY_FEE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.gps_ble_evv_checkin_mismatch_or_caregiver_continuity_breach:
+        return {
+            "status_code": 422,
+            "decision": "GPS_BLE_EVV_CHECKIN_MISMATCH_OR_CAREGIVER_CONTINUITY_BREACH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ltc_insurance_adl_claim_automation_and_direct_care_match_ready:
+        savings = round(gross_pool * 0.26, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "LTC_INSURANCE_ADL_CLAIM_AUTOMATION_AND_DIRECT_CARE_MATCH_CONFIRM",
+            "mandate_token": "senior_living_evv_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ADL_RATE_LOCK_AND_BLE_EVV_SHIFT_AUTHORIZED",
+        "mandate_token": "senior_living_evv_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -29446,6 +29527,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    senior_living_homecare_evv_escrow_guard = {
+        "authorized_200": evaluate_senior_living_homecare_evv_escrow_policy(
+            SeniorLivingHomecareEvvEscrowPolicyInput()
+        ),
+        "care_level_surge_or_community_fee_403": evaluate_senior_living_homecare_evv_escrow_policy(
+            SeniorLivingHomecareEvvEscrowPolicyInput(
+                care_level_bait_and_switch_surge_or_non_refundable_community_fee=True
+            )
+        ),
+        "evv_spoof_or_continuity_breach_422": evaluate_senior_living_homecare_evv_escrow_policy(
+            SeniorLivingHomecareEvvEscrowPolicyInput(
+                gps_ble_evv_checkin_mismatch_or_caregiver_continuity_breach=True
+            )
+        ),
+        "cms_citation_or_unbonded_aide_451": evaluate_senior_living_homecare_evv_escrow_policy(
+            SeniorLivingHomecareEvvEscrowPolicyInput(
+                webiq_cms_elder_neglect_citation_or_unbonded_caregiver_flag=True
+            )
+        ),
+        "ltc_adl_claim_and_subsidy_409": evaluate_senior_living_homecare_evv_escrow_policy(
+            SeniorLivingHomecareEvvEscrowPolicyInput(
+                ltc_insurance_adl_claim_automation_and_direct_care_match_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29659,6 +29766,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "solar_ess_vpp_ppa_escrow_guard": solar_ess_vpp_ppa_escrow_guard,
         "b2b_localization_tm_lqa_dubbing_escrow_guard": b2b_localization_tm_lqa_dubbing_escrow_guard,
         "golf_teetime_country_club_escrow_guard": golf_teetime_country_club_escrow_guard,
+        "senior_living_homecare_evv_escrow_guard": senior_living_homecare_evv_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -39337,6 +39445,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="golf-club-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TWILIGHT_HOT_DEAL_ARBITRAGE_AND_CLUB_FB_MINIMUM_AUTO_SWEEP_CONFIRM · Mandate: golf_teetime_club_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 85 Senior Living, Assisted-Care Tier Lock & Home-Care EVV Escrow -->
+      <div class="finops-box" id="senior-living-homecare-evv-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">👵 养老社区 (CCRC / 协助生活)、护理等级跳档防坑与居家护工电子签到 (EVV) 托管 (A Place for Mom / Care.com / Honor / 泰康之家) 12m ADL 锁价与 BLE 考勤沙盒 (Round 85)</div>
+            <div class="finops-subtitle">实测强制 12 个月独立老年科医师 6-ADL 护理等级费率封顶防入住 60 天后积分跳档暴涨 45% 及 90 天按比例可退 $5,000 入住社区费 (HTTP 403)、室内加密 BLE 蓝牙信标+GPS 双重 EVV 在岗核验防护工异地代打卡早退与满 1000h 零私签买断违约金 (HTTP 422)、Web IQ 养老院 CMS 监管罚单与护工背调熔断 (HTTP 451) 及商业长护险 2-ADL 自动理赔+企业 Care@Work 补贴净省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="senior-care-status-kpi">HTTP 409 · LTC_INSURANCE_ADL_CLAIM_AUTOMATION_AND_DIRECT_CARE_MATCH_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度养老社区与居家上门照护总预算池 ($ USD)
+            <input type="range" id="senior-care-pool-slider" min="25000" max="800000" step="5000" value="140000" oninput="updateSeniorLivingHomecareEvvEscrowSandbox()" />
+            <span id="senior-care-pool-val" style="color:#6ee7b7; font-family:monospace;">$140,000</span>
+          </label>
+          <label>
+            12 个月 ADL 护理等级费率封顶与 90 天可退入住费核验 (HTTP 403)
+            <select id="senior-care-tier-select" onchange="updateSeniorLivingHomecareEvvEscrowSandbox()">
+              <option value="pass">12 个月 ADL 费率封顶(需独立医师签字) + $5,000 入住费 90 天按比例可退 (放行)</option>
+              <option value="block">入住 60 天借口护理积分重评单方加价 +$2,550/月 或 强收不可退 $5,000 入住费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            室内 BLE 蓝牙信标 + GPS 双重 EVV 签到与买断费核验 (HTTP 422)
+            <select id="senior-care-evv-select" onchange="updateSeniorLivingHomecareEvvEscrowSandbox()">
+              <option value="pass">室内 BLE+GPS 在岗握手&gt;=95% 时长 + 主护工&lt;=2人/月 + 满 1000h 零买断费 (合规)</option>
+              <option value="block">护工在 3 公里外异地打卡早退 或 月换 6 人/私签索要 $18,000 违约金 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 养老院 CMS 监管缺陷与护工背调/TB 筛查 (HTTP 451)
+            <select id="senior-care-cms-select" onchange="updateSeniorLivingHomecareEvvEscrowSandbox()">
+              <option value="clear">养老院零 CMS 严重违规罚单 + 护工无犯罪记录与 TB 体检有效 (正常)</option>
+              <option value="hold">监测到养老院存在 CMS 虐待/压疮严重罚单 或 护工无犯罪/TB 证明过期 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            商业长护险 (LTC) 2-ADL 自动理赔与企业照护补贴叠加 (HTTP 409)
+            <select id="senior-care-opt-select" onchange="updateSeniorLivingHomecareEvvEscrowSandbox()">
+              <option value="enabled" selected>自动组装 2-of-6 ADL 长护险理赔单 + 叠加雇主 Care@Work 补贴净省 26% (HTTP 409)</option>
+              <option value="baseline">常规 12m ADL 锁价与室内 BLE EVV 考勤托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度养老与居家照护总池</div>
+            <div class="finops-kpi-val" id="senior-care-gross-kpi">$140,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">长护险理赔与补贴后净自付</div>
+            <div class="finops-kpi-val" id="senior-care-net-kpi" style="color:#6ee7b7;">$103,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度拦截跳档涨价与理赔增益</div>
+            <div class="finops-kpi-val" id="senior-care-savings-kpi" style="color:#38bdf8;">$36,400</div>
+          </div>
+        </div>
+        <div id="senior-care-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 LTC_INSURANCE_ADL_CLAIM_AUTOMATION_AND_DIRECT_CARE_MATCH_CONFIRM · Mandate: senior_living_evv_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -50998,6 +51169,80 @@ function updateGolfTeetimeCountryClubEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ALL_IN_TEETIME_AND_AGRONOMY_VERIFIED_AUTHORIZED · Mandate: golf_teetime_club_escrow_mandate_200';
+}}
+
+function updateSeniorLivingHomecareEvvEscrowSandbox() {{
+  const slider = document.getElementById('senior-care-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '140000');
+  const tierMode = document.getElementById('senior-care-tier-select').value;
+  const evvMode = document.getElementById('senior-care-evv-select').value;
+  const cmsMode = document.getElementById('senior-care-cms-select').value;
+  const optMode = document.getElementById('senior-care-opt-select').value;
+
+  document.getElementById('senior-care-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('senior-care-status-kpi');
+  const grossKpi = document.getElementById('senior-care-gross-kpi');
+  const netKpi = document.getElementById('senior-care-net-kpi');
+  const savingsKpi = document.getElementById('senior-care-savings-kpi');
+  const banner = document.getElementById('senior-care-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (cmsMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_CMS_ELDER_NEGLECT_CITATION_OR_UNBONDED_CAREGIVER_HOLD · Mandate: null';
+    return;
+  }}
+  if (tierMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CARE_LEVEL_BAIT_AND_SWITCH_SURGE_OR_NON_REFUNDABLE_COMMUNITY_FEE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (evvMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 GPS_BLE_EVV_CHECKIN_MISMATCH_OR_CAREGIVER_CONTINUITY_BREACH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.26);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 LTC_INSURANCE_ADL_CLAIM_AUTOMATION_AND_DIRECT_CARE_MATCH_CONFIRM · Mandate: senior_living_evv_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ADL_RATE_LOCK_AND_BLE_EVV_SHIFT_AUTHORIZED · Mandate: senior_living_evv_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

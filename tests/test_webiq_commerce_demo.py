@@ -14753,6 +14753,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("golf-teetime-country-club-escrow-sandbox", html_zh)
 
+    def test_senior_living_homecare_evv_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SeniorLivingHomecareEvvEscrowPolicyInput,
+            evaluate_senior_living_homecare_evv_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_senior_living_homecare_evv_escrow_policy(
+            SeniorLivingHomecareEvvEscrowPolicyInput(
+                quarterly_senior_living_and_homecare_pool_usd=140000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ADL_RATE_LOCK_AND_BLE_EVV_SHIFT_AUTHORIZED",
+        )
+
+        tier = evaluate_senior_living_homecare_evv_escrow_policy(
+            SeniorLivingHomecareEvvEscrowPolicyInput(
+                care_level_bait_and_switch_surge_or_non_refundable_community_fee=True
+            )
+        )
+        self.assertEqual(tier["status_code"], 403)
+        self.assertEqual(
+            tier["decision"],
+            "CARE_LEVEL_BAIT_AND_SWITCH_SURGE_OR_NON_REFUNDABLE_COMMUNITY_FEE_BLOCKED",
+        )
+
+        evv = evaluate_senior_living_homecare_evv_escrow_policy(
+            SeniorLivingHomecareEvvEscrowPolicyInput(
+                gps_ble_evv_checkin_mismatch_or_caregiver_continuity_breach=True
+            )
+        )
+        self.assertEqual(evv["status_code"], 422)
+        self.assertEqual(
+            evv["decision"],
+            "GPS_BLE_EVV_CHECKIN_MISMATCH_OR_CAREGIVER_CONTINUITY_BREACH_BLOCKED",
+        )
+
+        cms = evaluate_senior_living_homecare_evv_escrow_policy(
+            SeniorLivingHomecareEvvEscrowPolicyInput(
+                webiq_cms_elder_neglect_citation_or_unbonded_caregiver_flag=True
+            )
+        )
+        self.assertEqual(cms["status_code"], 451)
+        self.assertEqual(
+            cms["decision"],
+            "WEBIQ_CMS_ELDER_NEGLECT_CITATION_OR_UNBONDED_CAREGIVER_HOLD",
+        )
+
+        optim = evaluate_senior_living_homecare_evv_escrow_policy(
+            SeniorLivingHomecareEvvEscrowPolicyInput(
+                quarterly_senior_living_and_homecare_pool_usd=140000.0,
+                ltc_insurance_adl_claim_automation_and_direct_care_match_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 36400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 103600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("senior_living_homecare_evv_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("senior-living-homecare-evv-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
