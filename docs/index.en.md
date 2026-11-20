@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`210` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`211` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (38 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (66 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (47 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (48 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -156,7 +156,7 @@
 | 66 | **EV Public DC Fast-Charging (`DCFC`), `OCPI` Roaming & Idle-Penalty Escrow (`Tesla Supercharger / Electrify America / ChargePoint / TELD`) `ISO 15118` `BMS` Parity, `<50%` Occupancy Idle Gate & Off-Peak `TOU` Agent Architecture Selection FAQ** | [English](ev-dcfc-charging-roaming-ocpi-idle-fee-escrow-agent-selection-faq.en.md) · [中文](ev-dcfc-charging-roaming-ocpi-idle-fee-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (47 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (48 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -209,6 +209,7 @@
 | 45 | **B2B Trade-Show Booth Construction, Exhibition Drayage (`Material Handling`) & Lead-Retrieval Escrow (`Freeman / GES / BeMatrix / Popl Teams`) `CWT` Consolidation, `NFPA 701` Lock & Zero-Ransom Lead Sync Agent Architecture Selection FAQ** | [English](b2b-tradeshow-booth-drayage-lead-retrieval-escrow-agent-selection-faq.en.md) · [中文](b2b-tradeshow-booth-drayage-lead-retrieval-escrow-agent-selection-faq.md) |
 | 46 | **B2B Out-of-Home (`OOH`) Billboard, Programmatic `DOOH` & Transit Media Escrow (`JCDecaux / Clear Channel / Vistar Media / Focus Media`) `Geopath VAI` Audit, Loop `SOV` Lock & Dashcam Line-of-Sight Agent Architecture Selection FAQ** | [English](b2b-ooh-dooh-billboard-geopath-pop-escrow-agent-selection-faq.en.md) · [中文](b2b-ooh-dooh-billboard-geopath-pop-escrow-agent-selection-faq.md) |
 | 47 | **B2B Corporate Gifting, Swag Box Fulfillment & Anti-Bribery (`FCPA / UKBA`) Compliance Escrow (`Sendoso / Reachdesk / Snappy / Goody / JD Enterprise`) Zero-Breakage Pay-on-Claim, `FCPA` Cap & On-Demand Swag Agent Architecture Selection FAQ** | [English](b2b-corporate-gifting-swag-fcpa-zero-breakage-escrow-agent-selection-faq.en.md) · [中文](b2b-corporate-gifting-swag-fcpa-zero-breakage-escrow-agent-selection-faq.md) |
+| 48 | **B2B Corporate Uniform, Linen & Facility Rental (`Mat / Towel`) `UHF-RFID` Escrow (`Cintas / UniFirst / Vestis / Lands' End Business`) Soil-Bag `RFID` Audit, `HRIS` Sync & Anti-`60m`-Evergreen Agent Architecture Selection FAQ** | [English](b2b-uniform-linen-rental-rfid-evergreen-escrow-agent-selection-faq.en.md) · [中文](b2b-uniform-linen-rental-rfid-evergreen-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 Guides)

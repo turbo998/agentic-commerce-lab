@@ -15222,6 +15222,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ev-dcfc-charging-ocpi-escrow-sandbox", html_zh)
 
+    def test_b2b_uniform_linen_rental_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BUniformLinenRentalEscrowPolicyInput,
+            evaluate_b2b_uniform_linen_rental_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_uniform_linen_rental_escrow_policy(
+            B2BUniformLinenRentalEscrowPolicyInput(
+                quarterly_b2b_uniform_and_linen_rental_pool_usd=140000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "UHF_RFID_RECONCILED_AND_HRIS_SYNCED_LINEN_AUTHORIZED",
+        )
+
+        evg = evaluate_b2b_uniform_linen_rental_escrow_policy(
+            B2BUniformLinenRentalEscrowPolicyInput(
+                evergreen_60m_auto_renewal_or_junk_environmental_surcharge=True
+            )
+        )
+        self.assertEqual(evg["status_code"], 403)
+        self.assertEqual(
+            evg["decision"],
+            "EVERGREEN_60M_AUTO_RENEWAL_OR_JUNK_ENVIRONMENTAL_SURCHARGE_BLOCKED",
+        )
+
+        rfid = evaluate_b2b_uniform_linen_rental_escrow_policy(
+            B2BUniformLinenRentalEscrowPolicyInput(
+                uhf_rfid_laundry_cage_count_mismatch_or_departed_staff_ghost_billing=True
+            )
+        )
+        self.assertEqual(rfid["status_code"], 422)
+        self.assertEqual(
+            rfid["decision"],
+            "UHF_RFID_LAUNDRY_CAGE_COUNT_MISMATCH_OR_DEPARTED_STAFF_GHOST_BILLING_BLOCKED",
+        )
+
+        hlac = evaluate_b2b_uniform_linen_rental_escrow_policy(
+            B2BUniformLinenRentalEscrowPolicyInput(
+                webiq_hlac_laundry_hygiene_citation_or_pfas_flame_resist_recall_flag=True
+            )
+        )
+        self.assertEqual(hlac["status_code"], 451)
+        self.assertEqual(
+            hlac["decision"],
+            "WEBIQ_HLAC_LAUNDRY_HYGIENE_CITATION_OR_PFAS_FLAME_RESIST_RECALL_HOLD",
+        )
+
+        optim = evaluate_b2b_uniform_linen_rental_escrow_policy(
+            B2BUniformLinenRentalEscrowPolicyInput(
+                quarterly_b2b_uniform_and_linen_rental_pool_usd=140000.0,
+                direct_purchase_wash_and_wear_hybrid_and_rfid_towel_audit_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 47600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 92400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_uniform_linen_rental_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-uniform-linen-rental-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

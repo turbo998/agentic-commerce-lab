@@ -21884,6 +21884,87 @@ def evaluate_ev_dcfc_charging_ocpi_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BUniformLinenRentalEscrowPolicyInput:
+    """Input contract for B2B Corporate Uniform, Linen & Facility Rental UHF-RFID Escrow."""
+
+    quarterly_b2b_uniform_and_linen_rental_pool_usd: float = 140000.0
+    evergreen_60m_auto_renewal_or_junk_environmental_surcharge: bool = False
+    uhf_rfid_laundry_cage_count_mismatch_or_departed_staff_ghost_billing: bool = False
+    webiq_hlac_laundry_hygiene_citation_or_pfas_flame_resist_recall_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    direct_purchase_wash_and_wear_hybrid_and_rfid_towel_audit_ready: bool = False
+
+
+def evaluate_b2b_uniform_linen_rental_escrow_policy(
+    policy_input: B2BUniformLinenRentalEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Corporate Uniform, Linen & Facility Rental UHF-RFID Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_uniform_and_linen_rental_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_hlac_laundry_hygiene_citation_or_pfas_flame_resist_recall_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_HLAC_LAUNDRY_HYGIENE_CITATION_OR_PFAS_FLAME_RESIST_RECALL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.evergreen_60m_auto_renewal_or_junk_environmental_surcharge:
+        return {
+            "status_code": 403,
+            "decision": "EVERGREEN_60M_AUTO_RENEWAL_OR_JUNK_ENVIRONMENTAL_SURCHARGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uhf_rfid_laundry_cage_count_mismatch_or_departed_staff_ghost_billing:
+        return {
+            "status_code": 422,
+            "decision": "UHF_RFID_LAUNDRY_CAGE_COUNT_MISMATCH_OR_DEPARTED_STAFF_GHOST_BILLING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.direct_purchase_wash_and_wear_hybrid_and_rfid_towel_audit_ready:
+        savings = round(gross_pool * 0.34, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DIRECT_PURCHASE_WASH_AND_WEAR_HYBRID_AND_RFID_TOWEL_AUDIT_CONFIRM",
+            "mandate_token": "b2b_uniform_linen_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "UHF_RFID_RECONCILED_AND_HRIS_SYNCED_LINEN_AUTHORIZED",
+        "mandate_token": "b2b_uniform_linen_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -30195,6 +30276,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_uniform_linen_rental_escrow_guard = {
+        "authorized_200": evaluate_b2b_uniform_linen_rental_escrow_policy(
+            B2BUniformLinenRentalEscrowPolicyInput()
+        ),
+        "evergreen_or_junk_fee_403": evaluate_b2b_uniform_linen_rental_escrow_policy(
+            B2BUniformLinenRentalEscrowPolicyInput(
+                evergreen_60m_auto_renewal_or_junk_environmental_surcharge=True
+            )
+        ),
+        "rfid_mismatch_or_ghost_staff_422": evaluate_b2b_uniform_linen_rental_escrow_policy(
+            B2BUniformLinenRentalEscrowPolicyInput(
+                uhf_rfid_laundry_cage_count_mismatch_or_departed_staff_ghost_billing=True
+            )
+        ),
+        "hlac_citation_or_fr_recall_451": evaluate_b2b_uniform_linen_rental_escrow_policy(
+            B2BUniformLinenRentalEscrowPolicyInput(
+                webiq_hlac_laundry_hygiene_citation_or_pfas_flame_resist_recall_flag=True
+            )
+        ),
+        "direct_buy_hybrid_and_rfid_audit_409": evaluate_b2b_uniform_linen_rental_escrow_policy(
+            B2BUniformLinenRentalEscrowPolicyInput(
+                direct_purchase_wash_and_wear_hybrid_and_rfid_towel_audit_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -30415,6 +30522,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ski_pass_resort_rental_escrow_guard": ski_pass_resort_rental_escrow_guard,
         "b2b_corporate_gifting_swag_escrow_guard": b2b_corporate_gifting_swag_escrow_guard,
         "ev_dcfc_charging_ocpi_escrow_guard": ev_dcfc_charging_ocpi_escrow_guard,
+        "b2b_uniform_linen_rental_escrow_guard": b2b_uniform_linen_rental_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -40534,6 +40642,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ev-dcfc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TOU_OFF_PEAK_SUPERCHARGER_ROUTING_AND_FLEET_MEMBERSHIP_ARBITRAGE_CONFIRM · Mandate: ev_dcfc_charging_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 92 B2B Corporate Uniform, Linen & Facility Rental UHF-RFID Escrow -->
+      <div class="finops-box" id="b2b-uniform-linen-rental-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">👔 连锁餐饮/酒店工服布草租洗、地垫耗材与 UHF RFID 防丢账单托管 (Cintas / UniFirst / Vestis / 洁神洗涤) 脏衣筐 RFID 对账与租买分流沙盒 (Round 92)</div>
+            <div class="finops-subtitle">实测废除 60 个月自动续签长约(&lt;=12m 短约)与全包一口价防 25% 环保污水/能源附加费刺客 (HTTP 403)、门店后门 UHF RFID 脏衣筐出库扫描防洗涤厂自己洗丢毛巾反扣 3 倍赔偿费及 HRIS 离职员工实时停租 (HTTP 422)、Web IQ 洗涤厂 HLAC 细菌超标与阻燃服超洗失效熔断 (HTTP 451) 及前厅 Polo 衫/门口地垫“改租为买”混合路由净省 34% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="uniform-linen-status-kpi">HTTP 409 · DIRECT_PURCHASE_WASH_AND_WEAR_HYBRID_AND_RFID_TOWEL_AUDIT_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度连锁门店工服、布草与门口地垫租洗总池 ($ USD)
+            <input type="range" id="uniform-linen-pool-slider" min="25000" max="800000" step="5000" value="140000" oninput="updateB2BUniformLinenRentalEscrowSandbox()" />
+            <span id="uniform-linen-pool-val" style="color:#6ee7b7; font-family:monospace;">$140,000</span>
+          </label>
+          <label>
+            &lt;=12 个月短约、全包一口价与折旧残值上限核验 (HTTP 403)
+            <select id="uniform-linen-evergreen-select" onchange="updateB2BUniformLinenRentalEscrowSandbox()">
+              <option value="pass">&lt;=12 个月灵活期(30天邮件解约) + 零环保污水附加费 + 旧衣折旧残值赔付 (放行)</option>
+              <option value="block">暗藏 60 个月自动续签霸王长约 或 强加 16% 环保污水费+9% 能源配送费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            后门 UHF RFID 脏衣交接清单与 HRIS 离职停租核验 (HTTP 422)
+            <select id="uniform-linen-rfid-select" onchange="updateB2BUniformLinenRentalEscrowSandbox()">
+              <option value="pass">脏衣袋 UHF RFID 交接数与账单 100% 吻合 + 离职员工当日自动停租 (合规)</option>
+              <option value="block">洗涤厂分拣丢毛巾反扣门店每周 $600 遗失费 或 继续收取 15 名已离职员工工服租金 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 洗涤厂 HLAC 卫生认证与阻燃服 (NFPA 2112) 寿命核验 (HTTP 451)
+            <select id="uniform-linen-hlac-select" onchange="updateB2BUniformLinenRentalEscrowSandbox()">
+              <option value="clear">洗涤厂具备 HLAC/TRSA 高温消毒认证 + 阻燃工服水洗&lt;=50次 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">监测到洗涤厂发生细菌交叉感染罚单 或 技师阻燃工服水洗超限丧失防护力 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            前厅 Polo 衫/门口地垫“改租为买”与后厨 RFID 精洗混合 (HTTP 409)
+            <select id="uniform-linen-opt-select" onchange="updateB2BUniformLinenRentalEscrowSandbox()">
+              <option value="enabled" selected>剥离 20 倍溢价地垫与前厅 Polo 衫改为直采买断 + 后厨重油污 RFID 按实洗净省 34% (HTTP 409)</option>
+              <option value="baseline">常规 UHF RFID 对账与 HRIS 在职对齐标准租洗授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度工服与布草租洗总池</div>
+            <div class="finops-kpi-val" id="uniform-linen-gross-kpi">$140,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">直采买断与 RFID 对账后净支出</div>
+            <div class="finops-kpi-val" id="uniform-linen-net-kpi" style="color:#6ee7b7;">$92,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除丢件背锅与地垫溢价</div>
+            <div class="finops-kpi-val" id="uniform-linen-savings-kpi" style="color:#38bdf8;">$47,600</div>
+          </div>
+        </div>
+        <div id="uniform-linen-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DIRECT_PURCHASE_WASH_AND_WEAR_HYBRID_AND_RFID_TOWEL_AUDIT_CONFIRM · Mandate: b2b_uniform_linen_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -52713,6 +52884,80 @@ function updateEvDcfcChargingOcpiEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ISO15118_BMS_VERIFIED_AND_DIRECT_CPO_TARIFF_AUTHORIZED · Mandate: ev_dcfc_charging_escrow_mandate_200';
+}}
+
+function updateB2BUniformLinenRentalEscrowSandbox() {{
+  const slider = document.getElementById('uniform-linen-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '140000');
+  const evgMode = document.getElementById('uniform-linen-evergreen-select').value;
+  const rfidMode = document.getElementById('uniform-linen-rfid-select').value;
+  const hlacMode = document.getElementById('uniform-linen-hlac-select').value;
+  const optMode = document.getElementById('uniform-linen-opt-select').value;
+
+  document.getElementById('uniform-linen-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('uniform-linen-status-kpi');
+  const grossKpi = document.getElementById('uniform-linen-gross-kpi');
+  const netKpi = document.getElementById('uniform-linen-net-kpi');
+  const savingsKpi = document.getElementById('uniform-linen-savings-kpi');
+  const banner = document.getElementById('uniform-linen-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (hlacMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_HLAC_LAUNDRY_HYGIENE_CITATION_OR_PFAS_FLAME_RESIST_RECALL_HOLD · Mandate: null';
+    return;
+  }}
+  if (evgMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 EVERGREEN_60M_AUTO_RENEWAL_OR_JUNK_ENVIRONMENTAL_SURCHARGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (rfidMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UHF_RFID_LAUNDRY_CAGE_COUNT_MISMATCH_OR_DEPARTED_STAFF_GHOST_BILLING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.34);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DIRECT_PURCHASE_WASH_AND_WEAR_HYBRID_AND_RFID_TOWEL_AUDIT_CONFIRM · Mandate: b2b_uniform_linen_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 UHF_RFID_RECONCILED_AND_HRIS_SYNCED_LINEN_AUTHORIZED · Mandate: b2b_uniform_linen_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
