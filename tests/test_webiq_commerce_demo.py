@@ -15691,6 +15691,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-corporate-catering-escrow-sandbox", html_zh)
 
+    def test_rooftop_replacement_ul2218_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            RooftopReplacementUl2218EscrowPolicyInput,
+            evaluate_rooftop_replacement_ul2218_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_rooftop_replacement_ul2218_escrow_policy(
+            RooftopReplacementUl2218EscrowPolicyInput(
+                quarterly_rooftop_replacement_and_hail_claim_pool_usd=140000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "EAGLEVIEW_VERIFIED_AND_LIEN_WAIVED_ROOF_AUTHORIZED",
+        )
+
+        aob = evaluate_rooftop_replacement_ul2218_escrow_policy(
+            RooftopReplacementUl2218EscrowPolicyInput(
+                storm_chaser_aob_assignment_or_illegal_deductible_rebate=True
+            )
+        )
+        self.assertEqual(aob["status_code"], 403)
+        self.assertEqual(
+            aob["decision"],
+            "STORM_CHASER_AOB_ASSIGNMENT_OR_ILLEGAL_DEDUCTIBLE_REBATE_BLOCKED",
+        )
+
+        layer = evaluate_rooftop_replacement_ul2218_escrow_policy(
+            RooftopReplacementUl2218EscrowPolicyInput(
+                unphotographed_osb_decking_upsell_or_missing_ul2218_ice_shield=True
+            )
+        )
+        self.assertEqual(layer["status_code"], 422)
+        self.assertEqual(
+            layer["decision"],
+            "UNPHOTOGRAPHED_OSB_DECKING_UPSELL_OR_MISSING_UL2218_ICE_SHIELD_BLOCKED",
+        )
+
+        chaser = evaluate_rooftop_replacement_ul2218_escrow_policy(
+            RooftopReplacementUl2218EscrowPolicyInput(
+                webiq_out_of_state_chaser_lien_or_unregistered_oem_warranty_flag=True
+            )
+        )
+        self.assertEqual(chaser["status_code"], 451)
+        self.assertEqual(
+            chaser["decision"],
+            "WEBIQ_OUT_OF_STATE_CHASER_LIEN_OR_UNREGISTERED_OEM_WARRANTY_HOLD",
+        )
+
+        optim = evaluate_rooftop_replacement_ul2218_escrow_policy(
+            RooftopReplacementUl2218EscrowPolicyInput(
+                quarterly_rooftop_replacement_and_hail_claim_pool_usd=140000.0,
+                ul2218_class4_impact_shingle_upgrade_and_insurer_premium_discount_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 36400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 103600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("rooftop_replacement_ul2218_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("rooftop-replacement-ul2218-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

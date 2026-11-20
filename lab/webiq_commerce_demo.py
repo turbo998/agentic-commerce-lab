@@ -22451,6 +22451,87 @@ def evaluate_b2b_corporate_catering_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class RooftopReplacementUl2218EscrowPolicyInput:
+    """Input contract for Rooftop Replacement, Anti-AOB Storm-Chaser & UL 2218 Shingle Escrow."""
+
+    quarterly_rooftop_replacement_and_hail_claim_pool_usd: float = 140000.0
+    storm_chaser_aob_assignment_or_illegal_deductible_rebate: bool = False
+    unphotographed_osb_decking_upsell_or_missing_ul2218_ice_shield: bool = False
+    webiq_out_of_state_chaser_lien_or_unregistered_oem_warranty_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    ul2218_class4_impact_shingle_upgrade_and_insurer_premium_discount_ready: bool = False
+
+
+def evaluate_rooftop_replacement_ul2218_escrow_policy(
+    policy_input: RooftopReplacementUl2218EscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Rooftop Replacement, Anti-AOB Storm-Chaser & UL 2218 Shingle Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_rooftop_replacement_and_hail_claim_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_out_of_state_chaser_lien_or_unregistered_oem_warranty_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_OUT_OF_STATE_CHASER_LIEN_OR_UNREGISTERED_OEM_WARRANTY_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.storm_chaser_aob_assignment_or_illegal_deductible_rebate:
+        return {
+            "status_code": 403,
+            "decision": "STORM_CHASER_AOB_ASSIGNMENT_OR_ILLEGAL_DEDUCTIBLE_REBATE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unphotographed_osb_decking_upsell_or_missing_ul2218_ice_shield:
+        return {
+            "status_code": 422,
+            "decision": "UNPHOTOGRAPHED_OSB_DECKING_UPSELL_OR_MISSING_UL2218_ICE_SHIELD_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ul2218_class4_impact_shingle_upgrade_and_insurer_premium_discount_ready:
+        savings = round(gross_pool * 0.26, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "UL2218_CLASS4_IMPACT_SHINGLE_UPGRADE_AND_INSURER_PREMIUM_DISCOUNT_CONFIRM",
+            "mandate_token": "rooftop_replacement_ul2218_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "EAGLEVIEW_VERIFIED_AND_LIEN_WAIVED_ROOF_AUTHORIZED",
+        "mandate_token": "rooftop_replacement_ul2218_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -30944,6 +31025,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    rooftop_replacement_ul2218_escrow_guard = {
+        "authorized_200": evaluate_rooftop_replacement_ul2218_escrow_policy(
+            RooftopReplacementUl2218EscrowPolicyInput()
+        ),
+        "aob_hostage_or_deductible_rebate_403": evaluate_rooftop_replacement_ul2218_escrow_policy(
+            RooftopReplacementUl2218EscrowPolicyInput(
+                storm_chaser_aob_assignment_or_illegal_deductible_rebate=True
+            )
+        ),
+        "osb_extortion_or_missing_ice_shield_422": evaluate_rooftop_replacement_ul2218_escrow_policy(
+            RooftopReplacementUl2218EscrowPolicyInput(
+                unphotographed_osb_decking_upsell_or_missing_ul2218_ice_shield=True
+            )
+        ),
+        "out_of_state_chaser_or_lien_451": evaluate_rooftop_replacement_ul2218_escrow_policy(
+            RooftopReplacementUl2218EscrowPolicyInput(
+                webiq_out_of_state_chaser_lien_or_unregistered_oem_warranty_flag=True
+            )
+        ),
+        "ul2218_class4_and_insurer_discount_409": evaluate_rooftop_replacement_ul2218_escrow_policy(
+            RooftopReplacementUl2218EscrowPolicyInput(
+                ul2218_class4_impact_shingle_upgrade_and_insurer_premium_discount_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -31171,6 +31278,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_corporate_parking_lpr_escrow_guard": b2b_corporate_parking_lpr_escrow_guard,
         "online_flower_bouquet_escrow_guard": online_flower_bouquet_escrow_guard,
         "b2b_corporate_catering_escrow_guard": b2b_corporate_catering_escrow_guard,
+        "rooftop_replacement_ul2218_escrow_guard": rooftop_replacement_ul2218_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -41731,6 +41839,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="corp-cater-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SAME_DAY_0945_OPTIN_INDIVIDUAL_POD_AND_TAX_IRC119_OPTIMIZATION_CONFIRM · Mandate: b2b_corporate_catering_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 99 Rooftop Replacement, Anti-AOB Storm-Chaser & UL 2218 Shingle Escrow -->
+      <div class="finops-box" id="rooftop-replacement-ul2218-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏠 住宅与商业屋顶翻新 (Roofing)、防冰雹风暴游击队理赔转让 (AOB) 绑架与 UL 2218 抗冲击瓦托管 (GAF Master Elite / Owens Corning / EagleView / 东方雨虹) 隐蔽层拍照与留置权豁免沙盒 (Round 99)</div>
+            <div class="finops-subtitle">实测严禁保险理赔权益转让书 (AOB) 绑架及 EagleView 3D 航拍净面积锁(&lt;=12% 损耗)防虚加 28% 瓦片面积 (HTTP 403)、掀顶四道隐蔽层拍照门禁及前 3 张 OSB 木板免费(超量&lt;=$55/张)防掀掉旧瓦后坐地起价 $120/张与 ABC Supply 建材商留置权豁免书 (HTTP 422)、Web IQ 外州游击队空壳公司与未注册原厂质保熔断 (HTTP 451) 及升级 UL 2218 Class-4 瓦+22% 保费减免净省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="roof-ul2218-status-kpi">HTTP 409 · UL2218_CLASS4_IMPACT_SHINGLE_UPGRADE_AND_INSURER_PREMIUM_DISCOUNT_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度住宅与商业门店屋顶翻新及防水预算池 ($ USD)
+            <input type="range" id="roof-ul2218-pool-slider" min="25000" max="800000" step="5000" value="140000" oninput="updateRooftopReplacementUl2218EscrowSandbox()" />
+            <span id="roof-ul2218-pool-val" style="color:#6ee7b7; font-family:monospace;">$140,000</span>
+          </label>
+          <label>
+            零 AOB 理赔转让与 EagleView 3D 净面积 (&lt;=12% 损耗) 核验 (HTTP 403)
+            <select id="roof-ul2218-aob-select" onchange="updateRooftopReplacementUl2218EscrowSandbox()">
+              <option value="pass">零 AOB 房主直签 + 合规免赔额 + EagleView 3D 面积损耗&lt;=12% (放行)</option>
+              <option value="block">诱签 AOB 理赔转让书(解约收 25% 违约金)/违法返还免赔额 或 虚加 28% 瓦片面积 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            四道隐蔽防水层拍照、OSB 木板单价 (&lt;=$55) 与留置权豁免核验 (HTTP 422)
+            <select id="roof-ul2218-layer-select" onchange="updateRooftopReplacementUl2218EscrowSandbox()">
+              <option value="pass">天沟 Ice Shield + 新泛水拍照齐全 + 腐烂木板&lt;=$55/张 + 已交建材商无条件留置豁免书 (合规)</option>
+              <option value="block">掀开屋顶后无照讹诈 28 张木板($120/张=$3,360) 或 漏铺自粘冰水防水层/旧泛水不换 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 本地 5 年承包商实体资质与原厂 50 年质保注册号核验 (HTTP 451)
+            <select id="roof-ul2218-chaser-select" onchange="updateRooftopReplacementUl2218EscrowSandbox()">
+              <option value="clear">本地经营&gt;=5 年 Master Elite 认证商 + 已签发 GAF/OC 原厂质保注册号 (正常)</option>
+              <option value="hold">灾后外州临时游击队空壳公司卷走尾款拖欠 ABC Supply 建材款触发房产留置 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            升级 UL 2218 Class-4 抗冰雹瓦与房屋险 22% 保费减免联动 (HTTP 409)
+            <select id="roof-ul2218-opt-select" onchange="updateRooftopReplacementUl2218EscrowSandbox()">
+              <option value="enabled" selected>升级 UL 2218 Class-4 抗冲击改性沥青瓦 + 自动向保司申报 22% 年度保费折扣净省 26% (HTTP 409)</option>
+              <option value="baseline">常规 EagleView 锁量与留置权豁免标准屋顶翻新授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度屋顶翻新与保险总池</div>
+            <div class="finops-kpi-val" id="roof-ul2218-gross-kpi">$140,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">Class-4 升级与保费折后净成本</div>
+            <div class="finops-kpi-val" id="roof-ul2218-net-kpi" style="color:#6ee7b7;">$103,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除面积注水与保费节省</div>
+            <div class="finops-kpi-val" id="roof-ul2218-savings-kpi" style="color:#38bdf8;">$36,400</div>
+          </div>
+        </div>
+        <div id="roof-ul2218-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 UL2218_CLASS4_IMPACT_SHINGLE_UPGRADE_AND_INSURER_PREMIUM_DISCOUNT_CONFIRM · Mandate: rooftop_replacement_ul2218_mandate_optim_409
         </div>
       </div>
 
@@ -54428,6 +54599,80 @@ function updateB2BCorporateCateringEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 OPTIN_HEADCOUNT_AND_FALCPA_ALLERGEN_AUTHORIZED · Mandate: b2b_corporate_catering_mandate_200';
+}}
+
+function updateRooftopReplacementUl2218EscrowSandbox() {{
+  const slider = document.getElementById('roof-ul2218-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '140000');
+  const aobMode = document.getElementById('roof-ul2218-aob-select').value;
+  const layerMode = document.getElementById('roof-ul2218-layer-select').value;
+  const chsMode = document.getElementById('roof-ul2218-chaser-select').value;
+  const optMode = document.getElementById('roof-ul2218-opt-select').value;
+
+  document.getElementById('roof-ul2218-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('roof-ul2218-status-kpi');
+  const grossKpi = document.getElementById('roof-ul2218-gross-kpi');
+  const netKpi = document.getElementById('roof-ul2218-net-kpi');
+  const savingsKpi = document.getElementById('roof-ul2218-savings-kpi');
+  const banner = document.getElementById('roof-ul2218-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (chsMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_OUT_OF_STATE_CHASER_LIEN_OR_UNREGISTERED_OEM_WARRANTY_HOLD · Mandate: null';
+    return;
+  }}
+  if (aobMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 STORM_CHASER_AOB_ASSIGNMENT_OR_ILLEGAL_DEDUCTIBLE_REBATE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (layerMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNPHOTOGRAPHED_OSB_DECKING_UPSELL_OR_MISSING_UL2218_ICE_SHIELD_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.26);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 UL2218_CLASS4_IMPACT_SHINGLE_UPGRADE_AND_INSURER_PREMIUM_DISCOUNT_CONFIRM · Mandate: rooftop_replacement_ul2218_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 EAGLEVIEW_VERIFIED_AND_LIEN_WAIVED_ROOF_AUTHORIZED · Mandate: rooftop_replacement_ul2218_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
