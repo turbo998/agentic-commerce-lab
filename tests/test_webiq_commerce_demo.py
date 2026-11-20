@@ -13145,6 +13145,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("corporate-ridehailing-ground-transport-escrow-sandbox", html_zh)
 
+    def test_home_cleaning_maid_moveout_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            HomeCleaningMaidMoveoutEscrowPolicyInput,
+            evaluate_home_cleaning_maid_moveout_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_home_cleaning_maid_moveout_escrow_policy(
+            HomeCleaningMaidMoveoutEscrowPolicyInput(
+                quarterly_home_cleaning_and_moveout_deepclean_pool_usd=155000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "FLAT_SCOPE_AND_MOVEOUT_CHECKLIST_AUTHORIZED",
+        )
+
+        sur = evaluate_home_cleaning_maid_moveout_escrow_policy(
+            HomeCleaningMaidMoveoutEscrowPolicyInput(
+                doorstep_surcharge_bait_or_unauthorized_cleaner_swap=True
+            )
+        )
+        self.assertEqual(sur["status_code"], 403)
+        self.assertEqual(
+            sur["decision"],
+            "DOORSTEP_SURCHARGE_BAIT_OR_UNAUTHORIZED_CLEANER_SWAP_BLOCKED",
+        )
+
+        move = evaluate_home_cleaning_maid_moveout_escrow_policy(
+            HomeCleaningMaidMoveoutEscrowPolicyInput(
+                shortchanged_duration_or_moveout_inspection_failure=True
+            )
+        )
+        self.assertEqual(move["status_code"], 422)
+        self.assertEqual(
+            move["decision"],
+            "SHORTCHANGED_DURATION_OR_MOVEOUT_INSPECTION_FAILURE_BLOCKED",
+        )
+
+        bond = evaluate_home_cleaning_maid_moveout_escrow_policy(
+            HomeCleaningMaidMoveoutEscrowPolicyInput(
+                webiq_unbonded_cleaning_agency_or_marble_damage_risk_flag=True
+            )
+        )
+        self.assertEqual(bond["status_code"], 451)
+        self.assertEqual(
+            bond["decision"],
+            "WEBIQ_UNBONDED_CLEANING_AGENCY_OR_MARBLE_DAMAGE_RISK_HOLD",
+        )
+
+        optim = evaluate_home_cleaning_maid_moveout_escrow_policy(
+            HomeCleaningMaidMoveoutEscrowPolicyInput(
+                quarterly_home_cleaning_and_moveout_deepclean_pool_usd=155000.0,
+                offpeak_biweekly_cadence_and_pay_per_visit_spt_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 35650.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 119350.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("home_cleaning_maid_moveout_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("home-cleaning-maid-moveout-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

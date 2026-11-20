@@ -19373,6 +19373,87 @@ def evaluate_corporate_ridehailing_ground_transport_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class HomeCleaningMaidMoveoutEscrowPolicyInput:
+    """Input contract for Residential House Cleaning, Recurring Maid Subscription & Move-Out Deep-Clean Escrow."""
+
+    quarterly_home_cleaning_and_moveout_deepclean_pool_usd: float = 155000.0
+    doorstep_surcharge_bait_or_unauthorized_cleaner_swap: bool = False
+    shortchanged_duration_or_moveout_inspection_failure: bool = False
+    webiq_unbonded_cleaning_agency_or_marble_damage_risk_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    offpeak_biweekly_cadence_and_pay_per_visit_spt_ready: bool = False
+
+
+def evaluate_home_cleaning_maid_moveout_escrow_policy(
+    policy_input: HomeCleaningMaidMoveoutEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Residential House Cleaning, Recurring Maid & Move-Out Deep-Clean policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_home_cleaning_and_moveout_deepclean_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unbonded_cleaning_agency_or_marble_damage_risk_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNBONDED_CLEANING_AGENCY_OR_MARBLE_DAMAGE_RISK_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.doorstep_surcharge_bait_or_unauthorized_cleaner_swap:
+        return {
+            "status_code": 403,
+            "decision": "DOORSTEP_SURCHARGE_BAIT_OR_UNAUTHORIZED_CLEANER_SWAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.shortchanged_duration_or_moveout_inspection_failure:
+        return {
+            "status_code": 422,
+            "decision": "SHORTCHANGED_DURATION_OR_MOVEOUT_INSPECTION_FAILURE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.offpeak_biweekly_cadence_and_pay_per_visit_spt_ready:
+        savings = round(gross_pool * 0.23, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "OFFPEAK_BIWEEKLY_CADENCE_AND_PAY_PER_VISIT_SPT_CONFIRM",
+            "mandate_token": "home_cleaning_maid_moveout_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "FLAT_SCOPE_AND_MOVEOUT_CHECKLIST_AUTHORIZED",
+        "mandate_token": "home_cleaning_maid_moveout_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -26878,6 +26959,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    home_cleaning_maid_moveout_escrow_guard = {
+        "authorized_200": evaluate_home_cleaning_maid_moveout_escrow_policy(
+            HomeCleaningMaidMoveoutEscrowPolicyInput()
+        ),
+        "doorstep_surcharge_or_cleaner_swap_403": evaluate_home_cleaning_maid_moveout_escrow_policy(
+            HomeCleaningMaidMoveoutEscrowPolicyInput(
+                doorstep_surcharge_bait_or_unauthorized_cleaner_swap=True
+            )
+        ),
+        "shortchanged_hours_or_moveout_fail_422": evaluate_home_cleaning_maid_moveout_escrow_policy(
+            HomeCleaningMaidMoveoutEscrowPolicyInput(
+                shortchanged_duration_or_moveout_inspection_failure=True
+            )
+        ),
+        "unbonded_agency_or_marble_risk_451": evaluate_home_cleaning_maid_moveout_escrow_policy(
+            HomeCleaningMaidMoveoutEscrowPolicyInput(
+                webiq_unbonded_cleaning_agency_or_marble_damage_risk_flag=True
+            )
+        ),
+        "offpeak_biweekly_and_per_visit_409": evaluate_home_cleaning_maid_moveout_escrow_policy(
+            HomeCleaningMaidMoveoutEscrowPolicyInput(
+                offpeak_biweekly_cadence_and_pay_per_visit_spt_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -27067,6 +27174,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "corporate_catering_office_meal_escrow_guard": corporate_catering_office_meal_escrow_guard,
         "bridal_bespoke_tailoring_escrow_guard": bridal_bespoke_tailoring_escrow_guard,
         "corporate_ridehailing_ground_transport_escrow_guard": corporate_ridehailing_ground_transport_escrow_guard,
+        "home_cleaning_maid_moveout_escrow_guard": home_cleaning_maid_moveout_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -35233,6 +35341,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="corp-ride-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MULTI_PROVIDER_FARE_ARBITRAGE_AND_SHARED_COMMUTE_CONFIRM · Mandate: corporate_ridehailing_ground_transport_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 61 Residential House Cleaning, Recurring Maid Subscription & Move-Out Deep-Clean Escrow -->
+      <div class="finops-box" id="home-cleaning-maid-moveout-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🧹 家政保洁、钟点工周期包月与退租开荒保洁 (Handy / Thumbtack / 天鹅到家 / 自如家服 / 轻喜到家) 防上门坐地起价、门锁工时核验与房东验收托管沙盒 (Round 61)</div>
+            <div class="finops-subtitle">实测购前厨卫视频定损锁死一口价防上门以“重度油污”加价3倍与私换新手阿姨 (HTTP 403)、智能门锁在场工时核验防早退缩水与房东退租25项验收包过托管 (HTTP 422)、Web IQ $100k 家财损坏险核验与禁买跑路储值卡 (HTTP 451) 及周中闲时双周包月+按次SPT立省 23% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="home-clean-status-kpi">HTTP 409 · OFFPEAK_BIWEEKLY_CADENCE_AND_PAY_PER_VISIT_SPT_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度家庭保洁与公寓退租开荒结算池 ($ USD)
+            <input type="range" id="home-clean-pool-slider" min="30000" max="1200000" step="5000" value="155000" oninput="updateHomeCleaningMaidMoveoutSandbox()" />
+            <span id="home-clean-pool-val" style="color:#6ee7b7; font-family:monospace;">$155,000</span>
+          </label>
+          <label>
+            购前厨卫视频一口价与固定熟手阿姨校验 (HTTP 403)
+            <select id="home-clean-surcharge-select" onchange="updateHomeCleaningMaidMoveoutSandbox()">
+              <option value="pass">视频定损闭口一口价 (0上门加价) + 绑定固定熟手阿姨 (放行)</option>
+              <option value="block">上门后借故烤箱重油污强收 $260 药水费 或 偷换无经验临时工 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            智能门锁在场时长与房东退租 25 项验收校验 (HTTP 422)
+            <select id="home-clean-moveout-select" onchange="updateHomeCleaningMaidMoveoutSandbox()">
+              <option value="pass">门锁记录满 4 小时作业 + 退租 25 项死角通过房东验收 (合规)</option>
+              <option value="block">4 小时保洁只干 2 小时早退 或 油烟机/踢脚线未擦净被房东拒收 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 家政家财损坏责任险与预付卡风险筛查 (HTTP 451)
+            <select id="home-clean-bond-select" onchange="updateHomeCleaningMaidMoveoutSandbox()">
+              <option value="clear">$100k 天然石材/家具损坏险有效 + 零预付卡沉淀 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">无家财险游击队用强酸洗坏大理石 或 诱导充值 $2,000 跑路储值卡 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            周中闲时错峰包月与按次周期 SPT 结算 (HTTP 409)
+            <select id="home-clean-opt-select" onchange="updateHomeCleaningMaidMoveoutSandbox()">
+              <option value="enabled" selected>开启周二至周四午间闲时双周包月 + 按次SPT免充卡省 23% (HTTP 409)</option>
+              <option value="baseline">常规一口价满时与退租验收单次授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度家政保洁毛池</div>
+            <div class="finops-kpi-val" id="home-clean-gross-kpi">$155,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">闲时按次包月后净额</div>
+            <div class="finops-kpi-val" id="home-clean-net-kpi" style="color:#6ee7b7;">$119,350</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下加价与错峰优惠</div>
+            <div class="finops-kpi-val" id="home-clean-savings-kpi" style="color:#38bdf8;">$35,650</div>
+          </div>
+        </div>
+        <div id="home-clean-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 OFFPEAK_BIWEEKLY_CADENCE_AND_PAY_PER_VISIT_SPT_CONFIRM · Mandate: home_cleaning_maid_moveout_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -45118,6 +45289,80 @@ function updateCorporateRidehailingGroundTransportSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 GEOFENCE_AND_FLIGHT_SYNC_RIDE_AUTHORIZED · Mandate: corporate_ridehailing_ground_transport_mandate_200';
+}}
+
+function updateHomeCleaningMaidMoveoutSandbox() {{
+  const slider = document.getElementById('home-clean-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '155000');
+  const surMode = document.getElementById('home-clean-surcharge-select').value;
+  const moveMode = document.getElementById('home-clean-moveout-select').value;
+  const bondMode = document.getElementById('home-clean-bond-select').value;
+  const optMode = document.getElementById('home-clean-opt-select').value;
+
+  document.getElementById('home-clean-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('home-clean-status-kpi');
+  const grossKpi = document.getElementById('home-clean-gross-kpi');
+  const netKpi = document.getElementById('home-clean-net-kpi');
+  const savingsKpi = document.getElementById('home-clean-savings-kpi');
+  const banner = document.getElementById('home-clean-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (bondMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNBONDED_CLEANING_AGENCY_OR_MARBLE_DAMAGE_RISK_HOLD · Mandate: null';
+    return;
+  }}
+  if (surMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DOORSTEP_SURCHARGE_BAIT_OR_UNAUTHORIZED_CLEANER_SWAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (moveMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SHORTCHANGED_DURATION_OR_MOVEOUT_INSPECTION_FAILURE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.23);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 OFFPEAK_BIWEEKLY_CADENCE_AND_PAY_PER_VISIT_SPT_CONFIRM · Mandate: home_cleaning_maid_moveout_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 FLAT_SCOPE_AND_MOVEOUT_CHECKLIST_AUTHORIZED · Mandate: home_cleaning_maid_moveout_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
