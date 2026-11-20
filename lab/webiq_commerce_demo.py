@@ -23261,6 +23261,87 @@ def evaluate_pool_service_cya_lsi_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BSecurityGuardGsocEscrowPolicyInput:
+    """Input contract for B2B Corporate Security Guard, Anti-Ghost-Post & Remote GSOC Escrow."""
+
+    quarterly_b2b_security_guard_and_gsoc_pool_usd: float = 160000.0
+    vendor_fault_overtime_billing_or_16hr_fatigue_shift: bool = False
+    ghost_post_attendance_or_spoofed_nfc_tour_patrol: bool = False
+    webiq_unlicensed_guard_card_or_lapsed_assault_insurance_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    remote_ai_video_gsoc_talkdown_and_roving_patrol_ready: bool = False
+
+
+def evaluate_b2b_security_guard_gsoc_escrow_policy(
+    policy_input: B2BSecurityGuardGsocEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Corporate Security Guard, Anti-Ghost-Post & Remote GSOC Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_security_guard_and_gsoc_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unlicensed_guard_card_or_lapsed_assault_insurance_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNLICENSED_GUARD_CARD_OR_LAPSED_ASSAULT_INSURANCE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.vendor_fault_overtime_billing_or_16hr_fatigue_shift:
+        return {
+            "status_code": 403,
+            "decision": "VENDOR_FAULT_OVERTIME_BILLING_OR_16HR_FATIGUE_SHIFT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ghost_post_attendance_or_spoofed_nfc_tour_patrol:
+        return {
+            "status_code": 422,
+            "decision": "GHOST_POST_ATTENDANCE_OR_SPOOFED_NFC_TOUR_PATROL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.remote_ai_video_gsoc_talkdown_and_roving_patrol_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "REMOTE_AI_VIDEO_GSOC_TALKDOWN_AND_ROVING_PATROL_CONFIRM",
+            "mandate_token": "b2b_security_guard_gsoc_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "BIOMETRIC_VERIFIED_GUARD_AND_BLE_PATROL_AUTHORIZED",
+        "mandate_token": "b2b_security_guard_gsoc_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -32014,6 +32095,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_security_guard_gsoc_escrow_guard = {
+        "authorized_200": evaluate_b2b_security_guard_gsoc_escrow_policy(
+            B2BSecurityGuardGsocEscrowPolicyInput()
+        ),
+        "vendor_overtime_or_16hr_fatigue_403": evaluate_b2b_security_guard_gsoc_escrow_policy(
+            B2BSecurityGuardGsocEscrowPolicyInput(
+                vendor_fault_overtime_billing_or_16hr_fatigue_shift=True
+            )
+        ),
+        "ghost_post_or_spoofed_nfc_patrol_422": evaluate_b2b_security_guard_gsoc_escrow_policy(
+            B2BSecurityGuardGsocEscrowPolicyInput(
+                ghost_post_attendance_or_spoofed_nfc_tour_patrol=True
+            )
+        ),
+        "unlicensed_guard_or_lapsed_insurance_451": evaluate_b2b_security_guard_gsoc_escrow_policy(
+            B2BSecurityGuardGsocEscrowPolicyInput(
+                webiq_unlicensed_guard_card_or_lapsed_assault_insurance_flag=True
+            )
+        ),
+        "remote_ai_gsoc_and_roving_patrol_409": evaluate_b2b_security_guard_gsoc_escrow_policy(
+            B2BSecurityGuardGsocEscrowPolicyInput(
+                remote_ai_video_gsoc_talkdown_and_roving_patrol_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -32251,6 +32358,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "musical_instrument_piano_escrow_guard": musical_instrument_piano_escrow_guard,
         "b2b_office_plant_biophilic_escrow_guard": b2b_office_plant_biophilic_escrow_guard,
         "pool_service_cya_lsi_escrow_guard": pool_service_cya_lsi_escrow_guard,
+        "b2b_security_guard_gsoc_escrow_guard": b2b_security_guard_gsoc_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -43441,6 +43549,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="pool-svc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 VARIABLE_SPEED_PUMP_AFFINITY_AND_SALTWATER_SWG_CONFIRM · Mandate: pool_service_cya_lsi_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 109 B2B Corporate Security Guard, Anti-Ghost-Post & Remote GSOC Escrow -->
+      <div class="finops-box" id="b2b-security-guard-gsoc-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🛡️ 企业办公园区安保外包 (Security Guard Patrol)、防“幽灵空岗/抠巡更贴假巡逻”与远程 AI 视频值守 (GSOC) 托管 (Allied Universal / Securitas / GardaWorld / Verkada) 考勤与技防沙盒 (Round 109)</div>
+            <div class="finops-subtitle">实测严禁转嫁因安保商缺编导致的 1.5x 连班加班费+单班&lt;=12h 防疲劳锁+空岗 200% 倒扣 (HTTP 403)、大楼门禁活体人脸考勤 1:1 对账防吃空饷+动态 BLE/楼层 Wi-Fi/计步 IMU 防抠下 NFC 贴纸坐值班室假巡更 (HTTP 422)、Web IQ 保安员持证 (BSIS) 与千万级防暴责任险核验 (HTTP 451) 及夜间静态站岗转 AI 热成像周界+远程 GSOC 号角喊话净省 39% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="sec-guard-status-kpi">HTTP 409 · REMOTE_AI_VIDEO_GSOC_TALKDOWN_AND_ROVING_PATROL_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业办公园区与仓库安保外包预算池 ($ USD)
+            <input type="range" id="sec-guard-pool-slider" min="25000" max="600000" step="5000" value="160000" oninput="updateB2BSecurityGuardGsocEscrowSandbox()" />
+            <span id="sec-guard-pool-val" style="color:#6ee7b7; font-family:monospace;">$160,000</span>
+          </label>
+          <label>
+            供应商缺编加班费转嫁、12 小时防疲劳红线与空岗罚则审计 (HTTP 403)
+            <select id="sec-guard-ot-select" onchange="updateB2BSecurityGuardGsocEscrowSandbox()">
+              <option value="pass">非甲方增岗 0 加班溢价 + 单班&lt;=12h 轮换 + 空岗超 30m 触发 200% 违约金倒扣 (放行)</option>
+              <option value="block">因保安离职缺编让白班连上 16h 双班打瞌睡还要向甲方收 1.5x 加班费 或 空岗照收全额 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            大楼门禁活体考勤对账与防抠标签 BLE/Wi-Fi/步数巡更核验 (HTTP 422)
+            <select id="sec-guard-tour-select" onchange="updateB2BSecurityGuardGsocEscrowSandbox()">
+              <option value="pass">账单工时 100% 匹配大楼门禁活体人脸进出 + 动态 BLE/楼层 Wi-Fi/IMU 步数&gt;=600 真实巡更 (合规)</option>
+              <option value="block">夜班报 4 人实际闸机只进 2 人吃空饷 (Ghost Post) 或 把 12 个 NFC 贴纸抠下来揣兜里坐屋里刷 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 实名保安证 (BSIS / SIA) 与千万级防暴责任险核验 (HTTP 451)
+            <select id="sec-guard-lic-select" onchange="updateB2BSecurityGuardGsocEscrowSandbox()">
+              <option value="clear">全员持有效保安证/持械证 + 供应商具备 $10M Assault &amp; Battery 防暴扩展责任险 (正常)</option>
+              <option value="hold">临时派无证黑保安顶岗/高管随卫持枪证过期 或 缺肢体冲突责任险保单 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            夜间静态站岗转 AI 热成像周界 + 远程视频中心 (GSOC) 喊话寻优 (HTTP 409)
+            <select id="sec-guard-opt-select" onchange="updateB2BSecurityGuardGsocEscrowSandbox()">
+              <option value="enabled" selected>将夜间外围静态站岗替换为 AI 热成像跨线 + 远程 GSOC 8秒号角喊话 + 机动巡逻车净省 39% (HTTP 409)</option>
+              <option value="baseline">常规门禁活体对账与多模态防伪巡更标准安保结算授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业安保外包总池</div>
+            <div class="finops-kpi-val" id="sec-guard-gross-kpi">$160,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">人机协同远程 GSOC 寻优后净支出</div>
+            <div class="finops-kpi-val" id="sec-guard-net-kpi" style="color:#6ee7b7;">$97,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除夜间空饷与静态冗余岗</div>
+            <div class="finops-kpi-val" id="sec-guard-savings-kpi" style="color:#38bdf8;">$62,400</div>
+          </div>
+        </div>
+        <div id="sec-guard-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 REMOTE_AI_VIDEO_GSOC_TALKDOWN_AND_ROVING_PATROL_CONFIRM · Mandate: b2b_security_guard_gsoc_mandate_optim_409
         </div>
       </div>
 
@@ -56878,6 +57049,80 @@ function updatePoolServiceCyaLsiEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 LSI_BALANCED_AND_20MIN_BRUSH_SERVICE_AUTHORIZED · Mandate: pool_service_cya_lsi_mandate_200';
+}}
+
+function updateB2BSecurityGuardGsocEscrowSandbox() {{
+  const slider = document.getElementById('sec-guard-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '160000');
+  const otMode = document.getElementById('sec-guard-ot-select').value;
+  const tourMode = document.getElementById('sec-guard-tour-select').value;
+  const licMode = document.getElementById('sec-guard-lic-select').value;
+  const optMode = document.getElementById('sec-guard-opt-select').value;
+
+  document.getElementById('sec-guard-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('sec-guard-status-kpi');
+  const grossKpi = document.getElementById('sec-guard-gross-kpi');
+  const netKpi = document.getElementById('sec-guard-net-kpi');
+  const savingsKpi = document.getElementById('sec-guard-savings-kpi');
+  const banner = document.getElementById('sec-guard-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (licMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNLICENSED_GUARD_CARD_OR_LAPSED_ASSAULT_INSURANCE_HOLD · Mandate: null';
+    return;
+  }}
+  if (otMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 VENDOR_FAULT_OVERTIME_BILLING_OR_16HR_FATIGUE_SHIFT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (tourMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 GHOST_POST_ATTENDANCE_OR_SPOOFED_NFC_TOUR_PATROL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 REMOTE_AI_VIDEO_GSOC_TALKDOWN_AND_ROVING_PATROL_CONFIRM · Mandate: b2b_security_guard_gsoc_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 BIOMETRIC_VERIFIED_GUARD_AND_BLE_PATROL_AUTHORIZED · Mandate: b2b_security_guard_gsoc_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

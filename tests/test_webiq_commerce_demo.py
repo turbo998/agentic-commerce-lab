@@ -16361,6 +16361,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("pool-service-cya-lsi-escrow-sandbox", html_zh)
 
+    def test_b2b_security_guard_gsoc_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BSecurityGuardGsocEscrowPolicyInput,
+            evaluate_b2b_security_guard_gsoc_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_security_guard_gsoc_escrow_policy(
+            B2BSecurityGuardGsocEscrowPolicyInput(
+                quarterly_b2b_security_guard_and_gsoc_pool_usd=160000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "BIOMETRIC_VERIFIED_GUARD_AND_BLE_PATROL_AUTHORIZED",
+        )
+
+        ot = evaluate_b2b_security_guard_gsoc_escrow_policy(
+            B2BSecurityGuardGsocEscrowPolicyInput(
+                vendor_fault_overtime_billing_or_16hr_fatigue_shift=True
+            )
+        )
+        self.assertEqual(ot["status_code"], 403)
+        self.assertEqual(
+            ot["decision"],
+            "VENDOR_FAULT_OVERTIME_BILLING_OR_16HR_FATIGUE_SHIFT_BLOCKED",
+        )
+
+        ghost = evaluate_b2b_security_guard_gsoc_escrow_policy(
+            B2BSecurityGuardGsocEscrowPolicyInput(
+                ghost_post_attendance_or_spoofed_nfc_tour_patrol=True
+            )
+        )
+        self.assertEqual(ghost["status_code"], 422)
+        self.assertEqual(
+            ghost["decision"],
+            "GHOST_POST_ATTENDANCE_OR_SPOOFED_NFC_TOUR_PATROL_BLOCKED",
+        )
+
+        lic = evaluate_b2b_security_guard_gsoc_escrow_policy(
+            B2BSecurityGuardGsocEscrowPolicyInput(
+                webiq_unlicensed_guard_card_or_lapsed_assault_insurance_flag=True
+            )
+        )
+        self.assertEqual(lic["status_code"], 451)
+        self.assertEqual(
+            lic["decision"],
+            "WEBIQ_UNLICENSED_GUARD_CARD_OR_LAPSED_ASSAULT_INSURANCE_HOLD",
+        )
+
+        optim = evaluate_b2b_security_guard_gsoc_escrow_policy(
+            B2BSecurityGuardGsocEscrowPolicyInput(
+                quarterly_b2b_security_guard_and_gsoc_pool_usd=160000.0,
+                remote_ai_video_gsoc_talkdown_and_roving_patrol_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 62400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 97600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_security_guard_gsoc_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-security-guard-gsoc-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
