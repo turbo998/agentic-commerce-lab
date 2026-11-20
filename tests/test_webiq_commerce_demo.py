@@ -14150,6 +14150,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("bespoke-diamond-gold-jewelry-escrow-sandbox", html_zh)
 
+    def test_livestream_pitfee_net_gmv_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            LivestreamPitfeeNetGmvEscrowPolicyInput,
+            evaluate_livestream_pitfee_net_gmv_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_livestream_pitfee_net_gmv_escrow_policy(
+            LivestreamPitfeeNetGmvEscrowPolicyInput(
+                quarterly_livestream_pitfee_and_mcn_commission_pool_usd=290000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "T14D_NET_GMV_AND_PRIME_SLOT_AUTHORIZED",
+        )
+
+        slot = evaluate_livestream_pitfee_net_gmv_escrow_policy(
+            LivestreamPitfeeNetGmvEscrowPolicyInput(
+                non_refundable_pit_fee_or_midnight_garbage_slot=True
+            )
+        )
+        self.assertEqual(slot["status_code"], 403)
+        self.assertEqual(
+            slot["decision"],
+            "NON_REFUNDABLE_PIT_FEE_OR_MIDNIGHT_GARBAGE_SLOT_BLOCKED",
+        )
+
+        gmv = evaluate_livestream_pitfee_net_gmv_escrow_policy(
+            LivestreamPitfeeNetGmvEscrowPolicyInput(
+                gross_gmv_premature_settlement_or_brushing_return_spike=True
+            )
+        )
+        self.assertEqual(gmv["status_code"], 422)
+        self.assertEqual(
+            gmv["decision"],
+            "GROSS_GMV_PREMATURE_SETTLEMENT_OR_BRUSHING_RETURN_SPIKE_BLOCKED",
+        )
+
+        asr = evaluate_livestream_pitfee_net_gmv_escrow_policy(
+            LivestreamPitfeeNetGmvEscrowPolicyInput(
+                webiq_illegal_medical_ad_claim_or_bot_viewer_farm_flag=True
+            )
+        )
+        self.assertEqual(asr["status_code"], 451)
+        self.assertEqual(
+            asr["decision"],
+            "WEBIQ_ILLEGAL_MEDICAL_AD_CLAIM_OR_BOT_VIEWER_FARM_HOLD",
+        )
+
+        optim = evaluate_livestream_pitfee_net_gmv_escrow_policy(
+            LivestreamPitfeeNetGmvEscrowPolicyInput(
+                quarterly_livestream_pitfee_and_mcn_commission_pool_usd=290000.0,
+                pure_cps_tiered_commission_and_clip_whitelist_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 81200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 208800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("livestream_pitfee_net_gmv_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("livestream-pitfee-net-gmv-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

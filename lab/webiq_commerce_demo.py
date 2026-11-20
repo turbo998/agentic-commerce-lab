@@ -20588,6 +20588,87 @@ def evaluate_bespoke_diamond_gold_jewelry_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class LivestreamPitfeeNetGmvEscrowPolicyInput:
+    """Input contract for Livestream Shopping Pit-Fee Guarantee, MCN Slot Escrow & T+14d Net-GMV Settlement."""
+
+    quarterly_livestream_pitfee_and_mcn_commission_pool_usd: float = 290000.0
+    non_refundable_pit_fee_or_midnight_garbage_slot: bool = False
+    gross_gmv_premature_settlement_or_brushing_return_spike: bool = False
+    webiq_illegal_medical_ad_claim_or_bot_viewer_farm_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    pure_cps_tiered_commission_and_clip_whitelist_ready: bool = False
+
+
+def evaluate_livestream_pitfee_net_gmv_escrow_policy(
+    policy_input: LivestreamPitfeeNetGmvEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Livestream Shopping Pit-Fee, MCN Guarantee & T+14d Net-GMV policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_livestream_pitfee_and_mcn_commission_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_illegal_medical_ad_claim_or_bot_viewer_farm_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_ILLEGAL_MEDICAL_AD_CLAIM_OR_BOT_VIEWER_FARM_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.non_refundable_pit_fee_or_midnight_garbage_slot:
+        return {
+            "status_code": 403,
+            "decision": "NON_REFUNDABLE_PIT_FEE_OR_MIDNIGHT_GARBAGE_SLOT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.gross_gmv_premature_settlement_or_brushing_return_spike:
+        return {
+            "status_code": 422,
+            "decision": "GROSS_GMV_PREMATURE_SETTLEMENT_OR_BRUSHING_RETURN_SPIKE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pure_cps_tiered_commission_and_clip_whitelist_ready:
+        savings = round(gross_pool * 0.28, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PURE_CPS_TIERED_COMMISSION_AND_CLIP_WHITELIST_CONFIRM",
+            "mandate_token": "livestream_pitfee_net_gmv_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "T14D_NET_GMV_AND_PRIME_SLOT_AUTHORIZED",
+        "mandate_token": "livestream_pitfee_net_gmv_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -28483,6 +28564,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    livestream_pitfee_net_gmv_escrow_guard = {
+        "authorized_200": evaluate_livestream_pitfee_net_gmv_escrow_policy(
+            LivestreamPitfeeNetGmvEscrowPolicyInput()
+        ),
+        "non_refundable_pitfee_or_midnight_403": evaluate_livestream_pitfee_net_gmv_escrow_policy(
+            LivestreamPitfeeNetGmvEscrowPolicyInput(
+                non_refundable_pit_fee_or_midnight_garbage_slot=True
+            )
+        ),
+        "gross_gmv_or_brushing_spike_422": evaluate_livestream_pitfee_net_gmv_escrow_policy(
+            LivestreamPitfeeNetGmvEscrowPolicyInput(
+                gross_gmv_premature_settlement_or_brushing_return_spike=True
+            )
+        ),
+        "illegal_medical_claim_or_bot_451": evaluate_livestream_pitfee_net_gmv_escrow_policy(
+            LivestreamPitfeeNetGmvEscrowPolicyInput(
+                webiq_illegal_medical_ad_claim_or_bot_viewer_farm_flag=True
+            )
+        ),
+        "pure_cps_and_clip_whitelist_409": evaluate_livestream_pitfee_net_gmv_escrow_policy(
+            LivestreamPitfeeNetGmvEscrowPolicyInput(
+                pure_cps_tiered_commission_and_clip_whitelist_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -28687,6 +28794,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "private_jet_yacht_charter_apa_escrow_guard": private_jet_yacht_charter_apa_escrow_guard,
         "restaurant_pos_acquiring_mca_escrow_guard": restaurant_pos_acquiring_mca_escrow_guard,
         "bespoke_diamond_gold_jewelry_escrow_guard": bespoke_diamond_gold_jewelry_escrow_guard,
+        "livestream_pitfee_net_gmv_escrow_guard": livestream_pitfee_net_gmv_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -37798,6 +37906,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="diamond-gold-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 GIA_CERT_CROSS_SITE_ARBITRAGE_AND_SPOT_GOLD_CRAFT_CONFIRM · Mandate: bespoke_diamond_gold_jewelry_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 76 Livestream Shopping Pit-Fee Guarantee, MCN Slot Escrow & T+14d Net-GMV Settlement -->
+      <div class="finops-box" id="livestream-pitfee-net-gmv-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📱 直播带货坑位费对赌、达人 MCN 保量合同与防刷单退货分账 (巨量星图 / TikTok Shop / 淘宝直播 / 快手磁力聚星) 按比例退坑位费、T+14d净GMV与纯佣切片沙盒 (Round 76)</div>
+            <div class="finops-subtitle">实测坑位费按未达标比例刚性原路退还现金防“只安排素人补播不退钱”与午夜垃圾档偷梁换柱 (HTTP 403)、强制 T+14d 过退货期净成交额(Net-Settled GMV)防机房水军秒拍凑保底次日 90% 退货 (HTTP 422)、Web IQ 假粉识别与实时 ASR 广告法极限词熔断 (HTTP 451) 及零坑位费纯佣(CPS)+直播高光切片授权投流立省 28% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="live-pitfee-status-kpi">HTTP 409 · PURE_CPS_TIERED_COMMISSION_AND_CLIP_WHITELIST_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度品牌直播带货坑位费与达人分佣结算池 ($ USD)
+            <input type="range" id="live-pitfee-pool-slider" min="50000" max="1500000" step="10000" value="290000" oninput="updateLivestreamPitfeeNetGmvSandbox()" />
+            <span id="live-pitfee-pool-val" style="color:#6ee7b7; font-family:monospace;">$290,000</span>
+          </label>
+          <label>
+            坑位费按比例退还现金与黄金档期校验 (HTTP 403)
+            <select id="live-pitfee-slot-select" onchange="updateLivestreamPitfeeNetGmvSandbox()">
+              <option value="pass">19:30-22:30 黄金档讲解&gt;=300s + 未达标按比例退现金 (放行)</option>
+              <option value="block">MCN 拒退现金只肯补播 或 把商品挪到凌晨 1:40 匆匆过品 45s (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            T+14d 过退货期净 GMV 与反机房刷单退货校验 (HTTP 422)
+            <select id="live-pitfee-gmv-select" onchange="updateLivestreamPitfeeNetGmvSandbox()">
+              <option value="pass">满 T+14d 确认收货无退货净 GMV 达标 + 零机房异常退货潮 (合规)</option>
+              <option value="block">按下播瞬时战报提前提现 或 水军秒拍 $100k 后次日 90% 集体退货 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 假粉弹幕熵与实时 ASR 广告法极限词筛查 (HTTP 451)
+            <select id="live-pitfee-asr-select" onchange="updateLivestreamPitfeeNetGmvSandbox()">
+              <option value="clear">真实互动受众 + 口播严守广告法合规词库 + 密钥&lt;=180天 (正常)</option>
+              <option value="hold">主播脱稿乱吹“根治疾病”极限词致封店风险 或 直播间&gt;60%协议假人 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            零坑位费阶梯纯佣 (Pure CPS) 与 90天高光切片授权 (HTTP 409)
+            <select id="live-pitfee-opt-select" onchange="updateLivestreamPitfeeNetGmvSandbox()">
+              <option value="enabled" selected>开启 0 坑位费阶梯纯佣(15%-22%) + 90天直播切片千川/Spark投流省 28% (HTTP 409)</option>
+              <option value="baseline">常规对赌托管专场坑位费与标准分佣授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度直播投放毛池</div>
+            <div class="finops-kpi-val" id="live-pitfee-gross-kpi">$290,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">纯佣与切片投流后净额</div>
+            <div class="finops-kpi-val" id="live-pitfee-net-kpi" style="color:#6ee7b7;">$208,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度省下坑位费亏空</div>
+            <div class="finops-kpi-val" id="live-pitfee-savings-kpi" style="color:#38bdf8;">$81,200</div>
+          </div>
+        </div>
+        <div id="live-pitfee-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PURE_CPS_TIERED_COMMISSION_AND_CLIP_WHITELIST_CONFIRM · Mandate: livestream_pitfee_net_gmv_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -48793,6 +48964,80 @@ function updateBespokeDiamondGoldJewelrySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 GIA_GIRDLE_AND_GOLD_GRAM_AUTHORIZED · Mandate: bespoke_diamond_gold_jewelry_escrow_mandate_200';
+}}
+
+function updateLivestreamPitfeeNetGmvSandbox() {{
+  const slider = document.getElementById('live-pitfee-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '290000');
+  const slotMode = document.getElementById('live-pitfee-slot-select').value;
+  const gmvMode = document.getElementById('live-pitfee-gmv-select').value;
+  const asrMode = document.getElementById('live-pitfee-asr-select').value;
+  const optMode = document.getElementById('live-pitfee-opt-select').value;
+
+  document.getElementById('live-pitfee-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('live-pitfee-status-kpi');
+  const grossKpi = document.getElementById('live-pitfee-gross-kpi');
+  const netKpi = document.getElementById('live-pitfee-net-kpi');
+  const savingsKpi = document.getElementById('live-pitfee-savings-kpi');
+  const banner = document.getElementById('live-pitfee-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (asrMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_ILLEGAL_MEDICAL_AD_CLAIM_OR_BOT_VIEWER_FARM_HOLD · Mandate: null';
+    return;
+  }}
+  if (slotMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 NON_REFUNDABLE_PIT_FEE_OR_MIDNIGHT_GARBAGE_SLOT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (gmvMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 GROSS_GMV_PREMATURE_SETTLEMENT_OR_BRUSHING_RETURN_SPIKE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.28);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PURE_CPS_TIERED_COMMISSION_AND_CLIP_WHITELIST_CONFIRM · Mandate: livestream_pitfee_net_gmv_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 T14D_NET_GMV_AND_PRIME_SLOT_AUTHORIZED · Mandate: livestream_pitfee_net_gmv_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
