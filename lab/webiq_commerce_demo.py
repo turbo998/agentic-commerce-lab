@@ -21965,6 +21965,87 @@ def evaluate_b2b_uniform_linen_rental_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class YachtMarinaBerthHauloutEscrowPolicyInput:
+    """Input contract for Yacht Marina Berth, Shore-Power Metering & Shipyard Haul-Out Escrow."""
+
+    quarterly_yacht_marina_and_haulout_pool_usd: float = 110000.0
+    slip_min_length_bracket_padding_or_flat_shore_power_gouging: bool = False
+    haulout_jackstand_hostage_upsell_or_wrong_copper_biocide_paint: bool = False
+    webiq_noaa_mllw_channel_shoaling_grounding_risk_or_fuel_contamination_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    municipal_mooring_ball_hybrid_and_offseason_haulout_bundle_ready: bool = False
+
+
+def evaluate_yacht_marina_berth_haulout_escrow_policy(
+    policy_input: YachtMarinaBerthHauloutEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Yacht Marina Berth, Shore-Power Metering & Shipyard Haul-Out Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_yacht_marina_and_haulout_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_noaa_mllw_channel_shoaling_grounding_risk_or_fuel_contamination_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_NOAA_MLLW_CHANNEL_SHOALING_GROUNDING_RISK_OR_FUEL_CONTAMINATION_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.slip_min_length_bracket_padding_or_flat_shore_power_gouging:
+        return {
+            "status_code": 403,
+            "decision": "SLIP_MIN_LENGTH_BRACKET_PADDING_OR_FLAT_SHORE_POWER_GOUGING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.haulout_jackstand_hostage_upsell_or_wrong_copper_biocide_paint:
+        return {
+            "status_code": 422,
+            "decision": "HAULOUT_JACKSTAND_HOSTAGE_UPSELL_OR_WRONG_COPPER_BIOCIDE_PAINT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.municipal_mooring_ball_hybrid_and_offseason_haulout_bundle_ready:
+        savings = round(gross_pool * 0.27, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MUNICIPAL_MOORING_BALL_HYBRID_AND_OFFSEASON_HAULOUT_BUNDLE_CONFIRM",
+            "mandate_token": "yacht_marina_haulout_escrow_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "EXACT_LOA_BERTH_AND_SURVEYED_HAULOUT_AUTHORIZED",
+        "mandate_token": "yacht_marina_haulout_escrow_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -30302,6 +30383,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    yacht_marina_berth_haulout_escrow_guard = {
+        "authorized_200": evaluate_yacht_marina_berth_haulout_escrow_policy(
+            YachtMarinaBerthHauloutEscrowPolicyInput()
+        ),
+        "slip_padding_or_flat_power_403": evaluate_yacht_marina_berth_haulout_escrow_policy(
+            YachtMarinaBerthHauloutEscrowPolicyInput(
+                slip_min_length_bracket_padding_or_flat_shore_power_gouging=True
+            )
+        ),
+        "yard_hostage_or_paint_swap_422": evaluate_yacht_marina_berth_haulout_escrow_policy(
+            YachtMarinaBerthHauloutEscrowPolicyInput(
+                haulout_jackstand_hostage_upsell_or_wrong_copper_biocide_paint=True
+            )
+        ),
+        "shoaling_or_fuel_contamination_451": evaluate_yacht_marina_berth_haulout_escrow_policy(
+            YachtMarinaBerthHauloutEscrowPolicyInput(
+                webiq_noaa_mllw_channel_shoaling_grounding_risk_or_fuel_contamination_flag=True
+            )
+        ),
+        "mooring_hybrid_and_winter_lift_409": evaluate_yacht_marina_berth_haulout_escrow_policy(
+            YachtMarinaBerthHauloutEscrowPolicyInput(
+                municipal_mooring_ball_hybrid_and_offseason_haulout_bundle_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -30523,6 +30630,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_corporate_gifting_swag_escrow_guard": b2b_corporate_gifting_swag_escrow_guard,
         "ev_dcfc_charging_ocpi_escrow_guard": ev_dcfc_charging_ocpi_escrow_guard,
         "b2b_uniform_linen_rental_escrow_guard": b2b_uniform_linen_rental_escrow_guard,
+        "yacht_marina_berth_haulout_escrow_guard": yacht_marina_berth_haulout_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -40705,6 +40813,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="uniform-linen-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DIRECT_PURCHASE_WASH_AND_WEAR_HYBRID_AND_RFID_TOWEL_AUDIT_CONFIRM · Mandate: b2b_uniform_linen_escrow_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 93 Yacht Marina Berth, Shore-Power Metering & Shipyard Haul-Out Escrow -->
+      <div class="finops-box" id="yacht-marina-berth-haulout-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">⛵ 游艇码头泊位预订 (Marina Berth)、岸电计量与船厂吊装上岸刷防污漆托管 (Dockwa / Snag-A-Slip / D-Marin / 三亚半山半岛帆船港) 实际 LOA 锁价与 SAMS 验船沙盒 (Round 93)</div>
+            <div class="finops-subtitle">实测按船舶登记证实际总长 (52ft LOA) 计费防 70 尺大泊位跳档溢价及岸电按度实结防 $65/晚固定一口价暴利 (HTTP 403)、吊船上岸前锁定下水闭环及 SAMS/NAMS 独立验船师湿度仪签字防虚报 $11.5k 船底起泡坐地起价与防污漆空桶 UPC 核验 (HTTP 422)、Web IQ 进港航道低潮水深 (MLLW) 防搁浅熔断 (HTTP 451) 及 $45 市政系泊浮球交替+冬季淡季吊装净省 27% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="yacht-marina-status-kpi">HTTP 409 · MUNICIPAL_MOORING_BALL_HYBRID_AND_OFFSEASON_HAULOUT_BUNDLE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度游艇巡航停泊与船厂上岸维保总预算池 ($ USD)
+            <input type="range" id="yacht-marina-pool-slider" min="20000" max="600000" step="5000" value="110000" oninput="updateYachtMarinaBerthHauloutEscrowSandbox()" />
+            <span id="yacht-marina-pool-val" style="color:#6ee7b7; font-family:monospace;">$110,000</span>
+          </label>
+          <label>
+            实际船长 (Registered LOA) 计费与岸电按度核验 (HTTP 403)
+            <select id="yacht-marina-loa-select" onchange="updateYachtMarinaBerthHauloutEscrowSandbox()">
+              <option value="pass">按实际 52ft LOA 结算 + 岸电桩按 kWh 电表实收 + &gt;=25节大风预警全额退改 (放行)</option>
+              <option value="block">52 尺船被分进 70 尺泊位强收 70 尺起步费(+35%) 或 岸电强收 $65/晚固定费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            船厂上岸 SAMS 独立验船师复核与防污漆空桶核验 (HTTP 422)
+            <select id="yacht-marina-yard-select" onchange="updateYachtMarinaBerthHauloutEscrowSandbox()">
+              <option value="pass">免争议期占道费 + 增项经 SAMS 验船师湿度仪确认 + Micron 66 原装空桶 UPC 匹配 (合规)</option>
+              <option value="block">吊船上岸后虚报 $11,500 船底起泡并收 $140/天占道扣船费 或 偷换廉价防污漆 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 进港航道最低潮水深 (MLLW) 与码头柴油品质核验 (HTTP 451)
+            <select id="yacht-marina-depth-select" onchange="updateYachtMarinaBerthHauloutEscrowSandbox()">
+              <option value="clear">进港航道 MLLW 水深&gt;=吃水+1.5ft 余量 + 码头船用柴油零水分污染 (正常)</option>
+              <option value="hold">退潮期航道水深仅 5.2ft 小于 6.5ft 龙骨吃水必搁浅 或 加油桩柴油含水超标 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            $45/晚市政海湾系泊浮球交替与冬季淡季错峰吊装 (HTTP 409)
+            <select id="yacht-marina-opt-select" onchange="updateYachtMarinaBerthHauloutEscrowSandbox()">
+              <option value="enabled" selected>晴好夜交替使用 $45/晚海湾系泊浮球 (替 $315 泊位) + 冬季淡季吊装刷漆净省 27% (HTTP 409)</option>
+              <option value="baseline">常规实际 LOA 泊位与 SAMS 验船维保托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度游艇停泊与维保总池</div>
+            <div class="finops-kpi-val" id="yacht-marina-gross-kpi">$110,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">浮球交替与淡季吊装后净支出</div>
+            <div class="finops-kpi-val" id="yacht-marina-net-kpi" style="color:#6ee7b7;">$80,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除尺数注水与绑架增项</div>
+            <div class="finops-kpi-val" id="yacht-marina-savings-kpi" style="color:#38bdf8;">$29,700</div>
+          </div>
+        </div>
+        <div id="yacht-marina-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MUNICIPAL_MOORING_BALL_HYBRID_AND_OFFSEASON_HAULOUT_BUNDLE_CONFIRM · Mandate: yacht_marina_haulout_escrow_mandate_optim_409
         </div>
       </div>
 
@@ -52958,6 +53129,80 @@ function updateB2BUniformLinenRentalEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 UHF_RFID_RECONCILED_AND_HRIS_SYNCED_LINEN_AUTHORIZED · Mandate: b2b_uniform_linen_escrow_mandate_200';
+}}
+
+function updateYachtMarinaBerthHauloutEscrowSandbox() {{
+  const slider = document.getElementById('yacht-marina-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '110000');
+  const loaMode = document.getElementById('yacht-marina-loa-select').value;
+  const yardMode = document.getElementById('yacht-marina-yard-select').value;
+  const depthMode = document.getElementById('yacht-marina-depth-select').value;
+  const optMode = document.getElementById('yacht-marina-opt-select').value;
+
+  document.getElementById('yacht-marina-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('yacht-marina-status-kpi');
+  const grossKpi = document.getElementById('yacht-marina-gross-kpi');
+  const netKpi = document.getElementById('yacht-marina-net-kpi');
+  const savingsKpi = document.getElementById('yacht-marina-savings-kpi');
+  const banner = document.getElementById('yacht-marina-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (depthMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_NOAA_MLLW_CHANNEL_SHOALING_GROUNDING_RISK_OR_FUEL_CONTAMINATION_HOLD · Mandate: null';
+    return;
+  }}
+  if (loaMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SLIP_MIN_LENGTH_BRACKET_PADDING_OR_FLAT_SHORE_POWER_GOUGING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (yardMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 HAULOUT_JACKSTAND_HOSTAGE_UPSELL_OR_WRONG_COPPER_BIOCIDE_PAINT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.27);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MUNICIPAL_MOORING_BALL_HYBRID_AND_OFFSEASON_HAULOUT_BUNDLE_CONFIRM · Mandate: yacht_marina_haulout_escrow_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 EXACT_LOA_BERTH_AND_SURVEYED_HAULOUT_AUTHORIZED · Mandate: yacht_marina_haulout_escrow_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

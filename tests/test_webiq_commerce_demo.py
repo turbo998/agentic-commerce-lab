@@ -15289,6 +15289,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-uniform-linen-rental-escrow-sandbox", html_zh)
 
+    def test_yacht_marina_berth_haulout_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            YachtMarinaBerthHauloutEscrowPolicyInput,
+            evaluate_yacht_marina_berth_haulout_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_yacht_marina_berth_haulout_escrow_policy(
+            YachtMarinaBerthHauloutEscrowPolicyInput(
+                quarterly_yacht_marina_and_haulout_pool_usd=110000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "EXACT_LOA_BERTH_AND_SURVEYED_HAULOUT_AUTHORIZED",
+        )
+
+        loa = evaluate_yacht_marina_berth_haulout_escrow_policy(
+            YachtMarinaBerthHauloutEscrowPolicyInput(
+                slip_min_length_bracket_padding_or_flat_shore_power_gouging=True
+            )
+        )
+        self.assertEqual(loa["status_code"], 403)
+        self.assertEqual(
+            loa["decision"],
+            "SLIP_MIN_LENGTH_BRACKET_PADDING_OR_FLAT_SHORE_POWER_GOUGING_BLOCKED",
+        )
+
+        yard = evaluate_yacht_marina_berth_haulout_escrow_policy(
+            YachtMarinaBerthHauloutEscrowPolicyInput(
+                haulout_jackstand_hostage_upsell_or_wrong_copper_biocide_paint=True
+            )
+        )
+        self.assertEqual(yard["status_code"], 422)
+        self.assertEqual(
+            yard["decision"],
+            "HAULOUT_JACKSTAND_HOSTAGE_UPSELL_OR_WRONG_COPPER_BIOCIDE_PAINT_BLOCKED",
+        )
+
+        depth = evaluate_yacht_marina_berth_haulout_escrow_policy(
+            YachtMarinaBerthHauloutEscrowPolicyInput(
+                webiq_noaa_mllw_channel_shoaling_grounding_risk_or_fuel_contamination_flag=True
+            )
+        )
+        self.assertEqual(depth["status_code"], 451)
+        self.assertEqual(
+            depth["decision"],
+            "WEBIQ_NOAA_MLLW_CHANNEL_SHOALING_GROUNDING_RISK_OR_FUEL_CONTAMINATION_HOLD",
+        )
+
+        optim = evaluate_yacht_marina_berth_haulout_escrow_policy(
+            YachtMarinaBerthHauloutEscrowPolicyInput(
+                quarterly_yacht_marina_and_haulout_pool_usd=110000.0,
+                municipal_mooring_ball_hybrid_and_offseason_haulout_bundle_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 29700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 80300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("yacht_marina_berth_haulout_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("yacht-marina-berth-haulout-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
