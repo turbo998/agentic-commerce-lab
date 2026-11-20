@@ -14954,6 +14954,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("online-grocery-catch-weight-coldchain-sandbox", html_zh)
 
+    def test_b2b_ooh_dooh_billboard_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BOohDoohBillboardEscrowPolicyInput,
+            evaluate_b2b_ooh_dooh_billboard_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_ooh_dooh_billboard_escrow_policy(
+            B2BOohDoohBillboardEscrowPolicyInput(
+                quarterly_b2b_ooh_and_dooh_media_pool_usd=190000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "GEOPATH_VAI_AND_DASHCAM_LOS_AUTHORIZED",
+        )
+
+        sov = evaluate_b2b_ooh_dooh_billboard_escrow_policy(
+            B2BOohDoohBillboardEscrowPolicyInput(
+                loop_sov_dilution_or_unaudited_traffic_inflation=True
+            )
+        )
+        self.assertEqual(sov["status_code"], 403)
+        self.assertEqual(
+            sov["decision"],
+            "LOOP_SOV_DILUTION_OR_UNAUDITED_TRAFFIC_INFLATION_BLOCKED",
+        )
+
+        los = evaluate_b2b_ooh_dooh_billboard_escrow_policy(
+            B2BOohDoohBillboardEscrowPolicyInput(
+                dashcam_vision_foliage_obstruction_or_dead_led_panel=True
+            )
+        )
+        self.assertEqual(los["status_code"], 422)
+        self.assertEqual(
+            los["decision"],
+            "DASHCAM_VISION_FOLIAGE_OBSTRUCTION_OR_DEAD_LED_PANEL_BLOCKED",
+        )
+
+        perm = evaluate_b2b_ooh_dooh_billboard_escrow_policy(
+            B2BOohDoohBillboardEscrowPolicyInput(
+                webiq_municipal_billboard_removal_or_competitor_adjacency_flag=True
+            )
+        )
+        self.assertEqual(perm["status_code"], 451)
+        self.assertEqual(
+            perm["decision"],
+            "WEBIQ_MUNICIPAL_BILLBOARD_REMOVAL_OR_COMPETITOR_ADJACENCY_HOLD",
+        )
+
+        optim = evaluate_b2b_ooh_dooh_billboard_escrow_policy(
+            B2BOohDoohBillboardEscrowPolicyInput(
+                quarterly_b2b_ooh_and_dooh_media_pool_usd=190000.0,
+                programmatic_pdooh_daypart_weather_trigger_and_remnant_bid_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 55100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 134900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_ooh_dooh_billboard_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-ooh-dooh-billboard-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

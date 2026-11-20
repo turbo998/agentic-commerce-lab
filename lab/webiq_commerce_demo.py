@@ -21560,6 +21560,87 @@ def evaluate_online_grocery_catch_weight_coldchain_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BOohDoohBillboardEscrowPolicyInput:
+    """Input contract for B2B OOH Billboard, Programmatic DOOH & Transit Media Escrow."""
+
+    quarterly_b2b_ooh_and_dooh_media_pool_usd: float = 190000.0
+    loop_sov_dilution_or_unaudited_traffic_inflation: bool = False
+    dashcam_vision_foliage_obstruction_or_dead_led_panel: bool = False
+    webiq_municipal_billboard_removal_or_competitor_adjacency_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    programmatic_pdooh_daypart_weather_trigger_and_remnant_bid_ready: bool = False
+
+
+def evaluate_b2b_ooh_dooh_billboard_escrow_policy(
+    policy_input: B2BOohDoohBillboardEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B OOH Billboard, Programmatic DOOH & Transit Media Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_ooh_and_dooh_media_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_municipal_billboard_removal_or_competitor_adjacency_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_MUNICIPAL_BILLBOARD_REMOVAL_OR_COMPETITOR_ADJACENCY_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.loop_sov_dilution_or_unaudited_traffic_inflation:
+        return {
+            "status_code": 403,
+            "decision": "LOOP_SOV_DILUTION_OR_UNAUDITED_TRAFFIC_INFLATION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dashcam_vision_foliage_obstruction_or_dead_led_panel:
+        return {
+            "status_code": 422,
+            "decision": "DASHCAM_VISION_FOLIAGE_OBSTRUCTION_OR_DEAD_LED_PANEL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.programmatic_pdooh_daypart_weather_trigger_and_remnant_bid_ready:
+        savings = round(gross_pool * 0.29, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PROGRAMMATIC_PDOOH_DAYPART_WEATHER_TRIGGER_AND_REMNANT_BID_CONFIRM",
+            "mandate_token": "b2b_ooh_dooh_billboard_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "GEOPATH_VAI_AND_DASHCAM_LOS_AUTHORIZED",
+        "mandate_token": "b2b_ooh_dooh_billboard_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -29767,6 +29848,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_ooh_dooh_billboard_escrow_guard = {
+        "authorized_200": evaluate_b2b_ooh_dooh_billboard_escrow_policy(
+            B2BOohDoohBillboardEscrowPolicyInput()
+        ),
+        "sov_dilution_or_fake_traffic_403": evaluate_b2b_ooh_dooh_billboard_escrow_policy(
+            B2BOohDoohBillboardEscrowPolicyInput(
+                loop_sov_dilution_or_unaudited_traffic_inflation=True
+            )
+        ),
+        "tree_obstruction_or_dead_led_422": evaluate_b2b_ooh_dooh_billboard_escrow_policy(
+            B2BOohDoohBillboardEscrowPolicyInput(
+                dashcam_vision_foliage_obstruction_or_dead_led_panel=True
+            )
+        ),
+        "illegal_sign_or_competitor_clash_451": evaluate_b2b_ooh_dooh_billboard_escrow_policy(
+            B2BOohDoohBillboardEscrowPolicyInput(
+                webiq_municipal_billboard_removal_or_competitor_adjacency_flag=True
+            )
+        ),
+        "rush_hour_pdooh_and_daypart_409": evaluate_b2b_ooh_dooh_billboard_escrow_policy(
+            B2BOohDoohBillboardEscrowPolicyInput(
+                programmatic_pdooh_daypart_weather_trigger_and_remnant_bid_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -29983,6 +30090,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "senior_living_homecare_evv_escrow_guard": senior_living_homecare_evv_escrow_guard,
         "b2b_tradeshow_drayage_booth_escrow_guard": b2b_tradeshow_drayage_booth_escrow_guard,
         "online_grocery_catch_weight_coldchain_guard": online_grocery_catch_weight_coldchain_guard,
+        "b2b_ooh_dooh_billboard_escrow_guard": b2b_ooh_dooh_billboard_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -39850,6 +39958,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="online-grocery-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 IN_STORE_PARITY_MERCHANT_ROUTING_AND_PRIVATE_LABEL_SWAP_CONFIRM · Mandate: online_grocery_coldchain_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 88 B2B OOH Billboard, Programmatic DOOH & Transit Media Escrow -->
+      <div class="finops-box" id="b2b-ooh-dooh-billboard-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏙️ 户外广告大牌 (OOH)、程序化数字户外 (pDOOH) 与电梯楼宇媒体验真托管 (JCDecaux / Clear Channel / Vistar Media / 分众传媒) 硬件 PoP 频次锁与 150m 行车视觉沙盒 (Round 88)</div>
+            <div class="finops-subtitle">实测播控盒加密 Proof-of-Play (PoP) 日志锁死 &gt;=12.5% 轮播占比防旺季塞入 18 支广告稀释频次及 Geopath 视角矫正有效曝光计价 (HTTP 403)、150m 迎车车道行车记录仪视觉无遮挡(&gt;=95%)防树下近景仰拍掩盖 40% 树冠遮挡与夜间关灯偷电 (HTTP 422)、Web IQ 市政违建拆牌与竞品连播熔断 (HTTP 451) 及切换 pDOOH 早晚通勤高峰分时竞价净省 29% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="ooh-dooh-status-kpi">HTTP 409 · PROGRAMMATIC_PDOOH_DAYPART_WEATHER_TRIGGER_AND_REMNANT_BID_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度品牌户外大牌 (OOH) 与楼宇电梯数字屏 (DOOH) 预算池 ($ USD)
+            <input type="range" id="ooh-dooh-pool-slider" min="30000" max="1200000" step="10000" value="190000" oninput="updateB2BOohDoohBillboardEscrowSandbox()" />
+            <span id="ooh-dooh-pool-val" style="color:#6ee7b7; font-family:monospace;">$190,000</span>
+          </label>
+          <label>
+            硬件签名 PoP 播放频次 (&gt;=12.5% SOV) 与 Geopath 有效曝光核验 (HTTP 403)
+            <select id="ooh-dooh-sov-select" onchange="updateB2BOohDoohBillboardEscrowSandbox()">
+              <option value="pass">硬件 PoP 日播&gt;=1,125 次 (1/8 轮播位) + Geopath 视角矫正有效注视曝光计价 (放行)</option>
+              <option value="block">旺季偷偷将轮播扩至 18 家稀释 SOV 至 5.5% 或 拿凌晨 3 点双向毛车流充数 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            150 米迎车车道行车记录仪视觉通视率 (&gt;=95%) 与亮灯核验 (HTTP 422)
+            <select id="ooh-dooh-los-select" onchange="updateB2BOohDoohBillboardEscrowSandbox()">
+              <option value="pass">150m 迎车视角无树枝遮挡(&gt;=95% 可视) + 夜间亮灯电流正常 + 零 LED 黑块 (合规)</option>
+              <option value="block">行道树冠遮挡 40% 画面(仅靠树下近景仰拍糊弄) 或 晚 8 点关灯省电/LED 死灯黑屏 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 市政户外广告许可证与同品类竞品隔离核验 (HTTP 451)
+            <select id="ooh-dooh-permit-select" onchange="updateB2BOohDoohBillboardEscrowSandbox()">
+              <option value="clear">市政户外广告登记证有效 + 同品类竞品间隔&gt;=2 个轮播槽位 (正常)</option>
+              <option value="hold">点位属无证违建面临城管拆牌令 或 与直接竞品前后紧邻连播冲突 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            程序化 pDOOH 早晚通勤高峰分时竞价 (Dayparting) (HTTP 409)
+            <select id="ooh-dooh-opt-select" onchange="updateB2BOohDoohBillboardEscrowSandbox()">
+              <option value="enabled" selected>砍掉凌晨与空楼垃圾时段，仅在 07:30-09:30 / 17:00-19:30 高峰 pDOOH 竞价净省 29% (HTTP 409)</option>
+              <option value="baseline">常规 Geopath 锁价与行车视觉验真包月托管授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度户外媒介投放总池</div>
+            <div class="finops-kpi-val" id="ooh-dooh-gross-kpi">$190,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">高峰分时竞价后净媒介支出</div>
+            <div class="finops-kpi-val" id="ooh-dooh-net-kpi" style="color:#6ee7b7;">$134,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度剥离凌晨空播与稀释水分</div>
+            <div class="finops-kpi-val" id="ooh-dooh-savings-kpi" style="color:#38bdf8;">$55,100</div>
+          </div>
+        </div>
+        <div id="ooh-dooh-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PROGRAMMATIC_PDOOH_DAYPART_WEATHER_TRIGGER_AND_REMNANT_BID_CONFIRM · Mandate: b2b_ooh_dooh_billboard_mandate_optim_409
         </div>
       </div>
 
@@ -51733,6 +51904,80 @@ function updateOnlineGroceryCatchWeightColdchainSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 CATCH_WEIGHT_CAP_AND_COLD_CHAIN_TTI_AUTHORIZED · Mandate: online_grocery_coldchain_mandate_200';
+}}
+
+function updateB2BOohDoohBillboardEscrowSandbox() {{
+  const slider = document.getElementById('ooh-dooh-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '190000');
+  const sovMode = document.getElementById('ooh-dooh-sov-select').value;
+  const losMode = document.getElementById('ooh-dooh-los-select').value;
+  const permMode = document.getElementById('ooh-dooh-permit-select').value;
+  const optMode = document.getElementById('ooh-dooh-opt-select').value;
+
+  document.getElementById('ooh-dooh-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('ooh-dooh-status-kpi');
+  const grossKpi = document.getElementById('ooh-dooh-gross-kpi');
+  const netKpi = document.getElementById('ooh-dooh-net-kpi');
+  const savingsKpi = document.getElementById('ooh-dooh-savings-kpi');
+  const banner = document.getElementById('ooh-dooh-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (permMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_MUNICIPAL_BILLBOARD_REMOVAL_OR_COMPETITOR_ADJACENCY_HOLD · Mandate: null';
+    return;
+  }}
+  if (sovMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 LOOP_SOV_DILUTION_OR_UNAUDITED_TRAFFIC_INFLATION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (losMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DASHCAM_VISION_FOLIAGE_OBSTRUCTION_OR_DEAD_LED_PANEL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.29);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PROGRAMMATIC_PDOOH_DAYPART_WEATHER_TRIGGER_AND_REMNANT_BID_CONFIRM · Mandate: b2b_ooh_dooh_billboard_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 GEOPATH_VAI_AND_DASHCAM_LOS_AUTHORIZED · Mandate: b2b_ooh_dooh_billboard_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
