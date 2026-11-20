@@ -16160,6 +16160,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-office-coffee-pantry-escrow-sandbox", html_zh)
 
+    def test_musical_instrument_piano_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            MusicalInstrumentPianoEscrowPolicyInput,
+            evaluate_musical_instrument_piano_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_musical_instrument_piano_escrow_policy(
+            MusicalInstrumentPianoEscrowPolicyInput(
+                quarterly_musical_instrument_and_piano_pool_usd=50000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "LUTHIER_SETUP_AND_FULL_EQUITY_RENTAL_AUTHORIZED",
+        )
+
+        equity = evaluate_musical_instrument_piano_escrow_policy(
+            MusicalInstrumentPianoEscrowPolicyInput(
+                rental_equity_forfeiture_or_piano_stair_extortion=True
+            )
+        )
+        self.assertEqual(equity["status_code"], 403)
+        self.assertEqual(
+            equity["decision"],
+            "RENTAL_EQUITY_FORFEITURE_OR_PIANO_STAIR_EXTORTION_BLOCKED",
+        )
+
+        vso = evaluate_musical_instrument_piano_escrow_policy(
+            MusicalInstrumentPianoEscrowPolicyInput(
+                unplayable_vso_instrument_or_cracked_soundboard_pinblock=True
+            )
+        )
+        self.assertEqual(vso["status_code"], 422)
+        self.assertEqual(
+            vso["decision"],
+            "UNPLAYABLE_VSO_INSTRUMENT_OR_CRACKED_SOUNDBOARD_PINBLOCK_BLOCKED",
+        )
+
+        cites = evaluate_musical_instrument_piano_escrow_policy(
+            MusicalInstrumentPianoEscrowPolicyInput(
+                webiq_cites_rosewood_ivory_violation_or_stolen_serial_flag=True
+            )
+        )
+        self.assertEqual(cites["status_code"], 451)
+        self.assertEqual(
+            cites["decision"],
+            "WEBIQ_CITES_ROSEWOOD_IVORY_VIOLATION_OR_STOLEN_SERIAL_HOLD",
+        )
+
+        optim = evaluate_musical_instrument_piano_escrow_policy(
+            MusicalInstrumentPianoEscrowPolicyInput(
+                quarterly_musical_instrument_and_piano_pool_usd=50000.0,
+                early_buyout_discount_and_certified_jupa_refurb_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 17500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 32500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("musical_instrument_piano_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("musical-instrument-piano-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -23018,6 +23018,87 @@ def evaluate_b2b_office_coffee_pantry_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class MusicalInstrumentPianoEscrowPolicyInput:
+    """Input contract for Musical Instrument Rent-to-Own, School-Band Spec & Piano Humidity Escrow."""
+
+    quarterly_musical_instrument_and_piano_pool_usd: float = 50000.0
+    rental_equity_forfeiture_or_piano_stair_extortion: bool = False
+    unplayable_vso_instrument_or_cracked_soundboard_pinblock: bool = False
+    webiq_cites_rosewood_ivory_violation_or_stolen_serial_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    early_buyout_discount_and_certified_jupa_refurb_ready: bool = False
+
+
+def evaluate_musical_instrument_piano_escrow_policy(
+    policy_input: MusicalInstrumentPianoEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Musical Instrument Rent-to-Own, School-Band Spec & Piano Humidity Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_musical_instrument_and_piano_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_cites_rosewood_ivory_violation_or_stolen_serial_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_CITES_ROSEWOOD_IVORY_VIOLATION_OR_STOLEN_SERIAL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.rental_equity_forfeiture_or_piano_stair_extortion:
+        return {
+            "status_code": 403,
+            "decision": "RENTAL_EQUITY_FORFEITURE_OR_PIANO_STAIR_EXTORTION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unplayable_vso_instrument_or_cracked_soundboard_pinblock:
+        return {
+            "status_code": 422,
+            "decision": "UNPLAYABLE_VSO_INSTRUMENT_OR_CRACKED_SOUNDBOARD_PINBLOCK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.early_buyout_discount_and_certified_jupa_refurb_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "EARLY_BUYOUT_DISCOUNT_AND_CERTIFIED_JUPA_REFURB_CONFIRM",
+            "mandate_token": "musical_instrument_piano_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "LUTHIER_SETUP_AND_FULL_EQUITY_RENTAL_AUTHORIZED",
+        "mandate_token": "musical_instrument_piano_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -31693,6 +31774,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    musical_instrument_piano_escrow_guard = {
+        "authorized_200": evaluate_musical_instrument_piano_escrow_policy(
+            MusicalInstrumentPianoEscrowPolicyInput()
+        ),
+        "equity_forfeiture_or_stair_extortion_403": evaluate_musical_instrument_piano_escrow_policy(
+            MusicalInstrumentPianoEscrowPolicyInput(
+                rental_equity_forfeiture_or_piano_stair_extortion=True
+            )
+        ),
+        "unplayable_vso_or_cracked_soundboard_422": evaluate_musical_instrument_piano_escrow_policy(
+            MusicalInstrumentPianoEscrowPolicyInput(
+                unplayable_vso_instrument_or_cracked_soundboard_pinblock=True
+            )
+        ),
+        "cites_rosewood_or_stolen_serial_451": evaluate_musical_instrument_piano_escrow_policy(
+            MusicalInstrumentPianoEscrowPolicyInput(
+                webiq_cites_rosewood_ivory_violation_or_stolen_serial_flag=True
+            )
+        ),
+        "early_buyout_and_jupa_refurb_409": evaluate_musical_instrument_piano_escrow_policy(
+            MusicalInstrumentPianoEscrowPolicyInput(
+                early_buyout_discount_and_certified_jupa_refurb_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -31927,6 +32034,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_document_shredding_itad_escrow_guard": b2b_document_shredding_itad_escrow_guard,
         "pet_insurance_vet_directpay_escrow_guard": pet_insurance_vet_directpay_escrow_guard,
         "b2b_office_coffee_pantry_escrow_guard": b2b_office_coffee_pantry_escrow_guard,
+        "musical_instrument_piano_escrow_guard": musical_instrument_piano_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -42928,6 +43036,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ocs-pantry-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 OPEN_BEAN_SUPERAUTO_AND_POU_WATER_CONVERSION_CONFIRM · Mandate: b2b_office_coffee_pantry_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 106 Musical Instrument Rent-to-Own, School-Band Spec & Piano Humidity Escrow -->
+      <div class="finops-box" id="musical-instrument-piano-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎻 乐器先租后买 (Rent-to-Own)、学校管弦乐团指定型号防坑与钢琴恒温搬运/音板湿度托管 (Music &amp; Arts / Sweetwater / Steinway / Yamaha / 柏斯琴行) 验琴与租买沙盒 (Round 106)</div>
+            <div class="finops-subtitle">实测先租后买 100% 净租金冲抵真实街价 (MAP)+1/4 至 4/4 跨尺寸换琴保留权益+AR 台阶预勘一口价防搬琴现场坐地起价 (HTTP 403)、拦截 $119 不可调音玩具琴 (VSO)+RPT 钢琴弦轴扭矩(&gt;=70 in-lbs)/Dampp-Chaser 恒湿(RH 42%–50%)与 14 天静置精调门禁 (HTTP 422)、Web IQ CITES 濒危红木/象牙与序列号核验 (HTTP 451) 及第 9 月 30% 提前买断折扣+JUPA A 级准新琴净省 35% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="music-piano-status-kpi">HTTP 409 · EARLY_BUYOUT_DISCOUNT_AND_CERTIFIED_JUPA_REFURB_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度学校管弦乐团与家庭钢琴/乐器租购预算池 ($ USD)
+            <input type="range" id="music-piano-pool-slider" min="10000" max="250000" step="2500" value="50000" oninput="updateMusicalInstrumentPianoEscrowSandbox()" />
+            <span id="music-piano-pool-val" style="color:#6ee7b7; font-family:monospace;">$50,000</span>
+          </label>
+          <label>
+            先租后买本金抵扣率、跨尺寸升级与搬琴楼梯费审计 (HTTP 403)
+            <select id="music-piano-equity-select" onchange="updateMusicalInstrumentPianoEscrowSandbox()">
+              <option value="pass">100% 净租金冲抵真实街价 (MAP) + 1/4-&gt;4/4 换琴保留权益 + AR 预勘楼梯全包一口价 (放行)</option>
+              <option value="block">45% 月供被扣作管理费/按 2x 虚高 MSRP 买断/换大琴清零本金 或 搬琴到楼下按台阶每步加收 $25 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            学区乐团白名单、MENC 制琴师设置与钢琴 RPT 扭矩/恒湿核验 (HTTP 422)
+            <select id="music-piano-rpt-select" onchange="updateMusicalInstrumentPianoEscrowSandbox()">
+              <option value="pass">符合学校乐团型号 + 乌木弦轴/枫木琴码调校 + 钢琴扭矩&gt;=70 in-lbs + RH 42%–50% 静置 14 天精调 (合规)</option>
+              <option value="block">劣质不可调音 $119 玩具琴 (VSO) 被老师拒收 或 二手钢琴弦轴松旷(&lt;35 in-lbs)/音板开裂跑音 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ CITES 濒危红木/象牙通行证与原厂序列号核验 (HTTP 451)
+            <select id="music-piano-cites-select" onchange="updateMusicalInstrumentPianoEscrowSandbox()">
+              <option value="clear">CITES 木材合规 + 原厂序列号清晰无篡改 + 非被盗/走私乐器 (正常)</option>
+              <option value="hold">无证巴西玫瑰木/古董象牙琴键面临海关罚没 或 命中被盗乐器序列号库 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            第 9 个月 30% 提前买断折扣与 JUPA Grade-A 认证琴寻优 (HTTP 409)
+            <select id="music-piano-opt-select" onchange="updateMusicalInstrumentPianoEscrowSandbox()">
+              <option value="enabled" selected>触发第 9 个月 30% 提前买断本金折扣 + 选用 JUPA A 级原厂认证 Yamaha U1/YAS-280 净省 35% (HTTP 409)</option>
+              <option value="baseline">常规制琴师调校与 100% 本金抵扣标准租买授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度乐器与钢琴租购总池</div>
+            <div class="finops-kpi-val" id="music-piano-gross-kpi">$50,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">提前买断与认证准新寻优后净支出</div>
+            <div class="finops-kpi-val" id="music-piano-net-kpi" style="color:#6ee7b7;">$32,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除租金折损与新琴溢价</div>
+            <div class="finops-kpi-val" id="music-piano-savings-kpi" style="color:#38bdf8;">$17,500</div>
+          </div>
+        </div>
+        <div id="music-piano-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 EARLY_BUYOUT_DISCOUNT_AND_CERTIFIED_JUPA_REFURB_CONFIRM · Mandate: musical_instrument_piano_mandate_optim_409
         </div>
       </div>
 
@@ -56143,6 +56314,80 @@ function updateB2BOfficeCoffeePantryEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 OPEN_BEAN_AND_VERIFIED_TDS_PANTRY_AUTHORIZED · Mandate: b2b_office_coffee_pantry_mandate_200';
+}}
+
+function updateMusicalInstrumentPianoEscrowSandbox() {{
+  const slider = document.getElementById('music-piano-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '50000');
+  const equityMode = document.getElementById('music-piano-equity-select').value;
+  const rptMode = document.getElementById('music-piano-rpt-select').value;
+  const citesMode = document.getElementById('music-piano-cites-select').value;
+  const optMode = document.getElementById('music-piano-opt-select').value;
+
+  document.getElementById('music-piano-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('music-piano-status-kpi');
+  const grossKpi = document.getElementById('music-piano-gross-kpi');
+  const netKpi = document.getElementById('music-piano-net-kpi');
+  const savingsKpi = document.getElementById('music-piano-savings-kpi');
+  const banner = document.getElementById('music-piano-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (citesMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_CITES_ROSEWOOD_IVORY_VIOLATION_OR_STOLEN_SERIAL_HOLD · Mandate: null';
+    return;
+  }}
+  if (equityMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 RENTAL_EQUITY_FORFEITURE_OR_PIANO_STAIR_EXTORTION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (rptMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNPLAYABLE_VSO_INSTRUMENT_OR_CRACKED_SOUNDBOARD_PINBLOCK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 EARLY_BUYOUT_DISCOUNT_AND_CERTIFIED_JUPA_REFURB_CONFIRM · Mandate: musical_instrument_piano_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 LUTHIER_SETUP_AND_FULL_EQUITY_RENTAL_AUTHORIZED · Mandate: musical_instrument_piano_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
