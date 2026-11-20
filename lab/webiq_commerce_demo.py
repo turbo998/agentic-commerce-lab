@@ -22856,6 +22856,87 @@ def evaluate_b2b_document_shredding_itad_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class PetInsuranceVetDirectPayEscrowPolicyInput:
+    """Input contract for Pet Health Insurance, Bilateral Exclusion & Vet Direct-Pay Escrow."""
+
+    quarterly_pet_insurance_and_vet_care_pool_usd: float = 45000.0
+    bilateral_cruciate_exclusion_or_hereditary_sublimit: bool = False
+    unverified_vet_soap_baseline_or_no_hospital_direct_pay: bool = False
+    webiq_unlicensed_underwriter_or_chip_identity_fraud_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    issue_age_high_deductible_and_chewy_rx_arbitrage_ready: bool = False
+
+
+def evaluate_pet_insurance_vet_directpay_escrow_policy(
+    policy_input: PetInsuranceVetDirectPayEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Pet Health Insurance, Bilateral Exclusion & Vet Direct-Pay Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_pet_insurance_and_vet_care_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unlicensed_underwriter_or_chip_identity_fraud_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNLICENSED_UNDERWRITER_OR_CHIP_IDENTITY_FRAUD_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bilateral_cruciate_exclusion_or_hereditary_sublimit:
+        return {
+            "status_code": 403,
+            "decision": "BILATERAL_CRUCIATE_EXCLUSION_OR_HEREDITARY_SUBLIMIT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unverified_vet_soap_baseline_or_no_hospital_direct_pay:
+        return {
+            "status_code": 422,
+            "decision": "UNVERIFIED_VET_SOAP_BASELINE_OR_NO_HOSPITAL_DIRECT_PAY_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.issue_age_high_deductible_and_chewy_rx_arbitrage_ready:
+        savings = round(gross_pool * 0.33, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ISSUE_AGE_HIGH_DEDUCTIBLE_AND_CHEWY_RX_ARBITRAGE_CONFIRM",
+            "mandate_token": "pet_insurance_directpay_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "BILATERAL_COVERED_AND_VET_DIRECT_PAY_AUTHORIZED",
+        "mandate_token": "pet_insurance_directpay_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -31479,6 +31560,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    pet_insurance_vet_directpay_escrow_guard = {
+        "authorized_200": evaluate_pet_insurance_vet_directpay_escrow_policy(
+            PetInsuranceVetDirectPayEscrowPolicyInput()
+        ),
+        "bilateral_or_hereditary_exclusion_403": evaluate_pet_insurance_vet_directpay_escrow_policy(
+            PetInsuranceVetDirectPayEscrowPolicyInput(
+                bilateral_cruciate_exclusion_or_hereditary_sublimit=True
+            )
+        ),
+        "unverified_soap_or_no_directpay_422": evaluate_pet_insurance_vet_directpay_escrow_policy(
+            PetInsuranceVetDirectPayEscrowPolicyInput(
+                unverified_vet_soap_baseline_or_no_hospital_direct_pay=True
+            )
+        ),
+        "unlicensed_carrier_or_chip_fraud_451": evaluate_pet_insurance_vet_directpay_escrow_policy(
+            PetInsuranceVetDirectPayEscrowPolicyInput(
+                webiq_unlicensed_underwriter_or_chip_identity_fraud_flag=True
+            )
+        ),
+        "high_deductible_and_chewy_rx_409": evaluate_pet_insurance_vet_directpay_escrow_policy(
+            PetInsuranceVetDirectPayEscrowPolicyInput(
+                issue_age_high_deductible_and_chewy_rx_arbitrage_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -31711,6 +31818,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "specialty_coffee_green_bean_escrow_guard": specialty_coffee_green_bean_escrow_guard,
         "bespoke_suit_mtm_escrow_guard": bespoke_suit_mtm_escrow_guard,
         "b2b_document_shredding_itad_escrow_guard": b2b_document_shredding_itad_escrow_guard,
+        "pet_insurance_vet_directpay_escrow_guard": pet_insurance_vet_directpay_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -42586,6 +42694,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="shred-itad-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ULTRASONIC_BIN_FILL_SENSOR_ON_DEMAND_DISPATCH_AND_ITAD_VALUE_RECOVERY_CONFIRM · Mandate: b2b_document_shredding_itad_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 104 Pet Health Insurance, Bilateral Exclusion & Vet Direct-Pay Escrow -->
+      <div class="finops-box" id="pet-insurance-vet-directpay-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🐾 宠物医疗保险 (Pet Health Insurance)、双侧十字韧带拒赔拦截与急诊医院 60 秒直付托管 (Trupanion / Lemonade Pet / Nationwide / Fetch / 支付宝宠物险) 核保与直付沙盒 (Round 104)</div>
+            <div class="finops-subtitle">实测双侧疾病 (Bilateral CCL) 独立赔付+品种遗传病全额覆盖防左腿 TPLO 手术赔后右腿算既往症拒赔 (HTTP 403)、投保首日 24 个月医院 SOAP 电子病历前置核保+PIMS 60 秒前台直付防 $6,000 急诊自费垫付及秋后算账拒赔 (HTTP 422)、Web IQ 15 位芯片/AI 鼻纹核验 (HTTP 451) 及投保年龄锁价+$750 大病免赔+Chewy 外部药房拆单净省 33% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="pet-ins-status-kpi">HTTP 409 · ISSUE_AGE_HIGH_DEDUCTIBLE_AND_CHEWY_RX_ARBITRAGE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业员工宠物福利与家庭多宠医疗保障总池 ($ USD)
+            <input type="range" id="pet-ins-pool-slider" min="5000" max="250000" step="2500" value="45000" oninput="updatePetInsuranceVetDirectPayEscrowSandbox()" />
+            <span id="pet-ins-pool-val" style="color:#6ee7b7; font-family:monospace;">$45,000</span>
+          </label>
+          <label>
+            双侧十字韧带 (Bilateral CCL) 与品种遗传病条款审计 (HTTP 403)
+            <select id="pet-ins-clause-select" onchange="updatePetInsuranceVetDirectPayEscrowSandbox()">
+              <option value="pass">双侧十字韧带/白内障独立保障 + 覆盖遗传病 (BOAS/IVDD/髋关节) + 180天治愈重置 (放行)</option>
+              <option value="block">左腿赔付后将右腿列为双侧既往症永久拒赔 或 品种遗传病设 $1,500 微缩低限额 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            投保首日 24 个月医院 SOAP 病历前置核保与 PIMS 60 秒直付 (HTTP 422)
+            <select id="pet-ins-soap-select" onchange="updatePetInsuranceVetDirectPayEscrowSandbox()">
+              <option value="pass">首日锁定 24 个月 SOAP 约束性既往症白名单 + 14天骨科体检豁免 + PIMS 60秒医院直付 90% (合规)</option>
+              <option value="block">投保不审病历留事后拒赔暗雷 或 $6,000 急诊 ICU 无医院直付需全额刷卡垫付等 45 天 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 15 位国际微芯片 (ISO 11784) 与 AI 鼻纹核验 (HTTP 451)
+            <select id="pet-ins-chip-select" onchange="updatePetInsuranceVetDirectPayEscrowSandbox()">
+              <option value="clear">ISO 15 位芯片号 + 活体 AI 鼻纹核验一致 + 承保商偿付能力合规 (正常)</option>
+              <option value="hold">多宠顶替骗保/芯片鼻纹不符 或 承保机构无牌照/拒赔率异常 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            投保年龄锁价 (Issue-Age)、$750 大病高免赔与 Chewy 药房套利 (HTTP 409)
+            <select id="pet-ins-opt-select" onchange="updatePetInsuranceVetDirectPayEscrowSandbox()">
+              <option value="enabled" selected>开启 $750 大病免赔额 + 砍掉负收益疫苗包 + Apoquel/心脏药转 Chewy 药房净省 33% (HTTP 409)</option>
+              <option value="baseline">常规双侧保障与医院前台 60 秒直付标准授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度宠物医疗与保费总池</div>
+            <div class="finops-kpi-val" id="pet-ins-gross-kpi">$45,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">大病免赔与外部药房寻优后净支出</div>
+            <div class="finops-kpi-val" id="pet-ins-net-kpi" style="color:#6ee7b7;">$30,150</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除负收益附加险与医院药差</div>
+            <div class="finops-kpi-val" id="pet-ins-savings-kpi" style="color:#38bdf8;">$14,850</div>
+          </div>
+        </div>
+        <div id="pet-ins-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ISSUE_AGE_HIGH_DEDUCTIBLE_AND_CHEWY_RX_ARBITRAGE_CONFIRM · Mandate: pet_insurance_directpay_mandate_optim_409
         </div>
       </div>
 
@@ -55653,6 +55824,80 @@ function updateB2BDocumentShreddingItadEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ONSITE_DIN_P4_AND_SERIALIZED_NIST80088_AUTHORIZED · Mandate: b2b_document_shredding_itad_mandate_200';
+}}
+
+function updatePetInsuranceVetDirectPayEscrowSandbox() {{
+  const slider = document.getElementById('pet-ins-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '45000');
+  const clauseMode = document.getElementById('pet-ins-clause-select').value;
+  const soapMode = document.getElementById('pet-ins-soap-select').value;
+  const chipMode = document.getElementById('pet-ins-chip-select').value;
+  const optMode = document.getElementById('pet-ins-opt-select').value;
+
+  document.getElementById('pet-ins-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('pet-ins-status-kpi');
+  const grossKpi = document.getElementById('pet-ins-gross-kpi');
+  const netKpi = document.getElementById('pet-ins-net-kpi');
+  const savingsKpi = document.getElementById('pet-ins-savings-kpi');
+  const banner = document.getElementById('pet-ins-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (chipMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNLICENSED_UNDERWRITER_OR_CHIP_IDENTITY_FRAUD_HOLD · Mandate: null';
+    return;
+  }}
+  if (clauseMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BILATERAL_CRUCIATE_EXCLUSION_OR_HEREDITARY_SUBLIMIT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (soapMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNVERIFIED_VET_SOAP_BASELINE_OR_NO_HOSPITAL_DIRECT_PAY_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.33);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ISSUE_AGE_HIGH_DEDUCTIBLE_AND_CHEWY_RX_ARBITRAGE_CONFIRM · Mandate: pet_insurance_directpay_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 BILATERAL_COVERED_AND_VET_DIRECT_PAY_AUTHORIZED · Mandate: pet_insurance_directpay_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg547" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="50%" stop-color="#132338"/>
+      <stop offset="100%" stop-color="#091326"/>
+    </linearGradient>
+    <linearGradient id="accent547" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg547)"/>
+  <rect x="28" y="24" width="1144" height="627" rx="18" fill="none" stroke="url(#accent547)" stroke-width="2" opacity="0.5"/>
+  <text x="54" y="66" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">ROUND 104 · RETAIL &amp; CONSUMER INSURANCE SAGA · SVG 547</text>
+  <text x="54" y="100" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">Pet Health Insurance, Bilateral Cruciate Lock &amp; Real-Time Vet Direct-Pay Escrow</text>
+  <text x="54" y="128" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Trupanion vs. Lemonade Pet vs. Fetch vs. Alipay Pet · Bilateral-Exclusion Block (HTTP 403) · 60-Second PIMS Direct-Pay &amp; SOAP Audit (HTTP 422)</text>
+
+  <!-- Lane 1: Policy Wordings & Breed Risk Guard -->
+  <rect x="54" y="152" width="345" height="465" rx="14" fill="#111827" stroke="#ef4444" stroke-width="1.6"/>
+  <rect x="54" y="152" width="345" height="42" rx="14" fill="#7f1d1d"/>
+  <text x="72" y="179" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">1. Policy Clause &amp; Breed Lock (HTTP 403)</text>
+  <text x="72" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Bilateral &amp; Hereditary Exclusion Gate</text>
+  <text x="72" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Blocks policies classifying right-knee CCL</text>
+  <text x="72" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  tear or right-eye cataract as 'Pre-Existing'</text>
+  <text x="72" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  after left-side claim (Bilateral Trap)</text>
+  <rect x="72" y="298" width="309" height="82" rx="9" fill="#1e293b" stroke="#f87171" stroke-width="1"/>
+  <text x="86" y="321" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">Breed-Specific &amp; Age Cap Shield</text>
+  <text x="86" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Rejects policies excluding Hip Dysplasia,</text>
+  <text x="86" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  IVDD, or BOAS in Golden/French Bulldog</text>
+  <text x="72" y="408" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Cured-Condition Lookback &amp; Exam Fee</text>
+  <text x="72" y="430" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Enforces &lt;=180-day symptom-free reset for</text>
+  <text x="72" y="450" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  curable ear/GI infections &amp; includes ER</text>
+  <text x="72" y="470" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  vet exam fees ($220+ visit fee covered)</text>
+  <rect x="72" y="502" width="309" height="92" rx="9" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="86" y="526" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 403 Deterministic Verdict</text>
+  <text x="86" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">BILATERAL_CRUCIATE_EXCLUSION_OR</text>
+  <text x="86" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_HEREDITARY_SUBLIMIT_BLOCKED</text>
+
+  <!-- Lane 2: SOAP Baseline & Vet Direct-Pay -->
+  <rect x="426" y="152" width="348" height="465" rx="14" fill="#111827" stroke="#f59e0b" stroke-width="1.6"/>
+  <rect x="426" y="152" width="348" height="42" rx="14" fill="#78350f"/>
+  <text x="444" y="179" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">2. SOAP Audit &amp; Direct-Pay (HTTP 422)</text>
+  <text x="444" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Day-1 Vet SOAP Medical Record Underwriting</text>
+  <text x="444" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Parses 24-month Cornerstone / ezyVet SOAP</text>
+  <text x="444" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  notes at enrollment to issue binding pre-</text>
+  <text x="444" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  existing schedule (no post-claim ambush!)</text>
+  <rect x="444" y="298" width="312" height="82" rx="9" fill="#1e293b" stroke="#fbbf24" stroke-width="1"/>
+  <text x="458" y="321" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">60-Second PIMS Hospital Direct-Pay</text>
+  <text x="458" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Settles 80–90% of $5,500 TPLO / ICU bill</text>
+  <text x="458" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  at checkout; owner pays only copay</text>
+  <text x="444" y="408" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Cruciate Ortho Waiting-Period Calendar</text>
+  <text x="444" y="430" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Schedules ortho exam waiver at enrollment</text>
+  <text x="444" y="450" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  to reduce 6-month CCL wait to 14 days</text>
+  <text x="444" y="470" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Blocks vague vet note 'mild limp' traps</text>
+  <rect x="444" y="502" width="312" height="92" rx="9" fill="#0f172a" stroke="#f59e0b" stroke-width="1"/>
+  <text x="458" y="526" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 422 Deterministic Verdict</text>
+  <text x="458" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">UNVERIFIED_VET_SOAP_BASELINE_OR</text>
+  <text x="458" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_NO_HOSPITAL_DIRECT_PAY_BLOCKED</text>
+
+  <!-- Lane 3: Senior Age-Pricing & Rx FinOps -->
+  <rect x="801" y="152" width="345" height="465" rx="14" fill="#111827" stroke="#10b981" stroke-width="1.6"/>
+  <rect x="801" y="152" width="345" height="42" rx="14" fill="#064e3b"/>
+  <text x="819" y="179" fill="#a7f3d0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">3. Issue-Age Lock &amp; FinOps (451/409)</text>
+  <text x="819" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Web IQ Nose-Print Biometrics &amp; License (451)</text>
+  <text x="819" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Verifies ISO 11784/11785 15-digit microchip</text>
+  <text x="819" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  + AI nose-print match &amp; state DOI / NAIC</text>
+  <text x="819" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  carrier solvency before issuing policy</text>
+  <rect x="819" y="298" width="309" height="96" rx="9" fill="#1e293b" stroke="#34d399" stroke-width="1"/>
+  <text x="833" y="321" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">FinOps High-Deductible + Chewy Rx (409)</text>
+  <text x="833" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Shifts deductible $250 -&gt; $750 (-42% premium)</text>
+  <text x="833" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Drops negative-ROI Wellness add-on &amp; routes</text>
+  <text x="833" y="381" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  Apoquel/Simparica to Chewy Pharmacy: -33%</text>
+  <text x="819" y="420" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Issue-Age vs. Birthday Escalation Curve</text>
+  <text x="819" y="442" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Models 10-year TCO across senior ages 8–12</text>
+  <text x="819" y="462" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  to prevent $320/mo senior birthday shock</text>
+  <rect x="819" y="502" width="309" height="92" rx="9" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+  <text x="833" y="526" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 409 / 451 Deterministic Verdict</text>
+  <text x="833" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">ISSUE_AGE_HIGH_DEDUCTIBLE_AND_CHEWY</text>
+  <text x="833" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_RX_ARBITRAGE_CONFIRM (-33% Net)</text>
+</svg>

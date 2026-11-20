@@ -16026,6 +16026,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-document-shredding-itad-escrow-sandbox", html_zh)
 
+    def test_pet_insurance_vet_directpay_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            PetInsuranceVetDirectPayEscrowPolicyInput,
+            evaluate_pet_insurance_vet_directpay_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_pet_insurance_vet_directpay_escrow_policy(
+            PetInsuranceVetDirectPayEscrowPolicyInput(
+                quarterly_pet_insurance_and_vet_care_pool_usd=45000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "BILATERAL_COVERED_AND_VET_DIRECT_PAY_AUTHORIZED",
+        )
+
+        clause = evaluate_pet_insurance_vet_directpay_escrow_policy(
+            PetInsuranceVetDirectPayEscrowPolicyInput(
+                bilateral_cruciate_exclusion_or_hereditary_sublimit=True
+            )
+        )
+        self.assertEqual(clause["status_code"], 403)
+        self.assertEqual(
+            clause["decision"],
+            "BILATERAL_CRUCIATE_EXCLUSION_OR_HEREDITARY_SUBLIMIT_BLOCKED",
+        )
+
+        soap = evaluate_pet_insurance_vet_directpay_escrow_policy(
+            PetInsuranceVetDirectPayEscrowPolicyInput(
+                unverified_vet_soap_baseline_or_no_hospital_direct_pay=True
+            )
+        )
+        self.assertEqual(soap["status_code"], 422)
+        self.assertEqual(
+            soap["decision"],
+            "UNVERIFIED_VET_SOAP_BASELINE_OR_NO_HOSPITAL_DIRECT_PAY_BLOCKED",
+        )
+
+        chip = evaluate_pet_insurance_vet_directpay_escrow_policy(
+            PetInsuranceVetDirectPayEscrowPolicyInput(
+                webiq_unlicensed_underwriter_or_chip_identity_fraud_flag=True
+            )
+        )
+        self.assertEqual(chip["status_code"], 451)
+        self.assertEqual(
+            chip["decision"],
+            "WEBIQ_UNLICENSED_UNDERWRITER_OR_CHIP_IDENTITY_FRAUD_HOLD",
+        )
+
+        optim = evaluate_pet_insurance_vet_directpay_escrow_policy(
+            PetInsuranceVetDirectPayEscrowPolicyInput(
+                quarterly_pet_insurance_and_vet_care_pool_usd=45000.0,
+                issue_age_high_deductible_and_chewy_rx_arbitrage_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 14850.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 30150.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("pet_insurance_vet_directpay_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("pet-insurance-vet-directpay-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
