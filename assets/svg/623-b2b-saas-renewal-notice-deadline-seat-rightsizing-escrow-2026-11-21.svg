@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg623" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr623" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg623)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr623)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 180 · B2B SaaS Renewal Negotiation, Notice-Window Shield &amp; SSO Seat Right-Sizing Escrow</text>
+  <text x="48" y="74" class="sub">Vendr / Tropic / Zylo / Productiv · T-90d Auto-Renew Notice Lock · Okta/Entra 60d Inactive Seat Reclaim · Price Benchmark (-34% Spend)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #623 · FAQ #299</text>
+
+  <!-- Lane 1: Predatory 60/90-Day Auto-Renewal Notice Trap & Uplift Cap -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Auto-Renewal Notice &amp; Uplift Breaker (403)</text>
+  <text x="44" y="162" class="body-txt">• Defeats the "60-Day Opt-Out Window" Trap:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Vendor hides until Day T-59 → forces 1-year</text>
+  <text x="54" y="200" class="mono">auto-renewal + 12% CPI/List price hike!</text>
+  <text x="44" y="223" class="body-txt">• Pre-Emptive Tactical Non-Renewal Notice:</text>
+  <text x="54" y="243" class="mono">At T-95d: Auto-send Certified Opt-Out Notice</text>
+  <text x="54" y="261" class="body-txt">to preserve negotiation leverage &amp; seat downsize</text>
+  <text x="44" y="284" class="body-txt">• Blocks signing order forms containing uncapped</text>
+  <text x="54" y="302" class="body-txt">renewal uplift (`require Renewal_Cap &lt;= 3%`)</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 MISSED_OPT_OUT_WINDOW_OR_UNCAPPED_UPLIFT_BLOCKED</text>
+
+  <!-- Lane 2: Okta/Entra SSO Zombie-Seat Reclaim & Tier Downgrade -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. SSO Zombie-Seat &amp; License Tier Gate (422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Renewing 40% Unused "Shelfware" Seats:</text>
+  <text x="442" y="182" class="mono">Ingest Okta / Entra ID SAML Login + Feature API</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Zero Login &gt;60d → Auto-Reclaim via SCIM</text>
+  <text x="432" y="223" class="body-txt">• Pro-to-Viewer Tier Downgrade Arbitrage:</text>
+  <text x="442" y="243" class="mono">Users w/ 0 Write/Edit Events in 90 Days:</text>
+  <text x="442" y="261" class="body-txt">Downgrade `$75/mo Creator` → `$0/$12 Viewer`</text>
+  <text x="432" y="284" class="body-txt">• Blocks rubber-stamping "Flat Seat Count" or</text>
+  <text x="442" y="302" class="body-txt">auto-true-up when active utilization is `&lt;75%`</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNHARVESTED_ZOMBIE_SEATS_OR_PRO_WASTE_BLOCKED</text>
+
+  <!-- Lane 3: Shadow-IT Duplicate Card Spend & SOC2/DPA Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Shadow-IT Card Sprawl &amp; AI-DPA Lock (451)</text>
+  <text x="820" y="162" class="body-txt">• Eliminates Duplicate Departmental Subscriptions:</text>
+  <text x="830" y="182" class="mono">Scan Ramp/Brex/Expensify + OAuth Grants</text>
+  <text x="830" y="200" class="body-txt">Finds 6 teams paying list price on credit cards</text>
+  <text x="830" y="218" class="body-txt">for the same tool already under Enterprise EA</text>
+  <text x="820" y="241" class="body-txt">• AI Model Training Opt-Out &amp; SOC2 Type-II Gate:</text>
+  <text x="830" y="261" class="mono" fill="#f9a8d4">Require Zero_Data_Retention &amp; No_LLM_Training</text>
+  <text x="820" y="284" class="body-txt">• Freezes rogue SaaS virtual cards upon employee</text>
+  <text x="830" y="302" class="body-txt">offboarding (`Workday/Rippling Termination`) </text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 SHADOW_IT_DUPLICATE_SPEND_OR_AI_DPA_HOLD</text>
+
+  <!-- Bottom Vendr/Tropic P25 Benchmark & Cloud Marketplace Drawdown Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Peer P25 Price-Benchmark Negotiation + AWS/Azure Marketplace EDP/MACC Drawdown + Swap-Rights (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① T-95d Tactical Opt-Out</text>
+  <text x="62" y="462" class="body-txt">Sends contractual non-renewal</text>
+  <text x="62" y="480" class="body-txt">notice 35d before cutoff;</text>
+  <text x="62" y="498" class="body-txt">kills automatic 12% uplift &amp;</text>
+  <text x="62" y="516" class="mono">Unlocks Seat Downsizing</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② SCIM Auto-Harvesting</text>
+  <text x="337" y="462" class="body-txt">Reclaims 60d inactive seats &amp;</text>
+  <text x="337" y="480" class="body-txt">downgrades read-only users</text>
+  <text x="337" y="498" class="body-txt">before renewal quote generation;</text>
+  <text x="337" y="516" class="mono">-28% Baseline License Count</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Peer P25 Price Benchmark</text>
+  <text x="622" y="462" class="body-txt">Grounds target SKU against</text>
+  <text x="622" y="480" class="body-txt">anonymized peer contracts at</text>
+  <text x="622" y="498" class="body-txt">matching seat tier (Vendr/Tropic);</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">Exposes 35% Vendor Price Padding</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Cloud MACC/EDP Commit Burn</text>
+  <text x="907" y="462" class="body-txt">Routes SaaS renewal through</text>
+  <text x="907" y="480" class="body-txt">AWS EDP / Azure MACC Private</text>
+  <text x="907" y="498" class="body-txt">Offer to burn cloud commit;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-34% Net Enterprise SaaS Spend</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-34.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Enterprise SaaS Spend Saved</text>
+  <text x="46" y="642" class="mono">$71,400 Saved / $210k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">T-95d Shield</text>
+  <text x="336" y="626" class="kpi-lbl">Zero Missed 60d Opt-Out Windows</text>
+  <text x="336" y="642" class="mono">Caps Renewal Uplift &lt;=3%</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">SCIM Reclaim</text>
+  <text x="626" y="626" class="kpi-lbl">60d Inactive &amp; Read-Only Downgrade</text>
+  <text x="626" y="642" class="mono">Eliminates 40% Shelfware Waste</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">MACC / EDP</text>
+  <text x="916" y="626" class="kpi-lbl">Cloud Marketplace Private Offer</text>
+  <text x="916" y="642" class="mono">100% Cloud Commit Drawdown</text>
+</svg>

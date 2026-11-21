@@ -21118,6 +21118,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-pre-ship-order-edit-sandbox", html_zh)
 
+    def test_b2b_saas_renewal_rightsizing_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BSaasRenewalRightSizingPolicyInput,
+            evaluate_b2b_saas_renewal_rightsizing_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_saas_renewal_rightsizing_policy(
+            B2BSaasRenewalRightSizingPolicyInput(
+                quarterly_enterprise_saas_waste_uplift_and_shadow_it_pool_usd=210000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "RIGHT_SIZED_B2B_SAAS_RENEWAL_AUTHORIZED",
+        )
+
+        optout = evaluate_b2b_saas_renewal_rightsizing_policy(
+            B2BSaasRenewalRightSizingPolicyInput(
+                missed_auto_renewal_opt_out_window_or_uncapped_price_uplift=True
+            )
+        )
+        self.assertEqual(optout["status_code"], 403)
+        self.assertEqual(
+            optout["decision"],
+            "MISSED_OPT_OUT_WINDOW_OR_UNCAPPED_UPLIFT_BLOCKED",
+        )
+
+        scim = evaluate_b2b_saas_renewal_rightsizing_policy(
+            B2BSaasRenewalRightSizingPolicyInput(
+                unharvested_60d_zombie_seats_or_read_only_users_on_creator_tier=True
+            )
+        )
+        self.assertEqual(scim["status_code"], 422)
+        self.assertEqual(
+            scim["decision"],
+            "UNHARVESTED_ZOMBIE_SEATS_OR_PRO_WASTE_BLOCKED",
+        )
+
+        shadow = evaluate_b2b_saas_renewal_rightsizing_policy(
+            B2BSaasRenewalRightSizingPolicyInput(
+                duplicate_shadow_it_card_subscriptions_or_missing_no_train_dpa=True
+            )
+        )
+        self.assertEqual(shadow["status_code"], 451)
+        self.assertEqual(
+            shadow["decision"],
+            "SHADOW_IT_DUPLICATE_SPEND_OR_AI_DPA_HOLD",
+        )
+
+        optim = evaluate_b2b_saas_renewal_rightsizing_policy(
+            B2BSaasRenewalRightSizingPolicyInput(
+                quarterly_enterprise_saas_waste_uplift_and_shadow_it_pool_usd=210000.0,
+                t95_opt_out_scim_rightsizing_p25_benchmark_and_macc_offer_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 71400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 138600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_saas_renewal_rightsizing_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-saas-renewal-rightsizing-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

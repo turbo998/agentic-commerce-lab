@@ -28749,6 +28749,82 @@ def evaluate_ecommerce_pre_ship_order_edit_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BSaasRenewalRightSizingPolicyInput:
+    quarterly_enterprise_saas_waste_uplift_and_shadow_it_pool_usd: float = 210000.0
+    missed_auto_renewal_opt_out_window_or_uncapped_price_uplift: bool = False
+    unharvested_60d_zombie_seats_or_read_only_users_on_creator_tier: bool = False
+    duplicate_shadow_it_card_subscriptions_or_missing_no_train_dpa: bool = False
+    t95_opt_out_scim_rightsizing_p25_benchmark_and_macc_offer_ready: bool = False
+
+
+def evaluate_b2b_saas_renewal_rightsizing_policy(
+    policy_input: B2BSaasRenewalRightSizingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_enterprise_saas_waste_uplift_and_shadow_it_pool_usd
+        ),
+    )
+    if policy_input.duplicate_shadow_it_card_subscriptions_or_missing_no_train_dpa:
+        return {
+            "status_code": 451,
+            "decision": "SHADOW_IT_DUPLICATE_SPEND_OR_AI_DPA_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missed_auto_renewal_opt_out_window_or_uncapped_price_uplift:
+        return {
+            "status_code": 403,
+            "decision": "MISSED_OPT_OUT_WINDOW_OR_UNCAPPED_UPLIFT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unharvested_60d_zombie_seats_or_read_only_users_on_creator_tier:
+        return {
+            "status_code": 422,
+            "decision": "UNHARVESTED_ZOMBIE_SEATS_OR_PRO_WASTE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.t95_opt_out_scim_rightsizing_p25_benchmark_and_macc_offer_ready:
+        savings = round(gross_pool * 0.34, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "T95_OPT_OUT_SCIM_RIGHTSIZING_P25_AND_MACC_OFFER_CONFIRM",
+            "mandate_token": "b2b_saas_renewal_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "RIGHT_SIZED_B2B_SAAS_RENEWAL_AUTHORIZED",
+        "mandate_token": "b2b_saas_renewal_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -39348,6 +39424,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_saas_renewal_rightsizing_guard = {
+        "authorized_200": evaluate_b2b_saas_renewal_rightsizing_policy(
+            B2BSaasRenewalRightSizingPolicyInput()
+        ),
+        "missed_window_or_uplift_403": evaluate_b2b_saas_renewal_rightsizing_policy(
+            B2BSaasRenewalRightSizingPolicyInput(
+                missed_auto_renewal_opt_out_window_or_uncapped_price_uplift=True
+            )
+        ),
+        "zombie_seats_or_pro_waste_422": evaluate_b2b_saas_renewal_rightsizing_policy(
+            B2BSaasRenewalRightSizingPolicyInput(
+                unharvested_60d_zombie_seats_or_read_only_users_on_creator_tier=True
+            )
+        ),
+        "shadow_it_or_ai_dpa_451": evaluate_b2b_saas_renewal_rightsizing_policy(
+            B2BSaasRenewalRightSizingPolicyInput(
+                duplicate_shadow_it_card_subscriptions_or_missing_no_train_dpa=True
+            )
+        ),
+        "t95_scim_and_macc_409": evaluate_b2b_saas_renewal_rightsizing_policy(
+            B2BSaasRenewalRightSizingPolicyInput(
+                t95_opt_out_scim_rightsizing_p25_benchmark_and_macc_offer_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -39656,6 +39758,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "multi_psp_orchestration_guard": multi_psp_orchestration_guard,
         "marketplace_seller_payout_escrow_guard": marketplace_seller_payout_escrow_guard,
         "ecommerce_pre_ship_order_edit_guard": ecommerce_pre_ship_order_edit_guard,
+        "b2b_saas_renewal_rightsizing_guard": b2b_saas_renewal_rightsizing_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -55115,6 +55218,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="preedit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 GRACE_HOLD_30M_IN_PLACE_SWAP_AND_ADDON_UPSELL_CONFIRM · Mandate: pre_ship_edit_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 180 B2B SaaS Renewal Negotiation & SSO Seat Right-Sizing Escrow -->
+      <div class="finops-box" id="b2b-saas-renewal-rightsizing-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💼 企业 B2B SaaS 续约谈判 (Vendr / Tropic / Zylo) 与 SSO 僵尸席位自动缩容沙盒</div>
+            <div class="finops-sub">Round 180 · T-95d 自动发不续约保留函破 12% 涨价锁 (HTTP 403) + SCIM 60d 僵尸回收与只读降级 (HTTP 422) + 影子 IT 归并与 AI DPA (HTTP 451) + P25 对标与 MACC 抵扣净省 34% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="saasren-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度企业 SaaS 僵尸席位浪费、12% 自动涨价、影子 IT 重复买与闲置云承诺池 ($)
+            <input type="number" id="saasren-gross-input" value="210000" min="10000" step="5000" oninput="recalcB2BSaasRenewalRightSizingSandbox()" />
+          </label>
+          <label>T-95d 自动续约退订通知期 (60/90d Opt-Out) 与次年涨幅上限
+            <select id="saasren-optout-select" onchange="recalcB2BSaasRenewalRightSizingSandbox()">
+              <option value="pass">T-95d 已自动发出存证暂停自动续约函 + 锁死次年涨幅上限 &lt;=3% (合规)</option>
+              <option value="block_403">被销售拖到第 T-58 天错过 60天通知期，按原席位强行绑死 1 年且自动涨价 12% (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>Okta / Entra ID 60d 僵尸席位回收与 90d 只读用户降级
+            <select id="saasren-scim-select" onchange="recalcB2BSaasRenewalRightSizingSandbox()">
+              <option value="pass">SCIM 自动回收 60d 零登录号 + 90d 零编辑用户从 $75 Creator 降为 Viewer (合规)</option>
+              <option value="block_422">未清理 40% 离职/闲置僵尸席位 或 让只看不改的员工全占着 $75/月顶配版续费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>影子 IT (Shadow IT) 多部门刷卡归并与 AI 零数据留存 DPA
+            <select id="saasren-shadow-select" onchange="recalcB2BSaasRenewalRightSizingSandbox()">
+              <option value="pass">已归并全公司散装报销卡至企业主租户 + 签署 Zero-Data-Retention AI DPA (安全)</option>
+              <option value="block_451">6 个部门各自刷公司卡按原价重复买同款工具 或 默认允许 AI 厂商拿公司数据训模型 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Vendr/Tropic P25 底价对标博弈与 Azure MACC / AWS EDP 私密报价抵扣
+            <select id="saasren-opt-select" onchange="recalcB2BSaasRenewalRightSizingSandbox()">
+              <option value="enabled" selected>对标同阶梯 P25 底价砍价 + 走 Azure MACC / AWS EDP Private Offer 全额冲抵 (-34% 支出 / HTTP 409)</option>
+              <option value="disabled">盲目接受供应商首轮报价并用预算外现金直接电汇 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度 SaaS 浪费与涨价溢价总池</div>
+            <div class="finops-kpi-val" id="saasren-gross-kpi">$210,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">SCIM 瘦身与 P25/MACC 后净支出</div>
+            <div class="finops-kpi-val" id="saasren-net-kpi" style="color:#6ee7b7;">$138,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省僵尸席位与议价/云抵扣</div>
+            <div class="finops-kpi-val" id="saasren-savings-kpi" style="color:#38bdf8;">$71,400</div>
+          </div>
+        </div>
+        <div id="saasren-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 T95_OPT_OUT_SCIM_RIGHTSIZING_P25_AND_MACC_OFFER_CONFIRM · Mandate: b2b_saas_renewal_escrow_optim_409
         </div>
       </div>
 
@@ -73772,6 +73932,79 @@ function recalcEcommercePreShipOrderEditSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 SAME_ZIP_PRE_WAVE_ORDER_EDIT_AUTHORIZED · Mandate: pre_ship_edit_escrow_200';
+}}
+
+function recalcB2BSaasRenewalRightSizingSandbox() {{
+  const grossInput = document.getElementById('saasren-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '210000'));
+  const optoutGate = document.getElementById('saasren-optout-select').value;
+  const scimGate = document.getElementById('saasren-scim-select').value;
+  const shadowGate = document.getElementById('saasren-shadow-select').value;
+  const optMode = document.getElementById('saasren-opt-select').value;
+
+  const grossKpi = document.getElementById('saasren-gross-kpi');
+  const netKpi = document.getElementById('saasren-net-kpi');
+  const savingsKpi = document.getElementById('saasren-savings-kpi');
+  const statusKpi = document.getElementById('saasren-status-kpi');
+  const banner = document.getElementById('saasren-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (shadowGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 SHADOW_IT_DUPLICATE_SPEND_OR_AI_DPA_HOLD · Mandate: null';
+    return;
+  }}
+  if (optoutGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MISSED_OPT_OUT_WINDOW_OR_UNCAPPED_UPLIFT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (scimGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNHARVESTED_ZOMBIE_SEATS_OR_PRO_WASTE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.34);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 T95_OPT_OUT_SCIM_RIGHTSIZING_P25_AND_MACC_OFFER_CONFIRM · Mandate: b2b_saas_renewal_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 RIGHT_SIZED_B2B_SAAS_RENEWAL_AUTHORIZED · Mandate: b2b_saas_renewal_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
