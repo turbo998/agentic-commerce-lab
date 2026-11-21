@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg674" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg674)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 231 · B2B Trade-Show Booth, Drayage &amp; `ICP` Lead-Retrieval Escrow</text>
+  <text x="48" y="74" class="sub">Cvent / Freeman / GES / Captello / Salesforce · `ICP` Badge-Scan Audit · Advance-Warehouse Drayage Lock · Union OT Shield (-37%)</text>
+  <rect x="1002" y="36" width="150" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1077" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #674 · FAQ #350</text>
+
+  <!-- Lane 1: Junk Badge Scans ("Paying $150/Lead for Students, Vendors & Competitors") Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. `ICP` Lead-Scan Verification (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Paying Hosted-Buyer Fees for Junk Scans:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Filter Out `Competitor_Domains`, `Students`,</text>
+  <text x="54" y="200" class="mono">`Exhibitor_Staff` &amp; `Personal_Gmail_Swag_Hunters`</text>
+  <text x="44" y="223" class="body-txt">• Enforces Hosted-Buyer `1-on-1` Meeting Attendance:</text>
+  <text x="54" y="243" class="mono">Require Dual-NFC Check-In + `&gt;=12m` Meeting</text>
+  <text x="44" y="266" class="body-txt">• Prevents event organizers billing `$800/meeting`</text>
+  <text x="54" y="286" class="body-txt">for no-show executives or counting 300 free-tote</text>
+  <text x="54" y="304" class="body-txt">scanners toward guaranteed MQL lead quotas</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 NON_ICP_SWAG_SCAN_OR_HOSTED_BUYER_NOSHOW_BLOCK</text>
+
+  <!-- Lane 2: Show-Site Drayage ($180/CWT) & Weekend Double-Time Rigging Ambush Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Drayage `CWT` &amp; Union OT Cap (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Show-Site Material Handling Overbilling:</text>
+  <text x="442" y="182" class="mono">Audit Certified Scale Ticket Weight vs `Freeman`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Invoice (`Block Arbitrary 2x Special-Handling`)!</text>
+  <text x="432" y="223" class="body-txt">• Straight-Time Move-In Window Enforcement:</text>
+  <text x="442" y="243" class="mono">Block Unapproved Sunday `2.0x Double-Time` Labor</text>
+  <text x="432" y="266" class="body-txt">• Eliminates `$18,000` surprise drayage bills caused</text>
+  <text x="442" y="286" class="body-txt">by shipping loose boxes instead of consolidated</text>
+  <text x="442" y="304" class="body-txt">shrink-wrapped skids to the Advance Warehouse</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNVERIFIED_DRAYAGE_CWT_OR_UNAUTHORIZED_UNION_OT</text>
+
+  <!-- Lane 3: Early-Bird Deadline Miss (+35% Penalty) & Fire-Marshal / COI Booth Shutdown Gate -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `NFPA 701` Fire &amp; `COI` Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Prevents Fire-Marshal Opening-Morning Shutdown:</text>
+  <text x="830" y="182" class="mono">Require `NFPA 701 Flame-Retardant Cert` +</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">`$2M Exhibitor Liability COI` + Structural Stamp!</text>
+  <text x="820" y="223" class="body-txt">• Universal LeadKit API vs `$600` Proprietary Scanner:</text>
+  <text x="830" y="243" class="body-txt">Mandates developer-kit QR/NFC badge API access</text>
+  <text x="830" y="261" class="body-txt">before signing sponsorship contract</text>
+  <text x="820" y="284" class="body-txt">• Stops fire marshals tearing down uncertified</text>
+  <text x="830" y="302" class="body-txt">fabric drapes or double-deck booths on Day 1</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 MISSING_NFPA701_FLAME_CERT_OR_EXHIBITOR_COI_HOLD</text>
+
+  <!-- Bottom T-30d Early-Bird Auto-Order, Modular Aluminum Booth Reuse & Real-Time CRM Routing -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. `T-30d` Early-Bird Utility Lock + Lightweight Modular Frame Reuse (`-48%` Drayage) (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① `T-30d` Early-Bird Lock</text>
+  <text x="62" y="462" class="body-txt">Auto-orders power, rigging</text>
+  <text x="62" y="480" class="body-txt">&amp; carpet 30 days prior to</text>
+  <text x="62" y="498" class="body-txt">avoid the `+35%` floor</text>
+  <text x="62" y="516" class="mono">late-order penalty!</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Modular Aluminum &amp; SEG</text>
+  <text x="337" y="462" class="body-txt">Replaces heavy custom MDF</text>
+  <text x="337" y="480" class="body-txt">wood crates (`8,000 lbs`) w/</text>
+  <text x="337" y="498" class="body-txt">reusable `beMatrix` frames</text>
+  <text x="337" y="516" class="mono">(`2,800 lbs` -&gt; -65% Drayage)</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ 5-Second CRM Enrichment</text>
+  <text x="622" y="462" class="body-txt">Enriches badge scan via</text>
+  <text x="622" y="480" class="body-txt">Clearbit/ZoomInfo &amp; books</text>
+  <text x="622" y="498" class="body-txt">AE follow-up on the spot</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">(vs 7-Day CSV Upload Delay)</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Single-Skid Consolidation</text>
+  <text x="907" y="462" class="body-txt">Consolidates 12 loose boxes</text>
+  <text x="907" y="480" class="body-txt">onto 1 pallet to defeat</text>
+  <text x="907" y="498" class="body-txt">`200-lb Minimum/Box` traps;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Event &amp; Booth Spend</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Trade-Show &amp; Booth Saved</text>
+  <text x="46" y="642" class="mono">$88,800 Saved / $240k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% ICP</text>
+  <text x="336" y="626" class="kpi-lbl">Verified Buyer Scans &amp; Hosted Mtgs</text>
+  <text x="336" y="642" class="mono">Zero Charge for Swag-Hunters</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">-65% CWT</text>
+  <text x="626" y="626" class="kpi-lbl">Single-Skid + Modular Aluminum</text>
+  <text x="626" y="642" class="mono">0 Late-Order +35% Penalties</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">&lt;5s Lead SLA</text>
+  <text x="916" y="626" class="kpi-lbl">Live CRM Sync vs 7-Day CSV Lag</text>
+  <text x="916" y="642" class="mono">NFPA 701 + COI Pre-Cleared</text>
+</svg>

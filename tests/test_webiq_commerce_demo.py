@@ -24535,6 +24535,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-theme-park-ski-resort-ticketing-sandbox", html_zh)
 
+    def test_b2b_tradeshow_booth_sponsorship_drayage_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BTradeshowBoothSponsorshipDrayagePolicyInput,
+            evaluate_b2b_tradeshow_booth_sponsorship_drayage_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_tradeshow_booth_sponsorship_drayage_policy(
+            B2BTradeshowBoothSponsorshipDrayagePolicyInput(
+                quarterly_junk_lead_drayage_overcharge_and_throwaway_booth_pool_usd=240000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ICP_LEADS_AND_CERTIFIED_DRAYAGE_AUTHORIZED",
+        )
+
+        icp = evaluate_b2b_tradeshow_booth_sponsorship_drayage_policy(
+            B2BTradeshowBoothSponsorshipDrayagePolicyInput(
+                counting_non_icp_swag_scans_or_hosted_buyer_meeting_noshow=True
+            )
+        )
+        self.assertEqual(icp["status_code"], 403)
+        self.assertEqual(
+            icp["decision"],
+            "NON_ICP_SWAG_SCAN_OR_HOSTED_BUYER_NOSHOW_BLOCK",
+        )
+
+        drayage = evaluate_b2b_tradeshow_booth_sponsorship_drayage_policy(
+            B2BTradeshowBoothSponsorshipDrayagePolicyInput(
+                unverified_drayage_cwt_padding_or_unapproved_weekend_union_overtime=True
+            )
+        )
+        self.assertEqual(drayage["status_code"], 422)
+        self.assertEqual(
+            drayage["decision"],
+            "UNVERIFIED_DRAYAGE_CWT_OR_UNAUTHORIZED_UNION_OT",
+        )
+
+        fire = evaluate_b2b_tradeshow_booth_sponsorship_drayage_policy(
+            B2BTradeshowBoothSponsorshipDrayagePolicyInput(
+                missing_nfpa701_flame_cert_exhibitor_coi_or_lead_api_access=True
+            )
+        )
+        self.assertEqual(fire["status_code"], 451)
+        self.assertEqual(
+            fire["decision"],
+            "MISSING_NFPA701_FLAME_CERT_OR_EXHIBITOR_COI_HOLD",
+        )
+
+        optim = evaluate_b2b_tradeshow_booth_sponsorship_drayage_policy(
+            B2BTradeshowBoothSponsorshipDrayagePolicyInput(
+                quarterly_junk_lead_drayage_overcharge_and_throwaway_booth_pool_usd=240000.0,
+                t30d_early_bird_utility_lock_and_modular_skid_reuse_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 88800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 151200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_tradeshow_booth_sponsorship_drayage_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-tradeshow-booth-sponsorship-drayage-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

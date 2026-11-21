@@ -32625,6 +32625,82 @@ def evaluate_ota_theme_park_ski_resort_ticketing_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BTradeshowBoothSponsorshipDrayagePolicyInput:
+    quarterly_junk_lead_drayage_overcharge_and_throwaway_booth_pool_usd: float = 240000.0
+    counting_non_icp_swag_scans_or_hosted_buyer_meeting_noshow: bool = False
+    unverified_drayage_cwt_padding_or_unapproved_weekend_union_overtime: bool = False
+    missing_nfpa701_flame_cert_exhibitor_coi_or_lead_api_access: bool = False
+    t30d_early_bird_utility_lock_and_modular_skid_reuse_ready: bool = False
+
+
+def evaluate_b2b_tradeshow_booth_sponsorship_drayage_policy(
+    policy_input: B2BTradeshowBoothSponsorshipDrayagePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_junk_lead_drayage_overcharge_and_throwaway_booth_pool_usd
+        ),
+    )
+    if policy_input.missing_nfpa701_flame_cert_exhibitor_coi_or_lead_api_access:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_NFPA701_FLAME_CERT_OR_EXHIBITOR_COI_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.counting_non_icp_swag_scans_or_hosted_buyer_meeting_noshow:
+        return {
+            "status_code": 403,
+            "decision": "NON_ICP_SWAG_SCAN_OR_HOSTED_BUYER_NOSHOW_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unverified_drayage_cwt_padding_or_unapproved_weekend_union_overtime:
+        return {
+            "status_code": 422,
+            "decision": "UNVERIFIED_DRAYAGE_CWT_OR_UNAUTHORIZED_UNION_OT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.t30d_early_bird_utility_lock_and_modular_skid_reuse_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "EARLY_BIRD_UTILITY_AND_MODULAR_SKID_REUSE_CONFIRM",
+            "mandate_token": "b2b_tradeshow_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ICP_LEADS_AND_CERTIFIED_DRAYAGE_AUTHORIZED",
+        "mandate_token": "b2b_tradeshow_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -44550,6 +44626,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_tradeshow_booth_sponsorship_drayage_guard = {
+        "authorized_200": evaluate_b2b_tradeshow_booth_sponsorship_drayage_policy(
+            B2BTradeshowBoothSponsorshipDrayagePolicyInput()
+        ),
+        "non_icp_or_noshow_403": evaluate_b2b_tradeshow_booth_sponsorship_drayage_policy(
+            B2BTradeshowBoothSponsorshipDrayagePolicyInput(
+                counting_non_icp_swag_scans_or_hosted_buyer_meeting_noshow=True
+            )
+        ),
+        "drayage_pad_or_ot_422": evaluate_b2b_tradeshow_booth_sponsorship_drayage_policy(
+            B2BTradeshowBoothSponsorshipDrayagePolicyInput(
+                unverified_drayage_cwt_padding_or_unapproved_weekend_union_overtime=True
+            )
+        ),
+        "no_flame_cert_or_coi_451": evaluate_b2b_tradeshow_booth_sponsorship_drayage_policy(
+            B2BTradeshowBoothSponsorshipDrayagePolicyInput(
+                missing_nfpa701_flame_cert_exhibitor_coi_or_lead_api_access=True
+            )
+        ),
+        "early_bird_and_modular_409": evaluate_b2b_tradeshow_booth_sponsorship_drayage_policy(
+            B2BTradeshowBoothSponsorshipDrayagePolicyInput(
+                t30d_early_bird_utility_lock_and_modular_skid_reuse_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -44909,6 +45011,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_social_group_buying_community_guard": ecommerce_social_group_buying_community_guard,
         "b2b_supplier_tooling_mold_amortization_guard": b2b_supplier_tooling_mold_amortization_guard,
         "ota_theme_park_ski_resort_ticketing_guard": ota_theme_park_ski_resort_ticketing_guard,
+        "b2b_tradeshow_booth_sponsorship_drayage_guard": b2b_tradeshow_booth_sponsorship_drayage_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -63275,6 +63378,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="themepark-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DYNAMIC_CROWD_STEERING_AND_CITYPASS_SCAN_SPLIT_CONFIRM · Mandate: ota_themepark_ski_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 231 B2B Trade-Show Booth, Drayage & ICP Lead-Retrieval Escrow (#350) -->
+      <div class="finops-box" id="b2b-tradeshow-booth-sponsorship-drayage-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎪 企业 B2B 展会赞助、特装搭建、Drayage 搬运与 ICP 潜客托管 (Cvent / Freeman / Captello / Salesforce) 沙盒</div>
+            <div class="finops-sub">Round 231 (#350) · 扫码 3秒 ZoomInfo 剔除学生/竞品非 ICP 废线索与特邀买家 &gt;=12m 打卡锁 (HTTP 403) + 整托过磅单 CWT 对账拦截 30% 特殊搬运费与未授权周日 2x 加班费 (HTTP 422) + NFPA 701 防火阻燃证书与 $2M COI 门禁 (HTTP 451) + T-30d 早鸟锁水电与 beMatrix 铝框复用净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="tradeshow-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度展会保底 MQL 赞助混入 45% 学生/竞品废线索、零散寄件遭收天价 Drayage 搬运费与一次性木展台报废损耗池 ($)
+            <input type="number" id="tradeshow-gross-input" value="240000" min="10000" step="5000" oninput="recalcB2BTradeshowBoothSponsorshipDrayageSandbox()" />
+          </label>
+          <label>胸牌扫码实时 ZoomInfo 企业画像 (ICP) 穿透与特邀买家 (Hosted Buyer) 双端 &gt;=12m 打卡核验
+            <select id="tradeshow-icp-select" onchange="recalcB2BTradeshowBoothSponsorshipDrayageSandbox()">
+              <option value="pass">实时过滤竞品与学生，仅按合格 ICP 决策者与满 12 分钟闭门会谈结算赞助费 (合规)</option>
+              <option value="block_403">主办方拿领帆布袋的学生、竞品员工和个人 Gmail 充当保底 MQL 或 特邀买家领完礼品卡就跑未开会 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>前置仓合箱整托过磅单 (Certified Scale CWT) 对账与平价工作日进场 (Straight-Time) 人工锁
+            <select id="tradeshow-drayage-select" onchange="recalcB2BTradeshowBoothSponsorshipDrayageSandbox()">
+              <option value="pass">10 箱合 1 整托凭 28 CWT 认证地磅单结算 + 锁死周一至周五平价进场时段 (合规)</option>
+              <option value="block_422">10 个散箱直发场馆被按 2,000 磅保底重 +30% 特殊搬运费宰客 或 未经签字强收周日 2.0x 工会加班费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>展台画布与地毯 NFPA 701 / B1 防火阻燃检测证书、$2M 参展商责任险 (COI) 与通用胸牌 API 准入
+            <select id="tradeshow-fire-select" onchange="recalcB2BTradeshowBoothSponsorshipDrayageSandbox()">
+              <option value="pass">全套 NFPA 701 阻燃证书 + 含场馆抬头的 $2M COI 保单 + 实时胸牌 Webhook 已就绪 (安全)</option>
+              <option value="block_451">缺少 NFPA 701 防火阻燃证书致开展早被消防官封展台、缺 $2M COI 保单 或 被强买 $600 离线扫码枪 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>开展前 T-30 天自动锁定早鸟水电网吊点 (-35%)、beMatrix 模块化铝框跨展复用 (-65% CWT) 与 5秒入 CRM
+            <select id="tradeshow-opt-select" onchange="recalcB2BTradeshowBoothSponsorshipDrayageSandbox()">
+              <option value="enabled" selected>T-30d 自动锁早鸟水电(-35%) + 2,800磅铝架复用15场(-65%搬运费) + 扫码 5秒入 Salesforce (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">错过早鸟期现场加价 35% 买电 + 8,000磅一次性木头展台撤展砸烂 + 7天后手动导 CSV (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度废线索与展馆搬运宰客损耗池</div>
+            <div class="finops-kpi-val" id="tradeshow-gross-kpi">$240,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">整托减重与 ICP 过滤后净损耗</div>
+            <div class="finops-kpi-val" id="tradeshow-net-kpi" style="color:#6ee7b7;">$151,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省搬运罚金与无效赞助费</div>
+            <div class="finops-kpi-val" id="tradeshow-savings-kpi" style="color:#38bdf8;">$88,800</div>
+          </div>
+        </div>
+        <div id="tradeshow-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 EARLY_BIRD_UTILITY_AND_MODULAR_SKID_REUSE_CONFIRM · Mandate: b2b_tradeshow_escrow_optim_409
         </div>
       </div>
 
@@ -85655,6 +85815,79 @@ function recalcOTAThemeParkSkiResortTicketingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_TURNSTILE_RFID_AND_OHRC_EXPRESS_AUTHORIZED · Mandate: ota_themepark_ski_escrow_200';
+}}
+
+function recalcB2BTradeshowBoothSponsorshipDrayageSandbox() {{
+  const grossInput = document.getElementById('tradeshow-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '240000'));
+  const icpGate = document.getElementById('tradeshow-icp-select').value;
+  const drayageGate = document.getElementById('tradeshow-drayage-select').value;
+  const fireGate = document.getElementById('tradeshow-fire-select').value;
+  const optMode = document.getElementById('tradeshow-opt-select').value;
+
+  const grossKpi = document.getElementById('tradeshow-gross-kpi');
+  const netKpi = document.getElementById('tradeshow-net-kpi');
+  const savingsKpi = document.getElementById('tradeshow-savings-kpi');
+  const statusKpi = document.getElementById('tradeshow-status-kpi');
+  const banner = document.getElementById('tradeshow-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fireGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_NFPA701_FLAME_CERT_OR_EXHIBITOR_COI_HOLD · Mandate: null';
+    return;
+  }}
+  if (icpGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 NON_ICP_SWAG_SCAN_OR_HOSTED_BUYER_NOSHOW_BLOCK · Mandate: null';
+    return;
+  }}
+  if (drayageGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNVERIFIED_DRAYAGE_CWT_OR_UNAUTHORIZED_UNION_OT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 EARLY_BIRD_UTILITY_AND_MODULAR_SKID_REUSE_CONFIRM · Mandate: b2b_tradeshow_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_ICP_LEADS_AND_CERTIFIED_DRAYAGE_AUTHORIZED · Mandate: b2b_tradeshow_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
