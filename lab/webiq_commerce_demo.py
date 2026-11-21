@@ -27645,6 +27645,79 @@ def evaluate_marketplace_facilitator_tax_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceReturnlessRefundPolicyInput:
+    quarterly_reverse_logistics_and_keep_it_pool_usd: float = 105000.0
+    static_threshold_gaming_or_positive_net_recovery: bool = False
+    first_order_new_user_or_365d_household_keep_cap: bool = False
+    viral_exploit_velocity_spike_or_high_resale_sku: bool = False
+    partial_50pct_keep_or_charity_tax_shield_ready: bool = False
+
+
+def evaluate_ecommerce_returnless_refund_policy(
+    policy_input: EcommerceReturnlessRefundPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_reverse_logistics_and_keep_it_pool_usd)
+    )
+    if policy_input.viral_exploit_velocity_spike_or_high_resale_sku:
+        return {
+            "status_code": 451,
+            "decision": "VIRAL_EXPLOIT_VELOCITY_SPIKE_OR_HIGH_RESALE_SKU_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.static_threshold_gaming_or_positive_net_recovery:
+        return {
+            "status_code": 403,
+            "decision": "STATIC_THRESHOLD_GAMING_OR_POSITIVE_NET_RECOVERY_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.first_order_new_user_or_365d_household_keep_cap:
+        return {
+            "status_code": 422,
+            "decision": "FIRST_ORDER_NEW_USER_OR_365D_HOUSEHOLD_KEEP_CAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.partial_50pct_keep_or_charity_tax_shield_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PARTIAL_50PCT_KEEP_OR_CHARITY_TAX_SHIELD_CONFIRM",
+            "mandate_token": "returnless_refund_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "NEGATIVE_RECOVERY_VIP_KEEP_IT_AUTHORIZED",
+        "mandate_token": "returnless_refund_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -37854,6 +37927,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_returnless_refund_guard = {
+        "authorized_200": evaluate_ecommerce_returnless_refund_policy(
+            EcommerceReturnlessRefundPolicyInput()
+        ),
+        "static_threshold_or_positive_recovery_403": evaluate_ecommerce_returnless_refund_policy(
+            EcommerceReturnlessRefundPolicyInput(
+                static_threshold_gaming_or_positive_net_recovery=True
+            )
+        ),
+        "first_order_or_365d_cap_422": evaluate_ecommerce_returnless_refund_policy(
+            EcommerceReturnlessRefundPolicyInput(
+                first_order_new_user_or_365d_household_keep_cap=True
+            )
+        ),
+        "viral_velocity_or_resale_sku_451": evaluate_ecommerce_returnless_refund_policy(
+            EcommerceReturnlessRefundPolicyInput(
+                viral_exploit_velocity_spike_or_high_resale_sku=True
+            )
+        ),
+        "partial_50pct_keep_or_charity_409": evaluate_ecommerce_returnless_refund_policy(
+            EcommerceReturnlessRefundPolicyInput(
+                partial_50pct_keep_or_charity_tax_shield_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -38147,6 +38246,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_referral_marketing_guard": ecommerce_referral_marketing_guard,
         "ecommerce_byob_bundle_escrow_guard": ecommerce_byob_bundle_escrow_guard,
         "marketplace_facilitator_tax_escrow_guard": marketplace_facilitator_tax_escrow_guard,
+        "ecommerce_returnless_refund_guard": ecommerce_returnless_refund_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -52751,6 +52851,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="mfl-tax-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MFL_EXEMPT_DEDUCTION_AND_AMENDED_REFUND_CONFIRM · Mandate: mfl_inform_tax_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 165 E-Commerce Returnless Refund & Anti-Exploit Escrow -->
+      <div class="finops-box" id="ecommerce-returnless-refund-sandbox" style="margin-top:12px;border-color:#ef4444;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛡️ 电商免退货退款 (Returnless Refund：Loop / Narvar) 防“小红书仅退款攻略”挤兑与逆向经济学沙盒</div>
+            <div class="finops-sub">Round 165 · 逆向净回收值 &lt;$0 精算锁 (HTTP 403) + 纯新客禁免退与 365d 限1次 (HTTP 422) + 1h &gt;3x 暴冲全局熔断 (HTTP 451) + 50%留货/慈善抵税净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="returnless-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度免退货漏洞挤兑与低值品逆向运费池 ($)
+            <input type="number" id="returnless-gross-input" value="105000" min="10000" step="5000" oninput="recalcEcommerceReturnlessRefundSandbox()" />
+          </label>
+          <label>单品逆向净回收值 (Net_Recovery) 精算
+            <select id="returnless-econ-select" onchange="recalcEcommerceReturnlessRefundSandbox()">
+              <option value="pass">Net_Recovery &lt; -$2 (运回仓库必倒贴亏运费) (合规)</option>
+              <option value="block_403">高残值重售标品或故意卡 $24.99 静态阈值试探 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>客户 LTV 资历 (&gt;=3单) 与家庭 365 天 1 次锁
+            <select id="returnless-ltv-select" onchange="recalcEcommerceReturnlessRefundSandbox()">
+              <option value="pass">已完成 &gt;=3 单无退货 VIP 老客且本年度首次 (合规)</option>
+              <option value="block_422">刚注册第 1 单纯新客或同住址半年连薅 4 次免退 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>1 小时 &gt;3x 暴冲全局熔断与高变现品拉黑
+            <select id="returnless-vel-select" onchange="recalcEcommerceReturnlessRefundSandbox()">
+              <option value="pass">全站每小时免退触发率正常 + 非 3C 高变现品 (安全)</option>
+              <option value="block_451">被发到小红书/TikTok 羊毛群引发 1h 12x 仅退款暴冲 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>“退 50% 留货 / 100% 储值 / 慈善抵税”博弈
+            <select id="returnless-opt-select" onchange="recalcEcommerceReturnlessRefundSandbox()">
+              <option value="enabled" selected>退 50% 现金留货或直捐 501(c)(3) 享 2x COGS 抵税 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">无脑原路退 100% 现金且白送商品诱发道德风险 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度逆向退货与免退风险总池</div>
+            <div class="finops-kpi-val" id="returnless-gross-kpi">$105,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">熔断防护与博弈分流后净成本</div>
+            <div class="finops-kpi-val" id="returnless-net-kpi" style="color:#6ee7b7;">$67,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省攻略挤兑与倒挂运费</div>
+            <div class="finops-kpi-val" id="returnless-savings-kpi" style="color:#38bdf8;">$37,800</div>
+          </div>
+        </div>
+        <div id="returnless-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PARTIAL_50PCT_KEEP_OR_CHARITY_TAX_SHIELD_CONFIRM · Mandate: returnless_refund_escrow_optim_409
         </div>
       </div>
 
@@ -70313,6 +70470,79 @@ function recalcMarketplaceFacilitatorTaxSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 RECONCILED_MFL_AND_DIRECT_TAX_LEDGER_AUTHORIZED · Mandate: mfl_inform_tax_escrow_200';
+}}
+
+function recalcEcommerceReturnlessRefundSandbox() {{
+  const grossInput = document.getElementById('returnless-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '105000'));
+  const econGate = document.getElementById('returnless-econ-select').value;
+  const ltvGate = document.getElementById('returnless-ltv-select').value;
+  const velGate = document.getElementById('returnless-vel-select').value;
+  const optMode = document.getElementById('returnless-opt-select').value;
+
+  const grossKpi = document.getElementById('returnless-gross-kpi');
+  const netKpi = document.getElementById('returnless-net-kpi');
+  const savingsKpi = document.getElementById('returnless-savings-kpi');
+  const statusKpi = document.getElementById('returnless-status-kpi');
+  const banner = document.getElementById('returnless-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (velGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 VIRAL_EXPLOIT_VELOCITY_SPIKE_OR_HIGH_RESALE_SKU_HOLD · Mandate: null';
+    return;
+  }}
+  if (econGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 STATIC_THRESHOLD_GAMING_OR_POSITIVE_NET_RECOVERY_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (ltvGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FIRST_ORDER_NEW_USER_OR_365D_HOUSEHOLD_KEEP_CAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PARTIAL_50PCT_KEEP_OR_CHARITY_TAX_SHIELD_CONFIRM · Mandate: returnless_refund_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 NEGATIVE_RECOVERY_VIP_KEEP_IT_AUTHORIZED · Mandate: returnless_refund_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

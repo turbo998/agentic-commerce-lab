@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`283` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`284` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (15 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (42 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (103 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (104 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (65 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (23 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (35 guides)](#tax-fx-privacy-disputes)
@@ -91,7 +91,7 @@
 | 42 | **E-Commerce Digital Gift Cards, Stored-Value Wallets & Corporate Gifting (`Rise.ai / Blackhawk / Stripe / Govalo`), Anti-Triangulation Fraud & `CARD Act / Escheatment` Escrow (`3DS2` Cascade Revocation, Promo-on-Gift-Card Ban & Dual Ledger `-37%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.en.md) · [中文](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (103 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (104 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -200,6 +200,7 @@
 | 101 | **Brand-Owned Recommerce & Resale (`Trove / Archive / Arc'teryx ReBIRD / Lululemon Like New`), `EU ESPR` Digital Product Passport (`DPP`) & `Entrupy` Authentication Escrow (`NTAG 424 NFC`, Care-Label CV Gate & `1-Tap Digital Closet` `-36%` Cost) Agent Architecture Selection FAQ** | [English](brand-recommerce-resale-eu-dpp-passport-entrupy-escrow-agent-selection-faq.en.md) · [中文](brand-recommerce-resale-eu-dpp-passport-entrupy-escrow-agent-selection-faq.md) |
 | 102 | **E-Commerce Referral & Friend-Get-Friend Marketing (`Extole / Mention Me / ReferralCandy`), Anti-Self-Referral Household Graph & `T+30d` Reward Escrow (`Card PAR + USPS DPBC` Lock, Coupon-Site Veto & `Share-by-Name` `-38%` Spend) Agent Architecture Selection FAQ** | [English](ecommerce-referral-marketing-anti-self-referral-gaming-escrow-agent-selection-faq.en.md) · [中文](ecommerce-referral-marketing-anti-self-referral-gaming-escrow-agent-selection-faq.md) |
 | 103 | **E-Commerce Build-Your-Own-Bundle (`BYOB`: `Shopify Cart Transform / Skio / Fast Bundle`), Anti-Hero-SKU Slot Stuffing & Atomic Component Expansion Escrow (`Hero + Companion` Slots, `Min(Child_ATP)` Sync & Mixed-VAT Split `-35%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-build-your-own-bundle-byob-cart-transform-escrow-agent-selection-faq.en.md) · [中文](ecommerce-build-your-own-bundle-byob-cart-transform-escrow-agent-selection-faq.md) |
+| 104 | **E-Commerce Returnless Refund (`Keep-the-Item`: `Loop Returns / Narvar / AfterShip`), Viral Exploit Circuit Breaker & Reverse Unit-Economics Escrow (`Net_Recovery < $0`, `1/365d` VIP Cap, `3x` Breaker & `IRC §170` Charity Shield `-36%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-returnless-refund-reverse-logistics-abuse-circuit-breaker-escrow-agent-selection-faq.en.md) · [中文](ecommerce-returnless-refund-reverse-logistics-abuse-circuit-breaker-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (65 Guides)

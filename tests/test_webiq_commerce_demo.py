@@ -20113,6 +20113,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("marketplace-facilitator-tax-escrow-sandbox", html_zh)
 
+    def test_ecommerce_returnless_refund_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceReturnlessRefundPolicyInput,
+            evaluate_ecommerce_returnless_refund_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_returnless_refund_policy(
+            EcommerceReturnlessRefundPolicyInput(
+                quarterly_reverse_logistics_and_keep_it_pool_usd=105000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "NEGATIVE_RECOVERY_VIP_KEEP_IT_AUTHORIZED",
+        )
+
+        econ = evaluate_ecommerce_returnless_refund_policy(
+            EcommerceReturnlessRefundPolicyInput(
+                static_threshold_gaming_or_positive_net_recovery=True
+            )
+        )
+        self.assertEqual(econ["status_code"], 403)
+        self.assertEqual(
+            econ["decision"],
+            "STATIC_THRESHOLD_GAMING_OR_POSITIVE_NET_RECOVERY_BLOCKED",
+        )
+
+        ltv = evaluate_ecommerce_returnless_refund_policy(
+            EcommerceReturnlessRefundPolicyInput(
+                first_order_new_user_or_365d_household_keep_cap=True
+            )
+        )
+        self.assertEqual(ltv["status_code"], 422)
+        self.assertEqual(
+            ltv["decision"],
+            "FIRST_ORDER_NEW_USER_OR_365D_HOUSEHOLD_KEEP_CAP_BLOCKED",
+        )
+
+        vel = evaluate_ecommerce_returnless_refund_policy(
+            EcommerceReturnlessRefundPolicyInput(
+                viral_exploit_velocity_spike_or_high_resale_sku=True
+            )
+        )
+        self.assertEqual(vel["status_code"], 451)
+        self.assertEqual(
+            vel["decision"],
+            "VIRAL_EXPLOIT_VELOCITY_SPIKE_OR_HIGH_RESALE_SKU_HOLD",
+        )
+
+        optim = evaluate_ecommerce_returnless_refund_policy(
+            EcommerceReturnlessRefundPolicyInput(
+                quarterly_reverse_logistics_and_keep_it_pool_usd=105000.0,
+                partial_50pct_keep_or_charity_tax_shield_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 37800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 67200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_returnless_refund_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-returnless-refund-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

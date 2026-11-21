@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg608" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#05101e" />
+    </linearGradient>
+    <linearGradient id="accent608" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ef4444" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg608)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent608)" rx="3" />
+
+  <text x="40" y="58" class="title">电商免退货退款 (Returnless Refund：Loop / Narvar) 防“小红书仅退款攻略”挤兑与逆向经济学架构</text>
+  <text x="40" y="80" class="subtitle">Round 165 · 防 $25 免寄回阈值泄露引发万人卡 $24.99 白嫖、防高残值标品误免退 &amp; 5折留购转化净省 36% (SVG 608)</text>
+
+  <!-- Left Card: 3 Returnless Refund Disasters -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大免退货仅退款 (Keep-It) 灾难</text>
+  <text x="56" y="164" class="card-title">1. “卡 $24.99 免寄回阈值”全网挤兑 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 商家为省 $9 逆向运费，设死规则：`Order &lt; $25 自动退款不用寄回`</text>
+  <text x="56" y="202" class="body">• 被 TikTok/小红书博主发帖：“这店买 $24.99 点退货直接白拿钱和货!”</text>
+  <text x="56" y="220" class="warn">• 48 小时内涌入 12,000 单精准卡 $24.99 申请退货，血亏 $300,000!</text>
+
+  <text x="56" y="256" class="card-title">2. 新号首单与同一地址“连薅 5 次仅退款” (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 未校验买家历史生命周期贡献毛利 (Customer LTV) 与家庭退货频次</text>
+  <text x="56" y="294" class="body">• 刚注册的第 1 单纯新客、或同一公寓门牌号在半年内连续第 4 次触发</text>
+  <text x="56" y="312" class="warn">  “Keep-the-Item”，把善良省运费策略变成零成本进货渠道!</text>
+
+  <text x="56" y="348" class="card-title">3. 5 分钟免退率暴冲未熔断与高值标品误免 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 容易被挂闲鱼转卖的 3C 配件/盲盒被误纳入免寄回白名单</text>
+  <text x="56" y="386" class="body">• 或遭遇社交平台“薅羊毛攻略”病毒传播时，系统缺乏全局流速熔断器</text>
+  <text x="56" y="404" class="warn">  整晚自动批出上万笔“退全款且白送货”!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: STATIC_THRESHOLD_GAMING_OR_POSITIVE_RECOVERY</text>
+  <text x="70" y="502" class="warn">• HTTP 422: FIRST_ORDER_NEW_USER_OR_365D_KEEP_CAP</text>
+  <text x="70" y="524" class="warn">• HTTP 451: VIRAL_EXPLOIT_VELOCITY_BREAKER_OR_RESALE_SKU</text>
+  <text x="70" y="546" class="mono">• HTTP 409:PARTIAL_50PCT_KEEP_OFFER_OR_P2P_FORWARD_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: NEGATIVE_RECOVERY_VIP_KEEP_IT_200</text>
+  <text x="70" y="596" class="body">铁律: 纯新客首单 100% 严禁触发免寄回全额退款!</text>
+
+  <!-- Center Card: 4-Stage Returnless Refund Circuit-Breaker Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶免退货退款 (Keep-It) 防挤兑托管架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ef4444" />
+  <text x="450" y="175" class="card-title" fill="#fca5a5">Gate 1: 逆向净回收值公式与随机扰动阈值 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• 废除全网公开的 `$25` 死阈值! 实时计算单件逆向净回收值:</text>
+  <text x="450" y="213" class="body">  `Net_Recovery = P(Restock)×COGS - Return_Label($8.50) - Refurb($4.50)`</text>
+  <text x="450" y="231" class="mono">• 凡 Net_Recovery &gt; $0 或疑似故意卡整数边界试探 -&gt; 强制寄回 HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: 历史净贡献 LTV 门槛与 365 天 1 次硬锁 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 免寄回特权仅向 `已完成 &gt;=3 笔未退货订单 且 累计净毛利 &gt;$100` 的</text>
+  <text x="450" y="320" class="body">  高信誉老客开放 (纯新客首单 100% 强制去驿站扫码投递!)</text>
+  <text x="450" y="338" class="body">• 同一家庭地址/支付卡在 365 天内最多只允许触发 `1 次` 免寄回</text>
+  <text x="450" y="354" class="mono">• 新号首单或一年内第 2 次企图白拿免退货退款 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 1小时 3x 暴冲全局熔断与高转售品拉黑 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 实时监测全站 `Returnless_Grant_Rate`: 一旦 1 小时内触发量超过</text>
+  <text x="450" y="437" class="body">  日常均值 3 倍 (疑似被发到小红书/Reddit 攻略群)，0.1秒全局关闭免寄回!</text>
+  <text x="450" y="455" class="mono">• 3C 标品/潮玩等高二手变现率商品永久排除在免退外 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: “退 50% 留货”博弈甄别器与慈善抵税 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 绝不直接给“退 100% 全款且不用寄回”! 而是先弹出:</text>
+  <text x="450" y="546" class="body">  “方案 A: 免跑快递，立即退您 50% 货款(或 100% 锁定下次满减储值金)并保留商品；</text>
+  <text x="450" y="566" class="mono">   方案 B: 免费打印面单去驿站寄回退 100%” (真不想要的人与羊毛党瞬间分离!)</text>
+  <text x="450" y="586" class="mono">• 或引导寄本地慈善机构享 IRC §170(e)(3) 双倍成本抵税 -&gt; 净省 36%</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大智能逆向退货与免退控制引擎</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Loop Returns (`Keep Item` Workflows)</text>
+  <text x="846" y="182" class="body">• 优势: 原生支持按 Customer Tag、SKU 成本、退货原因组合触发 Keep Item</text>
+  <text x="846" y="198" class="body">• 特性: 支持先弹“部分退款留货 (Partial Refund to Keep)”保护本金</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Narvar / AfterShip Returns (逆向经济测算)</text>
+  <text x="846" y="244" class="body">• 优势: 结合承运商实时分区费率与仓库处理费，动态计算每笔退货</text>
+  <text x="846" y="260" class="body">  是否值得运回，并内置客户欺诈风险分 (Fraud Score) 门禁</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Liqvid / GiveBackBox (退货直捐慈善抵税)</text>
+  <text x="846" y="306" class="body">• 优势: 买家想免全款但商家不愿让他白留商品以防恶意套利时:</text>
+  <text x="846" y="322" class="body">  生成就近 501(c)(3) 慈善机构投递单，杜绝白嫖且商家获联邦抵税额!</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. P2P 邻近买家直转 (Peer-to-Peer Return Routing)</text>
+  <text x="846" y="368" class="body">• 优势: 跨境/大件退回海外仓太贵时，退货暂存买家处 7 天，同城新买家</text>
+  <text x="846" y="384" class="body">  下单直接打印面单寄给下一位买家，省去回仓双程运费</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度免退货漏洞挤兑与逆向倒挂运费池 ($105,000)</text>
+  <text x="860" y="456" class="body">• 传统静态$25免退被攻略群薅穿+倒贴运费: $105,000/季</text>
+  <text x="860" y="476" class="mono">• 1h 暴冲熔断+新客禁免退+365d限1次防挤兑: -$19,950</text>
+  <text x="860" y="496" class="mono">• “退 50% 留货 vs 寄回退 100%”博弈挽回本金: -$11,550</text>
+  <text x="860" y="516" class="mono">• 负回收值低值品精准免退省下 $9/单逆向运费: -$6,300</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净逆向退货成本: $67,200 (净省 $37,800 / -36%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: returnless_refund_escrow_optim_409</text>
+</svg>
