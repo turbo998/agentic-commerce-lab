@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg564" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="50%" stop-color="#172554"/>
+      <stop offset="100%" stop-color="#091326"/>
+    </linearGradient>
+    <linearGradient id="accent564" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg564)"/>
+  <rect x="28" y="24" width="1144" height="627" rx="18" fill="none" stroke="url(#accent564)" stroke-width="2" opacity="0.5"/>
+  <text x="54" y="66" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">ROUND 121 · B2B SOFTWARE ELA &amp; CLOUD MARKETPLACE (MACC/EDP) ESCROW · SVG 564</text>
+  <text x="54" y="100" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">B2B Software ELA, Cloud Marketplace (MACC/EDP) &amp; Renewal Cap Escrow</text>
+  <text x="54" y="128" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">AWS Marketplace / Azure MACC / Vendr / Tropic · List-Price Reset Block (HTTP 403) · 100% MACC/EDP Drawdown Gate (HTTP 422)</text>
+
+  <!-- Lane 1: Net-Price Renewal Cap & Module Swap Lock -->
+  <rect x="54" y="152" width="345" height="465" rx="14" fill="#111827" stroke="#ef4444" stroke-width="1.6"/>
+  <rect x="54" y="152" width="345" height="42" rx="14" fill="#7f1d1d"/>
+  <text x="72" y="179" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">1. Renewal-Uplift &amp; Swap Lock (HTTP 403)</text>
+  <text x="72" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Anti-'List-Price Reset' Renewal Cap (&lt;=3%)</text>
+  <text x="72" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Blocks '7% cap on List Price' traps that</text>
+  <text x="72" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  wipe out Year-1 50% promo discounts;</text>
+  <text x="72" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  anchors &lt;=3% cap to Net Paid Unit Price</text>
+  <rect x="72" y="298" width="309" height="82" rx="9" fill="#1e293b" stroke="#f87171" stroke-width="1"/>
+  <text x="86" y="321" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">Unbundled SKU Reduction &amp; Swap Rights</text>
+  <text x="86" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Rejects 'All-or-Nothing' bundle locks</text>
+  <text x="86" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  that penalize dropping unused shelfware</text>
+  <text x="72" y="408" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Pre-Negotiated Expansion Rate Lock</text>
+  <text x="72" y="430" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Locks mid-term add-on seats &amp; API overage</text>
+  <text x="72" y="450" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  at the same discounted unit rate (blocks</text>
+  <text x="72" y="470" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  1.5x punitive overage rate cards)</text>
+  <rect x="72" y="502" width="309" height="92" rx="9" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="86" y="526" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 403 Deterministic Verdict</text>
+  <text x="86" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">LIST_PRICE_RENEWAL_RESET_OR_BUNDLE</text>
+  <text x="86" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_REDUCTION_PENALTY_BLOCKED</text>
+
+  <!-- Lane 2: 100% MACC/EDP Drawdown & P25 Benchmark Gate -->
+  <rect x="426" y="152" width="348" height="465" rx="14" fill="#111827" stroke="#f59e0b" stroke-width="1.6"/>
+  <rect x="426" y="152" width="348" height="42" rx="14" fill="#78350f"/>
+  <text x="444" y="179" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">2. 100% MACC/EDP Gate (HTTP 422)</text>
+  <text x="444" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">100% Cloud Commit Drawdown Eligibility</text>
+  <text x="444" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Verifies ISV offer carries 'Azure IP</text>
+  <text x="444" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  Co-Sell / AWS EDP 100% Eligible' badge</text>
+  <text x="444" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  before routing via Cloud Marketplace</text>
+  <rect x="444" y="298" width="312" height="82" rx="9" fill="#1e293b" stroke="#fbbf24" stroke-width="1"/>
+  <text x="458" y="321" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">Vendr / Tropic P25 Price-Benchmark Gate</text>
+  <text x="458" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Rejects quotes &gt;10% above peer P25</text>
+  <text x="458" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  clearing price for identical seat tier</text>
+  <text x="444" y="408" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">CPPO Reseller Margin Pass-Through</text>
+  <text x="444" y="430" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Audits Channel Partner Private Offers</text>
+  <text x="444" y="450" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  (CPPO) to block resellers passing 3%</text>
+  <text x="444" y="470" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  marketplace listing fees onto the buyer</text>
+  <rect x="444" y="502" width="312" height="92" rx="9" fill="#0f172a" stroke="#f59e0b" stroke-width="1"/>
+  <text x="458" y="526" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 422 Deterministic Verdict</text>
+  <text x="458" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">INELIGIBLE_MACC_EDP_DRAWDOWN_OR_ABOVE</text>
+  <text x="458" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_P25_BENCHMARK_QUOTE_BLOCKED</text>
+
+  <!-- Lane 3: EU Data Residency & Cloud Commit Burn FinOps -->
+  <rect x="801" y="152" width="345" height="465" rx="14" fill="#111827" stroke="#10b981" stroke-width="1.6"/>
+  <rect x="801" y="152" width="345" height="42" rx="14" fill="#064e3b"/>
+  <text x="819" y="179" fill="#a7f3d0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">3. GDPR Residency &amp; FinOps (451/409)</text>
+  <text x="819" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Web IQ Sub-Processor &amp; FedRAMP Gate (451)</text>
+  <text x="819" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Blocks unapproved cross-border LLM sub-</text>
+  <text x="819" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  processors, missing EU SCCs, or lapsed</text>
+  <text x="819" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  FedRAMP / ISO 27001 security authorizations</text>
+  <rect x="819" y="298" width="309" height="96" rx="9" fill="#1e293b" stroke="#34d399" stroke-width="1"/>
+  <text x="833" y="321" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">FinOps MACC/EDP Burn + EOQ Timing (409)</text>
+  <text x="833" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Retires expiring Azure MACC / AWS EDP</text>
+  <text x="833" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  shortfall via Private Offer + aligns close</text>
+  <text x="833" y="381" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  to ISV fiscal Q4 + P25 target: -26% Net</text>
+  <text x="819" y="420" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Ramp-Schedule Seat Deployment</text>
+  <text x="819" y="442" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Phases 1,000-seat rollout across Q1–Q4</text>
+  <text x="819" y="462" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  instead of paying Day-1 for unboarded seats</text>
+  <rect x="819" y="502" width="309" height="92" rx="9" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+  <text x="833" y="526" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 409 / 451 Deterministic Verdict</text>
+  <text x="833" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">MACC_EDP_PRIVATE_OFFER_AND_RAMP</text>
+  <text x="833" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_SCHEDULE_P25_CONFIRM (-26% Net)</text>
+</svg>

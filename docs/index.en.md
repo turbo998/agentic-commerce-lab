@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`239` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`240` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (11 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (39 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (79 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (59 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (60 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (21 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (30 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -171,7 +171,7 @@
 | 79 | **Cruise Line Booking, Return-to-Ship Excursion & Drink-Package Escrow (`Royal Caribbean / Carnival / NCL / Viator`) Port-Day Drink Breakeven, `T-90m` Excursion Bond & `T-90d` Re-Price Agent Architecture Selection FAQ** | [English](cruise-line-booking-shore-excursion-drink-package-obc-escrow-agent-selection-faq.en.md) · [中文](cruise-line-booking-shore-excursion-drink-package-obc-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (59 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (60 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -236,6 +236,7 @@
 | 57 | **B2B Corporate Security Guard, Anti-Ghost-Post & Remote `GSOC` Escrow (`Allied Universal / Securitas / GardaWorld / Verkada`) Turnstile Biometric Parity, `BLE/IMU` Patrol Lock & AI Video `GSOC` Agent Architecture Selection FAQ** | [English](b2b-corporate-security-guard-patrol-ghost-post-gsoc-escrow-agent-selection-faq.en.md) · [中文](b2b-corporate-security-guard-patrol-ghost-post-gsoc-escrow-agent-selection-faq.md) |
 | 58 | **B2B `RFQ` Sourcing, Anti-Bid-Rigging & `MSA / DPA` Contract Redline Escrow (`SAP Ariba / Coupa / Fairmarkit / Ironclad AI`) `UBO` Collusion Forensics, `>=2x ACV Super-Cap` / `Zero-AI-Train DPA` & `ILP` Lot-Split Agent Architecture Selection FAQ** | [English](b2b-rfq-sourcing-anti-bid-rigging-msa-redline-escrow-agent-selection-faq.en.md) · [中文](b2b-rfq-sourcing-anti-bid-rigging-msa-redline-escrow-agent-selection-faq.md) |
 | 59 | **B2B Contingent Staffing (`VMS`), Timesheet Telemetry & Direct-Sourcing Escrow (`SAP Fieldglass / Beeline / Workday VNDLY / Magnit`) 180d `ATS` Ownership Lock, `Entra SSO` Timesheet Parity & `10%` Direct-Sourcing Payrolling Agent Architecture Selection FAQ** | [English](b2b-contingent-staffing-vms-timesheet-ratecard-escrow-agent-selection-faq.en.md) · [中文](b2b-contingent-staffing-vms-timesheet-ratecard-escrow-agent-selection-faq.md) |
+| 60 | **B2B Software `ELA`, Cloud Marketplace (`Azure MACC / AWS EDP`) & Renewal-Cap Escrow (`Vendr / Tropic / AWS Marketplace / Azure Marketplace`) Net-Paid `<=3%` Renewal Cap, `100% IP Co-Sell` Drawdown & Stepped `Ramp` Agent Architecture Selection FAQ** | [English](b2b-software-ela-cloud-marketplace-macc-edp-renewal-cap-escrow-agent-selection-faq.en.md) · [中文](b2b-software-ela-cloud-marketplace-macc-edp-renewal-cap-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (21 Guides)

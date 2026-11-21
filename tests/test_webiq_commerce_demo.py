@@ -17165,6 +17165,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cruise-line-excursion-obc-escrow-sandbox", html_zh)
 
+    def test_b2b_software_ela_macc_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BSoftwareElaMaccEscrowPolicyInput,
+            evaluate_b2b_software_ela_macc_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_software_ela_macc_escrow_policy(
+            B2BSoftwareElaMaccEscrowPolicyInput(
+                quarterly_b2b_software_ela_and_cloud_pool_usd=310000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "P25_BENCHMARKED_ELA_AND_MACC_DRAWDOWN_AUTHORIZED",
+        )
+
+        reset = evaluate_b2b_software_ela_macc_escrow_policy(
+            B2BSoftwareElaMaccEscrowPolicyInput(
+                list_price_renewal_reset_or_bundle_reduction_penalty=True
+            )
+        )
+        self.assertEqual(reset["status_code"], 403)
+        self.assertEqual(
+            reset["decision"],
+            "LIST_PRICE_RENEWAL_RESET_OR_BUNDLE_REDUCTION_PENALTY_BLOCKED",
+        )
+
+        p25 = evaluate_b2b_software_ela_macc_escrow_policy(
+            B2BSoftwareElaMaccEscrowPolicyInput(
+                ineligible_macc_edp_drawdown_or_above_p25_benchmark_quote=True
+            )
+        )
+        self.assertEqual(p25["status_code"], 422)
+        self.assertEqual(
+            p25["decision"],
+            "INELIGIBLE_MACC_EDP_DRAWDOWN_OR_ABOVE_P25_BENCHMARK_QUOTE_BLOCKED",
+        )
+
+        gdpr = evaluate_b2b_software_ela_macc_escrow_policy(
+            B2BSoftwareElaMaccEscrowPolicyInput(
+                webiq_unapproved_subprocessor_or_data_residency_breach_flag=True
+            )
+        )
+        self.assertEqual(gdpr["status_code"], 451)
+        self.assertEqual(
+            gdpr["decision"],
+            "WEBIQ_UNAPPROVED_SUBPROCESSOR_OR_DATA_RESIDENCY_BREACH_HOLD",
+        )
+
+        optim = evaluate_b2b_software_ela_macc_escrow_policy(
+            B2BSoftwareElaMaccEscrowPolicyInput(
+                quarterly_b2b_software_ela_and_cloud_pool_usd=310000.0,
+                macc_edp_private_offer_and_ramp_schedule_p25_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 80600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 229400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_software_ela_macc_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-software-ela-macc-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

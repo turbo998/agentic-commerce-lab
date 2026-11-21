@@ -24233,6 +24233,87 @@ def evaluate_cruise_line_excursion_obc_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BSoftwareElaMaccEscrowPolicyInput:
+    """Input contract for B2B Software ELA, Cloud Marketplace (MACC/EDP) & Renewal-Cap Escrow."""
+
+    quarterly_b2b_software_ela_and_cloud_pool_usd: float = 310000.0
+    list_price_renewal_reset_or_bundle_reduction_penalty: bool = False
+    ineligible_macc_edp_drawdown_or_above_p25_benchmark_quote: bool = False
+    webiq_unapproved_subprocessor_or_data_residency_breach_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    macc_edp_private_offer_and_ramp_schedule_p25_ready: bool = False
+
+
+def evaluate_b2b_software_ela_macc_escrow_policy(
+    policy_input: B2BSoftwareElaMaccEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Software ELA, Cloud Marketplace (MACC/EDP) & Renewal-Cap Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_software_ela_and_cloud_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unapproved_subprocessor_or_data_residency_breach_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNAPPROVED_SUBPROCESSOR_OR_DATA_RESIDENCY_BREACH_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.list_price_renewal_reset_or_bundle_reduction_penalty:
+        return {
+            "status_code": 403,
+            "decision": "LIST_PRICE_RENEWAL_RESET_OR_BUNDLE_REDUCTION_PENALTY_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ineligible_macc_edp_drawdown_or_above_p25_benchmark_quote:
+        return {
+            "status_code": 422,
+            "decision": "INELIGIBLE_MACC_EDP_DRAWDOWN_OR_ABOVE_P25_BENCHMARK_QUOTE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.macc_edp_private_offer_and_ramp_schedule_p25_ready:
+        savings = round(gross_pool * 0.26, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MACC_EDP_PRIVATE_OFFER_AND_RAMP_SCHEDULE_P25_CONFIRM",
+            "mandate_token": "b2b_software_ela_macc_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "P25_BENCHMARKED_ELA_AND_MACC_DRAWDOWN_AUTHORIZED",
+        "mandate_token": "b2b_software_ela_macc_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -33298,6 +33379,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_software_ela_macc_escrow_guard = {
+        "authorized_200": evaluate_b2b_software_ela_macc_escrow_policy(
+            B2BSoftwareElaMaccEscrowPolicyInput()
+        ),
+        "list_price_reset_or_bundle_penalty_403": evaluate_b2b_software_ela_macc_escrow_policy(
+            B2BSoftwareElaMaccEscrowPolicyInput(
+                list_price_renewal_reset_or_bundle_reduction_penalty=True
+            )
+        ),
+        "ineligible_macc_or_above_p25_quote_422": evaluate_b2b_software_ela_macc_escrow_policy(
+            B2BSoftwareElaMaccEscrowPolicyInput(
+                ineligible_macc_edp_drawdown_or_above_p25_benchmark_quote=True
+            )
+        ),
+        "unapproved_subprocessor_or_residency_451": evaluate_b2b_software_ela_macc_escrow_policy(
+            B2BSoftwareElaMaccEscrowPolicyInput(
+                webiq_unapproved_subprocessor_or_data_residency_breach_flag=True
+            )
+        ),
+        "macc_private_offer_and_ramp_p25_409": evaluate_b2b_software_ela_macc_escrow_policy(
+            B2BSoftwareElaMaccEscrowPolicyInput(
+                macc_edp_private_offer_and_ramp_schedule_p25_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -33547,6 +33654,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "sneaker_toy_card_vault_escrow_guard": sneaker_toy_card_vault_escrow_guard,
         "b2b_contingent_staffing_vms_escrow_guard": b2b_contingent_staffing_vms_escrow_guard,
         "cruise_line_excursion_obc_escrow_guard": cruise_line_excursion_obc_escrow_guard,
+        "b2b_software_ela_macc_escrow_guard": b2b_software_ela_macc_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -45493,6 +45601,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="cruise-obc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PRE_FINAL_PAYMENT_REPRICE_AND_INSURED_EXCURSION_OBC_CONFIRM · Mandate: cruise_line_excursion_obc_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 121 B2B Software ELA, Cloud Marketplace (MACC/EDP) & Renewal-Cap Escrow -->
+      <div class="finops-box" id="b2b-software-ela-macc-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">☁️ 企业软件年框采购 (B2B Software ELA)、云市场承购抵扣 (Azure MACC / AWS EDP) 与防“续约按吊牌价翻倍”托管 (Vendr / Tropic / AWS &amp; Azure Marketplace) 议价与冲抵沙盒 (Round 121)</div>
+            <div class="finops-subtitle">实测锚定“上期实付净单价 (Net Paid Price)”&lt;=3% 续约涨幅硬顶+模块互换权防首年 5 折写成 One-Time Credit 次年回吊牌价翻倍 (HTTP 403)、核验云市场 Private Offer 具备 100% Azure IP Co-Sell / AWS EDP 冲抵标签+同行 P25 底价分位门禁 (HTTP 422)、Web IQ GDPR 数据主权驻留与子处理商核验 (HTTP 451) 及 Q1–Q4 阶梯爬坡激活计费 (Ramp Schedule)+消化临期 MACC/EDP 差额净省 26% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="ela-macc-status-kpi">HTTP 409 · MACC_EDP_PRIVATE_OFFER_AND_RAMP_SCHEDULE_P25_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业核心 SaaS 年框 (ELA) 与云市场采购总池 ($ USD)
+            <input type="range" id="ela-macc-pool-slider" min="40000" max="1500000" step="10000" value="310000" oninput="updateB2BSoftwareElaMaccEscrowSandbox()" />
+            <span id="ela-macc-pool-val" style="color:#6ee7b7; font-family:monospace;">$310,000</span>
+          </label>
+          <label>
+            续约净单价涨幅上限(&lt;=3%) 与闲置模块替换/缩容权审计 (HTTP 403)
+            <select id="ela-macc-renewal-select" onchange="updateB2BSoftwareElaMaccEscrowSandbox()">
+              <option value="pass">续约涨幅锚定上期实付净单价 &lt;=3% + 允许周年替换闲置模块 + 期中增购同折扣锁价 (放行)</option>
+              <option value="block">首年 5 折写成“一次性促销”次年按 List Price+7% 翻倍收割 或 砍边缘模块即没收主产品折扣 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            云市场 100% MACC/EDP 抵扣认证与同行 P25 分位比价门禁 (HTTP 422)
+            <select id="ela-macc-p25-select" onchange="updateB2BSoftwareElaMaccEscrowSandbox()">
+              <option value="pass">具备 Azure IP Co-Sell / AWS EDP 100% 冲抵标识 + 单价 &lt;= 同规模企业 P25 成交分位 (合规)</option>
+              <option value="block">云市场链接非 Co-Sell 导致 $400k 订单 0% 冲抵 MACC 承诺池 或 报价高于同行 P25 底价 20% (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 欧盟数据驻留 (GDPR)、AI 子处理商与 FedRAMP 核验 (HTTP 451)
+            <select id="ela-macc-gdpr-select" onchange="updateB2BSoftwareElaMaccEscrowSandbox()">
+              <option value="clear">数据主权锁死指定区域 + 子处理商名录合规 + ISO 27001/SOC 2 Type II 有效 (正常)</option>
+              <option value="hold">供应商私自将客户数据转交境外未授权大模型子处理商 或 安全合规认证已失效 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            上线期阶梯爬坡计费 (Ramp Schedule) 与临期 MACC/EDP 余额冲抵 (HTTP 409)
+            <select id="ela-macc-opt-select" onchange="updateB2BSoftwareElaMaccEscrowSandbox()">
+              <option value="enabled" selected>按 Q1–Q4 实际部署人数阶梯爬坡付费(免前半年空置) + 100% 冲抵年底将作废 MACC/EDP 差额净省 26% (HTTP 409)</option>
+              <option value="baseline">常规 P25 底价核验与云市场合并账单标准采购授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业软件 ELA 与云采购总池</div>
+            <div class="finops-kpi-val" id="ela-macc-gross-kpi">$310,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">爬坡计费与 MACC 冲抵后净支出</div>
+            <div class="finops-kpi-val" id="ela-macc-net-kpi" style="color:#6ee7b7;">$229,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除部署期空置与云承诺罚金</div>
+            <div class="finops-kpi-val" id="ela-macc-savings-kpi" style="color:#38bdf8;">$80,600</div>
+          </div>
+        </div>
+        <div id="ela-macc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MACC_EDP_PRIVATE_OFFER_AND_RAMP_SCHEDULE_P25_CONFIRM · Mandate: b2b_software_ela_macc_mandate_optim_409
         </div>
       </div>
 
@@ -59818,6 +59989,80 @@ function updateCruiseLineExcursionObcEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 QUIET_DECK_CABIN_AND_GUARANTEED_EXCURSION_AUTHORIZED · Mandate: cruise_line_excursion_obc_mandate_200';
+}}
+
+function updateB2BSoftwareElaMaccEscrowSandbox() {{
+  const slider = document.getElementById('ela-macc-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '310000');
+  const renewalMode = document.getElementById('ela-macc-renewal-select').value;
+  const p25Mode = document.getElementById('ela-macc-p25-select').value;
+  const gdprMode = document.getElementById('ela-macc-gdpr-select').value;
+  const optMode = document.getElementById('ela-macc-opt-select').value;
+
+  document.getElementById('ela-macc-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('ela-macc-status-kpi');
+  const grossKpi = document.getElementById('ela-macc-gross-kpi');
+  const netKpi = document.getElementById('ela-macc-net-kpi');
+  const savingsKpi = document.getElementById('ela-macc-savings-kpi');
+  const banner = document.getElementById('ela-macc-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (gdprMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNAPPROVED_SUBPROCESSOR_OR_DATA_RESIDENCY_BREACH_HOLD · Mandate: null';
+    return;
+  }}
+  if (renewalMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 LIST_PRICE_RENEWAL_RESET_OR_BUNDLE_REDUCTION_PENALTY_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (p25Mode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 INELIGIBLE_MACC_EDP_DRAWDOWN_OR_ABOVE_P25_BENCHMARK_QUOTE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.26);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MACC_EDP_PRIVATE_OFFER_AND_RAMP_SCHEDULE_P25_CONFIRM · Mandate: b2b_software_ela_macc_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 P25_BENCHMARKED_ELA_AND_MACC_DRAWDOWN_AUTHORIZED · Mandate: b2b_software_ela_macc_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
