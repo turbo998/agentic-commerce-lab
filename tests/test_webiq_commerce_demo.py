@@ -22659,6 +22659,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-saas-predictive-churn-seat-swap-sandbox", html_zh)
 
+    def test_ondemand_home_services_marketplace_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OndemandHomeServicesMarketplacePolicyInput,
+            evaluate_ondemand_home_services_marketplace_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ondemand_home_services_marketplace_policy(
+            OndemandHomeServicesMarketplacePolicyInput(
+                quarterly_off_platform_leakage_upcharge_and_rework_pool_usd=170000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_FIXED_PRICE_HOME_SERVICE_AUTHORIZED",
+        )
+
+        leak = evaluate_ondemand_home_services_marketplace_policy(
+            OndemandHomeServicesMarketplacePolicyInput(
+                order_cancelled_after_15m_inside_homeowner_gps_or_phone_leak=True
+            )
+        )
+        self.assertEqual(leak["status_code"], 403)
+        self.assertEqual(
+            leak["decision"],
+            "ONSITE_GEOFENCE_CANCEL_CIRCUMVENTION_BLOCKED",
+        )
+
+        upcharge = evaluate_ondemand_home_services_marketplace_policy(
+            OndemandHomeServicesMarketplacePolicyInput(
+                unitemized_onsite_upcharge_after_disassembly_exceeding_ratecard=True
+            )
+        )
+        self.assertEqual(upcharge["status_code"], 422)
+        self.assertEqual(
+            upcharge["decision"],
+            "UNITEMIZED_ONSITE_BAIT_AND_SWITCH_UPCHARGE_BLOCKED",
+        )
+
+        escrow = evaluate_ondemand_home_services_marketplace_policy(
+            OndemandHomeServicesMarketplacePolicyInput(
+                expired_trade_license_coi_or_instant_100pct_payout_without_hold=True
+            )
+        )
+        self.assertEqual(escrow["status_code"], 451)
+        self.assertEqual(
+            escrow["decision"],
+            "EXPIRED_TRADE_LICENSE_OR_INSTANT_100PCT_PAYOUT_HOLD",
+        )
+
+        optim = evaluate_ondemand_home_services_marketplace_policy(
+            OndemandHomeServicesMarketplacePolicyInput(
+                quarterly_off_platform_leakage_upcharge_and_rework_pool_usd=170000.0,
+                pre_visit_video_scoping_sliding_repeat_fee_and_80_20_escrow_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 61200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 108800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ondemand_home_services_marketplace_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ondemand-home-services-marketplace-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

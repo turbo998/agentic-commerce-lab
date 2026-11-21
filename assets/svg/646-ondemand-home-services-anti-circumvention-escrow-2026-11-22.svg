@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg646" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr646" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg646)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr646)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 203 · On-Demand Home Services &amp; Gig Marketplace Anti-Circumvention &amp; Upcharge Escrow</text>
+  <text x="48" y="74" class="sub">Thumbtack / TaskRabbit / Angi / Stripe Connect · Geofence Cancel Audit · Standardized Parts Rate-Card · 80/20 7d Warranty Hold (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #646 · FAQ #322</text>
+
+  <!-- Lane 1: On-Site Cancel-and-Pay-Cash Platform Circumvention Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Anti-Circumvention Geofence Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops "Cancel App Order at Door &amp; Pay Cash":</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">If `Pro_GPS == At_Homeowner_Address (&gt;=15 mins)`</text>
+  <text x="54" y="200" class="mono">&amp; `Order == Cancelled`: Flag Disintermediation!</text>
+  <text x="44" y="223" class="body-txt">• Masked Proxy Number &amp; Chat Regex Filter:</text>
+  <text x="54" y="243" class="mono">Redact Raw Phone / Venmo / Zelle / CashApp Tags</text>
+  <text x="44" y="266" class="body-txt">• Protects platform's $35 customer acquisition</text>
+  <text x="54" y="286" class="body-txt">cost (`CAC`) when pros whisper "Cancel on the app</text>
+  <text x="54" y="304" class="body-txt">and pay me $150 Venmo so we skip the platform fee"</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 ONSITE_GEOFENCE_CANCEL_CIRCUMVENTION_BLOCKED</text>
+
+  <!-- Lane 2: Bait-and-Switch 3x On-Site Upcharge After Disassembly Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Rate-Card &amp; Upcharge Cap Lock (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops $79 Quote Turning Into $420 Mid-Job Extortion:</text>
+  <text x="442" y="182" class="mono">Require Pre-Disassembly Photo + Published Part SKU</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Block On-Site Add-On &gt; +30% Without AI Diagnostic</text>
+  <text x="432" y="223" class="body-txt">• Homeowner In-App Incremental Auth Approval:</text>
+  <text x="442" y="243" class="mono">Zero Verbal Cash Upcharges; Must Sign In-App Scope</text>
+  <text x="432" y="266" class="body-txt">• Eliminates predatory technicians taking apart</text>
+  <text x="442" y="286" class="body-txt">an AC or sink and demanding $350 in unitemized</text>
+  <text x="442" y="304" class="body-txt">"special valve/freon fees" before reassembling</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNITEMIZED_ONSITE_BAIT_AND_SWITCH_UPCHARGE_BLOCKED</text>
+
+  <!-- Lane 3: Expired Trade License / Liability Insurance & 7-Day Warranty Hold Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. License/COI &amp; 7d Warranty Escrow (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Unlicensed Dispatch &amp; Next-Day Leak Ghosting:</text>
+  <text x="830" y="182" class="mono">Verify Active `State_Trade_License + $1M_GL_COI`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Split Payout: `80% On Sign-Off + 20% at T+7 Days`</text>
+  <text x="820" y="223" class="body-txt">• Automatic Re-Dispatch Warranty Guarantee:</text>
+  <text x="830" y="243" class="body-txt">If pipe leaks within 7 days and original pro ghosts,</text>
+  <text x="830" y="261" class="body-txt">20% holdback funds a priority backup technician</text>
+  <text x="820" y="284" class="body-txt">• Prevents catastrophic homeowner property-damage</text>
+  <text x="830" y="302" class="body-txt">lawsuits and hit-and-run instant payouts</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 EXPIRED_TRADE_LICENSE_OR_INSTANT_100PCT_PAYOUT_HOLD</text>
+
+  <!-- Bottom Multimodal Pre-Visit Video Scoping & Tiered Loyalty Fee Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. 10-Second Pre-Visit Video AI Scoping + Repeat-Booking Sliding Take-Rate (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① 10s Video AI Pre-Scoping</text>
+  <text x="62" y="462" class="body-txt">Homeowner films broken unit;</text>
+  <text x="62" y="480" class="body-txt">Vision AI identifies model #</text>
+  <text x="62" y="498" class="body-txt">&amp; locks fixed upfront quote;</text>
+  <text x="62" y="516" class="mono">92% First-Visit Fix Rate</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Standardized Parts Catalog</text>
+  <text x="337" y="462" class="body-txt">Any extra part needed on-site</text>
+  <text x="337" y="480" class="body-txt">is scanned against platform's</text>
+  <text x="337" y="498" class="body-txt">fixed-price parts catalog;</text>
+  <text x="337" y="516" class="mono">0 Predatory Price Gouging</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Sliding Repeat Take-Rate</text>
+  <text x="622" y="462" class="body-txt">Drops platform take-rate from</text>
+  <text x="622" y="480" class="body-txt">22% on Job #1 to 7% on</text>
+  <text x="622" y="498" class="body-txt">repeat bookings + free COI;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">-76% Off-Platform Leakage</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ 80/20 Warranty Split</text>
+  <text x="907" y="462" class="body-txt">Releases 80% via Stripe</text>
+  <text x="907" y="480" class="body-txt">Connect on photo sign-off &amp;</text>
+  <text x="907" y="498" class="body-txt">20% after 7-day zero-leak;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Disintermediation &amp; Rework</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Leakage &amp; Rework Loss Saved</text>
+  <text x="46" y="642" class="mono">$61,200 Saved / $170k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">GPS + Proxy</text>
+  <text x="336" y="626" class="kpi-lbl">Catches Doorstep Cancel-for-Cash</text>
+  <text x="336" y="642" class="mono">Protects Platform CAC Investment</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0 Extortion</text>
+  <text x="626" y="626" class="kpi-lbl">Pre-Disassembly Rate-Card Lock</text>
+  <text x="626" y="642" class="mono">Stops 3x Mid-Job Upcharges</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">80 / 20 Escrow</text>
+  <text x="916" y="626" class="kpi-lbl">7-Day Workmanship Warranty Hold</text>
+  <text x="916" y="642" class="mono">Funds Instant Backup Re-Dispatch</text>
+</svg>

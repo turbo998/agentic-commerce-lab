@@ -30497,6 +30497,82 @@ def evaluate_b2b_saas_predictive_churn_seat_swap_policy(
     }
 
 
+@dataclass(frozen=True)
+class OndemandHomeServicesMarketplacePolicyInput:
+    quarterly_off_platform_leakage_upcharge_and_rework_pool_usd: float = 170000.0
+    order_cancelled_after_15m_inside_homeowner_gps_or_phone_leak: bool = False
+    unitemized_onsite_upcharge_after_disassembly_exceeding_ratecard: bool = False
+    expired_trade_license_coi_or_instant_100pct_payout_without_hold: bool = False
+    pre_visit_video_scoping_sliding_repeat_fee_and_80_20_escrow_ready: bool = False
+
+
+def evaluate_ondemand_home_services_marketplace_policy(
+    policy_input: OndemandHomeServicesMarketplacePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_off_platform_leakage_upcharge_and_rework_pool_usd
+        ),
+    )
+    if policy_input.expired_trade_license_coi_or_instant_100pct_payout_without_hold:
+        return {
+            "status_code": 451,
+            "decision": "EXPIRED_TRADE_LICENSE_OR_INSTANT_100PCT_PAYOUT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.order_cancelled_after_15m_inside_homeowner_gps_or_phone_leak:
+        return {
+            "status_code": 403,
+            "decision": "ONSITE_GEOFENCE_CANCEL_CIRCUMVENTION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unitemized_onsite_upcharge_after_disassembly_exceeding_ratecard:
+        return {
+            "status_code": 422,
+            "decision": "UNITEMIZED_ONSITE_BAIT_AND_SWITCH_UPCHARGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pre_visit_video_scoping_sliding_repeat_fee_and_80_20_escrow_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "VIDEO_PRE_SCOPING_AND_80_20_WARRANTY_ESCROW_CONFIRM",
+            "mandate_token": "home_services_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_FIXED_PRICE_HOME_SERVICE_AUTHORIZED",
+        "mandate_token": "home_services_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -41694,6 +41770,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ondemand_home_services_marketplace_guard = {
+        "authorized_200": evaluate_ondemand_home_services_marketplace_policy(
+            OndemandHomeServicesMarketplacePolicyInput()
+        ),
+        "geofence_cancel_leak_403": evaluate_ondemand_home_services_marketplace_policy(
+            OndemandHomeServicesMarketplacePolicyInput(
+                order_cancelled_after_15m_inside_homeowner_gps_or_phone_leak=True
+            )
+        ),
+        "bait_and_switch_upcharge_422": evaluate_ondemand_home_services_marketplace_policy(
+            OndemandHomeServicesMarketplacePolicyInput(
+                unitemized_onsite_upcharge_after_disassembly_exceeding_ratecard=True
+            )
+        ),
+        "expired_coi_or_100pct_451": evaluate_ondemand_home_services_marketplace_policy(
+            OndemandHomeServicesMarketplacePolicyInput(
+                expired_trade_license_coi_or_instant_100pct_payout_without_hold=True
+            )
+        ),
+        "video_scope_and_80_20_409": evaluate_ondemand_home_services_marketplace_policy(
+            OndemandHomeServicesMarketplacePolicyInput(
+                pre_visit_video_scoping_sliding_repeat_fee_and_80_20_escrow_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42025,6 +42127,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_cpg_trade_promotion_tpm_guard": b2b_cpg_trade_promotion_tpm_guard,
         "omnichannel_clienteling_endless_aisle_guard": omnichannel_clienteling_endless_aisle_guard,
         "b2b_saas_predictive_churn_seat_swap_guard": b2b_saas_predictive_churn_seat_swap_guard,
+        "ondemand_home_services_marketplace_guard": ondemand_home_services_marketplace_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -58795,6 +58898,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="saaschurn-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ACV_NEUTRAL_SEAT_TO_AI_SWAP_AND_T120D_RESCUE_CONFIRM · Mandate: b2b_saas_churn_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 203 On-Demand Home Services & Gig Marketplace Anti-Circumvention & Upcharge Escrow (#322) -->
+      <div class="finops-box" id="ondemand-home-services-marketplace-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔧 到家服务与家电维修撮合平台 (Thumbtack / TaskRabbit / 万师傅)、防当面跳单与防坐地起价沙盒</div>
+            <div class="finops-sub">Round 203 (#322) · 到店 GPS 停留 &gt;=15m 后异常撤单防跳单稽核 (HTTP 403) + 严禁先拆机后口头加价与平台统一备件定额表 (HTTP 422) + 特种证照/保险锁与 80/20 7天质保分账 (HTTP 451) + 10秒视频识件一口价净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="homesvc-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度师傅到门口劝业主退单私结流失、拆机坐地起价拒付客诉与次日漏水失联返修池 ($)
+            <input type="number" id="homesvc-gross-input" value="170000" min="10000" step="5000" oninput="recalcOndemandHomeServicesMarketplaceSandbox()" />
+          </label>
+          <label>虚拟隐私号通话与“到店 GPS 围栏停留 &gt;=15 分钟后取消订单”跳单稽核
+            <select id="homesvc-leak-select" onchange="recalcOndemandHomeServicesMarketplaceSandbox()">
+              <option value="pass">全程虚拟隐私号隔离联系方式 且 无到店长时间停留后恶意撤单 (合规)</option>
+              <option value="block_403">师傅在业主家 GPS 停留 35 分钟后点“客户取消订单”私下扫微信/Venmo 逃避佣金 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>平台标准备件定额表 (Rate-Card) 与严禁先拆机后口头加价 (小病大修)
+            <select id="homesvc-upcharge-select" onchange="recalcOndemandHomeServicesMarketplaceSandbox()">
+              <option value="pass">一口价零增项 或 拆机前已选平台锁价配件 SKU 传图并经业主 App 确认 (合规)</option>
+              <option value="block_422">$69 上门先把机器拆散一地，口头勒索 $350 非标换主板/阀门费否则不装回 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>电工/燃气证与商业责任险 (COI) 有效锁及 80/20 7 天质保期分阶段放款
+            <select id="homesvc-escrow-select" onchange="recalcOndemandHomeServicesMarketplaceSandbox()">
+              <option value="pass">证照与 $1M 责任险有效 + 完工放款 80% + 剩余 20% 冻结 7 天无漏水自动解冻 (安全)</option>
+              <option value="block_451">派发无证/脱保师傅上门 或 完工秒提 100% 全款导致当晚水管爆裂师傅拉黑失联 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>报修端 10 秒视频 AI 识铭牌锁一口价与熟客复购阶梯降佣 (22% → 7%)
+            <select id="homesvc-opt-select" onchange="recalcOndemandHomeServicesMarketplaceSandbox()">
+              <option value="enabled" selected>10s 视频识别型号带齐配件一次修好 + 80/20 质保分账 + 复购降佣至 7% (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统盲派上门议价且对老客复购照抽 25% 高佣逼走师傅 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度私下跳单与坐地起价总损耗</div>
+            <div class="finops-kpi-val" id="homesvc-gross-kpi">$170,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">围栏锁与 80/20 质保托管后净损耗</div>
+            <div class="finops-kpi-val" id="homesvc-net-kpi" style="color:#6ee7b7;">$108,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回平台佣金与返修赔付</div>
+            <div class="finops-kpi-val" id="homesvc-savings-kpi" style="color:#38bdf8;">$61,200</div>
+          </div>
+        </div>
+        <div id="homesvc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 VIDEO_PRE_SCOPING_AND_80_20_WARRANTY_ESCROW_CONFIRM · Mandate: home_services_escrow_optim_409
         </div>
       </div>
 
@@ -79131,6 +79291,79 @@ function recalcB2bSaasPredictiveChurnSeatSwapSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_HEALTHY_ENTERPRISE_TENANT_RENEWAL_AUTHORIZED · Mandate: b2b_saas_churn_escrow_200';
+}}
+
+function recalcOndemandHomeServicesMarketplaceSandbox() {{
+  const grossInput = document.getElementById('homesvc-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '170000'));
+  const leakGate = document.getElementById('homesvc-leak-select').value;
+  const upchargeGate = document.getElementById('homesvc-upcharge-select').value;
+  const escrowGate = document.getElementById('homesvc-escrow-select').value;
+  const optMode = document.getElementById('homesvc-opt-select').value;
+
+  const grossKpi = document.getElementById('homesvc-gross-kpi');
+  const netKpi = document.getElementById('homesvc-net-kpi');
+  const savingsKpi = document.getElementById('homesvc-savings-kpi');
+  const statusKpi = document.getElementById('homesvc-status-kpi');
+  const banner = document.getElementById('homesvc-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (escrowGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EXPIRED_TRADE_LICENSE_OR_INSTANT_100PCT_PAYOUT_HOLD · Mandate: null';
+    return;
+  }}
+  if (leakGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ONSITE_GEOFENCE_CANCEL_CIRCUMVENTION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (upchargeGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNITEMIZED_ONSITE_BAIT_AND_SWITCH_UPCHARGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 VIDEO_PRE_SCOPING_AND_80_20_WARRANTY_ESCROW_CONFIRM · Mandate: home_services_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_FIXED_PRICE_HOME_SERVICE_AUTHORIZED · Mandate: home_services_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
