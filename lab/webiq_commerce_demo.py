@@ -30573,6 +30573,82 @@ def evaluate_ondemand_home_services_marketplace_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceGiftRegistryGroupGiftingPolicyInput:
+    quarterly_duplicate_gift_return_fraud_and_abandoned_big_ticket_pool_usd: float = 155000.0
+    fake_instant_registry_completion_abuse_or_stolen_card_credit_launder: bool = False
+    unreserved_concurrent_duplicate_buy_or_blind_honeymoon_dispatch: bool = False
+    stranded_partial_group_gift_pool_or_unmapped_discontinued_sku: bool = False
+    pre_ship_digital_reveal_swap_and_zero_fee_group_pool_ready: bool = False
+
+
+def evaluate_ecommerce_gift_registry_group_gifting_policy(
+    policy_input: EcommerceGiftRegistryGroupGiftingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_duplicate_gift_return_fraud_and_abandoned_big_ticket_pool_usd
+        ),
+    )
+    if policy_input.stranded_partial_group_gift_pool_or_unmapped_discontinued_sku:
+        return {
+            "status_code": 451,
+            "decision": "STRANDED_PARTIAL_GROUP_GIFT_OR_SKU_DISCONTINUED_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.fake_instant_registry_completion_abuse_or_stolen_card_credit_launder:
+        return {
+            "status_code": 403,
+            "decision": "REGISTRY_TRIANGULATION_OR_COMPLETION_GAMING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unreserved_concurrent_duplicate_buy_or_blind_honeymoon_dispatch:
+        return {
+            "status_code": 422,
+            "decision": "DUPLICATE_GIFT_COLLISION_OR_UNSYNCED_RECEIPT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pre_ship_digital_reveal_swap_and_zero_fee_group_pool_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PRE_SHIP_DIGITAL_SWAP_AND_GROUP_GIFT_POOL_CONFIRM",
+            "mandate_token": "gift_registry_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_REGISTRY_GIFT_PURCHASE_AUTHORIZED",
+        "mandate_token": "gift_registry_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -41796,6 +41872,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_gift_registry_group_gifting_guard = {
+        "authorized_200": evaluate_ecommerce_gift_registry_group_gifting_policy(
+            EcommerceGiftRegistryGroupGiftingPolicyInput()
+        ),
+        "triangulation_or_coupon_403": evaluate_ecommerce_gift_registry_group_gifting_policy(
+            EcommerceGiftRegistryGroupGiftingPolicyInput(
+                fake_instant_registry_completion_abuse_or_stolen_card_credit_launder=True
+            )
+        ),
+        "duplicate_gift_collision_422": evaluate_ecommerce_gift_registry_group_gifting_policy(
+            EcommerceGiftRegistryGroupGiftingPolicyInput(
+                unreserved_concurrent_duplicate_buy_or_blind_honeymoon_dispatch=True
+            )
+        ),
+        "stranded_group_or_oos_451": evaluate_ecommerce_gift_registry_group_gifting_policy(
+            EcommerceGiftRegistryGroupGiftingPolicyInput(
+                stranded_partial_group_gift_pool_or_unmapped_discontinued_sku=True
+            )
+        ),
+        "pre_ship_swap_and_pool_409": evaluate_ecommerce_gift_registry_group_gifting_policy(
+            EcommerceGiftRegistryGroupGiftingPolicyInput(
+                pre_ship_digital_reveal_swap_and_zero_fee_group_pool_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42128,6 +42230,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "omnichannel_clienteling_endless_aisle_guard": omnichannel_clienteling_endless_aisle_guard,
         "b2b_saas_predictive_churn_seat_swap_guard": b2b_saas_predictive_churn_seat_swap_guard,
         "ondemand_home_services_marketplace_guard": ondemand_home_services_marketplace_guard,
+        "ecommerce_gift_registry_group_gifting_guard": ecommerce_gift_registry_group_gifting_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -58955,6 +59058,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="homesvc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 VIDEO_PRE_SCOPING_AND_80_20_WARRANTY_ESCROW_CONFIRM · Mandate: home_services_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 204 E-Commerce Gift Registry, Group Gifting & Anti-Triangulation Escrow (#323) -->
+      <div class="finops-box" id="ecommerce-gift-registry-group-gifting-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎁 电商婚礼与新生儿心愿单 (Babylist / Zola / Amazon Registry)、多人众筹送礼与发货前数字置换沙盒</div>
+            <div class="finops-sub">Round 204 (#323) · 建单 &gt;=30d 防骗 15% 完单券与黑卡退礼 14d 冻结 (HTTP 403) + 20m 购礼防撞单锁与发货前数字拆礼免发实物 (HTTP 422) + 众筹未凑满 $0 费转通用礼金 (HTTP 451) + 净省 35% 退货与欺诈损耗 (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="registry-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度亲友买重撞礼双程退货运费、假心愿单骗 85 折完单券与黑卡退礼洗钱损耗池 ($)
+            <input type="number" id="registry-gross-input" value="155000" min="10000" step="5000" oninput="recalcEcommerceGiftRegistryGroupGiftingSandbox()" />
+          </label>
+          <label>15% 完单折扣券 (Completion Discount) 30天账龄门槛与退礼储值金反洗钱锁
+            <select id="registry-fraud-select" onchange="recalcEcommerceGiftRegistryGroupGiftingSandbox()">
+              <option value="pass">建单 &gt;=30 天且有真实亲友购礼 + 排除 MAP 商品 + 退礼余额强绑实名主号冻结 14d (合规)</option>
+              <option value="block_403">建“明天结婚”的假单秒领 85 折券搬空苹果戴森 或 用黑卡买礼退成不记名礼品卡洗钱 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>20 分钟“正在购买”防撞单软锁与发货前数字拆礼置换 (Pre-Ship Digital Swap)
+            <select id="registry-swap-select" onchange="recalcEcommerceGiftRegistryGroupGiftingSandbox()">
+              <option value="pass">点购加 20m 软锁防撞 + 先发数字拆礼卡由新人确认发货或发货前原地转余额 (合规)</option>
+              <option value="block_422">3 位亲友同时买重 $800 婴儿车并直接寄去新人度蜜月空房导致被偷与退货亏运费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>多人众筹送礼 (Group Gifting) 未凑满资金 $0 费归集与长周期断货平替
+            <select id="registry-pool-select" onchange="recalcEcommerceGiftRegistryGroupGiftingSandbox()">
+              <option value="pass">未凑满 100% 的众筹礼金自动零手续费转入新人通用余额 + 停产款平滑换新款 (安全)</option>
+              <option value="block_451">$900 婴儿床众筹了 $650 后差 $250 卡死既发不了货又无法使用 或 6个月后商品断货下架 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>先数字拆礼免发实物置换 (Zola 模式) 与大件多人分摊众筹引擎
+            <select id="registry-opt-select" onchange="recalcEcommerceGiftRegistryGroupGiftingSandbox()">
+              <option value="enabled" selected>发货前数字拆礼一键换款($0退货运费) + 6人分摊买大件售出率翻3.1倍 (-35% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统买完即发物理大箱子且大件只能单人全款买 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度撞礼退货与骗券洗钱总损耗</div>
+            <div class="finops-kpi-val" id="registry-gross-kpi">$155,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">数字拆礼与众筹托管后净损耗</div>
+            <div class="finops-kpi-val" id="registry-net-kpi" style="color:#6ee7b7;">$100,750</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省大件退货运费与反欺诈</div>
+            <div class="finops-kpi-val" id="registry-savings-kpi" style="color:#38bdf8;">$54,250</div>
+          </div>
+        </div>
+        <div id="registry-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PRE_SHIP_DIGITAL_SWAP_AND_GROUP_GIFT_POOL_CONFIRM · Mandate: gift_registry_escrow_optim_409
         </div>
       </div>
 
@@ -79364,6 +79524,79 @@ function recalcOndemandHomeServicesMarketplaceSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_FIXED_PRICE_HOME_SERVICE_AUTHORIZED · Mandate: home_services_escrow_200';
+}}
+
+function recalcEcommerceGiftRegistryGroupGiftingSandbox() {{
+  const grossInput = document.getElementById('registry-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '155000'));
+  const fraudGate = document.getElementById('registry-fraud-select').value;
+  const swapGate = document.getElementById('registry-swap-select').value;
+  const poolGate = document.getElementById('registry-pool-select').value;
+  const optMode = document.getElementById('registry-opt-select').value;
+
+  const grossKpi = document.getElementById('registry-gross-kpi');
+  const netKpi = document.getElementById('registry-net-kpi');
+  const savingsKpi = document.getElementById('registry-savings-kpi');
+  const statusKpi = document.getElementById('registry-status-kpi');
+  const banner = document.getElementById('registry-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (poolGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 STRANDED_PARTIAL_GROUP_GIFT_OR_SKU_DISCONTINUED_HOLD · Mandate: null';
+    return;
+  }}
+  if (fraudGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 REGISTRY_TRIANGULATION_OR_COMPLETION_GAMING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (swapGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DUPLICATE_GIFT_COLLISION_OR_UNSYNCED_RECEIPT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PRE_SHIP_DIGITAL_SWAP_AND_GROUP_GIFT_POOL_CONFIRM · Mandate: gift_registry_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_REGISTRY_GIFT_PURCHASE_AUTHORIZED · Mandate: gift_registry_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

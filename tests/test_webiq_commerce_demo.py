@@ -22726,6 +22726,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ondemand-home-services-marketplace-sandbox", html_zh)
 
+    def test_ecommerce_gift_registry_group_gifting_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceGiftRegistryGroupGiftingPolicyInput,
+            evaluate_ecommerce_gift_registry_group_gifting_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_gift_registry_group_gifting_policy(
+            EcommerceGiftRegistryGroupGiftingPolicyInput(
+                quarterly_duplicate_gift_return_fraud_and_abandoned_big_ticket_pool_usd=155000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_REGISTRY_GIFT_PURCHASE_AUTHORIZED",
+        )
+
+        fraud = evaluate_ecommerce_gift_registry_group_gifting_policy(
+            EcommerceGiftRegistryGroupGiftingPolicyInput(
+                fake_instant_registry_completion_abuse_or_stolen_card_credit_launder=True
+            )
+        )
+        self.assertEqual(fraud["status_code"], 403)
+        self.assertEqual(
+            fraud["decision"],
+            "REGISTRY_TRIANGULATION_OR_COMPLETION_GAMING_BLOCKED",
+        )
+
+        collision = evaluate_ecommerce_gift_registry_group_gifting_policy(
+            EcommerceGiftRegistryGroupGiftingPolicyInput(
+                unreserved_concurrent_duplicate_buy_or_blind_honeymoon_dispatch=True
+            )
+        )
+        self.assertEqual(collision["status_code"], 422)
+        self.assertEqual(
+            collision["decision"],
+            "DUPLICATE_GIFT_COLLISION_OR_UNSYNCED_RECEIPT_BLOCKED",
+        )
+
+        pool = evaluate_ecommerce_gift_registry_group_gifting_policy(
+            EcommerceGiftRegistryGroupGiftingPolicyInput(
+                stranded_partial_group_gift_pool_or_unmapped_discontinued_sku=True
+            )
+        )
+        self.assertEqual(pool["status_code"], 451)
+        self.assertEqual(
+            pool["decision"],
+            "STRANDED_PARTIAL_GROUP_GIFT_OR_SKU_DISCONTINUED_HOLD",
+        )
+
+        optim = evaluate_ecommerce_gift_registry_group_gifting_policy(
+            EcommerceGiftRegistryGroupGiftingPolicyInput(
+                quarterly_duplicate_gift_return_fraud_and_abandoned_big_ticket_pool_usd=155000.0,
+                pre_ship_digital_reveal_swap_and_zero_fee_group_pool_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 54250.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 100750.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_gift_registry_group_gifting_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-gift-registry-group-gifting-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
