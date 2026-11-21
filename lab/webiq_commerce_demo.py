@@ -25691,6 +25691,87 @@ def evaluate_live_event_ticketing_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceBnplMarginRefundEscrowPolicyInput:
+    """Input contract for E-Commerce BNPL (Klarna/Affirm/Afterpay), MDR Margin Gate & Tail-First Partial-Return Escrow."""
+
+    quarterly_bnpl_mdr_subsidy_and_return_dispute_pool_usd: float = 98000.0
+    zero_apr_mdr_wipes_out_low_margin_sku_contribution: bool = False
+    partial_return_unadjusted_autopay_without_tail_first_reamortization: bool = False
+    capture_before_wms_shipment_or_cfpb_regz_dispute_freeze_breach: bool = False
+    mandate_signing_key_age_days: int = 30
+    oem_cosponsored_subsidy_and_high_margin_bundle_unlock_ready: bool = False
+
+
+def evaluate_ecommerce_bnpl_margin_refund_escrow_policy(
+    policy_input: EcommerceBnplMarginRefundEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane E-Commerce BNPL, MDR Margin Gate & Tail-First Partial-Return Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_bnpl_mdr_subsidy_and_return_dispute_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.capture_before_wms_shipment_or_cfpb_regz_dispute_freeze_breach
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "CAPTURE_BEFORE_WMS_SHIPMENT_OR_CFPB_REGZ_DISPUTE_FREEZE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.zero_apr_mdr_wipes_out_low_margin_sku_contribution:
+        return {
+            "status_code": 403,
+            "decision": "ZERO_APR_MDR_WIPES_OUT_LOW_MARGIN_SKU_CONTRIBUTION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.partial_return_unadjusted_autopay_without_tail_first_reamortization:
+        return {
+            "status_code": 422,
+            "decision": "PARTIAL_RETURN_UNADJUSTED_AUTOPAY_WITHOUT_TAIL_FIRST_REAMORTIZATION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.oem_cosponsored_subsidy_and_high_margin_bundle_unlock_ready:
+        savings = round(gross_pool * 0.30, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "OEM_COSPONSORED_SUBSIDY_AND_HIGH_MARGIN_BUNDLE_UNLOCK_CONFIRM",
+            "mandate_token": "ecommerce_bnpl_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "MARGIN_VERIFIED_BNPL_AND_TAIL_FIRST_REFUND_AUTHORIZED",
+        "mandate_token": "ecommerce_bnpl_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -35224,6 +35305,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_bnpl_margin_refund_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_bnpl_margin_refund_escrow_policy(
+            EcommerceBnplMarginRefundEscrowPolicyInput()
+        ),
+        "mdr_wipes_margin_403": evaluate_ecommerce_bnpl_margin_refund_escrow_policy(
+            EcommerceBnplMarginRefundEscrowPolicyInput(
+                zero_apr_mdr_wipes_out_low_margin_sku_contribution=True
+            )
+        ),
+        "unadjusted_partial_return_422": evaluate_ecommerce_bnpl_margin_refund_escrow_policy(
+            EcommerceBnplMarginRefundEscrowPolicyInput(
+                partial_return_unadjusted_autopay_without_tail_first_reamortization=True
+            )
+        ),
+        "capture_before_ship_or_regz_451": evaluate_ecommerce_bnpl_margin_refund_escrow_policy(
+            EcommerceBnplMarginRefundEscrowPolicyInput(
+                capture_before_wms_shipment_or_cfpb_regz_dispute_freeze_breach=True
+            )
+        ),
+        "cosponsored_and_bundle_unlock_409": evaluate_ecommerce_bnpl_margin_refund_escrow_policy(
+            EcommerceBnplMarginRefundEscrowPolicyInput(
+                oem_cosponsored_subsidy_and_high_margin_bundle_unlock_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -35491,6 +35598,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "subscribe_and_save_replenishment_escrow_guard": subscribe_and_save_replenishment_escrow_guard,
         "electronics_trade_in_escrow_guard": electronics_trade_in_escrow_guard,
         "live_event_ticketing_escrow_guard": live_event_ticketing_escrow_guard,
+        "ecommerce_bnpl_margin_refund_escrow_guard": ecommerce_bnpl_margin_refund_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -48571,6 +48679,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ticketing-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CROSS_EXCHANGE_SAME_SEAT_DEDUPE_AND_INSTANT_SAFETIX_CONFIRM · Mandate: live_event_ticketing_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 139 E-Commerce BNPL, MDR Margin Gate & Tail-First Partial-Return Escrow -->
+      <div class="finops-box" id="ecommerce-bnpl-margin-refund-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">💸 电商先买后付 (BNPL: Klarna / Affirm / Afterpay / 白条)、贴息毛利锁与部分退货重算托管沙盒 (Round 139)</div>
+            <div class="finops-subtitle">实测硬控购物车净毛利门禁拦截在微利 3C 单品上盲开 6.5% 商家贴息 0% APR 卖一单亏一单 (HTTP 403)、退货快递揽收即挂起 Autopay + 倒序冲抵尾期(Tail-First)防“买3退2后照扣全额分期” (HTTP 422)、预售商品发货才请款(Capture-on-Ship)与 CFPB Reg Z 合规 (HTTP 451) 及品牌/银行联合贴息+高毛利配件凑单净省 30% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="bnpl-escrow-status-kpi">HTTP 409 · OEM_COSPONSORED_SUBSIDY_AND_HIGH_MARGIN_BUNDLE_UNLOCK_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度电商 BNPL 免息贴息费 (MDR) 与部分退货争议损耗总池 ($ USD)
+            <input type="range" id="bnpl-escrow-pool-slider" min="15000" max="450000" step="5000" value="98000" oninput="updateEcommerceBnplMarginRefundEscrowSandbox()" />
+            <span id="bnpl-escrow-pool-val" style="color:#6ee7b7; font-family:monospace;">$98,000</span>
+          </label>
+          <label>
+            SKU 净毛利门槛 (&gt;=15%) 与 4.5%~6.5% 商家贴息费审计 (HTTP 403)
+            <select id="bnpl-escrow-margin-select" onchange="updateEcommerceBnplMarginRefundEscrowSandbox()">
+              <option value="pass">扣除贴息后净毛利 &gt;=15% 才开商家免息 + 微利款自动转买方付息或 PayPal Pay Later (放行)</option>
+              <option value="block">净毛利仅 5% 的主机/显卡盲开 12 期 0 息被抽走 6.5% MDR 导致每卖一单净亏 1.5% (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            部分退货揽收挂起 Autopay 与倒序冲抵尾期 (Tail-First) (HTTP 422)
+            <select id="bnpl-escrow-refund-select" onchange="updateEcommerceBnplMarginRefundEscrowSandbox()">
+              <option value="pass">退货扫码即暂停近期扣款 + 优先注销第4/3期尾款并将超付首期差额秒退原卡 (合规)</option>
+              <option value="block">买 $600 付首期 $150 后退货 $480，系统未重算还款表导致第 14 天又从卡里硬扣 $150 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            预售出库才请款 (Capture-on-Ship) 与 CFPB Reg Z 争议冻结 (HTTP 451)
+            <select id="bnpl-escrow-ship-select" onchange="updateEcommerceBnplMarginRefundEscrowSandbox()">
+              <option value="clear">WMS 回传真实运单号才触发 Capture 起算分期 + 争议调查期间自动冻结催收 (正常)</option>
+              <option value="hold">45天预售期房商品下单当天直接 Capture 让顾客货没收到先还两期贷款 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            品牌商/发卡行联合贴息池与高毛利配件凑单解锁免息 (HTTP 409)
+            <select id="bnpl-escrow-opt-select" onchange="updateEcommerceBnplMarginRefundEscrowSandbox()">
+              <option value="enabled" selected>自动调用手机厂商+银行联合贴息池(分担70%费率) + 引导加购高毛利延保解锁整单免息净省 30% (HTTP 409)</option>
+              <option value="baseline">常规高毛利单品免息与倒序退货重算授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度 BNPL 贴息与争议损耗总池</div>
+            <div class="finops-kpi-val" id="bnpl-escrow-gross-kpi">$98,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">毛利门禁与联合贴息后净成本</div>
+            <div class="finops-kpi-val" id="bnpl-escrow-net-kpi" style="color:#6ee7b7;">$68,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省负毛利贴息与争议罚金</div>
+            <div class="finops-kpi-val" id="bnpl-escrow-savings-kpi" style="color:#38bdf8;">$29,400</div>
+          </div>
+        </div>
+        <div id="bnpl-escrow-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 OEM_COSPONSORED_SUBSIDY_AND_HIGH_MARGIN_BUNDLE_UNLOCK_CONFIRM · Mandate: ecommerce_bnpl_escrow_optim_409
         </div>
       </div>
 
@@ -64228,6 +64399,80 @@ function updateLiveEventTicketingEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 FACE_VALUE_ALL_IN_AND_SAFETIX_ROTATING_TOKEN_AUTHORIZED · Mandate: live_event_ticketing_200';
+}}
+
+function updateEcommerceBnplMarginRefundEscrowSandbox() {{
+  const slider = document.getElementById('bnpl-escrow-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '98000');
+  const marginMode = document.getElementById('bnpl-escrow-margin-select').value;
+  const refundMode = document.getElementById('bnpl-escrow-refund-select').value;
+  const shipMode = document.getElementById('bnpl-escrow-ship-select').value;
+  const optMode = document.getElementById('bnpl-escrow-opt-select').value;
+
+  document.getElementById('bnpl-escrow-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('bnpl-escrow-status-kpi');
+  const grossKpi = document.getElementById('bnpl-escrow-gross-kpi');
+  const netKpi = document.getElementById('bnpl-escrow-net-kpi');
+  const savingsKpi = document.getElementById('bnpl-escrow-savings-kpi');
+  const banner = document.getElementById('bnpl-escrow-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (shipMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 CAPTURE_BEFORE_WMS_SHIPMENT_OR_CFPB_REGZ_DISPUTE_FREEZE_HOLD · Mandate: null';
+    return;
+  }}
+  if (marginMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ZERO_APR_MDR_WIPES_OUT_LOW_MARGIN_SKU_CONTRIBUTION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (refundMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PARTIAL_RETURN_UNADJUSTED_AUTOPAY_WITHOUT_TAIL_FIRST_REAMORTIZATION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.30);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 OEM_COSPONSORED_SUBSIDY_AND_HIGH_MARGIN_BUNDLE_UNLOCK_CONFIRM · Mandate: ecommerce_bnpl_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 MARGIN_VERIFIED_BNPL_AND_TAIL_FIRST_REFUND_AUTHORIZED · Mandate: ecommerce_bnpl_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`257` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`258` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (13 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (40 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (41 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (87 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (63 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (23 guides)](#saas-finops-micropayments)
@@ -39,7 +39,7 @@
 | 13 | **Commercial Agent Build Path & Platform Selection (`Microsoft Copilot Studio + Dynamics 365` vs `Azure AI Foundry + Semantic Kernel / LangGraph` vs `Salesforce Agentforce` vs `Shopify Sidekick`) Anti-Credit-Burn, Deterministic Cross-ERP Saga & Hybrid Composable Architecture (`-34%` TCO) Agent Architecture Selection FAQ** | [English](commercial-agent-build-platform-copilot-studio-azure-foundry-agentforce-shopify-selection-faq.en.md) · [中文](commercial-agent-build-platform-copilot-studio-azure-foundry-agentforce-shopify-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (40 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (41 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -85,6 +85,7 @@
 | 38 | **Music Festival & Stadium Cashless `RFID` Wristband, Anti-Tip-Creep & Auto-Refund Escrow (`Coachella / Tomorrowland / Intellitix / Front Gate`) Zero-Breakage Auto-Refund, `0%–10%` Tip Cap & `45s` Double-Tap Idempotency Agent Architecture Selection FAQ** | [English](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.en.md) · [中文](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.md) |
 | 39 | **Corporate Virtual Cards, Anti-`Zombie-MIT` & `Level-3` Receipt Escrow (`Ramp / Brex / Airbase / Stripe Issuing`) Single-Use `Auto-Burn`, First-Swipe `CAID` Pinning & `EU 13th Directive VAT` Recovery Agent Architecture Selection FAQ** | [English](corporate-virtual-card-expense-level3-receipt-escrow-agent-selection-faq.en.md) · [中文](corporate-virtual-card-expense-level3-receipt-escrow-agent-selection-faq.md) |
 | 40 | **Agent Payment & Checkout Protocol Selection (`Stripe Agent Toolkit SPT` vs `Visa Intelligent Commerce VIC` vs `Mastercard Agent Pay` vs `PayPal Agentic Toolkit` vs `Corporate Virtual Cards VCN`) Zero-PAN Isolation, Anti-3DS2-Deadlock & 5-Rail Smart Router (`-33%` Payment Loss) Agent Architecture Selection FAQ** | [English](agent-payment-checkout-protocol-stripe-spt-visa-vic-mastercard-paypal-vcn-selection-faq.en.md) · [中文](agent-payment-checkout-protocol-stripe-spt-visa-vic-mastercard-paypal-vcn-selection-faq.md) |
+| 41 | **E-Commerce Buy Now, Pay Later (`BNPL`: `Affirm / Klarna / Afterpay / PayPal Pay Later`), `MDR` Margin-Floor Gate & Partial-Return `Tail-First` Re-Amortization Escrow (`>=15%` Net Margin Lock, Carrier-Scan Snooze & Co-Subsidy) Agent Architecture Selection FAQ** | [English](ecommerce-bnpl-installment-mdr-margin-floor-partial-return-escrow-agent-selection-faq.en.md) · [中文](ecommerce-bnpl-installment-mdr-margin-floor-partial-return-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (87 Guides)

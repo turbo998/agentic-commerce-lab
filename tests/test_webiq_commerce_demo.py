@@ -18371,6 +18371,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("live-event-ticketing-escrow-sandbox", html_zh)
 
+    def test_ecommerce_bnpl_margin_refund_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceBnplMarginRefundEscrowPolicyInput,
+            evaluate_ecommerce_bnpl_margin_refund_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_bnpl_margin_refund_escrow_policy(
+            EcommerceBnplMarginRefundEscrowPolicyInput(
+                quarterly_bnpl_mdr_subsidy_and_return_dispute_pool_usd=98000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "MARGIN_VERIFIED_BNPL_AND_TAIL_FIRST_REFUND_AUTHORIZED",
+        )
+
+        margin = evaluate_ecommerce_bnpl_margin_refund_escrow_policy(
+            EcommerceBnplMarginRefundEscrowPolicyInput(
+                zero_apr_mdr_wipes_out_low_margin_sku_contribution=True
+            )
+        )
+        self.assertEqual(margin["status_code"], 403)
+        self.assertEqual(
+            margin["decision"],
+            "ZERO_APR_MDR_WIPES_OUT_LOW_MARGIN_SKU_CONTRIBUTION_BLOCKED",
+        )
+
+        refund = evaluate_ecommerce_bnpl_margin_refund_escrow_policy(
+            EcommerceBnplMarginRefundEscrowPolicyInput(
+                partial_return_unadjusted_autopay_without_tail_first_reamortization=True
+            )
+        )
+        self.assertEqual(refund["status_code"], 422)
+        self.assertEqual(
+            refund["decision"],
+            "PARTIAL_RETURN_UNADJUSTED_AUTOPAY_WITHOUT_TAIL_FIRST_REAMORTIZATION_BLOCKED",
+        )
+
+        ship = evaluate_ecommerce_bnpl_margin_refund_escrow_policy(
+            EcommerceBnplMarginRefundEscrowPolicyInput(
+                capture_before_wms_shipment_or_cfpb_regz_dispute_freeze_breach=True
+            )
+        )
+        self.assertEqual(ship["status_code"], 451)
+        self.assertEqual(
+            ship["decision"],
+            "CAPTURE_BEFORE_WMS_SHIPMENT_OR_CFPB_REGZ_DISPUTE_FREEZE_HOLD",
+        )
+
+        optim = evaluate_ecommerce_bnpl_margin_refund_escrow_policy(
+            EcommerceBnplMarginRefundEscrowPolicyInput(
+                quarterly_bnpl_mdr_subsidy_and_return_dispute_pool_usd=98000.0,
+                oem_cosponsored_subsidy_and_high_margin_bundle_unlock_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 29400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 68600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_bnpl_margin_refund_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-bnpl-margin-refund-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

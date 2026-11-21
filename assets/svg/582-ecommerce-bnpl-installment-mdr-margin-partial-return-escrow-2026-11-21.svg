@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg582" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+    <linearGradient id="accent582" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg582)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent582)" rx="3" />
+
+  <text x="40" y="58" class="title">电商先买后付 (BNPL: Klarna / Affirm / Afterpay / 白条)、贴息毛利锁与部分退货重算托管</text>
+  <text x="40" y="80" class="subtitle">Round 139 · 防 6.5% 商家贴息吞穿微利 3C 毛利、防买 3 退 2 后照扣全额分期款 &amp; 动态免息门槛净增 30% 毛利 (SVG 582)</text>
+
+  <!-- Left Card: 3 BNPL Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大先买后付 (BNPL) 黑洞</text>
+  <text x="56" y="164" class="card-title">1. 6.5% 商家免息贴息吞噬微利单品 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 游戏主机/显卡净毛利率仅 5.5%，却全店一刀切开放</text>
+  <text x="56" y="202" class="body">  Klarna / Affirm 12 期 0% APR 商家贴息分期</text>
+  <text x="56" y="220" class="warn">• BNPL 平台抽走 6.5% + $0.30 MDR 贴息费 -&gt; 卖一台净亏 1%!</text>
+
+  <text x="56" y="256" class="card-title">2. 部分退货后分期计划未重算继续扣款 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 顾客用 Pay-in-4 买 3 件风衣 ($600，每两周扣 $150)</text>
+  <text x="56" y="294" class="body">• 首期付完 $150 后退回 2 件 ($400)，剩余应还仅 $50</text>
+  <text x="56" y="312" class="warn">• OMS 未调 BNPL 部分退款重算接口，第2期照扣 $150 引发投诉!</text>
+
+  <text x="56" y="348" class="card-title">3. 预售期房商品“货没发先扣分期款”违规 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 定制家具/预售手办需 45 天发货，结账即执行 Capture 请款</text>
+  <text x="56" y="386" class="body">• 顾客货还没影，第 14 天和第 28 天已被扣走两期分期贷款</text>
+  <text x="56" y="404" class="warn">• 严重违反卡组织与 CFPB “发货才起算还款”红线，遭强制清退</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: BNPL_MDR_WIPES_SKU_CONTRIBUTION_MARGIN</text>
+  <text x="70" y="502" class="warn">• HTTP 422: PARTIAL_RETURN_UNADJUSTED_AUTOPAY_SCHEDULE</text>
+  <text x="70" y="524" class="warn">• HTTP 451: CAPTURE_BEFORE_SHIP_OR_CFPB_DISCLOSURE_HOLD</text>
+  <text x="70" y="546" class="mono">• HTTP 409: MARGIN_GATED_0APR_AND_CO_SPONSORED_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: PROFITABLE_BNPL_AND_TAIL_FIRST_REFUND_200</text>
+  <text x="70" y="596" class="body">铁律: 部分退货必须优先倒序冲抵尾期 (Tail-First Reduction)!</text>
+
+  <!-- Center Card: 4-Stage BNPL Margin & Refund Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶 BNPL 贴息毛利保护与退货重算架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="175" class="card-title" fill="#d8b4fe">Gate 1: 购物车综合毛利门禁 (SKU Margin Floor)</text>
+  <text x="450" y="195" class="body">• 实时计算整车加权毛利率: 仅当 `Cart_Margin - BNPL_MDR &gt;= 15%`</text>
+  <text x="450" y="213" class="body">  且客单价 `&gt;= $150` 时，才展示商家贴息 0% APR 免息分期</text>
+  <text x="450" y="231" class="mono">• 微利引流款强制切换为“买家付息分期”或立减 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: 部分退货“倒序冲抵尾期”原子重算 (Tail-First)</text>
+  <text x="450" y="302" class="body">• 仓库签收部分退货瞬间，调 Affirm/Klarna `/v2/refunds` 接口</text>
+  <text x="450" y="320" class="body">• 退货款优先砍掉第 4 期、第 3 期未到期账单 (而非拖到最后再退)</text>
+  <text x="450" y="338" class="body">• 若已实付金额 &gt; 留存商品总价，差额 1 秒原路退回顾客银行卡!</text>
+  <text x="450" y="354" class="mono">• 退货后未同步重算下期 Autopay 扣款计划 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="399" class="card-title" fill="#6ee7b7">Gate 3: 发货触发请款 (Capture-on-Ship) 与 CFPB 合规</text>
+  <text x="450" y="419" class="body">• 预售/定制单在下单时仅做 `Authorize Only` 锁定额度，绝不激活账单</text>
+  <text x="450" y="437" class="body">• 仅当 WMS 回传真实运单号出库时才触发 Capture 启动首期还款计时</text>
+  <text x="450" y="455" class="mono">• 未发货提前起算分期账单或违规叠加滞纳金 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#f59e0b" />
+  <text x="450" y="508" class="card-title" fill="#fcd34d">Gate 4: 凑单满额解锁免息与品牌联合贴息 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 当购物车为 $125 微利主机时，引导加购 1 件 $35 高毛利配件包</text>
+  <text x="450" y="546" class="body">• 整车综合毛利越过安全线，立即为整单解锁 6 期 0 息分期!</text>
+  <text x="450" y="566" class="mono">• 自动调用品牌商与银行联合贴息池 (商家仅承担 1.5%，银行贴 4%)</text>
+  <text x="450" y="586" class="mono">• 拦截负毛利贴息 + 高毛利配件凑单 -&gt; 净增 30% 分期净毛利</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大全球 BNPL 分期生态</text>
+
+  <text x="846" y="164" class="card-title" fill="#a855f7">1. Affirm (Adaptive Checkout)</text>
+  <text x="846" y="182" class="body">• 优势: 支持同页面动态混排“4期免息”与“6-36个月买方付息”</text>
+  <text x="846" y="198" class="body">• 特性: 极适合 $300~$5,000 大件家居、健身器材与机酒分期</text>
+
+  <text x="846" y="226" class="card-title" fill="#ec4899">2. Klarna / Afterpay (Pay-in-4 标杆)</text>
+  <text x="846" y="244" class="body">• 优势: 欧美时尚美妆转化神器，客单价 (AOV) 平均提升 +45%</text>
+  <text x="846" y="260" class="body">• 注意: 商户费率约 4.0%~5.99%，必须防多尺码试穿全退损耗</text>
+
+  <text x="846" y="288" class="card-title" fill="#38bdf8">3. PayPal Pay Later (零额外 MDR 溢价)</text>
+  <text x="846" y="306" class="body">• 优势: 包含在标准 PayPal 收单费率内，不向商户额外加收高额贴息</text>
+  <text x="846" y="322" class="body">• 特性: 微利 3C 品类替代高费率独立 BNPL 的最佳低成本平替</text>
+
+  <text x="846" y="350" class="card-title" fill="#6ee7b7">4. 花呗分期 / 京东白条 (联合贴息池)</text>
+  <text x="846" y="368" class="body">• 优势: 支持手机品牌方、平台与发卡行三方按比例分摊免息贴息费</text>
+  <text x="846" y="384" class="body">• 特性: 原生绑定订单行项退款自动重算每期账单</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度 BNPL 贴息费与退货损耗池 ($98,000)</text>
+  <text x="860" y="456" class="body">• 传统微利品盲贴息+退货不退MDR+投诉: $98,000/季</text>
+  <text x="860" y="476" class="mono">• 拦截微利单品 6% 免息贴息改走买方付息: -$15,680</text>
+  <text x="860" y="496" class="mono">• 品牌/银行联合贴息池 + PayPal 平替降费: -$8,820</text>
+  <text x="860" y="516" class="mono">• 部分退货倒序重算消除超扣客诉与拒付罚金: -$4,900</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净成本: $68,600 (净省/增利 $29,400 / -30%)</text>
+  <text x="860" y="574" class="body">Provenance: official_list_price + synthetic</text>
+  <text x="860" y="594" class="body">Mandate: ecommerce_bnpl_escrow_optim_409</text>
+</svg>
