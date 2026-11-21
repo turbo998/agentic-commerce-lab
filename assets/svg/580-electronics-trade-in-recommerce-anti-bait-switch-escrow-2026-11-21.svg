@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg580" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+    <linearGradient id="accent580" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg580)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent580)" rx="3" />
+
+  <text x="40" y="58" class="title">3C 数码以旧换新 (Trade-In: Apple / 爱回收 / 转转 / Back Market)、防“到手刀”压价与即时抵扣托管</text>
+  <text x="40" y="80" class="subtitle">Round 137 · 防线上虚报 $600 寄到后恶意砍价至 $280“到手刀”、防黑产寄模型机骗补贴 &amp; 先拿新机导数据净增 35% 转化 (SVG 580)</text>
+
+  <!-- Left Card: 3 Trade-In Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大以旧换新信任黑洞</text>
+  <text x="56" y="164" class="card-title">1. 寄出后恶意压价 50%“到手刀” (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 回收商线上报 $600 高价诱骗用户寄出完美成色 iPhone</text>
+  <text x="56" y="202" class="body">• 到仓拆机后捏造“主板轻微受潮/屏幕老化”强砍到 $280</text>
+  <text x="56" y="220" class="warn">• 若用户拒绝贱卖要求寄回，竟索要 $35 质检费或寄回防水胶已毁!</text>
+
+  <text x="56" y="256" class="card-title">2. 黑产寄华强北模型机骗取即时抵扣款 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 平台给用户立减 $600 发新机，黑产用空卡锁挂失后</text>
+  <text x="56" y="294" class="body">  寄回一台未解绑 iCloud 激活锁 (FMI ON) 的赃机或机模</text>
+  <text x="56" y="312" class="warn">• 二次扣款追缴失败，平台每单净亏 $600 新机补贴本金!</text>
+
+  <text x="56" y="348" class="card-title">3. 隐私数据恢复泄露与 GSMA 失窃黑名单 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 普通恢复出厂设置被底层闪存读取工具还原出用户私密相册</text>
+  <text x="56" y="386" class="body">• 误收 GSMA 全球失窃黑名单或分期未结清锁机 (Financed Lock)</text>
+  <text x="56" y="404" class="warn">• 导致回收仓面临销赃连带法律责任与整批货无法二次上架</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: BAIT_AND_SWITCH_LOWBALL_OR_RETURN_FEE</text>
+  <text x="70" y="502" class="warn">• HTTP 422: FMI_ICLOUD_LOCKED_OR_UNVERIFIED_DIAGNOSTIC</text>
+  <text x="70" y="524" class="warn">• HTTP 451: GSMA_STOLEN_IMEI_OR_MISSING_NIST_WIPE_HOLD</text>
+  <text x="70" y="546" class="mono">• HTTP 409: INSTANT_CREDIT_14D_SPT_AND_SUBSIDY_STACK_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: ON_DEVICE_DIAGNOSTIC_LOCKED_QUOTE_200</text>
+  <text x="70" y="596" class="body">铁律: 寄出前本机硬件遥测锁价 + 质检全程 4K 无死角监控!</text>
+
+  <!-- Center Card: 4-Stage Trade-In Escrow Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶以旧换新防到手刀与质押架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">Gate 1: 寄出前本机诊断锁价 + 拒卖双向免邮退回</text>
+  <text x="450" y="195" class="body">• 旧机运行官方诊断小程序读取电池循环、气密性与对镜自拍屏幕</text>
+  <text x="450" y="213" class="body">• 签发保底锁价令牌；到仓若压价 &gt;10% 必须附显微镜与气密视频</text>
+  <text x="450" y="231" class="mono">• 用户不满意新报价 100% 顺丰保价免费退回且严禁拆机 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="282" class="card-title" fill="#6ee7b7">Gate 2: FMI / 激活锁核验与 14 天新旧机并行质押</text>
+  <text x="450" y="302" class="body">• 签发立减补贴前，强制校验 Find My iPhone / Google FRP 已关闭</text>
+  <text x="450" y="320" class="body">• 通过 Stripe SPT / 芝麻信用冻结旧机估值同额担保 (拒绝预付卡)</text>
+  <text x="450" y="338" class="body">• 用户收到新手机面对面传完微信聊天记录后，14天内再寄出旧机!</text>
+  <text x="450" y="354" class="mono">• 未关激活锁或预授权质押无效 -&gt; HTTP 422 拦截</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: GSMA 失窃库筛查与 Blancco NIST 800-88 擦除</text>
+  <text x="450" y="419" class="body">• 实时联机核验 IMEI/SN 非运营商欠费锁机、非失窃黑名单设备</text>
+  <text x="450" y="437" class="body">• 入库即执行 NIST SP 800-88 Rev.1 密码学擦除并向用户发证书</text>
+  <text x="450" y="455" class="mono">• 命中失窃/租机未结清或缺失擦除证书 -&gt; HTTP 451 熔断</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#f59e0b" />
+  <text x="450" y="508" class="card-title" fill="#fcd34d">Gate 4: 多渠道实时竞价 + 厂商换新补贴叠加 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 同时向官方 Trade-In、爱回收、转转、Back Market 询实时保底价</text>
+  <text x="450" y="546" class="body">• 自动叠加手机厂商 $150“以旧换新专项补贴”与国补 15% 抵扣</text>
+  <text x="450" y="566" class="mono">• 支持上门面对面当场验机秒打款 (当面交割 0 到手刀争议!)</text>
+  <text x="450" y="586" class="mono">• 消灭到手刀 + 先拿新机导数据 + 补贴叠加 -&gt; 净增 35% 换新价值</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大 3C 以旧换新生态</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Apple Trade In / Samsung 官方换新</text>
+  <text x="846" y="182" class="body">• 优势: 只要开机屏幕完好即一口价不挑小划痕，绝无恶意到手刀</text>
+  <text x="846" y="198" class="body">• 特性: 新机到货后 14 天寄回旧机，体验最稳但基础估价偏保守</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. 爱回收 (万物新生) / 转转上门回收</text>
+  <text x="846" y="244" class="body">• 优势: 质检工程师上门或门店当面验机、当面付清钱款再拿走手机</text>
+  <text x="846" y="260" class="body">• 特性: 深度绑定京东/抖音“送新取旧一步到位”与品牌换新补贴</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Back Market / Assurant / Phobio</text>
+  <text x="846" y="306" class="body">• 优势: 欧美最大翻新电子交易市场与运营商级 B2B2C 回收清分引擎</text>
+  <text x="846" y="322" class="body">• 特性: 标准化外观分级 (Grade A/B/C) 与自动化机器视觉质检</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Blancco + GSMA Device Check</text>
+  <text x="846" y="368" class="body">• 优势: 全球二手 3C 合法性与军工级数据粉碎擦除行业金标准</text>
+  <text x="846" y="384" class="body">• 特性: 生成带数字签名的《个人隐私彻底销毁证明》打消顾虑</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" fill="#6ee7b7" class="card-title">季度以旧换新压价流失与坏账池 ($112,000)</text>
+  <text x="860" y="456" class="body">• 传统到手刀弃单+模型机骗补+未领国补: $112,000/季</text>
+  <text x="860" y="476" class="mono">• 本机遥测锁价+当面交割消除到手刀弃单: -$17,920</text>
+  <text x="860" y="496" class="mono">• FMI 激活锁+SPT 预授权拦截模型机骗补: -$12,320</text>
+  <text x="860" y="516" class="mono">• 多平台比价叠加厂商换新补贴与国补: -$8,960</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净损耗: $72,800 (净省/增收 $39,200 / -35%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: electronics_tradein_escrow_optim_409</text>
+</svg>

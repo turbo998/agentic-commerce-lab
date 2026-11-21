@@ -18237,6 +18237,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("subscribe-and-save-replenishment-escrow-sandbox", html_zh)
 
+    def test_electronics_trade_in_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            ElectronicsTradeInEscrowPolicyInput,
+            evaluate_electronics_trade_in_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_electronics_trade_in_escrow_policy(
+            ElectronicsTradeInEscrowPolicyInput(
+                quarterly_electronics_tradein_and_subsidy_pool_usd=112000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ON_DEVICE_TELEMETRY_FLOOR_LOCK_AND_NIST80088_WIPE_AUTHORIZED",
+        )
+
+        lowball = evaluate_electronics_trade_in_escrow_policy(
+            ElectronicsTradeInEscrowPolicyInput(
+                post_ship_bait_and_switch_lowball_or_destructive_seal_break=True
+            )
+        )
+        self.assertEqual(lowball["status_code"], 403)
+        self.assertEqual(
+            lowball["decision"],
+            "POST_SHIP_BAIT_AND_SWITCH_LOWBALL_OR_DESTRUCTIVE_SEAL_BREAK_BLOCKED",
+        )
+
+        fmi = evaluate_electronics_trade_in_escrow_policy(
+            ElectronicsTradeInEscrowPolicyInput(
+                fmi_icloud_locked_brick_or_unsecured_prepaid_instant_credit=True
+            )
+        )
+        self.assertEqual(fmi["status_code"], 422)
+        self.assertEqual(
+            fmi["decision"],
+            "FMI_ICLOUD_LOCKED_BRICK_OR_UNSECURED_PREPAID_INSTANT_CREDIT_BLOCKED",
+        )
+
+        gsma = evaluate_electronics_trade_in_escrow_policy(
+            ElectronicsTradeInEscrowPolicyInput(
+                gsma_stolen_financed_imei_or_missing_nist80088_wipe_cert=True
+            )
+        )
+        self.assertEqual(gsma["status_code"], 451)
+        self.assertEqual(
+            gsma["decision"],
+            "GSMA_STOLEN_FINANCED_IMEI_OR_MISSING_NIST80088_WIPE_CERT_HOLD",
+        )
+
+        optim = evaluate_electronics_trade_in_escrow_policy(
+            ElectronicsTradeInEscrowPolicyInput(
+                quarterly_electronics_tradein_and_subsidy_pool_usd=112000.0,
+                parallel_14d_spt_swap_and_oem_gov_subsidy_stack_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 39200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 72800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("electronics_trade_in_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("electronics-trade-in-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

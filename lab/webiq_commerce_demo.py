@@ -25529,6 +25529,87 @@ def evaluate_subscribe_and_save_replenishment_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class ElectronicsTradeInEscrowPolicyInput:
+    """Input contract for 3C Electronics Trade-In, Anti-Bait-and-Switch Lowball & Instant-Credit SPT Escrow."""
+
+    quarterly_electronics_tradein_and_subsidy_pool_usd: float = 112000.0
+    post_ship_bait_and_switch_lowball_or_destructive_seal_break: bool = False
+    fmi_icloud_locked_brick_or_unsecured_prepaid_instant_credit: bool = False
+    gsma_stolen_financed_imei_or_missing_nist80088_wipe_cert: bool = False
+    mandate_signing_key_age_days: int = 30
+    parallel_14d_spt_swap_and_oem_gov_subsidy_stack_ready: bool = False
+
+
+def evaluate_electronics_trade_in_escrow_policy(
+    policy_input: ElectronicsTradeInEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane 3C Electronics Trade-In, Anti-Bait-and-Switch Lowball & Instant-Credit SPT Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_electronics_tradein_and_subsidy_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.gsma_stolen_financed_imei_or_missing_nist80088_wipe_cert
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "GSMA_STOLEN_FINANCED_IMEI_OR_MISSING_NIST80088_WIPE_CERT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.post_ship_bait_and_switch_lowball_or_destructive_seal_break:
+        return {
+            "status_code": 403,
+            "decision": "POST_SHIP_BAIT_AND_SWITCH_LOWBALL_OR_DESTRUCTIVE_SEAL_BREAK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.fmi_icloud_locked_brick_or_unsecured_prepaid_instant_credit:
+        return {
+            "status_code": 422,
+            "decision": "FMI_ICLOUD_LOCKED_BRICK_OR_UNSECURED_PREPAID_INSTANT_CREDIT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.parallel_14d_spt_swap_and_oem_gov_subsidy_stack_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PARALLEL_14D_SPT_SWAP_AND_OEM_GOV_SUBSIDY_STACK_CONFIRM",
+            "mandate_token": "electronics_tradein_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ON_DEVICE_TELEMETRY_FLOOR_LOCK_AND_NIST80088_WIPE_AUTHORIZED",
+        "mandate_token": "electronics_tradein_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -35010,6 +35091,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    electronics_trade_in_escrow_guard = {
+        "authorized_200": evaluate_electronics_trade_in_escrow_policy(
+            ElectronicsTradeInEscrowPolicyInput()
+        ),
+        "bait_and_switch_lowball_403": evaluate_electronics_trade_in_escrow_policy(
+            ElectronicsTradeInEscrowPolicyInput(
+                post_ship_bait_and_switch_lowball_or_destructive_seal_break=True
+            )
+        ),
+        "fmi_locked_or_unsecured_credit_422": evaluate_electronics_trade_in_escrow_policy(
+            ElectronicsTradeInEscrowPolicyInput(
+                fmi_icloud_locked_brick_or_unsecured_prepaid_instant_credit=True
+            )
+        ),
+        "gsma_stolen_or_missing_wipe_451": evaluate_electronics_trade_in_escrow_policy(
+            ElectronicsTradeInEscrowPolicyInput(
+                gsma_stolen_financed_imei_or_missing_nist80088_wipe_cert=True
+            )
+        ),
+        "parallel_14d_swap_and_subsidy_stack_409": evaluate_electronics_trade_in_escrow_policy(
+            ElectronicsTradeInEscrowPolicyInput(
+                parallel_14d_spt_swap_and_oem_gov_subsidy_stack_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -35275,6 +35382,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_checkout_inventory_saga_guard": ecommerce_checkout_inventory_saga_guard,
         "b2b_freight_forwarding_ocean_escrow_guard": b2b_freight_forwarding_ocean_escrow_guard,
         "subscribe_and_save_replenishment_escrow_guard": subscribe_and_save_replenishment_escrow_guard,
+        "electronics_trade_in_escrow_guard": electronics_trade_in_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -48229,6 +48337,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="sub-save-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PASSWORDLESS_1TAP_SNOOZE_AND_5ITEM_15PCT_FILLER_BUNDLE_CONFIRM · Mandate: subscribe_save_replenish_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 137 3C Electronics Trade-In, Anti-Bait-and-Switch Lowball & Instant-Credit SPT Escrow -->
+      <div class="finops-box" id="electronics-trade-in-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📱 3C 数码以旧换新 (Trade-In: Apple / 京东×爱回收 / 转转 / Back Market)、防“到手刀”压价与先拿新机托管沙盒 (Round 137)</div>
+            <div class="finops-subtitle">实测硬控寄出前本机遥测+对镜双面自拍保底锁价拦截到仓恶意压价 50%“到手刀”与私拆破坏防水胶 (HTTP 403)、FMI/FRP 激活锁预检+14天 SPT 冻结质押防黑产寄模型机骗先行补贴 (HTTP 422)、GSMA 失窃库筛查与 Blancco NIST 800-88 隐私擦除证书 (HTTP 451) 及先收新机导数据+厂商/国补双叠加净增 35% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="tradein-status-kpi">HTTP 409 · PARALLEL_14D_SPT_SWAP_AND_OEM_GOV_SUBSIDY_STACK_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度 3C 数码以旧换新压价弃单、模型机骗补与补贴池 ($ USD)
+            <input type="range" id="tradein-pool-slider" min="20000" max="500000" step="5000" value="112000" oninput="updateElectronicsTradeInEscrowSandbox()" />
+            <span id="tradein-pool-val" style="color:#6ee7b7; font-family:monospace;">$112,000</span>
+          </label>
+          <label>
+            寄出前本机遥测锁价、无损气密检测与拒卖免费退回 (HTTP 403)
+            <select id="tradein-lowball-select" onchange="updateElectronicsTradeInEscrowSandbox()">
+              <option value="pass">本机遥测+对镜自拍锁死 95% 保底价 + 无损气密仪不拆机 + 拒卖 $0 保价包邮退回 (放行)</option>
+              <option value="block">线上报 $600 诱骗寄出后借口“微瑕”砍到 $280 到手刀 或 私拆破坏防水胶索要 $35 退回费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            Find My (FMI) 激活锁预检与 14 天先拿新机 SPT 质押 (HTTP 422)
+            <select id="tradein-fmi-select" onchange="updateElectronicsTradeInEscrowSandbox()">
+              <option value="pass">核实 FMI/FRP 激活锁已关 + 非预付卡冻结等额 SPT 担保，享 14 天先收新机在家导数据 (合规)</option>
+              <option value="block">黑产用空壳预付卡领走 $600 立减新机后寄回未解绑 iCloud 砖头锁机或塑料机模 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            GSMA 失窃/分期锁筛查与 Blancco NIST 800-88 隐私擦除证书 (HTTP 451)
+            <select id="tradein-gsma-select" onchange="updateElectronicsTradeInEscrowSandbox()">
+              <option value="clear">IMEI 非失窃非租机欠费 + 入库强制 NIST 800-88 闪存覆写并向机主发擦除证书 (正常)</option>
+              <option value="hold">命中 GSMA 全球失窃黑名单/分期违约锁机 或 仅做普通出厂重置未签发隐私销毁证明 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            同城上门当面送新取旧与厂商换新补贴 + 15% 国补叠加 (HTTP 409)
+            <select id="tradein-opt-select" onchange="updateElectronicsTradeInEscrowSandbox()">
+              <option value="enabled" selected>4 渠道实时竞价 + 自动叠加厂商 $120 换新加价券与 15% 国补 + 骑士上门当面导数据交割净增 35% (HTTP 409)</option>
+              <option value="baseline">常规本机遥测锁价与 NIST 擦除标准邮寄换新 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度换新流失、坏账与补贴池</div>
+            <div class="finops-kpi-val" id="tradein-gross-kpi">$112,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防到手刀与叠满补贴后净损耗</div>
+            <div class="finops-kpi-val" id="tradein-net-kpi" style="color:#6ee7b7;">$72,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回弃单、骗补与增收</div>
+            <div class="finops-kpi-val" id="tradein-savings-kpi" style="color:#38bdf8;">$39,200</div>
+          </div>
+        </div>
+        <div id="tradein-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PARALLEL_14D_SPT_SWAP_AND_OEM_GOV_SUBSIDY_STACK_CONFIRM · Mandate: electronics_tradein_escrow_optim_409
         </div>
       </div>
 
@@ -63738,6 +63909,80 @@ function updateSubscribeAndSaveReplenishmentEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 LOWEST_PROMO_PRICE_SHIELD_AND_DEPLETION_VERIFIED_AUTHORIZED · Mandate: subscribe_save_replenish_200';
+}}
+
+function updateElectronicsTradeInEscrowSandbox() {{
+  const slider = document.getElementById('tradein-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '112000');
+  const lowballMode = document.getElementById('tradein-lowball-select').value;
+  const fmiMode = document.getElementById('tradein-fmi-select').value;
+  const gsmaMode = document.getElementById('tradein-gsma-select').value;
+  const optMode = document.getElementById('tradein-opt-select').value;
+
+  document.getElementById('tradein-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('tradein-status-kpi');
+  const grossKpi = document.getElementById('tradein-gross-kpi');
+  const netKpi = document.getElementById('tradein-net-kpi');
+  const savingsKpi = document.getElementById('tradein-savings-kpi');
+  const banner = document.getElementById('tradein-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (gsmaMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 GSMA_STOLEN_FINANCED_IMEI_OR_MISSING_NIST80088_WIPE_CERT_HOLD · Mandate: null';
+    return;
+  }}
+  if (lowballMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 POST_SHIP_BAIT_AND_SWITCH_LOWBALL_OR_DESTRUCTIVE_SEAL_BREAK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (fmiMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FMI_ICLOUD_LOCKED_BRICK_OR_UNSECURED_PREPAID_INSTANT_CREDIT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PARALLEL_14D_SPT_SWAP_AND_OEM_GOV_SUBSIDY_STACK_CONFIRM · Mandate: electronics_tradein_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ON_DEVICE_TELEMETRY_FLOOR_LOCK_AND_NIST80088_WIPE_AUTHORIZED · Mandate: electronics_tradein_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
