@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg654" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr654" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ec4899"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg654)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr654)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 211 · Florist, Cake &amp; Occasion Gifting Timed Delivery &amp; Photo-Proof Escrow</text>
+  <text x="48" y="74" class="sub">1-800-Flowers / UrbanStems / DoorDash Drive · Pre-Dispatch Stem-Count CV · Peak Capacity Cap · Event-Cutoff SLA (-37% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #654 · FAQ #330</text>
+
+  <!-- Lane 1: Pre-Dispatch Bouquet/Cake CV Stem-Count & Substitution Approval Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Pre-Dispatch Bouquet Photo Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops "Ordered 24 Peonies, Got 10 Carnations":</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">CV_Stem_Count &gt;= Ordered_Stems &amp; Grade == A1</text>
+  <text x="44" y="205" class="body-txt">• Equal-or-Greater Value Substitution Rule:</text>
+  <text x="54" y="225" class="mono">Block Downgrading Focal Blooms Without Buyer</text>
+  <text x="54" y="243" class="mono">SMS Photo Approval Before Courier Pickup!</text>
+  <text x="44" y="266" class="body-txt">• Eliminates viral "Expectation vs. Reality" flower</text>
+  <text x="54" y="286" class="body-txt">scams where local wire-service florists pocket 50%</text>
+  <text x="54" y="304" class="body-txt">of the stem budget and ship cheap filler greens</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 BOUQUET_STEM_SHORTAGE_OR_UNAPPROVED_SUB_BLOCKED</text>
+
+  <!-- Lane 2: Valentine's / Mother's Day Bench Capacity Cap & Event-Cutoff SLA Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Peak Bench Cap &amp; Event-Cutoff SLA (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Florists Accepting 800 Orders w/ 200 Cap:</text>
+  <text x="442" y="182" class="mono">Auto-Overflow to Next Shop When `Slot_Load &gt;= 90%`</text>
+  <text x="432" y="205" class="body-txt">• Hard Occasion Deadline (`Office 5PM / Party 7PM`):</text>
+  <text x="442" y="225" class="mono" fill="#fcd34d">Block Delivering Office Flowers at 8:30 PM After</text>
+  <text x="442" y="243" class="mono" fill="#fcd34d">Recipient Left Work or Cake After Birthday Party!</text>
+  <text x="432" y="266" class="body-txt">• Re-dispatches delayed couriers at T-45m before</text>
+  <text x="442" y="286" class="body-txt">cutoff so gifts never arrive to an empty office</text>
+  <text x="442" y="304" class="body-txt">on Valentine's Day</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 SHOP_CAPACITY_OVERBOOK_OR_MISSED_OCCASION_CUTOFF</text>
+
+  <!-- Lane 3: Upright Car-Courier Cake Lock & Sun/Freeze Porch-Melt Guard -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Upright Cake &amp; Weather Porch Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops 3-Tier Fondant Cake Tilted on Moped/Bike:</text>
+  <text x="830" y="182" class="mono">Enforce `Vehicle == AC_Car_Flat_Floor` + Ice Pack</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">for Tiered Cakes &amp; Chocolate Arrangements!</text>
+  <text x="820" y="223" class="body-txt">• Extreme Weather Porch-Drop Prohibition:</text>
+  <text x="830" y="243" class="body-txt">Blocks unattended doorstep drop when ambient temp</text>
+  <text x="830" y="261" class="body-txt">`&gt; 85°F (29°C)` or `&lt; 32°F (0°C)` without handoff</text>
+  <text x="820" y="284" class="body-txt">• Prevents melted frosting, frozen blackened roses,</text>
+  <text x="830" y="302" class="body-txt">and smashed birthday cakes during last-mile transit</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 MOPED_CAKE_TILT_HAZARD_OR_EXTREME_TEMP_PORCH_HOLD</text>
+
+  <!-- Bottom Sender Live Photo Preview & Multi-DSP Backup Dispatch Escrow -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. "See Your Exact Bouquet" Sender Preview + Multi-DSP Failover &amp; Anniversary Flywheel (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Bench Photo to Sender</text>
+  <text x="62" y="462" class="body-txt">Texts actual finished bouquet</text>
+  <text x="62" y="480" class="body-txt">&amp; piped cake photo to buyer</text>
+  <text x="62" y="498" class="body-txt">before courier seals box;</text>
+  <text x="62" y="516" class="mono">-88% "Not As Pictured" Claims</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② T-45m Multi-DSP Failover</text>
+  <text x="337" y="462" class="body-txt">If primary courier is delayed</text>
+  <text x="337" y="480" class="body-txt">15 mins, auto-switches to</text>
+  <text x="337" y="498" class="body-txt">Uber Direct / DoorDash Drive;</text>
+  <text x="337" y="516" class="mono">99.4% On-Time Before 5PM</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Privacy-Safe Address Ping</text>
+  <text x="622" y="462" class="body-txt">Confirms recipient is at</text>
+  <text x="622" y="480" class="body-txt">home vs office without</text>
+  <text x="622" y="498" class="body-txt">spoiling the sender identity;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">0 Missed-Recipient Redeliveries</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ T-7d Next-Year Auto-Draft</text>
+  <text x="907" y="462" class="body-txt">Pre-locks next Valentine's/</text>
+  <text x="907" y="480" class="body-txt">birthday slot 7 days early</text>
+  <text x="907" y="498" class="body-txt">at off-peak stem pricing;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Perishable Gifting Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Florist &amp; Cake Loss Saved</text>
+  <text x="46" y="642" class="mono">$62,900 Saved / $170k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% CV Match</text>
+  <text x="336" y="626" class="kpi-lbl">Stem Count &amp; Cake Writing Verified</text>
+  <text x="336" y="642" class="mono">Before Courier Pickup Release</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">99.4% On-Time</text>
+  <text x="626" y="626" class="kpi-lbl">5PM Office &amp; Party Cutoff Protected</text>
+  <text x="626" y="642" class="mono">Dynamic Bench Load Balancing</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 Tilted Cakes</text>
+  <text x="916" y="626" class="kpi-lbl">Flat-Floor AC Car &amp; Temp Handoff Gate</text>
+  <text x="916" y="642" class="mono">Milestone #330 Bilingual Guide</text>
+</svg>

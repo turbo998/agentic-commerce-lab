@@ -23195,6 +23195,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-vmi-consignment-settlement-sandbox", html_zh)
 
+    def test_ecommerce_perishable_florist_cake_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommercePerishableFloristCakePolicyInput,
+            evaluate_ecommerce_perishable_florist_cake_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_perishable_florist_cake_policy(
+            EcommercePerishableFloristCakePolicyInput(
+                quarterly_stem_skimming_late_occasion_and_melted_cake_pool_usd=170000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_BOUQUET_AND_TIMED_CAKE_DELIVERY_AUTHORIZED",
+        )
+
+        cv = evaluate_ecommerce_perishable_florist_cake_policy(
+            EcommercePerishableFloristCakePolicyInput(
+                bouquet_stem_count_shortage_or_unapproved_floral_downgrade=True
+            )
+        )
+        self.assertEqual(cv["status_code"], 403)
+        self.assertEqual(
+            cv["decision"],
+            "BOUQUET_STEM_SHORTAGE_OR_UNAPPROVED_SUB_BLOCKED",
+        )
+
+        cutoff = evaluate_ecommerce_perishable_florist_cake_policy(
+            EcommercePerishableFloristCakePolicyInput(
+                florist_bench_capacity_overbooked_or_missed_5pm_office_cutoff=True
+            )
+        )
+        self.assertEqual(cutoff["status_code"], 422)
+        self.assertEqual(
+            cutoff["decision"],
+            "SHOP_CAPACITY_OVERBOOK_OR_MISSED_OCCASION_CUTOFF",
+        )
+
+        car = evaluate_ecommerce_perishable_florist_cake_policy(
+            EcommercePerishableFloristCakePolicyInput(
+                tiered_cake_dispatched_on_two_wheel_moped_or_extreme_temp_porch_drop=True
+            )
+        )
+        self.assertEqual(car["status_code"], 451)
+        self.assertEqual(
+            car["decision"],
+            "MOPED_CAKE_TILT_HAZARD_OR_EXTREME_TEMP_PORCH_HOLD",
+        )
+
+        optim = evaluate_ecommerce_perishable_florist_cake_policy(
+            EcommercePerishableFloristCakePolicyInput(
+                quarterly_stem_skimming_late_occasion_and_melted_cake_pool_usd=170000.0,
+                pre_dispatch_sender_photo_preview_and_multi_dsp_failover_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 62900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 107100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_perishable_florist_cake_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-perishable-florist-cake-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

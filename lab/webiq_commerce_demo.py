@@ -31105,6 +31105,82 @@ def evaluate_b2b_vmi_consignment_settlement_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommercePerishableFloristCakePolicyInput:
+    quarterly_stem_skimming_late_occasion_and_melted_cake_pool_usd: float = 170000.0
+    bouquet_stem_count_shortage_or_unapproved_floral_downgrade: bool = False
+    florist_bench_capacity_overbooked_or_missed_5pm_office_cutoff: bool = False
+    tiered_cake_dispatched_on_two_wheel_moped_or_extreme_temp_porch_drop: bool = False
+    pre_dispatch_sender_photo_preview_and_multi_dsp_failover_ready: bool = False
+
+
+def evaluate_ecommerce_perishable_florist_cake_policy(
+    policy_input: EcommercePerishableFloristCakePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_stem_skimming_late_occasion_and_melted_cake_pool_usd
+        ),
+    )
+    if policy_input.tiered_cake_dispatched_on_two_wheel_moped_or_extreme_temp_porch_drop:
+        return {
+            "status_code": 451,
+            "decision": "MOPED_CAKE_TILT_HAZARD_OR_EXTREME_TEMP_PORCH_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bouquet_stem_count_shortage_or_unapproved_floral_downgrade:
+        return {
+            "status_code": 403,
+            "decision": "BOUQUET_STEM_SHORTAGE_OR_UNAPPROVED_SUB_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.florist_bench_capacity_overbooked_or_missed_5pm_office_cutoff:
+        return {
+            "status_code": 422,
+            "decision": "SHOP_CAPACITY_OVERBOOK_OR_MISSED_OCCASION_CUTOFF",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pre_dispatch_sender_photo_preview_and_multi_dsp_failover_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SENDER_PHOTO_PREVIEW_AND_MULTI_DSP_FAILOVER_CONFIRM",
+            "mandate_token": "florist_cake_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_BOUQUET_AND_TIMED_CAKE_DELIVERY_AUTHORIZED",
+        "mandate_token": "florist_cake_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -42510,6 +42586,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_perishable_florist_cake_guard = {
+        "authorized_200": evaluate_ecommerce_perishable_florist_cake_policy(
+            EcommercePerishableFloristCakePolicyInput()
+        ),
+        "stem_shortage_or_sub_403": evaluate_ecommerce_perishable_florist_cake_policy(
+            EcommercePerishableFloristCakePolicyInput(
+                bouquet_stem_count_shortage_or_unapproved_floral_downgrade=True
+            )
+        ),
+        "bench_overbook_or_5pm_422": evaluate_ecommerce_perishable_florist_cake_policy(
+            EcommercePerishableFloristCakePolicyInput(
+                florist_bench_capacity_overbooked_or_missed_5pm_office_cutoff=True
+            )
+        ),
+        "moped_cake_or_temp_451": evaluate_ecommerce_perishable_florist_cake_policy(
+            EcommercePerishableFloristCakePolicyInput(
+                tiered_cake_dispatched_on_two_wheel_moped_or_extreme_temp_porch_drop=True
+            )
+        ),
+        "photo_preview_and_dsp_409": evaluate_ecommerce_perishable_florist_cake_policy(
+            EcommercePerishableFloristCakePolicyInput(
+                pre_dispatch_sender_photo_preview_and_multi_dsp_failover_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42849,6 +42951,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hospitality_fine_dining_reservation_guard": hospitality_fine_dining_reservation_guard,
         "ecommerce_big_bulky_white_glove_guard": ecommerce_big_bulky_white_glove_guard,
         "b2b_vmi_consignment_settlement_guard": b2b_vmi_consignment_settlement_guard,
+        "ecommerce_perishable_florist_cake_guard": ecommerce_perishable_florist_cake_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -60075,6 +60178,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="vmiconsign-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 RFID_201K_MRKO_SELF_BILLING_AND_150D_ROTATION_CONFIRM · Mandate: b2b_vmi_consignment_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 211 Florist, Cake & Occasion Gifting Timed Delivery Escrow (#330) -->
+      <div class="finops-box" id="ecommerce-perishable-florist-cake-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💐 鲜花、生日蛋糕与节庆礼篮“同城定时极速达 (1-800-Flowers / UrbanStems / 美团闪购)”与实拍验真沙盒</div>
+            <div class="finops-sub">Round 211 (#330 Milestone) · 包花台 CV 花枝点数与只升不降替花锁 (HTTP 403) + 情人节花艺师产能 90% 水位分流与写字楼 16:30 必达死线 (HTTP 422) + 多层蛋糕强制四轮轿车平放与高温严寒禁放门口 (HTTP 451) + 送礼人实拍预览净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="floristcake-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度鲜花“买家秀货不对板”退单、情人节爆仓下班后送空写字楼与电瓶车颠塌生日蛋糕损耗池 ($)
+            <input type="number" id="floristcake-gross-input" value="170000" min="10000" step="5000" oninput="recalcEcommercePerishableFloristCakeSandbox()" />
+          </label>
+          <label>出库前包花台/裱花台 CV 花头点数、A1 鲜度评级与只升不降替花门禁
+            <select id="floristcake-cv-select" onchange="recalcEcommercePerishableFloristCakeSandbox()">
+              <option value="pass">CV 清点花头数 &gt;= 承诺朵数且 A1 级零黑斑 + 生日巧克力牌拼写 100% 匹配 (合规)</option>
+              <option value="block_403">订 24 朵粉玫瑰加盟花店偷偷减成 12 朵枯萎康乃馨 或 未经买家看图同意私自降级换廉价配花 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>情人节/母亲节门店花艺师工时 90% 水位分流与商业写字楼 16:30 下班前必达死线
+            <select id="floristcake-cutoff-select" onchange="recalcEcommercePerishableFloristCakeSandbox()">
+              <option value="pass">门店工位负载 &lt; 90% (超负荷自动分流周边合作店) + 写字楼 16:30 前准时送达 (合规)</option>
+              <option value="block_422">小花店盲目接 600 单爆仓 或 晚上 8 点半才把情人节玫瑰送到空无一人的写字楼前台 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>多层动物奶油生日蛋糕“四轮空调小轿车平放专送”与极端气温 (32°F–85°F) 禁放室外锁
+            <select id="floristcake-car-select" onchange="recalcEcommercePerishableFloristCakeSandbox()">
+              <option value="pass">双层奶油蛋糕指派四轮空调轿车后备箱平放 + 高温/严寒天气强制当面交接 (安全)</option>
+              <option value="block_451">把 $180 三层草莓蛋糕派给两轮电瓶车骑手一路颠塌 或 35°C 大夏天直接扔在别墅铁门口晒化 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>封箱前向送礼买家秒推“您的专属花束实拍图”与 T-45m 多运力 (Uber Direct/闪送) 自动改派
+            <select id="floristcake-opt-select" onchange="recalcEcommercePerishableFloristCakeSandbox()">
+              <option value="enabled" selected>出发前推送成品实拍图定心 + 骑手迟到 15m 自动切换多运力专车 + 次年纪念日锁单 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统转单盲盒发货 + 单一众包骑手无超时改派兜底 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度鲜花蛋糕货不对板与迟到池</div>
+            <div class="finops-kpi-val" id="floristcake-gross-kpi">$170,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">CV 点花头与四轮专车护航后净耗</div>
+            <div class="finops-kpi-val" id="floristcake-net-kpi" style="color:#6ee7b7;">$107,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省退单拒付与重做赔付</div>
+            <div class="finops-kpi-val" id="floristcake-savings-kpi" style="color:#38bdf8;">$62,900</div>
+          </div>
+        </div>
+        <div id="floristcake-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SENDER_PHOTO_PREVIEW_AND_MULTI_DSP_FAILOVER_CONFIRM · Mandate: florist_cake_escrow_optim_409
         </div>
       </div>
 
@@ -80995,6 +81155,79 @@ function recalcB2BVmiConsignmentSettlementSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_201K_WITHDRAWAL_MRKO_SETTLEMENT_AUTHORIZED · Mandate: b2b_vmi_consignment_escrow_200';
+}}
+
+function recalcEcommercePerishableFloristCakeSandbox() {{
+  const grossInput = document.getElementById('floristcake-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '170000'));
+  const cvGate = document.getElementById('floristcake-cv-select').value;
+  const cutoffGate = document.getElementById('floristcake-cutoff-select').value;
+  const carGate = document.getElementById('floristcake-car-select').value;
+  const optMode = document.getElementById('floristcake-opt-select').value;
+
+  const grossKpi = document.getElementById('floristcake-gross-kpi');
+  const netKpi = document.getElementById('floristcake-net-kpi');
+  const savingsKpi = document.getElementById('floristcake-savings-kpi');
+  const statusKpi = document.getElementById('floristcake-status-kpi');
+  const banner = document.getElementById('floristcake-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (carGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MOPED_CAKE_TILT_HAZARD_OR_EXTREME_TEMP_PORCH_HOLD · Mandate: null';
+    return;
+  }}
+  if (cvGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BOUQUET_STEM_SHORTAGE_OR_UNAPPROVED_SUB_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (cutoffGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SHOP_CAPACITY_OVERBOOK_OR_MISSED_OCCASION_CUTOFF · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SENDER_PHOTO_PREVIEW_AND_MULTI_DSP_FAILOVER_CONFIRM · Mandate: florist_cake_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_BOUQUET_AND_TIMED_CAKE_DELIVERY_AUTHORIZED · Mandate: florist_cake_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
