@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`303` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`304` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (17 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (44 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (45 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (112 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (69 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (25 guides)](#saas-finops-micropayments)
@@ -43,7 +43,7 @@
 | 17 | **E-Commerce Verified-Purchase Reviews, `FTC 16 CFR Part 465` Anti-Gating Compliance & Retail Syndication Escrow (`Bazaarvoice / Yotpo / PowerReviews / Okendo`), Sentiment-Neutral Incentives, `14-Digit GTIN` Anti-Variant-Hijack Lock & Omnichannel Syndication (`-36%` Penalty & Cold-Start Loss) Agent Architecture Selection FAQ** | [English](ecommerce-verified-reviews-ftc-part465-seeding-syndication-escrow-agent-selection-faq.en.md) · [中文](ecommerce-verified-reviews-ftc-part465-seeding-syndication-escrow-agent-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (44 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (45 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -93,6 +93,7 @@
 | 42 | **E-Commerce Digital Gift Cards, Stored-Value Wallets & Corporate Gifting (`Rise.ai / Blackhawk / Stripe / Govalo`), Anti-Triangulation Fraud & `CARD Act / Escheatment` Escrow (`3DS2` Cascade Revocation, Promo-on-Gift-Card Ban & Dual Ledger `-37%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.en.md) · [中文](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.md) |
 | 43 | **E-Commerce Account Takeover (`ATO`), Saved-Card Abuse & Address-Mismatch Escrow (`Forter / Riskified / Signifyd / Stripe Radar`), Vaulted-Token + New-Address Step-Up `3DS2 / Full-PAN` Lock, 24h Profile-Swap Freeze & Carrier Reroute Shield (`-39%` Fraud & Decline Loss) Agent Architecture Selection FAQ** | [English](ecommerce-account-takeover-ato-saved-card-address-mismatch-escrow-agent-selection-faq.en.md) · [中文](ecommerce-account-takeover-ato-saved-card-address-mismatch-escrow-agent-selection-faq.md) |
 | 44 | **Multi-PSP Payment Orchestration, Acquirer Failover & `Durbin` PINless Debit Routing Escrow (`Primer / Spreedly / Adyen / Stripe`), Anti-Double-Charge `0420` Timeout Mutex, Decoupled `3DS2 CAVV` Reuse & Local `MID` Routing (`-39%` Payment MDR & Decline Loss) Agent Architecture Selection FAQ** | [English](ecommerce-multi-psp-payment-orchestration-acquirer-failover-debit-routing-escrow-agent-selection-faq.en.md) · [中文](ecommerce-multi-psp-payment-orchestration-acquirer-failover-debit-routing-escrow-agent-selection-faq.md) |
+| 45 | **E-Commerce `HSA / FSA` Tax-Free Health & Wellness Checkout, `SIGIS IIAS` Mixed-Cart Split & Letter of Medical Necessity (`LMN`) Escrow (`TrueMed / Flex / Sika Health / Stripe`), `Code-57` Decline Shield, Clinician `NPI` `IRS §213(d)` Lock & `TPA` Auto-Substantiation (`-34%` Decline & Audit Loss) Agent Architecture Selection FAQ** | [English](ecommerce-hsa-fsa-tax-free-checkout-sigis-lmn-split-escrow-agent-selection-faq.en.md) · [中文](ecommerce-hsa-fsa-tax-free-checkout-sigis-lmn-split-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (112 Guides)

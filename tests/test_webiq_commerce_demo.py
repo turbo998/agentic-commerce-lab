@@ -21453,6 +21453,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-verified-review-syndication-sandbox", html_zh)
 
+    def test_ecommerce_hsa_fsa_checkout_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceHsaFsaCheckoutPolicyInput,
+            evaluate_ecommerce_hsa_fsa_checkout_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_hsa_fsa_checkout_policy(
+            EcommerceHsaFsaCheckoutPolicyInput(
+                quarterly_hsa_fsa_card_decline_tpa_rejection_and_abandon_pool_usd=140000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "SIGIS_IIAS_ELIGIBLE_HSA_FSA_CHECKOUT_AUTHORIZED",
+        )
+
+        iias = evaluate_ecommerce_hsa_fsa_checkout_policy(
+            EcommerceHsaFsaCheckoutPolicyInput(
+                non_iias_mcc_direct_swipe_or_ineligible_sku_in_hsa_tender=True
+            )
+        )
+        self.assertEqual(iias["status_code"], 403)
+        self.assertEqual(
+            iias["decision"],
+            "NON_IIAS_MCC_OR_MIXED_CART_HSA_CHARGE_BLOCKED",
+        )
+
+        lmn = evaluate_ecommerce_hsa_fsa_checkout_policy(
+            EcommerceHsaFsaCheckoutPolicyInput(
+                dual_purpose_wellness_sku_without_clinician_signed_lmn=True
+            )
+        )
+        self.assertEqual(lmn["status_code"], 422)
+        self.assertEqual(
+            lmn["decision"],
+            "MISSING_CLINICIAN_LMN_OR_GENERAL_WELLNESS_BLOCKED",
+        )
+
+        tpa = evaluate_ecommerce_hsa_fsa_checkout_policy(
+            EcommerceHsaFsaCheckoutPolicyInput(
+                missing_5element_tpa_substantiation_or_hsa_refund_to_cash_giftcard=True
+            )
+        )
+        self.assertEqual(tpa["status_code"], 451)
+        self.assertEqual(
+            tpa["decision"],
+            "UNSUBSTANTIATED_TPA_RECEIPT_OR_CASH_OUT_HOLD",
+        )
+
+        optim = evaluate_ecommerce_hsa_fsa_checkout_policy(
+            EcommerceHsaFsaCheckoutPolicyInput(
+                quarterly_hsa_fsa_card_decline_tpa_rejection_and_abandon_pool_usd=140000.0,
+                sigis_dual_tender_split_embedded_npi_lmn_and_tpa_pack_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 47600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 92400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_hsa_fsa_checkout_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-hsa-fsa-checkout-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

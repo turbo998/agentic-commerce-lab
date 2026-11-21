@@ -29129,6 +29129,82 @@ def evaluate_ecommerce_verified_review_syndication_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceHsaFsaCheckoutPolicyInput:
+    quarterly_hsa_fsa_card_decline_tpa_rejection_and_abandon_pool_usd: float = 140000.0
+    non_iias_mcc_direct_swipe_or_ineligible_sku_in_hsa_tender: bool = False
+    dual_purpose_wellness_sku_without_clinician_signed_lmn: bool = False
+    missing_5element_tpa_substantiation_or_hsa_refund_to_cash_giftcard: bool = False
+    sigis_dual_tender_split_embedded_npi_lmn_and_tpa_pack_ready: bool = False
+
+
+def evaluate_ecommerce_hsa_fsa_checkout_policy(
+    policy_input: EcommerceHsaFsaCheckoutPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_hsa_fsa_card_decline_tpa_rejection_and_abandon_pool_usd
+        ),
+    )
+    if policy_input.missing_5element_tpa_substantiation_or_hsa_refund_to_cash_giftcard:
+        return {
+            "status_code": 451,
+            "decision": "UNSUBSTANTIATED_TPA_RECEIPT_OR_CASH_OUT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.non_iias_mcc_direct_swipe_or_ineligible_sku_in_hsa_tender:
+        return {
+            "status_code": 403,
+            "decision": "NON_IIAS_MCC_OR_MIXED_CART_HSA_CHARGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dual_purpose_wellness_sku_without_clinician_signed_lmn:
+        return {
+            "status_code": 422,
+            "decision": "MISSING_CLINICIAN_LMN_OR_GENERAL_WELLNESS_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sigis_dual_tender_split_embedded_npi_lmn_and_tpa_pack_ready:
+        savings = round(gross_pool * 0.34, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SIGIS_DUAL_TENDER_SPLIT_EMBEDDED_LMN_AND_TPA_PACK_CONFIRM",
+            "mandate_token": "hsa_fsa_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "SIGIS_IIAS_ELIGIBLE_HSA_FSA_CHECKOUT_AUTHORIZED",
+        "mandate_token": "hsa_fsa_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -39858,6 +39934,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_hsa_fsa_checkout_guard = {
+        "authorized_200": evaluate_ecommerce_hsa_fsa_checkout_policy(
+            EcommerceHsaFsaCheckoutPolicyInput()
+        ),
+        "non_iias_or_mixed_cart_403": evaluate_ecommerce_hsa_fsa_checkout_policy(
+            EcommerceHsaFsaCheckoutPolicyInput(
+                non_iias_mcc_direct_swipe_or_ineligible_sku_in_hsa_tender=True
+            )
+        ),
+        "missing_clinician_lmn_422": evaluate_ecommerce_hsa_fsa_checkout_policy(
+            EcommerceHsaFsaCheckoutPolicyInput(
+                dual_purpose_wellness_sku_without_clinician_signed_lmn=True
+            )
+        ),
+        "unsubstantiated_or_cash_refund_451": evaluate_ecommerce_hsa_fsa_checkout_policy(
+            EcommerceHsaFsaCheckoutPolicyInput(
+                missing_5element_tpa_substantiation_or_hsa_refund_to_cash_giftcard=True
+            )
+        ),
+        "dual_tender_and_lmn_409": evaluate_ecommerce_hsa_fsa_checkout_policy(
+            EcommerceHsaFsaCheckoutPolicyInput(
+                sigis_dual_tender_split_embedded_npi_lmn_and_tpa_pack_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40171,6 +40273,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_parcel_shipping_audit_guard": ecommerce_parcel_shipping_audit_guard,
         "b2b_clm_contract_redlining_guard": b2b_clm_contract_redlining_guard,
         "ecommerce_verified_review_syndication_guard": ecommerce_verified_review_syndication_guard,
+        "ecommerce_hsa_fsa_checkout_guard": ecommerce_hsa_fsa_checkout_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -55915,6 +56018,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ugc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CATEGORY_TIMED_AMP_AND_RETAIL_GTIN_SYNDICATION_CONFIRM · Mandate: verified_review_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 185 E-Commerce HSA / FSA Tax-Free Checkout & SIGIS/LMN Escrow (#304) -->
+      <div class="finops-box" id="ecommerce-hsa-fsa-checkout-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🩺 电商 HSA / FSA 免税医保卡结账、SIGIS 混合拆单与 LMN 处方 (TrueMed / Flex / Sika) 沙盒</div>
+            <div class="finops-sub">Round 185 (#304) · 拦截非医疗 MCC Code 57 拒付与混合购物车自动双卡拆单 (HTTP 403) + 持牌医师 NPI 签发 IRS §213(d) LMN (HTTP 422) + 五要素 TPA 核销单与原卡退货锁 (HTTP 451) + 免税直付净省 34% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="hsafsa-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 HSA/FSA 卡 Code 57 拒付弃单、混合购物车失败与 TPA 冻结拒赔池 ($)
+            <input type="number" id="hsafsa-gross-input" value="140000" min="10000" step="5000" oninput="recalcEcommerceHsaFsaCheckoutSandbox()" />
+          </label>
+          <label>SIGIS IIAS 医疗收单轨与混合购物车双卡原子拆单
+            <select id="hsafsa-iias-select" onchange="recalcEcommerceHsaFsaCheckoutSandbox()">
+              <option value="pass">走 SIGIS IIAS/医疗网关 且 $80防晒霜刷HSA卡 + $25帆布袋刷Apple Pay (合规)</option>
+              <option value="block_403">在普通零售 MCC 5699 上裸刷 HSA 卡遭 Code 57 拒付 或 将非医疗帆布袋混入 HSA 扣款 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>IRS §213(d) 双重用途商品 (智能戒/理疗仪/补剂) 持牌医生 LMN
+            <select id="hsafsa-lmn-select" onchange="recalcEcommerceHsaFsaCheckoutSandbox()">
+              <option value="pass">完成 90s HIPAA 症状问卷并由州持牌医师 (NPI) 签发 12个月 LMN (合规)</option>
+              <option value="block_422">无任何医学症状纯日常健身自证 或 无持牌医生签名 LMN 违规刷医保卡 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>五要素 TPA 核销水单合成与售后退货防套现锁
+            <select id="hsafsa-tpa-select" onchange="recalcEcommerceHsaFsaCheckoutSandbox()">
+              <option value="pass">自动下发含 ICD-10 与签名 LMN 的五要素 PDF + 退货 100% 原路退回 HSA 卡 (安全)</option>
+              <option value="block_451">缺少合规收据导致客户医保卡被 WEX 冻结 或 将 HSA 订单退成通用现金/礼品卡逃税 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>一单双卡无感拆付、90s 内嵌 LMN 与 Q4 年底 FSA 清零季导购
+            <select id="hsafsa-opt-select" onchange="recalcEcommerceHsaFsaCheckoutSandbox()">
+              <option value="enabled" selected>1-Click 医保+个人双卡拆付 + 90s 内嵌开具 LMN + 一键 TPA 报销包 (-34% 弃单损耗 / HTTP 409)</option>
+              <option value="disabled">要求客户先用个人卡全额垫付、自己去医院找医生开证明事后手工报销 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度医保卡拒付与弃单损失总池</div>
+            <div class="finops-kpi-val" id="hsafsa-gross-kpi">$140,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">双卡拆付与内嵌 LMN 后净损耗</div>
+            <div class="finops-kpi-val" id="hsafsa-net-kpi" style="color:#6ee7b7;">$92,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省拒付流失与 TPA 退单</div>
+            <div class="finops-kpi-val" id="hsafsa-savings-kpi" style="color:#38bdf8;">$47,600</div>
+          </div>
+        </div>
+        <div id="hsafsa-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SIGIS_DUAL_TENDER_SPLIT_EMBEDDED_LMN_AND_TPA_PACK_CONFIRM · Mandate: hsa_fsa_escrow_optim_409
         </div>
       </div>
 
@@ -74937,6 +75097,79 @@ function recalcEcommerceVerifiedReviewSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 FTC_COMPLIANT_VERIFIED_BUYER_REVIEW_PUBLISHED · Mandate: verified_review_escrow_200';
+}}
+
+function recalcEcommerceHsaFsaCheckoutSandbox() {{
+  const grossInput = document.getElementById('hsafsa-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '140000'));
+  const iiasGate = document.getElementById('hsafsa-iias-select').value;
+  const lmnGate = document.getElementById('hsafsa-lmn-select').value;
+  const tpaGate = document.getElementById('hsafsa-tpa-select').value;
+  const optMode = document.getElementById('hsafsa-opt-select').value;
+
+  const grossKpi = document.getElementById('hsafsa-gross-kpi');
+  const netKpi = document.getElementById('hsafsa-net-kpi');
+  const savingsKpi = document.getElementById('hsafsa-savings-kpi');
+  const statusKpi = document.getElementById('hsafsa-status-kpi');
+  const banner = document.getElementById('hsafsa-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (tpaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNSUBSTANTIATED_TPA_RECEIPT_OR_CASH_OUT_HOLD · Mandate: null';
+    return;
+  }}
+  if (iiasGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 NON_IIAS_MCC_OR_MIXED_CART_HSA_CHARGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (lmnGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MISSING_CLINICIAN_LMN_OR_GENERAL_WELLNESS_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.34);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SIGIS_DUAL_TENDER_SPLIT_EMBEDDED_LMN_AND_TPA_PACK_CONFIRM · Mandate: hsa_fsa_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 SIGIS_IIAS_ELIGIBLE_HSA_FSA_CHECKOUT_AUTHORIZED · Mandate: hsa_fsa_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
