@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg649" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr649" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg649)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr649)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 206 · E-Commerce &amp; B2B Pay-by-Bank (Open Banking A2A), Anti-ACH-R01 &amp; FedNow Escrow</text>
+  <text x="48" y="74" class="sub">Plaid Transfer / Stripe Financial Connections / Trustly / FedNow · 1.25x Live Balance Check · R29 Corporate Debit Whitelist (-37% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #649 · FAQ #325</text>
+
+  <!-- Lane 1: Ship-Before-Settle ACH R01/R10 Kiting & Empty-Account Fraud Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Anti-ACH-Kiting &amp; Balance Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Shipping $4,000 MacBook Before ACH Clears:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Require `Available_Balance &gt;= 1.25 × Order_Total`</text>
+  <text x="54" y="200" class="mono">&amp; `Plaid_Signal_Return_Risk &lt; 0.02`</text>
+  <text x="44" y="223" class="body-txt">• High-Risk SKU Settlement Hold (`T+3d` or `RTP`):</text>
+  <text x="54" y="243" class="mono">Hold WMS Release Until `ACH_Settled` or Use `FedNow`</text>
+  <text x="44" y="266" class="body-txt">• Prevents fraudsters from paying with a $5</text>
+  <text x="54" y="286" class="body-txt">checking account on Day 1, receiving the package</text>
+  <text x="54" y="304" class="body-txt">on Day 2, and bouncing `R01 NSF` on Day 4</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 ACH_NSF_R01_RISK_OR_UNSETTLED_HIGH_TICKET_BLOCKED</text>
+
+  <!-- Lane 2: Corporate Account ACH Debit Block (`R29`) & Manual Routing Typo Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Corporate `R29` &amp; OAuth Link Lock (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops B2B Checking Accounts Bouncing `R29` Block:</text>
+  <text x="442" y="182" class="mono">Display `Merchant_ACH_Company_ID` for Treasury Allow</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Or Auto-Fallback to `Push-Credit vIBAN / RTP RfP`</text>
+  <text x="432" y="223" class="body-txt">• Zero Manual Routing/Account Typing (`R02/R03`):</text>
+  <text x="442" y="243" class="mono">Enforce OAuth `TAN` Account Link + Owner Name Match</text>
+  <text x="432" y="266" class="body-txt">• Eliminates 18% of B2B ACH failures caused by</text>
+  <text x="442" y="286" class="body-txt">corporate Positive Pay / ACH Debit Filters rejecting</text>
+  <text x="442" y="304" class="body-txt">unwhitelisted `CCD` pull debits</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 CORPORATE_R29_DEBIT_FILTER_OR_MANUAL_TYPO_BLOCKED</text>
+
+  <!-- Lane 3: Nacha Excessive Retry Fines & Missing Instant-Cashback Incentive Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Nacha Retry Cap &amp; Consent Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Violating Nacha `Max 2 Retries` &amp; `R07/R10` Rules:</text>
+  <text x="830" y="182" class="mono">Hard-Stop Retries on `R02/R03/R07/R10/R29` Codes</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Max 2 `R01 NSF` Retries Synced w/ Live Balance Check</text>
+  <text x="820" y="223" class="body-txt">• Nacha `WEB` Debit Authorization Evidence:</text>
+  <text x="830" y="243" class="body-txt">Seals explicit mandate text, IP, and OAuth token</text>
+  <text x="830" y="261" class="body-txt">for 2 years to defeat unauthorized `R10` claims</text>
+  <text x="820" y="284" class="body-txt">• Prevents bank termination when Administrative</text>
+  <text x="830" y="302" class="body-txt">Return Rate exceeds 3.0% or Unauthorized &gt; 0.5%</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 NACHA_RETRY_CAP_OR_UNAUTHORIZED_R10_RATIO_HOLD</text>
+
+  <!-- Bottom Instant Cashback Steer & Guaranteed A2A / FedNow Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Instant 1.0% Pay-by-Bank Cashback Steer + Guaranteed ACH / `FedNow RfP` Settlement (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① 1% Instant Checkout Rebate</text>
+  <text x="62" y="462" class="body-txt">Shares 1.0% of the saved</text>
+  <text x="62" y="480" class="body-txt">`2.9%` credit card fee w/ buyer</text>
+  <text x="62" y="498" class="body-txt">on orders &gt;$500 (`-$40 off`);</text>
+  <text x="62" y="516" class="mono">3.2x Pay-by-Bank Share Lift</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Live 1.25x Balance Check</text>
+  <text x="337" y="462" class="body-txt">Verifies real-time account</text>
+  <text x="337" y="480" class="body-txt">funds + 90d cashflow velocity</text>
+  <text x="337" y="498" class="body-txt">in 250ms before approving;</text>
+  <text x="337" y="516" class="mono">-89% NSF R01 Return Rate</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Guaranteed ACH / FedNow</text>
+  <text x="622" y="462" class="body-txt">Routes eligible banks to</text>
+  <text x="622" y="480" class="body-txt">`FedNow / RTP RfP` or `Trustly`</text>
+  <text x="622" y="498" class="body-txt">Guaranteed ACH for instant ship;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">0 Merchant NSF Default Loss</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ B2B vIBAN Push Fallback</text>
+  <text x="907" y="462" class="body-txt">Generates order-specific</text>
+  <text x="907" y="480" class="body-txt">virtual routing/account # so</text>
+  <text x="907" y="498" class="body-txt">B2B buyers push ACH/Wire easily;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% MDR &amp; ACH Return Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Card MDR &amp; R01 Loss Saved</text>
+  <text x="46" y="642" class="mono">$68,450 Saved / $185k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">$5 Flat Cap</text>
+  <text x="336" y="626" class="kpi-lbl">Replaces $116 Card Fee on $4k Order</text>
+  <text x="336" y="642" class="mono">1.0% Shared Instant Buyer Rebate</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0 R01 Kiting</text>
+  <text x="626" y="626" class="kpi-lbl">1.25x Live Balance &amp; Settlement Gate</text>
+  <text x="626" y="642" class="mono">Never Ships on Empty Bank Account</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 R29 Bounces</text>
+  <text x="916" y="626" class="kpi-lbl">Company ID Allowlist + vIBAN Push</text>
+  <text x="916" y="642" class="mono">100% Nacha Return-Threshold Safe</text>
+</svg>

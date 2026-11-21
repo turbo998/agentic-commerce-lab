@@ -22860,6 +22860,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-dealer-portal-mdf-warranty-sandbox", html_zh)
 
+    def test_ecommerce_pay_by_bank_ach_fednow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommercePayByBankAchFednowPolicyInput,
+            evaluate_ecommerce_pay_by_bank_ach_fednow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_pay_by_bank_ach_fednow_policy(
+            EcommercePayByBankAchFednowPolicyInput(
+                quarterly_high_ticket_card_mdr_and_ach_r01_return_loss_pool_usd=185000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_OAUTH_PAY_BY_BANK_SETTLEMENT_AUTHORIZED",
+        )
+
+        bal = evaluate_ecommerce_pay_by_bank_ach_fednow_policy(
+            EcommercePayByBankAchFednowPolicyInput(
+                live_bank_balance_below_125pct_or_shipping_before_ach_settlement=True
+            )
+        )
+        self.assertEqual(bal["status_code"], 403)
+        self.assertEqual(
+            bal["decision"],
+            "ACH_NSF_R01_RISK_OR_UNSETTLED_HIGH_TICKET_BLOCKED",
+        )
+
+        r29 = evaluate_ecommerce_pay_by_bank_ach_fednow_policy(
+            EcommercePayByBankAchFednowPolicyInput(
+                corporate_account_r29_debit_filter_or_manual_routing_number_entry=True
+            )
+        )
+        self.assertEqual(r29["status_code"], 422)
+        self.assertEqual(
+            r29["decision"],
+            "CORPORATE_R29_DEBIT_FILTER_OR_MANUAL_TYPO_BLOCKED",
+        )
+
+        nacha = evaluate_ecommerce_pay_by_bank_ach_fednow_policy(
+            EcommercePayByBankAchFednowPolicyInput(
+                retrying_hard_nacha_codes_or_exceeding_two_r01_nsf_retries=True
+            )
+        )
+        self.assertEqual(nacha["status_code"], 451)
+        self.assertEqual(
+            nacha["decision"],
+            "NACHA_RETRY_CAP_OR_UNAUTHORIZED_R10_RATIO_HOLD",
+        )
+
+        optim = evaluate_ecommerce_pay_by_bank_ach_fednow_policy(
+            EcommercePayByBankAchFednowPolicyInput(
+                quarterly_high_ticket_card_mdr_and_ach_r01_return_loss_pool_usd=185000.0,
+                instant_1pct_cashback_steer_fednow_and_viban_push_fallback_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 68450.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 116550.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_pay_by_bank_ach_fednow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-pay-by-bank-ach-fednow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

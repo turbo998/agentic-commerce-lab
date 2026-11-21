@@ -30725,6 +30725,82 @@ def evaluate_b2b_dealer_portal_mdf_warranty_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommercePayByBankAchFednowPolicyInput:
+    quarterly_high_ticket_card_mdr_and_ach_r01_return_loss_pool_usd: float = 185000.0
+    live_bank_balance_below_125pct_or_shipping_before_ach_settlement: bool = False
+    corporate_account_r29_debit_filter_or_manual_routing_number_entry: bool = False
+    retrying_hard_nacha_codes_or_exceeding_two_r01_nsf_retries: bool = False
+    instant_1pct_cashback_steer_fednow_and_viban_push_fallback_ready: bool = False
+
+
+def evaluate_ecommerce_pay_by_bank_ach_fednow_policy(
+    policy_input: EcommercePayByBankAchFednowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_high_ticket_card_mdr_and_ach_r01_return_loss_pool_usd
+        ),
+    )
+    if policy_input.retrying_hard_nacha_codes_or_exceeding_two_r01_nsf_retries:
+        return {
+            "status_code": 451,
+            "decision": "NACHA_RETRY_CAP_OR_UNAUTHORIZED_R10_RATIO_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.live_bank_balance_below_125pct_or_shipping_before_ach_settlement:
+        return {
+            "status_code": 403,
+            "decision": "ACH_NSF_R01_RISK_OR_UNSETTLED_HIGH_TICKET_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.corporate_account_r29_debit_filter_or_manual_routing_number_entry:
+        return {
+            "status_code": 422,
+            "decision": "CORPORATE_R29_DEBIT_FILTER_OR_MANUAL_TYPO_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.instant_1pct_cashback_steer_fednow_and_viban_push_fallback_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "INSTANT_REBATE_STEER_FEDNOW_AND_VIBAN_PUSH_CONFIRM",
+            "mandate_token": "pay_by_bank_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_OAUTH_PAY_BY_BANK_SETTLEMENT_AUTHORIZED",
+        "mandate_token": "pay_by_bank_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -42000,6 +42076,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_pay_by_bank_ach_fednow_guard = {
+        "authorized_200": evaluate_ecommerce_pay_by_bank_ach_fednow_policy(
+            EcommercePayByBankAchFednowPolicyInput()
+        ),
+        "nsf_r01_or_unsettled_ship_403": evaluate_ecommerce_pay_by_bank_ach_fednow_policy(
+            EcommercePayByBankAchFednowPolicyInput(
+                live_bank_balance_below_125pct_or_shipping_before_ach_settlement=True
+            )
+        ),
+        "corporate_r29_or_typo_422": evaluate_ecommerce_pay_by_bank_ach_fednow_policy(
+            EcommercePayByBankAchFednowPolicyInput(
+                corporate_account_r29_debit_filter_or_manual_routing_number_entry=True
+            )
+        ),
+        "nacha_retry_cap_451": evaluate_ecommerce_pay_by_bank_ach_fednow_policy(
+            EcommercePayByBankAchFednowPolicyInput(
+                retrying_hard_nacha_codes_or_exceeding_two_r01_nsf_retries=True
+            )
+        ),
+        "rebate_steer_and_fednow_409": evaluate_ecommerce_pay_by_bank_ach_fednow_policy(
+            EcommercePayByBankAchFednowPolicyInput(
+                instant_1pct_cashback_steer_fednow_and_viban_push_fallback_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42334,6 +42436,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ondemand_home_services_marketplace_guard": ondemand_home_services_marketplace_guard,
         "ecommerce_gift_registry_group_gifting_guard": ecommerce_gift_registry_group_gifting_guard,
         "b2b_dealer_portal_mdf_warranty_guard": b2b_dealer_portal_mdf_warranty_guard,
+        "ecommerce_pay_by_bank_ach_fednow_guard": ecommerce_pay_by_bank_ach_fednow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -59275,6 +59378,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="dealer-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DIRECT_MDF_FIELD_DESTROY_WARRANTY_AND_NET_REBATE_CONFIRM · Mandate: dealer_portal_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 206 E-Commerce & B2B Pay-by-Bank (Open Banking A2A), Anti-ACH-R01 & FedNow Escrow (#325) -->
+      <div class="finops-box" id="ecommerce-pay-by-bank-ach-fednow-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏦 大额电商与 B2B 银行直连支付 (Pay-by-Bank: Plaid / Stripe / Trustly / FedNow) 与防 ACH R01 退票沙盒</div>
+            <div class="finops-sub">Round 206 (#325) · OAuth 实时可用余额 &gt;=1.25x 与未清算禁发锁 (HTTP 403) + 对公账户防 R29 借记锁与专属 vIBAN 推送 (HTTP 422) + Nacha 硬退票码零重试锁 (HTTP 451) + 结账立减 1% 分润导流净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="paybybank-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度大额订单 2.9% 信用卡手续费、ACH R01 空头支票未到账骗货与对公 R29 失败损耗池 ($)
+            <input type="number" id="paybybank-gross-input" value="185000" min="10000" step="5000" oninput="recalcEcommercePayByBankAchFednowSandbox()" />
+          </label>
+          <label>OAuth 实时可用余额 (&gt;=1.25x 订单额) 核验与防未清算提前发货 (Anti-Kiting)
+            <select id="paybybank-bal-select" onchange="recalcEcommercePayByBankAchFednowSandbox()">
+              <option value="pass">实时可用余额 &gt;=1.25x + 走 FedNow/担保 ACH 秒发 或 普通 ACH 到账后再发货 (合规)</option>
+              <option value="block_403">骗子拿余额仅 $12 的空支票户买 $4,000 电脑，未等 T+4 清算就发货导致 R01 钱货两空 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>企业对公账户防 R29 借记拦截 (ACH Debit Filter) 与免手填 OAuth 账号
+            <select id="paybybank-r29-select" onchange="recalcEcommercePayByBankAchFednowSandbox()">
+              <option value="pass">OAuth 免手填防 R02/R03 + 对公户提示 Company ID 白名单或一键切 vIBAN 主动打款 (合规)</option>
+              <option value="block_422">对开启了银行防盗锁的企业对公户直接发起 ACH 拉取导致 100% 触发 R29 退票 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国 Nacha 退票率红线与硬退票码 (R02/R03/R10/R29) 零重试规则
+            <select id="paybybank-nacha-select" onchange="recalcEcommercePayByBankAchFednowSandbox()">
+              <option value="pass">硬退票码 0 重试 + R01 仅在查明发薪入账后重扣 &lt;=2 次 + 2年授权存证 (安全)</option>
+              <option value="block_451">对 R10/R29 硬退票码违规重试 或 对空账户暴力连扣 5 次导致突破 Nacha 阈值被封通道 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>结账立减 1.0% 现金折扣导流与 FedNow / $5 封顶 ACH 结算
+            <select id="paybybank-opt-select" onchange="recalcEcommercePayByBankAchFednowSandbox()">
+              <option value="enabled" selected>大额单展示“银行直连立减 1% ($40)” + $5 封顶通道费每单净省 $71 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">无激励导致 92% 买家继续刷 2.9% 高费率白金信用卡 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度高额刷卡费与 ACH 退票损耗池</div>
+            <div class="finops-kpi-val" id="paybybank-gross-kpi">$185,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">1% 立减导流与实时验资后净支出</div>
+            <div class="finops-kpi-val" id="paybybank-net-kpi" style="color:#6ee7b7;">$116,550</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省信用卡 MDR 与 R01 坏账</div>
+            <div class="finops-kpi-val" id="paybybank-savings-kpi" style="color:#38bdf8;">$68,450</div>
+          </div>
+        </div>
+        <div id="paybybank-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 INSTANT_REBATE_STEER_FEDNOW_AND_VIBAN_PUSH_CONFIRM · Mandate: pay_by_bank_escrow_optim_409
         </div>
       </div>
 
@@ -79830,6 +79990,79 @@ function recalcB2bDealerPortalMdfWarrantySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_DEALER_MDF_AND_WARRANTY_CLAIM_AUTHORIZED · Mandate: dealer_portal_escrow_200';
+}}
+
+function recalcEcommercePayByBankAchFednowSandbox() {{
+  const grossInput = document.getElementById('paybybank-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '185000'));
+  const balGate = document.getElementById('paybybank-bal-select').value;
+  const r29Gate = document.getElementById('paybybank-r29-select').value;
+  const nachaGate = document.getElementById('paybybank-nacha-select').value;
+  const optMode = document.getElementById('paybybank-opt-select').value;
+
+  const grossKpi = document.getElementById('paybybank-gross-kpi');
+  const netKpi = document.getElementById('paybybank-net-kpi');
+  const savingsKpi = document.getElementById('paybybank-savings-kpi');
+  const statusKpi = document.getElementById('paybybank-status-kpi');
+  const banner = document.getElementById('paybybank-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (nachaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 NACHA_RETRY_CAP_OR_UNAUTHORIZED_R10_RATIO_HOLD · Mandate: null';
+    return;
+  }}
+  if (balGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ACH_NSF_R01_RISK_OR_UNSETTLED_HIGH_TICKET_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (r29Gate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CORPORATE_R29_DEBIT_FILTER_OR_MANUAL_TYPO_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 INSTANT_REBATE_STEER_FEDNOW_AND_VIBAN_PUSH_CONFIRM · Mandate: pay_by_bank_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_OAUTH_PAY_BY_BANK_SETTLEMENT_AUTHORIZED · Mandate: pay_by_bank_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`324` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`325` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (20 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (46 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (47 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (120 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (73 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (27 guides)](#saas-finops-micropayments)
@@ -46,7 +46,7 @@
 | 20 | **Omnichannel Retail Clienteling, Endless-Aisle Store Fulfillment & Commission-Attribution Escrow (`Tulip / Salesforce Retail POS / Shopify POS / NewStore`), 14-Day Stylist Lookbook Lock, Dual-Store Quota Credit & VIP Book-of-Business Shield (`-37%` OOS & Churn Loss) Agent Architecture Selection FAQ (🏆 320th Guide Milestone)** | [English](omnichannel-retail-clienteling-endless-aisle-commission-attribution-escrow-agent-selection-faq.en.md) · [中文](omnichannel-retail-clienteling-endless-aisle-commission-attribution-escrow-agent-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (46 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (47 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -98,6 +98,7 @@
 | 44 | **Multi-PSP Payment Orchestration, Acquirer Failover & `Durbin` PINless Debit Routing Escrow (`Primer / Spreedly / Adyen / Stripe`), Anti-Double-Charge `0420` Timeout Mutex, Decoupled `3DS2 CAVV` Reuse & Local `MID` Routing (`-39%` Payment MDR & Decline Loss) Agent Architecture Selection FAQ** | [English](ecommerce-multi-psp-payment-orchestration-acquirer-failover-debit-routing-escrow-agent-selection-faq.en.md) · [中文](ecommerce-multi-psp-payment-orchestration-acquirer-failover-debit-routing-escrow-agent-selection-faq.md) |
 | 45 | **E-Commerce `HSA / FSA` Tax-Free Health & Wellness Checkout, `SIGIS IIAS` Mixed-Cart Split & Letter of Medical Necessity (`LMN`) Escrow (`TrueMed / Flex / Sika Health / Stripe`), `Code-57` Decline Shield, Clinician `NPI` `IRS §213(d)` Lock & `TPA` Auto-Substantiation (`-34%` Decline & Audit Loss) Agent Architecture Selection FAQ** | [English](ecommerce-hsa-fsa-tax-free-checkout-sigis-lmn-split-escrow-agent-selection-faq.en.md) · [中文](ecommerce-hsa-fsa-tax-free-checkout-sigis-lmn-split-escrow-agent-selection-faq.md) |
 | 46 | **E-Commerce One-Click Accelerated Guest Checkout, Anti-`SMS-Pumping` Passkey Guard & `EMVCo Network Token` Escrow (`Shop Pay / PayPal Fastlane / Stripe Link / Apple Pay`), `MNO` Toll-Fraud Circuit Breaker, In-Sheet `CASS` Address Validation & `DPAN` Cryptograms (`-37%` Checkout Loss) Agent Architecture Selection FAQ** | [English](ecommerce-one-click-accelerated-checkout-passkey-network-token-sms-fraud-escrow-agent-selection-faq.en.md) · [中文](ecommerce-one-click-accelerated-checkout-passkey-network-token-sms-fraud-escrow-agent-selection-faq.md) |
+| 47 | **E-Commerce & B2B Pay-by-Bank (`Open Banking A2A`: `Plaid Transfer / Stripe Financial Connections / Trustly / FedNow`), Anti-`ACH R01` Kiting & Corporate `R29` Escrow, `1.25x` Live Balance Gate, `vIBAN` Push Fallback & `1%` Instant Cashback Steer (`-37%` Payment Loss) Agent Architecture Selection FAQ** | [English](ecommerce-pay-by-bank-open-banking-ach-return-r01-fednow-escrow-agent-selection-faq.en.md) · [中文](ecommerce-pay-by-bank-open-banking-ach-return-r01-fednow-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (120 Guides)
