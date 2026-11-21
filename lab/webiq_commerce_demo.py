@@ -28010,6 +28010,79 @@ def evaluate_corporate_expense_card_audit_policy(
     }
 
 
+@dataclass(frozen=True)
+class SaasInvoluntaryChurnDunningPolicyInput:
+    quarterly_involuntary_churn_arr_and_retry_penalty_pool_usd: float = 160000.0
+    hard_decline_retry_or_exceeds_15_rolling_attempts: bool = False
+    missing_cit_network_tx_id_or_day1_scare_dunning_email: bool = False
+    abrupt_b2b_production_tenant_cutoff_or_psd2_sca_unhandled: bool = False
+    pre_bill_vau_payday_ml_retry_and_magic_link_wallet_ready: bool = False
+
+
+def evaluate_saas_involuntary_churn_dunning_policy(
+    policy_input: SaasInvoluntaryChurnDunningPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_involuntary_churn_arr_and_retry_penalty_pool_usd)
+    )
+    if policy_input.abrupt_b2b_production_tenant_cutoff_or_psd2_sca_unhandled:
+        return {
+            "status_code": 451,
+            "decision": "B2B_PRODUCTION_CUTOFF_OR_PSD2_SCA_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hard_decline_retry_or_exceeds_15_rolling_attempts:
+        return {
+            "status_code": 403,
+            "decision": "HARD_DECLINE_OR_VISA_15X_RETRY_CAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missing_cit_network_tx_id_or_day1_scare_dunning_email:
+        return {
+            "status_code": 422,
+            "decision": "MISSING_CIT_TID_OR_PREMATURE_DUNNING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pre_bill_vau_payday_ml_retry_and_magic_link_wallet_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PRE_BILL_VAU_PAYDAY_ML_RETRY_AND_MAGIC_LINK_WALLET_CONFIRM",
+            "mandate_token": "smart_dunning_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "RECURRING_MIT_RENEWAL_AUTHORIZED",
+        "mandate_token": "smart_dunning_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -38349,6 +38422,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    saas_involuntary_churn_dunning_guard = {
+        "authorized_200": evaluate_saas_involuntary_churn_dunning_policy(
+            SaasInvoluntaryChurnDunningPolicyInput()
+        ),
+        "hard_decline_or_15x_cap_403": evaluate_saas_involuntary_churn_dunning_policy(
+            SaasInvoluntaryChurnDunningPolicyInput(
+                hard_decline_retry_or_exceeds_15_rolling_attempts=True
+            )
+        ),
+        "missing_tid_or_day1_email_422": evaluate_saas_involuntary_churn_dunning_policy(
+            SaasInvoluntaryChurnDunningPolicyInput(
+                missing_cit_network_tx_id_or_day1_scare_dunning_email=True
+            )
+        ),
+        "b2b_cutoff_or_psd2_sca_451": evaluate_saas_involuntary_churn_dunning_policy(
+            SaasInvoluntaryChurnDunningPolicyInput(
+                abrupt_b2b_production_tenant_cutoff_or_psd2_sca_unhandled=True
+            )
+        ),
+        "vau_payday_and_wallet_409": evaluate_saas_involuntary_churn_dunning_policy(
+            SaasInvoluntaryChurnDunningPolicyInput(
+                pre_bill_vau_payday_ml_retry_and_magic_link_wallet_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -38647,6 +38746,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_inventory_liquidation_guard": b2b_inventory_liquidation_guard,
         "ecommerce_fefo_lot_expiry_guard": ecommerce_fefo_lot_expiry_guard,
         "corporate_expense_card_audit_guard": corporate_expense_card_audit_guard,
+        "saas_involuntary_churn_dunning_guard": saas_involuntary_churn_dunning_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -53536,6 +53636,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="corp-exp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DIRECT_FOLIO_AUTO_MATCH_AND_PERSONAL_OVERAGE_SPLIT_CONFIRM · Mandate: corp_expense_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 170 SaaS & Subscription Involuntary Churn & Smart Dunning Escrow -->
+      <div class="finops-box" id="saas-involuntary-churn-dunning-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔄 SaaS 与订阅制被动流失挽回与智能催缴 (Stripe Adaptive / Recurly / Butter) 托管沙盒</div>
+            <div class="finops-sub">Round 170 · Category-1 硬拒付零重试与 15次上限锁 (HTTP 403) + CIT-TID 链路与 7天静默期免邮件锁 (HTTP 422) + B2B 租户分级宽限 (HTTP 451) + 发薪日择时与免登录换绑挽回 41% ARR (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="dunning-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度续费扣款失败被动流失 ARR 与卡组重试罚金池 ($)
+            <input type="number" id="dunning-gross-input" value="160000" min="10000" step="5000" oninput="recalcSaasInvoluntaryChurnDunningSandbox()" />
+          </label>
+          <label>原始网络响应码 Category-1 硬拒付 &amp; 30天重试次数门禁
+            <select id="dunning-hard-select" onchange="recalcSaasInvoluntaryChurnDunningSandbox()">
+              <option value="pass">软拒付 (Code 51/05) 且 30 天内重试 &lt;=14 次 (零卡组罚金)</option>
+              <option value="block_403">对 Code 41 挂失卡/R0 止付卡死循环重试或突破 Visa 15 次上限遭罚 $1.50/次 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>CIT-to-MIT 交易 ID 报文链与 7 天静默期邮件防惊扰门禁
+            <select id="dunning-tid-select" onchange="recalcSaasInvoluntaryChurnDunningSandbox()">
+              <option value="pass">携带首次签约 CIT Network TID + 前 7 天静默重试 0 邮件打扰 (合规)</option>
+              <option value="block_422">漏传 CIT TID 遭 05 误杀或失败第 1 秒群发红字警告邮件惊醒用户退订 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>B2B 企业生产租户分级宽限与欧盟 PSD2 SCA / 印度 RBI 合规
+            <select id="dunning-b2b-select" onchange="recalcSaasInvoluntaryChurnDunningSandbox()">
+              <option value="pass">B2B 租户前 14 天仅提醒财务 Admin (生产 API 正常) + 注入 MIT 豁免 (安全)</option>
+              <option value="block_451">因公司卡过期第 3 天暴力切断 200 人企业租户生产 API 或未处理 PSD2 Code 79 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>T-72h VAU 卡组预更新、发薪日择时重扣与免登录 Apple Pay/ACH 救援
+            <select id="dunning-opt-select" onchange="recalcSaasInvoluntaryChurnDunningSandbox()">
+              <option value="enabled" selected>T-72h VAU 换新卡 + 对齐周五/1号/15号发薪日 + 免登录 1-Tap 换卡 (挽回 41% / HTTP 409)</option>
+              <option value="disabled">传统固定每隔 24 小时盲目重试 + 要求输入密码登录后台改卡 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度被动流失 ARR 与罚款总池</div>
+            <div class="finops-kpi-val" id="dunning-gross-kpi">$160,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">智能静默重扣与换卡后净流失</div>
+            <div class="finops-kpi-val" id="dunning-net-kpi" style="color:#6ee7b7;">$94,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回订阅 ARR 与省下罚金</div>
+            <div class="finops-kpi-val" id="dunning-savings-kpi" style="color:#38bdf8;">$65,600</div>
+          </div>
+        </div>
+        <div id="dunning-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PRE_BILL_VAU_PAYDAY_ML_RETRY_AND_MAGIC_LINK_WALLET_CONFIRM · Mandate: smart_dunning_escrow_optim_409
         </div>
       </div>
 
@@ -71463,6 +71620,79 @@ function recalcCorporateExpenseCardAuditSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 COMPLIANT_CORP_EXPENSE_POSTING_AUTHORIZED · Mandate: corp_expense_escrow_200';
+}}
+
+function recalcSaasInvoluntaryChurnDunningSandbox() {{
+  const grossInput = document.getElementById('dunning-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '160000'));
+  const hardGate = document.getElementById('dunning-hard-select').value;
+  const tidGate = document.getElementById('dunning-tid-select').value;
+  const b2bGate = document.getElementById('dunning-b2b-select').value;
+  const optMode = document.getElementById('dunning-opt-select').value;
+
+  const grossKpi = document.getElementById('dunning-gross-kpi');
+  const netKpi = document.getElementById('dunning-net-kpi');
+  const savingsKpi = document.getElementById('dunning-savings-kpi');
+  const statusKpi = document.getElementById('dunning-status-kpi');
+  const banner = document.getElementById('dunning-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (b2bGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 B2B_PRODUCTION_CUTOFF_OR_PSD2_SCA_HOLD · Mandate: null';
+    return;
+  }}
+  if (hardGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 HARD_DECLINE_OR_VISA_15X_RETRY_CAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (tidGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MISSING_CIT_TID_OR_PREMATURE_DUNNING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PRE_BILL_VAU_PAYDAY_ML_RETRY_AND_MAGIC_LINK_WALLET_CONFIRM · Mandate: smart_dunning_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 RECURRING_MIT_RENEWAL_AUTHORIZED · Mandate: smart_dunning_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

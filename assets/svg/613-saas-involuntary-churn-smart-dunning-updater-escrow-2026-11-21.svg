@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg613" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0c1c31"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr613" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg613)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr613)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 170 · SaaS &amp; Subscription Involuntary Churn, Smart Dunning &amp; Network Updater Escrow</text>
+  <text x="48" y="74" class="sub">Stripe Adaptive Acceptance / Recurly / Chargebee / Butter · Hard-Decline MAC Halt · Payday-Aware Retry · VAU/NT Token Refresh (-41% ARR Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #613 · FAQ #289</text>
+
+  <!-- Lane 1: Hard-Decline & Excessive Retry Fine Breaker -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Hard-Decline &amp; Card-Network Fine Breaker (403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Naive "Retry Every 24h for 10 Days" Loops:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Visa Category-1 / Mastercard MAC Category-1:</text>
+  <text x="54" y="200" class="mono">04/07/14/41/43/R0/R1 → ZERO Retries Allowed</text>
+  <text x="44" y="223" class="body-txt">• Prevents $0.10–$1.50/tx Network Retry Fines &amp;</text>
+  <text x="54" y="243" class="body-txt">Merchant MID Approval-Rate Blacklisting:</text>
+  <text x="54" y="263" class="mono">Cap Soft-Decline Retries &lt;= 15 per 30 Rolling Days</text>
+  <text x="44" y="286" class="body-txt">• Routes Hard Declines immediately to Out-of-Band</text>
+  <text x="54" y="304" class="body-txt">1-Tap Apple Pay / Google Pay / Link update link</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 HARD_DECLINE_OR_VISA_15X_RETRY_CAP_BLOCKED</text>
+
+  <!-- Lane 2: Silent Pre-Dunning Network Token & CIT/MIT Flag -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. CIT/MIT Trace ID &amp; Silent Updater Gate (422)</text>
+  <text x="432" y="162" class="body-txt">• Fixes False `05 Do Not Honor` on Recurring MIT:</text>
+  <text x="442" y="182" class="mono">Require Original_CIT_Network_Tx_ID (TID) +</text>
+  <text x="442" y="200" class="mono">recurring_indicator=MIT + Zero-CVV Payload</text>
+  <text x="432" y="223" class="body-txt">• T-72h Pre-Bill Network Token / VAU / ABU Sync:</text>
+  <text x="442" y="243" class="mono" fill="#fcd34d">Refresh Expired / Reissued PAN Before Billing</text>
+  <text x="432" y="266" class="body-txt">• Anti-Customer-Scare "Failed Payment!" Email Lock:</text>
+  <text x="442" y="286" class="body-txt">Suppresses dunning emails during 7-day silent</text>
+  <text x="442" y="304" class="body-txt">smart-retry window so passive users don't cancel</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 MISSING_CIT_TID_OR_PREMATURE_DUNNING_BLOCKED</text>
+
+  <!-- Lane 3: Production Tenant Brick & Partial-Auth Guard -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. B2B Tenant Grace &amp; PSD2 SCA Exemption (451)</text>
+  <text x="820" y="162" class="body-txt">• Never Hard-Kill Active B2B Production Tenants:</text>
+  <text x="830" y="182" class="mono">Day 1-14: Admin Banner Only (API/SSO stays UP)</text>
+  <text x="830" y="200" class="mono">Day 15-21: Read-Only Mode · Day 30: Archive</text>
+  <text x="820" y="223" class="body-txt">• EU/UK PSD2 `79 Soft Decline (SCA Required)`:</text>
+  <text x="830" y="243" class="mono" fill="#f9a8d4">Apply Fixed-Amount MIT Exemption or Send 3DS2</text>
+  <text x="820" y="266" class="body-txt">• RBI India e-Mandate (`>INR 15,000` Pre-Debit):</text>
+  <text x="830" y="286" class="body-txt">Enforces mandatory T-24h AFA notification before</text>
+  <text x="830" y="304" class="body-txt">recurring charge to prevent statutory bank block</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 B2B_PRODUCTION_CUTOFF_OR_PSD2_SCA_HOLD</text>
+
+  <!-- Bottom Payday-Aware ML Retry & Multi-PSP Failover Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Payday-Aware ML Retry Scheduling + Multi-PSP Routing + Magic-Link Wallet Rescue (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① T-72h Network Token &amp; VAU</text>
+  <text x="62" y="462" class="body-txt">Auto-swaps expired/lost cards</text>
+  <text x="62" y="480" class="body-txt">to issuer Network Tokens (NT)</text>
+  <text x="62" y="498" class="body-txt">before renewal; lifts baseline</text>
+  <text x="62" y="516" class="mono">+4.2% Auth Rate on Day 0</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Payday &amp; Timezone ML Retry</text>
+  <text x="337" y="462" class="body-txt">For `51 Insufficient Funds`:</text>
+  <text x="337" y="480" class="body-txt">waits for 1st/15th/Friday payday</text>
+  <text x="337" y="498" class="body-txt">at 06:05 local bank settlement;</text>
+  <text x="337" y="516" class="mono">68% Recovered Silently (0 Email)</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Secondary PSP &amp; Debit Rail</text>
+  <text x="622" y="462" class="body-txt">For `05 Do Not Honor`: retries</text>
+  <text x="622" y="480" class="body-txt">via secondary acquiring MID or</text>
+  <text x="622" y="498" class="body-txt">US PINless Debit (`Star/Accel`)</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">Bypasses Single-Acquirer Filter</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Zero-Login Apple Pay / ACH</text>
+  <text x="907" y="462" class="body-txt">Day-7 SMS/Email with signed</text>
+  <text x="907" y="480" class="body-txt">WebAuthn link to swap to Apple</text>
+  <text x="907" y="498" class="body-txt">Pay or B2B ACH without password</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-41% Involuntary Churn ARR Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-41.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Failed-Renewal ARR Saved</text>
+  <text x="46" y="642" class="mono">$65,600 Saved / $160k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">0 Visa/MC Fines</text>
+  <text x="336" y="626" class="kpi-lbl">Category-1 Hard-Decline Halt</text>
+  <text x="336" y="642" class="mono">Cap &lt;=15 Soft Retries / 30d</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">7d Silent Window</text>
+  <text x="626" y="626" class="kpi-lbl">No Premature Dunning Alarm</text>
+  <text x="626" y="642" class="mono">Stops Passive Cancellation</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">CIT-to-MIT TID</text>
+  <text x="916" y="626" class="kpi-lbl">Network Transaction ID Chain</text>
+  <text x="916" y="642" class="mono">+6.8% Issuer Auth Uplift</text>
+</svg>

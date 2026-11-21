@@ -20448,6 +20448,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("corporate-expense-card-audit-sandbox", html_zh)
 
+    def test_saas_involuntary_churn_dunning_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaasInvoluntaryChurnDunningPolicyInput,
+            evaluate_saas_involuntary_churn_dunning_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_involuntary_churn_dunning_policy(
+            SaasInvoluntaryChurnDunningPolicyInput(
+                quarterly_involuntary_churn_arr_and_retry_penalty_pool_usd=160000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "RECURRING_MIT_RENEWAL_AUTHORIZED",
+        )
+
+        hard = evaluate_saas_involuntary_churn_dunning_policy(
+            SaasInvoluntaryChurnDunningPolicyInput(
+                hard_decline_retry_or_exceeds_15_rolling_attempts=True
+            )
+        )
+        self.assertEqual(hard["status_code"], 403)
+        self.assertEqual(
+            hard["decision"],
+            "HARD_DECLINE_OR_VISA_15X_RETRY_CAP_BLOCKED",
+        )
+
+        tid = evaluate_saas_involuntary_churn_dunning_policy(
+            SaasInvoluntaryChurnDunningPolicyInput(
+                missing_cit_network_tx_id_or_day1_scare_dunning_email=True
+            )
+        )
+        self.assertEqual(tid["status_code"], 422)
+        self.assertEqual(
+            tid["decision"],
+            "MISSING_CIT_TID_OR_PREMATURE_DUNNING_BLOCKED",
+        )
+
+        b2b = evaluate_saas_involuntary_churn_dunning_policy(
+            SaasInvoluntaryChurnDunningPolicyInput(
+                abrupt_b2b_production_tenant_cutoff_or_psd2_sca_unhandled=True
+            )
+        )
+        self.assertEqual(b2b["status_code"], 451)
+        self.assertEqual(
+            b2b["decision"],
+            "B2B_PRODUCTION_CUTOFF_OR_PSD2_SCA_HOLD",
+        )
+
+        optim = evaluate_saas_involuntary_churn_dunning_policy(
+            SaasInvoluntaryChurnDunningPolicyInput(
+                quarterly_involuntary_churn_arr_and_retry_penalty_pool_usd=160000.0,
+                pre_bill_vau_payday_ml_retry_and_magic_link_wallet_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 65600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 94400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_involuntary_churn_dunning_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-involuntary-churn-dunning-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
