@@ -30041,6 +30041,82 @@ def evaluate_b2b_index_formula_pricing_policy(
     }
 
 
+@dataclass(frozen=True)
+class CorporateTravelHotelRfpAuditPolicyInput:
+    quarterly_lra_squatting_gds_misload_and_bar_undercut_pool_usd: float = 170000.0
+    peak_season_lra_closed_while_standard_room_bar_available: bool = False
+    offpeak_public_bar_lower_than_fixed_corp_or_q1_gds_unloaded: bool = False
+    unwaived_destination_urban_fee_or_heavy_rfp_in_sub100n_city: bool = False
+    hybrid_rate_cap_dynamic_bar_and_weekly_gds_pcc_audit_ready: bool = False
+
+
+def evaluate_corporate_travel_hotel_rfp_audit_policy(
+    policy_input: CorporateTravelHotelRfpAuditPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_lra_squatting_gds_misload_and_bar_undercut_pool_usd
+        ),
+    )
+    if policy_input.unwaived_destination_urban_fee_or_heavy_rfp_in_sub100n_city:
+        return {
+            "status_code": 451,
+            "decision": "UNWAIVED_DESTINATION_FEE_OR_TAIL_RFP_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.peak_season_lra_closed_while_standard_room_bar_available:
+        return {
+            "status_code": 403,
+            "decision": "LRA_AVAILABILITY_SQUATTING_OR_BLACKOUT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.offpeak_public_bar_lower_than_fixed_corp_or_q1_gds_unloaded:
+        return {
+            "status_code": 422,
+            "decision": "PUBLIC_BAR_UNDERCUT_OR_GDS_MISLOAD_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hybrid_rate_cap_dynamic_bar_and_weekly_gds_pcc_audit_ready:
+        savings = round(gross_pool * 0.34, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "HYBRID_RATE_CAP_AND_WEEKLY_GDS_LRA_AUDIT_CONFIRM",
+            "mandate_token": "hotel_rfp_lra_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_LRA_CORPORATE_HOTEL_RATE_AUTHORIZED",
+        "mandate_token": "hotel_rfp_lra_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -41082,6 +41158,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    corporate_travel_hotel_rfp_audit_guard = {
+        "authorized_200": evaluate_corporate_travel_hotel_rfp_audit_policy(
+            CorporateTravelHotelRfpAuditPolicyInput()
+        ),
+        "peak_lra_squatting_403": evaluate_corporate_travel_hotel_rfp_audit_policy(
+            CorporateTravelHotelRfpAuditPolicyInput(
+                peak_season_lra_closed_while_standard_room_bar_available=True
+            )
+        ),
+        "bar_undercut_or_misload_422": evaluate_corporate_travel_hotel_rfp_audit_policy(
+            CorporateTravelHotelRfpAuditPolicyInput(
+                offpeak_public_bar_lower_than_fixed_corp_or_q1_gds_unloaded=True
+            )
+        ),
+        "urban_fee_or_tail_rfp_451": evaluate_corporate_travel_hotel_rfp_audit_policy(
+            CorporateTravelHotelRfpAuditPolicyInput(
+                unwaived_destination_urban_fee_or_heavy_rfp_in_sub100n_city=True
+            )
+        ),
+        "hybrid_cap_and_gds_audit_409": evaluate_corporate_travel_hotel_rfp_audit_policy(
+            CorporateTravelHotelRfpAuditPolicyInput(
+                hybrid_rate_cap_dynamic_bar_and_weekly_gds_pcc_audit_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -41407,6 +41509,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "conversational_commerce_whatsapp_guard": conversational_commerce_whatsapp_guard,
         "ecommerce_made_to_order_custom_guard": ecommerce_made_to_order_custom_guard,
         "b2b_index_formula_pricing_guard": b2b_index_formula_pricing_guard,
+        "corporate_travel_hotel_rfp_audit_guard": corporate_travel_hotel_rfp_audit_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -57835,6 +57938,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="indexform-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 QUARTERLY_SHOULD_COST_RESET_AND_SAP_PIR_SYNC_CONFIRM · Mandate: b2b_index_formula_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 197 Corporate Travel Hotel RFP, LRA Squatting Audit & Dynamic BAR-Cap Escrow (#316) -->
+      <div class="finops-box" id="corporate-travel-hotel-rfp-audit-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏢 企业商旅酒店年度协议价招标 (Hotel RFP)、防旺季关停 LRA 协议房与动态 BAR 封顶 (Cvent / Tripbam / Sabre) 沙盒</div>
+            <div class="finops-sub">Round 197 (#316) · 旺季散客有房却关停企业 LRA 协议码反欺诈探测 (HTTP 403) + 淡季 BAR 跌破固定协议价取低与 1月初 GDS 漏录审计 (HTTP 422) + 100% 豁免 $45 目的地杂费 (HTTP 451) + 混合封顶合约净省 34% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="hotelrfp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度旺季 LRA 被违规关房买高价散客票、Q1 年初 GDS 漏录与淡季倒挂多付损耗池 ($)
+            <input type="number" id="hotelrfp-gross-input" value="170000" min="10000" step="5000" oninput="recalcCorporateTravelHotelRfpAuditSandbox()" />
+          </label>
+          <label>旺季“最后一间房可用权 (LRA)”双通道公网比对防偷偷关房
+            <select id="hotelrfp-lra-select" onchange="recalcCorporateTravelHotelRfpAuditSandbox()">
+              <option value="pass">只要公网散客 BAR 还有同款标准间，企业 LRA 协议价即 100% 诚实开放 (合规)</option>
+              <option value="block_403">展会周公开散客仍在卖 $510 标准间，酒店却偷偷将企业 $240 LRA 协议码关为无房 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>淡季公开 BAR 倒挂取低保护与 1 月初 GDS 专属 PCC 录价审计
+            <select id="hotelrfp-bar-select" onchange="recalcCorporateTravelHotelRfpAuditSandbox()">
+              <option value="pass">执行 Min(固定封顶, 0.88×实时BAR) 且 1月2日已自动验明 GDS 价格与含早加载无误 (合规)</option>
+              <option value="block_422">淡季公开网价跌到 $165 却让员工按 $240 固定协议价买单 或 Q1 酒店漏录 GDS 协议码 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>$45/晚城市目的地费 (Destination/Urban Fee) 豁免与 100 间夜城市招标分层
+            <select id="hotelrfp-fee-select" onchange="recalcCorporateTravelHotelRfpAuditSandbox()">
+              <option value="pass">合同强制 100% 免除前台目的地杂费 且 &lt;100间夜长尾城市直接挂集团动态折扣 (安全)</option>
+              <option value="block_451">退房前台强刷 $45/晚城市设施费 或 为一年仅住 20 晚的三线城市耗费 4 个月做固定价 RFP (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>混合封顶动态折 (Hybrid Rate-Cap) 与每周全自动 GDS/LRA 机器巡检
+            <select id="hotelrfp-opt-select" onchange="recalcCorporateTravelHotelRfpAuditSandbox()">
+              <option value="enabled" selected>旺季 $240 封顶 + 淡季 BAR 88折 + 每周自动扫描 PCC 录价与 LRA 违约追偿 (-34% 支出 / HTTP 409)</option>
+              <option value="disabled">传统一年一签静态固定价且无 GDS 录价持续监控 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度协议酒店漏录与倒挂总损耗池</div>
+            <div class="finops-kpi-val" id="hotelrfp-gross-kpi">$170,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">LRA 巡检与混合封顶后净支出</div>
+            <div class="finops-kpi-val" id="hotelrfp-net-kpi" style="color:#6ee7b7;">$112,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省旺季溢价与淡季倒挂房费</div>
+            <div class="finops-kpi-val" id="hotelrfp-savings-kpi" style="color:#38bdf8;">$57,800</div>
+          </div>
+        </div>
+        <div id="hotelrfp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 HYBRID_RATE_CAP_AND_WEEKLY_GDS_LRA_AUDIT_CONFIRM · Mandate: hotel_rfp_lra_escrow_optim_409
         </div>
       </div>
 
@@ -77733,6 +77893,79 @@ function recalcB2bIndexFormulaPricingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_DEADBAND_STABLE_FORMULA_PRICE_MAINTAINED · Mandate: b2b_index_formula_escrow_200';
+}}
+
+function recalcCorporateTravelHotelRfpAuditSandbox() {{
+  const grossInput = document.getElementById('hotelrfp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '170000'));
+  const lraGate = document.getElementById('hotelrfp-lra-select').value;
+  const barGate = document.getElementById('hotelrfp-bar-select').value;
+  const feeGate = document.getElementById('hotelrfp-fee-select').value;
+  const optMode = document.getElementById('hotelrfp-opt-select').value;
+
+  const grossKpi = document.getElementById('hotelrfp-gross-kpi');
+  const netKpi = document.getElementById('hotelrfp-net-kpi');
+  const savingsKpi = document.getElementById('hotelrfp-savings-kpi');
+  const statusKpi = document.getElementById('hotelrfp-status-kpi');
+  const banner = document.getElementById('hotelrfp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (feeGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNWAIVED_DESTINATION_FEE_OR_TAIL_RFP_HOLD · Mandate: null';
+    return;
+  }}
+  if (lraGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 LRA_AVAILABILITY_SQUATTING_OR_BLACKOUT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (barGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PUBLIC_BAR_UNDERCUT_OR_GDS_MISLOAD_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.34);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 HYBRID_RATE_CAP_AND_WEEKLY_GDS_LRA_AUDIT_CONFIRM · Mandate: hotel_rfp_lra_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_LRA_CORPORATE_HOTEL_RATE_AUTHORIZED · Mandate: hotel_rfp_lra_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

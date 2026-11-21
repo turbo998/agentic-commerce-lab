@@ -22257,6 +22257,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-index-formula-pricing-sandbox", html_zh)
 
+    def test_corporate_travel_hotel_rfp_audit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CorporateTravelHotelRfpAuditPolicyInput,
+            evaluate_corporate_travel_hotel_rfp_audit_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_corporate_travel_hotel_rfp_audit_policy(
+            CorporateTravelHotelRfpAuditPolicyInput(
+                quarterly_lra_squatting_gds_misload_and_bar_undercut_pool_usd=170000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_LRA_CORPORATE_HOTEL_RATE_AUTHORIZED",
+        )
+
+        lra = evaluate_corporate_travel_hotel_rfp_audit_policy(
+            CorporateTravelHotelRfpAuditPolicyInput(
+                peak_season_lra_closed_while_standard_room_bar_available=True
+            )
+        )
+        self.assertEqual(lra["status_code"], 403)
+        self.assertEqual(
+            lra["decision"],
+            "LRA_AVAILABILITY_SQUATTING_OR_BLACKOUT_BLOCKED",
+        )
+
+        bar = evaluate_corporate_travel_hotel_rfp_audit_policy(
+            CorporateTravelHotelRfpAuditPolicyInput(
+                offpeak_public_bar_lower_than_fixed_corp_or_q1_gds_unloaded=True
+            )
+        )
+        self.assertEqual(bar["status_code"], 422)
+        self.assertEqual(
+            bar["decision"],
+            "PUBLIC_BAR_UNDERCUT_OR_GDS_MISLOAD_BLOCKED",
+        )
+
+        fee = evaluate_corporate_travel_hotel_rfp_audit_policy(
+            CorporateTravelHotelRfpAuditPolicyInput(
+                unwaived_destination_urban_fee_or_heavy_rfp_in_sub100n_city=True
+            )
+        )
+        self.assertEqual(fee["status_code"], 451)
+        self.assertEqual(
+            fee["decision"],
+            "UNWAIVED_DESTINATION_FEE_OR_TAIL_RFP_HOLD",
+        )
+
+        optim = evaluate_corporate_travel_hotel_rfp_audit_policy(
+            CorporateTravelHotelRfpAuditPolicyInput(
+                quarterly_lra_squatting_gds_misload_and_bar_undercut_pool_usd=170000.0,
+                hybrid_rate_cap_dynamic_bar_and_weekly_gds_pcc_audit_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 57800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 112200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("corporate_travel_hotel_rfp_audit_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("corporate-travel-hotel-rfp-audit-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
