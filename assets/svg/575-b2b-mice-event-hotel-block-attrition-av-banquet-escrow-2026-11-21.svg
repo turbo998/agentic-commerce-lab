@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg575" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#102240" />
+      <stop offset="100%" stop-color="#06101d" />
+    </linearGradient>
+    <linearGradient id="accent575" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg575)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent575)" rx="3" />
+
+  <text x="40" y="58" class="title">企业会展团队订房 (MICE Hotel Block)、防空房罚金 (Attrition) 与宴会影音防宰客托管 (Cvent / GroupSync)</text>
+  <text x="40" y="80" class="subtitle">Round 132 · 防参会者跑去 OTA 订房致团队块未达 80% 赔 $42,000、防驻场 AV 加收 65% 服务税费 &amp; 动态退房池净省 29% (SVG 575)</text>
+
+  <!-- Left Card: 3 MICE & Group Booking Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大会展包房与宴会黑洞</text>
+  <text x="56" y="164" class="card-title">1. 80% 保底入住率 (Attrition) 巨额违约金</text>
+  <text x="56" y="184" class="body">• 企业签 500 房晚协议，约定最低完成 80% (400 房晚)</text>
+  <text x="56" y="202" class="body">• 80 名员工图积分自己去 Booking/携程订了同一家酒店</text>
+  <text x="56" y="220" class="warn">• 团队代码名下仅统计到 310 晚，酒店强罚 90 晚空房费 $27,000!</text>
+
+  <text x="56" y="256" class="card-title">2. 驻场独家影音 (In-House AV) 65% 附加费刺客</text>
+  <text x="56" y="276" class="body">• 宴会厅租 2 台投影仪+无线麦报价 $18,000，外加“26% 服务费</text>
+  <text x="56" y="294" class="body">  + 10% 场馆管理费 + 场馆电工开机费 $1,500”</text>
+  <text x="56" y="312" class="warn">• 甚至对“26% 服务费”本身再叠加征收 9% 消费税 (Tax-on-Fee)</text>
+
+  <text x="56" y="348" class="card-title">3. 酒店全满还收空房罚金 (Double-Dipping)</text>
+  <text x="56" y="368" class="body">• 我方未住满的 50 间房，其实早被酒店高价卖给了散客</text>
+  <text x="56" y="386" class="body">• 酒店当晚入住率 98%，却隐瞒转售事实照收我方 100% 违约金</text>
+  <text x="56" y="404" class="warn">• 按全额房费 (含酒店没发生的打扫成本) 而非净毛利算赔偿</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: AV_EXCLUSIVITY_SURCHARGE_OR_TAX_ON_FEE</text>
+  <text x="70" y="502" class="warn">• HTTP 422: UNCREDITED_AROUND_THE_BLOCK_OR_GROSS_ATTRITION</text>
+  <text x="70" y="524" class="warn">• HTTP 451: UNMITIGATED_SOLD_OUT_HOTEL_DOUBLE_DIP_HOLD</text>
+  <text x="70" y="546" class="mono">• HTTP 409: ROLLING_CUTOFF_DROP_AND_PROFIT_ATTRITION_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: MICE_BLOCK_AND_BANQUET_BEO_AUTHORIZED</text>
+  <text x="70" y="596" class="body">铁律: 参会名单全店交叉归因 + 仅按75%净房间毛利算违约!</text>
+
+  <!-- Center Card: 4-Stage MICE Escrow Pipeline -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶会展包房与宴会 BEO 审计架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">Gate 1: 全店参会名单交叉归因 (Around-the-Block Audit)</text>
+  <text x="450" y="195" class="body">• Cvent 参会注册表与酒店 PMS 入住总表做隐私哈希碰撞</text>
+  <text x="450" y="213" class="body">• 凡参会嘉宾入住本酒店(无论从携程/官网何渠道订)，100% 计入</text>
+  <text x="450" y="231" class="mono">• 瞬间找回 15%~25% 流失房晚，直接跨过 80% 免罚线!</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="282" class="card-title" fill="#6ee7b7">Gate 2: 转售减损核销 (Resale Credit) 与 75% 净利封顶</text>
+  <text x="450" y="302" class="body">• 强制要求酒店出具审计级当日总入住率报表 (Occupancy Report)</text>
+  <text x="450" y="320" class="body">• 酒店转售出去的房间必须 1:1 冲抵我方未住满差额 (HTTP 451)</text>
+  <text x="450" y="338" class="body">• 即使真有空房，仅按房费 75% 净毛利 (扣除客房打扫成本) 赔付</text>
+  <text x="450" y="354" class="mono">• 累计跨日总算 (Cumulative) 而非按单晚峰值逐夜苛扣 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#f59e0b" />
+  <text x="450" y="399" class="card-title" fill="#fcd34d">Gate 3: 宴会执行单 (BEO) 与第三方 AV 免入场费锁</text>
+  <text x="450" y="419" class="body">• 合同初审砍掉“引入外部 AV 搭建商需交 $5,000 线路接驳费”霸王条款</text>
+  <text x="450" y="437" class="body">• 严禁对非应税服务费重复计税或擅自把 $80 茶歇改成按全员人头收</text>
+  <text x="450" y="455" class="mono">• BEO 决算单超预批总额 &gt;5% 自动拦截 -&gt; HTTP 403</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#a855f7" />
+  <text x="450" y="508" class="card-title" fill="#d8b4fe">Gate 4: T-60d / T-30d 阶梯无损释放 (Rolling Drop) (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 根据早鸟票报名实况，在 T-60d 免费调减 20%、T-30d 再调减 15% 包房</text>
+  <text x="450" y="546" class="body">• 若临期发现酒店散客价低于团队协议价，自动触发团队整块降价对齐</text>
+  <text x="450" y="566" class="mono">• 未用完空房赔偿金 100% 转为明年同集团酒店会议消费抵用金</text>
+  <text x="450" y="586" class="mono">• 跨渠道归因 + 阶梯减房 + 第三方 AV 竞价 -&gt; 净省 29% 会展成本</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大企业会展与团房平台</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Cvent Passkey &amp; Venue Sourcing</text>
+  <text x="846" y="182" class="body">• 优势: 全球会展寻源标杆，直连酒店 PMS 实时监控团队捡房率</text>
+  <text x="846" y="198" class="body">• 特性: 支持参会名单与酒店住客名单自动比对找回漏记房晚</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. GroupSync / MeetingPackage</text>
+  <text x="846" y="244" class="body">• 优势: 实时在线锁定 10-50 间中小型团队房与会议室一口价</text>
+  <text x="846" y="260" class="body">• 特性: 标准化合同条款，大幅缩短 RFP 往返谈判周期</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Navan Events / 携程商旅会展</text>
+  <text x="846" y="306" class="body">• 优势: 将员工参会机票、协议酒店包房与差旅审批合流管理</text>
+  <text x="846" y="322" class="body">• 特性: 强制引导参会员工订入公司已签包房块，防流向外部 OTA</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. 独立 AV 制作商竞价 vs 驻场 Encore</text>
+  <text x="846" y="368" class="body">• 优势: 免除驻场 AV 垄断商 26% 强制服务费与高溢价设备日租</text>
+  <text x="846" y="384" class="body">• 特性: 合同预锁免收外部搭建押金与免费会场 Wi-Fi 带宽</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度企业峰会包房与宴会预算池 ($160,000)</text>
+  <text x="860" y="456" class="body">• 传统空房违约金+驻场 AV 宰客+BEO 溢价: $160,000/季</text>
+  <text x="860" y="476" class="mono">• 全店名单归因 + T-60/30d 阶梯减房免违约: -$20,800</text>
+  <text x="860" y="496" class="mono">• 剥离驻场 AV 26% 服务费与外部入场费: -$16,000</text>
+  <text x="860" y="516" class="mono">• 酒店转售减损核销与 75% 净利重算: -$9,600</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净支出: $113,600 (净省 $46,400 / -29%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: b2b_mice_hotel_block_optim_409</text>
+</svg>

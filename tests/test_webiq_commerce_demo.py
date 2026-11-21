@@ -17902,6 +17902,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-price-match-guarantee-escrow-sandbox", html_zh)
 
+    def test_b2b_mice_hotel_block_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BMiceHotelBlockEscrowPolicyInput,
+            evaluate_b2b_mice_hotel_block_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_mice_hotel_block_escrow_policy(
+            B2BMiceHotelBlockEscrowPolicyInput(
+                quarterly_corporate_mice_hotel_block_and_banquet_pool_usd=160000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "CUMULATIVE_PICKUP_AND_SIGNED_BEO_MASTER_FOLIO_AUTHORIZED",
+        )
+
+        av_block = evaluate_b2b_mice_hotel_block_escrow_policy(
+            B2BMiceHotelBlockEscrowPolicyInput(
+                captive_av_patch_fee_or_tax_on_service_charge_unsigned_beo=True
+            )
+        )
+        self.assertEqual(av_block["status_code"], 403)
+        self.assertEqual(
+            av_block["decision"],
+            "CAPTIVE_AV_PATCH_FEE_OR_TAX_ON_SERVICE_CHARGE_UNSIGNED_BEO_BLOCKED",
+        )
+
+        pickup = evaluate_b2b_mice_hotel_block_escrow_policy(
+            B2BMiceHotelBlockEscrowPolicyInput(
+                uncredited_around_the_block_ota_stays_or_per_night_gross_attrition=True
+            )
+        )
+        self.assertEqual(pickup["status_code"], 422)
+        self.assertEqual(
+            pickup["decision"],
+            "UNCREDITED_AROUND_THE_BLOCK_OTA_STAYS_OR_PER_NIGHT_GROSS_ATTRITION_BLOCKED",
+        )
+
+        resale = evaluate_b2b_mice_hotel_block_escrow_policy(
+            B2BMiceHotelBlockEscrowPolicyInput(
+                sold_out_hotel_double_dip_without_certified_resale_mitigation=True
+            )
+        )
+        self.assertEqual(resale["status_code"], 451)
+        self.assertEqual(
+            resale["decision"],
+            "SOLD_OUT_HOTEL_DOUBLE_DIP_WITHOUT_CERTIFIED_RESALE_MITIGATION_HOLD",
+        )
+
+        optim = evaluate_b2b_mice_hotel_block_escrow_policy(
+            B2BMiceHotelBlockEscrowPolicyInput(
+                quarterly_corporate_mice_hotel_block_and_banquet_pool_usd=160000.0,
+                rolling_t60_block_drop_and_future_event_credit_rollover_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 46400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 113600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_mice_hotel_block_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-mice-hotel-block-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
