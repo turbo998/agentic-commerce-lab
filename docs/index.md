@@ -2,12 +2,12 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`271` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`272` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（14 篇）](#platform-grounding)
-- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（41 篇）](#payments-mandates)
+- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（42 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（95 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（65 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（23 篇）](#saas-finops-micropayments)
@@ -40,7 +40,7 @@
 | 14 | **电商大促高并发虚拟排队室（Virtual Waiting Room：Queue-it / Cloudflare Waiting Room / EQL 抽签）、防全站陪葬宕机与防多开无痕窗口刷签托管“防 500 件联名款打挂全站 8,000 笔日常订单、防黄牛开 500 个标签页霸榜与预等候室洗牌净省 39%”Agent 架构选型 FAQ** | [中文](ecommerce-virtual-waiting-room-fair-queue-bot-mitigation-escrow-agent-selection-faq.md) · [English](ecommerce-virtual-waiting-room-fair-queue-bot-mitigation-escrow-agent-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
-## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（41 篇）
+## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（42 篇）
 
 > 涵盖 Google AP2、Stripe SPT、Visa VIC / TAP、Mastercard Agent Pay、PayPal、UCP/ACP 协议互操作、3DS2 无浏览器挑战、FIDO2/Passkey 硬件签名及幂等防重扣架构。
 
@@ -87,6 +87,7 @@
 | 39 | **企业预算虚拟卡（Corporate Virtual Cards）、防“单次卡转长期包月暗扣”与 Level-3 发票行项对账托管（Ramp / Brex / Airbase / Stripe Issuing / 分贝通）“防单次买报告虚拟卡被商户静默转成 $499/月自动续费、防拿刷卡总额水单隐瞒夹带买超市购物卡及买完打票秒退货套现”Agent 架构选型 FAQ** | [中文](corporate-virtual-card-expense-level3-receipt-escrow-agent-selection-faq.md) · [English](corporate-virtual-card-expense-level3-receipt-escrow-agent-selection-faq.en.md) |
 | 40 | **Agent 支付与结账协议横向选型（Stripe Agent Toolkit `SPT` vs Visa Intelligent Commerce `VIC` vs Mastercard Agent Pay vs PayPal Agentic Toolkit vs 企业预算虚拟卡 `VCN`）“防明文卡号入上下文脱库、防凌晨自动锁单撞上 3DS2 短信死锁与五轨智能路由降损 33%”Agent 架构选型 FAQ** | [中文](agent-payment-checkout-protocol-stripe-spt-visa-vic-mastercard-paypal-vcn-selection-faq.md) · [English](agent-payment-checkout-protocol-stripe-spt-visa-vic-mastercard-paypal-vcn-selection-faq.en.md) |
 | 41 | **电商先买后付（`BNPL`：Klarna / Affirm / Afterpay / 花呗分期 / 白条）、商家贴息费率（`MDR 4.5%–6.5%`）毛利门禁与部分退货本息倒序重算托管“防 6.5% 免息贴息吞穿微利 3C 毛利、防买 3 退 2 后照扣全额分期款与联合贴息净省 30%”Agent 架构选型 FAQ** | [中文](ecommerce-bnpl-installment-mdr-margin-floor-partial-return-escrow-agent-selection-faq.md) · [English](ecommerce-bnpl-installment-mdr-margin-floor-partial-return-escrow-agent-selection-faq.en.md) |
+| 42 | **电子礼品卡与品牌储值卡（Digital Gift Cards & Stored Value：Rise.ai / Blackhawk / Apple Gift Card / 京东E卡）防黑卡洗钱、防“8折买卡再8折买货”无限套利与沉淀资金（Escheatment）托管“防黑卡买 $500 电子卡 3 分钟变现留给商家 200% 拒付、防优惠码买礼品卡死循环与双账本隔离净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.md) · [English](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（95 篇）

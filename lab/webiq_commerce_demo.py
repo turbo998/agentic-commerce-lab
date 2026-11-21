@@ -26769,6 +26769,79 @@ def evaluate_ecommerce_preorder_deposit_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceDigitalGiftCardEscrowPolicyInput:
+    quarterly_gift_card_fraud_and_processing_pool_usd: float = 110000.0
+    stolen_card_gift_card_mint_or_pin_enumeration: bool = False
+    promo_code_on_gift_card_infinite_loop_or_cashout: bool = False
+    fincen_2k_daily_cap_breach_or_card_act_expiry_violation: bool = False
+    dual_ledger_giftco_breakage_and_ach_reload_ready: bool = False
+
+
+def evaluate_ecommerce_digital_gift_card_escrow_policy(
+    policy_input: EcommerceDigitalGiftCardEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_gift_card_fraud_and_processing_pool_usd)
+    )
+    if policy_input.fincen_2k_daily_cap_breach_or_card_act_expiry_violation:
+        return {
+            "status_code": 451,
+            "decision": "FINCEN_2K_DAILY_CAP_BREACH_OR_CARD_ACT_EXPIRY_VIOLATION_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stolen_card_gift_card_mint_or_pin_enumeration:
+        return {
+            "status_code": 403,
+            "decision": "STOLEN_CARD_GIFT_CARD_MINT_OR_PIN_ENUMERATION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.promo_code_on_gift_card_infinite_loop_or_cashout:
+        return {
+            "status_code": 422,
+            "decision": "PROMO_CODE_ON_GIFT_CARD_INFINITE_LOOP_OR_CASHOUT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dual_ledger_giftco_breakage_and_ach_reload_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DUAL_LEDGER_GIFTCO_BREAKAGE_AND_ACH_RELOAD_CONFIRM",
+            "mandate_token": "digital_gift_card_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "3DS2_VERIFIED_CLOSED_LOOP_GIFT_CARD_AUTHORIZED",
+        "mandate_token": "digital_gift_card_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -36666,6 +36739,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_digital_gift_card_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_digital_gift_card_escrow_policy(
+            EcommerceDigitalGiftCardEscrowPolicyInput()
+        ),
+        "stolen_card_mint_or_pin_403": evaluate_ecommerce_digital_gift_card_escrow_policy(
+            EcommerceDigitalGiftCardEscrowPolicyInput(
+                stolen_card_gift_card_mint_or_pin_enumeration=True
+            )
+        ),
+        "promo_on_gift_card_loop_422": evaluate_ecommerce_digital_gift_card_escrow_policy(
+            EcommerceDigitalGiftCardEscrowPolicyInput(
+                promo_code_on_gift_card_infinite_loop_or_cashout=True
+            )
+        ),
+        "fincen_cap_or_card_act_451": evaluate_ecommerce_digital_gift_card_escrow_policy(
+            EcommerceDigitalGiftCardEscrowPolicyInput(
+                fincen_2k_daily_cap_breach_or_card_act_expiry_violation=True
+            )
+        ),
+        "dual_ledger_and_ach_reload_409": evaluate_ecommerce_digital_gift_card_escrow_policy(
+            EcommerceDigitalGiftCardEscrowPolicyInput(
+                dual_ledger_giftco_breakage_and_ach_reload_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -36947,6 +37046,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_gwp_bogo_return_escrow_guard": ecommerce_gwp_bogo_return_escrow_guard,
         "ota_hotel_rate_parity_escrow_guard": ota_hotel_rate_parity_escrow_guard,
         "ecommerce_preorder_deposit_escrow_guard": ecommerce_preorder_deposit_escrow_guard,
+        "ecommerce_digital_gift_card_escrow_guard": ecommerce_digital_gift_card_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -50867,6 +50967,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="preorder-dep-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 C2M_DEPOSIT_MOQ_BATCHING_AND_WAITLIST_ROLLOVER_CONFIRM · Mandate: preorder_deposit_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 153 E-Commerce Digital Gift Card & Stored-Value Escrow -->
+      <div class="finops-box" id="ecommerce-digital-gift-card-escrow-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💳 电子礼品卡与品牌储值卡 (Rise.ai / Blackhawk) 防黑卡洗钱、防无限折扣循环与沉淀金托管沙盒</div>
+            <div class="finops-sub">Round 153 · 买卡强制 3DS2 与母子级联冻结 (HTTP 403) + 禁优惠码买卡死循环 (HTTP 422) + FinCEN/CARD Act 双账本 (HTTP 451) + ACH 储值净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="gift-card-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度礼品卡黑卡盗刷、折上折套利与手续费池 ($)
+            <input type="number" id="gift-card-gross-input" value="110000" min="10000" step="5000" oninput="recalcEcommerceDigitalGiftCardSandbox()" />
+          </label>
+          <label>买卡 3DS2 强核身与母单拒付级联锁
+            <select id="gift-card-fraud-select" onchange="recalcEcommerceDigitalGiftCardSandbox()">
+              <option value="pass">3DS2/Passkey 核身通过 + 2h 延迟发码 + 资金源干净 (合规)</option>
+              <option value="block_403">黑卡免密买电子卡秒变现或母单拒付后子卡盗刷 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>收银台“禁券买卡 &amp; 禁卡买卡”闭环锁
+            <select id="gift-card-loop-select" onchange="recalcEcommerceDigitalGiftCardSandbox()">
+              <option value="pass">GIFT_CARD 物理屏蔽一切折扣码且退货原卡退回 (合规)</option>
+              <option value="block_422">用 8 折码买礼品卡无限套利或退货要求退现金洗钱 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>FinCEN &lt;=$2,000 硬顶与 CARD Act 双账本
+            <select id="gift-card-aml-select" onchange="recalcEcommerceDigitalGiftCardSandbox()">
+              <option value="pass">单日 &lt;=$2,000 + Paid 本金永不过期 / Promo 赠金独立设期 (安全)</option>
+              <option value="block_451">单日匿名买卡超 $2,000 或将付费礼品卡设 1 年过期违法 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Paid/Promo 双账本拆分与 ACH 储值飞轮
+            <select id="gift-card-opt-select" onchange="recalcEcommerceDigitalGiftCardSandbox()">
+              <option value="enabled" selected>双账本优先扣赠金免充公 + ACH 零卡费充值加赠 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">混记单一账本被州政府充公 + 笔笔走高价信用卡网关 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度储值风控与通道费用总池</div>
+            <div class="finops-kpi-val" id="gift-card-gross-kpi">$110,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">级联反洗钱与双账本后净成本</div>
+            <div class="finops-kpi-val" id="gift-card-net-kpi" style="color:#6ee7b7;">$69,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省黑卡拒付、卡费与充公</div>
+            <div class="finops-kpi-val" id="gift-card-savings-kpi" style="color:#38bdf8;">$40,700</div>
+          </div>
+        </div>
+        <div id="gift-card-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DUAL_LEDGER_GIFTCO_BREAKAGE_AND_ACH_RELOAD_CONFIRM · Mandate: digital_gift_card_escrow_optim_409
         </div>
       </div>
 
@@ -67553,6 +67710,79 @@ function recalcEcommercePreorderDepositSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 HASH_LOCKED_DEPOSIT_AND_BALANCE_AUTHORIZED · Mandate: preorder_deposit_escrow_200';
+}}
+
+function recalcEcommerceDigitalGiftCardSandbox() {{
+  const grossInput = document.getElementById('gift-card-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '110000'));
+  const fraudGate = document.getElementById('gift-card-fraud-select').value;
+  const loopGate = document.getElementById('gift-card-loop-select').value;
+  const amlGate = document.getElementById('gift-card-aml-select').value;
+  const optMode = document.getElementById('gift-card-opt-select').value;
+
+  const grossKpi = document.getElementById('gift-card-gross-kpi');
+  const netKpi = document.getElementById('gift-card-net-kpi');
+  const savingsKpi = document.getElementById('gift-card-savings-kpi');
+  const statusKpi = document.getElementById('gift-card-status-kpi');
+  const banner = document.getElementById('gift-card-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (amlGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FINCEN_2K_DAILY_CAP_BREACH_OR_CARD_ACT_EXPIRY_VIOLATION_HOLD · Mandate: null';
+    return;
+  }}
+  if (fraudGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 STOLEN_CARD_GIFT_CARD_MINT_OR_PIN_ENUMERATION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (loopGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PROMO_CODE_ON_GIFT_CARD_INFINITE_LOOP_OR_CASHOUT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DUAL_LEDGER_GIFTCO_BREAKAGE_AND_ACH_RELOAD_CONFIRM · Mandate: digital_gift_card_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 3DS2_VERIFIED_CLOSED_LOOP_GIFT_CARD_AUTHORIZED · Mandate: digital_gift_card_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

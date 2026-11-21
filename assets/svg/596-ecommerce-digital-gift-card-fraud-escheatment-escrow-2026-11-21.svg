@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg596" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#05101e" />
+    </linearGradient>
+    <linearGradient id="accent596" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg596)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent596)" rx="3" />
+
+  <text x="40" y="58" class="title">电子礼品卡与品牌储值卡 (Rise.ai / Blackhawk) 防黑卡洗钱、防无限折扣循环与沉淀金托管架构</text>
+  <text x="40" y="80" class="subtitle">Round 153 · 防黑卡秒买 $500 电子卡 3 分钟变现拒付、防“8折买卡再8折买货”无限套利 &amp; 储值留存净省 37% (SVG 596)</text>
+
+  <!-- Left Card: 3 Digital Gift Card Disasters -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大电子礼品卡洗钱与破产漏洞</text>
+  <text x="56" y="164" class="card-title">1. 黑卡买电子卡“秒发码秒变现” (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 盗卡团伙半夜用偷来的信用卡购买 20 张 $500 电子礼品卡</text>
+  <text x="56" y="202" class="body">• 系统 1 秒钟把 16 位卡密发到黑客邮箱 -> 3 分钟内在闲鱼/CardCash</text>
+  <text x="56" y="220" class="warn">  8 折洗白买走高价商品发货，7 天后真卡主拒付商家血亏 200%!</text>
+
+  <text x="56" y="256" class="card-title">2. “用 8 折码买礼品卡”无限套利循环 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 新客 8 折码未排除电子礼品卡 SKU：花 $80 买 $100 礼品卡，</text>
+  <text x="56" y="294" class="body">  再用这 $100 礼品卡叠黑五 8 折买正价货 (或继续买下一张礼品卡!)</text>
+  <text x="56" y="312" class="warn">• 或用高面额卡买 $2 小物件要求全额退 $198 现金違反 AML 反洗钱!</text>
+
+  <text x="56" y="348" class="card-title">3. 违反联邦 CARD Act 5年有效期与各州充公法 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 付费购买的礼品卡设“1 年过期作废”或每月收 $2.50 休眠管理费</text>
+  <text x="56" y="386" class="body">• 直接违反美国联邦 CARD Act (至少 5 年有效) 与加州终身有效法</text>
+  <text x="56" y="404" class="warn">• 或未拆分“付费本金 vs 满赠红包”导致促销积分也被州政府充公!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: STOLEN_CARD_GIFT_CARD_MINT_OR_PIN_SCRAPE</text>
+  <text x="70" y="502" y2="502" class="warn">• HTTP 422: PROMO_ON_GIFTCARD_INFINITE_LOOP_OR_CASHOUT</text>
+  <text x="70" y="524" class="warn">• HTTP 451: FINCEN_2K_DAILY_CAP_OR_CARD_ACT_EXPIRY</text>
+  <text x="70" y="546" class="mono">• HTTP 409:GIFTCO_ENTITY_AND_RELOAD_BONUS_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: 3DS2_VERIFIED_CLOSED_LOOP_GIFTCARD_200</text>
+  <text x="70" y="596" class="body">铁律: 礼品卡永远不得使用折扣码购买，也不得用礼品卡买礼品卡!</text>
+
+  <!-- Center Card: 4-Stage Digital Gift Card Escrow Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶电子礼品卡与储值反洗钱托管架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ef4444" />
+  <text x="450" y="175" class="card-title" fill="#fca5a5">Gate 1: 强制 3DS2/Passkey 与高危发卡延迟队列 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• 购买数字礼品卡 100% 强制触发 `3DS2 / Passkey` 责任转移核身</text>
+  <text x="450" y="213" class="body">• 新注册账号或单笔 &gt;$200 电子卡自动进入 `2–4h` 异步风控冷却池</text>
+  <text x="450" y="231" class="mono">• 级联吊销锁: 买卡母单一旦发生拒付，秒冻结子卡及用卡买的未发订单!</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: 禁优惠码买卡死循环与禁套现锁 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 收银台内核硬编码: `Product_Type == GIFT_CARD` 时，100% 禁用</text>
+  <text x="450" y="320" class="body">  任何百分比/满减优惠码，且严禁用现有礼品卡余额购买新礼品卡!</text>
+  <text x="450" y="338" class="body">• 礼品卡支付的订单退货时，必须 100% 退回原储值卡（严禁退银行卡套现）</text>
+  <text x="450" y="354" class="mono">• 企图用券买卡套利或大额储值买小件退现金 (仅限加州 &lt;$10) -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: FinCEN $2,000 单日硬顶与双账本隔离 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 严守美国 FinCEN 闭环预付访问规则: 单张卡面额 &lt;= $2,000 且单日限额</text>
+  <text x="450" y="437" class="body">• 财务账本物理拆分为 `Paid_Gift_Card` (受 CARD Act 5年保护，永不过期)</text>
+  <text x="450" y="455" class="mono">  与 `Promo_Bonus_Credit` (可设 90 天有效期且免充公) -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: 免充公州发行实体 (Giftco) 与直连钱包充值 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 通过在免未认领财产上缴州设立发卡子公司 + 拆分促销赠金账本</text>
+  <text x="450" y="546" class="body">  合法保留沉淀资金 (Breakage Revenue) 并按 ASC 606 按比例确认收入</text>
+  <text x="450" y="566" class="mono">• 引导老客使用 ACH/RTP 零手续费储值送 3% 赠金 (省 2.9% 卡费)</text>
+  <text x="450" y="586" class="mono">• 消灭黑卡盗刷洗钱 + 省刷卡通道费 + 合法沉淀收益 -&gt; 净省 37%</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大企业级礼品卡与储值底座</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Rise.ai / Govalo (Shopify 储值与礼赠标杆)</text>
+  <text x="846" y="182" class="body">• 优势: 原生区分“付费购买礼品卡”与“促销限时返现 Store Credit”</text>
+  <text x="846" y="198" class="body">• 特性: 支持定时发送电子贺卡与退货一键转储值额外加赠</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Blackhawk Network / InComm Payments</text>
+  <text x="846" y="244" class="body">• 优势: 全球商超实体刮刮卡与 B2B 企业员工福利批量采购网络</text>
+  <text x="846" y="260" class="body">• 特性: POS 收银台激活才生效 (POSA)，防仓库未激活卡被枚举盗刷</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Riskified / Signifyd 数字商品专门模型</text>
+  <text x="846" y="306" class="body">• 优势: 针对无收货地址的纯虚拟礼品卡订单进行邮箱图谱与设备指纹核验</text>
+  <text x="846" y="322" class="body">• 特性: 拦截 99% 暗网黑卡批量自动化测卡与三角诈骗</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. 星巴克 / Amazon Reload 闭环储值飞轮</text>
+  <text x="846" y="368" class="body">• 经验: 将高频小额消费沉淀在品牌自有闭环钱包内，每年创造</text>
+  <text x="846" y="384" class="body">  数亿美元免息浮存金与合法沉淀金 (Breakage)，且单次核销 0 通道费</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度礼品卡黑卡盗刷、折上折漏洞与费用池 ($110,000)</text>
+  <text x="860" y="456" class="body">• 传统黑卡秒发码被盗刷+用券买卡漏洞+卡费: $110,000/季</text>
+  <text x="860" y="476" class="mono">• 3DS2 强核身+延迟发码+母单拒付级联锁: -$19,800</text>
+  <text x="860" y="496" class="mono">• 严禁优惠码买礼品卡及拆分促销赠金免充公: -$12,100</text>
+  <text x="860" y="516" class="mono">• ACH 储值加赠省下高频小单信用卡通道费: -$8,800</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净储值风控成本: $69,300 (净省 $40,700 / -37%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: digital_gift_card_escrow_optim_409</text>
+</svg>

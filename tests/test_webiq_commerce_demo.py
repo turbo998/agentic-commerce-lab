@@ -19309,6 +19309,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-preorder-deposit-escrow-sandbox", html_zh)
 
+    def test_ecommerce_digital_gift_card_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceDigitalGiftCardEscrowPolicyInput,
+            evaluate_ecommerce_digital_gift_card_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_digital_gift_card_escrow_policy(
+            EcommerceDigitalGiftCardEscrowPolicyInput(
+                quarterly_gift_card_fraud_and_processing_pool_usd=110000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "3DS2_VERIFIED_CLOSED_LOOP_GIFT_CARD_AUTHORIZED",
+        )
+
+        fraud = evaluate_ecommerce_digital_gift_card_escrow_policy(
+            EcommerceDigitalGiftCardEscrowPolicyInput(
+                stolen_card_gift_card_mint_or_pin_enumeration=True
+            )
+        )
+        self.assertEqual(fraud["status_code"], 403)
+        self.assertEqual(
+            fraud["decision"],
+            "STOLEN_CARD_GIFT_CARD_MINT_OR_PIN_ENUMERATION_BLOCKED",
+        )
+
+        loop = evaluate_ecommerce_digital_gift_card_escrow_policy(
+            EcommerceDigitalGiftCardEscrowPolicyInput(
+                promo_code_on_gift_card_infinite_loop_or_cashout=True
+            )
+        )
+        self.assertEqual(loop["status_code"], 422)
+        self.assertEqual(
+            loop["decision"],
+            "PROMO_CODE_ON_GIFT_CARD_INFINITE_LOOP_OR_CASHOUT_BLOCKED",
+        )
+
+        aml = evaluate_ecommerce_digital_gift_card_escrow_policy(
+            EcommerceDigitalGiftCardEscrowPolicyInput(
+                fincen_2k_daily_cap_breach_or_card_act_expiry_violation=True
+            )
+        )
+        self.assertEqual(aml["status_code"], 451)
+        self.assertEqual(
+            aml["decision"],
+            "FINCEN_2K_DAILY_CAP_BREACH_OR_CARD_ACT_EXPIRY_VIOLATION_HOLD",
+        )
+
+        optim = evaluate_ecommerce_digital_gift_card_escrow_policy(
+            EcommerceDigitalGiftCardEscrowPolicyInput(
+                quarterly_gift_card_fraud_and_processing_pool_usd=110000.0,
+                dual_ledger_giftco_breakage_and_ach_reload_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 40700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 69300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_digital_gift_card_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-digital-gift-card-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
