@@ -31333,6 +31333,82 @@ def evaluate_ota_car_rental_damage_toll_ldw_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommercePetAutoshipVetRxPolicyInput:
+    quarterly_kibble_crush_50lb_surcharge_rx_churn_and_promo_pool_usd: float = 210000.0
+    pet_species_or_weight_band_dosing_mismatch_or_autoship_promo_abuse: bool = False
+    heavy_litter_copacked_with_fragile_cans_or_box_over_48lbs: bool = False
+    dispensing_vet_rx_without_vcpr_or_requiring_bereavement_return: bool = False
+    puppy_growth_curve_dosing_and_zone2_autoship_prestaging_ready: bool = False
+
+
+def evaluate_ecommerce_pet_autoship_vet_rx_policy(
+    policy_input: EcommercePetAutoshipVetRxPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_kibble_crush_50lb_surcharge_rx_churn_and_promo_pool_usd
+        ),
+    )
+    if policy_input.dispensing_vet_rx_without_vcpr_or_requiring_bereavement_return:
+        return {
+            "status_code": 451,
+            "decision": "UNVERIFIED_VET_VCPR_RX_OR_BEREAVEMENT_RETURN_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pet_species_or_weight_band_dosing_mismatch_or_autoship_promo_abuse:
+        return {
+            "status_code": 403,
+            "decision": "SPECIES_WEIGHT_RX_MISMATCH_OR_AUTOSHIP_PROMO_ABUSE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.heavy_litter_copacked_with_fragile_cans_or_box_over_48lbs:
+        return {
+            "status_code": 422,
+            "decision": "HEAVY_LITTER_CO_PACK_CRUSH_OR_50LB_SURCHARGE_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.puppy_growth_curve_dosing_and_zone2_autoship_prestaging_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "GROWTH_CURVE_RX_AND_ZONE2_SIOC_AUTOSHIP_CONFIRM",
+            "mandate_token": "pet_autoship_rx_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_VCPR_RX_AND_SIOC_PET_AUTOSHIP_AUTHORIZED",
+        "mandate_token": "pet_autoship_rx_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -42816,6 +42892,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_pet_autoship_vet_rx_guard = {
+        "authorized_200": evaluate_ecommerce_pet_autoship_vet_rx_policy(
+            EcommercePetAutoshipVetRxPolicyInput()
+        ),
+        "species_weight_or_promo_403": evaluate_ecommerce_pet_autoship_vet_rx_policy(
+            EcommercePetAutoshipVetRxPolicyInput(
+                pet_species_or_weight_band_dosing_mismatch_or_autoship_promo_abuse=True
+            )
+        ),
+        "litter_crush_or_50lb_422": evaluate_ecommerce_pet_autoship_vet_rx_policy(
+            EcommercePetAutoshipVetRxPolicyInput(
+                heavy_litter_copacked_with_fragile_cans_or_box_over_48lbs=True
+            )
+        ),
+        "unverified_vcpr_or_bereave_451": evaluate_ecommerce_pet_autoship_vet_rx_policy(
+            EcommercePetAutoshipVetRxPolicyInput(
+                dispensing_vet_rx_without_vcpr_or_requiring_bereavement_return=True
+            )
+        ),
+        "growth_curve_and_zone2_409": evaluate_ecommerce_pet_autoship_vet_rx_policy(
+            EcommercePetAutoshipVetRxPolicyInput(
+                puppy_growth_curve_dosing_and_zone2_autoship_prestaging_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -43158,6 +43260,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_perishable_florist_cake_guard": ecommerce_perishable_florist_cake_guard,
         "omnichannel_softpos_tap_to_pay_guard": omnichannel_softpos_tap_to_pay_guard,
         "ota_car_rental_damage_toll_ldw_guard": ota_car_rental_damage_toll_ldw_guard,
+        "ecommerce_pet_autoship_vet_rx_guard": ecommerce_pet_autoship_vet_rx_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -60555,6 +60658,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="carrental-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CV_DAMAGE_DIFF_PLATE_TOLL_BIND_AND_PARKING_TCO_CONFIRM · Mandate: car_rental_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 214 Pet E-Commerce, Vet Rx Approval, Heavy-Kibble Packing & Autoship Escrow (#333) -->
+      <div class="finops-box" id="ecommerce-pet-autoship-vet-rx-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🐾 宠物电商、周期购 (Chewy Autoship / Petco) 与兽医处方药 (Covetrus VCPR) 履约沙盒</div>
+            <div class="finops-sub">Round 214 (#333) · 宠物档案物种/体重档位防错用药与首单 35% 周期购防刷单 (HTTP 403) + 40磅猫砂/大袋粮 SIOC 独立箱禁混装易碎罐头与 48磅拆箱红线 (HTTP 422) + FDA VCPR 兽医电子签章与爱宠离世免寄回全额退款 (HTTP 451) + 幼犬生长升档与前置仓净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="petautoship-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 40磅猫砂砸爆同箱罐头破损、单箱超 50磅被快递罚 $31.50、首单周期购刷单与传真审方弃单池 ($)
+            <input type="number" id="petautoship-gross-input" value="210000" min="10000" step="5000" oninput="recalcEcommercePetAutoshipVetRxSandbox()" />
+          </label>
+          <label>宠物电子档案物种/动态体重区间硬匹配与首单 35% Autoship 家庭地址/卡指纹防套利
+            <select id="petautoship-species-select" onchange="recalcEcommercePetAutoshipVetRxSandbox()">
+              <option value="pass">宠物物种与体重区间 100% 匹配 SKU + 家庭地址 DPBC 与卡 PAR 唯一核验通过 (合规)</option>
+              <option value="block_403">为猫咪选购含剧毒氯菊酯的犬用驱虫药、45磅犬仍发 10-20磅幼犬药量 或 换 50 个小号刷首单 35% 折扣 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>&gt;25 磅重粮/猫砂 SIOC 原箱独立直发 (严禁与易碎罐头同箱) 与单箱 48.0 磅拆箱硬红线
+            <select id="petautoship-pack-select" onchange="recalcEcommercePetAutoshipVetRxSandbox()">
+              <option value="pass">40 磅重粮 SIOC 独立包裹 + 罐头独立防震箱且每箱毛重 &lt;= 48.0 磅免超重罚金 (合规)</option>
+              <option value="block_422">把 42 磅膨润土猫砂和 12 罐马口铁湿粮塞进同一个 54 磅纸箱导致罐头全砸瘪且被快递罚 $31.50 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>直连宠物医院 PIMS 的 FDA VCPR 兽医处方签章与“爱宠离世免寄回全额退款代捐救助站”温情锁
+            <select id="petautoship-vcpr-select" onchange="recalcEcommercePetAutoshipVetRxSandbox()">
+              <option value="pass">已获执业兽医 VCPR 电子处方授权 + 遇爱宠离世立即关停订阅并 100% 免寄回退款捐收容所 (安全)</option>
+              <option value="block_451">未经兽医 VCPR 核准违规发心丝虫处方药 或 主人哭诉狗狗去世机器人却逼其自费寄回 40磅狗粮 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>幼犬生长曲线自动提示升级药量档位与 Autoship 提前 14 天区域前置仓 (Zone 1/2) 布货
+            <select id="petautoship-opt-select" onchange="recalcEcommercePetAutoshipVetRxSandbox()">
+              <option value="enabled" selected>满 6 月龄自动提醒升档 + 提前 14 天干线铺货至 Zone 2 前置仓 + 4分钟 PIMS 电子审方 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统跨洲发 40 磅重包 + 人工给宠物医院发传真等 4 天审处方 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度重粮砸箱罚款与处方流失池</div>
+            <div class="finops-kpi-val" id="petautoship-gross-kpi">$210,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">SIOC 拆箱与前置仓布货后净损耗</div>
+            <div class="finops-kpi-val" id="petautoship-net-kpi" style="color:#6ee7b7;">$134,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省超重罚款与破损重发</div>
+            <div class="finops-kpi-val" id="petautoship-savings-kpi" style="color:#38bdf8;">$75,600</div>
+          </div>
+        </div>
+        <div id="petautoship-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 GROWTH_CURVE_RX_AND_ZONE2_SIOC_AUTOSHIP_CONFIRM · Mandate: pet_autoship_rx_escrow_optim_409
         </div>
       </div>
 
@@ -81694,6 +81854,79 @@ function recalcOtaCarRentalDamageTollLdwSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 CLEAN_CAR_RENTAL_FOLIO_AND_FUEL_OCR_AUTHORIZED · Mandate: car_rental_escrow_200';
+}}
+
+function recalcEcommercePetAutoshipVetRxSandbox() {{
+  const grossInput = document.getElementById('petautoship-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '210000'));
+  const speciesGate = document.getElementById('petautoship-species-select').value;
+  const packGate = document.getElementById('petautoship-pack-select').value;
+  const vcprGate = document.getElementById('petautoship-vcpr-select').value;
+  const optMode = document.getElementById('petautoship-opt-select').value;
+
+  const grossKpi = document.getElementById('petautoship-gross-kpi');
+  const netKpi = document.getElementById('petautoship-net-kpi');
+  const savingsKpi = document.getElementById('petautoship-savings-kpi');
+  const statusKpi = document.getElementById('petautoship-status-kpi');
+  const banner = document.getElementById('petautoship-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vcprGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNVERIFIED_VET_VCPR_RX_OR_BEREAVEMENT_RETURN_HOLD · Mandate: null';
+    return;
+  }}
+  if (speciesGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SPECIES_WEIGHT_RX_MISMATCH_OR_AUTOSHIP_PROMO_ABUSE · Mandate: null';
+    return;
+  }}
+  if (packGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 HEAVY_LITTER_CO_PACK_CRUSH_OR_50LB_SURCHARGE_BLOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 GROWTH_CURVE_RX_AND_ZONE2_SIOC_AUTOSHIP_CONFIRM · Mandate: pet_autoship_rx_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_VCPR_RX_AND_SIOC_PET_AUTOSHIP_AUTHORIZED · Mandate: pet_autoship_rx_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

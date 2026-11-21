@@ -23396,6 +23396,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-car-rental-damage-toll-ldw-sandbox", html_zh)
 
+    def test_ecommerce_pet_autoship_vet_rx_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommercePetAutoshipVetRxPolicyInput,
+            evaluate_ecommerce_pet_autoship_vet_rx_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_pet_autoship_vet_rx_policy(
+            EcommercePetAutoshipVetRxPolicyInput(
+                quarterly_kibble_crush_50lb_surcharge_rx_churn_and_promo_pool_usd=210000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_VCPR_RX_AND_SIOC_PET_AUTOSHIP_AUTHORIZED",
+        )
+
+        species = evaluate_ecommerce_pet_autoship_vet_rx_policy(
+            EcommercePetAutoshipVetRxPolicyInput(
+                pet_species_or_weight_band_dosing_mismatch_or_autoship_promo_abuse=True
+            )
+        )
+        self.assertEqual(species["status_code"], 403)
+        self.assertEqual(
+            species["decision"],
+            "SPECIES_WEIGHT_RX_MISMATCH_OR_AUTOSHIP_PROMO_ABUSE",
+        )
+
+        pack = evaluate_ecommerce_pet_autoship_vet_rx_policy(
+            EcommercePetAutoshipVetRxPolicyInput(
+                heavy_litter_copacked_with_fragile_cans_or_box_over_48lbs=True
+            )
+        )
+        self.assertEqual(pack["status_code"], 422)
+        self.assertEqual(
+            pack["decision"],
+            "HEAVY_LITTER_CO_PACK_CRUSH_OR_50LB_SURCHARGE_BLOCK",
+        )
+
+        vcpr = evaluate_ecommerce_pet_autoship_vet_rx_policy(
+            EcommercePetAutoshipVetRxPolicyInput(
+                dispensing_vet_rx_without_vcpr_or_requiring_bereavement_return=True
+            )
+        )
+        self.assertEqual(vcpr["status_code"], 451)
+        self.assertEqual(
+            vcpr["decision"],
+            "UNVERIFIED_VET_VCPR_RX_OR_BEREAVEMENT_RETURN_HOLD",
+        )
+
+        optim = evaluate_ecommerce_pet_autoship_vet_rx_policy(
+            EcommercePetAutoshipVetRxPolicyInput(
+                quarterly_kibble_crush_50lb_surcharge_rx_churn_and_promo_pool_usd=210000.0,
+                puppy_growth_curve_dosing_and_zone2_autoship_prestaging_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 75600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 134400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_pet_autoship_vet_rx_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-pet-autoship-vet-rx-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

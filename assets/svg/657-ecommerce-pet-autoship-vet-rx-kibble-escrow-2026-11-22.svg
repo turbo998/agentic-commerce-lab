@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg657" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <linearGradient id="hdr657" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg657)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr657)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 214 · Pet E-Commerce, Vet `Rx` Approval, Heavy-Kibble Packing &amp; Autoship Escrow</text>
+  <text x="48" y="74" class="sub">Chewy / Covetrus / Petco / Shopify · Vet-Clinic `VCPR` Rx Gate · 40-lb Kibble + Fragile Split Lock · Bereavement Zero-Return (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #657 · FAQ #333</text>
+
+  <!-- Lane 1: Pet Weight-Band Dosing Mismatch & First-Order 35% Autoship Abuse Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Weight-Band Rx &amp; Autoship Abuse (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Ordering 88-lb Dog Simparica for 9-lb Cat:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Verify `Pet_Species == SKU_Species` &amp;</text>
+  <text x="54" y="200" class="mono">`Pet_Weight_Lbs in SKU_Weight_Band_Range`!</text>
+  <text x="44" y="223" class="body-txt">• Stops "35% Off 1st Autoship + Instant Cancel":</text>
+  <text x="54" y="243" class="mono">Block Same-Card/Address Multi-Account Promo Loop</text>
+  <text x="44" y="266" class="body-txt">• Prevents fatal permethrin toxicity (dog flea meds</text>
+  <text x="54" y="286" class="body-txt">applied to cats) and stops resellers farming</text>
+  <text x="54" y="304" class="body-txt">first-order 35% Autoship discounts on 50 accounts</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 SPECIES_WEIGHT_RX_MISMATCH_OR_AUTOSHIP_PROMO_ABUSE</text>
+
+  <!-- Lane 2: 40-lb Kibble Crushing Fragile Cat Litter/Cans in Single Box & Zone-8 Bleed Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Heavy-Kibble Crush &amp; Zone Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Packing 40-lb Kibble Bag With Glass/Chip:</text>
+  <text x="442" y="182" class="mono">Enforce `SIOC (Ships-In-Own-Container)` on &gt;25lb Bag</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Never Co-Pack Heavy Litter With Crushable Treats!</text>
+  <text x="432" y="223" class="body-txt">• Stops >50-lb Oversize Carrier Penalty (`$31.50`):</text>
+  <text x="442" y="243" class="mono">Split Carton Before `Gross_Box_Weight &gt; 48.0 lbs`</text>
+  <text x="432" y="266" class="body-txt">• Eliminates burst kibble bags and dented wet-food</text>
+  <text x="442" y="286" class="body-txt">cans caused by 42-lb clay cat litter slamming</text>
+  <text x="442" y="304" class="body-txt">fragile items inside a single oversized box</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 HEAVY_LITTER_CO_PACK_CRUSH_OR_50LB_SURCHARGE_BLOCK</text>
+
+  <!-- Lane 3: FDA Vet Prescription (VCPR) Verification & Pet Bereavement Empathy Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `FDA VCPR` Vet Rx &amp; Empathy Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• `FDA CVM` / State Pharmacy Board `VCPR` Lock:</text>
+  <text x="830" y="182" class="mono">Require Active Vet `DEA/License` Sign-Off (`Covetrus`)</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Before Dispensing Heartworm / Apoquel / Insulin!</text>
+  <text x="820" y="223" class="body-txt">• Compassionate Pet-Bereavement Protocol:</text>
+  <text x="830" y="243" class="body-txt">When owner reports pet passed away: immediately</text>
+  <text x="830" y="261" class="body-txt">cancel all Autoships, refund last bag 100% + donate</text>
+  <text x="820" y="284" class="body-txt">• Blocks heartless "please ship the opened dog food</text>
+  <text x="830" y="302" class="body-txt">back for a restocking fee" bot responses</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNVERIFIED_VET_VCPR_RX_OR_BEREAVEMENT_RETURN_HOLD</text>
+
+  <!-- Bottom Puppy-to-Adult Growth Curve & Regional FC Autoship Pre-Allocation -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Puppy-to-Adult Growth-Curve Dosing + Zone-1/2 Autoship Forward-Positioning (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Growth-Curve SKU Prompt</text>
+  <text x="62" y="462" class="body-txt">Tracks puppy birth date &amp;</text>
+  <text x="62" y="480" class="body-txt">prompts weight-band upgrade</text>
+  <text x="62" y="498" class="body-txt">(10-20lb → 20-40lb Heartgard)</text>
+  <text x="62" y="516" class="mono">at Month 6 Before Next Ship</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Zone-1/2 Kibble Pre-Stage</text>
+  <text x="337" y="462" class="body-txt">Predicts known Autoship</text>
+  <text x="337" y="480" class="body-txt">dates 14d ahead to stage</text>
+  <text x="337" y="498" class="body-txt">40-lb bags in local regional FC;</text>
+  <text x="337" y="516" class="mono">-44% Heavy Parcel Zone Cost</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Direct Vet-PIMS e-Prescribe</text>
+  <text x="622" y="462" class="body-txt">Replaces manual faxing with</text>
+  <text x="622" y="480" class="body-txt">1-click `Covetrus / IDEXX`</text>
+  <text x="622" y="498" class="body-txt">clinic approval in 4 mins;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">+28% Vet Rx Fill Conversion</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Shelter-Donate Empathy</text>
+  <text x="907" y="462" class="body-txt">Full refund + local shelter</text>
+  <text x="907" y="480" class="body-txt">donation on bereavement builds</text>
+  <text x="907" y="498" class="body-txt">lifetime brand advocacy;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Pet Logistics &amp; Rx Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Pet Freight &amp; Damage Saved</text>
+  <text x="46" y="642" class="mono">$75,600 Saved / $210k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% VCPR Rx</text>
+  <text x="336" y="626" class="kpi-lbl">Species &amp; Weight-Band Dosing Verified</text>
+  <text x="336" y="642" class="mono">Zero Toxic Dog-on-Cat Mixups</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0 Crushed Cans</text>
+  <text x="626" y="626" class="kpi-lbl">SIOC Heavy Bag + &lt;48-lb Carton Cap</text>
+  <text x="626" y="642" class="mono">Eliminates $31.50 Oversize Fines</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">100% Empathy</text>
+  <text x="916" y="626" class="kpi-lbl">Instant Bereavement Refund + Shelter</text>
+  <text x="916" y="642" class="mono">Zero Post-Loss Autoship Errors</text>
+</svg>
