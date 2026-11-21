@@ -17098,6 +17098,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-contingent-staffing-vms-escrow-sandbox", html_zh)
 
+    def test_cruise_line_excursion_obc_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CruiseLineExcursionObcEscrowPolicyInput,
+            evaluate_cruise_line_excursion_obc_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cruise_line_excursion_obc_escrow_policy(
+            CruiseLineExcursionObcEscrowPolicyInput(
+                quarterly_cruise_vacation_and_mice_pool_usd=85000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "QUIET_DECK_CABIN_AND_GUARANTEED_EXCURSION_AUTHORIZED",
+        )
+
+        drink = evaluate_cruise_line_excursion_obc_escrow_policy(
+            CruiseLineExcursionObcEscrowPolicyInput(
+                negative_roi_cabin_drink_package_or_obstructed_lifeboat_cabin=True
+            )
+        )
+        self.assertEqual(drink["status_code"], 403)
+        self.assertEqual(
+            drink["decision"],
+            "NEGATIVE_ROI_CABIN_DRINK_PACKAGE_OR_OBSTRUCTED_LIFEBOAT_CABIN_BLOCKED",
+        )
+
+        shore = evaluate_cruise_line_excursion_obc_escrow_policy(
+            CruiseLineExcursionObcEscrowPolicyInput(
+                uninsured_shore_excursion_cutoff_or_unrefunded_skipped_port_tax=True
+            )
+        )
+        self.assertEqual(shore["status_code"], 422)
+        self.assertEqual(
+            shore["decision"],
+            "UNINSURED_SHORE_EXCURSION_CUTOFF_OR_UNREFUNDED_SKIPPED_PORT_TAX_BLOCKED",
+        )
+
+        mcc = evaluate_cruise_line_excursion_obc_escrow_policy(
+            CruiseLineExcursionObcEscrowPolicyInput(
+                webiq_maritime_mcc901_roaming_trap_or_missing_medevac_flag=True
+            )
+        )
+        self.assertEqual(mcc["status_code"], 451)
+        self.assertEqual(
+            mcc["decision"],
+            "WEBIQ_MARITIME_MCC901_ROAMING_TRAP_OR_MISSING_MEDEVAC_HOLD",
+        )
+
+        optim = evaluate_cruise_line_excursion_obc_escrow_policy(
+            CruiseLineExcursionObcEscrowPolicyInput(
+                quarterly_cruise_vacation_and_mice_pool_usd=85000.0,
+                pre_final_payment_reprice_and_insured_excursion_obc_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 26350.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 58650.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cruise_line_excursion_obc_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cruise-line-excursion-obc-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

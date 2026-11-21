@@ -24152,6 +24152,87 @@ def evaluate_b2b_contingent_staffing_vms_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class CruiseLineExcursionObcEscrowPolicyInput:
+    """Input contract for Cruise Line Booking, Shore Excursion Guarantee & Drink-Package Escrow."""
+
+    quarterly_cruise_vacation_and_mice_pool_usd: float = 85000.0
+    negative_roi_cabin_drink_package_or_obstructed_lifeboat_cabin: bool = False
+    uninsured_shore_excursion_cutoff_or_unrefunded_skipped_port_tax: bool = False
+    webiq_maritime_mcc901_roaming_trap_or_missing_medevac_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    pre_final_payment_reprice_and_insured_excursion_obc_ready: bool = False
+
+
+def evaluate_cruise_line_excursion_obc_escrow_policy(
+    policy_input: CruiseLineExcursionObcEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Cruise Line Booking, Shore Excursion Guarantee & Drink-Package Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_cruise_vacation_and_mice_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_maritime_mcc901_roaming_trap_or_missing_medevac_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_MARITIME_MCC901_ROAMING_TRAP_OR_MISSING_MEDEVAC_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.negative_roi_cabin_drink_package_or_obstructed_lifeboat_cabin:
+        return {
+            "status_code": 403,
+            "decision": "NEGATIVE_ROI_CABIN_DRINK_PACKAGE_OR_OBSTRUCTED_LIFEBOAT_CABIN_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uninsured_shore_excursion_cutoff_or_unrefunded_skipped_port_tax:
+        return {
+            "status_code": 422,
+            "decision": "UNINSURED_SHORE_EXCURSION_CUTOFF_OR_UNREFUNDED_SKIPPED_PORT_TAX_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pre_final_payment_reprice_and_insured_excursion_obc_ready:
+        savings = round(gross_pool * 0.31, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PRE_FINAL_PAYMENT_REPRICE_AND_INSURED_EXCURSION_OBC_CONFIRM",
+            "mandate_token": "cruise_line_excursion_obc_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "QUIET_DECK_CABIN_AND_GUARANTEED_EXCURSION_AUTHORIZED",
+        "mandate_token": "cruise_line_excursion_obc_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -33191,6 +33272,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cruise_line_excursion_obc_escrow_guard = {
+        "authorized_200": evaluate_cruise_line_excursion_obc_escrow_policy(
+            CruiseLineExcursionObcEscrowPolicyInput()
+        ),
+        "negative_roi_drink_pack_or_obstructed_cabin_403": evaluate_cruise_line_excursion_obc_escrow_policy(
+            CruiseLineExcursionObcEscrowPolicyInput(
+                negative_roi_cabin_drink_package_or_obstructed_lifeboat_cabin=True
+            )
+        ),
+        "uninsured_excursion_or_unrefunded_port_tax_422": evaluate_cruise_line_excursion_obc_escrow_policy(
+            CruiseLineExcursionObcEscrowPolicyInput(
+                uninsured_shore_excursion_cutoff_or_unrefunded_skipped_port_tax=True
+            )
+        ),
+        "maritime_mcc901_or_missing_medevac_451": evaluate_cruise_line_excursion_obc_escrow_policy(
+            CruiseLineExcursionObcEscrowPolicyInput(
+                webiq_maritime_mcc901_roaming_trap_or_missing_medevac_flag=True
+            )
+        ),
+        "pre_final_reprice_and_insured_excursion_obc_409": evaluate_cruise_line_excursion_obc_escrow_policy(
+            CruiseLineExcursionObcEscrowPolicyInput(
+                pre_final_payment_reprice_and_insured_excursion_obc_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -33439,6 +33546,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "corporate_virtual_card_expense_escrow_guard": corporate_virtual_card_expense_escrow_guard,
         "sneaker_toy_card_vault_escrow_guard": sneaker_toy_card_vault_escrow_guard,
         "b2b_contingent_staffing_vms_escrow_guard": b2b_contingent_staffing_vms_escrow_guard,
+        "cruise_line_excursion_obc_escrow_guard": cruise_line_excursion_obc_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -45322,6 +45430,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="vms-staff-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DIRECT_SOURCING_PAYROLL_TIER_AND_SLIDING_BUYOUT_CONFIRM · Mandate: b2b_contingent_staffing_vms_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 120 Cruise Line Booking, Shore Excursion Guarantee & Drink-Package Escrow -->
+      <div class="finops-box" id="cruise-line-excursion-obc-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🚢 邮轮度假船票 (Cruise Line Booking)、岸上观光防误船保证与船上无限畅饮包 (Drink Package) 动态寻优托管 (Royal Caribbean / Carnival / NCL / 携程邮轮) 选房与岸上游沙盒 (Round 120)</div>
+            <div class="finops-subtitle">实测扣除靠岸日测算回本率拦截同舱第2人连坐强绑 $1,570 豪华酒精包+剔除救生艇遮挡与泳池甲板下噪音盲盒房 (HTTP 403)、独立岸上游提前 90 分钟回港红线+$1,000/人误船追船机票险+风浪跳港 (AIS) 自动退还 $55 政府港务税 (HTTP 422)、Web IQ 海事卫星漫游 ($15/MB MCC 901) 熔断与直升机海救险核验 (HTTP 451) 及 T-90d 尾款前船票退差价+船上 Wi-Fi 餐饮闪促无损重拍+股东 OBC 叠加净省 31% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="cruise-obc-status-kpi">HTTP 409 · PRE_FINAL_PAYMENT_REPRICE_AND_INSURED_EXCURSION_OBC_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业会奖邮轮与家庭豪华邮轮度假总池 ($ USD)
+            <input type="range" id="cruise-obc-pool-slider" min="15000" max="450000" step="5000" value="85000" oninput="updateCruiseLineExcursionObcEscrowSandbox()" />
+            <span id="cruise-obc-pool-val" style="color:#6ee7b7; font-family:monospace;">$85,000</span>
+          </label>
+          <label>
+            全舱连坐酒精畅饮包回本率与甲板三维视线/噪音排雷 (HTTP 403)
+            <select id="cruise-obc-drink-select" onchange="updateCruiseLineExcursionObcEscrowSandbox()">
+              <option value="pass">按杯单点+自带2瓶合规红酒(省$1,089) + 上下相邻均为纯客房层无遮挡海景阳台 (放行)</option>
+              <option value="block">同舱不喝酒家属被强绑 $1,570 双人酒精畅饮包亏本 或 GTY 盲盒分到救生艇遮挡/夜店正下方噪音房 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            独立岸上游 T-90m 回船缓冲/追船险与风浪跳港退税门禁 (HTTP 422)
+            <select id="cruise-obc-shore-select" onchange="updateCruiseLineExcursionObcEscrowSandbox()">
+              <option value="pass">计划回码头早于开船&gt;=90m + 含 $1,000/人误船追船机票担保 + AIS 跳港自动退还 $55 港务税 (合规)</option>
+              <option value="block">找码头无保险黑车卡点回船面临误船滞留 或 风浪取消停靠嫩船港后船方吞没政府港务税不退 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 海事卫星漫游 (MCC 901 $15/MB) 熔断与海上直升机救援险核验 (HTTP 451)
+            <select id="cruise-obc-mcc-select" onchange="updateCruiseLineExcursionObcEscrowSandbox()">
+              <option value="clear">登船自动锁死 MCC 901 海事卫星蜂窝漫游 + 配备 &gt;=$50,000 海上医疗直升机转运险 (正常)</option>
+              <option value="hold">未关漫游连上 Cellular at Sea 产生 $600 后台流量账单 或 无海上直升机救援险裸奔出公海 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            T-90d 船票退差价、Cruise Planner 闪促无损重拍与股东 OBC 叠加 (HTTP 409)
+            <select id="cruise-obc-opt-select" onchange="updateCruiseLineExcursionObcEscrowSandbox()">
+              <option value="enabled" selected>尾款前自动退船票降价差额 + 黑五自动退旧重买 Starlink Wi-Fi + 叠加 $250 股东/代理 OBC 净省 31% (HTTP 409)</option>
+              <option value="baseline">常规无遮挡安静舱房与保船岸上游标准预订授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度邮轮船票与岸上游总池</div>
+            <div class="finops-kpi-val" id="cruise-obc-gross-kpi">$85,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">解绑酒水包与动态重拍后净支出</div>
+            <div class="finops-kpi-val" id="cruise-obc-net-kpi" style="color:#6ee7b7;">$58,650</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省酒水溢价、岸上游与退差</div>
+            <div class="finops-kpi-val" id="cruise-obc-savings-kpi" style="color:#38bdf8;">$26,350</div>
+          </div>
+        </div>
+        <div id="cruise-obc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PRE_FINAL_PAYMENT_REPRICE_AND_INSURED_EXCURSION_OBC_CONFIRM · Mandate: cruise_line_excursion_obc_mandate_optim_409
         </div>
       </div>
 
@@ -59573,6 +59744,80 @@ function updateB2BContingentStaffingVmsEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_VMS_TIMESHEET_AND_RATE_CARD_AUTHORIZED · Mandate: b2b_contingent_staffing_vms_mandate_200';
+}}
+
+function updateCruiseLineExcursionObcEscrowSandbox() {{
+  const slider = document.getElementById('cruise-obc-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '85000');
+  const drinkMode = document.getElementById('cruise-obc-drink-select').value;
+  const shoreMode = document.getElementById('cruise-obc-shore-select').value;
+  const mccMode = document.getElementById('cruise-obc-mcc-select').value;
+  const optMode = document.getElementById('cruise-obc-opt-select').value;
+
+  document.getElementById('cruise-obc-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('cruise-obc-status-kpi');
+  const grossKpi = document.getElementById('cruise-obc-gross-kpi');
+  const netKpi = document.getElementById('cruise-obc-net-kpi');
+  const savingsKpi = document.getElementById('cruise-obc-savings-kpi');
+  const banner = document.getElementById('cruise-obc-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (mccMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_MARITIME_MCC901_ROAMING_TRAP_OR_MISSING_MEDEVAC_HOLD · Mandate: null';
+    return;
+  }}
+  if (drinkMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 NEGATIVE_ROI_CABIN_DRINK_PACKAGE_OR_OBSTRUCTED_LIFEBOAT_CABIN_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (shoreMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNINSURED_SHORE_EXCURSION_CUTOFF_OR_UNREFUNDED_SKIPPED_PORT_TAX_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.31);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PRE_FINAL_PAYMENT_REPRICE_AND_INSURED_EXCURSION_OBC_CONFIRM · Mandate: cruise_line_excursion_obc_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 QUIET_DECK_CABIN_AND_GUARANTEED_EXCURSION_AUTHORIZED · Mandate: cruise_line_excursion_obc_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
