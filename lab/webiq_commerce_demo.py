@@ -29053,6 +29053,82 @@ def evaluate_b2b_clm_contract_redlining_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceVerifiedReviewSyndicationPolicyInput:
+    quarterly_review_ftc_penalty_cold_start_and_hijack_pool_usd: float = 145000.0
+    star_gated_incentive_or_selective_1star_review_suppression: bool = False
+    cross_category_variant_review_hijack_or_unverified_bot_bomb: bool = False
+    undisclosed_gifted_seeding_or_insider_employee_review: bool = False
+    category_timed_amp_collection_and_retail_gtin_syndication_ready: bool = False
+
+
+def evaluate_ecommerce_verified_review_syndication_policy(
+    policy_input: EcommerceVerifiedReviewSyndicationPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_review_ftc_penalty_cold_start_and_hijack_pool_usd
+        ),
+    )
+    if policy_input.undisclosed_gifted_seeding_or_insider_employee_review:
+        return {
+            "status_code": 451,
+            "decision": "UNDISCLOSED_SEEDING_OR_INSIDER_REVIEW_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.star_gated_incentive_or_selective_1star_review_suppression:
+        return {
+            "status_code": 403,
+            "decision": "STAR_GATED_INCENTIVE_OR_1STAR_SUPPRESSION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cross_category_variant_review_hijack_or_unverified_bot_bomb:
+        return {
+            "status_code": 422,
+            "decision": "VARIANT_REVIEW_HIJACK_OR_UNVERIFIED_BOMB_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.category_timed_amp_collection_and_retail_gtin_syndication_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CATEGORY_TIMED_AMP_AND_RETAIL_GTIN_SYNDICATION_CONFIRM",
+            "mandate_token": "verified_review_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "FTC_COMPLIANT_VERIFIED_BUYER_REVIEW_PUBLISHED",
+        "mandate_token": "verified_review_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -39756,6 +39832,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_verified_review_syndication_guard = {
+        "authorized_200": evaluate_ecommerce_verified_review_syndication_policy(
+            EcommerceVerifiedReviewSyndicationPolicyInput()
+        ),
+        "star_gating_or_suppression_403": evaluate_ecommerce_verified_review_syndication_policy(
+            EcommerceVerifiedReviewSyndicationPolicyInput(
+                star_gated_incentive_or_selective_1star_review_suppression=True
+            )
+        ),
+        "variant_hijack_or_bot_bomb_422": evaluate_ecommerce_verified_review_syndication_policy(
+            EcommerceVerifiedReviewSyndicationPolicyInput(
+                cross_category_variant_review_hijack_or_unverified_bot_bomb=True
+            )
+        ),
+        "undisclosed_seeding_or_insider_451": evaluate_ecommerce_verified_review_syndication_policy(
+            EcommerceVerifiedReviewSyndicationPolicyInput(
+                undisclosed_gifted_seeding_or_insider_employee_review=True
+            )
+        ),
+        "timed_amp_and_syndication_409": evaluate_ecommerce_verified_review_syndication_policy(
+            EcommerceVerifiedReviewSyndicationPolicyInput(
+                category_timed_amp_collection_and_retail_gtin_syndication_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40068,6 +40170,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_ai_shopping_assistant_guard": ecommerce_ai_shopping_assistant_guard,
         "ecommerce_parcel_shipping_audit_guard": ecommerce_parcel_shipping_audit_guard,
         "b2b_clm_contract_redlining_guard": b2b_clm_contract_redlining_guard,
+        "ecommerce_verified_review_syndication_guard": ecommerce_verified_review_syndication_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -55755,6 +55858,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="clm-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PLAYBOOK_OOXML_REDLINER_AUTO_SLA_AND_REBATE_CONFIRM · Mandate: b2b_clm_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 184 E-Commerce Verified Reviews, FTC Part 465 & Retail Syndication Escrow (#303) -->
+      <div class="finops-box" id="ecommerce-verified-review-syndication-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">⭐ 电商真实购买评价、FTC Part 465 合规与跨商超分发 (Bazaarvoice / Yotpo / Okendo) 沙盒</div>
+            <div class="finops-sub">Round 184 (#303) · 禁好评返现与藏匿1星差评防 $51,744/条罚款 (HTTP 403) + 14位 GTIN 防变体嫁接洗评 (HTTP 422) + 免费寄样强制打标 (HTTP 451) + 跨商超分发净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="ugc-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 FTC 违规好评返现罚款风险、变体封店与商超 0 评价冷启动池 ($)
+            <input type="number" id="ugc-gross-input" value="145000" min="10000" step="5000" oninput="recalcEcommerceVerifiedReviewSandbox()" />
+          </label>
+          <label>FTC 16 CFR Part 465 星级中立激励与对称发布门禁
+            <select id="ugc-ftc-select" onchange="recalcEcommerceVerifiedReviewSandbox()">
+              <option value="pass">不论 1星还是 5星均得同等积分 + 1-5星真实评价同速透明发布 (合规)</option>
+              <option value="block_403">设置“给5星好评返$10”或将 1-3星差评卡在后台不发遭罚 $51,744/条 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>已妥投订单密码学签名令牌与 14位 GTIN 防变体嫁接
+            <select id="ugc-gtin-select" onchange="recalcEcommerceVerifiedReviewSandbox()">
+              <option value="pass">真实妥投 Order_ID 签名令牌 + 仅限同型号尺码/颜色变体共享评价 (合规)</option>
+              <option value="block_422">把旧款袜子 4,000 条好评嫁接合并到新款投影仪 或 无单水军刷差评 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>免费寄样 (Seeding) 强制 #Incentivized 披露徽章与员工 IP 锁
+            <select id="ugc-seed-select" onchange="recalcEcommerceVerifiedReviewSandbox()">
+              <option value="pass">寄样/积分评价自动加盖 [Incentivized Review] 徽章 + 拦截员工 IP (安全)</option>
+              <option value="block_451">免费送样测评隐瞒不标 #Incentivized 徽章 或 内部员工/代理商小号自刷好评 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>品类起效周期择时 AMP 邮件与 Walmart / Target / Sephora 全网分发
+            <select id="ugc-opt-select" onchange="recalcEcommerceVerifiedReviewSandbox()">
+              <option value="enabled" selected>服饰 T+5d / 护肤 T+21d 交互邮件 + 按 GTIN 一键同步至各大商超货架 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">签收次日盲目催评且评价锁在独立站无法同步商超 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度评价合规与冷启动损失总池</div>
+            <div class="finops-kpi-val" id="ugc-gross-kpi">$145,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">FTC 护栏与跨网分发后净损耗</div>
+            <div class="finops-kpi-val" id="ugc-net-kpi" style="color:#6ee7b7;">$92,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省罚金风险与商超转化提升</div>
+            <div class="finops-kpi-val" id="ugc-savings-kpi" style="color:#38bdf8;">$52,200</div>
+          </div>
+        </div>
+        <div id="ugc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CATEGORY_TIMED_AMP_AND_RETAIL_GTIN_SYNDICATION_CONFIRM · Mandate: verified_review_escrow_optim_409
         </div>
       </div>
 
@@ -74704,6 +74864,79 @@ function recalcB2BClmContractRedliningSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 PLAYBOOK_COMPLIANT_CONTRACT_AND_ERP_SYNC_AUTHORIZED · Mandate: b2b_clm_escrow_200';
+}}
+
+function recalcEcommerceVerifiedReviewSandbox() {{
+  const grossInput = document.getElementById('ugc-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '145000'));
+  const ftcGate = document.getElementById('ugc-ftc-select').value;
+  const gtinGate = document.getElementById('ugc-gtin-select').value;
+  const seedGate = document.getElementById('ugc-seed-select').value;
+  const optMode = document.getElementById('ugc-opt-select').value;
+
+  const grossKpi = document.getElementById('ugc-gross-kpi');
+  const netKpi = document.getElementById('ugc-net-kpi');
+  const savingsKpi = document.getElementById('ugc-savings-kpi');
+  const statusKpi = document.getElementById('ugc-status-kpi');
+  const banner = document.getElementById('ugc-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (seedGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNDISCLOSED_SEEDING_OR_INSIDER_REVIEW_HOLD · Mandate: null';
+    return;
+  }}
+  if (ftcGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 STAR_GATED_INCENTIVE_OR_1STAR_SUPPRESSION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (gtinGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 VARIANT_REVIEW_HIJACK_OR_UNVERIFIED_BOMB_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CATEGORY_TIMED_AMP_AND_RETAIL_GTIN_SYNDICATION_CONFIRM · Mandate: verified_review_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 FTC_COMPLIANT_VERIFIED_BUYER_REVIEW_PUBLISHED · Mandate: verified_review_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

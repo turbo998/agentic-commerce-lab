@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg627" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr627" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg627)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr627)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 184 · E-Commerce Verified Reviews, FTC Part 465 Anti-Gating &amp; Retail Syndication Escrow</text>
+  <text x="48" y="74" class="sub">Bazaarvoice / Yotpo / PowerReviews / Okendo · FTC $51,744/Violation Shield · Anti-Variant-Hijack GTIN Lock · Syndication (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #627 · FAQ #303</text>
+
+  <!-- Lane 1: FTC 16 CFR Part 465 Star-Gating & Review Suppression Ban -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. FTC Part 465 Star-Gating Ban (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Bans Illegal "Sentiment-Conditioned" Rewards:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">"Leave a 5-Star Review for $10 Off" = ILLEGAL</text>
+  <text x="54" y="200" class="mono">($51,744 Civil Penalty per Violation!)</text>
+  <text x="44" y="223" class="body-txt">• Bans Selective Negative-Review Suppression:</text>
+  <text x="54" y="243" class="mono">Auto-Publish 1★-3★ Authentic Buyer Reviews</text>
+  <text x="54" y="261" class="body-txt">alongside 4★-5★ (blocks hiding low ratings in</text>
+  <text x="54" y="279" class="body-txt">"Pending Moderation" while publishing 5★ instantly)</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 STAR_GATED_INCENTIVE_OR_1STAR_SUPPRESSION_BLOCKED</text>
+
+  <!-- Lane 2: Variant-Merge Review Hijacking & Unverified Bot Bombing -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Anti-Variant-Hijack &amp; Delivery Proof (422)</text>
+  <text x="432" y="162" class="body-txt">• Stops "Merge 4,000 Socks Reviews onto New TV":</text>
+  <text x="442" y="182" class="mono">Pin Review_Record → Immutable 14-Digit GTIN</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Allow Parent-Rollup ONLY within Same_Category</text>
+  <text x="432" y="223" class="body-txt">• Cryptographic `Verified Buyer` Token:</text>
+  <text x="442" y="243" class="mono">Require Carrier_Delivered_Scan + Usage_Days</text>
+  <text x="432" y="266" class="body-txt">• Blocks competitor negative "Review Bombing"</text>
+  <text x="442" y="286" class="body-txt">from anonymous web forms without a settled</text>
+  <text x="442" y="304" class="body-txt">non-refunded `Order_ID` token</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 VARIANT_REVIEW_HIJACK_OR_UNVERIFIED_BOMB_BLOCKED</text>
+
+  <!-- Lane 3: Undisclosed Gifted Seeding & Shipping/CS Misattribution -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. #Incentivized Badge &amp; Carrier Split (451)</text>
+  <text x="820" y="162" class="body-txt">• Mandatory `Incentivized / Free Sample` Badge:</text>
+  <text x="830" y="182" class="mono">If Order_Discount == 100% OR Points_Awarded:</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Hard-Stamp `[Incentivized Review]` in Schema</text>
+  <text x="820" y="223" class="body-txt">• Insider / Employee / Agency Review Ban:</text>
+  <text x="830" y="243" class="body-txt">Blocks `@brand.com` &amp; agency IPs from posting</text>
+  <text x="830" y="261" class="body-txt">undisclosed reviews on newly launched SKUs</text>
+  <text x="820" y="284" class="body-txt">• Separates "FedEx Lost My Box 1★" into Carrier</text>
+  <text x="830" y="302" class="body-txt">Service Feedback + triggers instant CS rescue</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNDISCLOSED_SEEDING_OR_INSIDER_REVIEW_HOLD</text>
+
+  <!-- Bottom Category-Timed In-Mail Review & Retail Syndication Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Category-Timed AMP In-Email Collection + Retail Syndication (Walmart/Target/Sephora) + Fit Attributes (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Category Usage-Window Timing</text>
+  <text x="62" y="462" class="body-txt">Apparel: ask at `Delivered + 5d`;</text>
+  <text x="62" y="480" class="body-txt">Skincare/Supplements: wait until</text>
+  <text x="62" y="498" class="body-txt">`Delivered + 21d` for real results;</text>
+  <text x="62" y="516" class="mono">3.4x Higher Review Submission</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Structured Fit &amp; Skin Tags</text>
+  <text x="337" y="462" class="body-txt">Captures `Runs Small/True/Large`,</text>
+  <text x="337" y="480" class="body-txt">`Height/Weight` &amp; `Skin Type`</text>
+  <text x="337" y="498" class="body-txt">inside 1-click AMP email form;</text>
+  <text x="337" y="516" class="mono">Feeds AI Sizing &amp; Search Engine</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Omnichannel GTIN Syndication</text>
+  <text x="622" y="462" class="body-txt">Syndicates 1 DTC review across</text>
+  <text x="622" y="480" class="body-txt">Target, Walmart, Sephora, Best</text>
+  <text x="622" y="498" class="body-txt">Buy &amp; Google Shopping via GTIN;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">Day-1 Cold-Start Social Proof</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ 1★ Pre-Publish CS Resolution</text>
+  <text x="907" y="462" class="body-txt">Publishes 1★ review transparently</text>
+  <text x="907" y="480" class="body-txt">AND opens P0 Gorgias/Zendesk</text>
+  <text x="907" y="498" class="body-txt">replacement ticket in 60 seconds;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% FTC Risk &amp; Cold-Start Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Cold-Start &amp; Compliance Saved</text>
+  <text x="46" y="642" class="mono">$52,200 Saved / $145k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">FTC Part 465</text>
+  <text x="336" y="626" class="kpi-lbl">Zero Star-Gating or 1★ Hiding</text>
+  <text x="336" y="642" class="mono">$0 Civil Penalty Exposure</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">GTIN-Pinned</text>
+  <text x="626" y="626" class="kpi-lbl">Anti-Variant-Hijack Review Lock</text>
+  <text x="626" y="642" class="mono">0 Fake Merged-Listing Reviews</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">1-to-Many Sync</text>
+  <text x="916" y="626" class="kpi-lbl">Bazaarvoice/Yotpo Retail Network</text>
+  <text x="916" y="642" class="mono">+31% New-SKU Launch Conversion</text>
+</svg>

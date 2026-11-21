@@ -2,11 +2,11 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`302` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`303` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
-- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（16 篇）](#platform-grounding)
+- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（17 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（44 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（112 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（69 篇）](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（16 篇）
+## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（17 篇）
 
 > 面向企业架构师的平台底座选型（Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify）、搜索接地（Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl）、目录同步屏障、A2UI 渲染隔离与可信 Bot 鉴权。
 
@@ -40,6 +40,7 @@
 | 14 | **电商大促高并发虚拟排队室（Virtual Waiting Room：Queue-it / Cloudflare Waiting Room / EQL 抽签）、防全站陪葬宕机与防多开无痕窗口刷签托管“防 500 件联名款打挂全站 8,000 笔日常订单、防黄牛开 500 个标签页霸榜与预等候室洗牌净省 39%”Agent 架构选型 FAQ** | [中文](ecommerce-virtual-waiting-room-fair-queue-bot-mitigation-escrow-agent-selection-faq.md) · [English](ecommerce-virtual-waiting-room-fair-queue-bot-mitigation-escrow-agent-selection-faq.en.md) |
 | 15 | **电商站内混合搜索与智能导购重排（Hybrid Search & Merchandising：Constructor.io / Algolia NeuralSearch / Vertex AI Search for Commerce）、防“断码僵尸爆款霸屏”与毛利感知托管“防仅剩 XXXL 的断码鞋服霸占首屏浪费 40% 流量、防纯向量检索搞混 iPhone 16/15 型号导致买错退货与期望净毛利重排净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-hybrid-search-merchandising-swiss-cheese-stock-margin-escrow-agent-selection-faq.md) · [English](ecommerce-hybrid-search-merchandising-swiss-cheese-stock-margin-escrow-agent-selection-faq.en.md) |
 | 16 | **电商个性化 AI 导购、跨品类穿搭/整屋成套搭配与购物车转化托管（Shopify Storefront MCP / Salesforce Agentforce / Amazon Rufus / Constructor.io）防“推荐的衣服点进去发现自己尺码断货”、防大模型乱搭不兼容镜头卡口/护肤酸醇冲突与一键成套加购托管“防提示词注入骗走 1 折神券、防打断高意向结账流与搭配连带率提升净省 38%”Agent 架构选型 FAQ（🏆 第 300 篇里程碑）** | [中文](ecommerce-ai-shopping-assistant-outfit-bundle-compatibility-cart-escrow-agent-selection-faq.md) · [English](ecommerce-ai-shopping-assistant-outfit-bundle-compatibility-cart-escrow-agent-selection-faq.en.md) |
+| 17 | **电商真实购买评价（`UGC Reviews`）、美国 `FTC 16 CFR Part 465` 反刷评合规与跨商超评价同步托管（Bazaarvoice / Yotpo / PowerReviews / Okendo）防“好评返现 $10 / 藏匿一星差评”遭每条罚 `$51,744`、防老链接合并变体洗白 4,000 条旧好评与一键分发至 Walmart/Target/Sephora 净省 36% Agent 架构选型 FAQ** | [中文](ecommerce-verified-reviews-ftc-part465-seeding-syndication-escrow-agent-selection-faq.md) · [English](ecommerce-verified-reviews-ftc-part465-seeding-syndication-escrow-agent-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
 ## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（44 篇）

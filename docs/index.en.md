@@ -2,11 +2,11 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`302` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`303` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
-- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (16 guides)](#platform-grounding)
+- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (17 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (44 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (112 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (69 guides)](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (16 Guides)
+## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (17 Guides)
 
 > Platform selection (Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify), real-time search grounding (Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl), catalog feed barriers, A2UI isolation, and Web Bot Auth vs WAF governance.
 
@@ -40,6 +40,7 @@
 | 14 | **E-Commerce High-Concurrency Virtual Waiting Room, Pre-Drop Fair-Lottery Shuffle & Edge-Signed `HMAC` Pass Escrow (`Queue-it / Cloudflare Waiting Room / EQL`) Path-Scoped Bulkhead, `1-User-1-Slot` & SKU-Pinned Pass Agent Architecture Selection FAQ** | [English](ecommerce-virtual-waiting-room-fair-queue-bot-mitigation-escrow-agent-selection-faq.en.md) · [中文](ecommerce-virtual-waiting-room-fair-queue-bot-mitigation-escrow-agent-selection-faq.md) |
 | 15 | **E-Commerce Hybrid Search & Profit-Aware Merchandising (`Constructor.io / Algolia NeuralSearch / Vertex AI Retail`), Anti-"Swiss-Cheese" Broken-Size-Curve Demotion & `NER` Spec Lock (`>=40%` Core Size Curve, Pre-Retrieval Hard Filter & Net-Profit LTR `-37%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-hybrid-search-merchandising-swiss-cheese-stock-margin-escrow-agent-selection-faq.en.md) · [中文](ecommerce-hybrid-search-merchandising-swiss-cheese-stock-margin-escrow-agent-selection-faq.md) |
 | 16 | **E-Commerce Conversational AI Shopping Assistant, Cross-Category Outfit/Kit Styling & Cart-Conversion Escrow (`Shopify Storefront MCP / Salesforce Agentforce / Amazon Rufus / Constructor.io`), Variant-Level `ATP >= 2` Lock, Deterministic `PIM` Compatibility Graph & 1-Tap Multi-SKU Cart Hydration (`-38%` Bounce & Wrong-Buy Loss) Agent Architecture Selection FAQ (🏆 300th Guide Milestone)** | [English](ecommerce-ai-shopping-assistant-outfit-bundle-compatibility-cart-escrow-agent-selection-faq.en.md) · [中文](ecommerce-ai-shopping-assistant-outfit-bundle-compatibility-cart-escrow-agent-selection-faq.md) |
+| 17 | **E-Commerce Verified-Purchase Reviews, `FTC 16 CFR Part 465` Anti-Gating Compliance & Retail Syndication Escrow (`Bazaarvoice / Yotpo / PowerReviews / Okendo`), Sentiment-Neutral Incentives, `14-Digit GTIN` Anti-Variant-Hijack Lock & Omnichannel Syndication (`-36%` Penalty & Cold-Start Loss) Agent Architecture Selection FAQ** | [English](ecommerce-verified-reviews-ftc-part465-seeding-syndication-escrow-agent-selection-faq.en.md) · [中文](ecommerce-verified-reviews-ftc-part465-seeding-syndication-escrow-agent-selection-faq.md) |
 
 <a id="payments-mandates"></a>
 ## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (44 Guides)

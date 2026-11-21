@@ -21386,6 +21386,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-clm-contract-redlining-sandbox", html_zh)
 
+    def test_ecommerce_verified_review_syndication_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceVerifiedReviewSyndicationPolicyInput,
+            evaluate_ecommerce_verified_review_syndication_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_verified_review_syndication_policy(
+            EcommerceVerifiedReviewSyndicationPolicyInput(
+                quarterly_review_ftc_penalty_cold_start_and_hijack_pool_usd=145000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "FTC_COMPLIANT_VERIFIED_BUYER_REVIEW_PUBLISHED",
+        )
+
+        ftc = evaluate_ecommerce_verified_review_syndication_policy(
+            EcommerceVerifiedReviewSyndicationPolicyInput(
+                star_gated_incentive_or_selective_1star_review_suppression=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 403)
+        self.assertEqual(
+            ftc["decision"],
+            "STAR_GATED_INCENTIVE_OR_1STAR_SUPPRESSION_BLOCKED",
+        )
+
+        gtin = evaluate_ecommerce_verified_review_syndication_policy(
+            EcommerceVerifiedReviewSyndicationPolicyInput(
+                cross_category_variant_review_hijack_or_unverified_bot_bomb=True
+            )
+        )
+        self.assertEqual(gtin["status_code"], 422)
+        self.assertEqual(
+            gtin["decision"],
+            "VARIANT_REVIEW_HIJACK_OR_UNVERIFIED_BOMB_BLOCKED",
+        )
+
+        seed = evaluate_ecommerce_verified_review_syndication_policy(
+            EcommerceVerifiedReviewSyndicationPolicyInput(
+                undisclosed_gifted_seeding_or_insider_employee_review=True
+            )
+        )
+        self.assertEqual(seed["status_code"], 451)
+        self.assertEqual(
+            seed["decision"],
+            "UNDISCLOSED_SEEDING_OR_INSIDER_REVIEW_HOLD",
+        )
+
+        optim = evaluate_ecommerce_verified_review_syndication_policy(
+            EcommerceVerifiedReviewSyndicationPolicyInput(
+                quarterly_review_ftc_penalty_cold_start_and_hijack_pool_usd=145000.0,
+                category_timed_amp_collection_and_retail_gtin_syndication_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 52200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 92800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_verified_review_syndication_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-verified-review-syndication-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
