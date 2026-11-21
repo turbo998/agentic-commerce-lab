@@ -23666,6 +23666,87 @@ def evaluate_ota_price_drop_rebooking_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BRfqMsaRedlineEscrowPolicyInput:
+    """Input contract for B2B RFQ Sourcing, Anti-Bid-Rigging & MSA/DPA Redline Escrow."""
+
+    quarterly_b2b_tactical_rfq_pool_usd: float = 220000.0
+    collusive_ubo_cover_bidding_or_po_splitting_evasion: bool = False
+    uncapped_vendor_data_training_or_missing_breach_supercap: bool = False
+    webiq_sanctioned_ubo_or_expired_soc2_attestation_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    cherry_pick_lot_split_and_should_cost_redline_ready: bool = False
+
+
+def evaluate_b2b_rfq_msa_redline_escrow_policy(
+    policy_input: B2BRfqMsaRedlineEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B RFQ Sourcing, Anti-Bid-Rigging & MSA/DPA Redline Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_tactical_rfq_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_sanctioned_ubo_or_expired_soc2_attestation_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_SANCTIONED_UBO_OR_EXPIRED_SOC2_ATTESTATION_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.collusive_ubo_cover_bidding_or_po_splitting_evasion:
+        return {
+            "status_code": 403,
+            "decision": "COLLUSIVE_UBO_COVER_BIDDING_OR_PO_SPLITTING_EVASION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncapped_vendor_data_training_or_missing_breach_supercap:
+        return {
+            "status_code": 422,
+            "decision": "UNCAPPED_VENDOR_DATA_TRAINING_OR_MISSING_BREACH_SUPERCAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cherry_pick_lot_split_and_should_cost_redline_ready:
+        savings = round(gross_pool * 0.29, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CHERRY_PICK_LOT_SPLIT_AND_SHOULD_COST_REDLINE_CONFIRM",
+            "mandate_token": "b2b_rfq_msa_redline_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "COMPETITIVE_RFQ_AND_REDLINED_MSA_PO_AUTHORIZED",
+        "mandate_token": "b2b_rfq_msa_redline_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -32549,6 +32630,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_rfq_msa_redline_escrow_guard = {
+        "authorized_200": evaluate_b2b_rfq_msa_redline_escrow_policy(
+            B2BRfqMsaRedlineEscrowPolicyInput()
+        ),
+        "collusive_cover_bidding_or_po_split_403": evaluate_b2b_rfq_msa_redline_escrow_policy(
+            B2BRfqMsaRedlineEscrowPolicyInput(
+                collusive_ubo_cover_bidding_or_po_splitting_evasion=True
+            )
+        ),
+        "vendor_ai_training_or_missing_supercap_422": evaluate_b2b_rfq_msa_redline_escrow_policy(
+            B2BRfqMsaRedlineEscrowPolicyInput(
+                uncapped_vendor_data_training_or_missing_breach_supercap=True
+            )
+        ),
+        "sanctioned_ubo_or_expired_soc2_451": evaluate_b2b_rfq_msa_redline_escrow_policy(
+            B2BRfqMsaRedlineEscrowPolicyInput(
+                webiq_sanctioned_ubo_or_expired_soc2_attestation_flag=True
+            )
+        ),
+        "cherry_pick_lot_split_and_should_cost_409": evaluate_b2b_rfq_msa_redline_escrow_policy(
+            B2BRfqMsaRedlineEscrowPolicyInput(
+                cherry_pick_lot_split_and_should_cost_redline_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -32791,6 +32898,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_churn_retention_escrow_guard": saas_churn_retention_escrow_guard,
         "cross_border_returns_duty_drawback_escrow_guard": cross_border_returns_duty_drawback_escrow_guard,
         "ota_price_drop_rebooking_escrow_guard": ota_price_drop_rebooking_escrow_guard,
+        "b2b_rfq_msa_redline_escrow_guard": b2b_rfq_msa_redline_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -44296,6 +44404,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ota-rebook-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 NDC_ORDER_RESHOP_RESIDUAL_CREDIT_AND_SAME_ROOM_REBOOK_CONFIRM · Mandate: ota_price_drop_rebooking_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 114 B2B RFQ Sourcing, Anti-Bid-Rigging & MSA/DPA Redline Escrow -->
+      <div class="finops-box" id="b2b-rfq-msa-redline-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📑 企业 B2B 采购寻源询价 (RFQ)、防“关联围标/拆单逃避招标”与合同条款初审 (MSA / DPA Redlining) 托管 (SAP Ariba / Coupa / Fairmarkit / Ironclad AI) 寻源与法务沙盒 (Round 114)</div>
+            <div class="finops-subtitle">实测 30 天滚动拆单合并+投标商 UBO 股权/PDF 指纹穿透防马甲公司高价陪标 (HTTP 403)、自动抓取报价单外链条款强制注入 &gt;=2x ACV 泄密赔偿上限 (Super-Cap) 与“零 AI 模型训练权”DPA 附件 (HTTP 422)、Web IQ 50% 股权制裁穿透与 SOC 2 Type II 核验 (HTTP 451) 及多行项整数规划跨供应商择优拆标 (Cherry-Pick)+Should-Cost 目标价竞标净省 29% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="b2b-rfq-status-kpi">HTTP 409 · CHERRY_PICK_LOT_SPLIT_AND_SHOULD_COST_REDLINE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业中长尾战术采购 (RFQ) 与外包服务总预算池 ($ USD)
+            <input type="range" id="b2b-rfq-pool-slider" min="30000" max="1000000" step="10000" value="220000" oninput="updateB2BRfqMsaRedlineEscrowSandbox()" />
+            <span id="b2b-rfq-pool-val" style="color:#6ee7b7; font-family:monospace;">$220,000</span>
+          </label>
+          <label>
+            投标商 UBO 实控人/PDF 指纹反围标与防拆单审计 (HTTP 403)
+            <select id="b2b-rfq-collusion-select" onchange="updateB2BRfqMsaRedlineEscrowSandbox()">
+              <option value="pass">系统盲邀独立供应商 + Commit-Reveal 密封开标 + 3家投标商 UBO/IP/PDF 零关联 (放行)</option>
+              <option value="block">把 $135k 采购拆成 3 张 $45k 小单逃避招标 或 3家报价单共享同一实控人/同台电脑导出陪标 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            MSA / DPA 法务红线编译器与 DDP 到岸总成本归一化 (HTTP 422)
+            <select id="b2b-rfq-redline-select" onchange="updateB2BRfqMsaRedlineEscrowSandbox()">
+              <option value="pass">签回 &gt;=2x ACV 数据泄露 Super-Cap + 严禁拿甲方数据训练 AI + DDP 完税净现值对齐 (合规)</option>
+              <option value="block">报价单底部小字超链接暗藏“允许拿客户数据训练大模型”/泄密仅赔 1 个月费用 或 隐瞒 EXW 运费关税 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ OFAC 50% 股权制裁穿透与 SOC 2 Type II 核验 (HTTP 451)
+            <select id="b2b-rfq-soc2-select" onchange="updateB2BRfqMsaRedlineEscrowSandbox()">
+              <option value="clear">50% 股权穿透零制裁命中 + 邓白氏资信健康 + 具备有效期内 SOC 2 Type II 报告 (正常)</option>
+              <option value="hold">供应商母公司命中制裁名单/濒临破产 或 涉密 SaaS 供应商 SOC 2 审计报告已过期 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            多行项跨供应商择优拆标 (Lot-Split) 与 Should-Cost 议价 (HTTP 409)
+            <select id="b2b-rfq-opt-select" onchange="updateB2BRfqMsaRedlineEscrowSandbox()">
+              <option value="enabled" selected>ILP 整数规划跨供应商择优拆标 (消除长尾行项 60% 加价) + Should-Cost 目标价 + 2/10 Net 45 净省 29% (HTTP 409)</option>
+              <option value="baseline">常规三家密封比价与标准 MSA 合同初审放行授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业 B2B 寻源总池</div>
+            <div class="finops-kpi-val" id="b2b-rfq-gross-kpi">$220,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">行项择优拆标与目标价竞标后净支出</div>
+            <div class="finops-kpi-val" id="b2b-rfq-net-kpi" style="color:#6ee7b7;">$156,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消除陪标水分与长尾加价</div>
+            <div class="finops-kpi-val" id="b2b-rfq-savings-kpi" style="color:#38bdf8;">$63,800</div>
+          </div>
+        </div>
+        <div id="b2b-rfq-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CHERRY_PICK_LOT_SPLIT_AND_SHOULD_COST_REDLINE_CONFIRM · Mandate: b2b_rfq_msa_redline_mandate_optim_409
         </div>
       </div>
 
@@ -58103,6 +58274,80 @@ function updateOtaPriceDropRebookingEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ALL_IN_FARE_AND_ATOMIC_REBOOK_SAGA_AUTHORIZED · Mandate: ota_price_drop_rebooking_mandate_200';
+}}
+
+function updateB2BRfqMsaRedlineEscrowSandbox() {{
+  const slider = document.getElementById('b2b-rfq-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '220000');
+  const collusionMode = document.getElementById('b2b-rfq-collusion-select').value;
+  const redlineMode = document.getElementById('b2b-rfq-redline-select').value;
+  const soc2Mode = document.getElementById('b2b-rfq-soc2-select').value;
+  const optMode = document.getElementById('b2b-rfq-opt-select').value;
+
+  document.getElementById('b2b-rfq-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('b2b-rfq-status-kpi');
+  const grossKpi = document.getElementById('b2b-rfq-gross-kpi');
+  const netKpi = document.getElementById('b2b-rfq-net-kpi');
+  const savingsKpi = document.getElementById('b2b-rfq-savings-kpi');
+  const banner = document.getElementById('b2b-rfq-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (soc2Mode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_SANCTIONED_UBO_OR_EXPIRED_SOC2_ATTESTATION_HOLD · Mandate: null';
+    return;
+  }}
+  if (collusionMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 COLLUSIVE_UBO_COVER_BIDDING_OR_PO_SPLITTING_EVASION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (redlineMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCAPPED_VENDOR_DATA_TRAINING_OR_MISSING_BREACH_SUPERCAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.29);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CHERRY_PICK_LOT_SPLIT_AND_SHOULD_COST_REDLINE_CONFIRM · Mandate: b2b_rfq_msa_redline_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 COMPETITIVE_RFQ_AND_REDLINED_MSA_PO_AUTHORIZED · Mandate: b2b_rfq_msa_redline_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

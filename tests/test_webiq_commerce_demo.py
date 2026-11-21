@@ -16696,6 +16696,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-price-drop-rebooking-escrow-sandbox", html_zh)
 
+    def test_b2b_rfq_msa_redline_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BRfqMsaRedlineEscrowPolicyInput,
+            evaluate_b2b_rfq_msa_redline_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_rfq_msa_redline_escrow_policy(
+            B2BRfqMsaRedlineEscrowPolicyInput(
+                quarterly_b2b_tactical_rfq_pool_usd=220000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "COMPETITIVE_RFQ_AND_REDLINED_MSA_PO_AUTHORIZED",
+        )
+
+        collusion = evaluate_b2b_rfq_msa_redline_escrow_policy(
+            B2BRfqMsaRedlineEscrowPolicyInput(
+                collusive_ubo_cover_bidding_or_po_splitting_evasion=True
+            )
+        )
+        self.assertEqual(collusion["status_code"], 403)
+        self.assertEqual(
+            collusion["decision"],
+            "COLLUSIVE_UBO_COVER_BIDDING_OR_PO_SPLITTING_EVASION_BLOCKED",
+        )
+
+        redline = evaluate_b2b_rfq_msa_redline_escrow_policy(
+            B2BRfqMsaRedlineEscrowPolicyInput(
+                uncapped_vendor_data_training_or_missing_breach_supercap=True
+            )
+        )
+        self.assertEqual(redline["status_code"], 422)
+        self.assertEqual(
+            redline["decision"],
+            "UNCAPPED_VENDOR_DATA_TRAINING_OR_MISSING_BREACH_SUPERCAP_BLOCKED",
+        )
+
+        soc2 = evaluate_b2b_rfq_msa_redline_escrow_policy(
+            B2BRfqMsaRedlineEscrowPolicyInput(
+                webiq_sanctioned_ubo_or_expired_soc2_attestation_flag=True
+            )
+        )
+        self.assertEqual(soc2["status_code"], 451)
+        self.assertEqual(
+            soc2["decision"],
+            "WEBIQ_SANCTIONED_UBO_OR_EXPIRED_SOC2_ATTESTATION_HOLD",
+        )
+
+        optim = evaluate_b2b_rfq_msa_redline_escrow_policy(
+            B2BRfqMsaRedlineEscrowPolicyInput(
+                quarterly_b2b_tactical_rfq_pool_usd=220000.0,
+                cherry_pick_lot_split_and_should_cost_redline_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 63800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 156200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_rfq_msa_redline_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-rfq-msa-redline-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
