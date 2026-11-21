@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg618" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr618" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg618)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr618)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 175 · B2B E-Commerce Net-Terms Checkout (Net-30/60), Trade Credit &amp; Factoring Escrow</text>
+  <text x="48" y="74" class="sub">Balance / Hokodo / Resolve / TreviPay / Allianz Trade · Anti-Bust-Out KYB + Plaid Lock · T+1 Non-Recourse Payout (-37% Bad Debt &amp; DSO)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #618 · FAQ #294</text>
+
+  <!-- Lane 1: Corporate Impersonation & Shelf-LLC Bust-Out Gate -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Corporate Impersonation &amp; KYB Gate (403)</text>
+  <text x="44" y="162" class="body-txt">• Stops "Fake Buyer Using Fortune-500 DUNS/EIN":</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Require Corporate_SSO / @company.com Domain +</text>
+  <text x="54" y="200" class="mono">Plaid / Open-Banking Operating Account Match</text>
+  <text x="44" y="223" class="body-txt">• Defeats Aged "Shelf-LLC" Credit Bust-Out:</text>
+  <text x="54" y="243" class="mono">Flag UBO_Ownership_Change &lt; 90d in SoS Filing</text>
+  <text x="44" y="266" class="body-txt">• Authorized Delivery-Dock Geofence:</text>
+  <text x="54" y="286" class="body-txt">Blocks Net-30 orders shipping to residential</text>
+  <text x="54" y="304" class="body-txt">apartments or self-storage units instead of HQ</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 CORPORATE_IMPERSONATION_OR_SHELF_LLC_BLOCKED</text>
+
+  <!-- Lane 2: Open Credit Exposure, Overdue AR & D&B PAYDEX Gate -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Real-Time Credit Exposure &amp; Aging Lock (422)</text>
+  <text x="432" y="162" class="body-txt">• Stops New Orders While Old Invoices Are Past Due:</text>
+  <text x="442" y="182" class="mono">If Past_Due_AR_Over_15d &gt; $0 OR</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">(Unbilled_WIP + Open_AR + Cart) &gt; Credit_Limit</text>
+  <text x="432" y="223" class="body-txt">• Live Bureau &amp; Bank-Balance Underwriting (`3s`):</text>
+  <text x="442" y="243" class="mono">Combine D&amp;B PAYDEX + Experian Intelliscore +</text>
+  <text x="442" y="261" class="mono">Live Plaid Cash_Buffer &gt;= 2.5x Credit_Line</text>
+  <text x="432" y="284" class="body-txt">• Offers instant split-pay: cover excess via ACH</text>
+  <text x="442" y="302" class="body-txt">or pay oldest past-due invoice in 1 click to unlock</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 CREDIT_LIMIT_EXCEEDED_OR_PAST_DUE_AR_BLOCKED</text>
+
+  <!-- Lane 3: Commercial Dispute vs. Non-Recourse Factoring Shield -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. POD Acceptance &amp; UCC Lien Check Lock (451)</text>
+  <text x="820" y="162" class="body-txt">• Closes the "Non-Recourse Commercial Dispute" Gap:</text>
+  <text x="830" y="182" class="mono">Factoring covers Insolvency, NOT "Wrong Spec"</text>
+  <text x="830" y="200" class="body-txt">Requires signed e-POD + PO Spec Match before</text>
+  <text x="830" y="218" class="body-txt">releasing T+1 non-recourse advance</text>
+  <text x="820" y="241" class="body-txt">• UCC-1 Blanket Lien &amp; Double-Factoring Check:</text>
+  <text x="830" y="261" class="mono" fill="#f9a8d4">Verify Invoice_Hash ∉ External_Factor_Registry</text>
+  <text x="820" y="284" class="body-txt">• US ECOA Reg B Adverse-Action Notice Mandate:</text>
+  <text x="830" y="302" class="body-txt">Auto-generates specific credit-denial reason codes</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNSIGNED_POD_DISPUTE_OR_UCC_LIEN_CONFLICT_HOLD</text>
+
+  <!-- Bottom T+1 Non-Recourse Settlement & ERP Auto-Reconciliation Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. 3-Second Embedded Net-30/60 Checkout + T+1 Non-Recourse Payout + Smart Virtual-IBAN AR Match (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① 3-Second Checkout Approval</text>
+  <text x="62" y="462" class="body-txt">Replaces 14-day PDF credit app</text>
+  <text x="62" y="480" class="body-txt">&amp; trade-reference calls with</text>
+  <text x="62" y="498" class="body-txt">instant API credit line;</text>
+  <text x="62" y="516" class="mono">+42% B2B Checkout Conversion</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② T+1 Non-Recourse Cash Payout</text>
+  <text x="337" y="462" class="body-txt">Buyer gets Net-60 free terms;</text>
+  <text x="337" y="480" class="body-txt">Merchant receives 97.5% cash</text>
+  <text x="337" y="498" class="body-txt">at T+1 ship-confirm with</text>
+  <text x="337" y="516" class="mono">0 Default Risk on Balance Sheet</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Card-to-ACH Fee Migration</text>
+  <text x="622" y="462" class="body-txt">Moves $25,000 B2B orders off</text>
+  <text x="622" y="480" class="body-txt">2.9% credit cards onto $2</text>
+  <text x="622" y="498" class="body-txt">FedNow / RTP / SEPA Instant</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">Saves 180 bps Payment MDR</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Virtual-Account Auto-Cash-App</text>
+  <text x="907" y="462" class="body-txt">Dedicated per-buyer virtual</text>
+  <text x="907" y="480" class="body-txt">routing/IBAN + OCR remittance</text>
+  <text x="907" y="498" class="body-txt">auto-closes NetSuite AR;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Bad Debt, MDR &amp; DSO Cost</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Bad-Debt, DSO &amp; MDR Saved</text>
+  <text x="46" y="642" class="mono">$70,300 Saved / $190k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">T+1 Cash Out</text>
+  <text x="336" y="626" class="kpi-lbl">Non-Recourse Trade Credit</text>
+  <text x="336" y="642" class="mono">DSO Drops from 54 Days to 1 Day</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">KYB + Plaid</text>
+  <text x="626" y="626" class="kpi-lbl">Anti-Impersonation &amp; Shelf-LLC</text>
+  <text x="626" y="642" class="mono">0 Fake Fortune-500 PO Frauds</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">vIBAN Auto-AR</text>
+  <text x="916" y="626" class="kpi-lbl">100% Automated Cash Application</text>
+  <text x="916" y="642" class="mono">Eliminates Unapplied Wire Mess</text>
+</svg>

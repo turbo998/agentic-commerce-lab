@@ -20783,6 +20783,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-ddp-landed-cost-sandbox", html_zh)
 
+    def test_b2b_net_terms_trade_credit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BNetTermsTradeCreditPolicyInput,
+            evaluate_b2b_net_terms_trade_credit_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_net_terms_trade_credit_policy(
+            B2BNetTermsTradeCreditPolicyInput(
+                quarterly_b2b_bad_debt_dso_capital_and_card_mdr_pool_usd=190000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_NET_TERMS_ORDER_AUTHORIZED",
+        )
+
+        kyb = evaluate_b2b_net_terms_trade_credit_policy(
+            B2BNetTermsTradeCreditPolicyInput(
+                corporate_ein_impersonation_or_shelf_llc_ubo_flip_under_90d=True
+            )
+        )
+        self.assertEqual(kyb["status_code"], 403)
+        self.assertEqual(
+            kyb["decision"],
+            "CORPORATE_IMPERSONATION_OR_SHELF_LLC_BLOCKED",
+        )
+
+        ar = evaluate_b2b_net_terms_trade_credit_policy(
+            B2BNetTermsTradeCreditPolicyInput(
+                open_ar_plus_unbilled_wip_exceeds_limit_or_past_due_over_15d=True
+            )
+        )
+        self.assertEqual(ar["status_code"], 422)
+        self.assertEqual(
+            ar["decision"],
+            "CREDIT_LIMIT_EXCEEDED_OR_PAST_DUE_AR_BLOCKED",
+        )
+
+        pod = evaluate_b2b_net_terms_trade_credit_policy(
+            B2BNetTermsTradeCreditPolicyInput(
+                missing_signed_epod_acceptance_or_duplicate_ucc1_factoring_lien=True
+            )
+        )
+        self.assertEqual(pod["status_code"], 451)
+        self.assertEqual(
+            pod["decision"],
+            "UNSIGNED_POD_DISPUTE_OR_UCC_LIEN_CONFLICT_HOLD",
+        )
+
+        optim = evaluate_b2b_net_terms_trade_credit_policy(
+            B2BNetTermsTradeCreditPolicyInput(
+                quarterly_b2b_bad_debt_dso_capital_and_card_mdr_pool_usd=190000.0,
+                t1_non_recourse_factoring_ach_migration_and_viban_auto_ar_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 70300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 119700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_net_terms_trade_credit_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-net-terms-trade-credit-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

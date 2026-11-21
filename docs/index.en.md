@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`293` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`294` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (15 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (43 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (108 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (67 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (68 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (24 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (36 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -208,7 +208,7 @@
 | 108 | **Retail Media Network (`RMN`: `Amazon Ads / Walmart Connect / Target Roundel / Instacart`) Sponsored Bidding, `Buy-Box` & Regional `OOS` Auto-Pause, and Incremental `iROAS / POAS` Escrow (`-38%` Wasted Ad Spend) Agent Architecture Selection FAQ** | [English](retail-media-network-rmn-buybox-oos-incrementality-bid-escrow-agent-selection-faq.en.md) · [中文](retail-media-network-rmn-buybox-oos-incrementality-bid-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (67 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (68 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -281,6 +281,7 @@
 | 65 | **Enterprise B2B Services Procurement & Contingent Labor `VMS` (`SAP Fieldglass / Beeline / Coupa / Workday VNDLY`), Anti-"Bait-and-Switch" Staffing & Deliverable-Backed `SOW` Escrow (`Worker_Okta_ID` Tier Lock, Telemetry Timesheets & `-33%` Spend) Agent Architecture Selection FAQ** | [English](b2b-sow-services-contingent-labor-vms-milestone-timesheet-escrow-agent-selection-faq.en.md) · [中文](b2b-sow-services-contingent-labor-vms-milestone-timesheet-escrow-agent-selection-faq.md) |
 | 66 | **B2B Inventory Liquidation & Off-Price Closeout (`Ghost / B-Stock / Inturn`), Anti-Amazon-`Buy-Box` Cannibalization & Mandatory `De-Labeling / UPC` Escrow (`30%` Diversion Bond, `UPC` Barcode Overwrite & Week-6 Sealed Auction `-36%` Loss) Agent Architecture Selection FAQ** | [English](b2b-inventory-liquidation-closeout-anti-buybox-cannibalization-escrow-agent-selection-faq.en.md) · [中文](b2b-inventory-liquidation-closeout-anti-buybox-cannibalization-escrow-agent-selection-faq.md) |
 | 67 | **Corporate Expense Card, Receipt `OCR` & Policy Audit Escrow (`Ramp / Brex / Navan Expense / SAP Concur`), Pre-Swipe `MCC` & Per-Diem Lock, `Level III` Line-Item Split & Cross-Channel Duplicate Receipt Hash (`-38%` Spend & Audit Cost) Agent Architecture Selection FAQ** | [English](corporate-expense-card-receipt-ocr-policy-audit-escrow-agent-selection-faq.en.md) · [中文](corporate-expense-card-receipt-ocr-policy-audit-escrow-agent-selection-faq.md) |
+| 68 | **B2B E-Commerce Net-Terms Checkout (`Net-30 / Net-60`), Real-Time Trade Credit Underwriting & Non-Recourse Factoring Escrow (`Balance / Hokodo / Resolve / TreviPay`), Anti-Impersonation `KYB + Plaid` Lock, `WIP + AR` Exposure Gate & `T+1` Payout (`-37%` Bad-Debt & DSO Cost) Agent Architecture Selection FAQ** | [English](b2b-ecommerce-net-terms-trade-credit-underwriting-factoring-escrow-agent-selection-faq.en.md) · [中文](b2b-ecommerce-net-terms-trade-credit-underwriting-factoring-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (24 Guides)
