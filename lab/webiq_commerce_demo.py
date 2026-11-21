@@ -29737,6 +29737,82 @@ def evaluate_saas_free_trial_conversion_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderEuEprCompliancePolicyInput:
+    quarterly_eu_epr_overpayment_double_filing_and_penalty_pool_usd: float = 150000.0
+    duplicate_reporting_of_marketplace_withheld_orders_or_pvc_malus: bool = False
+    lumping_cardboard_weight_into_plastic_tariff_or_unnetted_returns: bool = False
+    missing_active_de_lucid_weee_ear_or_fr_uin_before_listing: bool = False
+    sku_gram_bom_split_eco_bonus_and_lucid_pro_parity_sync_ready: bool = False
+
+
+def evaluate_cross_border_eu_epr_compliance_policy(
+    policy_input: CrossBorderEuEprCompliancePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_eu_epr_overpayment_double_filing_and_penalty_pool_usd
+        ),
+    )
+    if policy_input.missing_active_de_lucid_weee_ear_or_fr_uin_before_listing:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_EU_EPR_LUCID_WEEE_UIN_REGISTRATION_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.duplicate_reporting_of_marketplace_withheld_orders_or_pvc_malus:
+        return {
+            "status_code": 403,
+            "decision": "EPR_MARKETPLACE_DOUBLE_PAY_OR_PVC_MALUS_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.lumping_cardboard_weight_into_plastic_tariff_or_unnetted_returns:
+        return {
+            "status_code": 422,
+            "decision": "GROSS_PLASTIC_LUMPING_OR_UNNETTED_RMA_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sku_gram_bom_split_eco_bonus_and_lucid_pro_parity_sync_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SKU_GRAM_BOM_SPLIT_AND_LUCID_PRO_PARITY_SYNC_CONFIRM",
+            "mandate_token": "eu_epr_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_EU_EPR_LEDGER_COMPLIANCE_AUTHORIZED",
+        "mandate_token": "eu_epr_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -40674,6 +40750,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_eu_epr_compliance_guard = {
+        "authorized_200": evaluate_cross_border_eu_epr_compliance_policy(
+            CrossBorderEuEprCompliancePolicyInput()
+        ),
+        "mp_double_pay_or_pvc_403": evaluate_cross_border_eu_epr_compliance_policy(
+            CrossBorderEuEprCompliancePolicyInput(
+                duplicate_reporting_of_marketplace_withheld_orders_or_pvc_malus=True
+            )
+        ),
+        "plastic_lump_or_rma_422": evaluate_cross_border_eu_epr_compliance_policy(
+            CrossBorderEuEprCompliancePolicyInput(
+                lumping_cardboard_weight_into_plastic_tariff_or_unnetted_returns=True
+            )
+        ),
+        "missing_lucid_weee_uin_451": evaluate_cross_border_eu_epr_compliance_policy(
+            CrossBorderEuEprCompliancePolicyInput(
+                missing_active_de_lucid_weee_ear_or_fr_uin_before_listing=True
+            )
+        ),
+        "gram_bom_and_lucid_sync_409": evaluate_cross_border_eu_epr_compliance_policy(
+            CrossBorderEuEprCompliancePolicyInput(
+                sku_gram_bom_split_eco_bonus_and_lucid_pro_parity_sync_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40995,6 +41097,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_tail_spend_spot_buy_guard": b2b_tail_spend_spot_buy_guard,
         "ecommerce_one_click_checkout_guard": ecommerce_one_click_checkout_guard,
         "saas_free_trial_conversion_guard": saas_free_trial_conversion_guard,
+        "cross_border_eu_epr_compliance_guard": cross_border_eu_epr_compliance_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -57195,6 +57298,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="saastrial-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 REVERSE_TRIAL_TELEMETRY_UPGRADE_AND_GRACE_EXTEND_CONFIRM · Mandate: saas_trial_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 193 Cross-Border EU EPR (LUCID / WEEE / UIN) & Eco-Fee Escrow (#312) -->
+      <div class="finops-box" id="cross-border-eu-epr-compliance-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">♻️ 跨境电商欧盟生产者责任延伸 (EU EPR: 德国 LUCID / WEEE / 法国 UIN) 与环保费核销 (Lizenzero / Citeo) 沙盒</div>
+            <div class="finops-sub">Round 193 (#312) · 剥离平台已代扣订单防交双份环保费与 PVC 惩罚税拦截 (HTTP 403) + 0.1g 纸箱(€0.18) vs 塑料(€1.45) 克重 BOM 拆解与退货核减 (HTTP 422) + 上架前置 LUCID/WEEE/UIN 门禁 (HTTP 451) + 官局双轨零误差平账净省 35% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="euepr-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度欧盟 EPR 纸箱按塑料高价错报、平台代扣重缴与德国律所警告函损耗池 ($)
+            <input type="number" id="euepr-gross-input" value="150000" min="10000" step="5000" oninput="recalcCrossBorderEuEprComplianceSandbox()" />
+          </label>
+          <label>平台代扣代缴 (Pay-on-Behalf) 订单去重与法国 Citeo 高罚金包材拦截
+            <select id="euepr-dedup-select" onchange="recalcCrossBorderEuEprComplianceSandbox()">
+              <option value="pass">自动剥离 Amazon/速卖通已代扣订单仅报自营渠道 + 禁用 PVC/炭黑惩罚包材 (合规)</option>
+              <option value="block_403">把平台已代扣的法国/西班牙订单在自主申报中重复再交一遍 或 用 PVC 被罚 +100% 税 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>SKU 纸板 (€0.18/kg) vs 塑料 (€1.45/kg) 0.1g 克重 BOM 拆解与退货核销
+            <select id="euepr-bom-select" onchange="recalcCrossBorderEuEprComplianceSandbox()">
+              <option value="pass">精确拆解一级彩盒与 3PL 二级纸箱克重 + 自动扣减取消及跨境退回包裹 (合规)</option>
+              <option value="block_422">把 320g 瓦楞纸箱混入贵 8 倍的塑料费率一刀切申报 或 漏扣退货订单重量 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>欧洲站点上架前置德国 LUCID / WEEE-Stiftung EAR / 法国 UIN 注册号门禁
+            <select id="euepr-uin-select" onchange="recalcCrossBorderEuEprComplianceSandbox()">
+              <option value="pass">DE LUCID / WEEE EAR / 电池法 / FR UIN 及欧盟授权代表 (AR) 全部 ACTIVE (安全)</option>
+              <option value="block_451">未拿到德国 Stiftung EAR WEEE 号即上架带电新品遭律所发 Abmahnung 警告函并封店 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>ZSVR LUCID ↔ PRO 双轨同源平账、以纸代塑 Eco-Bonus 与小微包干寻优
+            <select id="euepr-opt-select" onchange="recalcCrossBorderEuEprComplianceSandbox()">
+              <option value="enabled" selected>0.1g 分材质台账 + 法国 FSC 纸袋 -15% 奖励 + LUCID 零误差平账 (-35% 支出 / HTTP 409)</option>
+              <option value="disabled">传统年底人工估算表格手动填报 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度欧盟 EPR 多缴与合规风险总池</div>
+            <div class="finops-kpi-val" id="euepr-gross-kpi">$150,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">克重拆解与去重平账后净支出</div>
+            <div class="finops-kpi-val" id="euepr-net-kpi" style="color:#6ee7b7;">$97,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省环保回收费与律所罚金</div>
+            <div class="finops-kpi-val" id="euepr-savings-kpi" style="color:#38bdf8;">$52,500</div>
+          </div>
+        </div>
+        <div id="euepr-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SKU_GRAM_BOM_SPLIT_AND_LUCID_PRO_PARITY_SYNC_CONFIRM · Mandate: eu_epr_escrow_optim_409
         </div>
       </div>
 
@@ -76801,6 +76961,79 @@ function recalcSaasFreeTrialConversionSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_ACTIVE_TRIAL_CONVERSION_AUTHORIZED · Mandate: saas_trial_escrow_200';
+}}
+
+function recalcCrossBorderEuEprComplianceSandbox() {{
+  const grossInput = document.getElementById('euepr-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '150000'));
+  const dedupGate = document.getElementById('euepr-dedup-select').value;
+  const bomGate = document.getElementById('euepr-bom-select').value;
+  const uinGate = document.getElementById('euepr-uin-select').value;
+  const optMode = document.getElementById('euepr-opt-select').value;
+
+  const grossKpi = document.getElementById('euepr-gross-kpi');
+  const netKpi = document.getElementById('euepr-net-kpi');
+  const savingsKpi = document.getElementById('euepr-savings-kpi');
+  const statusKpi = document.getElementById('euepr-status-kpi');
+  const banner = document.getElementById('euepr-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (uinGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_EU_EPR_LUCID_WEEE_UIN_REGISTRATION_HOLD · Mandate: null';
+    return;
+  }}
+  if (dedupGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 EPR_MARKETPLACE_DOUBLE_PAY_OR_PVC_MALUS_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (bomGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 GROSS_PLASTIC_LUMPING_OR_UNNETTED_RMA_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SKU_GRAM_BOM_SPLIT_AND_LUCID_PRO_PARITY_SYNC_CONFIRM · Mandate: eu_epr_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_EU_EPR_LEDGER_COMPLIANCE_AUTHORIZED · Mandate: eu_epr_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

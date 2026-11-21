@@ -21989,6 +21989,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-free-trial-conversion-sandbox", html_zh)
 
+    def test_cross_border_eu_epr_compliance_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderEuEprCompliancePolicyInput,
+            evaluate_cross_border_eu_epr_compliance_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_eu_epr_compliance_policy(
+            CrossBorderEuEprCompliancePolicyInput(
+                quarterly_eu_epr_overpayment_double_filing_and_penalty_pool_usd=150000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_EU_EPR_LEDGER_COMPLIANCE_AUTHORIZED",
+        )
+
+        dedup = evaluate_cross_border_eu_epr_compliance_policy(
+            CrossBorderEuEprCompliancePolicyInput(
+                duplicate_reporting_of_marketplace_withheld_orders_or_pvc_malus=True
+            )
+        )
+        self.assertEqual(dedup["status_code"], 403)
+        self.assertEqual(
+            dedup["decision"],
+            "EPR_MARKETPLACE_DOUBLE_PAY_OR_PVC_MALUS_BLOCKED",
+        )
+
+        bom = evaluate_cross_border_eu_epr_compliance_policy(
+            CrossBorderEuEprCompliancePolicyInput(
+                lumping_cardboard_weight_into_plastic_tariff_or_unnetted_returns=True
+            )
+        )
+        self.assertEqual(bom["status_code"], 422)
+        self.assertEqual(
+            bom["decision"],
+            "GROSS_PLASTIC_LUMPING_OR_UNNETTED_RMA_BLOCKED",
+        )
+
+        uin = evaluate_cross_border_eu_epr_compliance_policy(
+            CrossBorderEuEprCompliancePolicyInput(
+                missing_active_de_lucid_weee_ear_or_fr_uin_before_listing=True
+            )
+        )
+        self.assertEqual(uin["status_code"], 451)
+        self.assertEqual(
+            uin["decision"],
+            "MISSING_EU_EPR_LUCID_WEEE_UIN_REGISTRATION_HOLD",
+        )
+
+        optim = evaluate_cross_border_eu_epr_compliance_policy(
+            CrossBorderEuEprCompliancePolicyInput(
+                quarterly_eu_epr_overpayment_double_filing_and_penalty_pool_usd=150000.0,
+                sku_gram_bom_split_eco_bonus_and_lucid_pro_parity_sync_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 52500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 97500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_eu_epr_compliance_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-eu-epr-compliance-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
