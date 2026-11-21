@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg660" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <linearGradient id="hdr660" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg660)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr660)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 217 · Sales-Tax Holiday &amp; Exemption Certificate (`Avalara ECM / Vertex`) Escrow</text>
+  <text x="48" y="74" class="sub">Avalara CertCapture / Vertex / Sovos / Stripe Tax · Per-Item Price Cliff · Ship-To State Nexus · Resale Scope Gate (-36% Audit Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #660 · FAQ #336</text>
+
+  <!-- Lane 1: Expired / Out-of-State Resale Certificate & Personal-Use Scope Abuse Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Ship-To State &amp; Resale Scope (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Using Oregon Cert to Ship Tax-Free to CA:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Cert_Valid_In(Ship_To_State) == TRUE</text>
+  <text x="54" y="200" class="mono">&amp; `State_DOR_Permit_Status == ACTIVE`!</text>
+  <text x="44" y="223" class="body-txt">• Resale Business-Scope Consistency Check:</text>
+  <text x="54" y="243" class="mono">Block Auto-Body Shop Buying $8k Diamond Ring on</text>
+  <text x="54" y="261" class="mono">a "Resale Certificate" (Fails Good-Faith Test!)</text>
+  <text x="44" y="284" class="body-txt">• Eliminates 100% out-of-pocket merchant liability</text>
+  <text x="54" y="302" class="body-txt">plus 25% state DOR audit penalties on bad certs</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 INVALID_SHIP_TO_EXEMPTION_CERT_OR_RESALE_MISMATCH</text>
+
+  <!-- Lane 2: Back-to-School / Hurricane Tax-Holiday Per-Item Cap ($100 Apparel / $1,500 PC) Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Tax-Holiday Threshold Cliff (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Blanket Storewide 0% Tax on Tax Holiday:</text>
+  <text x="442" y="182" class="mono">Enforce Exact `PTC` Code &amp; Per-Item Price Cap!</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">(e.g. TX Apparel &lt;=$100 Exempt; $105 Jacket = Taxed)</text>
+  <text x="432" y="223" class="body-txt">• Bundle &amp; Shipping Proration Split Rule:</text>
+  <text x="442" y="243" class="mono">Unbundle Kit Lines So $15 Mouse Doesn't Push</text>
+  <text x="442" y="261" class="mono">$1,490 Laptop Over the $1,500 Tax-Free Cliff!</text>
+  <text x="432" y="284" class="body-txt">• Prevents under-collecting state tax on luxury</text>
+  <text x="442" y="302" class="body-txt">items or over-taxing eligible school supplies</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 TAX_HOLIDAY_PRICE_CLIFF_OR_PTC_MISCLASS_BLOCKED</text>
+
+  <!-- Lane 3: Drop-Shipment Triangulation Nexus (CA/NY Strict Rule) & Missing Signature Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Drop-Ship Nexus &amp; Sign Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Strict Drop-Ship States (`CA / NY / HI / MA`):</text>
+  <text x="830" y="182" class="mono">Verify Reseller Cert Acceptance Rules When</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Manufacturer Drop-Ships Direct to CA Consumer!</text>
+  <text x="820" y="223" class="body-txt">• Mandatory `MTC / SST Form F0003` Completeness:</text>
+  <text x="830" y="243" class="body-txt">Blocks unsigned PDFs or missing State Registration</text>
+  <text x="830" y="261" class="body-txt">IDs before releasing tax-exempt B2B checkout</text>
+  <text x="820" y="284" class="body-txt">• Protects wholesalers from California CDTFA</text>
+  <text x="830" y="302" class="body-txt">drop-shipper retail tax assessments</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNSIGNED_SST_EXEMPTION_FORM_OR_DROPSHIP_NEXUS_HOLD</text>
+
+  <!-- Bottom In-Cart 5-Second Digital Wizard & T-30d Auto-Renewal Campaign -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. In-Cart 5-Second Digital Cert Wizard + Live State DOR Lookup &amp; Auto-Renewal (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① In-Cart Digital Cert Wizard</text>
+  <text x="62" y="462" class="body-txt">Buyer enters State Tax ID &amp;</text>
+  <text x="62" y="480" class="body-txt">e-signs `SST/MTC` form right</text>
+  <text x="62" y="498" class="body-txt">inside checkout in 15s;</text>
+  <text x="62" y="516" class="mono">-94% Tax-Refund Support Tickets</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Live State DOR TIN Match</text>
+  <text x="337" y="462" class="body-txt">Queries FL/TX/CA/NY state</text>
+  <text x="337" y="480" class="body-txt">revenue API in 250ms to</text>
+  <text x="337" y="498" class="body-txt">confirm permit is active;</text>
+  <text x="337" y="516" class="mono">0 Audit Disallowances</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Holiday Coupon Cliff Assist</text>
+  <text x="622" y="462" class="body-txt">Applies promo coupon to</text>
+  <text x="622" y="480" class="body-txt">bring $108 sneakers down to</text>
+  <text x="622" y="498" class="body-txt">$99.00 under $100 tax cliff;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">+19% Tax-Holiday Conversion</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ T-30d Cert Auto-Renewal</text>
+  <text x="907" y="462" class="body-txt">Auto-polls state registry &amp;</text>
+  <text x="907" y="480" class="body-txt">pings B2B buyers 30d before</text>
+  <text x="907" y="498" class="body-txt">annual cert expiration;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Tax Audit &amp; Support Cost</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Tax Audit &amp; Ops Loss Saved</text>
+  <text x="46" y="642" class="mono">$68,400 Saved / $190k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% Ship-To</text>
+  <text x="336" y="626" class="kpi-lbl">State DOR Permit &amp; Scope Verified</text>
+  <text x="336" y="642" class="mono">Zero Bad-Faith Resale Fines</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">Exact PTC</text>
+  <text x="626" y="626" class="kpi-lbl">Per-Item Holiday Threshold Engine</text>
+  <text x="626" y="642" class="mono">Zero Over/Under-Collected Tax</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">-94% Tickets</text>
+  <text x="916" y="626" class="kpi-lbl">15-Second In-Cart Exemption Wizard</text>
+  <text x="916" y="642" class="mono">eliminates Post-Order Tax Refunds</text>
+</svg>

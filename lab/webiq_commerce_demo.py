@@ -31561,6 +31561,82 @@ def evaluate_wellness_fitness_medspa_membership_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceSalesTaxHolidayExemptionPolicyInput:
+    quarterly_audit_disallowance_holiday_miscalc_and_tax_refund_pool_usd: float = 190000.0
+    expired_wrong_state_cert_or_bad_faith_resale_scope_mismatch: bool = False
+    tax_holiday_per_item_cliff_violation_or_unsplit_bundle_overcap: bool = False
+    unsigned_sst_exemption_form_or_unverified_strict_state_dropship: bool = False
+    in_cart_15s_digital_cert_wizard_and_holiday_coupon_assist_ready: bool = False
+
+
+def evaluate_ecommerce_sales_tax_holiday_exemption_policy(
+    policy_input: EcommerceSalesTaxHolidayExemptionPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_audit_disallowance_holiday_miscalc_and_tax_refund_pool_usd
+        ),
+    )
+    if policy_input.unsigned_sst_exemption_form_or_unverified_strict_state_dropship:
+        return {
+            "status_code": 451,
+            "decision": "UNSIGNED_SST_EXEMPTION_FORM_OR_DROPSHIP_NEXUS_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.expired_wrong_state_cert_or_bad_faith_resale_scope_mismatch:
+        return {
+            "status_code": 403,
+            "decision": "INVALID_SHIP_TO_EXEMPTION_CERT_OR_RESALE_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tax_holiday_per_item_cliff_violation_or_unsplit_bundle_overcap:
+        return {
+            "status_code": 422,
+            "decision": "TAX_HOLIDAY_PRICE_CLIFF_OR_PTC_MISCLASS_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.in_cart_15s_digital_cert_wizard_and_holiday_coupon_assist_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "IN_CART_DOR_CERT_WIZARD_AND_HOLIDAY_CLIFF_ASSIST_CONFIRM",
+            "mandate_token": "sales_tax_exemption_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ACTIVE_SHIP_TO_EXEMPTION_AND_PTC_HOLIDAY_AUTHORIZED",
+        "mandate_token": "sales_tax_exemption_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -43122,6 +43198,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_sales_tax_holiday_exemption_guard = {
+        "authorized_200": evaluate_ecommerce_sales_tax_holiday_exemption_policy(
+            EcommerceSalesTaxHolidayExemptionPolicyInput()
+        ),
+        "bad_cert_or_scope_403": evaluate_ecommerce_sales_tax_holiday_exemption_policy(
+            EcommerceSalesTaxHolidayExemptionPolicyInput(
+                expired_wrong_state_cert_or_bad_faith_resale_scope_mismatch=True
+            )
+        ),
+        "holiday_cliff_or_bundle_422": evaluate_ecommerce_sales_tax_holiday_exemption_policy(
+            EcommerceSalesTaxHolidayExemptionPolicyInput(
+                tax_holiday_per_item_cliff_violation_or_unsplit_bundle_overcap=True
+            )
+        ),
+        "unsigned_form_or_dropship_451": evaluate_ecommerce_sales_tax_holiday_exemption_policy(
+            EcommerceSalesTaxHolidayExemptionPolicyInput(
+                unsigned_sst_exemption_form_or_unverified_strict_state_dropship=True
+            )
+        ),
+        "wizard_and_cliff_assist_409": evaluate_ecommerce_sales_tax_holiday_exemption_policy(
+            EcommerceSalesTaxHolidayExemptionPolicyInput(
+                in_cart_15s_digital_cert_wizard_and_holiday_coupon_assist_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -43467,6 +43569,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_pet_autoship_vet_rx_guard": ecommerce_pet_autoship_vet_rx_guard,
         "b2b_corporate_print_branded_swag_guard": b2b_corporate_print_branded_swag_guard,
         "wellness_fitness_medspa_membership_guard": wellness_fitness_medspa_membership_guard,
+        "ecommerce_sales_tax_holiday_exemption_guard": ecommerce_sales_tax_holiday_exemption_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -61035,6 +61138,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="medspafit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ONE_TAP_MEMBERSHIP_FREEZE_AND_CONCURRENT_WAITLIST_CONFIRM · Mandate: wellness_medspa_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 217 Sales-Tax Holiday & Exemption Certificate (Avalara ECM) Escrow (#336) -->
+      <div class="finops-box" id="ecommerce-sales-tax-holiday-exemption-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🧾 美国各州“免税周末 (Sales Tax Holiday)”与销售税豁免证书 (Avalara CertCapture / Vertex) 沙盒</div>
+            <div class="finops-sub">Round 217 (#336) · 收货州 DOR 税号实时验活与转售行业范围“善意匹配”锁 (HTTP 403) + 免税周细粒度 PTC 单件悬崖线与混合捆绑包自动拆行 (HTTP 422) + SST F0003 法定电子签章与严管州三角代发锁 (HTTP 451) + 结账内嵌 15秒免税向导净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="taxexempt-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度假免税证遭州税务局追缴补税与 25% 罚金、免税周错算及事后人工退税客服工单损耗池 ($)
+            <input type="number" id="taxexempt-gross-input" value="190000" min="10000" step="5000" oninput="recalcEcommerceSalesTaxHolidayExemptionSandbox()" />
+          </label>
+          <label>收货州 (Ship-To State) 州税务局 DOR 实时验活与转售主营行业善意审查 (Good-Faith Match)
+            <select id="taxexempt-dor-select" onchange="recalcEcommerceSalesTaxHolidayExemptionSandbox()">
+              <option value="pass">Ship-To 州税号联网 ACTIVE 有效 + 所购商品符合买方 NAICS 转售/教育主营范围 (合规)</option>
+              <option value="block_403">拿俄勒冈免税证要求发往加州 或 拿汽修店转售免税证免税买走 $8,000 钻戒违反善意原则 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>返校/防灾免税周末 (Tax Holiday) 逐件 PTC 限额悬崖线与捆绑套装自动拆行保免税
+            <select id="taxexempt-holiday-select" onchange="recalcEcommerceSalesTaxHolidayExemptionSandbox()">
+              <option value="pass">按 PTC 编码逐件比对 $100/$1,500 免税上限 + 混合套装自动拆行保住主机免税 (合规)</option>
+              <option value="block_422">粗暴将全服装类目设 0% 把 $1,200 皮衣漏收税 或 $1,490 笔记本绑 $25 鼠标超 $1,500 多收 $120 税 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>SST Form F0003 / MTC 法定电子签名完整性与严管代发州 (CA / NY Drop-Ship) 互认门禁
+            <select id="taxexempt-sst-select" onchange="recalcEcommerceSalesTaxHolidayExemptionSandbox()">
+              <option value="pass">免税表含完整税号与 ESIGN 签名 + 加州/纽约三角代发凭证齐全 (安全)</option>
+              <option value="block_451">上传未签名的残缺免税 PDF 或 品牌厂替外州无证中间商直发加州消费者触发代发补税 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>结账页内嵌 15 秒数字免税向导 (In-Cart Wizard) 与临线满减券助跳免税悬崖线
+            <select id="taxexempt-opt-select" onchange="recalcEcommerceSalesTaxHolidayExemptionSandbox()">
+              <option value="enabled" selected>结账内嵌 15秒在线签章当场免税 (-94% 退税工单) + $108 球鞋用 $10 券压进 $100 免税池 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统要求客户先含税付款事后发邮件找财务开红字发票人工退税 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度税务稽查罚金与退税工单池</div>
+            <div class="finops-kpi-val" id="taxexempt-gross-kpi">$190,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">内嵌向导与 PTC 悬崖引擎后净耗</div>
+            <div class="finops-kpi-val" id="taxexempt-net-kpi" style="color:#6ee7b7;">$121,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省审计补税与人工退税费</div>
+            <div class="finops-kpi-val" id="taxexempt-savings-kpi" style="color:#38bdf8;">$68,400</div>
+          </div>
+        </div>
+        <div id="taxexempt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 IN_CART_DOR_CERT_WIZARD_AND_HOLIDAY_CLIFF_ASSIST_CONFIRM · Mandate: sales_tax_exemption_escrow_optim_409
         </div>
       </div>
 
@@ -82393,6 +82553,79 @@ function recalcWellnessFitnessMedspaMembershipSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_STUDIO_CHECKIN_AND_ASC606_SCAN_AUTHORIZED · Mandate: wellness_medspa_escrow_200';
+}}
+
+function recalcEcommerceSalesTaxHolidayExemptionSandbox() {{
+  const grossInput = document.getElementById('taxexempt-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '190000'));
+  const dorGate = document.getElementById('taxexempt-dor-select').value;
+  const holidayGate = document.getElementById('taxexempt-holiday-select').value;
+  const sstGate = document.getElementById('taxexempt-sst-select').value;
+  const optMode = document.getElementById('taxexempt-opt-select').value;
+
+  const grossKpi = document.getElementById('taxexempt-gross-kpi');
+  const netKpi = document.getElementById('taxexempt-net-kpi');
+  const savingsKpi = document.getElementById('taxexempt-savings-kpi');
+  const statusKpi = document.getElementById('taxexempt-status-kpi');
+  const banner = document.getElementById('taxexempt-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (sstGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNSIGNED_SST_EXEMPTION_FORM_OR_DROPSHIP_NEXUS_HOLD · Mandate: null';
+    return;
+  }}
+  if (dorGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INVALID_SHIP_TO_EXEMPTION_CERT_OR_RESALE_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (holidayGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 TAX_HOLIDAY_PRICE_CLIFF_OR_PTC_MISCLASS_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 IN_CART_DOR_CERT_WIZARD_AND_HOLIDAY_CLIFF_ASSIST_CONFIRM · Mandate: sales_tax_exemption_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ACTIVE_SHIP_TO_EXEMPTION_AND_PTC_HOLIDAY_AUTHORIZED · Mandate: sales_tax_exemption_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

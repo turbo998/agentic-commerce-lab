@@ -23597,6 +23597,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("wellness-fitness-medspa-membership-sandbox", html_zh)
 
+    def test_ecommerce_sales_tax_holiday_exemption_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceSalesTaxHolidayExemptionPolicyInput,
+            evaluate_ecommerce_sales_tax_holiday_exemption_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_sales_tax_holiday_exemption_policy(
+            EcommerceSalesTaxHolidayExemptionPolicyInput(
+                quarterly_audit_disallowance_holiday_miscalc_and_tax_refund_pool_usd=190000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ACTIVE_SHIP_TO_EXEMPTION_AND_PTC_HOLIDAY_AUTHORIZED",
+        )
+
+        dor = evaluate_ecommerce_sales_tax_holiday_exemption_policy(
+            EcommerceSalesTaxHolidayExemptionPolicyInput(
+                expired_wrong_state_cert_or_bad_faith_resale_scope_mismatch=True
+            )
+        )
+        self.assertEqual(dor["status_code"], 403)
+        self.assertEqual(
+            dor["decision"],
+            "INVALID_SHIP_TO_EXEMPTION_CERT_OR_RESALE_MISMATCH",
+        )
+
+        holiday = evaluate_ecommerce_sales_tax_holiday_exemption_policy(
+            EcommerceSalesTaxHolidayExemptionPolicyInput(
+                tax_holiday_per_item_cliff_violation_or_unsplit_bundle_overcap=True
+            )
+        )
+        self.assertEqual(holiday["status_code"], 422)
+        self.assertEqual(
+            holiday["decision"],
+            "TAX_HOLIDAY_PRICE_CLIFF_OR_PTC_MISCLASS_BLOCKED",
+        )
+
+        sst = evaluate_ecommerce_sales_tax_holiday_exemption_policy(
+            EcommerceSalesTaxHolidayExemptionPolicyInput(
+                unsigned_sst_exemption_form_or_unverified_strict_state_dropship=True
+            )
+        )
+        self.assertEqual(sst["status_code"], 451)
+        self.assertEqual(
+            sst["decision"],
+            "UNSIGNED_SST_EXEMPTION_FORM_OR_DROPSHIP_NEXUS_HOLD",
+        )
+
+        optim = evaluate_ecommerce_sales_tax_holiday_exemption_policy(
+            EcommerceSalesTaxHolidayExemptionPolicyInput(
+                quarterly_audit_disallowance_holiday_miscalc_and_tax_refund_pool_usd=190000.0,
+                in_cart_15s_digital_cert_wizard_and_holiday_coupon_assist_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 68400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 121600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_sales_tax_holiday_exemption_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-sales-tax-holiday-exemption-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
