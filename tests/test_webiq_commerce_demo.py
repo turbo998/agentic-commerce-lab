@@ -18036,6 +18036,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-car-rental-damage-fuel-escrow-sandbox", html_zh)
 
+    def test_ecommerce_checkout_inventory_saga_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceCheckoutInventorySagaPolicyInput,
+            evaluate_ecommerce_checkout_inventory_saga_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_checkout_inventory_saga_policy(
+            EcommerceCheckoutInventorySagaPolicyInput(
+                quarterly_checkout_oversell_and_zombie_capture_loss_pool_usd=125000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ATOMIC_LUA_RESERVE_AND_DUAL_TTL_SAGA_AUTHORIZED",
+        )
+
+        oversell = evaluate_ecommerce_checkout_inventory_saga_policy(
+            EcommerceCheckoutInventorySagaPolicyInput(
+                non_atomic_sql_oversell_or_add_to_cart_bot_hoarding_dos=True
+            )
+        )
+        self.assertEqual(oversell["status_code"], 403)
+        self.assertEqual(
+            oversell["decision"],
+            "NON_ATOMIC_SQL_OVERSELL_OR_ADD_TO_CART_BOT_HOARDING_DOS_BLOCKED",
+        )
+
+        zombie = evaluate_ecommerce_checkout_inventory_saga_policy(
+            EcommerceCheckoutInventorySagaPolicyInput(
+                random_uuid_retry_double_charge_or_zero_dual_ttl_zombie_capture=True
+            )
+        )
+        self.assertEqual(zombie["status_code"], 422)
+        self.assertEqual(
+            zombie["decision"],
+            "RANDOM_UUID_RETRY_DOUBLE_CHARGE_OR_ZERO_DUAL_TTL_ZOMBIE_CAPTURE_BLOCKED",
+        )
+
+        orphan = evaluate_ecommerce_checkout_inventory_saga_policy(
+            EcommerceCheckoutInventorySagaPolicyInput(
+                split_tender_card_decline_leaving_gift_card_or_coupon_orphaned=True
+            )
+        )
+        self.assertEqual(orphan["status_code"], 451)
+        self.assertEqual(
+            orphan["decision"],
+            "SPLIT_TENDER_CARD_DECLINE_LEAVING_GIFT_CARD_OR_COUPON_ORPHANED_HOLD",
+        )
+
+        optim = evaluate_ecommerce_checkout_inventory_saga_policy(
+            EcommerceCheckoutInventorySagaPolicyInput(
+                quarterly_checkout_oversell_and_zombie_capture_loss_pool_usd=125000.0,
+                flash_180s_ttl_and_preauthorized_waitlist_autofill_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 46250.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 78750.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_checkout_inventory_saga_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-checkout-inventory-saga-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`252` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`253` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (13 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (40 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (84 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (85 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (62 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (22 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (31 guides)](#tax-fx-privacy-disputes)
@@ -87,7 +87,7 @@
 | 40 | **Agent Payment & Checkout Protocol Selection (`Stripe Agent Toolkit SPT` vs `Visa Intelligent Commerce VIC` vs `Mastercard Agent Pay` vs `PayPal Agentic Toolkit` vs `Corporate Virtual Cards VCN`) Zero-PAN Isolation, Anti-3DS2-Deadlock & 5-Rail Smart Router (`-33%` Payment Loss) Agent Architecture Selection FAQ** | [English](agent-payment-checkout-protocol-stripe-spt-visa-vic-mastercard-paypal-vcn-selection-faq.en.md) · [中文](agent-payment-checkout-protocol-stripe-spt-visa-vic-mastercard-paypal-vcn-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (84 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (85 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -177,6 +177,7 @@
 | 82 | **Influencer & `KOL` Affiliate Marketing, Anti-Bot-Pod Fraud & Return-Window Clawback Escrow (`Impact.com / CreatorIQ / Modash / TikTok Shop Affiliate`) `AQS >= 75%` Pod Audit, `T+35d` Return Clawback & `30% Base + Net GMV` Hybrid Agent Architecture Selection FAQ** | [English](influencer-kol-affiliate-marketing-bot-audit-return-clawback-escrow-agent-selection-faq.en.md) · [中文](influencer-kol-affiliate-marketing-bot-audit-return-clawback-escrow-agent-selection-faq.md) |
 | 83 | **E-Commerce Price-Match & 30-Day Post-Purchase Price-Drop Guarantee, Anti-`F12`-Screenshot Spoofing & Net-Paid Principal Re-Anchoring Escrow (`Web IQ / Shopify Flow / Loop / Rise.ai`) Server-Side `GTIN-14` Fetch, Atomic Principal Decrement & `+15%` Store-Credit Agent Architecture Selection FAQ** | [English](ecommerce-price-match-post-purchase-guarantee-gtin-escrow-agent-selection-faq.en.md) · [中文](ecommerce-price-match-post-purchase-guarantee-gtin-escrow-agent-selection-faq.md) |
 | 84 | **OTA & Corporate Car Rental (`Hertz / Avis / National / Enterprise`), Anti-Counter `CDW` Upsell, `C2PA` AI Damage-Scanner Defense & Phantom-Fuel Escrow (`Skip-the-Counter`, Pre-Exit `C2PA` Video & `8/8` Fuel Lock) Agent Architecture Selection FAQ** | [English](ota-car-rental-cdw-upsell-ai-damage-scan-fuel-escrow-agent-selection-faq.en.md) · [中文](ota-car-rental-cdw-upsell-ai-damage-scan-fuel-escrow-agent-selection-faq.md) |
+| 85 | **E-Commerce High-Concurrency Cart Inventory Reservation, Payload-Hash Idempotent Checkout & Split-Tender Saga (`Shopify Checkout / Stripe PaymentIntents / Redis Lua / Temporal`) `120s` Dual-TTL Cushion, `SHA-256` Cart Key & Waitlist Auto-Fill Agent Architecture Selection FAQ** | [English](ecommerce-cart-inventory-reservation-idempotent-checkout-saga-agent-selection-faq.en.md) · [中文](ecommerce-cart-inventory-reservation-idempotent-checkout-saga-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (62 Guides)
