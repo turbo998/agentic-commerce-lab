@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg641" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr641" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg641)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr641)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 198 · Pre-Dispute Deflection (Verifi RDR / Ethoca), Double-Refund Mutex &amp; VAMP Escrow</text>
+  <text x="48" y="74" class="sub">Verifi RDR / Mastercard Ethoca / Chargeflow / Stripe · Double-Refund Mutex · EV Fight-vs-Deflect · Instant WMS/Seat Revoke (-38% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #641 · FAQ #317</text>
+
+  <!-- Lane 1: Double-Refund Exploit (Bank Dispute + Support Bot Refund) Mutex Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Anti-Double-Refund Mutex Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Paying 200% via Bank Alert + Support Bot:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">If `Order_State IN (RDR_AUTO_REFUND, ETHOCA_OPEN`:</text>
+  <text x="54" y="200" class="mono">Hard-Block OMS / CS Agent `create_refund` Call!</text>
+  <text x="44" y="223" class="body-txt">• Ethoca 24-Hour Asynchronous Credit Sync:</text>
+  <text x="54" y="243" class="mono">Resolve Alert via Single Idempotent PSP Refund ID</text>
+  <text x="44" y="266" class="body-txt">• Prevents fraudsters from filing a bank dispute</text>
+  <text x="54" y="286" class="body-txt">at 9:00 AM and asking the AI support bot for a</text>
+  <text x="54" y="304" class="body-txt">standard refund at 9:15 AM to pocket 2x the money</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 DOUBLE_REFUND_ON_OPEN_PREDISPUTE_ALERT_BLOCKED</text>
+
+  <!-- Lane 2: Negative-EV Low-Ticket Dispute Fighting & Visa VAMP Ratio Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Expected-Value (`EV`) &amp; VAMP Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Escalating $35 Orders Into $25 Dispute Fines:</text>
+  <text x="442" y="182" class="mono">If `Order_Amount &lt;= $55` or `CE30_Proof == False`:</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Auto-Deflect via `Verifi RDR` ($0 Chargeback Fee!)</text>
+  <text x="432" y="223" class="body-txt">• Visa VAMP (`0.9%` Early Warning) Dynamic Slider:</text>
+  <text x="442" y="243" class="mono">Raise RDR Auto-Accept Cap to $120 if VAMP &gt; 0.65%</text>
+  <text x="432" y="266" class="body-txt">• Eliminates losing $35 merchandise + $25 PSP</text>
+  <text x="442" y="286" class="body-txt">chargeback fee + VAMP ratio points on low-value</text>
+  <text x="442" y="304" class="body-txt">disputes that cannot win representment</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 NEGATIVE_EV_DISPUTE_ESCALATION_OR_VAMP_BREACH_BLOCKED</text>
+
+  <!-- Lane 3: Unrevoked SaaS Seat / Unintercepted Parcel After RDR Refund Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Post-RDR Fulfillment &amp; Seat Revoke (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Shipping Goods After RDR Silent Refund:</text>
+  <text x="830" y="182" class="mono">On `RDR / Ethoca Trigger`: Cancel WMS Pick Wave</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">&amp; Fire Carrier `Delivery Intercept` + Revoke Seat</text>
+  <text x="820" y="223" class="body-txt">• Auto-Cancel Underlying Recurring Subscription:</text>
+  <text x="830" y="243" class="body-txt">Terminates active `Stripe Subscription` so next</text>
+  <text x="830" y="261" class="body-txt">month doesn't bill the same disputed card again</text>
+  <text x="820" y="284" class="body-txt">• Prevents RDR-refunded customers from still</text>
+  <text x="830" y="302" class="body-txt">receiving the physical package or keeping Pro access</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNREVOKED_FULFILLMENT_OR_RECURRING_SUB_HOLD</text>
+
+  <!-- Bottom Order-Insight Pre-Deflection & Tiered RDR/CE3.0 Router Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Tiered Pre-Dispute Router (`Order Insight → Verifi RDR / Ethoca → Visa CE 3.0`) (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Banking-App Order Insight</text>
+  <text x="62" y="462" class="body-txt">Pushes store logo, item name</text>
+  <text x="62" y="480" class="body-txt">&amp; delivery photo into issuer</text>
+  <text x="62" y="498" class="body-txt">banking app (`Verifi / Ethoca`);</text>
+  <text x="62" y="516" class="mono">Deflects 32% of "What Is This?"</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Sub-$55 RDR Auto-Deflect</text>
+  <text x="337" y="462" class="body-txt">Auto-resolves low-ticket or</text>
+  <text x="337" y="480" class="body-txt">unwinnable alerts pre-dispute;</text>
+  <text x="337" y="498" class="body-txt">saves $25 PSP dispute fee;</text>
+  <text x="337" y="516" class="mono">Excluded from Active Dispute #</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ High-Ticket CE 3.0 Fight</text>
+  <text x="622" y="462" class="body-txt">For &gt;$100 orders w/ 2 prior</text>
+  <text x="622" y="480" class="body-txt">settled orders (`IP + Device`),</text>
+  <text x="622" y="498" class="body-txt">declines RDR &amp; wins via CE 3.0;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">84% High-Ticket Recovery Rate</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Instant WMS/Sub Kill-Switch</text>
+  <text x="907" y="462" class="body-txt">Locks OMS refund button, halts</text>
+  <text x="907" y="480" class="body-txt">warehouse wave &amp; cancels</text>
+  <text x="907" y="498" class="body-txt">future recurring renewals;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-38% Total Dispute &amp; Fine Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-38.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Dispute Fee &amp; 2x-Refund Saved</text>
+  <text x="46" y="642" class="mono">$66,500 Saved / $175k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">0 Double-Refunds</text>
+  <text x="336" y="626" class="kpi-lbl">OMS ↔ RDR/Ethoca State Mutex</text>
+  <text x="336" y="642" class="mono">Blocks Parallel CS Bot Refunds</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">&lt; 0.35% Ratio</text>
+  <text x="626" y="626" class="kpi-lbl">Dynamic VAMP Threshold Protection</text>
+  <text x="626" y="642" class="mono">Saves $25 Fee on Sub-$55 Orders</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">Instant Revoke</text>
+  <text x="916" y="626" class="kpi-lbl">Halts Unshipped WMS &amp; Future MITs</text>
+  <text x="916" y="642" class="mono">Zero Free-Riding After Alert</text>
+</svg>

@@ -22324,6 +22324,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("corporate-travel-hotel-rfp-audit-sandbox", html_zh)
 
+    def test_ecommerce_pre_dispute_rdr_ethoca_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommercePreDisputeRdrEthocaPolicyInput,
+            evaluate_ecommerce_pre_dispute_rdr_ethoca_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_pre_dispute_rdr_ethoca_policy(
+            EcommercePreDisputeRdrEthocaPolicyInput(
+                quarterly_dispute_fee_double_refund_and_unstopped_shipment_pool_usd=175000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ORDER_INSIGHT_RECOGNIZED_NO_DISPUTE_AUTHORIZED",
+        )
+
+        mutex = evaluate_ecommerce_pre_dispute_rdr_ethoca_policy(
+            EcommercePreDisputeRdrEthocaPolicyInput(
+                cs_bot_refund_issued_while_rdr_ethoca_or_chargeback_already_open=True
+            )
+        )
+        self.assertEqual(mutex["status_code"], 403)
+        self.assertEqual(
+            mutex["decision"],
+            "DOUBLE_REFUND_ON_OPEN_PREDISPUTE_ALERT_BLOCKED",
+        )
+
+        ev = evaluate_ecommerce_pre_dispute_rdr_ethoca_policy(
+            EcommercePreDisputeRdrEthocaPolicyInput(
+                escalating_sub55_unwinnable_alert_into_25usd_chargeback_fine=True
+            )
+        )
+        self.assertEqual(ev["status_code"], 422)
+        self.assertEqual(
+            ev["decision"],
+            "NEGATIVE_EV_DISPUTE_ESCALATION_OR_VAMP_BREACH_BLOCKED",
+        )
+
+        revoke = evaluate_ecommerce_pre_dispute_rdr_ethoca_policy(
+            EcommercePreDisputeRdrEthocaPolicyInput(
+                unstopped_wms_shipment_or_active_recurring_sub_after_rdr_refund=True
+            )
+        )
+        self.assertEqual(revoke["status_code"], 451)
+        self.assertEqual(
+            revoke["decision"],
+            "UNREVOKED_FULFILLMENT_OR_RECURRING_SUB_HOLD",
+        )
+
+        optim = evaluate_ecommerce_pre_dispute_rdr_ethoca_policy(
+            EcommercePreDisputeRdrEthocaPolicyInput(
+                quarterly_dispute_fee_double_refund_and_unstopped_shipment_pool_usd=175000.0,
+                order_insight_ev_tiered_rdr_ce30_and_instant_wms_revoke_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 66500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 108500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_pre_dispute_rdr_ethoca_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-pre-dispute-rdr-ethoca-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`316` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`317` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -11,7 +11,7 @@
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (117 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (71 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (26 guides)](#saas-finops-micropayments)
-- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (37 guides)](#tax-fx-privacy-disputes)
+- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (38 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
 
@@ -337,7 +337,7 @@
 | 26 | **SaaS & AI App Free-Trial-to-Paid Conversion, Anti-Burner-`BIN` Abuse & `FTC / ARL` Notice Escrow (`Stripe Billing / RevenueCat / Chargebee / Paddle`), `card.fingerprint` Deduplication, Zero-Usage Charge Shield & Reverse-Trial Orchestration (`-36%` Trial Loss) Agent Architecture Selection FAQ** | [English](saas-free-trial-conversion-virtual-card-abuse-ftc-notice-escrow-agent-selection-faq.en.md) · [中文](saas-free-trial-conversion-virtual-card-abuse-ftc-notice-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (37 Guides)
+## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (38 Guides)
 
 > Covers Merchant of Record (MoR) vs DIY PSP, HS-code DDP landed cost & VAT/Sales Tax nexus, FX quote collars & ISO 20022 netting, ZK eligibility / PCI redaction / GDPR crypto-shredding, and Visa CE 3.0 / VAMP dispute defense.
 
@@ -380,6 +380,7 @@
 | 35 | **Marketplace Facilitator Tax (`MFL`: `Amazon / TikTok Shop / Walmart`), Anti-Double-Remittance ERP Sync & `INFORM Consumers Act` Escrow (`Avalara / Numeral / Stripe Connect`) `MFL_Paid` Isolation, `FBA MCF` Nexus Radar & `10-Day` Seller Freeze (`-37%` Loss) Agent Architecture Selection FAQ** | [English](marketplace-facilitator-tax-mfl-inform-act-double-remittance-escrow-agent-selection-faq.en.md) · [中文](marketplace-facilitator-tax-mfl-inform-act-double-remittance-escrow-agent-selection-faq.md) |
 | 36 | **Cross-Border E-Commerce `DDP` vs. `DDU` Landed-Cost Guarantee, `Section 321 / IOSS` De-Minimis Anti-Smurfing & Duty-Refusal Escrow (`Zonos / Global-e / Avalara / Passport`), 10-Digit `HTS + CoO` Lock, Net-Discounted Invoice Parity & `MAWB` Zone-Skipping (`-36%` Customs & Refusal Loss) Agent Architecture Selection FAQ** | [English](cross-border-ecommerce-ddp-ddu-landed-cost-de-minimis-escrow-agent-selection-faq.en.md) · [中文](cross-border-ecommerce-ddp-ddu-landed-cost-de-minimis-escrow-agent-selection-faq.md) |
 | 37 | **Cross-Border E-Commerce `EU EPR` (`German LUCID / WEEE Stiftung EAR / French UIN & Citeo / Battery Regulation`) & Eco-Fee Escrow (`Lizenzero / Interseroh / Ecosistant / Amazon EPR`), Channel Double-Pay Deduplication, `0.1g` Material-BOM Split & `ZSVR` Parity Sync (`-35%` EPR Spend) Agent Architecture Selection FAQ** | [English](cross-border-ecommerce-eu-epr-packaging-weee-battery-compliance-escrow-agent-selection-faq.en.md) · [中文](cross-border-ecommerce-eu-epr-packaging-weee-battery-compliance-escrow-agent-selection-faq.md) |
+| 38 | **E-Commerce & Subscription Pre-Dispute Deflection (`Verifi RDR / CDRN & Mastercard Ethoca Alerts`), Anti-Double-Refund Mutex & `Visa VAMP` Escrow (`Chargeflow / Stripe / Adyen`), `OMS ↔ RDR` State Lock, Expected-Value (`EV`) Routing & Instant `WMS / Subscription` Kill-Switch (`-38%` Dispute Loss) Agent Architecture Selection FAQ** | [English](ecommerce-pre-dispute-rdr-ethoca-auto-refund-double-refund-mutex-escrow-agent-selection-faq.en.md) · [中文](ecommerce-pre-dispute-rdr-ethoca-auto-refund-double-refund-mutex-escrow-agent-selection-faq.md) |
 
 <a id="architecture-blueprints"></a>
 ## 7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 Specs)

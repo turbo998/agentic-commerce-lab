@@ -30117,6 +30117,82 @@ def evaluate_corporate_travel_hotel_rfp_audit_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommercePreDisputeRdrEthocaPolicyInput:
+    quarterly_dispute_fee_double_refund_and_unstopped_shipment_pool_usd: float = 175000.0
+    cs_bot_refund_issued_while_rdr_ethoca_or_chargeback_already_open: bool = False
+    escalating_sub55_unwinnable_alert_into_25usd_chargeback_fine: bool = False
+    unstopped_wms_shipment_or_active_recurring_sub_after_rdr_refund: bool = False
+    order_insight_ev_tiered_rdr_ce30_and_instant_wms_revoke_ready: bool = False
+
+
+def evaluate_ecommerce_pre_dispute_rdr_ethoca_policy(
+    policy_input: EcommercePreDisputeRdrEthocaPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_dispute_fee_double_refund_and_unstopped_shipment_pool_usd
+        ),
+    )
+    if policy_input.unstopped_wms_shipment_or_active_recurring_sub_after_rdr_refund:
+        return {
+            "status_code": 451,
+            "decision": "UNREVOKED_FULFILLMENT_OR_RECURRING_SUB_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cs_bot_refund_issued_while_rdr_ethoca_or_chargeback_already_open:
+        return {
+            "status_code": 403,
+            "decision": "DOUBLE_REFUND_ON_OPEN_PREDISPUTE_ALERT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.escalating_sub55_unwinnable_alert_into_25usd_chargeback_fine:
+        return {
+            "status_code": 422,
+            "decision": "NEGATIVE_EV_DISPUTE_ESCALATION_OR_VAMP_BREACH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.order_insight_ev_tiered_rdr_ce30_and_instant_wms_revoke_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TIERED_RDR_CE30_EV_ROUTER_AND_INSTANT_REVOKE_CONFIRM",
+            "mandate_token": "predispute_rdr_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ORDER_INSIGHT_RECOGNIZED_NO_DISPUTE_AUTHORIZED",
+        "mandate_token": "predispute_rdr_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -41184,6 +41260,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_pre_dispute_rdr_ethoca_guard = {
+        "authorized_200": evaluate_ecommerce_pre_dispute_rdr_ethoca_policy(
+            EcommercePreDisputeRdrEthocaPolicyInput()
+        ),
+        "double_refund_mutex_403": evaluate_ecommerce_pre_dispute_rdr_ethoca_policy(
+            EcommercePreDisputeRdrEthocaPolicyInput(
+                cs_bot_refund_issued_while_rdr_ethoca_or_chargeback_already_open=True
+            )
+        ),
+        "negative_ev_or_vamp_422": evaluate_ecommerce_pre_dispute_rdr_ethoca_policy(
+            EcommercePreDisputeRdrEthocaPolicyInput(
+                escalating_sub55_unwinnable_alert_into_25usd_chargeback_fine=True
+            )
+        ),
+        "unrevoked_wms_or_sub_451": evaluate_ecommerce_pre_dispute_rdr_ethoca_policy(
+            EcommercePreDisputeRdrEthocaPolicyInput(
+                unstopped_wms_shipment_or_active_recurring_sub_after_rdr_refund=True
+            )
+        ),
+        "tiered_rdr_and_revoke_409": evaluate_ecommerce_pre_dispute_rdr_ethoca_policy(
+            EcommercePreDisputeRdrEthocaPolicyInput(
+                order_insight_ev_tiered_rdr_ce30_and_instant_wms_revoke_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -41510,6 +41612,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_made_to_order_custom_guard": ecommerce_made_to_order_custom_guard,
         "b2b_index_formula_pricing_guard": b2b_index_formula_pricing_guard,
         "corporate_travel_hotel_rfp_audit_guard": corporate_travel_hotel_rfp_audit_guard,
+        "ecommerce_pre_dispute_rdr_ethoca_guard": ecommerce_pre_dispute_rdr_ethoca_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -57995,6 +58098,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="hotelrfp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 HYBRID_RATE_CAP_AND_WEEKLY_GDS_LRA_AUDIT_CONFIRM · Mandate: hotel_rfp_lra_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 198 Pre-Dispute Deflection (Verifi RDR / Ethoca), Double-Refund Mutex & VAMP Escrow (#317) -->
+      <div class="finops-box" id="ecommerce-pre-dispute-rdr-ethoca-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛡️ 电商与订阅预拒付实时拦截 (Verifi RDR / Ethoca)、防 200% 双倍退款与 Visa VAMP 护栏沙盒</div>
+            <div class="finops-sub">Round 198 (#317) · 银行 RDR 自动退费与客服常规退款全局强互斥锁 (HTTP 403) + &lt;=$55 小单走 RDR 免 $25 正式拒付罚金与 EV 分流 (HTTP 422) + 退费 200ms 停发包裹与取消下月续费 (HTTP 451) + Order Insight 劝退净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="predispute-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度正式拒付 $25/笔罚金、银行+客服 200% 双倍退款与退费后未停发包裹损耗池 ($)
+            <input type="number" id="predispute-gross-input" value="175000" min="10000" step="5000" oninput="recalcEcommercePreDisputeRdrEthocaSandbox()" />
+          </label>
+          <label>OMS / AI 客服退款网关与卡组 RDR/Ethoca 预警状态强互斥锁
+            <select id="predispute-mutex-select" onchange="recalcEcommercePreDisputeRdrEthocaSandbox()">
+              <option value="pass">收到 RDR/Ethoca/争议通知毫秒级置为 DISPUTE_LOCKED 硬锁死客服退款按钮 (合规)</option>
+              <option value="block_403">买家 9:00 触发银行 RDR 自动退回 $120，9:15 又找网站 AI 客服点常规退款骗双份钱 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>抗辩期望值 (EV) 分流 (&lt;=$55 小单走 RDR 秒退 vs &gt;$100 CE 3.0 硬刚) 与 VAMP 保护
+            <select id="predispute-ev-select" onchange="recalcEcommercePreDisputeRdrEthocaSandbox()">
+              <option value="pass">&lt;=$55 小单或无证据单走 RDR 免 $25 拒付罚金 + &gt;$100 熟客双单走 CE 3.0 抗辩 (合规)</option>
+              <option value="block_422">为 $35 无胜算小单拒绝 RDR 硬刚正式拒付，败诉倒赔 $35+$25 罚金且推高 VAMP 拒付率 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>触发预拒付退款后 200ms 联动拦截 WMS 待发包裹与终止自动续费订阅
+            <select id="predispute-revoke-select" onchange="recalcEcommercePreDisputeRdrEthocaSandbox()">
+              <option value="pass">RDR 退费瞬间自动取消仓库拣货/拦截快递 + 吊销 SaaS 席位并终止次月续费 (安全)</option>
+              <option value="block_451">RDR 在后台默默把钱退了，仓库下午却照常把 $180 商品寄走 或 下月继续扣该争议卡 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Order Insight 手机银行账单详情透传与三级智能争议路由
+            <select id="predispute-opt-select" onchange="recalcEcommercePreDisputeRdrEthocaSandbox()">
+              <option value="enabled" selected>向银行 App 实时回传商品图劝退 32% 误报 + RDR/CE3.0 分层路由 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">无前置拦截任由所有争议变成正式拒付后人工写材料 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度拒付罚金与双倍退费总损耗池</div>
+            <div class="finops-kpi-val" id="predispute-gross-kpi">$175,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">互斥锁与三级 EV 分流后净损耗</div>
+            <div class="finops-kpi-val" id="predispute-net-kpi" style="color:#6ee7b7;">$108,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省拒付罚金与双倍退款</div>
+            <div class="finops-kpi-val" id="predispute-savings-kpi" style="color:#38bdf8;">$66,500</div>
+          </div>
+        </div>
+        <div id="predispute-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TIERED_RDR_CE30_EV_ROUTER_AND_INSTANT_REVOKE_CONFIRM · Mandate: predispute_rdr_escrow_optim_409
         </div>
       </div>
 
@@ -77966,6 +78126,79 @@ function recalcCorporateTravelHotelRfpAuditSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_LRA_CORPORATE_HOTEL_RATE_AUTHORIZED · Mandate: hotel_rfp_lra_escrow_200';
+}}
+
+function recalcEcommercePreDisputeRdrEthocaSandbox() {{
+  const grossInput = document.getElementById('predispute-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '175000'));
+  const mutexGate = document.getElementById('predispute-mutex-select').value;
+  const evGate = document.getElementById('predispute-ev-select').value;
+  const revokeGate = document.getElementById('predispute-revoke-select').value;
+  const optMode = document.getElementById('predispute-opt-select').value;
+
+  const grossKpi = document.getElementById('predispute-gross-kpi');
+  const netKpi = document.getElementById('predispute-net-kpi');
+  const savingsKpi = document.getElementById('predispute-savings-kpi');
+  const statusKpi = document.getElementById('predispute-status-kpi');
+  const banner = document.getElementById('predispute-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (revokeGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNREVOKED_FULFILLMENT_OR_RECURRING_SUB_HOLD · Mandate: null';
+    return;
+  }}
+  if (mutexGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DOUBLE_REFUND_ON_OPEN_PREDISPUTE_ALERT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (evGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 NEGATIVE_EV_DISPUTE_ESCALATION_OR_VAMP_BREACH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TIERED_RDR_CE30_EV_ROUTER_AND_INSTANT_REVOKE_CONFIRM · Mandate: predispute_rdr_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ORDER_INSIGHT_RECOGNIZED_NO_DISPUTE_AUTHORIZED · Mandate: predispute_rdr_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
