@@ -18438,6 +18438,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-bnpl-margin-refund-escrow-sandbox", html_zh)
 
+    def test_ecommerce_chargeback_ce30_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceChargebackCe30EscrowPolicyInput,
+            evaluate_ecommerce_chargeback_ce30_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_chargeback_ce30_escrow_policy(
+            EcommerceChargebackCe30EscrowPolicyInput(
+                quarterly_chargeback_principal_and_dispute_fee_pool_usd=130000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VISA_CE30_2OF4_MATCH_AND_DISPUTE_MUTEX_AUTHORIZED",
+        )
+
+        mutex = evaluate_ecommerce_chargeback_ce30_escrow_policy(
+            EcommerceChargebackCe30EscrowPolicyInput(
+                sub_35usd_negative_ev_fight_or_duplicate_refund_on_disputed_order=True
+            )
+        )
+        self.assertEqual(mutex["status_code"], 403)
+        self.assertEqual(
+            mutex["decision"],
+            "SUB_35USD_NEGATIVE_EV_FIGHT_OR_DUPLICATE_REFUND_ON_DISPUTE_BLOCKED",
+        )
+
+        ce30 = evaluate_ecommerce_chargeback_ce30_escrow_policy(
+            EcommerceChargebackCe30EscrowPolicyInput(
+                missing_ce30_120_to_365d_two_order_2of4_historical_match=True
+            )
+        )
+        self.assertEqual(ce30["status_code"], 422)
+        self.assertEqual(
+            ce30["decision"],
+            "MISSING_CE30_120_TO_365D_TWO_ORDER_2OF4_HISTORICAL_MATCH_BLOCKED",
+        )
+
+        vamp = evaluate_ecommerce_chargeback_ce30_escrow_policy(
+            EcommerceChargebackCe30EscrowPolicyInput(
+                visa_vamp_dispute_ratio_065pct_canary_breach_without_rdr_throttle=True
+            )
+        )
+        self.assertEqual(vamp["status_code"], 451)
+        self.assertEqual(
+            vamp["decision"],
+            "VISA_VAMP_DISPUTE_RATIO_065PCT_CANARY_BREACH_EMERGENCY_HOLD",
+        )
+
+        optim = evaluate_ecommerce_chargeback_ce30_escrow_policy(
+            EcommerceChargebackCe30EscrowPolicyInput(
+                quarterly_chargeback_principal_and_dispute_fee_pool_usd=130000.0,
+                rdr_ethoca_auto_deflect_and_ce30_multimodal_dossier_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 49400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 80600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_chargeback_ce30_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-chargeback-ce30-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

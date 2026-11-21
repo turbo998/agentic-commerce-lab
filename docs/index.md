@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`258` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`259` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -11,7 +11,7 @@
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（87 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（63 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（23 篇）](#saas-finops-micropayments)
-- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（31 篇）](#tax-fx-privacy-disputes)
+- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（32 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
 
@@ -285,7 +285,7 @@
 | 23 | **快消与宠粮自动补货订阅（`Subscribe & Save`：Amazon / Chewy Autoship / Recharge / Skio / 京东周期购）、防“家里没吃完硬发退订（Overstock Churn）”与防次月暗涨杀熟托管“防首单 6 折次月静默涨回高价、防缺 1 件小商品把整单 85 折降为 95 折与一键顺延净省 33%”Agent 架构选型 FAQ** | [中文](ecommerce-subscribe-and-save-replenishment-skip-price-creep-escrow-agent-selection-faq.md) · [English](ecommerce-subscribe-and-save-replenishment-skip-price-creep-escrow-agent-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（31 篇）
+## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（32 篇）
 
 > 聚焦 Merchant of Record（MoR）选型、跨境 HS 编码完税价（DDP）与 VAT/Sales Tax 合规、实时锁汇与 ISO 20022 多币种净额轧差、PCI-DSS v4.0.1 / GDPR 加密粉碎，以及 Visa CE 3.0 / VAMP 友好欺诈抗辩证据链。
 
@@ -322,6 +322,7 @@
 | 29 | **跨境集运、海外华人转运仓与海淘合箱清结算（Cross-Border Parcel Consolidation, Reverse-Haul Forwarding & Volumetric Weight Escrow：菜鸟国际集运 / Superbuy / Buyee / MyUS / 顺丰集运）“防转运仓故意塞大纸箱虚增 2.5 倍体积重（泡重刺客）、防合箱漏发少件死无对证与带电/美妆敏感货冲普货被扣关”Agent 架构选型 FAQ** | [中文](crossborder-parcel-consolidation-volumetric-repack-escrow-agent-selection-faq.md) · [English](crossborder-parcel-consolidation-volumetric-repack-escrow-agent-selection-faq.en.md) |
 | 30 | **跨境电商退换货售后自动化（Cross-Border RMA）、防“AI 伪造破损图骗仅退款”与海外仓二次上架/关税退税托管（Loop Returns / Narvar / AfterShip Returns / 菜鸟跨境逆向 / 万邑通）“防 AI 局部重绘假破损图骗仅退款、防 FTID 篡改面单寄 15g 空纸巾给隔壁麦当劳骗全款与 CBP 7501 追回 99% 进口关税”Agent 架构选型 FAQ** | [中文](cross-border-ecommerce-returns-rma-returnless-duty-drawback-escrow-agent-selection-faq.md) · [English](cross-border-ecommerce-returns-rma-returnless-duty-drawback-escrow-agent-selection-faq.en.md) |
 | 31 | **跨境电商多语种智能客服（Multilingual Support）、`DDP` 完税交货防门口补税拒收与本地尺码免退补发托管（Gorgias / Global-e / Zonos / Zendesk AI）“防快递员上门收 €45 关税+€18 代垫费致欧洲买家当场拒收弃件、防多语种幻觉乱承诺全额白送与净省 33% 跨境售后损耗”Agent 架构选型 FAQ** | [中文](cross-border-multilingual-support-ddp-customs-duty-refusal-escrow-agent-selection-faq.md) · [English](cross-border-multilingual-support-ddp-customs-duty-refusal-escrow-agent-selection-faq.en.md) |
+| 32 | **电商与金融支付拒付抗辩（Chargeback Representment：Visa `CE 3.0` / Verifi `RDR` / Ethoca / Chargeflow）与防“第一方熟人恶退欺诈（Friendly Fraud）”托管“防老客收货后谎称盗刷（Visa 10.4）白嫖、防小额单盲目申诉倒贴 $20 罚金封号与历史双订单 2-of-4 要素逆转净挽回 38%”Agent 架构选型 FAQ** | [中文](ecommerce-chargeback-representment-visa-ce30-rdr-ethoca-escrow-agent-selection-faq.md) · [English](ecommerce-chargeback-representment-visa-ce30-rdr-ethoca-escrow-agent-selection-faq.en.md) |
 
 <a id="architecture-blueprints"></a>
 ## 七、确定性领域架构蓝图（`docs/architecture/` · 21 份）

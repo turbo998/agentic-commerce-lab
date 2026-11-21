@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg583" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+    <linearGradient id="accent583" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg583)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent583)" rx="3" />
+
+  <text x="40" y="58" class="title">电商拒付抗辩与友好欺诈防御 (Visa CE 3.0 / Verifi RDR / Ethoca / Chargeflow) 分流托管</text>
+  <text x="40" y="80" class="subtitle">Round 140 · 防买家收货后谎称“盗刷 10.4”白嫖、防小额必输单盲目抗辩倒贴 $25 罚金 &amp; CE 3.0 铁证净挽回 38% (SVG 583)</text>
+
+  <!-- Left Card: 3 Chargeback & Friendly Fraud Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大拒付黑洞与封号危机</text>
+  <text x="56" y="164" class="card-title">1. 第一方“熟人恶退”欺诈 (Visa 10.4) (HTTP 422)</text>
+  <text x="56" y="184" class="body">• 老客户本人下单签收 $650 球鞋，两周后向发卡行申请</text>
+  <text x="56" y="202" class="body">  Reason Code 10.4 “无卡欺诈 (Card-Absent Fraud)”</text>
+  <text x="56" y="220" class="warn">• 传统只交快递签收单胜诉率 &lt;18%，货钱两空再罚 $20 拒付费!</text>
+
+  <text x="56" y="256" class="card-title">2. 小额必输单盲目申诉烧钱破红线 (HTTP 403)</text>
+  <text x="56" y="276" class="body">• 一笔 $18 的订单被买家发起争议，若不通过 RDR 预拒付拦截</text>
+  <text x="56" y="294" class="body">• 一旦进入正式拒付流：立即扣 $18 本金 + $20 不可退拒付罚金</text>
+  <text x="56" y="312" class="warn">• 且计入 Visa VAMP 拒付率分子! 破 0.9% 红线面临收单行封号!</text>
+
+  <text x="56" y="348" class="card-title">3. 客人一边找客服退款、一边找银行拒付双退</text>
+  <text x="56" y="368" class="body">• 买家昨天刚向发卡行提交拒付冻结了商户 $400 资金</text>
+  <text x="56" y="386" class="body">• 今天又找商城 AI 客服要求退货退款，客服不知情又退了 $400</text>
+  <text x="56" y="404" class="warn">• 导致一笔订单被双倍扣走 $800 (Double Refund Loss)!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: LOW_VALUE_FIGHT_OR_DOUBLE_REFUND_ON_DISPUTE</text>
+  <text x="70" y="502" class="warn">• HTTP 422: MISSING_CE30_2_OF_4_HISTORICAL_MATCH_PROOF</text>
+  <text x="70" y="524" class="warn">• HTTP 451: VAMP_THRESHOLD_09PCT_BREACH_EMERGENCY_HOLD</text>
+  <text x="70" y="546" class="mono">• HTTP 409: RDR_ETHOCA_DEFLECT_AND_CE30_AUTO_WIN_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: COMPELLING_EVIDENCE_REPRESENTMENT_WON_200</text>
+  <text x="70" y="596" class="body">铁律: &lt;$35 争议走 RDR 自动秒退保拒付率，高额走 CE 3.0 必胜!</text>
+
+  <!-- Center Card: 4-Stage Chargeback Triage & CE 3.0 Engine -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶预拒付分流与 Visa CE 3.0 抗辩架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">Gate 1: Verifi RDR / Ethoca 预拒付秒级止损分流</text>
+  <text x="450" y="195" class="body">• 在发卡行正式生成拒付单前 24h 捕获预警 (Pre-Dispute Alert)</text>
+  <text x="450" y="213" class="body">• 若订单金额 &lt; $35 或无勝诉证据: 自动秒退本金化解争议</text>
+  <text x="450" y="231" class="mono">• 免交 $20 拒付罚金且 **0% 计入 Visa VAMP 拒付率** -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="282" class="card-title" fill="#6ee7b7">Gate 2: Visa CE 3.0 历史双订单 2-of-4 要素自动锁</text>
+  <text x="450" y="302" class="body">• 针对高额 10.4 恶意拒付，自动检索该卡过去 120~365 天内</text>
+  <text x="450" y="320" class="body">  至少 **2 笔无争议历史成功订单**，比对 4 项数字指纹:</text>
+  <text x="450" y="338" class="body">  (IP 地址 / 设备指纹 ID / 收货物理地址 / 用户账号 ID)</text>
+  <text x="450" y="354" class="mono">• 命中其中 >=2 项一致 -&gt; 触发 Visa CE 3.0 责任强制逆转必胜!</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 客服退款与银行拒付互斥锁 + VAMP 监控</text>
+  <text x="450" y="419" class="body">• 一旦收到 RDR/Ethoca/Chargeback Webhook，立即冻结客服退款键</text>
+  <text x="450" y="437" class="body">• 100% 阻断“银行拒付退一次 + 客服手动又退一次”的双倍失血</text>
+  <text x="450" y="455" class="mono">• 滚动拒付率逼近 0.65% 警戒线自动拉宽 RDR 拦截面 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#f59e0b" />
+  <text x="450" y="508" class="card-title" fill="#fcd34d">Gate 4: 多模态铁证包自动组装与纯成功费代申诉</text>
+  <text x="450" y="528" class="body">• 3 秒自动拼装 15 页 PDF 抗辩书: FedEx 门口放货实拍图(Geo-Tag)</text>
+  <text x="450" y="546" class="body">  + 买家与客服聊天承认收到货的记录 + CE 3.0 历史指纹表</text>
+  <text x="450" y="566" class="mono">• 将 10.4 / 13.1 拒付抗辩胜诉率从行业平均 21% 拉升至 78%!</text>
+  <text x="450" y="586" class="mono">• RDR 保号分流 + CE 3.0 铁证追回 -&gt; 净挽回 38% 拒付损失</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大拒付拦截与抗辩技术栈</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Verifi RDR &amp; Order Insight (Visa 官方)</text>
+  <text x="846" y="182" class="body">• 优势: 发卡行录入争议瞬间自动按预设规则退款，不记入拒付率</text>
+  <text x="846" y="198" class="body">• 特性: 原生支持直推 Visa CE 3.0 历史双订单要素免除拒付</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Ethoca Alerts (Mastercard 官方)</text>
+  <text x="846" y="244" class="body">• 优势: 覆盖万事达与全球主流发卡行协作网络，提前 24-72h 预警</text>
+  <text x="846" y="260" class="body">• 特性: 及时拦截未发货欺诈单直接取消出库，保住实物货值</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Chargeflow / Justt / Chargebacks911</text>
+  <text x="846" y="306" class="body">• 优势: AI 自动生成定制化法律抗辩陈词，支持按胜诉结果分成</text>
+  <text x="846" y="322" class="body">• 特性: 自动抓取物流妥投照片、社媒晒单与登录日志合成铁证</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Stripe Radar + Chargeback Protection</text>
+  <text x="846" y="368" class="body">• 优势: 下单时自动记录设备指纹与 IP，一键填充 CE 3.0 资格表</text>
+  <text x="846" y="384" class="body">• 特性: 订单级拒付状态机锁，物理阻断后台重复手动退款</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度恶意拒付本金与罚金损失池 ($130,000)</text>
+  <text x="860" y="456" class="body">• 传统熟人恶退败诉+$20罚金+双倍退款: $130,000/季</text>
+  <text x="860" y="476" class="mono">• Visa CE 3.0 历史双订单要素逆转高额拒付: -$27,300</text>
+  <text x="860" y="496" class="mono">• RDR/Ethoca 拦截小额单免 $20 罚金保账号: -$13,000</text>
+  <text x="860" y="516" class="mono">• 客服退款与拒付互斥锁消除双倍退钱漏洞: -$9,100</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净损耗: $80,600 (净挽回 $49,400 / -38%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: chargeback_ce30_rdr_optim_409</text>
+</svg>
