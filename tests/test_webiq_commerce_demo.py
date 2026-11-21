@@ -17433,6 +17433,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agent-payment-protocol-router-sandbox", html_zh)
 
+    def test_commercial_agent_platform_router_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CommercialAgentPlatformRouterPolicyInput,
+            evaluate_commercial_agent_platform_router_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_commercial_agent_platform_router_policy(
+            CommercialAgentPlatformRouterPolicyInput(
+                quarterly_agent_platform_license_and_rework_tco_pool_usd=135000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "GOVERNED_AGENT_PLATFORM_AND_ENTRA_OBO_AUTHORIZED",
+        )
+
+        credit_burn = evaluate_commercial_agent_platform_router_policy(
+            CommercialAgentPlatformRouterPolicyInput(
+                public_b2c_anonymous_traffic_on_per_conversation_credit_saas=True
+            )
+        )
+        self.assertEqual(credit_burn["status_code"], 403)
+        self.assertEqual(
+            credit_burn["decision"],
+            "PUBLIC_B2C_ANONYMOUS_TRAFFIC_ON_PER_CONVERSATION_CREDIT_SAAS_BLOCKED",
+        )
+
+        saga_fail = evaluate_commercial_agent_platform_router_policy(
+            CommercialAgentPlatformRouterPolicyInput(
+                lowcode_multi_erp_write_without_saga_checkpointer_rollback=True
+            )
+        )
+        self.assertEqual(saga_fail["status_code"], 422)
+        self.assertEqual(
+            saga_fail["decision"],
+            "LOWCODE_MULTI_ERP_WRITE_WITHOUT_SAGA_CHECKPOINTER_ROLLBACK_BLOCKED",
+        )
+
+        obo_leak = evaluate_commercial_agent_platform_router_policy(
+            CommercialAgentPlatformRouterPolicyInput(
+                shared_god_mode_admin_spn_bypassing_entra_obo_rls=True
+            )
+        )
+        self.assertEqual(obo_leak["status_code"], 451)
+        self.assertEqual(
+            obo_leak["decision"],
+            "SHARED_GOD_MODE_ADMIN_SPN_BYPASSING_ENTRA_OBO_RLS_HOLD",
+        )
+
+        optim = evaluate_commercial_agent_platform_router_policy(
+            CommercialAgentPlatformRouterPolicyInput(
+                quarterly_agent_platform_license_and_rework_tco_pool_usd=135000.0,
+                hybrid_studio_front_shell_and_foundry_langgraph_core_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 45900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 89100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("commercial_agent_platform_router_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("commercial-agent-platform-router-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

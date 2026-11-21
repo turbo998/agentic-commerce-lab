@@ -24557,6 +24557,87 @@ def evaluate_agent_payment_protocol_router_policy(
     }
 
 
+@dataclass(frozen=True)
+class CommercialAgentPlatformRouterPolicyInput:
+    """Input contract for Commercial Agent Build Platform Router (Copilot Studio / Foundry / Agentforce / Shopify)."""
+
+    quarterly_agent_platform_license_and_rework_tco_pool_usd: float = 135000.0
+    public_b2c_anonymous_traffic_on_per_conversation_credit_saas: bool = False
+    lowcode_multi_erp_write_without_saga_checkpointer_rollback: bool = False
+    shared_god_mode_admin_spn_bypassing_entra_obo_rls: bool = False
+    mandate_signing_key_age_days: int = 30
+    hybrid_studio_front_shell_and_foundry_langgraph_core_ready: bool = False
+
+
+def evaluate_commercial_agent_platform_router_policy(
+    policy_input: CommercialAgentPlatformRouterPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Commercial Agent Build Platform Router policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_agent_platform_license_and_rework_tco_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.shared_god_mode_admin_spn_bypassing_entra_obo_rls
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "SHARED_GOD_MODE_ADMIN_SPN_BYPASSING_ENTRA_OBO_RLS_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.public_b2c_anonymous_traffic_on_per_conversation_credit_saas:
+        return {
+            "status_code": 403,
+            "decision": "PUBLIC_B2C_ANONYMOUS_TRAFFIC_ON_PER_CONVERSATION_CREDIT_SAAS_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.lowcode_multi_erp_write_without_saga_checkpointer_rollback:
+        return {
+            "status_code": 422,
+            "decision": "LOWCODE_MULTI_ERP_WRITE_WITHOUT_SAGA_CHECKPOINTER_ROLLBACK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hybrid_studio_front_shell_and_foundry_langgraph_core_ready:
+        savings = round(gross_pool * 0.34, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "HYBRID_STUDIO_FRONT_SHELL_AND_FOUNDRY_LANGGRAPH_CORE_CONFIRM",
+            "mandate_token": "agent_platform_router_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "GOVERNED_AGENT_PLATFORM_AND_ENTRA_OBO_AUTHORIZED",
+        "mandate_token": "agent_platform_router_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -33726,6 +33807,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    commercial_agent_platform_router_guard = {
+        "authorized_200": evaluate_commercial_agent_platform_router_policy(
+            CommercialAgentPlatformRouterPolicyInput()
+        ),
+        "b2c_credit_burn_mismatch_403": evaluate_commercial_agent_platform_router_policy(
+            CommercialAgentPlatformRouterPolicyInput(
+                public_b2c_anonymous_traffic_on_per_conversation_credit_saas=True
+            )
+        ),
+        "lowcode_no_saga_rollback_422": evaluate_commercial_agent_platform_router_policy(
+            CommercialAgentPlatformRouterPolicyInput(
+                lowcode_multi_erp_write_without_saga_checkpointer_rollback=True
+            )
+        ),
+        "shared_admin_spn_no_obo_451": evaluate_commercial_agent_platform_router_policy(
+            CommercialAgentPlatformRouterPolicyInput(
+                shared_god_mode_admin_spn_bypassing_entra_obo_rls=True
+            )
+        ),
+        "hybrid_studio_foundry_409": evaluate_commercial_agent_platform_router_policy(
+            CommercialAgentPlatformRouterPolicyInput(
+                hybrid_studio_front_shell_and_foundry_langgraph_core_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -33979,6 +34086,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "vacation_rental_str_escrow_guard": vacation_rental_str_escrow_guard,
         "enterprise_search_grounding_router_guard": enterprise_search_grounding_router_guard,
         "agent_payment_protocol_router_guard": agent_payment_protocol_router_guard,
+        "commercial_agent_platform_router_guard": commercial_agent_platform_router_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -46177,6 +46285,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="payment-router-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FIVE_RAIL_ADAPTIVE_ROUTER_AND_FIDO2_LIABILITY_SHIFT_CONFIRM · Mandate: payment_protocol_router_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 125 Commercial Agent Build Platform Router -->
+      <div class="finops-box" id="commercial-agent-platform-router-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏗️ 商业 Agent 构建平台选型 (Copilot Studio + D365 vs Azure AI Foundry / LangGraph vs Salesforce Agentforce vs Shopify Sidekick) 前店后厂混合架构沙盒 (Round 125)</div>
+            <div class="finops-subtitle">实测硬控拦截将百万级公网匿名 B2C 导购闲聊直接挂在 $2/对话 或 25 Credits/自主动作 SaaS 通道烧穿账单 (HTTP 403)、拦截无 Checkpointer 与无逆向补偿 Saga 的低代码拖拽流执行跨 ERP/支付多步写操作 (HTTP 422)、强制端到端 Entra ID OBO 令牌透传拉黑共享 Admin SPN 越权 (HTTP 451) 及“前店 Copilot Studio + 后厂 Foundry LangGraph”混合组装净省 34% TCO (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="platform-router-status-kpi">HTTP 409 · HYBRID_STUDIO_FRONT_SHELL_AND_FOUNDRY_LANGGRAPH_CORE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度智能体平台许可费、公网 Token 消耗与研发返工总 TCO 池 ($ USD)
+            <input type="range" id="platform-router-pool-slider" min="25000" max="600000" step="5000" value="135000" oninput="updateCommercialAgentPlatformRouterSandbox()" />
+            <span id="platform-router-pool-val" style="color:#6ee7b7; font-family:monospace;">$135,000</span>
+          </label>
+          <label>
+            公网高并发未登录 B2C 流量与按次/Credit 计费匹配审计 (HTTP 403)
+            <select id="platform-router-credit-select" onchange="updateCommercialAgentPlatformRouterSandbox()">
+              <option value="pass">公网匿名高频导购下沉 Azure AI Foundry 底层 Token($0.002/轮) + 内部员工复用 M365 Copilot 许可 (放行)</option>
+              <option value="block">将日均 5 万次公网未登录闲聊直接接入 $2/对话 或 25-Credit 高频轮询通道烧穿预算 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            跨 ERP / 支付网关 / 仓储 WMS 分布式事务 Saga 补偿校验 (HTTP 422)
+            <select id="platform-router-saga-select" onchange="updateCommercialAgentPlatformRouterSandbox()">
+              <option value="pass">跨系统写操作强制托管于 LangGraph Postgres Checkpointer + 失败自动逆序冲正回滚 (合规)</option>
+              <option value="block">用无状态低代码拖拽流裸跑“Stripe扣款+SAP锁库+D365改单”中途超时留下半截脏账 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            端到端 Entra ID On-Behalf-Of (OBO) 行级权限 (RLS) 门禁 (HTTP 451)
+            <select id="platform-router-obo-select" onchange="updateCommercialAgentPlatformRouterSandbox()">
+              <option value="clear">100% 透传当前登录用户 OBO JWT 令牌触发 CRM/ERP 行级权限隔离 (正常)</option>
+              <option value="hold">Pro-Code 代码偷懒硬编码全局 Admin Service Principal 密钥导致全公司底价与薪资越权泄露 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            “前店后厂”混合组装架构 (Studio 前台壳 + Foundry 后台核) (HTTP 409)
+            <select id="platform-router-opt-select" onchange="updateCommercialAgentPlatformRouterSandbox()">
+              <option value="enabled" selected>Copilot Studio 免自研内部 UI/SSO + Foundry/LangGraph 扛公网导购与跨库 Saga + Shopify MCP 净省 34% (HTTP 409)</option>
+              <option value="baseline">常规单栈合规授权架构 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度平台许可与研发总 TCO</div>
+            <div class="finops-kpi-val" id="platform-router-gross-kpi">$135,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">前店后厂混合架构净 TCO</div>
+            <div class="finops-kpi-val" id="platform-router-net-kpi" style="color:#6ee7b7;">$89,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省 Credit 账单与研发费</div>
+            <div class="finops-kpi-val" id="platform-router-savings-kpi" style="color:#38bdf8;">$45,900</div>
+          </div>
+        </div>
+        <div id="platform-router-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 HYBRID_STUDIO_FRONT_SHELL_AND_FOUNDRY_LANGGRAPH_CORE_CONFIRM · Mandate: agent_platform_router_optim_409
         </div>
       </div>
 
@@ -60798,6 +60969,80 @@ function updateAgentPaymentProtocolRouterSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 SCOPED_SPT_VIC_MANDATE_AND_ZERO_PAN_AUTHORIZED · Mandate: payment_protocol_router_200';
+}}
+
+function updateCommercialAgentPlatformRouterSandbox() {{
+  const slider = document.getElementById('platform-router-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '135000');
+  const creditMode = document.getElementById('platform-router-credit-select').value;
+  const sagaMode = document.getElementById('platform-router-saga-select').value;
+  const oboMode = document.getElementById('platform-router-obo-select').value;
+  const optMode = document.getElementById('platform-router-opt-select').value;
+
+  document.getElementById('platform-router-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('platform-router-status-kpi');
+  const grossKpi = document.getElementById('platform-router-gross-kpi');
+  const netKpi = document.getElementById('platform-router-net-kpi');
+  const savingsKpi = document.getElementById('platform-router-savings-kpi');
+  const banner = document.getElementById('platform-router-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (oboMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 SHARED_GOD_MODE_ADMIN_SPN_BYPASSING_ENTRA_OBO_RLS_HOLD · Mandate: null';
+    return;
+  }}
+  if (creditMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PUBLIC_B2C_ANONYMOUS_TRAFFIC_ON_PER_CONVERSATION_CREDIT_SAAS_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (sagaMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 LOWCODE_MULTI_ERP_WRITE_WITHOUT_SAGA_CHECKPOINTER_ROLLBACK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.34);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 HYBRID_STUDIO_FRONT_SHELL_AND_FOUNDRY_LANGGRAPH_CORE_CONFIRM · Mandate: agent_platform_router_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 GOVERNED_AGENT_PLATFORM_AND_ENTRA_OBO_AUTHORIZED · Mandate: agent_platform_router_200';
 }}
 
 function updateStage1756Sandbox() {{

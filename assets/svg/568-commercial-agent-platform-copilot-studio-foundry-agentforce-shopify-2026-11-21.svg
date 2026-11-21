@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg568" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2140" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+    <linearGradient id="accent568" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg568)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent568)" rx="3" />
+
+  <text x="40" y="58" class="title">商业 Agent 构建平台选型 (Copilot Studio vs Azure AI Foundry/LangGraph vs Agentforce vs Shopify)</text>
+  <text x="40" y="80" class="subtitle">Round 125 · 防高并发 B2C 导购烧穿 $2/对话按次账单、防低代码无补偿跨系统脏写 &amp; 前店后厂双层架构净省 34% TCO (SVG 568)</text>
+
+  <!-- Left Card: 3 Platform Selection Anti-Patterns -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大平台选型错配事故</text>
+  <text x="56" y="164" class="card-title">1. 高并发公网导购误用按次/按 Credit 平台</text>
+  <text x="56" y="184" class="body">• 将日活 10 万未登录访客的电商闲聊导购建在</text>
+  <text x="56" y="202" class="body">  Agentforce ($2/对话) 或 Copilot Studio (Autonomous Credits)</text>
+  <text x="56" y="220" class="warn">• 羊毛党与比价爬虫刷 50 万次闲聊 -&gt; 月账单暴增 $180,000</text>
+
+  <text x="56" y="256" class="card-title">2. 低代码连接器硬跑跨 ERP 分布式事务 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 用纯拖拽 Power Automate 流同步扣款 Stripe + 锁 SAP 库存</text>
+  <text x="56" y="294" class="body">  + 改写 Dynamics 365 订单，中途 SAP 超时报错</text>
+  <text x="56" y="312" class="warn">• 缺乏确定性 Saga 逆向冲正状态机 -&gt; 钱扣了货没发脏数据</text>
+
+  <text x="56" y="348" class="card-title">3. 越权共享 Service Principal 绕过 RBAC (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 开发者图省事给自建 LangGraph Agent 配置全局 Admin 密钥</text>
+  <text x="56" y="386" class="body">• 一线销售通过对话问出全公司高管薪资与大客户底价合同</text>
+  <text x="56" y="404" class="warn">• 丧失 Entra OBO / 平台级行级权限 (RLS) 触发严重内控违纪</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: B2C_HIGH_VOLUME_CREDIT_BURN_MISMATCH</text>
+  <text x="70" y="502" class="warn">• HTTP 422: LOWCODE_SAGA_PARTIAL_COMMIT_NO_ROLLBACK</text>
+  <text x="70" y="524" class="warn">• HTTP 451: SHARED_ADMIN_SPN_BYPASSING_ENTRA_OBO</text>
+  <text x="70" y="546" class="mono">• HTTP 409: HYBRID_STUDIO_FOUNDRY_COMPOSITE_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: GOVERNED_AGENT_PLATFORM_AUTHORIZED</text>
+  <text x="70" y="596" class="body">架构真言: 低代码管渠道与身份，Pro-Code 管核心状态机</text>
+
+  <!-- Center Card: Hybrid Composable Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">“前店后厂”混合分层智能体参考架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">L1 前台交互与身份壳: Copilot Studio / Agentforce</text>
+  <text x="450" y="195" class="body">• 职责: 秒级发布到 Teams / M365 / 企微 / Salesforce 工作台</text>
+  <text x="450" y="213" class="body">• 核心优势: 原生继承 Entra ID OBO 与 CRM 行级权限 (RLS)</text>
+  <text x="450" y="231" class="mono">• 禁用无上限后台循环消耗昂贵 Copilot Credits</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="282" class="card-title" fill="#6ee7b7">L2 核心交易状态机: Azure AI Foundry + SK / LangGraph</text>
+  <text x="450" y="302" class="body">• 职责: 承接高并发 B2C 导购与跨 ERP/PSP 复杂 Saga 事务</text>
+  <text x="450" y="320" class="body">• 计费优势: 直接按底层 Token (PTU / PayGo + 路由小模型) 结算</text>
+  <text x="450" y="338" class="body">• 状态确定性: LangGraph Checkpointer 持久化回滚与幂等锁</text>
+  <text x="450" y="354" class="mono">• 比纯按次 SaaS 消息包节省 75%~85% 高并发推理成本</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">L3 领域原生垂直执行: Shopify Sidekick / D365 MCP</text>
+  <text x="450" y="419" class="body">• 职责: 商家后台一键配满减活动、库存调拨、CRM 商机更新</text>
+  <text x="450" y="437" class="body">• 优势: 零代码理解 Shopify/D365 专有领域对象，开箱即用</text>
+  <text x="450" y="455" class="mono">• 通过标准 MCP Server 向 L2 Foundry 编排器暴露原子能力</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#f59e0b" />
+  <text x="450" y="508" class="card-title" fill="#fcd34d">四象限架构师选型铁律 (Platform Router)</text>
+  <text x="450" y="528" class="body">• 内部员工 Copilot + D365 轻查询 -&gt; Copilot Studio</text>
+  <text x="450" y="546" class="body">• 重度 Salesforce 客服工单闭环 -&gt; Agentforce (限已登录客户)</text>
+  <text x="450" y="566" class="mono">• 百万级 B2C 消费者导购 + 跨系统 Saga -&gt; Foundry + LangGraph</text>
+  <text x="450" y="586" class="mono">• 混合组装模式 (Studio 前端 + Foundry 后端) -&gt; 净省 34% TCO</text>
+
+  <!-- Right Card: 4-Platform Comparison & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大商业构建底座矩阵</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Microsoft Copilot Studio + D365</text>
+  <text x="846" y="182" class="body">• 优势: 1,400+ 连接器、Teams 原生、M365 Copilot 无缝扩展</text>
+  <text x="846" y="198" class="body">• 注意: 自主触发 (25 Credits) 高频轮询需下沉至 Foundry</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Azure AI Foundry + SK / LangGraph</text>
+  <text x="846" y="244" class="body">• 优势: 完全代码级控制、支持多模型路由、底层 Token 成本最低</text>
+  <text x="846" y="260" class="body">• 注意: 需自建前端 UI、会话持久化与 OBO 权限传递管道</text>
+
+  <text x="846" y="288" class="card-title" fill="#a5b4fc">3. Salesforce Agentforce (Atlas Engine)</text>
+  <text x="846" y="306" class="body">• 优势: 深度绑定 Data Cloud 与 Service/Sales Cloud 流程</text>
+  <text x="846" y="322" class="body">• 注意: ~$2/conversation 或 Flex Credits 对公网匿名流量极贵</text>
+
+  <text x="846" y="350" class="card-title" fill="#fcd34d">4. Shopify Sidekick &amp; Commerce MCP</text>
+  <text x="846" y="368" class="body">• 优势: 专为独立站店长运营与结账扩展设计，含在订阅内</text>
+  <text x="846" y="384" class="body">• 注意: 无法跨非 Shopify ERP/SAP 执行企业级采购审批</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度平台许可与研发总 TCO ($135,000)</text>
+  <text x="860" y="456" class="body">• 纯 SaaS 消息包跑高频流量 + 事故返工: $135,000/季</text>
+  <text x="860" y="476" class="mono">• B2C 高频导购下沉 Foundry PTU/小模型: -$24,300</text>
+  <text x="860" y="496" class="mono">• 复用 Copilot Studio 免自研内部 UI/鉴权: -$12,150</text>
+  <text x="860" y="516" class="mono">• LangGraph Saga 消除跨系统脏写赔付: -$9,450</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净 TCO: $89,100 (净省 $45,900 / -34%)</text>
+  <text x="860" y="574" class="body">Provenance: official_list_price + synthetic</text>
+  <text x="860" y="594" class="body">Mandate: agent_platform_router_optim_409</text>
+</svg>
