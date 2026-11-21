@@ -18572,6 +18572,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("floral-gift-delivery-escrow-sandbox", html_zh)
 
+    def test_b2b_corporate_swag_print_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BCorporateSwagPrintEscrowPolicyInput,
+            evaluate_b2b_corporate_swag_print_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_corporate_swag_print_escrow_policy(
+            B2BCorporateSwagPrintEscrowPolicyInput(
+                quarterly_corporate_swag_and_marketing_print_pool_usd=96000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "PANTONE_DELTA_E_VERIFIED_AND_EXACT_QTY_PRINT_AUTHORIZED",
+        )
+
+        fee = evaluate_b2b_corporate_swag_print_escrow_policy(
+            B2BCorporateSwagPrintEscrowPolicyInput(
+                repeat_setup_digitizing_fee_or_10pct_overrun_billing=True
+            )
+        )
+        self.assertEqual(fee["status_code"], 403)
+        self.assertEqual(
+            fee["decision"],
+            "REPEAT_SETUP_DIGITIZING_FEE_OR_10PCT_OVERRUN_BILLING_BLOCKED",
+        )
+
+        color = evaluate_b2b_corporate_swag_print_escrow_policy(
+            B2BCorporateSwagPrintEscrowPolicyInput(
+                low_dpi_raster_or_pantone_delta_e_above_2_unapproved_sample=True
+            )
+        )
+        self.assertEqual(color["status_code"], 422)
+        self.assertEqual(
+            color["decision"],
+            "LOW_DPI_RASTER_OR_PANTONE_DELTA_E_ABOVE_2_SAMPLE_BLOCKED",
+        )
+
+        safety = evaluate_b2b_corporate_swag_print_escrow_policy(
+            B2BCorporateSwagPrintEscrowPolicyInput(
+                uncertified_ul2056_powerbank_prop65_or_unauthorized_cobrand=True
+            )
+        )
+        self.assertEqual(safety["status_code"], 451)
+        self.assertEqual(
+            safety["decision"],
+            "UNCERTIFIED_UL2056_POWERBANK_PROP65_OR_UNAUTHORIZED_COBRAND_HOLD",
+        )
+
+        optim = evaluate_b2b_corporate_swag_print_escrow_policy(
+            B2BCorporateSwagPrintEscrowPolicyInput(
+                quarterly_corporate_swag_and_marketing_print_pool_usd=96000.0,
+                ondemand_size_redemption_pod_and_exact_qty_lock_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 31680.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 64320.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_corporate_swag_print_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-corporate-swag-print-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

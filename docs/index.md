@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`260` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`261` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（13 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（41 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（88 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（63 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（64 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（23 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（32 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -184,7 +184,7 @@
 | 88 | **鲜花蛋糕与节日同城礼赠（Floral & Gift Delivery：1-800-Flowers / 美团闪购 / DoorDash / BloomNation）、防“廉价花材偷梁换柱”出店实拍验真与防写字楼下班迟到托管“防情人节 $120 玫瑰被私换 $20 康乃馨、防 20:30 才送到已关门写字楼与直连本地花店净省 34%”Agent 架构选型 FAQ** | [中文](floral-gift-delivery-holiday-substitution-outbox-photo-escrow-agent-selection-faq.md) · [English](floral-gift-delivery-holiday-substitution-outbox-photo-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（63 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（64 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -253,6 +253,7 @@
 | 61 | **企业 B2B 应付账款三单匹配（`AP Three-Way Match`）、防供应商收款银行账号 `BEC` 邮件劫持与动态提前付款折扣（`2/10 Net 30`）托管（Coupa Pay / SAP Ariba / Tipalti / Taulia）“防黑客伪造 PDF 发票改 IBAN 骗走 $250,000 货款、防仓库实收 80 件却按 100 件全额打款与闲置资金年化 36.7% 早付套利”Agent 架构选型 FAQ** | [中文](b2b-ap-three-way-match-bec-iban-guard-dynamic-discounting-escrow-agent-selection-faq.md) · [English](b2b-ap-three-way-match-bec-iban-guard-dynamic-discounting-escrow-agent-selection-faq.en.md) |
 | 62 | **企业会议会展与商旅团队订房（`MICE` Hotel Room Block & Banquet `BEO`）、防空房违约金（`Attrition Penalty`）与防宴会影音加价 60% 刺客托管（Cvent / GroupSync / Navan Events / 携程会展）“防参会者私去 OTA 订房致团队块未满 80% 被罚 $27,000、防酒店满房还双收空房费与阶梯减房净省 29%”Agent 架构选型 FAQ** | [中文](b2b-mice-event-hotel-room-block-attrition-av-banquet-escrow-agent-selection-faq.md) · [English](b2b-mice-event-hotel-room-block-attrition-av-banquet-escrow-agent-selection-faq.en.md) |
 | 63 | **企业 B2B 国际货代海运（Freight Forwarding：Flexport / Maersk / 运去哪）、防滞箱滞港天价罚金（`Demurrage & Detention`）与防拼箱目的港扣货勒索托管“防 $1/方低价拼箱到港强收 $2,800 拆箱换单费、防码头无预约号乱收 $350/天滞箱费与散货集拼整柜净省 31%”Agent 架构选型 FAQ** | [中文](b2b-freight-forwarding-ocean-demurrage-detention-lcl-escrow-agent-selection-faq.md) · [English](b2b-freight-forwarding-ocean-demurrage-detention-lcl-escrow-agent-selection-faq.en.md) |
+| 64 | **企业品牌周边定制与营销印刷采购（Corporate Swag & Print：4imprint / Printful / SwagUp / 京东企礼 / 阳光印网）、防 `Pantone` 专色印偏色报废与按需自选尺码一件代发托管“防品牌红印成猪肝红拒不退货、防复购重收 $180 制版费与消灭 40% 断码库存积压净省 33%”Agent 架构选型 FAQ** | [中文](b2b-corporate-swag-print-pantone-proof-ondemand-kit-escrow-agent-selection-faq.md) · [English](b2b-corporate-swag-print-pantone-proof-ondemand-kit-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（23 篇）

@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg585" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+    <linearGradient id="accent585" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg585)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent585)" rx="3" />
+
+  <text x="40" y="58" class="title">企业周边定制与营销印刷采购 (Corporate Swag &amp; Print: 4imprint / Printful / Sendoso / 京东企礼)</text>
+  <text x="80" y="80" class="subtitle" transform="translate(-40,0)">Round 142 · 防 Pantone 专色印偏色报废 5,000 件文化衫、防复购重收 $180 制版开机费 &amp; 按需领码直发净省 33% (SVG 585)</text>
+
+  <!-- Left Card: 3 Swag & Print Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大周边与印刷采购黑洞</text>
+  <text x="56" y="164" class="card-title">1. Pantone 专色偏色与未看产前样开机 (HTTP 422)</text>
+  <text x="56" y="184" class="body">• 供应商把企业 VI 标准 Pantone 185C 鲜红直接转四色 CMYK</text>
+  <text x="56" y="202" class="body">• 未寄实物产前样 (Pre-Production Sample) 直接印 3,000 件卫衣</text>
+  <text x="56" y="220" class="warn">• 到货变成暗沉猪肝红且水洗掉色，定制品还不给退货!</text>
+
+  <text x="56" y="256" class="card-title">2. 复购重收 $180 制版费与 +10% 溢装强收 (HTTP 403)</text>
+  <text x="56" y="276" class="body">• 上季度刚付过 $180 丝网版/刺绣制版费 (Setup / Digitizing Fee)</text>
+  <text x="56" y="294" class="body">• 本季度加印同款 Logo 衫，供应商账单又偷偷收一次 $180 开机费</text>
+  <text x="56" y="312" class="warn">• 订 1,000 本手册发来 1,100 本，强按“行业 ±10% 溢短装”多收 10%!</text>
+
+  <text x="56" y="348" class="card-title">3. 盲囤 500 套大码入职包积压仓库发霉</text>
+  <text x="56" y="368" class="body">• HR 凭感觉一次买断 500 件 S/M/L/XL 卫衣堆在行政储物间</text>
+  <text x="56" y="386" class="body">• L/M 码三个月发完，剩下 210 件 XS 和 3XL 放了两年直到公司</text>
+  <text x="56" y="404" class="warn">  换新 Logo 全部当垃圾扔掉，外加每月 $800 礼品仓保管费!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: REPEAT_SETUP_FEE_OR_OVERRUN_10PCT_BILLING</text>
+  <text x="70" y="502" class="warn">• HTTP 422: PANTONE_DELTA_E_BREACH_OR_LOW_DPI_RASTER</text>
+  <text x="70" y="524" class="warn">• HTTP 451: TRADEMARK_VIOLATION_OR_PROP65_LEAD_HOLD</text>
+  <text x="70" y="546" class="mono">• HTTP 409: ONDEMAND_SIZE_LINK_AND_EXACT_QTY_LOCK_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: PRE_PROD_SAMPLE_AND_PANTONE_AUTHORIZED</text>
+  <text x="70" y="596" class="body">铁律: 合同写死 Exact Quantity 零溢装多收 + 矢量 Pantone 锁!</text>
+
+  <!-- Center Card: 4-Stage Swag & Print Escrow Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶周边定制色差门禁与按需分发架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">Gate 1: 零溢装条款 (Exact Qty) 与复购免制版费锁</text>
+  <text x="450" y="195" class="body">• PO 强制写入 `Exact Quantity Only (0% Overrun Billable)`</text>
+  <text x="450" y="213" class="body">• 供应商多印的 5%~10% 备品只能免费赠送，严禁加收一分钱</text>
+  <text x="450" y="231" class="mono">• 24个月内同 Logo 复购重收制版/打版费 -&gt; HTTP 403 拒付</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="282" class="card-title" fill="#6ee7b7">Gate 2: 矢量刀线预检与 Pantone 色差仪锁 (Delta-E &lt;= 2.0)</text>
+  <text x="450" y="302" class="body">• 自动校验设计稿为 CMYK/Pantone 矢量 PDF (&gt;=300 DPI + 3mm 出血)</text>
+  <text x="450" y="320" class="body">• 批量订单 (&gt;$2,500) 强制要求先通过产前实物样 (PPS) 分光测色</text>
+  <text x="450" y="338" class="body">• 实测色差 `Delta-E &gt; 2.0` 或直接拿 72 DPI 网页低清图开印 -&gt; HTTP 422</text>
+  <text x="450" y="354" class="mono">• 未获市场部数字签批产前样，大货资金池 100% 冻结不放行!</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 联名商标授权与保温杯/玩具安全合规 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 校验联名款 (如 Stanley / Nike 刺绣企业标) 具备正品渠道授权</text>
+  <text x="450" y="437" class="body">• 水杯/充电宝强制核验 FDA 食品接触级、Prop 65 无铅与 UL 认证</text>
+  <text x="450" y="455" class="mono">• 假冒联名底衫或充电宝无 UL2056/3C 防爆认证 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#f59e0b" />
+  <text x="450" y="508" class="card-title" fill="#fcd34d">Gate 4: 免囤货按需自选尺码直发 (Redemption Link)</text>
+  <text x="450" y="528" class="body">• 废除“盲猜尺码一次买 500 件堆仓库”的传统重资产模式!</text>
+  <text x="450" y="546" class="body">• 新员工入职或客户获奖时收到专属兑换链接，自己选合身尺码</text>
+  <text x="450" y="566" class="mono">• 由 Printful / SwagUp 按需数码直喷 (DTG) 单件直发到家，0 断码报废!</text>
+  <text x="450" y="586" class="mono">• 零断码积压 + 砍重收制版费 + 零溢装 -&gt; 净省 33% 周边采购费</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大企业周边与云印刷平台</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. 4imprint / CustomInk (大宗展会促销品)</text>
+  <text x="846" y="182" class="body">• 优势: 北美最大促销礼品目录，免费寄样品包，准时交货保障</text>
+  <text x="846" y="198" class="body">• 适用: 展会 2,000+ 件大批量帆布袋、笔、水杯集中低价定制</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Printful / Printify (按需单件直发 POD)</text>
+  <text x="846" y="244" class="body">• 优势: 全球分布式印厂，0 起订量 (MOQ=1)，零仓储保管费</text>
+  <text x="846" y="260" class="body">• 适用: 远程员工入职服装按真实尺码一件代发，消灭断码死库存</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Sendoso / SwagUp / Reachdesk</text>
+  <text x="846" y="306" class="body">• 优势: 原生打通 Workday (新员工入职自动触发) 与 Salesforce</text>
+  <text x="846" y="322" class="body">• 特性: 礼盒组装与收件人自助填地址/选尺码门户体验极佳</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. 京东企礼 / 阳光印网 / 盛大印刷</text>
+  <text x="846" y="368" class="body">• 优势: 国内画册包材云印刷与米家/罗技大牌正品激光刻标直发</text>
+  <text x="846" y="384" class="body">• 特性: 标准化刀版预检与集中竞价大幅压降单册印刷成本</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度企业文化衫、展会周边与画册池 ($96,000)</text>
+  <text x="860" y="456" class="body">• 传统断码积压报废+印错色重印+制版费: $96,000/季</text>
+  <text x="860" y="476" class="mono">• 入职周边改自选尺码按需直发消除断码报废: -$15,360</text>
+  <text x="860" y="496" class="mono">• 产前样色差锁 (Delta-E&lt;=2) 杜绝整批印错重做: -$9,600</text>
+  <text x="860" y="516" class="mono">• 砍掉复购重复制版费与 +10% 溢装强收款: -$6,720</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净支出: $64,320 (净省 $31,680 / -33%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: b2b_corporate_swag_print_optim_409</text>
+</svg>

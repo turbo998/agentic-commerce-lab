@@ -25934,6 +25934,87 @@ def evaluate_floral_gift_delivery_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BCorporateSwagPrintEscrowPolicyInput:
+    """Input contract for Enterprise Corporate Swag, Print Pantone Delta-E Lock & On-Demand Size-Redemption Escrow."""
+
+    quarterly_corporate_swag_and_marketing_print_pool_usd: float = 96000.0
+    repeat_setup_digitizing_fee_or_10pct_overrun_billing: bool = False
+    low_dpi_raster_or_pantone_delta_e_above_2_unapproved_sample: bool = False
+    uncertified_ul2056_powerbank_prop65_or_unauthorized_cobrand: bool = False
+    mandate_signing_key_age_days: int = 30
+    ondemand_size_redemption_pod_and_exact_qty_lock_ready: bool = False
+
+
+def evaluate_b2b_corporate_swag_print_escrow_policy(
+    policy_input: B2BCorporateSwagPrintEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Enterprise Corporate Swag, Print Pantone Delta-E Lock & On-Demand Size-Redemption Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_corporate_swag_and_marketing_print_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.uncertified_ul2056_powerbank_prop65_or_unauthorized_cobrand
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "UNCERTIFIED_UL2056_POWERBANK_PROP65_OR_UNAUTHORIZED_COBRAND_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.repeat_setup_digitizing_fee_or_10pct_overrun_billing:
+        return {
+            "status_code": 403,
+            "decision": "REPEAT_SETUP_DIGITIZING_FEE_OR_10PCT_OVERRUN_BILLING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.low_dpi_raster_or_pantone_delta_e_above_2_unapproved_sample:
+        return {
+            "status_code": 422,
+            "decision": "LOW_DPI_RASTER_OR_PANTONE_DELTA_E_ABOVE_2_SAMPLE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ondemand_size_redemption_pod_and_exact_qty_lock_ready:
+        savings = round(gross_pool * 0.33, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ONDEMAND_SIZE_REDEMPTION_POD_AND_EXACT_QTY_LOCK_CONFIRM",
+            "mandate_token": "b2b_corporate_swag_print_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "PANTONE_DELTA_E_VERIFIED_AND_EXACT_QTY_PRINT_AUTHORIZED",
+        "mandate_token": "b2b_corporate_swag_print_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -35545,6 +35626,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_corporate_swag_print_escrow_guard = {
+        "authorized_200": evaluate_b2b_corporate_swag_print_escrow_policy(
+            B2BCorporateSwagPrintEscrowPolicyInput()
+        ),
+        "repeat_setup_or_overrun_403": evaluate_b2b_corporate_swag_print_escrow_policy(
+            B2BCorporateSwagPrintEscrowPolicyInput(
+                repeat_setup_digitizing_fee_or_10pct_overrun_billing=True
+            )
+        ),
+        "low_dpi_or_pantone_delta_e_422": evaluate_b2b_corporate_swag_print_escrow_policy(
+            B2BCorporateSwagPrintEscrowPolicyInput(
+                low_dpi_raster_or_pantone_delta_e_above_2_unapproved_sample=True
+            )
+        ),
+        "uncertified_ul2056_or_prop65_451": evaluate_b2b_corporate_swag_print_escrow_policy(
+            B2BCorporateSwagPrintEscrowPolicyInput(
+                uncertified_ul2056_powerbank_prop65_or_unauthorized_cobrand=True
+            )
+        ),
+        "ondemand_size_link_and_exact_qty_409": evaluate_b2b_corporate_swag_print_escrow_policy(
+            B2BCorporateSwagPrintEscrowPolicyInput(
+                ondemand_size_redemption_pod_and_exact_qty_lock_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -35815,6 +35922,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_bnpl_margin_refund_escrow_guard": ecommerce_bnpl_margin_refund_escrow_guard,
         "ecommerce_chargeback_ce30_escrow_guard": ecommerce_chargeback_ce30_escrow_guard,
         "floral_gift_delivery_escrow_guard": floral_gift_delivery_escrow_guard,
+        "b2b_corporate_swag_print_escrow_guard": b2b_corporate_swag_print_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -49084,6 +49192,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="floral-gift-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DIRECT_3KM_LOCAL_FLORIST_BYPASS_WIRE_COMMISSION_CONFIRM · Mandate: floral_gift_delivery_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 142 Enterprise Corporate Swag, Print Pantone Delta-E Lock & On-Demand Size-Redemption Escrow -->
+      <div class="finops-box" id="b2b-corporate-swag-print-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">👕 企业周边定制与营销印刷采购 (Corporate Swag &amp; Print: 4imprint / Printful / SwagUp / 京东企礼) 托管沙盒 (Round 142)</div>
+            <div class="finops-subtitle">实测硬控 24个月模具复用免除 $180 重复制版费 + 合同写死 Exact Quantity 拦截 +10% 印刷溢装强收款 (HTTP 403)、300 DPI 矢量预检 + 产前实物样 Pantone 分光色差锁(Delta-E&lt;=2.0)防品牌红印成猪肝红整批报废 (HTTP 422)、充电宝 UL2056/3C 与水杯无铅认证 (HTTP 451) 及入职卫衣自选尺码按需直发消除 40% 断码积压净省 33% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="swag-print-status-kpi">HTTP 409 · ONDEMAND_SIZE_REDEMPTION_POD_AND_EXACT_QTY_LOCK_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业展会周边、HR 入职文化衫与宣传画册总预算池 ($ USD)
+            <input type="range" id="swag-print-pool-slider" min="15000" max="450000" step="5000" value="96000" oninput="updateB2BCorporateSwagPrintEscrowSandbox()" />
+            <span id="swag-print-pool-val" style="color:#6ee7b7; font-family:monospace;">$96,000</span>
+          </label>
+          <label>
+            模具复用免制版费与 Exact Quantity 零溢装多收审计 (HTTP 403)
+            <select id="swag-print-fee-select" onchange="updateB2BCorporateSwagPrintEscrowSandbox()">
+              <option value="pass">复用历史丝网/刺绣打版号 $0 制版费 + 合同锁死 Exact Quantity 多印备品免费送 (放行)</option>
+              <option value="block">同款 Logo 复购重复收 $180 制版开机费 或 订 5,000 本发 5,500 本强按 +10% 溢装多收钱 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            300 DPI 矢量刀版预检与产前样 Pantone 色差锁 (Delta-E&lt;=2.0) (HTTP 422)
+            <select id="swag-print-color-select" onchange="updateB2BCorporateSwagPrintEscrowSandbox()">
+              <option value="pass">PDF/X-4 矢量含 3mm 出血 + 产前实物样分光测色 Delta-E&lt;=2.0 签批后开印 (合规)</option>
+              <option value="block">拿 72 DPI 网页低清截图直接开印马赛克 或 专色私转 CMYK 把品牌红印成猪肝红 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            充电宝 UL2056/3C 防爆、水杯 FDA 无铅与大牌联名授权 (HTTP 451)
+            <select id="swag-print-safety-select" onchange="updateB2BCorporateSwagPrintEscrowSandbox()">
+              <option value="clear">移动电源具备 UL2056/3C 认证 + 保温杯通过 FDA/Prop65 无铅检测 + 联名正品链路 (正常)</option>
+              <option value="hold">采购三无贴牌锂电充电宝有起火召回风险 或 假冒 Nike/Stanley 底衫刻企业标 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            有尺码服饰转“自选尺码兑换链 + 按需 POD 直发”寻优 (HTTP 409)
+            <select id="swag-print-opt-select" onchange="updateB2BCorporateSwagPrintEscrowSandbox()">
+              <option value="enabled" selected>废除盲囤 500 件衣服堆仓库，员工点链接自选合身码由 Printful/SwagUp 按需直发 0 断码报废净省 33% (HTTP 409)</option>
+              <option value="baseline">常规产前样色差核验与精确数量大宗印务结算 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业周边与营销印刷总池</div>
+            <div class="finops-kpi-val" id="swag-print-gross-kpi">$96,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">按需领码与色差锁后净支出</div>
+            <div class="finops-kpi-val" id="swag-print-net-kpi" style="color:#6ee7b7;">$64,320</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省断码报废、重印与版费</div>
+            <div class="finops-kpi-val" id="swag-print-savings-kpi" style="color:#38bdf8;">$31,680</div>
+          </div>
+        </div>
+        <div id="swag-print-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ONDEMAND_SIZE_REDEMPTION_POD_AND_EXACT_QTY_LOCK_CONFIRM · Mandate: b2b_corporate_swag_print_optim_409
         </div>
       </div>
 
@@ -64963,6 +65134,80 @@ function updateFloralGiftDeliveryEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 BLOOMSNAP_VERIFIED_AND_PRE_1630_OFFICE_GIFT_AUTHORIZED · Mandate: floral_gift_delivery_200';
+}}
+
+function updateB2BCorporateSwagPrintEscrowSandbox() {{
+  const slider = document.getElementById('swag-print-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '96000');
+  const feeMode = document.getElementById('swag-print-fee-select').value;
+  const colorMode = document.getElementById('swag-print-color-select').value;
+  const safetyMode = document.getElementById('swag-print-safety-select').value;
+  const optMode = document.getElementById('swag-print-opt-select').value;
+
+  document.getElementById('swag-print-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('swag-print-status-kpi');
+  const grossKpi = document.getElementById('swag-print-gross-kpi');
+  const netKpi = document.getElementById('swag-print-net-kpi');
+  const savingsKpi = document.getElementById('swag-print-savings-kpi');
+  const banner = document.getElementById('swag-print-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (safetyMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 UNCERTIFIED_UL2056_POWERBANK_PROP65_OR_UNAUTHORIZED_COBRAND_HOLD · Mandate: null';
+    return;
+  }}
+  if (feeMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 REPEAT_SETUP_DIGITIZING_FEE_OR_10PCT_OVERRUN_BILLING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (colorMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 LOW_DPI_RASTER_OR_PANTONE_DELTA_E_ABOVE_2_SAMPLE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.33);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ONDEMAND_SIZE_REDEMPTION_POD_AND_EXACT_QTY_LOCK_CONFIRM · Mandate: b2b_corporate_swag_print_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 PANTONE_DELTA_E_VERIFIED_AND_EXACT_QTY_PRINT_AUTHORIZED · Mandate: b2b_corporate_swag_print_200';
 }}
 
 function updateStage1756Sandbox() {{
