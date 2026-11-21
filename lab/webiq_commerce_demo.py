@@ -29509,6 +29509,82 @@ def evaluate_ecommerce_back_in_stock_waitlist_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bTailSpendSpotBuyPolicyInput:
+    quarterly_tail_spend_maverick_overpay_and_vendor_bloat_pool_usd: float = 185000.0
+    split_po_smurfing_under_approval_limit_within_14d_window: bool = False
+    maverick_free_text_buy_ignoring_lower_contract_catalog_sku: bool = False
+    unvetted_onetime_vendor_onboarding_or_missing_w9_ofac_check: bool = False
+    autonomous_3bid_micro_rfq_and_single_mor_vcn_settlement_ready: bool = False
+
+
+def evaluate_b2b_tail_spend_spot_buy_policy(
+    policy_input: B2bTailSpendSpotBuyPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_tail_spend_maverick_overpay_and_vendor_bloat_pool_usd
+        ),
+    )
+    if policy_input.unvetted_onetime_vendor_onboarding_or_missing_w9_ofac_check:
+        return {
+            "status_code": 451,
+            "decision": "UNVETTED_ONETIME_VENDOR_OR_MISSING_W9_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.split_po_smurfing_under_approval_limit_within_14d_window:
+        return {
+            "status_code": 403,
+            "decision": "SPLIT_ORDER_THRESHOLD_SMURFING_BYPASS_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.maverick_free_text_buy_ignoring_lower_contract_catalog_sku:
+        return {
+            "status_code": 422,
+            "decision": "MAVERICK_OFF_CONTRACT_RETAIL_OVERPAY_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.autonomous_3bid_micro_rfq_and_single_mor_vcn_settlement_ready:
+        savings = round(gross_pool * 0.34, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "AUTONOMOUS_3BID_MICRO_RFQ_AND_SINGLE_MOR_VCN_CONFIRM",
+            "mandate_token": "b2b_tail_spend_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "CATALOG_VERIFIED_SPOT_REQUISITION_AUTHORIZED",
+        "mandate_token": "b2b_tail_spend_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -40368,6 +40444,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_tail_spend_spot_buy_guard = {
+        "authorized_200": evaluate_b2b_tail_spend_spot_buy_policy(
+            B2bTailSpendSpotBuyPolicyInput()
+        ),
+        "split_po_smurfing_403": evaluate_b2b_tail_spend_spot_buy_policy(
+            B2bTailSpendSpotBuyPolicyInput(
+                split_po_smurfing_under_approval_limit_within_14d_window=True
+            )
+        ),
+        "maverick_off_contract_422": evaluate_b2b_tail_spend_spot_buy_policy(
+            B2bTailSpendSpotBuyPolicyInput(
+                maverick_free_text_buy_ignoring_lower_contract_catalog_sku=True
+            )
+        ),
+        "unvetted_vendor_w9_451": evaluate_b2b_tail_spend_spot_buy_policy(
+            B2bTailSpendSpotBuyPolicyInput(
+                unvetted_onetime_vendor_onboarding_or_missing_w9_ofac_check=True
+            )
+        ),
+        "micro_rfq_and_vcn_409": evaluate_b2b_tail_spend_spot_buy_policy(
+            B2bTailSpendSpotBuyPolicyInput(
+                autonomous_3bid_micro_rfq_and_single_mor_vcn_settlement_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40686,6 +40788,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_pim_catalog_onboarding_guard": ecommerce_pim_catalog_onboarding_guard,
         "ota_travel_price_drop_reshopping_guard": ota_travel_price_drop_reshopping_guard,
         "ecommerce_back_in_stock_waitlist_guard": ecommerce_back_in_stock_waitlist_guard,
+        "b2b_tail_spend_spot_buy_guard": b2b_tail_spend_spot_buy_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -56715,6 +56818,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="waitlist-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TIERED_WAVE_ALLOCATION_AND_SPT_AUTO_PURCHASE_CONFIRM · Mandate: back_in_stock_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 190 B2B Tail-Spend & Spot-Buy Anti-Smurfing & Micro-RFQ Escrow (#309) -->
+      <div class="finops-box" id="b2b-tail-spend-spot-buy-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛒 企业 B2B 长尾零星采购、防化整为零拆单绕审与自动三家微询价 (Fairmarkit / Amazon Business / Zip) 沙盒</div>
+            <div class="finops-sub">Round 190 (#309) · 14天滚动防拆单逃避 $10k 审批锁 (HTTP 403) + 自由文本对标年框协议目录防野采 (HTTP 422) + 免建一次性供应商主数据与 W-9/OFAC 门禁 (HTTP 451) + 自动 3 家微询价与单次 VCN 净省 34% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="tailspend-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度长尾零星采购拆单溢价、目录外零售高价野采与新供应商建档损耗池 ($)
+            <input type="number" id="tailspend-gross-input" value="185000" min="10000" step="5000" oninput="recalcB2bTailSpendSpotBuySandbox()" />
+          </label>
+          <label>14 天滚动同供应商/同项目拆单累计锁 (Anti-Smurfing Gate)
+            <select id="tailspend-smurf-select" onchange="recalcB2bTailSpendSpotBuySandbox()">
+              <option value="pass">14天滚动累计未越界 或 已正规走 VP 与三家招标审批 (合规)</option>
+              <option value="block_403">把 $28,500 采购拆成 3 笔 $9,500 小单企图绕过 $10,000 VP 审批红线 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>自由文本请购单对标集团年框目录 (PunchOut Catalog Redirect)
+            <select id="tailspend-catalog-select" onchange="recalcB2bTailSpendSpotBuySandbox()">
+              <option value="pass">已优先命中年框协议目录低价 SKU 或 确属目录外非标物资 (合规)</option>
+              <option value="block_422">放着集团年框协议价 $48/套不买，填自由文本去零售网店按 $85/套高价野采 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>一次性零星供应商免建档伞形结算与 W-9 / OFAC 合规校验
+            <select id="tailspend-vendor-select" onchange="recalcB2bTailSpendSpotBuySandbox()">
+              <option value="pass">走 Amazon Business 伞形 MoR 或单次 Level-3 VCN 虚拟卡免建档 + W-9/OFAC 已核验 (安全)</option>
+              <option value="block_451">为买 $350 配件在 SAP 新建长期供应商档案(耗费$1,400) 或 未验 W-9/OFAC 直接付款 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Fairmarkit 自动并发 3 家微询价 (Micro-RFQ) 与周度合单
+            <select id="tailspend-opt-select" onchange="recalcB2bTailSpendSpotBuySandbox()">
+              <option value="enabled" selected>目录外需求自动并发 3 家合格供应商竞价 + 单一 MoR/VCN 结算 (-34% 支出 / HTTP 409)</option>
+              <option value="disabled">单一供应商报价无竞争直接人工走单 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度长尾野采与供应商建档损耗池</div>
+            <div class="finops-kpi-val" id="tailspend-gross-kpi">$185,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">目录重定向与微询价后净损耗</div>
+            <div class="finops-kpi-val" id="tailspend-net-kpi" style="color:#6ee7b7;">$122,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省长尾比价与建档行政费</div>
+            <div class="finops-kpi-val" id="tailspend-savings-kpi" style="color:#38bdf8;">$62,900</div>
+          </div>
+        </div>
+        <div id="tailspend-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 AUTONOMOUS_3BID_MICRO_RFQ_AND_SINGLE_MOR_VCN_CONFIRM · Mandate: b2b_tail_spend_escrow_optim_409
         </div>
       </div>
 
@@ -76102,6 +76262,79 @@ function recalcEcommerceBackInStockWaitlistSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_VARIANT_WAITLIST_ALLOCATION_AUTHORIZED · Mandate: back_in_stock_escrow_200';
+}}
+
+function recalcB2bTailSpendSpotBuySandbox() {{
+  const grossInput = document.getElementById('tailspend-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '185000'));
+  const smurfGate = document.getElementById('tailspend-smurf-select').value;
+  const catalogGate = document.getElementById('tailspend-catalog-select').value;
+  const vendorGate = document.getElementById('tailspend-vendor-select').value;
+  const optMode = document.getElementById('tailspend-opt-select').value;
+
+  const grossKpi = document.getElementById('tailspend-gross-kpi');
+  const netKpi = document.getElementById('tailspend-net-kpi');
+  const savingsKpi = document.getElementById('tailspend-savings-kpi');
+  const statusKpi = document.getElementById('tailspend-status-kpi');
+  const banner = document.getElementById('tailspend-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vendorGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNVETTED_ONETIME_VENDOR_OR_MISSING_W9_HOLD · Mandate: null';
+    return;
+  }}
+  if (smurfGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SPLIT_ORDER_THRESHOLD_SMURFING_BYPASS_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (catalogGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MAVERICK_OFF_CONTRACT_RETAIL_OVERPAY_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.34);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 AUTONOMOUS_3BID_MICRO_RFQ_AND_SINGLE_MOR_VCN_CONFIRM · Mandate: b2b_tail_spend_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 CATALOG_VERIFIED_SPOT_REQUISITION_AUTHORIZED · Mandate: b2b_tail_spend_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

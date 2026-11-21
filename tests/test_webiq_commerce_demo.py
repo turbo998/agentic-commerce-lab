@@ -21788,6 +21788,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-back-in-stock-waitlist-sandbox", html_zh)
 
+    def test_b2b_tail_spend_spot_buy_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bTailSpendSpotBuyPolicyInput,
+            evaluate_b2b_tail_spend_spot_buy_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_tail_spend_spot_buy_policy(
+            B2bTailSpendSpotBuyPolicyInput(
+                quarterly_tail_spend_maverick_overpay_and_vendor_bloat_pool_usd=185000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "CATALOG_VERIFIED_SPOT_REQUISITION_AUTHORIZED",
+        )
+
+        smurf = evaluate_b2b_tail_spend_spot_buy_policy(
+            B2bTailSpendSpotBuyPolicyInput(
+                split_po_smurfing_under_approval_limit_within_14d_window=True
+            )
+        )
+        self.assertEqual(smurf["status_code"], 403)
+        self.assertEqual(
+            smurf["decision"],
+            "SPLIT_ORDER_THRESHOLD_SMURFING_BYPASS_BLOCKED",
+        )
+
+        maverick = evaluate_b2b_tail_spend_spot_buy_policy(
+            B2bTailSpendSpotBuyPolicyInput(
+                maverick_free_text_buy_ignoring_lower_contract_catalog_sku=True
+            )
+        )
+        self.assertEqual(maverick["status_code"], 422)
+        self.assertEqual(
+            maverick["decision"],
+            "MAVERICK_OFF_CONTRACT_RETAIL_OVERPAY_BLOCKED",
+        )
+
+        vendor = evaluate_b2b_tail_spend_spot_buy_policy(
+            B2bTailSpendSpotBuyPolicyInput(
+                unvetted_onetime_vendor_onboarding_or_missing_w9_ofac_check=True
+            )
+        )
+        self.assertEqual(vendor["status_code"], 451)
+        self.assertEqual(
+            vendor["decision"],
+            "UNVETTED_ONETIME_VENDOR_OR_MISSING_W9_HOLD",
+        )
+
+        optim = evaluate_b2b_tail_spend_spot_buy_policy(
+            B2bTailSpendSpotBuyPolicyInput(
+                quarterly_tail_spend_maverick_overpay_and_vendor_bloat_pool_usd=185000.0,
+                autonomous_3bid_micro_rfq_and_single_mor_vcn_settlement_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 62900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 122100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_tail_spend_spot_buy_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-tail-spend-spot-buy-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
