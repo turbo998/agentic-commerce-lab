@@ -25043,6 +25043,87 @@ def evaluate_cross_border_support_ddp_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommercePriceMatchGuaranteeEscrowPolicyInput:
+    """Input contract for E-Commerce Price-Match & 30-Day Guarantee, Anti-F12-Spoof & Net-Paid Escrow."""
+
+    quarterly_price_match_and_return_rebuy_loss_pool_usd: float = 90000.0
+    f12_dom_edited_screenshot_spoof_or_unapproved_burner_store: bool = False
+    refurb_oos_gtin_mismatch_or_promo_double_dip_unanchored_principal: bool = False
+    below_cost_dumping_or_competitor_price_mistake_violation: bool = False
+    mandate_signing_key_age_days: int = 30
+    proactive_price_drop_and_15pct_bonus_store_credit_ready: bool = False
+
+
+def evaluate_ecommerce_price_match_guarantee_escrow_policy(
+    policy_input: EcommercePriceMatchGuaranteeEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane E-Commerce Price-Match & 30-Day Guarantee, Anti-F12-Spoof & Net-Paid Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_price_match_and_return_rebuy_loss_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.below_cost_dumping_or_competitor_price_mistake_violation
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "BELOW_COST_DUMPING_OR_COMPETITOR_PRICE_MISTAKE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.f12_dom_edited_screenshot_spoof_or_unapproved_burner_store:
+        return {
+            "status_code": 403,
+            "decision": "F12_DOM_EDITED_SCREENSHOT_SPOOF_OR_UNAPPROVED_BURNER_STORE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.refurb_oos_gtin_mismatch_or_promo_double_dip_unanchored_principal:
+        return {
+            "status_code": 422,
+            "decision": "REFURB_OOS_GTIN_MISMATCH_OR_PROMO_DOUBLE_DIP_UNANCHORED_PRINCIPAL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.proactive_price_drop_and_15pct_bonus_store_credit_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PROACTIVE_PRICE_DROP_AND_15PCT_BONUS_STORE_CREDIT_CONFIRM",
+            "mandate_token": "ecommerce_price_match_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "WEBIQ_GTIN_NET_PAID_DELTA_AND_PRINCIPAL_ANCHOR_AUTHORIZED",
+        "mandate_token": "ecommerce_price_match_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -34368,6 +34449,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_price_match_guarantee_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_price_match_guarantee_escrow_policy(
+            EcommercePriceMatchGuaranteeEscrowPolicyInput()
+        ),
+        "f12_spoof_or_burner_store_403": evaluate_ecommerce_price_match_guarantee_escrow_policy(
+            EcommercePriceMatchGuaranteeEscrowPolicyInput(
+                f12_dom_edited_screenshot_spoof_or_unapproved_burner_store=True
+            )
+        ),
+        "gtin_mismatch_or_double_dip_422": evaluate_ecommerce_price_match_guarantee_escrow_policy(
+            EcommercePriceMatchGuaranteeEscrowPolicyInput(
+                refurb_oos_gtin_mismatch_or_promo_double_dip_unanchored_principal=True
+            )
+        ),
+        "below_cost_or_price_mistake_451": evaluate_ecommerce_price_match_guarantee_escrow_policy(
+            EcommercePriceMatchGuaranteeEscrowPolicyInput(
+                below_cost_dumping_or_competitor_price_mistake_violation=True
+            )
+        ),
+        "proactive_bonus_store_credit_409": evaluate_ecommerce_price_match_guarantee_escrow_policy(
+            EcommercePriceMatchGuaranteeEscrowPolicyInput(
+                proactive_price_drop_and_15pct_bonus_store_credit_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -34627,6 +34734,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "influencer_kol_affiliate_escrow_guard": influencer_kol_affiliate_escrow_guard,
         "saas_usage_outcome_billing_escrow_guard": saas_usage_outcome_billing_escrow_guard,
         "cross_border_support_ddp_escrow_guard": cross_border_support_ddp_escrow_guard,
+        "ecommerce_price_match_guarantee_escrow_guard": ecommerce_price_match_guarantee_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -47203,6 +47311,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="cb-ddp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PROACTIVE_TAX_ID_RESCUE_AND_8USD_LOCAL_KEEP_RESHIP_CONFIRM · Mandate: cross_border_support_ddp_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 131 E-Commerce Price-Match & 30-Day Guarantee, Anti-F12-Spoof & Net-Paid Escrow -->
+      <div class="finops-box" id="ecommerce-price-match-guarantee-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏷️ 电商买贵必赔与 30 天价保 (Price Match &amp; Guarantee)、防 F12 假截图与防双重退差托管 (Web IQ / Shopify Flow / Loop / 京东价保) 沙盒 (Round 131)</div>
+            <div class="finops-subtitle">实测硬控截图 0% 价格信任+服务端 Web IQ 直连白名单自营官网防 F12 改网页 DOM 骗 $600 退差 (HTTP 403)、14 位 GTIN 全新同尺码现货锁+按扣券扣赠品后“实付净额”算差+原子下调原单可退本金防“领完价保再退货双吃” (HTTP 422)、倾销与乌龙指熔断 (HTTP 451) 及主动退 +15% 商城储值金免除“退旧买新”净省 36% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="price-match-status-kpi">HTTP 409 · PROACTIVE_PRICE_DROP_AND_15PCT_BONUS_STORE_CREDIT_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度大促买贵必赔、假截图骗补与“退旧买新”物流折旧总池 ($ USD)
+            <input type="range" id="price-match-pool-slider" min="15000" max="400000" step="5000" value="90000" oninput="updateEcommercePriceMatchGuaranteeEscrowSandbox()" />
+            <span id="price-match-pool-val" style="color:#6ee7b7; font-family:monospace;">$90,000</span>
+          </label>
+          <label>
+            服务端白名单权威源直抓与防 F12 伪造截图审计 (HTTP 403)
+            <select id="price-match-spoof-select" onchange="updateEcommercePriceMatchGuaranteeEscrowSandbox()">
+              <option value="pass">0% 采信截图文字，100% 由服务端 Web IQ 直抓 Top-15 授权自营官网实时价格 (放行)</option>
+              <option value="block">羊毛党按 F12 把网页 $999 改成 $399 截图骗退差 或 拿自建野鸡钓鱼店链接比价 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            14位 GTIN 全新现货对齐、实付净额扣减与退货本金重锚定 (HTTP 422)
+            <select id="price-match-parity-select" onchange="updateEcommercePriceMatchGuaranteeEscrowSandbox()">
+              <option value="pass">GTIN-14 全新现货一致 + 按实付净额(扣神券/赠品)算差 + 同步下调原单可退本金上限 (合规)</option>
+              <option value="block">拿官翻机/无货款碰瓷 或 用券实付 $760 却按标价 $1,000 算退差 或 领完价保又全额退货双吃 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            破产清仓倾销与竞品标错价乌龙指 (Price Mistake) 门禁 (HTTP 451)
+            <select id="price-match-dump-select" onchange="updateEcommercePriceMatchGuaranteeEscrowSandbox()">
+              <option value="clear">竞品价格处于正常大促区间且高于品牌成本红线 (正常)</option>
+              <option value="hold">竞品系统标错 1 折乌龙指价格 或 破产清仓低于成本底线恶意倾销 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            退货期内主动退差与 +15% 商城储值金免“退旧买新”寻优 (HTTP 409)
+            <select id="price-match-opt-select" onchange="updateEcommercePriceMatchGuaranteeEscrowSandbox()">
+              <option value="enabled" selected>主动提供秒发 115% 差额商城储值卡，消除客户“买新退旧”双程运费与开箱折旧净省 36% (HTTP 409)</option>
+              <option value="baseline">常规服务端验真与原路实付净差额退款授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度价保赔付、骗补与退重买池</div>
+            <div class="finops-kpi-val" id="price-match-gross-kpi">$90,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">服务端验真与储值转化后净损</div>
+            <div class="finops-kpi-val" id="price-match-net-kpi" style="color:#6ee7b7;">$57,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省假截图骗补与退重买</div>
+            <div class="finops-kpi-val" id="price-match-savings-kpi" style="color:#38bdf8;">$32,400</div>
+          </div>
+        </div>
+        <div id="price-match-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PROACTIVE_PRICE_DROP_AND_15PCT_BONUS_STORE_CREDIT_CONFIRM · Mandate: ecommerce_price_match_optim_409
         </div>
       </div>
 
@@ -62268,6 +62439,80 @@ function updateCrossBorderSupportDdpEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 LANDED_COST_DDP_IOSS_AND_POLICY_LOCKED_SUPPORT_AUTHORIZED · Mandate: cross_border_support_ddp_200';
+}}
+
+function updateEcommercePriceMatchGuaranteeEscrowSandbox() {{
+  const slider = document.getElementById('price-match-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '90000');
+  const spoofMode = document.getElementById('price-match-spoof-select').value;
+  const parityMode = document.getElementById('price-match-parity-select').value;
+  const dumpMode = document.getElementById('price-match-dump-select').value;
+  const optMode = document.getElementById('price-match-opt-select').value;
+
+  document.getElementById('price-match-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('price-match-status-kpi');
+  const grossKpi = document.getElementById('price-match-gross-kpi');
+  const netKpi = document.getElementById('price-match-net-kpi');
+  const savingsKpi = document.getElementById('price-match-savings-kpi');
+  const banner = document.getElementById('price-match-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dumpMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 BELOW_COST_DUMPING_OR_COMPETITOR_PRICE_MISTAKE_HOLD · Mandate: null';
+    return;
+  }}
+  if (spoofMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 F12_DOM_EDITED_SCREENSHOT_SPOOF_OR_UNAPPROVED_BURNER_STORE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (parityMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 REFURB_OOS_GTIN_MISMATCH_OR_PROMO_DOUBLE_DIP_UNANCHORED_PRINCIPAL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PROACTIVE_PRICE_DROP_AND_15PCT_BONUS_STORE_CREDIT_CONFIRM · Mandate: ecommerce_price_match_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 WEBIQ_GTIN_NET_PAID_DELTA_AND_PRINCIPAL_ANCHOR_AUTHORIZED · Mandate: ecommerce_price_match_200';
 }}
 
 function updateStage1756Sandbox() {{

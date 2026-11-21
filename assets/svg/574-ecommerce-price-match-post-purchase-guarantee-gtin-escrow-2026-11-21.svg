@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg574" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+    <linearGradient id="accent574" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg574)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent574)" rx="3" />
+
+  <text x="40" y="58" class="title">电商买贵必赔与 30 天价保 (Price Match &amp; Guarantee)、防 F12 假截图与防双重退差托管 (Web IQ / Shopify)</text>
+  <text x="40" y="80" class="subtitle">Round 131 · 防按 F12 改网页 DOM 伪造 $399 假低价截图骗退差、防黑五满减叠加价保双重薅毛 &amp; 商城储值退差净省 36% (SVG 574)</text>
+
+  <!-- Left Card: 3 Price-Match Fraud Vectors -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大买贵必赔欺诈黑洞</text>
+  <text x="56" y="164" class="card-title">1. F12 改网页 DOM 伪造低价截图 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 羊毛党在浏览器按 F12 把 BestBuy 上 $999 电视改成 $399</text>
+  <text x="56" y="202" class="body">• 截图发给多模态客服 Agent 要求履行“买贵退差价 $600”</text>
+  <text x="56" y="220" class="warn">• 视觉模型看图信以为真秒退 $600 现金 -&gt; 单晚被洗劫 $18万</text>
+
+  <text x="56" y="256" class="card-title">2. 拿翻新/无货引流款碰瓷与折上折双吃 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 拿拼多多/第三方二手官翻机 (Refurbished) 或早已断货的</text>
+  <text x="56" y="294" class="body">  “1件秒杀引流链接”要求比价全新国行正品</text>
+  <text x="56" y="312" class="warn">• 原单已用满 $500 减 $100 券(实付$899)，却按吊牌价$999算退差</text>
+
+  <text x="56" y="348" class="card-title">3. 领完价保退差后又全额退货套现</text>
+  <text x="56" y="368" class="body">• 先领走 $150 价保补贴，第 14 天又申请整单退货退款</text>
+  <text x="56" y="386" class="body">• 若退货系统未扣减已发放的 $150 价保款，导致超额退钱</text>
+  <text x="56" y="404" class="warn">• 黑产自建虚假 Shopify 钓鱼店挂 1 折假价格专门用来骗比价</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: F12_SCREENSHOT_SPOOF_OR_FAKE_STORE_BLOCK</text>
+  <text x="70" y="502" class="warn">• HTTP 422: GTIN_CONDITION_MISMATCH_OR_PROMO_DOUBLE_DIP</text>
+  <text x="70" y="524" class="warn">• HTTP 451: BELOW_COST_DUMPING_OR_MAP_BREACH_HOLD</text>
+  <text x="70" y="546" class="mono">• HTTP 409: PROACTIVE_BONUS_STORE_CREDIT_PRICE_DROP_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: WEBIQ_GTIN_NET_PAID_DELTA_AUTHORIZED</text>
+  <text x="70" y="596" class="body">铁律: 截图 0 采信! 100% 由服务端实时抓取白名单官网验价!</text>
+
+  <!-- Center Card: 4-Stage Price Match Verification Engine -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶买贵必赔服务端实时验真架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">Gate 1: 严禁信截图 + 白名单官网服务端直抓</text>
+  <text x="450" y="195" class="body">• 用户上传截图仅提取 SKU，价格 100% 由服务端 Web IQ /</text>
+  <text x="450" y="213" class="body">  Firecrawl 直连 Top-15 授权零售商官网实时读取 JSON-LD</text>
+  <text x="450" y="231" class="mono">• F12 篡改截图或野鸡自建站链接 -&gt; HTTP 403 直接拒止</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="282" class="card-title" fill="#6ee7b7">Gate 2: 14 位 GTIN 全新现货对齐与“实付净额”扣减</text>
+  <text x="450" y="302" class="body">• 强制核对 14 位 GTIN/UPC + ItemCondition==NewCondition</text>
+  <text x="450" y="320" class="body">  + 目标尺码颜色当日可加购现货 (InStock &amp; Ship_Ready)</text>
+  <text x="450" y="338" class="body">• 退差公式 = (本单实付净额 Net Paid - 赠品残值) - (竞品价+竞品运费)</text>
+  <text x="450" y="354" class="mono">• 拿官翻/断码无货比价或按未扣券原价算退差 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 品牌最低公示价 (MAP) 与退货本金重锚定</text>
+  <text x="450" y="419" class="body">• 竞品清仓破产甩卖低于成本底线 -&gt; 触发 HTTP 451 人工核准</text>
+  <text x="450" y="437" class="body">• 一旦发放 $100 价保退差，立即将原订单可退本金下调 -$100</text>
+  <text x="450" y="455" class="mono">• 彻底堵死“先领价保补贴、再退货拿回全款”的双重提现漏洞</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#f59e0b" />
+  <text x="450" y="508" class="card-title" fill="#fcd34d">Gate 4: 店内降价主动退 110% 商城储值金 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 防止客户在大促前7天因为“怕买早了降价”持币观望不下单</text>
+  <text x="450" y="546" class="body">• 也要防止客户因为降价 $40 直接把已拆封旧货退回来重买</text>
+  <text x="450" y="566" class="mono">• 主动推送:“退 $40 现金”或“秒领 $46 (+15%) 商城无门槛储值卡”</text>
+  <text x="450" y="586" class="mono">• 免除退重买双程物流损耗 + 锁定二单复购 -&gt; 净省 36% 损耗</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大价保与比价风控体系</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. 京东 / 天猫 30 天实付价保标准</text>
+  <text x="846" y="182" class="body">• 标杆: 自动剔除百亿补贴/秒杀/神券，严格按实付净额退差</text>
+  <text x="846" y="198" class="body">• 特性: 领价保后订单发生退货，系统自动从退款中扣除价保金</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. BestBuy / Target 授权白名单比价</text>
+  <text x="846" y="244" class="body">• 标杆: 仅匹配公开发布的 ~15 家顶级零售商直营自营在售款</text>
+  <text x="846" y="260" class="body">• 特性: 第三方入驻卖家 (3P Marketplace) 与清仓款一律排除</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Web IQ + Firecrawl 服务端直连验价</text>
+  <text x="846" y="306" class="body">• 优势: 绕过用户本地浏览器，服务端直接校验竞品 UPC 与库存</text>
+  <text x="846" y="322" class="body">• 特性: 100% 物理免疫 PS 修图与 F12 审查元素篡改</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Loop / Rise.ai 储值金价保挽留</text>
+  <text x="846" y="368" class="body">• 优势: 将退差价现金流转化为高毛利店铺储值卡 (Store Credit)</text>
+  <text x="846" y="384" class="body">• 特性: 消除“退旧买新 (Return-and-Rebuy)”导致的 $22 拆封折旧</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度价保赔付、骗补与退重买损耗池 ($90,000)</text>
+  <text x="860" y="456" class="body">• 传统看截图被骗补+退旧买新物流折旧: $90,000/季</text>
+  <text x="860" y="476" class="mono">• 服务端直抓拦截 F12 假截图与官翻碰瓷: -$14,400</text>
+  <text x="860" y="496" class="mono">• 实付净额扣减+退货本金重锚定防双吃: -$10,800</text>
+  <text x="860" y="516" class="mono">• 主动退 +15% 储值金免除退旧买新折旧: -$7,200</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净损耗: $57,600 (净省 $32,400 / -36%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: ecommerce_price_match_optim_409</text>
+</svg>

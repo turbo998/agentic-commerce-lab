@@ -17835,6 +17835,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-support-ddp-escrow-sandbox", html_zh)
 
+    def test_ecommerce_price_match_guarantee_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommercePriceMatchGuaranteeEscrowPolicyInput,
+            evaluate_ecommerce_price_match_guarantee_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_price_match_guarantee_escrow_policy(
+            EcommercePriceMatchGuaranteeEscrowPolicyInput(
+                quarterly_price_match_and_return_rebuy_loss_pool_usd=90000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "WEBIQ_GTIN_NET_PAID_DELTA_AND_PRINCIPAL_ANCHOR_AUTHORIZED",
+        )
+
+        spoof = evaluate_ecommerce_price_match_guarantee_escrow_policy(
+            EcommercePriceMatchGuaranteeEscrowPolicyInput(
+                f12_dom_edited_screenshot_spoof_or_unapproved_burner_store=True
+            )
+        )
+        self.assertEqual(spoof["status_code"], 403)
+        self.assertEqual(
+            spoof["decision"],
+            "F12_DOM_EDITED_SCREENSHOT_SPOOF_OR_UNAPPROVED_BURNER_STORE_BLOCKED",
+        )
+
+        parity = evaluate_ecommerce_price_match_guarantee_escrow_policy(
+            EcommercePriceMatchGuaranteeEscrowPolicyInput(
+                refurb_oos_gtin_mismatch_or_promo_double_dip_unanchored_principal=True
+            )
+        )
+        self.assertEqual(parity["status_code"], 422)
+        self.assertEqual(
+            parity["decision"],
+            "REFURB_OOS_GTIN_MISMATCH_OR_PROMO_DOUBLE_DIP_UNANCHORED_PRINCIPAL_BLOCKED",
+        )
+
+        dump = evaluate_ecommerce_price_match_guarantee_escrow_policy(
+            EcommercePriceMatchGuaranteeEscrowPolicyInput(
+                below_cost_dumping_or_competitor_price_mistake_violation=True
+            )
+        )
+        self.assertEqual(dump["status_code"], 451)
+        self.assertEqual(
+            dump["decision"],
+            "BELOW_COST_DUMPING_OR_COMPETITOR_PRICE_MISTAKE_HOLD",
+        )
+
+        optim = evaluate_ecommerce_price_match_guarantee_escrow_policy(
+            EcommercePriceMatchGuaranteeEscrowPolicyInput(
+                quarterly_price_match_and_return_rebuy_loss_pool_usd=90000.0,
+                proactive_price_drop_and_15pct_bonus_store_credit_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 32400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 57600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_price_match_guarantee_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-price-match-guarantee-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
