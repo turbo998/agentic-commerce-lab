@@ -25610,6 +25610,87 @@ def evaluate_electronics_trade_in_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class LiveEventTicketingEscrowPolicyInput:
+    """Input contract for Live Event, Concert & Sports Ticketing, Anti-Platinum Surge & SafeTix Escrow."""
+
+    quarterly_live_event_and_hospitality_ticketing_pool_usd: float = 72000.0
+    official_platinum_algorithmic_surge_or_hidden_checkout_junk_fee: bool = False
+    static_pdf_duplicate_barcode_or_unflagged_obstructed_view_seat: bool = False
+    unescrowed_speculative_short_sell_or_biometric_real_id_mismatch: bool = False
+    mandate_signing_key_age_days: int = 30
+    cross_exchange_same_seat_dedupe_and_instant_safetix_ready: bool = False
+
+
+def evaluate_live_event_ticketing_escrow_policy(
+    policy_input: LiveEventTicketingEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Live Event, Concert & Sports Ticketing, Anti-Platinum Surge & SafeTix Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_live_event_and_hospitality_ticketing_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.unescrowed_speculative_short_sell_or_biometric_real_id_mismatch
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "UNESCROWED_SPECULATIVE_SHORT_SELL_OR_BIOMETRIC_REAL_ID_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.official_platinum_algorithmic_surge_or_hidden_checkout_junk_fee:
+        return {
+            "status_code": 403,
+            "decision": "OFFICIAL_PLATINUM_ALGORITHMIC_SURGE_OR_HIDDEN_CHECKOUT_JUNK_FEE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.static_pdf_duplicate_barcode_or_unflagged_obstructed_view_seat:
+        return {
+            "status_code": 422,
+            "decision": "STATIC_PDF_DUPLICATE_BARCODE_OR_UNFLAGGED_OBSTRUCTED_VIEW_SEAT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cross_exchange_same_seat_dedupe_and_instant_safetix_ready:
+        savings = round(gross_pool * 0.32, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CROSS_EXCHANGE_SAME_SEAT_DEDUPE_AND_INSTANT_SAFETIX_CONFIRM",
+            "mandate_token": "live_event_ticketing_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "FACE_VALUE_ALL_IN_AND_SAFETIX_ROTATING_TOKEN_AUTHORIZED",
+        "mandate_token": "live_event_ticketing_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -35117,6 +35198,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    live_event_ticketing_escrow_guard = {
+        "authorized_200": evaluate_live_event_ticketing_escrow_policy(
+            LiveEventTicketingEscrowPolicyInput()
+        ),
+        "platinum_surge_or_junk_fee_403": evaluate_live_event_ticketing_escrow_policy(
+            LiveEventTicketingEscrowPolicyInput(
+                official_platinum_algorithmic_surge_or_hidden_checkout_junk_fee=True
+            )
+        ),
+        "static_pdf_or_obstructed_view_422": evaluate_live_event_ticketing_escrow_policy(
+            LiveEventTicketingEscrowPolicyInput(
+                static_pdf_duplicate_barcode_or_unflagged_obstructed_view_seat=True
+            )
+        ),
+        "speculative_short_sell_or_real_id_451": evaluate_live_event_ticketing_escrow_policy(
+            LiveEventTicketingEscrowPolicyInput(
+                unescrowed_speculative_short_sell_or_biometric_real_id_mismatch=True
+            )
+        ),
+        "same_seat_dedupe_and_safetix_409": evaluate_live_event_ticketing_escrow_policy(
+            LiveEventTicketingEscrowPolicyInput(
+                cross_exchange_same_seat_dedupe_and_instant_safetix_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -35383,6 +35490,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_freight_forwarding_ocean_escrow_guard": b2b_freight_forwarding_ocean_escrow_guard,
         "subscribe_and_save_replenishment_escrow_guard": subscribe_and_save_replenishment_escrow_guard,
         "electronics_trade_in_escrow_guard": electronics_trade_in_escrow_guard,
+        "live_event_ticketing_escrow_guard": live_event_ticketing_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -48400,6 +48508,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="tradein-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PARALLEL_14D_SPT_SWAP_AND_OEM_GOV_SUBSIDY_STACK_CONFIRM · Mandate: electronics_tradein_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 138 Live Event, Concert & Sports Ticketing, Anti-Platinum Surge & SafeTix Escrow -->
+      <div class="finops-box" id="live-event-ticketing-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🎟️ 演唱会与体育票务 (Ticketmaster SafeTix / StubHub / SeatGeek / 大麦)、防动态高价刺客与防假票/鸽单托管沙盒 (Round 138)</div>
+            <div class="finops-subtitle">实测硬控剥离无 VIP 权益却贵 5 倍的 Official Platinum 动态算法票与 &gt;20% 隐藏手续费 (HTTP 403)、拒收静态 PDF 二维码强制走 SafeTix 15s 滚动加密过户+3D 控台遮挡排雷 (HTTP 422)、拦截无货空头期房票与国内强实名假转赠 (HTTP 451) 及跨 4 平台同座去重改走 0 手续费通道净省 32% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="ticketing-status-kpi">HTTP 409 · CROSS_EXCHANGE_SAME_SEAT_DEDUPE_AND_INSTANT_SAFETIX_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业体育包厢招待与个人演唱会购票总预算池 ($ USD)
+            <input type="range" id="ticketing-pool-slider" min="15000" max="350000" step="5000" value="72000" oninput="updateLiveEventTicketingEscrowSandbox()" />
+            <span id="ticketing-pool-val" style="color:#6ee7b7; font-family:monospace;">$72,000</span>
+          </label>
+          <label>
+            Official Platinum 动态溢价过滤与 FTC 全包价封顶 (HTTP 403)
+            <select id="ticketing-surge-select" onchange="updateLiveEventTicketingEscrowSandbox()">
+              <option value="pass">硬锁 Standard 原价或真 VIP 票 + 含全额场馆/服务费 All-In 总价不超上限 (放行)</option>
+              <option value="block">算法将 $180 普座标成 Official Platinum 炒到 $1,650 误刷 或 结账突袭加收 35% 隐性杂费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            SafeTix 15s 滚动加密过户与 3D 舞台视线遮挡排雷 (HTTP 422)
+            <select id="ticketing-safetix-select" onchange="updateLiveEventTicketingEscrowSandbox()">
+              <option value="pass">Ticketmaster SafeTix / AXS 账户直转(旧码作废) + AViewFromMySeat 3D 视野评分 &gt;=7.5 (合规)</option>
+              <option value="block">卖家发静态 PDF/截图二维码易一票八卖 或 座位正对巨大音响塔重度遮挡未披露 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            预托管现票 (Instant Download) 与国内人证脸强实名门禁 (HTTP 451)
+            <select id="ticketing-flake-select" onchange="updateLiveEventTicketingEscrowSandbox()">
+              <option value="clear">卖家已将票预存在平台金库付款 15s 自动过户 + 强实名场次仅走大麦官方退票回流仓 (正常)</option>
+              <option value="hold">卖家无票空卖期房票临开场涨价毁约不给票 或 国内强实名场次买不可过闸机的黄牛转赠票 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            跨 4 平台同座指纹去重免买家费与 T-48h 退票/清仓寻优 (HTTP 409)
+            <select id="ticketing-opt-select" onchange="updateLiveEventTicketingEscrowSandbox()">
+              <option value="enabled" selected>按 (Section+Row+Seat) 识别同一票商跨网挂单切向 TickPick 零买家费通道 + 退票回流狙击净省 32% (HTTP 409)</option>
+              <option value="baseline">常规原价全包与 SafeTix 官方过户标准购票 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度赛事招待与演出购票总池</div>
+            <div class="finops-kpi-val" id="ticketing-gross-kpi">$72,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">跨网同座去重与防刺客后净支出</div>
+            <div class="finops-kpi-val" id="ticketing-net-kpi" style="color:#6ee7b7;">$48,960</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省 Platinum 溢价与手续费</div>
+            <div class="finops-kpi-val" id="ticketing-savings-kpi" style="color:#38bdf8;">$23,040</div>
+          </div>
+        </div>
+        <div id="ticketing-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CROSS_EXCHANGE_SAME_SEAT_DEDUPE_AND_INSTANT_SAFETIX_CONFIRM · Mandate: live_event_ticketing_optim_409
         </div>
       </div>
 
@@ -63983,6 +64154,80 @@ function updateElectronicsTradeInEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ON_DEVICE_TELEMETRY_FLOOR_LOCK_AND_NIST80088_WIPE_AUTHORIZED · Mandate: electronics_tradein_escrow_200';
+}}
+
+function updateLiveEventTicketingEscrowSandbox() {{
+  const slider = document.getElementById('ticketing-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '72000');
+  const surgeMode = document.getElementById('ticketing-surge-select').value;
+  const safetixMode = document.getElementById('ticketing-safetix-select').value;
+  const flakeMode = document.getElementById('ticketing-flake-select').value;
+  const optMode = document.getElementById('ticketing-opt-select').value;
+
+  document.getElementById('ticketing-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('ticketing-status-kpi');
+  const grossKpi = document.getElementById('ticketing-gross-kpi');
+  const netKpi = document.getElementById('ticketing-net-kpi');
+  const savingsKpi = document.getElementById('ticketing-savings-kpi');
+  const banner = document.getElementById('ticketing-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (flakeMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 UNESCROWED_SPECULATIVE_SHORT_SELL_OR_BIOMETRIC_REAL_ID_HOLD · Mandate: null';
+    return;
+  }}
+  if (surgeMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 OFFICIAL_PLATINUM_ALGORITHMIC_SURGE_OR_HIDDEN_CHECKOUT_JUNK_FEE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (safetixMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 STATIC_PDF_DUPLICATE_BARCODE_OR_UNFLAGGED_OBSTRUCTED_VIEW_SEAT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.32);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CROSS_EXCHANGE_SAME_SEAT_DEDUPE_AND_INSTANT_SAFETIX_CONFIRM · Mandate: live_event_ticketing_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 FACE_VALUE_ALL_IN_AND_SAFETIX_ROTATING_TOKEN_AUTHORIZED · Mandate: live_event_ticketing_200';
 }}
 
 function updateStage1756Sandbox() {{

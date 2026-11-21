@@ -18304,6 +18304,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("electronics-trade-in-escrow-sandbox", html_zh)
 
+    def test_live_event_ticketing_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            LiveEventTicketingEscrowPolicyInput,
+            evaluate_live_event_ticketing_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_live_event_ticketing_escrow_policy(
+            LiveEventTicketingEscrowPolicyInput(
+                quarterly_live_event_and_hospitality_ticketing_pool_usd=72000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "FACE_VALUE_ALL_IN_AND_SAFETIX_ROTATING_TOKEN_AUTHORIZED",
+        )
+
+        surge = evaluate_live_event_ticketing_escrow_policy(
+            LiveEventTicketingEscrowPolicyInput(
+                official_platinum_algorithmic_surge_or_hidden_checkout_junk_fee=True
+            )
+        )
+        self.assertEqual(surge["status_code"], 403)
+        self.assertEqual(
+            surge["decision"],
+            "OFFICIAL_PLATINUM_ALGORITHMIC_SURGE_OR_HIDDEN_CHECKOUT_JUNK_FEE_BLOCKED",
+        )
+
+        pdf = evaluate_live_event_ticketing_escrow_policy(
+            LiveEventTicketingEscrowPolicyInput(
+                static_pdf_duplicate_barcode_or_unflagged_obstructed_view_seat=True
+            )
+        )
+        self.assertEqual(pdf["status_code"], 422)
+        self.assertEqual(
+            pdf["decision"],
+            "STATIC_PDF_DUPLICATE_BARCODE_OR_UNFLAGGED_OBSTRUCTED_VIEW_SEAT_BLOCKED",
+        )
+
+        flake = evaluate_live_event_ticketing_escrow_policy(
+            LiveEventTicketingEscrowPolicyInput(
+                unescrowed_speculative_short_sell_or_biometric_real_id_mismatch=True
+            )
+        )
+        self.assertEqual(flake["status_code"], 451)
+        self.assertEqual(
+            flake["decision"],
+            "UNESCROWED_SPECULATIVE_SHORT_SELL_OR_BIOMETRIC_REAL_ID_HOLD",
+        )
+
+        optim = evaluate_live_event_ticketing_escrow_policy(
+            LiveEventTicketingEscrowPolicyInput(
+                quarterly_live_event_and_hospitality_ticketing_pool_usd=72000.0,
+                cross_exchange_same_seat_dedupe_and_instant_safetix_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 23040.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 48960.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("live_event_ticketing_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("live-event-ticketing-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

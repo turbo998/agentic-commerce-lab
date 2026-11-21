@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`256` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`257` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (13 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (40 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (86 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (87 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (63 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (23 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (31 guides)](#tax-fx-privacy-disputes)
@@ -87,7 +87,7 @@
 | 40 | **Agent Payment & Checkout Protocol Selection (`Stripe Agent Toolkit SPT` vs `Visa Intelligent Commerce VIC` vs `Mastercard Agent Pay` vs `PayPal Agentic Toolkit` vs `Corporate Virtual Cards VCN`) Zero-PAN Isolation, Anti-3DS2-Deadlock & 5-Rail Smart Router (`-33%` Payment Loss) Agent Architecture Selection FAQ** | [English](agent-payment-checkout-protocol-stripe-spt-visa-vic-mastercard-paypal-vcn-selection-faq.en.md) · [中文](agent-payment-checkout-protocol-stripe-spt-visa-vic-mastercard-paypal-vcn-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (86 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (87 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -179,6 +179,7 @@
 | 84 | **OTA & Corporate Car Rental (`Hertz / Avis / National / Enterprise`), Anti-Counter `CDW` Upsell, `C2PA` AI Damage-Scanner Defense & Phantom-Fuel Escrow (`Skip-the-Counter`, Pre-Exit `C2PA` Video & `8/8` Fuel Lock) Agent Architecture Selection FAQ** | [English](ota-car-rental-cdw-upsell-ai-damage-scan-fuel-escrow-agent-selection-faq.en.md) · [中文](ota-car-rental-cdw-upsell-ai-damage-scan-fuel-escrow-agent-selection-faq.md) |
 | 85 | **E-Commerce High-Concurrency Cart Inventory Reservation, Payload-Hash Idempotent Checkout & Split-Tender Saga (`Shopify Checkout / Stripe PaymentIntents / Redis Lua / Temporal`) `120s` Dual-TTL Cushion, `SHA-256` Cart Key & Waitlist Auto-Fill Agent Architecture Selection FAQ** | [English](ecommerce-cart-inventory-reservation-idempotent-checkout-saga-agent-selection-faq.en.md) · [中文](ecommerce-cart-inventory-reservation-idempotent-checkout-saga-agent-selection-faq.md) |
 | 86 | **Consumer Electronics Trade-In & Recommerce (`Apple Trade In / Aihuishou / Back Market / Assurant`), Anti-"Bait-and-Switch" Lowballing, 14-Day Instant-Credit `SPT` Collateral & `NIST 800-88` Data-Wipe Escrow Agent Architecture Selection FAQ** | [English](electronics-trade-in-recommerce-anti-bait-and-switch-grading-escrow-agent-selection-faq.en.md) · [中文](electronics-trade-in-recommerce-anti-bait-and-switch-grading-escrow-agent-selection-faq.md) |
+| 87 | **Live Event, Concert & Sports Ticketing (`Ticketmaster SafeTix / StubHub / SeatGeek / TickPick / Damai`), Anti-`Official Platinum` Surge, Anti-Seller-Flake & Cross-Exchange Same-Seat Escrow Agent Architecture Selection FAQ** | [English](live-event-concert-sports-ticketing-dynamic-pricing-safetix-escrow-agent-selection-faq.en.md) · [中文](live-event-concert-sports-ticketing-dynamic-pricing-safetix-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (63 Guides)
