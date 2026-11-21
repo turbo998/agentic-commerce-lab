@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg658" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081426"/>
+    </linearGradient>
+    <linearGradient id="hdr658" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg658)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr658)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 215 · B2B Corporate Print, Branded Swag &amp; `Pantone` Digital-Proof Escrow</text>
+  <text x="48" y="74" class="sub">Sendoso / Postal / 4imprint / Printful · Vector `PMS` Brand-DAM Lock · Rogue Small-Batch Redirect · Event Dock SLA (-37% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #658 · FAQ #334</text>
+
+  <!-- Lane 1: Deprecated Logo / Low-DPI JPEG & Pantone Color Drift Pre-Press Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Brand-DAM Vector &amp; `PMS` Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Printing 5,000 Hoodies w/ Old 2021 Logo:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Artwork_SHA256 in `Approved_Brand_DAM_Vault`</text>
+  <text x="54" y="200" class="mono">&amp; `Vector_DPI &gt;= 300` &amp; `Delta_E_Pantone &lt;= 1.5`</text>
+  <text x="44" y="223" class="body-txt">• Mandatory Dual-Sign Pre-Press Proof Token:</text>
+  <text x="54" y="243" class="mono">Block Press Run Without `OCR` Spellcheck + Brand Sign</text>
+  <text x="44" y="266" class="body-txt">• Eliminates $25,000 scrap disasters where field</text>
+  <text x="54" y="286" class="body-txt">marketers upload a blurry website PNG or print</text>
+  <text x="54" y="304" class="body-txt">brochures with a typo in the company URL/QR code</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 DEPRECATED_LOGO_OR_LOW_DPI_PANTONE_DRIFT_BLOCKED</text>
+
+  <!-- Lane 2: Rogue Small-Batch Ordering vs Central Inventory & Trade-Show Drayage Cutoff Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Central Stock &amp; Expo Cutoff Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Paying $22/Unit When 1,400 Sit in Central Hub:</text>
+  <text x="442" y="182" class="mono">If `Central_Swag_Locker_ATP &gt;= Requested_Qty`:</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Redirect Rogue Custom Print Order to Central Drawdown!</text>
+  <text x="432" y="223" class="body-txt">• Trade-Show Marshaling Yard Cutoff (`Freeman/GES`):</text>
+  <text x="442" y="243" class="mono">Block Standard Ground If `Est_Arrival &gt; Expo_Advance_Warehouse`</text>
+  <text x="432" y="266" class="body-txt">• Prevents swag arriving at the convention center</text>
+  <text x="442" y="286" class="body-txt">the day after the trade-show booth closes</text>
+  <text x="442" y="304" class="body-txt">or incurring $800 emergency air-freight rush fees</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 DUPLICATE_SMALL_BATCH_OR_MISSED_EXPO_DOCK_BLOCKED</text>
+
+  <!-- Lane 3: Prospect Anti-Bribery Gift Cap ($75-$100 FCPA) & Unused Closet Deadstock Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `FCPA` Gift Cap &amp; Closet Hoard Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Corporate Gifting Anti-Bribery (`FCPA / UK Bribery`):</text>
+  <text x="830" y="182" class="mono">Block Prospect Gift &gt; `$100/Yr` or `$0` for Public</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Sector / Gov Officials (`CRM_Account_Type == GOV`)!</text>
+  <text x="820" y="223" class="body-txt">• Stops Shipping 500 Boxes to Office Storage Closets:</text>
+  <text x="830" y="243" class="body-txt">Requires 3PL Swag-Locker warehousing or on-demand</text>
+  <text x="830" y="261" class="body-txt">redemption links instead of rotting in branch offices</text>
+  <text x="820" y="284" class="body-txt">• Eliminates compliance violations when SDRs send</text>
+  <text x="830" y="302" class="body-txt">$300 Apple AirPods to government procurement buyers</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 GOV_GIFT_BRIBERY_CAP_OR_OFFICE_CLOSET_HOARD_HOLD</text>
+
+  <!-- Bottom Swag-on-Demand Recipient Size-Select & Consolidated Tier-Break Escrow -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Swag-on-Demand Recipient Size-Picker + Cross-Dept Tier-Break Consolidation (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Size-Select Gift Link</text>
+  <text x="62" y="462" class="body-txt">Recipient clicks link, picks</text>
+  <text x="62" y="480" class="body-txt">exact jacket size &amp; enters</text>
+  <text x="62" y="498" class="body-txt">current WFH address;</text>
+  <text x="62" y="516" class="mono">0 Leftover XXL/XS Deadstock</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Print-on-Demand (`DTG/Emb`)</text>
+  <text x="337" y="462" class="body-txt">Embroider blank Yeti/Patagonia</text>
+  <text x="337" y="480" class="body-txt">only after recipient claims;</text>
+  <text x="62" y="498" class="body-txt"></text>
+  <text x="337" y="498" class="body-txt">pay $0 for unclaimed invites;</text>
+  <text x="337" y="516" class="mono">-100% Rebrand Obsolete Scrap</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Tier-Break Batching Pool</text>
+  <text x="622" y="462" class="body-txt">Pools 6 regional event orders</text>
+  <text x="622" y="480" class="body-txt">(6 × 150 = 900 units) to hit</text>
+  <text x="622" y="498" class="body-txt">the 1,000-unit price break;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">Unit Cost: $16.50 → $5.40</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Dynamic QR URL Check</text>
+  <text x="907" y="462" class="body-txt">Enforces editable dynamic QR</text>
+  <text x="907" y="480" class="body-txt">shortlinks on print collateral</text>
+  <text x="907" y="498" class="body-txt">so broken URLs never scrap run;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Print &amp; Swag Spend</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Print &amp; Swag Waste Saved</text>
+  <text x="46" y="642" class="mono">$66,600 Saved / $180k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% Brand-DAM</text>
+  <text x="336" y="626" class="kpi-lbl">300-DPI Vector &amp; Pantone PMS Locked</text>
+  <text x="336" y="642" class="mono">Zero Misprinted Logo Scrap</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">-67% Unit Cost</text>
+  <text x="626" y="626" class="kpi-lbl">Cross-Dept Tier-Break Batching</text>
+  <text x="626" y="642" class="mono">Redirects to Central Swag Locker</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 Closet Rot</text>
+  <text x="916" y="626" class="kpi-lbl">On-Demand Claim Link &amp; Size Picker</text>
+  <text x="916" y="642" class="mono">100% FCPA &amp; Gov Gift Compliant</text>
+</svg>

@@ -23463,6 +23463,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-pet-autoship-vet-rx-sandbox", html_zh)
 
+    def test_b2b_corporate_print_branded_swag_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BCorporatePrintBrandedSwagPolicyInput,
+            evaluate_b2b_corporate_print_branded_swag_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_corporate_print_branded_swag_policy(
+            B2BCorporatePrintBrandedSwagPolicyInput(
+                quarterly_misprint_scrap_rogue_small_batch_and_closet_deadstock_pool_usd=180000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_BRAND_DAM_VECTOR_AND_SWAG_LOCKER_AUTHORIZED",
+        )
+
+        dam = evaluate_b2b_corporate_print_branded_swag_policy(
+            B2BCorporatePrintBrandedSwagPolicyInput(
+                unapproved_logo_low_dpi_or_pantone_delta_e_breach=True
+            )
+        )
+        self.assertEqual(dam["status_code"], 403)
+        self.assertEqual(
+            dam["decision"],
+            "DEPRECATED_LOGO_OR_LOW_DPI_PANTONE_DRIFT_BLOCKED",
+        )
+
+        locker = evaluate_b2b_corporate_print_branded_swag_policy(
+            B2BCorporatePrintBrandedSwagPolicyInput(
+                rogue_reprint_ignoring_central_locker_or_missed_expo_cutoff=True
+            )
+        )
+        self.assertEqual(locker["status_code"], 422)
+        self.assertEqual(
+            locker["decision"],
+            "DUPLICATE_SMALL_BATCH_OR_MISSED_EXPO_DOCK_BLOCKED",
+        )
+
+        fcpa = evaluate_b2b_corporate_print_branded_swag_policy(
+            B2BCorporatePrintBrandedSwagPolicyInput(
+                fcpa_gov_gift_cap_violation_or_shipping_bulk_to_office_closet=True
+            )
+        )
+        self.assertEqual(fcpa["status_code"], 451)
+        self.assertEqual(
+            fcpa["decision"],
+            "GOV_GIFT_BRIBERY_CAP_OR_OFFICE_CLOSET_HOARD_HOLD",
+        )
+
+        optim = evaluate_b2b_corporate_print_branded_swag_policy(
+            B2BCorporatePrintBrandedSwagPolicyInput(
+                quarterly_misprint_scrap_rogue_small_batch_and_closet_deadstock_pool_usd=180000.0,
+                recipient_size_picker_pod_and_cross_dept_tier_batching_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 66600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 113400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_corporate_print_branded_swag_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-corporate-print-branded-swag-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

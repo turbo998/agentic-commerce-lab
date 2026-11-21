@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`333` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`334` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（20 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（48 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（125 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（74 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（75 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（27 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（39 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -235,7 +235,7 @@
 | 125 | **宠物电商、周期购（`Autoship`）与兽医处方药核验（Pet E-Commerce & Veterinary Pharmacy：Chewy / Petco / Covetrus / 京东宠物/波奇）、防“把大型犬驱虫药错买给猫咪中毒”、防“40 磅猫砂与易碎罐头混装砸烂”与爱宠离世关怀免退货全额退款托管“防未获执业兽医处方（`VCPR`）违规发药被 `FDA` 重罚、防单箱超 50 磅被快递罚 $31.50 与前置仓就近发重粮净省 36%”Agent 架构选型 FAQ** | [中文](ecommerce-pet-autoship-vet-rx-verification-heavy-kibble-split-escrow-agent-selection-faq.md) · [English](ecommerce-pet-autoship-vet-rx-verification-heavy-kibble-split-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（74 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（75 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -315,6 +315,7 @@
 | 72 | **快消品牌与商超零售“渠道促销费用管理（Trade Promotion Management `TPM`：SAP TPM / Salesforce CG Cloud / Anaplan / Trax）”、门店端架 AI 视觉验真与收银实销返利（`Scan-Based Billback`）托管“防交了 $50,000 端架堆头费货却锁在商超后仓没摆出来、防经销商趁 8 折档期狂囤 1 万箱过后倒卖窜货与拦截无合同扣款净省 35%”Agent 架构选型 FAQ** | [中文](b2b-cpg-trade-promotion-management-tpm-scan-billback-shelf-vision-escrow-agent-selection-faq.md) · [English](b2b-cpg-trade-promotion-management-tpm-scan-billback-shelf-vision-escrow-agent-selection-faq.en.md) |
 | 73 | **品牌经销商与特许加盟门户（B2B Dealer & Franchisee Portal：Salesforce B2B Commerce / SAP Commerce / Tavant）、联合营销基金（`Co-Op / MDF`）核销防骗补与售后保修旧件索赔（`Warranty Claim`）托管“防经销商找熟人开假广告发票或夹带竞品骗走 $40,000 市场补贴、防维修站谎报好零件损坏骗领免费原厂备件倒卖与防季末冲量次月退货套返利净省 36%”Agent 架构选型 FAQ** | [中文](b2b-dealer-franchise-portal-mdf-coop-audit-warranty-claim-escrow-agent-selection-faq.md) · [English](b2b-dealer-franchise-portal-mdf-coop-audit-warranty-claim-escrow-agent-selection-faq.en.md) |
 | 74 | **企业 B2B 供应商管理库存与寄售代销结算（VMI & Consignment Inventory：`SAP S/4HANA MRKO / Ariba SCC / E2open / EDI 852/867`）、防“货刚进寄售仓未领用就提前开票催款”、防“员工偷拿不扫码致月底盘亏扯皮”与 180 天呆滞品转买断托管“防买方破产时寄售货物未登记 `UCC-1` 被银行抵债没收与 `RFID` 自助结报净省 35%”Agent 架构选型 FAQ** | [中文](b2b-vendor-managed-inventory-vmi-consignment-settlement-shrinkage-escrow-agent-selection-faq.md) · [English](b2b-vendor-managed-inventory-vmi-consignment-settlement-shrinkage-escrow-agent-selection-faq.en.md) |
+| 75 | **企业 B2B 定制印刷、展会周边与品牌礼盒集中采购（Corporate Print, Branded Swag & Gifting Procurement：Sendoso / Postal / 4imprint / Printful / Coupa）、品牌资产库（`DAM`）矢量图与潘通色号（`Pantone PMS`）印前校验、跨部门拼单凑阶梯价与按需一件代发托管“防拿模糊网页截图印废 5,000 件文化衫、防各部门小批量贵 3 倍重复野采与防展会闭幕了礼盒才寄到会场净省 37%”Agent 架构选型 FAQ** | [中文](b2b-corporate-print-branded-merch-swag-pantone-proof-escrow-agent-selection-faq.md) · [English](b2b-corporate-print-branded-merch-swag-pantone-proof-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（27 篇）

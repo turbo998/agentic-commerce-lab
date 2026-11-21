@@ -31409,6 +31409,82 @@ def evaluate_ecommerce_pet_autoship_vet_rx_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BCorporatePrintBrandedSwagPolicyInput:
+    quarterly_misprint_scrap_rogue_small_batch_and_closet_deadstock_pool_usd: float = 180000.0
+    unapproved_logo_low_dpi_or_pantone_delta_e_breach: bool = False
+    rogue_reprint_ignoring_central_locker_or_missed_expo_cutoff: bool = False
+    fcpa_gov_gift_cap_violation_or_shipping_bulk_to_office_closet: bool = False
+    recipient_size_picker_pod_and_cross_dept_tier_batching_ready: bool = False
+
+
+def evaluate_b2b_corporate_print_branded_swag_policy(
+    policy_input: B2BCorporatePrintBrandedSwagPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_misprint_scrap_rogue_small_batch_and_closet_deadstock_pool_usd
+        ),
+    )
+    if policy_input.fcpa_gov_gift_cap_violation_or_shipping_bulk_to_office_closet:
+        return {
+            "status_code": 451,
+            "decision": "GOV_GIFT_BRIBERY_CAP_OR_OFFICE_CLOSET_HOARD_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unapproved_logo_low_dpi_or_pantone_delta_e_breach:
+        return {
+            "status_code": 403,
+            "decision": "DEPRECATED_LOGO_OR_LOW_DPI_PANTONE_DRIFT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.rogue_reprint_ignoring_central_locker_or_missed_expo_cutoff:
+        return {
+            "status_code": 422,
+            "decision": "DUPLICATE_SMALL_BATCH_OR_MISSED_EXPO_DOCK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.recipient_size_picker_pod_and_cross_dept_tier_batching_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "RECIPIENT_SIZE_PICKER_POD_AND_TIER_BATCH_CONFIRM",
+            "mandate_token": "b2b_print_swag_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_BRAND_DAM_VECTOR_AND_SWAG_LOCKER_AUTHORIZED",
+        "mandate_token": "b2b_print_swag_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -42918,6 +42994,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_corporate_print_branded_swag_guard = {
+        "authorized_200": evaluate_b2b_corporate_print_branded_swag_policy(
+            B2BCorporatePrintBrandedSwagPolicyInput()
+        ),
+        "deprecated_logo_or_pms_403": evaluate_b2b_corporate_print_branded_swag_policy(
+            B2BCorporatePrintBrandedSwagPolicyInput(
+                unapproved_logo_low_dpi_or_pantone_delta_e_breach=True
+            )
+        ),
+        "rogue_batch_or_expo_422": evaluate_b2b_corporate_print_branded_swag_policy(
+            B2BCorporatePrintBrandedSwagPolicyInput(
+                rogue_reprint_ignoring_central_locker_or_missed_expo_cutoff=True
+            )
+        ),
+        "fcpa_gift_or_closet_451": evaluate_b2b_corporate_print_branded_swag_policy(
+            B2BCorporatePrintBrandedSwagPolicyInput(
+                fcpa_gov_gift_cap_violation_or_shipping_bulk_to_office_closet=True
+            )
+        ),
+        "size_picker_and_tier_409": evaluate_b2b_corporate_print_branded_swag_policy(
+            B2BCorporatePrintBrandedSwagPolicyInput(
+                recipient_size_picker_pod_and_cross_dept_tier_batching_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -43261,6 +43363,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "omnichannel_softpos_tap_to_pay_guard": omnichannel_softpos_tap_to_pay_guard,
         "ota_car_rental_damage_toll_ldw_guard": ota_car_rental_damage_toll_ldw_guard,
         "ecommerce_pet_autoship_vet_rx_guard": ecommerce_pet_autoship_vet_rx_guard,
+        "b2b_corporate_print_branded_swag_guard": b2b_corporate_print_branded_swag_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -60715,6 +60818,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="petautoship-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 GROWTH_CURVE_RX_AND_ZONE2_SIOC_AUTOSHIP_CONFIRM · Mandate: pet_autoship_rx_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 215 B2B Corporate Print, Branded Swag & Pantone Digital-Proof Escrow (#334) -->
+      <div class="finops-box" id="b2b-corporate-print-branded-swag-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎁 企业 B2B 定制印刷、展会周边与品牌礼盒采购 (Sendoso / Postal / 4imprint / Printful) 沙盒</div>
+            <div class="finops-sub">Round 215 (#334) · Brand-DAM 300DPI 矢量母版与潘通色号锁 (HTTP 403) + 优先调拨中央云仓现货与展会 Freeman 截单日硬锁 (HTTP 422) + CRM 联动 FCPA 反贿赂送礼上限与禁塞办公室杂物间 (HTTP 451) + 自助选码一件代发与跨部门凑千件阶梯价净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="printswag-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度低清/旧版 Logo 印错报废、各部门无视中央仓现货高价小批量野采与办公室剩码发霉损耗池 ($)
+            <input type="number" id="printswag-gross-input" value="180000" min="10000" step="5000" oninput="recalcB2BCorporatePrintBrandedSwagSandbox()" />
+          </label>
+          <label>官方品牌资产库 (Brand DAM) 300DPI 矢量母版、潘通色差 (Delta-E &lt;= 1.5) 与动态二维码门禁
+            <select id="printswag-dam-select" onchange="recalcB2BCorporatePrintBrandedSwagSandbox()">
+              <option value="pass">强制拉取 Brand DAM 签名矢量图 + Pantone 专色校准 + 动态可改向二维码 (合规)</option>
+              <option value="block_403">员工拿 72DPI 网页截图或旧版 Logo 印废 5,000 件卫衣 或 宣传册印死静态错误 URL 二维码 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>中央周边云仓 (Central Swag Locker) 现货自动调拨拦截与展会集散仓截单日 (Advance Cutoff) 门禁
+            <select id="printswag-locker-select" onchange="recalcB2BCorporatePrintBrandedSwagSandbox()">
+              <option value="pass">优先从中央云仓调拨 $5.40 现货 + 确保在展会 Freeman 集散仓截单日前入库 (合规)</option>
+              <option value="block_422">中央仓明明躺着 1,400 个同款保温杯却花 $22/个重复开版印 100 个 或 展会撤展了物料才送到会场 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>CRM 联动的 FCPA 反贿赂客户送礼上限 ($0 政务官员 / &lt;=$100 商业客户) 与禁塞办公室储物间锁
+            <select id="printswag-fcpa-select" onchange="recalcB2BCorporatePrintBrandedSwagSandbox()">
+              <option value="pass">CRM 校验非政府官员且年累计礼金 &lt;= $100 + 大宗周边入驻 3PL 云仓管理 (安全)</option>
+              <option value="block_451">SDR 向公立/政务采购负责人寄送 $350 耳机触犯反贿赂法 或 把 500 箱衣服寄回分公司杂物间吃灰 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>收礼人点击链接自选尺码按需一件刺绣代发 (Swag-on-Demand) 与跨部门拼单凑千件阶梯价
+            <select id="printswag-opt-select" onchange="recalcB2BCorporatePrintBrandedSwagSandbox()">
+              <option value="enabled" selected>自选尺码后再刺绣发货(未领 $0 成本) + 跨部门拼单享 1,000 件阶梯底价省 67% (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统盲猜尺码比例整批囤货 + 各部门各自下小单支付多次制版费 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度印刷报废与分散野采损耗池</div>
+            <div class="finops-kpi-val" id="printswag-gross-kpi">$180,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">DAM 印前锁与按需云仓后净支出</div>
+            <div class="finops-kpi-val" id="printswag-net-kpi" style="color:#6ee7b7;">$113,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省重印报废与小批量溢价</div>
+            <div class="finops-kpi-val" id="printswag-savings-kpi" style="color:#38bdf8;">$66,600</div>
+          </div>
+        </div>
+        <div id="printswag-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 RECIPIENT_SIZE_PICKER_POD_AND_TIER_BATCH_CONFIRM · Mandate: b2b_print_swag_escrow_optim_409
         </div>
       </div>
 
@@ -81927,6 +82087,79 @@ function recalcEcommercePetAutoshipVetRxSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_VCPR_RX_AND_SIOC_PET_AUTOSHIP_AUTHORIZED · Mandate: pet_autoship_rx_escrow_200';
+}}
+
+function recalcB2BCorporatePrintBrandedSwagSandbox() {{
+  const grossInput = document.getElementById('printswag-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '180000'));
+  const damGate = document.getElementById('printswag-dam-select').value;
+  const lockerGate = document.getElementById('printswag-locker-select').value;
+  const fcpaGate = document.getElementById('printswag-fcpa-select').value;
+  const optMode = document.getElementById('printswag-opt-select').value;
+
+  const grossKpi = document.getElementById('printswag-gross-kpi');
+  const netKpi = document.getElementById('printswag-net-kpi');
+  const savingsKpi = document.getElementById('printswag-savings-kpi');
+  const statusKpi = document.getElementById('printswag-status-kpi');
+  const banner = document.getElementById('printswag-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fcpaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 GOV_GIFT_BRIBERY_CAP_OR_OFFICE_CLOSET_HOARD_HOLD · Mandate: null';
+    return;
+  }}
+  if (damGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DEPRECATED_LOGO_OR_LOW_DPI_PANTONE_DRIFT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (lockerGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DUPLICATE_SMALL_BATCH_OR_MISSED_EXPO_DOCK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 RECIPIENT_SIZE_PICKER_POD_AND_TIER_BATCH_CONFIRM · Mandate: b2b_print_swag_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_BRAND_DAM_VECTOR_AND_SWAG_LOCKER_AUTHORIZED · Mandate: b2b_print_swag_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
