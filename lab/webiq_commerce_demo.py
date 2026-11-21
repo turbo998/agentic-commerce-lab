@@ -23990,6 +23990,87 @@ def evaluate_corporate_virtual_card_expense_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class SneakerToyCardVaultEscrowPolicyInput:
+    """Input contract for Sneaker, Designer Blind-Box Toy & Graded Card Vault Escrow."""
+
+    quarterly_collectible_sneaker_toy_card_pool_usd: float = 125000.0
+    uncollateralized_seller_flake_or_searched_blind_box_pack: bool = False
+    reglued_blind_box_or_cracked_psa_slab_replica_stitch: bool = False
+    webiq_deactivated_psa_cert_or_pu_hydrolysis_crumble_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    delaware_tax_free_vault_custody_and_instant_title_ready: bool = False
+
+
+def evaluate_sneaker_toy_card_vault_escrow_policy(
+    policy_input: SneakerToyCardVaultEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Sneaker, Designer Blind-Box Toy & Graded Card Vault Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_collectible_sneaker_toy_card_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_deactivated_psa_cert_or_pu_hydrolysis_crumble_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_DEACTIVATED_PSA_CERT_OR_PU_HYDROLYSIS_CRUMBLE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncollateralized_seller_flake_or_searched_blind_box_pack:
+        return {
+            "status_code": 403,
+            "decision": "UNCOLLATERALIZED_SELLER_FLAKE_OR_SEARCHED_BLIND_BOX_PACK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.reglued_blind_box_or_cracked_psa_slab_replica_stitch:
+        return {
+            "status_code": 422,
+            "decision": "REGLUED_BLIND_BOX_OR_CRACKED_PSA_SLAB_REPLICA_STITCH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.delaware_tax_free_vault_custody_and_instant_title_ready:
+        savings = round(gross_pool * 0.29, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DELAWARE_TAX_FREE_VAULT_CUSTODY_AND_INSTANT_TITLE_CONFIRM",
+            "mandate_token": "sneaker_toy_card_vault_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "MULTIMODAL_AUTHENTICATED_AND_NFC_SEALED_AUTHORIZED",
+        "mandate_token": "sneaker_toy_card_vault_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -32977,6 +33058,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    sneaker_toy_card_vault_escrow_guard = {
+        "authorized_200": evaluate_sneaker_toy_card_vault_escrow_policy(
+            SneakerToyCardVaultEscrowPolicyInput()
+        ),
+        "seller_flake_or_searched_blind_box_403": evaluate_sneaker_toy_card_vault_escrow_policy(
+            SneakerToyCardVaultEscrowPolicyInput(
+                uncollateralized_seller_flake_or_searched_blind_box_pack=True
+            )
+        ),
+        "reglued_box_or_cracked_psa_slab_422": evaluate_sneaker_toy_card_vault_escrow_policy(
+            SneakerToyCardVaultEscrowPolicyInput(
+                reglued_blind_box_or_cracked_psa_slab_replica_stitch=True
+            )
+        ),
+        "deactivated_cert_or_hydrolysis_crumble_451": evaluate_sneaker_toy_card_vault_escrow_policy(
+            SneakerToyCardVaultEscrowPolicyInput(
+                webiq_deactivated_psa_cert_or_pu_hydrolysis_crumble_flag=True
+            )
+        ),
+        "delaware_tax_free_vault_custody_409": evaluate_sneaker_toy_card_vault_escrow_policy(
+            SneakerToyCardVaultEscrowPolicyInput(
+                delaware_tax_free_vault_custody_and_instant_title_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -33223,6 +33330,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ai_shopping_bundle_promo_escrow_guard": ai_shopping_bundle_promo_escrow_guard,
         "ecommerce_geo_verified_review_escrow_guard": ecommerce_geo_verified_review_escrow_guard,
         "corporate_virtual_card_expense_escrow_guard": corporate_virtual_card_expense_escrow_guard,
+        "sneaker_toy_card_vault_escrow_guard": sneaker_toy_card_vault_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -44980,6 +45088,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="corp-vcn-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FOREIGN_VAT_RECLAIM_AND_DUPLICATE_VCN_CONSOLIDATION_CONFIRM · Mandate: corporate_virtual_card_expense_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 118 Sneaker, Designer Blind-Box Toy & Graded Card Vault Escrow -->
+      <div class="finops-box" id="sneaker-toy-card-vault-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">👟 限量球鞋、潮玩盲盒 (Labubu / 泡泡玛特) 与球星卡评级金库托管 (StockX / GOAT / 得物 Poizon / PSA Vault) 鉴真与免税金库沙盒 (Round 118)</div>
+            <div class="finops-subtitle">实测卖家 15% 违约保证金自动盘口吃单补货防暴涨放鸽子+禁散卖被称重/内窥镜挑走 1/144 隐藏款的废盲盒 (HTTP 403)、365nm 紫光中底/盒底热熔胶二次封口微距+PSA 600DPI 官网原图闪斑配准防撬壳换假卡 (HTTP 422)、Web IQ PSA 被盗作废证号与 &gt;=7年老鞋 PU 中底水解粉化核验 (HTTP 451) 及特拉华免税州恒温金库 (Delaware Vault) $0 消费税+T+0 秒级过户净省 29% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="sneaker-vault-status-kpi">HTTP 409 · DELAWARE_TAX_FREE_VAULT_CUSTODY_AND_INSTANT_TITLE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度限量球鞋、潮玩隐藏款与 PSA 评级卡交易总池 ($ USD)
+            <input type="range" id="sneaker-vault-pool-slider" min="15000" max="600000" step="5000" value="125000" oninput="updateSneakerToyCardVaultEscrowSandbox()" />
+            <span id="sneaker-vault-pool-val" style="color:#6ee7b7; font-family:monospace;">$125,000</span>
+          </label>
+          <label>
+            卖家 15% 防鸽保证金自动补货与盲盒防探盒审计 (HTTP 403)
+            <select id="sneaker-vault-flake-select" onchange="updateSneakerToyCardVaultEscrowSandbox()">
+              <option value="pass">冻结卖家 15% 保证金(违约自动替买家补货) + 原厂封箱整端/拆盒未拆袋确认款 (放行)</option>
+              <option value="block">暴涨 40% 卖家无成本放鸽子取消订单 或 散卖已被 0.01g 电子秤/内窥镜挑走隐藏款的假随机盲盒 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            365nm 紫光中底、盒底热熔胶与 PSA 600DPI 原图闪斑核验 (HTTP 422)
+            <select id="sneaker-vault-slab-select" onchange="updateSneakerToyCardVaultEscrowSandbox()">
+              <option value="pass">中底拉帮线/盒底原厂胶点无损 + PSA 超声波焊缝完好且闪斑与 600DPI 原图 100% 重合 + NTAG 424 防拆扣 (合规)</option>
+              <option value="block">热风枪底开盲盒二次点胶 / 莆田高仿鞋走线异常 或 撬开真 PSA 10 卡砖换入修剪假卡 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ PSA 被盗作废证书库与 &gt;=7年老鞋中底水解核验 (HTTP 451)
+            <select id="sneaker-vault-cert-select" onchange="updateSneakerToyCardVaultEscrowSandbox()">
+              <option value="clear">PSA/BGS 证书号有效在册 + 球鞋中底邵氏硬度弹性正常无水解粉化 (正常)</option>
+              <option value="hold">证书编号命中 PSA 挂失作废黑名单 (Deactivated) 或 8 年老鞋 PU 中底已水解一踩即碎 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            特拉华免税州恒温金库 (Delaware Vault) 与 T+0 仓单过户寻优 (HTTP 409)
+            <select id="sneaker-vault-opt-select" onchange="updateSneakerToyCardVaultEscrowSandbox()">
+              <option value="enabled" selected>直接入驻 Delaware 免税州 20°C/45%RH 恒温金库 ($0 销售税 + $0 双程运费 + T+0 秒级转售) 净省 29% (HTTP 409)</option>
+              <option value="baseline">常规多模态鉴定通过并绑定 NTAG 424 防伪扣保价直发到家 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度潮玩球鞋与评级卡交易总池</div>
+            <div class="finops-kpi-val" id="sneaker-vault-gross-kpi">$125,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">免税金库托管与零运费后净成本</div>
+            <div class="finops-kpi-val" id="sneaker-vault-net-kpi" style="color:#6ee7b7;">$88,750</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省消费税、运费与防鸽补差</div>
+            <div class="finops-kpi-val" id="sneaker-vault-savings-kpi" style="color:#38bdf8;">$36,250</div>
+          </div>
+        </div>
+        <div id="sneaker-vault-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DELAWARE_TAX_FREE_VAULT_CUSTODY_AND_INSTANT_TITLE_CONFIRM · Mandate: sneaker_toy_card_vault_mandate_optim_409
         </div>
       </div>
 
@@ -59083,6 +59254,80 @@ function updateCorporateVirtualCardExpenseEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 CAID_PINNED_VCN_AND_LEVEL3_RECONCILED_AUTHORIZED · Mandate: corporate_virtual_card_expense_mandate_200';
+}}
+
+function updateSneakerToyCardVaultEscrowSandbox() {{
+  const slider = document.getElementById('sneaker-vault-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '125000');
+  const flakeMode = document.getElementById('sneaker-vault-flake-select').value;
+  const slabMode = document.getElementById('sneaker-vault-slab-select').value;
+  const certMode = document.getElementById('sneaker-vault-cert-select').value;
+  const optMode = document.getElementById('sneaker-vault-opt-select').value;
+
+  document.getElementById('sneaker-vault-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('sneaker-vault-status-kpi');
+  const grossKpi = document.getElementById('sneaker-vault-gross-kpi');
+  const netKpi = document.getElementById('sneaker-vault-net-kpi');
+  const savingsKpi = document.getElementById('sneaker-vault-savings-kpi');
+  const banner = document.getElementById('sneaker-vault-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (certMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_DEACTIVATED_PSA_CERT_OR_PU_HYDROLYSIS_CRUMBLE_HOLD · Mandate: null';
+    return;
+  }}
+  if (flakeMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNCOLLATERALIZED_SELLER_FLAKE_OR_SEARCHED_BLIND_BOX_PACK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (slabMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 REGLUED_BLIND_BOX_OR_CRACKED_PSA_SLAB_REPLICA_STITCH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.29);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DELAWARE_TAX_FREE_VAULT_CUSTODY_AND_INSTANT_TITLE_CONFIRM · Mandate: sneaker_toy_card_vault_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 MULTIMODAL_AUTHENTICATED_AND_NFC_SEALED_AUTHORIZED · Mandate: sneaker_toy_card_vault_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

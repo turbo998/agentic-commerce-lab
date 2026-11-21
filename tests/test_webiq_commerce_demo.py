@@ -16964,6 +16964,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("corporate-virtual-card-expense-escrow-sandbox", html_zh)
 
+    def test_sneaker_toy_card_vault_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SneakerToyCardVaultEscrowPolicyInput,
+            evaluate_sneaker_toy_card_vault_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_sneaker_toy_card_vault_escrow_policy(
+            SneakerToyCardVaultEscrowPolicyInput(
+                quarterly_collectible_sneaker_toy_card_pool_usd=125000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "MULTIMODAL_AUTHENTICATED_AND_NFC_SEALED_AUTHORIZED",
+        )
+
+        flake = evaluate_sneaker_toy_card_vault_escrow_policy(
+            SneakerToyCardVaultEscrowPolicyInput(
+                uncollateralized_seller_flake_or_searched_blind_box_pack=True
+            )
+        )
+        self.assertEqual(flake["status_code"], 403)
+        self.assertEqual(
+            flake["decision"],
+            "UNCOLLATERALIZED_SELLER_FLAKE_OR_SEARCHED_BLIND_BOX_PACK_BLOCKED",
+        )
+
+        slab = evaluate_sneaker_toy_card_vault_escrow_policy(
+            SneakerToyCardVaultEscrowPolicyInput(
+                reglued_blind_box_or_cracked_psa_slab_replica_stitch=True
+            )
+        )
+        self.assertEqual(slab["status_code"], 422)
+        self.assertEqual(
+            slab["decision"],
+            "REGLUED_BLIND_BOX_OR_CRACKED_PSA_SLAB_REPLICA_STITCH_BLOCKED",
+        )
+
+        cert = evaluate_sneaker_toy_card_vault_escrow_policy(
+            SneakerToyCardVaultEscrowPolicyInput(
+                webiq_deactivated_psa_cert_or_pu_hydrolysis_crumble_flag=True
+            )
+        )
+        self.assertEqual(cert["status_code"], 451)
+        self.assertEqual(
+            cert["decision"],
+            "WEBIQ_DEACTIVATED_PSA_CERT_OR_PU_HYDROLYSIS_CRUMBLE_HOLD",
+        )
+
+        optim = evaluate_sneaker_toy_card_vault_escrow_policy(
+            SneakerToyCardVaultEscrowPolicyInput(
+                quarterly_collectible_sneaker_toy_card_pool_usd=125000.0,
+                delaware_tax_free_vault_custody_and_instant_title_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 36250.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 88750.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("sneaker_toy_card_vault_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("sneaker-toy-card-vault-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
