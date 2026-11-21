@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg664" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <linearGradient id="hdr664" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ec4899"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg664)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr664)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 221 · Beauty `GWP` (Gift-With-Purchase), Birthday-Gift &amp; Return-Clawback Escrow</text>
+  <text x="48" y="74" class="sub">Sephora / Ulta / Estée Lauder / Loop Returns · Pro-Rata GWP Return Deduction · Birthday-Bot Spend Floor · OOS Gift Swap (-37% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #664 · FAQ #340</text>
+
+  <!-- Lane 1: "Buy $100 Serum to Get $80 Free GWP Bag, Return Serum & Keep GWP" Abuse Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Pro-Rata `GWP` Return Clawback (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Returning $100 Main Item &amp; Keeping $80 GWP:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Allocate_Invoice_Discount(Main=$65, GWP=$35)</text>
+  <text x="54" y="200" class="mono">If `GWP_Returned == FALSE`: Refund Only `$65`!</text>
+  <text x="44" y="223" class="body-txt">• Enforces `ASC 606` Split Performance Obligation:</text>
+  <text x="54" y="243" class="mono">Never Book GWP at $0.00 on Returnable Receipt!</text>
+  <text x="44" y="266" class="body-txt">• Eliminates viral TikTok hacks where resellers</text>
+  <text x="54" y="286" class="body-txt">buy $100 creams just to harvest the 8-piece</text>
+  <text x="54" y="304" class="body-txt">luxury gift bag and return the cream for $100</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 UNRETURNED_GWP_FULL_REFUND_EXPLOIT_BLOCKED</text>
+
+  <!-- Lane 2: Fake "Today Is My Birthday" Bot Farms & $1.50 Filler-Item Free-Gift Cart Stuffing Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Birthday-Bot &amp; Stack Abuse Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops 5,000 Bots Setting Birthday == Today:</text>
+  <text x="442" y="182" class="mono">Require `Account_Age &gt;= 30d` &amp; `Annual_Spend &gt;= $25`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">+ Immutable DOB Lock (Max 1 Edit Lifetime)!</text>
+  <text x="432" y="223" class="body-txt">• Stops Stacking 6 GWP Codes on a $2 Cotton Swab:</text>
+  <text x="442" y="243" class="mono">Enforce `1 Tiered GWP Per Qualifying Cart_Net_Spend`</text>
+  <text x="432" y="266" class="body-txt">• Prevents sample-reseller rings draining $25</text>
+  <text x="442" y="286" class="body-txt">Dior/La Mer birthday sets via $2 cotton-pad orders</text>
+  <text x="442" y="304" class="body-txt">to resell on eBay/Mercari</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 BIRTHDAY_BOT_FARM_OR_GWP_CODE_STACKING_BLOCKED</text>
+
+  <!-- Lane 3: Silent GWP Stockout ("Ordered for the Gift, Shipped Without It") & Unsealed Hygiene Return Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Silent `GWP` OOS &amp; Hygiene Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Silently Dropping Sold-Out GWP at WMS:</text>
+  <text x="830" y="182" class="mono">If `GWP_SKU_ATP == 0` at Pick: Auto-Substitute</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Equal-Value Gift OR Issue $25 Instant Gift Card!</text>
+  <text x="820" y="223" class="body-txt">• Cosmetic Hygiene Seal &amp; Weight-Scale Return Check:</text>
+  <text x="830" y="243" class="body-txt">Quarantines opened mascara/lipgloss from restock</text>
+  <text x="830" y="261" class="body-txt">&amp; detects water-filled returned serum bottles (`0.1g`)</text>
+  <text x="820" y="284" class="body-txt">• Eliminates angry full-order returns when a buyer</text>
+  <text x="830" y="302" class="body-txt">spent $125 specifically for the GWP and got nothing</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNCOMPENSATED_GWP_STOCKOUT_OR_WATER_SWAP_HOLD</text>
+
+  <!-- Bottom Try-Before-You-Open Sample Packet & Discovery-Set Bounceback Flywheel -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. "Try the Sample Vial Before Unsealing Full-Size" + Discovery Voucher Flywheel (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Twin-Pack Sample Vial</text>
+  <text x="62" y="462" class="body-txt">Includes 2ml matching</text>
+  <text x="62" y="480" class="body-txt">sample vial outside sealed</text>
+  <text x="62" y="498" class="body-txt">100ml perfume box; return</text>
+  <text x="62" y="516" class="mono">100% Resaleable If Unopened!</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Discovery-Set Bounceback</text>
+  <text x="337" y="462" class="body-txt">Sells 5-scent sampler for</text>
+  <text x="337" y="480" class="body-txt">$35 w/ a $35 credit toward</text>
+  <text x="337" y="498" class="body-txt">any full-size bottle inside</text>
+  <text x="337" y="516" class="mono">60 days (48% Full-Size Conv!)</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ AI Shade-Match Sample</text>
+  <text x="622" y="462" class="body-txt">Packs ±1 adjacent shade</text>
+  <text x="622" y="480" class="body-txt">blister cards w/ foundation</text>
+  <text x="622" y="498" class="body-txt">order to eliminate shade</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">mismatch destruction (-62%)</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Split-Line Receipt Pricing</text>
+  <text x="907" y="462" class="body-txt">Prints allocated GWP value</text>
+  <text x="907" y="480" class="body-txt">($35) on receipt so Loop/POS</text>
+  <text x="907" y="498" class="body-txt">auto-deducts unreturned gifts;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Beauty GWP &amp; Return Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly GWP &amp; Return Waste Saved</text>
+  <text x="46" y="642" class="mono">$66,600 Saved / $180k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">0 Freebie Abuse</text>
+  <text x="336" y="626" class="kpi-lbl">Pro-Rata Invoice Split Clawback</text>
+  <text x="336" y="642" class="mono">Unreturned GWP Deducted Automatically</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% Resaleable</text>
+  <text x="626" y="626" class="kpi-lbl">External 2ml Sample Vial Saves Bottle</text>
+  <text x="626" y="642" class="mono">-62% Opened Perfume Destruction</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">48% Bounceback</text>
+  <text x="916" y="626" class="kpi-lbl">Discovery Set -> Full-Size Redemption</text>
+  <text x="916" y="642" class="mono">Milestone #340 Bilingual Guide</text>
+</svg>

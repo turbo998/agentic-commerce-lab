@@ -23865,6 +23865,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-sow-services-procurement-sandbox", html_zh)
 
+    def test_ecommerce_beauty_gwp_sample_return_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceBeautyGwpSampleReturnPolicyInput,
+            evaluate_ecommerce_beauty_gwp_sample_return_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_beauty_gwp_sample_return_policy(
+            EcommerceBeautyGwpSampleReturnPolicyInput(
+                quarterly_unreturned_gwp_birthday_bot_and_opened_destruction_pool_usd=180000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "SPLIT_RECEIPT_GWP_AND_SEALED_BEAUTY_ORDER_AUTHORIZED",
+        )
+
+        clawback = evaluate_ecommerce_beauty_gwp_sample_return_policy(
+            EcommerceBeautyGwpSampleReturnPolicyInput(
+                returning_main_item_for_full_refund_while_keeping_gwp=True
+            )
+        )
+        self.assertEqual(clawback["status_code"], 403)
+        self.assertEqual(
+            clawback["decision"],
+            "UNRETURNED_GWP_FULL_REFUND_EXPLOIT_BLOCKED",
+        )
+
+        bday = evaluate_ecommerce_beauty_gwp_sample_return_policy(
+            EcommerceBeautyGwpSampleReturnPolicyInput(
+                new_account_birthday_gift_farming_or_multi_gwp_code_stacking=True
+            )
+        )
+        self.assertEqual(bday["status_code"], 422)
+        self.assertEqual(
+            bday["decision"],
+            "BIRTHDAY_BOT_FARM_OR_GWP_CODE_STACKING_BLOCKED",
+        )
+
+        hygiene = evaluate_ecommerce_beauty_gwp_sample_return_policy(
+            EcommerceBeautyGwpSampleReturnPolicyInput(
+                silent_gwp_stockout_omission_or_water_refilled_serum_return=True
+            )
+        )
+        self.assertEqual(hygiene["status_code"], 451)
+        self.assertEqual(
+            hygiene["decision"],
+            "UNCOMPENSATED_GWP_STOCKOUT_OR_WATER_SWAP_HOLD",
+        )
+
+        optim = evaluate_ecommerce_beauty_gwp_sample_return_policy(
+            EcommerceBeautyGwpSampleReturnPolicyInput(
+                quarterly_unreturned_gwp_birthday_bot_and_opened_destruction_pool_usd=180000.0,
+                external_2ml_trial_vial_and_discovery_set_bounceback_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 66600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 113400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_beauty_gwp_sample_return_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-beauty-gwp-sample-return-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

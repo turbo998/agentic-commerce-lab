@@ -31865,6 +31865,82 @@ def evaluate_b2b_sow_services_procurement_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceBeautyGwpSampleReturnPolicyInput:
+    quarterly_unreturned_gwp_birthday_bot_and_opened_destruction_pool_usd: float = 180000.0
+    returning_main_item_for_full_refund_while_keeping_gwp: bool = False
+    new_account_birthday_gift_farming_or_multi_gwp_code_stacking: bool = False
+    silent_gwp_stockout_omission_or_water_refilled_serum_return: bool = False
+    external_2ml_trial_vial_and_discovery_set_bounceback_ready: bool = False
+
+
+def evaluate_ecommerce_beauty_gwp_sample_return_policy(
+    policy_input: EcommerceBeautyGwpSampleReturnPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_unreturned_gwp_birthday_bot_and_opened_destruction_pool_usd
+        ),
+    )
+    if policy_input.silent_gwp_stockout_omission_or_water_refilled_serum_return:
+        return {
+            "status_code": 451,
+            "decision": "UNCOMPENSATED_GWP_STOCKOUT_OR_WATER_SWAP_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.returning_main_item_for_full_refund_while_keeping_gwp:
+        return {
+            "status_code": 403,
+            "decision": "UNRETURNED_GWP_FULL_REFUND_EXPLOIT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.new_account_birthday_gift_farming_or_multi_gwp_code_stacking:
+        return {
+            "status_code": 422,
+            "decision": "BIRTHDAY_BOT_FARM_OR_GWP_CODE_STACKING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.external_2ml_trial_vial_and_discovery_set_bounceback_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PRO_RATA_GWP_SPLIT_EXTERNAL_VIAL_AND_BOUNCEBACK_CONFIRM",
+            "mandate_token": "beauty_gwp_sample_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "SPLIT_RECEIPT_GWP_AND_SEALED_BEAUTY_ORDER_AUTHORIZED",
+        "mandate_token": "beauty_gwp_sample_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -43530,6 +43606,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_beauty_gwp_sample_return_guard = {
+        "authorized_200": evaluate_ecommerce_beauty_gwp_sample_return_policy(
+            EcommerceBeautyGwpSampleReturnPolicyInput()
+        ),
+        "unreturned_gwp_exploit_403": evaluate_ecommerce_beauty_gwp_sample_return_policy(
+            EcommerceBeautyGwpSampleReturnPolicyInput(
+                returning_main_item_for_full_refund_while_keeping_gwp=True
+            )
+        ),
+        "birthday_bot_or_stack_422": evaluate_ecommerce_beauty_gwp_sample_return_policy(
+            EcommerceBeautyGwpSampleReturnPolicyInput(
+                new_account_birthday_gift_farming_or_multi_gwp_code_stacking=True
+            )
+        ),
+        "silent_oos_or_water_451": evaluate_ecommerce_beauty_gwp_sample_return_policy(
+            EcommerceBeautyGwpSampleReturnPolicyInput(
+                silent_gwp_stockout_omission_or_water_refilled_serum_return=True
+            )
+        ),
+        "external_vial_and_bounce_409": evaluate_ecommerce_beauty_gwp_sample_return_policy(
+            EcommerceBeautyGwpSampleReturnPolicyInput(
+                external_2ml_trial_vial_and_discovery_set_bounceback_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -43879,6 +43981,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_saas_cloud_marketplace_offer_guard": b2b_saas_cloud_marketplace_offer_guard,
         "ecommerce_sneaker_drop_raffle_auth_guard": ecommerce_sneaker_drop_raffle_auth_guard,
         "b2b_sow_services_procurement_guard": b2b_sow_services_procurement_guard,
+        "ecommerce_beauty_gwp_sample_return_guard": ecommerce_beauty_gwp_sample_return_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -61675,6 +61778,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="sowproc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 WARRANTY_RETAINAGE_SES_AND_CHANGE_ORDER_DIFF_CONFIRM · Mandate: b2b_sow_services_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 221 Beauty GWP (Gift-With-Purchase), Birthday-Gift & Return-Clawback Escrow (#340) -->
+      <div class="finops-box" id="ecommerce-beauty-gwp-sample-return-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💄 美妆高化“买赠小样礼包 (GWP: Sephora / Ulta / 雅诗兰黛)”与外挂试香管防损沙盒</div>
+            <div class="finops-sub">Round 221 (#340 Milestone) · 结账小票 ASC 606 分摊记录 (正装 $65 + 赠品 $35) 未退赠品自动仅退 $65 (HTTP 403) + 生日礼硬锁注册 30天与年消费 &gt;=$25 防脚本搬空 (HTTP 422) + GWP 断货自动升级与 0.1g 天平防灌水退货 (HTTP 451) + 盒外附赠 2ml 试香管保正装免销毁净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="beautygwp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度买 $100 正装退货白嫖 $80 赠品包、脚本刷空生日礼中样與 $240 香水被拆封试喷 1 下强制销毁池 ($)
+            <input type="number" id="beautygwp-gross-input" value="180000" min="10000" step="5000" oninput="recalcEcommerceBeautyGwpSampleReturnSandbox()" />
+          </label>
+          <label>结账小票 ASC 606 公允价值分摊 (Pro-Rata GWP Invoice Split) 与未退赠品自动扣回
+            <select id="beautygwp-clawback-select" onchange="recalcEcommerceBeautyGwpSampleReturnSandbox()">
+              <option value="pass">小票分摊记录正装 $65 + 赠品 $35 (未随单退回 GWP 礼包时仅退 $65) (合规)</option>
+              <option value="block_403">小票把赠品记为 $0 导致羊毛党只退回正装拿走 $100 全款白嫖价值 $80 的 7件套礼包挂闲鱼 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>会员免费生日礼“注册满 30 天 + 年度净消费 &gt;=$25 + 终身锁死生日”与防叠码门禁
+            <select id="beautygwp-bday-select" onchange="recalcEcommerceBeautyGwpSampleReturnSandbox()">
+              <option value="pass">核验老客注册 &gt;= 30d 且年消费 &gt;= $25 + 单笔仅激活 1 档满赠礼包 (合规)</option>
+              <option value="block_422">黄牛脚本注册 5,000 个今日过生日假号买 $2 化妆棉搬空全网 Dior/La Mer 生日小样 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>拣货端 GWP 断货严禁静默漏发 (自动升级或补 $25 礼卡) 与退货仓 0.1g 天平防灌水锁
+            <select id="beautygwp-hygiene-select" onchange="recalcEcommerceBeautyGwpSampleReturnSandbox()">
+              <option value="pass">GWP 缺货自动升级高配礼盒 + 退货仓 0.1g 称重与塑封激光防伪膜完好 (安全)</option>
+              <option value="block_451">仓库发现 GWP 抢光一声不吭发走空盒引发整单暴怒退货 或 买家把 $380 精华倒出灌自来水退回 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>正装塑封盒外附赠 2ml 同款试香管/试色卡与 $35 小样探索盒全额抵扣正装飞轮
+            <select id="beautygwp-opt-select" onchange="recalcEcommerceBeautyGwpSampleReturnSandbox()">
+              <option value="enabled" selected>盒外先试 2ml 小样保未拆正装 100% 二次上架 (-62% 销毁) + $35 探索盒送 $35 正装券 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统裸发正装被拆开喷 1 下退回即 100% 当危废砸碎销毁 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度买赠被撸与拆封销毁损耗池</div>
+            <div class="finops-kpi-val" id="beautygwp-gross-kpi">$180,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">小票分摊与外挂试香管后净损耗</div>
+            <div class="finops-kpi-val" id="beautygwp-net-kpi" style="color:#6ee7b7;">$113,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省白嫖赠品与正装报废</div>
+            <div class="finops-kpi-val" id="beautygwp-savings-kpi" style="color:#38bdf8;">$66,600</div>
+          </div>
+        </div>
+        <div id="beautygwp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PRO_RATA_GWP_SPLIT_EXTERNAL_VIAL_AND_BOUNCEBACK_CONFIRM · Mandate: beauty_gwp_sample_escrow_optim_409
         </div>
       </div>
 
@@ -83325,6 +83485,79 @@ function recalcB2BSowServicesProcurementSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_DELIVERABLE_SES_AND_NAMED_STAFF_AUTHORIZED · Mandate: b2b_sow_services_escrow_200';
+}}
+
+function recalcEcommerceBeautyGwpSampleReturnSandbox() {{
+  const grossInput = document.getElementById('beautygwp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '180000'));
+  const clawbackGate = document.getElementById('beautygwp-clawback-select').value;
+  const bdayGate = document.getElementById('beautygwp-bday-select').value;
+  const hygieneGate = document.getElementById('beautygwp-hygiene-select').value;
+  const optMode = document.getElementById('beautygwp-opt-select').value;
+
+  const grossKpi = document.getElementById('beautygwp-gross-kpi');
+  const netKpi = document.getElementById('beautygwp-net-kpi');
+  const savingsKpi = document.getElementById('beautygwp-savings-kpi');
+  const statusKpi = document.getElementById('beautygwp-status-kpi');
+  const banner = document.getElementById('beautygwp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (hygieneGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCOMPENSATED_GWP_STOCKOUT_OR_WATER_SWAP_HOLD · Mandate: null';
+    return;
+  }}
+  if (clawbackGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNRETURNED_GWP_FULL_REFUND_EXPLOIT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (bdayGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BIRTHDAY_BOT_FARM_OR_GWP_CODE_STACKING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PRO_RATA_GWP_SPLIT_EXTERNAL_VIAL_AND_BOUNCEBACK_CONFIRM · Mandate: beauty_gwp_sample_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 SPLIT_RECEIPT_GWP_AND_SEALED_BEAUTY_ORDER_AUTHORIZED · Mandate: beauty_gwp_sample_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
