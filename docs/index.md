@@ -2,12 +2,12 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`235` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`236` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（11 篇）](#platform-grounding)
-- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（38 篇）](#payments-mandates)
+- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（39 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（77 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（58 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（21 篇）](#saas-finops-micropayments)
@@ -37,7 +37,7 @@
 | 11 | **电商生成式搜索优化（GEO / AEO）、结构化目录流（`UCP / Schema.org`）与防黑公关恶评投毒接地（Microsoft Web IQ / Google AI Mode / ChatGPT Shopping / Bazaarvoice）“防纯 CSR 动态渲染导致 AI 漏抓促销价、防 WAF 误封合法导购 Bot 与防无订单水军差评（Review Bombing）/内容农场黑稿污染”Agent 架构选型 FAQ** | [中文](ecommerce-geo-aeo-structured-feed-verified-review-grounding-agent-selection-faq.md) · [English](ecommerce-geo-aeo-structured-feed-verified-review-grounding-agent-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
-## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（38 篇）
+## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（39 篇）
 
 > 涵盖 Google AP2、Stripe SPT、Visa VIC / TAP、Mastercard Agent Pay、PayPal、UCP/ACP 协议互操作、3DS2 无浏览器挑战、FIDO2/Passkey 硬件签名及幂等防重扣架构。
 
@@ -81,6 +81,7 @@
 | 36 | **消费电子、家电与高端硬件“全生命周期延保（AppleCare+ / 京东全保换新 / Extend / Clyde）、备件先行置换（Advanced RMA）与授权维修网点索赔审计”Agent 架构选型 FAQ：投保前实时硬件自检防“碎屏后再补买保险”、先行发新机全额质押锁与防维修点虚报换主板实战指南** | [中文](warranty-extended-protection-advanced-rma-collateral-claim-audit-agent-selection-faq.md) · [English](warranty-extended-protection-advanced-rma-collateral-claim-audit-agent-selection-faq.en.md) |
 | 37 | **智慧停车、无感道闸与新能源超充站（Smart Parking, LPR Barrierless Garage & EV Supercharger Billing：Metropolis / ParkMobile / Tesla Supercharger / 捷停车 / 特来电）“防出口跟车漏扫幽灵计费 7 天、防路侧二维码贴纸钓鱼（Quishing）与超时占桩费（Idle Fee）拥堵门槛锁”Agent 架构选型 FAQ：终结充电还要再交停车费与公车电卡私充实战指南** | [中文](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.md) · [English](smart-parking-ev-supercharger-lpr-idle-fee-fleet-escrow-agent-selection-faq.en.md) |
 | 38 | **音乐节与体育场馆无现金 RFID 手环充值、防默认 25% 小费刺客与余额零手续费秒退（Music Festival & Stadium Cashless RFID Wristband, Anti-Tip-Creep & Auto-Refund Escrow：Coachella / Tomorrowland / Intellitix / 草莓音乐节）“防散场剩 $19 收 $5 退费手续费吞没沉淀款、防买瓶水 POS 屏默认勾 25% 小费与直绑免充值”Agent 架构选型 FAQ** | [中文](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.md) · [English](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.en.md) |
+| 39 | **企业预算虚拟卡（Corporate Virtual Cards）、防“单次卡转长期包月暗扣”与 Level-3 发票行项对账托管（Ramp / Brex / Airbase / Stripe Issuing / 分贝通）“防单次买报告虚拟卡被商户静默转成 $499/月自动续费、防拿刷卡总额水单隐瞒夹带买超市购物卡及买完打票秒退货套现”Agent 架构选型 FAQ** | [中文](corporate-virtual-card-expense-level3-receipt-escrow-agent-selection-faq.md) · [English](corporate-virtual-card-expense-level3-receipt-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（77 篇）

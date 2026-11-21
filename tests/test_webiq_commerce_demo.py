@@ -16897,6 +16897,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-geo-verified-review-escrow-sandbox", html_zh)
 
+    def test_corporate_virtual_card_expense_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CorporateVirtualCardExpenseEscrowPolicyInput,
+            evaluate_corporate_virtual_card_expense_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_corporate_virtual_card_expense_escrow_policy(
+            CorporateVirtualCardExpenseEscrowPolicyInput(
+                quarterly_corporate_vcn_and_expense_pool_usd=175000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "CAID_PINNED_VCN_AND_LEVEL3_RECONCILED_AUTHORIZED",
+        )
+
+        mit = evaluate_corporate_virtual_card_expense_escrow_policy(
+            CorporateVirtualCardExpenseEscrowPolicyInput(
+                unauthorized_mit_recurring_conversion_or_gift_card_cashout=True
+            )
+        )
+        self.assertEqual(mit["status_code"], 403)
+        self.assertEqual(
+            mit["decision"],
+            "UNAUTHORIZED_MIT_RECURRING_CONVERSION_OR_GIFT_CARD_CASHOUT_BLOCKED",
+        )
+
+        level3 = evaluate_corporate_virtual_card_expense_escrow_policy(
+            CorporateVirtualCardExpenseEscrowPolicyInput(
+                missing_level3_itemized_folio_or_duplicate_reimbursement=True
+            )
+        )
+        self.assertEqual(level3["status_code"], 422)
+        self.assertEqual(
+            level3["decision"],
+            "MISSING_LEVEL3_ITEMIZED_FOLIO_OR_DUPLICATE_REIMBURSEMENT_BLOCKED",
+        )
+
+        irs = evaluate_corporate_virtual_card_expense_escrow_policy(
+            CorporateVirtualCardExpenseEscrowPolicyInput(
+                webiq_irs_accountable_plan_or_fcpa_hospitality_violation_flag=True
+            )
+        )
+        self.assertEqual(irs["status_code"], 451)
+        self.assertEqual(
+            irs["decision"],
+            "WEBIQ_IRS_ACCOUNTABLE_PLAN_OR_FCPA_HOSPITALITY_VIOLATION_HOLD",
+        )
+
+        optim = evaluate_corporate_virtual_card_expense_escrow_policy(
+            CorporateVirtualCardExpenseEscrowPolicyInput(
+                quarterly_corporate_vcn_and_expense_pool_usd=175000.0,
+                foreign_vat_reclaim_and_duplicate_vcn_consolidation_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 49000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 126000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("corporate_virtual_card_expense_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("corporate-virtual-card-expense-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

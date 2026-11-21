@@ -23909,6 +23909,87 @@ def evaluate_ecommerce_geo_verified_review_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class CorporateVirtualCardExpenseEscrowPolicyInput:
+    """Input contract for Corporate Virtual Cards, Anti-Zombie-MIT & Level-3 Receipt Escrow."""
+
+    quarterly_corporate_vcn_and_expense_pool_usd: float = 175000.0
+    unauthorized_mit_recurring_conversion_or_gift_card_cashout: bool = False
+    missing_level3_itemized_folio_or_duplicate_reimbursement: bool = False
+    webiq_irs_accountable_plan_or_fcpa_hospitality_violation_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    foreign_vat_reclaim_and_duplicate_vcn_consolidation_ready: bool = False
+
+
+def evaluate_corporate_virtual_card_expense_escrow_policy(
+    policy_input: CorporateVirtualCardExpenseEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Corporate Virtual Cards, Anti-Zombie-MIT & Level-3 Receipt Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_corporate_vcn_and_expense_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_irs_accountable_plan_or_fcpa_hospitality_violation_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_IRS_ACCOUNTABLE_PLAN_OR_FCPA_HOSPITALITY_VIOLATION_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unauthorized_mit_recurring_conversion_or_gift_card_cashout:
+        return {
+            "status_code": 403,
+            "decision": "UNAUTHORIZED_MIT_RECURRING_CONVERSION_OR_GIFT_CARD_CASHOUT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missing_level3_itemized_folio_or_duplicate_reimbursement:
+        return {
+            "status_code": 422,
+            "decision": "MISSING_LEVEL3_ITEMIZED_FOLIO_OR_DUPLICATE_REIMBURSEMENT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.foreign_vat_reclaim_and_duplicate_vcn_consolidation_ready:
+        savings = round(gross_pool * 0.28, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FOREIGN_VAT_RECLAIM_AND_DUPLICATE_VCN_CONSOLIDATION_CONFIRM",
+            "mandate_token": "corporate_virtual_card_expense_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "CAID_PINNED_VCN_AND_LEVEL3_RECONCILED_AUTHORIZED",
+        "mandate_token": "corporate_virtual_card_expense_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -32870,6 +32951,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    corporate_virtual_card_expense_escrow_guard = {
+        "authorized_200": evaluate_corporate_virtual_card_expense_escrow_policy(
+            CorporateVirtualCardExpenseEscrowPolicyInput()
+        ),
+        "unauthorized_mit_or_gift_card_cashout_403": evaluate_corporate_virtual_card_expense_escrow_policy(
+            CorporateVirtualCardExpenseEscrowPolicyInput(
+                unauthorized_mit_recurring_conversion_or_gift_card_cashout=True
+            )
+        ),
+        "missing_level3_folio_or_duplicate_dip_422": evaluate_corporate_virtual_card_expense_escrow_policy(
+            CorporateVirtualCardExpenseEscrowPolicyInput(
+                missing_level3_itemized_folio_or_duplicate_reimbursement=True
+            )
+        ),
+        "irs_accountable_plan_or_fcpa_violation_451": evaluate_corporate_virtual_card_expense_escrow_policy(
+            CorporateVirtualCardExpenseEscrowPolicyInput(
+                webiq_irs_accountable_plan_or_fcpa_hospitality_violation_flag=True
+            )
+        ),
+        "foreign_vat_reclaim_and_vcn_consolidation_409": evaluate_corporate_virtual_card_expense_escrow_policy(
+            CorporateVirtualCardExpenseEscrowPolicyInput(
+                foreign_vat_reclaim_and_duplicate_vcn_consolidation_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -33115,6 +33222,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_rfq_msa_redline_escrow_guard": b2b_rfq_msa_redline_escrow_guard,
         "ai_shopping_bundle_promo_escrow_guard": ai_shopping_bundle_promo_escrow_guard,
         "ecommerce_geo_verified_review_escrow_guard": ecommerce_geo_verified_review_escrow_guard,
+        "corporate_virtual_card_expense_escrow_guard": corporate_virtual_card_expense_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -44809,6 +44917,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="geo-review-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SIGNED_UCP_SCHEMA_FEED_AND_VERIFIED_REVIEW_GROUNDING_CONFIRM · Mandate: ecommerce_geo_verified_review_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 117 Corporate Virtual Cards, Anti-Zombie-MIT & Level-3 Receipt Escrow -->
+      <div class="finops-box" id="corporate-virtual-card-expense-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">💳 企业预算虚拟卡 (Corporate Virtual Cards)、防“单次卡转长期包月暗扣”与 Level-3 发票行项对账托管 (Ramp / Brex / Airbase / Stripe Issuing / 分贝通) 发卡与报销沙盒 (Round 117)</div>
+            <div class="finops-subtitle">实测单次虚拟卡首笔 Capture 后 60 秒即焚+首刷商户号 (CAID) 唯一锁死防单次买报告被偷偷转成 $499/月自动续费 (HTTP 403)、Level-3 行项明细水单穿透+跨轨哈希查重+税局防红冲复核防夹带购物卡/一票两报/买完打票秒退货 (HTTP 422)、Web IQ IRS §62(c) &gt;$75 收据凭据与 FCPA 核验 (HTTP 451) 及欧盟/英国 20% VAT 自动退税+部门重复 SaaS 虚拟卡合并净省 28% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="corp-vcn-status-kpi">HTTP 409 · FOREIGN_VAT_RECLAIM_AND_DUPLICATE_VCN_CONSOLIDATION_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业差旅、零星采购与部门 SaaS 虚拟卡总池 ($ USD)
+            <input type="range" id="corp-vcn-pool-slider" min="25000" max="750000" step="5000" value="175000" oninput="updateCorporateVirtualCardExpenseEscrowSandbox()" />
+            <span id="corp-vcn-pool-val" style="color:#6ee7b7; font-family:monospace;">$175,000</span>
+          </label>
+          <label>
+            单次卡清算即焚、首刷 CAID 商户锁与防购物卡套现审计 (HTTP 403)
+            <select id="corp-vcn-mit-select" onchange="updateCorporateVirtualCardExpenseEscrowSandbox()">
+              <option value="pass">单次卡首笔清算 60s 自动销毁 + 周期卡绑定唯一 CAID + 禁绝 MCC 6051/礼品卡 (放行)</option>
+              <option value="block">单次买报告被商户静默转成 $499/月 MIT 周期代扣 或 办公采购夹带刷 $200 超市购物卡套现 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            Level-3 行项水单穿透、防“一票两报”与防“买完打票秒退”门禁 (HTTP 422)
+            <select id="corp-vcn-level3-select" onchange="updateCorporateVirtualCardExpenseEscrowSandbox()">
+              <option value="pass">完整酒店 Folio/电商行项明细(剥离迷你吧) + 全局发票哈希唯一 + 税局未红冲/客票已乘机 (合规)</option>
+              <option value="block">只交信用卡刷卡总额水单隐瞒客房红酒/礼品卡 或 买完下载发票 PDF 立刻取消订单骗现金报销 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ IRS §62(c) Accountable Plan (&gt;$75 凭据) 与 FCPA 招待核验 (HTTP 451)
+            <select id="corp-vcn-irs-select" onchange="updateCorporateVirtualCardExpenseEscrowSandbox()">
+              <option value="clear">&gt;$75 支出 72h 内配齐明细小票与招待人员事由 + 零外国公职人员超标宴请 (正常)</option>
+              <option value="hold">&gt;$75 无票据面临并入员工 W-2 工资补税 或 违规高规格招待海外政府官员触犯 FCPA (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            跨国差旅 20% VAT 自动退税与部门重复 SaaS 虚拟卡合并 (HTTP 409)
+            <select id="corp-vcn-opt-select" onchange="updateCorporateVirtualCardExpenseEscrowSandbox()">
+              <option value="enabled" selected>退房实时纠偏公司英文税头追回 20% EU/UK VAT + 合并跨部门重复 SaaS 卡 + 1.75% 返现净省 28% (HTTP 409)</option>
+              <option value="baseline">常规 CAID 锁死与 Level-3 行项自动入账标准授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业虚拟卡与报销总池</div>
+            <div class="finops-kpi-val" id="corp-vcn-gross-kpi">$175,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">VAT 退税与合并重卡后净支出</div>
+            <div class="finops-kpi-val" id="corp-vcn-net-kpi" style="color:#6ee7b7;">$126,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度追回海外 VAT 与消灭僵尸扣款</div>
+            <div class="finops-kpi-val" id="corp-vcn-savings-kpi" style="color:#38bdf8;">$49,000</div>
+          </div>
+        </div>
+        <div id="corp-vcn-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FOREIGN_VAT_RECLAIM_AND_DUPLICATE_VCN_CONSOLIDATION_CONFIRM · Mandate: corporate_virtual_card_expense_mandate_optim_409
         </div>
       </div>
 
@@ -58838,6 +59009,80 @@ function updateEcommerceGeoVerifiedReviewEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_GEO_FEED_AND_AUTHENTIC_SENTIMENT_AUTHORIZED · Mandate: ecommerce_geo_verified_review_mandate_200';
+}}
+
+function updateCorporateVirtualCardExpenseEscrowSandbox() {{
+  const slider = document.getElementById('corp-vcn-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '175000');
+  const mitMode = document.getElementById('corp-vcn-mit-select').value;
+  const level3Mode = document.getElementById('corp-vcn-level3-select').value;
+  const irsMode = document.getElementById('corp-vcn-irs-select').value;
+  const optMode = document.getElementById('corp-vcn-opt-select').value;
+
+  document.getElementById('corp-vcn-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('corp-vcn-status-kpi');
+  const grossKpi = document.getElementById('corp-vcn-gross-kpi');
+  const netKpi = document.getElementById('corp-vcn-net-kpi');
+  const savingsKpi = document.getElementById('corp-vcn-savings-kpi');
+  const banner = document.getElementById('corp-vcn-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (irsMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_IRS_ACCOUNTABLE_PLAN_OR_FCPA_HOSPITALITY_VIOLATION_HOLD · Mandate: null';
+    return;
+  }}
+  if (mitMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNAUTHORIZED_MIT_RECURRING_CONVERSION_OR_GIFT_CARD_CASHOUT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (level3Mode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MISSING_LEVEL3_ITEMIZED_FOLIO_OR_DUPLICATE_REIMBURSEMENT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.28);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FOREIGN_VAT_RECLAIM_AND_DUPLICATE_VCN_CONSOLIDATION_CONFIRM · Mandate: corporate_virtual_card_expense_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 CAID_PINNED_VCN_AND_LEVEL3_RECONCILED_AUTHORIZED · Mandate: corporate_virtual_card_expense_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
