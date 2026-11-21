@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg667" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <linearGradient id="hdr667" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg667)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr667)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 224 · Auto Parts E-Commerce `17-Digit VIN` (`ACES/PIES`) &amp; `Core-Charge` Escrow</text>
+  <text x="48" y="74" class="sub">eBay Motors Guaranteed Fit / AutoZone / RockAuto / TecDoc · License-Plate-to-VIN · Core-Return Inspection · Old-Part Swap Lock (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #667 · FAQ #343</text>
+
+  <!-- Lane 1: Sub-Model / Trim / Engine-Code Fitment Mismatch ("28% Wrong-Part Return Rate") Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. `ACES/PIES` 17-Digit `VIN` Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Guessing "2020 F-150" Without Engine/Axle:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Resolve `License_Plate -&gt; 17-Char_VIN -&gt; OEM_PR_Code`</text>
+  <text x="54" y="200" class="mono">Require `ACES_Fitment_Match == EXACT_ROTOR_MM`!</text>
+  <text x="44" y="223" class="body-txt">• Blocks Left-vs-Right &amp; AWD-vs-FWD Collisions:</text>
+  <text x="54" y="243" class="mono">Hard-Block Checkout If `Submodel/Engine` Unresolved</text>
+  <text x="44" y="266" class="body-txt">• Eliminates the #1 aftermarket profit killer:</text>
+  <text x="54" y="286" class="body-txt">buyers ordering 320mm brake rotors when their</text>
+  <text x="54" y="304" class="body-txt">sport-package caliper requires 350mm rotors</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 VIN_SUBMODEL_FITMENT_MISMATCH_OR_UNRESOLVED_TRIM</text>
+
+  <!-- Lane 2: "Old Rusty Part in New Box" Return Swap & Remanufactured Core-Charge Escrow Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. `Core-Charge` &amp; Old-Part Swap (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Returning Rusty 150k-Mile Alternator as "New":</text>
+  <text x="442" y="182" class="mono">Verify `Laser_Etched_Part_Serial == Shipped_Serial`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">&amp; Check Terminal Bolt-Mount Witness Marks!</text>
+  <text x="432" y="223" class="body-txt">• Remanufactured `Core Deposit ($75–$250)` Escrow:</text>
+  <text x="442" y="243" class="mono">Hold Core Refund If `Cracked_Housing == TRUE`</text>
+  <text x="432" y="266" class="body-txt">• Separates "New Unused Retail Return" from</text>
+  <text x="442" y="286" class="body-txt">"Rebuildable Old Core Return" so fraudsters</text>
+  <text x="442" y="304" class="body-txt">never get a $400 full refund for a junkyard part</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 OLD_PART_IN_NEW_BOX_SWAP_OR_CRACKED_CORE_BLOCKED</text>
+
+  <!-- Lane 3: EPA Clean Air Act ("DPF/EGR Delete Tuners") & NHTSA Recalled Airbag Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `EPA / CARB` &amp; `NHTSA` Recall Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• `EPA Clean Air Act` (`$5,580/Part Fine`) &amp; `CARB EO`:</text>
+  <text x="830" y="182" class="mono">Block Emissions-Defeat `DPF/Cat Delete` Pipes &amp;</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Require `CARB_EO_Number` on CA Catalytic Converters!</text>
+  <text x="820" y="223" class="body-txt">• `NHTSA` Takata Airbag &amp; Hazmat Battery Lock:</text>
+  <text x="830" y="243" class="body-txt">Blocks prohibited salvage airbags and enforces</text>
+  <text x="830" y="261" class="body-txt">hazmat ground-only routing on AGM/Lithium batteries</text>
+  <text x="820" y="284" class="body-txt">• Protects marketplaces from multi-million-dollar</text>
+  <text x="830" y="302" class="body-txt">DOJ/EPA enforcement decrees</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 EPA_CARB_EMISSIONS_DEFEAT_OR_RECALLED_AIRBAG_HOLD</text>
+
+  <!-- Bottom Guaranteed-Fit Badge + Companion Hardware Kit & Local Installer Ship -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. 1-Tap License-Plate-to-`VIN` Decoder + Companion Hardware Kit &amp; Bay-Synced Delivery (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Plate-to-VIN Decoder</text>
+  <text x="62" y="462" class="body-txt">Shopper enters license plate</text>
+  <text x="62" y="480" class="body-txt">(easier than 17-char VIN);</text>
+  <text x="62" y="498" class="body-txt">auto-resolves exact trim &amp;</text>
+  <text x="62" y="516" class="mono">-78% Wrong-Fitment Returns</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Companion Gasket/Clip Kit</text>
+  <text x="337" y="462" class="body-txt">Auto-attaches required $6</text>
+  <text x="337" y="480" class="body-txt">crush washer, O-ring &amp; brake</text>
+  <text x="337" y="498" class="body-txt">hardware clips so mechanic</text>
+  <text x="337" y="516" class="mono">never stalls on the lift</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Card-Hold Core Waiver</text>
+  <text x="622" y="462" class="body-txt">Uses 30-day `SetupIntent`</text>
+  <text x="622" y="480" class="body-txt">for $120 Core Charge instead</text>
+  <text x="622" y="498" class="body-txt">of upfront cash hit;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">+24% Reman Part Conversion</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Direct-to-Shop Bay Sync</text>
+  <text x="907" y="462" class="body-txt">Ships tires/brakes directly</text>
+  <text x="907" y="480" class="body-txt">to partner installer bay</text>
+  <text x="907" y="498" class="body-txt">24h before appointment;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Aftermarket Return Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Auto-Parts Return Saved</text>
+  <text x="46" y="642" class="mono">$82,800 Saved / $230k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">-78% Fit Error</text>
+  <text x="336" y="626" class="kpi-lbl">Plate-to-VIN + OEM PR-Code Match</text>
+  <text x="336" y="642" class="mono">100% ACES / TecDoc Validated</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0 Old-Part Swaps</text>
+  <text x="626" y="626" class="kpi-lbl">Laser-Serial &amp; Bolt-Mark CV Audit</text>
+  <text x="626" y="642" class="mono">Intact Core Housing Escrow</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">100% EPA/CARB</text>
+  <text x="916" y="626" class="kpi-lbl">CA EO-Number &amp; Recall Airbag Gate</text>
+  <text x="916" y="642" class="mono">Zero Clean-Air-Act Penalties</text>
+</svg>

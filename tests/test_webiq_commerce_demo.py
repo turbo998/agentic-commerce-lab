@@ -24066,6 +24066,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-cruise-fly-cruise-folio-sandbox", html_zh)
 
+    def test_ecommerce_auto_parts_vin_core_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceAutoPartsVinCorePolicyInput,
+            evaluate_ecommerce_auto_parts_vin_core_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_auto_parts_vin_core_policy(
+            EcommerceAutoPartsVinCorePolicyInput(
+                quarterly_wrong_fitment_old_part_swap_and_cracked_core_pool_usd=230000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "EXACT_VIN_ACES_FITMENT_AND_INTACT_CORE_AUTHORIZED",
+        )
+
+        fit = evaluate_ecommerce_auto_parts_vin_core_policy(
+            EcommerceAutoPartsVinCorePolicyInput(
+                unresolved_vin_submodel_brake_caliper_or_engine_code_mismatch=True
+            )
+        )
+        self.assertEqual(fit["status_code"], 403)
+        self.assertEqual(
+            fit["decision"],
+            "VIN_SUBMODEL_FITMENT_MISMATCH_OR_UNRESOLVED_TRIM",
+        )
+
+        core = evaluate_ecommerce_auto_parts_vin_core_policy(
+            EcommerceAutoPartsVinCorePolicyInput(
+                old_used_part_returned_in_new_box_or_cracked_unrebuildable_core=True
+            )
+        )
+        self.assertEqual(core["status_code"], 422)
+        self.assertEqual(
+            core["decision"],
+            "OLD_PART_IN_NEW_BOX_SWAP_OR_CRACKED_CORE_BLOCKED",
+        )
+
+        carb = evaluate_ecommerce_auto_parts_vin_core_policy(
+            EcommerceAutoPartsVinCorePolicyInput(
+                non_carb_catalytic_converter_to_ca_ny_or_epa_defeat_tuner=True
+            )
+        )
+        self.assertEqual(carb["status_code"], 451)
+        self.assertEqual(
+            carb["decision"],
+            "EPA_CARB_EMISSIONS_DEFEAT_OR_RECALLED_AIRBAG_HOLD",
+        )
+
+        optim = evaluate_ecommerce_auto_parts_vin_core_policy(
+            EcommerceAutoPartsVinCorePolicyInput(
+                quarterly_wrong_fitment_old_part_swap_and_cracked_core_pool_usd=230000.0,
+                license_plate_to_vin_decoder_and_30d_core_setupintent_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 82800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 147200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_auto_parts_vin_core_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-auto-parts-vin-core-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

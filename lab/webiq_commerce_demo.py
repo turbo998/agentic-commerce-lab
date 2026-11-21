@@ -32093,6 +32093,82 @@ def evaluate_ota_cruise_fly_cruise_folio_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceAutoPartsVinCorePolicyInput:
+    quarterly_wrong_fitment_old_part_swap_and_cracked_core_pool_usd: float = 230000.0
+    unresolved_vin_submodel_brake_caliper_or_engine_code_mismatch: bool = False
+    old_used_part_returned_in_new_box_or_cracked_unrebuildable_core: bool = False
+    non_carb_catalytic_converter_to_ca_ny_or_epa_defeat_tuner: bool = False
+    license_plate_to_vin_decoder_and_30d_core_setupintent_ready: bool = False
+
+
+def evaluate_ecommerce_auto_parts_vin_core_policy(
+    policy_input: EcommerceAutoPartsVinCorePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_wrong_fitment_old_part_swap_and_cracked_core_pool_usd
+        ),
+    )
+    if policy_input.non_carb_catalytic_converter_to_ca_ny_or_epa_defeat_tuner:
+        return {
+            "status_code": 451,
+            "decision": "EPA_CARB_EMISSIONS_DEFEAT_OR_RECALLED_AIRBAG_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unresolved_vin_submodel_brake_caliper_or_engine_code_mismatch:
+        return {
+            "status_code": 403,
+            "decision": "VIN_SUBMODEL_FITMENT_MISMATCH_OR_UNRESOLVED_TRIM",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.old_used_part_returned_in_new_box_or_cracked_unrebuildable_core:
+        return {
+            "status_code": 422,
+            "decision": "OLD_PART_IN_NEW_BOX_SWAP_OR_CRACKED_CORE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.license_plate_to_vin_decoder_and_30d_core_setupintent_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PLATE_TO_VIN_GUARANTEED_FIT_AND_CORE_HOLD_CONFIRM",
+            "mandate_token": "auto_parts_vin_core_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "EXACT_VIN_ACES_FITMENT_AND_INTACT_CORE_AUTHORIZED",
+        "mandate_token": "auto_parts_vin_core_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -43836,6 +43912,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_auto_parts_vin_core_guard = {
+        "authorized_200": evaluate_ecommerce_auto_parts_vin_core_policy(
+            EcommerceAutoPartsVinCorePolicyInput()
+        ),
+        "vin_trim_mismatch_403": evaluate_ecommerce_auto_parts_vin_core_policy(
+            EcommerceAutoPartsVinCorePolicyInput(
+                unresolved_vin_submodel_brake_caliper_or_engine_code_mismatch=True
+            )
+        ),
+        "old_swap_or_cracked_core_422": evaluate_ecommerce_auto_parts_vin_core_policy(
+            EcommerceAutoPartsVinCorePolicyInput(
+                old_used_part_returned_in_new_box_or_cracked_unrebuildable_core=True
+            )
+        ),
+        "non_carb_or_defeat_451": evaluate_ecommerce_auto_parts_vin_core_policy(
+            EcommerceAutoPartsVinCorePolicyInput(
+                non_carb_catalytic_converter_to_ca_ny_or_epa_defeat_tuner=True
+            )
+        ),
+        "plate_to_vin_and_core_409": evaluate_ecommerce_auto_parts_vin_core_policy(
+            EcommerceAutoPartsVinCorePolicyInput(
+                license_plate_to_vin_decoder_and_30d_core_setupintent_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -44188,6 +44290,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_beauty_gwp_sample_return_guard": ecommerce_beauty_gwp_sample_return_guard,
         "high_ticket_auto_split_tender_guard": high_ticket_auto_split_tender_guard,
         "ota_cruise_fly_cruise_folio_guard": ota_cruise_fly_cruise_folio_guard,
+        "ecommerce_auto_parts_vin_core_guard": ecommerce_auto_parts_vin_core_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -62155,6 +62258,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="cruisefolio-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CABIN_BID_UP_WATERFALL_AND_SKIPPED_PORT_REBATE_CONFIRM · Mandate: cruise_folio_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 224 Auto Parts E-Commerce 17-Digit VIN (ACES/PIES) & Core-Charge Escrow (#343) -->
+      <div class="finops-box" id="ecommerce-auto-parts-vin-core-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔧 汽车零配件电商“车牌转 17 位 VIN 精准适配 (eBay Motors / AutoZone / 途虎)”与 Core 押金沙盒</div>
+            <div class="finops-sub">Round 224 (#343) · 车牌秒转 17位 VIN 与原厂 PR-Code 卡钳尺寸硬锁 (HTTP 403) + 机身激光码与螺栓安装压痕 CV 防“拿拆车旧件塞新盒骗退款”与 Core 外壳完好锁 (HTTP 422) + 收货州 CARB EO 催化器排放合规 (HTTP 451) + 30天免现 Core 预授权与直发汽修工位净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="autopartsvin-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度买错刹车盘/传感器 28% 重货退货运费、拆车旧件装新盒调包退全款与无 CARB 催化器罚单池 ($)
+            <input type="number" id="autopartsvin-gross-input" value="230000" min="10000" step="5000" oninput="recalcEcommerceAutoPartsVinCoreSandbox()" />
+          </label>
+          <label>车牌号秒转 17位 VIN + 原厂配置单 (OEM PR-Code) 与 ACES/TecDoc 子型号必选门禁
+            <select id="autopartsvin-fit-select" onchange="recalcEcommerceAutoPartsVinCoreSandbox()">
+              <option value="pass">车牌反查 17位 VIN 锁定精确 350mm 运动卡钳与发动机代号 + Guaranteed Fit 保修 (合规)</option>
+              <option value="block_403">买家只选“2020款思域”未区分 1.5T Sport 卡钳导致车升上举升机发现刹车盘小了 2厘米装不上退货 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>出库机身激光序列号/螺栓安装压痕 CV 鉴伪与再制造旧件回收 (Core Charge) 外壳完好门禁
+            <select id="autopartsvin-core-select" onchange="recalcEcommerceAutoPartsVinCoreSandbox()">
+              <option value="pass">新品退货激光序列号一致零安装压痕 (或 Core 旧件回收外壳无断裂具备翻新价值) (合规)</option>
+              <option value="block_422">买家把车上拆下的 15万公里生锈旧发电机塞进新盒谎称“全新未拆”骗 $380 全款 或 寄回撞裂废铁骗 Core 押金 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>收货州 EPA / 加州 CARB EO 尾气催化器认证号硬锁与 NHTSA 召回气囊/蓄电池危化品门禁
+            <select id="autopartsvin-carb-select" onchange="recalcEcommerceAutoPartsVinCoreSandbox()">
+              <option value="pass">发往 CA/NY/CO 的催化器持有匹配车型的 CARB EO 钢印编号 + 零排放作弊件 (安全)</option>
+              <option value="block_451">向加州买家误发无 CARB EO 编号的普通三元催化器 或 违规售卖 DPF/EGR 屏蔽刷阶器面临 $5,580/件重罚 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>30 天免现金 Core 预授权 (SetupIntent) + 必换 $6 密封垫圈绑定 + 提前 24h 直发修理厂工位
+            <select id="autopartsvin-opt-select" onchange="recalcEcommerceAutoPartsVinCoreSandbox()">
+              <option value="enabled" selected>输车牌秒配(-78%买错) + 30d SetupIntent 免付 $110 现金押金(+24%转化) + 直发安装店工位 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统三级下拉框靠买家盲猜型号 + 结账强收 $110 现金旧件押金 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度汽配买错运费与旧件调包池</div>
+            <div class="finops-kpi-val" id="autopartsvin-gross-kpi">$230,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">车牌转 VIN 与激光鉴伪后净损耗</div>
+            <div class="finops-kpi-val" id="autopartsvin-net-kpi" style="color:#6ee7b7;">$147,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省重货退运费与调包诈骗</div>
+            <div class="finops-kpi-val" id="autopartsvin-savings-kpi" style="color:#38bdf8;">$82,800</div>
+          </div>
+        </div>
+        <div id="autopartsvin-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PLATE_TO_VIN_GUARANTEED_FIT_AND_CORE_HOLD_CONFIRM · Mandate: auto_parts_vin_core_escrow_optim_409
         </div>
       </div>
 
@@ -84024,6 +84184,79 @@ function recalcOtaCruiseFlyCruiseFolioSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_FLY_CRUISE_AND_STARLINK_FOLIO_AUTHORIZED · Mandate: cruise_folio_escrow_200';
+}}
+
+function recalcEcommerceAutoPartsVinCoreSandbox() {{
+  const grossInput = document.getElementById('autopartsvin-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '230000'));
+  const fitGate = document.getElementById('autopartsvin-fit-select').value;
+  const coreGate = document.getElementById('autopartsvin-core-select').value;
+  const carbGate = document.getElementById('autopartsvin-carb-select').value;
+  const optMode = document.getElementById('autopartsvin-opt-select').value;
+
+  const grossKpi = document.getElementById('autopartsvin-gross-kpi');
+  const netKpi = document.getElementById('autopartsvin-net-kpi');
+  const savingsKpi = document.getElementById('autopartsvin-savings-kpi');
+  const statusKpi = document.getElementById('autopartsvin-status-kpi');
+  const banner = document.getElementById('autopartsvin-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (carbGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EPA_CARB_EMISSIONS_DEFEAT_OR_RECALLED_AIRBAG_HOLD · Mandate: null';
+    return;
+  }}
+  if (fitGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 VIN_SUBMODEL_FITMENT_MISMATCH_OR_UNRESOLVED_TRIM · Mandate: null';
+    return;
+  }}
+  if (coreGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 OLD_PART_IN_NEW_BOX_SWAP_OR_CRACKED_CORE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PLATE_TO_VIN_GUARANTEED_FIT_AND_CORE_HOLD_CONFIRM · Mandate: auto_parts_vin_core_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 EXACT_VIN_ACES_FITMENT_AND_INTACT_CORE_AUTHORIZED · Mandate: auto_parts_vin_core_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
