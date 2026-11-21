@@ -28825,6 +28825,82 @@ def evaluate_b2b_saas_renewal_rightsizing_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceAiShoppingAssistantPolicyInput:
+    quarterly_assistant_bounce_wrong_cross_sell_and_token_pool_usd: float = 160000.0
+    recommended_variant_out_of_stock_in_user_size_or_prompt_price_edit: bool = False
+    incompatible_accessory_mount_dimension_or_skincare_ingredient_clash: bool = False
+    intrusive_checkout_popup_or_unverified_fda_medical_claim: bool = False
+    storefront_mcp_1tap_outfit_hydration_and_low_rma_margin_rank_ready: bool = False
+
+
+def evaluate_ecommerce_ai_shopping_assistant_policy(
+    policy_input: EcommerceAiShoppingAssistantPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_assistant_bounce_wrong_cross_sell_and_token_pool_usd
+        ),
+    )
+    if policy_input.intrusive_checkout_popup_or_unverified_fda_medical_claim:
+        return {
+            "status_code": 451,
+            "decision": "CHECKOUT_DISTRACTION_OR_MEDICAL_CLAIM_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.recommended_variant_out_of_stock_in_user_size_or_prompt_price_edit:
+        return {
+            "status_code": 403,
+            "decision": "OOS_USER_SIZE_OR_HALLUCINATED_PRICE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.incompatible_accessory_mount_dimension_or_skincare_ingredient_clash:
+        return {
+            "status_code": 422,
+            "decision": "INCOMPATIBLE_MOUNT_DIMENSION_OR_INGREDIENT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.storefront_mcp_1tap_outfit_hydration_and_low_rma_margin_rank_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "STOREFRONT_MCP_1TAP_OUTFIT_AND_LOW_RMA_MARGIN_RANK_CONFIRM",
+            "mandate_token": "ai_stylist_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "GROUNDED_VARIANT_COMPATIBLE_STYLING_AUTHORIZED",
+        "mandate_token": "ai_stylist_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -39450,6 +39526,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_ai_shopping_assistant_guard = {
+        "authorized_200": evaluate_ecommerce_ai_shopping_assistant_policy(
+            EcommerceAiShoppingAssistantPolicyInput()
+        ),
+        "oos_size_or_price_edit_403": evaluate_ecommerce_ai_shopping_assistant_policy(
+            EcommerceAiShoppingAssistantPolicyInput(
+                recommended_variant_out_of_stock_in_user_size_or_prompt_price_edit=True
+            )
+        ),
+        "incompatible_mount_or_acid_422": evaluate_ecommerce_ai_shopping_assistant_policy(
+            EcommerceAiShoppingAssistantPolicyInput(
+                incompatible_accessory_mount_dimension_or_skincare_ingredient_clash=True
+            )
+        ),
+        "checkout_popup_or_fda_451": evaluate_ecommerce_ai_shopping_assistant_policy(
+            EcommerceAiShoppingAssistantPolicyInput(
+                intrusive_checkout_popup_or_unverified_fda_medical_claim=True
+            )
+        ),
+        "mcp_1tap_outfit_409": evaluate_ecommerce_ai_shopping_assistant_policy(
+            EcommerceAiShoppingAssistantPolicyInput(
+                storefront_mcp_1tap_outfit_hydration_and_low_rma_margin_rank_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -39759,6 +39861,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "marketplace_seller_payout_escrow_guard": marketplace_seller_payout_escrow_guard,
         "ecommerce_pre_ship_order_edit_guard": ecommerce_pre_ship_order_edit_guard,
         "b2b_saas_renewal_rightsizing_guard": b2b_saas_renewal_rightsizing_guard,
+        "ecommerce_ai_shopping_assistant_guard": ecommerce_ai_shopping_assistant_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -55275,6 +55378,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="saasren-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 T95_OPT_OUT_SCIM_RIGHTSIZING_P25_AND_MACC_OFFER_CONFIRM · Mandate: b2b_saas_renewal_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 181 E-Commerce AI Shopping Assistant & Outfit Compatibility Escrow (#300) -->
+      <div class="finops-box" id="ecommerce-ai-shopping-assistant-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛍️ 电商个性化 AI 导购与跨品类成套搭配 (Shopify Storefront MCP / Agentforce / Rufus) 沙盒</div>
+            <div class="finops-sub">Round 181 (#300 里程碑) · 用户专属尺码 ATP&gt;=2 与零改价锁 (HTTP 403) + PIM 物理/成分兼容图谱 (HTTP 422) + 结账防打扰与 FDA 滤网 (HTTP 451) + 1-Tap 整套入车净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="aistyl-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度导购推荐断码跳出、错配配件退货运费与无效闲聊算力池 ($)
+            <input type="number" id="aistyl-gross-input" value="160000" min="10000" step="5000" oninput="recalcEcommerceAiShoppingAssistantSandbox()" />
+          </label>
+          <label>子规格尺码实时库存 (Variant ATP &gt;= 2) 与目录只读改价隔离
+            <select id="aistyl-atp-select" onchange="recalcEcommerceAiShoppingAssistantSandbox()">
+              <option value="pass">用户所选 L 码/42码实时 ATP &gt;=2 且价格由结账内核只读拉取 (合规)</option>
+              <option value="block_403">推荐的西装点进去发现用户穿的 L 码早卖光了 或 被提示词注入哄骗改价为 $1 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>PIM 确定性物理卡口 / 尺寸 / 美妆活性成分兼容图谱
+            <select id="aistyl-pim-select" onchange="recalcEcommerceAiShoppingAssistantSandbox()">
+              <option value="pass">相机镜头卡口/床垫内径/早C晚A成分经 PIM 图谱 100% 校验兼容 (合规)</option>
+              <option value="block_422">大模型给索尼微单配佳能 RF 镜头、King 床垫配 Queen 床架或高浓度刷酸叠加 A 醇 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>结账高意向防弹窗打扰与 FDA / 广告法医疗宣称过滤
+            <select id="aistyl-fda-select" onchange="recalcEcommerceAiShoppingAssistantSandbox()">
+              <option value="pass">进入购物车抽屉后自动静默导购弹窗 + 拦截医疗治病词汇 + SLM 缓存 (安全)</option>
+              <option value="block_451">用户正要点 Apple Pay 时强弹聊天框打断结账 或 宣称“面霜能根治湿疹”违法 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Shopify Storefront MCP 三件套预配码 1-Tap 入车与低退货毛利重排
+            <select id="aistyl-opt-select" onchange="recalcEcommerceAiShoppingAssistantSandbox()">
+              <option value="enabled" selected>预选全身尺码 1-Tap 原子级整套加购 + 优先推荐 &lt;8% 低退货高毛利搭子 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统扔出 3 个单品链接让用户自己开 3 个页面逐个选码加购 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度断码跳出与错配退货总池</div>
+            <div class="finops-kpi-val" id="aistyl-gross-kpi">$160,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">尺码接地与 1-Tap 成套后净损耗</div>
+            <div class="finops-kpi-val" id="aistyl-net-kpi" style="color:#6ee7b7;">$99,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省跳出、错退与连带增收</div>
+            <div class="finops-kpi-val" id="aistyl-savings-kpi" style="color:#38bdf8;">$60,800</div>
+          </div>
+        </div>
+        <div id="aistyl-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 STOREFRONT_MCP_1TAP_OUTFIT_AND_LOW_RMA_MARGIN_RANK_CONFIRM · Mandate: ai_stylist_escrow_optim_409
         </div>
       </div>
 
@@ -74005,6 +74165,79 @@ function recalcB2BSaasRenewalRightSizingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 RIGHT_SIZED_B2B_SAAS_RENEWAL_AUTHORIZED · Mandate: b2b_saas_renewal_escrow_200';
+}}
+
+function recalcEcommerceAiShoppingAssistantSandbox() {{
+  const grossInput = document.getElementById('aistyl-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '160000'));
+  const atpGate = document.getElementById('aistyl-atp-select').value;
+  const pimGate = document.getElementById('aistyl-pim-select').value;
+  const fdaGate = document.getElementById('aistyl-fda-select').value;
+  const optMode = document.getElementById('aistyl-opt-select').value;
+
+  const grossKpi = document.getElementById('aistyl-gross-kpi');
+  const netKpi = document.getElementById('aistyl-net-kpi');
+  const savingsKpi = document.getElementById('aistyl-savings-kpi');
+  const statusKpi = document.getElementById('aistyl-status-kpi');
+  const banner = document.getElementById('aistyl-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fdaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CHECKOUT_DISTRACTION_OR_MEDICAL_CLAIM_HOLD · Mandate: null';
+    return;
+  }}
+  if (atpGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 OOS_USER_SIZE_OR_HALLUCINATED_PRICE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (pimGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 INCOMPATIBLE_MOUNT_DIMENSION_OR_INGREDIENT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 STOREFRONT_MCP_1TAP_OUTFIT_AND_LOW_RMA_MARGIN_RANK_CONFIRM · Mandate: ai_stylist_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 GROUNDED_VARIANT_COMPATIBLE_STYLING_AUTHORIZED · Mandate: ai_stylist_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

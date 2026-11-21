@@ -21185,6 +21185,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-saas-renewal-rightsizing-sandbox", html_zh)
 
+    def test_ecommerce_ai_shopping_assistant_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceAiShoppingAssistantPolicyInput,
+            evaluate_ecommerce_ai_shopping_assistant_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_ai_shopping_assistant_policy(
+            EcommerceAiShoppingAssistantPolicyInput(
+                quarterly_assistant_bounce_wrong_cross_sell_and_token_pool_usd=160000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "GROUNDED_VARIANT_COMPATIBLE_STYLING_AUTHORIZED",
+        )
+
+        atp = evaluate_ecommerce_ai_shopping_assistant_policy(
+            EcommerceAiShoppingAssistantPolicyInput(
+                recommended_variant_out_of_stock_in_user_size_or_prompt_price_edit=True
+            )
+        )
+        self.assertEqual(atp["status_code"], 403)
+        self.assertEqual(
+            atp["decision"],
+            "OOS_USER_SIZE_OR_HALLUCINATED_PRICE_BLOCKED",
+        )
+
+        pim = evaluate_ecommerce_ai_shopping_assistant_policy(
+            EcommerceAiShoppingAssistantPolicyInput(
+                incompatible_accessory_mount_dimension_or_skincare_ingredient_clash=True
+            )
+        )
+        self.assertEqual(pim["status_code"], 422)
+        self.assertEqual(
+            pim["decision"],
+            "INCOMPATIBLE_MOUNT_DIMENSION_OR_INGREDIENT_BLOCKED",
+        )
+
+        fda = evaluate_ecommerce_ai_shopping_assistant_policy(
+            EcommerceAiShoppingAssistantPolicyInput(
+                intrusive_checkout_popup_or_unverified_fda_medical_claim=True
+            )
+        )
+        self.assertEqual(fda["status_code"], 451)
+        self.assertEqual(
+            fda["decision"],
+            "CHECKOUT_DISTRACTION_OR_MEDICAL_CLAIM_HOLD",
+        )
+
+        optim = evaluate_ecommerce_ai_shopping_assistant_policy(
+            EcommerceAiShoppingAssistantPolicyInput(
+                quarterly_assistant_bounce_wrong_cross_sell_and_token_pool_usd=160000.0,
+                storefront_mcp_1tap_outfit_hydration_and_low_rma_margin_rank_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 60800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 99200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_ai_shopping_assistant_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-ai-shopping-assistant-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
