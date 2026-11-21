@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`350` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`351` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -11,7 +11,7 @@
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（133 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（79 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（29 篇）](#saas-finops-micropayments)
-- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（40 篇）](#tax-fx-privacy-disputes)
+- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（41 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
 
@@ -368,7 +368,7 @@
 | 29 | **在线职业考培、IT 认证考试券与企业培训报销（EdTech Certification Voucher, `Pass-Guarantee` & `CEU/CPE` Tuition Escrow：Coursera / Pearson VUE / Guild Education / Workday Learning）、防“报名 $2,400 不过包退班第一天扒光题库就弃考骗全额退款”、防“领走 $300 官方考试券挂闲鱼倒卖”与继续教育（`NASBA / ACCME`）反倍速挂机托管“防买 2,000 个企业学习账号 65% 吃灰、防刚报销完 $10,000 MBA 学费第二天就跳槽去竞对与免费送补考券代替退全款净省 36%”Agent 架构选型 FAQ** | [中文](edtech-certification-exam-voucher-pass-guarantee-ceu-tuition-escrow-agent-selection-faq.md) · [English](edtech-certification-exam-voucher-pass-guarantee-ceu-tuition-escrow-agent-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（40 篇）
+## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（41 篇）
 
 > 聚焦 Merchant of Record（MoR）选型、跨境 HS 编码完税价（DDP）与 VAT/Sales Tax 合规、实时锁汇与 ISO 20022 多币种净额轧差、PCI-DSS v4.0.1 / GDPR 加密粉碎，以及 Visa CE 3.0 / VAMP 友好欺诈抗辩证据链。
 
@@ -414,6 +414,7 @@
 | 38 | **电商与订阅支付“预拒付实时拦截（Pre-Dispute Deflection：Verifi RDR / CDRN & Ethoca Alerts）”、防“银行拒付+客服退款双吃（Double-Refund Exploit）”与 Visa `VAMP` 护栏托管“防买家早上向银行报盗刷触发 RDR 秒退、下午又找 AI 客服骗第二次常规退款（倒赔 200%），防为 $35 小单硬刚拒付倒贴 $25 罚金净省 38%”Agent 架构选型 FAQ** | [中文](ecommerce-pre-dispute-rdr-ethoca-auto-refund-double-refund-mutex-escrow-agent-selection-faq.md) · [English](ecommerce-pre-dispute-rdr-ethoca-auto-refund-double-refund-mutex-escrow-agent-selection-faq.en.md) |
 | 39 | **跨境电商与外贸 B2B“多币种本地收款账户（Local Receiving `vIBAN`：Airwallex 空中云汇 / 万里汇 WorldFirst / 派安盈 Payoneer / Wise）”、防“多店铺共用收款号触发 Amazon KYC 二审关联封店”与本币自然对冲轧差（`Natural FX Netting`）托管“防欧元收入先换人民币再换回欧元交海外仓费被剥两层 4.5% 汇损皮、防周六日休市高点差换汇与阳光结汇净省 36%”Agent 架构选型 FAQ** | [中文](cross-border-multi-currency-viban-natural-fx-netting-kyc-isolation-escrow-agent-selection-faq.md) · [English](cross-border-multi-currency-viban-natural-fx-netting-kyc-isolation-escrow-agent-selection-faq.en.md) |
 | 40 | **零售与 B2B 电商美国各州“免税周末（Sales Tax Holiday）”与销售税豁免证书（Exemption Certificate：Avalara CertCapture / Vertex / Sovos / Stripe Tax）核验、防“把 $2,400 电脑混进 $100 返校免税池漏收税被州税局重罚”、防“拿过期/外州转售免税证（Resale Cert）逃税自用”与结账内嵌 15 秒数字签章托管“防学校/非营利组织先含税付款再找客服人工退税净省 36%”Agent 架构选型 FAQ** | [中文](ecommerce-sales-tax-holiday-exemption-certificate-resale-audit-escrow-agent-selection-faq.md) · [English](ecommerce-sales-tax-holiday-exemption-certificate-resale-audit-escrow-agent-selection-faq.en.md) |
+| 41 | **跨境电商与品牌出海“欧盟延长生产者责任环保税与包装/电子垃圾/电池回收费结算（Cross-Border `EPR` Packaging, `WEEE` & Battery Eco-Fee Escrow：德国 `LUCID VerpackG` / 法国 `Citeo UIN` / 西班牙 `RD 1055` / Amazon EPR / Lizenzero）”、防“把 1.2kg 商品净重当成包装重量多交 10 倍塑料税”、防“平台代扣了 EPR 自己又向回收组织重报一遍交双份钱”与 `LUCID / WEEE` 注册号预审托管“防未挂号遭亚马逊封店与德国律所 €100,000 警告函敲诈及环保包装减免净省 36%”Agent 架构选型 FAQ** | [中文](cross-border-epr-packaging-weee-battery-lucid-citeo-ecofee-escrow-agent-selection-faq.md) · [English](cross-border-epr-packaging-weee-battery-lucid-citeo-ecofee-escrow-agent-selection-faq.en.md) |
 
 <a id="architecture-blueprints"></a>
 ## 七、确定性领域架构蓝图（`docs/architecture/` · 21 份）

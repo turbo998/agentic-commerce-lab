@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg675" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg675)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 232 · Cross-Border EU `EPR` Packaging, `WEEE` &amp; Battery Eco-Fee Escrow</text>
+  <text x="48" y="74" class="sub">Germany LUCID VerpackG / France Citeo UIN / Amazon EPR · Packaging-BOM Grammage Split · Return Netting · Eco-Modulation (-36%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #675 · FAQ #351</text>
+
+  <!-- Lane 1: Paying Eco-Fees on Gross Product Weight Instead of Packaging Tare & Cancelled/RTO Orders -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Tare-Grammage &amp; Return Netting (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Taxing Product Weight as Packaging Weight:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Enforce `Paper_85g + LDPE_12g` Tare BOM Split</text>
+  <text x="54" y="200" class="mono">(Never Pay Packaging Fee on 1.2kg Product Mass!)</text>
+  <text x="44" y="223" class="body-txt">• Deducts Cross-Border `RTO` &amp; Cancelled Shipments:</text>
+  <text x="54" y="243" class="mono">Exclude `Unshipped / Returned_to_Origin_Outside_EU`</text>
+  <text x="44" y="266" class="body-txt">• Prevents marketplace default fallback estimators</text>
+  <text x="54" y="286" class="body-txt">from charging plastic `€0.65/kg` eco-fees on</text>
+  <text x="54" y="304" class="body-txt">total parcel weight or undelivered returns</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 GROSS_WEIGHT_OVERDECLARATION_OR_RTO_DOUBLE_FEE</text>
+
+  <!-- Lane 2: Double-Paying EPR (Both Marketplace "Pay on Behalf" AND Own PRO Declaration) Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Anti-Double-Filing `PRO` Mutex (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Paying Citeo/Der Grüne Punkt Twice:</text>
+  <text x="442" y="182" class="mono">Carve Out `Marketplace_Pay_on_Behalf_Units` From</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Direct `PRO (Lizenzero / Citeo)` Annual Filing!</text>
+  <text x="432" y="223" class="body-txt">• Reconciles `LUCID` vs `Dual System` Tonnage Parity:</text>
+  <text x="442" y="243" class="mono">Enforce `ZSVR_LUCID_Kg == Lizenzero_Contract_Kg`</text>
+  <text x="432" y="266" class="body-txt">• Prevents German `ZSVR` regulator audits triggered</text>
+  <text x="442" y="286" class="body-txt">by a 1-kilogram discrepancy between the public</text>
+  <text x="442" y="304" class="body-txt">LUCID registry and the Dual System invoice</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 DOUBLE_EPR_PAYMENT_OR_LUCID_PRO_WEIGHT_MISMATCH</text>
+
+  <!-- Lane 3: Storefront Listing Suspension & €100k "Abmahnung" Lawsuit (Missing LUCID / WEEE / UIN) -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `LUCID / WEEE / UIN` Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Blocks Unregistered Shipments to `DE / FR / ES`:</text>
+  <text x="830" y="182" class="mono">Require Active `DE-LUCID`, `Stiftung-EAR WEEE-Nr`,</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">`BattG` &amp; `FR-UIN` + Authorized Rep (`AR`)!</text>
+  <text x="820" y="223" class="body-txt">• French `Triman` &amp; Italian `CONAI` Label Check:</text>
+  <text x="830" y="243" class="body-txt">Verifies mandatory sorting symbols (`FR Triman`,</text>
+  <text x="830" y="261" class="body-txt">`IT PAP20/LDPE04`) are printed on packaging</text>
+  <text x="820" y="284" class="body-txt">• Eliminates marketplace ASIN takedowns and</text>
+  <text x="830" y="302" class="body-txt">German competitor cease-and-desist (`Abmahnung`)</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 MISSING_LUCID_WEEE_UIN_OR_AUTHORIZED_REP_HOLD</text>
+
+  <!-- Bottom Eco-Modulation Bonus Optimization & FBA Secondary-Packaging Carve-Out -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. `Eco-Modulation` Mono-Material Bonus (`-30%` Tariff) + `3PL/FBA` Outer-Carton Carve-Out (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Eco-Modulation Bonus</text>
+  <text x="62" y="462" class="body-txt">Claims `Citeo / CONAI`</text>
+  <text x="62" y="480" class="body-txt">`-20% to -30%` eco-bonus</text>
+  <text x="62" y="498" class="body-txt">for `FSC` mono-cardboard</text>
+  <text x="62" y="516" class="mono">&amp; avoids PVC/carbon-black</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② `FBA` Outer-Box Carve-Out</text>
+  <text x="337" y="462" class="body-txt">Declares only primary SKU</text>
+  <text x="337" y="480" class="body-txt">box when `Amazon FBA` is</text>
+  <text x="337" y="498" class="body-txt">legally responsible for</text>
+  <text x="337" y="516" class="mono">secondary shipping cartons!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Minimum-Threshold Guard</text>
+  <text x="622" y="462" class="body-txt">Routes low-volume EU stores</text>
+  <text x="622" y="480" class="body-txt">onto flat Simplified-Rate</text>
+  <text x="622" y="498" class="body-txt">bands (`&lt;10,000 units/yr`</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">in France `€80` Flat Fee)</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ XML One-Click Filing</text>
+  <text x="907" y="462" class="body-txt">Auto-generates mirrored</text>
+  <text x="907" y="480" class="body-txt">`ZSVR LUCID` + `Lizenzero`</text>
+  <text x="907" y="498" class="body-txt">`XML` year-end reports;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% EPR Tax &amp; Legal Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly EPR Eco-Fee &amp; Fine Saved</text>
+  <text x="46" y="642" class="mono">$68,400 Saved / $190k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% Tare</text>
+  <text x="336" y="626" class="kpi-lbl">Exact Packaging Grammage Only</text>
+  <text x="336" y="642" class="mono">Zero Tax on Product Net Mass</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0 Double-Pay</text>
+  <text x="626" y="626" class="kpi-lbl">Marketplace vs Direct PRO Split</text>
+  <text x="626" y="642" class="mono">100% LUCID-to-PRO Parity</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 Takedowns</text>
+  <text x="916" y="626" class="kpi-lbl">Active LUCID / WEEE / UIN Verified</text>
+  <text x="916" y="642" class="mono">Zero €100k Abmahnung Lawsuits</text>
+</svg>

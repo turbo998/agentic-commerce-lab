@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`350` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`351` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -11,7 +11,7 @@
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (133 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (79 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (29 guides)](#saas-finops-micropayments)
-- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (40 guides)](#tax-fx-privacy-disputes)
+- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (41 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
 
@@ -368,7 +368,7 @@
 | 29 | **EdTech Certification Voucher, `Pass-Guarantee` Bootcamp & `CEU / CPE` Tuition Escrow (`Coursera / Pearson VUE / Guild Education / Workday Learning`), Diligence-Gated Refund Lock, Just-in-Time Exam Voucher Minting, `NASBA` 50-Min Seat-Time Gate & `IRS § 127` Tuition Escrow (`-36%` EdTech & L&D Loss) Agent Architecture Selection FAQ** | [English](edtech-certification-exam-voucher-pass-guarantee-ceu-tuition-escrow-agent-selection-faq.en.md) · [中文](edtech-certification-exam-voucher-pass-guarantee-ceu-tuition-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (40 Guides)
+## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (41 Guides)
 
 > Covers Merchant of Record (MoR) vs DIY PSP, HS-code DDP landed cost & VAT/Sales Tax nexus, FX quote collars & ISO 20022 netting, ZK eligibility / PCI redaction / GDPR crypto-shredding, and Visa CE 3.0 / VAMP dispute defense.
 
@@ -414,6 +414,7 @@
 | 38 | **E-Commerce & Subscription Pre-Dispute Deflection (`Verifi RDR / CDRN & Mastercard Ethoca Alerts`), Anti-Double-Refund Mutex & `Visa VAMP` Escrow (`Chargeflow / Stripe / Adyen`), `OMS ↔ RDR` State Lock, Expected-Value (`EV`) Routing & Instant `WMS / Subscription` Kill-Switch (`-38%` Dispute Loss) Agent Architecture Selection FAQ** | [English](ecommerce-pre-dispute-rdr-ethoca-auto-refund-double-refund-mutex-escrow-agent-selection-faq.en.md) · [中文](ecommerce-pre-dispute-rdr-ethoca-auto-refund-double-refund-mutex-escrow-agent-selection-faq.md) |
 | 39 | **Cross-Border Multi-Currency `vIBAN` Treasury, `Like-for-Like` Natural FX Netting & `KYB` Store-Isolation Escrow (`Airwallex / WorldFirst / Payoneer / Wise`), `1-Store-1-vIBAN` Anti-Linkage Lock, Weekend Spread Shield & Manifest-Backed Repatriation (`-36%` FX & Freeze Loss) Agent Architecture Selection FAQ** | [English](cross-border-multi-currency-viban-natural-fx-netting-kyc-isolation-escrow-agent-selection-faq.en.md) · [中文](cross-border-multi-currency-viban-natural-fx-netting-kyc-isolation-escrow-agent-selection-faq.md) |
 | 40 | **E-Commerce Sales-Tax Holiday & Exemption Certificate Escrow (`Avalara CertCapture / Vertex / Sovos / Stripe Tax`), Ship-To State `DOR` Lookup, Good-Faith Resale Scope Gate, Per-Item Holiday Price Cliff & 15-Second In-Cart Digital Wizard (`-36%` Tax Audit & Ops Loss) Agent Architecture Selection FAQ** | [English](ecommerce-sales-tax-holiday-exemption-certificate-resale-audit-escrow-agent-selection-faq.en.md) · [中文](ecommerce-sales-tax-holiday-exemption-certificate-resale-audit-escrow-agent-selection-faq.md) |
+| 41 | **Cross-Border EU `EPR` Packaging, `WEEE` & Battery Eco-Fee Escrow (`Germany LUCID VerpackG / France Citeo UIN / Spain RD 1055 / Amazon EPR / Lizenzero`), Packaging-`BOM` Tare Grammage Split, Anti-Double-Filing `PRO` Mutex, `LUCID / WEEE` Listing Gate & `Eco-Modulation` Bonus (`-36%` Compliance Spend) Agent Architecture Selection FAQ** | [English](cross-border-epr-packaging-weee-battery-lucid-citeo-ecofee-escrow-agent-selection-faq.en.md) · [中文](cross-border-epr-packaging-weee-battery-lucid-citeo-ecofee-escrow-agent-selection-faq.md) |
 
 <a id="architecture-blueprints"></a>
 ## 7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 Specs)

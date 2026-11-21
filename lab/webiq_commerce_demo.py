@@ -32701,6 +32701,82 @@ def evaluate_b2b_tradeshow_booth_sponsorship_drayage_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderEPRPackagingWEEEBatteryPolicyInput:
+    quarterly_epr_overdeclaration_double_filing_and_takedown_pool_usd: float = 190000.0
+    declaring_gross_product_weight_as_packaging_or_including_rto_returns: bool = False
+    double_paying_marketplace_pob_and_direct_pro_or_lucid_weight_mismatch: bool = False
+    missing_de_lucid_weee_fr_uin_authorized_rep_or_triman_label: bool = False
+    fba_outer_box_carveout_and_citeo_mono_material_eco_bonus_ready: bool = False
+
+
+def evaluate_cross_border_epr_packaging_weee_battery_policy(
+    policy_input: CrossBorderEPRPackagingWEEEBatteryPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_epr_overdeclaration_double_filing_and_takedown_pool_usd
+        ),
+    )
+    if policy_input.missing_de_lucid_weee_fr_uin_authorized_rep_or_triman_label:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_LUCID_WEEE_UIN_OR_AUTHORIZED_REP_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.declaring_gross_product_weight_as_packaging_or_including_rto_returns:
+        return {
+            "status_code": 403,
+            "decision": "GROSS_WEIGHT_OVERDECLARATION_OR_RTO_DOUBLE_FEE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.double_paying_marketplace_pob_and_direct_pro_or_lucid_weight_mismatch:
+        return {
+            "status_code": 422,
+            "decision": "DOUBLE_EPR_PAYMENT_OR_LUCID_PRO_WEIGHT_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.fba_outer_box_carveout_and_citeo_mono_material_eco_bonus_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FBA_OUTER_BOX_CARVEOUT_AND_ECO_MODULATION_BONUS_CONFIRM",
+            "mandate_token": "cross_border_epr_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_TARE_BOM_AND_LUCID_WEEE_UIN_AUTHORIZED",
+        "mandate_token": "cross_border_epr_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -44652,6 +44728,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_epr_packaging_weee_battery_guard = {
+        "authorized_200": evaluate_cross_border_epr_packaging_weee_battery_policy(
+            CrossBorderEPRPackagingWEEEBatteryPolicyInput()
+        ),
+        "gross_weight_or_rto_403": evaluate_cross_border_epr_packaging_weee_battery_policy(
+            CrossBorderEPRPackagingWEEEBatteryPolicyInput(
+                declaring_gross_product_weight_as_packaging_or_including_rto_returns=True
+            )
+        ),
+        "double_pay_or_lucid_drift_422": evaluate_cross_border_epr_packaging_weee_battery_policy(
+            CrossBorderEPRPackagingWEEEBatteryPolicyInput(
+                double_paying_marketplace_pob_and_direct_pro_or_lucid_weight_mismatch=True
+            )
+        ),
+        "missing_uin_or_ar_451": evaluate_cross_border_epr_packaging_weee_battery_policy(
+            CrossBorderEPRPackagingWEEEBatteryPolicyInput(
+                missing_de_lucid_weee_fr_uin_authorized_rep_or_triman_label=True
+            )
+        ),
+        "fba_carveout_and_ecobonus_409": evaluate_cross_border_epr_packaging_weee_battery_policy(
+            CrossBorderEPRPackagingWEEEBatteryPolicyInput(
+                fba_outer_box_carveout_and_citeo_mono_material_eco_bonus_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -45012,6 +45114,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_supplier_tooling_mold_amortization_guard": b2b_supplier_tooling_mold_amortization_guard,
         "ota_theme_park_ski_resort_ticketing_guard": ota_theme_park_ski_resort_ticketing_guard,
         "b2b_tradeshow_booth_sponsorship_drayage_guard": b2b_tradeshow_booth_sponsorship_drayage_guard,
+        "cross_border_epr_packaging_weee_battery_guard": cross_border_epr_packaging_weee_battery_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -63435,6 +63538,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="tradeshow-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 EARLY_BIRD_UTILITY_AND_MODULAR_SKID_REUSE_CONFIRM · Mandate: b2b_tradeshow_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 232 Cross-Border EU EPR Packaging, WEEE & Battery Eco-Fee Escrow (#351) -->
+      <div class="finops-box" id="cross-border-epr-packaging-weee-battery-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">♻️ 跨境欧盟 EPR 包装法、WEEE 电子垃圾与电池环保税结算 (德国 LUCID / 法国 Citeo / Amazon EPR / Lizenzero) 沙盒</div>
+            <div class="finops-sub">Round 232 (#351) · SKU 级包装皮重 BOM 精准分材质克重与跨境 RTO 退件冲减 (HTTP 403) + 平台代扣与自营渠道互斥防重缴及德国 LUCID==PRO 毫克级对齐 (HTTP 422) + 上架前 DE-LUCID/WEEE/FR-UIN 与德国授权代表 AR 门禁 (HTTP 451) + FBA 外箱剥离与 Citeo 绿色奖金净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="eurepr-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度漏填包装皮重 BOM 致按商品整机毛重和最高塑料档多交 8倍环保税、平台代扣后独立站重报交双份钱与德国 WEEE 警告函损耗池 ($)
+            <input type="number" id="eurepr-gross-input" value="190000" min="10000" step="5000" oninput="recalcCrossBorderEPRPackagingWEEEBatterySandbox()" />
+          </label>
+          <label>SKU 级一级包装皮重 BOM (纸板 g + 塑料 g) 物理拆分与未妥投/退回非欧盟仓 (RTO) 订单冲减锁
+            <select id="eurepr-tare-select" onchange="recalcCrossBorderEPRPackagingWEEEBatterySandbox()">
+              <option value="pass">仅按实测 95g 纸盒皮重计提环保费 (剔除 900g 商品净重) + 100% 冲减取消与跨境退回包裹 (合规)</option>
+              <option value="block_403">拿 1.2kg 商品整机毛重当成包装重量按 €0.65/kg 塑料档交冤枉税 或 将已退货/未清关取消单计入年底申报 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>平台代扣代缴 (Marketplace Pay-on-Behalf) 与独立站自报互斥锁及德国 ZSVR LUCID == Dual System 对齐
+            <select id="eurepr-double-select" onchange="recalcCrossBorderEPRPackagingWEEEBatterySandbox()">
+              <option value="pass">自动剥离亚马逊已代扣法国订单免重报 + 德国 LUCID 官方登记量与 Lizenzero 购买量 100% 镜像对齐 (合规)</option>
+              <option value="block_422">把亚马逊已代扣 EPR 的订单又混进独立站总销量向法国 Citeo 交第二遍钱 或 德国 LUCID 与绿点吨数差 5kg 招致罚单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>欧洲站点上架前 DE-LUCID / WEEE-Reg.-Nr. / BattG / 法国 UIN、本土授权代表 (AR) 与 Triman 印刷标核验
+            <select id="eurepr-uin-select" onchange="recalcCrossBorderEPRPackagingWEEEBatterySandbox()">
+              <option value="pass">德/法/西包装、WEEE 与电池注册号全齐 + 已委任德国本土授权代表 (AR) 且彩盒印有 Triman 标 (安全)</option>
+              <option value="block_451">带电产品发德国漏办 WEEE/本土授权代表遭亚马逊封店及律所 €100k 警告函 Abmahnung 或 漏印法国 Triman 标 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Amazon FBA 二级发货外箱责任剥离与法国 Citeo 单一再生纸盒生态调制绿色奖金 (Eco-Modulation -30%)
+            <select id="eurepr-opt-select" onchange="recalcCrossBorderEPRPackagingWEEEBatterySandbox()">
+              <option value="enabled" selected>剥离 FBA 二级外箱重量 + 申领 FSC 单一纸盒 Citeo -30% 绿色奖金 + 小微站点 €80 简报档 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">替亚马逊多交一遍 FBA 外箱包装税 + 放弃单一材质 30% 绿色减免奖金 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度EPR虚报重缴与封店损耗池</div>
+            <div class="finops-kpi-val" id="eurepr-gross-kpi">$190,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">皮重拆分与绿色减免后净损耗</div>
+            <div class="finops-kpi-val" id="eurepr-net-kpi" style="color:#6ee7b7;">$121,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省虚高塑料税与律所罚金</div>
+            <div class="finops-kpi-val" id="eurepr-savings-kpi" style="color:#38bdf8;">$68,400</div>
+          </div>
+        </div>
+        <div id="eurepr-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FBA_OUTER_BOX_CARVEOUT_AND_ECO_MODULATION_BONUS_CONFIRM · Mandate: cross_border_epr_escrow_optim_409
         </div>
       </div>
 
@@ -85888,6 +86048,79 @@ function recalcB2BTradeshowBoothSponsorshipDrayageSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_ICP_LEADS_AND_CERTIFIED_DRAYAGE_AUTHORIZED · Mandate: b2b_tradeshow_escrow_200';
+}}
+
+function recalcCrossBorderEPRPackagingWEEEBatterySandbox() {{
+  const grossInput = document.getElementById('eurepr-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '190000'));
+  const tareGate = document.getElementById('eurepr-tare-select').value;
+  const doubleGate = document.getElementById('eurepr-double-select').value;
+  const uinGate = document.getElementById('eurepr-uin-select').value;
+  const optMode = document.getElementById('eurepr-opt-select').value;
+
+  const grossKpi = document.getElementById('eurepr-gross-kpi');
+  const netKpi = document.getElementById('eurepr-net-kpi');
+  const savingsKpi = document.getElementById('eurepr-savings-kpi');
+  const statusKpi = document.getElementById('eurepr-status-kpi');
+  const banner = document.getElementById('eurepr-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (uinGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_LUCID_WEEE_UIN_OR_AUTHORIZED_REP_HOLD · Mandate: null';
+    return;
+  }}
+  if (tareGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 GROSS_WEIGHT_OVERDECLARATION_OR_RTO_DOUBLE_FEE · Mandate: null';
+    return;
+  }}
+  if (doubleGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DOUBLE_EPR_PAYMENT_OR_LUCID_PRO_WEIGHT_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FBA_OUTER_BOX_CARVEOUT_AND_ECO_MODULATION_BONUS_CONFIRM · Mandate: cross_border_epr_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_TARE_BOM_AND_LUCID_WEEE_UIN_AUTHORIZED · Mandate: cross_border_epr_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
