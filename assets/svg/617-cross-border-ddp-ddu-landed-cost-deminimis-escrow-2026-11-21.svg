@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg617" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr617" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg617)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr617)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 174 · Cross-Border E-Commerce DDP Landed-Cost, De-Minimis Cap &amp; Duty-Refusal Escrow</text>
+  <text x="48" y="74" class="sub">Zonos / Global-e / Avalara / Passport · 10-Digit HTS + CoO Lock · Anti-Split De-Minimis Smurfing · Zero-DDU Refusal (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #617 · FAQ #293</text>
+
+  <!-- Lane 1: DDU Doorstep Duty-Shock & Carrier Advancement Fee Block -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. DDU Doorstep Duty-Shock Breaker (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Unannounced `DDU / DAP` Doorstep Extortion:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Courier demands €42 VAT + €18 Advancement Fee</text>
+  <text x="54" y="200" class="body-txt">at buyer's door → 34% buyers refuse parcel!</text>
+  <text x="44" y="223" class="body-txt">• Mandatory Guaranteed `DDP` Checkout Gate:</text>
+  <text x="54" y="243" class="mono">Require Pre-Collected Duty + Tax + Zero_COD</text>
+  <text x="44" y="266" class="body-txt">• Blocks shipping DDU when round-trip return</text>
+  <text x="54" y="286" class="body-txt">air freight (`$45-$70`) + customs abandonment</text>
+  <text x="54" y="304" class="body-txt">exceeds net product contribution margin</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 UNDISCLOSED_DDU_DOORSTEP_DUTY_SHOCK_BLOCKED</text>
+
+  <!-- Lane 2: 10-Digit HTS, Country of Origin & Under-Valuation Lock -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. 10-Digit HTS, CoO &amp; Invoice Parity Gate (422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Generic 6-Digit HS &amp; Wrong Origin Rate:</text>
+  <text x="442" y="182" class="mono">Duty = f(10_Digit_HTS, Country_of_Origin_CoO,</text>
+  <text x="442" y="200" class="mono">         Ship_From_Country, Material_Comp)</text>
+  <text x="432" y="223" class="body-txt">• Strict Commercial Invoice Valuation Lock:</text>
+  <text x="442" y="243" class="mono" fill="#fcd34d">Customs_Declared_Value == Net_Paid_Checkout_Amt</text>
+  <text x="442" y="261" class="body-txt">Bans fake "$5 Gift / Sample" under-declaration</text>
+  <text x="432" y="284" class="body-txt">• Prevents pre-discount MSRP over-taxation on</text>
+  <text x="442" y="302" class="body-txt">promotional/bundled orders (`attach discount line`)</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 GENERIC_6DIGIT_HS_OR_UNDERDECLARATION_BLOCKED</text>
+
+  <!-- Lane 3: Section 321 / IOSS De-Minimis Split-Order Smurfing Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Section 321 &amp; EU IOSS De-Minimis Lock (451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Illegal "$800 Split-Shipment Smurfing":</text>
+  <text x="830" y="182" class="mono">US CBP 19 CFR §10.151: Aggregate <= $800</text>
+  <text x="830" y="200" class="mono">per One Person on One Day (24h Window)</text>
+  <text x="820" y="223" class="body-txt">• Section 301 / Trade-Remedy Exclusion Check:</text>
+  <text x="830" y="243" class="mono" fill="#f9a8d4">Verify HTS Eligibility for Entry Type 86</text>
+  <text x="820" y="266" class="body-txt">• EU `IOSS <= €150` / UK `HMRC <= £135` Split:</text>
+  <text x="830" y="286" class="body-txt">Injects signed IOSS ID into electronic airwaybill</text>
+  <text x="830" y="304" class="body-txt">to stop double VAT collection at EU border</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 DEMINIMIS_DAILY_SMURFING_OR_IOSS_MISMATCH_HOLD</text>
+
+  <!-- Bottom Guaranteed Landed Cost & Zone-Skipping Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Guaranteed Landed-Cost DDP Escrow + Consolidated Air Zone-Skipping + Duty Drawback Loop (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Guaranteed Landed Cost</text>
+  <text x="62" y="462" class="body-txt">Locks exact Duty + VAT + Fee</text>
+  <text x="62" y="480" class="body-txt">at checkout in 90ms; Zonos/</text>
+  <text x="62" y="498" class="body-txt">Global-e absorbs any customs</text>
+  <text x="62" y="516" class="mono">0 Variance Risk to Merchant</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Eliminate $18 Carrier Fee</text>
+  <text x="337" y="462" class="body-txt">Pre-paying DDP via broker</text>
+  <text x="337" y="480" class="body-txt">account waives the $15–$22</text>
+  <text x="337" y="498" class="body-txt">DHL/UPS "Disbursement/COD"</text>
+  <text x="337" y="516" class="mono">+24% International Checkout CVR</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Consolidated Zone-Skipping</text>
+  <text x="622" y="462" class="body-txt">Clears 500 parcels on 1 master</text>
+  <text x="622" y="480" class="body-txt">airwaybill (`MAWB`) &amp; injects</text>
+  <text x="622" y="498" class="body-txt">into domestic Royal Mail/USPS</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">-42% Per-Parcel Brokerage Fee</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ In-Country Return Hub &amp; Drawback</text>
+  <text x="907" y="462" class="body-txt">Aggregates cross-border returns</text>
+  <text x="907" y="480" class="body-txt">at local hub &amp; files batch</text>
+  <text x="907" y="498" class="body-txt">duty drawback / VAT credit;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Cross-Border Duty &amp; Return Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Duty, Refusal &amp; Fine Savings</text>
+  <text x="46" y="642" class="mono">$55,800 Saved / $155k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% DDP Lock</text>
+  <text x="336" y="626" class="kpi-lbl">Zero Doorstep COD Surprises</text>
+  <text x="336" y="642" class="mono">Eliminates $18 Carrier Junk Fee</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">10-Digit HTS+CoO</text>
+  <text x="626" y="626" class="kpi-lbl">Exact Tariff &amp; Discount Invoice</text>
+  <text x="626" y="642" class="mono">0 MSRP Over-Taxation Errors</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">24h Consignee Cap</text>
+  <text x="916" y="626" class="kpi-lbl">Anti-Smurfing Section 321 / IOSS</text>
+  <text x="916" y="642" class="mono">0 Customs Seizure Penalties</text>
+</svg>

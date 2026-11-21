@@ -28305,6 +28305,79 @@ def evaluate_ecommerce_account_takeover_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderDdpLandedCostPolicyInput:
+    quarterly_cross_border_duty_refusal_and_brokerage_pool_usd: float = 155000.0
+    undisclosed_ddu_doorstep_duty_and_carrier_advancement_shock: bool = False
+    generic_6digit_hs_wrong_coo_or_msrp_underdeclared_invoice: bool = False
+    de_minimis_same_day_split_smurfing_or_missing_ioss_edi: bool = False
+    guaranteed_ddp_mawb_zone_skipping_and_duty_drawback_ready: bool = False
+
+
+def evaluate_cross_border_ddp_landed_cost_policy(
+    policy_input: CrossBorderDdpLandedCostPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_cross_border_duty_refusal_and_brokerage_pool_usd)
+    )
+    if policy_input.de_minimis_same_day_split_smurfing_or_missing_ioss_edi:
+        return {
+            "status_code": 451,
+            "decision": "DEMINIMIS_DAILY_SMURFING_OR_IOSS_MISMATCH_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.undisclosed_ddu_doorstep_duty_and_carrier_advancement_shock:
+        return {
+            "status_code": 403,
+            "decision": "UNDISCLOSED_DDU_DOORSTEP_DUTY_SHOCK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.generic_6digit_hs_wrong_coo_or_msrp_underdeclared_invoice:
+        return {
+            "status_code": 422,
+            "decision": "GENERIC_6DIGIT_HS_OR_UNDERDECLARATION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.guaranteed_ddp_mawb_zone_skipping_and_duty_drawback_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "GUARANTEED_DDP_MAWB_ZONE_SKIPPING_AND_DRAWBACK_CONFIRM",
+            "mandate_token": "cross_border_ddp_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "COMPLIANT_CROSS_BORDER_DDP_SHIPMENT_AUTHORIZED",
+        "mandate_token": "cross_border_ddp_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -38748,6 +38821,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_ddp_landed_cost_guard = {
+        "authorized_200": evaluate_cross_border_ddp_landed_cost_policy(
+            CrossBorderDdpLandedCostPolicyInput()
+        ),
+        "ddu_doorstep_shock_403": evaluate_cross_border_ddp_landed_cost_policy(
+            CrossBorderDdpLandedCostPolicyInput(
+                undisclosed_ddu_doorstep_duty_and_carrier_advancement_shock=True
+            )
+        ),
+        "generic_hs_or_msrp_invoice_422": evaluate_cross_border_ddp_landed_cost_policy(
+            CrossBorderDdpLandedCostPolicyInput(
+                generic_6digit_hs_wrong_coo_or_msrp_underdeclared_invoice=True
+            )
+        ),
+        "deminimis_smurf_or_ioss_451": evaluate_cross_border_ddp_landed_cost_policy(
+            CrossBorderDdpLandedCostPolicyInput(
+                de_minimis_same_day_split_smurfing_or_missing_ioss_edi=True
+            )
+        ),
+        "guaranteed_ddp_and_mawb_409": evaluate_cross_border_ddp_landed_cost_policy(
+            CrossBorderDdpLandedCostPolicyInput(
+                guaranteed_ddp_mawb_zone_skipping_and_duty_drawback_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -39050,6 +39149,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_extended_warranty_guard": ecommerce_extended_warranty_guard,
         "retail_media_network_bidding_guard": retail_media_network_bidding_guard,
         "ecommerce_account_takeover_escrow_guard": ecommerce_account_takeover_escrow_guard,
+        "cross_border_ddp_landed_cost_guard": cross_border_ddp_landed_cost_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -54167,6 +54267,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ato-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SELECTIVE_3DS2_PASSKEY_STEPUP_AND_TRUSTED_FASTLANE_CONFIRM · Mandate: ato_saved_card_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 174 Cross-Border E-Commerce DDP Landed-Cost & De-Minimis Escrow -->
+      <div class="finops-box" id="cross-border-ddp-landed-cost-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🌍 跨境电商 DDP 完税交货 (Zonos / Global-e / Passport) 与免税额合规沙盒</div>
+            <div class="finops-sub">Round 174 · 禁 DDU 上门收税与 $18 代垫费 (HTTP 403) + 10位 HTS/原产国与折后发票对齐 (HTTP 422) + 同收件人 24h 免税额防拆单与 IOSS 签名 (HTTP 451) + 干线集拼净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="ddp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度跨境 DDU 拒收退件、发票原价多缴税与单包清关杂费池 ($)
+            <input type="number" id="ddp-gross-input" value="155000" min="10000" step="5000" oninput="recalcCrossBorderDdpLandedCostSandbox()" />
+          </label>
+          <label>应税订单 DDU vs Guaranteed DDP 结账完税门禁
+            <select id="ddp-mode-select" onchange="recalcCrossBorderDdpLandedCostSandbox()">
+              <option value="pass">结账 100% 锁死预付 DDP (免除快递员上门强收 $18 代垫税金手续费)</option>
+              <option value="block_403">发无预警 DDU 让快递员上门收 €42 税 + €18 代垫费导致 34% 买家拒收 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>10位 HTS + 原产国 (CoO) 税率与电子商业发票折后价对齐
+            <select id="ddp-hts-select" onchange="recalcCrossBorderDdpLandedCostSandbox()">
+              <option value="pass">10位目的国 HTS + 工厂原产国 CoO + 商业发票按折后实付价报关 (合规)</option>
+              <option value="block_422">只用 6 位粗码/错拿发货国算税、按划线原价 MSRP 多交 40% 税或虚假 $5 低报 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>同收件人 24h 免税额防拆单 (Section 321) 与欧盟 IOSS 报文签名
+            <select id="ddp-demin-select" onchange="recalcCrossBorderDdpLandedCostSandbox()">
+              <option value="pass">24h 同一收件人累计 &lt;=$800 且欧盟 &lt;=€150 运单已加密绑定 IOSS 税号 (安全)</option>
+              <option value="block_451">将 $950 大单拆成 2 个同日包裹规避 $800 免税线或漏传 IOSS 致邮局二次收税 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>到手价差额 100% 兜底担保、MAWB 干线并单落地配与本地退货退税
+            <select id="ddp-opt-select" onchange="recalcCrossBorderDdpLandedCostSandbox()">
+              <option value="enabled" selected>Zonos/Global-e 税费兜底 + MAWB 主提单集拼砍 42% 清关费 + 本地退货退税 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">单包独立商业清关 + 跨境退货原路空运退回发货国 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度跨境拒收与多缴税费总池</div>
+            <div class="finops-kpi-val" id="ddp-gross-kpi">$155,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">DDP 锁价与 MAWB 集拼后净成本</div>
+            <div class="finops-kpi-val" id="ddp-net-kpi" style="color:#6ee7b7;">$99,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省拒收退件费与报关溢价</div>
+            <div class="finops-kpi-val" id="ddp-savings-kpi" style="color:#38bdf8;">$55,800</div>
+          </div>
+        </div>
+        <div id="ddp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 GUARANTEED_DDP_MAWB_ZONE_SKIPPING_AND_DRAWBACK_CONFIRM · Mandate: cross_border_ddp_escrow_optim_409
         </div>
       </div>
 
@@ -72386,6 +72543,79 @@ function recalcEcommerceAccountTakeoverSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 TRUSTED_ADDRESS_VAULTED_TOKEN_CHECKOUT_AUTHORIZED · Mandate: ato_saved_card_escrow_200';
+}}
+
+function recalcCrossBorderDdpLandedCostSandbox() {{
+  const grossInput = document.getElementById('ddp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '155000'));
+  const modeGate = document.getElementById('ddp-mode-select').value;
+  const htsGate = document.getElementById('ddp-hts-select').value;
+  const deminGate = document.getElementById('ddp-demin-select').value;
+  const optMode = document.getElementById('ddp-opt-select').value;
+
+  const grossKpi = document.getElementById('ddp-gross-kpi');
+  const netKpi = document.getElementById('ddp-net-kpi');
+  const savingsKpi = document.getElementById('ddp-savings-kpi');
+  const statusKpi = document.getElementById('ddp-status-kpi');
+  const banner = document.getElementById('ddp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (deminGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 DEMINIMIS_DAILY_SMURFING_OR_IOSS_MISMATCH_HOLD · Mandate: null';
+    return;
+  }}
+  if (modeGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNDISCLOSED_DDU_DOORSTEP_DUTY_SHOCK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (htsGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 GENERIC_6DIGIT_HS_OR_UNDERDECLARATION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 GUARANTEED_DDP_MAWB_ZONE_SKIPPING_AND_DRAWBACK_CONFIRM · Mandate: cross_border_ddp_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 COMPLIANT_CROSS_BORDER_DDP_SHIPMENT_AUTHORIZED · Mandate: cross_border_ddp_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

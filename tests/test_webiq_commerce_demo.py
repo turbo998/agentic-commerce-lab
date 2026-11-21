@@ -20716,6 +20716,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-account-takeover-escrow-sandbox", html_zh)
 
+    def test_cross_border_ddp_landed_cost_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderDdpLandedCostPolicyInput,
+            evaluate_cross_border_ddp_landed_cost_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_ddp_landed_cost_policy(
+            CrossBorderDdpLandedCostPolicyInput(
+                quarterly_cross_border_duty_refusal_and_brokerage_pool_usd=155000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "COMPLIANT_CROSS_BORDER_DDP_SHIPMENT_AUTHORIZED",
+        )
+
+        ddu = evaluate_cross_border_ddp_landed_cost_policy(
+            CrossBorderDdpLandedCostPolicyInput(
+                undisclosed_ddu_doorstep_duty_and_carrier_advancement_shock=True
+            )
+        )
+        self.assertEqual(ddu["status_code"], 403)
+        self.assertEqual(
+            ddu["decision"],
+            "UNDISCLOSED_DDU_DOORSTEP_DUTY_SHOCK_BLOCKED",
+        )
+
+        hts = evaluate_cross_border_ddp_landed_cost_policy(
+            CrossBorderDdpLandedCostPolicyInput(
+                generic_6digit_hs_wrong_coo_or_msrp_underdeclared_invoice=True
+            )
+        )
+        self.assertEqual(hts["status_code"], 422)
+        self.assertEqual(
+            hts["decision"],
+            "GENERIC_6DIGIT_HS_OR_UNDERDECLARATION_BLOCKED",
+        )
+
+        demin = evaluate_cross_border_ddp_landed_cost_policy(
+            CrossBorderDdpLandedCostPolicyInput(
+                de_minimis_same_day_split_smurfing_or_missing_ioss_edi=True
+            )
+        )
+        self.assertEqual(demin["status_code"], 451)
+        self.assertEqual(
+            demin["decision"],
+            "DEMINIMIS_DAILY_SMURFING_OR_IOSS_MISMATCH_HOLD",
+        )
+
+        optim = evaluate_cross_border_ddp_landed_cost_policy(
+            CrossBorderDdpLandedCostPolicyInput(
+                quarterly_cross_border_duty_refusal_and_brokerage_pool_usd=155000.0,
+                guaranteed_ddp_mawb_zone_skipping_and_duty_drawback_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 55800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 99200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_ddp_landed_cost_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-ddp-landed-cost-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
