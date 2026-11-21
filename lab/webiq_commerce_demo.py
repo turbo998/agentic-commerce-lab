@@ -32169,6 +32169,82 @@ def evaluate_ecommerce_auto_parts_vin_core_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BReturnablePackagingPalletPolicyInput:
+    quarterly_pallet_shrinkage_phantom_dwell_rent_and_backhaul_pool_usd: float = 220000.0
+    dock_empty_pallet_over_pickup_or_whitewood_junk_swap: bool = False
+    billing_dwell_rent_after_edi856_transfer_or_taxing_leih_deposit: bool = False
+    cross_border_wood_missing_ispm15_stamp_or_unwashed_food_rpc: bool = False
+    deadhead_backhaul_empty_sweep_and_instant_pool_offhire_ready: bool = False
+
+
+def evaluate_b2b_returnable_packaging_pallet_policy(
+    policy_input: B2BReturnablePackagingPalletPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_pallet_shrinkage_phantom_dwell_rent_and_backhaul_pool_usd
+        ),
+    )
+    if policy_input.cross_border_wood_missing_ispm15_stamp_or_unwashed_food_rpc:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_ISPM15_HT_STAMP_OR_UNWASHED_FOOD_RPC_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dock_empty_pallet_over_pickup_or_whitewood_junk_swap:
+        return {
+            "status_code": 403,
+            "decision": "DOCK_PALLET_OVER_PICKUP_OR_WHITEWOOD_SWAP_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.billing_dwell_rent_after_edi856_transfer_or_taxing_leih_deposit:
+        return {
+            "status_code": 422,
+            "decision": "POST_TRANSFER_DWELL_RENT_OR_LEIH_VAT_ERROR_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.deadhead_backhaul_empty_sweep_and_instant_pool_offhire_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "INSTANT_EDI_OFFHIRE_AND_BACKHAUL_EMPTY_SWEEP_CONFIRM",
+            "mandate_token": "b2b_rtp_pallet_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_GRAI_PALLET_EXCHANGE_AND_ISPM15_AUTHORIZED",
+        "mandate_token": "b2b_rtp_pallet_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -43938,6 +44014,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_returnable_packaging_pallet_guard = {
+        "authorized_200": evaluate_b2b_returnable_packaging_pallet_policy(
+            B2BReturnablePackagingPalletPolicyInput()
+        ),
+        "dock_over_pickup_or_swap_403": evaluate_b2b_returnable_packaging_pallet_policy(
+            B2BReturnablePackagingPalletPolicyInput(
+                dock_empty_pallet_over_pickup_or_whitewood_junk_swap=True
+            )
+        ),
+        "post_ship_rent_or_vat_422": evaluate_b2b_returnable_packaging_pallet_policy(
+            B2BReturnablePackagingPalletPolicyInput(
+                billing_dwell_rent_after_edi856_transfer_or_taxing_leih_deposit=True
+            )
+        ),
+        "missing_ispm15_or_wash_451": evaluate_b2b_returnable_packaging_pallet_policy(
+            B2BReturnablePackagingPalletPolicyInput(
+                cross_border_wood_missing_ispm15_stamp_or_unwashed_food_rpc=True
+            )
+        ),
+        "instant_offhire_and_backhaul_409": evaluate_b2b_returnable_packaging_pallet_policy(
+            B2BReturnablePackagingPalletPolicyInput(
+                deadhead_backhaul_empty_sweep_and_instant_pool_offhire_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -44291,6 +44393,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "high_ticket_auto_split_tender_guard": high_ticket_auto_split_tender_guard,
         "ota_cruise_fly_cruise_folio_guard": ota_cruise_fly_cruise_folio_guard,
         "ecommerce_auto_parts_vin_core_guard": ecommerce_auto_parts_vin_core_guard,
+        "b2b_returnable_packaging_pallet_guard": b2b_returnable_packaging_pallet_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -62315,6 +62418,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="autopartsvin-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PLATE_TO_VIN_GUARANTEED_FIT_AND_CORE_HOLD_CONFIRM · Mandate: auto_parts_vin_core_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 225 B2B Returnable Transport Packaging (RTP) & Pallet-Pool (CHEP / IFCO) Escrow (#344) -->
+      <div class="finops-box" id="b2b-returnable-packaging-pallet-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📦 企业 B2B 可循环包装与共享托盘池结算 (RTP: CHEP 集保 / IFCO / EPAL / SAP LEIH) 沙盒</div>
+            <div class="finops-sub">Round 225 (#344) · 月台门洞 GRAI-96 RFID 点算防司机多叉空托盘或用 $4 烂白木调包 (HTTP 403) + EDI 856 发货毫秒级同步 myCHEP 立停日租金与 SAP LEIH 免税押金 (HTTP 422) + 跨境木托盘 ISPM-15 熏蒸章与生鲜筐 FSMA 洗消锁 (HTTP 451) + 返程顺路收空筐净省 35% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="rtppallet-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度月台被多拉走 CHEP 托盘 ($38/块丢失费)、忘报转移白交 18天滞留日租与逆向专车收空筐运费池 ($)
+            <input type="number" id="rtppallet-gross-input" value="220000" min="10000" step="5000" oninput="recalcB2BReturnablePackagingPalletSandbox()" />
+          </label>
+          <label>月台门洞 GS1 GRAI-96 RFID + 视觉叠高点算与防劣质白木板 (White-Wood) 顶替门禁
+            <select id="rtppallet-dock-select" onchange="recalcB2BReturnablePackagingPalletSandbox()">
+              <option value="pass">拉走空托盘数 == 卸货交入数 + 100% 识别 CHEP/EPAL 官方正品标识 (合规)</option>
+              <option value="block_403">送货司机卸下 22 块 CHEP 好托盘却趁乱叉走 30 块空盘卖废品 或 拿 $4 烂白木板充数交差 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>发货 EDI 856 ASN 毫秒级触发租赁池 (myCHEP/IFCO) 过户停租与 SAP LEIH 押金免税隔离
+            <select id="rtppallet-offhire-select" onchange="recalcB2BReturnablePackagingPalletSandbox()">
+              <option value="pass">发货当日自动推送 myCHEP 转移单立停本方日租 + SAP LEIH 501M 独立免税押金账本 (合规)</option>
+              <option value="block_422">货已发给商超 18 天却忘录转移单继续白交每日滞留租金 或 把可退周转箱押金混入商品售价重交增值税 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>跨境海运木托盘 ISPM-15 IPPC 热处理检疫烙印核验与生鲜折叠筐 (RPC) FSMA 高温洗消门禁
+            <select id="rtppallet-ispm-select" onchange="recalcB2BReturnablePackagingPalletSandbox()">
+              <option value="pass">出口木托盘含清晰 IPPC HT 麦穗检疫章 + 生鲜塑料筐经 80°C 高温洗消合格 (安全)</option>
+              <option value="block_451">跨境海运垫了无 ISPM-15 烙印实木托盘遭目的港海关整柜退运 或 未洗消生鲜筐直接装果蔬 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>自有车队空车返程顺路捎回折叠空筐 (Backhaul Sweep) 与 45 天滞留预警免买断罚金
+            <select id="rtppallet-opt-select" onchange="recalcB2BReturnablePackagingPalletSandbox()">
+              <option value="enabled" selected>返程空车顺路带回折叠筐(-62%逆向运费) + EDI 秒停日租(-18天) + 45d 催还免 $38 买断费 (-35% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统纸质托盘白条人工记账 + 单独雇零担货车去拉空周转箱 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度托盘丢失罚金与滞留租金池</div>
+            <div class="finops-kpi-val" id="rtppallet-gross-kpi">$220,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">GRAI 门禁与秒级过户后净损耗</div>
+            <div class="finops-kpi-val" id="rtppallet-net-kpi" style="color:#6ee7b7;">$143,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省托盘赔付与逆向运费</div>
+            <div class="finops-kpi-val" id="rtppallet-savings-kpi" style="color:#38bdf8;">$77,000</div>
+          </div>
+        </div>
+        <div id="rtppallet-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 INSTANT_EDI_OFFHIRE_AND_BACKHAUL_EMPTY_SWEEP_CONFIRM · Mandate: b2b_rtp_pallet_escrow_optim_409
         </div>
       </div>
 
@@ -84257,6 +84417,79 @@ function recalcEcommerceAutoPartsVinCoreSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 EXACT_VIN_ACES_FITMENT_AND_INTACT_CORE_AUTHORIZED · Mandate: auto_parts_vin_core_escrow_200';
+}}
+
+function recalcB2BReturnablePackagingPalletSandbox() {{
+  const grossInput = document.getElementById('rtppallet-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '220000'));
+  const dockGate = document.getElementById('rtppallet-dock-select').value;
+  const offhireGate = document.getElementById('rtppallet-offhire-select').value;
+  const ispmGate = document.getElementById('rtppallet-ispm-select').value;
+  const optMode = document.getElementById('rtppallet-opt-select').value;
+
+  const grossKpi = document.getElementById('rtppallet-gross-kpi');
+  const netKpi = document.getElementById('rtppallet-net-kpi');
+  const savingsKpi = document.getElementById('rtppallet-savings-kpi');
+  const statusKpi = document.getElementById('rtppallet-status-kpi');
+  const banner = document.getElementById('rtppallet-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ispmGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_ISPM15_HT_STAMP_OR_UNWASHED_FOOD_RPC_HOLD · Mandate: null';
+    return;
+  }}
+  if (dockGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DOCK_PALLET_OVER_PICKUP_OR_WHITEWOOD_SWAP_BLOCK · Mandate: null';
+    return;
+  }}
+  if (offhireGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 POST_TRANSFER_DWELL_RENT_OR_LEIH_VAT_ERROR_BLOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 INSTANT_EDI_OFFHIRE_AND_BACKHAUL_EMPTY_SWEEP_CONFIRM · Mandate: b2b_rtp_pallet_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_GRAI_PALLET_EXCHANGE_AND_ISPM15_AUTHORIZED · Mandate: b2b_rtp_pallet_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

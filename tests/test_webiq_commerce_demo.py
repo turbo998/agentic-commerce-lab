@@ -24133,6 +24133,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-auto-parts-vin-core-sandbox", html_zh)
 
+    def test_b2b_returnable_packaging_pallet_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BReturnablePackagingPalletPolicyInput,
+            evaluate_b2b_returnable_packaging_pallet_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_returnable_packaging_pallet_policy(
+            B2BReturnablePackagingPalletPolicyInput(
+                quarterly_pallet_shrinkage_phantom_dwell_rent_and_backhaul_pool_usd=220000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_GRAI_PALLET_EXCHANGE_AND_ISPM15_AUTHORIZED",
+        )
+
+        dock = evaluate_b2b_returnable_packaging_pallet_policy(
+            B2BReturnablePackagingPalletPolicyInput(
+                dock_empty_pallet_over_pickup_or_whitewood_junk_swap=True
+            )
+        )
+        self.assertEqual(dock["status_code"], 403)
+        self.assertEqual(
+            dock["decision"],
+            "DOCK_PALLET_OVER_PICKUP_OR_WHITEWOOD_SWAP_BLOCK",
+        )
+
+        offhire = evaluate_b2b_returnable_packaging_pallet_policy(
+            B2BReturnablePackagingPalletPolicyInput(
+                billing_dwell_rent_after_edi856_transfer_or_taxing_leih_deposit=True
+            )
+        )
+        self.assertEqual(offhire["status_code"], 422)
+        self.assertEqual(
+            offhire["decision"],
+            "POST_TRANSFER_DWELL_RENT_OR_LEIH_VAT_ERROR_BLOCK",
+        )
+
+        ispm = evaluate_b2b_returnable_packaging_pallet_policy(
+            B2BReturnablePackagingPalletPolicyInput(
+                cross_border_wood_missing_ispm15_stamp_or_unwashed_food_rpc=True
+            )
+        )
+        self.assertEqual(ispm["status_code"], 451)
+        self.assertEqual(
+            ispm["decision"],
+            "MISSING_ISPM15_HT_STAMP_OR_UNWASHED_FOOD_RPC_HOLD",
+        )
+
+        optim = evaluate_b2b_returnable_packaging_pallet_policy(
+            B2BReturnablePackagingPalletPolicyInput(
+                quarterly_pallet_shrinkage_phantom_dwell_rent_and_backhaul_pool_usd=220000.0,
+                deadhead_backhaul_empty_sweep_and_instant_pool_offhire_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 77000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 143000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_returnable_packaging_pallet_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-returnable-packaging-pallet-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
