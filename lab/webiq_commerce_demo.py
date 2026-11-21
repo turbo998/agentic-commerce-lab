@@ -26404,6 +26404,79 @@ def evaluate_b2b_sow_services_vms_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceShippingProtectionEscrowPolicyInput:
+    quarterly_shipping_loss_and_protection_pool_usd: float = 95000.0
+    aigc_fake_damage_photo_or_dna_fraud_ring: bool = False
+    high_aov_missing_signature_or_48h_cooling_bypass: bool = False
+    prechecked_opt_out_drip_fee_sb478_violation: bool = False
+    merchant_captive_pool_cogs_reship_and_subrogation_ready: bool = False
+
+
+def evaluate_ecommerce_shipping_protection_escrow_policy(
+    policy_input: EcommerceShippingProtectionEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_shipping_loss_and_protection_pool_usd)
+    )
+    if policy_input.prechecked_opt_out_drip_fee_sb478_violation:
+        return {
+            "status_code": 451,
+            "decision": "PRECHECKED_OPT_OUT_DRIP_FEE_SB478_VIOLATION_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.aigc_fake_damage_photo_or_dna_fraud_ring:
+        return {
+            "status_code": 403,
+            "decision": "AIGC_FAKE_DAMAGE_PHOTO_OR_DNA_FRAUD_RING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.high_aov_missing_signature_or_48h_cooling_bypass:
+        return {
+            "status_code": 422,
+            "decision": "HIGH_AOV_MISSING_SIGNATURE_OR_48H_COOLING_BYPASS_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.merchant_captive_pool_cogs_reship_and_subrogation_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MERCHANT_CAPTIVE_POOL_COGS_RESHIP_AND_SUBROGATION_CONFIRM",
+            "mandate_token": "shipping_protection_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_POD_AND_INSTANT_RESHIP_AUTHORIZED",
+        "mandate_token": "shipping_protection_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -36171,6 +36244,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_shipping_protection_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_shipping_protection_escrow_policy(
+            EcommerceShippingProtectionEscrowPolicyInput()
+        ),
+        "aigc_damage_or_dna_ring_403": evaluate_ecommerce_shipping_protection_escrow_policy(
+            EcommerceShippingProtectionEscrowPolicyInput(
+                aigc_fake_damage_photo_or_dna_fraud_ring=True
+            )
+        ),
+        "missing_signature_or_48h_cooling_422": evaluate_ecommerce_shipping_protection_escrow_policy(
+            EcommerceShippingProtectionEscrowPolicyInput(
+                high_aov_missing_signature_or_48h_cooling_bypass=True
+            )
+        ),
+        "prechecked_drip_fee_sb478_451": evaluate_ecommerce_shipping_protection_escrow_policy(
+            EcommerceShippingProtectionEscrowPolicyInput(
+                prechecked_opt_out_drip_fee_sb478_violation=True
+            )
+        ),
+        "captive_pool_reship_and_subrogation_409": evaluate_ecommerce_shipping_protection_escrow_policy(
+            EcommerceShippingProtectionEscrowPolicyInput(
+                merchant_captive_pool_cogs_reship_and_subrogation_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -36447,6 +36546,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "virtual_waiting_room_fair_queue_guard": virtual_waiting_room_fair_queue_guard,
         "ecommerce_promo_stacking_escrow_guard": ecommerce_promo_stacking_escrow_guard,
         "b2b_sow_services_vms_escrow_guard": b2b_sow_services_vms_escrow_guard,
+        "ecommerce_shipping_protection_escrow_guard": ecommerce_shipping_protection_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -50082,6 +50182,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="sow-vms-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 T_AND_M_TO_NTE_DELIVERABLE_SOW_AND_VOLUME_REBATE_CONFIRM · Mandate: b2b_sow_vms_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 148 E-Commerce Shipping Protection & Captive Escrow -->
+      <div class="finops-box" id="ecommerce-shipping-protection-escrow-sandbox" style="margin-top:12px;border-color:#a855f7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📦 电商包裹保价、防门口被偷 (Porch Piracy) 与商家自保资金池托管沙盒 (Corso / Navidium / Route)</div>
+            <div class="finops-sub">Round 148 · WebRTC 实时视频破损鉴伪 (HTTP 403) + &gt;$250 强制签收/48h 冷静期 (HTTP 422) + 禁默认勾选 (HTTP 451) + 自保池净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="ship-prot-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度包裹丢损、假报损与保费外流池 ($)
+            <input type="number" id="ship-prot-gross-input" value="95000" min="10000" step="5000" oninput="recalcEcommerceShippingProtectionSandbox()" />
+          </label>
+          <label>战损照片 AIGC 鉴伪与承运商 POD 比对
+            <select id="ship-prot-fraud-select" onchange="recalcEcommerceShippingProtectionSandbox()">
+              <option value="pass">WebRTC 实时相机箱货同框 + 承运商 POD 真实 (合规)</option>
+              <option value="block_403">相册上传 AIGC 合成假裂纹图或 DNA 团伙骗赔 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>&gt;$250 贵重件强制签收锁与 48h 冷静期
+            <select id="ship-prot-sig-select" onchange="recalcEcommerceShippingProtectionSandbox()">
+              <option value="pass">&gt;$250 已挂本人签收/自提柜 + 满 48h 错投排查期 (合规)</option>
+              <option value="block_422">&gt;$250 贵重包裹裸奔放门口或妥投 5 分钟秒报丢件 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>加州 SB-478 禁默认勾选暗扣门禁
+            <select id="ship-prot-sb478-select" onchange="recalcEcommerceShippingProtectionSandbox()">
+              <option value="pass">Explicit Opt-In 显式自愿勾选 + 商家履约保障表述 (安全)</option>
+              <option value="block_451">购物车默认偷勾 Pre-Checked $4.95 保价费违法 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>商家自建保障池 (Captive Pool) 与快递追偿
+            <select id="ship-prot-opt-select" onchange="recalcEcommerceShippingProtectionSandbox()">
+              <option value="enabled" selected>自保池留存 70% 结余 + COGS 成本秒补发 + 快递 $100 追偿 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">保费全交第三方插件抽走 70% + 丢件退全额现金 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度履约丢损与保价总池</div>
+            <div class="finops-kpi-val" id="ship-prot-gross-kpi">$95,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">自保池补发与追偿后净支出</div>
+            <div class="finops-kpi-val" id="ship-prot-net-kpi" style="color:#6ee7b7;">$59,850</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省插件抽成与骗赔资损</div>
+            <div class="finops-kpi-val" id="ship-prot-savings-kpi" style="color:#38bdf8;">$35,150</div>
+          </div>
+        </div>
+        <div id="ship-prot-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MERCHANT_CAPTIVE_POOL_COGS_RESHIP_AND_SUBROGATION_CONFIRM · Mandate: shipping_protection_escrow_optim_409
         </div>
       </div>
 
@@ -66403,6 +66560,79 @@ function recalcB2BSowServicesVmsSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_SES_AND_UAT_DELIVERABLE_AUTHORIZED · Mandate: b2b_sow_vms_escrow_200';
+}}
+
+function recalcEcommerceShippingProtectionSandbox() {{
+  const grossInput = document.getElementById('ship-prot-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '95000'));
+  const fraudGate = document.getElementById('ship-prot-fraud-select').value;
+  const sigGate = document.getElementById('ship-prot-sig-select').value;
+  const sb478Gate = document.getElementById('ship-prot-sb478-select').value;
+  const optMode = document.getElementById('ship-prot-opt-select').value;
+
+  const grossKpi = document.getElementById('ship-prot-gross-kpi');
+  const netKpi = document.getElementById('ship-prot-net-kpi');
+  const savingsKpi = document.getElementById('ship-prot-savings-kpi');
+  const statusKpi = document.getElementById('ship-prot-status-kpi');
+  const banner = document.getElementById('ship-prot-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (sb478Gate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PRECHECKED_OPT_OUT_DRIP_FEE_SB478_VIOLATION_HOLD · Mandate: null';
+    return;
+  }}
+  if (fraudGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 AIGC_FAKE_DAMAGE_PHOTO_OR_DNA_FRAUD_RING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (sigGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 HIGH_AOV_MISSING_SIGNATURE_OR_48H_COOLING_BYPASS_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MERCHANT_CAPTIVE_POOL_COGS_RESHIP_AND_SUBROGATION_CONFIRM · Mandate: shipping_protection_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_POD_AND_INSTANT_RESHIP_AUTHORIZED · Mandate: shipping_protection_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

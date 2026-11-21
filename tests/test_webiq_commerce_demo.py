@@ -18974,6 +18974,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-sow-services-vms-escrow-sandbox", html_zh)
 
+    def test_ecommerce_shipping_protection_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceShippingProtectionEscrowPolicyInput,
+            evaluate_ecommerce_shipping_protection_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_shipping_protection_escrow_policy(
+            EcommerceShippingProtectionEscrowPolicyInput(
+                quarterly_shipping_loss_and_protection_pool_usd=95000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_POD_AND_INSTANT_RESHIP_AUTHORIZED",
+        )
+
+        fraud = evaluate_ecommerce_shipping_protection_escrow_policy(
+            EcommerceShippingProtectionEscrowPolicyInput(
+                aigc_fake_damage_photo_or_dna_fraud_ring=True
+            )
+        )
+        self.assertEqual(fraud["status_code"], 403)
+        self.assertEqual(
+            fraud["decision"],
+            "AIGC_FAKE_DAMAGE_PHOTO_OR_DNA_FRAUD_RING_BLOCKED",
+        )
+
+        sig = evaluate_ecommerce_shipping_protection_escrow_policy(
+            EcommerceShippingProtectionEscrowPolicyInput(
+                high_aov_missing_signature_or_48h_cooling_bypass=True
+            )
+        )
+        self.assertEqual(sig["status_code"], 422)
+        self.assertEqual(
+            sig["decision"],
+            "HIGH_AOV_MISSING_SIGNATURE_OR_48H_COOLING_BYPASS_BLOCKED",
+        )
+
+        sb478 = evaluate_ecommerce_shipping_protection_escrow_policy(
+            EcommerceShippingProtectionEscrowPolicyInput(
+                prechecked_opt_out_drip_fee_sb478_violation=True
+            )
+        )
+        self.assertEqual(sb478["status_code"], 451)
+        self.assertEqual(
+            sb478["decision"],
+            "PRECHECKED_OPT_OUT_DRIP_FEE_SB478_VIOLATION_HOLD",
+        )
+
+        optim = evaluate_ecommerce_shipping_protection_escrow_policy(
+            EcommerceShippingProtectionEscrowPolicyInput(
+                quarterly_shipping_loss_and_protection_pool_usd=95000.0,
+                merchant_captive_pool_cogs_reship_and_subrogation_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 35150.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 59850.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_shipping_protection_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-shipping-protection-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

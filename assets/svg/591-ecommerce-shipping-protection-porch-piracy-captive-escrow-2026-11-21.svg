@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg591" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081426" />
+      <stop offset="50%" stop-color="#0e2240" />
+      <stop offset="100%" stop-color="#05101e" />
+    </linearGradient>
+    <linearGradient id="accent591" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg591)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent591)" rx="3" />
+
+  <text x="40" y="58" class="title">电商包裹保价、防门口被偷 (Porch Piracy) 与自保资金池托管架构 (Route / Corso / Navidium)</text>
+  <text x="40" y="80" class="subtitle">Round 148 · 防收银台默认偷勾 $4.95 保价费违法、防 AIGC 假破损图骗赔 &amp; 商家自保池省下 65% 抽成净省 37% (SVG 591)</text>
+
+  <!-- Left Card: 3 Shipping Protection Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大包裹保价与丢件理赔乱象</text>
+  <text x="56" y="164" class="card-title">1. 默认偷勾 $4.95 保价费引发集体诉讼 (HTTP 451)</text>
+  <text x="56" y="184" class="body">• 独立站插件在购物车默认打开 (Pre-Checked Opt-Out) $4.95 保价</text>
+  <text x="56" y="202" class="body">• 违反加州 SB-478 滴灌定价法与 FTC Junk Fee 法规，且无保险牌照</text>
+  <text x="56" y="220" class="warn">• 转化率因结账页莫名加价暴跌 11%，还招致律所敲诈诉讼!</text>
+
+  <text x="56" y="256" class="card-title">2. 假称“门口快递被偷”或 AI 伪造破损照 (HTTP 403)</text>
+  <text x="56" y="276" class="body">• FedEx/UPS 刚拍下家门口投递照片 (POD)，黑产 10 分钟后就点</text>
+  <text x="56" y="294" class="body">  “包裹被偷 (DNA - Did Not Receive)”骗取免费补发或全额退款</text>
+  <text x="56" y="312" class="warn">• 或用 Midjourney/PS 给完好商品加上裂纹图层骗保，转手闲鱼卖掉!</text>
+
+  <text x="56" y="348" class="card-title">3. 第三方保价插件抽走 60%–75% 暴利 (HTTP 422)</text>
+  <text x="56" y="368" class="body">• 消费者一年交了 $120,000 保价费，真实丢件赔付仅 $22,000 (18%)</text>
+  <text x="56" y="386" class="body">• 剩下的 $98,000 净利被外部保价 SaaS 插件独吞，商家一分没落着</text>
+  <text x="56" y="404" class="warn">• 且大于 $250 高客单包裹未强制加挂“本人签收 (ASR)”白送小偷!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: AIGC_DAMAGE_PHOTO_OR_DNA_RING_FRAUD</text>
+  <text x="70" y="502" class="warn">• HTTP 422: HIGH_AOV_MISSING_SIGNATURE_OR_COOLING</text>
+  <text x="70" y="524" class="warn">• HTTP 451: PRECHECKED_OPT_OUT_DRIP_FEE_ILLEGAL</text>
+  <text x="70" y="546" class="mono">• HTTP 409:CAPTIVE_SELF_INSURED_POOL_RESHIP_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: VERIFIED_POD_AND_INSTANT_RESHIP_200</text>
+  <text x="70" y="596" class="body">铁律: 严禁默认勾选保价开关；&gt;$250 订单必挂签收锁!</text>
+
+  <!-- Center Card: 4-Stage Shipping Protection & Captive Escrow -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶包裹保障与自保资金池托管架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ef4444" />
+  <text x="450" y="175" class="card-title" fill="#fca5a5">Gate 1: 承运商 GPS/POD 与 AIGC 假破损图鉴伪 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• 核验 FedEx/UPS 投递 GPS 坐标误差 &lt;15m 及门口门垫特征匹配</text>
+  <text x="450" y="213" class="body">• 战损理赔强制通过 WebRTC 实时相机连拍 (禁相册上传 AI 改图)</text>
+  <text x="450" y="231" class="mono">• 检出 AIGC 合成裂纹或团伙高频报“丢件 DNA”-&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: &gt;$250 强制本人签收与 48h 错投冷静期 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 订单实付 &gt;$250 或收件地址属高被盗率街区: 出单 API 自动附加</text>
+  <text x="450" y="320" class="body">  `Direct Signature Required` 或引导改投 Amazon Locker 自提柜</text>
+  <text x="450" y="338" class="body">• 显示“已送达但未收到”须满 48h 邻里错投排查期 (超 $300 附警局回执)</text>
+  <text x="450" y="354" class="mono">• 高价值包裹裸奔放门口或投递后 5 分钟秒点丢件索赔 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 禁用默认勾选暗扣与合规服务条款门禁 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 严格遵循加州 SB-478 与 FTC 规范: 严禁 Pre-Checked 默认勾选加费</text>
+  <text x="450" y="437" class="body">• 必须采用 Explicit Opt-In 显式勾选，或直接内嵌于 VIP 免邮权益包</text>
+  <text x="450" y="455" class="mono">• 检出默认勾选暗扣插件或无牌照违规表述“保险费”-&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: 商家自建保障池 (Captive Pool) + 优先补发 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 告别被外部插件抽走 70% 保费! 采用 Navidium / Shopify Flow</text>
+  <text x="450" y="546" class="body">  建立商家自留履约保障金池，100% 沉淀结余归商家所有</text>
+  <text x="450" y="566" class="mono">• 理赔默认优先执行 `1-Click Instant Reship` (仅耗 COGS 成本 35%)</text>
+  <text x="450" y="586" class="mono">• 同步自动向 UPS/FedEx 追偿 $100 基础保额 -&gt; 净省 37% 资损</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大包裹保价与丢件理赔引擎</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Corso / Navidium (商家自留利润池模式)</text>
+  <text x="846" y="182" class="body">• 优势: 保障金留存在商家自己账上，赔付率仅 15%–20%，70% 变净利</text>
+  <text x="846" y="198" class="body">• 特性: 理赔优先引导“换新重发”而非现金退款，锁住客户 LTV</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Route / Extend Shipping Protection</text>
+  <text x="846" y="244" class="body">• 优势: 持牌承保商背书 (Lloyd's / Chubb)，全包合规与跨店轨迹追踪</text>
+  <text x="846" y="260" class="body">• 局限: 保费大头归平台所有，适合不想自管资金池的品牌</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. FedEx / UPS Delivery Photo + 驿站自提柜</text>
+  <text x="846" y="306" class="body">• 优势: 地理围栏识别“历史丢件黑洞街区”，结账自动免邮推自提柜</text>
+  <text x="846" y="322" class="body">• 特性: 菜鸟驿站/丰巢/Amazon Hub 取件码核销实现 0% 门口被偷</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Carpe Data / Shift 承运商索赔自动追偿</text>
+  <text x="846" y="368" class="body">• 优势: 在先行秒赔买家后，Agent 自动整理称重与破损证据包</text>
+  <text x="846" y="384" class="body">• 特性: 向物流商发起批量 Subrogation 追偿，挽回 $100/单保底额</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度丢件赔付、假报损与保费外流池 ($95,000)</text>
+  <text x="860" y="456" class="body">• 传统第三方抽走70%保费+门口被偷+假图骗赔: $95,000/季</text>
+  <text x="860" y="476" class="mono">• 商家自保池 (Captive Pool) 留存结余与 COGS 重发: -$16,150</text>
+  <text x="860" y="496" class="mono">• &gt;$250 强制签收/自提柜与 AIGC 假破损图拦截: -$11,400</text>
+  <text x="860" y="516" class="mono">• 自动向 UPS/FedEx 批量追偿承运商基础保额: -$7,600</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净履约损耗: $59,850 (净省 $35,150 / -37%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: shipping_protection_escrow_optim_409</text>
+</svg>
