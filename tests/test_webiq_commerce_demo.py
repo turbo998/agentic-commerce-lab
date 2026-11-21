@@ -18103,6 +18103,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-checkout-inventory-saga-sandbox", html_zh)
 
+    def test_b2b_freight_forwarding_ocean_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BFreightForwardingOceanEscrowPolicyInput,
+            evaluate_b2b_freight_forwarding_ocean_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_freight_forwarding_ocean_escrow_policy(
+            B2BFreightForwardingOceanEscrowPolicyInput(
+                quarterly_ocean_freight_and_port_dd_pool_usd=150000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ALL_IN_DOOR_TO_DOOR_TARIFF_AND_14D_FREE_TIME_AUTHORIZED",
+        )
+
+        hostage = evaluate_b2b_freight_forwarding_ocean_escrow_policy(
+            B2BFreightForwardingOceanEscrowPolicyInput(
+                negative_freight_lcl_destination_cisf_hostage_or_fake_gri=True
+            )
+        )
+        self.assertEqual(hostage["status_code"], 403)
+        self.assertEqual(
+            hostage["decision"],
+            "NEGATIVE_FREIGHT_LCL_DESTINATION_CISF_HOSTAGE_OR_FAKE_GRI_BLOCKED",
+        )
+
+        mode = evaluate_b2b_freight_forwarding_ocean_escrow_policy(
+            B2BFreightForwardingOceanEscrowPolicyInput(
+                over_13cbm_loose_lcl_mismatch_or_under_10d_port_free_time=True
+            )
+        )
+        self.assertEqual(mode["status_code"], 422)
+        self.assertEqual(
+            mode["decision"],
+            "OVER_13CBM_LOOSE_LCL_MISMATCH_OR_UNDER_10D_PORT_FREE_TIME_BLOCKED",
+        )
+
+        osra = evaluate_b2b_freight_forwarding_ocean_escrow_policy(
+            B2BFreightForwardingOceanEscrowPolicyInput(
+                fmc_osra_closed_terminal_detention_or_missing_13_invoice_fields=True
+            )
+        )
+        self.assertEqual(osra["status_code"], 451)
+        self.assertEqual(
+            osra["decision"],
+            "FMC_OSRA_CLOSED_TERMINAL_DETENTION_OR_MISSING_13_INVOICE_FIELDS_HOLD",
+        )
+
+        optim = evaluate_b2b_freight_forwarding_ocean_escrow_policy(
+            B2BFreightForwardingOceanEscrowPolicyInput(
+                quarterly_ocean_freight_and_port_dd_pool_usd=150000.0,
+                multi_vendor_origin_40hq_consolidation_and_14d_free_time_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 46500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 103500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_freight_forwarding_ocean_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-freight-forwarding-ocean-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

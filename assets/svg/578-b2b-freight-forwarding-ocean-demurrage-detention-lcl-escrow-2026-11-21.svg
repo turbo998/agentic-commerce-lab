@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg578" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#071324" />
+      <stop offset="50%" stop-color="#0d233d" />
+      <stop offset="100%" stop-color="#050f1c" />
+    </linearGradient>
+    <linearGradient id="accent578" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg578)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent578)" rx="3" />
+
+  <text x="40" y="58" class="title">B2B 国际货代海运 (Flexport / Maersk / 运去哪)、防滞箱滞港罚金 (D&amp;D) 与防拼箱到港扣货托管</text>
+  <text x="40" y="80" class="subtitle">Round 135 · 防 $1/CBM 拼箱到港勒索 $2,800 拆箱换单费、防码头无预约号乱收 $350/d 滞箱费 (FMC OSRA) &amp; 净省 31% (SVG 578)</text>
+
+  <!-- Left Card: 3 Ocean Freight & Forwarder Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大跨境海运货代黑洞</text>
+  <text x="56" y="164" class="card-title">1. $1/CBM 负运费拼箱到港扣提单 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 起运港货代报“海运费 $1/立方米”低价抢单，货到汉堡/洛杉矶</text>
+  <text x="56" y="202" class="body">• 目的港代理扣住提单(D/O)，勒索 $2,800 拆箱费+CISF+换单费</text>
+  <text x="56" y="220" class="warn">• 不交钱不放货，拖延 5 天再叠加每天 $220 监管仓堆存费!</text>
+
+  <text x="56" y="256" class="card-title">2. 码头无提还箱预约号照罚 $350/d 滞箱费 (HTTP 451)</text>
+  <text x="56" y="276" class="body">• 拖车行想还空箱，但码头堆场爆满连续 4 天关闭预约窗口</text>
+  <text x="56" y="294" class="body">• 船公司系统不管码头有没有空位，照常按 $350/天/柜开罚单</text>
+  <text x="56" y="312" class="warn">• 直接违反美国联邦海事委员会 FMC OSRA 2022 激励原则!</text>
+
+  <text x="56" y="348" class="card-title">3. 突发加收 $1,500 PSS 旺季附加费与甩柜</text>
+  <text x="56" y="368" class="body">• 已签长协固定运价，货代临时通知“船东加收 $1,500 GRI/PSS”</text>
+  <text x="56" y="386" class="body">• 或把你的低价长协柜恶意甩到下一班船 (Rolled Cargo)，把舱位</text>
+  <text x="56" y="404" class="warn">  高价卖给现货客，导致工厂断料停线或亚马逊断货降权!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: LCL_DESTINATION_CISF_HOSTAGE_OR_FAKE_GRI</text>
+  <text x="70" y="502" class="warn">• HTTP 422: LCL_VS_FCL_BREAKEVEN_MISMATCH_OR_NO_FREE_TIME</text>
+  <text x="70" y="524" class="warn">• HTTP 451: FMC_OSRA_CLOSED_TERMINAL_DETENTION_HOLD</text>
+  <text x="70" y="546" class="mono">• HTTP 409: FCL_CONSOLIDATION_AND_14D_FREE_TIME_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: ALL_IN_DOOR_TO_DOOR_TARIFF_AUTHORIZED</text>
+  <text x="70" y="596" class="body">铁律: 满 13 CBM 强制转 20GP 整柜 + 订舱锁死 14~21天免箱期!</text>
+
+  <!-- Center Card: 4-Stage Ocean Freight Escrow Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶国际海运防扣货与 D&amp;D 豁免架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">Gate 1: 端到端全包锁价 (All-In Door-to-Door) 门禁</text>
+  <text x="450" y="195" class="body">• 严禁接受只报起运港海运费、隐瞒目的港收费的阴阳报价单</text>
+  <text x="450" y="213" class="body">• 强制要求货代签署目的港 THC / CFS 拆箱费 / 换单费封顶清单</text>
+  <text x="450" y="231" class="mono">• 负运费引流拼箱或无船东公开运价表的假 GRI -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="282" class="card-title" fill="#6ee7b7">Gate 2: 拼箱转整柜盈亏平衡锁 (13 CBM -&gt; 20GP FCL)</text>
+  <text x="450" y="302" class="body">• 货量一旦达到 12~14 CBM，散货拼箱(LCL)加上两边拆装箱费</text>
+  <text x="450" y="320" class="body">  实际上比直接包一整个 20 尺集装箱 (20GP FCL) 还要贵 35%!</text>
+  <text x="450" y="338" class="body">• 订舱前强制嵌入 14~21 天目的港合并免堆免箱期 (Combined Free Time)</text>
+  <text x="450" y="354" class="mono">• 15 CBM 仍走高价散货拼箱或仅给 4 天免箱期 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: FMC OSRA 2022 码头无预约号截屏免罚 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• Agent 每小时抓取洛杉矶/长滩/鹿特丹码头预约系统状态</text>
+  <text x="450" y="437" class="body">• 凡码头无可用提/还箱窗口或海关查验停钟，自动存档时间戳截图</text>
+  <text x="450" y="455" class="mono">• 援引 46 CFR §541 拒付不可归责于货主的非法滞箱费 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#f59e0b" />
+  <text x="450" y="508" class="card-title" fill="#fcd34d">Gate 4: Xeneta 运价指数对标与多厂集拼整柜 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 实时接入 Xeneta / Drewry WCI 航线市场 P25 分位点运价</text>
+  <text x="450" y="546" class="body">• 自动将华东 3 家供应商的 8 CBM + 9 CBM + 11 CBM 散货在</text>
+  <text x="450" y="566" class="mono">  宁波保税仓集拼成 1 个 40HQ 高柜直发，省去 3 份目的港拆箱费!</text>
+  <text x="450" y="586" class="mono">• 多厂集拼整柜 + 21天免箱期 + OSRA 免罚 -&gt; 净省 31% 海运费</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大数字化海运与运价平台</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Flexport / 运去哪 / 环世物流</text>
+  <text x="846" y="182" class="body">• 优势: 门到门数字化费用拆解透明，支持多供应商起运港集拼</text>
+  <text x="846" y="198" class="body">• 特性: 集装箱里程碑 (船开/到港/卸船/放行/提重/还空) 实时 Webhook</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Maersk Spot / Hapag-Lloyd Quick Quotes</text>
+  <text x="846" y="244" class="body">• 优势: 船东直签双向违约赔偿保舱保柜 (甩柜向货主赔付违约金)</text>
+  <text x="846" y="260" class="body">• 特性: 在线一键加购额外免箱期 (仅 $25/天 vs 事后罚 $350/天!)</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Xeneta / Freightos Baltic Index (FBX)</text>
+  <text x="846" y="306" class="body">• 优势: 全球最大海空运实付合同运价数据库，戳穿货代虚报涨价</text>
+  <text x="846" y="322" class="body">• 特性: 支持指数挂钩浮动长协 (Index-Linked Contracts)</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Project44 / FourKites 港口拥堵雷达</text>
+  <text x="846" y="368" class="body">• 优势: 追踪码头底盘车 (Chassis) 紧缺与空箱归还点关闭状态</text>
+  <text x="846" y="384" class="body">• 特性: 自动生成 FMC OSRA 滞箱费争议法定抗辩证据包</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度国际海运与目的港附加费池 ($150,000)</text>
+  <text x="860" y="456" class="body">• 传统拼箱到港被宰+天价滞箱滞港罚金: $150,000/季</text>
+  <text x="860" y="476" class="mono">• 散货起运港集拼转 40HQ 整柜免目的港拆箱宰客: -$19,500</text>
+  <text x="860" y="496" class="mono">• 订舱预锁 14~21d 免箱期 + FMC OSRA 免罚抗辩: -$16,500</text>
+  <text x="860" y="516" class="mono">• Xeneta P25 运价对标剔除虚假旺季附加费: -$10,500</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净支出: $103,500 (净省 $46,500 / -31%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: b2b_freight_forwarding_optim_409</text>
+</svg>

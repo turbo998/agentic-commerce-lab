@@ -25367,6 +25367,87 @@ def evaluate_ecommerce_checkout_inventory_saga_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BFreightForwardingOceanEscrowPolicyInput:
+    """Input contract for B2B Ocean Freight Forwarding, Anti-D&D (FMC OSRA) & LCL-to-FCL Consolidation Escrow."""
+
+    quarterly_ocean_freight_and_port_dd_pool_usd: float = 150000.0
+    negative_freight_lcl_destination_cisf_hostage_or_fake_gri: bool = False
+    over_13cbm_loose_lcl_mismatch_or_under_10d_port_free_time: bool = False
+    fmc_osra_closed_terminal_detention_or_missing_13_invoice_fields: bool = False
+    mandate_signing_key_age_days: int = 30
+    multi_vendor_origin_40hq_consolidation_and_14d_free_time_ready: bool = False
+
+
+def evaluate_b2b_freight_forwarding_ocean_escrow_policy(
+    policy_input: B2BFreightForwardingOceanEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Ocean Freight Forwarding, Anti-D&D (FMC OSRA) & LCL-to-FCL Consolidation Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_ocean_freight_and_port_dd_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.fmc_osra_closed_terminal_detention_or_missing_13_invoice_fields
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "FMC_OSRA_CLOSED_TERMINAL_DETENTION_OR_MISSING_13_INVOICE_FIELDS_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.negative_freight_lcl_destination_cisf_hostage_or_fake_gri:
+        return {
+            "status_code": 403,
+            "decision": "NEGATIVE_FREIGHT_LCL_DESTINATION_CISF_HOSTAGE_OR_FAKE_GRI_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.over_13cbm_loose_lcl_mismatch_or_under_10d_port_free_time:
+        return {
+            "status_code": 422,
+            "decision": "OVER_13CBM_LOOSE_LCL_MISMATCH_OR_UNDER_10D_PORT_FREE_TIME_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.multi_vendor_origin_40hq_consolidation_and_14d_free_time_ready:
+        savings = round(gross_pool * 0.31, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MULTI_VENDOR_ORIGIN_40HQ_CONSOLIDATION_AND_14D_FREE_TIME_CONFIRM",
+            "mandate_token": "b2b_freight_forwarding_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ALL_IN_DOOR_TO_DOOR_TARIFF_AND_14D_FREE_TIME_AUTHORIZED",
+        "mandate_token": "b2b_freight_forwarding_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -34796,6 +34877,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_freight_forwarding_ocean_escrow_guard = {
+        "authorized_200": evaluate_b2b_freight_forwarding_ocean_escrow_policy(
+            B2BFreightForwardingOceanEscrowPolicyInput()
+        ),
+        "lcl_hostage_or_fake_gri_403": evaluate_b2b_freight_forwarding_ocean_escrow_policy(
+            B2BFreightForwardingOceanEscrowPolicyInput(
+                negative_freight_lcl_destination_cisf_hostage_or_fake_gri=True
+            )
+        ),
+        "over_13cbm_lcl_or_short_free_time_422": evaluate_b2b_freight_forwarding_ocean_escrow_policy(
+            B2BFreightForwardingOceanEscrowPolicyInput(
+                over_13cbm_loose_lcl_mismatch_or_under_10d_port_free_time=True
+            )
+        ),
+        "fmc_osra_closed_terminal_451": evaluate_b2b_freight_forwarding_ocean_escrow_policy(
+            B2BFreightForwardingOceanEscrowPolicyInput(
+                fmc_osra_closed_terminal_detention_or_missing_13_invoice_fields=True
+            )
+        ),
+        "multi_vendor_40hq_consolidation_409": evaluate_b2b_freight_forwarding_ocean_escrow_policy(
+            B2BFreightForwardingOceanEscrowPolicyInput(
+                multi_vendor_origin_40hq_consolidation_and_14d_free_time_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -35059,6 +35166,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_mice_hotel_block_escrow_guard": b2b_mice_hotel_block_escrow_guard,
         "ota_car_rental_damage_fuel_escrow_guard": ota_car_rental_damage_fuel_escrow_guard,
         "ecommerce_checkout_inventory_saga_guard": ecommerce_checkout_inventory_saga_guard,
+        "b2b_freight_forwarding_ocean_escrow_guard": b2b_freight_forwarding_ocean_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -47887,6 +47995,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="checkout-saga-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FLASH_180S_TTL_AND_PREAUTHORIZED_WAITLIST_AUTOFILL_CONFIRM · Mandate: ecommerce_checkout_saga_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 135 B2B Ocean Freight Forwarding, Anti-D&D (FMC OSRA) & LCL-to-FCL Consolidation Escrow -->
+      <div class="finops-box" id="b2b-freight-forwarding-ocean-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🚢 企业 B2B 国际货代海运 (Flexport / Maersk / 运去哪)、防滞箱滞港罚金 (D&amp;D) 与防拼箱目的港扣货托管沙盒 (Round 135)</div>
+            <div class="finops-subtitle">实测硬控门到门全口径锁价拦截 $1/CBM 负运费拼箱到目的港勒索 $2,800 拆箱换单费 (HTTP 403)、满 13 CBM 强制转 20GP/40HQ 整柜+订舱预锁 14~21 天合并免堆免箱期 (HTTP 422)、每小时抓取码头无还箱预约号截图援引美国 FMC OSRA 2022 拒付 $350/天非法滞箱费 (HTTP 451) 及起运港多厂散货集拼 40HQ 高柜净省 31% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="ocean-freight-status-kpi">HTTP 409 · MULTI_VENDOR_ORIGIN_40HQ_CONSOLIDATION_AND_14D_FREE_TIME_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业国际海运头程、目的港拆箱与滞箱滞港费 (D&amp;D) 总池 ($ USD)
+            <input type="range" id="ocean-freight-pool-slider" min="25000" max="600000" step="5000" value="150000" oninput="updateB2BFreightForwardingOceanEscrowSandbox()" />
+            <span id="ocean-freight-pool-val" style="color:#6ee7b7; font-family:monospace;">$150,000</span>
+          </label>
+          <label>
+            目的港全包收费封顶与防 $1/CBM 负运费拼箱扣货审计 (HTTP 403)
+            <select id="ocean-freight-hostage-select" onchange="updateB2BFreightForwardingOceanEscrowSandbox()">
+              <option value="pass">门到门全包锁死目的港 CFS/THC/DO 上限 + 对标 Xeneta P25 真实航线运价 (放行)</option>
+              <option value="block">$1/CBM 低价拼箱诱骗上船到目的港勒索 $2,800 拆箱换单费才放提单 或 无船东通告虚构 GRI 涨价 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            13 CBM 拼箱转整柜盈亏锁与 14~21 天目的港合并免箱期 (HTTP 422)
+            <select id="ocean-freight-mode-select" onchange="updateB2BFreightForwardingOceanEscrowSandbox()">
+              <option value="pass">&gt;=13 CBM 自动切换整柜 FCL + 提单预锁 14~21 天目的港合并免堆免箱期 (合规)</option>
+              <option value="block">16 CBM 货物仍走散货拼箱被收双倍拆箱费 或 仅给 4 天默认免堆期极易超期受罚 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            码头无提还箱预约号快照与 FMC OSRA 2022 法定免罚门禁 (HTTP 451)
+            <select id="ocean-freight-osra-select" onchange="updateB2BFreightForwardingOceanEscrowSandbox()">
+              <option value="clear">码头开放预约正常提还箱 + 账单齐全 FMC OSRA 13 项法定计费要素 (正常)</option>
+              <option value="hold">码头堆场爆满连续 5 天 0 空箱归还预约号，船公司仍违法强收 $350/天滞箱费 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            多供应商起运港保税仓集拼 40HQ 高柜与 Xeneta 锁价寻优 (HTTP 409)
+            <select id="ocean-freight-opt-select" onchange="updateB2BFreightForwardingOceanEscrowSandbox()">
+              <option value="enabled" selected>将华东 3 家工厂散货在宁波仓合装 1 个 40HQ 整柜免 3 份目的港拆箱费 + OSRA 免罚净省 31% (HTTP 409)</option>
+              <option value="baseline">常规门到门全包运价与 14 天免箱期标准结算 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度海运与目的港附加费总池</div>
+            <div class="finops-kpi-val" id="ocean-freight-gross-kpi">$150,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">多厂集拼整柜与免罚后净支出</div>
+            <div class="finops-kpi-val" id="ocean-freight-net-kpi" style="color:#6ee7b7;">$103,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省拆箱宰客与滞箱罚金</div>
+            <div class="finops-kpi-val" id="ocean-freight-savings-kpi" style="color:#38bdf8;">$46,500</div>
+          </div>
+        </div>
+        <div id="ocean-freight-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MULTI_VENDOR_ORIGIN_40HQ_CONSOLIDATION_AND_14D_FREE_TIME_CONFIRM · Mandate: b2b_freight_forwarding_optim_409
         </div>
       </div>
 
@@ -63248,6 +63419,80 @@ function updateEcommerceCheckoutInventorySagaSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ATOMIC_LUA_RESERVE_AND_DUAL_TTL_SAGA_AUTHORIZED · Mandate: ecommerce_checkout_saga_200';
+}}
+
+function updateB2BFreightForwardingOceanEscrowSandbox() {{
+  const slider = document.getElementById('ocean-freight-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '150000');
+  const hostageMode = document.getElementById('ocean-freight-hostage-select').value;
+  const modeSelect = document.getElementById('ocean-freight-mode-select').value;
+  const osraMode = document.getElementById('ocean-freight-osra-select').value;
+  const optMode = document.getElementById('ocean-freight-opt-select').value;
+
+  document.getElementById('ocean-freight-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('ocean-freight-status-kpi');
+  const grossKpi = document.getElementById('ocean-freight-gross-kpi');
+  const netKpi = document.getElementById('ocean-freight-net-kpi');
+  const savingsKpi = document.getElementById('ocean-freight-savings-kpi');
+  const banner = document.getElementById('ocean-freight-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (osraMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 FMC_OSRA_CLOSED_TERMINAL_DETENTION_OR_MISSING_13_INVOICE_FIELDS_HOLD · Mandate: null';
+    return;
+  }}
+  if (hostageMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 NEGATIVE_FREIGHT_LCL_DESTINATION_CISF_HOSTAGE_OR_FAKE_GRI_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (modeSelect === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 OVER_13CBM_LOOSE_LCL_MISMATCH_OR_UNDER_10D_PORT_FREE_TIME_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.31);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MULTI_VENDOR_ORIGIN_40HQ_CONSOLIDATION_AND_14D_FREE_TIME_CONFIRM · Mandate: b2b_freight_forwarding_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ALL_IN_DOOR_TO_DOOR_TARIFF_AND_14D_FREE_TIME_AUTHORIZED · Mandate: b2b_freight_forwarding_200';
 }}
 
 function updateStage1756Sandbox() {{
