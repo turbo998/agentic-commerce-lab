@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg559" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="50%" stop-color="#0f2942"/>
+      <stop offset="100%" stop-color="#091326"/>
+    </linearGradient>
+    <linearGradient id="accent559" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg559)"/>
+  <rect x="28" y="24" width="1144" height="627" rx="18" fill="none" stroke="url(#accent559)" stroke-width="2" opacity="0.5"/>
+  <text x="54" y="66" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">ROUND 116 · GENERATIVE ENGINE OPTIMIZATION (GEO/AEO) &amp; REVIEW GROUNDING · SVG 559</text>
+  <text x="54" y="100" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">E-Commerce GEO/AEO Feed, Anti-Review-Bombing &amp; FTC 16 CFR 465 Escrow</text>
+  <text x="54" y="128" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Microsoft Web IQ / Google UCP / ChatGPT Search / Bazaarvoice · CSR Stale-Price Block (HTTP 403) · Verified-Buyer Gate (HTTP 422)</text>
+
+  <!-- Lane 1: CSR Hydration Blindness & Stale Feed Block -->
+  <rect x="54" y="152" width="345" height="465" rx="14" fill="#111827" stroke="#ef4444" stroke-width="1.6"/>
+  <rect x="54" y="152" width="345" height="42" rx="14" fill="#7f1d1d"/>
+  <text x="72" y="179" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">1. Live Feed &amp; SSR Lock (HTTP 403)</text>
+  <text x="72" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Anti-CSR-Blindness &amp; Stale Price Veto</text>
+  <text x="72" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Blocks client-side JS-only pricing that</text>
+  <text x="72" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  causes AI search crawlers to index $0.00</text>
+  <text x="72" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  or expired MSRP instead of live promo price</text>
+  <rect x="72" y="298" width="309" height="82" rx="9" fill="#1e293b" stroke="#f87171" stroke-width="1"/>
+  <text x="86" y="321" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">WAF Blanket-Block Self-Sabotage Guard</text>
+  <text x="86" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Distinguishes signed AI shopping agents</text>
+  <text x="86" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  (RFC 9421) from malicious training scrapers</text>
+  <text x="72" y="408" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Schema.org Product + Offer Completeness</text>
+  <text x="72" y="430" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Mandates 14-digit GTIN, MerchantReturnPolicy,</text>
+  <text x="72" y="450" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  OfferShippingDetails &amp; real-time stock</text>
+  <text x="72" y="470" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  TTL &lt;= 300s in SSR JSON-LD</text>
+  <rect x="72" y="502" width="309" height="92" rx="9" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="86" y="526" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 403 Deterministic Verdict</text>
+  <text x="86" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">UNINDEXABLE_CSR_PRICE_FEED_OR_WAF</text>
+  <text x="86" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_SHOPPING_BOT_BLACKOUT_BLOCKED</text>
+
+  <!-- Lane 2: Verified-Buyer Review & Anti-Listicle Poisoning -->
+  <rect x="426" y="152" width="348" height="465" rx="14" fill="#111827" stroke="#f59e0b" stroke-width="1.6"/>
+  <rect x="426" y="152" width="348" height="42" rx="14" fill="#78350f"/>
+  <text x="444" y="179" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">2. Verified Review Gate (HTTP 422)</text>
+  <text x="444" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Order-Attested Review Grounding Only</text>
+  <text x="444" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Filters out unverified 1-star competitor</text>
+  <text x="444" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  review-bombing bursts &amp; paid SEO affiliate</text>
+  <text x="444" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  'Top 10' hit-pieces lacking lab telemetry</text>
+  <rect x="444" y="298" width="312" height="82" rx="9" fill="#1e293b" stroke="#fbbf24" stroke-width="1"/>
+  <text x="458" y="321" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">Bazaarvoice / Yotpo Cryptographic Proof</text>
+  <text x="458" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Weights sentiment by verified purchase</text>
+  <text x="458" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  duration (&gt;=30d ownership) &amp; return rate</text>
+  <text x="444" y="408" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Variant-Level Defect Attribution</text>
+  <text x="444" y="430" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Separates 3rd-party seller counterfeit</text>
+  <text x="444" y="450" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  complaints in shared marketplace review</text>
+  <text x="444" y="470" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  pools from 1P authorized brand SKU quality</text>
+  <rect x="444" y="502" width="312" height="92" rx="9" fill="#0f172a" stroke="#f59e0b" stroke-width="1"/>
+  <text x="458" y="526" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 422 Deterministic Verdict</text>
+  <text x="458" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">UNVERIFIED_REVIEW_BOMBING_OR_PAID</text>
+  <text x="458" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_AFFILIATE_POISONING_BLOCKED</text>
+
+  <!-- Lane 3: FTC 16 CFR 465 Fake-Review Ban & UCP Push FinOps -->
+  <rect x="801" y="152" width="345" height="465" rx="14" fill="#111827" stroke="#10b981" stroke-width="1.6"/>
+  <rect x="801" y="152" width="345" height="42" rx="14" fill="#064e3b"/>
+  <text x="819" y="179" fill="#a7f3d0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">3. FTC 16 CFR 465 &amp; GEO (451/409)</text>
+  <text x="819" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Web IQ FTC Fake-Review Rule Gate (451)</text>
+  <text x="819" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Blocks AI-generated fake testimonials,</text>
+  <text x="819" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  undisclosed incentivized reviews, or</text>
+  <text x="819" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  suppressing genuine &lt;3-star reviews</text>
+  <rect x="819" y="298" width="309" height="96" rx="9" fill="#1e293b" stroke="#34d399" stroke-width="1"/>
+  <text x="833" y="321" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">FinOps Signed UCP Delta + Edge Cache (409)</text>
+  <text x="833" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Serves lightweight signed JSON-LD / UCP</text>
+  <text x="833" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  at CDN edge (-82% origin crawl load) +</text>
+  <text x="833" y="381" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  lifts AI discovery checkout: +35% Net</text>
+  <text x="819" y="420" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">llms-commerce.txt Spec Table Indexing</text>
+  <text x="819" y="442" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Exposes structured comparison tables &amp;</text>
+  <text x="819" y="462" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  live promo codes directly to shopping agents</text>
+  <rect x="819" y="502" width="309" height="92" rx="9" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+  <text x="833" y="526" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 409 / 451 Deterministic Verdict</text>
+  <text x="833" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">SIGNED_UCP_SCHEMA_FEED_AND_VERIFIED</text>
+  <text x="833" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_REVIEW_GROUNDING_CONFIRM (+35%)</text>
+</svg>

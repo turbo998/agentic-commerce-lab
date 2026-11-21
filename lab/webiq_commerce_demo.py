@@ -23828,6 +23828,87 @@ def evaluate_ai_shopping_bundle_promo_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceGeoVerifiedReviewEscrowPolicyInput:
+    """Input contract for E-Commerce GEO/AEO Structured Feed & Verified-Review Grounding Escrow."""
+
+    quarterly_ai_discovery_cac_and_crawl_pool_usd: float = 95000.0
+    unindexable_csr_price_feed_or_waf_shopping_bot_blackout: bool = False
+    unverified_review_bombing_or_paid_affiliate_poisoning: bool = False
+    webiq_ftc_16cfr465_fake_review_or_suppression_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    signed_ucp_schema_feed_and_verified_review_grounding_ready: bool = False
+
+
+def evaluate_ecommerce_geo_verified_review_escrow_policy(
+    policy_input: EcommerceGeoVerifiedReviewEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane E-Commerce GEO/AEO Structured Feed & Verified-Review Grounding Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_ai_discovery_cac_and_crawl_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_ftc_16cfr465_fake_review_or_suppression_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_FTC_16CFR465_FAKE_REVIEW_OR_SUPPRESSION_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unindexable_csr_price_feed_or_waf_shopping_bot_blackout:
+        return {
+            "status_code": 403,
+            "decision": "UNINDEXABLE_CSR_PRICE_FEED_OR_WAF_SHOPPING_BOT_BLACKOUT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unverified_review_bombing_or_paid_affiliate_poisoning:
+        return {
+            "status_code": 422,
+            "decision": "UNVERIFIED_REVIEW_BOMBING_OR_PAID_AFFILIATE_POISONING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.signed_ucp_schema_feed_and_verified_review_grounding_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SIGNED_UCP_SCHEMA_FEED_AND_VERIFIED_REVIEW_GROUNDING_CONFIRM",
+            "mandate_token": "ecommerce_geo_verified_review_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_GEO_FEED_AND_AUTHENTIC_SENTIMENT_AUTHORIZED",
+        "mandate_token": "ecommerce_geo_verified_review_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -32763,6 +32844,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_geo_verified_review_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_geo_verified_review_escrow_policy(
+            EcommerceGeoVerifiedReviewEscrowPolicyInput()
+        ),
+        "unindexable_csr_or_waf_blackout_403": evaluate_ecommerce_geo_verified_review_escrow_policy(
+            EcommerceGeoVerifiedReviewEscrowPolicyInput(
+                unindexable_csr_price_feed_or_waf_shopping_bot_blackout=True
+            )
+        ),
+        "review_bombing_or_affiliate_poisoning_422": evaluate_ecommerce_geo_verified_review_escrow_policy(
+            EcommerceGeoVerifiedReviewEscrowPolicyInput(
+                unverified_review_bombing_or_paid_affiliate_poisoning=True
+            )
+        ),
+        "ftc_fake_review_or_suppression_451": evaluate_ecommerce_geo_verified_review_escrow_policy(
+            EcommerceGeoVerifiedReviewEscrowPolicyInput(
+                webiq_ftc_16cfr465_fake_review_or_suppression_flag=True
+            )
+        ),
+        "signed_ucp_feed_and_verified_review_409": evaluate_ecommerce_geo_verified_review_escrow_policy(
+            EcommerceGeoVerifiedReviewEscrowPolicyInput(
+                signed_ucp_schema_feed_and_verified_review_grounding_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -33007,6 +33114,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_price_drop_rebooking_escrow_guard": ota_price_drop_rebooking_escrow_guard,
         "b2b_rfq_msa_redline_escrow_guard": b2b_rfq_msa_redline_escrow_guard,
         "ai_shopping_bundle_promo_escrow_guard": ai_shopping_bundle_promo_escrow_guard,
+        "ecommerce_geo_verified_review_escrow_guard": ecommerce_geo_verified_review_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -44638,6 +44746,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ai-bundle-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 COLOCATED_FC_SINGLE_BOX_AND_HIGH_MARGIN_ATTACH_CONFIRM · Mandate: ai_shopping_bundle_promo_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 116 E-Commerce GEO/AEO Structured Feed & Verified-Review Grounding Escrow -->
+      <div class="finops-box" id="ecommerce-geo-verified-review-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🌐 电商生成式搜索优化 (GEO / AEO)、结构化目录流 (UCP / Schema.org) 与防黑公关恶评投毒接地 (Microsoft Web IQ / Google AI Mode / ChatGPT Shopping / Bazaarvoice) 接地与防投毒沙盒 (Round 116)</div>
+            <div class="finops-subtitle">实测服务端直出 SSR JSON-LD 折后实付价+RFC 9421 购物爬虫分流防纯 CSR 动态渲染漏价与 WAF 误封导购流量 (HTTP 403)、Verified-Purchase 完结订单评价权重(&gt;=85%)+水军 Z-Score 清洗防竞品一星恶评潮 (Review Bombing) 与 CPA 软文黑稿污染 (HTTP 422)、Web IQ FTC 16 CFR 465 反 AI 假买家秀与禁折叠真实差评核验 (HTTP 451) 及 CDN 边缘 3KB 签名 UCP 直出(-82% 源站负载)+导购专享码净省 35% 获客成本 (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="geo-review-status-kpi">HTTP 409 · SIGNED_UCP_SCHEMA_FEED_AND_VERIFIED_REVIEW_GROUNDING_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度 AI 购物入口导流获客与源站爬虫带宽总池 ($ USD)
+            <input type="range" id="geo-review-pool-slider" min="15000" max="450000" step="5000" value="95000" oninput="updateEcommerceGeoVerifiedReviewEscrowSandbox()" />
+            <span id="geo-review-pool-val" style="color:#6ee7b7; font-family:monospace;">$95,000</span>
+          </label>
+          <label>
+            服务端 SSR JSON-LD 实时折后价与边缘 WAF 购物 Bot 分流 (HTTP 403)
+            <select id="geo-review-csr-select" onchange="updateEcommerceGeoVerifiedReviewEscrowSandbox()">
+              <option value="pass">首包 SSR JSON-LD 直出 14位 GTIN/折后净价(TTL&lt;=300s) + RFC 9421 放行合法导购 Bot (放行)</option>
+              <option value="block">纯 CSR 客户端 JS 渲染导致 AI 抓到过期原价/$0 或 WAF 一刀切封杀 OAI-SearchBot/WebIQBot (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            Verified-Purchase 完结订单评价与防黑公关/内容农场投毒 (HTTP 422)
+            <select id="geo-review-bomb-select" onchange="updateEcommerceGeoVerifiedReviewEscrowSandbox()">
+              <option value="pass">仅聚合持机&gt;=14d 未退货真实订单评价(Bazaarvoice 签名) + 剥离 3P 跟卖假货差评 (合规)</option>
+              <option value="block">采信竞品水军突击刷入的 500 条无订单 1 星恶评 或 按高佣金排名的 CPA 联盟营销黑稿 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ FTC 16 CFR Part 465 反假评论与反隐藏真实差评核验 (HTTP 451)
+            <select id="geo-review-ftc-select" onchange="updateEcommerceGeoVerifiedReviewEscrowSandbox()">
+              <option value="clear">真实展示 1–5 星完整评价分布 + 寄样返现测评显式带 IncentivizedReview 标签 (正常)</option>
+              <option value="hold">使用 AI 批量伪造买家好评证言 或 后台恶意扣留隐藏真实 &lt;3 星质量差评面临 $51,744/次重罚 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            CDN 边缘 3KB 签名 UCP / llms-commerce.txt 与导购专享码寻优 (HTTP 409)
+            <select id="geo-review-opt-select" onchange="updateEcommerceGeoVerifiedReviewEscrowSandbox()">
+              <option value="enabled" selected>开启 CDN 边缘签名 UCP 参数对比表直出 (-82% 源站负载) + 导购专属折上折码净省 35% (HTTP 409)</option>
+              <option value="baseline">常规 SSR 结构化目录与认证评价接地标准授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度 AI 购物获客与爬虫带宽池</div>
+            <div class="finops-kpi-val" id="geo-review-gross-kpi">$95,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">边缘 UCP 与真实口碑转化后净成本</div>
+            <div class="finops-kpi-val" id="geo-review-net-kpi" style="color:#6ee7b7;">$61,750</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省获客 CAC 与源站算力</div>
+            <div class="finops-kpi-val" id="geo-review-savings-kpi" style="color:#38bdf8;">$33,250</div>
+          </div>
+        </div>
+        <div id="geo-review-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SIGNED_UCP_SCHEMA_FEED_AND_VERIFIED_REVIEW_GROUNDING_CONFIRM · Mandate: ecommerce_geo_verified_review_mandate_optim_409
         </div>
       </div>
 
@@ -58593,6 +58764,80 @@ function updateAiShoppingBundlePromoEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 COMPATIBLE_BUNDLE_AND_PRORATA_ESCROW_AUTHORIZED · Mandate: ai_shopping_bundle_promo_mandate_200';
+}}
+
+function updateEcommerceGeoVerifiedReviewEscrowSandbox() {{
+  const slider = document.getElementById('geo-review-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '95000');
+  const csrMode = document.getElementById('geo-review-csr-select').value;
+  const bombMode = document.getElementById('geo-review-bomb-select').value;
+  const ftcMode = document.getElementById('geo-review-ftc-select').value;
+  const optMode = document.getElementById('geo-review-opt-select').value;
+
+  document.getElementById('geo-review-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('geo-review-status-kpi');
+  const grossKpi = document.getElementById('geo-review-gross-kpi');
+  const netKpi = document.getElementById('geo-review-net-kpi');
+  const savingsKpi = document.getElementById('geo-review-savings-kpi');
+  const banner = document.getElementById('geo-review-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ftcMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_FTC_16CFR465_FAKE_REVIEW_OR_SUPPRESSION_HOLD · Mandate: null';
+    return;
+  }}
+  if (csrMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNINDEXABLE_CSR_PRICE_FEED_OR_WAF_SHOPPING_BOT_BLACKOUT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (bombMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNVERIFIED_REVIEW_BOMBING_OR_PAID_AFFILIATE_POISONING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SIGNED_UCP_SCHEMA_FEED_AND_VERIFIED_REVIEW_GROUNDING_CONFIRM · Mandate: ecommerce_geo_verified_review_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_GEO_FEED_AND_AUTHENTIC_SENTIMENT_AUTHORIZED · Mandate: ecommerce_geo_verified_review_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

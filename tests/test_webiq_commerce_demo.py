@@ -16830,6 +16830,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ai-shopping-bundle-promo-escrow-sandbox", html_zh)
 
+    def test_ecommerce_geo_verified_review_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceGeoVerifiedReviewEscrowPolicyInput,
+            evaluate_ecommerce_geo_verified_review_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_geo_verified_review_escrow_policy(
+            EcommerceGeoVerifiedReviewEscrowPolicyInput(
+                quarterly_ai_discovery_cac_and_crawl_pool_usd=95000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_GEO_FEED_AND_AUTHENTIC_SENTIMENT_AUTHORIZED",
+        )
+
+        csr = evaluate_ecommerce_geo_verified_review_escrow_policy(
+            EcommerceGeoVerifiedReviewEscrowPolicyInput(
+                unindexable_csr_price_feed_or_waf_shopping_bot_blackout=True
+            )
+        )
+        self.assertEqual(csr["status_code"], 403)
+        self.assertEqual(
+            csr["decision"],
+            "UNINDEXABLE_CSR_PRICE_FEED_OR_WAF_SHOPPING_BOT_BLACKOUT_BLOCKED",
+        )
+
+        bomb = evaluate_ecommerce_geo_verified_review_escrow_policy(
+            EcommerceGeoVerifiedReviewEscrowPolicyInput(
+                unverified_review_bombing_or_paid_affiliate_poisoning=True
+            )
+        )
+        self.assertEqual(bomb["status_code"], 422)
+        self.assertEqual(
+            bomb["decision"],
+            "UNVERIFIED_REVIEW_BOMBING_OR_PAID_AFFILIATE_POISONING_BLOCKED",
+        )
+
+        ftc = evaluate_ecommerce_geo_verified_review_escrow_policy(
+            EcommerceGeoVerifiedReviewEscrowPolicyInput(
+                webiq_ftc_16cfr465_fake_review_or_suppression_flag=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 451)
+        self.assertEqual(
+            ftc["decision"],
+            "WEBIQ_FTC_16CFR465_FAKE_REVIEW_OR_SUPPRESSION_HOLD",
+        )
+
+        optim = evaluate_ecommerce_geo_verified_review_escrow_policy(
+            EcommerceGeoVerifiedReviewEscrowPolicyInput(
+                quarterly_ai_discovery_cac_and_crawl_pool_usd=95000.0,
+                signed_ucp_schema_feed_and_verified_review_grounding_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 33250.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 61750.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_geo_verified_review_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-geo-verified-review-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
