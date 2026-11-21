@@ -23061,6 +23061,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("hospitality-fine-dining-reservation-sandbox", html_zh)
 
+    def test_ecommerce_big_bulky_white_glove_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceBigBulkyWhiteGlovePolicyInput,
+            evaluate_ecommerce_big_bulky_white_glove_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_big_bulky_white_glove_policy(
+            EcommerceBigBulkyWhiteGlovePolicyInput(
+                quarterly_wont_fit_refusal_curb_downgrade_and_damage_return_pool_usd=230000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_WHITE_GLOVE_ASSEMBLY_AND_POD_AUTHORIZED",
+        )
+
+        fit = evaluate_ecommerce_big_bulky_white_glove_policy(
+            EcommerceBigBulkyWhiteGlovePolicyInput(
+                doorway_elevator_clearance_fail_or_missing_highrise_coi=True
+            )
+        )
+        self.assertEqual(fit["status_code"], 403)
+        self.assertEqual(
+            fit["decision"],
+            "DOORWAY_ELEVATOR_FIT_OR_MISSING_BUILDING_COI_BLOCK",
+        )
+
+        sla = evaluate_ecommerce_big_bulky_white_glove_policy(
+            EcommerceBigBulkyWhiteGlovePolicyInput(
+                white_glove_downgraded_to_curb_or_missing_pre_post_floor_photos=True
+            )
+        )
+        self.assertEqual(sla["status_code"], 422)
+        self.assertEqual(
+            sla["decision"],
+            "WHITE_GLOVE_DOWNGRADE_OR_MISSING_ASSEMBLY_POD_BLOCK",
+        )
+
+        safety = evaluate_ecommerce_big_bulky_white_glove_policy(
+            EcommerceBigBulkyWhiteGlovePolicyInput(
+                sturdy_act_unanchored_dresser_or_mattress_stewardship_violation=True
+            )
+        )
+        self.assertEqual(safety["status_code"], 451)
+        self.assertEqual(
+            safety["decision"],
+            "STURDY_TIP_HAZARD_OR_MATTRESS_STEWARDSHIP_HOLD",
+        )
+
+        optim = evaluate_ecommerce_big_bulky_white_glove_policy(
+            EcommerceBigBulkyWhiteGlovePolicyInput(
+                quarterly_wont_fit_refusal_curb_downgrade_and_damage_return_pool_usd=230000.0,
+                neighborhood_green_slot_clustering_and_mobile_medic_repair_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 82800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 147200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_big_bulky_white_glove_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-big-bulky-white-glove-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

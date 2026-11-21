@@ -30953,6 +30953,82 @@ def evaluate_hospitality_fine_dining_reservation_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceBigBulkyWhiteGlovePolicyInput:
+    quarterly_wont_fit_refusal_curb_downgrade_and_damage_return_pool_usd: float = 230000.0
+    doorway_elevator_clearance_fail_or_missing_highrise_coi: bool = False
+    white_glove_downgraded_to_curb_or_missing_pre_post_floor_photos: bool = False
+    sturdy_act_unanchored_dresser_or_mattress_stewardship_violation: bool = False
+    neighborhood_green_slot_clustering_and_mobile_medic_repair_ready: bool = False
+
+
+def evaluate_ecommerce_big_bulky_white_glove_policy(
+    policy_input: EcommerceBigBulkyWhiteGlovePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_wont_fit_refusal_curb_downgrade_and_damage_return_pool_usd
+        ),
+    )
+    if policy_input.sturdy_act_unanchored_dresser_or_mattress_stewardship_violation:
+        return {
+            "status_code": 451,
+            "decision": "STURDY_TIP_HAZARD_OR_MATTRESS_STEWARDSHIP_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.doorway_elevator_clearance_fail_or_missing_highrise_coi:
+        return {
+            "status_code": 403,
+            "decision": "DOORWAY_ELEVATOR_FIT_OR_MISSING_BUILDING_COI_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.white_glove_downgraded_to_curb_or_missing_pre_post_floor_photos:
+        return {
+            "status_code": 422,
+            "decision": "WHITE_GLOVE_DOWNGRADE_OR_MISSING_ASSEMBLY_POD_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.neighborhood_green_slot_clustering_and_mobile_medic_repair_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "NEIGHBORHOOD_GREEN_SLOT_AND_INHOME_MEDIC_REPAIR_CONFIRM",
+            "mandate_token": "white_glove_bulky_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_WHITE_GLOVE_ASSEMBLY_AND_POD_AUTHORIZED",
+        "mandate_token": "white_glove_bulky_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -42306,6 +42382,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_big_bulky_white_glove_guard = {
+        "authorized_200": evaluate_ecommerce_big_bulky_white_glove_policy(
+            EcommerceBigBulkyWhiteGlovePolicyInput()
+        ),
+        "wont_fit_or_coi_403": evaluate_ecommerce_big_bulky_white_glove_policy(
+            EcommerceBigBulkyWhiteGlovePolicyInput(
+                doorway_elevator_clearance_fail_or_missing_highrise_coi=True
+            )
+        ),
+        "curb_downgrade_or_floor_422": evaluate_ecommerce_big_bulky_white_glove_policy(
+            EcommerceBigBulkyWhiteGlovePolicyInput(
+                white_glove_downgraded_to_curb_or_missing_pre_post_floor_photos=True
+            )
+        ),
+        "sturdy_or_mrc_451": evaluate_ecommerce_big_bulky_white_glove_policy(
+            EcommerceBigBulkyWhiteGlovePolicyInput(
+                sturdy_act_unanchored_dresser_or_mattress_stewardship_violation=True
+            )
+        ),
+        "green_slot_and_medic_409": evaluate_ecommerce_big_bulky_white_glove_policy(
+            EcommerceBigBulkyWhiteGlovePolicyInput(
+                neighborhood_green_slot_clustering_and_mobile_medic_repair_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42643,6 +42745,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_pay_by_bank_ach_fednow_guard": ecommerce_pay_by_bank_ach_fednow_guard,
         "cross_border_viban_natural_fx_netting_guard": cross_border_viban_natural_fx_netting_guard,
         "hospitality_fine_dining_reservation_guard": hospitality_fine_dining_reservation_guard,
+        "ecommerce_big_bulky_white_glove_guard": ecommerce_big_bulky_white_glove_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -59755,6 +59858,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="finedining-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 POS_DEPOSIT_AUTO_INJECT_AND_STANDBY_BACKFILL_CONFIRM · Mandate: fine_dining_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 209 Big & Bulky White-Glove Delivery, AR Fit-Gate & Assembly Escrow (#328) -->
+      <div class="finops-box" id="ecommerce-big-bulky-white-glove-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛋️ 大件家具家电“送装一体白手套配送 (Ryder / FragilePAK / XPO)”、AR 电梯/门框预审与上门精修沙盒</div>
+            <div class="finops-sub">Round 209 (#328) · 发车前 AR 走廊对角线通航核验与高层公寓 COI 保险单锁货梯 (HTTP 403) + 进场地板照/房内组装照/带走纸箱照三图防降级 (HTTP 422) + STURDY 防倾倒墙锚与州旧床垫回收锁 (HTTP 451) + 顺路绿波拼车与 $120 木匠上门补漆净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="whiteglove-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度大件沙发/实木桌卡电梯拒收 ($380/单往返)、白手套降级扔门口退费与微瑕整件拉回损耗池 ($)
+            <input type="number" id="whiteglove-gross-input" value="230000" min="10000" step="5000" oninput="recalcEcommerceBigBulkyWhiteGloveSandbox()" />
+          </label>
+          <label>发车前 AR 电梯/走廊转弯斜对角线通航预审与高层公寓 $2M COI 责任险/货梯预约门禁
+            <select id="whiteglove-fit-select" onchange="recalcEcommerceBigBulkyWhiteGloveSandbox()">
+              <option value="pass">通道对角线净空充裕 (或已切模块化拆装款) + 公寓物业 COI 与货梯已锁定 (合规)</option>
+              <option value="block_403">96 英寸整装沙发塞不进 78 英寸电梯当场拒收 或 未提前交物业 COI 被门卫轰走产生 $175 空跑费 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>白手套入室组装三图核销 (进门地板照 + 房内组装完照 + 包装垃圾清走照) 与防降级锁
+            <select id="whiteglove-sla-select" onchange="recalcEcommerceBigBulkyWhiteGloveSandbox()">
+              <option value="pass">进出场地板完好存证 + 房内组装到位且带走全部木架纸箱 (合规)</option>
+              <option value="block_422">买家付了 $199 白手套费外包司机却把 300 磅木箱扔在车库门口就跑 或 未拍进门前实木地板存证照 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国 CPSC STURDY 法案五斗柜防倾倒墙锚、持证水电工核验与州旧床垫强制回收 (MRC) 门禁
+            <select id="whiteglove-safety-select" onchange="recalcEcommerceBigBulkyWhiteGloveSandbox()">
+              <option value="pass">高柜防倾倒墙锚固定签字 + 持证水电燃气技师 + 代收床垫 MRC 回收费并免费拉旧 (安全)</option>
+              <option value="block_451">五斗柜未装防倾倒墙锚存在儿童砸伤风险、无证私接燃气烘干机 或 拒不履行加州旧床垫免费回收 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>同邮编顺路“绿波拼车日”运费立减与轻微磕碰派本地木匠 ($120) 上门无痕精修
+            <select id="whiteglove-opt-select" onchange="recalcEcommerceBigBulkyWhiteGloveSandbox()">
+              <option value="enabled" selected>顺路绿波日省 $68/单里程 + 1cm 桌腿小擦痕派本地木匠 $120 上门补漆代替 $760 整件退换 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统盲发重卡且遇到任何小划痕一律整件拉回重发 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度大件退货运费与降级理赔池</div>
+            <div class="finops-kpi-val" id="whiteglove-gross-kpi">$230,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">AR 通航预审与上门精修后净损耗</div>
+            <div class="finops-kpi-val" id="whiteglove-net-kpi" style="color:#6ee7b7;">$147,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省往返重货运费与报废</div>
+            <div class="finops-kpi-val" id="whiteglove-savings-kpi" style="color:#38bdf8;">$82,800</div>
+          </div>
+        </div>
+        <div id="whiteglove-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 NEIGHBORHOOD_GREEN_SLOT_AND_INHOME_MEDIC_REPAIR_CONFIRM · Mandate: white_glove_bulky_escrow_optim_409
         </div>
       </div>
 
@@ -80529,6 +80689,79 @@ function recalcHospitalityFineDiningReservationSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_DINER_RESERVATION_AND_POS_CHECK_AUTHORIZED · Mandate: fine_dining_escrow_200';
+}}
+
+function recalcEcommerceBigBulkyWhiteGloveSandbox() {{
+  const grossInput = document.getElementById('whiteglove-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '230000'));
+  const fitGate = document.getElementById('whiteglove-fit-select').value;
+  const slaGate = document.getElementById('whiteglove-sla-select').value;
+  const safetyGate = document.getElementById('whiteglove-safety-select').value;
+  const optMode = document.getElementById('whiteglove-opt-select').value;
+
+  const grossKpi = document.getElementById('whiteglove-gross-kpi');
+  const netKpi = document.getElementById('whiteglove-net-kpi');
+  const savingsKpi = document.getElementById('whiteglove-savings-kpi');
+  const statusKpi = document.getElementById('whiteglove-status-kpi');
+  const banner = document.getElementById('whiteglove-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (safetyGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 STURDY_TIP_HAZARD_OR_MATTRESS_STEWARDSHIP_HOLD · Mandate: null';
+    return;
+  }}
+  if (fitGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DOORWAY_ELEVATOR_FIT_OR_MISSING_BUILDING_COI_BLOCK · Mandate: null';
+    return;
+  }}
+  if (slaGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 WHITE_GLOVE_DOWNGRADE_OR_MISSING_ASSEMBLY_POD_BLOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 NEIGHBORHOOD_GREEN_SLOT_AND_INHOME_MEDIC_REPAIR_CONFIRM · Mandate: white_glove_bulky_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_WHITE_GLOVE_ASSEMBLY_AND_POD_AUTHORIZED · Mandate: white_glove_bulky_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
