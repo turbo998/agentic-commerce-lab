@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`306` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`307` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (18 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (45 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (113 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (114 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (69 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (25 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (36 guides)](#tax-fx-privacy-disputes)
@@ -97,7 +97,7 @@
 | 45 | **E-Commerce `HSA / FSA` Tax-Free Health & Wellness Checkout, `SIGIS IIAS` Mixed-Cart Split & Letter of Medical Necessity (`LMN`) Escrow (`TrueMed / Flex / Sika Health / Stripe`), `Code-57` Decline Shield, Clinician `NPI` `IRS §213(d)` Lock & `TPA` Auto-Substantiation (`-34%` Decline & Audit Loss) Agent Architecture Selection FAQ** | [English](ecommerce-hsa-fsa-tax-free-checkout-sigis-lmn-split-escrow-agent-selection-faq.en.md) · [中文](ecommerce-hsa-fsa-tax-free-checkout-sigis-lmn-split-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (113 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (114 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -216,6 +216,7 @@
 | 111 | **E-Commerce Pre-Ship Order Modification, Self-Serve Address/Size Edit & `WMS` Pick-Lock Escrow (`Cleverific / Order Editing / Gorgias / Manhattan WMS`), Synchronous `WMS` Wave Mutex, Post-Auth Address-Hijack Lock & In-Place Variant Swap (`-36%` Cancel & Double-Ship Loss) Agent Architecture Selection FAQ** | [English](ecommerce-pre-ship-order-editing-address-size-swap-wms-lock-escrow-agent-selection-faq.en.md) · [中文](ecommerce-pre-ship-order-editing-address-size-swap-wms-lock-escrow-agent-selection-faq.md) |
 | 112 | **E-Commerce Small-Parcel Shipping Audit, 3D Cartonization `DIM` Shield & Carrier `GSR` Refund Escrow (`Shipium / EasyPost / LateShipment / 71lbs`), `DIM Divisor 139` Scanner Lock, `EDI 210` Laser-Inflation Dispute & `Air-to-Ground` TNT Downgrade (`-35%` Outbound Parcel Spend) Agent Architecture Selection FAQ** | [English](ecommerce-parcel-shipping-audit-dim-cartonization-carrier-refund-escrow-agent-selection-faq.en.md) · [中文](ecommerce-parcel-shipping-audit-dim-cartonization-carrier-refund-escrow-agent-selection-faq.md) |
 | 113 | **E-Commerce Device Trade-In, Instant Upfront Credit & Grading-Collateral Escrow (`Apple Trade-In / Phobio / Assurant / Back Market`), Live `GSMA / Find-My / MDM` Lock, Anti-"Bait-and-Switch" Re-Grading Consent & 42-State Sales-Tax Offset (`-36%` Bricked-Unit & Drop-Off Loss) Agent Architecture Selection FAQ** | [English](ecommerce-device-trade-in-upfront-credit-grading-collateral-escrow-agent-selection-faq.en.md) · [中文](ecommerce-device-trade-in-upfront-credit-grading-collateral-escrow-agent-selection-faq.md) |
+| 114 | **Corporate Travel & OTA Post-Booking Price-Drop Re-Shopping & Unused Ticket Credit-Bank Escrow (`Tripbam / FairFly / Navan / Amadeus`), `Book-New-Before-Cancel` Atomic Saga, 5-Dimension Room/Loyalty Parity & Automated `e-Credit` Redemption (`-35%` Travel Spend) Agent Architecture Selection FAQ** | [English](ota-corporate-travel-price-drop-reshopping-unused-ticket-credit-escrow-agent-selection-faq.en.md) · [中文](ota-corporate-travel-price-drop-reshopping-unused-ticket-credit-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (69 Guides)

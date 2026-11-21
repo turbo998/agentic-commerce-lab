@@ -21654,6 +21654,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-pim-catalog-onboarding-sandbox", html_zh)
 
+    def test_ota_travel_price_drop_reshopping_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaTravelPriceDropReshoppingPolicyInput,
+            evaluate_ota_travel_price_drop_reshopping_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_travel_price_drop_reshopping_policy(
+            OtaTravelPriceDropReshoppingPolicyInput(
+                quarterly_post_booking_overpay_and_expired_ticket_credit_pool_usd=155000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "PARITY_VERIFIED_TRAVEL_RESERVATION_MAINTAINED",
+        )
+
+        saga = evaluate_ota_travel_price_drop_reshopping_policy(
+            OtaTravelPriceDropReshoppingPolicyInput(
+                cancel_old_before_new_confirmed_or_within_24h_penalty_cutoff=True
+            )
+        )
+        self.assertEqual(saga["status_code"], 403)
+        self.assertEqual(
+            saga["decision"],
+            "CANCEL_BEFORE_NEW_CONFIRM_OR_PAST_CUTOFF_BLOCKED",
+        )
+
+        perk = evaluate_ota_travel_price_drop_reshopping_policy(
+            OtaTravelPriceDropReshoppingPolicyInput(
+                nonrefundable_opaque_downgrade_or_lost_loyalty_aisle_seat=True
+            )
+        )
+        self.assertEqual(perk["status_code"], 422)
+        self.assertEqual(
+            perk["decision"],
+            "NONREFUNDABLE_DOWNGRADE_OR_SEAT_LOSS_BLOCKED",
+        )
+
+        credit = evaluate_ota_travel_price_drop_reshopping_policy(
+            OtaTravelPriceDropReshoppingPolicyInput(
+                new_cash_booking_ignoring_open_ecredit_or_departed_staff_leak=True
+            )
+        )
+        self.assertEqual(credit["status_code"], 451)
+        self.assertEqual(
+            credit["decision"],
+            "UNAPPLIED_OPEN_ECREDIT_OR_ORPHAN_TICKET_HOLD",
+        )
+
+        optim = evaluate_ota_travel_price_drop_reshopping_policy(
+            OtaTravelPriceDropReshoppingPolicyInput(
+                quarterly_post_booking_overpay_and_expired_ticket_credit_pool_usd=155000.0,
+                six_hour_atomic_reshop_and_unused_ticket_credit_auto_burn_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 54250.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 100750.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_travel_price_drop_reshopping_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-travel-price-drop-reshopping-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

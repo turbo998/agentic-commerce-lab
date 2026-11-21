@@ -29357,6 +29357,82 @@ def evaluate_ecommerce_pim_catalog_onboarding_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaTravelPriceDropReshoppingPolicyInput:
+    quarterly_post_booking_overpay_and_expired_ticket_credit_pool_usd: float = 155000.0
+    cancel_old_before_new_confirmed_or_within_24h_penalty_cutoff: bool = False
+    nonrefundable_opaque_downgrade_or_lost_loyalty_aisle_seat: bool = False
+    new_cash_booking_ignoring_open_ecredit_or_departed_staff_leak: bool = False
+    six_hour_atomic_reshop_and_unused_ticket_credit_auto_burn_ready: bool = False
+
+
+def evaluate_ota_travel_price_drop_reshopping_policy(
+    policy_input: OtaTravelPriceDropReshoppingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_post_booking_overpay_and_expired_ticket_credit_pool_usd
+        ),
+    )
+    if policy_input.new_cash_booking_ignoring_open_ecredit_or_departed_staff_leak:
+        return {
+            "status_code": 451,
+            "decision": "UNAPPLIED_OPEN_ECREDIT_OR_ORPHAN_TICKET_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cancel_old_before_new_confirmed_or_within_24h_penalty_cutoff:
+        return {
+            "status_code": 403,
+            "decision": "CANCEL_BEFORE_NEW_CONFIRM_OR_PAST_CUTOFF_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.nonrefundable_opaque_downgrade_or_lost_loyalty_aisle_seat:
+        return {
+            "status_code": 422,
+            "decision": "NONREFUNDABLE_DOWNGRADE_OR_SEAT_LOSS_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.six_hour_atomic_reshop_and_unused_ticket_credit_auto_burn_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SIX_HOUR_ATOMIC_RESHOP_AND_ECREDIT_AUTO_BURN_CONFIRM",
+            "mandate_token": "travel_reshop_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "PARITY_VERIFIED_TRAVEL_RESERVATION_MAINTAINED",
+        "mandate_token": "travel_reshop_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -40164,6 +40240,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_travel_price_drop_reshopping_guard = {
+        "authorized_200": evaluate_ota_travel_price_drop_reshopping_policy(
+            OtaTravelPriceDropReshoppingPolicyInput()
+        ),
+        "cancel_first_or_cutoff_403": evaluate_ota_travel_price_drop_reshopping_policy(
+            OtaTravelPriceDropReshoppingPolicyInput(
+                cancel_old_before_new_confirmed_or_within_24h_penalty_cutoff=True
+            )
+        ),
+        "opaque_or_seat_loss_422": evaluate_ota_travel_price_drop_reshopping_policy(
+            OtaTravelPriceDropReshoppingPolicyInput(
+                nonrefundable_opaque_downgrade_or_lost_loyalty_aisle_seat=True
+            )
+        ),
+        "unapplied_ecredit_or_exit_451": evaluate_ota_travel_price_drop_reshopping_policy(
+            OtaTravelPriceDropReshoppingPolicyInput(
+                new_cash_booking_ignoring_open_ecredit_or_departed_staff_leak=True
+            )
+        ),
+        "atomic_reshop_and_ecredit_409": evaluate_ota_travel_price_drop_reshopping_policy(
+            OtaTravelPriceDropReshoppingPolicyInput(
+                six_hour_atomic_reshop_and_unused_ticket_credit_auto_burn_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40480,6 +40582,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_hsa_fsa_checkout_guard": ecommerce_hsa_fsa_checkout_guard,
         "ecommerce_device_trade_in_escrow_guard": ecommerce_device_trade_in_escrow_guard,
         "ecommerce_pim_catalog_onboarding_guard": ecommerce_pim_catalog_onboarding_guard,
+        "ota_travel_price_drop_reshopping_guard": ota_travel_price_drop_reshopping_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -56395,6 +56498,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="pim-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 VISION_GROUNDED_TAXONOMY_AND_GDSN_UCP_SYNDICATION_CONFIRM · Mandate: pim_onboarding_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 188 OTA & Corporate Travel Price-Drop Re-Shopping & Credit Bank (#307) -->
+      <div class="finops-box" id="ota-travel-price-drop-reshopping-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏨 商旅与 OTA 预订后机酒降价自动重订与未用机票残值银行 (Tripbam / FairFly / Navan) 沙盒</div>
+            <div class="finops-sub">Round 188 (#307) · 先订新房拿确认号再退旧房防无房可住 (HTTP 403) + 含早/可退/常旅客积分与靠窗座同质锁 (HTTP 422) + 未用 e-Credit 强制冲抵与离职回收 (HTTP 451) + 6h 降价雷达净省 35% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="reshop-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度机酒预订后降价未退差、未用机票 e-Credit 过期与离职流失池 ($)
+            <input type="number" id="reshop-gross-input" value="155000" min="10000" step="5000" oninput="recalcOtaTravelPriceDropReshoppingSandbox()" />
+          </label>
+          <label>先拿新房确认号后退旧房 (Book-New-First) 与 24h 取消死线缓冲
+            <select id="reshop-saga-select" onchange="recalcOtaTravelPriceDropReshoppingSandbox()">
+              <option value="pass">先锁妥新确认号再退旧房 + 距酒店本地免费取消线 &gt;=24h (合规)</option>
+              <option value="block_403">先退掉旧房结果新低价房秒光致高管露宿街头 或 误超免费取消期被罚首晚房费 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>房型/含早/可退改/万豪积分 5维同质与机票座位属性保护
+            <select id="reshop-perk-select" onchange="recalcOtaTravelPriceDropReshoppingSandbox()">
+              <option value="pass">保留免费取消+双早+常旅客积分 且 机票重出票保留靠窗/过道好座 (合规)</option>
+              <option value="block_422">为省 $30 换成不可退无积分批发商盲盒房 或 把靠窗座换成最后一排中间座 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>未用机票残值 (Unused e-Credit) 结账优先冲抵与离职员工回收
+            <select id="reshop-credit-select" onchange="recalcOtaTravelPriceDropReshoppingSandbox()">
+              <option value="pass">买新票自动优先抵扣名下 $420 e-Credit + 离职员工机票残值自动转入公池 (安全)</option>
+              <option value="block_451">名下有未用退票残值却刷卡买新票致过期作废 或 离职员工拿公司机票额度私人旅游 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>每 6 小时全自动 GDS/NDC 机酒降价巡检与差额 EMD 入库
+            <select id="reshop-opt-select" onchange="recalcOtaTravelPriceDropReshoppingSandbox()">
+              <option value="enabled" selected>每 6h 自动订新退旧(平均每晚省$118) + 结账自动冲抵存量 e-Credit (-35% 支出 / HTTP 409)</option>
+              <option value="disabled">传统订完即忘无人盯盘且退票残值散落个人邮箱过期 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度预订后买贵与废票过期总池</div>
+            <div class="finops-kpi-val" id="reshop-gross-kpi">$155,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">自动重购与残值冲抵后净支出</div>
+            <div class="finops-kpi-val" id="reshop-net-kpi" style="color:#6ee7b7;">$100,750</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省酒店降价差额与废票回收</div>
+            <div class="finops-kpi-val" id="reshop-savings-kpi" style="color:#38bdf8;">$54,250</div>
+          </div>
+        </div>
+        <div id="reshop-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SIX_HOUR_ATOMIC_RESHOP_AND_ECREDIT_AUTO_BURN_CONFIRM · Mandate: travel_reshop_escrow_optim_409
         </div>
       </div>
 
@@ -75636,6 +75796,79 @@ function recalcEcommercePimCatalogOnboardingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 GS1_VERIFIED_GOLDEN_SKU_SYNDICATION_AUTHORIZED · Mandate: pim_onboarding_escrow_200';
+}}
+
+function recalcOtaTravelPriceDropReshoppingSandbox() {{
+  const grossInput = document.getElementById('reshop-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '155000'));
+  const sagaGate = document.getElementById('reshop-saga-select').value;
+  const perkGate = document.getElementById('reshop-perk-select').value;
+  const creditGate = document.getElementById('reshop-credit-select').value;
+  const optMode = document.getElementById('reshop-opt-select').value;
+
+  const grossKpi = document.getElementById('reshop-gross-kpi');
+  const netKpi = document.getElementById('reshop-net-kpi');
+  const savingsKpi = document.getElementById('reshop-savings-kpi');
+  const statusKpi = document.getElementById('reshop-status-kpi');
+  const banner = document.getElementById('reshop-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (creditGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNAPPLIED_OPEN_ECREDIT_OR_ORPHAN_TICKET_HOLD · Mandate: null';
+    return;
+  }}
+  if (sagaGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CANCEL_BEFORE_NEW_CONFIRM_OR_PAST_CUTOFF_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (perkGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 NONREFUNDABLE_DOWNGRADE_OR_SEAT_LOSS_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SIX_HOUR_ATOMIC_RESHOP_AND_ECREDIT_AUTO_BURN_CONFIRM · Mandate: travel_reshop_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 PARITY_VERIFIED_TRAVEL_RESERVATION_MAINTAINED · Mandate: travel_reshop_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
