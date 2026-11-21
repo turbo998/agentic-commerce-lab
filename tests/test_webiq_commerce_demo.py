@@ -17701,6 +17701,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("influencer-kol-affiliate-escrow-sandbox", html_zh)
 
+    def test_saas_usage_outcome_billing_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaasUsageOutcomeBillingEscrowPolicyInput,
+            evaluate_saas_usage_outcome_billing_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_usage_outcome_billing_escrow_policy(
+            SaasUsageOutcomeBillingEscrowPolicyInput(
+                quarterly_ai_saas_usage_and_overage_pool_usd=95000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "IDEMPOTENT_STREAMING_USAGE_AND_72H_OUTCOME_AUTHORIZED",
+        )
+
+        loop = evaluate_saas_usage_outcome_billing_escrow_policy(
+            SaasUsageOutcomeBillingEscrowPolicyInput(
+                runaway_agent_loop_velocity_spike_or_hard_spend_cap_breach=True
+            )
+        )
+        self.assertEqual(loop["status_code"], 403)
+        self.assertEqual(
+            loop["decision"],
+            "RUNAWAY_AGENT_LOOP_VELOCITY_SPIKE_OR_HARD_SPEND_CAP_BREACH_BLOCKED",
+        )
+
+        fake_outcome = evaluate_saas_usage_outcome_billing_escrow_policy(
+            SaasUsageOutcomeBillingEscrowPolicyInput(
+                upstream_5xx_retry_double_bill_or_72h_reopened_fake_outcome=True
+            )
+        )
+        self.assertEqual(fake_outcome["status_code"], 422)
+        self.assertEqual(
+            fake_outcome["decision"],
+            "UPSTREAM_5XX_RETRY_DOUBLE_BILL_OR_72H_REOPENED_FAKE_OUTCOME_BLOCKED",
+        )
+
+        asc = evaluate_saas_usage_outcome_billing_escrow_policy(
+            SaasUsageOutcomeBillingEscrowPolicyInput(
+                asc606_unconsumed_prepaid_credit_revenue_or_forfeiture_violation=True
+            )
+        )
+        self.assertEqual(asc["status_code"], 451)
+        self.assertEqual(
+            asc["decision"],
+            "ASC606_UNCONSUMED_PREPAID_CREDIT_REVENUE_OR_FORFEITURE_HOLD",
+        )
+
+        optim = evaluate_saas_usage_outcome_billing_escrow_policy(
+            SaasUsageOutcomeBillingEscrowPolicyInput(
+                quarterly_ai_saas_usage_and_overage_pool_usd=95000.0,
+                credit_25pct_rollover_and_committed_tier_trueup_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 28500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 66500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_usage_outcome_billing_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-usage-outcome-billing-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

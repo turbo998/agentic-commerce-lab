@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`247` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`248` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -10,7 +10,7 @@
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（40 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（82 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（61 篇）](#b2b-procurement-erp)
-- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（21 篇）](#saas-finops-micropayments)
+- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（22 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（30 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
@@ -246,7 +246,7 @@
 | 61 | **企业 B2B 应付账款三单匹配（`AP Three-Way Match`）、防供应商收款银行账号 `BEC` 邮件劫持与动态提前付款折扣（`2/10 Net 30`）托管（Coupa Pay / SAP Ariba / Tipalti / Taulia）“防黑客伪造 PDF 发票改 IBAN 骗走 $250,000 货款、防仓库实收 80 件却按 100 件全额打款与闲置资金年化 36.7% 早付套利”Agent 架构选型 FAQ** | [中文](b2b-ap-three-way-match-bec-iban-guard-dynamic-discounting-escrow-agent-selection-faq.md) · [English](b2b-ap-three-way-match-bec-iban-guard-dynamic-discounting-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（21 篇）
+## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（22 篇）
 
 > 涵盖企业 SaaS 席位与影子 IT 治理、高频 Token/API 用量水位线幂等计费、FTC 一键退订（Click-to-Cancel）与挽留护栏、HTTP 402（x402 / Stripe MPP Tempo）亚美分流式微支付及推理 FinOps 成本路由。
 
@@ -273,6 +273,7 @@
 | 19 | **短剧出海充值、网络小说按章解锁与互动影游微支付（Micro-Drama IAP, Web-Novel Pay-Per-Chapter & Interactive Video Subscription Escrow：ReelShort / DramaBox / ShortMax / 番茄小说 / 起点中文网）“防‘$0.99 解锁大结局’夹带 $39.99/周自动续费暗扣、防按集零买贵过整剧买断 5 倍与 H5 网页直充免 30% 苹果税”Agent 架构选型 FAQ** | [中文](micro-drama-webnovel-pay-per-episode-cap-weekly-sub-escrow-agent-selection-faq.md) · [English](micro-drama-webnovel-pay-per-episode-cap-weekly-sub-escrow-agent-selection-faq.en.md) |
 | 20 | **播客动态广告插入（DAI）、主播口播赞助与音乐流媒体版税分账（Podcast Dynamic Ad Insertion, Host-Read Sponsorship & Music Royalty Split Escrow：Spotify Megaphone / Acast / Gumball / 小宇宙播客商业化 / DistroKid）“防手游内嵌静音播放器刷假下载骗 $35 CPM、防主播漏念优惠码与联合创作版税（Split Sheet）秒级清分”Agent 架构选型 FAQ** | [中文](podcast-dai-sponsorship-music-royalty-iab-escrow-agent-selection-faq.md) · [English](podcast-dai-sponsorship-music-royalty-iab-escrow-agent-selection-faq.en.md) |
 | 21 | **订阅制 SaaS 客户续费挽留（Churn Deflection）、防“假退订骗半价券”与 FTC 一键退订合规托管（Chargebee Retention / Churnkey / Stripe Billing / Gainsight）“防羊毛党每季度点一次取消白嫖 5 折挽留券、防向季节性休眠/高活跃大客户错发永久打折券及 FTC Click-to-Cancel 对称退订”Agent 架构选型 FAQ** | [中文](saas-churn-retention-save-offer-click-to-cancel-escrow-agent-selection-faq.md) · [English](saas-churn-retention-save-offer-click-to-cancel-escrow-agent-selection-faq.en.md) |
+| 22 | **AI 原生 SaaS 按量与按结果计费（Usage-Based & Outcome Billing）、防死循环爆账单熔断与预付积分跨期结转托管（Orb / Metronome / Stripe Billing / Lago）“防周末 Agent 死循环刷出 $45,000 惊吓账单、防假‘已解决工单’乱收 $0.99 结果费与预付积分结转降本 30%”Agent 架构选型 FAQ** | [中文](saas-usage-based-outcome-billing-token-burn-circuit-breaker-escrow-agent-selection-faq.md) · [English](saas-usage-based-outcome-billing-token-burn-circuit-breaker-escrow-agent-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（30 篇）

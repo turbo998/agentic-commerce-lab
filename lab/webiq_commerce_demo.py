@@ -24881,6 +24881,87 @@ def evaluate_influencer_kol_affiliate_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class SaasUsageOutcomeBillingEscrowPolicyInput:
+    """Input contract for AI SaaS Usage-Based & Outcome Billing, Runaway-Loop Breaker & Credit Rollover Escrow."""
+
+    quarterly_ai_saas_usage_and_overage_pool_usd: float = 95000.0
+    runaway_agent_loop_velocity_spike_or_hard_spend_cap_breach: bool = False
+    upstream_5xx_retry_double_bill_or_72h_reopened_fake_outcome: bool = False
+    asc606_unconsumed_prepaid_credit_revenue_or_forfeiture_violation: bool = False
+    mandate_signing_key_age_days: int = 30
+    credit_25pct_rollover_and_committed_tier_trueup_ready: bool = False
+
+
+def evaluate_saas_usage_outcome_billing_escrow_policy(
+    policy_input: SaasUsageOutcomeBillingEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane AI SaaS Usage-Based & Outcome Billing, Runaway-Loop Breaker & Credit Rollover Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_ai_saas_usage_and_overage_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.asc606_unconsumed_prepaid_credit_revenue_or_forfeiture_violation
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "ASC606_UNCONSUMED_PREPAID_CREDIT_REVENUE_OR_FORFEITURE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.runaway_agent_loop_velocity_spike_or_hard_spend_cap_breach:
+        return {
+            "status_code": 403,
+            "decision": "RUNAWAY_AGENT_LOOP_VELOCITY_SPIKE_OR_HARD_SPEND_CAP_BREACH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.upstream_5xx_retry_double_bill_or_72h_reopened_fake_outcome:
+        return {
+            "status_code": 422,
+            "decision": "UPSTREAM_5XX_RETRY_DOUBLE_BILL_OR_72H_REOPENED_FAKE_OUTCOME_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.credit_25pct_rollover_and_committed_tier_trueup_ready:
+        savings = round(gross_pool * 0.30, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CREDIT_25PCT_ROLLOVER_AND_COMMITTED_TIER_TRUEUP_CONFIRM",
+            "mandate_token": "saas_usage_outcome_billing_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "IDEMPOTENT_STREAMING_USAGE_AND_72H_OUTCOME_AUTHORIZED",
+        "mandate_token": "saas_usage_outcome_billing_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -34154,6 +34235,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    saas_usage_outcome_billing_escrow_guard = {
+        "authorized_200": evaluate_saas_usage_outcome_billing_escrow_policy(
+            SaasUsageOutcomeBillingEscrowPolicyInput()
+        ),
+        "runaway_loop_or_cap_breach_403": evaluate_saas_usage_outcome_billing_escrow_policy(
+            SaasUsageOutcomeBillingEscrowPolicyInput(
+                runaway_agent_loop_velocity_spike_or_hard_spend_cap_breach=True
+            )
+        ),
+        "retry_double_bill_or_fake_outcome_422": evaluate_saas_usage_outcome_billing_escrow_policy(
+            SaasUsageOutcomeBillingEscrowPolicyInput(
+                upstream_5xx_retry_double_bill_or_72h_reopened_fake_outcome=True
+            )
+        ),
+        "asc606_unconsumed_revenue_451": evaluate_saas_usage_outcome_billing_escrow_policy(
+            SaasUsageOutcomeBillingEscrowPolicyInput(
+                asc606_unconsumed_prepaid_credit_revenue_or_forfeiture_violation=True
+            )
+        ),
+        "credit_rollover_and_trueup_409": evaluate_saas_usage_outcome_billing_escrow_policy(
+            SaasUsageOutcomeBillingEscrowPolicyInput(
+                credit_25pct_rollover_and_committed_tier_trueup_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -34411,6 +34518,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "airline_irrops_eu261_escrow_guard": airline_irrops_eu261_escrow_guard,
         "b2b_ap_three_way_match_escrow_guard": b2b_ap_three_way_match_escrow_guard,
         "influencer_kol_affiliate_escrow_guard": influencer_kol_affiliate_escrow_guard,
+        "saas_usage_outcome_billing_escrow_guard": saas_usage_outcome_billing_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -46861,6 +46969,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="kol-escrow-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 HYBRID_30PCT_BASE_NET_GMV_CLAWBACK_AND_SPARK_ADS_CONFIRM · Mandate: influencer_kol_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 129 AI SaaS Usage-Based & Outcome Billing, Runaway-Loop Breaker & Credit Rollover Escrow -->
+      <div class="finops-box" id="saas-usage-outcome-billing-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">⚡ AI 原生 SaaS 按量与按结果计费 (Usage &amp; Outcome Billing)、防死循环爆账单与积分结转托管 (Orb / Metronome / Stripe Billing / Lago) 沙盒 (Round 129)</div>
+            <div class="finops-subtitle">实测硬控亚秒级流式水位线(&lt;150ms)与 5 分钟 &gt;8x 斜率熔断防周末递归死循环刷出 $45,000 惊吓账单 (HTTP 403)、UUIDv7 幂等零失败计费+72h 无重开/无转人工真结果验真防乱收 $0.99 工单解决费 (HTTP 422)、ASC 606 预付积分递延收入合规 (HTTP 451) 及 25% 跨期积分结转(Rollover)+承诺包折算净省 30% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="saas-meter-status-kpi">HTTP 409 · CREDIT_25PCT_ROLLOVER_AND_COMMITTED_TIER_TRUEUP_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度 AI SaaS 用量 Token、Outcome 结果费与超额预算池 ($ USD)
+            <input type="range" id="saas-meter-pool-slider" min="15000" max="450000" step="5000" value="95000" oninput="updateSaasUsageOutcomeBillingEscrowSandbox()" />
+            <span id="saas-meter-pool-val" style="color:#6ee7b7; font-family:monospace;">$95,000</span>
+          </label>
+          <label>
+            亚秒级流式水位线与 &gt;8x 递归死循环斜率熔断 (HTTP 403)
+            <select id="saas-meter-loop-select" onchange="updateSaasUsageOutcomeBillingEscrowSandbox()">
+              <option value="pass">&lt;150ms 实时钱包扣减 + 消耗斜率正常且在租户硬顶上限内 (放行)</option>
+              <option value="block">周末 Webhook 递归死循环 5 分钟斜率飙至 14x 或 突破月度硬上限企图刷出 $45,000 账单 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            UUIDv7 幂等去重与 72h 无重开“真结果 (Outcome)”验真 (HTTP 422)
+            <select id="saas-meter-outcome-select" onchange="updateSaasUsageOutcomeBillingEscrowSandbox()">
+              <option value="pass">5xx 超时重试 $0 计费 + AI 解决工单后满 72 小时零重开/零转人工才扣 $0.99 (合规)</option>
+              <option value="block">对上游 502 超时重试重复扣费 3 次 或 客户 10 分钟后重开工单转人工仍强扣 $0.99 结果费 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            ASC 606 预付积分递延收入账本与多级预警合规 (HTTP 451)
+            <select id="saas-meter-asc-select" onchange="updateSaasUsageOutcomeBillingEscrowSandbox()">
+              <option value="clear">预充值 Credits 计入合同负债按 FIFO 实耗确认收入 + 50%/80%/100% 阈值告警 (正常)</option>
+              <option value="hold">违规将未消耗预付积分提前确认为当期 GAAP 营收 或 无预警暗中强制清零大额余额 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            25% 跨期积分结转 (Rollover) 与阶梯承诺价扩容 (True-Up) (HTTP 409)
+            <select id="saas-meter-opt-select" onchange="updateSaasUsageOutcomeBillingEscrowSandbox()">
+              <option value="enabled" selected>允许当期未用完 25% 积分自动顺延下季 + 超量按 72 折承诺价平滑补齐免惩罚性溢价净省 30% (HTTP 409)</option>
+              <option value="baseline">常规流式计量与 72h 结果核验标准出账 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度 AI 用量与结果计费总池</div>
+            <div class="finops-kpi-val" id="saas-meter-gross-kpi">$95,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">熔断护栏与积分结转后净支出</div>
+            <div class="finops-kpi-val" id="saas-meter-net-kpi" style="color:#6ee7b7;">$66,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省死循环、假结果与清零</div>
+            <div class="finops-kpi-val" id="saas-meter-savings-kpi" style="color:#38bdf8;">$28,500</div>
+          </div>
+        </div>
+        <div id="saas-meter-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CREDIT_25PCT_ROLLOVER_AND_COMMITTED_TIER_TRUEUP_CONFIRM · Mandate: saas_usage_outcome_billing_optim_409
         </div>
       </div>
 
@@ -61778,6 +61949,80 @@ function updateInfluencerKolAffiliateEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CREATOR_AQS_AND_35D_NET_GMV_CLAWBACK_AUTHORIZED · Mandate: influencer_kol_escrow_200';
+}}
+
+function updateSaasUsageOutcomeBillingEscrowSandbox() {{
+  const slider = document.getElementById('saas-meter-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '95000');
+  const loopMode = document.getElementById('saas-meter-loop-select').value;
+  const outcomeMode = document.getElementById('saas-meter-outcome-select').value;
+  const ascMode = document.getElementById('saas-meter-asc-select').value;
+  const optMode = document.getElementById('saas-meter-opt-select').value;
+
+  document.getElementById('saas-meter-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('saas-meter-status-kpi');
+  const grossKpi = document.getElementById('saas-meter-gross-kpi');
+  const netKpi = document.getElementById('saas-meter-net-kpi');
+  const savingsKpi = document.getElementById('saas-meter-savings-kpi');
+  const banner = document.getElementById('saas-meter-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ascMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 ASC606_UNCONSUMED_PREPAID_CREDIT_REVENUE_OR_FORFEITURE_HOLD · Mandate: null';
+    return;
+  }}
+  if (loopMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 RUNAWAY_AGENT_LOOP_VELOCITY_SPIKE_OR_HARD_SPEND_CAP_BREACH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (outcomeMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UPSTREAM_5XX_RETRY_DOUBLE_BILL_OR_72H_REOPENED_FAKE_OUTCOME_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.30);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CREDIT_25PCT_ROLLOVER_AND_COMMITTED_TIER_TRUEUP_CONFIRM · Mandate: saas_usage_outcome_billing_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 IDEMPOTENT_STREAMING_USAGE_AND_72H_OUTCOME_AUTHORIZED · Mandate: saas_usage_outcome_billing_200';
 }}
 
 function updateStage1756Sandbox() {{
