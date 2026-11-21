@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`275` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`276` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（14 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（42 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（98 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（99 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（65 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（23 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（33 篇）](#tax-fx-privacy-disputes)
@@ -90,7 +90,7 @@
 | 42 | **电子礼品卡与品牌储值卡（Digital Gift Cards & Stored Value：Rise.ai / Blackhawk / Apple Gift Card / 京东E卡）防黑卡洗钱、防“8折买卡再8折买货”无限套利与沉淀资金（Escheatment）托管“防黑卡买 $500 电子卡 3 分钟变现留给商家 200% 拒付、防优惠码买礼品卡死循环与双账本隔离净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.md) · [English](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（98 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（99 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -194,6 +194,7 @@
 | 96 | **电商分布式订单路由（DOM：Manhattan Active Omni / Fluent Commerce / Shopify Order Routing）、防“拆成 4 个包裹运费吞穿毛利”与门店安全库存托管“防 $55 免邮单拆发 4 箱倒赔 $16、防派单给门店最后 1 件残次样机遭拒单与合包奖励净省 35%”Agent 架构选型 FAQ** | [中文](ecommerce-distributed-order-management-dom-split-shipment-margin-escrow-agent-selection-faq.md) · [English](ecommerce-distributed-order-management-dom-split-shipment-margin-escrow-agent-selection-faq.en.md) |
 | 97 | **直播电商与短视频原生直购（Livestream & Video Commerce：TikTok Shop / YouTube Shopping / 抖音千川 / Whatnot）、防“中控手抖少打一个 0”破价熔断与净成交（Net-GMV）投流托管“防 $290 输成 $29.0 上链接 5 秒被抢空、防秒拍秒退虚假转化骗光广告预算与 180 秒极速释库净省 36%”Agent 架构选型 FAQ** | [中文](livestream-video-commerce-tiktok-shop-price-glitch-ad-roas-escrow-agent-selection-faq.md) · [English](livestream-video-commerce-tiktok-shop-price-glitch-ad-roas-escrow-agent-selection-faq.en.md) |
 | 98 | **付费会员（Paid Membership：Prime / 88VIP / 京东PLUS / Inveterate）防“职业代购蹭无限免邮”、积分防撞库盗刷与退会扣减已享权益托管“防 $99 会员卡一年发 600 个异地地址亏穿 $12,000 运费、防下单秒拿积分再用积分买货后退原单与高毛利加价购净省 38%”Agent 架构选型 FAQ** | [中文](ecommerce-loyalty-paid-membership-free-shipping-abuse-points-ato-escrow-agent-selection-faq.md) · [English](ecommerce-loyalty-paid-membership-free-shipping-abuse-points-ato-escrow-agent-selection-faq.en.md) |
+| 99 | **服装鞋履 AI 尺码推荐与虚拟试穿（AI Sizing & Virtual Try-On：True Fit / Bold Metrics / Google VTO）、防“同款连拍 S/M/L 三件退两件（Bracketing）”与退货偏码自愈托管“防买 3 退 2 吃光整单毛利并锁死大促黄金库存、防全站套用一张假尺码表与跨品牌精准锁码净省 39%”Agent 架构选型 FAQ** | [中文](ecommerce-apparel-ai-sizing-virtual-tryon-bracketing-return-escrow-agent-selection-faq.md) · [English](ecommerce-apparel-ai-sizing-virtual-tryon-bracketing-return-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（65 篇）

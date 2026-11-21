@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`275` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`276` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (14 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (42 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (98 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (99 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (65 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (23 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (33 guides)](#tax-fx-privacy-disputes)
@@ -90,7 +90,7 @@
 | 42 | **E-Commerce Digital Gift Cards, Stored-Value Wallets & Corporate Gifting (`Rise.ai / Blackhawk / Stripe / Govalo`), Anti-Triangulation Fraud & `CARD Act / Escheatment` Escrow (`3DS2` Cascade Revocation, Promo-on-Gift-Card Ban & Dual Ledger `-37%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.en.md) · [中文](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (98 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (99 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -194,6 +194,7 @@
 | 96 | **E-Commerce Distributed Order Management (`DOM`: `Manhattan Active Omni / Fluent Commerce / Shopify Routing`), Anti-Split-Shipment Margin Wipeout & Store Safety-Stock Escrow (`Minimize-Splits` Margin Lock, Store `On_Hand >= 3` Buffer & `-35%` Cost) Agent Architecture Selection FAQ** | [English](ecommerce-distributed-order-management-dom-split-shipment-margin-escrow-agent-selection-faq.en.md) · [中文](ecommerce-distributed-order-management-dom-split-shipment-margin-escrow-agent-selection-faq.md) |
 | 97 | **Livestream & Video Commerce (`TikTok Shop / YouTube Shopping / Douyin / Whatnot`), Anti-"Fat-Finger `$29.0`" Price-Glitch Guard & Net-Settled `ROAS` Escrow (`COGS` Decimal Lock, Instant-Cancel Ad Circuit Breaker & `180s` Recycle `-36%` Cost) Agent Architecture Selection FAQ** | [English](livestream-video-commerce-tiktok-shop-price-glitch-ad-roas-escrow-agent-selection-faq.en.md) · [中文](livestream-video-commerce-tiktok-shop-price-glitch-ad-roas-escrow-agent-selection-faq.md) |
 | 98 | **E-Commerce Paid Membership (`Prime / 88VIP / Inveterate`) & Loyalty Points (`Talon.One / Antavo / Yotpo`), Anti-Reseller Free-Shipping Abuse, `T+30d` Points Escrow & `Points+Cash` Redemption (`<=5` Household Address Lock & `-38%` Cost) Agent Architecture Selection FAQ** | [English](ecommerce-loyalty-paid-membership-free-shipping-abuse-points-ato-escrow-agent-selection-faq.en.md) · [中文](ecommerce-loyalty-paid-membership-free-shipping-abuse-points-ato-escrow-agent-selection-faq.md) |
+| 99 | **Apparel & Footwear AI Sizing, Virtual Try-On (`True Fit / Bold Metrics / Google VTO`) & Anti-`Bracketing` Return Escrow (`S+M+L` Cart Interceptor, Closed-Loop RMA Calibration & `BIPA` 5s Wipe `-39%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-apparel-ai-sizing-virtual-tryon-bracketing-return-escrow-agent-selection-faq.en.md) · [中文](ecommerce-apparel-ai-sizing-virtual-tryon-bracketing-return-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (65 Guides)

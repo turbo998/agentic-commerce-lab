@@ -27061,6 +27061,79 @@ def evaluate_ecommerce_loyalty_paid_vip_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceApparelSizingEscrowPolicyInput:
+    quarterly_apparel_fit_return_and_bracketing_pool_usd: float = 140000.0
+    multi_size_bracketing_cart_hoarding_detected: bool = False
+    generic_size_chart_or_uncalibrated_high_return_lot: bool = False
+    uncalibrated_vto_drape_or_bipa_body_photo_retention: bool = False
+    cross_brand_fit_graph_and_instant_exchange_ready: bool = False
+
+
+def evaluate_ecommerce_apparel_sizing_escrow_policy(
+    policy_input: EcommerceApparelSizingEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_apparel_fit_return_and_bracketing_pool_usd)
+    )
+    if policy_input.uncalibrated_vto_drape_or_bipa_body_photo_retention:
+        return {
+            "status_code": 451,
+            "decision": "UNCALIBRATED_VTO_DRAPE_OR_BIPA_BODY_PHOTO_RETENTION_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.multi_size_bracketing_cart_hoarding_detected:
+        return {
+            "status_code": 403,
+            "decision": "MULTI_SIZE_BRACKETING_CART_HOARDING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.generic_size_chart_or_uncalibrated_high_return_lot:
+        return {
+            "status_code": 422,
+            "decision": "GENERIC_SIZE_CHART_OR_UNCALIBRATED_HIGH_RETURN_LOT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cross_brand_fit_graph_and_instant_exchange_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CROSS_BRAND_FIT_GRAPH_AND_INSTANT_EXCHANGE_CONFIRM",
+            "mandate_token": "apparel_ai_sizing_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "GARMENT_SPEC_VERIFIED_SINGLE_SIZE_AUTHORIZED",
+        "mandate_token": "apparel_ai_sizing_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -37062,6 +37135,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_apparel_sizing_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_apparel_sizing_escrow_policy(
+            EcommerceApparelSizingEscrowPolicyInput()
+        ),
+        "multi_size_bracketing_403": evaluate_ecommerce_apparel_sizing_escrow_policy(
+            EcommerceApparelSizingEscrowPolicyInput(
+                multi_size_bracketing_cart_hoarding_detected=True
+            )
+        ),
+        "generic_chart_or_return_lot_422": evaluate_ecommerce_apparel_sizing_escrow_policy(
+            EcommerceApparelSizingEscrowPolicyInput(
+                generic_size_chart_or_uncalibrated_high_return_lot=True
+            )
+        ),
+        "uncalibrated_vto_or_bipa_451": evaluate_ecommerce_apparel_sizing_escrow_policy(
+            EcommerceApparelSizingEscrowPolicyInput(
+                uncalibrated_vto_drape_or_bipa_body_photo_retention=True
+            )
+        ),
+        "cross_brand_fit_and_exchange_409": evaluate_ecommerce_apparel_sizing_escrow_policy(
+            EcommerceApparelSizingEscrowPolicyInput(
+                cross_brand_fit_graph_and_instant_exchange_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -37347,6 +37446,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_dom_split_shipment_escrow_guard": ecommerce_dom_split_shipment_escrow_guard,
         "livestream_video_commerce_escrow_guard": livestream_video_commerce_escrow_guard,
         "ecommerce_loyalty_paid_vip_escrow_guard": ecommerce_loyalty_paid_vip_escrow_guard,
+        "ecommerce_apparel_sizing_escrow_guard": ecommerce_apparel_sizing_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -51495,6 +51595,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="paid-vip-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 POINTS_PLUS_CASH_COGS_COVERED_CATALOG_REDEMPTION_CONFIRM · Mandate: loyalty_paid_vip_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 157 Apparel AI Sizing & Anti-Bracketing Escrow -->
+      <div class="finops-box" id="ecommerce-apparel-sizing-escrow-sandbox" style="margin-top:12px;border-color:#a855f7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">👗 服装鞋履 AI 尺码导购 (True Fit / Bold Metrics)、防买3退2试码 (Bracketing) 与虚拟试穿托管沙盒</div>
+            <div class="finops-sub">Round 157 · 购物车相邻多码连拍拦截 (HTTP 403) + PLM 实测与退货自愈闭环 (HTTP 422) + 3D衣长锚定/BIPA照片即焚 (HTTP 451) + 跨品牌锁码净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="apparel-size-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度服装尺码退货、买3退2占库与熨烫损耗池 ($)
+            <input type="number" id="apparel-size-gross-input" value="140000" min="15000" step="5000" oninput="recalcEcommerceApparelSizingSandbox()" />
+          </label>
+          <label>购物车同款多尺码连拍 (Bracketing) 检测
+            <select id="apparel-size-bracket-select" onchange="recalcEcommerceApparelSizingSandbox()">
+              <option value="pass">精准锁定单尺码购买 + 赠免费极速换码保障 (合规)</option>
+              <option value="block_403">同款连衣裙一口气拍下 S/M/L 三件回家试穿必退两件 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>PLM 成衣实测参数与退货偏码自愈回路
+            <select id="apparel-size-spec-select" onchange="recalcEcommerceApparelSizingSandbox()">
+              <option value="pass">绑定 CAD 实测平铺围度 + 偏小批次已自动 +0.8 码修正 (合规)</option>
+              <option value="block_422">全站共用一张假尺码表或偏码退货率 &gt;22% 未自动修正 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>虚拟试穿 (VTO) 3D 衣长锚定与 BIPA 隐私锁
+            <select id="apparel-size-vto-select" onchange="recalcEcommerceApparelSizingSandbox()">
+              <option value="pass">CLO3D 物理下摆对齐 + 用户全身照 5 秒内内存即焚 (安全)</option>
+              <option value="block_451">2D 修图把短款画成长款误导或落盘存用户全身照违法 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>True Fit 跨品牌合身图谱与免垫资秒换码
+            <select id="apparel-size-opt-select" onchange="recalcEcommerceApparelSizingSandbox()">
+              <option value="enabled" selected>跨品牌 1 秒映射 (“穿 Zara M = 本店 L”) + 单件免邮秒换 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">逼买家自己找软尺量三围导致犹豫多拍退货 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度服装尺码退货与翻新总池</div>
+            <div class="finops-kpi-val" id="apparel-size-gross-kpi">$140,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防多码连拍与锁码后净损耗</div>
+            <div class="finops-kpi-val" id="apparel-size-net-kpi" style="color:#6ee7b7;">$85,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省试码退货运费与占库</div>
+            <div class="finops-kpi-val" id="apparel-size-savings-kpi" style="color:#38bdf8;">$54,600</div>
+          </div>
+        </div>
+        <div id="apparel-size-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CROSS_BRAND_FIT_GRAPH_AND_INSTANT_EXCHANGE_CONFIRM · Mandate: apparel_ai_sizing_escrow_optim_409
         </div>
       </div>
 
@@ -68473,6 +68630,79 @@ function recalcEcommerceLoyaltyPaidVipSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 HOUSEHOLD_BOUND_VIP_AND_ESCROW_POINTS_AUTHORIZED · Mandate: loyalty_paid_vip_escrow_200';
+}}
+
+function recalcEcommerceApparelSizingSandbox() {{
+  const grossInput = document.getElementById('apparel-size-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '140000'));
+  const bracketGate = document.getElementById('apparel-size-bracket-select').value;
+  const specGate = document.getElementById('apparel-size-spec-select').value;
+  const vtoGate = document.getElementById('apparel-size-vto-select').value;
+  const optMode = document.getElementById('apparel-size-opt-select').value;
+
+  const grossKpi = document.getElementById('apparel-size-gross-kpi');
+  const netKpi = document.getElementById('apparel-size-net-kpi');
+  const savingsKpi = document.getElementById('apparel-size-savings-kpi');
+  const statusKpi = document.getElementById('apparel-size-status-kpi');
+  const banner = document.getElementById('apparel-size-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vtoGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCALIBRATED_VTO_DRAPE_OR_BIPA_BODY_PHOTO_RETENTION_HOLD · Mandate: null';
+    return;
+  }}
+  if (bracketGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MULTI_SIZE_BRACKETING_CART_HOARDING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (specGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 GENERIC_SIZE_CHART_OR_UNCALIBRATED_HIGH_RETURN_LOT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CROSS_BRAND_FIT_GRAPH_AND_INSTANT_EXCHANGE_CONFIRM · Mandate: apparel_ai_sizing_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 GARMENT_SPEC_VERIFIED_SINGLE_SIZE_AUTHORIZED · Mandate: apparel_ai_sizing_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

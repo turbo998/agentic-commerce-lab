@@ -19577,6 +19577,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-loyalty-paid-vip-escrow-sandbox", html_zh)
 
+    def test_ecommerce_apparel_sizing_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceApparelSizingEscrowPolicyInput,
+            evaluate_ecommerce_apparel_sizing_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_apparel_sizing_escrow_policy(
+            EcommerceApparelSizingEscrowPolicyInput(
+                quarterly_apparel_fit_return_and_bracketing_pool_usd=140000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "GARMENT_SPEC_VERIFIED_SINGLE_SIZE_AUTHORIZED",
+        )
+
+        bracket = evaluate_ecommerce_apparel_sizing_escrow_policy(
+            EcommerceApparelSizingEscrowPolicyInput(
+                multi_size_bracketing_cart_hoarding_detected=True
+            )
+        )
+        self.assertEqual(bracket["status_code"], 403)
+        self.assertEqual(
+            bracket["decision"],
+            "MULTI_SIZE_BRACKETING_CART_HOARDING_BLOCKED",
+        )
+
+        spec = evaluate_ecommerce_apparel_sizing_escrow_policy(
+            EcommerceApparelSizingEscrowPolicyInput(
+                generic_size_chart_or_uncalibrated_high_return_lot=True
+            )
+        )
+        self.assertEqual(spec["status_code"], 422)
+        self.assertEqual(
+            spec["decision"],
+            "GENERIC_SIZE_CHART_OR_UNCALIBRATED_HIGH_RETURN_LOT_BLOCKED",
+        )
+
+        vto = evaluate_ecommerce_apparel_sizing_escrow_policy(
+            EcommerceApparelSizingEscrowPolicyInput(
+                uncalibrated_vto_drape_or_bipa_body_photo_retention=True
+            )
+        )
+        self.assertEqual(vto["status_code"], 451)
+        self.assertEqual(
+            vto["decision"],
+            "UNCALIBRATED_VTO_DRAPE_OR_BIPA_BODY_PHOTO_RETENTION_HOLD",
+        )
+
+        optim = evaluate_ecommerce_apparel_sizing_escrow_policy(
+            EcommerceApparelSizingEscrowPolicyInput(
+                quarterly_apparel_fit_return_and_bracketing_pool_usd=140000.0,
+                cross_brand_fit_graph_and_instant_exchange_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 54600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 85400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_apparel_sizing_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-apparel-sizing-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
