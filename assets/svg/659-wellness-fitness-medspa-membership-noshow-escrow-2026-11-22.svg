@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg659" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <linearGradient id="hdr659" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg659)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr659)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 216 · Fitness, Boutique Studio &amp; MedSpa Membership &amp; Package Escrow</text>
+  <text x="48" y="74" class="sub">Mindbody / Mariana Tek / Zenoti / ClassPass · Reformer Slot Hoarding Guard · Package Retail Proration · FTC Click-to-Cancel (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #659 · FAQ #335</text>
+
+  <!-- Lane 1: Reformer / Cycle Class Slot Hoarding & Aggregator (ClassPass) Margin Cannibalization Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Class-Slot Hoarding &amp; Yield Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Unlimited Members Hoarding 5 Slots/Day:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Max 1 Prime-Time Reformer Booking Per Day</text>
+  <text x="54" y="200" class="mono">+ T-12h Auto-Release Unconfirmed Waitlist Spot!</text>
+  <text x="44" y="223" class="body-txt">• Stops $11 ClassPass Taking $42 Direct Drop-In:</text>
+  <text x="54" y="243" class="mono">Cap 3rd-Party Aggregator Allocation at &lt;= 15% Prime</text>
+  <text x="44" y="266" class="body-txt">• Prevents 14-machine Pilates studios having 4</text>
+  <text x="54" y="286" class="body-txt">empty beds on Saturday 10 AM while direct $42</text>
+  <text x="54" y="304" class="body-txt">retail clients were locked out by a full waitlist</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 PRIME_SLOT_HOARDING_OR_AGGREGATOR_OVERCAP_BLOCKED</text>
+
+  <!-- Lane 2: Bundled Session Package ("Buy 10 Get 2 Free") Mid-Pack Refund Arbitrage & ASC 606 Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Package Retail-Rate Proration (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops "Buy 10 Sessions ($200/ea), Use 3, Refund 7":</text>
+  <text x="442" y="182" class="mono">Refund = `Paid_Total - (Used_Qty × $280_Single_Rate)`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Never Refund Consumed Sessions at Bulk Discount!</text>
+  <text x="432" y="223" class="body-txt">• `ASC 606` Deferred Liability Recognition:</text>
+  <text x="442" y="243" class="mono">Recognize Revenue Per-Session Scanned (Not Day 1)</text>
+  <text x="432" y="266" class="body-txt">• Eliminates MedSpa buyers purchasing a 10-pack</text>
+  <text x="442" y="286" class="body-txt">for a 30% discount, doing 2 laser treatments, and</text>
+  <text x="442" y="304" class="body-txt">demanding an 80% pro-rata cash refund</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 DISCOUNT_PRORATED_PACKAGE_REFUND_ARBITRAGE_BLOCKED</text>
+
+  <!-- Lane 3: FTC Click-to-Cancel ("Must Cancel In-Person / Certified Mail") & State Health-Club Bond Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `FTC Click-to-Cancel` &amp; Bond Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• `FTC 16 CFR Part 425` / `CA ARL` Gym Rule:</text>
+  <text x="830" y="182" class="mono">Block "In-Person or Certified Mail Only" Cancel!</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Enforce 2-Click Online Cancel Symmetry ($51k Fine)</text>
+  <text x="820" y="223" class="body-txt">• State Health-Studio Contract Cap (`NY / CA`):</text>
+  <text x="830" y="243" class="body-txt">Enforces 3-day/5-day statutory cooling-off refund</text>
+  <text x="830" y="261" class="body-txt">and blocks multi-year prepaid gym contracts</text>
+  <text x="820" y="284" class="body-txt">• Eliminates AG lawsuits and bank `Visa 13.2`</text>
+  <text x="830" y="302" class="body-txt">"Cancelled Recurring" chargeback cascades</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 ILLEGAL_IN_PERSON_CANCEL_HURDLE_OR_ARL_BREACH_HOLD</text>
+
+  <!-- Bottom 1-Tap Membership Freeze ($15/Mo) & Dynamic Off-Peak Credit Pricing -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. 1-Tap Membership Freeze ($15/Mo Pause) + Dynamic Off-Peak Class Credit Pricing (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① $15/Mo Travel/Injury Freeze</text>
+  <text x="62" y="462" class="body-txt">On cancel screen, offers</text>
+  <text x="62" y="480" class="body-txt">1-tap 60-day freeze (locks</text>
+  <text x="62" y="498" class="body-txt">grandfathered founding rate);</text>
+  <text x="62" y="516" class="mono">Saves 46% of Cancelling Members</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② T-2h Smart Waitlist Promote</text>
+  <text x="337" y="462" class="body-txt">Inside 12h window, texts top</text>
+  <text x="337" y="480" class="body-txt">3 waitlisters simultaneously</text>
+  <text x="337" y="498" class="body-txt">("First to Tap YES Gets Bed 4");</text>
+  <text x="337" y="516" class="mono">98.6% Reformer Utilization</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Off-Peak Credit Discount</text>
+  <text x="622" y="462" class="body-txt">Prices 2:00 PM Tue class at</text>
+  <text x="622" y="480" class="body-txt">0.75 credits vs 1.5 credits</text>
+  <text x="622" y="498" class="body-txt">for Sat 10:00 AM peak;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">+31% Off-Peak Bed Occupancy</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Account-Updater Dunning</text>
+  <text x="907" y="462" class="body-txt">Syncs Visa/MC `VAU/ABU`</text>
+  <text x="907" y="480" class="body-txt">before 1st-of-month billing +</text>
+  <text x="907" y="498" class="body-txt">turnstile grace prompt;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Studio &amp; MedSpa Leakage</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Studio &amp; MedSpa Loss Saved</text>
+  <text x="46" y="642" class="mono">$57,600 Saved / $160k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">98.6% Fill</text>
+  <text x="336" y="626" class="kpi-lbl">Prime Reformer &amp; Treatment Rooms</text>
+  <text x="336" y="642" class="mono">Zero Multi-Slot Hoarding</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0 Pack Arb</text>
+  <text x="626" y="626" class="kpi-lbl">Single-Session Retail Rate Deduct</text>
+  <text x="626" y="642" class="mono">ASC 606 Deferred Liability Clean</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">46% Saved</text>
+  <text x="916" y="626" class="kpi-lbl">Via 1-Tap $15/Mo Freeze vs Cancel</text>
+  <text x="916" y="642" class="mono">100% FTC Click-to-Cancel Compliant</text>
+</svg>

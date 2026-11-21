@@ -23530,6 +23530,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-corporate-print-branded-swag-sandbox", html_zh)
 
+    def test_wellness_fitness_medspa_membership_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            WellnessFitnessMedspaMembershipPolicyInput,
+            evaluate_wellness_fitness_medspa_membership_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_wellness_fitness_medspa_membership_policy(
+            WellnessFitnessMedspaMembershipPolicyInput(
+                quarterly_empty_reformer_pack_refund_arb_and_cancel_churn_pool_usd=160000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_STUDIO_CHECKIN_AND_ASC606_SCAN_AUTHORIZED",
+        )
+
+        slot = evaluate_wellness_fitness_medspa_membership_policy(
+            WellnessFitnessMedspaMembershipPolicyInput(
+                unlimited_member_multi_slot_hoarding_or_aggregator_over_15pct_prime=True
+            )
+        )
+        self.assertEqual(slot["status_code"], 403)
+        self.assertEqual(
+            slot["decision"],
+            "PRIME_SLOT_HOARDING_OR_AGGREGATOR_OVERCAP_BLOCKED",
+        )
+
+        pack = evaluate_wellness_fitness_medspa_membership_policy(
+            WellnessFitnessMedspaMembershipPolicyInput(
+                mid_package_refund_at_discounted_rate_or_upfront_revenue_recognition=True
+            )
+        )
+        self.assertEqual(pack["status_code"], 422)
+        self.assertEqual(
+            pack["decision"],
+            "DISCOUNT_PRORATED_PACKAGE_REFUND_ARBITRAGE_BLOCKED",
+        )
+
+        ftc = evaluate_wellness_fitness_medspa_membership_policy(
+            WellnessFitnessMedspaMembershipPolicyInput(
+                requiring_in_person_or_mail_cancellation_violating_ftc_rule=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 451)
+        self.assertEqual(
+            ftc["decision"],
+            "ILLEGAL_IN_PERSON_CANCEL_HURDLE_OR_ARL_BREACH_HOLD",
+        )
+
+        optim = evaluate_wellness_fitness_medspa_membership_policy(
+            WellnessFitnessMedspaMembershipPolicyInput(
+                quarterly_empty_reformer_pack_refund_arb_and_cancel_churn_pool_usd=160000.0,
+                one_tap_15usd_membership_freeze_and_t2h_concurrent_waitlist_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 57600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 102400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("wellness_fitness_medspa_membership_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("wellness-fitness-medspa-membership-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -31485,6 +31485,82 @@ def evaluate_b2b_corporate_print_branded_swag_policy(
     }
 
 
+@dataclass(frozen=True)
+class WellnessFitnessMedspaMembershipPolicyInput:
+    quarterly_empty_reformer_pack_refund_arb_and_cancel_churn_pool_usd: float = 160000.0
+    unlimited_member_multi_slot_hoarding_or_aggregator_over_15pct_prime: bool = False
+    mid_package_refund_at_discounted_rate_or_upfront_revenue_recognition: bool = False
+    requiring_in_person_or_mail_cancellation_violating_ftc_rule: bool = False
+    one_tap_15usd_membership_freeze_and_t2h_concurrent_waitlist_ready: bool = False
+
+
+def evaluate_wellness_fitness_medspa_membership_policy(
+    policy_input: WellnessFitnessMedspaMembershipPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_empty_reformer_pack_refund_arb_and_cancel_churn_pool_usd
+        ),
+    )
+    if policy_input.requiring_in_person_or_mail_cancellation_violating_ftc_rule:
+        return {
+            "status_code": 451,
+            "decision": "ILLEGAL_IN_PERSON_CANCEL_HURDLE_OR_ARL_BREACH_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unlimited_member_multi_slot_hoarding_or_aggregator_over_15pct_prime:
+        return {
+            "status_code": 403,
+            "decision": "PRIME_SLOT_HOARDING_OR_AGGREGATOR_OVERCAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.mid_package_refund_at_discounted_rate_or_upfront_revenue_recognition:
+        return {
+            "status_code": 422,
+            "decision": "DISCOUNT_PRORATED_PACKAGE_REFUND_ARBITRAGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.one_tap_15usd_membership_freeze_and_t2h_concurrent_waitlist_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ONE_TAP_MEMBERSHIP_FREEZE_AND_CONCURRENT_WAITLIST_CONFIRM",
+            "mandate_token": "wellness_medspa_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_STUDIO_CHECKIN_AND_ASC606_SCAN_AUTHORIZED",
+        "mandate_token": "wellness_medspa_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -43020,6 +43096,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    wellness_fitness_medspa_membership_guard = {
+        "authorized_200": evaluate_wellness_fitness_medspa_membership_policy(
+            WellnessFitnessMedspaMembershipPolicyInput()
+        ),
+        "slot_hoard_or_aggreg_403": evaluate_wellness_fitness_medspa_membership_policy(
+            WellnessFitnessMedspaMembershipPolicyInput(
+                unlimited_member_multi_slot_hoarding_or_aggregator_over_15pct_prime=True
+            )
+        ),
+        "pack_refund_arbitrage_422": evaluate_wellness_fitness_medspa_membership_policy(
+            WellnessFitnessMedspaMembershipPolicyInput(
+                mid_package_refund_at_discounted_rate_or_upfront_revenue_recognition=True
+            )
+        ),
+        "in_person_cancel_ftc_451": evaluate_wellness_fitness_medspa_membership_policy(
+            WellnessFitnessMedspaMembershipPolicyInput(
+                requiring_in_person_or_mail_cancellation_violating_ftc_rule=True
+            )
+        ),
+        "freeze_and_t2h_blast_409": evaluate_wellness_fitness_medspa_membership_policy(
+            WellnessFitnessMedspaMembershipPolicyInput(
+                one_tap_15usd_membership_freeze_and_t2h_concurrent_waitlist_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -43364,6 +43466,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_car_rental_damage_toll_ldw_guard": ota_car_rental_damage_toll_ldw_guard,
         "ecommerce_pet_autoship_vet_rx_guard": ecommerce_pet_autoship_vet_rx_guard,
         "b2b_corporate_print_branded_swag_guard": b2b_corporate_print_branded_swag_guard,
+        "wellness_fitness_medspa_membership_guard": wellness_fitness_medspa_membership_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -60875,6 +60978,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="printswag-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 RECIPIENT_SIZE_PICKER_POD_AND_TIER_BATCH_CONFIRM · Mandate: b2b_print_swag_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 216 Fitness, Boutique Studio & MedSpa Membership Escrow (#335) -->
+      <div class="finops-box" id="wellness-fitness-medspa-membership-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🧘‍♀️ 健身房、精品普拉提工作室与轻医美会员订阅 (Mindbody / Mariana Tek / Zenoti) 沙盒</div>
+            <div class="finops-sub">Round 216 (#335) · 包月卡同日限占 1 节黄金课与 ClassPass 黄金档 &lt;=15% 封顶 (HTTP 403) + 10次疗程包中途退费按单次门市原价扣除与 ASC 606 扫码消课 (HTTP 422) + FTC 2步在线一键退会对称性 (HTTP 451) + $15/月保创始低价冻卡挽留净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="medspafit-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度周六黄金普拉提床位被占座鸽单空置、10次医美包按团购价中途退卡套利与退会拒付流失池 ($)
+            <input type="number" id="medspafit-gross-input" value="160000" min="10000" step="5000" oninput="recalcWellnessFitnessMedspaMembershipSandbox()" />
+          </label>
+          <label>无限包月会员黄金时段同日防连占多课锁与第三方平台 (ClassPass) 黄金档 &lt;=15% 配额
+            <select id="medspafit-slot-select" onchange="recalcWellnessFitnessMedspaMembershipSandbox()">
+              <option value="pass">包月会员同日仅限 1 节黄金课预约 + 黄金档第三方平台床位 &lt;= 15% 保障 $42 正价客 (合规)</option>
+              <option value="block_403">包月会员一口气占满 5 节晚高峰课临时放鸽子 或 把周六早 10 点黄金床位全按 $11 放给 ClassPass (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>打包疗程次卡 (买 10 次 $2,000) 中途退费“已消课按单次门市原价 ($280) 扣除”与 ASC 606 核算
+            <select id="medspafit-pack-select" onchange="recalcWellnessFitnessMedspaMembershipSandbox()">
+              <option value="pass">按 $2,000 - (已用 3 次 × $280 单次原价) = $1,160 退费 + 凭每次到店扫码确认 ASC 606 收入 (合规)</option>
+              <option value="block_422">做完 3 次激光医美后要求按 $200 团购折后均价退回 $1,400 白嫖折扣 或 购卡首日把预收款全算成利润 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国 FTC Click-to-Cancel (16 CFR 425) 在线 2 步对等退会与州立健身房 3 天冷静期门禁
+            <select id="medspafit-ftc-select" onchange="recalcWellnessFitnessMedspaMembershipSandbox()">
+              <option value="pass">App 内 2 步在线无障碍退订 + 新办卡 3-5 天法定冷静期全额无忧退 (安全)</option>
+              <option value="block_451">线上 1 分钟办卡却强制会员必须工作日去门店前台找店长或寄邮政挂号信才能退会面临 $51,744 罚款 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>退订页同屏一键切换“$15/月保创始会员低价冻卡 (Freeze)”与开课前 2 小时候补并发抢位
+            <select id="medspafit-opt-select" onchange="recalcWellnessFitnessMedspaMembershipSandbox()">
+              <option value="enabled" selected>$15/月冻卡挽留 46% 退会会员 + T-2h 并发短信秒补退课空床 + 下午闲时 0.75 倍课点引流 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">无保价冻卡选项直接彻底退会 + 候补按顺序单发邮件苦等 2 小时致床位空置 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度空床损耗与次卡套利流失池</div>
+            <div class="finops-kpi-val" id="medspafit-gross-kpi">$160,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">冻卡挽留与原价折算后净损耗</div>
+            <div class="finops-kpi-val" id="medspafit-net-kpi" style="color:#6ee7b7;">$102,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省床位空置与会员流失</div>
+            <div class="finops-kpi-val" id="medspafit-savings-kpi" style="color:#38bdf8;">$57,600</div>
+          </div>
+        </div>
+        <div id="medspafit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ONE_TAP_MEMBERSHIP_FREEZE_AND_CONCURRENT_WAITLIST_CONFIRM · Mandate: wellness_medspa_escrow_optim_409
         </div>
       </div>
 
@@ -82160,6 +82320,79 @@ function recalcB2BCorporatePrintBrandedSwagSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_BRAND_DAM_VECTOR_AND_SWAG_LOCKER_AUTHORIZED · Mandate: b2b_print_swag_escrow_200';
+}}
+
+function recalcWellnessFitnessMedspaMembershipSandbox() {{
+  const grossInput = document.getElementById('medspafit-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '160000'));
+  const slotGate = document.getElementById('medspafit-slot-select').value;
+  const packGate = document.getElementById('medspafit-pack-select').value;
+  const ftcGate = document.getElementById('medspafit-ftc-select').value;
+  const optMode = document.getElementById('medspafit-opt-select').value;
+
+  const grossKpi = document.getElementById('medspafit-gross-kpi');
+  const netKpi = document.getElementById('medspafit-net-kpi');
+  const savingsKpi = document.getElementById('medspafit-savings-kpi');
+  const statusKpi = document.getElementById('medspafit-status-kpi');
+  const banner = document.getElementById('medspafit-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ftcGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 ILLEGAL_IN_PERSON_CANCEL_HURDLE_OR_ARL_BREACH_HOLD · Mandate: null';
+    return;
+  }}
+  if (slotGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PRIME_SLOT_HOARDING_OR_AGGREGATOR_OVERCAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (packGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DISCOUNT_PRORATED_PACKAGE_REFUND_ARBITRAGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ONE_TAP_MEMBERSHIP_FREEZE_AND_CONCURRENT_WAITLIST_CONFIRM · Mandate: wellness_medspa_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_STUDIO_CHECKIN_AND_ASC606_SCAN_AUTHORIZED · Mandate: wellness_medspa_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
