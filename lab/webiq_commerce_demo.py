@@ -26988,6 +26988,79 @@ def evaluate_livestream_video_commerce_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceLoyaltyPaidVipEscrowPolicyInput:
+    quarterly_vip_freight_and_loyalty_redemption_pool_usd: float = 115000.0
+    paid_vip_reseller_multi_address_freight_abuse: bool = False
+    loyalty_ato_drain_or_unescrowed_pending_points_spend: bool = False
+    vip_perk_consumed_full_fee_refund_or_rosca_violation: bool = False
+    points_plus_cash_cogs_covered_catalog_redemption_ready: bool = False
+
+
+def evaluate_ecommerce_loyalty_paid_vip_escrow_policy(
+    policy_input: EcommerceLoyaltyPaidVipEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_vip_freight_and_loyalty_redemption_pool_usd)
+    )
+    if policy_input.vip_perk_consumed_full_fee_refund_or_rosca_violation:
+        return {
+            "status_code": 451,
+            "decision": "VIP_PERK_CONSUMED_FULL_FEE_REFUND_OR_ROSCA_VIOLATION_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.paid_vip_reseller_multi_address_freight_abuse:
+        return {
+            "status_code": 403,
+            "decision": "PAID_VIP_RESELLER_MULTI_ADDRESS_FREIGHT_ABUSE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.loyalty_ato_drain_or_unescrowed_pending_points_spend:
+        return {
+            "status_code": 422,
+            "decision": "LOYALTY_ATO_DRAIN_OR_UNESCROWED_PENDING_POINTS_SPEND_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.points_plus_cash_cogs_covered_catalog_redemption_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "POINTS_PLUS_CASH_COGS_COVERED_CATALOG_REDEMPTION_CONFIRM",
+            "mandate_token": "loyalty_paid_vip_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "HOUSEHOLD_BOUND_VIP_AND_ESCROW_POINTS_AUTHORIZED",
+        "mandate_token": "loyalty_paid_vip_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -36963,6 +37036,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_loyalty_paid_vip_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_loyalty_paid_vip_escrow_policy(
+            EcommerceLoyaltyPaidVipEscrowPolicyInput()
+        ),
+        "reseller_multi_address_freight_403": evaluate_ecommerce_loyalty_paid_vip_escrow_policy(
+            EcommerceLoyaltyPaidVipEscrowPolicyInput(
+                paid_vip_reseller_multi_address_freight_abuse=True
+            )
+        ),
+        "ato_or_unescrowed_points_422": evaluate_ecommerce_loyalty_paid_vip_escrow_policy(
+            EcommerceLoyaltyPaidVipEscrowPolicyInput(
+                loyalty_ato_drain_or_unescrowed_pending_points_spend=True
+            )
+        ),
+        "perk_consumed_refund_or_rosca_451": evaluate_ecommerce_loyalty_paid_vip_escrow_policy(
+            EcommerceLoyaltyPaidVipEscrowPolicyInput(
+                vip_perk_consumed_full_fee_refund_or_rosca_violation=True
+            )
+        ),
+        "points_plus_cash_catalog_409": evaluate_ecommerce_loyalty_paid_vip_escrow_policy(
+            EcommerceLoyaltyPaidVipEscrowPolicyInput(
+                points_plus_cash_cogs_covered_catalog_redemption_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -37247,6 +37346,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_digital_gift_card_escrow_guard": ecommerce_digital_gift_card_escrow_guard,
         "ecommerce_dom_split_shipment_escrow_guard": ecommerce_dom_split_shipment_escrow_guard,
         "livestream_video_commerce_escrow_guard": livestream_video_commerce_escrow_guard,
+        "ecommerce_loyalty_paid_vip_escrow_guard": ecommerce_loyalty_paid_vip_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -51338,6 +51438,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="livestream-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 NET_SETTLED_ROAS_BID_AND_180S_FLASH_RECYCLE_CONFIRM · Mandate: livestream_commerce_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 156 E-Commerce Paid VIP Membership & Loyalty Points Escrow -->
+      <div class="finops-box" id="ecommerce-loyalty-paid-vip-escrow-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">👑 付费会员 (Prime / 88VIP / Inveterate) 防代购蹭免邮与忠诚度积分防盗刷托管沙盒</div>
+            <div class="finops-sub">Round 156 · 家庭常住地址 &lt;=5 硬锁 (HTTP 403) + 积分 T+30d 退货冻结与异地 OTP (HTTP 422) + 退会扣已享权益 (HTTP 451) + 加价购净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="paid-vip-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度付费会员代购亏运费与积分兑付池 ($)
+            <input type="number" id="paid-vip-gross-input" value="115000" min="10000" step="5000" oninput="recalcEcommerceLoyaltyPaidVipSandbox()" />
+          </label>
+          <label>个人 VIP 家庭地址簿上限 (&lt;=5 个/年)
+            <select id="paid-vip-addr-select" onchange="recalcEcommerceLoyaltyPaidVipSandbox()">
+              <option value="pass">本人及家庭 &lt;=5 个常住地址合理免邮 (合规)</option>
+              <option value="block_403">$99 会员卡一年发往 600 个异地陌生地址替全网代拍 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>积分 T+30d 退货期冻结与异地兑奖 OTP
+            <select id="paid-vip-pts-select" onchange="recalcEcommerceLoyaltyPaidVipSandbox()">
+              <option value="pass">签收满 30 天已解冻积分 + 异地兑奖通过 Passkey 核身 (合规)</option>
+              <option value="block_422">下单秒拿分花掉再退原单 或 撞库盗刷老客积分寄自提柜 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>中途退会费“已享权益扣减”与 ROSCA 合规
+            <select id="paid-vip-refund-select" onchange="recalcEcommerceLoyaltyPaidVipSandbox()">
+              <option value="pass">退会自动扣除已领开卡礼/免邮额 + T-30d 续费提醒 (安全)</option>
+              <option value="block_451">领完 $60 开卡礼免邮 5 单后要求全额白退 $99 会费 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>高毛利“积分+现金”专享商城与保级推荐
+            <select id="paid-vip-opt-select" onchange="recalcEcommerceLoyaltyPaidVipSandbox()">
+              <option value="enabled" selected>积分+小额现金覆盖 COGS 零出血消债 + 保级加购 (-38% 成本 / HTTP 409)</option>
+              <option value="disabled">积分 100% 在结账页直接抵扣正价爆款现金毛利 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度会员免邮与积分兑付总池</div>
+            <div class="finops-kpi-val" id="paid-vip-gross-kpi">$115,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">反代购锁与加价购消债后净成本</div>
+            <div class="finops-kpi-val" id="paid-vip-net-kpi" style="color:#6ee7b7;">$71,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省代购运费与积分负债</div>
+            <div class="finops-kpi-val" id="paid-vip-savings-kpi" style="color:#38bdf8;">$43,700</div>
+          </div>
+        </div>
+        <div id="paid-vip-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 POINTS_PLUS_CASH_COGS_COVERED_CATALOG_REDEMPTION_CONFIRM · Mandate: loyalty_paid_vip_escrow_optim_409
         </div>
       </div>
 
@@ -68243,6 +68400,79 @@ function recalcLivestreamVideoCommerceSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 DUAL_SIGNED_FLASH_LINK_AUTHORIZED · Mandate: livestream_commerce_escrow_200';
+}}
+
+function recalcEcommerceLoyaltyPaidVipSandbox() {{
+  const grossInput = document.getElementById('paid-vip-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '115000'));
+  const addrGate = document.getElementById('paid-vip-addr-select').value;
+  const ptsGate = document.getElementById('paid-vip-pts-select').value;
+  const refundGate = document.getElementById('paid-vip-refund-select').value;
+  const optMode = document.getElementById('paid-vip-opt-select').value;
+
+  const grossKpi = document.getElementById('paid-vip-gross-kpi');
+  const netKpi = document.getElementById('paid-vip-net-kpi');
+  const savingsKpi = document.getElementById('paid-vip-savings-kpi');
+  const statusKpi = document.getElementById('paid-vip-status-kpi');
+  const banner = document.getElementById('paid-vip-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (refundGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 VIP_PERK_CONSUMED_FULL_FEE_REFUND_OR_ROSCA_VIOLATION_HOLD · Mandate: null';
+    return;
+  }}
+  if (addrGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PAID_VIP_RESELLER_MULTI_ADDRESS_FREIGHT_ABUSE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (ptsGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 LOYALTY_ATO_DRAIN_OR_UNESCROWED_PENDING_POINTS_SPEND_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 POINTS_PLUS_CASH_COGS_COVERED_CATALOG_REDEMPTION_CONFIRM · Mandate: loyalty_paid_vip_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 HOUSEHOLD_BOUND_VIP_AND_ESCROW_POINTS_AUTHORIZED · Mandate: loyalty_paid_vip_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

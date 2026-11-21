@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg599" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081426" />
+      <stop offset="50%" stop-color="#102342" />
+      <stop offset="100%" stop-color="#05101e" />
+    </linearGradient>
+    <linearGradient id="accent599" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg599)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent599)" rx="3" />
+
+  <text x="40" y="58" class="title">付费会员 (Prime / 88VIP / PLUS) 防代购滥用免邮与积分防盗刷托管架构 (Talon.One / Antavo / Yotpo)</text>
+  <text x="40" y="80" class="subtitle">Round 156 · 防 $99 会员卡一年下 1,800 单寄 400 个异地代购地址亏穿运费、防撞库盗刷积分 &amp; 加价购净省 38% (SVG 599)</text>
+
+  <!-- Left Card: 3 Paid Membership & Loyalty Disasters -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大付费会员与积分体系黑洞</text>
+  <text x="56" y="164" class="card-title">1. $99 免邮会员卡沦为职业代购发货机 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 黄牛花 $99 买一张全年无限免邮 VIP 卡，转手在闲鱼/eBay 挂代拍</text>
+  <text x="56" y="202" class="body">• 一年狂下 1,800 单 $8 小件，发往全国 650 个不同收件人地址</text>
+  <text x="56" y="220" class="warn">• 消耗商家 $12,600 快递费，单张会员卡净亏 -$12,501!</text>
+
+  <text x="56" y="256" class="card-title">2. 撞库盗刷老客 50,000 积分秒兑走 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 会员积分库无多因素核身，黑客用撞库密码登录沉睡老客账号</text>
+  <text x="56" y="294" class="body">• 将积攒 3 年的 $400 积分秒兑成无门槛券寄往陌生自提柜</text>
+  <text x="56" y="312" class="warn">• 或下单拿完双倍积分立刻退货，却利用异步延迟把积分花光!</text>
+
+  <text x="56" y="348" class="card-title">3. 付费会员到期静默扣年费遭 FTC 重罚 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 会员首年享完所有开卡大礼包后要求“全额退 $99 会费”白嫖礼盒</text>
+  <text x="56" y="386" class="body">• 或次年自动续费未提前 30 天发通知、退订需连点 8 页迷宫</text>
+  <text x="56" y="404" class="warn">• 直接违反 FTC Click-to-Cancel 与自动续费 ROSCA 联邦法规!</text>
+
+  <rect x="56" y="432" width="318" width-max="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: PAID_VIP_RESELLER_MULTI_ADDRESS_FREIGHT_ABUSE</text>
+  <text x="70" y="502" class="warn">• HTTP 422: LOYALTY_ATO_DRAIN_OR_UNESCROWED_POINTS_SPEND</text>
+  <text x="70" y="524" class="warn">• HTTP 451: VIP_PERK_CONSUMED_REFUND_OR_ROSCA_VIOLATION</text>
+  <text x="70" y="546" class="mono">• HTTP 409:POINTS_PLUS_CASH_CATALOG_REDEMPTION_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: HOUSEHOLD_BOUND_VIP_AND_ESCROW_POINTS_200</text>
+  <text x="70" y="596" class="body">铁律: 个人免邮会员全年限绑 &lt;=5 个家庭常住收货地址!</text>
+
+  <!-- Center Card: 4-Stage Paid Membership & Loyalty Escrow -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶付费会员防代购与积分托管架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ef4444" />
+  <text x="450" y="175" class="card-title" fill="#fca5a5">Gate 1: 家庭收货地址簿硬上限与免邮合理使用锁 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• 个人付费会员卡 (Personal VIP) 全年免邮权益限绑 `Max_Unique_Addresses`</text>
+  <text x="450" y="213" class="body">  `&lt;= 5` (每季最多改 1 次) 且设年度免邮补贴封顶池 (如 36 张运费券)</text>
+  <text x="450" y="231" class="mono">• 检出单号发往 &gt;10 个陌生地址疑似职业代拍分销 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: 积分 T+30d 待生效冻结与异地兑奖 Step-Up (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 下单获得的积分处于 `PENDING_ESCROW` 状态，满 30 天无退货才转可用</text>
+  <text x="450" y="320" class="body">  (彻底杜绝“下单秒拿分、拿分秒买货、原单再退货”的时间差套现!)</text>
+  <text x="450" y="338" class="body">• 兑换 &gt;$25 积分且收货地址非历史本人常用地址 -&gt; 强制手机 Passkey/OTP</text>
+  <text x="450" y="354" class="mono">• 撞库异地盗刷积分或企图动用未过退货期冻结积分 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 退会费“已享权益净值扣减”与 ROSCA 合规 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 买完会员领走 $50 开卡礼并免邮 5 次 ($35) 后申请中途退 $99 年费:</text>
+  <text x="450" y="437" class="body">  系统自动按 `Max(0, $99 - 已用权益实际价值 $85) = $14` 差额结算!</text>
+  <text x="450" y="455" class="mono">• 企图领完开卡礼全额白退年费 或 续费缺 T-30d 通知 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: 高毛利“积分+现金”专享池与保级冲刺 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 引导积分优先兑换高毛利自有品牌正装或“积分+小额现金”加价购</text>
+  <text x="450" y="546" class="body">  (实际履约 COGS 成本仅占积分账面负债的 28%，比直接抵现省一半!)</text>
+  <text x="450" y="566" class="mono">• 距保级金卡仅差 $35 时精准推送高毛利跨品类加购单</text>
+  <text x="450" y="586" class="mono">• 砍掉代购免邮黑洞 + 降低积分兑付成本 -&gt; 净省 38% 会员运营支出</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大企业级忠诚度与付费会员底座</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Talon.One / Antavo Enterprise Loyalty</text>
+  <text x="846" y="182" class="body">• 优势: 原生支持 Pending Points 退货期冻结账本与退货自动逆向扣分</text>
+  <text x="846" y="198" class="body">• 特性: 支持按家庭户口 (Household Account) 设定共享上限与地址白名单</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Yotpo Loyalty / Smile.io (Shopify Plus)</text>
+  <text x="846" y="244" class="body">• 优势: 快速构建 VIP 等级阶梯与“积分换专属高毛利实物”商城</text>
+  <text x="846" y="260" class="body">• 特性: 结账页滑块控制单笔订单最高可用积分抵扣比例 (如 &lt;=20%)</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. 京东 PLUS / 淘宝 88VIP“运费券包定额化”</text>
+  <text x="846" y="306" class="body">• 经验: 将早期“无上限无限次免邮”升级为“每年 60 张运费券或</text>
+  <text x="846" y="322" class="body">  无限免邮但严禁异地多地址商业代拍”，彻底堵死黄牛套利</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Inveterate / Conjured (付费会员订阅引擎)</text>
+  <text x="846" y="368" class="body">• 优势: 专为 DTC 付费会员打造，内置“退会费自动扣除已用权益”算子</text>
+  <text x="846" y="384" class="body">• 特性: 100% 合规生成 FTC ROSCA 续费提醒与一键退订页</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度付费会员代购亏运费与积分盗刷池 ($115,000)</text>
+  <text x="860" y="456" class="body">• 传统代购蹭免邮+撞库盗积分+白嫖开卡礼退会: $115,000/季</text>
+  <text x="860" y="476" class="mono">• 家庭地址簿 &lt;=5 上限封死职业代拍蹭免邮: -$20,700</text>
+  <text x="860" y="496" class="mono">• T+30d 积分冻结+异地兑奖 OTP+退会扣已享权益: -$13,800</text>
+  <text x="860" y="516" class="mono">• 高毛利“积分+现金”专享商城降低兑付成本: -$9,200</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净会员体系成本: $71,300 (净省 $43,700 / -38%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: loyalty_paid_vip_escrow_optim_409</text>
+</svg>

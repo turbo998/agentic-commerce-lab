@@ -19510,6 +19510,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("livestream-video-commerce-escrow-sandbox", html_zh)
 
+    def test_ecommerce_loyalty_paid_vip_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceLoyaltyPaidVipEscrowPolicyInput,
+            evaluate_ecommerce_loyalty_paid_vip_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_loyalty_paid_vip_escrow_policy(
+            EcommerceLoyaltyPaidVipEscrowPolicyInput(
+                quarterly_vip_freight_and_loyalty_redemption_pool_usd=115000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "HOUSEHOLD_BOUND_VIP_AND_ESCROW_POINTS_AUTHORIZED",
+        )
+
+        reseller = evaluate_ecommerce_loyalty_paid_vip_escrow_policy(
+            EcommerceLoyaltyPaidVipEscrowPolicyInput(
+                paid_vip_reseller_multi_address_freight_abuse=True
+            )
+        )
+        self.assertEqual(reseller["status_code"], 403)
+        self.assertEqual(
+            reseller["decision"],
+            "PAID_VIP_RESELLER_MULTI_ADDRESS_FREIGHT_ABUSE_BLOCKED",
+        )
+
+        ato = evaluate_ecommerce_loyalty_paid_vip_escrow_policy(
+            EcommerceLoyaltyPaidVipEscrowPolicyInput(
+                loyalty_ato_drain_or_unescrowed_pending_points_spend=True
+            )
+        )
+        self.assertEqual(ato["status_code"], 422)
+        self.assertEqual(
+            ato["decision"],
+            "LOYALTY_ATO_DRAIN_OR_UNESCROWED_PENDING_POINTS_SPEND_BLOCKED",
+        )
+
+        rosca = evaluate_ecommerce_loyalty_paid_vip_escrow_policy(
+            EcommerceLoyaltyPaidVipEscrowPolicyInput(
+                vip_perk_consumed_full_fee_refund_or_rosca_violation=True
+            )
+        )
+        self.assertEqual(rosca["status_code"], 451)
+        self.assertEqual(
+            rosca["decision"],
+            "VIP_PERK_CONSUMED_FULL_FEE_REFUND_OR_ROSCA_VIOLATION_HOLD",
+        )
+
+        optim = evaluate_ecommerce_loyalty_paid_vip_escrow_policy(
+            EcommerceLoyaltyPaidVipEscrowPolicyInput(
+                quarterly_vip_freight_and_loyalty_redemption_pool_usd=115000.0,
+                points_plus_cash_cogs_covered_catalog_redemption_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 43700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 71300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_loyalty_paid_vip_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-loyalty-paid-vip-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
