@@ -31029,6 +31029,82 @@ def evaluate_ecommerce_big_bulky_white_glove_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BVmiConsignmentSettlementPolicyInput:
+    quarterly_consignment_shrinkage_premature_billing_and_deadstock_pool_usd: float = 250000.0
+    invoicing_before_201k_withdrawal_or_retroactive_price_hike: bool = False
+    unreconciled_consignment_shrinkage_or_asn_exceeding_vmi_max_cap: bool = False
+    missing_ucc1_consignment_filing_or_unconverted_180d_aged_stock: bool = False
+    rfid_weight_cabinet_mrko_self_billing_and_150d_plant_rotation_ready: bool = False
+
+
+def evaluate_b2b_vmi_consignment_settlement_policy(
+    policy_input: B2BVmiConsignmentSettlementPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_consignment_shrinkage_premature_billing_and_deadstock_pool_usd
+        ),
+    )
+    if policy_input.missing_ucc1_consignment_filing_or_unconverted_180d_aged_stock:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_UCC1_CONSIGNMENT_FILING_OR_180D_AGING_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.invoicing_before_201k_withdrawal_or_retroactive_price_hike:
+        return {
+            "status_code": 403,
+            "decision": "PREMATURE_UNCONSUMED_INVOICE_OR_PRICE_DATE_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unreconciled_consignment_shrinkage_or_asn_exceeding_vmi_max_cap:
+        return {
+            "status_code": 422,
+            "decision": "UNRECORDED_SHRINKAGE_GAP_OR_VMI_MAX_OVERFLOW_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.rfid_weight_cabinet_mrko_self_billing_and_150d_plant_rotation_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "RFID_201K_MRKO_SELF_BILLING_AND_150D_ROTATION_CONFIRM",
+            "mandate_token": "b2b_vmi_consignment_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_201K_WITHDRAWAL_MRKO_SETTLEMENT_AUTHORIZED",
+        "mandate_token": "b2b_vmi_consignment_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -42408,6 +42484,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_vmi_consignment_settlement_guard = {
+        "authorized_200": evaluate_b2b_vmi_consignment_settlement_policy(
+            B2BVmiConsignmentSettlementPolicyInput()
+        ),
+        "premature_or_price_403": evaluate_b2b_vmi_consignment_settlement_policy(
+            B2BVmiConsignmentSettlementPolicyInput(
+                invoicing_before_201k_withdrawal_or_retroactive_price_hike=True
+            )
+        ),
+        "shrinkage_or_max_cap_422": evaluate_b2b_vmi_consignment_settlement_policy(
+            B2BVmiConsignmentSettlementPolicyInput(
+                unreconciled_consignment_shrinkage_or_asn_exceeding_vmi_max_cap=True
+            )
+        ),
+        "ucc1_or_180d_aging_451": evaluate_b2b_vmi_consignment_settlement_policy(
+            B2BVmiConsignmentSettlementPolicyInput(
+                missing_ucc1_consignment_filing_or_unconverted_180d_aged_stock=True
+            )
+        ),
+        "rfid_mrko_and_rotation_409": evaluate_b2b_vmi_consignment_settlement_policy(
+            B2BVmiConsignmentSettlementPolicyInput(
+                rfid_weight_cabinet_mrko_self_billing_and_150d_plant_rotation_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42746,6 +42848,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_viban_natural_fx_netting_guard": cross_border_viban_natural_fx_netting_guard,
         "hospitality_fine_dining_reservation_guard": hospitality_fine_dining_reservation_guard,
         "ecommerce_big_bulky_white_glove_guard": ecommerce_big_bulky_white_glove_guard,
+        "b2b_vmi_consignment_settlement_guard": b2b_vmi_consignment_settlement_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -59915,6 +60018,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="whiteglove-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 NEIGHBORHOOD_GREEN_SLOT_AND_INHOME_MEDIC_REPAIR_CONFIRM · Mandate: white_glove_bulky_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 210 B2B Vendor-Managed Inventory (VMI) & Consignment (SAP MRKO) Escrow (#329) -->
+      <div class="finops-box" id="b2b-vmi-consignment-settlement-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏭 企业 B2B 供应商管理库存与寄售代销结算 (VMI &amp; Consignment: SAP MRKO / Ariba SCC / RFID 柜) 沙盒</div>
+            <div class="finops-sub">Round 210 (#329) · 拒收 101K 未领用手工发票强制按 MIGO 201K 领用日 PIR 协议价自开票 (HTTP 403) + 盘亏自动补记 201K 消耗与 Max 上限防塞货 (HTTP 422) + UCC-1 物权登记与 180天呆滞转买断 (HTTP 451) + RFID 智能柜净省 35% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="vmiconsign-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度寄售仓工人拿货未扫码盘亏扯皮、未领用提前开票误付、呆滞定制件烂尾与断料空运费池 ($)
+            <input type="number" id="vmiconsign-gross-input" value="250000" min="10000" step="5000" oninput="recalcB2BVmiConsignmentSettlementSandbox()" />
+          </label>
+          <label>按实际领用出库 (MIGO 201K/411K) 触发 SAP MRKO 自开票与领用日 PIR 单价锁
+            <select id="vmiconsign-mrko-select" onchange="recalcB2BVmiConsignmentSettlementSandbox()">
+              <option value="pass">仅对已发生 201K/411K 领用出库批次按领用日 PIR 协议价执行 MRKO 周结 (合规)</option>
+              <option value="block_403">货刚送进寄售仓 (101K) 还没领用供应商就寄发票催款 或 趁涨价后按月末高价回溯结算月初已领用货 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>寄售仓周期盘点负差异 (Unrecorded Shrinkage) 自动补记消耗与 VMI Max 水位防塞货
+            <select id="vmiconsign-shrink-select" onchange="recalcB2BVmiConsignmentSettlementSandbox()">
+              <option value="pass">账实 100% 相符 (或盘亏差额已自动过账 201K 消耗结算) + 补货 ASN &lt;= Max 上限 (合规)</option>
+              <option value="block_422">工人急用拿走寄售件未扫码导致月底盘亏 120 件双方赖账 或 供应商季末超 Max 上限强塞 9 个月库存 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国 UCC Article 9 (UCC-1) 寄售物权优先权登记与 180 天呆滞库龄强制转买断/退回门禁
+            <select id="vmiconsign-ucc-select" onchange="recalcB2BVmiConsignmentSettlementSandbox()">
+              <option value="pass">已办妥 UCC-1 寄售物权登记并通知抵押银行 + 满 180 天批次执行 411K 买断或退回 (安全)</option>
+              <option value="block_451">放了 $50万寄售货未办 UCC-1 登记面临买方破产被银行查封抵债 或 定制物料躺满 300 天拒不买断 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>RFID / 重力秤智能领料柜 400ms 自动过账 201K 与 150 天临期跨厂区优先调拨
+            <select id="vmiconsign-opt-select" onchange="recalcB2BVmiConsignmentSettlementSandbox()">
+              <option value="enabled" selected>刷工牌开 RFID 智能柜 0% 盘亏 + 每周 MRKO 免对账 + 150 天库龄跨厂调拨消纳 (-35% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统人工纸质领料登记本 + 月末手工拉 Excel 对账开票 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度寄售盘亏与错付呆滞损耗池</div>
+            <div class="finops-kpi-val" id="vmiconsign-gross-kpi">$250,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">RFID 201K 与 MRKO 自开票后净耗</div>
+            <div class="finops-kpi-val" id="vmiconsign-net-kpi" style="color:#6ee7b7;">$162,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省盘亏赔偿与资金占压</div>
+            <div class="finops-kpi-val" id="vmiconsign-savings-kpi" style="color:#38bdf8;">$87,500</div>
+          </div>
+        </div>
+        <div id="vmiconsign-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 RFID_201K_MRKO_SELF_BILLING_AND_150D_ROTATION_CONFIRM · Mandate: b2b_vmi_consignment_escrow_optim_409
         </div>
       </div>
 
@@ -80762,6 +80922,79 @@ function recalcEcommerceBigBulkyWhiteGloveSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_WHITE_GLOVE_ASSEMBLY_AND_POD_AUTHORIZED · Mandate: white_glove_bulky_escrow_200';
+}}
+
+function recalcB2BVmiConsignmentSettlementSandbox() {{
+  const grossInput = document.getElementById('vmiconsign-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '250000'));
+  const mrkoGate = document.getElementById('vmiconsign-mrko-select').value;
+  const shrinkGate = document.getElementById('vmiconsign-shrink-select').value;
+  const uccGate = document.getElementById('vmiconsign-ucc-select').value;
+  const optMode = document.getElementById('vmiconsign-opt-select').value;
+
+  const grossKpi = document.getElementById('vmiconsign-gross-kpi');
+  const netKpi = document.getElementById('vmiconsign-net-kpi');
+  const savingsKpi = document.getElementById('vmiconsign-savings-kpi');
+  const statusKpi = document.getElementById('vmiconsign-status-kpi');
+  const banner = document.getElementById('vmiconsign-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (uccGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_UCC1_CONSIGNMENT_FILING_OR_180D_AGING_HOLD · Mandate: null';
+    return;
+  }}
+  if (mrkoGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PREMATURE_UNCONSUMED_INVOICE_OR_PRICE_DATE_BLOCK · Mandate: null';
+    return;
+  }}
+  if (shrinkGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNRECORDED_SHRINKAGE_GAP_OR_VMI_MAX_OVERFLOW_BLOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 RFID_201K_MRKO_SELF_BILLING_AND_150D_ROTATION_CONFIRM · Mandate: b2b_vmi_consignment_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_201K_WITHDRAWAL_MRKO_SETTLEMENT_AUTHORIZED · Mandate: b2b_vmi_consignment_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

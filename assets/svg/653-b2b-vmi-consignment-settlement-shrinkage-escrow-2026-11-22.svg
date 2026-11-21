@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg653" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071426"/>
+    </linearGradient>
+    <linearGradient id="hdr653" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg653)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr653)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 210 · B2B Vendor-Managed Inventory (VMI) &amp; Consignment (`MRKO / EDI 852`) Escrow</text>
+  <text x="48" y="74" class="sub">SAP S/4HANA MRKO / Ariba SCC / E2open · Pay-on-Consumption Lock · Shrinkage Audit · 180d Aging Buyout (-35% Working-Capital Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #653 · FAQ #329</text>
+
+  <!-- Lane 1: Premature Invoicing Before Consumption (MIGO 411K/201K) & Price-Date Drift Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Pay-on-Withdrawal `201K` Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Billing Upon Dock Delivery (`101K`):</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Title Transfers ONLY on `MIGO 201K / 411K`</text>
+  <text x="54" y="200" class="mono">(Consumption Withdrawal from Consignment Hub!)</text>
+  <text x="44" y="223" class="body-txt">• Consignment Info-Record (`PIR`) Date Lock:</text>
+  <text x="54" y="243" class="mono">Price = `Withdrawal_Date_PIR` (Not Invoice Date!)</text>
+  <text x="44" y="266" class="body-txt">• Prevents suppliers sending standard `EDI 810`</text>
+  <text x="54" y="286" class="body-txt">invoices when goods merely sit in the consignment</text>
+  <text x="54" y="304" class="body-txt">cage or billing after a retroactive price hike</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 PREMATURE_UNCONSUMED_INVOICE_OR_PRICE_DATE_BLOCK</text>
+
+  <!-- Lane 2: Unbilled Consignment Shrinkage ("Missing in Buyer's Cage") & Min/Max Stuffing Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Shrinkage Auto-Bill &amp; Max-Cap Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops "Used Without Scanning" Floor Shrinkage:</text>
+  <text x="442" y="182" class="mono">If `Book_Consignment_Qty - Cycle_Count_Qty &gt; 0`:</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Auto-Post `MIGO 201K` Consumption for Missing Units!</text>
+  <text x="432" y="223" class="body-txt">• VMI `Min/Max` Band Channel-Stuffing Shield:</text>
+  <text x="442" y="243" class="mono">Reject `ASN 856` If `Projected_Hub_Qty &gt; Max_Cap`</text>
+  <text x="432" y="266" class="body-txt">• Eliminates workers taking consignment parts off</text>
+  <text x="442" y="286" class="body-txt">the shelf without scanning and stops suppliers</text>
+  <text x="442" y="304" class="body-txt">over-shipping slow stock into the buyer's warehouse</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNRECORDED_SHRINKAGE_GAP_OR_VMI_MAX_OVERFLOW_BLOCK</text>
+
+  <!-- Lane 3: UCC-1 Purchase-Money Security Interest (PMSI) & 180-Day Obsolete Deadstock Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `UCC Article 9` Lien &amp; 180d Aging (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Protects Consigned Goods From Buyer Bankruptcy:</text>
+  <text x="830" y="182" class="mono">Require Active `UCC-1 Consignment Filing` + Notice</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Before Shipping &gt;$100k Consigned Inventory!</text>
+  <text x="820" y="223" class="body-txt">• 180-Day Aging Auto-Buyout / Rotation Clause:</text>
+  <text x="830" y="243" class="body-txt">Blocks indefinite free warehousing of custom SKUs</text>
+  <text x="830" y="261" class="body-txt">past 180 days without mandatory conversion (`411K`)</text>
+  <text x="820" y="284" class="body-txt">• Prevents senior bank lenders seizing supplier's</text>
+  <text x="830" y="302" class="body-txt">unfiled consignment stock during buyer insolvency</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 MISSING_UCC1_CONSIGNMENT_FILING_OR_180D_AGING_HOLD</text>
+
+  <!-- Bottom Automated Self-Billing (SAP MRKO / EDI 861) & RFID Smart-Cabinet Escrow -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. RFID Weight-Sensing Cabinet + Automated Weekly `SAP MRKO` Self-Billing Escrow (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① RFID / Scale Smart Bin</text>
+  <text x="62" y="462" class="body-txt">Badge-tap unlocks cabinet;</text>
+  <text x="62" y="480" class="body-txt">load-cell + UHF RFID logs</text>
+  <text x="62" y="498" class="body-txt">`MIGO 201K` withdrawal live;</text>
+  <text x="62" y="516" class="mono">0% Unbilled Shrinkage</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Weekly `SAP MRKO` Settlement</text>
+  <text x="337" y="462" class="body-txt">Buyer ERP auto-generates</text>
+  <text x="337" y="480" class="body-txt">self-billing credit advice</text>
+  <text x="337" y="498" class="body-txt">from verified `EDI 867` pulls;</text>
+  <text x="337" y="516" class="mono">Zero 3-Way Match Exceptions</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Dynamic `EDI 852` Min/Max</text>
+  <text x="622" y="462" class="body-txt">Adjusts safety stock bands</text>
+  <text x="622" y="480" class="body-txt">from live production schedule;</text>
+  <text x="622" y="498" class="body-txt">99.8% On-Shelf Availability;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">-42% Expedited Air-Freight</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ 150d Rotation Early-Warning</text>
+  <text x="907" y="462" class="body-txt">Re-allocates slow VMI lots</text>
+  <text x="907" y="480" class="body-txt">to sister plants 30 days</text>
+  <text x="907" y="498" class="body-txt">before 180d buyout trigger;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-35% VMI &amp; Consignment Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-35.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly VMI &amp; Shrinkage Loss Saved</text>
+  <text x="46" y="642" class="mono">$87,500 Saved / $250k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% MRKO</text>
+  <text x="336" y="626" class="kpi-lbl">Touchless Self-Billing on `201K/411K`</text>
+  <text x="336" y="642" class="mono">Zero Premature Dock Invoices</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0% Shrink Gap</text>
+  <text x="626" y="626" class="kpi-lbl">RFID Cabinet + Cycle-Count Auto-TrueUp</text>
+  <text x="626" y="642" class="mono">Enforces Dynamic Min/Max Caps</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">UCC-1 Protected</text>
+  <text x="916" y="626" class="kpi-lbl">Article 9 Consignment Lien Verified</text>
+  <text x="916" y="642" class="mono">180-Day Aging Auto-Buyout Gate</text>
+</svg>

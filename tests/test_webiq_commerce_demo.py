@@ -23128,6 +23128,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-big-bulky-white-glove-sandbox", html_zh)
 
+    def test_b2b_vmi_consignment_settlement_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BVmiConsignmentSettlementPolicyInput,
+            evaluate_b2b_vmi_consignment_settlement_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_vmi_consignment_settlement_policy(
+            B2BVmiConsignmentSettlementPolicyInput(
+                quarterly_consignment_shrinkage_premature_billing_and_deadstock_pool_usd=250000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_201K_WITHDRAWAL_MRKO_SETTLEMENT_AUTHORIZED",
+        )
+
+        premature = evaluate_b2b_vmi_consignment_settlement_policy(
+            B2BVmiConsignmentSettlementPolicyInput(
+                invoicing_before_201k_withdrawal_or_retroactive_price_hike=True
+            )
+        )
+        self.assertEqual(premature["status_code"], 403)
+        self.assertEqual(
+            premature["decision"],
+            "PREMATURE_UNCONSUMED_INVOICE_OR_PRICE_DATE_BLOCK",
+        )
+
+        shrink = evaluate_b2b_vmi_consignment_settlement_policy(
+            B2BVmiConsignmentSettlementPolicyInput(
+                unreconciled_consignment_shrinkage_or_asn_exceeding_vmi_max_cap=True
+            )
+        )
+        self.assertEqual(shrink["status_code"], 422)
+        self.assertEqual(
+            shrink["decision"],
+            "UNRECORDED_SHRINKAGE_GAP_OR_VMI_MAX_OVERFLOW_BLOCK",
+        )
+
+        ucc = evaluate_b2b_vmi_consignment_settlement_policy(
+            B2BVmiConsignmentSettlementPolicyInput(
+                missing_ucc1_consignment_filing_or_unconverted_180d_aged_stock=True
+            )
+        )
+        self.assertEqual(ucc["status_code"], 451)
+        self.assertEqual(
+            ucc["decision"],
+            "MISSING_UCC1_CONSIGNMENT_FILING_OR_180D_AGING_HOLD",
+        )
+
+        optim = evaluate_b2b_vmi_consignment_settlement_policy(
+            B2BVmiConsignmentSettlementPolicyInput(
+                quarterly_consignment_shrinkage_premature_billing_and_deadstock_pool_usd=250000.0,
+                rfid_weight_cabinet_mrko_self_billing_and_150d_plant_rotation_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 87500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 162500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_vmi_consignment_settlement_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-vmi-consignment-settlement-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
