@@ -21721,6 +21721,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-travel-price-drop-reshopping-sandbox", html_zh)
 
+    def test_ecommerce_back_in_stock_waitlist_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceBackInStockWaitlistPolicyInput,
+            evaluate_ecommerce_back_in_stock_waitlist_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_back_in_stock_waitlist_policy(
+            EcommerceBackInStockWaitlistPolicyInput(
+                quarterly_oos_abandonment_and_waitlist_blast_waste_pool_usd=170000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_VARIANT_WAITLIST_ALLOCATION_AUTHORIZED",
+        )
+
+        wave = evaluate_ecommerce_back_in_stock_waitlist_policy(
+            EcommerceBackInStockWaitlistPolicyInput(
+                unthrottled_mass_blast_for_low_stock_or_scalper_waitlist_stuffing=True
+            )
+        )
+        self.assertEqual(wave["status_code"], 403)
+        self.assertEqual(
+            wave["decision"],
+            "UNTHROTTLED_WAITLIST_BLAST_OR_BOT_SWEEP_BLOCKED",
+        )
+
+        floor = evaluate_ecommerce_back_in_stock_waitlist_policy(
+            EcommerceBackInStockWaitlistPolicyInput(
+                single_uninspected_rma_return_trigger_or_variant_size_mismatch=True
+            )
+        )
+        self.assertEqual(floor["status_code"], 422)
+        self.assertEqual(
+            floor["decision"],
+            "SINGLE_RETURN_NOISE_OR_VARIANT_MISMATCH_BLOCKED",
+        )
+
+        ftc = evaluate_ecommerce_back_in_stock_waitlist_policy(
+            EcommerceBackInStockWaitlistPolicyInput(
+                preorder_shipping_delay_past_30d_without_ftc_part435_opt_in_consent=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 451)
+        self.assertEqual(
+            ftc["decision"],
+            "FTC_PART435_PREORDER_DELAY_CONSENT_REQUIRED_HOLD",
+        )
+
+        optim = evaluate_ecommerce_back_in_stock_waitlist_policy(
+            EcommerceBackInStockWaitlistPolicyInput(
+                quarterly_oos_abandonment_and_waitlist_blast_waste_pool_usd=170000.0,
+                tiered_5to1_wave_allocation_and_spt_auto_purchase_hold_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 61200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 108800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_back_in_stock_waitlist_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-back-in-stock-waitlist-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

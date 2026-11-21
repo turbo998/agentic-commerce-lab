@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg632" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr632" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg632)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr632)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 189 · E-Commerce Back-in-Stock Waitlist Wave Allocation &amp; Pre-Order Escrow</text>
+  <text x="48" y="74" class="sub">Klaviyo / Attentive / Purple Dot / Shopify · 5:1 Wave Batch Throttle · Bot Waitlist Purge · FTC 16 CFR 435 Delay Consent (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #632 · FAQ #308</text>
+
+  <!-- Lane 1: Blast-All Sold-Out Backlash & Scalper Waitlist Stuffing Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Blast-All &amp; Scalper Waitlist Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Blasting 15,000 Alerts for 80 Restocked Units:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Max_Wave_Send = Available_Stock × 5 (Wait 2h)</text>
+  <text x="54" y="200" class="mono">Halt Next Wave Immediately When Stock == 0</text>
+  <text x="44" y="223" class="body-txt">• Anti-Scalper Waitlist Stuffing &amp; Household Cap:</text>
+  <text x="54" y="243" class="mono">Deduplicate Plus-Aliases (`+1@`) &amp; Max 2 Units/HH</text>
+  <text x="44" y="266" class="body-txt">• Prevents 98% of notified shoppers from clicking</text>
+  <text x="54" y="286" class="body-txt">into a "Sold Out Again" page within 30 seconds</text>
+  <text x="54" y="304" class="body-txt">and unsubscribing from SMS/email marketing</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 UNTHROTTLED_WAITLIST_BLAST_OR_BOT_SWEEP_BLOCKED</text>
+
+  <!-- Lane 2: False Single-Unit Return Restock & Variant Size Mismatch Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Min-Restock Floor &amp; Exact Size Lock (422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Triggering Campaign on 1 Returned Item:</text>
+  <text x="442" y="182" class="mono">Require Sellable_Restock_Qty &gt;= Min_Threshold (10)</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Quarantine Uninspected RMA Returns from Trigger</text>
+  <text x="432" y="223" class="body-txt">• Variant-Level SKU &amp; Regional Warehouse Match:</text>
+  <text x="442" y="243" class="mono">Alert Only Subscribers of Exact `Size=M / Color`</text>
+  <text x="432" y="266" class="body-txt">• Blocks waking up Size-M shoppers when only</text>
+  <text x="442" y="286" class="body-txt">XXXL is restocked or shipping a single stained</text>
+  <text x="442" y="304" y2="304" class="body-txt">RMA return as a "Restocked New Arrival"</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 SINGLE_RETURN_NOISE_OR_VARIANT_MISMATCH_BLOCKED</text>
+
+  <!-- Lane 3: FTC 16 CFR Part 435 Pre-Order Delay Consent & Vaulted Token Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. FTC Part 435 Delay Consent Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Unlawful Pre-Order Delays Past Promised Date:</text>
+  <text x="830" y="182" class="mono">FTC 16 CFR Part 435 (30-Day Mail Order Rule)</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Require Explicit Opt-In Consent or Auto-Refund</text>
+  <text x="820" y="223" class="body-txt">• Capture-on-Dispatch Network Token Escrow:</text>
+  <text x="830" y="243" class="body-txt">Stores `$0` Network Token Mandate (`SPT/SetupIntent`)</text>
+  <text x="830" y="261" class="body-txt">instead of charging 100% cash 90 days before ship</text>
+  <text x="820" y="284" class="body-txt">• Eliminates expired-preauth failures and FTC</text>
+  <text x="830" y="302" class="body-txt">regulatory penalties when container vessels delay</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 FTC_PART435_PREORDER_DELAY_CONSENT_REQUIRED_HOLD</text>
+
+  <!-- Bottom VIP Priority Wave & Reserved-Cart Hold Token Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Loyalty-Tiered Wave Dispatch + 2-Hour Reserved-Cart Hold Token &amp; Auto-Capture Backorder (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① VIP-First Priority Waves</text>
+  <text x="62" y="462" class="body-txt">Ranks waitlist by LTV, VIP</text>
+  <text x="62" y="480" class="body-txt">tier &amp; zero-return score;</text>
+  <text x="62" y="498" class="body-txt">dispatches in 30-min waves</text>
+  <text x="62" y="516" class="mono">5 Alerts per 1 Restocked Unit</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② 2-Hour Soft Cart Hold Link</text>
+  <text x="337" y="462" class="body-txt">Pre-allocates 1 unit for VIP</text>
+  <text x="337" y="480" class="body-txt">for 120 mins via signed magic</text>
+  <text x="337" y="498" class="body-txt">checkout link (`hold_tok`);</text>
+  <text x="337" y="516" class="mono">0 "Sold Out On Click" Rage</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Pre-Authorized Auto-Ship</text>
+  <text x="622" y="462" class="body-txt">Shoppers opt into "Auto-Buy</text>
+  <text x="622" y="480" class="body-txt">When Restocked &lt;= $120" via</text>
+  <text x="622" y="498" class="body-txt">bounded `Stripe SPT` mandate;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">3.4x Higher Restock Conversion</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ ASN-Synced Pre-Order Gate</text>
+  <text x="907" y="462" class="body-txt">Converts OOS product page to</text>
+  <text x="907" y="480" class="body-txt">capped Pre-Order once factory</text>
+  <text x="907" y="498" class="body-txt">`EDI 856 ASN` is in transit;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% OOS Lost Revenue &amp; Churn</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly OOS Abandonment &amp; SMS Waste</text>
+  <text x="46" y="642" class="mono">$61,200 Saved / $170k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">5 : 1 Wave Cap</text>
+  <text x="336" y="626" class="kpi-lbl">Dynamic Batch Throttling by Stock</text>
+  <text x="336" y="642" class="mono">Halts Instantly on Zero Inventory</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">Qty &gt;= 10 Floor</text>
+  <text x="626" y="626" class="kpi-lbl">Blocks Single-Return False Alarms</text>
+  <text x="626" y="642" class="mono">100% Exact Size/Color SKU Match</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">FTC Part 435</text>
+  <text x="916" y="626" class="kpi-lbl">Pre-Order Delay Opt-In Compliance</text>
+  <text x="916" y="642" class="mono">Zero Unconsented Shipping Delays</text>
+</svg>

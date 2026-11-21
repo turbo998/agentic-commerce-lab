@@ -29433,6 +29433,82 @@ def evaluate_ota_travel_price_drop_reshopping_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceBackInStockWaitlistPolicyInput:
+    quarterly_oos_abandonment_and_waitlist_blast_waste_pool_usd: float = 170000.0
+    unthrottled_mass_blast_for_low_stock_or_scalper_waitlist_stuffing: bool = False
+    single_uninspected_rma_return_trigger_or_variant_size_mismatch: bool = False
+    preorder_shipping_delay_past_30d_without_ftc_part435_opt_in_consent: bool = False
+    tiered_5to1_wave_allocation_and_spt_auto_purchase_hold_ready: bool = False
+
+
+def evaluate_ecommerce_back_in_stock_waitlist_policy(
+    policy_input: EcommerceBackInStockWaitlistPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_oos_abandonment_and_waitlist_blast_waste_pool_usd
+        ),
+    )
+    if policy_input.preorder_shipping_delay_past_30d_without_ftc_part435_opt_in_consent:
+        return {
+            "status_code": 451,
+            "decision": "FTC_PART435_PREORDER_DELAY_CONSENT_REQUIRED_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unthrottled_mass_blast_for_low_stock_or_scalper_waitlist_stuffing:
+        return {
+            "status_code": 403,
+            "decision": "UNTHROTTLED_WAITLIST_BLAST_OR_BOT_SWEEP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.single_uninspected_rma_return_trigger_or_variant_size_mismatch:
+        return {
+            "status_code": 422,
+            "decision": "SINGLE_RETURN_NOISE_OR_VARIANT_MISMATCH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tiered_5to1_wave_allocation_and_spt_auto_purchase_hold_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TIERED_WAVE_ALLOCATION_AND_SPT_AUTO_PURCHASE_CONFIRM",
+            "mandate_token": "back_in_stock_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_VARIANT_WAITLIST_ALLOCATION_AUTHORIZED",
+        "mandate_token": "back_in_stock_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -40266,6 +40342,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_back_in_stock_waitlist_guard = {
+        "authorized_200": evaluate_ecommerce_back_in_stock_waitlist_policy(
+            EcommerceBackInStockWaitlistPolicyInput()
+        ),
+        "mass_blast_or_bot_403": evaluate_ecommerce_back_in_stock_waitlist_policy(
+            EcommerceBackInStockWaitlistPolicyInput(
+                unthrottled_mass_blast_for_low_stock_or_scalper_waitlist_stuffing=True
+            )
+        ),
+        "single_return_or_size_422": evaluate_ecommerce_back_in_stock_waitlist_policy(
+            EcommerceBackInStockWaitlistPolicyInput(
+                single_uninspected_rma_return_trigger_or_variant_size_mismatch=True
+            )
+        ),
+        "ftc_part435_delay_451": evaluate_ecommerce_back_in_stock_waitlist_policy(
+            EcommerceBackInStockWaitlistPolicyInput(
+                preorder_shipping_delay_past_30d_without_ftc_part435_opt_in_consent=True
+            )
+        ),
+        "tiered_wave_and_spt_409": evaluate_ecommerce_back_in_stock_waitlist_policy(
+            EcommerceBackInStockWaitlistPolicyInput(
+                tiered_5to1_wave_allocation_and_spt_auto_purchase_hold_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40583,6 +40685,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_device_trade_in_escrow_guard": ecommerce_device_trade_in_escrow_guard,
         "ecommerce_pim_catalog_onboarding_guard": ecommerce_pim_catalog_onboarding_guard,
         "ota_travel_price_drop_reshopping_guard": ota_travel_price_drop_reshopping_guard,
+        "ecommerce_back_in_stock_waitlist_guard": ecommerce_back_in_stock_waitlist_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -56555,6 +56658,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="reshop-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SIX_HOUR_ATOMIC_RESHOP_AND_ECREDIT_AUTO_BURN_CONFIRM · Mandate: travel_reshop_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 189 E-Commerce Back-in-Stock Waitlist Wave Allocation & Pre-Order Escrow (#308) -->
+      <div class="finops-box" id="ecommerce-back-in-stock-waitlist-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔔 电商断货候补通知、5:1 分波次配额放行与在途预售 (Klaviyo / Attentive / Purple Dot) 沙盒</div>
+            <div class="finops-sub">Round 189 (#308) · 5:1 动态波次流控与黄牛清洗 (HTTP 403) + 最小 10 件可售门槛防单件退货误报与精确尺码锁 (HTTP 422) + FTC Part 435 预售延期同意门禁 (HTTP 451) + VIP 2h 锁库链接与 SPT 到货自动下单净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="waitlist-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度断货流失、无流控群发售罄客诉与预售延误拒付损耗池 ($)
+            <input type="number" id="waitlist-gross-input" value="170000" min="10000" step="5000" oninput="recalcEcommerceBackInStockWaitlistSandbox()" />
+          </label>
+          <label>5:1 按库存比例分波次发送 (Wave Throttling) 与反黄牛占号
+            <select id="waitlist-wave-select" onchange="recalcEcommerceBackInStockWaitlistSandbox()">
+              <option value="pass">每到货 1 件最多发 5 条通知 + 售罄秒停 + 清洗 +号黄牛邮箱 (合规)</option>
+              <option value="block_403">补货 80 件却向 1.5 万人一次性群发致 99% 点进售罄页 或 黄牛脚本秒光库存 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>最小可售补货量门槛 (Qty &gt;= 10) 与精确尺码颜色变体匹配
+            <select id="waitlist-floor-select" onchange="recalcEcommerceBackInStockWaitlistSandbox()">
+              <option value="pass">剔除待检退货仓且同尺码变体可售 &gt;=10 件才启动大规模通知 (合规)</option>
+              <option value="block_422">仅 1 件未质检买家退货入库即误触全网提醒 或 订阅 M 码却发 XXXL 补货通知 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>在途 ASN 预售额度与美国 FTC 16 CFR Part 435 延期同意合规
+            <select id="waitlist-ftc-select" onchange="recalcEcommerceBackInStockWaitlistSandbox()">
+              <option value="pass">绑定真实在途 ASN 开启预售 + 船期延误自动发送 FTC 延期双选确认或全额退单 (安全)</option>
+              <option value="block_451">无在途库存盲开无限期预售 或 延误超 30 天未获买家明确同意仍强留资金 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>VIP 优先波次 2h 软锁库链接与 Stripe SPT 到货自动扣款发货
+            <select id="waitlist-opt-select" onchange="recalcEcommerceBackInStockWaitlistSandbox()">
+              <option value="enabled" selected>第 0 波自动履约 SPT 预授权单 + VIP 专属 2h 软锁库链接 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">普通静态到货邮件提醒无锁库预留 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度断货流失与短信轰炸损耗池</div>
+            <div class="finops-kpi-val" id="waitlist-gross-kpi">$170,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">分波次锁库与预售托管后净损耗</div>
+            <div class="finops-kpi-val" id="waitlist-net-kpi" style="color:#6ee7b7;">$108,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回断货 GMV 与短信退订损耗</div>
+            <div class="finops-kpi-val" id="waitlist-savings-kpi" style="color:#38bdf8;">$61,200</div>
+          </div>
+        </div>
+        <div id="waitlist-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TIERED_WAVE_ALLOCATION_AND_SPT_AUTO_PURCHASE_CONFIRM · Mandate: back_in_stock_escrow_optim_409
         </div>
       </div>
 
@@ -75869,6 +76029,79 @@ function recalcOtaTravelPriceDropReshoppingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 PARITY_VERIFIED_TRAVEL_RESERVATION_MAINTAINED · Mandate: travel_reshop_escrow_200';
+}}
+
+function recalcEcommerceBackInStockWaitlistSandbox() {{
+  const grossInput = document.getElementById('waitlist-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '170000'));
+  const waveGate = document.getElementById('waitlist-wave-select').value;
+  const floorGate = document.getElementById('waitlist-floor-select').value;
+  const ftcGate = document.getElementById('waitlist-ftc-select').value;
+  const optMode = document.getElementById('waitlist-opt-select').value;
+
+  const grossKpi = document.getElementById('waitlist-gross-kpi');
+  const netKpi = document.getElementById('waitlist-net-kpi');
+  const savingsKpi = document.getElementById('waitlist-savings-kpi');
+  const statusKpi = document.getElementById('waitlist-status-kpi');
+  const banner = document.getElementById('waitlist-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ftcGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FTC_PART435_PREORDER_DELAY_CONSENT_REQUIRED_HOLD · Mandate: null';
+    return;
+  }}
+  if (waveGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNTHROTTLED_WAITLIST_BLAST_OR_BOT_SWEEP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (floorGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SINGLE_RETURN_NOISE_OR_VARIANT_MISMATCH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TIERED_WAVE_ALLOCATION_AND_SPT_AUTO_PURCHASE_CONFIRM · Mandate: back_in_stock_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_VARIANT_WAITLIST_ALLOCATION_AUTHORIZED · Mandate: back_in_stock_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
