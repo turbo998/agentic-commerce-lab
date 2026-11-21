@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`248` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`249` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -11,7 +11,7 @@
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (82 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (61 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (22 guides)](#saas-finops-micropayments)
-- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (30 guides)](#tax-fx-privacy-disputes)
+- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (31 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
 
@@ -276,7 +276,7 @@
 | 22 | **AI-Native SaaS Usage-Based & Outcome Billing, Runaway-Loop Circuit Breaker & Prepaid Credit Rollover Escrow (`Orb / Metronome / Stripe Billing / Lago`) `<150ms` Loop Breaker, `72h` Outcome Cool-Off & `25%` Credit Rollover Agent Architecture Selection FAQ** | [English](saas-usage-based-outcome-billing-token-burn-circuit-breaker-escrow-agent-selection-faq.en.md) · [中文](saas-usage-based-outcome-billing-token-burn-circuit-breaker-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (30 Guides)
+## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (31 Guides)
 
 > Covers Merchant of Record (MoR) vs DIY PSP, HS-code DDP landed cost & VAT/Sales Tax nexus, FX quote collars & ISO 20022 netting, ZK eligibility / PCI redaction / GDPR crypto-shredding, and Visa CE 3.0 / VAMP dispute defense.
 
@@ -312,6 +312,7 @@
 | 28 | **FinTech Credit Underwriting, Anti-`Bust-Out` Cycling & `CFPB Reg F` Hardship Restructuring (`Stripe Capital / Plaid / Experian / FICO / TrueAccord`) `ECOA Reg B` Adverse-Action Gate, `7-in-7` Contact Cap, `PACER` Bankruptcy Stay & `SCRA 6%` Escrow Agent Architecture Selection FAQ** | [English](fintech-credit-underwriting-bustout-regf-hardship-restructure-agent-selection-faq.en.md) · [中文](fintech-credit-underwriting-bustout-regf-hardship-restructure-agent-selection-faq.md) |
 | 29 | **Cross-Border Parcel Consolidation, Reverse-Haul Forwarding & Volumetric Weight Escrow (`Cainiao / Superbuy / Buyee / MyUS`) Anti-Volumetric-Padding Gate, Overhead Packing Video Hash & `IATA DGR` Split-Routing Agent Architecture Selection FAQ** | [English](crossborder-parcel-consolidation-volumetric-repack-escrow-agent-selection-faq.en.md) · [中文](crossborder-parcel-consolidation-volumetric-repack-escrow-agent-selection-faq.md) |
 | 30 | **Cross-Border E-Commerce Returns (`RMA`), Anti-`Returnless` Fraud & Customs Duty Drawback Escrow (`Loop Returns / Narvar / AfterShip / Cainiao Global`) Live `WebRTC` Anti-Inpainting, `FTID` Scale-Weight Gate & `19 CFR 190` `99%` Duty Drawback Agent Architecture Selection FAQ** | [English](cross-border-ecommerce-returns-rma-returnless-duty-drawback-escrow-agent-selection-faq.en.md) · [中文](cross-border-ecommerce-returns-rma-returnless-duty-drawback-escrow-agent-selection-faq.md) |
+| 31 | **Cross-Border E-Commerce Multilingual Customer Support, `DDP / IOSS` Doorstep-Refusal Guard & Local Keep-and-Reship Sizing Escrow (`Gorgias / Global-e / Zonos / Zendesk AI`) Anti-`€18` Carrier Duty Shock, Policy-First Translation & `$8` Local Reship Agent Architecture Selection FAQ** | [English](cross-border-multilingual-support-ddp-customs-duty-refusal-escrow-agent-selection-faq.en.md) · [中文](cross-border-multilingual-support-ddp-customs-duty-refusal-escrow-agent-selection-faq.md) |
 
 <a id="architecture-blueprints"></a>
 ## 7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 Specs)

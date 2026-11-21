@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg573" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#071324" />
+      <stop offset="50%" stop-color="#0d233d" />
+      <stop offset="100%" stop-color="#050f1c" />
+    </linearGradient>
+    <linearGradient id="accent573" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg573)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent573)" rx="3" />
+
+  <text x="40" y="58" class="title">跨境电商多语种客服、DDP 完税防门口拒收与本地尺码换货托管 (Gorgias / Global-e / Zonos / Zendesk)</text>
+  <text x="40" y="80" class="subtitle">Round 130 · 防 DDU 快递员上门收 €45 关税+€18 代垫费致买家拒收弃件、防多语种幻觉乱诺退款 &amp; 净省 33% 跨境损耗 (SVG 573)</text>
+
+  <!-- Left Card: 3 Cross-Border Support & Customs Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大跨境售后与清关黑洞</text>
+  <text x="56" y="164" class="card-title">1. DDU 到付关税致门口拒收弃件 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 结账未预收关税 (DDU/DAP)，包裹到德国/加拿大买家门口</text>
+  <text x="56" y="202" class="body">• DHL/UPS 要求当场付 €32 关税 + €18 承运商代垫手续费</text>
+  <text x="56" y="220" class="warn">• 买家拒收并提 PayPal INR 争议 -&gt; 货被海关销毁+倒贴双程运费</text>
+
+  <text x="56" y="256" class="card-title">2. 多语种 AI 客服政策幻觉与乱退全款 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 日本/法国买家用意译俚语抱怨物流慢 2 天或尺码略紧</text>
+  <text x="56" y="294" class="body">• 未受控多语种 LLM 直接在法语回复中承诺“全额退款且不用退货”</text>
+  <text x="56" y="312" class="warn">• 截图成为卡组织争议铁证，或把欧码 40 错换发成美码 40</text>
+
+  <text x="56" y="348" class="card-title">3. 欧盟 14 天冷静期违规与海关低报扣关</text>
+  <text x="56" y="368" class="body">• 为省税将 $180 羽绒服按 $15 礼品低报，遭海关查验重罚扣货</text>
+  <text x="56" y="386" class="body">• AI 客服拒绝欧盟消费者 14 天法定无理由退货权触发消协重罚</text>
+  <text x="56" y="404" class="warn">• 缺乏主动轨迹安抚导致“包裹在哪 (WISMO)”工单占 65% 成本</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: DDU_DOORSTEP_DUTY_SHOCK_OR_BROKER_FEE</text>
+  <text x="70" y="502" class="warn">• HTTP 422: MULTILINGUAL_PROMISE_HALLUCINATION_OR_SIZE</text>
+  <text x="70" y="524" class="warn">• HTTP 451: CUSTOMS_UNDERVALUATION_OR_EU14D_VIOLATION</text>
+  <text x="70" y="546" class="mono">• HTTP 409: DDP_IOSS_AND_LOCAL_RESHIP_KEEP_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: LANDED_COST_DDP_AND_POLICY_LOCKED_200</text>
+  <text x="70" y="596" class="body">铁律: 多语种仅负责翻译润色，退款金额与动作由状态机决定!</text>
+
+  <!-- Center Card: 4-Stage Cross-Border Support & DDP Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶完税交货 (DDP) 与多语种售后架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">Gate 1: 结账 10 位 HS 编码完税锁 (Zonos / Global-e DDP)</text>
+  <text x="450" y="195" class="body">• 结账实时核算目的国关税 + VAT (欧盟 IOSS / 英国ヒMRC)</text>
+  <text x="450" y="213" class="body">• 免除快递公司 €15~$20 上门代垫清关手续费 (Disbursement Fee)</text>
+  <text x="450" y="231" class="mono">• 禁用高拒收率国别 DDU 未完税盲发 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="282" class="card-title" fill="#6ee7b7">Gate 2: 确定性策略核 + 多语种渲染解耦 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 严禁多语种 LLM 自由发挥售后承诺! 先由规则引擎算出:</text>
+  <text x="450" y="320" class="body">  Allowed_Action = [30%_Partial_Keep, Free_Local_Size_Reship]</text>
+  <text x="450" y="338" class="body">• 内置美/欧/英/日厘米级尺码换算表，根绝跨国换错码</text>
+  <text x="450" y="354" class="mono">• 译文出现未授权“全额白送/免退货”词汇立即拦截 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 真实申报发票与法域消保路由 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 电子商业发票 (Commercial Invoice) 强制 1:1 绑定实付净额</text>
+  <text x="450" y="437" class="body">• 识别欧盟/英国 IP 自动启用 14 天法定冷静期合规退货通道</text>
+  <text x="450" y="455" class="mono">• 严禁低报货值或伪造礼品申报规避海关监管 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#f59e0b" />
+  <text x="450" y="508" class="card-title" fill="#fcd34d">Gate 4: 海关滞留主动预警与免退回尺码补发 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 17TRACK/AfterShip 监测到清关异常，0.5s 主动发母语补税号邮件</text>
+  <text x="450" y="546" class="body">• 砍掉 68% “我的包裹在哪 (WISMO)”焦虑进线与 PayPal 争议</text>
+  <text x="450" y="566" class="mono">• 尺码不合 ($45以下): 收 $9 运费直接从本地仓补发合身码免寄回</text>
+  <text x="450" y="586" class="mono">• DDP 零拒收 + 本地免退换码 -&gt; 净省 33% 跨境弃件与售后损耗</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大跨境完税与多语客服栈</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Global-e / Zonos / Passport</text>
+  <text x="846" y="182" class="body">• 优势: 100+ 国家完税到手价 (Landed Cost DDP) 实时锁价保证</text>
+  <text x="846" y="198" class="body">• 特性: 自动代缴欧盟 IOSS / 英国 VAT，彻底消除门口补税拒收</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Gorgias AI / Zendesk AI + Shopify</text>
+  <text x="846" y="244" class="body">• 优势: 深度集成订单改地址、部分退款与物流轨迹主动触发</text>
+  <text x="846" y="260" class="body">• 特性: 支持严格 SOP 动作白名单，杜绝客服大模型越权乱退</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. AfterShip / 17TRACK 清关雷达</text>
+  <text x="846" y="306" class="body">• 优势: 识别巴西 CPF 税号缺失、欧洲海关留置等 80+ 异常子状态</text>
+  <text x="846" y="322" class="body">• 特性: 买家发飙前主动推送本地语言自助补件链接</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. 本地海外仓微换货 (3PL Keep-and-Reship)</text>
+  <text x="846" y="368" class="body">• 优势: 避免 $28 跨国逆向邮费吃掉 $38 T恤全部货值</text>
+  <text x="846" y="384" class="body">• 特性: 原衣留赠亲友 + 仅收基础邮费补发新尺码，复购率 +42%</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度跨境拒收弃件与多语售后池 ($115,000)</text>
+  <text x="860" y="456" class="body">• 传统 DDU 门口拒收销毁+跨国逆向邮费: $115,000/季</text>
+  <text x="860" y="476" class="mono">• DDP + IOSS 消除门口补税拒收弃件: -$18,400</text>
+  <text x="860" y="496" class="mono">• 尺码不合本地免退补发省跨国逆向运费: -$11,500</text>
+  <text x="860" y="516" class="mono">• 拦截多语种幻觉乱退全款与 PayPal 罚金: -$8,050</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净损耗: $77,050 (净省 $37,950 / -33%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: cross_border_support_ddp_optim_409</text>
+</svg>

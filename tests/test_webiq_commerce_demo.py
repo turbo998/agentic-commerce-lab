@@ -17768,6 +17768,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-usage-outcome-billing-escrow-sandbox", html_zh)
 
+    def test_cross_border_support_ddp_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderSupportDdpEscrowPolicyInput,
+            evaluate_cross_border_support_ddp_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_support_ddp_escrow_policy(
+            CrossBorderSupportDdpEscrowPolicyInput(
+                quarterly_cross_border_refusal_and_post_purchase_loss_pool_usd=115000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "LANDED_COST_DDP_IOSS_AND_POLICY_LOCKED_SUPPORT_AUTHORIZED",
+        )
+
+        ddu = evaluate_cross_border_support_ddp_escrow_policy(
+            CrossBorderSupportDdpEscrowPolicyInput(
+                unannounced_ddu_doorstep_duty_shock_or_courier_disbursement_fee=True
+            )
+        )
+        self.assertEqual(ddu["status_code"], 403)
+        self.assertEqual(
+            ddu["decision"],
+            "UNANNOUNCED_DDU_DOORSTEP_DUTY_SHOCK_OR_COURIER_DISBURSEMENT_FEE_BLOCKED",
+        )
+
+        hallucination = evaluate_cross_border_support_ddp_escrow_policy(
+            CrossBorderSupportDdpEscrowPolicyInput(
+                multilingual_llm_refund_hallucination_or_unmapped_raw_size_swap=True
+            )
+        )
+        self.assertEqual(hallucination["status_code"], 422)
+        self.assertEqual(
+            hallucination["decision"],
+            "MULTILINGUAL_LLM_REFUND_HALLUCINATION_OR_UNMAPPED_RAW_SIZE_SWAP_BLOCKED",
+        )
+
+        customs = evaluate_cross_border_support_ddp_escrow_policy(
+            CrossBorderSupportDdpEscrowPolicyInput(
+                customs_invoice_undervaluation_or_eu_14d_cooling_off_denial=True
+            )
+        )
+        self.assertEqual(customs["status_code"], 451)
+        self.assertEqual(
+            customs["decision"],
+            "CUSTOMS_INVOICE_UNDERVALUATION_OR_EU_14D_COOLING_OFF_DENIAL_HOLD",
+        )
+
+        optim = evaluate_cross_border_support_ddp_escrow_policy(
+            CrossBorderSupportDdpEscrowPolicyInput(
+                quarterly_cross_border_refusal_and_post_purchase_loss_pool_usd=115000.0,
+                proactive_tax_id_rescue_and_8usd_local_keep_reship_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 37950.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 77050.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_support_ddp_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-support-ddp-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

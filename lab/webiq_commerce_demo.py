@@ -24962,6 +24962,87 @@ def evaluate_saas_usage_outcome_billing_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderSupportDdpEscrowPolicyInput:
+    """Input contract for Cross-Border Multilingual Support, DDP/IOSS Customs & Local Keep-and-Reship Escrow."""
+
+    quarterly_cross_border_refusal_and_post_purchase_loss_pool_usd: float = 115000.0
+    unannounced_ddu_doorstep_duty_shock_or_courier_disbursement_fee: bool = False
+    multilingual_llm_refund_hallucination_or_unmapped_raw_size_swap: bool = False
+    customs_invoice_undervaluation_or_eu_14d_cooling_off_denial: bool = False
+    mandate_signing_key_age_days: int = 30
+    proactive_tax_id_rescue_and_8usd_local_keep_reship_ready: bool = False
+
+
+def evaluate_cross_border_support_ddp_escrow_policy(
+    policy_input: CrossBorderSupportDdpEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Cross-Border Multilingual Support, DDP/IOSS Customs & Local Keep-and-Reship Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_cross_border_refusal_and_post_purchase_loss_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.customs_invoice_undervaluation_or_eu_14d_cooling_off_denial
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "CUSTOMS_INVOICE_UNDERVALUATION_OR_EU_14D_COOLING_OFF_DENIAL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unannounced_ddu_doorstep_duty_shock_or_courier_disbursement_fee:
+        return {
+            "status_code": 403,
+            "decision": "UNANNOUNCED_DDU_DOORSTEP_DUTY_SHOCK_OR_COURIER_DISBURSEMENT_FEE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.multilingual_llm_refund_hallucination_or_unmapped_raw_size_swap:
+        return {
+            "status_code": 422,
+            "decision": "MULTILINGUAL_LLM_REFUND_HALLUCINATION_OR_UNMAPPED_RAW_SIZE_SWAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.proactive_tax_id_rescue_and_8usd_local_keep_reship_ready:
+        savings = round(gross_pool * 0.33, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PROACTIVE_TAX_ID_RESCUE_AND_8USD_LOCAL_KEEP_RESHIP_CONFIRM",
+            "mandate_token": "cross_border_support_ddp_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "LANDED_COST_DDP_IOSS_AND_POLICY_LOCKED_SUPPORT_AUTHORIZED",
+        "mandate_token": "cross_border_support_ddp_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -34261,6 +34342,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_support_ddp_escrow_guard = {
+        "authorized_200": evaluate_cross_border_support_ddp_escrow_policy(
+            CrossBorderSupportDdpEscrowPolicyInput()
+        ),
+        "ddu_doorstep_duty_shock_403": evaluate_cross_border_support_ddp_escrow_policy(
+            CrossBorderSupportDdpEscrowPolicyInput(
+                unannounced_ddu_doorstep_duty_shock_or_courier_disbursement_fee=True
+            )
+        ),
+        "multilingual_hallucination_or_size_422": evaluate_cross_border_support_ddp_escrow_policy(
+            CrossBorderSupportDdpEscrowPolicyInput(
+                multilingual_llm_refund_hallucination_or_unmapped_raw_size_swap=True
+            )
+        ),
+        "customs_undervaluation_or_eu14d_451": evaluate_cross_border_support_ddp_escrow_policy(
+            CrossBorderSupportDdpEscrowPolicyInput(
+                customs_invoice_undervaluation_or_eu_14d_cooling_off_denial=True
+            )
+        ),
+        "proactive_tax_id_and_local_reship_409": evaluate_cross_border_support_ddp_escrow_policy(
+            CrossBorderSupportDdpEscrowPolicyInput(
+                proactive_tax_id_rescue_and_8usd_local_keep_reship_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -34519,6 +34626,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_ap_three_way_match_escrow_guard": b2b_ap_three_way_match_escrow_guard,
         "influencer_kol_affiliate_escrow_guard": influencer_kol_affiliate_escrow_guard,
         "saas_usage_outcome_billing_escrow_guard": saas_usage_outcome_billing_escrow_guard,
+        "cross_border_support_ddp_escrow_guard": cross_border_support_ddp_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -47032,6 +47140,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="saas-meter-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CREDIT_25PCT_ROLLOVER_AND_COMMITTED_TIER_TRUEUP_CONFIRM · Mandate: saas_usage_outcome_billing_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 130 Cross-Border Multilingual Support, DDP/IOSS Customs & Local Keep-and-Reship Escrow -->
+      <div class="finops-box" id="cross-border-support-ddp-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🌍 跨境电商多语种智能客服、DDP 完税防门口补税拒收与本地免退换码托管 (Gorgias / Global-e / Zonos / Zendesk AI) 沙盒 (Round 130)</div>
+            <div class="finops-subtitle">实测硬控结账预收 DDP + 欧盟 IOSS 税号防快递员上门收 €32 关税+€18 代垫费致买家拒收弃件 (HTTP 403)、确定性策略核与多语种翻译壳解耦防外语幻觉乱诺全额白送+厘米级尺码映射 (HTTP 422)、1:1 实付报关单与欧盟 14d 冷静期合规 (HTTP 451) 及清关缺 CPF/PCCC 税号主动催补+收 $8 运费本地免退补发净省 33% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="cb-ddp-status-kpi">HTTP 409 · PROACTIVE_TAX_ID_RESCUE_AND_8USD_LOCAL_KEEP_RESHIP_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度跨境门口拒收弃件、跨国逆向退货与售后错退总池 ($ USD)
+            <input type="range" id="cb-ddp-pool-slider" min="20000" max="500000" step="5000" value="115000" oninput="updateCrossBorderSupportDdpEscrowSandbox()" />
+            <span id="cb-ddp-pool-val" style="color:#6ee7b7; font-family:monospace;">$115,000</span>
+          </label>
+          <label>
+            结账完税交货 (DDP + 欧盟 IOSS / 英国 HMRC) 门禁 (HTTP 403)
+            <select id="cb-ddp-duty-select" onchange="updateCrossBorderSupportDdpEscrowSandbox()">
+              <option value="pass">Zonos/Global-e 结账预收完税一口价 + 电子绑定 IOSS 码免除 €18 承运商代垫手续费 (放行)</option>
+              <option value="block">向欧洲/加拿大买家盲发 DDU 到付税包裹，快递员上门索要 €50 税费+代垫费致买家拒收弃件 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            多语种客服“策略核解耦”与美/欧/英厘米级尺码校验 (HTTP 422)
+            <select id="cb-ddp-lang-select" onchange="updateCrossBorderSupportDdpEscrowSandbox()">
+              <option value="pass">代码状态机锁死最高退款额后交多语种润色 + 实测厘米(CM/MM)尺码图谱精准换码 (合规)</option>
+              <option value="block">法语/日语 LLM 产生幻觉越权承诺“100% 全额退款且不用退货” 或 将 UK 8 误当 US 8 错发 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            海关 1:1 如实申报发票与欧盟 14 天法定冷静期门禁 (HTTP 451)
+            <select id="cb-ddp-customs-select" onchange="updateCrossBorderSupportDdpEscrowSandbox()">
+              <option value="clear">电子报关发票金额 == 实付净额 + 自动开放欧盟/英国 14 天法定无理由退货通道 (正常)</option>
+              <option value="hold">将 $180 羽绒服伪造低报成 $15 Gift 遭海关扣货重罚 或 非法剥夺欧盟 14 天退货权 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            清关缺税号 30s 母语催补与低货值 $8 免退本地补发 (HTTP 409)
+            <select id="cb-ddp-opt-select" onchange="updateCrossBorderSupportDdpEscrowSandbox()">
+              <option value="enabled" selected>17TRACK 捕捉缺 CPF/PCCC 税号 30s 发母语补件链 + &lt;$45 尺码不合收 $8 从本地仓补发免寄回净省 33% (HTTP 409)</option>
+              <option value="baseline">常规 DDP 完税与多语种受控工单闭环 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度跨境弃件与售后损耗总池</div>
+            <div class="finops-kpi-val" id="cb-ddp-gross-kpi">$115,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">DDP 完税与免退换码后净损</div>
+            <div class="finops-kpi-val" id="cb-ddp-net-kpi" style="color:#6ee7b7;">$77,050</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省弃件销毁与跨国邮费</div>
+            <div class="finops-kpi-val" id="cb-ddp-savings-kpi" style="color:#38bdf8;">$37,950</div>
+          </div>
+        </div>
+        <div id="cb-ddp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PROACTIVE_TAX_ID_RESCUE_AND_8USD_LOCAL_KEEP_RESHIP_CONFIRM · Mandate: cross_border_support_ddp_optim_409
         </div>
       </div>
 
@@ -62023,6 +62194,80 @@ function updateSaasUsageOutcomeBillingEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 IDEMPOTENT_STREAMING_USAGE_AND_72H_OUTCOME_AUTHORIZED · Mandate: saas_usage_outcome_billing_200';
+}}
+
+function updateCrossBorderSupportDdpEscrowSandbox() {{
+  const slider = document.getElementById('cb-ddp-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '115000');
+  const dutyMode = document.getElementById('cb-ddp-duty-select').value;
+  const langMode = document.getElementById('cb-ddp-lang-select').value;
+  const customsMode = document.getElementById('cb-ddp-customs-select').value;
+  const optMode = document.getElementById('cb-ddp-opt-select').value;
+
+  document.getElementById('cb-ddp-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('cb-ddp-status-kpi');
+  const grossKpi = document.getElementById('cb-ddp-gross-kpi');
+  const netKpi = document.getElementById('cb-ddp-net-kpi');
+  const savingsKpi = document.getElementById('cb-ddp-savings-kpi');
+  const banner = document.getElementById('cb-ddp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (customsMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 CUSTOMS_INVOICE_UNDERVALUATION_OR_EU_14D_COOLING_OFF_DENIAL_HOLD · Mandate: null';
+    return;
+  }}
+  if (dutyMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNANNOUNCED_DDU_DOORSTEP_DUTY_SHOCK_OR_COURIER_DISBURSEMENT_FEE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (langMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MULTILINGUAL_LLM_REFUND_HALLUCINATION_OR_UNMAPPED_RAW_SIZE_SWAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.33);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PROACTIVE_TAX_ID_RESCUE_AND_8USD_LOCAL_KEEP_RESHIP_CONFIRM · Mandate: cross_border_support_ddp_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 LANDED_COST_DDP_IOSS_AND_POLICY_LOCKED_SUPPORT_AUTHORIZED · Mandate: cross_border_support_ddp_200';
 }}
 
 function updateStage1756Sandbox() {{
