@@ -20515,6 +20515,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-involuntary-churn-dunning-sandbox", html_zh)
 
+    def test_ecommerce_extended_warranty_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceExtendedWarrantyPolicyInput,
+            evaluate_ecommerce_extended_warranty_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_extended_warranty_policy(
+            EcommerceExtendedWarrantyPolicyInput(
+                quarterly_warranty_claim_leakage_and_lost_respend_pool_usd=115000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "SERIAL_VERIFIED_WARRANTY_CLAIM_AUTHORIZED",
+        )
+
+        serial = evaluate_ecommerce_extended_warranty_policy(
+            EcommerceExtendedWarrantyPolicyInput(
+                unmatched_device_serial_swap_or_retroactive_broken_enrollment=True
+            )
+        )
+        self.assertEqual(serial["status_code"], 403)
+        self.assertEqual(
+            serial["decision"],
+            "UNBOUND_SERIAL_SWAP_OR_RETROACTIVE_DAMAGE_BLOCKED",
+        )
+
+        oem = evaluate_ecommerce_extended_warranty_policy(
+            EcommerceExtendedWarrantyPolicyInput(
+                year1_oem_defect_overlap_or_repair_exceeds_70pct_net_price=True
+            )
+        )
+        self.assertEqual(oem["status_code"], 422)
+        self.assertEqual(
+            oem["decision"],
+            "OEM_YEAR1_OVERLAP_OR_UNCAP_REPAIR_BLOCKED",
+        )
+
+        legal = evaluate_ecommerce_extended_warranty_policy(
+            EcommerceExtendedWarrantyPolicyInput(
+                orphaned_warranty_on_returned_item_or_magnuson_moss_violation=True
+            )
+        )
+        self.assertEqual(legal["status_code"], 451)
+        self.assertEqual(
+            legal["decision"],
+            "ORPHANED_WARRANTY_OR_MAGNUSON_MOSS_HOLD",
+        )
+
+        optim = evaluate_ecommerce_extended_warranty_policy(
+            EcommerceExtendedWarrantyPolicyInput(
+                quarterly_warranty_claim_leakage_and_lost_respend_pool_usd=115000.0,
+                obligor_funded_store_credit_replacement_and_day14_attach_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 42550.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 72450.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_extended_warranty_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-extended-warranty-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

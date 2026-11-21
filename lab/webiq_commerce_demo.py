@@ -28083,6 +28083,79 @@ def evaluate_saas_involuntary_churn_dunning_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceExtendedWarrantyPolicyInput:
+    quarterly_warranty_claim_leakage_and_lost_respend_pool_usd: float = 115000.0
+    unmatched_device_serial_swap_or_retroactive_broken_enrollment: bool = False
+    year1_oem_defect_overlap_or_repair_exceeds_70pct_net_price: bool = False
+    orphaned_warranty_on_returned_item_or_magnuson_moss_violation: bool = False
+    obligor_funded_store_credit_replacement_and_day14_attach_ready: bool = False
+
+
+def evaluate_ecommerce_extended_warranty_policy(
+    policy_input: EcommerceExtendedWarrantyPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_warranty_claim_leakage_and_lost_respend_pool_usd)
+    )
+    if policy_input.orphaned_warranty_on_returned_item_or_magnuson_moss_violation:
+        return {
+            "status_code": 451,
+            "decision": "ORPHANED_WARRANTY_OR_MAGNUSON_MOSS_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unmatched_device_serial_swap_or_retroactive_broken_enrollment:
+        return {
+            "status_code": 403,
+            "decision": "UNBOUND_SERIAL_SWAP_OR_RETROACTIVE_DAMAGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.year1_oem_defect_overlap_or_repair_exceeds_70pct_net_price:
+        return {
+            "status_code": 422,
+            "decision": "OEM_YEAR1_OVERLAP_OR_UNCAP_REPAIR_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.obligor_funded_store_credit_replacement_and_day14_attach_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "OBLIGOR_FUNDED_STORE_CREDIT_REPLACEMENT_AND_DAY14_ATTACH_CONFIRM",
+            "mandate_token": "warranty_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "SERIAL_VERIFIED_WARRANTY_CLAIM_AUTHORIZED",
+        "mandate_token": "warranty_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -38448,6 +38521,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_extended_warranty_guard = {
+        "authorized_200": evaluate_ecommerce_extended_warranty_policy(
+            EcommerceExtendedWarrantyPolicyInput()
+        ),
+        "serial_swap_or_retro_fraud_403": evaluate_ecommerce_extended_warranty_policy(
+            EcommerceExtendedWarrantyPolicyInput(
+                unmatched_device_serial_swap_or_retroactive_broken_enrollment=True
+            )
+        ),
+        "oem_overlap_or_ber_cap_422": evaluate_ecommerce_extended_warranty_policy(
+            EcommerceExtendedWarrantyPolicyInput(
+                year1_oem_defect_overlap_or_repair_exceeds_70pct_net_price=True
+            )
+        ),
+        "orphaned_plan_or_magnuson_451": evaluate_ecommerce_extended_warranty_policy(
+            EcommerceExtendedWarrantyPolicyInput(
+                orphaned_warranty_on_returned_item_or_magnuson_moss_violation=True
+            )
+        ),
+        "store_credit_flywheel_409": evaluate_ecommerce_extended_warranty_policy(
+            EcommerceExtendedWarrantyPolicyInput(
+                obligor_funded_store_credit_replacement_and_day14_attach_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -38747,6 +38846,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_fefo_lot_expiry_guard": ecommerce_fefo_lot_expiry_guard,
         "corporate_expense_card_audit_guard": corporate_expense_card_audit_guard,
         "saas_involuntary_churn_dunning_guard": saas_involuntary_churn_dunning_guard,
+        "ecommerce_extended_warranty_guard": ecommerce_extended_warranty_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -53693,6 +53793,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="dunning-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PRE_BILL_VAU_PAYDAY_ML_RETRY_AND_MAGIC_LINK_WALLET_CONFIRM · Mandate: smart_dunning_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 171 E-Commerce Extended Warranty, ADP & Serial-Bound Claim Escrow -->
+      <div class="finops-box" id="ecommerce-extended-warranty-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛡️ 电商延保、意外险 (ADP: Extend / Clyde / Mulberry) 与序列号绑定理赔托管沙盒</div>
+            <div class="finops-sub">Round 171 · 出库 GS1-21 序列号绑定与补购 14天等待期 (HTTP 403) + 首年 OEM 分流与 70% BER 维修上限 (HTTP 422) + 退货秒退延保 (HTTP 451) + 赔付转本店换新单净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="warranty-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度延保骗保赔穿、天价维修与现金赔付外流损失池 ($)
+            <input type="number" id="warranty-gross-input" value="115000" min="10000" step="5000" oninput="recalcEcommerceExtendedWarrantySandbox()" />
+          </label>
+          <label>WMS 出库 GS1 (21) 序列号绑定与签收后补买等待期
+            <select id="warranty-serial-select" onchange="recalcEcommerceExtendedWarrantySandbox()">
+              <option value="pass">理赔机身序列号与出库绑定 100% 匹配 + 补买已过 WebRTC 验机与 14 天等待期 (合规)</option>
+              <option value="block_403">拿闲鱼/eBay 二手报废同款机掉包骗保或摔碎屏幕当天翻邮件补买意外险 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>首年厂家质保 (OEM) 故障分流与 70% 经济维修上限 (BER)
+            <select id="warranty-oem-select" onchange="recalcEcommerceExtendedWarrantySandbox()">
+              <option value="pass">首年非人为故障自动路由厂家 OEM 售后 + 维修报价 &lt;=70% 折后实付价 (合规)</option>
+              <option value="block_422">首年自然故障错用延保资金池或 $240 吸尘器报出 $255 维修运费倒挂账单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>主商品退货原子级联动退保与马格努森-莫斯保修法合规
+            <select id="warranty-legal-select" onchange="recalcEcommerceExtendedWarrantySandbox()">
+              <option value="pass">主商品退货秒级自动退还 100% 延保费 + 高值换新锁旧件回收押金 (安全)</option>
+              <option value="block_451">主商品已退货却漏退 $79 延保费遭拒付或含“撕毁防拆标即脱保”违法条款 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>承保商全额出资“本店 100% 换新储值码”飞轮与 Day-14 邮件加购
+            <select id="warranty-opt-select" onchange="recalcEcommerceExtendedWarrantySandbox()">
+              <option value="enabled" selected>全损理赔由承保商出资生成本店免单换新单(理赔变第2笔GMV) + Day14 追销 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统保险公司寄外部现金支票导致客户流向竞品 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度骗保漏损与外流总池</div>
+            <div class="finops-kpi-val" id="warranty-gross-kpi">$115,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">序列号硬锁与本店换新后净成本</div>
+            <div class="finops-kpi-val" id="warranty-net-kpi" style="color:#6ee7b7;">$72,450</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省骗保与再造二次 GMV 毛利</div>
+            <div class="finops-kpi-val" id="warranty-savings-kpi" style="color:#38bdf8;">$42,550</div>
+          </div>
+        </div>
+        <div id="warranty-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 OBLIGOR_FUNDED_STORE_CREDIT_REPLACEMENT_AND_DAY14_ATTACH_CONFIRM · Mandate: warranty_escrow_optim_409
         </div>
       </div>
 
@@ -71693,6 +71850,79 @@ function recalcSaasInvoluntaryChurnDunningSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 RECURRING_MIT_RENEWAL_AUTHORIZED · Mandate: smart_dunning_escrow_200';
+}}
+
+function recalcEcommerceExtendedWarrantySandbox() {{
+  const grossInput = document.getElementById('warranty-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '115000'));
+  const serialGate = document.getElementById('warranty-serial-select').value;
+  const oemGate = document.getElementById('warranty-oem-select').value;
+  const legalGate = document.getElementById('warranty-legal-select').value;
+  const optMode = document.getElementById('warranty-opt-select').value;
+
+  const grossKpi = document.getElementById('warranty-gross-kpi');
+  const netKpi = document.getElementById('warranty-net-kpi');
+  const savingsKpi = document.getElementById('warranty-savings-kpi');
+  const statusKpi = document.getElementById('warranty-status-kpi');
+  const banner = document.getElementById('warranty-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (legalGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 ORPHANED_WARRANTY_OR_MAGNUSON_MOSS_HOLD · Mandate: null';
+    return;
+  }}
+  if (serialGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNBOUND_SERIAL_SWAP_OR_RETROACTIVE_DAMAGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (oemGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 OEM_YEAR1_OVERLAP_OR_UNCAP_REPAIR_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 OBLIGOR_FUNDED_STORE_CREDIT_REPLACEMENT_AND_DAY14_ATTACH_CONFIRM · Mandate: warranty_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 SERIAL_VERIFIED_WARRANTY_CLAIM_AUTHORIZED · Mandate: warranty_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

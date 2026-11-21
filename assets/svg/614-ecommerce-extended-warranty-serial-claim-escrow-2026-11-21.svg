@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg614" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr614" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg614)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr614)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 171 · E-Commerce Extended Warranty, Accidental Damage (ADP) &amp; Serial-Bound Claim Escrow</text>
+  <text x="48" y="74" class="sub">Extend / Clyde / Mulberry / AppleCare+ · GS1 (21) IMEI/Serial Lock · Retroactive Crash-Test Video Gate · Store-Credit Buyout (-37% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #614 · FAQ #290</text>
+
+  <!-- Lane 1: Serial / IMEI Binding & "Broken-Twin" Swap Block -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Serial/IMEI Binding &amp; Twin-Swap Gate (403)</text>
+  <text x="44" y="162" class="body-txt">• Stops "Buy 1 Plan, Claim eBay Junk Unit" Fraud:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">WMS Pack-Out Binds GS1 (21) Serial / IMEI</text>
+  <text x="54" y="200" class="mono">to Extend/Clyde Contract_ID at Ship-Confirm</text>
+  <text x="44" y="223" class="body-txt">• Claim Intake Cryptographic Serial Verification:</text>
+  <text x="54" y="243" class="mono">Claim_Device_Serial == Policy_Bound_Serial</text>
+  <text x="44" y="266" class="body-txt">• Post-Purchase Retroactive Add-On Fraud Gate:</text>
+  <text x="54" y="286" class="body-txt">Adding ADP after delivery requires live WebRTC</text>
+  <text x="54" y="304" class="body-txt">mirror/screen diagnostic + 14-day waiting period</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 UNBOUND_SERIAL_SWAP_OR_RETROACTIVE_DAMAGE_BLOCKED</text>
+
+  <!-- Lane 2: OEM Base-Warranty Overlap & Total-Loss Buyout Cap -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. OEM Overlap Routing &amp; Repair-Cap Gate (422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Paying for Year-1 OEM Mechanical Defects:</text>
+  <text x="442" y="182" class="mono">If Day &lt;= 365 &amp; Cause == Mechanical_Defect:</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Route to Manufacturer OEM RMA ($0 Plan Cost)</text>
+  <text x="432" y="223" class="body-txt">• Anti-Runaway Repair Bill (`BER` Economical Cap):</text>
+  <text x="442" y="243" class="mono">Block Repair_Quote + 2-Way_Freight &gt; 70% Price</text>
+  <text x="432" y="266" class="body-txt">• Cumulative Limit-of-Liability (`LoL`) Ledger:</text>
+  <text x="442" y="286" class="body-txt">Caps lifetime claim payouts at `100% Original</text>
+  <text x="442" y="304" class="body-txt">Net Paid Price` (after promo/coupon discounts)</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 OEM_YEAR1_OVERLAP_OR_UNCAP_REPAIR_BLOCKED</text>
+
+  <!-- Lane 3: Magnuson-Moss Act, Pro-Rata Refund & Salvage Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Magnuson-Moss &amp; Return Co-Refund Lock (451)</text>
+  <text x="820" y="162" class="body-txt">• Product Return Orphaned-Warranty Auto-Refund:</text>
+  <text x="830" y="182" class="mono">When Parent_Item Returned → Auto-Refund Plan</text>
+  <text x="830" y="200" class="body-txt">Prevents charging $79 warranty on returned TV</text>
+  <text x="820" y="223" class="body-txt">• US Magnuson-Moss Act &amp; Pre-Sale Terms Link:</text>
+  <text x="830" y="243" class="mono" fill="#f9a8d4">Ban "Void if Opened" Sticker &amp; Tied-Sale Lock</text>
+  <text x="820" y="266" class="body-txt">• Salvage / Dead-Unit Recovery Hold (`>$200`):</text>
+  <text x="830" y="286" class="body-txt">Places card hold or bricks IoT/IMEI until broken</text>
+  <text x="830" y="304" class="body-txt">core is scanned by carrier to stop dual-device keep</text>
+  <rect x="820" y="318" width="336" height="26" fill="#320b1e" rx="6"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 ORPHANED_WARRANTY_OR_MAGNUSON_MOSS_HOLD</text>
+
+  <!-- Bottom Store-Credit Replacement Flywheel & Post-Purchase Attach Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Instant Store-Credit Replacement Flywheel + Post-Delivery Day-14 Attach + Obligor Revenue Share (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Cart &amp; Day-14 Email Attach</text>
+  <text x="62" y="462" class="body-txt">Dynamic price tier (`8-12%` of</text>
+  <text x="62" y="480" class="body-txt">item price) in cart + Day-14</text>
+  <text x="62" y="498" class="body-txt">post-unboxing 1-click attach;</text>
+  <text x="62" y="516" class="mono">55-65% Pure Gross Margin Share</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② 90-Second Instant Claim Triage</text>
+  <text x="337" y="462" class="body-txt">Verifies serial, purchase date,</text>
+  <text x="337" y="480" class="body-txt">OEM window &amp; damage photo in</text>
+  <text x="337" y="498" class="body-txt">90s without call-center friction;</text>
+  <text x="337" y="516" class="mono">4.8★ Post-Claim CSAT Score</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Store-Credit Buyout Flywheel</text>
+  <text x="622" y="462" class="body-txt">Instead of mailing cash check,</text>
+  <text x="622" y="480" class="body-txt">obligor funds 100% merchant</text>
+  <text x="622" y="498" class="body-txt">store credit / replacement order;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">Every Claim = 2nd Paid Sale!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Core Salvage &amp; Refurb Loop</text>
+  <text x="907" y="462" class="body-txt">Prepaid QR return label routes</text>
+  <text x="907" y="480" class="body-txt">damaged unit to certified depot</text>
+  <text x="907" y="498" class="body-txt">for parts harvesting; nets</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Warranty Leakage &amp; Cost</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Claim Leakage &amp; Margin Saved</text>
+  <text x="46" y="642" class="mono">$42,550 Saved / $115k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">GS1 (21) Lock</text>
+  <text x="336" y="626" class="kpi-lbl">WMS Ship-Scan Serial Binding</text>
+  <text x="336" y="642" class="mono">0 eBay Broken-Twin Swaps</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% Re-Spend</text>
+  <text x="626" y="626" class="kpi-lbl">Obligor-Funded Store Replacement</text>
+  <text x="626" y="642" class="mono">Turns Claims into Repeat GMV</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">Auto Co-Refund</text>
+  <text x="916" y="626" class="kpi-lbl">Zero Orphaned Warranty Charges</text>
+  <text x="916" y="642" class="mono">Magnuson-Moss Act Compliant</text>
+</svg>
