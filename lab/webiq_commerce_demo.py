@@ -27207,6 +27207,79 @@ def evaluate_ecommerce_hybrid_search_merchandising_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderTaxFreeExemptionPolicyInput:
+    quarterly_tax_audit_and_exemption_leakage_pool_usd: float = 100000.0
+    unstamped_customs_export_or_prepaid_collateral_card: bool = False
+    expired_or_mismatched_naics_resale_exemption_cert: bool = False
+    unverified_freight_forwarder_export_tax_claim: bool = False
+    digital_customs_instant_vat_and_threshold_bump_ready: bool = False
+
+
+def evaluate_cross_border_tax_free_exemption_policy(
+    policy_input: CrossBorderTaxFreeExemptionPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_tax_audit_and_exemption_leakage_pool_usd)
+    )
+    if policy_input.unverified_freight_forwarder_export_tax_claim:
+        return {
+            "status_code": 451,
+            "decision": "UNVERIFIED_FREIGHT_FORWARDER_EXPORT_TAX_CLAIM_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unstamped_customs_export_or_prepaid_collateral_card:
+        return {
+            "status_code": 403,
+            "decision": "UNSTAMPED_CUSTOMS_EXPORT_OR_PREPAID_COLLATERAL_CARD_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.expired_or_mismatched_naics_resale_exemption_cert:
+        return {
+            "status_code": 422,
+            "decision": "EXPIRED_OR_MISMATCHED_NAICS_RESALE_EXEMPTION_CERT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.digital_customs_instant_vat_and_threshold_bump_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DIGITAL_CUSTOMS_INSTANT_VAT_AND_THRESHOLD_BUMP_CONFIRM",
+            "mandate_token": "tax_free_exemption_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "TIN_AND_CUSTOMS_VERIFIED_TAX_EXEMPT_AUTHORIZED",
+        "mandate_token": "tax_free_exemption_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -37260,6 +37333,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_tax_free_exemption_guard = {
+        "authorized_200": evaluate_cross_border_tax_free_exemption_policy(
+            CrossBorderTaxFreeExemptionPolicyInput()
+        ),
+        "unstamped_customs_or_prepaid_403": evaluate_cross_border_tax_free_exemption_policy(
+            CrossBorderTaxFreeExemptionPolicyInput(
+                unstamped_customs_export_or_prepaid_collateral_card=True
+            )
+        ),
+        "expired_or_mismatched_resale_cert_422": evaluate_cross_border_tax_free_exemption_policy(
+            CrossBorderTaxFreeExemptionPolicyInput(
+                expired_or_mismatched_naics_resale_exemption_cert=True
+            )
+        ),
+        "unverified_freight_forwarder_451": evaluate_cross_border_tax_free_exemption_policy(
+            CrossBorderTaxFreeExemptionPolicyInput(
+                unverified_freight_forwarder_export_tax_claim=True
+            )
+        ),
+        "digital_customs_and_threshold_bump_409": evaluate_cross_border_tax_free_exemption_policy(
+            CrossBorderTaxFreeExemptionPolicyInput(
+                digital_customs_instant_vat_and_threshold_bump_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -37547,6 +37646,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_loyalty_paid_vip_escrow_guard": ecommerce_loyalty_paid_vip_escrow_guard,
         "ecommerce_apparel_sizing_escrow_guard": ecommerce_apparel_sizing_escrow_guard,
         "ecommerce_hybrid_search_merchandising_guard": ecommerce_hybrid_search_merchandising_guard,
+        "cross_border_tax_free_exemption_guard": cross_border_tax_free_exemption_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -51809,6 +51909,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="hybrid-search-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PROFIT_WEIGHTED_RRF_HYBRID_RERANK_CONFIRM · Mandate: hybrid_search_merch_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 159 Cross-Border Tax-Free Shopping & Resale Exemption Escrow -->
+      <div class="finops-box" id="cross-border-tax-free-exemption-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛂 离境免税退税 (Global Blue / Planet) 与美国州免税证核验托管沙盒 (Avalara CertCapture)</div>
+            <div class="finops-sub">Round 159 · 21d 海关电子签章质押与禁预付卡 (HTTP 403) + 州税局 TIN/NAICS 联机锁 (HTTP 422) + 持牌转运仓白名单 (HTTP 451) + 凑单退税净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="tax-free-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度假免税证补税罚单、未离境骗税与弃购池 ($)
+            <input type="number" id="tax-free-gross-input" value="100000" min="10000" step="5000" oninput="recalcCrossBorderTaxFreeExemptionSandbox()" />
+          </label>
+          <label>市内即买即退 21d 海关签章与担保卡锁
+            <select id="tax-free-customs-select" onchange="recalcCrossBorderTaxFreeExemptionSandbox()">
+              <option value="pass">本人贷记卡 21d 质押 + 机场 PABLO/DIVA 海关电子验讫 (合规)</option>
+              <option value="block_403">用空壳预付卡担保领完 12% 退税后不离境在境内倒卖 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>美国州转售免税证 (TIN 状态 &amp; NAICS 行业)
+            <select id="tax-free-cert-select" onchange="recalcCrossBorderTaxFreeExemptionSandbox()">
+              <option value="pass">Avalara 实时核验州税号 ACTIVE 且主营行业对口 (合规)</option>
+              <option value="block_422">上传过期假 PDF 或拿快餐店税号免税买 50 台游戏本 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>迈阿密/特拉华出口转运仓资质核验
+            <select id="tax-free-fwd-select" onchange="recalcCrossBorderTaxFreeExemptionSandbox()">
+              <option value="pass">命中州政府持牌 Certified Freight Forwarder 白名单 + 附提单 (安全)</option>
+              <option value="block_451">普通本地住宅地址伪装出口转运仓骗取免税 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>离境起退线智能凑单与护照 3s 电子开单
+            <select id="tax-free-opt-select" onchange="recalcCrossBorderTaxFreeExemptionSandbox()">
+              <option value="enabled" selected>差 €12 满起退线智能推荐凑单 + 护照 OCR 秒开电子单 (-36% 税损 / HTTP 409)</option>
+              <option value="disabled">无起退线凑单提醒且手填纸质退税单排长队弃购 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度税务罚单与免税流失总池</div>
+            <div class="finops-kpi-val" id="tax-free-gross-kpi">$100,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">联机验真与质押托管后净成本</div>
+            <div class="finops-kpi-val" id="tax-free-net-kpi" style="color:#6ee7b7;">$64,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省审计补税罚单与弃购</div>
+            <div class="finops-kpi-val" id="tax-free-savings-kpi" style="color:#38bdf8;">$36,000</div>
+          </div>
+        </div>
+        <div id="tax-free-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DIGITAL_CUSTOMS_INSTANT_VAT_AND_THRESHOLD_BUMP_CONFIRM · Mandate: tax_free_exemption_escrow_optim_409
         </div>
       </div>
 
@@ -68933,6 +69090,79 @@ function recalcEcommerceHybridSearchMerchSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 EXACT_SPEC_AND_SIZE_ATP_SEARCH_AUTHORIZED · Mandate: hybrid_search_merch_200';
+}}
+
+function recalcCrossBorderTaxFreeExemptionSandbox() {{
+  const grossInput = document.getElementById('tax-free-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '100000'));
+  const customsGate = document.getElementById('tax-free-customs-select').value;
+  const certGate = document.getElementById('tax-free-cert-select').value;
+  const fwdGate = document.getElementById('tax-free-fwd-select').value;
+  const optMode = document.getElementById('tax-free-opt-select').value;
+
+  const grossKpi = document.getElementById('tax-free-gross-kpi');
+  const netKpi = document.getElementById('tax-free-net-kpi');
+  const savingsKpi = document.getElementById('tax-free-savings-kpi');
+  const statusKpi = document.getElementById('tax-free-status-kpi');
+  const banner = document.getElementById('tax-free-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fwdGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNVERIFIED_FREIGHT_FORWARDER_EXPORT_TAX_CLAIM_HOLD · Mandate: null';
+    return;
+  }}
+  if (customsGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNSTAMPED_CUSTOMS_EXPORT_OR_PREPAID_COLLATERAL_CARD_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (certGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 EXPIRED_OR_MISMATCHED_NAICS_RESALE_EXEMPTION_CERT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DIGITAL_CUSTOMS_INSTANT_VAT_AND_THRESHOLD_BUMP_CONFIRM · Mandate: tax_free_exemption_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 TIN_AND_CUSTOMS_VERIFIED_TAX_EXEMPT_AUTHORIZED · Mandate: tax_free_exemption_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

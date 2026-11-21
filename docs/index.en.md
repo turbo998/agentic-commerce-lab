@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`277` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`278` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -11,7 +11,7 @@
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (99 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (65 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (23 guides)](#saas-finops-micropayments)
-- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (33 guides)](#tax-fx-privacy-disputes)
+- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (34 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
 
@@ -302,7 +302,7 @@
 | 23 | **E-Commerce `Subscribe & Save` Replenishment (`Amazon / Chewy Autoship / Recharge / Skio`), Anti-Overstock Churn, Anti-Price-Creep & 5-Item Tier Escrow (Passwordless `1-Tap Snooze`, OOS Tier Honor & `$3` Filler Arbitrage) Agent Architecture Selection FAQ** | [English](ecommerce-subscribe-and-save-replenishment-skip-price-creep-escrow-agent-selection-faq.en.md) · [中文](ecommerce-subscribe-and-save-replenishment-skip-price-creep-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (33 Guides)
+## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (34 Guides)
 
 > Covers Merchant of Record (MoR) vs DIY PSP, HS-code DDP landed cost & VAT/Sales Tax nexus, FX quote collars & ISO 20022 netting, ZK eligibility / PCI redaction / GDPR crypto-shredding, and Visa CE 3.0 / VAMP dispute defense.
 
@@ -341,6 +341,7 @@
 | 31 | **Cross-Border E-Commerce Multilingual Customer Support, `DDP / IOSS` Doorstep-Refusal Guard & Local Keep-and-Reship Sizing Escrow (`Gorgias / Global-e / Zonos / Zendesk AI`) Anti-`€18` Carrier Duty Shock, Policy-First Translation & `$8` Local Reship Agent Architecture Selection FAQ** | [English](cross-border-multilingual-support-ddp-customs-duty-refusal-escrow-agent-selection-faq.en.md) · [中文](cross-border-multilingual-support-ddp-customs-duty-refusal-escrow-agent-selection-faq.md) |
 | 32 | **E-Commerce & FinTech Chargeback Representment (`Visa CE 3.0 / Verifi RDR / Ethoca / Chargeflow`) & Anti-Friendly-Fraud Escrow (`2-of-4` Historical Match, Sub-`$35` `RDR` Deflection & `DISPUTE_LOCKED` Mutex) Agent Architecture Selection FAQ** | [English](ecommerce-chargeback-representment-visa-ce30-rdr-ethoca-escrow-agent-selection-faq.en.md) · [中文](ecommerce-chargeback-representment-visa-ce30-rdr-ethoca-escrow-agent-selection-faq.md) |
 | 33 | **Cross-Border Multi-Currency Checkout & Treasury `FX` (`Adyen Like-for-Like / Airwallex / Stripe / Wise`), Anti-`DCC` (`6.5%` Markup) Guard & `ISO 4217` Zero-Decimal `100x`-Overcharge Escrow Agent Architecture Selection FAQ** | [English](cross-border-multi-currency-fx-lock-anti-dcc-zero-decimal-escrow-agent-selection-faq.en.md) · [中文](cross-border-multi-currency-fx-lock-anti-dcc-zero-decimal-escrow-agent-selection-faq.md) |
+| 34 | **Cross-Border Tourist Tax-Free Shopping (`Global Blue / Planet`) & US Sales-Tax Exemption Certificate Escrow (`Avalara CertCapture / Sovos / Stripe Tax`) 21d Customs-Stamp `SPT` Hold, Live `TIN / NAICS` Match & Threshold Upsell (`-36%` Loss) Agent Architecture Selection FAQ** | [English](cross-border-tax-free-shopping-reseller-exemption-cert-escrow-agent-selection-faq.en.md) · [中文](cross-border-tax-free-shopping-reseller-exemption-cert-escrow-agent-selection-faq.md) |
 
 <a id="architecture-blueprints"></a>
 ## 7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 Specs)

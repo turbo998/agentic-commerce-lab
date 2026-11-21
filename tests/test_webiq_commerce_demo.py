@@ -19711,6 +19711,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-hybrid-search-merchandising-sandbox", html_zh)
 
+    def test_cross_border_tax_free_exemption_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderTaxFreeExemptionPolicyInput,
+            evaluate_cross_border_tax_free_exemption_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_tax_free_exemption_policy(
+            CrossBorderTaxFreeExemptionPolicyInput(
+                quarterly_tax_audit_and_exemption_leakage_pool_usd=100000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "TIN_AND_CUSTOMS_VERIFIED_TAX_EXEMPT_AUTHORIZED",
+        )
+
+        customs = evaluate_cross_border_tax_free_exemption_policy(
+            CrossBorderTaxFreeExemptionPolicyInput(
+                unstamped_customs_export_or_prepaid_collateral_card=True
+            )
+        )
+        self.assertEqual(customs["status_code"], 403)
+        self.assertEqual(
+            customs["decision"],
+            "UNSTAMPED_CUSTOMS_EXPORT_OR_PREPAID_COLLATERAL_CARD_BLOCKED",
+        )
+
+        cert = evaluate_cross_border_tax_free_exemption_policy(
+            CrossBorderTaxFreeExemptionPolicyInput(
+                expired_or_mismatched_naics_resale_exemption_cert=True
+            )
+        )
+        self.assertEqual(cert["status_code"], 422)
+        self.assertEqual(
+            cert["decision"],
+            "EXPIRED_OR_MISMATCHED_NAICS_RESALE_EXEMPTION_CERT_BLOCKED",
+        )
+
+        fwd = evaluate_cross_border_tax_free_exemption_policy(
+            CrossBorderTaxFreeExemptionPolicyInput(
+                unverified_freight_forwarder_export_tax_claim=True
+            )
+        )
+        self.assertEqual(fwd["status_code"], 451)
+        self.assertEqual(
+            fwd["decision"],
+            "UNVERIFIED_FREIGHT_FORWARDER_EXPORT_TAX_CLAIM_HOLD",
+        )
+
+        optim = evaluate_cross_border_tax_free_exemption_policy(
+            CrossBorderTaxFreeExemptionPolicyInput(
+                quarterly_tax_audit_and_exemption_leakage_pool_usd=100000.0,
+                digital_customs_instant_vat_and_threshold_bump_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 36000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 64000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_tax_free_exemption_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-tax-free-exemption-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
