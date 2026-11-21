@@ -22927,6 +22927,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-pay-by-bank-ach-fednow-sandbox", html_zh)
 
+    def test_cross_border_viban_natural_fx_netting_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderVibanNaturalFxNettingPolicyInput,
+            evaluate_cross_border_viban_natural_fx_netting_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_viban_natural_fx_netting_policy(
+            CrossBorderVibanNaturalFxNettingPolicyInput(
+                quarterly_double_fx_spread_store_linkage_and_aml_freeze_pool_usd=180000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ISOLATED_VIBAN_TREASURY_SETTLEMENT_AUTHORIZED",
+        )
+
+        kyb = evaluate_cross_border_viban_natural_fx_netting_policy(
+            CrossBorderVibanNaturalFxNettingPolicyInput(
+                reusing_viban_across_multiple_stores_or_beneficiary_kyb_mismatch=True
+            )
+        )
+        self.assertEqual(kyb["status_code"], 403)
+        self.assertEqual(
+            kyb["decision"],
+            "SHARED_VIBAN_STORE_LINKAGE_OR_KYB_MISMATCH_BLOCKED",
+        )
+
+        netting = evaluate_cross_border_viban_natural_fx_netting_policy(
+            CrossBorderVibanNaturalFxNettingPolicyInput(
+                converting_foreign_revenue_before_paying_same_currency_3pl_or_weekend=True
+            )
+        )
+        self.assertEqual(netting["status_code"], 422)
+        self.assertEqual(
+            netting["decision"],
+            "DOUBLE_FX_ROUNDTRIP_OR_WEEKEND_SPREAD_BLOCKED",
+        )
+
+        aml = evaluate_cross_border_viban_natural_fx_netting_policy(
+            CrossBorderVibanNaturalFxNettingPolicyInput(
+                unbacked_personal_supplier_transfer_without_order_manifest=True
+            )
+        )
+        self.assertEqual(aml["status_code"], 451)
+        self.assertEqual(
+            aml["decision"],
+            "UNBACKED_SUPPLIER_PAYOUT_OR_MISSING_MANIFEST_HOLD",
+        )
+
+        optim = evaluate_cross_border_viban_natural_fx_netting_policy(
+            CrossBorderVibanNaturalFxNettingPolicyInput(
+                quarterly_double_fx_spread_store_linkage_and_aml_freeze_pool_usd=180000.0,
+                like_for_like_natural_fx_netting_and_multi_currency_ad_vcn_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 64800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 115200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_viban_natural_fx_netting_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-viban-natural-fx-netting-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

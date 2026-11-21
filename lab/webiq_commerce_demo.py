@@ -30801,6 +30801,82 @@ def evaluate_ecommerce_pay_by_bank_ach_fednow_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderVibanNaturalFxNettingPolicyInput:
+    quarterly_double_fx_spread_store_linkage_and_aml_freeze_pool_usd: float = 180000.0
+    reusing_viban_across_multiple_stores_or_beneficiary_kyb_mismatch: bool = False
+    converting_foreign_revenue_before_paying_same_currency_3pl_or_weekend: bool = False
+    unbacked_personal_supplier_transfer_without_order_manifest: bool = False
+    like_for_like_natural_fx_netting_and_multi_currency_ad_vcn_ready: bool = False
+
+
+def evaluate_cross_border_viban_natural_fx_netting_policy(
+    policy_input: CrossBorderVibanNaturalFxNettingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_double_fx_spread_store_linkage_and_aml_freeze_pool_usd
+        ),
+    )
+    if policy_input.unbacked_personal_supplier_transfer_without_order_manifest:
+        return {
+            "status_code": 451,
+            "decision": "UNBACKED_SUPPLIER_PAYOUT_OR_MISSING_MANIFEST_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.reusing_viban_across_multiple_stores_or_beneficiary_kyb_mismatch:
+        return {
+            "status_code": 403,
+            "decision": "SHARED_VIBAN_STORE_LINKAGE_OR_KYB_MISMATCH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.converting_foreign_revenue_before_paying_same_currency_3pl_or_weekend:
+        return {
+            "status_code": 422,
+            "decision": "DOUBLE_FX_ROUNDTRIP_OR_WEEKEND_SPREAD_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.like_for_like_natural_fx_netting_and_multi_currency_ad_vcn_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "NATURAL_FX_NETTING_AND_ISOLATED_VIBAN_TREASURY_CONFIRM",
+            "mandate_token": "viban_fx_netting_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ISOLATED_VIBAN_TREASURY_SETTLEMENT_AUTHORIZED",
+        "mandate_token": "viban_fx_netting_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -42102,6 +42178,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_viban_natural_fx_netting_guard = {
+        "authorized_200": evaluate_cross_border_viban_natural_fx_netting_policy(
+            CrossBorderVibanNaturalFxNettingPolicyInput()
+        ),
+        "shared_viban_or_kyb_403": evaluate_cross_border_viban_natural_fx_netting_policy(
+            CrossBorderVibanNaturalFxNettingPolicyInput(
+                reusing_viban_across_multiple_stores_or_beneficiary_kyb_mismatch=True
+            )
+        ),
+        "double_fx_or_weekend_422": evaluate_cross_border_viban_natural_fx_netting_policy(
+            CrossBorderVibanNaturalFxNettingPolicyInput(
+                converting_foreign_revenue_before_paying_same_currency_3pl_or_weekend=True
+            )
+        ),
+        "unbacked_supplier_aml_451": evaluate_cross_border_viban_natural_fx_netting_policy(
+            CrossBorderVibanNaturalFxNettingPolicyInput(
+                unbacked_personal_supplier_transfer_without_order_manifest=True
+            )
+        ),
+        "natural_netting_and_vcn_409": evaluate_cross_border_viban_natural_fx_netting_policy(
+            CrossBorderVibanNaturalFxNettingPolicyInput(
+                like_for_like_natural_fx_netting_and_multi_currency_ad_vcn_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42437,6 +42539,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_gift_registry_group_gifting_guard": ecommerce_gift_registry_group_gifting_guard,
         "b2b_dealer_portal_mdf_warranty_guard": b2b_dealer_portal_mdf_warranty_guard,
         "ecommerce_pay_by_bank_ach_fednow_guard": ecommerce_pay_by_bank_ach_fednow_guard,
+        "cross_border_viban_natural_fx_netting_guard": cross_border_viban_natural_fx_netting_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -59435,6 +59538,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="paybybank-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 INSTANT_REBATE_STEER_FEDNOW_AND_VIBAN_PUSH_CONFIRM · Mandate: pay_by_bank_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 207 Cross-Border Multi-Currency vIBAN, Natural FX Netting & KYC Isolation Escrow (#326) -->
+      <div class="finops-box" id="cross-border-viban-natural-fx-netting-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🌍 跨境多币种本地收款账户 (vIBAN: Airwallex / 万里汇 / 派安盈)、本币自然轧差与防店铺关联沙盒</div>
+            <div class="finops-sub">Round 207 (#326) · 一店铺法人唯一 vIBAN 防 Amazon 二审关联封店 (HTTP 403) + 欧元原币留存直付海外仓/VAT/广告免双向换汇 (HTTP 422) + 订单 Manifest 绑定阳光结汇防冻卡 (HTTP 451) + 银行间 0.15% 锁汇净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="vibanfx-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度外币回款双向换汇 4.5% 汇损、多店共用 vIBAN 关联冻结与周末高点差损耗池 ($)
+            <input type="number" id="vibanfx-gross-input" value="180000" min="10000" step="5000" oninput="recalcCrossBorderVibanNaturalFxNettingSandbox()" />
+          </label>
+          <label>一店铺法人唯一独立 vIBAN 隔离锁与 DAC7 / KYB 开户证明信对齐
+            <select id="vibanfx-kyb-select" onchange="recalcCrossBorderVibanNaturalFxNettingSandbox()">
+              <option value="pass">1 店铺实体绑定 1 个终身唯一 vIBAN + 户名与营业执照 100% 一致 (合规)</option>
+              <option value="block_403">出纳把同一个欧元 DE IBAN 填进 2 个 Amazon 店铺后台触发关联扫号封店冻结资金 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>同币种自然对冲轧差 (Like-for-Like Netting) 与周末外汇休市期点差保护
+            <select id="vibanfx-netting-select" onchange="recalcCrossBorderVibanNaturalFxNettingSandbox()">
+              <option value="pass">留存 EUR/GBP 原币直付海外仓、VAT 与广告卡(0%汇损) + 工作日开盘换汇 (合规)</option>
+              <option value="block_422">把 €10万全换成人民币再购汇付德国海外仓被剥两层 4.5% 汇差 或 在周日休市期高点差换汇 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>真实平台订单舱单 (Order Manifest) 绑定与阳光结汇直付国内工厂对公户
+            <select id="vibanfx-aml-select" onchange="recalcCrossBorderVibanNaturalFxNettingSandbox()">
+              <option value="pass">100% 挂载真实平台订单流与物流单 + 持牌通道直付 1688/工厂对公账户 (安全)</option>
+              <option value="block_451">无订单贸易背景向私人银行卡乱打款 或 走地下钱庄换汇导致国内工厂银行卡被司法冻结 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>银行间工作日 0.15% 目标汇率挂单与多币种广告虚拟卡 (1.2% 返现)
+            <select id="vibanfx-opt-select" onchange="recalcCrossBorderVibanNaturalFxNettingSandbox()">
+              <option value="enabled" selected>40% 外币原币直付 0 汇损 + 净余资金 0.15% 点差锁汇 + 广告 VCN 返现 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统平台强制换汇提现再用国内双币信用卡付海外账单 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度跨境双向汇损与关联风险池</div>
+            <div class="finops-kpi-val" id="vibanfx-gross-kpi">$180,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">本币自然轧差与独立 vIBAN 后净损耗</div>
+            <div class="finops-kpi-val" id="vibanfx-net-kpi" style="color:#6ee7b7;">$115,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省换汇点差与广告卡返利</div>
+            <div class="finops-kpi-val" id="vibanfx-savings-kpi" style="color:#38bdf8;">$64,800</div>
+          </div>
+        </div>
+        <div id="vibanfx-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 NATURAL_FX_NETTING_AND_ISOLATED_VIBAN_TREASURY_CONFIRM · Mandate: viban_fx_netting_escrow_optim_409
         </div>
       </div>
 
@@ -80063,6 +80223,79 @@ function recalcEcommercePayByBankAchFednowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_OAUTH_PAY_BY_BANK_SETTLEMENT_AUTHORIZED · Mandate: pay_by_bank_escrow_200';
+}}
+
+function recalcCrossBorderVibanNaturalFxNettingSandbox() {{
+  const grossInput = document.getElementById('vibanfx-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '180000'));
+  const kybGate = document.getElementById('vibanfx-kyb-select').value;
+  const nettingGate = document.getElementById('vibanfx-netting-select').value;
+  const amlGate = document.getElementById('vibanfx-aml-select').value;
+  const optMode = document.getElementById('vibanfx-opt-select').value;
+
+  const grossKpi = document.getElementById('vibanfx-gross-kpi');
+  const netKpi = document.getElementById('vibanfx-net-kpi');
+  const savingsKpi = document.getElementById('vibanfx-savings-kpi');
+  const statusKpi = document.getElementById('vibanfx-status-kpi');
+  const banner = document.getElementById('vibanfx-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (amlGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNBACKED_SUPPLIER_PAYOUT_OR_MISSING_MANIFEST_HOLD · Mandate: null';
+    return;
+  }}
+  if (kybGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SHARED_VIBAN_STORE_LINKAGE_OR_KYB_MISMATCH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (nettingGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DOUBLE_FX_ROUNDTRIP_OR_WEEKEND_SPREAD_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 NATURAL_FX_NETTING_AND_ISOLATED_VIBAN_TREASURY_CONFIRM · Mandate: viban_fx_netting_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ISOLATED_VIBAN_TREASURY_SETTLEMENT_AUTHORIZED · Mandate: viban_fx_netting_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
