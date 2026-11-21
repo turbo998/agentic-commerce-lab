@@ -17567,6 +17567,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("airline-irrops-eu261-escrow-sandbox", html_zh)
 
+    def test_b2b_ap_three_way_match_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BApThreeWayMatchEscrowPolicyInput,
+            evaluate_b2b_ap_three_way_match_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_ap_three_way_match_escrow_policy(
+            B2BApThreeWayMatchEscrowPolicyInput(
+                quarterly_ap_leakage_and_missed_early_pay_discount_pool_usd=145000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "THREE_WAY_MATCHED_ERP_AP_AND_READONLY_IBAN_AUTHORIZED",
+        )
+
+        dup = evaluate_b2b_ap_three_way_match_escrow_policy(
+            B2BApThreeWayMatchEscrowPolicyInput(
+                fuzzy_duplicate_invoice_or_unapproved_off_po_surcharge=True
+            )
+        )
+        self.assertEqual(dup["status_code"], 403)
+        self.assertEqual(
+            dup["decision"],
+            "FUZZY_DUPLICATE_INVOICE_OR_UNAPPROVED_OFF_PO_SURCHARGE_BLOCKED",
+        )
+
+        grn = evaluate_b2b_ap_three_way_match_escrow_policy(
+            B2BApThreeWayMatchEscrowPolicyInput(
+                invoice_qty_exceeds_warehouse_grn_or_unit_price_variance=True
+            )
+        )
+        self.assertEqual(grn["status_code"], 422)
+        self.assertEqual(
+            grn["decision"],
+            "INVOICE_QTY_EXCEEDS_WAREHOUSE_GRN_OR_UNIT_PRICE_VARIANCE_BLOCKED",
+        )
+
+        bec = evaluate_b2b_ap_three_way_match_escrow_policy(
+            B2BApThreeWayMatchEscrowPolicyInput(
+                bec_printed_invoice_iban_mismatch_against_vendor_master=True
+            )
+        )
+        self.assertEqual(bec["status_code"], 451)
+        self.assertEqual(
+            bec["decision"],
+            "BEC_PRINTED_INVOICE_IBAN_MISMATCH_AGAINST_VENDOR_MASTER_HOLD",
+        )
+
+        optim = evaluate_b2b_ap_three_way_match_escrow_policy(
+            B2BApThreeWayMatchEscrowPolicyInput(
+                quarterly_ap_leakage_and_missed_early_pay_discount_pool_usd=145000.0,
+                sub_24h_three_way_match_and_2_10_net_30_discount_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 39150.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 105850.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_ap_three_way_match_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-ap-three-way-match-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

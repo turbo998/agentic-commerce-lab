@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg570" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081322" />
+      <stop offset="50%" stop-color="#0d233a" />
+      <stop offset="100%" stop-color="#06101c" />
+    </linearGradient>
+    <linearGradient id="accent570" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg570)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent570)" rx="3" />
+
+  <text x="40" y="58" class="title">B2B 应付账款三单匹配 (3-Way Match)、防 BEC 改银行账号诈骗与动态早付折扣托管 (Coupa / SAP / Tipalti)</text>
+  <text x="40" y="80" class="subtitle">Round 127 · 防黑客伪造 PDF 发票改收款 IBAN 骗走 $250k、防仓库实收 80 件按 100 件全付 &amp; 2/10 Net 30 早付套利净省 27% (SVG 570)</text>
+
+  <!-- Left Card: 3 AP & Invoice Fraud Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大应付账款资金黑洞</text>
+  <text x="56" y="164" class="card-title">1. BEC 邮件劫持改供应商银行账号 (HTTP 451)</text>
+  <text x="56" y="184" class="body">• 黑客入侵供应商邮箱，发来盖章 PDF：“我司因审计切换</text>
+  <text x="56" y="202" class="body">  新收款账号，请将本期 $250,000 货款打入新香港账户”</text>
+  <text x="56" y="220" class="warn">• OCR Agent 自动提取 PDF 上新 IBAN 并覆盖主数据直接汇款!</text>
+
+  <text x="56" y="256" class="card-title">2. 无收货单 (GRN) 盲付或短装超付 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 采购单 (PO) 订 100 台服务器，仓库实际仅签收 80 台 (GRN=80)</text>
+  <text x="56" y="294" class="body">• 供应商财务直接按 100 台开具全额发票，并夹带 $1,800 加急费</text>
+  <text x="56" y="312" class="warn">• Agent 仅做二单匹配 (PO vs Invoice) 导致多付 20 台冤枉钱</text>
+
+  <text x="56" y="348" class="card-title">3. 改发票号重开双倍付款与错失 2% 早付收益</text>
+  <text x="56" y="368" class="body">• 同一批货发来 `INV-2026-088` 与 `INV-2026-088A` 两次请款</text>
+  <text x="56" y="386" class="body">• 人工审票拖延 18 天，白白错过 `2/10 Net 30` (10天内付打98折</text>
+  <text x="56" y="404" class="warn">  相当于年化 36.7% 无风险收益!) 的黄金提前付款窗口</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: DUPLICATE_INVOICE_OR_UNAPPROVED_SURCHARGE</text>
+  <text x="70" y="502" class="warn">• HTTP 422: THREE_WAY_MATCH_PO_GRN_QTY_PRICE_VARIANCE</text>
+  <text x="70" y="524" class="warn">• HTTP 451: BEC_IBAN_BANK_CHANGE_ON_INVOICE_HOLD</text>
+  <text x="70" y="546" class="mono">• HTTP 409: DYNAMIC_DISCOUNTING_2_10_NET_30_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: THREE_WAY_MATCHED_ERP_AP_AUTHORIZED</text>
+  <text x="70" y="596" class="body">铁律: 严禁根据发票 PDF 上的文字修改 ERP 供应商收款账号!</text>
+
+  <!-- Center Card: 4-Stage AP & Treasury Guard Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="192" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶 B2B 应付账款确定性核销流水线</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="175" class="card-title" fill="#d8b4fe">Gate 1: 收款银行账号 (IBAN/ACH) 零信任锁 (HTTP 451)</text>
+  <text x="450" y="195" class="body">• 发票 PDF 上的银行账号仅作只读比对，严禁自动写回主数据</text>
+  <text x="450" y="213" class="body">• 一旦发票 IBAN != ERP 主数据已认证 IBAN，立即冻结付款</text>
+  <text x="450" y="231" class="mono">• 强制触发 Plaid / Swift 账户户名核验 + 双通道电话回拨确认</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: 行项级三单匹配 (PO × GRN × Invoice)</text>
+  <text x="450" y="302" class="body">• 逐行校验: 发票单价 &lt;= PO 合同单价 (容差 &lt;= 0.5%)</text>
+  <text x="450" y="320" class="body">• 逐行校验: 发票请款数量 &lt;= WMS 实收合格入库数 (GRN)</text>
+  <text x="450" y="338" class="body">• 若 PO=100、GRN=80、发票=100 -&gt; 挂起 20 件差异 (HTTP 422)</text>
+  <text x="450" y="354" class="mono">• 自动生成 Credit Memo 索取单或仅就已入库 80 件生成部分付款</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="399" class="card-title" fill="#6ee7b7">Gate 3: 模糊指纹防重付锁 (Fuzzy Duplicate Guard)</text>
+  <text x="450" y="419" class="body">• 计算 (Vendor_ID + PO_Line + 金额 + 日期±7d) 组合哈希</text>
+  <text x="450" y="437" class="body">• 揪出加后缀 `-A / -REV`、扫描件与电子票双投的重复请款</text>
+  <text x="450" y="455" class="mono">• 剔除 PO 合同外未授权包装费/最低订单附加费 -&gt; HTTP 403</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#f59e0b" />
+  <text x="450" y="508" class="card-title" fill="#fcd34d">Gate 4: 动态早付折扣寻优 (Dynamic Discounting)</text>
+  <text x="450" y="528" class="body">• T+1 天完成三单匹配，赶在第 10 天前触发 `2/10 Net 30`</text>
+  <text x="450" y="546" class="body">• 早付 20 天拿 2% 现金折扣 = 等效年化 36.7% 无风险财资收益!</text>
+  <text x="450" y="566" class="mono">• 即使过第 10 天，按滑动比例 (如第18天享 1.2% 折扣) 动态议价</text>
+  <text x="450" y="586" class="mono">• 防错付 + 防诈骗 + 动态早付返利 -&gt; 净省 27% AP 综合损耗</text>
+
+  <!-- Right Card: AP Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大企业 AP 自动化生态</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Coupa Pay &amp; SAP Ariba Invoicing</text>
+  <text x="846" y="182" class="body">• 优势: PO Flip 一键转合规电子发票，原生早付折扣市场</text>
+  <text x="846" y="198" class="body">• 适用: 大中型企业全球直接/间接物料三单匹配</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Tipalti / Medius / Stampli</text>
+  <text x="846" y="244" class="body">• 优势: 强项在跨国多币种批量打款、KYP 银行账户验真与税表</text>
+  <text x="846" y="260" class="body">• 适用: 拥有数千家海外供应商的跨境电商与数字平台</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. C2FO / Taulia 动态贴现平台</text>
+  <text x="846" y="306" class="body">• 优势: 让供应商自主竞价“愿意让利多少换取明天拿钱”</text>
+  <text x="846" y="322" class="body">• 适用: 账上现金充裕、追求无风险超额收益的买方财资部</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Swift Pre-Validation / Plaid Signal</text>
+  <text x="846" y="368" class="body">• 优势: 打款前实时校验银行账号法定开户名称与税号一致性</text>
+  <text x="846" y="384" class="body">• 适用: 100% 物理阻断 BEC 邮件伪造收款账户欺诈</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度 AP 错付、欺诈与早付收益池 ($145,000)</text>
+  <text x="860" y="456" class="body">• 传统短装多付/重付损耗与错失折扣: $145,000/季</text>
+  <text x="860" y="476" class="mono">• 捕获 2/10 Net 30 动态早付现金折扣: -$18,850</text>
+  <text x="860" y="496" class="mono">• 拦截 GRN 短装超开与重复发票请款: -$11,600</text>
+  <text x="860" y="516" class="mono">• 阻断 BEC 篡改银行账号风险暴露: -$8,700</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净损耗: $105,850 (净省 $39,150 / -27%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: b2b_ap_three_way_match_optim_409</text>
+</svg>
