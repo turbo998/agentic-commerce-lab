@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg571" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a1124" />
+      <stop offset="50%" stop-color="#131f3e" />
+      <stop offset="100%" stop-color="#070e1c" />
+    </linearGradient>
+    <linearGradient id="accent571" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ec4899" />
+      <stop offset="50%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg571)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent571)" rx="3" />
+
+  <text x="40" y="58" class="title">网红达人种草带货 (Influencer / KOL)、防刷量假粉水军与防退货骗佣托管 (Impact / CreatorIQ / 星图)</text>
+  <text x="40" y="80" class="subtitle">Round 128 · 防 $25,000 一口价投中 80% 机刷僵尸粉、防“下单拿 20% 佣金第 7 天全退货”套现 &amp; 混合对赌分账净省 35% (SVG 571)</text>
+
+  <!-- Left Card: 3 Influencer Marketing Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大达人投放翻车黑洞</text>
+  <text x="56" y="164" class="card-title">1. 机刷僵尸粉与互赞群假互动 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 达人号称 80 万粉丝，报价 $25,000 一口价 (Flat Fee)</text>
+  <text x="56" y="202" class="body">• 视频发布 5 分钟涌入 3,000 条“太棒了🔥”机刷脚本评论</text>
+  <text x="56" y="220" class="warn">• 真实完播率 &lt;2%，最终仅卖出 2 单 ($120)，ROI 惨烈归零</text>
+
+  <text x="56" y="256" class="card-title">2. 自买自退骗佣与优惠券爬虫劫持 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 黑产用达人高佣链接狂买 $50,000 商品，秒结算 $10,000 佣金</text>
+  <text x="56" y="294" class="body">• 提现后第 7 天全部发起无理由退货，品牌方白丢 $10,000 佣金</text>
+  <text x="56" y="312" class="warn">• Honey/Coupon 浏览器插件将达人私享码贴到公网截胡自然单</text>
+
+  <text x="56" y="348" class="card-title">3. 漏标 #ad 遭 FTC 重罚与收样跑路 (Gifting Ghost)</text>
+  <text x="56" y="368" class="body">• 达人未在视频前 3 行标明 #ad / 合作推广，违反 FTC 指南</text>
+  <text x="56" y="386" class="body">• 寄出 100 套 $300 高端护肤品样品，45 名达人收货后失联不发稿</text>
+  <text x="56" y="404" class="warn">• 合同未锁付费投流授权 (Whitelisting/Spark Ads) 无法二创放大</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: BOT_FOLLOWER_POD_OR_UNBANNED_FLAT_FEE</text>
+  <text x="70" y="502" class="warn">• HTTP 422: RETURN_WINDOW_CLAWBACK_OR_COUPON_LEAK</text>
+  <text x="70" y="524" class="warn">• HTTP 451: MISSING_FTC_AD_DISCLOSURE_OR_EXCLUSIVITY</text>
+  <text x="70" y="546" class="mono">• HTTP 409: HYBRID_BASE_PLUS_NET_GMV_ESCROW_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: VERIFIED_CREATOR_CLAWBACK_AUTHORIZED</text>
+  <text x="70" y="596" class="body">铁律: 退货期满 (T+35d) 才按净实收 GMV 解冻达人带货分佣!</text>
+
+  <!-- Center Card: 4-Stage Creator Escrow Pipeline -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="192" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶达人营销反作弊与托管清算引擎</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ec4899" />
+  <text x="450" y="175" class="card-title" fill="#f472b6">Gate 1: 粉丝质量图谱与反刷量审计 (HypeAuditor/Modash)</text>
+  <text x="450" y="195" class="body">• 校验粉丝增长斜率、评论熵值与互赞群 (Engagement Pod) 重叠度</text>
+  <text x="450" y="213" class="body">• 真实受众率 (AQS) &lt; 75% 或纯一口价无保底 CPM 锁 -&gt; HTTP 403</text>
+  <text x="450" y="231" class="mono">• 高单价样品寄送前绑定 $0 预授权担保，30天不发稿自动扣回</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: T+35d 退货期满佣金解冻与防优惠券截胡</text>
+  <text x="450" y="302" class="body">• 达人带货佣金强制进入 35 天退货锁定期 (Return Clawback Escrow)</text>
+  <text x="450" y="320" class="body">• 发生退货/拒付自动冲销待发佣金，彻底断绝“自买自退套佣”</text>
+  <text x="450" y="338" class="body">• 动态单次优惠码绑定引流 Referrer，拦截 Honey 插件结算页截胡</text>
+  <text x="450" y="354" class="mono">• 未满退货期抢先提现或插件泛滥泄露优惠码 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: FTC #ad 披露与竞品排他期视觉巡检 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 多模态 Agent 自动扫描达人发布视频前 3 秒字幕与首行文案</text>
+  <text x="450" y="437" class="body">• 缺失 #ad / Paid Partnership 标识或排他期内接竞品广告立即熔断</text>
+  <text x="450" y="455" class="mono">• 自动校验 IRS W-9 / W-8BEN 税表完成后才开放尾款提现</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: “30% 低保底 + 阶梯净 GMV 分佣 + Spark 投流”</text>
+  <text x="450" y="528" class="body">• 废除高风险 100% 纯一口价，改签 30% 基础制作费 + 15% 净销提成</text>
+  <text x="450" y="546" class="body">• 合同默认含 60 天 Spark Ads / Whitelisting 广告放大授权码</text>
+  <text x="450" y="566" class="mono">• 对自然爆款视频自动追加小额信息流投流放大 4.2x ROI</text>
+  <text x="450" y="586" class="mono">• 砍假粉 + 防退货骗佣 + 混合对赌合同 -&gt; 净省 35% 预算浪费</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大达人营销与归因平台</text>
+
+  <text x="846" y="164" class="card-title" fill="#ec4899">1. Impact.com / Partnerize</text>
+  <text x="846" y="182" class="body">• 优势: 行业最强退货期佣金回拨 (Action Locking) 与反插件截胡</text>
+  <text x="846" y="198" class="body">• 适用: 全球 DTC 品牌混合分佣与跨渠道归因结算</text>
+
+  <text x="846" y="226" class="card-title" fill="#8b5cf6">2. CreatorIQ / GRIN / Modash</text>
+  <text x="846" y="244" class="body">• 优势: 深度受众真实性评分 (AQS)、电商发样追踪与版权管理</text>
+  <text x="846" y="260" class="body">• 适用: 规模化管理数百名中腰部种草达人</text>
+
+  <text x="846" y="288" class="card-title" fill="#38bdf8">3. TikTok Shop Affiliate / 巨量星图</text>
+  <text x="846" y="306" class="body">• 优势: 平台闭环直接从订单实收款中在退货期后自动分账</text>
+  <text x="846" y="322" class="body">• 适用: 短视频与直播原生闭环带货</text>
+
+  <text x="846" y="350" class="card-title" fill="#6ee7b7">4. Shopify Collabs + 独享动态码</text>
+  <text x="846" y="368" class="body">• 优势: 原生打通 Shopify 订单退款状态与礼品寄送免单码</text>
+  <text x="846" y="384" class="body">• 适用: 独立站快速启动微型 KOC 种草矩阵</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度达人投放与分佣预算池 ($105,000)</text>
+  <text x="860" y="456" class="body">• 传统纯一口价踩雷假粉 + 退货骗佣: $105,000/季</text>
+  <text x="860" y="476" class="mono">• 砍掉 AQS&lt;75% 刷量号与纯一口价溢价: -$17,850</text>
+  <text x="860" y="496" class="mono">• T+35d 退货锁 + 拦截优惠券插件截胡: -$11,550</text>
+  <text x="860" y="516" class="mono">• 防收样跑路 + 爆款 Spark Ads 放大收益: -$7,350</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净支出: $68,250 (净省 $36,750 / -35%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: influencer_kol_escrow_optim_409</text>
+</svg>

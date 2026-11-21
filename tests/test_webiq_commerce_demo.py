@@ -17634,6 +17634,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-ap-three-way-match-escrow-sandbox", html_zh)
 
+    def test_influencer_kol_affiliate_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            InfluencerKolAffiliateEscrowPolicyInput,
+            evaluate_influencer_kol_affiliate_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_influencer_kol_affiliate_escrow_policy(
+            InfluencerKolAffiliateEscrowPolicyInput(
+                quarterly_creator_sponsorship_and_affiliate_payout_pool_usd=105000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CREATOR_AQS_AND_35D_NET_GMV_CLAWBACK_AUTHORIZED",
+        )
+
+        bot = evaluate_influencer_kol_affiliate_escrow_policy(
+            InfluencerKolAffiliateEscrowPolicyInput(
+                bot_engagement_pod_aqs_below_75_or_unguaranteed_flat_fee=True
+            )
+        )
+        self.assertEqual(bot["status_code"], 403)
+        self.assertEqual(
+            bot["decision"],
+            "BOT_ENGAGEMENT_POD_AQS_BELOW_75_OR_UNGUARANTEED_FLAT_FEE_BLOCKED",
+        )
+
+        clawback = evaluate_influencer_kol_affiliate_escrow_policy(
+            InfluencerKolAffiliateEscrowPolicyInput(
+                premature_commission_before_35d_return_or_coupon_extension_poach=True
+            )
+        )
+        self.assertEqual(clawback["status_code"], 422)
+        self.assertEqual(
+            clawback["decision"],
+            "PREMATURE_COMMISSION_BEFORE_35D_RETURN_OR_COUPON_EXTENSION_POACH_BLOCKED",
+        )
+
+        ftc = evaluate_influencer_kol_affiliate_escrow_policy(
+            InfluencerKolAffiliateEscrowPolicyInput(
+                missing_ftc_ad_disclosure_or_competitor_exclusivity_breach=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 451)
+        self.assertEqual(
+            ftc["decision"],
+            "MISSING_FTC_AD_DISCLOSURE_OR_COMPETITOR_EXCLUSIVITY_BREACH_HOLD",
+        )
+
+        optim = evaluate_influencer_kol_affiliate_escrow_policy(
+            InfluencerKolAffiliateEscrowPolicyInput(
+                quarterly_creator_sponsorship_and_affiliate_payout_pool_usd=105000.0,
+                hybrid_30pct_base_net_gmv_clawback_and_spark_ads_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 36750.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 68250.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("influencer_kol_affiliate_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("influencer-kol-affiliate-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

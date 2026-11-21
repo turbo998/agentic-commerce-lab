@@ -24800,6 +24800,87 @@ def evaluate_b2b_ap_three_way_match_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class InfluencerKolAffiliateEscrowPolicyInput:
+    """Input contract for Influencer/KOL Affiliate Marketing, Anti-Bot-Pod Audit & Return-Window Clawback Escrow."""
+
+    quarterly_creator_sponsorship_and_affiliate_payout_pool_usd: float = 105000.0
+    bot_engagement_pod_aqs_below_75_or_unguaranteed_flat_fee: bool = False
+    premature_commission_before_35d_return_or_coupon_extension_poach: bool = False
+    missing_ftc_ad_disclosure_or_competitor_exclusivity_breach: bool = False
+    mandate_signing_key_age_days: int = 30
+    hybrid_30pct_base_net_gmv_clawback_and_spark_ads_ready: bool = False
+
+
+def evaluate_influencer_kol_affiliate_escrow_policy(
+    policy_input: InfluencerKolAffiliateEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Influencer/KOL Affiliate Marketing, Anti-Bot-Pod Audit & Return-Window Clawback Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_creator_sponsorship_and_affiliate_payout_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.missing_ftc_ad_disclosure_or_competitor_exclusivity_breach
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "MISSING_FTC_AD_DISCLOSURE_OR_COMPETITOR_EXCLUSIVITY_BREACH_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bot_engagement_pod_aqs_below_75_or_unguaranteed_flat_fee:
+        return {
+            "status_code": 403,
+            "decision": "BOT_ENGAGEMENT_POD_AQS_BELOW_75_OR_UNGUARANTEED_FLAT_FEE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.premature_commission_before_35d_return_or_coupon_extension_poach:
+        return {
+            "status_code": 422,
+            "decision": "PREMATURE_COMMISSION_BEFORE_35D_RETURN_OR_COUPON_EXTENSION_POACH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hybrid_30pct_base_net_gmv_clawback_and_spark_ads_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "HYBRID_30PCT_BASE_NET_GMV_CLAWBACK_AND_SPARK_ADS_CONFIRM",
+            "mandate_token": "influencer_kol_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CREATOR_AQS_AND_35D_NET_GMV_CLAWBACK_AUTHORIZED",
+        "mandate_token": "influencer_kol_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -34047,6 +34128,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    influencer_kol_affiliate_escrow_guard = {
+        "authorized_200": evaluate_influencer_kol_affiliate_escrow_policy(
+            InfluencerKolAffiliateEscrowPolicyInput()
+        ),
+        "bot_pod_or_flat_fee_403": evaluate_influencer_kol_affiliate_escrow_policy(
+            InfluencerKolAffiliateEscrowPolicyInput(
+                bot_engagement_pod_aqs_below_75_or_unguaranteed_flat_fee=True
+            )
+        ),
+        "return_clawback_or_poach_422": evaluate_influencer_kol_affiliate_escrow_policy(
+            InfluencerKolAffiliateEscrowPolicyInput(
+                premature_commission_before_35d_return_or_coupon_extension_poach=True
+            )
+        ),
+        "missing_ftc_ad_or_exclusivity_451": evaluate_influencer_kol_affiliate_escrow_policy(
+            InfluencerKolAffiliateEscrowPolicyInput(
+                missing_ftc_ad_disclosure_or_competitor_exclusivity_breach=True
+            )
+        ),
+        "hybrid_base_net_gmv_spark_409": evaluate_influencer_kol_affiliate_escrow_policy(
+            InfluencerKolAffiliateEscrowPolicyInput(
+                hybrid_30pct_base_net_gmv_clawback_and_spark_ads_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -34303,6 +34410,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "commercial_agent_platform_router_guard": commercial_agent_platform_router_guard,
         "airline_irrops_eu261_escrow_guard": airline_irrops_eu261_escrow_guard,
         "b2b_ap_three_way_match_escrow_guard": b2b_ap_three_way_match_escrow_guard,
+        "influencer_kol_affiliate_escrow_guard": influencer_kol_affiliate_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -46690,6 +46798,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ap-match-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SUB_24H_THREE_WAY_MATCH_AND_2_10_NET_30_DISCOUNT_CONFIRM · Mandate: b2b_ap_three_way_match_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 128 Influencer/KOL Affiliate Marketing, Anti-Bot-Pod Audit & Return Clawback Escrow -->
+      <div class="finops-box" id="influencer-kol-affiliate-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🌟 网红达人种草带货 (Influencer / KOL Affiliate)、防互赞群刷量假粉与防退货骗佣托管 (Impact.com / CreatorIQ / Modash / 巨量星图) 沙盒 (Round 128)</div>
+            <div class="finops-subtitle">实测硬控受众质量分(AQS&gt;=75%)与评论团伙重叠度图谱拉黑互赞群刷量号骗取 $25,000 纯一口价 (HTTP 403)、T+35d 退货期满才解冻净实收 GMV 佣金防“自买自退套现 20% 佣金”与防 Honey 插件截胡自然单 (HTTP 422)、FTC #ad 首屏显著披露巡检 (HTTP 451) 及“30%基础保底+净GMV提成+Spark Ads投流码”净省 35% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="kol-escrow-status-kpi">HTTP 409 · HYBRID_30PCT_BASE_NET_GMV_CLAWBACK_AND_SPARK_ADS_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度品牌达人种草投放与带货分佣总预算池 ($ USD)
+            <input type="range" id="kol-escrow-pool-slider" min="15000" max="450000" step="5000" value="105000" oninput="updateInfluencerKolAffiliateEscrowSandbox()" />
+            <span id="kol-escrow-pool-val" style="color:#6ee7b7; font-family:monospace;">$105,000</span>
+          </label>
+          <label>
+            Modash / HypeAuditor 受众质量分 (AQS&gt;=75%) 与防互赞群审计 (HTTP 403)
+            <select id="kol-escrow-bot-select" onchange="updateInfluencerKolAffiliateEscrowSandbox()">
+              <option value="pass">真实粉丝 AQS&gt;=75% + 评论互赞群重叠度&lt;=15% + 贵价寄样绑定 $0 SPT 担保 (放行)</option>
+              <option value="block">80% 机刷僵尸粉/互赞群抱团刷赞 (AQS&lt;75%) 却索要 $25,000 无保底纯一口价 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            T+35d 退货期满佣金解冻锁与防 Honey 优惠券插件截胡 (HTTP 422)
+            <select id="kol-escrow-clawback-select" onchange="updateInfluencerKolAffiliateEscrowSandbox()">
+              <option value="pass">满 35 天退货窗口扣减退货后按净实收 GMV 放款 + 动态优惠码强绑社媒引流 Click-ID (合规)</option>
+              <option value="block">黑产下单秒提 20% 佣金后第 7 天全额退货套现 或 Honey 插件在结账页自动试码截胡自然老客 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            FTC #ad 商业推广显著披露与竞品排他期视觉巡检 (HTTP 451)
+            <select id="kol-escrow-ftc-select" onchange="updateInfluencerKolAffiliateEscrowSandbox()">
+              <option value="clear">视频前 3 秒与首行显著标注 #ad / 合作推广 + 排他期内零竞品带货 (正常)</option>
+              <option value="hold">故意漏标或将 #ad 藏在第 18 个折叠标签下违反 FTC 指南 或 排他期内同接竞品广告 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            “30% 保底 + 净 GMV 提成 + 60d Spark Ads 授权”混合对赌寻优 (HTTP 409)
+            <select id="kol-escrow-opt-select" onchange="updateInfluencerKolAffiliateEscrowSandbox()">
+              <option value="enabled" selected>废除 100% 纯一口价改签 30% 保底+净实销分佣+高 CTR 视频 Spark Ads 投流放大净省 35% (HTTP 409)</option>
+              <option value="baseline">常规 AQS 验真与 T+35d 退货回拨标准授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度达人种草与分佣总预算池</div>
+            <div class="finops-kpi-val" id="kol-escrow-gross-kpi">$105,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">砍假粉与退货回拨后净支出</div>
+            <div class="finops-kpi-val" id="kol-escrow-net-kpi" style="color:#6ee7b7;">$68,250</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省假粉一口价与骗佣</div>
+            <div class="finops-kpi-val" id="kol-escrow-savings-kpi" style="color:#38bdf8;">$36,750</div>
+          </div>
+        </div>
+        <div id="kol-escrow-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 HYBRID_30PCT_BASE_NET_GMV_CLAWBACK_AND_SPARK_ADS_CONFIRM · Mandate: influencer_kol_escrow_optim_409
         </div>
       </div>
 
@@ -61533,6 +61704,80 @@ function updateB2BApThreeWayMatchEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 THREE_WAY_MATCHED_ERP_AP_AND_READONLY_IBAN_AUTHORIZED · Mandate: b2b_ap_three_way_match_200';
+}}
+
+function updateInfluencerKolAffiliateEscrowSandbox() {{
+  const slider = document.getElementById('kol-escrow-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '105000');
+  const botMode = document.getElementById('kol-escrow-bot-select').value;
+  const clawbackMode = document.getElementById('kol-escrow-clawback-select').value;
+  const ftcMode = document.getElementById('kol-escrow-ftc-select').value;
+  const optMode = document.getElementById('kol-escrow-opt-select').value;
+
+  document.getElementById('kol-escrow-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('kol-escrow-status-kpi');
+  const grossKpi = document.getElementById('kol-escrow-gross-kpi');
+  const netKpi = document.getElementById('kol-escrow-net-kpi');
+  const savingsKpi = document.getElementById('kol-escrow-savings-kpi');
+  const banner = document.getElementById('kol-escrow-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ftcMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 MISSING_FTC_AD_DISCLOSURE_OR_COMPETITOR_EXCLUSIVITY_BREACH_HOLD · Mandate: null';
+    return;
+  }}
+  if (botMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BOT_ENGAGEMENT_POD_AQS_BELOW_75_OR_UNGUARANTEED_FLAT_FEE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (clawbackMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PREMATURE_COMMISSION_BEFORE_35D_RETURN_OR_COUPON_EXTENSION_POACH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 HYBRID_30PCT_BASE_NET_GMV_CLAWBACK_AND_SPARK_ADS_CONFIRM · Mandate: influencer_kol_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CREATOR_AQS_AND_35D_NET_GMV_CLAWBACK_AUTHORIZED · Mandate: influencer_kol_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
