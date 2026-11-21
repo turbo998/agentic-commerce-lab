@@ -23664,6 +23664,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-sales-tax-holiday-exemption-sandbox", html_zh)
 
+    def test_b2b_saas_cloud_marketplace_offer_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BSaasCloudMarketplaceOfferPolicyInput,
+            evaluate_b2b_saas_cloud_marketplace_offer_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_saas_cloud_marketplace_offer_policy(
+            B2BSaasCloudMarketplaceOfferPolicyInput(
+                quarterly_deal_slippage_cppo_margin_leak_and_unbilled_metering_pool_usd=250000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_MACC_EDP_PRIVATE_OFFER_AND_TENANT_AUTHORIZED",
+        )
+
+        cppo = evaluate_b2b_saas_cloud_marketplace_offer_policy(
+            B2BSaasCloudMarketplaceOfferPolicyInput(
+                cppo_net_isv_proceeds_below_floor_or_unregistered_partner=True
+            )
+        )
+        self.assertEqual(cppo["status_code"], 403)
+        self.assertEqual(
+            cppo["decision"],
+            "CPPO_WHOLESALE_FLOOR_BREACH_OR_UNAUTH_RESELLER",
+        )
+
+        orphan = evaluate_b2b_saas_cloud_marketplace_offer_policy(
+            B2BSaasCloudMarketplaceOfferPolicyInput(
+                orphan_unlinked_marketplace_token_or_missed_60m_metering_window=True
+            )
+        )
+        self.assertEqual(orphan["status_code"], 422)
+        self.assertEqual(
+            orphan["decision"],
+            "METERING_WINDOW_EXPIRED_OR_ORPHAN_ENTITLEMENT_BLOCK",
+        )
+
+        macc = evaluate_b2b_saas_cloud_marketplace_offer_policy(
+            B2BSaasCloudMarketplaceOfferPolicyInput(
+                quoting_commit_drawdown_on_ineligible_sku_or_hardware_passthrough=True
+            )
+        )
+        self.assertEqual(macc["status_code"], 451)
+        self.assertEqual(
+            macc["decision"],
+            "INELIGIBLE_MACC_EDP_LISTING_OR_PASSTHROUGH_HOLD",
+        )
+
+        optim = evaluate_b2b_saas_cloud_marketplace_offer_policy(
+            B2BSaasCloudMarketplaceOfferPolicyInput(
+                quarterly_deal_slippage_cppo_margin_leak_and_unbilled_metering_pool_usd=250000.0,
+                cloud_commit_propensity_radar_and_multi_year_fps_ramp_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 95000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 155000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_saas_cloud_marketplace_offer_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-saas-cloud-marketplace-offer-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

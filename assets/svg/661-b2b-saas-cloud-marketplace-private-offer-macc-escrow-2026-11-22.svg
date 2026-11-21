@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg661" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <linearGradient id="hdr661" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg661)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr661)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 218 · B2B SaaS Cloud Marketplace Private Offers (`MACC / EDP / CPPO`) Escrow</text>
+  <text x="48" y="74" class="sub">AWS Marketplace / Microsoft MACC / GCP / Tackle / Clazar · Wholesale CPPO Floor · 1h Metering SLA · 100% Commit Drawdown (-38% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #661 · FAQ #337</text>
+
+  <!-- Lane 1: Channel Partner Private Offer (CPPO) Wholesale Margin Erosion & Double-Discount Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. `CPPO` Wholesale Margin Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Partner Discount + Cloud Fee Double-Hit:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Net_ISV_Proceeds = Wholesale_Price - Cloud_Fee</text>
+  <text x="54" y="200" class="mono">Require `Net_ISV_Proceeds &gt;= Approved_Floor_ACV`!</text>
+  <text x="44" y="223" class="body-txt">• Blocks Unauthorized Partner Resale Offers:</text>
+  <text x="54" y="243" class="mono">Verify `CPPO_Partner_ID == CRM_Registered_Partner`</text>
+  <text x="44" y="266" class="body-txt">• Prevents AE giving 25% customer discount AND</text>
+  <text x="54" y="286" class="body-txt">15% partner wholesale margin + 3% AWS fee without</text>
+  <text x="54" y="304" class="body-txt">realizing net revenue dropped 43%</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 CPPO_WHOLESALE_FLOOR_BREACH_OR_UNAUTH_RESELLER</text>
+
+  <!-- Lane 2: Cloud Metering API 1-Hour Window Drop ("Unbilled Usage") & Unlinked Entitlement Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Metering `1h` SLA &amp; Token Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Losing Overage Revenue on `BatchMeterUsage`:</text>
+  <text x="442" y="182" class="mono">Submit Hourly Usage Within Strict `60-Min Window`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">+ Dead-Letter Replay Before Cloud Cutoff!</text>
+  <text x="432" y="223" class="body-txt">• Stops "Accepted Offer, Never Completed SSO Link":</text>
+  <text x="442" y="243" class="mono">Require `x-amzn-marketplace-token` Tenant Bind</text>
+  <text x="432" y="266" class="body-txt">• Eliminates orphan subscriptions where the buyer</text>
+  <text x="442" y="286" class="body-txt">clicks "Subscribe" in AWS console but never links</text>
+  <text x="442" y="304" class="body-txt">their SaaS tenant ID—blocking usage metering</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 METERING_WINDOW_EXPIRED_OR_ORPHAN_ENTITLEMENT_BLOCK</text>
+
+  <!-- Lane 3: MACC / EDP 100% Commit Drawdown Eligibility & Pass-Through Hardware/Service Ban Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `MACC / EDP` Eligibility Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Promising 100% Drawdown on Unbadged SKU:</text>
+  <text x="830" y="182" class="mono">Verify `Listing_Status == MACC_Eligible / AWS_FTR`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Before Quoting Commit-Drawdown Language in PDF!</text>
+  <text x="820" y="223" class="body-txt">• Blocks Prohibited Pass-Through Billing:</text>
+  <text x="830" y="243" class="body-txt">Prohibits bundling 3rd-party consulting or physical</text>
+  <text x="830" y="261" class="body-txt">hardware inside a SaaS SKU (prevents delisting)</text>
+  <text x="820" y="284" class="body-txt">• Protects ISV from buyer clawbacks when a</text>
+  <text x="830" y="302" class="body-txt">non-transactable listing fails to decrement MACC</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 INELIGIBLE_MACC_EDP_LISTING_OR_PASSTHROUGH_HOLD</text>
+
+  <!-- Bottom Propensity-to-Buy Cloud Radar & Flexible Payment Scheduler (FPS) -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Cloud-Commit Propensity Radar + Multi-Year Flexible Payment Scheduler (`FPS`) (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Cloud-Commit Buyer Score</text>
+  <text x="62" y="462" class="body-txt">Detects buyer has unspent</text>
+  <text x="62" y="480" class="body-txt">AWS EDP / Azure MACC balance</text>
+  <text x="62" y="498" class="body-txt">expiring in Q4 → routes deal</text>
+  <text x="62" y="516" class="mono">-58% Procurement Cycle Days</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Standard Contract (`EULA`)</text>
+  <text x="337" y="462" class="body-txt">Uses pre-vetted AWS/Azure</text>
+  <text x="337" y="480" class="body-txt">`Standard Contract for Mktp`</text>
+  <text x="337" y="498" class="body-txt">to bypass 90-day vendor</text>
+  <text x="337" y="516" class="mono">onboarding &amp; redline loops</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ 3-Yr Flexible Payment (`FPS`)</text>
+  <text x="622" y="462" class="body-txt">Structures `$300k / $450k /`</text>
+  <text x="622" y="480" class="body-txt">`$600k` custom annual ramp</text>
+  <text x="622" y="498" class="body-txt">auto-invoiced on buyer's</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">existing cloud bill (0% Bad Debt)</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Bi-Directional `ACE / PC` Sync</text>
+  <text x="907" y="462" class="body-txt">Auto-co-sells via AWS ACE &amp;</text>
+  <text x="907" y="480" class="body-txt">Microsoft Partner Center to</text>
+  <text x="907" y="498" class="body-txt">unlock cloud rep quota relief;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-38% Deal Slippage &amp; Fee Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-38.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Deal Slippage &amp; Leak Saved</text>
+  <text x="46" y="642" class="mono">$95,000 Saved / $250k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">-58% Cycle</text>
+  <text x="336" y="626" class="kpi-lbl">Bypasses 90-Day Vendor Onboarding</text>
+  <text x="336" y="642" class="mono">Draws Down 100% MACC / EDP</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0% Metering Loss</text>
+  <text x="626" y="626" class="kpi-lbl">60-Min SLA + Tenant Token Binding</text>
+  <text x="626" y="642" class="mono">Zero Orphan Cloud Subscriptions</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">100% Net Floor</text>
+  <text x="916" y="626" class="kpi-lbl">CPPO Wholesale Margin Protected</text>
+  <text x="916" y="642" class="mono">Zero Double-Discount Surprises</text>
+</svg>

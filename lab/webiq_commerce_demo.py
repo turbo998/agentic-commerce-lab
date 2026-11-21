@@ -31637,6 +31637,82 @@ def evaluate_ecommerce_sales_tax_holiday_exemption_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BSaasCloudMarketplaceOfferPolicyInput:
+    quarterly_deal_slippage_cppo_margin_leak_and_unbilled_metering_pool_usd: float = 250000.0
+    cppo_net_isv_proceeds_below_floor_or_unregistered_partner: bool = False
+    orphan_unlinked_marketplace_token_or_missed_60m_metering_window: bool = False
+    quoting_commit_drawdown_on_ineligible_sku_or_hardware_passthrough: bool = False
+    cloud_commit_propensity_radar_and_multi_year_fps_ramp_ready: bool = False
+
+
+def evaluate_b2b_saas_cloud_marketplace_offer_policy(
+    policy_input: B2BSaasCloudMarketplaceOfferPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_deal_slippage_cppo_margin_leak_and_unbilled_metering_pool_usd
+        ),
+    )
+    if policy_input.quoting_commit_drawdown_on_ineligible_sku_or_hardware_passthrough:
+        return {
+            "status_code": 451,
+            "decision": "INELIGIBLE_MACC_EDP_LISTING_OR_PASSTHROUGH_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cppo_net_isv_proceeds_below_floor_or_unregistered_partner:
+        return {
+            "status_code": 403,
+            "decision": "CPPO_WHOLESALE_FLOOR_BREACH_OR_UNAUTH_RESELLER",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.orphan_unlinked_marketplace_token_or_missed_60m_metering_window:
+        return {
+            "status_code": 422,
+            "decision": "METERING_WINDOW_EXPIRED_OR_ORPHAN_ENTITLEMENT_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cloud_commit_propensity_radar_and_multi_year_fps_ramp_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CLOUD_COMMIT_PROPENSITY_AND_MULTI_YEAR_FPS_OFFER_CONFIRM",
+            "mandate_token": "cloud_mktp_offer_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_MACC_EDP_PRIVATE_OFFER_AND_TENANT_AUTHORIZED",
+        "mandate_token": "cloud_mktp_offer_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -43224,6 +43300,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_saas_cloud_marketplace_offer_guard = {
+        "authorized_200": evaluate_b2b_saas_cloud_marketplace_offer_policy(
+            B2BSaasCloudMarketplaceOfferPolicyInput()
+        ),
+        "cppo_floor_or_partner_403": evaluate_b2b_saas_cloud_marketplace_offer_policy(
+            B2BSaasCloudMarketplaceOfferPolicyInput(
+                cppo_net_isv_proceeds_below_floor_or_unregistered_partner=True
+            )
+        ),
+        "orphan_token_or_metering_422": evaluate_b2b_saas_cloud_marketplace_offer_policy(
+            B2BSaasCloudMarketplaceOfferPolicyInput(
+                orphan_unlinked_marketplace_token_or_missed_60m_metering_window=True
+            )
+        ),
+        "ineligible_macc_or_pass_451": evaluate_b2b_saas_cloud_marketplace_offer_policy(
+            B2BSaasCloudMarketplaceOfferPolicyInput(
+                quoting_commit_drawdown_on_ineligible_sku_or_hardware_passthrough=True
+            )
+        ),
+        "propensity_and_fps_409": evaluate_b2b_saas_cloud_marketplace_offer_policy(
+            B2BSaasCloudMarketplaceOfferPolicyInput(
+                cloud_commit_propensity_radar_and_multi_year_fps_ramp_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -43570,6 +43672,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_corporate_print_branded_swag_guard": b2b_corporate_print_branded_swag_guard,
         "wellness_fitness_medspa_membership_guard": wellness_fitness_medspa_membership_guard,
         "ecommerce_sales_tax_holiday_exemption_guard": ecommerce_sales_tax_holiday_exemption_guard,
+        "b2b_saas_cloud_marketplace_offer_guard": b2b_saas_cloud_marketplace_offer_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -61195,6 +61298,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="taxexempt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 IN_CART_DOR_CERT_WIZARD_AND_HOLIDAY_CLIFF_ASSIST_CONFIRM · Mandate: sales_tax_exemption_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 218 B2B SaaS Cloud Marketplace Private Offers (MACC / EDP / CPPO) Escrow (#337) -->
+      <div class="finops-box" id="b2b-saas-cloud-marketplace-offer-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">☁️ B2B SaaS 云市场专属私密报价与承诺额冲抵 (AWS EDP / Microsoft MACC / Tackle / Clazar) 沙盒</div>
+            <div class="finops-sub">Round 218 (#337) · CPPO 渠道代售扣除分成与云平台费后 ISV 净回款底线锁 (HTTP 403) + 15m 防幽灵未绑租户订阅与 60m BatchMeterUsage 死信重放 (HTTP 422) + 官方 MACC/EDP 100% 冲抵资质核验 (HTTP 451) + 云倾向雷达与 3年 FPS 阶梯分期净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="cloudmktp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度未识客户 MACC/EDP 走直签卡法务丢单、CPPO 折上折毛利穿仓与幽灵订阅漏收超额用量池 ($)
+            <input type="number" id="cloudmktp-gross-input" value="250000" min="10000" step="5000" oninput="recalcB2BSaasCloudMarketplaceOfferSandbox()" />
+          </label>
+          <label>渠道商私密报价 (CPPO / MPO) 扣除批发让利与云平台抽成后 ISV 净回款底线锁
+            <select id="cloudmktp-cppo-select" onchange="recalcB2BSaasCloudMarketplaceOfferSandbox()">
+              <option value="pass">Net_ISV_Proceeds (批发价 - 3% 云抽成) &gt;= 财务批准净底价 + 已报备 ACE/PC 伙伴 (合规)</option>
+              <option value="block_403">销售既给客户打 75 折又给渠道代理让利 15% 外加 3% 云平台费导致净回款暴跌 43% 穿仓 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>ResolveCustomer / Activate 租户账号绑定防“幽灵空单”与 60 分钟 BatchMeterUsage 用量上报
+            <select id="cloudmktp-meter-select" onchange="recalcB2BSaasCloudMarketplaceOfferSandbox()">
+              <option value="pass">订阅令牌 100% 绑定 SaaS 租户 ID + 每 30m 幂等上报超额用量零超时丢数 (合规)</option>
+              <option value="block_422">买方云管理员点完接受报价未跳回绑 SaaS 账号成幽灵单 或 Metering API 超 60 分钟死线漏收 $40k (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>官方 100% MACC / AWS EDP 冲抵徽章核验与严禁夹带第三方硬件/外包人头洗云预算门禁
+            <select id="cloudmktp-macc-select" onchange="recalcB2BSaasCloudMarketplaceOfferSandbox()">
+              <option value="pass">SKU 持有生效的 IP Co-Sell / MACC Eligible 认证 + 100% 纯自研软件合规交易 (安全)</option>
+              <option value="block_451">对未获 MACC 徽章的普通链接虚假承诺“可 100% 冲抵云预算”遭客户退单索赔 或 违规塞入硬件洗单 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>商机立项“云购买倾向雷达 (Cloud Propensity)”与 3 年期灵活分期付款计划 (FPS)
+            <select id="cloudmktp-opt-select" onchange="recalcB2BSaasCloudMarketplaceOfferSandbox()">
+              <option value="enabled" selected>首日识别买家存量 MACC/EDP + 套用云市场标准合同省 58% 周期 + 3年 FPS 分期 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统线下直签重审 40 页 MSA 耗时 4 个月 + 单年全额付款 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度云市场滑单与折扣计量损耗池</div>
+            <div class="finops-kpi-val" id="cloudmktp-gross-kpi">$250,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">倾向雷达与 CPPO 底线锁后净耗</div>
+            <div class="finops-kpi-val" id="cloudmktp-net-kpi" style="color:#6ee7b7;">$155,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回滑单 ARR 与渠道毛利</div>
+            <div class="finops-kpi-val" id="cloudmktp-savings-kpi" style="color:#38bdf8;">$95,000</div>
+          </div>
+        </div>
+        <div id="cloudmktp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CLOUD_COMMIT_PROPENSITY_AND_MULTI_YEAR_FPS_OFFER_CONFIRM · Mandate: cloud_mktp_offer_escrow_optim_409
         </div>
       </div>
 
@@ -82626,6 +82786,79 @@ function recalcEcommerceSalesTaxHolidayExemptionSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ACTIVE_SHIP_TO_EXEMPTION_AND_PTC_HOLIDAY_AUTHORIZED · Mandate: sales_tax_exemption_escrow_200';
+}}
+
+function recalcB2BSaasCloudMarketplaceOfferSandbox() {{
+  const grossInput = document.getElementById('cloudmktp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '250000'));
+  const cppoGate = document.getElementById('cloudmktp-cppo-select').value;
+  const meterGate = document.getElementById('cloudmktp-meter-select').value;
+  const maccGate = document.getElementById('cloudmktp-macc-select').value;
+  const optMode = document.getElementById('cloudmktp-opt-select').value;
+
+  const grossKpi = document.getElementById('cloudmktp-gross-kpi');
+  const netKpi = document.getElementById('cloudmktp-net-kpi');
+  const savingsKpi = document.getElementById('cloudmktp-savings-kpi');
+  const statusKpi = document.getElementById('cloudmktp-status-kpi');
+  const banner = document.getElementById('cloudmktp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (maccGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 INELIGIBLE_MACC_EDP_LISTING_OR_PASSTHROUGH_HOLD · Mandate: null';
+    return;
+  }}
+  if (cppoGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CPPO_WHOLESALE_FLOOR_BREACH_OR_UNAUTH_RESELLER · Mandate: null';
+    return;
+  }}
+  if (meterGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 METERING_WINDOW_EXPIRED_OR_ORPHAN_ENTITLEMENT_BLOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CLOUD_COMMIT_PROPENSITY_AND_MULTI_YEAR_FPS_OFFER_CONFIRM · Mandate: cloud_mktp_offer_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_MACC_EDP_PRIVATE_OFFER_AND_TENANT_AUTHORIZED · Mandate: cloud_mktp_offer_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`336` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`337` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -10,7 +10,7 @@
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (48 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (126 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (75 guides)](#b2b-procurement-erp)
-- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (27 guides)](#saas-finops-micropayments)
+- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (28 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (40 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
@@ -319,7 +319,7 @@
 | 75 | **Enterprise B2B Corporate Print, Branded Merch (`Swag`) & `Pantone` Digital-Proof Escrow (`Sendoso / Postal / 4imprint / Printful / Coupa`), `Brand-DAM` Vector Gate, Central Locker Redirect, `FCPA` Gifting Cap & `Swag-on-Demand` Size-Picker (`-37%` Merch Spend) Agent Architecture Selection FAQ** | [English](b2b-corporate-print-branded-merch-swag-pantone-proof-escrow-agent-selection-faq.en.md) · [中文](b2b-corporate-print-branded-merch-swag-pantone-proof-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (27 Guides)
+## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (28 Guides)
 
 > Covers enterprise SaaS seat governance, UUIDv7 usage metering watermarks, FTC Click-to-Cancel & retention guardrails, HTTP 402 (x402 / Stripe MPP Tempo) micropayments, and LLM token FinOps routing.
 
@@ -352,6 +352,7 @@
 | 25 | **Enterprise B2B SaaS Renewal Negotiation, Auto-Renewal `60-Day Opt-Out` Shield & `SSO / SCIM` Seat Right-Sizing Escrow (`Vendr / Tropic / Zylo / Productiv`), `T-95d` Tactical Non-Renewal Notice, `Creator-to-Viewer` Downgrade & Cloud `MACC/EDP` Drawdown (`-34%` SaaS Spend) Agent Architecture Selection FAQ** | [English](b2b-saas-renewal-negotiation-notice-deadline-seat-rightsizing-escrow-agent-selection-faq.en.md) · [中文](b2b-saas-renewal-negotiation-notice-deadline-seat-rightsizing-escrow-agent-selection-faq.md) |
 | 26 | **SaaS & AI App Free-Trial-to-Paid Conversion, Anti-Burner-`BIN` Abuse & `FTC / ARL` Notice Escrow (`Stripe Billing / RevenueCat / Chargebee / Paddle`), `card.fingerprint` Deduplication, Zero-Usage Charge Shield & Reverse-Trial Orchestration (`-36%` Trial Loss) Agent Architecture Selection FAQ** | [English](saas-free-trial-conversion-virtual-card-abuse-ftc-notice-escrow-agent-selection-faq.en.md) · [中文](saas-free-trial-conversion-virtual-card-abuse-ftc-notice-escrow-agent-selection-faq.md) |
 | 27 | **Enterprise B2B SaaS Customer Health, `T-120d` Churn Intervention & `ACV`-Neutral Seat-to-AddOn Swap Escrow (`Gainsight / ChurnZero / Totango / Stripe Billing`), `Sev-1` Outage Upsell Mute, Bulk-Export Migration Radar & Shelfware-to-AI-Token Conversion (`-36%` ARR Churn) Agent Architecture Selection FAQ** | [English](b2b-saas-customer-health-predictive-churn-seat-to-addon-swap-escrow-agent-selection-faq.en.md) · [中文](b2b-saas-customer-health-predictive-churn-seat-to-addon-swap-escrow-agent-selection-faq.md) |
+| 28 | **B2B SaaS Cloud Marketplace Private Offers, `MACC / EDP` Commit Drawdown & `CPPO` Wholesale Escrow (`AWS Marketplace / Microsoft MACC / GCP / Tackle / Clazar`), Net-Proceeds Floor Lock, `ResolveCustomer` Orphan-Subscription Guard & 60-Min Metering `SLA` (`-38%` Deal & Revenue Leakage) Agent Architecture Selection FAQ** | [English](b2b-saas-cloud-marketplace-private-offer-macc-edp-drawdown-cppo-escrow-agent-selection-faq.en.md) · [中文](b2b-saas-cloud-marketplace-private-offer-macc-edp-drawdown-cppo-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (40 Guides)
