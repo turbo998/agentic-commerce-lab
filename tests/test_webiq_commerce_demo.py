@@ -22458,6 +22458,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-rx-eyewear-contact-lens-sandbox", html_zh)
 
+    def test_b2b_cpg_trade_promotion_tpm_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bCpgTradePromotionTpmPolicyInput,
+            evaluate_b2b_cpg_trade_promotion_tpm_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_cpg_trade_promotion_tpm_policy(
+            B2bCpgTradePromotionTpmPolicyInput(
+                quarterly_phantom_display_forward_buy_and_invalid_deduction_pool_usd=200000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_PLANOGRAM_AND_SCAN_REBATE_AUTHORIZED",
+        )
+
+        vision = evaluate_b2b_cpg_trade_promotion_tpm_policy(
+            B2bCpgTradePromotionTpmPolicyInput(
+                phantom_endcap_backroom_stock_or_reused_staging_photo_hash=True
+            )
+        )
+        self.assertEqual(vision["status_code"], 403)
+        self.assertEqual(
+            vision["decision"],
+            "PHANTOM_ENDCAP_OR_REUSED_DISPLAY_PHOTO_BLOCKED",
+        )
+
+        hoard = evaluate_b2b_cpg_trade_promotion_tpm_policy(
+            B2bCpgTradePromotionTpmPolicyInput(
+                uncapped_off_invoice_forward_buying_exceeding_edi852_pos_scans=True
+            )
+        )
+        self.assertEqual(hoard["status_code"], 422)
+        self.assertEqual(
+            hoard["decision"],
+            "FORWARD_BUYING_HOARD_OR_UNVERIFIED_SCAN_BLOCKED",
+        )
+
+        debit = evaluate_b2b_cpg_trade_promotion_tpm_policy(
+            B2bCpgTradePromotionTpmPolicyInput(
+                uncontracted_edi812_invoice_deduction_or_expired_post_audit_claim=True
+            )
+        )
+        self.assertEqual(debit["status_code"], 451)
+        self.assertEqual(
+            debit["decision"],
+            "UNCONTRACTED_EDI812_DEDUCTION_OR_POST_AUDIT_HOLD",
+        )
+
+        optim = evaluate_b2b_cpg_trade_promotion_tpm_policy(
+            B2bCpgTradePromotionTpmPolicyInput(
+                quarterly_phantom_display_forward_buy_and_invalid_deduction_pool_usd=200000.0,
+                trax_shelf_vision_pos_scan_billback_and_edi812_defense_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 70000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 130000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_cpg_trade_promotion_tpm_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-cpg-trade-promotion-tpm-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

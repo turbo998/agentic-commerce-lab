@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg643" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr643" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg643)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr643)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 200 · B2B CPG Trade Promotion Management (TPM), Scan-Based Billback &amp; Shelf-Vision Escrow</text>
+  <text x="48" y="74" class="sub">SAP TPM / Salesforce CG Cloud / Trax / Crisp · Phantom Endcap Vision Lock · EDI 852 Scan-Data Billback · Post-Audit Defense (-35% Spend)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #643 · FAQ #319</text>
+
+  <!-- Lane 1: Phantom Endcap Display & Reused Staging Photo Fraud Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Phantom Endcap &amp; Shelf Vision Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Paying $50k Endcap Fee for Backroom Stock:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Require `Trax / Yoobic` Planogram Vision Score &gt;=85%</text>
+  <text x="54" y="200" class="mono">Verify `Store_Geofence_GPS + Live_Camera_pHash`</text>
+  <text x="44" y="223" class="body-txt">• Zero-Sales Store Velocity Cross-Check:</text>
+  <text x="54" y="243" class="mono">Flag Store if `Inventory &gt; 50` &amp; `POS_Scans == 0`</text>
+  <text x="44" y="266" class="body-txt">• Blocks field reps or retailers from reusing the</text>
+  <text x="54" y="286" class="body-txt">same staged display photo across 40 stores while</text>
+  <text x="54" y="304" class="body-txt">promo stock sits unstocked in the back warehouse</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 PHANTOM_ENDCAP_OR_REUSED_DISPLAY_PHOTO_BLOCKED</text>
+
+  <!-- Lane 2: Off-Invoice Forward-Buying Hoarding & Gray-Market Diversion Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Scan-Based Billback vs. Hoarding (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Wholesalers Hoarding 10,000 Cases at -25%:</text>
+  <text x="442" y="182" class="mono">Replace Uncapped `Off-Invoice` Discount w/ `Scan-Data`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Rebate Paid ONLY on Verified `EDI 852` Register Scans</text>
+  <text x="432" y="223" class="body-txt">• Historical Baseline Volume Cap (`<=1.3x`):</text>
+  <text x="442" y="243" class="mono">Cap Ship-In Promo Allocation to 130% of 12w Baseline</text>
+  <text x="432" y="266" class="body-txt">• Eliminates "Forward Buying" where distributors</text>
+  <text x="442" y="286" class="body-txt">load up on 6 months of discounted promo stock on</text>
+  <text x="442" y="304" class="body-txt">the final day and dump it into unauthorized channels</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 FORWARD_BUYING_HOARD_OR_UNVERIFIED_SCAN_BLOCKED</text>
+
+  <!-- Lane 3: Unauthorized Retailer Post-Audit Deduction (`EDI 812`) Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Post-Audit `EDI 812` Deduction Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Unbacked "Anniversary / Spoilage" Deductions:</text>
+  <text x="830" y="182" class="mono">Match Every `EDI 812` Debit vs. Signed `Deal_Sheet_#`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Reject Third-Party Post-Audit Claims &gt; 12 Months Old</text>
+  <text x="820" y="223" class="body-txt">• Automated Dispute Packet Assembly:</text>
+  <text x="830" y="243" class="body-txt">Compiles signed promotion contract, scan-data</text>
+  <text x="830" y="261" class="body-txt">ledger &amp; circular proof into retailer portal</text>
+  <text x="820" y="284" class="body-txt">• Prevents retail post-audit firms from short-paying</text>
+  <text x="830" y="302" class="body-txt">invoices by 8% with fabricated promo discrepancies</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNCONTRACTED_EDI812_DEDUCTION_OR_POST_AUDIT_HOLD</text>
+
+  <!-- Bottom Incremental Lift Modeling & Scan-Based Trade Settlement Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. `EDI 852` POS Scan-Based Settlement + AI Shelf-Vision Audit &amp; Incremental ROI Optimizer (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Shelf-Vision Compliance</text>
+  <text x="62" y="462" class="body-txt">Verifies endcap display &amp;</text>
+  <text x="62" y="480" class="body-txt">promo price tag on Day 1 of</text>
+  <text x="62" y="498" class="body-txt">campaign via `Trax` vision;</text>
+  <text x="62" y="516" class="mono">+28% Store Execution Compliance</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② POS Scan-Data Billback</text>
+  <text x="337" y="462" class="body-txt">Reimburses retailer strictly</text>
+  <text x="337" y="480" class="body-txt">on units scanned at consumer</text>
+  <text x="337" y="498" class="body-txt">checkout (`EDI 852 / Crisp`);</text>
+  <text x="337" y="516" class="mono">0 Forward-Buy Hoarding Leak</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Baseline vs. Incremental Lift</text>
+  <text x="622" y="462" class="body-txt">Separates pantry-loading</text>
+  <text x="622" y="480" class="body-txt">cannibalization from true</text>
+  <text x="622" y="498" class="body-txt">incremental category volume;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">Cuts Value-Destroying Promos</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Auto EDI 812 Defense</text>
+  <text x="907" y="462" class="body-txt">Reconciles invoice short-pays</text>
+  <text x="907" y="480" class="body-txt">against signed deal sheets</text>
+  <text x="907" y="498" class="body-txt">&amp; claws back invalid debits;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-35% Trade-Spend Leakage Saved</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-35.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Trade-Spend Waste Saved</text>
+  <text x="46" y="642" class="mono">$70,000 Saved / $200k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">&gt;=85% Display</text>
+  <text x="336" y="626" class="kpi-lbl">Vision-Verified Endcap Execution</text>
+  <text x="336" y="642" class="mono">Stops Paying for Backroom Stock</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% Scan-Based</text>
+  <text x="626" y="626" class="kpi-lbl">EDI 852 Register-Scan Settlement</text>
+  <text x="626" y="642" class="mono">Eliminates Forward-Buy Diversion</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 Phantom 812s</text>
+  <text x="916" y="626" class="kpi-lbl">Contract-Matched Deduction Defense</text>
+  <text x="916" y="642" class="mono">Blocks Unauthorized Short-Pays</text>
+</svg>

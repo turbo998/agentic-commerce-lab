@@ -30269,6 +30269,82 @@ def evaluate_ecommerce_rx_eyewear_contact_lens_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bCpgTradePromotionTpmPolicyInput:
+    quarterly_phantom_display_forward_buy_and_invalid_deduction_pool_usd: float = 200000.0
+    phantom_endcap_backroom_stock_or_reused_staging_photo_hash: bool = False
+    uncapped_off_invoice_forward_buying_exceeding_edi852_pos_scans: bool = False
+    uncontracted_edi812_invoice_deduction_or_expired_post_audit_claim: bool = False
+    trax_shelf_vision_pos_scan_billback_and_edi812_defense_ready: bool = False
+
+
+def evaluate_b2b_cpg_trade_promotion_tpm_policy(
+    policy_input: B2bCpgTradePromotionTpmPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_phantom_display_forward_buy_and_invalid_deduction_pool_usd
+        ),
+    )
+    if policy_input.uncontracted_edi812_invoice_deduction_or_expired_post_audit_claim:
+        return {
+            "status_code": 451,
+            "decision": "UNCONTRACTED_EDI812_DEDUCTION_OR_POST_AUDIT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.phantom_endcap_backroom_stock_or_reused_staging_photo_hash:
+        return {
+            "status_code": 403,
+            "decision": "PHANTOM_ENDCAP_OR_REUSED_DISPLAY_PHOTO_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncapped_off_invoice_forward_buying_exceeding_edi852_pos_scans:
+        return {
+            "status_code": 422,
+            "decision": "FORWARD_BUYING_HOARD_OR_UNVERIFIED_SCAN_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.trax_shelf_vision_pos_scan_billback_and_edi812_defense_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SHELF_VISION_POS_SCAN_BILLBACK_AND_EDI812_DEFENSE_CONFIRM",
+            "mandate_token": "cpg_tpm_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_PLANOGRAM_AND_SCAN_REBATE_AUTHORIZED",
+        "mandate_token": "cpg_tpm_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -41388,6 +41464,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_cpg_trade_promotion_tpm_guard = {
+        "authorized_200": evaluate_b2b_cpg_trade_promotion_tpm_policy(
+            B2bCpgTradePromotionTpmPolicyInput()
+        ),
+        "phantom_endcap_or_phash_403": evaluate_b2b_cpg_trade_promotion_tpm_policy(
+            B2bCpgTradePromotionTpmPolicyInput(
+                phantom_endcap_backroom_stock_or_reused_staging_photo_hash=True
+            )
+        ),
+        "forward_buy_hoarding_422": evaluate_b2b_cpg_trade_promotion_tpm_policy(
+            B2bCpgTradePromotionTpmPolicyInput(
+                uncapped_off_invoice_forward_buying_exceeding_edi852_pos_scans=True
+            )
+        ),
+        "unbacked_edi812_debit_451": evaluate_b2b_cpg_trade_promotion_tpm_policy(
+            B2bCpgTradePromotionTpmPolicyInput(
+                uncontracted_edi812_invoice_deduction_or_expired_post_audit_claim=True
+            )
+        ),
+        "shelf_vision_and_scan_409": evaluate_b2b_cpg_trade_promotion_tpm_policy(
+            B2bCpgTradePromotionTpmPolicyInput(
+                trax_shelf_vision_pos_scan_billback_and_edi812_defense_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -41716,6 +41818,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "corporate_travel_hotel_rfp_audit_guard": corporate_travel_hotel_rfp_audit_guard,
         "ecommerce_pre_dispute_rdr_ethoca_guard": ecommerce_pre_dispute_rdr_ethoca_guard,
         "ecommerce_rx_eyewear_contact_lens_guard": ecommerce_rx_eyewear_contact_lens_guard,
+        "b2b_cpg_trade_promotion_tpm_guard": b2b_cpg_trade_promotion_tpm_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -58315,6 +58418,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="rxeyewear-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TELE_OPTOMETRY_AR_PD_AND_LIVE_VISION_BENEFIT_CONFIRM · Mandate: rx_eyewear_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 200 B2B CPG Trade Promotion (TPM), Scan-Based Billback & Shelf-Vision Escrow (#319) -->
+      <div class="finops-box" id="b2b-cpg-trade-promotion-tpm-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🥫 快消品牌与商超渠道促销管理 (TPM: SAP / Trax / Crisp)、端架视觉验真与扫码实销返利沙盒</div>
+            <div class="finops-sub">Round 200 (#319) · 门店端架 Trax 视觉 &gt;=85% 与防跨店假图骗补贴 (HTTP 403) + 收银机 EDI 852 真实扫码返利防经销商囤货窜货 (HTTP 422) + 商超 EDI 812 无合同乱扣款抗辩 (HTTP 451) + 真实增量寻优净省 35% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="cpgtpm-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度幽灵端架堆头费打水漂、经销商 8 折恶意压货窜货与商超 EDI 812 乱扣款池 ($)
+            <input type="number" id="cpgtpm-gross-input" value="200000" min="10000" step="5000" oninput="recalcB2bCpgTradePromotionTpmSandbox()" />
+          </label>
+          <label>门店端架 AI 视觉排面打分 (Trax &gt;=85%)、实时 GPS/pHash 与后仓零扫码锁
+            <select id="cpgtpm-vision-select" onchange="recalcB2bCpgTradePromotionTpmSandbox()">
+              <option value="pass">实时相机 GPS+pHash 唯一 + 端架排面与特价签 &gt;=85% + POS 正常动销 (合规)</option>
+              <option value="block_403">交了 $50k 堆头费货却锁在后仓 0 扫码 或 拿同一张照片改文件名充当 42 家门店验收照 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>收银台 EDI 852 扫码实销后返 (Scan-Based Billback) 与 1.3x 进货配额封顶
+            <select id="cpgtpm-scan-select" onchange="recalcB2bCpgTradePromotionTpmSandbox()">
+              <option value="pass">严格按消费者结账真实扫码量返利 且 经销特价进货锁死在 12周基线 1.3x 内 (合规)</option>
+              <option value="block_422">给无上限出厂立减致经销商最后一天狂囤 8,000 箱(仅 2,900 箱实销)转手黑市窜货 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>商超 EDI 812 短付扣款单对齐已签批电子促销单 (Signed Deal_ID) 门禁
+            <select id="cpgtpm-debit-select" onchange="recalcB2bCpgTradePromotionTpmSandbox()">
+              <option value="pass">每笔扣款 100% 匹配电子 Deal Sheet 编号与实际扫码销量 (安全)</option>
+              <option value="block_451">商超单方面强扣 $28,000 无合同“店庆杂费” 或 事后审计机构追索 2 年前过期旧账 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>真实增量毛利 (Incremental Lift) 预演与 EDI 812 自动组包抗辩追回
+            <select id="cpgtpm-opt-select" onchange="recalcB2bCpgTradePromotionTpmSandbox()">
+              <option value="enabled" selected>Trax 视觉验真 + EDI 852 按实销返利 + 自动驳回无证扣款 (-35% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统按出厂开票直降且人工核对纸质促销扣款单 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度渠道促销浪费与违规扣款池</div>
+            <div class="finops-kpi-val" id="cpgtpm-gross-kpi">$200,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">视觉验真与扫码实销后净支出</div>
+            <div class="finops-kpi-val" id="cpgtpm-net-kpi" style="color:#6ee7b7;">$130,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省幽灵堆头、压货与乱扣款</div>
+            <div class="finops-kpi-val" id="cpgtpm-savings-kpi" style="color:#38bdf8;">$70,000</div>
+          </div>
+        </div>
+        <div id="cpgtpm-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SHELF_VISION_POS_SCAN_BILLBACK_AND_EDI812_DEFENSE_CONFIRM · Mandate: cpg_tpm_escrow_optim_409
         </div>
       </div>
 
@@ -78432,6 +78592,79 @@ function recalcEcommerceRxEyewearContactLensSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_RX_OPTICAL_LAB_DISPATCH_AUTHORIZED · Mandate: rx_eyewear_escrow_200';
+}}
+
+function recalcB2bCpgTradePromotionTpmSandbox() {{
+  const grossInput = document.getElementById('cpgtpm-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '200000'));
+  const visionGate = document.getElementById('cpgtpm-vision-select').value;
+  const scanGate = document.getElementById('cpgtpm-scan-select').value;
+  const debitGate = document.getElementById('cpgtpm-debit-select').value;
+  const optMode = document.getElementById('cpgtpm-opt-select').value;
+
+  const grossKpi = document.getElementById('cpgtpm-gross-kpi');
+  const netKpi = document.getElementById('cpgtpm-net-kpi');
+  const savingsKpi = document.getElementById('cpgtpm-savings-kpi');
+  const statusKpi = document.getElementById('cpgtpm-status-kpi');
+  const banner = document.getElementById('cpgtpm-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (debitGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCONTRACTED_EDI812_DEDUCTION_OR_POST_AUDIT_HOLD · Mandate: null';
+    return;
+  }}
+  if (visionGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PHANTOM_ENDCAP_OR_REUSED_DISPLAY_PHOTO_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (scanGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FORWARD_BUYING_HOARD_OR_UNVERIFIED_SCAN_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SHELF_VISION_POS_SCAN_BILLBACK_AND_EDI812_DEFENSE_CONFIRM · Mandate: cpg_tpm_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_PLANOGRAM_AND_SCAN_REBATE_AUTHORIZED · Mandate: cpg_tpm_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
