@@ -19979,6 +19979,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-referral-marketing-sandbox", html_zh)
 
+    def test_ecommerce_byob_bundle_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceByobBundleEscrowPolicyInput,
+            evaluate_ecommerce_byob_bundle_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_byob_bundle_escrow_policy(
+            EcommerceByobBundleEscrowPolicyInput(
+                quarterly_bundle_margin_bleed_and_oos_pool_usd=100000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "SLOT_LOCKED_AND_ATP_SYNCED_BUNDLE_AUTHORIZED",
+        )
+
+        stuffing = evaluate_ecommerce_byob_bundle_escrow_policy(
+            EcommerceByobBundleEscrowPolicyInput(
+                uncapped_hero_sku_slot_stuffing_exploit=True
+            )
+        )
+        self.assertEqual(stuffing["status_code"], 403)
+        self.assertEqual(
+            stuffing["decision"],
+            "UNCAPPED_HERO_SKU_SLOT_STUFFING_EXPLOIT_BLOCKED",
+        )
+
+        phantom = evaluate_ecommerce_byob_bundle_escrow_policy(
+            EcommerceByobBundleEscrowPolicyInput(
+                phantom_parent_bundle_component_oos_or_double_ship=True
+            )
+        )
+        self.assertEqual(phantom["status_code"], 422)
+        self.assertEqual(
+            phantom["decision"],
+            "PHANTOM_PARENT_BUNDLE_COMPONENT_OOS_OR_DOUBLE_SHIP_BLOCKED",
+        )
+
+        tax = evaluate_ecommerce_byob_bundle_escrow_policy(
+            EcommerceByobBundleEscrowPolicyInput(
+                mixed_vat_hs_bundle_unexpanded_tax_contagion=True
+            )
+        )
+        self.assertEqual(tax["status_code"], 451)
+        self.assertEqual(
+            tax["decision"],
+            "MIXED_VAT_HS_BUNDLE_UNEXPANDED_TAX_CONTAGION_HOLD",
+        )
+
+        optim = evaluate_ecommerce_byob_bundle_escrow_policy(
+            EcommerceByobBundleEscrowPolicyInput(
+                quarterly_bundle_margin_bleed_and_oos_pool_usd=100000.0,
+                cart_transform_expand_and_tier_up_cliff_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 35000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 65000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_byob_bundle_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-byob-bundle-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

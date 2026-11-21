@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg606" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#05101e" />
+    </linearGradient>
+    <linearGradient id="accent606" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a855f7" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg606)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent606)" rx="3" />
+
+  <text x="40" y="58" class="title">自选礼盒套装 (Build-Your-Own-Bundle：Shopify Cart Transform) 防越级套利与原子拆包架构</text>
+  <text x="40" y="80" class="subtitle">Round 163 · 防“任选3件 $99”全挑 3 瓶 $120 贵妇霜亏穿成本、防虚拟套装库存不同步超卖 &amp; 分槽定级净省 35% (SVG 606)</text>
+
+  <!-- Left Card: 3 BYOB Bundle Disasters -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大自选礼盒与虚拟套装黑洞</text>
+  <text x="56" y="164" class="card-title">1. “任选3件 $99”全挑 3 件高价王牌 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 本意是“1瓶 $60 精华 + 1支 $25 洁面 + 1盒 $20 面膜 = $99”</text>
+  <text x="56" y="202" class="body">• 运营配置成“全场护肤分类任选 3 件 $99”且未锁槽位类型</text>
+  <text x="56" y="220" class="warn">• 羊毛党直接选 3 瓶单价 $120 贵妇面霜 (COGS=$135) 卖 $99 血亏!</text>
+
+  <text x="56" y="256" class="card-title">2. 虚拟父 SKU 库存不同步导致超卖卡单 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 旧插件把套装建为一个独立虚拟 SKU (`#BUNDLE-SET`, 库存设 500)</text>
+  <text x="56" y="294" class="body">• 但套装里的子组件“#01号热门口红”早已被单品买家买光断货!</text>
+  <text x="56" y="312" class="warn">• 套装照常收钱却推到 WMS 无法拣货，或把父子单同时传给仓库发两遍!</text>
+
+  <text x="56" y="348" class="card-title">3. 套装再叠全场 8 折码与海关 HS 税率错乱 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 自选套装本身已打 65 折，结账又未排除全场 8 折码变成 52 折</text>
+  <text x="56" y="386" class="body">• 或跨境礼盒内含“化妆品(高税率) + 化妆刷(低税率) + 零食(0%税)”</text>
+  <text x="56" y="404" class="warn">  未展开为子组件各自报税，被按最高档税率整包连坐多征 15% 税!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: UNCAPPED_HERO_SKU_SLOT_STUFFING_EXPLOIT</text>
+  <text x="70" y="502" class="warn">• HTTP 422: PHANTOM_PARENT_BUNDLE_COMPONENT_OOS</text>
+  <text x="70" y="524" class="warn">• HTTP 451: MIXED_VAT_HS_BUNDLE_UNEXPANDED_TAX_SHOCK</text>
+  <text x="70" y="546" class="mono">• HTTP 409:CART_TRANSFORM_EXPAND_AND_TIER_UP_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: SLOT_LOCKED_AND_ATP_SYNCED_BUNDLE_200</text>
+  <text x="70" y="596" class="body">铁律: 套装可用库存必须实时等于 `Min(各子组件可用库存)`!</text>
+
+  <!-- Center Card: 4-Stage BYOB & Cart Transform Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶自选礼盒分槽硬锁与原子拆包架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ef4444" />
+  <text x="450" y="175" class="card-title" fill="#fca5a5">Gate 1: 槽位分角色硬约束 (Hero + Companion Slots) (HTTP 403)</text>
+  <text x="450" y="195" class="body">• 严禁开放无槽位限制的“全场任选 N 件一口价”!</text>
+  <text x="450" y="213" class="body">• 强制设定槽位拓扑: `Slot 1 (主品: 限选1件精华) + Slot 2 (洁面) +`</text>
+  <text x="450" y="231" class="mono">  `Slot 3 (高毛利面膜/配件)` 且校验套装总价 &gt;= Sum(COGS)×1.25 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: Cart Transform 原子展开与子件实时 ATP 锁 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 废除虚假库存的“虚拟父 SKU”! 采用 `Shopify Cart Transform API`</text>
+  <text x="450" y="320" class="body">  前端合并展示为 1 个礼盒，底层 OMS/WMS 原子展开为 3 条真实子组件</text>
+  <text x="450" y="338" class="body">• 套装实时可售数严格等于 `Min(Child_SKU_i_ATP / Qty_i)`</text>
+  <text x="450" y="354" class="mono">• 任一子组件色号/尺码断货或父子行重复下发 WMS -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 混合税率 (Mixed VAT/HS) 逐行拆算与折上折锁 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 英欧/跨境礼盒含不同 VAT 税率子品 (如 0% 咖啡豆 + 20% 马克杯):</text>
+  <text x="450" y="437" class="body">  必须按子件展开分摊净价分别计税 (免除整包按 20% 高税率连坐!)</text>
+  <text x="450" y="455" class="mono">• 未展开混合税率行项或套装再叠大额全场优惠码 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: 动态阶梯升档 (“加 $12 升级 5 件套”) (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 当用户在自选器里挑满 3 件 ($85, 享 85 折) 时，实时弹出:</text>
+  <text x="450" y="546" class="body">  “再加选 1 件 $15 高毛利护手霜升级 4 件礼盒，整套立享 75 折</text>
+  <text x="450" y="566" class="mono">  (实付仅多花 $3.50 即可多拿 1 件正装!)” -&gt; 转化率高达 42%!</text>
+  <text x="450" y="586" class="mono">• 消灭越级薅贵妇霜 + 零子件超卖 + 升档增购 -&gt; 净省 35% 套装损耗</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <text x="856" y="134" class="badge">四大自选套装与 Cart Transform 底座</text>
+  <rect x="846" y="118" width="196" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大自选套装与 Cart Transform 底座</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Shopify Cart Transform API (`expand` / `merge`)</text>
+  <text x="846" y="182" class="body">• 优势: WebAssembly 底层算子，完美解决“买家看是1个套装、</text>
+  <text x="846" y="198" class="body">  仓库拣货看是3个独立子SKU、退货按分摊比例算”的世纪难题</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Skio / Recharge Dynamic Bundles</text>
+  <text x="846" y="244" class="body">• 优势: 支持“每月自选 6 罐不同口味饮料订阅箱 (Box-of-the-Month)”</text>
+  <text x="846" y="260" class="body">• 特性: 某口味断货时提前 72h 自动提示订户一键替换为相似畅销口味</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Fast Bundle / FoxSell (槽位规则引擎)</text>
+  <text x="846" y="306" class="body">• 优势: 原生支持多步骤分槽构建器 (`Step 1 选底妆 -> Step 2 选刷具`)</text>
+  <text x="846" y="322" class="body">• 特性: 限制每个槽位可选 SKU 价格带，100% 防范全挑高价品套利</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Avalara / Vertex 组合商品拆行报税</text>
+  <text x="846" y="368" class="body">• 经验: 对含食品(低税)与非食品(高税)的圣诞礼篮，自动按各子件</text>
+  <text x="846" y="384" class="body">  公允价值拆分计税，合法节税 8%–12% 并通过海关 HS 编码查验</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度自选套装越级薅毛与超卖卡单池 ($100,000)</text>
+  <text x="860" y="456" class="body">• 传统任选池全挑高价款亏本+子件断货超卖: $100,000/季</text>
+  <text x="860" y="476" class="mono">• 分槽角色硬锁 (Hero+Companion) 保住套装毛利: -$18,000</text>
+  <text x="860" y="496" class="mono">• Cart Transform 子件实时 ATP 同步零超卖: -$10,000</text>
+  <text x="860" y="516" class="mono">• 混合税率拆行节税与动态升档凑齐高毛利子件: -$7,000</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净套装损耗: $65,000 (净省 $35,000 / -35%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: byob_bundle_escrow_optim_409</text>
+</svg>

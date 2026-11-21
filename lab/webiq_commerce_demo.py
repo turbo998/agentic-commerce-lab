@@ -27499,6 +27499,79 @@ def evaluate_ecommerce_referral_marketing_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceByobBundleEscrowPolicyInput:
+    quarterly_bundle_margin_bleed_and_oos_pool_usd: float = 100000.0
+    uncapped_hero_sku_slot_stuffing_exploit: bool = False
+    phantom_parent_bundle_component_oos_or_double_ship: bool = False
+    mixed_vat_hs_bundle_unexpanded_tax_contagion: bool = False
+    cart_transform_expand_and_tier_up_cliff_ready: bool = False
+
+
+def evaluate_ecommerce_byob_bundle_escrow_policy(
+    policy_input: EcommerceByobBundleEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_bundle_margin_bleed_and_oos_pool_usd)
+    )
+    if policy_input.mixed_vat_hs_bundle_unexpanded_tax_contagion:
+        return {
+            "status_code": 451,
+            "decision": "MIXED_VAT_HS_BUNDLE_UNEXPANDED_TAX_CONTAGION_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncapped_hero_sku_slot_stuffing_exploit:
+        return {
+            "status_code": 403,
+            "decision": "UNCAPPED_HERO_SKU_SLOT_STUFFING_EXPLOIT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.phantom_parent_bundle_component_oos_or_double_ship:
+        return {
+            "status_code": 422,
+            "decision": "PHANTOM_PARENT_BUNDLE_COMPONENT_OOS_OR_DOUBLE_SHIP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cart_transform_expand_and_tier_up_cliff_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CART_TRANSFORM_EXPAND_AND_TIER_UP_CLIFF_CONFIRM",
+            "mandate_token": "byob_bundle_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "SLOT_LOCKED_AND_ATP_SYNCED_BUNDLE_AUTHORIZED",
+        "mandate_token": "byob_bundle_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -37656,6 +37729,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_byob_bundle_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_byob_bundle_escrow_policy(
+            EcommerceByobBundleEscrowPolicyInput()
+        ),
+        "uncapped_hero_slot_stuffing_403": evaluate_ecommerce_byob_bundle_escrow_policy(
+            EcommerceByobBundleEscrowPolicyInput(
+                uncapped_hero_sku_slot_stuffing_exploit=True
+            )
+        ),
+        "phantom_parent_oos_or_double_422": evaluate_ecommerce_byob_bundle_escrow_policy(
+            EcommerceByobBundleEscrowPolicyInput(
+                phantom_parent_bundle_component_oos_or_double_ship=True
+            )
+        ),
+        "mixed_vat_unexpanded_tax_451": evaluate_ecommerce_byob_bundle_escrow_policy(
+            EcommerceByobBundleEscrowPolicyInput(
+                mixed_vat_hs_bundle_unexpanded_tax_contagion=True
+            )
+        ),
+        "cart_transform_and_tier_up_409": evaluate_ecommerce_byob_bundle_escrow_policy(
+            EcommerceByobBundleEscrowPolicyInput(
+                cart_transform_expand_and_tier_up_cliff_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -37947,6 +38046,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_post_purchase_upsell_guard": ecommerce_post_purchase_upsell_guard,
         "brand_recommerce_dpp_escrow_guard": brand_recommerce_dpp_escrow_guard,
         "ecommerce_referral_marketing_guard": ecommerce_referral_marketing_guard,
+        "ecommerce_byob_bundle_escrow_guard": ecommerce_byob_bundle_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -52437,6 +52537,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="referral-mkt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SHARE_BY_NAME_PRIVATE_LINK_AND_AOV_THRESHOLD_CONFIRM · Mandate: referral_anti_gaming_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 163 E-Commerce Build-Your-Own-Bundle (BYOB) & Cart Transform Escrow -->
+      <div class="finops-box" id="ecommerce-byob-bundle-escrow-sandbox" style="margin-top:12px;border-color:#a855f7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎁 自选礼盒套装 (Build-Your-Own-Bundle：Shopify Cart Transform) 防越级套利与原子拆包托管沙盒</div>
+            <div class="finops-sub">Round 163 · 分槽角色硬锁 (Hero+Companion, HTTP 403) + Cart Transform 原子展开与子件 ATP 锁 (HTTP 422) + 混合税率拆行 (HTTP 451) + 升档净省 35% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="byob-bundle-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度自选套装越级薅毛与超卖卡单池 ($)
+            <input type="number" id="byob-bundle-gross-input" value="100000" min="10000" step="5000" oninput="recalcEcommerceByobBundleSandbox()" />
+          </label>
+          <label>分槽位角色锁 (Hero Slot &lt;= 1 + COGS 底线)
+            <select id="byob-bundle-slot-select" onchange="recalcEcommerceByobBundleSandbox()">
+              <option value="pass">Slot 1 限选 1 件精华 + Slot 2/3 搭配洁面/面膜 (合规)</option>
+              <option value="block_403">“任选3件 $99”全挑 3 瓶单价 $120 贵妇眼霜血亏 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>Cart Transform 原子展开与子件实时 ATP
+            <select id="byob-bundle-atp-select" onchange="recalcEcommerceByobBundleSandbox()">
+              <option value="pass">绑定 Min(Child_ATP) + 底层展开为分摊真实子 SKU (合规)</option>
+              <option value="block_422">子组件口红已断货仍凭虚拟父 SKU 超卖或发双倍货 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>混合增值税/海关编码 (Mixed VAT/HS) 拆行
+            <select id="byob-bundle-tax-select" onchange="recalcEcommerceByobBundleSandbox()">
+              <option value="pass">按展开子组件各自适用 0%/20% 税率且屏蔽外部全场券 (安全)</option>
+              <option value="block_451">含 0% 税食品礼篮未拆行被整包按 20% 高税率连坐征税 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>动态阶梯悬崖升档 (“多付 $2 多拿 1 件”)
+            <select id="byob-bundle-opt-select" onchange="recalcEcommerceByobBundleSandbox()">
+              <option value="enabled" selected>加选第 4 件高毛利润唇膏升享 75 折 + 订阅断货口味自动顺延 (-35% 损耗 / HTTP 409)</option>
+              <option value="disabled">静态无升档引导且订阅子件缺货整箱卡死停发 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度自选套装损耗与超卖总池</div>
+            <div class="finops-kpi-val" id="byob-bundle-gross-kpi">$100,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">分槽锁与原子拆包后净损耗</div>
+            <div class="finops-kpi-val" id="byob-bundle-net-kpi" style="color:#6ee7b7;">$65,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省越级套利与卡单重发</div>
+            <div class="finops-kpi-val" id="byob-bundle-savings-kpi" style="color:#38bdf8;">$35,000</div>
+          </div>
+        </div>
+        <div id="byob-bundle-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CART_TRANSFORM_EXPAND_AND_TIER_UP_CLIFF_CONFIRM · Mandate: byob_bundle_escrow_optim_409
         </div>
       </div>
 
@@ -69853,6 +70010,79 @@ function recalcEcommerceReferralMarketingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_NET_NEW_FRIEND_REFERRAL_AUTHORIZED · Mandate: referral_anti_gaming_200';
+}}
+
+function recalcEcommerceByobBundleSandbox() {{
+  const grossInput = document.getElementById('byob-bundle-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '100000'));
+  const slotGate = document.getElementById('byob-bundle-slot-select').value;
+  const atpGate = document.getElementById('byob-bundle-atp-select').value;
+  const taxGate = document.getElementById('byob-bundle-tax-select').value;
+  const optMode = document.getElementById('byob-bundle-opt-select').value;
+
+  const grossKpi = document.getElementById('byob-bundle-gross-kpi');
+  const netKpi = document.getElementById('byob-bundle-net-kpi');
+  const savingsKpi = document.getElementById('byob-bundle-savings-kpi');
+  const statusKpi = document.getElementById('byob-bundle-status-kpi');
+  const banner = document.getElementById('byob-bundle-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (taxGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MIXED_VAT_HS_BUNDLE_UNEXPANDED_TAX_CONTAGION_HOLD · Mandate: null';
+    return;
+  }}
+  if (slotGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNCAPPED_HERO_SKU_SLOT_STUFFING_EXPLOIT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (atpGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PHANTOM_PARENT_BUNDLE_COMPONENT_OOS_OR_DOUBLE_SHIP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CART_TRANSFORM_EXPAND_AND_TIER_UP_CLIFF_CONFIRM · Mandate: byob_bundle_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 SLOT_LOCKED_AND_ATP_SYNCED_BUNDLE_AUTHORIZED · Mandate: byob_bundle_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
