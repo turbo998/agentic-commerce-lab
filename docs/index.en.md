@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`347` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`348` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (20 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (49 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (132 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (77 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (78 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (29 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (40 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -243,7 +243,7 @@
 | 132 | **Social Group-Buying, Community Grocery (`Tuanzhang`) & Tiered-Drop Escrow (`Pinduoduo / Community Group Buy / Kickstarter / Shopify GroupBuy`), Anti-Fake-Cohort `PAR` Lock, Lowest-Tier Partial Capture, Station `BLE` Cold-Box Gate & `T-30m` Open-Pool Auto-Match (`-37%` Group-Buy Loss) Agent Architecture Selection FAQ** | [English](ecommerce-social-group-buying-community-leader-cold-chain-tiered-rebate-escrow-agent-selection-faq.en.md) · [中文](ecommerce-social-group-buying-community-leader-cold-chain-tiered-rebate-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (77 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (78 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -326,6 +326,7 @@
 | 75 | **Enterprise B2B Corporate Print, Branded Merch (`Swag`) & `Pantone` Digital-Proof Escrow (`Sendoso / Postal / 4imprint / Printful / Coupa`), `Brand-DAM` Vector Gate, Central Locker Redirect, `FCPA` Gifting Cap & `Swag-on-Demand` Size-Picker (`-37%` Merch Spend) Agent Architecture Selection FAQ** | [English](b2b-corporate-print-branded-merch-swag-pantone-proof-escrow-agent-selection-faq.en.md) · [中文](b2b-corporate-print-branded-merch-swag-pantone-proof-escrow-agent-selection-faq.md) |
 | 76 | **Enterprise B2B Deliverable-Based `SOW` & Services Procurement Escrow (`SAP Fieldglass / Beeline / Coupa SOW / Workday`), Key-Personnel & Cross-`SOW` Double-Billing Lock, `SAP ML81N SES` Artifact Gate, Co-Employment Shield & `10%` Warranty Retainage (`-36%` Consulting Spend) Agent Architecture Selection FAQ** | [English](b2b-sow-services-procurement-milestone-deliverable-retainage-escrow-agent-selection-faq.en.md) · [中文](b2b-sow-services-procurement-milestone-deliverable-retainage-escrow-agent-selection-faq.md) |
 | 77 | **Enterprise B2B Returnable Transport Packaging (`RTP`), Reusable Produce Crates (`RPC`) & Pallet-Pool Escrow (`CHEP / IFCO / EPAL / SAP LEIH`), Dock `GRAI-96 RFID` Swap Lock, Instant `EDI 856` Off-Hire Rent Cutoff, `ISPM-15` Phytosanitary Gate & Backhaul Sweep (`-35%` Packaging Loss) Agent Architecture Selection FAQ** | [English](b2b-returnable-transport-packaging-rtp-pallet-pool-deposit-demurrage-escrow-agent-selection-faq.en.md) · [中文](b2b-returnable-transport-packaging-rtp-pallet-pool-deposit-demurrage-escrow-agent-selection-faq.md) |
+| 78 | **Enterprise B2B Custom Supplier Tooling, Mold Amortization & `PPAP` Bailment Escrow (`SAP FI-AA / Ariba / Coupa / PLM`), Split-`PIR` `ZTOO` Amortization Auto-Shutoff (`100k` Cap), `30/40/30` `PPAP Level-3` (`Cpk >= 1.33`) Gate, Riveted Asset-Plate `UCC-1` Bailment Lock & `80%` Shot-Life Alert (`-36%` Tooling Spend) Agent Architecture Selection FAQ** | [English](b2b-supplier-tooling-mold-amortization-ppap-bailment-escrow-agent-selection-faq.en.md) · [中文](b2b-supplier-tooling-mold-amortization-ppap-bailment-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (29 Guides)

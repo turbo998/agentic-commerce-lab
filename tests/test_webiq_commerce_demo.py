@@ -24401,6 +24401,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-social-group-buying-community-sandbox", html_zh)
 
+    def test_b2b_supplier_tooling_mold_amortization_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BSupplierToolingMoldAmortizationPolicyInput,
+            evaluate_b2b_supplier_tooling_mold_amortization_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_supplier_tooling_mold_amortization_policy(
+            B2BSupplierToolingMoldAmortizationPolicyInput(
+                quarterly_zombie_amortization_premature_pay_and_hostage_mold_pool_usd=260000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_PPAP_BAILMENT_AND_BOUNDED_AMORTIZATION_AUTHORIZED",
+        )
+
+        amort = evaluate_b2b_supplier_tooling_mold_amortization_policy(
+            B2BSupplierToolingMoldAmortizationPolicyInput(
+                charging_amortization_after_cap_or_unauthorized_shadow_run=True
+            )
+        )
+        self.assertEqual(amort["status_code"], 403)
+        self.assertEqual(
+            amort["decision"],
+            "ZOMBIE_TOOLING_AMORTIZATION_OR_SHADOW_RUN_BLOCKED",
+        )
+
+        ppap = evaluate_b2b_supplier_tooling_mold_amortization_policy(
+            B2BSupplierToolingMoldAmortizationPolicyInput(
+                releasing_final_30pct_before_ppap_cpk133_or_soft_steel_swap=True
+            )
+        )
+        self.assertEqual(ppap["status_code"], 422)
+        self.assertEqual(
+            ppap["decision"],
+            "UNAPPROVED_PPAP_PSW_OR_SOFT_STEEL_DOWNGRADE_BLOCK",
+        )
+
+        bailment = evaluate_b2b_supplier_tooling_mold_amortization_policy(
+            B2BSupplierToolingMoldAmortizationPolicyInput(
+                missing_riveted_buyer_asset_plate_ucc1_bailment_or_lien_waiver=True
+            )
+        )
+        self.assertEqual(bailment["status_code"], 451)
+        self.assertEqual(
+            bailment["decision"],
+            "MISSING_BAILMENT_ASSET_PLATE_OR_MOLD_LIEN_HOLD",
+        )
+
+        optim = evaluate_b2b_supplier_tooling_mold_amortization_policy(
+            B2BSupplierToolingMoldAmortizationPolicyInput(
+                quarterly_zombie_amortization_premature_pay_and_hostage_mold_pool_usd=260000.0,
+                split_pir_ztoo_auto_shutoff_and_80pct_shot_life_escrow_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 93600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 166400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_supplier_tooling_mold_amortization_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-supplier-tooling-mold-amortization-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

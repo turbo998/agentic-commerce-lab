@@ -32473,6 +32473,82 @@ def evaluate_ecommerce_social_group_buying_community_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BSupplierToolingMoldAmortizationPolicyInput:
+    quarterly_zombie_amortization_premature_pay_and_hostage_mold_pool_usd: float = 260000.0
+    charging_amortization_after_cap_or_unauthorized_shadow_run: bool = False
+    releasing_final_30pct_before_ppap_cpk133_or_soft_steel_swap: bool = False
+    missing_riveted_buyer_asset_plate_ucc1_bailment_or_lien_waiver: bool = False
+    split_pir_ztoo_auto_shutoff_and_80pct_shot_life_escrow_ready: bool = False
+
+
+def evaluate_b2b_supplier_tooling_mold_amortization_policy(
+    policy_input: B2BSupplierToolingMoldAmortizationPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_zombie_amortization_premature_pay_and_hostage_mold_pool_usd
+        ),
+    )
+    if policy_input.missing_riveted_buyer_asset_plate_ucc1_bailment_or_lien_waiver:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_BAILMENT_ASSET_PLATE_OR_MOLD_LIEN_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.charging_amortization_after_cap_or_unauthorized_shadow_run:
+        return {
+            "status_code": 403,
+            "decision": "ZOMBIE_TOOLING_AMORTIZATION_OR_SHADOW_RUN_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.releasing_final_30pct_before_ppap_cpk133_or_soft_steel_swap:
+        return {
+            "status_code": 422,
+            "decision": "UNAPPROVED_PPAP_PSW_OR_SOFT_STEEL_DOWNGRADE_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.split_pir_ztoo_auto_shutoff_and_80pct_shot_life_escrow_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SPLIT_PIR_AMORTIZATION_SHUTOFF_AND_BAILMENT_CONFIRM",
+            "mandate_token": "b2b_tooling_mold_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_PPAP_BAILMENT_AND_BOUNDED_AMORTIZATION_AUTHORIZED",
+        "mandate_token": "b2b_tooling_mold_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -44346,6 +44422,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_supplier_tooling_mold_amortization_guard = {
+        "authorized_200": evaluate_b2b_supplier_tooling_mold_amortization_policy(
+            B2BSupplierToolingMoldAmortizationPolicyInput()
+        ),
+        "zombie_amort_or_shadow_403": evaluate_b2b_supplier_tooling_mold_amortization_policy(
+            B2BSupplierToolingMoldAmortizationPolicyInput(
+                charging_amortization_after_cap_or_unauthorized_shadow_run=True
+            )
+        ),
+        "no_ppap_or_soft_steel_422": evaluate_b2b_supplier_tooling_mold_amortization_policy(
+            B2BSupplierToolingMoldAmortizationPolicyInput(
+                releasing_final_30pct_before_ppap_cpk133_or_soft_steel_swap=True
+            )
+        ),
+        "no_plate_or_lien_451": evaluate_b2b_supplier_tooling_mold_amortization_policy(
+            B2BSupplierToolingMoldAmortizationPolicyInput(
+                missing_riveted_buyer_asset_plate_ucc1_bailment_or_lien_waiver=True
+            )
+        ),
+        "split_pir_and_shot_life_409": evaluate_b2b_supplier_tooling_mold_amortization_policy(
+            B2BSupplierToolingMoldAmortizationPolicyInput(
+                split_pir_ztoo_auto_shutoff_and_80pct_shot_life_escrow_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -44703,6 +44805,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_apparel_gear_rental_guard": ecommerce_apparel_gear_rental_guard,
         "edtech_exam_voucher_pass_guarantee_guard": edtech_exam_voucher_pass_guarantee_guard,
         "ecommerce_social_group_buying_community_guard": ecommerce_social_group_buying_community_guard,
+        "b2b_supplier_tooling_mold_amortization_guard": b2b_supplier_tooling_mold_amortization_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -62955,6 +63058,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="socialgroup-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 OPEN_POOL_AUTO_MATCH_AND_LOWEST_TIER_CAPTURE_CONFIRM · Mandate: social_group_buy_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 229 B2B Supplier Tooling, Mold Amortization & PPAP Bailment Escrow (#348) -->
+      <div class="finops-box" id="b2b-supplier-tooling-mold-amortization-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔩 企业 B2B 定制开模、专用工装模具与按件摊销结算 (SAP FI-AA / Ariba / Coupa / PPAP) 沙盒</div>
+            <div class="finops-sub">Round 229 (#348) · SAP PIR 拆分 ZTOO 模具摊销条件满 100,000 件自动清零与模次防夜班私印 (HTTP 403) + 30/40/30 尾款硬锁 PPAP Level-3 (Cpk&gt;=1.33) 与 H13/S136 钢材证明 (HTTP 422) + 机身铆接买方资产铭牌、二级厂弃权函与 UCC-1 登记 (HTTP 451) + 3D 图纸入库与 80% 寿命开二模净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="toolingmold-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度满 10万件后未降价继续付 $1.80/件僵尸模具摊销费、未过 PPAP 提前付清尾款修模与供应商扣模敲诈损耗池 ($)
+            <input type="number" id="toolingmold-gross-input" value="260000" min="10000" step="5000" oninput="recalcB2BSupplierToolingMoldAmortizationSandbox()" />
+          </label>
+          <label>SAP PIR 拆分模具摊销附加条件 (ZTOO) 满额自动清零锁与模具 IoT 模次防夜班盗印门禁
+            <select id="toolingmold-amort-select" onchange="recalcB2BSupplierToolingMoldAmortizationSandbox()">
+              <option value="pass">零件净价 $4.20 与摊销费 ZTOO $1.80 独立建档，满 10万件自动降至 $4.20 + 模次匹配 PO 量 (合规)</option>
+              <option value="block_403">$180k 模具早在第 10万件回本后代工厂仍继续在第 11-25万件多收 $1.80/件 或 夜班偷拿私模打山寨货 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>30/40/30 里程碑尾款强绑定 PPAP Level-3 量产签字 (Cpk&gt;=1.33) 与 H13/S136 淬火模具钢材质书
+            <select id="toolingmold-ppap-select" onchange="recalcB2BSupplierToolingMoldAmortizationSandbox()">
+              <option value="pass">连续 300件量产节拍 Cpk=1.45&gt;=1.33 签发 PPAP PSW + S136 钢材原厂炉号硬度报告核验通过 (合规)</option>
+              <option value="block_422">仅凭 5件手工砂纸打磨的 T1 首样就要求释放最后 30% 尾款 或 将 S136 长寿命钢偷换为廉价 P20 软钢 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>模具机身铆接“Property of Buyer”金属铭牌照、二级模具厂无留置权豁免函与 UCC-1 Bailment 物权备案
+            <select id="toolingmold-bailment-select" onchange="recalcB2BSupplierToolingMoldAmortizationSandbox()">
+              <option value="pass">机身永久铆接买方资产铭牌 + 二级模具厂签署放弃留置权声明 + UCC-1 借用物权已备案 (安全)</option>
+              <option value="block_451">模具未钉买方物权铭牌、未签二级厂弃权函或未做 UCC-1 备案致转厂被扣模敲诈/破产被查封 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>完整 3D 模具 STEP 图纸入 PLM 保险箱、进口报关 Assist 自动下调与 80% 保证寿命提前开二模预警
+            <select id="toolingmold-opt-select" onchange="recalcB2BSupplierToolingMoldAmortizationSandbox()">
+              <option value="enabled" selected>ZTOO 满额自动断流 + 报关 Assist 同步下调 + 3D 图纸托管 + 80% 模次寿命提前开二模 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统人工 Excel 记模具摊销进度 + 模具坏了才临时停线开新模 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度僵尸摊销与扣模返工损耗池</div>
+            <div class="finops-kpi-val" id="toolingmold-gross-kpi">$260,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">自动断摊与 PPAP 锁定后净损耗</div>
+            <div class="finops-kpi-val" id="toolingmold-net-kpi" style="color:#6ee7b7;">$166,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省超额摊销与停线赎模费</div>
+            <div class="finops-kpi-val" id="toolingmold-savings-kpi" style="color:#38bdf8;">$93,600</div>
+          </div>
+        </div>
+        <div id="toolingmold-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SPLIT_PIR_AMORTIZATION_SHUTOFF_AND_BAILMENT_CONFIRM · Mandate: b2b_tooling_mold_escrow_optim_409
         </div>
       </div>
 
@@ -85189,6 +85349,79 @@ function recalcEcommerceSocialGroupBuyingCommunitySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_COHORT_QUORUM_AND_COLD_STATION_AUTHORIZED · Mandate: social_group_buy_escrow_200';
+}}
+
+function recalcB2BSupplierToolingMoldAmortizationSandbox() {{
+  const grossInput = document.getElementById('toolingmold-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '260000'));
+  const amortGate = document.getElementById('toolingmold-amort-select').value;
+  const ppapGate = document.getElementById('toolingmold-ppap-select').value;
+  const bailmentGate = document.getElementById('toolingmold-bailment-select').value;
+  const optMode = document.getElementById('toolingmold-opt-select').value;
+
+  const grossKpi = document.getElementById('toolingmold-gross-kpi');
+  const netKpi = document.getElementById('toolingmold-net-kpi');
+  const savingsKpi = document.getElementById('toolingmold-savings-kpi');
+  const statusKpi = document.getElementById('toolingmold-status-kpi');
+  const banner = document.getElementById('toolingmold-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (bailmentGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_BAILMENT_ASSET_PLATE_OR_MOLD_LIEN_HOLD · Mandate: null';
+    return;
+  }}
+  if (amortGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ZOMBIE_TOOLING_AMORTIZATION_OR_SHADOW_RUN_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (ppapGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNAPPROVED_PPAP_PSW_OR_SOFT_STEEL_DOWNGRADE_BLOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SPLIT_PIR_AMORTIZATION_SHUTOFF_AND_BAILMENT_CONFIRM · Mandate: b2b_tooling_mold_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_PPAP_BAILMENT_AND_BOUNDED_AMORTIZATION_AUTHORIZED · Mandate: b2b_tooling_mold_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

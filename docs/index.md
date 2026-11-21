@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`347` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`348` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（20 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（49 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（132 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（77 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（78 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（29 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（40 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -243,7 +243,7 @@
 | 132 | **社交拼团、社区生鲜团购与阶梯众筹集采（Social Group-Buying & Community Grocery：拼多多 / 兴盛优选 / 美团优选 / Kickstarter / Shopify GroupBuy）、防“二道贩子开 9 个假小号凑满 10 人团拿 5 折批发价后秒退 9 单（Cancel-All-But-One Exploit）”、防“早鸟参团客见满 500 人降价 $35 集体退单重拍”与社区团长自提点冷链托管“防无冰柜团长把和牛冰淇淋扔 35°C 门口化冻变质与临期 30 分钟公海自动凑团净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-social-group-buying-community-leader-cold-chain-tiered-rebate-escrow-agent-selection-faq.md) · [English](ecommerce-social-group-buying-community-leader-cold-chain-tiered-rebate-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（77 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（78 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -326,6 +326,7 @@
 | 75 | **企业 B2B 定制印刷、展会周边与品牌礼盒集中采购（Corporate Print, Branded Swag & Gifting Procurement：Sendoso / Postal / 4imprint / Printful / Coupa）、品牌资产库（`DAM`）矢量图与潘通色号（`Pantone PMS`）印前校验、跨部门拼单凑阶梯价与按需一件代发托管“防拿模糊网页截图印废 5,000 件文化衫、防各部门小批量贵 3 倍重复野采与防展会闭幕了礼盒才寄到会场净省 37%”Agent 架构选型 FAQ** | [中文](b2b-corporate-print-branded-merch-swag-pantone-proof-escrow-agent-selection-faq.md) · [English](b2b-corporate-print-branded-merch-swag-pantone-proof-escrow-agent-selection-faq.en.md) |
 | 76 | **企业 B2B 软件外包、管理咨询与专业服务工作说明书采购（Deliverable-Based `SOW` & Services Procurement：SAP Fieldglass / Beeline / Coupa SOW / Workday）、防“投标时挂名 $350/小时金牌合伙人、进场全换成大四实习生（Bait-and-Switch Staffing）”、防“预算烧光 90% 活只干了 35% 逼甲方加钱签变更单”与 `10%` 质保尾款留置金（`Retainage`）托管“防同一顾问在 3 个项目里每天报 24 小时假工时、防结项未收回生产库权限与按验收物生成 `SAP SES` 净省 36%”Agent 架构选型 FAQ** | [中文](b2b-sow-services-procurement-milestone-deliverable-retainage-escrow-agent-selection-faq.md) · [English](b2b-sow-services-procurement-milestone-deliverable-retainage-escrow-agent-selection-faq.en.md) |
 | 77 | **企业 B2B 可循环物流包装、周转折叠筐与共享托盘池结算（Returnable Transport Packaging `RTP` & Pallet Pool：CHEP 集保 / IFCO / EPAL 欧标托盘 / 招商路凯 / `SAP LEIH`）、防“送货司机卸下 22 块蓝托盘却顺手拉走 30 块空托盘（Dock Over-Pickup）”、防“货早发给商超了托盘公司还在收供应商每日滞留租金”与 `ISPM-15` 跨境熏蒸检疫托管“防拿 $5 烂白木托盘顶替 $38 欧标托盘与返程顺路带回空筐净省 35%”Agent 架构选型 FAQ** | [中文](b2b-returnable-transport-packaging-rtp-pallet-pool-deposit-demurrage-escrow-agent-selection-faq.md) · [English](b2b-returnable-transport-packaging-rtp-pallet-pool-deposit-demurrage-escrow-agent-selection-faq.en.md) |
+| 78 | **企业 B2B 定制开模、专用工装模具与按件摊销结算（Supplier Tooling, Molds & Amortization Escrow：`SAP FI-AA / Ariba / Coupa / PPAP`）、防“$180,000 模具费早在第 10 万件就摊销回本了，代工厂却装糊涂继续在第 11–25 万件上每件多收 $1.80（僵尸摊销费 Zombie Amortization）”、防“代工厂偷拿品牌方私模夜班生产山寨货倒卖”与 `UCC-1` 模具借用物权铭牌托管“防未过 `PPAP` 量产验收就付清模具尾款与防供应商破产扣押模具敲诈净省 36%”Agent 架构选型 FAQ** | [中文](b2b-supplier-tooling-mold-amortization-ppap-bailment-escrow-agent-selection-faq.md) · [English](b2b-supplier-tooling-mold-amortization-ppap-bailment-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（29 篇）

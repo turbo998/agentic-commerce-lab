@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg672" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <linearGradient id="hdr672" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </style>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg672)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 229 · B2B Custom Tooling, Mold Amortization Cap &amp; `PPAP` Bailment Escrow</text>
+  <text x="48" y="74" class="sub">SAP FI-AA / Ariba / Coupa · Amortization Auto-Shutoff (`100k Units`) · `PPAP Level 3` Final-Pay Gate · `UCC-1` Bailment (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #672 · FAQ #348</text>
+
+  <!-- Lane 1: Zombie Tooling Amortization Overcharge ("Paid Off $180k Mold Twice!") Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Amortization Auto-Shutoff (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Paying $1.80/Unit Surcharge After Payoff:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">If `Cumulative_GR_Qty &gt;= 100,000_Amortized_Cap`:</text>
+  <text x="54" y="200" class="mono">Auto-Step-Down `SAP PIR` Piece Price by `-$1.80`!</text>
+  <text x="44" y="223" class="body-txt">• Stops Unauthorized Night-Shift Shadow Production:</text>
+  <text x="54" y="243" class="mono">Block Cycle Count &gt; `Authorized_PO_Qty × Cavities`</text>
+  <text x="44" y="266" class="body-txt">• Eliminates "Zombie Amortization" where suppliers</text>
+  <text x="54" y="286" class="body-txt">keep charging the $1.80/unit mold-recovery adder</text>
+  <text x="54" y="304" class="body-txt">on units 100,001 to 250,000 ($270k overpayment!)</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 ZOMBIE_TOOLING_AMORTIZATION_OR_SHADOW_RUN_BLOCKED</text>
+
+  <!-- Lane 2: Releasing Final 30% Tooling Balance Before PPAP Level-3 / Cpk>=1.33 Sign-Off Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. `30/40/30 PPAP` Milestone Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Paying 100% Before Mass-Production Proof:</text>
+  <text x="442" y="182" class="mono">30% Design + 40% T1 First-Article + 30% `PPAP PSW`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Require `Signed_PSW_Level3` &amp; `Cpk &gt;= 1.33`!</text>
+  <text x="432" y="223" class="body-txt">• Verified Tooling Steel Grade (`H13 / S136`) Gate:</text>
+  <text x="442" y="243" class="mono">Block Soft P20 Steel Substitution on Class-101 Mold</text>
+  <text x="432" y="266" class="body-txt">• Prevents contract manufacturers collecting 100%</text>
+  <text x="442" y="286" class="body-txt">of tooling cash on hand-polished T1 samples that</text>
+  <text x="442" y="304" class="body-txt">fail dimensional tolerances at full press speed</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNAPPROVED_PPAP_PSW_OR_SOFT_STEEL_DOWNGRADE_BLOCK</text>
+
+  <!-- Lane 3: Supplier Bankruptcy Tooling Hostage ("Mold Lien") & UCC-1 Bailment Plate Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `UCC-1` Bailment &amp; Asset Plate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Protects Buyer-Owned Mold From Supplier Bankruptcy:</text>
+  <text x="830" y="182" class="mono">Require Riveted `Property of [Buyer] Asset Plate`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">+ Filed `UCC-1 Tooling Bailment` + Lien Waiver!</text>
+  <text x="820" y="223" class="body-txt">• Blocks Mold-Maker Artisan Lien Hostage Crisis:</text>
+  <text x="830" y="243" class="body-txt">Requires Tier-2 sub-tier mold shop lien release</text>
+  <text x="830" y="261" class="body-txt">before releasing final tooling payout to Tier-1 CM</text>
+  <text x="820" y="284" class="body-txt">• Ensures instant legal replevin right to pull</text>
+  <text x="830" y="302" class="body-txt">your molds out if the supplier becomes insolvent</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 MISSING_BAILMENT_ASSET_PLATE_OR_MOLD_LIEN_HOLD</text>
+
+  <!-- Bottom Dual-Line SAP PIR (Piece Price + Amortized Adder) & Refurbishment Reserve -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Separate-Condition `SAP PIR` Amortization Counter + `80%` Shot-Life Refurb Trigger (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Split `SAP PIR` Condition</text>
+  <text x="62" y="462" class="body-txt">Separates `$4.20` part price</text>
+  <text x="62" y="480" class="body-txt">from `$1.80` `ZTOO` tooling</text>
+  <text x="62" y="498" class="body-txt">adder; auto-expires `ZTOO`</text>
+  <text x="62" y="516" class="mono">at Unit #100,000 ($0 Overpay!)</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Customs Duty Valuation</text>
+  <text x="337" y="462" class="body-txt">Properly declares foreign</text>
+  <text x="337" y="480" class="body-txt">tooling "Assist" on first</text>
+  <text x="337" y="498" class="body-txt">100k units only, then drops</text>
+  <text x="337" y="516" class="mono">dutiable value by -$1.80/unit</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ 80% Shot-Life Lead Alert</text>
+  <text x="622" y="462" class="body-txt">Alerts sourcing at 400k of</text>
+  <text x="622" y="480" class="body-txt">500k guaranteed shots to</text>
+  <text x="622" y="498" class="body-txt">kick off replacement tool;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">0 Line-Stop Tooling Failures</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ 3D CAD Vault Escrow</text>
+  <text x="907" y="462" class="body-txt">Escrows native 3D mold</text>
+  <text x="907" y="480" class="body-txt">`STEP/IGES` drawings so</text>
+  <text x="907" y="498" class="body-txt">buyer can dual-source fast;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Tooling &amp; Piece Overpay</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Tooling &amp; Overpay Saved</text>
+  <text x="46" y="642" class="mono">$93,600 Saved / $260k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">$0 Zombie Fee</text>
+  <text x="336" y="626" class="kpi-lbl">Auto-Shutoff of `ZTOO` Adder at Cap</text>
+  <text x="336" y="642" class="mono">Never Pay Off a Mold Twice</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% PPAP PSW</text>
+  <text x="626" y="626" class="kpi-lbl">30% Final Pay Locked on Cpk &gt;=1.33</text>
+  <text x="626" y="642" class="mono">Verified H13/S136 Tool Steel</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">100% Title</text>
+  <text x="916" y="626" class="kpi-lbl">Riveted Asset Plate + UCC-1 Bailment</text>
+  <text x="916" y="642" class="mono">Zero Hostage Mold Shakedowns</text>
+</svg>
