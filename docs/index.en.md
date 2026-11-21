@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`240` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`241` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (11 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (39 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (79 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (80 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (60 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (21 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (30 guides)](#tax-fx-privacy-disputes)
@@ -84,7 +84,7 @@
 | 39 | **Corporate Virtual Cards, Anti-`Zombie-MIT` & `Level-3` Receipt Escrow (`Ramp / Brex / Airbase / Stripe Issuing`) Single-Use `Auto-Burn`, First-Swipe `CAID` Pinning & `EU 13th Directive VAT` Recovery Agent Architecture Selection FAQ** | [English](corporate-virtual-card-expense-level3-receipt-escrow-agent-selection-faq.en.md) · [中文](corporate-virtual-card-expense-level3-receipt-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (79 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (80 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -169,6 +169,7 @@
 | 77 | **E-Commerce AI Shopping Stylist, Cross-Category Bundle & Pro-Rata Promo Escrow (`Shopify Sidekick / Amazon Rufus / Zalando AI / Taobao Wenwen`) Symbolic Spec Graph, `Single-FC` Box Consolidation & Pro-Rata Split-Return Agent Architecture Selection FAQ** | [English](ecommerce-ai-shopping-stylist-cross-category-bundle-promo-escrow-agent-selection-faq.en.md) · [中文](ecommerce-ai-shopping-stylist-cross-category-bundle-promo-escrow-agent-selection-faq.md) |
 | 78 | **Sneaker, Designer Blind-Box Toy (`Labubu / Pop Mart`) & Graded Trading Card Vault Escrow (`StockX / GOAT / Poizon / PSA Vault`) `15%` Anti-Flake Auto-Rematch, `PSA 600-DPI` Slab Alignment & Delaware Tax-Free Vault Agent Architecture Selection FAQ** | [English](sneaker-designer-toy-graded-card-vault-escrow-agent-selection-faq.en.md) · [中文](sneaker-designer-toy-graded-card-vault-escrow-agent-selection-faq.md) |
 | 79 | **Cruise Line Booking, Return-to-Ship Excursion & Drink-Package Escrow (`Royal Caribbean / Carnival / NCL / Viator`) Port-Day Drink Breakeven, `T-90m` Excursion Bond & `T-90d` Re-Price Agent Architecture Selection FAQ** | [English](cruise-line-booking-shore-excursion-drink-package-obc-escrow-agent-selection-faq.en.md) · [中文](cruise-line-booking-shore-excursion-drink-package-obc-escrow-agent-selection-faq.md) |
+| 80 | **Vacation Rental (`Airbnb / Vrbo / Guesty`), Anti-Cleaning-Fee Chore & `STR` Permit Escrow (`<=15%` Cleaning Cap, `T+24h` GPS Check-In Hold & `7-Night LOS` Discount Cliff) Agent Architecture Selection FAQ** | [English](vacation-rental-airbnb-vrbo-cleaning-fee-chore-str-escrow-agent-selection-faq.en.md) · [中文](vacation-rental-airbnb-vrbo-cleaning-fee-chore-str-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (60 Guides)

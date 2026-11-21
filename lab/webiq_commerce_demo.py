@@ -24314,6 +24314,87 @@ def evaluate_b2b_software_ela_macc_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class VacationRentalStrEscrowPolicyInput:
+    """Input contract for Vacation Rental (Airbnb/Vrbo), Anti-Cleaning-Fee Chore & STR Permit Escrow."""
+
+    quarterly_vacation_rental_and_extended_stay_pool_usd: float = 92000.0
+    excessive_cleaning_fee_chore_trap_or_hidden_pool_heat_surcharge: bool = False
+    bait_and_switch_address_swap_or_unverified_wifi_bed_count: bool = False
+    webiq_unlicensed_municipal_str_or_indoor_camera_violation_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    weekly_los_discount_cliff_and_direct_pms_ota_bypass_ready: bool = False
+
+
+def evaluate_vacation_rental_str_escrow_policy(
+    policy_input: VacationRentalStrEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Vacation Rental (Airbnb/Vrbo), Anti-Cleaning-Fee Chore & STR Permit Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_vacation_rental_and_extended_stay_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_unlicensed_municipal_str_or_indoor_camera_violation_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNLICENSED_MUNICIPAL_STR_OR_INDOOR_CAMERA_VIOLATION_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.excessive_cleaning_fee_chore_trap_or_hidden_pool_heat_surcharge:
+        return {
+            "status_code": 403,
+            "decision": "EXCESSIVE_CLEANING_FEE_CHORE_TRAP_OR_HIDDEN_POOL_HEAT_SURCHARGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bait_and_switch_address_swap_or_unverified_wifi_bed_count:
+        return {
+            "status_code": 422,
+            "decision": "BAIT_AND_SWITCH_ADDRESS_SWAP_OR_UNVERIFIED_WIFI_BED_COUNT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.weekly_los_discount_cliff_and_direct_pms_ota_bypass_ready:
+        savings = round(gross_pool * 0.28, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "WEEKLY_LOS_DISCOUNT_CLIFF_AND_DIRECT_PMS_OTA_BYPASS_CONFIRM",
+            "mandate_token": "vacation_rental_str_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ALL_IN_VERIFIED_STR_AND_ZERO_CHORE_AUTHORIZED",
+        "mandate_token": "vacation_rental_str_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -33405,6 +33486,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    vacation_rental_str_escrow_guard = {
+        "authorized_200": evaluate_vacation_rental_str_escrow_policy(
+            VacationRentalStrEscrowPolicyInput()
+        ),
+        "cleaning_fee_chore_or_pool_surcharge_403": evaluate_vacation_rental_str_escrow_policy(
+            VacationRentalStrEscrowPolicyInput(
+                excessive_cleaning_fee_chore_trap_or_hidden_pool_heat_surcharge=True
+            )
+        ),
+        "address_swap_or_unverified_wifi_422": evaluate_vacation_rental_str_escrow_policy(
+            VacationRentalStrEscrowPolicyInput(
+                bait_and_switch_address_swap_or_unverified_wifi_bed_count=True
+            )
+        ),
+        "unlicensed_str_or_indoor_camera_451": evaluate_vacation_rental_str_escrow_policy(
+            VacationRentalStrEscrowPolicyInput(
+                webiq_unlicensed_municipal_str_or_indoor_camera_violation_flag=True
+            )
+        ),
+        "weekly_los_cliff_and_direct_pms_409": evaluate_vacation_rental_str_escrow_policy(
+            VacationRentalStrEscrowPolicyInput(
+                weekly_los_discount_cliff_and_direct_pms_ota_bypass_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -33655,6 +33762,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_contingent_staffing_vms_escrow_guard": b2b_contingent_staffing_vms_escrow_guard,
         "cruise_line_excursion_obc_escrow_guard": cruise_line_excursion_obc_escrow_guard,
         "b2b_software_ela_macc_escrow_guard": b2b_software_ela_macc_escrow_guard,
+        "vacation_rental_str_escrow_guard": vacation_rental_str_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -45664,6 +45772,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ela-macc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MACC_EDP_PRIVATE_OFFER_AND_RAMP_SCHEDULE_P25_CONFIRM · Mandate: b2b_software_ela_macc_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 122 Vacation Rental (Airbnb/Vrbo), Anti-Cleaning-Fee Chore & STR Permit Escrow -->
+      <div class="finops-box" id="vacation-rental-str-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🏡 短租民宿预订 (Airbnb / Vrbo / 美团民宿 / 途家)、防“$350 清洁费刺客+退房做家务罚款”与防临时换房托管 (Guesty / Hostaway) 比价与验真沙盒 (Round 122)</div>
+            <div class="finops-subtitle">实测硬控清洁费占比&lt;=15%+NLP 拉黑“退房不洗床单倒垃圾罚款 $200”家务清单+禁收泳池加热电费 (HTTP 403)、入住满 T+24h 门锁/GPS 原址确权放款防“借故水管爆了骗去住地下室”+Ookla 实测网速(&gt;=100Mbps) (HTTP 422)、Web IQ 市政合法短租牌照 (NYC LL18/日本民泊) 与禁室内摄像头核验 (HTTP 451) 及“住6晚改订7晚触发8折反降价”悬崖套利+物业直订站免 15% OTA 服务费净省 28% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="str-rental-status-kpi">HTTP 409 · WEEKLY_LOS_DISCOUNT_CLIFF_AND_DIRECT_PMS_OTA_BYPASS_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业外派短租公寓与家庭度假民宿总预算池 ($ USD)
+            <input type="range" id="str-rental-pool-slider" min="15000" max="450000" step="5000" value="92000" oninput="updateVacationRentalStrEscrowSandbox()" />
+            <span id="str-rental-pool-val" style="color:#6ee7b7; font-family:monospace;">$92,000</span>
+          </label>
+          <label>
+            清洁费占比(&lt;=15%)、零退房家务罚款与水电全包审计 (HTTP 403)
+            <select id="str-rental-chore-select" onchange="updateVacationRentalStrEscrowSandbox()">
+              <option value="pass">FTC 全包一口价(清洁费&lt;=15%) + 零退房洗床单家务清单 + 空调与泳池加热全包 (放行)</option>
+              <option value="block">收 $350 清洁费还威胁不洗床单倒垃圾罚款 $200 或 到店私收每天 $85 泳池加热费/高价电费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            T+24h 原址 GPS 入住放款、Ookla 实测网速与进退房视频门禁 (HTTP 422)
+            <select id="str-rental-swap-select" onchange="updateVacationRentalStrEscrowSandbox()">
+              <option value="pass">T+24h 门锁/GPS 原址核实才放款 + 内嵌 Ookla 实测&gt;=100Mbps + 进退房 60s 视频防讹诈 (合规)</option>
+              <option value="block">到店前1小时谎称“海景房水管爆了”诱骗私换去4公里外地下室 或 充气床垫冒充卧室/网速仅3Mbps (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 市政合法短租牌照 (STR Permit) 与禁室内摄像头核验 (HTTP 451)
+            <select id="str-rental-permit-select" onchange="updateVacationRentalStrEscrowSandbox()">
+              <option value="clear">市政短租登记证号(NYC LL18/民泊/HUTB)有效 + 室内零摄像头隐私合规 (正常)</option>
+              <option value="hold">无证违建黑民宿面临物业/警察半夜查封驱逐 或 室内客厅暗藏未披露监控摄像头 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            7 晚/28 晚入住天数折扣悬崖 (LOS Cliff) 与物业直订站去中介 (HTTP 409)
+            <select id="str-rental-opt-select" onchange="updateVacationRentalStrEscrowSandbox()">
+              <option value="enabled" selected>6晚改订7晚触发20%周租折扣(多住1晚反便宜$110!) + 穿透物业 Guesty 直订站省 15% OTA 费净省 28% (HTTP 409)</option>
+              <option value="baseline">常规市政牌照核验与全包零家务标准短租授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度短租民宿与外派公寓总池</div>
+            <div class="finops-kpi-val" id="str-rental-gross-kpi">$92,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">周租悬崖与直订去中介后净支出</div>
+            <div class="finops-kpi-val" id="str-rental-net-kpi" style="color:#6ee7b7;">$66,240</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省 OTA 服务费与周租折差</div>
+            <div class="finops-kpi-val" id="str-rental-savings-kpi" style="color:#38bdf8;">$25,760</div>
+          </div>
+        </div>
+        <div id="str-rental-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 WEEKLY_LOS_DISCOUNT_CLIFF_AND_DIRECT_PMS_OTA_BYPASS_CONFIRM · Mandate: vacation_rental_str_mandate_optim_409
         </div>
       </div>
 
@@ -60063,6 +60234,80 @@ function updateB2BSoftwareElaMaccEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 P25_BENCHMARKED_ELA_AND_MACC_DRAWDOWN_AUTHORIZED · Mandate: b2b_software_ela_macc_mandate_200';
+}}
+
+function updateVacationRentalStrEscrowSandbox() {{
+  const slider = document.getElementById('str-rental-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '92000');
+  const choreMode = document.getElementById('str-rental-chore-select').value;
+  const swapMode = document.getElementById('str-rental-swap-select').value;
+  const permitMode = document.getElementById('str-rental-permit-select').value;
+  const optMode = document.getElementById('str-rental-opt-select').value;
+
+  document.getElementById('str-rental-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('str-rental-status-kpi');
+  const grossKpi = document.getElementById('str-rental-gross-kpi');
+  const netKpi = document.getElementById('str-rental-net-kpi');
+  const savingsKpi = document.getElementById('str-rental-savings-kpi');
+  const banner = document.getElementById('str-rental-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (permitMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNLICENSED_MUNICIPAL_STR_OR_INDOOR_CAMERA_VIOLATION_HOLD · Mandate: null';
+    return;
+  }}
+  if (choreMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 EXCESSIVE_CLEANING_FEE_CHORE_TRAP_OR_HIDDEN_POOL_HEAT_SURCHARGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (swapMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BAIT_AND_SWITCH_ADDRESS_SWAP_OR_UNVERIFIED_WIFI_BED_COUNT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.28);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 WEEKLY_LOS_DISCOUNT_CLIFF_AND_DIRECT_PMS_OTA_BYPASS_CONFIRM · Mandate: vacation_rental_str_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ALL_IN_VERIFIED_STR_AND_ZERO_CHORE_AUTHORIZED · Mandate: vacation_rental_str_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

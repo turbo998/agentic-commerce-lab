@@ -17232,6 +17232,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-software-ela-macc-escrow-sandbox", html_zh)
 
+    def test_vacation_rental_str_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            VacationRentalStrEscrowPolicyInput,
+            evaluate_vacation_rental_str_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_vacation_rental_str_escrow_policy(
+            VacationRentalStrEscrowPolicyInput(
+                quarterly_vacation_rental_and_extended_stay_pool_usd=92000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ALL_IN_VERIFIED_STR_AND_ZERO_CHORE_AUTHORIZED",
+        )
+
+        chore = evaluate_vacation_rental_str_escrow_policy(
+            VacationRentalStrEscrowPolicyInput(
+                excessive_cleaning_fee_chore_trap_or_hidden_pool_heat_surcharge=True
+            )
+        )
+        self.assertEqual(chore["status_code"], 403)
+        self.assertEqual(
+            chore["decision"],
+            "EXCESSIVE_CLEANING_FEE_CHORE_TRAP_OR_HIDDEN_POOL_HEAT_SURCHARGE_BLOCKED",
+        )
+
+        swap = evaluate_vacation_rental_str_escrow_policy(
+            VacationRentalStrEscrowPolicyInput(
+                bait_and_switch_address_swap_or_unverified_wifi_bed_count=True
+            )
+        )
+        self.assertEqual(swap["status_code"], 422)
+        self.assertEqual(
+            swap["decision"],
+            "BAIT_AND_SWITCH_ADDRESS_SWAP_OR_UNVERIFIED_WIFI_BED_COUNT_BLOCKED",
+        )
+
+        permit = evaluate_vacation_rental_str_escrow_policy(
+            VacationRentalStrEscrowPolicyInput(
+                webiq_unlicensed_municipal_str_or_indoor_camera_violation_flag=True
+            )
+        )
+        self.assertEqual(permit["status_code"], 451)
+        self.assertEqual(
+            permit["decision"],
+            "WEBIQ_UNLICENSED_MUNICIPAL_STR_OR_INDOOR_CAMERA_VIOLATION_HOLD",
+        )
+
+        optim = evaluate_vacation_rental_str_escrow_policy(
+            VacationRentalStrEscrowPolicyInput(
+                quarterly_vacation_rental_and_extended_stay_pool_usd=92000.0,
+                weekly_los_discount_cliff_and_direct_pms_ota_bypass_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 25760.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 66240.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("vacation_rental_str_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("vacation-rental-str-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
