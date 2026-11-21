@@ -31257,6 +31257,82 @@ def evaluate_omnichannel_softpos_tap_to_pay_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaCarRentalDamageTollLdwPolicyInput:
+    quarterly_bogus_damage_counter_ldw_fuel_and_toll_admin_pool_usd: float = 170000.0
+    post_return_claim_for_pre_existing_scratch_or_sub_2inch_wear: bool = False
+    duplicate_counter_ldw_upsell_on_covered_cdp_or_false_refuel_fee: bool = False
+    predatory_daily_toll_admin_package_or_unverified_driver_license: bool = False
+    pickup_360_cv_diff_plate_toll_bind_and_hotel_parking_tco_ready: bool = False
+
+
+def evaluate_ota_car_rental_damage_toll_ldw_policy(
+    policy_input: OtaCarRentalDamageTollLdwPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_bogus_damage_counter_ldw_fuel_and_toll_admin_pool_usd
+        ),
+    )
+    if policy_input.predatory_daily_toll_admin_package_or_unverified_driver_license:
+        return {
+            "status_code": 451,
+            "decision": "PREDATORY_TOLL_ADMIN_FEE_OR_SUSPENDED_LICENSE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.post_return_claim_for_pre_existing_scratch_or_sub_2inch_wear:
+        return {
+            "status_code": 403,
+            "decision": "PRE_EXISTING_DAMAGE_CLAIM_OR_WEAR_AND_TEAR_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.duplicate_counter_ldw_upsell_on_covered_cdp_or_false_refuel_fee:
+        return {
+            "status_code": 422,
+            "decision": "DUPLICATE_COUNTER_LDW_UPSELL_OR_BOGUS_FUEL_FEE_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pickup_360_cv_diff_plate_toll_bind_and_hotel_parking_tco_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CV_DAMAGE_DIFF_PLATE_TOLL_BIND_AND_PARKING_TCO_CONFIRM",
+            "mandate_token": "car_rental_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "CLEAN_CAR_RENTAL_FOLIO_AND_FUEL_OCR_AUTHORIZED",
+        "mandate_token": "car_rental_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -42714,6 +42790,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_car_rental_damage_toll_ldw_guard = {
+        "authorized_200": evaluate_ota_car_rental_damage_toll_ldw_policy(
+            OtaCarRentalDamageTollLdwPolicyInput()
+        ),
+        "old_scratch_or_wear_403": evaluate_ota_car_rental_damage_toll_ldw_policy(
+            OtaCarRentalDamageTollLdwPolicyInput(
+                post_return_claim_for_pre_existing_scratch_or_sub_2inch_wear=True
+            )
+        ),
+        "counter_ldw_or_fuel_422": evaluate_ota_car_rental_damage_toll_ldw_policy(
+            OtaCarRentalDamageTollLdwPolicyInput(
+                duplicate_counter_ldw_upsell_on_covered_cdp_or_false_refuel_fee=True
+            )
+        ),
+        "toll_admin_or_license_451": evaluate_ota_car_rental_damage_toll_ldw_policy(
+            OtaCarRentalDamageTollLdwPolicyInput(
+                predatory_daily_toll_admin_package_or_unverified_driver_license=True
+            )
+        ),
+        "cv_diff_and_parking_tco_409": evaluate_ota_car_rental_damage_toll_ldw_policy(
+            OtaCarRentalDamageTollLdwPolicyInput(
+                pickup_360_cv_diff_plate_toll_bind_and_hotel_parking_tco_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -43055,6 +43157,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_vmi_consignment_settlement_guard": b2b_vmi_consignment_settlement_guard,
         "ecommerce_perishable_florist_cake_guard": ecommerce_perishable_florist_cake_guard,
         "omnichannel_softpos_tap_to_pay_guard": omnichannel_softpos_tap_to_pay_guard,
+        "ota_car_rental_damage_toll_ldw_guard": ota_car_rental_damage_toll_ldw_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -60395,6 +60498,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="softpos-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 EMVCO_PAR_OMNICHANNEL_AND_REG_II_SOFTPOS_CONFIRM · Mandate: omnichannel_softpos_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 213 Car Rental & Mobility Fleet AI Damage Audit, Toll & LDW Escrow (#332) -->
+      <div class="finops-box" id="ota-car-rental-damage-toll-ldw-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🚗 商旅与自驾租车结算 (Hertz / Enterprise / Sixt / Navan)、360° 车损比对与防隐形杂费沙盒</div>
+            <div class="finops-sub">Round 213 (#332) · 提车 30s 视频 vs 还车扫描 CV 差分驳回旧划痕与 &lt;2英寸正常磨损 (HTTP 403) + VCN 限额硬拦柜台重复推销 $39/天 LDW 险与满油仪表盘 OCR (HTTP 422) + 临时车牌动态绑企业 ETC 免 $15/天管理费 (HTTP 451) + 含酒店停车费租车 vs 打车 TCO 分流净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="carrental-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度租车还车后被讹旧划痕修车费、柜台重复买保险 (LDW)、$9.99/加仑补油罚款与 $105 过路费管理费池 ($)
+            <input type="number" id="carrental-gross-input" value="170000" min="10000" step="5000" oninput="recalcOtaCarRentalDamageTollLdwSandbox()" />
+          </label>
+          <label>提车 360° 绕车视频哈希 vs 还车 AI 龙门架扫描差分与 &lt;2.0 英寸正常磨损免责锁
+            <select id="carrental-damage-select" onchange="recalcOtaCarRentalDamageTollLdwSandbox()">
+              <option value="pass">无新增车损 (或已凭提车视频证明系既有旧伤 / &lt;2英寸免责磨损) + 离场即刻冻结 VCN (合规)</option>
+              <option value="block_403">还车 2 周后租车行把上任租客留下的保险杠旧划痕算在本单头上强扣 $650 修车与停运折旧费 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>企业协议码 (CDP) 自带全险时 VCN 限额拦截柜台强推 LDW 附加险与满油仪表盘 OCR
+            <select id="carrental-ldw-select" onchange="recalcOtaCarRentalDamageTollLdwSandbox()">
+              <option value="pass">VCN 限额仅放行合同基础租金 + 熄火拍 8/8 满油仪表盘 OCR 免除缺油费 (合规)</option>
+              <option value="block_422">公司协议已含全险却被机场柜员话术忽悠加购 $39/天重复保险 或 满油还车仍被扣 $140 补油费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>租期窗口 [提车, 还车] 临时车牌动态绑入企业 ETC (E-ZPass) 免 $15/天管理费刺客
+            <select id="carrental-toll-select" onchange="recalcOtaCarRentalDamageTollLdwSandbox()">
+              <option value="pass">提车扫车牌绑入企业 ETC 按 $2.50 原价直付 + 还车秒级自动解绑车牌 (安全)</option>
+              <option value="block_451">只过 1 次 $2.50 大桥收费站却被收 7 天 × $15/天 = $105 PlatePass 包周管理费 或 还车忘解绑替别人买单 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>计入“酒店每晚 $70 停车费”的租车 vs 网约车 (Uber) 总成本 (TCO) 自动比价分流
+            <select id="carrental-opt-select" onchange="recalcOtaCarRentalDamageTollLdwSandbox()">
+              <option value="enabled" selected>市中心高停车费行程自动改推 Uber 券 + Emerald 免柜台挑车 + 临时车牌直连 ETC (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统员工自行去机场柜台刷实体卡租车事后贴票报销 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度商旅租车隐形杂费与车损池</div>
+            <div class="finops-kpi-val" id="carrental-gross-kpi">$170,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">360° 车损比对与 VCN 锁额后净耗</div>
+            <div class="finops-kpi-val" id="carrental-net-kpi" style="color:#6ee7b7;">$108,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省冤枉修车与重复保险费</div>
+            <div class="finops-kpi-val" id="carrental-savings-kpi" style="color:#38bdf8;">$61,200</div>
+          </div>
+        </div>
+        <div id="carrental-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CV_DAMAGE_DIFF_PLATE_TOLL_BIND_AND_PARKING_TCO_CONFIRM · Mandate: car_rental_escrow_optim_409
         </div>
       </div>
 
@@ -81461,6 +81621,79 @@ function recalcOmnichannelSoftposTapToPaySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ATTESTED_EMV_SOFTPOS_AND_REFERENCED_REFUND_AUTHORIZED · Mandate: omnichannel_softpos_escrow_200';
+}}
+
+function recalcOtaCarRentalDamageTollLdwSandbox() {{
+  const grossInput = document.getElementById('carrental-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '170000'));
+  const damageGate = document.getElementById('carrental-damage-select').value;
+  const ldwGate = document.getElementById('carrental-ldw-select').value;
+  const tollGate = document.getElementById('carrental-toll-select').value;
+  const optMode = document.getElementById('carrental-opt-select').value;
+
+  const grossKpi = document.getElementById('carrental-gross-kpi');
+  const netKpi = document.getElementById('carrental-net-kpi');
+  const savingsKpi = document.getElementById('carrental-savings-kpi');
+  const statusKpi = document.getElementById('carrental-status-kpi');
+  const banner = document.getElementById('carrental-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (tollGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PREDATORY_TOLL_ADMIN_FEE_OR_SUSPENDED_LICENSE_HOLD · Mandate: null';
+    return;
+  }}
+  if (damageGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PRE_EXISTING_DAMAGE_CLAIM_OR_WEAR_AND_TEAR_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (ldwGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DUPLICATE_COUNTER_LDW_UPSELL_OR_BOGUS_FUEL_FEE_BLOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CV_DAMAGE_DIFF_PLATE_TOLL_BIND_AND_PARKING_TCO_CONFIRM · Mandate: car_rental_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 CLEAN_CAR_RENTAL_FOLIO_AND_FUEL_OCR_AUTHORIZED · Mandate: car_rental_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

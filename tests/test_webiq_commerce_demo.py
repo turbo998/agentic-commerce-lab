@@ -23329,6 +23329,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("omnichannel-softpos-tap-to-pay-sandbox", html_zh)
 
+    def test_ota_car_rental_damage_toll_ldw_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaCarRentalDamageTollLdwPolicyInput,
+            evaluate_ota_car_rental_damage_toll_ldw_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_car_rental_damage_toll_ldw_policy(
+            OtaCarRentalDamageTollLdwPolicyInput(
+                quarterly_bogus_damage_counter_ldw_fuel_and_toll_admin_pool_usd=170000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "CLEAN_CAR_RENTAL_FOLIO_AND_FUEL_OCR_AUTHORIZED",
+        )
+
+        scratch = evaluate_ota_car_rental_damage_toll_ldw_policy(
+            OtaCarRentalDamageTollLdwPolicyInput(
+                post_return_claim_for_pre_existing_scratch_or_sub_2inch_wear=True
+            )
+        )
+        self.assertEqual(scratch["status_code"], 403)
+        self.assertEqual(
+            scratch["decision"],
+            "PRE_EXISTING_DAMAGE_CLAIM_OR_WEAR_AND_TEAR_BLOCKED",
+        )
+
+        ldw = evaluate_ota_car_rental_damage_toll_ldw_policy(
+            OtaCarRentalDamageTollLdwPolicyInput(
+                duplicate_counter_ldw_upsell_on_covered_cdp_or_false_refuel_fee=True
+            )
+        )
+        self.assertEqual(ldw["status_code"], 422)
+        self.assertEqual(
+            ldw["decision"],
+            "DUPLICATE_COUNTER_LDW_UPSELL_OR_BOGUS_FUEL_FEE_BLOCK",
+        )
+
+        toll = evaluate_ota_car_rental_damage_toll_ldw_policy(
+            OtaCarRentalDamageTollLdwPolicyInput(
+                predatory_daily_toll_admin_package_or_unverified_driver_license=True
+            )
+        )
+        self.assertEqual(toll["status_code"], 451)
+        self.assertEqual(
+            toll["decision"],
+            "PREDATORY_TOLL_ADMIN_FEE_OR_SUSPENDED_LICENSE_HOLD",
+        )
+
+        optim = evaluate_ota_car_rental_damage_toll_ldw_policy(
+            OtaCarRentalDamageTollLdwPolicyInput(
+                quarterly_bogus_damage_counter_ldw_fuel_and_toll_admin_pool_usd=170000.0,
+                pickup_360_cv_diff_plate_toll_bind_and_hotel_parking_tco_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 61200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 108800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_car_rental_damage_toll_ldw_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-car-rental-damage-toll-ldw-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

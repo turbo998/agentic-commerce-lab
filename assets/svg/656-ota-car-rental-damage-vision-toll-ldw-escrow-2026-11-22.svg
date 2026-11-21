@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg656" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <linearGradient id="hdr656" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg656)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr656)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 213 · Car Rental &amp; Mobility Fleet AI Damage Audit, Toll &amp; LDW Escrow</text>
+  <text x="48" y="74" class="sub">Hertz / Enterprise / Sixt / Turo / Navan · 360° Pre/Post-Pickup CV Diff · Fuel Gauge OCR · Counter LDW Upsell Block (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #656 · FAQ #332</text>
+
+  <!-- Lane 1: Pre-Existing Scratch Bogus $650 Damage Claim & Wear-and-Tear Gauge Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. 360° Pre/Post CV Damage Diff (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Billing Renter for Prior Renter's Dent:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Compare `Pickup_360_Video` vs `Return_Arch_Scan`</text>
+  <text x="54" y="200" class="mono">+ Enforce `Scratch &lt; 2.0 in (5cm) == Normal Wear`</text>
+  <text x="44" y="223" class="body-txt">• Blocks Post-Return Delayed Card Captures:</text>
+  <text x="54" y="243" class="mono">VCN Auto-Locks Base Folio Upon Lot Check-In!</text>
+  <text x="44" y="266" class="body-txt">• Eliminates surprise $650 bumper repair charges</text>
+  <text x="54" y="286" class="body-txt">hitting the corporate card 14 days after the</text>
+  <text x="54" y="304" class="body-txt">traveler returned the rental car undamaged</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 PRE_EXISTING_DAMAGE_CLAIM_OR_WEAR_AND_TEAR_BLOCKED</text>
+
+  <!-- Lane 2: Duplicate Counter LDW/CDW Insurance Upsell & $9.99/Gal Fuel Refill Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Counter LDW Upsell &amp; Fuel OCR (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops $39/Day Counter Insurance Double-Billing:</text>
+  <text x="442" y="182" class="mono">Corp Rate / Card Includes `Primary LDW/CDW`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">→ Strip Counter Upsell (`LDW/PAI/RSN`) via VCN Cap!</text>
+  <text x="432" y="223" class="body-txt">• Dashboard Fuel/EV Odometer OCR Proof:</text>
+  <text x="442" y="243" class="mono">Blocks Bogus $140 (`$9.99/gal`) Refueling Penalty</text>
+  <text x="432" y="266" class="body-txt">• Verifies timestamped return dashboard photo +</text>
+  <text x="442" y="286" class="body-txt">airport gas-station receipt within 5 miles of</text>
+  <text x="442" y="304" class="body-txt">rental return lot</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 DUPLICATE_COUNTER_LDW_UPSELL_OR_BOGUS_FUEL_FEE_BLOCK</text>
+
+  <!-- Lane 3: Predatory $15/Day All-Inclusive Toll Admin Fee & Traffic Citation Identity Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Toll Admin Cap &amp; License Check (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops $105 Admin Fee on a Single $2.50 Bridge Toll:</text>
+  <text x="830" y="182" class="mono">Bind License Plate to Corp `E-ZPass / SunPass` API</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">for Rental Window `[Pickup_TS, Return_TS]` Only!</text>
+  <text x="820" y="223" class="body-txt">• Live DMV Driver's License &amp; Age Compliance:</text>
+  <text x="830" y="243" class="body-txt">Verifies valid driver license &amp; waives Under-25</text>
+  <text x="830" y="261" class="body-txt">young-driver surcharge via corporate contract `CDP`</text>
+  <text x="820" y="284" class="body-txt">• Automatically unbinds plate at return minute so</text>
+  <text x="830" y="302" class="body-txt">next renter's tolls never bill to your account</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 PREDATORY_TOLL_ADMIN_FEE_OR_SUSPENDED_LICENSE_HOLD</text>
+
+  <!-- Bottom Rental vs Rideshare TCO Router & Exact-Folio VCN Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Rental-vs-Uber TCO Breakeven Router + Exact-Folio Single-Use VCN &amp; Plate Auto-Bind (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Rental vs Uber TCO Gate</text>
+  <text x="62" y="462" class="body-txt">Includes $65/night hotel</text>
+  <text x="62" y="480" class="body-txt">valet parking in TCO! Steers</text>
+  <text x="62" y="498" class="body-txt">downtown trips &lt;45 mi to Uber;</text>
+  <text x="62" y="516" class="mono">Saves $185/Trip Parking Waste</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② 30s Walkaround Video Hash</text>
+  <text x="337" y="462" class="body-txt">Traveler records 30s 360°</text>
+  <text x="337" y="480" class="body-txt">video + fuel gauge in lot;</text>
+  <text x="337" y="498" class="body-txt">auto-wins 100% of bogus</text>
+  <text x="337" y="516" class="mono">scratch &amp; fuel claims</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Temporary Plate Toll Bind</text>
+  <text x="622" y="462" class="body-txt">Registers rental plate to</text>
+  <text x="622" y="480" class="body-txt">fleet toll account for exact</text>
+  <text x="622" y="498" class="body-txt">pickup-to-return hours;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">$0 Daily Toll Convenience Fee</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Exact-Contract VCN Cap</text>
+  <text x="907" y="462" class="body-txt">Caps rental VCN at contracted</text>
+  <text x="907" y="480" class="body-txt">`Base + Tax + 10%` so counter</text>
+  <text x="907" y="498" class="body-txt">upsells decline instantly;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Car Rental &amp; Fleet Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Car Rental Leakage Saved</text>
+  <text x="46" y="642" class="mono">$61,200 Saved / $170k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">0 Bogus Dents</text>
+  <text x="336" y="626" class="kpi-lbl">360° Pickup vs Return CV Diff Proof</text>
+  <text x="336" y="642" class="mono">Enforces 2-Inch Wear-and-Tear Rule</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">$0 LDW Upsell</text>
+  <text x="626" y="626" class="kpi-lbl">Contract `CDP` Primary Coverage Lock</text>
+  <text x="626" y="642" class="mono">+ Dashboard Fuel Gauge OCR Shield</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">$0 Toll Penalty</text>
+  <text x="916" y="626" class="kpi-lbl">Time-Bounded License-Plate Toll API</text>
+  <text x="916" y="642" class="mono">Rental-vs-Uber Parking TCO Router</text>
+</svg>
