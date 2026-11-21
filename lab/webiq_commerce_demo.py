@@ -28232,6 +28232,79 @@ def evaluate_retail_media_network_bidding_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceAccountTakeoverEscrowPolicyInput:
+    quarterly_ato_chargeback_and_vip_false_decline_pool_usd: float = 170000.0
+    saved_card_token_with_unverified_new_shipping_address: bool = False
+    credential_stuffing_ja4_or_new_device_wallet_giftcard_drain: bool = False
+    recent_email_phone_swap_within_24h_or_carrier_reroute_unlocked: bool = False
+    selective_3ds2_passkey_stepup_and_trusted_address_fastlane_ready: bool = False
+
+
+def evaluate_ecommerce_account_takeover_escrow_policy(
+    policy_input: EcommerceAccountTakeoverEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_ato_chargeback_and_vip_false_decline_pool_usd)
+    )
+    if policy_input.recent_email_phone_swap_within_24h_or_carrier_reroute_unlocked:
+        return {
+            "status_code": 451,
+            "decision": "PROFILE_SWAP_COOLDOWN_OR_TRANSIT_REROUTE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.saved_card_token_with_unverified_new_shipping_address:
+        return {
+            "status_code": 403,
+            "decision": "SAVED_CARD_NEW_ADDRESS_NO_STEPUP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.credential_stuffing_ja4_or_new_device_wallet_giftcard_drain:
+        return {
+            "status_code": 422,
+            "decision": "NEW_DEVICE_WALLET_DRAIN_OR_BOT_JA4_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.selective_3ds2_passkey_stepup_and_trusted_address_fastlane_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SELECTIVE_3DS2_PASSKEY_STEPUP_AND_TRUSTED_FASTLANE_CONFIRM",
+            "mandate_token": "ato_saved_card_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "TRUSTED_ADDRESS_VAULTED_TOKEN_CHECKOUT_AUTHORIZED",
+        "mandate_token": "ato_saved_card_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -38649,6 +38722,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_account_takeover_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_account_takeover_escrow_policy(
+            EcommerceAccountTakeoverEscrowPolicyInput()
+        ),
+        "saved_card_new_addr_403": evaluate_ecommerce_account_takeover_escrow_policy(
+            EcommerceAccountTakeoverEscrowPolicyInput(
+                saved_card_token_with_unverified_new_shipping_address=True
+            )
+        ),
+        "bot_ja4_or_wallet_drain_422": evaluate_ecommerce_account_takeover_escrow_policy(
+            EcommerceAccountTakeoverEscrowPolicyInput(
+                credential_stuffing_ja4_or_new_device_wallet_giftcard_drain=True
+            )
+        ),
+        "email_swap_or_reroute_451": evaluate_ecommerce_account_takeover_escrow_policy(
+            EcommerceAccountTakeoverEscrowPolicyInput(
+                recent_email_phone_swap_within_24h_or_carrier_reroute_unlocked=True
+            )
+        ),
+        "stepup_and_fastlane_409": evaluate_ecommerce_account_takeover_escrow_policy(
+            EcommerceAccountTakeoverEscrowPolicyInput(
+                selective_3ds2_passkey_stepup_and_trusted_address_fastlane_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -38950,6 +39049,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_involuntary_churn_dunning_guard": saas_involuntary_churn_dunning_guard,
         "ecommerce_extended_warranty_guard": ecommerce_extended_warranty_guard,
         "retail_media_network_bidding_guard": retail_media_network_bidding_guard,
+        "ecommerce_account_takeover_escrow_guard": ecommerce_account_takeover_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -54010,6 +54110,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="rmn-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 HOURLY_STREAM_DAYPARTING_NTB_POAS_AND_COMPETITOR_CONQUEST_CONFIRM · Mandate: rmn_bidding_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 173 E-Commerce Account Takeover (ATO) & Saved-Card Address-Mismatch Escrow -->
+      <div class="finops-box" id="ecommerce-account-takeover-escrow-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔐 电商账户劫持 (ATO: Forter / Signifyd / Stripe Radar) 与已绑卡改址升维核身沙盒</div>
+            <div class="finops-sub">Round 173 · 已绑卡 Token + 新收货地址强制重输全卡号/3DS2 (HTTP 403) + 新设备 24h 禁洗储值余额 (HTTP 422) + 改邮箱冻结与禁快递中途改址 (HTTP 451) + 老地址秒过与 VIP 挽回净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="ato-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 ATO 撞库盗刷拒付、储值余额被洗空与差旅 VIP 误杀损失池 ($)
+            <input type="number" id="ato-gross-input" value="170000" min="10000" step="5000" oninput="recalcEcommerceAccountTakeoverSandbox()" />
+          </label>
+          <label>已保存信用卡 Token (****4821) + 收货地址图谱校验
+            <select id="ato-addr-select" onchange="recalcEcommerceAccountTakeoverSandbox()">
+              <option value="pass">寄往历史 45 天已妥投家庭地址 或 寄新地址已完成 16 位全卡号/3DS2 验证 (合规)</option>
+              <option value="block_403">黑客撞库登录老客账号新增销赃地址，试图免 CVV 直接一键刷走已保存卡 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>TLS JA4 撞库机器人识别与新设备 24h 储值钱包/积分保护锁
+            <select id="ato-wallet-select" onchange="recalcEcommerceAccountTakeoverSandbox()">
+              <option value="pass">真实人类设备指纹 + 正常商品结账 (合规)</option>
+              <option value="block_422">检出撞库脚本 JA4 指纹或新设备登录后 30 秒内把 $350 商城余额全换成电子礼品卡 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>修改邮箱/手机号 24h 冷静期与快递中途改址 (In-Transit Reroute) 硬锁
+            <select id="ato-profile-select" onchange="recalcEcommerceAccountTakeoverSandbox()">
+              <option value="pass">账号联系方式稳定 + UPS/顺丰打单已注入 Direct_Delivery_Only 禁中途转寄 (安全)</option>
+              <option value="block_451">刚改掉绑定邮箱就刷卡 或 填老客家庭地址骗过风控后调快递接口半路改址截胡 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>老地址免密快车道、Passkey/3DS2 责任转移与差旅 VIP 拒付包赔挽回
+            <select id="ato-opt-select" onchange="recalcEcommerceAccountTakeoverSandbox()">
+              <option value="enabled" selected>老地址 0 摩擦 1-Click 秒过 + 新地址精准 3DS2 + 酒店 Wi-Fi 真 VIP 包赔放行 (-39% 损失 / HTTP 409)</option>
+              <option value="disabled">传统静态规则对所有异地 IP 一刀切拒付误杀真实老客 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度 ATO 盗刷与 VIP 误杀总池</div>
+            <div class="finops-kpi-val" id="ato-gross-kpi">$170,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">地址图谱绑卡与升维核身后净损失</div>
+            <div class="finops-kpi-val" id="ato-net-kpi" style="color:#6ee7b7;">$103,700</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省盗刷拒付与挽回 VIP 毛利</div>
+            <div class="finops-kpi-val" id="ato-savings-kpi" style="color:#38bdf8;">$66,300</div>
+          </div>
+        </div>
+        <div id="ato-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SELECTIVE_3DS2_PASSKEY_STEPUP_AND_TRUSTED_FASTLANE_CONFIRM · Mandate: ato_saved_card_escrow_optim_409
         </div>
       </div>
 
@@ -72156,6 +72313,79 @@ function recalcRetailMediaNetworkBiddingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 INCREMENTAL_BUY_BOX_VERIFIED_RMN_BID_AUTHORIZED · Mandate: rmn_bidding_escrow_200';
+}}
+
+function recalcEcommerceAccountTakeoverSandbox() {{
+  const grossInput = document.getElementById('ato-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '170000'));
+  const addrGate = document.getElementById('ato-addr-select').value;
+  const walletGate = document.getElementById('ato-wallet-select').value;
+  const profileGate = document.getElementById('ato-profile-select').value;
+  const optMode = document.getElementById('ato-opt-select').value;
+
+  const grossKpi = document.getElementById('ato-gross-kpi');
+  const netKpi = document.getElementById('ato-net-kpi');
+  const savingsKpi = document.getElementById('ato-savings-kpi');
+  const statusKpi = document.getElementById('ato-status-kpi');
+  const banner = document.getElementById('ato-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (profileGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PROFILE_SWAP_COOLDOWN_OR_TRANSIT_REROUTE_HOLD · Mandate: null';
+    return;
+  }}
+  if (addrGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SAVED_CARD_NEW_ADDRESS_NO_STEPUP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (walletGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 NEW_DEVICE_WALLET_DRAIN_OR_BOT_JA4_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SELECTIVE_3DS2_PASSKEY_STEPUP_AND_TRUSTED_FASTLANE_CONFIRM · Mandate: ato_saved_card_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 TRUSTED_ADDRESS_VAULTED_TOKEN_CHECKOUT_AUTHORIZED · Mandate: ato_saved_card_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

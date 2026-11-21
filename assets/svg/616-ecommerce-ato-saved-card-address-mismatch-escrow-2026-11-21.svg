@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg616" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr616" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg616)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr616)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 173 · E-Commerce Account Takeover (ATO), Saved-Card Abuse &amp; Address-Mismatch Escrow</text>
+  <text x="48" y="74" class="sub">Forter / Riskified / Signifyd / Stripe Radar · Vaulted-Token + New Address Step-Up 3DS2/CVV · Credential-Stuffing JA4 Lock (-39% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #616 · FAQ #292</text>
+
+  <!-- Lane 1: Saved Card + New Shipping Address Step-Up Gate -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Saved-Card + New Address Step-Up Lock (403)</text>
+  <text x="44" y="162" class="body-txt">• Closes the "1-Click Vaulted Token" ATO Loophole:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Hacker logs in → adds Mule Drop Address →</text>
+  <text x="54" y="200" class="mono">charges victim's Saved Stripe/Braintree Token</text>
+  <text x="44" y="223" class="body-txt">• Mandatory Cryptographic Binding Rule:</text>
+  <text x="54" y="243" class="mono">If Payment == Saved_Card &amp; Ship_Addr == NEW:</text>
+  <text x="54" y="261" class="mono" fill="#fca5a5">Require Full_PAN_ReEntry OR 3DS2 / Passkey</text>
+  <text x="44" y="284" class="body-txt">• Blocks silent 0-CVV token reuse when shipping</text>
+  <text x="54" y="302" class="body-txt">destination diverges from historical address graph</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 SAVED_CARD_NEW_ADDRESS_NO_STEPUP_BLOCKED</text>
+
+  <!-- Lane 2: Credential-Stuffing JA4 & Stored-Value Drain Breaker -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Credential-Stuffing &amp; Wallet Drain Gate (422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Breached-Password Bot Login Storms:</text>
+  <text x="442" y="182" class="mono">Check TLS_JA4_Fingerprint + HIBP_Breach_Hash</text>
+  <text x="442" y="200" class="mono">+ Residential_Proxy_ASN Velocity</text>
+  <text x="432" y="223" class="body-txt">• Loyalty Points &amp; Store-Credit Instant-Drain Lock:</text>
+  <text x="442" y="243" class="mono" fill="#fcd34d">Block &gt;$50 Wallet/Points Redemption on</text>
+  <text x="442" y="261" class="mono" fill="#fcd34d">Unrecognized Device within 24h of Login</text>
+  <text x="432" y="284" class="body-txt">• Blocks converting hijacked store credit into</text>
+  <text x="442" y="302" class="body-txt">digital gift cards, game codes or BOPIS pickup</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 NEW_DEVICE_WALLET_DRAIN_OR_BOT_JA4_BLOCKED</text>
+
+  <!-- Lane 3: Email/Phone Takeover Cool-Down & Carrier Reroute Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Profile-Change Cool-Down &amp; Reroute Lock (451)</text>
+  <text x="820" y="162" class="body-txt">• Defeats "Change Email/Phone → Checkout" ATO:</text>
+  <text x="830" y="182" class="mono">Email/Phone Change → Dual-Notify Old Contact</text>
+  <text x="830" y="200" class="mono">+ 24h Saved-Card &amp; Wallet Freeze Window</text>
+  <text x="820" y="223" class="body-txt">• In-Transit Carrier Reroute (`UPS MyChoice/FedEx`):</text>
+  <text x="830" y="243" class="mono" fill="#f9a8d4">Ship with Shipper_Release=False &amp; Direct_Addr</text>
+  <text x="830" y="261" class="body-txt">Blocks attacker ordering to victim's real home</text>
+  <text x="830" y="279" class="body-txt">address then redirecting package in transit</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 PROFILE_SWAP_COOLDOWN_OR_TRANSIT_REROUTE_HOLD</text>
+
+  <!-- Bottom Passkey / Network Token & Chargeback-Guarantee Shift Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Known-Device WebAuthn Passkey + 3DS2 Liability Shift + False-Decline Guarantee Rescue (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Trusted Home-Address Fast-Lane</text>
+  <text x="62" y="462" class="body-txt">When Ship_Addr matches `>=2`</text>
+  <text x="62" y="480" class="body-txt">historical settled orders &gt;60d</text>
+  <text x="62" y="498" class="body-txt">old: 0-friction 1-click pass;</text>
+  <text x="62" y="516" class="mono">99.4% VIP Checkout Approval</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Selective 3DS2 Liability Shift</text>
+  <text x="337" y="462" class="body-txt">Triggers 3DS2 Challenge ONLY</text>
+  <text x="337" y="480" class="body-txt">on `(Saved_Card + New_Addr)` or</text>
+  <text x="337" y="498" class="body-txt">high-risk device; shifts 100%</text>
+  <text x="337" y="516" class="mono">Fraud Liability to Card Issuer</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Passkey &amp; Apple/Google Pay</text>
+  <text x="622" y="462" class="body-txt">Replaces SMS OTP (vulnerable to</text>
+  <text x="622" y="480" class="body-txt">SIM-swap) with device-bound</text>
+  <text x="622" y="498" class="body-txt">FIDO2 Passkey cryptographic</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">Biometric Cryptogram Proof</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ False-Decline Rescue &amp; CE 3.0</text>
+  <text x="907" y="462" class="body-txt">Rescues good VIP travelers on</text>
+  <text x="907" y="480" class="body-txt">hotel Wi-Fi via Forter/Signifyd</text>
+  <text x="907" y="498" class="body-txt">100% chargeback guarantee;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-39% ATO Fraud &amp; Decline Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-39.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly ATO Fraud &amp; False-Decline Saved</text>
+  <text x="46" y="642" class="mono">$66,300 Saved / $170k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">Addr-Bound Token</text>
+  <text x="336" y="626" class="kpi-lbl">Saved-Card + New-Address Gate</text>
+  <text x="336" y="642" class="mono">Forces 3DS2 / Full-PAN Re-Entry</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">24h Freeze</text>
+  <text x="626" y="626" class="kpi-lbl">Post-Email/Phone Change Lock</text>
+  <text x="626" y="642" class="mono">0 Silent Account Hijack Drains</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">Direct-Address</text>
+  <text x="916" y="626" class="kpi-lbl">Carrier Reroute Lock (`No-Redirect`)</text>
+  <text x="916" y="642" class="mono">Defeats In-Transit Package Theft</text>
+</svg>

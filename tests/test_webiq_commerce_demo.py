@@ -20649,6 +20649,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("retail-media-network-bidding-sandbox", html_zh)
 
+    def test_ecommerce_account_takeover_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceAccountTakeoverEscrowPolicyInput,
+            evaluate_ecommerce_account_takeover_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_account_takeover_escrow_policy(
+            EcommerceAccountTakeoverEscrowPolicyInput(
+                quarterly_ato_chargeback_and_vip_false_decline_pool_usd=170000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "TRUSTED_ADDRESS_VAULTED_TOKEN_CHECKOUT_AUTHORIZED",
+        )
+
+        addr = evaluate_ecommerce_account_takeover_escrow_policy(
+            EcommerceAccountTakeoverEscrowPolicyInput(
+                saved_card_token_with_unverified_new_shipping_address=True
+            )
+        )
+        self.assertEqual(addr["status_code"], 403)
+        self.assertEqual(
+            addr["decision"],
+            "SAVED_CARD_NEW_ADDRESS_NO_STEPUP_BLOCKED",
+        )
+
+        wallet = evaluate_ecommerce_account_takeover_escrow_policy(
+            EcommerceAccountTakeoverEscrowPolicyInput(
+                credential_stuffing_ja4_or_new_device_wallet_giftcard_drain=True
+            )
+        )
+        self.assertEqual(wallet["status_code"], 422)
+        self.assertEqual(
+            wallet["decision"],
+            "NEW_DEVICE_WALLET_DRAIN_OR_BOT_JA4_BLOCKED",
+        )
+
+        profile = evaluate_ecommerce_account_takeover_escrow_policy(
+            EcommerceAccountTakeoverEscrowPolicyInput(
+                recent_email_phone_swap_within_24h_or_carrier_reroute_unlocked=True
+            )
+        )
+        self.assertEqual(profile["status_code"], 451)
+        self.assertEqual(
+            profile["decision"],
+            "PROFILE_SWAP_COOLDOWN_OR_TRANSIT_REROUTE_HOLD",
+        )
+
+        optim = evaluate_ecommerce_account_takeover_escrow_policy(
+            EcommerceAccountTakeoverEscrowPolicyInput(
+                quarterly_ato_chargeback_and_vip_false_decline_pool_usd=170000.0,
+                selective_3ds2_passkey_stepup_and_trusted_address_fastlane_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 66300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 103700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_account_takeover_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-account-takeover-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

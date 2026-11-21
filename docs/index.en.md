@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`291` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`292` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (15 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (42 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (43 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (108 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (67 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (24 guides)](#saas-finops-micropayments)
@@ -41,7 +41,7 @@
 | 15 | **E-Commerce Hybrid Search & Profit-Aware Merchandising (`Constructor.io / Algolia NeuralSearch / Vertex AI Retail`), Anti-"Swiss-Cheese" Broken-Size-Curve Demotion & `NER` Spec Lock (`>=40%` Core Size Curve, Pre-Retrieval Hard Filter & Net-Profit LTR `-37%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-hybrid-search-merchandising-swiss-cheese-stock-margin-escrow-agent-selection-faq.en.md) · [中文](ecommerce-hybrid-search-merchandising-swiss-cheese-stock-margin-escrow-agent-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (42 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (43 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -89,6 +89,7 @@
 | 40 | **Agent Payment & Checkout Protocol Selection (`Stripe Agent Toolkit SPT` vs `Visa Intelligent Commerce VIC` vs `Mastercard Agent Pay` vs `PayPal Agentic Toolkit` vs `Corporate Virtual Cards VCN`) Zero-PAN Isolation, Anti-3DS2-Deadlock & 5-Rail Smart Router (`-33%` Payment Loss) Agent Architecture Selection FAQ** | [English](agent-payment-checkout-protocol-stripe-spt-visa-vic-mastercard-paypal-vcn-selection-faq.en.md) · [中文](agent-payment-checkout-protocol-stripe-spt-visa-vic-mastercard-paypal-vcn-selection-faq.md) |
 | 41 | **E-Commerce Buy Now, Pay Later (`BNPL`: `Affirm / Klarna / Afterpay / PayPal Pay Later`), `MDR` Margin-Floor Gate & Partial-Return `Tail-First` Re-Amortization Escrow (`>=15%` Net Margin Lock, Carrier-Scan Snooze & Co-Subsidy) Agent Architecture Selection FAQ** | [English](ecommerce-bnpl-installment-mdr-margin-floor-partial-return-escrow-agent-selection-faq.en.md) · [中文](ecommerce-bnpl-installment-mdr-margin-floor-partial-return-escrow-agent-selection-faq.md) |
 | 42 | **E-Commerce Digital Gift Cards, Stored-Value Wallets & Corporate Gifting (`Rise.ai / Blackhawk / Stripe / Govalo`), Anti-Triangulation Fraud & `CARD Act / Escheatment` Escrow (`3DS2` Cascade Revocation, Promo-on-Gift-Card Ban & Dual Ledger `-37%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.en.md) · [中文](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.md) |
+| 43 | **E-Commerce Account Takeover (`ATO`), Saved-Card Abuse & Address-Mismatch Escrow (`Forter / Riskified / Signifyd / Stripe Radar`), Vaulted-Token + New-Address Step-Up `3DS2 / Full-PAN` Lock, 24h Profile-Swap Freeze & Carrier Reroute Shield (`-39%` Fraud & Decline Loss) Agent Architecture Selection FAQ** | [English](ecommerce-account-takeover-ato-saved-card-address-mismatch-escrow-agent-selection-faq.en.md) · [中文](ecommerce-account-takeover-ato-saved-card-address-mismatch-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (108 Guides)
