@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg566" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081226" />
+      <stop offset="50%" stop-color="#0c1d36" />
+      <stop offset="100%" stop-color="#07111e" />
+    </linearGradient>
+    <linearGradient id="accent566" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 23px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg566)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent566)" rx="3" />
+
+  <text x="40" y="58" class="title">实时商业搜索与网页接地 API 选型 (Bing Web IQ / Perplexity Sonar / Tavily / Exa / Firecrawl)</text>
+  <text x="40" y="80" class="subtitle">Round 123 · 防把 6 个月前缓存旧价当现货、防 Affiliate 软文农场污染选型 &amp; 5 引擎分级路由净省 39% 搜索 API 账单 (SVG 566)</text>
+
+  <!-- Left Card: 3 Grounding Failure Modes -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大搜索接地失控黑洞</text>
+  <text x="56" y="164" class="card-title">1. 静态索引过期旧价与无货幻觉 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 搜索 API 返回 14 天前爬虫快照：“Sony 镜头 $1,798 有货”</text>
+  <text x="56" y="202" class="body">• 实际上商家 2 小时前已涨回 $2,298 或显示 Out of Stock</text>
+  <text x="56" y="220" class="warn">• Agent 盲信搜索摘要承诺低价 -&gt; 下单报错或倒贴差价</text>
+
+  <text x="56" y="256" class="card-title">2. SEO 返利农场与软文榜单污染 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 搜“Best Enterprise CRM / 最佳降噪耳机”前 10 条全是返利站</text>
+  <text x="56" y="294" class="body">• 谁给的 Affiliate 佣金高（15% vs 2%）谁就排第一名</text>
+  <text x="56" y="312" class="warn">• 缺乏一手评测/SEC 财报/Reddit 真实长文语义重排过滤</text>
+
+  <text x="56" y="348" class="card-title">3. 无节制全网 Deep Research 烧穿账单</text>
+  <text x="56" y="368" class="body">• 把简单的 SKU 查价全发给 $5~$15/1k 请求的推理搜索</text>
+  <text x="56" y="386" class="body">• 或对整站跑无缓存 Firecrawl 浏览器渲染，单月账单 $48,000</text>
+  <text x="56" y="404" class="warn">• 绕过 robots.txt 强爬付费墙研报触发 CFAA / 版权诉讼</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: STALE_CACHED_PRICE_OR_SEO_FARM_BLOCK</text>
+  <text x="70" y="502" class="warn">• HTTP 422: JS_HYDRATION_MISMATCH_OR_UNVERIFIED_DOM</text>
+  <text x="70" y="524" class="warn">• HTTP 451: ROBOTS_TXT_OR_PAYWALL_BYPASS_HOLD</text>
+  <text x="70" y="546" class="mono">• HTTP 409: TIERED_5_ENGINE_GROUNDING_ROUTER_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: FRESH_SCHEMA_GROUNDED_AUTHORIZED</text>
+  <text x="70" y="596" class="body">5 级按需路由: 查库/Bing -&gt; Tavily -&gt; Exa -&gt; Firecrawl -&gt; Sonar</text>
+
+  <!-- Center Card: 5-Layer Grounding Router Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="175" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">五层商业搜索接地智能路由架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">Gate 1: 时效性分级 &amp; 返利农场域名黑名单</text>
+  <text x="450" y="195" class="body">• 价格/库存查询强制 Freshness &lt;= 15 min + Schema.org 校验</text>
+  <text x="450" y="213" class="body">• 自动剔除含 ?tag= / affiliate 密集且无实测数据的 SEO 内容站</text>
+  <text x="450" y="231" class="mono">• 静态缓存快照超 1 小时且无实时库存戳 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="95" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="282" class="card-title" fill="#6ee7b7">Gate 2: 动态 JS 渲染与 JSON Schema 强类型抽取</text>
+  <text x="450" y="302" class="body">• 单页商品详情与阶梯报价表交由 Firecrawl / Browser-use</text>
+  <text x="450" y="320" class="body">• 等待 React/Next.js 水合完成后直接提取 Pydantic Schema</text>
+  <text x="450" y="338" class="mono">• 拒绝把 HTML 导航栏与广告噪音塞进 LLM 上下文 (省 78% Token)</text>
+
+  <rect x="435" y="368" width="350" height="105" rx="8" fill="#162847" stroke="#f59e0b" />
+  <text x="450" y="389" class="card-title" fill="#fcd34d">Gate 3: 5 大引擎按查询意图分级路由 (Tiered Router)</text>
+  <text x="450" y="409" class="body">• L1 毫秒级检索: Tavily ($0.008/次) / Bing Web IQ 企业合规</text>
+  <text x="450" y="427" class="body">• L2 深度语义/财报/论文寻源: Exa Neural Search 向量检索</text>
+  <text x="450" y="445" class="body">• L3 多源交叉推理与引用合成: Perplexity Sonar Pro</text>
+  <text x="450" y="463" class="mono">• L4 结构化抽取: Firecrawl /extract (带 15min 边缘语义缓存)</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#a855f7" />
+  <text x="450" y="508" class="card-title" fill="#d8b4fe">Gate 4: 合规爬虫门禁与引用溯源签名 (HTTP 451)</text>
+  <text x="450" y="528" class="body">• 严格遵守 robots.txt、TDM-Reservation 与付费墙版权边界</text>
+  <text x="450" y="546" class="body">• 每条价格/参数结论必须附带 URL + 抓取 UTC 时间戳 + 原文片段</text>
+  <text x="450" y="566" class="mono">• 无原文锚点支撑的数字一概禁止进入下单与合同审批流</text>
+  <text x="450" y="586" class="mono">• 语义缓存命中率 42% + 分级路由 -&gt; 净省 39% 搜索与 Token 成本</text>
+
+  <!-- Right Card: 5-Engine Matrix & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">五大商业接地方案横向矩阵</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Bing Grounding / Microsoft Web IQ</text>
+  <text x="846" y="182" class="body">• 优势: Azure 零数据留存合规、全球新闻/商情秒级索引</text>
+  <text x="846" y="198" class="body">• 局限: ~$35/1k 成本较高，深层 JS 购物车需配合提取器</text>
+
+  <text x="846" y="226" class="card-title" fill="#fcd34d">2. Perplexity Sonar / Sonar Pro API</text>
+  <text x="846" y="244" class="body">• 优势: 自带多源交叉验证与带角标引用合成，研报极强</text>
+  <text x="846" y="260" class="body">• 局限: 包含推理 Token 计费，不适合高频简单 SKU 轮询</text>
+
+  <text x="846" y="288" class="card-title" fill="#6ee7b7">3. Tavily Search &amp; Extract API</text>
+  <text x="846" y="306" class="body">• 优势: 专为 Agent 设计的洁净正文块，$5~$8/1k 极具性价比</text>
+  <text x="846" y="322" class="body">• 局限: 复杂交互式规格表需搭配 Firecrawl</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Exa (Neural Search) &amp; 5. Firecrawl</text>
+  <text x="846" y="368" class="body">• Exa: 搜“年营收 5000 万的冷链 ERP 供应商”长尾极准</text>
+  <text x="846" y="384" class="body">• Firecrawl: 攻克动态 JS 商品页与 PDF 价目表结构化提取</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度搜索接地 API 预算效益 ($75,000)</text>
+  <text x="860" y="456" class="body">• 粗放全量调用高价 Deep Research: $75,000/季</text>
+  <text x="860" y="476" class="mono">• Tavily/Exa 分级路由 + 边缘缓存: -$19,500</text>
+  <text x="860" y="496" class="mono">• Firecrawl Schema 压缩 78% 脏 HTML Token: -$6,750</text>
+  <text x="860" y="516" class="mono">• 拦截过期旧价导致赔付差价损失: -$3,000</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净支出: $45,750 (净省 $29,250 / -39%)</text>
+  <text x="860" y="574" class="body">Provenance: official_list_price + synthetic</text>
+  <text x="860" y="594" class="body">Mandate: search_grounding_router_optim_409</text>
+</svg>

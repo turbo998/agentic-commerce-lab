@@ -17299,6 +17299,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("vacation-rental-str-escrow-sandbox", html_zh)
 
+    def test_enterprise_search_grounding_router_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EnterpriseSearchGroundingRouterPolicyInput,
+            evaluate_enterprise_search_grounding_router_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_enterprise_search_grounding_router_policy(
+            EnterpriseSearchGroundingRouterPolicyInput(
+                quarterly_search_grounding_and_context_token_pool_usd=75000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "FRESH_SCHEMA_GROUNDED_AND_ZDR_VERIFIED_AUTHORIZED",
+        )
+
+        stale = evaluate_enterprise_search_grounding_router_policy(
+            EnterpriseSearchGroundingRouterPolicyInput(
+                stale_cached_search_snippet_price_or_affiliate_seo_farm_polluted=True
+            )
+        )
+        self.assertEqual(stale["status_code"], 403)
+        self.assertEqual(
+            stale["decision"],
+            "STALE_CACHED_SEARCH_SNIPPET_PRICE_OR_AFFILIATE_SEO_FARM_BLOCKED",
+        )
+
+        dom = evaluate_enterprise_search_grounding_router_policy(
+            EnterpriseSearchGroundingRouterPolicyInput(
+                unhydrated_js_dom_accessory_price_mismatch_or_out_of_stock_variant=True
+            )
+        )
+        self.assertEqual(dom["status_code"], 422)
+        self.assertEqual(
+            dom["decision"],
+            "UNHYDRATED_JS_DOM_ACCESSORY_PRICE_MISMATCH_OR_OUT_OF_STOCK_VARIANT_BLOCKED",
+        )
+
+        comp = evaluate_enterprise_search_grounding_router_policy(
+            EnterpriseSearchGroundingRouterPolicyInput(
+                robots_txt_paywall_bypass_or_non_zdr_pii_query_violation=True
+            )
+        )
+        self.assertEqual(comp["status_code"], 451)
+        self.assertEqual(
+            comp["decision"],
+            "ROBOTS_TXT_PAYWALL_BYPASS_OR_NON_ZDR_PII_QUERY_HOLD",
+        )
+
+        optim = evaluate_enterprise_search_grounding_router_policy(
+            EnterpriseSearchGroundingRouterPolicyInput(
+                quarterly_search_grounding_and_context_token_pool_usd=75000.0,
+                five_engine_tiered_router_and_firecrawl_schema_cache_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 29250.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 45750.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("enterprise_search_grounding_router_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("enterprise-search-grounding-router-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

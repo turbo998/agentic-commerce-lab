@@ -2,11 +2,11 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`241` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`242` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
-- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (11 guides)](#platform-grounding)
+- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (12 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (39 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (80 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (60 guides)](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (11 Guides)
+## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (12 Guides)
 
 > Platform selection (Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify), real-time search grounding (Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl), catalog feed barriers, A2UI isolation, and Web Bot Auth vs WAF governance.
 
@@ -35,6 +35,7 @@
 | 9 | **Social & Search Native Checkout Architecture Selection FAQ: Google AI Mode / Gemini (`UCP`) vs. TikTok Buy Direct (`UCP Brand-as-MoR`) vs. Shopify Fall '26 Multi-Brand Checkout vs. Walmart Agent Gateway (`MCP`)** | [English](social-search-native-checkout-google-ucp-vs-tiktok-buy-direct-shopify-walmart-mcp-selection-faq.en.md) · [中文](social-search-native-checkout-google-ucp-vs-tiktok-buy-direct-shopify-walmart-mcp-selection-faq.md) |
 | 10 | **Pre-Purchase Verification & Anti-Wrong-Buy Gate Architecture Selection FAQ: Eliminating the "54% of Failed Runs Still Purchase" Vulnerability Identified in the Visa Agentic Commerce Benchmark** | [English](ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.en.md) · [中文](ecommerce-pre-purchase-verification-anti-wrong-buy-visa-benchmark-gate-selection-faq.md) |
 | 11 | **E-Commerce Generative Engine Optimization (`GEO / AEO`), Structured `UCP / Schema.org` Feeds & Anti-Review-Bombing Grounding (`Microsoft Web IQ / Google AI Mode / ChatGPT Search / Bazaarvoice`) Edge `SSR JSON-LD`, `RFC 9421` Bot Split & `FTC 16 CFR 465` Agent Architecture Selection FAQ** | [English](ecommerce-geo-aeo-structured-feed-verified-review-grounding-agent-selection-faq.en.md) · [中文](ecommerce-geo-aeo-structured-feed-verified-review-grounding-agent-selection-faq.md) |
+| 12 | **Real-Time Commercial Search & Web Grounding APIs (`Microsoft Bing Grounding / Web IQ` vs `Perplexity Sonar Pro` vs `Tavily` vs `Exa` vs `Firecrawl`) Anti-Stale-Cache Pricing, Anti-Affiliate-SEO-Farm & 5-Engine Tiered Router (`-39%` API Cost) Agent Architecture Selection FAQ** | [English](enterprise-search-grounding-api-bing-webiq-perplexity-tavily-exa-firecrawl-selection-faq.en.md) · [中文](enterprise-search-grounding-api-bing-webiq-perplexity-tavily-exa-firecrawl-selection-faq.md) |
 
 <a id="payments-mandates"></a>
 ## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (39 Guides)
