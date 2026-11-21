@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`337` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`338` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (20 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (48 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (126 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (127 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (75 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (28 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (40 guides)](#tax-fx-privacy-disputes)
@@ -102,7 +102,7 @@
 | 48 | **Omnichannel `SoftPOS` (`Tap to Pay on iPhone & Android`), Anti-Unlinked-Refund Embezzlement & Offline `EMV` Escrow (`Adyen Terminal API / Stripe Terminal / Shopify POS / Square`), Referenced-Refund `EMVCo PAR` Lock, Manual Keyed-Entry Veto & `$150` `SAF` Cap (`-38%` Store Payment Loss) Agent Architecture Selection FAQ** | [English](omnichannel-softpos-tap-to-pay-unlinked-refund-offline-emv-escrow-agent-selection-faq.en.md) · [中文](omnichannel-softpos-tap-to-pay-unlinked-refund-offline-emv-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (126 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (127 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -234,6 +234,7 @@
 | 124 | **Corporate Travel & OTA Car Rental Settlement, `360° CV` Damage-Diff Audit, Fuel-Gauge `OCR` & Counter-`LDW` Upsell Escrow (`Hertz / Enterprise / Avis / Sixt / Turo / Navan`), Pre-Existing Scratch Deflection, Time-Bounded Plate Toll Binding & Parking-Inclusive `TCO` Routing (`-36%` Mobility Loss) Agent Architecture Selection FAQ** | [English](ota-car-rental-damage-vision-audit-toll-fuel-ldw-escrow-agent-selection-faq.en.md) · [中文](ota-car-rental-damage-vision-audit-toll-fuel-ldw-escrow-agent-selection-faq.md) |
 | 125 | **Pet E-Commerce, `Autoship` & Veterinary `Rx` Verification Escrow (`Chewy / Covetrus / Petco / Shopify`), Species & Weight-Band Dosing Gate, `SIOC` Heavy-Kibble Split-Packing, `FDA VCPR` e-Prescribe & Compassionate Bereavement Refund (`-36%` Pet Retail Loss) Agent Architecture Selection FAQ** | [English](ecommerce-pet-autoship-vet-rx-verification-heavy-kibble-split-escrow-agent-selection-faq.en.md) · [中文](ecommerce-pet-autoship-vet-rx-verification-heavy-kibble-split-escrow-agent-selection-faq.md) |
 | 126 | **Fitness, Boutique Studio & MedSpa Membership, Class-Slot Hoarding & Package Proration Escrow (`Mindbody / Mariana Tek / Zenoti / ClassPass`), Prime-Slot Yield Cap, Retail-Rate Package Refund, `FTC Click-to-Cancel` & `$15/Mo` Freeze (`-36%` Studio Loss) Agent Architecture Selection FAQ** | [English](wellness-fitness-medspa-membership-class-noshow-package-proration-escrow-agent-selection-faq.en.md) · [中文](wellness-fitness-medspa-membership-class-noshow-package-proration-escrow-agent-selection-faq.md) |
+| 127 | **Limited-Edition Sneaker & Collectible Drop Raffle (`EQL / Nike SNKRS`) & Authenticated Consignment Marketplace Escrow (`StockX / GOAT / eBay AG`), Post-Close `DPBC + PAR` Sybil Bot Purge, `15%` Seller-Flake Auto-Rematch & `NTAG 424 NFC` Tamper Lock (`-37%` Drop & Resale Loss) Agent Architecture Selection FAQ** | [English](ecommerce-sneaker-collectible-drop-raffle-authentication-seller-flake-escrow-agent-selection-faq.en.md) · [中文](ecommerce-sneaker-collectible-drop-raffle-authentication-seller-flake-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (75 Guides)

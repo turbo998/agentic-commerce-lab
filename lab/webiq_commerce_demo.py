@@ -31713,6 +31713,82 @@ def evaluate_b2b_saas_cloud_marketplace_offer_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceSneakerDropRaffleAuthPolicyInput:
+    quarterly_bot_scalping_seller_flake_and_replica_swap_pool_usd: float = 210000.0
+    sybil_bot_jiggled_address_or_virtual_card_par_cluster: bool = False
+    seller_48h_ship_flake_on_price_spike_or_unbacked_ask_collateral: bool = False
+    failed_uv_stitch_authentication_or_cut_ntag424_nfc_return_swap: bool = False
+    prior_loss_karma_boost_auto_rematch_and_taxfree_vault_ready: bool = False
+
+
+def evaluate_ecommerce_sneaker_drop_raffle_auth_policy(
+    policy_input: EcommerceSneakerDropRaffleAuthPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_bot_scalping_seller_flake_and_replica_swap_pool_usd
+        ),
+    )
+    if policy_input.failed_uv_stitch_authentication_or_cut_ntag424_nfc_return_swap:
+        return {
+            "status_code": 451,
+            "decision": "COUNTERFEIT_REPLICA_DETECTED_OR_CUT_NFC_TAG_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sybil_bot_jiggled_address_or_virtual_card_par_cluster:
+        return {
+            "status_code": 403,
+            "decision": "SYBIL_BOT_ADDRESS_JIGGLE_OR_VIRTUAL_BIN_CLUSTER",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.seller_48h_ship_flake_on_price_spike_or_unbacked_ask_collateral:
+        return {
+            "status_code": 422,
+            "decision": "SELLER_48H_SHIP_FLAKE_OR_UNBACKED_ASK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.prior_loss_karma_boost_auto_rematch_and_taxfree_vault_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "KARMA_RAFFLE_AUTO_REMATCH_AND_NFC_VAULT_CONFIRM",
+            "mandate_token": "sneaker_drop_auth_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_HUMAN_DRAW_AND_NFC_AUTHENTICATED_AUTHORIZED",
+        "mandate_token": "sneaker_drop_auth_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -43326,6 +43402,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_sneaker_drop_raffle_auth_guard = {
+        "authorized_200": evaluate_ecommerce_sneaker_drop_raffle_auth_policy(
+            EcommerceSneakerDropRaffleAuthPolicyInput()
+        ),
+        "sybil_bot_jiggle_403": evaluate_ecommerce_sneaker_drop_raffle_auth_policy(
+            EcommerceSneakerDropRaffleAuthPolicyInput(
+                sybil_bot_jiggled_address_or_virtual_card_par_cluster=True
+            )
+        ),
+        "seller_flake_spike_422": evaluate_ecommerce_sneaker_drop_raffle_auth_policy(
+            EcommerceSneakerDropRaffleAuthPolicyInput(
+                seller_48h_ship_flake_on_price_spike_or_unbacked_ask_collateral=True
+            )
+        ),
+        "replica_or_cut_nfc_451": evaluate_ecommerce_sneaker_drop_raffle_auth_policy(
+            EcommerceSneakerDropRaffleAuthPolicyInput(
+                failed_uv_stitch_authentication_or_cut_ntag424_nfc_return_swap=True
+            )
+        ),
+        "karma_rematch_and_vault_409": evaluate_ecommerce_sneaker_drop_raffle_auth_policy(
+            EcommerceSneakerDropRaffleAuthPolicyInput(
+                prior_loss_karma_boost_auto_rematch_and_taxfree_vault_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -43673,6 +43775,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "wellness_fitness_medspa_membership_guard": wellness_fitness_medspa_membership_guard,
         "ecommerce_sales_tax_holiday_exemption_guard": ecommerce_sales_tax_holiday_exemption_guard,
         "b2b_saas_cloud_marketplace_offer_guard": b2b_saas_cloud_marketplace_offer_guard,
+        "ecommerce_sneaker_drop_raffle_auth_guard": ecommerce_sneaker_drop_raffle_auth_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -61355,6 +61458,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="cloudmktp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CLOUD_COMMIT_PROPENSITY_AND_MULTI_YEAR_FPS_OFFER_CONFIRM · Mandate: cloud_mktp_offer_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 219 Limited Drop Raffle (EQL / SNKRS) & Authenticated Resale (StockX / GOAT) Escrow (#338) -->
+      <div class="finops-box" id="ecommerce-sneaker-drop-raffle-auth-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">👟 限量球鞋潮玩“抽签发售 (EQL / SNKRS)”与保真寄售市场 (StockX / GOAT / 得物) 沙盒</div>
+            <div class="finops-sub">Round 219 (#338) · 关闸后 USPS DPBC 地址码 + EMVCo PAR 清洗 2 万黄牛傀儡号 (HTTP 403) + 卖家 15% 违约保证金罚没并自动补贴下一顺位卖家保买家原价收货 (HTTP 422) + 4K 鉴别录像与 NTAG 424 NFC 防拆扣防调包 (HTTP 451) + 连败加权与免税 Vault 净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="sneakerdrop-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度黄牛外挂包场导致真粉流失与 CDN 过载、二级暴涨卖家恶意鸽单毁约与买真退假调包损耗池 ($)
+            <input type="number" id="sneakerdrop-gross-input" value="210000" min="10000" step="5000" oninput="recalcEcommerceSneakerDropRaffleAuthSandbox()" />
+          </label>
+          <label>报名期静默吸纳 + 摇号前 USPS 11位 DPBC 物理门牌码与 29位 EMVCo PAR 主卡反女巫去重
+            <select id="sneakerdrop-bot-select" onchange="recalcEcommerceSneakerDropRaffleAuthSandbox()">
+              <option value="pass">关闸后按 DPBC 门牌码与 PAR 银行主卡清洗完外挂 + 99.8% 真实人类收藏家 (合规)</option>
+              <option value="block_403">黄牛工作室改写地址标点符号 (Apt 1 / #001) 加 500 张虚拟子卡派 2 万个傀儡号抢空限量池 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>寄售卖家挂单 15% 履约保证金预授权与暴涨鸽单 (48h 未发货) 自动补贴下一顺位卖家
+            <select id="sneakerdrop-flake-select" onchange="recalcEcommerceSneakerDropRaffleAuthSandbox()">
+              <option value="pass">卖家 48h 内准时揽收 (或罚没违约卖家 15% 保证金自动补贴盘口下一最低 Ask 卖家保原价) (合规)</option>
+              <option value="block_422">球鞋次日从 $300 暴涨至 $550 卖家故意鸽单不发货导致买家被强制退单买不起鞋 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>鉴别中心多光谱 UV/走线 4K 开箱核验与 NTAG 424 DNA 加密防拆 NFC 吊牌防调包锁
+            <select id="sneakerdrop-nfc-select" onchange="recalcEcommerceSneakerDropRaffleAuthSandbox()">
+              <option value="pass">鉴别实验室 100% 验真通过 + 系紧 NTAG 424 导电防拆 NFC 吊牌与鞋底纹理哈希 (安全)</option>
+              <option value="block_451">卖家寄来高仿假鞋冲关 或 买家收到真鞋后剪断防伪扣套在 $40 莆田假鞋上申请退货拒付 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>EQL 真实粉丝历次未中签“连败幸运值加权 (2.5x)”与特拉华免税恒温金库 (Vault) 零物流交易
+            <select id="sneakerdrop-opt-select" onchange="recalcEcommerceSneakerDropRaffleAuthSandbox()">
+              <option value="enabled" selected>连败老粉享 2.5x 中签权重 + 仓内现货 Instant 秒发 + 免税 Vault 数字过户 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统先到先得拼手速抢购 + 每次转手来回寄两趟顺丰快递 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度黄牛包场与鸽单调包损耗池</div>
+            <div class="finops-kpi-val" id="sneakerdrop-gross-kpi">$210,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">反女巫清洗与自动补单后净损耗</div>
+            <div class="finops-kpi-val" id="sneakerdrop-net-kpi" style="color:#6ee7b7;">$132,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省鸽单赔付与调包拒付</div>
+            <div class="finops-kpi-val" id="sneakerdrop-savings-kpi" style="color:#38bdf8;">$77,700</div>
+          </div>
+        </div>
+        <div id="sneakerdrop-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 KARMA_RAFFLE_AUTO_REMATCH_AND_NFC_VAULT_CONFIRM · Mandate: sneaker_drop_auth_escrow_optim_409
         </div>
       </div>
 
@@ -82859,6 +83019,79 @@ function recalcB2BSaasCloudMarketplaceOfferSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_MACC_EDP_PRIVATE_OFFER_AND_TENANT_AUTHORIZED · Mandate: cloud_mktp_offer_escrow_200';
+}}
+
+function recalcEcommerceSneakerDropRaffleAuthSandbox() {{
+  const grossInput = document.getElementById('sneakerdrop-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '210000'));
+  const botGate = document.getElementById('sneakerdrop-bot-select').value;
+  const flakeGate = document.getElementById('sneakerdrop-flake-select').value;
+  const nfcGate = document.getElementById('sneakerdrop-nfc-select').value;
+  const optMode = document.getElementById('sneakerdrop-opt-select').value;
+
+  const grossKpi = document.getElementById('sneakerdrop-gross-kpi');
+  const netKpi = document.getElementById('sneakerdrop-net-kpi');
+  const savingsKpi = document.getElementById('sneakerdrop-savings-kpi');
+  const statusKpi = document.getElementById('sneakerdrop-status-kpi');
+  const banner = document.getElementById('sneakerdrop-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (nfcGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 COUNTERFEIT_REPLICA_DETECTED_OR_CUT_NFC_TAG_HOLD · Mandate: null';
+    return;
+  }}
+  if (botGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SYBIL_BOT_ADDRESS_JIGGLE_OR_VIRTUAL_BIN_CLUSTER · Mandate: null';
+    return;
+  }}
+  if (flakeGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SELLER_48H_SHIP_FLAKE_OR_UNBACKED_ASK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 KARMA_RAFFLE_AUTO_REMATCH_AND_NFC_VAULT_CONFIRM · Mandate: sneaker_drop_auth_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_HUMAN_DRAW_AND_NFC_AUTHENTICATED_AUTHORIZED · Mandate: sneaker_drop_auth_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

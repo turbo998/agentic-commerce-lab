@@ -23731,6 +23731,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-saas-cloud-marketplace-offer-sandbox", html_zh)
 
+    def test_ecommerce_sneaker_drop_raffle_auth_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceSneakerDropRaffleAuthPolicyInput,
+            evaluate_ecommerce_sneaker_drop_raffle_auth_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_sneaker_drop_raffle_auth_policy(
+            EcommerceSneakerDropRaffleAuthPolicyInput(
+                quarterly_bot_scalping_seller_flake_and_replica_swap_pool_usd=210000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_HUMAN_DRAW_AND_NFC_AUTHENTICATED_AUTHORIZED",
+        )
+
+        bot = evaluate_ecommerce_sneaker_drop_raffle_auth_policy(
+            EcommerceSneakerDropRaffleAuthPolicyInput(
+                sybil_bot_jiggled_address_or_virtual_card_par_cluster=True
+            )
+        )
+        self.assertEqual(bot["status_code"], 403)
+        self.assertEqual(
+            bot["decision"],
+            "SYBIL_BOT_ADDRESS_JIGGLE_OR_VIRTUAL_BIN_CLUSTER",
+        )
+
+        flake = evaluate_ecommerce_sneaker_drop_raffle_auth_policy(
+            EcommerceSneakerDropRaffleAuthPolicyInput(
+                seller_48h_ship_flake_on_price_spike_or_unbacked_ask_collateral=True
+            )
+        )
+        self.assertEqual(flake["status_code"], 422)
+        self.assertEqual(
+            flake["decision"],
+            "SELLER_48H_SHIP_FLAKE_OR_UNBACKED_ASK_BLOCKED",
+        )
+
+        nfc = evaluate_ecommerce_sneaker_drop_raffle_auth_policy(
+            EcommerceSneakerDropRaffleAuthPolicyInput(
+                failed_uv_stitch_authentication_or_cut_ntag424_nfc_return_swap=True
+            )
+        )
+        self.assertEqual(nfc["status_code"], 451)
+        self.assertEqual(
+            nfc["decision"],
+            "COUNTERFEIT_REPLICA_DETECTED_OR_CUT_NFC_TAG_HOLD",
+        )
+
+        optim = evaluate_ecommerce_sneaker_drop_raffle_auth_policy(
+            EcommerceSneakerDropRaffleAuthPolicyInput(
+                quarterly_bot_scalping_seller_flake_and_replica_swap_pool_usd=210000.0,
+                prior_loss_karma_boost_auto_rematch_and_taxfree_vault_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 77700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 132300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_sneaker_drop_raffle_auth_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-sneaker-drop-raffle-auth-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

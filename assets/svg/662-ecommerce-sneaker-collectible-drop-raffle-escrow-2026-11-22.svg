@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg662" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081424"/>
+    </linearGradient>
+    <linearGradient id="hdr662" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg662)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr662)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 219 · Limited Drop Raffle (`EQL / SNKRS`) &amp; Authenticated Resale (`StockX / GOAT`) Escrow</text>
+  <text x="48" y="74" class="sub">EQL / Nike SNKRS / StockX / GOAT / eBay AG · Post-Close Sybil Dedup · 15% Seller-Flake Collateral · NFC Tamper Tag (-37% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #662 · FAQ #338</text>
+
+  <!-- Lane 1: Sybil Bot Farm ("10,000 Jiggled Addresses + Virtual Cards") Raffle Rigging Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Post-Close Sybil Bot Dedup (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Defeats `XYZ Apt 1` / `123 Main #A` Address Jiggling:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Cluster by `USPS_DPBC_11 + Funding_Account_PAR`</text>
+  <text x="54" y="200" class="mono">+ `AppAttest / PlayIntegrity` Hardware Token!</text>
+  <text x="44" y="223" class="body-txt">• Silent Raffle-Close Purge (No Real-Time Signal):</text>
+  <text x="54" y="243" class="mono">Accept Bot Entries Silently → Purge Before Draw!</text>
+  <text x="44" y="266" class="body-txt">• Prevents bot developers probing real-time WAF</text>
+  <text x="54" y="286" class="body-txt">blocks while ensuring 100% of limited drops go</text>
+  <text x="54" y="304" class="body-txt">to genuine human collectors</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 SYBIL_BOT_ADDRESS_JIGGLE_OR_VIRTUAL_BIN_CLUSTER</text>
+
+  <!-- Lane 2: Seller Flaking When Market Price Spikes +200% & Instant Auto-Rematch Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Seller-Flake Collateral &amp; Rematch (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Seller Cancelling When Shoe Jumps $250→$600:</text>
+  <text x="442" y="182" class="mono">Pre-Auth `15% Seller Flake Penalty` on Ask Listing!</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Capture Penalty If Not Scanned by Carrier in 48h</text>
+  <text x="432" y="223" class="body-txt">• Seamless Order-Book Next-Ask Auto-Rematch:</text>
+  <text x="442" y="243" class="mono">Use Flake Penalty to Subsidize Next Lowest Ask</text>
+  <text x="432" y="266" class="body-txt">• Buyer still receives their authenticated pair</text>
+  <text x="442" y="286" class="body-txt">at their original locked purchase price instead</text>
+  <text x="442" y="304" class="body-txt">of suffering a cancelled order after a price spike</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 SELLER_48H_SHIP_FLAKE_OR_UNBACKED_ASK_BLOCKED</text>
+
+  <!-- Lane 3: Authentication Hub Replica Swap & Tamper-Evident NFC Tag Removal Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Lab Auth &amp; `NFC` Tamper Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Dual-Camera Unboxing &amp; UV/Weight/Stitching Gate:</text>
+  <text x="830" y="182" class="mono">Hold Seller Payout Until Hub `Auth_Pass == TRUE`!</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Attach Cryptographic `NTAG 424 DNA` Tamper Tag</text>
+  <text x="820" y="223" class="body-txt">• Stops Buyer "Received Real, Returned Fake" Swap:</text>
+  <text x="830" y="243" class="body-txt">Any post-delivery dispute requires intact physical</text>
+  <text x="830" y="261" class="body-txt">`NFC` security loop &amp; matching sole micro-texture</text>
+  <text x="820" y="284" class="body-txt">• Defeats 1:1 counterfeit swaps and chargebacks</text>
+  <text x="830" y="302" class="body-txt">on $1,500 sneakers, trading cards, and blind boxes</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 COUNTERFEIT_REPLICA_DETECTED_OR_CUT_NFC_TAG_HOLD</text>
+
+  <!-- Bottom EQL "Equalizer" Karma Boost & Vault Instant-Custody Trading -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. `EQL` Prior-Loss Karma Weighting + Climate-Controlled Vault Instant Trading (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Prior-Loss Karma Boost</text>
+  <text x="62" y="462" class="body-txt">Genuine fans who took `L`s</text>
+  <text x="62" y="480" class="body-txt">on last 4 drops get `2.5x`</text>
+  <text x="62" y="498" class="body-txt">draw weight on next launch;</text>
+  <text x="62" y="516" class="mono">3.4x Higher VIP Retention</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Pre-Verified Express Ship</text>
+  <text x="337" y="462" class="body-txt">Pre-authenticated inventory</text>
+  <text x="337" y="480" class="body-txt">stored in hub (`GOAT Instant`</text>
+  <text x="337" y="498" class="body-txt">/ `StockX Xpress`) ships same</text>
+  <text x="337" y="516" class="mono">day w/ 0% seller flake risk</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ PSA/BGS Vault Trading</text>
+  <text x="622" y="462" class="body-txt">Graded cards &amp; collectibles</text>
+  <text x="622" y="480" class="body-txt">trade title instantly inside</text>
+  <text x="622" y="498" class="body-txt">insured Delaware tax-free vault;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">$0 Shipping &amp; $0 Sales Tax</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Pre-Auth Auto-Capture Draw</text>
+  <text x="907" y="462" class="body-txt">Holds `3DS2 SetupIntent` on</text>
+  <text x="907" y="480" class="body-txt">entry; winners capture in</text>
+  <text x="907" y="498" class="body-txt">100ms (0 unpaid raffle wins);</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Drop &amp; Resale Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Bot, Flake &amp; Swap Loss Saved</text>
+  <text x="46" y="642" class="mono">$77,700 Saved / $210k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">99.8% Human</text>
+  <text x="336" y="626" class="kpi-lbl">Post-Close DPBC + PAR Sybil Purge</text>
+  <text x="336" y="642" class="mono">Zero WAF CDN Crash on Drop</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% Fulfill</text>
+  <text x="626" y="626" class="kpi-lbl">15% Flake Penalty Funds Next-Ask</text>
+  <text x="626" y="642" class="mono">Buyer Price Locked on Spikes</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 Fake Swaps</text>
+  <text x="916" y="626" class="kpi-lbl">NTAG 424 NFC Tag + Unboxing Video</text>
+  <text x="916" y="642" class="mono">Wins 100% CE 3.0 Disputes</text>
+</svg>
