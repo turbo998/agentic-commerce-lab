@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`231` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`232` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（10 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（38 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（75 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（76 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（57 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（21 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（30 篇）](#tax-fx-privacy-disputes)
@@ -82,7 +82,7 @@
 | 38 | **音乐节与体育场馆无现金 RFID 手环充值、防默认 25% 小费刺客与余额零手续费秒退（Music Festival & Stadium Cashless RFID Wristband, Anti-Tip-Creep & Auto-Refund Escrow：Coachella / Tomorrowland / Intellitix / 草莓音乐节）“防散场剩 $19 收 $5 退费手续费吞没沉淀款、防买瓶水 POS 屏默认勾 25% 小费与直绑免充值”Agent 架构选型 FAQ** | [中文](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.md) · [English](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（75 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（76 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -163,6 +163,7 @@
 | 73 | **乐器先租后买（Rent-to-Own）、学校管弦乐团指定型号防坑与钢琴恒温搬运/音板湿度托管（Musical Instrument Rent-to-Own, School-Band Spec & Piano Humidity Escrow：Music & Arts / Sweetwater / Steinway / Yamaha / 柏斯琴行）“防 $119 劣质不可调音玩具小提琴（VSO）被乐团老师退回、防换大尺寸提琴清零历史租金本金及搬琴到楼下按台阶每步坐地起价 $25”Agent 架构选型 FAQ** | [中文](musical-instrument-rent-to-own-piano-humidity-escrow-agent-selection-faq.md) · [English](musical-instrument-rent-to-own-piano-humidity-escrow-agent-selection-faq.en.md) |
 | 74 | **泳池水质养护包月（Pool Service Subscription）、氰尿酸“氯锁死（CYA Chlorine-Lock）”防坑与变频水泵节能托管（Leslie's / Poolwerx / Pentair / 别墅与酒店泳池管家）“防常年只扔三氯缓释片致 CYA>150ppm 氯锁死爆绿藻再敲诈 $950 换水费、防 90 秒泼水就跑及强酸片蚀穿 $4,200 热泵铜管”Agent 架构选型 FAQ** | [中文](pool-maintenance-subscription-cya-chlorine-lock-lsi-escrow-agent-selection-faq.md) · [English](pool-maintenance-subscription-cya-chlorine-lock-lsi-escrow-agent-selection-faq.en.md) |
 | 75 | **高端名表二级市场交易（Luxury Watch Escrow）、“拼装表（Frankenwatch）”机芯验真与全额装甲押运托管（Chrono24 / Bezel / WatchBox / Hodinkee / 保利名表）“防真壳假芯拼装表与钨钢配重假 18K 金表、防无货空挂（Ghost Listing）收全款后找货毁约及普通快递 $1,000 珠宝免责上限裸奔”Agent 架构选型 FAQ** | [中文](luxury-watch-secondary-market-frankenwatch-movement-escrow-agent-selection-faq.md) · [English](luxury-watch-secondary-market-frankenwatch-movement-escrow-agent-selection-faq.en.md) |
+| 76 | **OTA 机酒差旅智能比价改签（Price-Drop Rebooking）、防“基础经济舱/非联程拆票陷阱”与同房型降价重订托管（Navan / Fairfly / Hopper / 携程商旅 / IATA NDC）“防省 $35 误订无登机箱不可退改 Basic Economy、防酒店先退后订弄丢双早与行政房及 NDC OrderChange 原位退差价保原选座”Agent 架构选型 FAQ** | [中文](ota-flight-hotel-price-drop-rebooking-ndc-amenity-escrow-agent-selection-faq.md) · [English](ota-flight-hotel-price-drop-rebooking-ndc-amenity-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（57 篇）

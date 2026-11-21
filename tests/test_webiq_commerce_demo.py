@@ -16629,6 +16629,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-returns-duty-drawback-escrow-sandbox", html_zh)
 
+    def test_ota_price_drop_rebooking_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaPriceDropRebookingEscrowPolicyInput,
+            evaluate_ota_price_drop_rebooking_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_price_drop_rebooking_escrow_policy(
+            OtaPriceDropRebookingEscrowPolicyInput(
+                quarterly_corporate_ota_travel_pool_usd=150000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ALL_IN_FARE_AND_ATOMIC_REBOOK_SAGA_AUTHORIZED",
+        )
+
+        fare = evaluate_ota_price_drop_rebooking_escrow_policy(
+            OtaPriceDropRebookingEscrowPolicyInput(
+                basic_economy_unbundled_trap_or_unprotected_split_pnr=True
+            )
+        )
+        self.assertEqual(fare["status_code"], 403)
+        self.assertEqual(
+            fare["decision"],
+            "BASIC_ECONOMY_UNBUNDLED_TRAP_OR_UNPROTECTED_SPLIT_PNR_BLOCKED",
+        )
+
+        saga = evaluate_ota_price_drop_rebooking_escrow_policy(
+            OtaPriceDropRebookingEscrowPolicyInput(
+                amenity_downgrade_on_rebook_or_past_local_cancel_cutoff=True
+            )
+        )
+        self.assertEqual(saga["status_code"], 422)
+        self.assertEqual(
+            saga["decision"],
+            "AMENITY_DOWNGRADE_ON_REBOOK_OR_PAST_LOCAL_CANCEL_CUTOFF_BLOCKED",
+        )
+
+        adm = evaluate_ota_price_drop_rebooking_escrow_policy(
+            OtaPriceDropRebookingEscrowPolicyInput(
+                webiq_airline_adm_churning_penalty_or_dot_refund_violation_flag=True
+            )
+        )
+        self.assertEqual(adm["status_code"], 451)
+        self.assertEqual(
+            adm["decision"],
+            "WEBIQ_AIRLINE_ADM_CHURNING_PENALTY_OR_DOT_REFUND_VIOLATION_HOLD",
+        )
+
+        optim = evaluate_ota_price_drop_rebooking_escrow_policy(
+            OtaPriceDropRebookingEscrowPolicyInput(
+                quarterly_corporate_ota_travel_pool_usd=150000.0,
+                ndc_order_reshop_residual_credit_and_same_room_rebook_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 40500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 109500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_price_drop_rebooking_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-price-drop-rebooking-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -23585,6 +23585,87 @@ def evaluate_cross_border_returns_duty_drawback_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaPriceDropRebookingEscrowPolicyInput:
+    """Input contract for OTA Flight/Hotel Price-Drop Rebooking, Anti-Basic-Economy & NDC Escrow."""
+
+    quarterly_corporate_ota_travel_pool_usd: float = 150000.0
+    basic_economy_unbundled_trap_or_unprotected_split_pnr: bool = False
+    amenity_downgrade_on_rebook_or_past_local_cancel_cutoff: bool = False
+    webiq_airline_adm_churning_penalty_or_dot_refund_violation_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    ndc_order_reshop_residual_credit_and_same_room_rebook_ready: bool = False
+
+
+def evaluate_ota_price_drop_rebooking_escrow_policy(
+    policy_input: OtaPriceDropRebookingEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane OTA Flight/Hotel Price-Drop Rebooking, Anti-Basic-Economy & NDC Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_corporate_ota_travel_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_airline_adm_churning_penalty_or_dot_refund_violation_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_AIRLINE_ADM_CHURNING_PENALTY_OR_DOT_REFUND_VIOLATION_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.basic_economy_unbundled_trap_or_unprotected_split_pnr:
+        return {
+            "status_code": 403,
+            "decision": "BASIC_ECONOMY_UNBUNDLED_TRAP_OR_UNPROTECTED_SPLIT_PNR_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.amenity_downgrade_on_rebook_or_past_local_cancel_cutoff:
+        return {
+            "status_code": 422,
+            "decision": "AMENITY_DOWNGRADE_ON_REBOOK_OR_PAST_LOCAL_CANCEL_CUTOFF_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ndc_order_reshop_residual_credit_and_same_room_rebook_ready:
+        savings = round(gross_pool * 0.27, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "NDC_ORDER_RESHOP_RESIDUAL_CREDIT_AND_SAME_ROOM_REBOOK_CONFIRM",
+            "mandate_token": "ota_price_drop_rebooking_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ALL_IN_FARE_AND_ATOMIC_REBOOK_SAGA_AUTHORIZED",
+        "mandate_token": "ota_price_drop_rebooking_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -32442,6 +32523,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_price_drop_rebooking_escrow_guard = {
+        "authorized_200": evaluate_ota_price_drop_rebooking_escrow_policy(
+            OtaPriceDropRebookingEscrowPolicyInput()
+        ),
+        "basic_economy_or_split_pnr_403": evaluate_ota_price_drop_rebooking_escrow_policy(
+            OtaPriceDropRebookingEscrowPolicyInput(
+                basic_economy_unbundled_trap_or_unprotected_split_pnr=True
+            )
+        ),
+        "amenity_downgrade_or_past_cutoff_422": evaluate_ota_price_drop_rebooking_escrow_policy(
+            OtaPriceDropRebookingEscrowPolicyInput(
+                amenity_downgrade_on_rebook_or_past_local_cancel_cutoff=True
+            )
+        ),
+        "adm_churning_or_dot_refund_violation_451": evaluate_ota_price_drop_rebooking_escrow_policy(
+            OtaPriceDropRebookingEscrowPolicyInput(
+                webiq_airline_adm_churning_penalty_or_dot_refund_violation_flag=True
+            )
+        ),
+        "ndc_reshop_and_same_room_rebook_409": evaluate_ota_price_drop_rebooking_escrow_policy(
+            OtaPriceDropRebookingEscrowPolicyInput(
+                ndc_order_reshop_residual_credit_and_same_room_rebook_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -32683,6 +32790,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "luxury_watch_movement_escrow_guard": luxury_watch_movement_escrow_guard,
         "saas_churn_retention_escrow_guard": saas_churn_retention_escrow_guard,
         "cross_border_returns_duty_drawback_escrow_guard": cross_border_returns_duty_drawback_escrow_guard,
+        "ota_price_drop_rebooking_escrow_guard": ota_price_drop_rebooking_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -44125,6 +44233,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="cb-rma-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 BONUS_EXCHANGE_CREDIT_AND_CUSTOMS_DUTY_DRAWBACK_CONFIRM · Mandate: cross_border_returns_rma_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 113 OTA Flight/Hotel Price-Drop Rebooking, Anti-Basic-Economy & NDC Escrow -->
+      <div class="finops-box" id="ota-price-drop-rebooking-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">✈️ OTA 机酒差旅智能比价改签 (Price-Drop Rebooking)、防“基础经济舱/非联程拆票陷阱”与同房型降价重订托管 (Navan / Fairfly / Hopper / 携程商旅 / IATA NDC) 比价与重订沙盒 (Round 113)</div>
+            <div class="finops-subtitle">实测全包总价归一化拦截无行李不可退 Basic Economy 及非联程黑拆票 (HTTP 403)、酒店“先拿新 PMS HCN 确认号再退旧单”原子 Saga+早餐/床型/SNP 权益同构+当地时区 T-6h 死线锁 (HTTP 422)、Web IQ 防航司 $250 ADM 刷单罚单与 DOT 延误退现核验 (HTTP 451) 及 IATA NDC 21.3 OrderChange 原位退差价(100%保原选座)+闲置退票积分 (UTC) 自动冲抵净省 27% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="ota-rebook-status-kpi">HTTP 409 · NDC_ORDER_RESHOP_RESIDUAL_CREDIT_AND_SAME_ROOM_REBOOK_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业机票与酒店差旅预订总预算池 ($ USD)
+            <input type="range" id="ota-rebook-pool-slider" min="25000" max="600000" step="5000" value="150000" oninput="updateOtaPriceDropRebookingEscrowSandbox()" />
+            <span id="ota-rebook-pool-val" style="color:#6ee7b7; font-family:monospace;">$150,000</span>
+          </label>
+          <label>
+            全包真实总价归一化、基础经济舱与非联程拆票审计 (HTTP 403)
+            <select id="ota-rebook-fare-select" onchange="updateOtaPriceDropRebookingEscrowSandbox()">
+              <option value="pass">单一联程 PNR + 含登机箱/选座/免费改签标准舱 + 酒店计入 Resort Fee 可免费取消 (放行)</option>
+              <option value="block">贪便宜 $35 误选无登机箱不可退改 Basic Economy/非联程拆票 或 酒店重订为不可退预付盲盒房 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            酒店“先拿新 HCN 再退旧单”原子 Saga 与早餐/当地时区门禁 (HTTP 422)
+            <select id="ota-rebook-saga-select" onchange="updateOtaPriceDropRebookingEscrowSandbox()">
+              <option value="pass">Opera PMS 返回新 HCN 确认号才退旧单 + 大床/双早/SNP 完全同构 + 距当地取消死线&gt;=6h (合规)</option>
+              <option value="block">先退旧单再抢新房导致满房无处住 或 重订丢掉双早/万豪积分/算错酒店当地时区被扣首晚罚金 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 防航司 $250 ADM 刷单罚单与 DOT 延误退现核验 (HTTP 451)
+            <select id="ota-rebook-adm-select" onchange="updateOtaPriceDropRebookingEscrowSandbox()">
+              <option value="clear">采用只读 NDC OrderReshop 询价零占座 + 航班延误&gt;=3h 强制退还现金 (正常)</option>
+              <option value="hold">高频 GDS 虚假占座取消 (PNR Churning) 触发航司 $250 ADM 罚单 或 航变拒退现金强塞代金券 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            IATA NDC OrderChange 原位退差价保座位与闲置退票积分 (UTC) 冲抵 (HTTP 409)
+            <select id="ota-rebook-opt-select" onchange="updateOtaPriceDropRebookingEscrowSandbox()">
+              <option value="enabled" selected>NDC OrderChange 原位提取机票降价差额(100%保靠道座) + 酒店同房型重订 + 自动核销闲置 UTC 净省 27% (HTTP 409)</option>
+              <option value="baseline">常规全包比价与原子重订 Saga 标准出票授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业差旅机酒总池</div>
+            <div class="finops-kpi-val" id="ota-rebook-gross-kpi">$150,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原位退差与 UTC 冲抵后净支出</div>
+            <div class="finops-kpi-val" id="ota-rebook-net-kpi" style="color:#6ee7b7;">$109,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省降价差额与盘活废票</div>
+            <div class="finops-kpi-val" id="ota-rebook-savings-kpi" style="color:#38bdf8;">$40,500</div>
+          </div>
+        </div>
+        <div id="ota-rebook-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 NDC_ORDER_RESHOP_RESIDUAL_CREDIT_AND_SAME_ROOM_REBOOK_CONFIRM · Mandate: ota_price_drop_rebooking_mandate_optim_409
         </div>
       </div>
 
@@ -57858,6 +58029,80 @@ function updateCrossBorderReturnsDutyDrawbackEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_LOCAL_3PL_RMA_AND_EXCHANGE_AUTHORIZED · Mandate: cross_border_returns_rma_mandate_200';
+}}
+
+function updateOtaPriceDropRebookingEscrowSandbox() {{
+  const slider = document.getElementById('ota-rebook-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '150000');
+  const fareMode = document.getElementById('ota-rebook-fare-select').value;
+  const sagaMode = document.getElementById('ota-rebook-saga-select').value;
+  const admMode = document.getElementById('ota-rebook-adm-select').value;
+  const optMode = document.getElementById('ota-rebook-opt-select').value;
+
+  document.getElementById('ota-rebook-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('ota-rebook-status-kpi');
+  const grossKpi = document.getElementById('ota-rebook-gross-kpi');
+  const netKpi = document.getElementById('ota-rebook-net-kpi');
+  const savingsKpi = document.getElementById('ota-rebook-savings-kpi');
+  const banner = document.getElementById('ota-rebook-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (admMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_AIRLINE_ADM_CHURNING_PENALTY_OR_DOT_REFUND_VIOLATION_HOLD · Mandate: null';
+    return;
+  }}
+  if (fareMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BASIC_ECONOMY_UNBUNDLED_TRAP_OR_UNPROTECTED_SPLIT_PNR_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (sagaMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 AMENITY_DOWNGRADE_ON_REBOOK_OR_PAST_LOCAL_CANCEL_CUTOFF_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.27);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 NDC_ORDER_RESHOP_RESIDUAL_CREDIT_AND_SAME_ROOM_REBOOK_CONFIRM · Mandate: ota_price_drop_rebooking_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ALL_IN_FARE_AND_ATOMIC_REBOOK_SAGA_AUTHORIZED · Mandate: ota_price_drop_rebooking_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
