@@ -29965,6 +29965,82 @@ def evaluate_ecommerce_made_to_order_custom_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bIndexFormulaPricingPolicyInput:
+    quarterly_commodity_ratchet_overpay_and_unweighted_hike_pool_usd: float = 190000.0
+    asymmetric_ignored_index_deflation_or_inside_deadband_hike: bool = False
+    unweighted_100pct_finished_price_passthrough_or_spot_peak_date: bool = False
+    unverified_vendor_index_source_or_uncontracted_energy_surcharge: bool = False
+    quarterly_should_cost_bom_reset_and_sap_pir_auto_writeback_ready: bool = False
+
+
+def evaluate_b2b_index_formula_pricing_policy(
+    policy_input: B2bIndexFormulaPricingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_commodity_ratchet_overpay_and_unweighted_hike_pool_usd
+        ),
+    )
+    if policy_input.unverified_vendor_index_source_or_uncontracted_energy_surcharge:
+        return {
+            "status_code": 451,
+            "decision": "UNVERIFIED_INDEX_SOURCE_OR_ADHOC_SURCHARGE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.asymmetric_ignored_index_deflation_or_inside_deadband_hike:
+        return {
+            "status_code": 403,
+            "decision": "ASYMMETRIC_RATCHET_OR_DEADBAND_BREACH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unweighted_100pct_finished_price_passthrough_or_spot_peak_date:
+        return {
+            "status_code": 422,
+            "decision": "UNWEIGHTED_100PCT_PASSTHROUGH_OR_SPOT_PEAK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.quarterly_should_cost_bom_reset_and_sap_pir_auto_writeback_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "QUARTERLY_SHOULD_COST_RESET_AND_SAP_PIR_SYNC_CONFIRM",
+            "mandate_token": "b2b_index_formula_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_DEADBAND_STABLE_FORMULA_PRICE_MAINTAINED",
+        "mandate_token": "b2b_index_formula_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -40980,6 +41056,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_index_formula_pricing_guard = {
+        "authorized_200": evaluate_b2b_index_formula_pricing_policy(
+            B2bIndexFormulaPricingPolicyInput()
+        ),
+        "asymmetric_ratchet_or_band_403": evaluate_b2b_index_formula_pricing_policy(
+            B2bIndexFormulaPricingPolicyInput(
+                asymmetric_ignored_index_deflation_or_inside_deadband_hike=True
+            )
+        ),
+        "unweighted_100pct_or_spot_422": evaluate_b2b_index_formula_pricing_policy(
+            B2bIndexFormulaPricingPolicyInput(
+                unweighted_100pct_finished_price_passthrough_or_spot_peak_date=True
+            )
+        ),
+        "unverified_source_or_fee_451": evaluate_b2b_index_formula_pricing_policy(
+            B2bIndexFormulaPricingPolicyInput(
+                unverified_vendor_index_source_or_uncontracted_energy_surcharge=True
+            )
+        ),
+        "should_cost_and_pir_sync_409": evaluate_b2b_index_formula_pricing_policy(
+            B2bIndexFormulaPricingPolicyInput(
+                quarterly_should_cost_bom_reset_and_sap_pir_auto_writeback_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -41304,6 +41406,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_eu_epr_compliance_guard": cross_border_eu_epr_compliance_guard,
         "conversational_commerce_whatsapp_guard": conversational_commerce_whatsapp_guard,
         "ecommerce_made_to_order_custom_guard": ecommerce_made_to_order_custom_guard,
+        "b2b_index_formula_pricing_guard": b2b_index_formula_pricing_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -57675,6 +57778,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="mtocustom-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TWO_HOUR_GRACE_AND_DIRECT_CAD_MODULAR_TAG_CONFIRM · Mandate: mto_custom_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 196 B2B Index-Based Formula Pricing, Should-Cost Weighting & Deflation Clawback Escrow (#315) -->
+      <div class="finops-box" id="b2b-index-formula-pricing-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📈 企业 B2B 大宗指数挂钩公式调价、Should-Cost 权重传导与跌价追回 (Mintec / ICIS / SAP Ariba) 沙盒</div>
+            <div class="finops-sub">Round 196 (#315) · 双向对称跌价自动追回与 ±5% 死区走廊锁 (HTTP 403) + 40% 原料 BOM 权重折算防 100% 整件转嫁 (HTTP 422) + 官方指数绑定与禁收合同外附加费 (HTTP 451) + 季初自动写回 SAP PIR 净省 35% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="indexform-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度大宗原料下跌未追回、100% 全价超额转嫁与发票乱收附加费损耗池 ($)
+            <input type="number" id="indexform-gross-input" value="190000" min="10000" step="5000" oninput="recalcB2bIndexFormulaPricingSandbox()" />
+          </label>
+          <label>双向对称下行跌价追回 (Symmetric Deflation Clawback) 与 ±5% 死区走廊
+            <select id="indexform-ratchet-select" onchange="recalcB2bIndexFormulaPricingSandbox()">
+              <option value="pass">指数下跌自动触发降价重置 且 波动处于 ±5% 死区内不调价 (合规)</option>
+              <option value="block_403">原料涨价秒发函、原料暴跌 20% 时装死拒不降价 或 在 ±5% 死区内违规涨价 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>Should-Cost BOM 原材料占比权重折算与 90 天移动均价锁
+            <select id="indexform-bom-select" onchange="recalcB2bIndexFormulaPricingSandbox()">
+              <option value="pass">按原料占成本 40% 权重折算 (原纸涨 15% 仅准整箱涨 6%) + 90天移动均价 (合规)</option>
+              <option value="block_422">把占成本 40% 的原料涨幅按 100% 成品全价转嫁 或 挑单日现货最高点计价 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>权威独立指数序列 (Mintec / ICIS / Fastmarkets) 锚定与附加费门禁
+            <select id="indexform-source-select" onchange="recalcB2bIndexFormulaPricingSandbox()">
+              <option value="pass">绑定官方指数 Ticker 序列 且 发票零合同外杂费 (安全)</option>
+              <option value="block_451">拿野鸡网站截图要求涨价 或 在 EDI 810 发票里私塞 8% 临时能源附加费 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>每季度首日全量 SKU 自动重算并直写更新 SAP 采购信息记录 (PIR)
+            <select id="indexform-opt-select" onchange="recalcB2bIndexFormulaPricingSandbox()">
+              <option value="enabled" selected>季初 API 自动拉取均价 + Should-Cost 重算直写 SAP PIR (-35% 溢价 / HTTP 409)</option>
+              <option value="disabled">人工 Excel 滞后核对且依赖供应商主动发函 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度大宗材料超额溢价与漏追池</div>
+            <div class="finops-kpi-val" id="indexform-gross-kpi">$190,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">BOM 权重与自动跌价追回后净成本</div>
+            <div class="finops-kpi-val" id="indexform-net-kpi" style="color:#6ee7b7;">$123,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省大宗原料转嫁水分与跌价红利</div>
+            <div class="finops-kpi-val" id="indexform-savings-kpi" style="color:#38bdf8;">$66,500</div>
+          </div>
+        </div>
+        <div id="indexform-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 QUARTERLY_SHOULD_COST_RESET_AND_SAP_PIR_SYNC_CONFIRM · Mandate: b2b_index_formula_escrow_optim_409
         </div>
       </div>
 
@@ -77500,6 +77660,79 @@ function recalcEcommerceMadeToOrderCustomSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_3D_PROOF_CUSTOM_PRODUCTION_AUTHORIZED · Mandate: mto_custom_escrow_200';
+}}
+
+function recalcB2bIndexFormulaPricingSandbox() {{
+  const grossInput = document.getElementById('indexform-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '190000'));
+  const ratchetGate = document.getElementById('indexform-ratchet-select').value;
+  const bomGate = document.getElementById('indexform-bom-select').value;
+  const sourceGate = document.getElementById('indexform-source-select').value;
+  const optMode = document.getElementById('indexform-opt-select').value;
+
+  const grossKpi = document.getElementById('indexform-gross-kpi');
+  const netKpi = document.getElementById('indexform-net-kpi');
+  const savingsKpi = document.getElementById('indexform-savings-kpi');
+  const statusKpi = document.getElementById('indexform-status-kpi');
+  const banner = document.getElementById('indexform-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (sourceGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNVERIFIED_INDEX_SOURCE_OR_ADHOC_SURCHARGE_HOLD · Mandate: null';
+    return;
+  }}
+  if (ratchetGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ASYMMETRIC_RATCHET_OR_DEADBAND_BREACH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (bomGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNWEIGHTED_100PCT_PASSTHROUGH_OR_SPOT_PEAK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 QUARTERLY_SHOULD_COST_RESET_AND_SAP_PIR_SYNC_CONFIRM · Mandate: b2b_index_formula_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_DEADBAND_STABLE_FORMULA_PRICE_MAINTAINED · Mandate: b2b_index_formula_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

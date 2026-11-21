@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg639" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr639" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg639)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr639)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 196 · B2B Index-Based Formula Pricing, Should-Cost Weighting &amp; Deflation Clawback Escrow</text>
+  <text x="48" y="74" class="sub">SAP Ariba / Coupa / Mintec / ICIS / Fastmarkets · Symmetric Downward Clawback · BOM Weight Pass-Through · ±5% Deadband (-35% Spend)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #639 · FAQ #315</text>
+
+  <!-- Lane 1: Rocket-and-Feather Asymmetric Pricing & Ignored Index Drop Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Symmetric Deflation Clawback (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops "Hike Fast on Spike, Stay Silent on Drop":</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Enforce Bidirectional Symmetric Index Formula</text>
+  <text x="54" y="200" class="mono">Auto-Update `SAP PIR` Downward When Index Falls</text>
+  <text x="44" y="223" class="body-txt">• ±5% Corridor Deadband &amp; Cap/Collar Guard:</text>
+  <text x="54" y="243" class="mono">Block Surcharges Inside `[-5.0%, +5.0%]` Deadband</text>
+  <text x="44" y="266" class="body-txt">• Prevents suppliers from keeping prices at peak</text>
+  <text x="54" y="286" class="body-txt">inflation levels 6 months after resin/paper/dairy</
+  ><text x="54" y="304" class="body-txt">indices have already dropped 22%</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 ASYMMETRIC_RATCHET_OR_DEADBAND_BREACH_BLOCKED</text>
+
+  <!-- Lane 2: 100% Finished-Price Pass-Through vs. BOM Component Weight Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Should-Cost BOM Weighting Lock (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Applying Raw-Material % Hike to Total Price:</text>
+  <text x="442" y="182" class="mono">Allowed_Delta = Raw_Weight (40%) × Index_Change</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Freeze Fixed Overhead, Margin &amp; Labor Portion (60%)</text>
+  <text x="432" y="223" class="body-txt">• Anti-Cherry-Picked Spot Peak Date:</text>
+  <text x="442" y="243" class="mono">Require `90-Day Trailing Average (T-1 Quarter)`</text>
+  <text x="432" y="266" class="body-txt">• Blocks a supplier from raising total carton price</text>
+  <text x="442" y="286" class="body-txt">by +15% when pulp rose +15% but pulp is only</text>
+  <text x="442" y="304" class="body-txt">40% of the carton's manufactured cost (+6% max!)</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNWEIGHTED_100PCT_PASSTHROUGH_OR_SPOT_PEAK_BLOCKED</text>
+
+  <!-- Lane 3: Unverified Index Ticker & Unauthorized Fuel/Energy Surcharge Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Authoritative Benchmark Feed Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Unverified Vendor Self-Quoted Price Letters:</text>
+  <text x="830" y="182" class="mono">Pin Contract to `ICIS / Fastmarkets / Mintec / EIA`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Reject Ad-Hoc "Energy / Tariff Surcharge" Lines</text>
+  <text x="820" y="223" class="body-txt">• FX-Adjusted Local vs. USD Index Normalization:</text>
+  <text x="830" y="243" class="body-txt">Prevents double-charging FX depreciation when</text>
+  <text x="830" y="261" class="body-txt">both the commodity index and invoice are in EUR</text>
+  <text x="820" y="284" class="body-txt">• Halts `EDI 810` invoices carrying uncontracted</text>
+  <text x="830" y="302" class="body-txt">surcharge codes not anchored in the MSA formula</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNVERIFIED_INDEX_SOURCE_OR_ADHOC_SURCHARGE_HOLD</text>
+
+  <!-- Bottom Automated Quarterly SAP Info-Record Re-Pricing & Deflation Capture Engine -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Automated Quarterly Index Reset + SAP Purchasing Info Record (`PIR`) Write-Back (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Live Benchmark Ingestion</text>
+  <text x="62" y="462" class="body-txt">Ingests `Mintec / ICIS / RISI`</text>
+  <text x="62" y="480" class="body-txt">`90d` trailing averages on</text>
+  <text x="62" y="498" class="body-txt">Day 1 of each quarter;</text>
+  <text x="62" y="516" class="mono">100% Auditable Index Series</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Should-Cost Formula Engine</text>
+  <text x="337" y="462" class="body-txt">Computes `P_t = P_0 × (0.60 +`</text>
+  <text x="337" y="480" class="body-txt">`0.40 × Index_t / Index_0)`</text>
+  <text x="337" y="498" class="body-txt">with ±5% deadband &amp; ±12% cap;</text>
+  <text x="337" y="516" class="mono">Zero Over-Weighted Markups</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Auto-Clawback Notice</text>
+  <text x="622" y="462" class="body-txt">Dispatches downward price-reset</text>
+  <text x="622" y="480" class="body-txt">amendments to suppliers the</text>
+  <text x="622" y="498" class="body-txt">day commodity indices fall;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">Captures 100% of Deflation</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ SAP PIR &amp; 3-Way Match Sync</text>
+  <text x="907" y="462" class="body-txt">Writes new quarterly unit price</text>
+  <text x="907" y="480" class="body-txt">directly into `SAP Ariba / PIR`</text>
+  <text x="907" y="498" class="body-txt">to block old-price invoices;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-35% Commodity Overpay Saved</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-35.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Commodity Overpay Saved</text>
+  <text x="46" y="642" class="mono">$66,500 Saved / $190k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% Symmetric</text>
+  <text x="336" y="626" class="kpi-lbl">Automatic Downward Deflation Reset</text>
+  <text x="336" y="642" class="mono">Ends "Rocket &amp; Feather" Ratchet</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">BOM Weighted</text>
+  <text x="626" y="626" class="kpi-lbl">Raw Material Share Pass-Through Only</text>
+  <text x="626" y="642" class="mono">Protects Fixed Overhead Portion</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">SAP PIR Sync</text>
+  <text x="916" y="626" class="kpi-lbl">Enforces Formula Price on Invoices</text>
+  <text x="916" y="642" class="mono">Blocks Ad-Hoc Surcharge Lines</text>
+</svg>

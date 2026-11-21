@@ -22190,6 +22190,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-made-to-order-custom-sandbox", html_zh)
 
+    def test_b2b_index_formula_pricing_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bIndexFormulaPricingPolicyInput,
+            evaluate_b2b_index_formula_pricing_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_index_formula_pricing_policy(
+            B2bIndexFormulaPricingPolicyInput(
+                quarterly_commodity_ratchet_overpay_and_unweighted_hike_pool_usd=190000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_DEADBAND_STABLE_FORMULA_PRICE_MAINTAINED",
+        )
+
+        ratchet = evaluate_b2b_index_formula_pricing_policy(
+            B2bIndexFormulaPricingPolicyInput(
+                asymmetric_ignored_index_deflation_or_inside_deadband_hike=True
+            )
+        )
+        self.assertEqual(ratchet["status_code"], 403)
+        self.assertEqual(
+            ratchet["decision"],
+            "ASYMMETRIC_RATCHET_OR_DEADBAND_BREACH_BLOCKED",
+        )
+
+        bom = evaluate_b2b_index_formula_pricing_policy(
+            B2bIndexFormulaPricingPolicyInput(
+                unweighted_100pct_finished_price_passthrough_or_spot_peak_date=True
+            )
+        )
+        self.assertEqual(bom["status_code"], 422)
+        self.assertEqual(
+            bom["decision"],
+            "UNWEIGHTED_100PCT_PASSTHROUGH_OR_SPOT_PEAK_BLOCKED",
+        )
+
+        src = evaluate_b2b_index_formula_pricing_policy(
+            B2bIndexFormulaPricingPolicyInput(
+                unverified_vendor_index_source_or_uncontracted_energy_surcharge=True
+            )
+        )
+        self.assertEqual(src["status_code"], 451)
+        self.assertEqual(
+            src["decision"],
+            "UNVERIFIED_INDEX_SOURCE_OR_ADHOC_SURCHARGE_HOLD",
+        )
+
+        optim = evaluate_b2b_index_formula_pricing_policy(
+            B2bIndexFormulaPricingPolicyInput(
+                quarterly_commodity_ratchet_overpay_and_unweighted_hike_pool_usd=190000.0,
+                quarterly_should_cost_bom_reset_and_sap_pir_auto_writeback_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 66500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 123500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_index_formula_pricing_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-index-formula-pricing-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
