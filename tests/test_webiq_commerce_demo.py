@@ -22994,6 +22994,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-viban-natural-fx-netting-sandbox", html_zh)
 
+    def test_hospitality_fine_dining_reservation_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            HospitalityFineDiningReservationPolicyInput,
+            evaluate_hospitality_fine_dining_reservation_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_hospitality_fine_dining_reservation_policy(
+            HospitalityFineDiningReservationPolicyInput(
+                quarterly_noshow_spoilage_scalper_and_pos_deposit_error_pool_usd=150000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_DINER_RESERVATION_AND_POS_CHECK_AUTHORIZED",
+        )
+
+        scalper = evaluate_hospitality_fine_dining_reservation_policy(
+            HospitalityFineDiningReservationPolicyInput(
+                scalper_name_transfer_or_overlapping_same_slot_multi_venue_hold=True
+            )
+        )
+        self.assertEqual(scalper["status_code"], 403)
+        self.assertEqual(
+            scalper["decision"],
+            "SCALPER_NAME_SWAP_OR_OVERLAPPING_SLOT_BLOCKED",
+        )
+
+        pos = evaluate_hospitality_fine_dining_reservation_policy(
+            HospitalityFineDiningReservationPolicyInput(
+                uncredited_prepaid_deposit_on_pos_check_or_unannounced_party_shrink=True
+            )
+        )
+        self.assertEqual(pos["status_code"], 422)
+        self.assertEqual(
+            pos["decision"],
+            "UNCREDITED_POS_DEPOSIT_OR_PARTY_SHRINK_BLOCKED",
+        )
+
+        backfill = evaluate_hospitality_fine_dining_reservation_policy(
+            HospitalityFineDiningReservationPolicyInput(
+                charging_cash_penalty_on_backfilled_table_or_burner_prepaid_bin=True
+            )
+        )
+        self.assertEqual(backfill["status_code"], 451)
+        self.assertEqual(
+            backfill["decision"],
+            "UNMITIGATED_BACKFILL_PENALTY_OR_BURNER_CARD_HOLD",
+        )
+
+        optim = evaluate_hospitality_fine_dining_reservation_policy(
+            HospitalityFineDiningReservationPolicyInput(
+                quarterly_noshow_spoilage_scalper_and_pos_deposit_error_pool_usd=150000.0,
+                tiered_deposit_pos_auto_inject_and_90s_standby_backfill_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 55500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 94500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("hospitality_fine_dining_reservation_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("hospitality-fine-dining-reservation-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

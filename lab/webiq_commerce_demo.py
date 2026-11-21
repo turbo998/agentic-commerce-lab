@@ -30877,6 +30877,82 @@ def evaluate_cross_border_viban_natural_fx_netting_policy(
     }
 
 
+@dataclass(frozen=True)
+class HospitalityFineDiningReservationPolicyInput:
+    quarterly_noshow_spoilage_scalper_and_pos_deposit_error_pool_usd: float = 150000.0
+    scalper_name_transfer_or_overlapping_same_slot_multi_venue_hold: bool = False
+    uncredited_prepaid_deposit_on_pos_check_or_unannounced_party_shrink: bool = False
+    charging_cash_penalty_on_backfilled_table_or_burner_prepaid_bin: bool = False
+    tiered_deposit_pos_auto_inject_and_90s_standby_backfill_ready: bool = False
+
+
+def evaluate_hospitality_fine_dining_reservation_policy(
+    policy_input: HospitalityFineDiningReservationPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_noshow_spoilage_scalper_and_pos_deposit_error_pool_usd
+        ),
+    )
+    if policy_input.charging_cash_penalty_on_backfilled_table_or_burner_prepaid_bin:
+        return {
+            "status_code": 451,
+            "decision": "UNMITIGATED_BACKFILL_PENALTY_OR_BURNER_CARD_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.scalper_name_transfer_or_overlapping_same_slot_multi_venue_hold:
+        return {
+            "status_code": 403,
+            "decision": "SCALPER_NAME_SWAP_OR_OVERLAPPING_SLOT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncredited_prepaid_deposit_on_pos_check_or_unannounced_party_shrink:
+        return {
+            "status_code": 422,
+            "decision": "UNCREDITED_POS_DEPOSIT_OR_PARTY_SHRINK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tiered_deposit_pos_auto_inject_and_90s_standby_backfill_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "POS_DEPOSIT_AUTO_INJECT_AND_STANDBY_BACKFILL_CONFIRM",
+            "mandate_token": "fine_dining_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_DINER_RESERVATION_AND_POS_CHECK_AUTHORIZED",
+        "mandate_token": "fine_dining_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -42204,6 +42280,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    hospitality_fine_dining_reservation_guard = {
+        "authorized_200": evaluate_hospitality_fine_dining_reservation_policy(
+            HospitalityFineDiningReservationPolicyInput()
+        ),
+        "scalper_or_overlap_403": evaluate_hospitality_fine_dining_reservation_policy(
+            HospitalityFineDiningReservationPolicyInput(
+                scalper_name_transfer_or_overlapping_same_slot_multi_venue_hold=True
+            )
+        ),
+        "uncredited_pos_or_shrink_422": evaluate_hospitality_fine_dining_reservation_policy(
+            HospitalityFineDiningReservationPolicyInput(
+                uncredited_prepaid_deposit_on_pos_check_or_unannounced_party_shrink=True
+            )
+        ),
+        "backfill_penalty_or_burner_451": evaluate_hospitality_fine_dining_reservation_policy(
+            HospitalityFineDiningReservationPolicyInput(
+                charging_cash_penalty_on_backfilled_table_or_burner_prepaid_bin=True
+            )
+        ),
+        "pos_inject_and_standby_409": evaluate_hospitality_fine_dining_reservation_policy(
+            HospitalityFineDiningReservationPolicyInput(
+                tiered_deposit_pos_auto_inject_and_90s_standby_backfill_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42540,6 +42642,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_dealer_portal_mdf_warranty_guard": b2b_dealer_portal_mdf_warranty_guard,
         "ecommerce_pay_by_bank_ach_fednow_guard": ecommerce_pay_by_bank_ach_fednow_guard,
         "cross_border_viban_natural_fx_netting_guard": cross_border_viban_natural_fx_netting_guard,
+        "hospitality_fine_dining_reservation_guard": hospitality_fine_dining_reservation_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -59595,6 +59698,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="vibanfx-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 NATURAL_FX_NETTING_AND_ISOLATED_VIBAN_TREASURY_CONFIRM · Mandate: viban_fx_netting_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 208 Fine-Dining & Hospitality Reservation, Anti-Scalper & POS Deposit Escrow (#327) -->
+      <div class="finops-box" id="hospitality-fine-dining-reservation-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🍽️ 高端餐饮与米其林餐厅预订 (Tock / Resy / SevenRooms)、防黄牛抢号与 POS 定金自动冲抵沙盒</div>
+            <div class="finops-sub">Round 208 (#327) · 实名 Passkey 禁改名转让防黄牛与同餐段跨店防占 4 桌 (HTTP 403) + 迎宾点 SEATED 毫秒级向 Toast POS 注入 -$400 定金防双倍收费 (HTTP 422) + 候补接盘成功免扣现金违约金 (HTTP 451) + 90秒候补补位净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="finedining-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度餐厅黄金档放鸽子 (No-Show) 顶级食材报废、结账漏扣定金差评退款与黄牛弃单损耗池 ($)
+            <input type="number" id="finedining-gross-input" value="150000" min="10000" step="5000" oninput="recalcHospitalityFineDiningReservationSandbox()" />
+          </label>
+          <label>黄金时段预订实名 Passkey 禁改名转让锁与同城同餐段 (±2.5h) 跨店重叠占座拦截
+            <select id="finedining-scalper-select" onchange="recalcHospitalityFineDiningReservationSandbox()">
+              <option value="pass">本人 Passkey + 卡尾号核销不可改名过户 + 当晚无重叠跨店占座 (合规)</option>
+              <option value="block_403">黄牛脚本秒抢周五晚 8 点桌位后企图改名加价 $250 转卖 或 同一人同晚同时占 4 家餐厅放鸽子 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>迎宾台点击已入座 (SEATED) 自动向 Toast/Micros POS 注入预付定金与人数缩水核销
+            <select id="finedining-pos-select" onchange="recalcHospitalityFineDiningReservationSandbox()">
+              <option value="pass">入座 150ms 内自动向 POS 桌号账单写入 -$400 定金抵扣行 + T-24h 确认人数 (合规)</option>
+              <option value="block_422">服务员买单忘扣 $400 预付定金把客人重刷全额遭一星差评 或 订 6 人大包厢无预警只来 2 人 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>防 $1 一次性虚拟废卡占座与“候补名单成功补位 (Waitlist Backfill) 免现金双罚”门禁
+            <select id="finedining-backfill-select" onchange="recalcHospitalityFineDiningReservationSandbox()">
+              <option value="pass">拦截预付废卡 BIN + 候补食客接盘成功后 100% 免除原客现金罚金或转 90 天储值券 (安全)</option>
+              <option value="block_451">食客用 $1 虚拟废卡占座逃避违约金 或 餐桌已被候补食客原价买走却仍强扣原客 $400 罚金收双份钱 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>分时段动态定金/全款餐票 (Tock) 与周边 15 分钟 VIP 候补 90 秒极速补位
+            <select id="finedining-opt-select" onchange="recalcHospitalityFineDiningReservationSandbox()">
+              <option value="enabled" selected>板前预售餐票 + 临期退单 90 秒自动摇来周边候补客 + POS 甜点出餐翻台同步 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统人工电话订座手写小本子且收银台不互通 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度餐厅空台报废与定金差错池</div>
+            <div class="finops-kpi-val" id="finedining-gross-kpi">$150,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">候补秒接盘与 POS 自动冲抵后净耗</div>
+            <div class="finops-kpi-val" id="finedining-net-kpi" style="color:#6ee7b7;">$94,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省海鲜损耗与拒付赔付</div>
+            <div class="finops-kpi-val" id="finedining-savings-kpi" style="color:#38bdf8;">$55,500</div>
+          </div>
+        </div>
+        <div id="finedining-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 POS_DEPOSIT_AUTO_INJECT_AND_STANDBY_BACKFILL_CONFIRM · Mandate: fine_dining_escrow_optim_409
         </div>
       </div>
 
@@ -80296,6 +80456,79 @@ function recalcCrossBorderVibanNaturalFxNettingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ISOLATED_VIBAN_TREASURY_SETTLEMENT_AUTHORIZED · Mandate: viban_fx_netting_escrow_200';
+}}
+
+function recalcHospitalityFineDiningReservationSandbox() {{
+  const grossInput = document.getElementById('finedining-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '150000'));
+  const scalperGate = document.getElementById('finedining-scalper-select').value;
+  const posGate = document.getElementById('finedining-pos-select').value;
+  const backfillGate = document.getElementById('finedining-backfill-select').value;
+  const optMode = document.getElementById('finedining-opt-select').value;
+
+  const grossKpi = document.getElementById('finedining-gross-kpi');
+  const netKpi = document.getElementById('finedining-net-kpi');
+  const savingsKpi = document.getElementById('finedining-savings-kpi');
+  const statusKpi = document.getElementById('finedining-status-kpi');
+  const banner = document.getElementById('finedining-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (backfillGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNMITIGATED_BACKFILL_PENALTY_OR_BURNER_CARD_HOLD · Mandate: null';
+    return;
+  }}
+  if (scalperGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SCALPER_NAME_SWAP_OR_OVERLAPPING_SLOT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (posGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCREDITED_POS_DEPOSIT_OR_PARTY_SHRINK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 POS_DEPOSIT_AUTO_INJECT_AND_STANDBY_BACKFILL_CONFIRM · Mandate: fine_dining_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_DINER_RESERVATION_AND_POS_CHECK_AUTHORIZED · Mandate: fine_dining_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

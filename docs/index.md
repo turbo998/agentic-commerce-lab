@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`326` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`327` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（20 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（47 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（120 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（121 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（73 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（27 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（39 篇）](#tax-fx-privacy-disputes)
@@ -101,7 +101,7 @@
 | 47 | **大额电商与 B2B 收银“银行直连支付（Pay-by-Bank / Open Banking A2A：Plaid Transfer / Stripe Financial Connections / Trustly / FedNow）”、防 `ACH R01` 空头账户未到账骗货与对公借记锁（`R29`）托管“防省 $100 刷卡费却在 T+4 收到银行余额不足退票致 $4,000 电脑打水漂、防企业账户开启防盗刷锁扣款失败与立减 1% 导流净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-pay-by-bank-open-banking-ach-return-r01-fednow-escrow-agent-selection-faq.md) · [English](ecommerce-pay-by-bank-open-banking-ach-return-r01-fednow-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（120 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（121 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -227,6 +227,7 @@
 | 118 | **处方眼镜、隐形眼镜与数字视光电商（Rx Eyewear & Contact Lens E-Commerce：Warby Parker / 1-800 Contacts / Zenni / 博士伦）、美国 `FTC 16 CFR Part 315` 8 营业小时处方核验与视觉医保（`VSP / EyeMed`）实时抵扣托管“防买家把近视 `-3.25` 手滑填成远视 `+3.25` 磨废镜片、防未满医生 8 个工作小时违规发货被罚 $51,744 与 AR 测瞳距净省 36%”Agent 架构选型 FAQ** | [中文](ecommerce-rx-eyewear-contact-lens-ftc-8hour-verification-vision-insurance-escrow-agent-selection-faq.md) · [English](ecommerce-rx-eyewear-contact-lens-ftc-8hour-verification-vision-insurance-escrow-agent-selection-faq.en.md) |
 | 119 | **到家服务、家电家具维修安装与同城服务撮合平台（On-Demand Home Services & Gig Marketplace：Thumbtack / TaskRabbit / Angi / 鲁班到家 / 万师傅）、防“上门后退掉平台单私下微信转账（Off-Platform Circumvention）”、防“拆开机器坐地起价 3 倍”与 7 天质保分阶段放款托管“防平台花 $35 获客师傅到门口忽悠业主取消订单私下付现、防小病大修敲诈与视频预估价净省 36%”Agent 架构选型 FAQ** | [中文](ondemand-home-services-gig-marketplace-anti-circumvention-upcharge-escrow-agent-selection-faq.md) · [English](ondemand-home-services-gig-marketplace-anti-circumvention-upcharge-escrow-agent-selection-faq.en.md) |
 | 120 | **电商婚礼/新生儿心愿单与多人众筹送礼（Gift Registry & Group Gifting：Babylist / Zola / Amazon Registry / Target）、防“3 位亲友同时买重同一台 $800 婴儿车”、防黑卡假心愿单洗钱（Triangulation Fraud）与发货前数字拆礼置换（Pre-Ship Digital Swap）托管“防新人在度蜜月包裹堆满大堂被偷、防凑份子差 $100 卡死发不出货与净省 35% 逆向物流损耗”Agent 架构选型 FAQ** | [中文](ecommerce-gift-registry-group-gifting-duplicate-lock-triangulation-escrow-agent-selection-faq.md) · [English](ecommerce-gift-registry-group-gifting-duplicate-lock-triangulation-escrow-agent-selection-faq.en.md) |
+| 121 | **高端餐饮、米其林/黑珍珠餐厅与主厨餐桌预订（Fine-Dining & Experience Reservation：Tock / Resy / SevenRooms / OpenTable / 美团订座）、防“黄牛机器人秒抢周末黄金桌位加价 $250 倒卖”、防“一人同时订 4 家餐厅临时放鸽子（No-Show）致备料全毁”与收银 `POS` 定金自动冲抵托管“防服务员结账忘扣 $400 预付定金引发双倍扣款差评、防订 6 人桌只来 2 人与候补自动接盘免违约金净省 37%”Agent 架构选型 FAQ** | [中文](hospitality-fine-dining-reservation-noshow-deposit-pos-waitlist-escrow-agent-selection-faq.md) · [English](hospitality-fine-dining-reservation-noshow-deposit-pos-waitlist-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（73 篇）

@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg651" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr651" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg651)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr651)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 208 · Fine-Dining &amp; Hospitality Reservation, Anti-Scalper &amp; POS Deposit Escrow</text>
+  <text x="48" y="74" class="sub">Tock / Resy / SevenRooms / Toast POS · Cross-Venue Same-Slot Mutex · Non-Transferable Passkey Table · POS Auto-Credit (-37% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #651 · FAQ #327</text>
+
+  <!-- Lane 1: Scalper Bot Table Sniping & Cross-Restaurant Same-Slot Double Booking Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Anti-Scalper &amp; Same-Slot Mutex (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Bots Sniping 8:00 PM Tables to Resell at $250:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Bind Reservation to `Diner_Passkey + Card_Last4`</text>
+  <text x="54" y="200" class="mono">Block Name-Change Transfers on Prime Weekend Slots</text>
+  <text x="44" y="223" class="body-txt">• Cross-Venue Overlapping Time-Slot Lock (`±2.5h`):</text>
+  <text x="54" y="243" class="mono">Block Holding 4 Restaurants at Friday 19:30!</text>
+  <text x="44" y="266" class="body-txt">• Eliminates appointment-hoarding where diners</text>
+  <text x="54" y="286" class="body-txt">book 4 restaurants for the same Friday night and</text>
+  <text x="54" y="304" class="body-txt">no-show 3 of them at 7:00 PM</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 SCALPER_NAME_SWAP_OR_OVERLAPPING_SLOT_BLOCKED</text>
+
+  <!-- Lane 2: Unapplied Pre-Paid Deposit on Restaurant POS Check ("Double-Charge") Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. POS Check Deposit Auto-Credit (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Forgetting to Deduct $400 Deposit on Bill:</text>
+  <text x="442" y="182" class="mono">Inject `Prepaid_Deposit = -$400` Into `Toast/Micros`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Automatically When Host Marks Table `SEATED`!</text>
+  <text x="432" y="223" class="body-txt">• Party-Size Shrinkage (`Booked 6 → Showed Up w/ 2`):</text>
+  <text x="442" y="243" class="mono">Require T-24h Headcount Confirm or Apply Per-Seat Fee</text>
+  <text x="432" y="266" class="body-txt">• Eliminates the #1 fine-dining 1-star review:</text>
+  <text x="442" y="286" class="body-txt">servers forgetting to subtract the $100/person</text>
+  <text x="442" y="304" class="body-txt">booking deposit from the final dinner check</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNCREDITED_POS_DEPOSIT_OR_PARTY_SHRINK_BLOCKED</text>
+
+  <!-- Lane 3: Predatory Penalty When Waitlist Backfills Table & Burner-Card Hold Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Waitlist Backfill &amp; Card-Hold Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Double-Dipping Cancel Fee + Resold Table:</text>
+  <text x="830" y="182" class="mono">If `Late_Cancel_Table` Filled by `Standby_Waitlist`:</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Waive Cash Penalty or Convert 100% to 90d Dining Credit</text>
+  <text x="820" y="223" class="body-txt">• Anti-$1-Burner-Card No-Show Shield:</text>
+  <text x="830" y="243" class="body-txt">Blocks non-reloadable prepaid cards &amp; uses `3DS2`</text>
+  <text x="830" y="261" class="body-txt">`SetupIntent` or upfront ticket (`Tock`) on Omakase</text>
+  <text x="820" y="284" class="body-txt">• Prevents chargeback losses when diners cancel</text>
+  <text x="830" y="302" class="body-txt">due to emergencies and the table is immediately resold</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNMITIGATED_BACKFILL_PENALTY_OR_BURNER_CARD_HOLD</text>
+
+  <!-- Bottom Dynamic Slot Pacing & Instant Standby Backfill Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Tiered Ticketing/Deposit Engine + Instant Geolocation Standby Backfill &amp; POS Sync (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Dynamic Deposit Tiering</text>
+  <text x="62" y="462" class="body-txt">Tue lunch = $0 card hold;</text>
+  <text x="62" y="480" class="body-txt">Fri 8PM 4-top = $50/seat hold;</text>
+  <text x="62" y="498" class="body-txt">Omakase counter = 100% ticket;</text>
+  <text x="62" y="516" class="mono">No-Show Rate: 18% → 1.4%</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② 90s Standby Auto-Backfill</text>
+  <text x="337" y="462" class="body-txt">When a 6PM cancel arrives,</text>
+  <text x="337" y="480" class="body-txt">pings verified VIPs within</text>
+  <text x="337" y="498" class="body-txt">15 mins of venue to claim;</text>
+  <text x="337" y="516" class="mono">94% Late-Cancel Table Recovery</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Host-Stand → POS Auto-Sync</text>
+  <text x="622" y="462" class="body-txt">Pushes dietary allergies,</text>
+  <text x="622" y="480" class="body-txt">VIP wine notes &amp; `-$200`</text>
+  <text x="622" y="498" class="body-txt">deposit line into `Toast POS`;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">0 Uncredited-Deposit Refunds</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Table-Turn Pacing Radar</text>
+  <text x="907" y="462" class="body-txt">Reads POS `Dessert_Fired`</text>
+  <text x="907" y="480" class="body-txt">event to text next seating</text>
+  <text x="907" y="498" class="body-txt">accurate table-ready time;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Spoilage &amp; Empty-Seat Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly No-Show &amp; POS Error Saved</text>
+  <text x="46" y="642" class="mono">$55,500 Saved / $150k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">1.4% No-Show</text>
+  <text x="336" y="626" class="kpi-lbl">Down from 18% Unprotected Baseline</text>
+  <text x="336" y="642" class="mono">Blocks Multi-Venue Slot Hoarding</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% POS Sync</text>
+  <text x="626" y="626" class="kpi-lbl">Auto-Deducts Deposit on Final Check</text>
+  <text x="626" y="642" class="mono">Zero Double-Charged Diners</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 Bot Resales</text>
+  <text x="916" y="626" class="kpi-lbl">Non-Transferable Passkey Check-In</text>
+  <text x="916" y="642" class="mono">94% Standby Backfill Recovery</text>
+</svg>
