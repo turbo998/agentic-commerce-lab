@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`267` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`268` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (14 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (41 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (91 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (92 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (65 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (23 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (33 guides)](#tax-fx-privacy-disputes)
@@ -89,7 +89,7 @@
 | 41 | **E-Commerce Buy Now, Pay Later (`BNPL`: `Affirm / Klarna / Afterpay / PayPal Pay Later`), `MDR` Margin-Floor Gate & Partial-Return `Tail-First` Re-Amortization Escrow (`>=15%` Net Margin Lock, Carrier-Scan Snooze & Co-Subsidy) Agent Architecture Selection FAQ** | [English](ecommerce-bnpl-installment-mdr-margin-floor-partial-return-escrow-agent-selection-faq.en.md) · [中文](ecommerce-bnpl-installment-mdr-margin-floor-partial-return-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (91 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (92 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -186,6 +186,7 @@
 | 89 | **White-Glove Furniture & Appliance Delivery (`Wayfair / IKEA / JD Heavy-Goods / WanShifu`), 3D Elevator-Diagonal Clearance Gate, `CPSC STURDY` Anti-Tip & Haul-Away Escrow Agent Architecture Selection FAQ** | [English](white-glove-furniture-appliance-delivery-elevator-dimension-escrow-agent-selection-faq.en.md) · [中文](white-glove-furniture-appliance-delivery-elevator-dimension-escrow-agent-selection-faq.md) |
 | 90 | **E-Commerce Promo & Coupon Stacking Engine (`Talon.One / Voucherify / Shopify Functions`), `COGS` Price-Cage Circuit Breaker & Uplift Elasticity Escrow (`Net >= COGS × 85%`, `user_id` Single-Use Codes & `-36%` Promo Waste) Agent Architecture Selection FAQ** | [English](ecommerce-promo-coupon-stacking-negative-margin-circuit-breaker-escrow-agent-selection-faq.en.md) · [中文](ecommerce-promo-coupon-stacking-negative-margin-circuit-breaker-escrow-agent-selection-faq.md) |
 | 91 | **E-Commerce Shipping Protection, Anti-`Porch-Piracy` (`DNA`) & Self-Insured Captive Escrow (`Corso / Navidium / Route / EasyPost`) Ban Pre-Checked Drip Fees (`SB-478`), Live WebRTC Damage Verification & Captive Reship Pool (`-37%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-shipping-protection-porch-piracy-claim-captive-escrow-agent-selection-faq.en.md) · [中文](ecommerce-shipping-protection-porch-piracy-claim-captive-escrow-agent-selection-faq.md) |
+| 92 | **E-Commerce Abandoned Cart Recovery & Omnichannel CRM (`Klaviyo / Attentive / Braze / Postscript`), Anti-Coupon-Gaming Cooldown & `TCPA` Quiet-Hours Escrow (Touch #1 `$0` Discount, 50ms Send-Time Check & `-38%` Spend) Agent Architecture Selection FAQ** | [English](ecommerce-abandoned-cart-sms-email-tcpa-coupon-gaming-escrow-agent-selection-faq.en.md) · [中文](ecommerce-abandoned-cart-sms-email-tcpa-coupon-gaming-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (65 Guides)

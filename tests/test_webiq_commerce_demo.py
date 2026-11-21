@@ -19041,6 +19041,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-shipping-protection-escrow-sandbox", html_zh)
 
+    def test_ecommerce_abandoned_cart_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceAbandonedCartEscrowPolicyInput,
+            evaluate_ecommerce_abandoned_cart_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_abandoned_cart_escrow_policy(
+            EcommerceAbandonedCartEscrowPolicyInput(
+                quarterly_cart_recovery_subsidy_and_sms_pool_usd=105000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "COMPLIANT_CART_RECOVERY_DISPATCH_AUTHORIZED",
+        )
+
+        gaming = evaluate_ecommerce_abandoned_cart_escrow_policy(
+            EcommerceAbandonedCartEscrowPolicyInput(
+                serial_cart_abandon_coupon_gaming_within_90d=True
+            )
+        )
+        self.assertEqual(gaming["status_code"], 403)
+        self.assertEqual(
+            gaming["decision"],
+            "SERIAL_CART_ABANDON_COUPON_GAMING_WITHIN_90D_BLOCKED",
+        )
+
+        state = evaluate_ecommerce_abandoned_cart_escrow_policy(
+            EcommerceAbandonedCartEscrowPolicyInput(
+                already_converted_cross_device_or_sku_out_of_stock=True
+            )
+        )
+        self.assertEqual(state["status_code"], 422)
+        self.assertEqual(
+            state["decision"],
+            "ALREADY_CONVERTED_CROSS_DEVICE_OR_SKU_OUT_OF_STOCK_BLOCKED",
+        )
+
+        tcpa = evaluate_ecommerce_abandoned_cart_escrow_policy(
+            EcommerceAbandonedCartEscrowPolicyInput(
+                tcpa_quiet_hours_breach_or_missing_double_optin=True
+            )
+        )
+        self.assertEqual(tcpa["status_code"], 451)
+        self.assertEqual(
+            tcpa["decision"],
+            "TCPA_QUIET_HOURS_BREACH_OR_MISSING_DOUBLE_OPTIN_HOLD",
+        )
+
+        optim = evaluate_ecommerce_abandoned_cart_escrow_policy(
+            EcommerceAbandonedCartEscrowPolicyInput(
+                quarterly_cart_recovery_subsidy_and_sms_pool_usd=105000.0,
+                email_first_waterfall_and_margin_gated_incentive_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 39900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 65100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_abandoned_cart_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-abandoned-cart-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

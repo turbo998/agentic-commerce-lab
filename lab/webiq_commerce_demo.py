@@ -26477,6 +26477,79 @@ def evaluate_ecommerce_shipping_protection_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceAbandonedCartEscrowPolicyInput:
+    quarterly_cart_recovery_subsidy_and_sms_pool_usd: float = 105000.0
+    serial_cart_abandon_coupon_gaming_within_90d: bool = False
+    already_converted_cross_device_or_sku_out_of_stock: bool = False
+    tcpa_quiet_hours_breach_or_missing_double_optin: bool = False
+    email_first_waterfall_and_margin_gated_incentive_ready: bool = False
+
+
+def evaluate_ecommerce_abandoned_cart_escrow_policy(
+    policy_input: EcommerceAbandonedCartEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_cart_recovery_subsidy_and_sms_pool_usd)
+    )
+    if policy_input.tcpa_quiet_hours_breach_or_missing_double_optin:
+        return {
+            "status_code": 451,
+            "decision": "TCPA_QUIET_HOURS_BREACH_OR_MISSING_DOUBLE_OPTIN_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.serial_cart_abandon_coupon_gaming_within_90d:
+        return {
+            "status_code": 403,
+            "decision": "SERIAL_CART_ABANDON_COUPON_GAMING_WITHIN_90D_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.already_converted_cross_device_or_sku_out_of_stock:
+        return {
+            "status_code": 422,
+            "decision": "ALREADY_CONVERTED_CROSS_DEVICE_OR_SKU_OUT_OF_STOCK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.email_first_waterfall_and_margin_gated_incentive_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "EMAIL_FIRST_WATERFALL_AND_MARGIN_GATED_INCENTIVE_CONFIRM",
+            "mandate_token": "abandoned_cart_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "COMPLIANT_CART_RECOVERY_DISPATCH_AUTHORIZED",
+        "mandate_token": "abandoned_cart_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -36270,6 +36343,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_abandoned_cart_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_abandoned_cart_escrow_policy(
+            EcommerceAbandonedCartEscrowPolicyInput()
+        ),
+        "serial_coupon_gaming_90d_403": evaluate_ecommerce_abandoned_cart_escrow_policy(
+            EcommerceAbandonedCartEscrowPolicyInput(
+                serial_cart_abandon_coupon_gaming_within_90d=True
+            )
+        ),
+        "already_converted_or_oos_422": evaluate_ecommerce_abandoned_cart_escrow_policy(
+            EcommerceAbandonedCartEscrowPolicyInput(
+                already_converted_cross_device_or_sku_out_of_stock=True
+            )
+        ),
+        "tcpa_quiet_hours_or_optin_451": evaluate_ecommerce_abandoned_cart_escrow_policy(
+            EcommerceAbandonedCartEscrowPolicyInput(
+                tcpa_quiet_hours_breach_or_missing_double_optin=True
+            )
+        ),
+        "email_first_waterfall_incentive_409": evaluate_ecommerce_abandoned_cart_escrow_policy(
+            EcommerceAbandonedCartEscrowPolicyInput(
+                email_first_waterfall_and_margin_gated_incentive_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -36547,6 +36646,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_promo_stacking_escrow_guard": ecommerce_promo_stacking_escrow_guard,
         "b2b_sow_services_vms_escrow_guard": b2b_sow_services_vms_escrow_guard,
         "ecommerce_shipping_protection_escrow_guard": ecommerce_shipping_protection_escrow_guard,
+        "ecommerce_abandoned_cart_escrow_guard": ecommerce_abandoned_cart_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -50239,6 +50339,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ship-prot-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MERCHANT_CAPTIVE_POOL_COGS_RESHIP_AND_SUBROGATION_CONFIRM · Mandate: shipping_protection_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 149 E-Commerce Abandoned Cart & TCPA Escrow -->
+      <div class="finops-box" id="ecommerce-abandoned-cart-escrow-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛒 电商弃购挽回 (Klaviyo / Attentive / Braze)、防“故意弃购骗 8 折券”与 TCPA 短信合规托管沙盒</div>
+            <div class="finops-sub">Round 149 · T+1h 零折扣与 90 天防骗券锁 (HTTP 403) + 50ms 已购/断货重检 (HTTP 422) + TCPA 宵禁锁 (HTTP 451) + 瀑布流净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="abandon-cart-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度弃购挽回补贴与短信成本池 ($)
+            <input type="number" id="abandon-cart-gross-input" value="105000" min="10000" step="5000" oninput="recalcEcommerceAbandonedCartSandbox()" />
+          </label>
+          <label>90 天防故意弃购骗券冷却锁
+            <select id="abandon-cart-gaming-select" onchange="recalcEcommerceAbandonedCartSandbox()">
+              <option value="pass">首封零折扣答疑 + 90 天内未领过弃购券 (合规)</option>
+              <option value="block_403">老客故意加购等 2 小时骗 20% Off 挽回码 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>发送前 50ms 跨端已购与库存重校验
+            <select id="abandon-cart-state-select" onchange="recalcEcommerceAbandonedCartSandbox()">
+              <option value="pass">确认未在其他端/Apple Pay 成交且尺码在库 (合规)</option>
+              <option value="block_422">刚在 App 原价买完或该尺码已断货仍要发打折码 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国 TCPA 双重授权与双时区宵禁锁
+            <select id="abandon-cart-tcpa-select" onchange="recalcEcommerceAbandonedCartSandbox()">
+              <option value="pass">Double Opt-In + 区号/地址双时区 08:00-20:00 + 单车限1条 (安全)</option>
+              <option value="block_451">晚 20:00 后发佛罗里达短信或单次弃购连轰 3 条违法 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Email/Push 优先瀑布流与毛利门槛路由
+            <select id="abandon-cart-opt-select" onchange="recalcEcommerceAbandonedCartSandbox()">
+              <option value="enabled" selected>Push/Email 优先 + 4h未读且毛利&gt;$25才发SMS (-38% 支出 / HTTP 409)</option>
+              <option value="disabled">不看毛利全员直接群发 $0.045 MMS 彩信 + 20% 券 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度弃购挽回与短信风险总池</div>
+            <div class="finops-kpi-val" id="abandon-cart-gross-kpi">$105,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防骗券与瀑布流路由后净支出</div>
+            <div class="finops-kpi-val" id="abandon-cart-net-kpi" style="color:#6ee7b7;">$65,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省被薅毛利与无效彩信费</div>
+            <div class="finops-kpi-val" id="abandon-cart-savings-kpi" style="color:#38bdf8;">$39,900</div>
+          </div>
+        </div>
+        <div id="abandon-cart-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 EMAIL_FIRST_WATERFALL_AND_MARGIN_GATED_INCENTIVE_CONFIRM · Mandate: abandoned_cart_escrow_optim_409
         </div>
       </div>
 
@@ -66633,6 +66790,79 @@ function recalcEcommerceShippingProtectionSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_POD_AND_INSTANT_RESHIP_AUTHORIZED · Mandate: shipping_protection_escrow_200';
+}}
+
+function recalcEcommerceAbandonedCartSandbox() {{
+  const grossInput = document.getElementById('abandon-cart-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '105000'));
+  const gamingGate = document.getElementById('abandon-cart-gaming-select').value;
+  const stateGate = document.getElementById('abandon-cart-state-select').value;
+  const tcpaGate = document.getElementById('abandon-cart-tcpa-select').value;
+  const optMode = document.getElementById('abandon-cart-opt-select').value;
+
+  const grossKpi = document.getElementById('abandon-cart-gross-kpi');
+  const netKpi = document.getElementById('abandon-cart-net-kpi');
+  const savingsKpi = document.getElementById('abandon-cart-savings-kpi');
+  const statusKpi = document.getElementById('abandon-cart-status-kpi');
+  const banner = document.getElementById('abandon-cart-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (tcpaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 TCPA_QUIET_HOURS_BREACH_OR_MISSING_DOUBLE_OPTIN_HOLD · Mandate: null';
+    return;
+  }}
+  if (gamingGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SERIAL_CART_ABANDON_COUPON_GAMING_WITHIN_90D_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (stateGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 ALREADY_CONVERTED_CROSS_DEVICE_OR_SKU_OUT_OF_STOCK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 EMAIL_FIRST_WATERFALL_AND_MARGIN_GATED_INCENTIVE_CONFIRM · Mandate: abandoned_cart_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 COMPLIANT_CART_RECOVERY_DISPATCH_AUTHORIZED · Mandate: abandoned_cart_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
