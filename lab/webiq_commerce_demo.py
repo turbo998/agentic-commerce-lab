@@ -24071,6 +24071,87 @@ def evaluate_sneaker_toy_card_vault_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BContingentStaffingVmsEscrowPolicyInput:
+    """Input contract for B2B Contingent Staffing (VMS), Timesheet Audit & Direct-Sourcing Escrow."""
+
+    quarterly_b2b_contingent_staffing_pool_usd: float = 240000.0
+    ats_duplicate_candidate_claim_or_excessive_conversion_fee: bool = False
+    unverified_holiday_timesheet_or_rate_card_level_inflation: bool = False
+    webiq_coemployment_tenure_breach_or_expired_work_permit_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    direct_sourcing_payroll_tier_and_sliding_buyout_ready: bool = False
+
+
+def evaluate_b2b_contingent_staffing_vms_escrow_policy(
+    policy_input: B2BContingentStaffingVmsEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane B2B Contingent Staffing (VMS), Timesheet Audit & Direct-Sourcing Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_b2b_contingent_staffing_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_coemployment_tenure_breach_or_expired_work_permit_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_COEMPLOYMENT_TENURE_BREACH_OR_EXPIRED_WORK_PERMIT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ats_duplicate_candidate_claim_or_excessive_conversion_fee:
+        return {
+            "status_code": 403,
+            "decision": "ATS_DUPLICATE_CANDIDATE_CLAIM_OR_EXCESSIVE_CONVERSION_FEE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unverified_holiday_timesheet_or_rate_card_level_inflation:
+        return {
+            "status_code": 422,
+            "decision": "UNVERIFIED_HOLIDAY_TIMESHEET_OR_RATE_CARD_LEVEL_INFLATION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.direct_sourcing_payroll_tier_and_sliding_buyout_ready:
+        savings = round(gross_pool * 0.32, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DIRECT_SOURCING_PAYROLL_TIER_AND_SLIDING_BUYOUT_CONFIRM",
+            "mandate_token": "b2b_contingent_staffing_vms_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_VMS_TIMESHEET_AND_RATE_CARD_AUTHORIZED",
+        "mandate_token": "b2b_contingent_staffing_vms_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -33084,6 +33165,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_contingent_staffing_vms_escrow_guard = {
+        "authorized_200": evaluate_b2b_contingent_staffing_vms_escrow_policy(
+            B2BContingentStaffingVmsEscrowPolicyInput()
+        ),
+        "ats_duplicate_or_excessive_buyout_403": evaluate_b2b_contingent_staffing_vms_escrow_policy(
+            B2BContingentStaffingVmsEscrowPolicyInput(
+                ats_duplicate_candidate_claim_or_excessive_conversion_fee=True
+            )
+        ),
+        "holiday_timesheet_or_level_inflation_422": evaluate_b2b_contingent_staffing_vms_escrow_policy(
+            B2BContingentStaffingVmsEscrowPolicyInput(
+                unverified_holiday_timesheet_or_rate_card_level_inflation=True
+            )
+        ),
+        "coemployment_tenure_or_work_permit_451": evaluate_b2b_contingent_staffing_vms_escrow_policy(
+            B2BContingentStaffingVmsEscrowPolicyInput(
+                webiq_coemployment_tenure_breach_or_expired_work_permit_flag=True
+            )
+        ),
+        "direct_sourcing_payroll_and_sliding_buyout_409": evaluate_b2b_contingent_staffing_vms_escrow_policy(
+            B2BContingentStaffingVmsEscrowPolicyInput(
+                direct_sourcing_payroll_tier_and_sliding_buyout_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -33331,6 +33438,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_geo_verified_review_escrow_guard": ecommerce_geo_verified_review_escrow_guard,
         "corporate_virtual_card_expense_escrow_guard": corporate_virtual_card_expense_escrow_guard,
         "sneaker_toy_card_vault_escrow_guard": sneaker_toy_card_vault_escrow_guard,
+        "b2b_contingent_staffing_vms_escrow_guard": b2b_contingent_staffing_vms_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -45151,6 +45259,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="sneaker-vault-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DELAWARE_TAX_FREE_VAULT_CUSTODY_AND_INSTANT_TITLE_CONFIRM · Mandate: sneaker_toy_card_vault_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 119 B2B Contingent Staffing (VMS), Timesheet Audit & Direct-Sourcing Escrow -->
+      <div class="finops-box" id="b2b-contingent-staffing-vms-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">👥 企业外包人力派遣 (VMS Contingent Staffing)、工时表 (Timesheet) 防虚报与职级套高托管 (SAP Fieldglass / Beeline / Workday VNDLY / Magnit / 科锐国际) 工时与直聘沙盒 (Round 119)</div>
+            <div class="finops-subtitle">实测内部 ATS 180天候选人归属锁+满 960 小时 $0 免费转正防猎头洗简历抢单及天价买断费 (HTTP 403)、VMS 周报与法定停工假日/Entra SSO 活跃日对账+面试视频与入职首日活体人脸 1:1 防枪手替考 (HTTP 422)、Web IQ 18 个月共同雇佣 (Co-Employment) 任期红线核验 (HTTP 451) 及银牌人才池/前员工自动走 10% 纯发薪通道替代 42% 猎头费率净省 32% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="vms-staff-status-kpi">HTTP 409 · DIRECT_SOURCING_PAYROLL_TIER_AND_SLIDING_BUYOUT_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业 IT/运营外包派遣与猎头服务总预算池 ($ USD)
+            <input type="range" id="vms-staff-pool-slider" min="30000" max="1000000" step="10000" value="240000" oninput="updateB2BContingentStaffingVmsEscrowSandbox()" />
+            <span id="vms-staff-pool-val" style="color:#6ee7b7; font-family:monospace;">$240,000</span>
+          </label>
+          <label>
+            内部 ATS 180 天归属排他锁与满 960 小时转正买断费审计 (HTTP 403)
+            <select id="vms-staff-ats-select" onchange="updateB2BContingentStaffingVmsEscrowSandbox()">
+              <option value="pass">全新外部寻源 + 候选人本人签署 RTR 唯一代表书 + 计费满 960h (6个月) $0 转正买断 (放行)</option>
+              <option value="block">猎头把公司内部 ATS 已有候选人改邮箱重推抢佣金 或 干满 1 年转正仍敲诈 25% ($35,000) 买断费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            法定假日/SSO 活跃日工时对账与防替考/职级套高门禁 (HTTP 422)
+            <select id="vms-staff-time-select" onchange="updateB2BContingentStaffingVmsEscrowSandbox()">
+              <option value="pass">工时表扣除法定停工假日且匹配 Entra SSO/VDI 活跃日 + 背调年限符合 L4 档位 + 入职人脸与面试一致 (合规)</option>
+              <option value="block">法定放假周无脑照填 40h 满工时 / 2年资历生手按 L4 架构师($165/h)计费 或 远程面试找大牛替考入职换人 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 18 个月共同雇佣 (Co-Employment) 任期上限与工签核验 (HTTP 451)
+            <select id="vms-staff-tenure-select" onchange="updateB2BContingentStaffingVmsEscrowSandbox()">
+              <option value="clear">连续派遣时长 &lt;=18 个月(提前 60 天触发转正/离场冷却) + I-9/工签许可有效 (正常)</option>
+              <option value="hold">外包人员超期连续服役 3 年触发共同雇佣(Vizcaino 期权社保追偿诉讼) 或 工签已过期 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            自有人才池 10% 纯发薪通道 (Direct-Sourcing Payrolling) 寻优 (HTTP 409)
+            <select id="vms-staff-opt-select" onchange="updateB2BContingentStaffingVmsEscrowSandbox()">
+              <option value="enabled" selected>前员工/终面银牌人选自动路由 10% 纯代发薪通道(替代 42% 猎头加成) + 猎头费 90 天退现托管净省 32% (HTTP 409)</option>
+              <option value="baseline">常规 SSO 工时核验与标准职级价目表结算授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业外包派遣总池</div>
+            <div class="finops-kpi-val" id="vms-staff-gross-kpi">$240,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">直聘发薪分流与挤干假工时后净支出</div>
+            <div class="finops-kpi-val" id="vms-staff-net-kpi" style="color:#6ee7b7;">$163,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省中介溢价与假日空饷</div>
+            <div class="finops-kpi-val" id="vms-staff-savings-kpi" style="color:#38bdf8;">$76,800</div>
+          </div>
+        </div>
+        <div id="vms-staff-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DIRECT_SOURCING_PAYROLL_TIER_AND_SLIDING_BUYOUT_CONFIRM · Mandate: b2b_contingent_staffing_vms_mandate_optim_409
         </div>
       </div>
 
@@ -59328,6 +59499,80 @@ function updateSneakerToyCardVaultEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 MULTIMODAL_AUTHENTICATED_AND_NFC_SEALED_AUTHORIZED · Mandate: sneaker_toy_card_vault_mandate_200';
+}}
+
+function updateB2BContingentStaffingVmsEscrowSandbox() {{
+  const slider = document.getElementById('vms-staff-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '240000');
+  const atsMode = document.getElementById('vms-staff-ats-select').value;
+  const timeMode = document.getElementById('vms-staff-time-select').value;
+  const tenureMode = document.getElementById('vms-staff-tenure-select').value;
+  const optMode = document.getElementById('vms-staff-opt-select').value;
+
+  document.getElementById('vms-staff-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('vms-staff-status-kpi');
+  const grossKpi = document.getElementById('vms-staff-gross-kpi');
+  const netKpi = document.getElementById('vms-staff-net-kpi');
+  const savingsKpi = document.getElementById('vms-staff-savings-kpi');
+  const banner = document.getElementById('vms-staff-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (tenureMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_COEMPLOYMENT_TENURE_BREACH_OR_EXPIRED_WORK_PERMIT_HOLD · Mandate: null';
+    return;
+  }}
+  if (atsMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ATS_DUPLICATE_CANDIDATE_CLAIM_OR_EXCESSIVE_CONVERSION_FEE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (timeMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNVERIFIED_HOLIDAY_TIMESHEET_OR_RATE_CARD_LEVEL_INFLATION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.32);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DIRECT_SOURCING_PAYROLL_TIER_AND_SLIDING_BUYOUT_CONFIRM · Mandate: b2b_contingent_staffing_vms_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_VMS_TIMESHEET_AND_RATE_CARD_AUTHORIZED · Mandate: b2b_contingent_staffing_vms_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

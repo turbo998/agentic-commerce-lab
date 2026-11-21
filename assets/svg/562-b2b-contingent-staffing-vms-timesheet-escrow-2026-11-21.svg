@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg562" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="50%" stop-color="#172554"/>
+      <stop offset="100%" stop-color="#091326"/>
+    </linearGradient>
+    <linearGradient id="accent562" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg562)"/>
+  <rect x="28" y="24" width="1144" height="627" rx="18" fill="none" stroke="url(#accent562)" stroke-width="2" opacity="0.5"/>
+  <text x="54" y="66" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.5">ROUND 119 · B2B CONTINGENT STAFFING, VMS TIMESHEET &amp; RATE-CARD ESCROW · SVG 562</text>
+  <text x="54" y="100" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">B2B Contingent Staffing (VMS), Timesheet Audit &amp; Direct-Sourcing Escrow</text>
+  <text x="54" y="128" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">SAP Fieldglass / Beeline / Workday VNDLY / Magnit · ATS Ownership &amp; Buyout Lock (HTTP 403) · SSO Timesheet &amp; L-Tier Gate (HTTP 422)</text>
+
+  <!-- Lane 1: ATS Ownership & Conversion Buyout Cap -->
+  <rect x="54" y="152" width="345" height="465" rx="14" fill="#111827" stroke="#ef4444" stroke-width="1.6"/>
+  <rect x="54" y="152" width="345" height="42" rx="14" fill="#7f1d1d"/>
+  <text x="72" y="179" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">1. ATS Ownership &amp; Buyout (HTTP 403)</text>
+  <text x="72" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Prior-ATS &amp; Right-to-Represent (RTR) Lock</text>
+  <text x="72" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Blocks agency fee claims on candidates</text>
+  <text x="72" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  active in internal Workday/Greenhouse ATS</text>
+  <text x="72" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  within 180d or lacking candidate-signed RTR</text>
+  <rect x="72" y="298" width="309" height="82" rx="9" fill="#1e293b" stroke="#f87171" stroke-width="1"/>
+  <text x="86" y="321" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">$0 Temp-to-Perm Conversion After 960 Hrs</text>
+  <text x="86" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Rejects 25% buyout fees after contractor</text>
+  <text x="86" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  completes 6 months (960 billable hours)</text>
+  <text x="72" y="408" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Open-Book Statutory Burden &amp; Markup Cap</text>
+  <text x="72" y="430" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Separates W-2 base pay rate from agency</text>
+  <text x="72" y="450" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  markup (&lt;=28% commercial / &lt;=35% IT)</text>
+  <text x="72" y="470" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  to block 65% opaque bill-rate spreads</text>
+  <rect x="72" y="502" width="309" height="92" rx="9" fill="#0f172a" stroke="#38bdf8" stroke-width="1"/>
+  <text x="86" y="526" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 403 Deterministic Verdict</text>
+  <text x="86" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">ATS_DUPLICATE_CANDIDATE_CLAIM_OR</text>
+  <text x="86" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_EXCESSIVE_CONVERSION_FEE_BLOCKED</text>
+
+  <!-- Lane 2: SSO/VDI Timesheet & Rate-Card Tier Audit -->
+  <rect x="426" y="152" width="348" height="465" rx="14" fill="#111827" stroke="#f59e0b" stroke-width="1.6"/>
+  <rect x="426" y="152" width="348" height="42" rx="14" fill="#78350f"/>
+  <text x="444" y="179" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">2. VMS Timesheet &amp; Tier Gate (HTTP 422)</text>
+  <text x="444" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">SSO / VDI Active-Day vs. 40h Timesheet Match</text>
+  <text x="444" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Cross-checks Fieldglass/Beeline 40h</text>
+  <text x="444" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  timesheets against Entra SSO / VDI active</text>
+  <text x="444" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  sessions &amp; public holiday shutdown days</text>
+  <rect x="444" y="298" width="312" height="82" rx="9" fill="#1e293b" stroke="#fbbf24" stroke-width="1"/>
+  <text x="458" y="321" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">Anti-'Title Inflation' Rate-Card Gate</text>
+  <text x="458" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Blocks billing a 2-yr Junior Dev at</text>
+  <text x="458" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  Senior L4 Architect ($165/hr) rate tier</text>
+  <text x="444" y="408" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Anti-'Bait-and-Switch' Proxy Interview Lock</text>
+  <text x="444" y="430" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Verifies Day-1 laptop onboarding face</text>
+  <text x="444" y="450" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  biometrics match the video-interviewed</text>
+  <text x="444" y="470" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  candidate (defeats deepfake/proxy stand-ins)</text>
+  <rect x="444" y="502" width="312" height="92" rx="9" fill="#0f172a" stroke="#f59e0b" stroke-width="1"/>
+  <text x="458" y="526" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 422 Deterministic Verdict</text>
+  <text x="458" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">UNVERIFIED_HOLIDAY_TIMESHEET_OR</text>
+  <text x="458" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_RATE_CARD_LEVEL_INFLATION_BLOCKED</text>
+
+  <!-- Lane 3: Co-Employment Tenure & Direct-Sourcing FinOps -->
+  <rect x="801" y="152" width="345" height="465" rx="14" fill="#111827" stroke="#10b981" stroke-width="1.6"/>
+  <rect x="801" y="152" width="345" height="42" rx="14" fill="#064e3b"/>
+  <text x="819" y="179" fill="#a7f3d0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">3. Co-Employment &amp; FinOps (451/409)</text>
+  <text x="819" y="216" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">Web IQ 18-Month Co-Employment Cap (451)</text>
+  <text x="819" y="238" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Enforces mandatory 18/24m tenure break</text>
+  <text x="819" y="258" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  (Microsoft Vizcaino doctrine) &amp; I-9</text>
+  <text x="819" y="278" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  E-Verify work authorization validity</text>
+  <rect x="819" y="298" width="309" height="96" rx="9" fill="#1e293b" stroke="#34d399" stroke-width="1"/>
+  <text x="833" y="321" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">FinOps Direct-Sourcing + Payrolling (409)</text>
+  <text x="833" y="341" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">• Routes silver-medalist &amp; alumni hires</text>
+  <text x="833" y="361" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  through 10%-markup EOR Payrolling instead</text>
+  <text x="833" y="381" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">  of 42% staffing agency rate: -32% Net</text>
+  <text x="819" y="420" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">90-Day Guarantee Fee Holdback</text>
+  <text x="819" y="442" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">• Escrows perm search fees with 100% cash</text>
+  <text x="819" y="462" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12.5">  clawback on early 90-day attrition</text>
+  <rect x="819" y="502" width="309" height="92" rx="9" fill="#0f172a" stroke="#10b981" stroke-width="1"/>
+  <text x="833" y="526" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12.5" font-weight="700">HTTP 409 / 451 Deterministic Verdict</text>
+  <text x="833" y="548" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">DIRECT_SOURCING_PAYROLL_TIER_AND</text>
+  <text x="833" y="566" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">_SLIDING_BUYOUT_CONFIRM (-32% Net)</text>
+</svg>

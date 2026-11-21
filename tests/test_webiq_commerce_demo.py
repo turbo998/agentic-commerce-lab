@@ -17031,6 +17031,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("sneaker-toy-card-vault-escrow-sandbox", html_zh)
 
+    def test_b2b_contingent_staffing_vms_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BContingentStaffingVmsEscrowPolicyInput,
+            evaluate_b2b_contingent_staffing_vms_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_contingent_staffing_vms_escrow_policy(
+            B2BContingentStaffingVmsEscrowPolicyInput(
+                quarterly_b2b_contingent_staffing_pool_usd=240000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_VMS_TIMESHEET_AND_RATE_CARD_AUTHORIZED",
+        )
+
+        ats = evaluate_b2b_contingent_staffing_vms_escrow_policy(
+            B2BContingentStaffingVmsEscrowPolicyInput(
+                ats_duplicate_candidate_claim_or_excessive_conversion_fee=True
+            )
+        )
+        self.assertEqual(ats["status_code"], 403)
+        self.assertEqual(
+            ats["decision"],
+            "ATS_DUPLICATE_CANDIDATE_CLAIM_OR_EXCESSIVE_CONVERSION_FEE_BLOCKED",
+        )
+
+        time_err = evaluate_b2b_contingent_staffing_vms_escrow_policy(
+            B2BContingentStaffingVmsEscrowPolicyInput(
+                unverified_holiday_timesheet_or_rate_card_level_inflation=True
+            )
+        )
+        self.assertEqual(time_err["status_code"], 422)
+        self.assertEqual(
+            time_err["decision"],
+            "UNVERIFIED_HOLIDAY_TIMESHEET_OR_RATE_CARD_LEVEL_INFLATION_BLOCKED",
+        )
+
+        tenure = evaluate_b2b_contingent_staffing_vms_escrow_policy(
+            B2BContingentStaffingVmsEscrowPolicyInput(
+                webiq_coemployment_tenure_breach_or_expired_work_permit_flag=True
+            )
+        )
+        self.assertEqual(tenure["status_code"], 451)
+        self.assertEqual(
+            tenure["decision"],
+            "WEBIQ_COEMPLOYMENT_TENURE_BREACH_OR_EXPIRED_WORK_PERMIT_HOLD",
+        )
+
+        optim = evaluate_b2b_contingent_staffing_vms_escrow_policy(
+            B2BContingentStaffingVmsEscrowPolicyInput(
+                quarterly_b2b_contingent_staffing_pool_usd=240000.0,
+                direct_sourcing_payroll_tier_and_sliding_buyout_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 76800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 163200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_contingent_staffing_vms_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-contingent-staffing-vms-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
