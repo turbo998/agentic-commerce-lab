@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg619" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr619" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg619)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr619)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 176 · Airline &amp; OTA Flight Disruption (IROPS), Auto-Rebooking &amp; DOT/EU261 Escrow</text>
+  <text x="48" y="74" class="sub">Amadeus / Sabre / Navan / Hopper HTS · Official Waiver-Code ADM Lock · Rebook-vs-Refund Mutex · Controllable VCN Hotel Voucher (-38% Cost)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #619 · FAQ #295</text>
+
+  <!-- Lane 1: Airline Waiver-Code & Sub-Class ADM Breaker -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Waiver-Code &amp; Cabin ADM Breaker (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops OTA Agent Issuing Unwaived $0 Reissue:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Require Airline_Waiver_Auth_Code in Endorsement</text>
+  <text x="54" y="200" class="mono">&amp; Same_Cabin_Hierarchy (Economy → Economy Y/B)</text>
+  <text x="44" y="223" class="body-txt">• Prevents $450/Ticket Airline `ADM` Debit Memos:</text>
+  <text x="54" y="243" class="body-txt">Blocks rebooking discounted `N-Class` into</text>
+  <text x="54" y="261" class="body-txt">Business `J-Class` or non-partner interline `OAL`</text>
+  <text x="44" y="284" class="body-txt">• Enforces `TKNE / Coupon Status == OPEN` check</text>
+  <text x="54" y="302" class="body-txt">before invol reissue to stop airport gate clash</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 UNWAIVED_CABIN_UPGRADE_OR_OAL_ADM_BLOCKED</text>
+
+  <!-- Lane 2: Rebook-vs-Refund Mutex & Downline Hotel/Car Sync -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Rebook-vs-Refund Mutex &amp; Hotel Sync (422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Double-Payout ("Rebooked Free + Refunded"): </text>
+  <text x="442" y="182" class="mono">Enforce Atomic Coupon_State Mutex:</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">EXCHANGED (Rebooked) XOR REFUNDED (Cash Back)</text>
+  <text x="432" y="223" class="body-txt">• Protects Return Leg from `No-Show` Auto-Cancel:</text>
+  <text x="442" y="243" class="mono">Preserve Inbound_Segment when Outbound Delayed</text>
+  <text x="432" y="266" class="body-txt">• Downline Hotel &amp; Car-Rental Late-Arrival Sync:</text>
+  <text x="442" y="286" class="body-txt">Auto-notifies destination hotel PMS of 02:00 AM</text>
+  <text x="442" y="304" class="body-txt">arrival to prevent room release &amp; 1-night penalty</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 DOUBLE_REFUND_REBOOK_OR_HOTEL_NOSHOW_BLOCKED</text>
+
+  <!-- Lane 3: US DOT 3h/6h Cash Rule & EU261 Cause Verification -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. DOT Cash Mandate &amp; EU261 Cause Lock (451)</text>
+  <text x="820" y="162" class="body-txt">• US DOT 2024 Automatic Cash-Refund Final Rule:</text>
+  <text x="830" y="182" class="mono">Delay &gt;=3h (Dom) / &gt;=6h (Intl) &amp; Unaccepted:</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Ban Voucher-Only Dark Pattern; Refund Original</text>
+  <text x="820" y="223" class="body-txt">• Official `IATA Delay Code` Cause Attribution:</text>
+  <text x="830" y="243" class="mono">Code 41-49 (Tech) / 61-69 (Crew) = Controllable</text>
+  <text x="830" y="261" class="mono">Code 71-77 (Weather) / 81 (ATC) = Extraordinary</text>
+  <text x="830" y="282" class="body-txt">Prevents paying €600 EU261 or hotel vouchers on</text>
+  <text x="830" y="300" class="body-txt">uncontrollable ATC/Hurricane force-majeure events</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 VOUCHER_DARK_PATTERN_OR_WEATHER_PAYOUT_HOLD</text>
+
+  <!-- Bottom 10-Second Self-Serve Rebook & Geofenced Meal/Hotel VCN Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. 10-Second Mobile 3-Option Rebooking + Airport-Geofenced Meal/Hotel Virtual Card + Ancillary Refund (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① 10s Push 3-Option Rebook</text>
+  <text x="62" y="462" class="body-txt">Pre-holds top 3 alternate</text>
+  <text x="62" y="480" class="body-txt">seats before gate announcement;</text>
+  <text x="62" y="498" class="body-txt">traveler taps 1 option in app;</text>
+  <text x="62" y="516" class="mono">82% Deflected from Call Center</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Airport-Scoped Meal/Hotel VCN</text>
+  <text x="337" y="462" class="body-txt">Issues $15 Meal / $140 Hotel</text>
+  <text x="337" y="480" class="body-txt">Apple Pay VCN locked to `MCC`</text>
+  <text x="337" y="498" class="body-txt">&amp; 24h expiry (no paper queues);</text>
+  <text x="337" y="516" class="mono">Unspent VCN Balance Auto-Reverts</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ EMD-A Seat &amp; Bag Auto-Refund</text>
+  <text x="622" y="462" class="body-txt">If rebooked aircraft lacks</text>
+  <text x="622" y="480" class="body-txt">paid Extra-Legroom seat (`EMD`),</text>
+  <text x="622" y="498" class="body-txt">auto-refunds ancillary fee;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">0 DOT Ancillary Fine Risk</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Parametric HTS Delay Cover</text>
+  <text x="907" y="462" class="body-txt">Optional `Hopper HTS` disruption</text>
+  <text x="907" y="480" class="body-txt">pass funds instant rebooking on</text>
+  <text x="907" y="498" class="body-txt">ANY carrier with 16% attach;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-38% IROPS Ops &amp; ADM Cost</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-38.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly IROPS, Call &amp; ADM Saved</text>
+  <text x="46" y="642" class="mono">$62,700 Saved / $165k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">0 Airline ADMs</text>
+  <text x="336" y="626" class="kpi-lbl">Waiver-Code &amp; Cabin Hierarchy Lock</text>
+  <text x="336" y="642" class="mono">100% IATA Reso 735d Compliant</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">Coupon Mutex</text>
+  <text x="626" y="626" class="kpi-lbl">Rebook XOR Refund State Lock</text>
+  <text x="626" y="642" class="mono">0 Double-Compensated Tickets</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">24h VCN Voucher</text>
+  <text x="916" y="626" class="kpi-lbl">Instant Airport Meal/Hotel Card</text>
+  <text x="916" y="642" class="mono">38% Unspent Balance Reclaimed</text>
+</svg>

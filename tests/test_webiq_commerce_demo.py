@@ -20850,6 +20850,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-net-terms-trade-credit-sandbox", html_zh)
 
+    def test_ota_airline_irops_rebooking_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaAirlineIropsRebookingPolicyInput,
+            evaluate_ota_airline_irops_rebooking_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_airline_irops_rebooking_policy(
+            OtaAirlineIropsRebookingPolicyInput(
+                quarterly_irops_adm_double_refund_and_call_surge_pool_usd=165000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "WAIVER_VERIFIED_INVOL_REBOOK_AUTHORIZED",
+        )
+
+        waiver = evaluate_ota_airline_irops_rebooking_policy(
+            OtaAirlineIropsRebookingPolicyInput(
+                missing_airline_waiver_code_or_unauthorized_cabin_upgrade=True
+            )
+        )
+        self.assertEqual(waiver["status_code"], 403)
+        self.assertEqual(
+            waiver["decision"],
+            "UNWAIVED_CABIN_UPGRADE_OR_OAL_ADM_BLOCKED",
+        )
+
+        mutex = evaluate_ota_airline_irops_rebooking_policy(
+            OtaAirlineIropsRebookingPolicyInput(
+                exchanged_coupon_double_refund_or_downline_hotel_noshow_unnotified=True
+            )
+        )
+        self.assertEqual(mutex["status_code"], 422)
+        self.assertEqual(
+            mutex["decision"],
+            "DOUBLE_REFUND_REBOOK_OR_HOTEL_NOSHOW_BLOCKED",
+        )
+
+        dot = evaluate_ota_airline_irops_rebooking_policy(
+            OtaAirlineIropsRebookingPolicyInput(
+                dot_3h_cash_refund_blocked_by_voucher_or_weather_eu261_mispaid=True
+            )
+        )
+        self.assertEqual(dot["status_code"], 451)
+        self.assertEqual(
+            dot["decision"],
+            "VOUCHER_DARK_PATTERN_OR_WEATHER_PAYOUT_HOLD",
+        )
+
+        optim = evaluate_ota_airline_irops_rebooking_policy(
+            OtaAirlineIropsRebookingPolicyInput(
+                quarterly_irops_adm_double_refund_and_call_surge_pool_usd=165000.0,
+                instant_3option_rebook_24h_meal_vcn_and_emd_seat_refund_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 62700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 102300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_airline_irops_rebooking_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-airline-irops-rebooking-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
