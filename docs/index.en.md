@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`313` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`314` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (19 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (46 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (115 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (116 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (70 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (26 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (37 guides)](#tax-fx-privacy-disputes)
@@ -99,7 +99,7 @@
 | 46 | **E-Commerce One-Click Accelerated Guest Checkout, Anti-`SMS-Pumping` Passkey Guard & `EMVCo Network Token` Escrow (`Shop Pay / PayPal Fastlane / Stripe Link / Apple Pay`), `MNO` Toll-Fraud Circuit Breaker, In-Sheet `CASS` Address Validation & `DPAN` Cryptograms (`-37%` Checkout Loss) Agent Architecture Selection FAQ** | [English](ecommerce-one-click-accelerated-checkout-passkey-network-token-sms-fraud-escrow-agent-selection-faq.en.md) · [中文](ecommerce-one-click-accelerated-checkout-passkey-network-token-sms-fraud-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (115 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (116 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -220,6 +220,7 @@
 | 113 | **E-Commerce Device Trade-In, Instant Upfront Credit & Grading-Collateral Escrow (`Apple Trade-In / Phobio / Assurant / Back Market`), Live `GSMA / Find-My / MDM` Lock, Anti-"Bait-and-Switch" Re-Grading Consent & 42-State Sales-Tax Offset (`-36%` Bricked-Unit & Drop-Off Loss) Agent Architecture Selection FAQ** | [English](ecommerce-device-trade-in-upfront-credit-grading-collateral-escrow-agent-selection-faq.en.md) · [中文](ecommerce-device-trade-in-upfront-credit-grading-collateral-escrow-agent-selection-faq.md) |
 | 114 | **Corporate Travel & OTA Post-Booking Price-Drop Re-Shopping & Unused Ticket Credit-Bank Escrow (`Tripbam / FairFly / Navan / Amadeus`), `Book-New-Before-Cancel` Atomic Saga, 5-Dimension Room/Loyalty Parity & Automated `e-Credit` Redemption (`-35%` Travel Spend) Agent Architecture Selection FAQ** | [English](ota-corporate-travel-price-drop-reshopping-unused-ticket-credit-escrow-agent-selection-faq.en.md) · [中文](ota-corporate-travel-price-drop-reshopping-unused-ticket-credit-escrow-agent-selection-faq.md) |
 | 115 | **E-Commerce Back-in-Stock Waitlist, Tiered Wave Allocation & Pre-Order Escrow (`Klaviyo / Attentive / Purple Dot / Shopify`), `5:1` Batch Throttling, Single-Return Noise Filter & `FTC 16 CFR Part 435` Delay-Consent Lock (`-36%` OOS Lost Revenue) Agent Architecture Selection FAQ** | [English](ecommerce-back-in-stock-waitlist-wave-allocation-ftc-preorder-escrow-agent-selection-faq.en.md) · [中文](ecommerce-back-in-stock-waitlist-wave-allocation-ftc-preorder-escrow-agent-selection-faq.md) |
+| 116 | **E-Commerce Made-to-Order (`MTO`), 3D Product Configurator & Custom-Engraving Escrow (`Threekit / Zakeke / Nike By You / Customily`), 2-Hour Typo Grace Window, Signed `3D Proof` Hash & `USPTO` Trademark Shield (`-36%` Custom Scrap & Dispute Loss) Agent Architecture Selection FAQ** | [English](ecommerce-made-to-order-custom-product-3d-configurator-no-return-escrow-agent-selection-faq.en.md) · [中文](ecommerce-made-to-order-custom-product-3d-configurator-no-return-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (70 Guides)

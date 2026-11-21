@@ -22123,6 +22123,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("conversational-commerce-whatsapp-sandbox", html_zh)
 
+    def test_ecommerce_made_to_order_custom_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceMadeToOrderCustomPolicyInput,
+            evaluate_ecommerce_made_to_order_custom_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_made_to_order_custom_policy(
+            EcommerceMadeToOrderCustomPolicyInput(
+                quarterly_custom_scrap_remorse_return_and_typo_dispute_pool_usd=165000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_3D_PROOF_CUSTOM_PRODUCTION_AUTHORIZED",
+        )
+
+        cut = evaluate_ecommerce_made_to_order_custom_policy(
+            EcommerceMadeToOrderCustomPolicyInput(
+                remorse_cancel_or_return_after_factory_laser_cut_started=True
+            )
+        )
+        self.assertEqual(cut["status_code"], 403)
+        self.assertEqual(
+            cut["decision"],
+            "POST_FACTORY_CUT_CANCEL_OR_REMORSE_RETURN_BLOCKED",
+        )
+
+        proof = evaluate_ecommerce_made_to_order_custom_policy(
+            EcommerceMadeToOrderCustomPolicyInput(
+                unconfirmed_3d_proof_hash_or_bleed_unit_dimension_error=True
+            )
+        )
+        self.assertEqual(proof["status_code"], 422)
+        self.assertEqual(
+            proof["decision"],
+            "UNCONFIRMED_3D_PROOF_OR_BLEED_OVERFLOW_BLOCKED",
+        )
+
+        ip_gate = evaluate_ecommerce_made_to_order_custom_policy(
+            EcommerceMadeToOrderCustomPolicyInput(
+                unauthorized_trademark_logo_or_prohibited_engraving_text=True
+            )
+        )
+        self.assertEqual(ip_gate["status_code"], 451)
+        self.assertEqual(
+            ip_gate["decision"],
+            "TRADEMARKED_LOGO_OR_PROHIBITED_TEXT_HOLD",
+        )
+
+        optim = evaluate_ecommerce_made_to_order_custom_policy(
+            EcommerceMadeToOrderCustomPolicyInput(
+                quarterly_custom_scrap_remorse_return_and_typo_dispute_pool_usd=165000.0,
+                two_hour_self_edit_grace_and_direct_cad_dxf_modular_tag_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 59400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 105600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_made_to_order_custom_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-made-to-order-custom-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

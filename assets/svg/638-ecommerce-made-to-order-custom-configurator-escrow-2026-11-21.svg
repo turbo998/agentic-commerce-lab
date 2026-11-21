@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg638" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr638" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg638)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr638)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 195 · E-Commerce Made-to-Order (MTO), 3D Configurator &amp; Custom-Engraving Escrow</text>
+  <text x="48" y="74" class="sub">Threekit / Zakeke / Nike By You / Customily · 2h Edit Cooling-Off Mutex · 3D Proof Hash Sign-Off · IP Trademark Shield (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #638 · FAQ #314</text>
+
+  <!-- Lane 1: Post-Cut Remorse Cancellation & Non-Resellable Custom Return Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Factory-Cut Non-Returnable Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Cancelling Engraved/Cut Goods Mid-Production:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">2-Hour Buyer Self-Edit Grace Window After Checkout</text>
+  <text x="54" y="200" class="mono">Hard-Lock Cancel When `MES_Status == LASER_OR_CUT`</text>
+  <text x="44" y="223" class="body-txt">• EU CRD Art. 16(c) &amp; US Custom-Goods Exemption:</text>
+  <text x="54" y="243" class="mono">Binds Explicit Bespoke Non-Returnable Attestation</text>
+  <text x="44" y="266" class="body-txt">• Prevents buyers from returning a $450 blazer</text>
+  <text x="54" y="286" class="body-txt">monogrammed with "J.R.K." or custom-cut blinds</text>
+  <text x="54" y="304" class="body-txt">under generic 14-day remorse return rules</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 POST_FACTORY_CUT_CANCEL_OR_REMORSE_RETURN_BLOCKED</text>
+
+  <!-- Lane 2: Unconfirmed 3D Proof Spelling/Dimension & Print-Ready Vector Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. 3D Proof &amp; Safe-Zone Vector Lock (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Buyer Typo Blame &amp; Cropped-Edge Engraving:</text>
+  <text x="442" y="182" class="mono">Require Signed `WebGL_3D_Snapshot_SHA256` at Pay</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Enforce `>=300 DPI` &amp; `3mm Bleed Safe-Zone` Box</text>
+  <text x="432" y="223" class="body-txt">• Custom Curtain/Furniture Measurement Sanity Gate:</text>
+  <text x="442" y="243" class="mono">Flag Width/Height Ratio Anomalies (cm vs. inch!)</text>
+  <text x="432" y="266" class="body-txt">• Eliminates "You spelled my wife's name wrong!"</text>
+  <text x="442" y="286" class="body-txt">chargebacks and customers typing inches into</text>
+  <text x="442" y="304" class="body-txt">centimeter fields on made-to-measure blinds</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNCONFIRMED_3D_PROOF_OR_BLEED_OVERFLOW_BLOCKED</text>
+
+  <!-- Lane 3: Trademarked Logo Infringement & Hate-Speech Engraving Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. IP Trademark &amp; Content Moderation (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Printing Unauthorized Disney/NFL/Luxury Logos:</text>
+  <text x="830" y="182" class="mono">Vision Embedding Match vs. `USPTO / EUIPO TM DB`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Require B2B Brand License Letter if TM Match &gt; 0.85</text>
+  <text x="820" y="223" class="body-txt">• Multi-Language Profanity &amp; Hate-Symbol Filter:</text>
+  <text x="830" y="243" class="body-txt">Screens custom jersey text, numeric dog-whistles</text>
+  <text x="830" y="261" class="body-txt">&amp; uploaded artwork before factory queue admission</text>
+  <text x="820" y="284" class="body-txt">• Protects brand from statutory counterfeit lawsuits</text>
+  <text x="830" y="302" class="body-txt">&amp; viral PR scandals from automated customizers</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 TRADEMARKED_LOGO_OR_PROHIBITED_TEXT_HOLD</text>
+
+  <!-- Bottom 2-Hour Grace Self-Edit & Automated CAD/Laser Job Dispatch Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. 2-Hour Self-Serve Typo-Fix Window + Direct WebGL-to-CAD (`DXF/SVG`) Factory Dispatch (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① 120-Min Typo Grace Hold</text>
+  <text x="62" y="462" class="body-txt">Holds order in buffer for 2h</text>
+  <text x="62" y="480" class="body-txt">so buyer can fix spelling or</text>
+  <text x="62" y="498" class="body-txt">ring size self-serve;</text>
+  <text x="62" y="516" class="mono">Catches 91% of Buyer Typos</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Signed 3D Proof Evidence</text>
+  <text x="337" y="462" class="body-txt">Captures rendered 3D angle</text>
+  <text x="337" y="480" class="body-txt">PNGs + exact text string into</text>
+  <text x="337" y="498" class="body-txt">Visa CE 3.0 receipt bundle;</text>
+  <text x="337" y="516" class="mono">98% SNAD Dispute Win Rate</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Zero-Touch CAD/Laser File</text>
+  <text x="622" y="462" class="body-txt">Compiles validated 3D config</text>
+  <text x="622" y="480" class="body-txt">directly into CNC `DXF` or</text>
+  <text x="622" y="498" class="body-txt">embroidery `DST` machine file;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">0 Manual Pre-Press Transcription</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Component De-Personalize</text>
+  <text x="907" y="462" class="body-txt">Designs modular engraved tag</text>
+  <text x="907" y="480" class="body-txt">/ strap so exchanges swap</text>
+  <text x="907" y="498" class="body-txt">only the $8 plate, not $400 bag;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Custom Scrap &amp; Dispute Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly MTO Scrap &amp; SNAD Dispute Saved</text>
+  <text x="46" y="642" class="mono">$59,400 Saved / $165k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">120m Grace</text>
+  <text x="336" y="626" class="kpi-lbl">Pre-Factory Self-Serve Typo Window</text>
+  <text x="336" y="642" class="mono">Locks Hard Once Laser/Cut Starts</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">3D Proof Hash</text>
+  <text x="626" y="626" class="kpi-lbl">Cryptographic Visual Sign-Off</text>
+  <text x="626" y="642" class="mono">Stops "Inch vs. CM" &amp; Typo Claims</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 IP Lawsuits</text>
+  <text x="916" y="626" class="kpi-lbl">Vision Trademark &amp; Slur Screening</text>
+  <text x="916" y="642" class="mono">Blocks Unauthorized Brand Logos</text>
+</svg>

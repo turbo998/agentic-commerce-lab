@@ -29889,6 +29889,82 @@ def evaluate_conversational_commerce_whatsapp_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceMadeToOrderCustomPolicyInput:
+    quarterly_custom_scrap_remorse_return_and_typo_dispute_pool_usd: float = 165000.0
+    remorse_cancel_or_return_after_factory_laser_cut_started: bool = False
+    unconfirmed_3d_proof_hash_or_bleed_unit_dimension_error: bool = False
+    unauthorized_trademark_logo_or_prohibited_engraving_text: bool = False
+    two_hour_self_edit_grace_and_direct_cad_dxf_modular_tag_ready: bool = False
+
+
+def evaluate_ecommerce_made_to_order_custom_policy(
+    policy_input: EcommerceMadeToOrderCustomPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_custom_scrap_remorse_return_and_typo_dispute_pool_usd
+        ),
+    )
+    if policy_input.unauthorized_trademark_logo_or_prohibited_engraving_text:
+        return {
+            "status_code": 451,
+            "decision": "TRADEMARKED_LOGO_OR_PROHIBITED_TEXT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.remorse_cancel_or_return_after_factory_laser_cut_started:
+        return {
+            "status_code": 403,
+            "decision": "POST_FACTORY_CUT_CANCEL_OR_REMORSE_RETURN_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unconfirmed_3d_proof_hash_or_bleed_unit_dimension_error:
+        return {
+            "status_code": 422,
+            "decision": "UNCONFIRMED_3D_PROOF_OR_BLEED_OVERFLOW_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.two_hour_self_edit_grace_and_direct_cad_dxf_modular_tag_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TWO_HOUR_GRACE_AND_DIRECT_CAD_MODULAR_TAG_CONFIRM",
+            "mandate_token": "mto_custom_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_3D_PROOF_CUSTOM_PRODUCTION_AUTHORIZED",
+        "mandate_token": "mto_custom_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -40878,6 +40954,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_made_to_order_custom_guard = {
+        "authorized_200": evaluate_ecommerce_made_to_order_custom_policy(
+            EcommerceMadeToOrderCustomPolicyInput()
+        ),
+        "post_cut_cancel_or_return_403": evaluate_ecommerce_made_to_order_custom_policy(
+            EcommerceMadeToOrderCustomPolicyInput(
+                remorse_cancel_or_return_after_factory_laser_cut_started=True
+            )
+        ),
+        "unconfirmed_proof_or_bleed_422": evaluate_ecommerce_made_to_order_custom_policy(
+            EcommerceMadeToOrderCustomPolicyInput(
+                unconfirmed_3d_proof_hash_or_bleed_unit_dimension_error=True
+            )
+        ),
+        "trademark_logo_or_slur_451": evaluate_ecommerce_made_to_order_custom_policy(
+            EcommerceMadeToOrderCustomPolicyInput(
+                unauthorized_trademark_logo_or_prohibited_engraving_text=True
+            )
+        ),
+        "two_hour_grace_and_cad_409": evaluate_ecommerce_made_to_order_custom_policy(
+            EcommerceMadeToOrderCustomPolicyInput(
+                two_hour_self_edit_grace_and_direct_cad_dxf_modular_tag_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -41201,6 +41303,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_free_trial_conversion_guard": saas_free_trial_conversion_guard,
         "cross_border_eu_epr_compliance_guard": cross_border_eu_epr_compliance_guard,
         "conversational_commerce_whatsapp_guard": conversational_commerce_whatsapp_guard,
+        "ecommerce_made_to_order_custom_guard": ecommerce_made_to_order_custom_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -57515,6 +57618,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="convcomm-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CTWA_NATIVE_FLOW_CHECKOUT_AND_HOUR22_WINDOW_CONFIRM · Mandate: conv_commerce_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 195 E-Commerce Made-to-Order (MTO), 3D Configurator & Custom-Engraving Escrow (#314) -->
+      <div class="finops-box" id="ecommerce-made-to-order-custom-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎨 电商按单定制与 3D 个性化配置 (Threekit / Zakeke / Nike By You)、2h 冷静期与防悔单报废沙盒</div>
+            <div class="finops-sub">Round 195 (#314) · 2h 自助改错缓冲与车间 LASER/CUT 开料后锁死撤单 (HTTP 403) + 3D 定稿图 SHA-256 签名与厘米/英寸防呆 (HTTP 422) + 商标库 USPTO/EUIPO 与违禁词拦截 (HTTP 451) + 直出机床 DXF 与模块化换牌净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="mtocustom-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度定制品开料后悔单退货报废、买家手滑打错字拒付败诉与美工重排损耗池 ($)
+            <input type="number" id="mtocustom-gross-input" value="165000" min="10000" step="5000" oninput="recalcEcommerceMadeToOrderCustomSandbox()" />
+          </label>
+          <label>2 小时改字冷静期缓冲与车间开料状态 (MES LASER_OR_CUT) 免退互斥锁
+            <select id="mtocustom-cut-select" onchange="recalcEcommerceMadeToOrderCustomSandbox()">
+              <option value="pass">处于 2h 开料前自助改错窗口 或 已绑定 EU CRD Art. 16(c) 定制免退协议正常履约 (合规)</option>
+              <option value="block_403">工厂激光机已把买家名字刻在 $450 真皮包上后，买家要求撤单或 7天无理由退货 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>WebGL 3D 定稿图 SHA-256 哈希签名确认与 3mm 出血位/厘米英寸防呆
+            <select id="mtocustom-proof-select" onchange="recalcEcommerceMadeToOrderCustomSandbox()">
+              <option value="pass">图案 &gt;=300 DPI + 未超 3mm 安全框 + 买家已勾选确认 3D 定稿快照哈希 (合规)</option>
+              <option value="block_422">未签署 3D 定稿图致买家拼错字赖账拒付 或 定制窗帘把英寸当厘米填错 2.5 倍 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>多模态商标侵权 (USPTO / EUIPO) 视觉比对与多语种违禁词前置审核
+            <select id="mtocustom-ip-select" onchange="recalcEcommerceMadeToOrderCustomSandbox()">
+              <option value="pass">原创图案/合规刻字 或 已附上 B2B 企业品牌商标正式授权书 (安全)</option>
+              <option value="block_451">上传未授权迪士尼/耐克/LV 注册商标图案 或 刻字含违禁脏话直接排产吃官司 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>120 分钟自助改错窗口、WebGL 直出激光/绣花机 DXF/DST 与可拆卸铭牌设计
+            <select id="mtocustom-opt-select" onchange="recalcEcommerceMadeToOrderCustomSandbox()">
+              <option value="enabled" selected>2h 自助修拼写拦截 91% 手滑 + 直出 CNC 机台码 + $8 可拆铭牌换码 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">下单秒推工厂且美工手动转抄排版无缓冲 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度定制报废与拒付总损耗池</div>
+            <div class="finops-kpi-val" id="mtocustom-gross-kpi">$165,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">定稿哈希与冷静期锁单后净损耗</div>
+            <div class="finops-kpi-val" id="mtocustom-net-kpi" style="color:#6ee7b7;">$105,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省定制死库存与 SNAD 拒付</div>
+            <div class="finops-kpi-val" id="mtocustom-savings-kpi" style="color:#38bdf8;">$59,400</div>
+          </div>
+        </div>
+        <div id="mtocustom-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TWO_HOUR_GRACE_AND_DIRECT_CAD_MODULAR_TAG_CONFIRM · Mandate: mto_custom_escrow_optim_409
         </div>
       </div>
 
@@ -77267,6 +77427,79 @@ function recalcConversationalCommerceWhatsappSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CONVERSATIONAL_COMMERCE_SESSION_AUTHORIZED · Mandate: conv_commerce_escrow_200';
+}}
+
+function recalcEcommerceMadeToOrderCustomSandbox() {{
+  const grossInput = document.getElementById('mtocustom-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '165000'));
+  const cutGate = document.getElementById('mtocustom-cut-select').value;
+  const proofGate = document.getElementById('mtocustom-proof-select').value;
+  const ipGate = document.getElementById('mtocustom-ip-select').value;
+  const optMode = document.getElementById('mtocustom-opt-select').value;
+
+  const grossKpi = document.getElementById('mtocustom-gross-kpi');
+  const netKpi = document.getElementById('mtocustom-net-kpi');
+  const savingsKpi = document.getElementById('mtocustom-savings-kpi');
+  const statusKpi = document.getElementById('mtocustom-status-kpi');
+  const banner = document.getElementById('mtocustom-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ipGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 TRADEMARKED_LOGO_OR_PROHIBITED_TEXT_HOLD · Mandate: null';
+    return;
+  }}
+  if (cutGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 POST_FACTORY_CUT_CANCEL_OR_REMORSE_RETURN_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (proofGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCONFIRMED_3D_PROOF_OR_BLEED_OVERFLOW_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TWO_HOUR_GRACE_AND_DIRECT_CAD_MODULAR_TAG_CONFIRM · Mandate: mto_custom_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_3D_PROOF_CUSTOM_PRODUCTION_AUTHORIZED · Mandate: mto_custom_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

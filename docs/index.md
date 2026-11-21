@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`313` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`314` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（19 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（46 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（115 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（116 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（70 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（26 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（37 篇）](#tax-fx-privacy-disputes)
@@ -99,7 +99,7 @@
 | 46 | **电商一键客座加速结账（One-Click Accelerated Checkout：Shop Pay / Stripe Link / PayPal Fastlane / Apple Pay）、防国际短信轰炸盗刷（`SMS Pumping Toll Fraud`）与卡组网络令牌（`Network Token`）托管“防黑产夜刷 15 万条高价验证码掏空 $45,000 短信费、防一键支付自动发往 3 年前旧公寓地址丢件与 `Passkey + DPAN` 净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-one-click-accelerated-checkout-passkey-network-token-sms-fraud-escrow-agent-selection-faq.md) · [English](ecommerce-one-click-accelerated-checkout-passkey-network-token-sms-fraud-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（115 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（116 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -220,6 +220,7 @@
 | 113 | **3C 数码与家电“以旧换新（Trade-In：Apple Trade In / Phobio / Assurant / 爱回收）”、结账立减预授信与定级刀手防坑托管“防收回未解绑 iCloud/MDM 激活锁的废砖机、防检测仓恶意压价强扣差额与 42 州净差额计税净省 36%”Agent 架构选型 FAQ** | [中文](ecommerce-device-trade-in-upfront-credit-grading-collateral-escrow-agent-selection-faq.md) · [English](ecommerce-device-trade-in-upfront-credit-grading-collateral-escrow-agent-selection-faq.en.md) |
 | 114 | **商旅与 OTA 预订后机酒降价自动重订（Post-Booking Price-Drop Re-Shopping：Tripbam / FairFly / Navan / Hopper）与未用机票残值银行（Unused Ticket Credit Bank）托管“防先退旧房结果新低价房秒光致旅客露宿街头、防重订丢掉万豪积分/靠窗座与离职员工机票额度自动回收净省 35%”Agent 架构选型 FAQ** | [中文](ota-corporate-travel-price-drop-reshopping-unused-ticket-credit-escrow-agent-selection-faq.md) · [English](ota-corporate-travel-price-drop-reshopping-unused-ticket-credit-escrow-agent-selection-faq.en.md) |
 | 115 | **电商断货候补通知（Back-in-Stock Waitlist：Klaviyo / Attentive / Back in Stock）、分波次配额放行（Wave Allocation）与在途预售（Pre-Order `FTC Part 435`）托管“防补货 80 件却群发 1.5 万条短信致 99% 买家点进售罄页怒退订、防 1 件退货脏次品误触全网到货提醒与 VIP 预授权自动锁单净省 36%”Agent 架构选型 FAQ** | [中文](ecommerce-back-in-stock-waitlist-wave-allocation-ftc-preorder-escrow-agent-selection-faq.md) · [English](ecommerce-back-in-stock-waitlist-wave-allocation-ftc-preorder-escrow-agent-selection-faq.en.md) |
+| 116 | **电商按单定制与 3D 个性化配置（Made-to-Order & Mass Customization：Nike By You / 定制珠宝箱包 / Threekit / Zakeke / Customily）、防“刻完名字后悔单退货砸手里”、防盗印迪士尼/耐克商标吃官司与 2 小时冷静期锁单托管“防买家自己拼错名字反咬商家货不对板拒付、防把英寸当厘米填错窗帘尺寸报废与模块化换牌净省 36%”Agent 架构选型 FAQ** | [中文](ecommerce-made-to-order-custom-product-3d-configurator-no-return-escrow-agent-selection-faq.md) · [English](ecommerce-made-to-order-custom-product-3d-configurator-no-return-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（70 篇）
