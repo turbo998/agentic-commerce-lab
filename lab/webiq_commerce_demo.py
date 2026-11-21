@@ -28676,6 +28676,79 @@ def evaluate_marketplace_seller_payout_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommercePreShipOrderEditPolicyInput:
+    quarterly_double_ship_cancel_rebuy_and_rts_loss_pool_usd: float = 130000.0
+    wms_pick_wave_already_released_without_sync_hold_ack: bool = False
+    post_auth_cross_zip_address_hijack_or_tax_evasion_swap: bool = False
+    captured_cancel_and_rebuy_burning_nonrefundable_mdr: bool = False
+    grace_hold_30m_in_place_variant_swap_and_addon_upsell_ready: bool = False
+
+
+def evaluate_ecommerce_pre_ship_order_edit_policy(
+    policy_input: EcommercePreShipOrderEditPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_double_ship_cancel_rebuy_and_rts_loss_pool_usd)
+    )
+    if policy_input.captured_cancel_and_rebuy_burning_nonrefundable_mdr:
+        return {
+            "status_code": 451,
+            "decision": "CAPTURED_CANCEL_REBUY_DOUBLE_MDR_WASTE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.wms_pick_wave_already_released_without_sync_hold_ack:
+        return {
+            "status_code": 403,
+            "decision": "WMS_PICK_WAVE_ALREADY_LOCKED_EDIT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.post_auth_cross_zip_address_hijack_or_tax_evasion_swap:
+        return {
+            "status_code": 422,
+            "decision": "POST_AUTH_CROSS_STATE_ADDRESS_HIJACK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.grace_hold_30m_in_place_variant_swap_and_addon_upsell_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "GRACE_HOLD_30M_IN_PLACE_SWAP_AND_ADDON_UPSELL_CONFIRM",
+            "mandate_token": "pre_ship_edit_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "SAME_ZIP_PRE_WAVE_ORDER_EDIT_AUTHORIZED",
+        "mandate_token": "pre_ship_edit_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -39249,6 +39322,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_pre_ship_order_edit_guard = {
+        "authorized_200": evaluate_ecommerce_pre_ship_order_edit_policy(
+            EcommercePreShipOrderEditPolicyInput()
+        ),
+        "wms_wave_locked_403": evaluate_ecommerce_pre_ship_order_edit_policy(
+            EcommercePreShipOrderEditPolicyInput(
+                wms_pick_wave_already_released_without_sync_hold_ack=True
+            )
+        ),
+        "cross_state_addr_hijack_422": evaluate_ecommerce_pre_ship_order_edit_policy(
+            EcommercePreShipOrderEditPolicyInput(
+                post_auth_cross_zip_address_hijack_or_tax_evasion_swap=True
+            )
+        ),
+        "captured_cancel_rebuy_451": evaluate_ecommerce_pre_ship_order_edit_policy(
+            EcommercePreShipOrderEditPolicyInput(
+                captured_cancel_and_rebuy_burning_nonrefundable_mdr=True
+            )
+        ),
+        "grace_hold_and_swap_409": evaluate_ecommerce_pre_ship_order_edit_policy(
+            EcommercePreShipOrderEditPolicyInput(
+                grace_hold_30m_in_place_variant_swap_and_addon_upsell_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -39556,6 +39655,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_airline_irops_rebooking_guard": ota_airline_irops_rebooking_guard,
         "multi_psp_orchestration_guard": multi_psp_orchestration_guard,
         "marketplace_seller_payout_escrow_guard": marketplace_seller_payout_escrow_guard,
+        "ecommerce_pre_ship_order_edit_guard": ecommerce_pre_ship_order_edit_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -54958,6 +55058,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="mktpay-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DD7_FBO_ESCROW_DYNAMIC_RESERVE_AND_INSTANT_PAYOUT_CONFIRM · Mandate: mkt_payout_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 179 E-Commerce Pre-Ship Order Modification & WMS Pick-Lock Escrow -->
+      <div class="finops-box" id="ecommerce-pre-ship-order-edit-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">✏️ 电商发货前自助改单 (Cleverific / Order Editing / Gorgias) 与 WMS 波次互锁沙盒</div>
+            <div class="finops-sub">Round 179 · 30m 缓冲窗与同步 WMS HOLD_ACK 防财货两空 (HTTP 403) + 同邮编补门牌防跨州盗刷改址 (HTTP 422) + 未扣款原地换码省 2.9% 手续费 (HTTP 451) + 自助改单加购净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="preedit-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度已退款仍发货双赔、退单重拍 38% 流失、改址盗刷与 RTS 退件池 ($)
+            <input type="number" id="preedit-gross-input" value="130000" min="10000" step="5000" oninput="recalcEcommercePreShipOrderEditSandbox()" />
+          </label>
+          <label>3PL WMS 拣货波次同步互斥锁 (Sync HOLD_CONFIRMED)
+            <select id="preedit-wms-select" onchange="recalcEcommercePreShipOrderEditSandbox()">
+              <option value="pass">处于 30m 静默缓冲期内 或 已拿到 WMS 同步挂起成功回执 (合规)</option>
+              <option value="block_403">仓库已在打包台贴面单，客服只看 Shopify 未回传单号就盲目点全额退款 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>付款后修改收货地址围栏 (Same ZIP &lt;=15km) 与跨州税率锁
+            <select id="preedit-addr-select" onchange="recalcEcommercePreShipOrderEditSandbox()">
+              <option value="pass">同邮编内补填漏写的公寓门牌号 (Apt 4B) 并经 USPS DPV 校验 (合规)</option>
+              <option value="block_422">先填真地址骗过 AVS 风控再找客服改发外省销赃仓 或 免税州改加州逃 9.5% 税 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>换尺码/颜色“原地替换” vs “已扣款整单取消重拍”门禁
+            <select id="preedit-mdr-select" onchange="recalcEcommercePreShipOrderEditSandbox()">
+              <option value="pass">30m 内保持预授权未扣款 (Uncaptured)，直接在原订单上将 M 码换成 L 码 (安全)</option>
+              <option value="block_451">让客户整单退款重拍导致白亏 2.9% 不可退手续费且 38% 客户不再重买 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>订单确认页 30m 自助改单门户、缺门牌自动提醒与同箱免邮加购
+            <select id="preedit-opt-select" onchange="recalcEcommercePreShipOrderEditSandbox()">
+              <option value="enabled" selected>Thank-You 页 30m 一键换码补 Apt# + 顺手加购配件合箱免运费 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">无自助入口全靠发邮件等客服 9 小时后回复(早已错发) (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度错发双赔与退单流失总池</div>
+            <div class="finops-kpi-val" id="preedit-gross-kpi">$130,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">30m 缓冲与原地改单后净损耗</div>
+            <div class="finops-kpi-val" id="preedit-net-kpi" style="color:#6ee7b7;">$83,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省双发、RTS 与挽回订单</div>
+            <div class="finops-kpi-val" id="preedit-savings-kpi" style="color:#38bdf8;">$46,800</div>
+          </div>
+        </div>
+        <div id="preedit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 GRACE_HOLD_30M_IN_PLACE_SWAP_AND_ADDON_UPSELL_CONFIRM · Mandate: pre_ship_edit_escrow_optim_409
         </div>
       </div>
 
@@ -73542,6 +73699,79 @@ function recalcMarketplaceSellerPayoutSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 DELIVERY_VERIFIED_MARKETPLACE_SPLIT_AUTHORIZED · Mandate: mkt_payout_escrow_200';
+}}
+
+function recalcEcommercePreShipOrderEditSandbox() {{
+  const grossInput = document.getElementById('preedit-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '130000'));
+  const wmsGate = document.getElementById('preedit-wms-select').value;
+  const addrGate = document.getElementById('preedit-addr-select').value;
+  const mdrGate = document.getElementById('preedit-mdr-select').value;
+  const optMode = document.getElementById('preedit-opt-select').value;
+
+  const grossKpi = document.getElementById('preedit-gross-kpi');
+  const netKpi = document.getElementById('preedit-net-kpi');
+  const savingsKpi = document.getElementById('preedit-savings-kpi');
+  const statusKpi = document.getElementById('preedit-status-kpi');
+  const banner = document.getElementById('preedit-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (mdrGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CAPTURED_CANCEL_REBUY_DOUBLE_MDR_WASTE_HOLD · Mandate: null';
+    return;
+  }}
+  if (wmsGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 WMS_PICK_WAVE_ALREADY_LOCKED_EDIT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (addrGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 POST_AUTH_CROSS_STATE_ADDRESS_HIJACK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 GRACE_HOLD_30M_IN_PLACE_SWAP_AND_ADDON_UPSELL_CONFIRM · Mandate: pre_ship_edit_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 SAME_ZIP_PRE_WAVE_ORDER_EDIT_AUTHORIZED · Mandate: pre_ship_edit_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

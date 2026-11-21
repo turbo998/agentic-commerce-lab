@@ -21051,6 +21051,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("marketplace-seller-payout-escrow-sandbox", html_zh)
 
+    def test_ecommerce_pre_ship_order_edit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommercePreShipOrderEditPolicyInput,
+            evaluate_ecommerce_pre_ship_order_edit_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_pre_ship_order_edit_policy(
+            EcommercePreShipOrderEditPolicyInput(
+                quarterly_double_ship_cancel_rebuy_and_rts_loss_pool_usd=130000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "SAME_ZIP_PRE_WAVE_ORDER_EDIT_AUTHORIZED",
+        )
+
+        wms = evaluate_ecommerce_pre_ship_order_edit_policy(
+            EcommercePreShipOrderEditPolicyInput(
+                wms_pick_wave_already_released_without_sync_hold_ack=True
+            )
+        )
+        self.assertEqual(wms["status_code"], 403)
+        self.assertEqual(
+            wms["decision"],
+            "WMS_PICK_WAVE_ALREADY_LOCKED_EDIT_BLOCKED",
+        )
+
+        addr = evaluate_ecommerce_pre_ship_order_edit_policy(
+            EcommercePreShipOrderEditPolicyInput(
+                post_auth_cross_zip_address_hijack_or_tax_evasion_swap=True
+            )
+        )
+        self.assertEqual(addr["status_code"], 422)
+        self.assertEqual(
+            addr["decision"],
+            "POST_AUTH_CROSS_STATE_ADDRESS_HIJACK_BLOCKED",
+        )
+
+        mdr = evaluate_ecommerce_pre_ship_order_edit_policy(
+            EcommercePreShipOrderEditPolicyInput(
+                captured_cancel_and_rebuy_burning_nonrefundable_mdr=True
+            )
+        )
+        self.assertEqual(mdr["status_code"], 451)
+        self.assertEqual(
+            mdr["decision"],
+            "CAPTURED_CANCEL_REBUY_DOUBLE_MDR_WASTE_HOLD",
+        )
+
+        optim = evaluate_ecommerce_pre_ship_order_edit_policy(
+            EcommercePreShipOrderEditPolicyInput(
+                quarterly_double_ship_cancel_rebuy_and_rts_loss_pool_usd=130000.0,
+                grace_hold_30m_in_place_variant_swap_and_addon_upsell_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 46800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 83200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_pre_ship_order_edit_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-pre-ship-order-edit-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

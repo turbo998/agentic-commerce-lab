@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`297` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`298` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (15 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (44 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (110 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (111 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (68 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (24 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (36 guides)](#tax-fx-privacy-disputes)
@@ -93,7 +93,7 @@
 | 44 | **Multi-PSP Payment Orchestration, Acquirer Failover & `Durbin` PINless Debit Routing Escrow (`Primer / Spreedly / Adyen / Stripe`), Anti-Double-Charge `0420` Timeout Mutex, Decoupled `3DS2 CAVV` Reuse & Local `MID` Routing (`-39%` Payment MDR & Decline Loss) Agent Architecture Selection FAQ** | [English](ecommerce-multi-psp-payment-orchestration-acquirer-failover-debit-routing-escrow-agent-selection-faq.en.md) · [中文](ecommerce-multi-psp-payment-orchestration-acquirer-failover-debit-routing-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (110 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (111 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -209,6 +209,7 @@
 | 108 | **Retail Media Network (`RMN`: `Amazon Ads / Walmart Connect / Target Roundel / Instacart`) Sponsored Bidding, `Buy-Box` & Regional `OOS` Auto-Pause, and Incremental `iROAS / POAS` Escrow (`-38%` Wasted Ad Spend) Agent Architecture Selection FAQ** | [English](retail-media-network-rmn-buybox-oos-incrementality-bid-escrow-agent-selection-faq.en.md) · [中文](retail-media-network-rmn-buybox-oos-incrementality-bid-escrow-agent-selection-faq.md) |
 | 109 | **Airline & OTA Flight Disruption (`IROPS`), Automated Rebooking & `US DOT / EU261` Cash-Refund vs. Voucher Escrow (`Amadeus Nevio / Sabre IROPS / Navan / Hopper HTS`), Official Waiver-Code `ADM` Lock, `Rebook XOR Refund` Coupon Mutex & 24h Airport Virtual Cards (`-38%` Disruption Cost) Agent Architecture Selection FAQ** | [English](ota-airline-irops-flight-disruption-rebooking-eu261-dot-escrow-agent-selection-faq.en.md) · [中文](ota-airline-irops-flight-disruption-rebooking-eu261-dot-escrow-agent-selection-faq.md) |
 | 110 | **Multi-Vendor Marketplace Split-Settlement, Seller Rolling Reserve & `DD+7` Delivery Escrow (`Stripe Connect / Adyen for Platforms / Mirakl Payout`), Anti-Hit-and-Run Payout Lock, Sub-Ledger `reverse_transfer` & `FBO` Custody (`-37%` Seller Default & Float Loss) Agent Architecture Selection FAQ** | [English](marketplace-seller-payout-rolling-reserve-split-settlement-escrow-agent-selection-faq.en.md) · [中文](marketplace-seller-payout-rolling-reserve-split-settlement-escrow-agent-selection-faq.md) |
+| 111 | **E-Commerce Pre-Ship Order Modification, Self-Serve Address/Size Edit & `WMS` Pick-Lock Escrow (`Cleverific / Order Editing / Gorgias / Manhattan WMS`), Synchronous `WMS` Wave Mutex, Post-Auth Address-Hijack Lock & In-Place Variant Swap (`-36%` Cancel & Double-Ship Loss) Agent Architecture Selection FAQ** | [English](ecommerce-pre-ship-order-editing-address-size-swap-wms-lock-escrow-agent-selection-faq.en.md) · [中文](ecommerce-pre-ship-order-editing-address-size-swap-wms-lock-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (68 Guides)

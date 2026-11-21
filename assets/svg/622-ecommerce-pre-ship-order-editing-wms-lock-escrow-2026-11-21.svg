@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg622" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr622" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg622)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr622)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 179 · E-Commerce Pre-Ship Order Modification, Address/Size Edit &amp; WMS Pick-Lock Escrow</text>
+  <text x="48" y="74" class="sub">Cleverific / Order Editing / Gorgias / Manhattan WMS · WMS Wave-Release Mutex · Post-Auth Address Fraud Lock · Zero-Cancel Swap (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #622 · FAQ #298</text>
+
+  <!-- Lane 1: WMS Pick-Wave Mutex & Double-Ship Prevention -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. WMS Pick-Wave Mutex &amp; Race Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops "Refunded in CS Portal, Shipped Anyway":</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Require Synchronous 3PL/WMS `HOLD_CONFIRMED`</text>
+  <text x="54" y="200" class="mono">Before Committing Any Order Edit or Cancel</text>
+  <text x="44" y="223" class="body-txt">• Two-Phase Warehouse State Machine:</text>
+  <text x="54" y="243" class="mono">0-30m: `GRACE_HOLD` (Editable in 1 Tap)</text>
+  <text x="54" y="261" class="mono" fill="#fca5a5">&gt;30m: `PICK_WAVE_LOCKED` (Block Self-Edit)</text>
+  <text x="44" y="284" class="body-txt">• Eliminates race conditions where warehouse</text>
+  <text x="54" y="302" class="body-txt">packs old SKU while AI refunds the order</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 WMS_PICK_WAVE_ALREADY_LOCKED_EDIT_BLOCKED</text>
+
+  <!-- Lane 2: Post-Auth Shipping Address Hijack & Tax-Jurisdiction Shift -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Post-Auth Address Hijack &amp; Tax Gate (422)</text>
+  <text x="432" y="162" class="body-txt">• Defeats "Pass AVS w/ Victim Addr → Chat Bot</text>
+  <text x="442" y="182" class="body-txt">to Swap to Mule Address After Auth" Fraud:</text>
+  <text x="442" y="202" class="mono">Allow Self-Edit ONLY for Street/Apt Typo</text>
+  <text x="442" y="220" class="mono" fill="#fcd34d">within Same_Zip_Prefix / &lt;=15km Radius</text>
+  <text x="432" y="243" class="body-txt">• Cross-State Sales-Tax &amp; Shipping Recalculation:</text>
+  <text x="442" y="263" class="mono">Block Oregon (0% Tax) → California (9.5% Tax)</text>
+  <text x="442" y="281" class="body-txt">address swap after checkout without collecting</text>
+  <text x="442" y="299" class="body-txt">the incremental tax &amp; re-running 3DS2/AVS</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 POST_AUTH_CROSS_STATE_ADDRESS_HIJACK_BLOCKED</text>
+
+  <!-- Lane 3: Non-Refundable Payment MDR Loss on "Cancel & Rebuy" -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Anti-"Cancel-and-Rebuy" MDR Shield (451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Paying Double Stripe/PayPal 2.9% MDR:</text>
+  <text x="830" y="182" class="mono">Captured Refund = Merchant Loses 2.9% Fee!</text>
+  <text x="830" y="200" class="body-txt">Plus 38% of shoppers who "Cancel to Fix Size"</text>
+  <text x="830" y="218" class="body-txt">never complete the 2nd checkout!</text>
+  <text x="820" y="241" class="body-txt">• Hold Payment in `AUTHORIZED (Uncaptured)`</text>
+  <text x="830" y="261" class="mono" fill="#f9a8d4">During 30-Minute Grace-Hold Window</text>
+  <text x="830" y="279" class="body-txt">Allows zero-fee in-place SKU/Size/Color swap</text>
+  <text x="830" y="297" class="body-txt">or incremental delta adjustment before capture</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 CAPTURED_CANCEL_REBUY_DOUBLE_MDR_WASTE_HOLD</text>
+
+  <!-- Bottom 30-Minute Self-Serve Order Edit & Bundle Add-On Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. 30-Minute Post-Checkout Self-Serve Edit Portal + In-Place Size/Color Swap + Add-Item Upsell (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① 30m Grace-Hold Buffer</text>
+  <text x="62" y="462" class="body-txt">Delays WMS wave export &amp;</text>
+  <text x="62" y="480" class="body-txt">payment capture by 30 mins;</text>
+  <text x="62" y="498" class="body-txt">solves 78% of "Oops, wrong</text>
+  <text x="62" y="516" class="mono">size/apt#" tickets w/ 0 Agent</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② In-Place Variant Swap</text>
+  <text x="337" y="462" class="body-txt">Swaps Size M → Size L on the</text>
+  <text x="337" y="480" class="body-txt">existing order ID; preserves</text>
+  <text x="337" y="498" class="body-txt">original payment auth &amp; promo;</text>
+  <text x="337" y="516" class="mono">0 Lost Rebuy Drop-Off</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ USPS/Smarty Apt# Auto-Fix</text>
+  <text x="622" y="462" class="body-txt">Allows safe same-building</text>
+  <text x="622" y="480" class="body-txt">Apt/Suite/Gate-Code edits</text>
+  <text x="622" y="498" class="body-txt">validated against USPS DPV;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">-64% Undeliverable RTS Parcels</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Free-Shipping Add-On Upsell</text>
+  <text x="907" y="462" class="body-txt">While editing order, shopper</text>
+  <text x="907" y="480" class="body-txt">can add forgotten items with</text>
+  <text x="907" y="498" class="body-txt">$0 incremental shipping;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Cancel, RTS &amp; Support Cost</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Cancel, RTS &amp; Double-Ship Saved</text>
+  <text x="46" y="642" class="mono">$46,800 Saved / $130k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">Sync WMS ACK</text>
+  <text x="336" y="626" class="kpi-lbl">Pick-Wave Mutex Before Refund</text>
+  <text x="336" y="642" class="mono">0 Shipped-After-Cancel Losses</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">&lt;=15km Zip Lock</text>
+  <text x="626" y="626" class="kpi-lbl">Anti-Post-Auth Address Hijack</text>
+  <text x="626" y="642" class="mono">Blocks 0%-to-9.5% Tax Evasion</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">In-Place Swap</text>
+  <text x="916" y="626" class="kpi-lbl">Uncaptured 30m Grace Window</text>
+  <text x="916" y="642" class="mono">Saves 2.9% Non-Refundable MDR</text>
+</svg>
