@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg635" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr635" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg635)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr635)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 192 · SaaS Free-Trial-to-Paid Conversion, Anti-Burner-BIN &amp; FTC Notice Escrow</text>
+  <text x="48" y="74" class="sub">Stripe Billing / RevenueCat / Chargebee / Paddle · Disposable Prepaid BIN Lock · T-3d FTC/ARL Reminder · Reverse-Trial Rescue (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #635 · FAQ #311</text>
+
+  <!-- Lane 1: $0.01 Burner Virtual Card & Multi-Account GPU Trial Farming Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Burner BIN &amp; Trial-Farm Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops $0.01 Disposable Cards Draining AI GPU Credits:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Block Prepaid_Non_Reloadable &amp; Burner_VCN_BINs</text>
+  <text x="54" y="200" class="mono">Enforce Card_Fingerprint + Device_ID Uniqueness</text>
+  <text x="44" y="223" class="body-txt">• Reversible $5 Auth-Hold on High-COGS AI Trials:</text>
+  <text x="54" y="243" class="mono">Auth_Then_Void($5.00) Verifies Real Funded Card</text>
+  <text x="44" y="266" class="body-txt">• Prevents script-kiddies from spinning up 500</text>
+  <text x="54" y="286" class="body-txt">`user+99@` free trials with empty burner cards</text>
+  <text x="54" y="304" class="body-txt">that 100% decline on Day 14</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 DISPOSABLE_BURNER_BIN_OR_TRIAL_FARM_BLOCKED</text>
+
+  <!-- Lane 2: Unactivated Zero-Usage Auto-Charge & Premature Paywall Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Zero-Usage Auto-Charge Shield (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Charging $299/yr to Zero-Session Signups:</text>
+  <text x="442" y="182" class="mono">If Active_Days == 0 &amp; Aha_Events == 0 at Day 14:</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Auto-Extend 7d or Downgrade Free (Do Not Charge!)</text>
+  <text x="432" y="223" class="body-txt">• Stepped Daily API/GPU Quota During Trial:</text>
+  <text x="442" y="243" class="mono">Cap Trial Token Burn &lt;= $2.50/Day Until Paid</text>
+  <text x="432" y="266" class="body-txt">• Eliminates the #1 cause of SaaS Day-15</text>
+  <text x="442" y="286" class="body-txt">friendly-fraud chargebacks ("I signed up once,</text>
+  <text x="442" y="304" class="body-txt">never used it, and got billed $299!")</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 ZERO_USAGE_UNACTIVATED_TRIAL_BILLING_BLOCKED</text>
+
+  <!-- Lane 3: FTC Negative Option / California ARL T-3d Pre-Charge Notice Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. FTC / ARL T-3d Notice Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Silent Trial-End Captures Without Notice:</text>
+  <text x="830" y="182" class="mono">Require Verified_Delivery(`T-3d_to_T-7d_Reminder`)</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Include 1-Click Cancel Link &amp; Exact Charge Amount</text>
+  <text x="820" y="223" class="body-txt">• Visa / Mastercard Trial-Mandate Compliance:</text>
+  <text x="830" y="243" class="body-txt">Binds initial `CIT` trial consent transaction ID</text>
+  <text x="830" y="261" class="body-txt">&amp; reminder timestamp into first `MIT` capture</text>
+  <text x="820" y="284" class="body-txt">• Prevents California ARL class-action lawsuits</text>
+  <text x="830" y="302" class="body-txt">&amp; card-network non-compliant trial fines</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 MISSING_FTC_ARL_PRE_BILLING_NOTICE_HOLD</text>
+
+  <!-- Bottom Reverse-Trial & Telemetry-Guided Conversion Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Reverse-Trial Architecture + Telemetry-Driven Early Upgrade &amp; Grace Extension (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Cardless Reverse Trial</text>
+  <text x="62" y="462" class="body-txt">Starts low-COGS features w/</text>
+  <text x="62" y="480" class="body-txt">Work SSO; requires funded card</text>
+  <text x="62" y="498" class="body-txt">only for high-GPU Pro tier;</text>
+  <text x="62" y="516" class="mono">2.4x Top-of-Funnel Signups</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Aha-Moment Early Convert</text>
+  <text x="337" y="462" class="body-txt">When trial user hits 100% of</text>
+  <text x="337" y="480" class="body-txt">trial quota on Day 4, offers</text>
+  <text x="337" y="498" class="body-txt">instant paid unlock + bonus;</text>
+  <text x="337" y="516" class="mono">+29% Faster Cash Collection</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ T-3d Transparent Reminder</text>
+  <text x="622" y="462" class="body-txt">Sends usage summary ("You</text>
+  <text x="622" y="480" class="body-txt">saved 14 hrs this week!") w/</text>
+  <text x="622" y="498" class="body-txt">1-click plan switch or pause;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">-78% Day-15 Chargeback Rate</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Unactivated 7d Auto-Extend</text>
+  <text x="907" y="462" class="body-txt">Instead of billing dormant</text>
+  <text x="907" y="480" class="body-txt">trials, grants 1-time 7-day</text>
+  <text x="907" y="498" class="body-txt">guided onboarding extension;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Trial GPU Drain &amp; Churn</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Trial Abuse &amp; Dispute Loss</text>
+  <text x="46" y="642" class="mono">$57,600 Saved / $160k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">0 Burner Cards</text>
+  <text x="336" y="626" class="kpi-lbl">Prepaid BIN &amp; Card-Hash Deduplication</text>
+  <text x="336" y="642" class="mono">Stops Endless Free-Trial Loops</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0 Dormant Bills</text>
+  <text x="626" y="626" class="kpi-lbl">Blocks Billing Zero-Usage Signups</text>
+  <text x="626" y="642" class="mono">Eliminates Day-15 Chargebacks</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">T-3d ARL Gate</text>
+  <text x="916" y="626" class="kpi-lbl">Mandatory Pre-Charge Notice Proof</text>
+  <text x="916" y="642" class="mono">100% FTC &amp; Visa Trial Compliant</text>
+</svg>

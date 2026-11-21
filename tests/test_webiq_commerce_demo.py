@@ -21922,6 +21922,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-one-click-checkout-sandbox", html_zh)
 
+    def test_saas_free_trial_conversion_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaasFreeTrialConversionPolicyInput,
+            evaluate_saas_free_trial_conversion_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_free_trial_conversion_policy(
+            SaasFreeTrialConversionPolicyInput(
+                quarterly_trial_gpu_abuse_and_day15_chargeback_loss_pool_usd=160000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ACTIVE_TRIAL_CONVERSION_AUTHORIZED",
+        )
+
+        burner = evaluate_saas_free_trial_conversion_policy(
+            SaasFreeTrialConversionPolicyInput(
+                disposable_prepaid_burner_bin_or_duplicate_card_fingerprint=True
+            )
+        )
+        self.assertEqual(burner["status_code"], 403)
+        self.assertEqual(
+            burner["decision"],
+            "DISPOSABLE_BURNER_BIN_OR_TRIAL_FARM_BLOCKED",
+        )
+
+        dormant = evaluate_saas_free_trial_conversion_policy(
+            SaasFreeTrialConversionPolicyInput(
+                auto_charging_annual_plan_to_zero_usage_unactivated_trial=True
+            )
+        )
+        self.assertEqual(dormant["status_code"], 422)
+        self.assertEqual(
+            dormant["decision"],
+            "ZERO_USAGE_UNACTIVATED_TRIAL_BILLING_BLOCKED",
+        )
+
+        ftc = evaluate_saas_free_trial_conversion_policy(
+            SaasFreeTrialConversionPolicyInput(
+                missing_t3d_ftc_arl_pre_billing_reminder_with_cancel_link=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 451)
+        self.assertEqual(
+            ftc["decision"],
+            "MISSING_FTC_ARL_PRE_BILLING_NOTICE_HOLD",
+        )
+
+        optim = evaluate_saas_free_trial_conversion_policy(
+            SaasFreeTrialConversionPolicyInput(
+                quarterly_trial_gpu_abuse_and_day15_chargeback_loss_pool_usd=160000.0,
+                reverse_trial_telemetry_upgrade_and_dormant_grace_extension_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 57600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 102400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_free_trial_conversion_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-free-trial-conversion-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

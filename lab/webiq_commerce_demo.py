@@ -29661,6 +29661,82 @@ def evaluate_ecommerce_one_click_checkout_policy(
     }
 
 
+@dataclass(frozen=True)
+class SaasFreeTrialConversionPolicyInput:
+    quarterly_trial_gpu_abuse_and_day15_chargeback_loss_pool_usd: float = 160000.0
+    disposable_prepaid_burner_bin_or_duplicate_card_fingerprint: bool = False
+    auto_charging_annual_plan_to_zero_usage_unactivated_trial: bool = False
+    missing_t3d_ftc_arl_pre_billing_reminder_with_cancel_link: bool = False
+    reverse_trial_telemetry_upgrade_and_dormant_grace_extension_ready: bool = False
+
+
+def evaluate_saas_free_trial_conversion_policy(
+    policy_input: SaasFreeTrialConversionPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_trial_gpu_abuse_and_day15_chargeback_loss_pool_usd
+        ),
+    )
+    if policy_input.missing_t3d_ftc_arl_pre_billing_reminder_with_cancel_link:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_FTC_ARL_PRE_BILLING_NOTICE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.disposable_prepaid_burner_bin_or_duplicate_card_fingerprint:
+        return {
+            "status_code": 403,
+            "decision": "DISPOSABLE_BURNER_BIN_OR_TRIAL_FARM_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.auto_charging_annual_plan_to_zero_usage_unactivated_trial:
+        return {
+            "status_code": 422,
+            "decision": "ZERO_USAGE_UNACTIVATED_TRIAL_BILLING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.reverse_trial_telemetry_upgrade_and_dormant_grace_extension_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "REVERSE_TRIAL_TELEMETRY_UPGRADE_AND_GRACE_EXTEND_CONFIRM",
+            "mandate_token": "saas_trial_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ACTIVE_TRIAL_CONVERSION_AUTHORIZED",
+        "mandate_token": "saas_trial_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -40572,6 +40648,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    saas_free_trial_conversion_guard = {
+        "authorized_200": evaluate_saas_free_trial_conversion_policy(
+            SaasFreeTrialConversionPolicyInput()
+        ),
+        "burner_bin_or_farm_403": evaluate_saas_free_trial_conversion_policy(
+            SaasFreeTrialConversionPolicyInput(
+                disposable_prepaid_burner_bin_or_duplicate_card_fingerprint=True
+            )
+        ),
+        "zero_usage_auto_charge_422": evaluate_saas_free_trial_conversion_policy(
+            SaasFreeTrialConversionPolicyInput(
+                auto_charging_annual_plan_to_zero_usage_unactivated_trial=True
+            )
+        ),
+        "missing_t3d_ftc_notice_451": evaluate_saas_free_trial_conversion_policy(
+            SaasFreeTrialConversionPolicyInput(
+                missing_t3d_ftc_arl_pre_billing_reminder_with_cancel_link=True
+            )
+        ),
+        "reverse_trial_and_grace_409": evaluate_saas_free_trial_conversion_policy(
+            SaasFreeTrialConversionPolicyInput(
+                reverse_trial_telemetry_upgrade_and_dormant_grace_extension_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40892,6 +40994,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_back_in_stock_waitlist_guard": ecommerce_back_in_stock_waitlist_guard,
         "b2b_tail_spend_spot_buy_guard": b2b_tail_spend_spot_buy_guard,
         "ecommerce_one_click_checkout_guard": ecommerce_one_click_checkout_guard,
+        "saas_free_trial_conversion_guard": saas_free_trial_conversion_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -57035,6 +57138,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="oneclick-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PASSKEY_ACCELERATED_CHECKOUT_AND_NETWORK_TOKEN_CONFIRM · Mandate: one_click_checkout_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 192 SaaS Free-Trial Conversion, Anti-Burner-BIN & FTC Notice Escrow (#311) -->
+      <div class="finops-box" id="saas-free-trial-conversion-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🚀 订阅制 SaaS 与 AI 应用免费试用转付费、防 $0.01 废卡白嫖算力与 FTC/ARL 通知 (Stripe / RevenueCat / Paddle) 沙盒</div>
+            <div class="finops-sub">Round 192 (#311) · 一次性预付废卡 BIN 硬阻断与 365天卡指纹去重 (HTTP 403) + 0登录未激活用户禁扣年费防拒付 (HTTP 422) + FTC/加州ARL T-3d 到期提醒回执锁 (HTTP 451) + 反向试用与算力触顶提前转正净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="saastrial-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度免费试用 GPU 算力被空卡白嫖与第 15 天静默扣款争议拒付损耗池 ($)
+            <input type="number" id="saastrial-gross-input" value="160000" min="10000" step="5000" oninput="recalcSaasFreeTrialConversionSandbox()" />
+          </label>
+          <label>一次性预付虚拟废卡 (Disposable Burner BIN) 拦截与 365 天卡指纹去重
+            <select id="saastrial-bin-select" onchange="recalcSaasFreeTrialConversionSandbox()">
+              <option value="pass">拦截不可充值预付空卡 BIN + card.fingerprint 唯一 + $5 预授权秒冲正验资 (合规)</option>
+              <option value="block_403">羊毛党用 $0.01 一次性虚拟卡批量注册 500 个试用号刷光 GPU 后第 14 天扣款失败 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>试用期按日算力水位线与“零活跃 (Zero-Usage) 用户禁扣年费”保护
+            <select id="saastrial-usage-select" onchange="recalcSaasFreeTrialConversionSandbox()">
+              <option value="pass">用户已真实激活使用 或 0登录休眠户已自动转 7 天破冰延期/降级免费版 (合规)</option>
+              <option value="block_422">对注册后 14 天内 0 登录的未激活用户静默强扣 $299 年费引发银行欺诈拒付 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国 FTC Negative Option / 加州 ARL 提前 3-7 天到期提醒回执锁
+            <select id="saastrial-ftc-select" onchange="recalcSaasFreeTrialConversionSandbox()">
+              <option value="pass">已提前 3-7 天成功送达含扣款金额、卡尾号与免登录一键取消链接的提醒函 (安全)</option>
+              <option value="block_451">未发 T-3d 到期扣款提醒邮件或藏匿取消入口即直接发起首期 MIT 扣款 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>免绑卡反向试用 (Reverse Trial) 与试用算力触顶提前转正激励
+            <select id="saastrial-opt-select" onchange="recalcSaasFreeTrialConversionSandbox()">
+              <option value="enabled" selected>第 4 天用满试用额度一键提前转正 + 0活跃用户赠送 7d 引导延期 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统一刀切 14 天绑卡到期硬扣款模式 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度试用算力白嫖与拒付总损耗池</div>
+            <div class="finops-kpi-val" id="saastrial-gross-kpi">$160,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">验资锁与零活跃保护后净损耗</div>
+            <div class="finops-kpi-val" id="saastrial-net-kpi" style="color:#6ee7b7;">$102,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省 GPU 白嫖与首月拒付罚金</div>
+            <div class="finops-kpi-val" id="saastrial-savings-kpi" style="color:#38bdf8;">$57,600</div>
+          </div>
+        </div>
+        <div id="saastrial-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 REVERSE_TRIAL_TELEMETRY_UPGRADE_AND_GRACE_EXTEND_CONFIRM · Mandate: saas_trial_escrow_optim_409
         </div>
       </div>
 
@@ -76568,6 +76728,79 @@ function recalcEcommerceOneClickCheckoutSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_GUEST_CHECKOUT_SESSION_AUTHORIZED · Mandate: one_click_checkout_escrow_200';
+}}
+
+function recalcSaasFreeTrialConversionSandbox() {{
+  const grossInput = document.getElementById('saastrial-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '160000'));
+  const binGate = document.getElementById('saastrial-bin-select').value;
+  const usageGate = document.getElementById('saastrial-usage-select').value;
+  const ftcGate = document.getElementById('saastrial-ftc-select').value;
+  const optMode = document.getElementById('saastrial-opt-select').value;
+
+  const grossKpi = document.getElementById('saastrial-gross-kpi');
+  const netKpi = document.getElementById('saastrial-net-kpi');
+  const savingsKpi = document.getElementById('saastrial-savings-kpi');
+  const statusKpi = document.getElementById('saastrial-status-kpi');
+  const banner = document.getElementById('saastrial-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ftcGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_FTC_ARL_PRE_BILLING_NOTICE_HOLD · Mandate: null';
+    return;
+  }}
+  if (binGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DISPOSABLE_BURNER_BIN_OR_TRIAL_FARM_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (usageGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 ZERO_USAGE_UNACTIVATED_TRIAL_BILLING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 REVERSE_TRIAL_TELEMETRY_UPGRADE_AND_GRACE_EXTEND_CONFIRM · Mandate: saas_trial_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_ACTIVE_TRIAL_CONVERSION_AUTHORIZED · Mandate: saas_trial_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

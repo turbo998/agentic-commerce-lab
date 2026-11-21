@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`310` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`311` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -10,7 +10,7 @@
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (46 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (115 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (70 guides)](#b2b-procurement-erp)
-- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (25 guides)](#saas-finops-micropayments)
+- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (26 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (36 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
@@ -299,7 +299,7 @@
 | 70 | **Enterprise B2B Tail-Spend & Spot-Buy Automation, Anti-Smurfing Split-PO Guard & Autonomous Micro-RFQ Escrow (`Fairmarkit / Amazon Business / Coupa / Zip`), 14-Day Split-Order Rollup, Contract Catalog Redirect & Single-Creditor `VCN` Settlement (`-34%` Tail Spend) Agent Architecture Selection FAQ** | [English](b2b-tail-spend-spot-buy-maverick-spend-split-po-escrow-agent-selection-faq.en.md) · [中文](b2b-tail-spend-spot-buy-maverick-spend-split-po-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (25 Guides)
+## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (26 Guides)
 
 > Covers enterprise SaaS seat governance, UUIDv7 usage metering watermarks, FTC Click-to-Cancel & retention guardrails, HTTP 402 (x402 / Stripe MPP Tempo) micropayments, and LLM token FinOps routing.
 
@@ -330,6 +330,7 @@
 | 23 | **E-Commerce `Subscribe & Save` Replenishment (`Amazon / Chewy Autoship / Recharge / Skio`), Anti-Overstock Churn, Anti-Price-Creep & 5-Item Tier Escrow (Passwordless `1-Tap Snooze`, OOS Tier Honor & `$3` Filler Arbitrage) Agent Architecture Selection FAQ** | [English](ecommerce-subscribe-and-save-replenishment-skip-price-creep-escrow-agent-selection-faq.en.md) · [中文](ecommerce-subscribe-and-save-replenishment-skip-price-creep-escrow-agent-selection-faq.md) |
 | 24 | **SaaS & Subscription Involuntary Churn Recovery, Smart Dunning & Network Account Updater Escrow (`Stripe Adaptive Acceptance / Recurly / Chargebee / Butter`), Anti-`Visa/MC` Retry Fines, 7-Day Silent Payday Retries & Zero-Login Wallet Rescue (`-41%` Failed-Renewal ARR) Agent Architecture Selection FAQ** | [English](saas-subscription-involuntary-churn-smart-dunning-account-updater-escrow-agent-selection-faq.en.md) · [中文](saas-subscription-involuntary-churn-smart-dunning-account-updater-escrow-agent-selection-faq.md) |
 | 25 | **Enterprise B2B SaaS Renewal Negotiation, Auto-Renewal `60-Day Opt-Out` Shield & `SSO / SCIM` Seat Right-Sizing Escrow (`Vendr / Tropic / Zylo / Productiv`), `T-95d` Tactical Non-Renewal Notice, `Creator-to-Viewer` Downgrade & Cloud `MACC/EDP` Drawdown (`-34%` SaaS Spend) Agent Architecture Selection FAQ** | [English](b2b-saas-renewal-negotiation-notice-deadline-seat-rightsizing-escrow-agent-selection-faq.en.md) · [中文](b2b-saas-renewal-negotiation-notice-deadline-seat-rightsizing-escrow-agent-selection-faq.md) |
+| 26 | **SaaS & AI App Free-Trial-to-Paid Conversion, Anti-Burner-`BIN` Abuse & `FTC / ARL` Notice Escrow (`Stripe Billing / RevenueCat / Chargebee / Paddle`), `card.fingerprint` Deduplication, Zero-Usage Charge Shield & Reverse-Trial Orchestration (`-36%` Trial Loss) Agent Architecture Selection FAQ** | [English](saas-free-trial-conversion-virtual-card-abuse-ftc-notice-escrow-agent-selection-faq.en.md) · [中文](saas-free-trial-conversion-virtual-card-abuse-ftc-notice-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (36 Guides)
