@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`301` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`302` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（16 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（44 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（112 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（68 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（69 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（25 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（36 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -214,7 +214,7 @@
 | 112 | **电商小包快递账单审计、3D 装箱防“体积重（`DIM`）刺客”与超时延误自动索赔托管（Shipium / EasyPost / LateShipment / 71lbs / Manhattan Cartonization）防打包员随手拿大纸箱把 0.5 磅 T 恤按 12 磅体积重计费、防快递公司激光扫描鼓包多收钱与陆运替代空运净省 35% Agent 架构选型 FAQ** | [中文](ecommerce-parcel-shipping-audit-dim-cartonization-carrier-refund-escrow-agent-selection-faq.md) · [English](ecommerce-parcel-shipping-audit-dim-cartonization-carrier-refund-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（68 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（69 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -288,6 +288,7 @@
 | 66 | **企业 B2B 尾货清仓与滞销库存变现（Inventory Liquidation：Ghost / B-Stock / Inturn / 唯品会奥莱）、防“2折清仓货转手挂上 Amazon 抢走官方黄金购物车（Buy Box）”与出库剪标覆写条码托管“防二道贩子窜货砸穿正价盘、防带标尾货拿回专柜骗全额原价退货与私密密封竞拍净挽回 36%”Agent 架构选型 FAQ** | [中文](b2b-inventory-liquidation-closeout-anti-buybox-cannibalization-escrow-agent-selection-faq.md) · [English](b2b-inventory-liquidation-closeout-anti-buybox-cannibalization-escrow-agent-selection-faq.en.md) |
 | 67 | **企业商旅与费用报销卡智能审计（Ramp / Brex / Navan Expense / SAP Concur）刷卡前 `MCC` 与差标硬锁、小票 `OCR / Level III` 行项目酒水礼品卡剥离与跨渠道防重报销托管“防先斩后奏超标消费、防刷公司卡又拿纸质小票二次报销与免贴票核销净省 38%”Agent 架构选型 FAQ** | [中文](corporate-expense-card-receipt-ocr-policy-audit-escrow-agent-selection-faq.md) · [English](corporate-expense-card-receipt-ocr-policy-audit-escrow-agent-selection-faq.en.md) |
 | 68 | **B2B 电商账期结账（`Net-30 / Net-60`）、实时商业信用授信与无追索权保理托管（Balance / Hokodo / Resolve / TreviPay / 安联贸易 Allianz Trade）防冒充世界 500 强税号骗赊销、防空壳公司养号爆雷与 `T+1` 买断放款托管“防 14 天纸质审信流失 60% 采购单、防前单逾期照发新货与砍掉 37% 坏账及资金占压成本”Agent 架构选型 FAQ** | [中文](b2b-ecommerce-net-terms-trade-credit-underwriting-factoring-escrow-agent-selection-faq.md) · [English](b2b-ecommerce-net-terms-trade-credit-underwriting-factoring-escrow-agent-selection-faq.en.md) |
+| 69 | **企业 B2B 合同全生命周期管理（`CLM`：Ironclad / Icertis / DocuSign IAM）、AI 条款初审红线批注（Redlining）与签后 `SLA` 赔付/阶梯返点自动追索托管“防业务员绕过法务签下无限连带赔偿合同、防订单附件推翻主协议 `Net-60` 账期与宕机 30 天内自动索赔净省 36%”Agent 架构选型 FAQ** | [中文](b2b-clm-contract-redlining-playbook-sla-credit-rebate-escrow-agent-selection-faq.md) · [English](b2b-clm-contract-redlining-playbook-sla-credit-rebate-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（25 篇）

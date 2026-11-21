@@ -28977,6 +28977,82 @@ def evaluate_ecommerce_parcel_shipping_audit_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BClmContractRedliningPolicyInput:
+    quarterly_contract_value_leakage_sla_forfeiture_and_legal_pool_usd: float = 185000.0
+    uncapped_consequential_liability_or_one_way_buyer_indemnity: bool = False
+    order_form_overrides_msa_terms_or_signed_pricing_unsynced_to_erp: bool = False
+    unclaimed_30d_sla_downtime_credit_or_unauthorized_logo_publicity: bool = False
+    playbook_ooxml_redliner_auto_sla_credit_and_volume_rebate_ready: bool = False
+
+
+def evaluate_b2b_clm_contract_redlining_policy(
+    policy_input: B2BClmContractRedliningPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_contract_value_leakage_sla_forfeiture_and_legal_pool_usd
+        ),
+    )
+    if policy_input.unclaimed_30d_sla_downtime_credit_or_unauthorized_logo_publicity:
+        return {
+            "status_code": 451,
+            "decision": "EXPIRED_SLA_CREDIT_OR_UNAUTHORIZED_LOGO_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncapped_consequential_liability_or_one_way_buyer_indemnity:
+        return {
+            "status_code": 403,
+            "decision": "UNCAPPED_LIABILITY_OR_1WAY_INDEMNITY_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.order_form_overrides_msa_terms_or_signed_pricing_unsynced_to_erp:
+        return {
+            "status_code": 422,
+            "decision": "ORDER_FORM_MSA_CONFLICT_OR_UNSYNCED_RATE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.playbook_ooxml_redliner_auto_sla_credit_and_volume_rebate_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PLAYBOOK_OOXML_REDLINER_AUTO_SLA_AND_REBATE_CONFIRM",
+            "mandate_token": "b2b_clm_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "PLAYBOOK_COMPLIANT_CONTRACT_AND_ERP_SYNC_AUTHORIZED",
+        "mandate_token": "b2b_clm_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -39654,6 +39730,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_clm_contract_redlining_guard = {
+        "authorized_200": evaluate_b2b_clm_contract_redlining_policy(
+            B2BClmContractRedliningPolicyInput()
+        ),
+        "uncapped_lol_or_1way_403": evaluate_b2b_clm_contract_redlining_policy(
+            B2BClmContractRedliningPolicyInput(
+                uncapped_consequential_liability_or_one_way_buyer_indemnity=True
+            )
+        ),
+        "order_form_conflict_or_no_erp_422": evaluate_b2b_clm_contract_redlining_policy(
+            B2BClmContractRedliningPolicyInput(
+                order_form_overrides_msa_terms_or_signed_pricing_unsynced_to_erp=True
+            )
+        ),
+        "expired_sla_or_logo_451": evaluate_b2b_clm_contract_redlining_policy(
+            B2BClmContractRedliningPolicyInput(
+                unclaimed_30d_sla_downtime_credit_or_unauthorized_logo_publicity=True
+            )
+        ),
+        "ooxml_redline_and_sla_claim_409": evaluate_b2b_clm_contract_redlining_policy(
+            B2BClmContractRedliningPolicyInput(
+                playbook_ooxml_redliner_auto_sla_credit_and_volume_rebate_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -39965,6 +40067,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_saas_renewal_rightsizing_guard": b2b_saas_renewal_rightsizing_guard,
         "ecommerce_ai_shopping_assistant_guard": ecommerce_ai_shopping_assistant_guard,
         "ecommerce_parcel_shipping_audit_guard": ecommerce_parcel_shipping_audit_guard,
+        "b2b_clm_contract_redlining_guard": b2b_clm_contract_redlining_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -55595,6 +55698,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="parcel-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TNT_AIR_TO_GROUND_REGIONAL_MIX_AND_EDI210_AUDIT_CONFIRM · Mandate: parcel_audit_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 183 B2B Contract CLM, AI Playbook Redlining & SLA/Rebate Escrow (#302) -->
+      <div class="finops-box" id="b2b-clm-contract-redlining-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📜 企业 B2B 合同初审 (CLM: Ironclad / Icertis / DocuSign IAM) 与签后 SLA/返利追索沙盒</div>
+            <div class="finops-sub">Round 183 (#302) · 1x-2x 赔偿上限与双向免责硬否决 (HTTP 403) + MSA与Order Form冲突扫描及 ERP 价格同步 (HTTP 422) + 30d SLA 索赔防过期 (HTTP 451) + 原生 OOXML 批注净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="clm-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度合同签后未同步高价付款、逾期作废 SLA 赔付、漏收阶梯返利与律所审单池 ($)
+            <input type="number" id="clm-gross-input" value="185000" min="10000" step="5000" oninput="recalcB2BClmContractRedliningSandbox()" />
+          </label>
+          <label>赔偿责任上限 (LoL Cap) 与双向第三方知识产权免责门禁
+            <select id="clm-lol-select" onchange="recalcB2BClmContractRedliningSandbox()">
+              <option value="pass">总赔偿上限锁死 1x-2x 年费 + 双向对等侵权免责 (合规)</option>
+              <option value="block_403">供应商模板删掉赔偿上限沦为无限连带责任 或 仅要求买方单向免责兜底 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>多文档效力优先级 (MSA ↔ Order Form) 与 ERP 价格主数据同步
+            <select id="clm-prec-select" onchange="recalcB2BClmContractRedliningSandbox()">
+              <option value="pass">Order Form 与 MSA 账期/单价一致 且 签署瞬间自动写入 SAP/Coupa 价格表 (合规)</option>
+              <option value="block_422">Order Form 小字将 MSA 谈好的 Net-60 偷改为 Net-15 或 签完锁网盘导致财务照付旧高价 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>供应商宕机 30 天 SLA 索赔窗口与 Logo 公关权/DPA 附件门禁
+            <select id="clm-sla-select" onchange="recalcB2BClmContractRedliningSandbox()">
+              <option value="pass">宕机次月 30d 内自动发函追回 15% SLA 抵扣 + 剥离免费 Logo 授权 + 附 DPA (安全)</option>
+              <option value="block_451">云厂商可用性跌破 99.9% 却错过 30天窗口白丢赔付 或 默认允许拿公司 Logo 发通稿 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>法务剧本原生 .docx OOXML 红线批注与采购满额返利自动收割
+            <select id="clm-opt-select" onchange="recalcB2BClmContractRedliningSandbox()">
+              <option value="enabled" selected>90秒生成 Word 修订红线 + Statuspage 自动索赔 SLA + 满额返利自动生成 Debit Memo (-36% 漏损 / HTTP 409)</option>
+              <option value="disabled">法务排队 14 天手工审 Word 且签完扔进网盘无人追踪返利 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度合同价值漏损与法务总池</div>
+            <div class="finops-kpi-val" id="clm-gross-kpi">$185,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">剧本审单与签后追索后净成本</div>
+            <div class="finops-kpi-val" id="clm-net-kpi" style="color:#6ee7b7;">$118,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省多付货款、SLA 与返利</div>
+            <div class="finops-kpi-val" id="clm-savings-kpi" style="color:#38bdf8;">$66,600</div>
+          </div>
+        </div>
+        <div id="clm-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PLAYBOOK_OOXML_REDLINER_AUTO_SLA_AND_REBATE_CONFIRM · Mandate: b2b_clm_escrow_optim_409
         </div>
       </div>
 
@@ -74471,6 +74631,79 @@ function recalcEcommerceParcelShippingAuditSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 CARTONIZED_PARCEL_LABEL_AND_INVOICE_AUTHORIZED · Mandate: parcel_audit_escrow_200';
+}}
+
+function recalcB2BClmContractRedliningSandbox() {{
+  const grossInput = document.getElementById('clm-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '185000'));
+  const lolGate = document.getElementById('clm-lol-select').value;
+  const precGate = document.getElementById('clm-prec-select').value;
+  const slaGate = document.getElementById('clm-sla-select').value;
+  const optMode = document.getElementById('clm-opt-select').value;
+
+  const grossKpi = document.getElementById('clm-gross-kpi');
+  const netKpi = document.getElementById('clm-net-kpi');
+  const savingsKpi = document.getElementById('clm-savings-kpi');
+  const statusKpi = document.getElementById('clm-status-kpi');
+  const banner = document.getElementById('clm-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (slaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EXPIRED_SLA_CREDIT_OR_UNAUTHORIZED_LOGO_HOLD · Mandate: null';
+    return;
+  }}
+  if (lolGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNCAPPED_LIABILITY_OR_1WAY_INDEMNITY_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (precGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 ORDER_FORM_MSA_CONFLICT_OR_UNSYNCED_RATE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PLAYBOOK_OOXML_REDLINER_AUTO_SLA_AND_REBATE_CONFIRM · Mandate: b2b_clm_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 PLAYBOOK_COMPLIANT_CONTRACT_AND_ERP_SYNC_AUTHORIZED · Mandate: b2b_clm_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

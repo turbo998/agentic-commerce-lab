@@ -21319,6 +21319,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-parcel-shipping-audit-sandbox", html_zh)
 
+    def test_b2b_clm_contract_redlining_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BClmContractRedliningPolicyInput,
+            evaluate_b2b_clm_contract_redlining_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_clm_contract_redlining_policy(
+            B2BClmContractRedliningPolicyInput(
+                quarterly_contract_value_leakage_sla_forfeiture_and_legal_pool_usd=185000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "PLAYBOOK_COMPLIANT_CONTRACT_AND_ERP_SYNC_AUTHORIZED",
+        )
+
+        lol = evaluate_b2b_clm_contract_redlining_policy(
+            B2BClmContractRedliningPolicyInput(
+                uncapped_consequential_liability_or_one_way_buyer_indemnity=True
+            )
+        )
+        self.assertEqual(lol["status_code"], 403)
+        self.assertEqual(
+            lol["decision"],
+            "UNCAPPED_LIABILITY_OR_1WAY_INDEMNITY_BLOCKED",
+        )
+
+        prec = evaluate_b2b_clm_contract_redlining_policy(
+            B2BClmContractRedliningPolicyInput(
+                order_form_overrides_msa_terms_or_signed_pricing_unsynced_to_erp=True
+            )
+        )
+        self.assertEqual(prec["status_code"], 422)
+        self.assertEqual(
+            prec["decision"],
+            "ORDER_FORM_MSA_CONFLICT_OR_UNSYNCED_RATE_BLOCKED",
+        )
+
+        sla = evaluate_b2b_clm_contract_redlining_policy(
+            B2BClmContractRedliningPolicyInput(
+                unclaimed_30d_sla_downtime_credit_or_unauthorized_logo_publicity=True
+            )
+        )
+        self.assertEqual(sla["status_code"], 451)
+        self.assertEqual(
+            sla["decision"],
+            "EXPIRED_SLA_CREDIT_OR_UNAUTHORIZED_LOGO_HOLD",
+        )
+
+        optim = evaluate_b2b_clm_contract_redlining_policy(
+            B2BClmContractRedliningPolicyInput(
+                quarterly_contract_value_leakage_sla_forfeiture_and_legal_pool_usd=185000.0,
+                playbook_ooxml_redliner_auto_sla_credit_and_volume_rebate_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 66600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 118400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_clm_contract_redlining_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-clm-contract-redlining-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

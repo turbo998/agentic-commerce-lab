@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg626" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr626" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg626)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr626)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 183 · B2B Contract CLM, AI Playbook Redlining &amp; Post-Signature SLA/Rebate Escrow</text>
+  <text x="48" y="74" class="sub">Ironclad / Icertis / DocuSign IAM / LinkSquares · Uncapped-LoL Veto · Order-Form Precedence Lock · Auto SLA-Credit Claim (-36% Leakage)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #626 · FAQ #302</text>
+
+  <!-- Lane 1: Uncapped Liability (LoL) & Asymmetric IP Indemnity Breaker -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Uncapped Liability &amp; Indemnity Veto (403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Signing Uncapped Consequential Damages:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Require General_LoL_Cap == 12m_Fees (1x-2x)</text>
+  <text x="54" y="200" class="mono">&amp; Super_Cap (Data/IP) &lt;= 3x Annual Contract</text>
+  <text x="44" y="223" class="body-txt">• Blocks Predatory 1-Way Indemnification:</text>
+  <text x="54" y="243" class="mono">Enforce Mutual_Third_Party_IP_Indemnity</text>
+  <text x="44" y="266" class="body-txt">• Blocks DocuSign / e-Sign envelope routing if</text>
+  <text x="54" y="286" class="body-txt">vendor paper strips limitation-of-liability cap</text>
+  <text x="54" y="304" class="body-txt">without General Counsel cryptographic sign-off</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 UNCAPPED_LIABILITY_OR_1WAY_INDEMNITY_BLOCKED</text>
+
+  <!-- Lane 2: Order-Form vs. MSA Order-of-Precedence & ERP Sync -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Precedence Conflict &amp; ERP Rate Lock (422)</text>
+  <text x="432" y="162" class="body-txt">• Stops "MSA Says Net-45, Order Form Says Net-15":</text>
+  <text x="442" y="182" class="mono">Cross-Check MSA ↔ Order_Form ↔ SOW ↔ DPA</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Flag Contradictory Payment / Price / Term Clauses</text>
+  <text x="432" y="223" class="body-txt">• Stops Post-Signature "Shelf-Contract" Drift:</text>
+  <text x="442" y="243" class="mono">Sync Signed_Tier_Pricing → Coupa/SAP Master</text>
+  <text x="442" y="261" class="body-txt">Prevents AP paying old list price on invoices</text>
+  <text x="442" y="279" class="body-txt">after procurement negotiated a 18% tier discount</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 ORDER_FORM_MSA_CONFLICT_OR_UNSYNCED_RATE_BLOCKED</text>
+
+  <!-- Lane 3: Unclaimed SLA Service Credits, Rebates & Logo Rights -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. SLA-Credit Window &amp; Logo/Governing Lock (451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Missing 30-Day `SLA Credit` Claim Windows:</text>
+  <text x="830" y="182" class="mono">Vendor Uptime &lt; 99.9% → 10%-25% Bill Credit</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Must File Claim Within 30d or Forfeit 100%!</text>
+  <text x="820" y="223" class="body-txt">• Unauthorized Publicity / Logo-Use &amp; Venue Lock:</text>
+  <text x="830" y="243" class="body-txt">Strips automatic "Right to Use Buyer Logo in</text>
+  <text x="830" y="261" class="body-txt">Press Releases" &amp; hostile foreign arbitration</text>
+  <text x="820" y="284" class="body-txt">• Enforces `GDPR SCC / HIPAA BAA` attachment</text>
+  <text x="830" y="302" class="body-txt">whenever PII/PHI data scope is checked</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 EXPIRED_SLA_CREDIT_OR_UNAUTHORIZED_LOGO_HOLD</text>
+
+  <!-- Bottom OOXML Playbook Auto-Redlining & Obligation Extraction Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Clause-Playbook OOXML Tracked-Changes Redliner + Status-Page SLA Credit Auto-Claim + Rebate Ledger (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Playbook OOXML Redliner</text>
+  <text x="62" y="462" class="body-txt">Applies pre-approved Preferred/</text>
+  <text x="62" y="480" class="body-txt">Fallback clause swaps in native</text>
+  <text x="62" y="498" class="body-txt">Word `.docx` Tracked Changes;</text>
+  <text x="62" y="516" class="mono">-72% First-Pass Legal Review Time</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Live Status-Page SLA Claim</text>
+  <text x="337" y="462" class="body-txt">Monitors vendor `Statuspage` &amp;</text>
+  <text x="337" y="480" class="body-txt">Datadog synthetics; auto-files</text>
+  <text x="337" y="498" class="body-txt">10-25% SLA credit memo before</text>
+  <text x="337" y="516" class="mono">30-Day Claim Cutoff Expires</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Volume-Rebate Tier Tracker</text>
+  <text x="622" y="462" class="body-txt">Tracks cumulative ERP spend</text>
+  <text x="622" y="480" class="body-txt">against signed volume-rebate</text>
+  <text x="622" y="498" class="body-txt">tiers (`$500k → 4% Cash Back`);</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">100% Earned Rebates Collected</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Signed-to-ERP Price Sync</text>
+  <text x="907" y="462" class="body-txt">Pushes executed rate cards &amp;</text>
+  <text x="907" y="480" class="body-txt">payment terms directly into</text>
+  <text x="907" y="498" class="body-txt">Coupa / SAP / NetSuite AP;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Contract Value Leakage</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Contract Leakage &amp; Legal Saved</text>
+  <text x="46" y="642" class="mono">$66,600 Saved / $185k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">1x-2x LoL Cap</text>
+  <text x="336" y="626" class="kpi-lbl">Zero Uncapped Liability Signatures</text>
+  <text x="336" y="642" class="mono">Mutual IP Indemnity Enforced</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0 Precedence Drift</text>
+  <text x="626" y="626" class="kpi-lbl">MSA ↔ Order-Form ↔ ERP Sync</text>
+  <text x="626" y="642" class="mono">Eliminates Overbilled AP Invoices</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">30d SLA Auto-Claim</text>
+  <text x="916" y="626" class="kpi-lbl">Statuspage-Driven Credit Recovery</text>
+  <text x="916" y="642" class="mono">Reclaims 10-25% Downtime Credits</text>
+</svg>
