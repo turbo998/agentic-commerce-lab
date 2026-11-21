@@ -18773,6 +18773,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("white-glove-furniture-delivery-escrow-sandbox", html_zh)
 
+    def test_virtual_waiting_room_fair_queue_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            VirtualWaitingRoomFairQueuePolicyInput,
+            evaluate_virtual_waiting_room_fair_queue_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_virtual_waiting_room_fair_queue_policy(
+            VirtualWaitingRoomFairQueuePolicyInput(
+                quarterly_flash_drop_infra_and_outage_loss_pool_usd=140000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ONE_USER_ONE_SLOT_AND_SKU_PINNED_HMAC_PASS_AUTHORIZED",
+        )
+
+        sybil = evaluate_virtual_waiting_room_fair_queue_policy(
+            VirtualWaitingRoomFairQueuePolicyInput(
+                multi_tab_anonymous_cookie_sybil_or_queue_url_resale=True
+            )
+        )
+        self.assertEqual(sybil["status_code"], 403)
+        self.assertEqual(
+            sybil["decision"],
+            "MULTI_TAB_ANONYMOUS_COOKIE_SYBIL_OR_QUEUE_URL_RESALE_BLOCKED",
+        )
+
+        bypass = evaluate_virtual_waiting_room_fair_queue_policy(
+            VirtualWaitingRoomFairQueuePolicyInput(
+                unsigned_direct_api_bypass_or_trojan_horse_sku_swap_attack=True
+            )
+        )
+        self.assertEqual(bypass["status_code"], 422)
+        self.assertEqual(
+            bypass["decision"],
+            "UNSIGNED_DIRECT_API_BYPASS_OR_TROJAN_HORSE_SKU_SWAP_BLOCKED",
+        )
+
+        crash = evaluate_virtual_waiting_room_fair_queue_policy(
+            VirtualWaitingRoomFairQueuePolicyInput(
+                unisolated_flash_drop_crashing_main_store_origin_db=True
+            )
+        )
+        self.assertEqual(crash["status_code"], 451)
+        self.assertEqual(
+            crash["decision"],
+            "UNISOLATED_FLASH_DROP_CRASHING_MAIN_STORE_ORIGIN_DB_HOLD",
+        )
+
+        optim = evaluate_virtual_waiting_room_fair_queue_policy(
+            VirtualWaitingRoomFairQueuePolicyInput(
+                quarterly_flash_drop_infra_and_outage_loss_pool_usd=140000.0,
+                pre_queue_random_shuffle_and_edge_bulkhead_throttle_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 54600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 85400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("virtual_waiting_room_fair_queue_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("virtual-waiting-room-fair-queue-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

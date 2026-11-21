@@ -2,11 +2,11 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`263` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`264` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
-- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (13 guides)](#platform-grounding)
+- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (14 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (41 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (89 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (64 guides)](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (13 Guides)
+## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (14 Guides)
 
 > Platform selection (Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify), real-time search grounding (Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl), catalog feed barriers, A2UI isolation, and Web Bot Auth vs WAF governance.
 
@@ -37,6 +37,7 @@
 | 11 | **E-Commerce Generative Engine Optimization (`GEO / AEO`), Structured `UCP / Schema.org` Feeds & Anti-Review-Bombing Grounding (`Microsoft Web IQ / Google AI Mode / ChatGPT Search / Bazaarvoice`) Edge `SSR JSON-LD`, `RFC 9421` Bot Split & `FTC 16 CFR 465` Agent Architecture Selection FAQ** | [English](ecommerce-geo-aeo-structured-feed-verified-review-grounding-agent-selection-faq.en.md) · [中文](ecommerce-geo-aeo-structured-feed-verified-review-grounding-agent-selection-faq.md) |
 | 12 | **Real-Time Commercial Search & Web Grounding APIs (`Microsoft Bing Grounding / Web IQ` vs `Perplexity Sonar Pro` vs `Tavily` vs `Exa` vs `Firecrawl`) Anti-Stale-Cache Pricing, Anti-Affiliate-SEO-Farm & 5-Engine Tiered Router (`-39%` API Cost) Agent Architecture Selection FAQ** | [English](enterprise-search-grounding-api-bing-webiq-perplexity-tavily-exa-firecrawl-selection-faq.en.md) · [中文](enterprise-search-grounding-api-bing-webiq-perplexity-tavily-exa-firecrawl-selection-faq.md) |
 | 13 | **Commercial Agent Build Path & Platform Selection (`Microsoft Copilot Studio + Dynamics 365` vs `Azure AI Foundry + Semantic Kernel / LangGraph` vs `Salesforce Agentforce` vs `Shopify Sidekick`) Anti-Credit-Burn, Deterministic Cross-ERP Saga & Hybrid Composable Architecture (`-34%` TCO) Agent Architecture Selection FAQ** | [English](commercial-agent-build-platform-copilot-studio-azure-foundry-agentforce-shopify-selection-faq.en.md) · [中文](commercial-agent-build-platform-copilot-studio-azure-foundry-agentforce-shopify-selection-faq.md) |
+| 14 | **E-Commerce High-Concurrency Virtual Waiting Room, Pre-Drop Fair-Lottery Shuffle & Edge-Signed `HMAC` Pass Escrow (`Queue-it / Cloudflare Waiting Room / EQL`) Path-Scoped Bulkhead, `1-User-1-Slot` & SKU-Pinned Pass Agent Architecture Selection FAQ** | [English](ecommerce-virtual-waiting-room-fair-queue-bot-mitigation-escrow-agent-selection-faq.en.md) · [中文](ecommerce-virtual-waiting-room-fair-queue-bot-mitigation-escrow-agent-selection-faq.md) |
 
 <a id="payments-mandates"></a>
 ## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (41 Guides)

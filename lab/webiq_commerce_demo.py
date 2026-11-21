@@ -26177,6 +26177,87 @@ def evaluate_white_glove_furniture_delivery_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class VirtualWaitingRoomFairQueuePolicyInput:
+    """Input contract for High-Concurrency Virtual Waiting Room, Pre-Drop Fair Shuffle & Edge HMAC Pass Escrow."""
+
+    quarterly_flash_drop_infra_and_outage_loss_pool_usd: float = 140000.0
+    multi_tab_anonymous_cookie_sybil_or_queue_url_resale: bool = False
+    unsigned_direct_api_bypass_or_trojan_horse_sku_swap_attack: bool = False
+    unisolated_flash_drop_crashing_main_store_origin_db: bool = False
+    mandate_signing_key_age_days: int = 30
+    pre_queue_random_shuffle_and_edge_bulkhead_throttle_ready: bool = False
+
+
+def evaluate_virtual_waiting_room_fair_queue_policy(
+    policy_input: VirtualWaitingRoomFairQueuePolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane High-Concurrency Virtual Waiting Room, Pre-Drop Fair Shuffle & Edge HMAC Pass Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_flash_drop_infra_and_outage_loss_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.unisolated_flash_drop_crashing_main_store_origin_db
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "UNISOLATED_FLASH_DROP_CRASHING_MAIN_STORE_ORIGIN_DB_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.multi_tab_anonymous_cookie_sybil_or_queue_url_resale:
+        return {
+            "status_code": 403,
+            "decision": "MULTI_TAB_ANONYMOUS_COOKIE_SYBIL_OR_QUEUE_URL_RESALE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unsigned_direct_api_bypass_or_trojan_horse_sku_swap_attack:
+        return {
+            "status_code": 422,
+            "decision": "UNSIGNED_DIRECT_API_BYPASS_OR_TROJAN_HORSE_SKU_SWAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pre_queue_random_shuffle_and_edge_bulkhead_throttle_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PRE_QUEUE_RANDOM_SHUFFLE_AND_EDGE_BULKHEAD_THROTTLE_CONFIRM",
+            "mandate_token": "virtual_waiting_room_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ONE_USER_ONE_SLOT_AND_SKU_PINNED_HMAC_PASS_AUTHORIZED",
+        "mandate_token": "virtual_waiting_room_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -35866,6 +35947,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    virtual_waiting_room_fair_queue_guard = {
+        "authorized_200": evaluate_virtual_waiting_room_fair_queue_policy(
+            VirtualWaitingRoomFairQueuePolicyInput()
+        ),
+        "multi_tab_sybil_or_resale_403": evaluate_virtual_waiting_room_fair_queue_policy(
+            VirtualWaitingRoomFairQueuePolicyInput(
+                multi_tab_anonymous_cookie_sybil_or_queue_url_resale=True
+            )
+        ),
+        "api_bypass_or_sku_swap_422": evaluate_virtual_waiting_room_fair_queue_policy(
+            VirtualWaitingRoomFairQueuePolicyInput(
+                unsigned_direct_api_bypass_or_trojan_horse_sku_swap_attack=True
+            )
+        ),
+        "unisolated_origin_db_crash_451": evaluate_virtual_waiting_room_fair_queue_policy(
+            VirtualWaitingRoomFairQueuePolicyInput(
+                unisolated_flash_drop_crashing_main_store_origin_db=True
+            )
+        ),
+        "pre_queue_shuffle_and_edge_throttle_409": evaluate_virtual_waiting_room_fair_queue_policy(
+            VirtualWaitingRoomFairQueuePolicyInput(
+                pre_queue_random_shuffle_and_edge_bulkhead_throttle_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -36139,6 +36246,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_corporate_swag_print_escrow_guard": b2b_corporate_swag_print_escrow_guard,
         "cross_border_multi_currency_fx_escrow_guard": cross_border_multi_currency_fx_escrow_guard,
         "white_glove_furniture_delivery_escrow_guard": white_glove_furniture_delivery_escrow_guard,
+        "virtual_waiting_room_fair_queue_guard": virtual_waiting_room_fair_queue_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -49597,6 +49705,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="white-glove-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MODULAR_KD_SWAP_AND_BACKHAUL_OLD_ITEM_HAUL_AWAY_CONFIRM · Mandate: white_glove_delivery_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 145 High-Concurrency Virtual Waiting Room, Pre-Drop Fair Shuffle & Edge HMAC Pass Escrow -->
+      <div class="finops-box" id="virtual-waiting-room-fair-queue-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">⏳ 大促高并发虚拟排队室与公平抽签架构 (Queue-it / Cloudflare Waiting Room / EQL 防黄牛) 托管沙盒 (Round 145)</div>
+            <div class="finops-subtitle">实测硬控实名 User_ID+支付卡指纹“一户一签”拦截开 500 个无痕标签页刷排位与闲鱼倒卖排队链接 (HTTP 403)、源站结账 API 0.5ms 强验边缘 HMAC 放行签名(硬绑目标 SKU)防抓包绕过排队页直调接口 (HTTP 422)、CDN 边缘路径级舱壁隔离保住主站日常正价订单 0 陪葬宕机 (HTTP 451) 及开售前 15m 预等候室加密随机洗牌+免 10x 云扩容净省 39% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="waiting-room-status-kpi">HTTP 409 · PRE_QUEUE_RANDOM_SHUFFLE_AND_EDGE_BULKHEAD_THROTTLE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度大促尖峰服务器扩容费、主站陪葬宕机损失与黄牛流失池 ($ USD)
+            <input type="range" id="waiting-room-pool-slider" min="25000" max="550000" step="5000" value="140000" oninput="updateVirtualWaitingRoomFairQueueSandbox()" />
+            <span id="waiting-room-pool-val" style="color:#6ee7b7; font-family:monospace;">$140,000</span>
+          </label>
+          <label>
+            实名 User_ID + 卡指纹“一户一签”与防倒卖排位审计 (HTTP 403)
+            <select id="waiting-room-sybil-select" onchange="updateVirtualWaitingRoomFairQueueSandbox()">
+              <option value="pass">绑定实名账号与卡指纹 500 个窗口自动合并为 1 签 + 排位令牌禁跨号转让 (放行)</option>
+              <option value="block">按匿名 Cookie 发号被黄牛开 500 个无痕窗口霸榜 或 将第 1 名排队链接以 $50 倒卖 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            源站结账 API 强验边缘 HMAC 放行令牌与绑定 SKU (HTTP 422)
+            <select id="waiting-room-hmac-select" onchange="updateVirtualWaitingRoomFairQueueSandbox()">
+              <option value="pass">源站网关校验 X-Queue-Pass-JWS 边缘签名且匹配 target_sku，0 绕过漏洞 (合规)</option>
+              <option value="block">黄牛脚本不加载前端排队页直接抓包 POST /api/checkout 或 从普通T恤页进站偷换限购爆款 SKU (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            CDN 边缘路径级舱壁隔离 (Path-Scoped Bulkhead) 门禁 (HTTP 451)
+            <select id="waiting-room-bulkhead-select" onchange="updateVirtualWaitingRoomFairQueueSandbox()">
+              <option value="clear">仅 /drop/* 走边缘排队室按 150人/m 匀速放行，全站日常正价购物车 100% 独立畅通 (正常)</option>
+              <option value="hold">50万抢鞋并发直击未隔离源站主库，导致正在买日常衣服的 8,000 名顾客全部 502 宕机陪葬 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            开售前 15m 预等候室随机洗牌与 EQL 老粉连败加权寻优 (HTTP 409)
+            <select id="waiting-room-opt-select" onchange="updateVirtualWaitingRoomFairQueueSandbox()">
+              <option value="enabled" selected>15m 预等候室整点加密随机洗牌废掉 0.1ms 机房抢跑 + 老粉连败权重×3 + 免 10倍常年云扩容净省 39% (HTTP 409)</option>
+              <option value="baseline">常规一户一签与边缘签名匀速放行授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度大促扩容与宕机风险总池</div>
+            <div class="finops-kpi-val" id="waiting-room-gross-kpi">$140,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">边缘排队削峰与防崩后净支出</div>
+            <div class="finops-kpi-val" id="waiting-room-net-kpi" style="color:#6ee7b7;">$85,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省 10x 云扩容与陪葬 GMV</div>
+            <div class="finops-kpi-val" id="waiting-room-savings-kpi" style="color:#38bdf8;">$54,600</div>
+          </div>
+        </div>
+        <div id="waiting-room-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PRE_QUEUE_RANDOM_SHUFFLE_AND_EDGE_BULKHEAD_THROTTLE_CONFIRM · Mandate: virtual_waiting_room_optim_409
         </div>
       </div>
 
@@ -65698,6 +65869,80 @@ function updateWhiteGloveFurnitureDeliveryEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_3D_CLEARANCE_AND_WHITE_GLOVE_ROOM_OF_CHOICE_AUTHORIZED · Mandate: white_glove_delivery_200';
+}}
+
+function updateVirtualWaitingRoomFairQueueSandbox() {{
+  const slider = document.getElementById('waiting-room-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '140000');
+  const sybilMode = document.getElementById('waiting-room-sybil-select').value;
+  const hmacMode = document.getElementById('waiting-room-hmac-select').value;
+  const bulkheadMode = document.getElementById('waiting-room-bulkhead-select').value;
+  const optMode = document.getElementById('waiting-room-opt-select').value;
+
+  document.getElementById('waiting-room-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('waiting-room-status-kpi');
+  const grossKpi = document.getElementById('waiting-room-gross-kpi');
+  const netKpi = document.getElementById('waiting-room-net-kpi');
+  const savingsKpi = document.getElementById('waiting-room-savings-kpi');
+  const banner = document.getElementById('waiting-room-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (bulkheadMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 UNISOLATED_FLASH_DROP_CRASHING_MAIN_STORE_ORIGIN_DB_HOLD · Mandate: null';
+    return;
+  }}
+  if (sybilMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MULTI_TAB_ANONYMOUS_COOKIE_SYBIL_OR_QUEUE_URL_RESALE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (hmacMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNSIGNED_DIRECT_API_BYPASS_OR_TROJAN_HORSE_SKU_SWAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PRE_QUEUE_RANDOM_SHUFFLE_AND_EDGE_BULKHEAD_THROTTLE_CONFIRM · Mandate: virtual_waiting_room_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ONE_USER_ONE_SLOT_AND_SKU_PINNED_HMAC_PASS_AUTHORIZED · Mandate: virtual_waiting_room_200';
 }}
 
 function updateStage1756Sandbox() {{
