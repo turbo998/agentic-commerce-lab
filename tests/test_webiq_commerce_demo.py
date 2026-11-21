@@ -23262,6 +23262,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-perishable-florist-cake-sandbox", html_zh)
 
+    def test_omnichannel_softpos_tap_to_pay_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OmnichannelSoftposTapToPayPolicyInput,
+            evaluate_omnichannel_softpos_tap_to_pay_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_omnichannel_softpos_tap_to_pay_policy(
+            OmnichannelSoftposTapToPayPolicyInput(
+                quarterly_unlinked_refund_keyed_fraud_and_offline_saf_pool_usd=190000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ATTESTED_EMV_SOFTPOS_AND_REFERENCED_REFUND_AUTHORIZED",
+        )
+
+        refund = evaluate_omnichannel_softpos_tap_to_pay_policy(
+            OmnichannelSoftposTapToPayPolicyInput(
+                unlinked_standalone_terminal_refund_or_exceeding_original_capture=True
+            )
+        )
+        self.assertEqual(refund["status_code"], 403)
+        self.assertEqual(
+            refund["decision"],
+            "UNLINKED_TERMINAL_REFUND_OR_PAR_MISMATCH_BLOCKED",
+        )
+
+        keyed = evaluate_omnichannel_softpos_tap_to_pay_policy(
+            OmnichannelSoftposTapToPayPolicyInput(
+                manual_keyed_pan_entry_fallback_without_emv_or_3ds2_qr=True
+            )
+        )
+        self.assertEqual(keyed["status_code"], 422)
+        self.assertEqual(
+            keyed["decision"],
+            "MANUAL_KEYED_PAN_FALLBACK_OR_INTERCHANGE_LEAK_BLOCK",
+        )
+
+        saf = evaluate_omnichannel_softpos_tap_to_pay_policy(
+            OmnichannelSoftposTapToPayPolicyInput(
+                offline_saf_exceeding_150_floor_limit_or_unattested_mpoc_device=True
+            )
+        )
+        self.assertEqual(saf["status_code"], 451)
+        self.assertEqual(
+            saf["decision"],
+            "OFFLINE_SAF_FLOOR_BREACH_OR_UNATTESTED_MPOC_HOLD",
+        )
+
+        optim = evaluate_omnichannel_softpos_tap_to_pay_policy(
+            OmnichannelSoftposTapToPayPolicyInput(
+                quarterly_unlinked_refund_keyed_fraud_and_offline_saf_pool_usd=190000.0,
+                emvco_par_cross_channel_match_and_reg_ii_debit_routing_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 72200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 117800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("omnichannel_softpos_tap_to_pay_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("omnichannel-softpos-tap-to-pay-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg655" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081424"/>
+    </linearGradient>
+    <linearGradient id="hdr655" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg655)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr655)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 212 · Omnichannel SoftPOS (`Tap to Pay`), Unlinked-Refund &amp; Offline EMV Escrow</text>
+  <text x="48" y="74" class="sub">Adyen Terminal API / Stripe Terminal / Apple Tap to Pay · Referenced-Only Refund · Block Manual Keyed Entry (-38% Fraud &amp; Fee Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #655 · FAQ #331</text>
+
+  <!-- Lane 1: Employee "Unlinked / Blind Refund to Own Debit Card" Embezzlement Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Referenced-Refund PAR Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Cashier Refunding Store Cash to Own Card:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Refund_Target == Original_Payment_Intent_ID</text>
+  <text x="54" y="200" class="mono">&amp; Refund_Amount &lt;= Remaining_Capturable_Cents</text>
+  <text x="44" y="223" class="body-txt">• Blocks "Unlinked / Standalone Terminal Refunds":</text>
+  <text x="54" y="243" class="mono">Cashier Tapping Personal Visa on Refund Screen = 403!</text>
+  <text x="44" y="266" class="body-txt">• Eliminates the #1 retail POS embezzlement vector</text>
+  <text x="54" y="286" class="body-txt">where rogue staff process fake returns onto their</text>
+  <text x="54" y="304" class="body-txt">own personal debit card or Apple Pay wallet</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 UNLINKED_TERMINAL_REFUND_OR_PAR_MISMATCH_BLOCKED</text>
+
+  <!-- Lane 2: Manual Keyed Card Entry (MOTO Fallback) Fraud & 1.10% Interchange Downgrade Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Manual Keyed-Entry (`MOTO`) Veto (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Typing Stolen Card Numbers Into POS:</text>
+  <text x="442" y="182" class="mono">Disable `Manual_PAN_Key_Entry` on Store Terminals!</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Require `EMV_Chip / NFC_Contactless` Cryptogram</text>
+  <text x="432" y="223" class="body-txt">• Eliminates `1.10%` CNP Interchange Downgrade:</text>
+  <text x="442" y="243" class="mono">Card-Present NFC (1.65%) vs Keyed Entry (2.75% + $0.10)</text>
+  <text x="432" y="266" class="body-txt">• If physical card chip is damaged, sends a `3DS2`</text>
+  <text x="442" y="286" class="body-txt">QR Pay-by-Link to buyer's phone so liability shifts</text>
+  <text x="442" y="304" class="body-txt">to the issuer instead of eating 100% fraud loss</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 MANUAL_KEYED_PAN_FALLBACK_OR_INTERCHANGE_LEAK_BLOCK</text>
+
+  <!-- Lane 3: Store Wi-Fi Outage "Store-and-Forward (SAF)" Floor Limit & PCI MPoC Attestation Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Offline `SAF` Cap &amp; `PCI MPoC` Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Bounded Offline Store-and-Forward (`SAF`) Risk:</text>
+  <text x="830" y="182" class="mono">Block Offline Txn &gt; `$150` or Repeat Same-Card</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Swipes During Store Internet Outage!</text>
+  <text x="820" y="223" class="body-txt">• `PCI MPoC` Hardware Attestation Gate:</text>
+  <text x="830" y="243" class="body-txt">Blocks jailbroken/rooted associate phones or</text>
+  <text x="830" y="261" class="body-txt">expired `P2PE` keys from accepting `Tap to Pay`</text>
+  <text x="820" y="284" class="body-txt">• Prevents fraudsters cutting store fiber lines to</text>
+  <text x="830" y="302" class="body-txt">binge-buy $5,000 luxury bags on declined cards</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 OFFLINE_SAF_FLOOR_BREACH_OR_UNATTESTED_MPOC_HOLD</text>
+
+  <!-- Bottom Cross-Channel PAR Tokenization & Least-Cost Debit Routing Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Tap-to-Pay Line-Busting + Unified `EMVCo PAR` Omnichannel Profile &amp; Reg II Routing (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Zero-Hardware SoftPOS</text>
+  <text x="62" y="462" class="body-txt">Turns every associate iPhone</text>
+  <text x="62" y="480" class="body-txt">into an `EMV NFC` terminal;</text>
+  <text x="62" y="498" class="body-txt">saves `$450/device` hardware</text>
+  <text x="62" y="516" class="mono">&amp; cuts queue abandonment 64%</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Unified `EMVCo PAR` Graph</text>
+  <text x="337" y="462" class="body-txt">Matches Apple Pay `DPAN` in</text>
+  <text x="337" y="480" class="body-txt">store to physical `FPAN` on</text>
+  <text x="337" y="498" class="body-txt">web for instant BORIS return</text>
+  <text x="337" y="516" class="mono">&amp; loyalty auto-recognition</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Durbin `Reg II` Pinless Debit</text>
+  <text x="622" y="462" class="body-txt">Routes contactless debit via</text>
+  <text x="622" y="480" class="body-txt">STAR / NYCE / Shazam at</text>
+  <text x="622" y="498" class="body-txt">`0.05% + $0.21` regulated cap;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">Saves 42 bps on Debit Taps</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Cellular 5G eSIM Auto-Fail</text>
+  <text x="907" y="462" class="body-txt">Switches SoftPOS to backup</text>
+  <text x="907" y="480" class="body-txt">5G eSIM in 200ms when mall</text>
+  <text x="907" y="498" class="body-txt">Wi-Fi drops—staying 100% online;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-38% Store POS Fraud &amp; Fee Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-38.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly POS Fraud &amp; Downgrade Saved</text>
+  <text x="46" y="642" class="mono">$72,200 Saved / $190k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">0 Blind Refunds</text>
+  <text x="336" y="626" class="kpi-lbl">100% Referenced Original-Token Only</text>
+  <text x="336" y="642" class="mono">Blocks Cashier Self-Refund Theft</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">-110 bps</text>
+  <text x="626" y="626" class="kpi-lbl">Eliminates Manual Keyed CNP Downgrade</text>
+  <text x="626" y="642" class="mono">100% EMV Cryptogram Liability Shift</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">PCI MPoC</text>
+  <text x="916" y="626" class="kpi-lbl">Hardware Enclave Attested SoftPOS</text>
+  <text x="916" y="642" class="mono">$150 Offline SAF Cap Protected</text>
+</svg>

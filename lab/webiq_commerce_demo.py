@@ -31181,6 +31181,82 @@ def evaluate_ecommerce_perishable_florist_cake_policy(
     }
 
 
+@dataclass(frozen=True)
+class OmnichannelSoftposTapToPayPolicyInput:
+    quarterly_unlinked_refund_keyed_fraud_and_offline_saf_pool_usd: float = 190000.0
+    unlinked_standalone_terminal_refund_or_exceeding_original_capture: bool = False
+    manual_keyed_pan_entry_fallback_without_emv_or_3ds2_qr: bool = False
+    offline_saf_exceeding_150_floor_limit_or_unattested_mpoc_device: bool = False
+    emvco_par_cross_channel_match_and_reg_ii_debit_routing_ready: bool = False
+
+
+def evaluate_omnichannel_softpos_tap_to_pay_policy(
+    policy_input: OmnichannelSoftposTapToPayPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_unlinked_refund_keyed_fraud_and_offline_saf_pool_usd
+        ),
+    )
+    if policy_input.offline_saf_exceeding_150_floor_limit_or_unattested_mpoc_device:
+        return {
+            "status_code": 451,
+            "decision": "OFFLINE_SAF_FLOOR_BREACH_OR_UNATTESTED_MPOC_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unlinked_standalone_terminal_refund_or_exceeding_original_capture:
+        return {
+            "status_code": 403,
+            "decision": "UNLINKED_TERMINAL_REFUND_OR_PAR_MISMATCH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.manual_keyed_pan_entry_fallback_without_emv_or_3ds2_qr:
+        return {
+            "status_code": 422,
+            "decision": "MANUAL_KEYED_PAN_FALLBACK_OR_INTERCHANGE_LEAK_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.emvco_par_cross_channel_match_and_reg_ii_debit_routing_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "EMVCO_PAR_OMNICHANNEL_AND_REG_II_SOFTPOS_CONFIRM",
+            "mandate_token": "omnichannel_softpos_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ATTESTED_EMV_SOFTPOS_AND_REFERENCED_REFUND_AUTHORIZED",
+        "mandate_token": "omnichannel_softpos_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -42612,6 +42688,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    omnichannel_softpos_tap_to_pay_guard = {
+        "authorized_200": evaluate_omnichannel_softpos_tap_to_pay_policy(
+            OmnichannelSoftposTapToPayPolicyInput()
+        ),
+        "unlinked_refund_or_par_403": evaluate_omnichannel_softpos_tap_to_pay_policy(
+            OmnichannelSoftposTapToPayPolicyInput(
+                unlinked_standalone_terminal_refund_or_exceeding_original_capture=True
+            )
+        ),
+        "manual_keyed_pan_422": evaluate_omnichannel_softpos_tap_to_pay_policy(
+            OmnichannelSoftposTapToPayPolicyInput(
+                manual_keyed_pan_entry_fallback_without_emv_or_3ds2_qr=True
+            )
+        ),
+        "offline_saf_or_mpoc_451": evaluate_omnichannel_softpos_tap_to_pay_policy(
+            OmnichannelSoftposTapToPayPolicyInput(
+                offline_saf_exceeding_150_floor_limit_or_unattested_mpoc_device=True
+            )
+        ),
+        "par_match_and_reg_ii_409": evaluate_omnichannel_softpos_tap_to_pay_policy(
+            OmnichannelSoftposTapToPayPolicyInput(
+                emvco_par_cross_channel_match_and_reg_ii_debit_routing_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42952,6 +43054,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_big_bulky_white_glove_guard": ecommerce_big_bulky_white_glove_guard,
         "b2b_vmi_consignment_settlement_guard": b2b_vmi_consignment_settlement_guard,
         "ecommerce_perishable_florist_cake_guard": ecommerce_perishable_florist_cake_guard,
+        "omnichannel_softpos_tap_to_pay_guard": omnichannel_softpos_tap_to_pay_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -60235,6 +60338,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="floristcake-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SENDER_PHOTO_PREVIEW_AND_MULTI_DSP_FAILOVER_CONFIRM · Mandate: florist_cake_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 212 Omnichannel SoftPOS (Tap to Pay), Unlinked-Refund & Offline EMV Escrow (#331) -->
+      <div class="finops-box" id="omnichannel-softpos-tap-to-pay-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📱 全渠道门店 SoftPOS (Tap to Pay on iPhone / Adyen / Stripe Terminal)、防内鬼盲退与离线 EMV 沙盒</div>
+            <div class="finops-sub">Round 212 (#331) · 禁用无原单独立退货防店员刷进私人银行卡 + 29位 EMVCo PAR 跨端秒退 (HTTP 403) + 锁死键盘手输卡号防 100% 拒付败诉与 1.1% 降级费 (HTTP 422) + 断网离线 SAF $150 上限与 PCI MPoC 证明 (HTTP 451) + 5G 热切净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="softpos-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度门店收银员无原单盲退侵占、手输卡号 (MOTO) 盗刷拒付败诉与 110 bps 降级费损耗池 ($)
+            <input type="number" id="softpos-gross-input" value="190000" min="10000" step="5000" oninput="recalcOmnichannelSoftposTapToPaySandbox()" />
+          </label>
+          <label>100% 关联原单原路退回锁 (Referenced Refund Only) 与 29位 EMVCo PAR 跨端识客
+            <select id="softpos-refund-select" onchange="recalcOmnichannelSoftposTapToPaySandbox()">
+              <option value="pass">永久关闭 Standalone 盲退 + 凭 EMVCo PAR 自动将线下实体卡关联至线上 Apple Pay 原单退回 (合规)</option>
+              <option value="block_403">内鬼收银员不绑原订单直接在 POS 上发起 $850 独立退款并刷进自己私人借记卡套现 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>禁用门店 POS 键盘手输 16 位卡号 (Manual Keyed PAN Veto) 与芯片故障转 3DS2 扫码付
+            <select id="softpos-keyed-select" onchange="recalcOmnichannelSoftposTapToPaySandbox()">
+              <option value="pass">100% 强制 EMV 芯片/NFC 动态密文 (芯片磨损自动弹 3DS2/Apple Pay 手机付款二维码) (合规)</option>
+              <option value="block_422">骗子拿刮花卡让店员在 POS 键盘手敲卡号导致多扣 1.10% 降级费且遭 Visa 10.4 拒付 100% 败诉 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>PCI MPoC 硬件安全飞地实时证明与商场断网离线收单 (Offline SAF) $150/单卡限 1 次熔断
+            <select id="softpos-saf-select" onchange="recalcOmnichannelSoftposTapToPaySandbox()">
+              <option value="pass">Apple/Android 安全飞地未越狱证明通过 + 断网离线 SAF 严控单笔 &lt;= $150 且同卡限刷 1 次 (安全)</option>
+              <option value="block_451">盗刷团伙趁商场 Wi-Fi 断网拿空卡连刷 $5,000 奢品包 或 店员用越狱手机运行 SoftPOS (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>iPhone Tap-to-Pay 零硬件移动消队、200ms 5G eSIM 切换与借记卡 Reg II 最优路由
+            <select id="softpos-opt-select" onchange="recalcOmnichannelSoftposTapToPaySandbox()">
+              <option value="enabled" selected>省去 $450 刷卡机硬件 + 200ms 切 5G 保持在线 + 借记卡走低费率网省 42 bps (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统固定收银台排队 + 借记卡全走高费率主干网 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度门店盲退盗窃与手输降级池</div>
+            <div class="finops-kpi-val" id="softpos-gross-kpi">$190,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">PAR 原路退与 EMV 护航后净损耗</div>
+            <div class="finops-kpi-val" id="softpos-net-kpi" style="color:#6ee7b7;">$117,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省内鬼侵占与通道手续费</div>
+            <div class="finops-kpi-val" id="softpos-savings-kpi" style="color:#38bdf8;">$72,200</div>
+          </div>
+        </div>
+        <div id="softpos-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 EMVCO_PAR_OMNICHANNEL_AND_REG_II_SOFTPOS_CONFIRM · Mandate: omnichannel_softpos_escrow_optim_409
         </div>
       </div>
 
@@ -81228,6 +81388,79 @@ function recalcEcommercePerishableFloristCakeSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_BOUQUET_AND_TIMED_CAKE_DELIVERY_AUTHORIZED · Mandate: florist_cake_escrow_200';
+}}
+
+function recalcOmnichannelSoftposTapToPaySandbox() {{
+  const grossInput = document.getElementById('softpos-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '190000'));
+  const refundGate = document.getElementById('softpos-refund-select').value;
+  const keyedGate = document.getElementById('softpos-keyed-select').value;
+  const safGate = document.getElementById('softpos-saf-select').value;
+  const optMode = document.getElementById('softpos-opt-select').value;
+
+  const grossKpi = document.getElementById('softpos-gross-kpi');
+  const netKpi = document.getElementById('softpos-net-kpi');
+  const savingsKpi = document.getElementById('softpos-savings-kpi');
+  const statusKpi = document.getElementById('softpos-status-kpi');
+  const banner = document.getElementById('softpos-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (safGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 OFFLINE_SAF_FLOOR_BREACH_OR_UNATTESTED_MPOC_HOLD · Mandate: null';
+    return;
+  }}
+  if (refundGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNLINKED_TERMINAL_REFUND_OR_PAR_MISMATCH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (keyedGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MANUAL_KEYED_PAN_FALLBACK_OR_INTERCHANGE_LEAK_BLOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 EMVCO_PAR_OMNICHANNEL_AND_REG_II_SOFTPOS_CONFIRM · Mandate: omnichannel_softpos_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ATTESTED_EMV_SOFTPOS_AND_REFERENCED_REFUND_AUTHORIZED · Mandate: omnichannel_softpos_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
