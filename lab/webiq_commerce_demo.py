@@ -32017,6 +32017,82 @@ def evaluate_high_ticket_auto_split_tender_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaCruiseFlyCruiseFolioPolicyInput:
+    quarterly_missed_ship_pvsa_fine_and_uncollected_onboard_folio_pool_usd: float = 240000.0
+    flight_arrival_under_6h_before_all_aboard_or_pvsa_breach: bool = False
+    shore_excursion_return_under_120m_or_single_adult_drink_pkg_split: bool = False
+    declined_at_sea_incremental_auth_without_gangway_seapass_lock: bool = False
+    cabin_bid_up_waterfall_and_skipped_port_tax_auto_rebate_ready: bool = False
+
+
+def evaluate_ota_cruise_fly_cruise_folio_policy(
+    policy_input: OtaCruiseFlyCruiseFolioPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_missed_ship_pvsa_fine_and_uncollected_onboard_folio_pool_usd
+        ),
+    )
+    if policy_input.declined_at_sea_incremental_auth_without_gangway_seapass_lock:
+        return {
+            "status_code": 451,
+            "decision": "DECLINED_ONBOARD_INCREMENTAL_AUTH_GANGWAY_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.flight_arrival_under_6h_before_all_aboard_or_pvsa_breach:
+        return {
+            "status_code": 403,
+            "decision": "TIGHT_FLY_CRUISE_CONNECTION_OR_PVSA_CABOTAGE_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.shore_excursion_return_under_120m_or_single_adult_drink_pkg_split:
+        return {
+            "status_code": 422,
+            "decision": "UNSAFE_EXCURSION_RETURN_WINDOW_OR_CABIN_PKG_SPLIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cabin_bid_up_waterfall_and_skipped_port_tax_auto_rebate_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CABIN_BID_UP_WATERFALL_AND_SKIPPED_PORT_REBATE_CONFIRM",
+            "mandate_token": "cruise_folio_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_FLY_CRUISE_AND_STARLINK_FOLIO_AUTHORIZED",
+        "mandate_token": "cruise_folio_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -43734,6 +43810,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_cruise_fly_cruise_folio_guard = {
+        "authorized_200": evaluate_ota_cruise_fly_cruise_folio_policy(
+            OtaCruiseFlyCruiseFolioPolicyInput()
+        ),
+        "tight_air_or_pvsa_403": evaluate_ota_cruise_fly_cruise_folio_policy(
+            OtaCruiseFlyCruiseFolioPolicyInput(
+                flight_arrival_under_6h_before_all_aboard_or_pvsa_breach=True
+            )
+        ),
+        "unsafe_tour_or_drink_422": evaluate_ota_cruise_fly_cruise_folio_policy(
+            OtaCruiseFlyCruiseFolioPolicyInput(
+                shore_excursion_return_under_120m_or_single_adult_drink_pkg_split=True
+            )
+        ),
+        "declined_at_sea_folio_451": evaluate_ota_cruise_fly_cruise_folio_policy(
+            OtaCruiseFlyCruiseFolioPolicyInput(
+                declined_at_sea_incremental_auth_without_gangway_seapass_lock=True
+            )
+        ),
+        "bid_up_and_port_rebate_409": evaluate_ota_cruise_fly_cruise_folio_policy(
+            OtaCruiseFlyCruiseFolioPolicyInput(
+                cabin_bid_up_waterfall_and_skipped_port_tax_auto_rebate_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -44085,6 +44187,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_sow_services_procurement_guard": b2b_sow_services_procurement_guard,
         "ecommerce_beauty_gwp_sample_return_guard": ecommerce_beauty_gwp_sample_return_guard,
         "high_ticket_auto_split_tender_guard": high_ticket_auto_split_tender_guard,
+        "ota_cruise_fly_cruise_folio_guard": ota_cruise_fly_cruise_folio_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -61995,6 +62098,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="autosplit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FOUR_WAY_SPLIT_TENDER_SETTLED_AND_UWB_KEY_UNLOCK_CONFIRM · Mandate: high_ticket_auto_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 223 Cruise Fly-Cruise Embarkation, Shore Excursion & Onboard Folio Escrow (#342) -->
+      <div class="finops-box" id="ota-cruise-fly-cruise-folio-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🚢 邮轮母港联程机票 (Fly-Cruise)、岸上观光与船上 SeaPass 账单结算 (RCL / NCL / Amadeus) 沙盒</div>
+            <div class="finops-sub">Round 223 (#342) · 航班落地距 All-Aboard 关闸 &gt;=6h 缓冲与美国 PVSA 沿海贸易法锁 (HTTP 403) + 岸上观光返港 &gt;=120m 缓冲与同舱成人酒水包同步买 (HTTP 422) + Starlink 每满 $250 实时增量预授权与下船闸机锁 (HTTP 451) + 连环竞价升舱与取消靠港 5s 自动退税净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="cruisefolio-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度同日紧巴航班延误误船废票 ($8k/家)、违反 PVSA 被罚 $941/人、公海刷爆空头卡下船逃单与同舱蹭酒损耗池 ($)
+            <input type="number" id="cruisefolio-gross-input" value="240000" min="10000" step="10000" oninput="recalcOtaCruiseFlyCruiseFolioSandbox()" />
+          </label>
+          <label>母港联程机票 (Fly-Cruise) 距登船关闸 &gt;=6.0 小时缓冲与美国 PVSA (46 U.S.C. 55103) 合规门禁
+            <select id="cruisefolio-air-select" onchange="recalcOtaCruiseFlyCruiseFolioSandbox()">
+              <option value="pass">提前 1 晚飞抵母港 (或间隔 &gt;=6h 官方包追船 Air2Sea) + 航线符合 PVSA 远洋外港规定 (合规)</option>
+              <option value="block_403">订起航当天 13:00 落地机票距 14:30 关闸仅 90m 延误误船 或 在两个美国港口间违规单向搭乘外籍船被罚 $941/人 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>岸上观光团返抵码头 &gt;=120 分钟安全缓冲 (带误船包追保障) 与同舱成年人无限酒水包同买锁
+            <select id="cruisefolio-shore-select" onchange="recalcOtaCruiseFlyCruiseFolioSandbox()">
+              <option value="pass">观光团提前 2h 返港且含回船担保 + 同舱成年室友同步绑定酒水套餐 (合规)</option>
+              <option value="block_422">第三方野导游离拔锚仅剩 20 分钟返港堵车把游客丢在外国码头 或 同舱 2 人仅买 1 份畅饮卡全屋蹭喝 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>公海 Starlink 卫星每满 $250 实时增量预授权与下船舷梯闸机 (Gangway Beacon) 未结清硬锁
+            <select id="cruisefolio-auth-select" onchange="recalcOtaCruiseFlyCruiseFolioSandbox()">
+              <option value="pass">船上每满 $250 实时追加 ISO 8583 预授权通过 + 靠岸合并实扣并秒发 0420 解冻多余押金 (安全)</option>
+              <option value="block_451">登船绑 $150 空头借记卡在公海免税店刷 $3,500 名表，增量授权被拒却未锁卡致下船逃单 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>T-90d 尾款后“内舱→阳台→套房”密封竞价连环升舱与跳过停靠港 5 秒自动退港务税
+            <select id="cruisefolio-opt-select" onchange="recalcOtaCruiseFlyCruiseFolioSandbox()">
+              <option value="enabled" selected>PlusGrade 连环升舱单舱增收 $420 + 大风取消靠港 5 秒自动退全船港务税与观光费 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统固定舱房不连环升舱 + 取消靠港让 3,000 人去服务台排长队手工退税 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度邮轮误船赔付与公海逃单池</div>
+            <div class="finops-kpi-val" id="cruisefolio-gross-kpi">$240,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">T-6h 缓冲与卫星增量锁后净损耗</div>
+            <div class="finops-kpi-val" id="cruisefolio-net-kpi" style="color:#6ee7b7;">$153,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省公海坏账与升舱增收</div>
+            <div class="finops-kpi-val" id="cruisefolio-savings-kpi" style="color:#38bdf8;">$86,400</div>
+          </div>
+        </div>
+        <div id="cruisefolio-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CABIN_BID_UP_WATERFALL_AND_SKIPPED_PORT_REBATE_CONFIRM · Mandate: cruise_folio_escrow_optim_409
         </div>
       </div>
 
@@ -83791,6 +83951,79 @@ function recalcHighTicketAutoSplitTenderSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_SPLIT_TENDER_AND_FUNDED_LOAN_AUTHORIZED · Mandate: high_ticket_auto_escrow_200';
+}}
+
+function recalcOtaCruiseFlyCruiseFolioSandbox() {{
+  const grossInput = document.getElementById('cruisefolio-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '240000'));
+  const airGate = document.getElementById('cruisefolio-air-select').value;
+  const shoreGate = document.getElementById('cruisefolio-shore-select').value;
+  const authGate = document.getElementById('cruisefolio-auth-select').value;
+  const optMode = document.getElementById('cruisefolio-opt-select').value;
+
+  const grossKpi = document.getElementById('cruisefolio-gross-kpi');
+  const netKpi = document.getElementById('cruisefolio-net-kpi');
+  const savingsKpi = document.getElementById('cruisefolio-savings-kpi');
+  const statusKpi = document.getElementById('cruisefolio-status-kpi');
+  const banner = document.getElementById('cruisefolio-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (authGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 DECLINED_ONBOARD_INCREMENTAL_AUTH_GANGWAY_HOLD · Mandate: null';
+    return;
+  }}
+  if (airGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 TIGHT_FLY_CRUISE_CONNECTION_OR_PVSA_CABOTAGE_BLOCK · Mandate: null';
+    return;
+  }}
+  if (shoreGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNSAFE_EXCURSION_RETURN_WINDOW_OR_CABIN_PKG_SPLIT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CABIN_BID_UP_WATERFALL_AND_SKIPPED_PORT_REBATE_CONFIRM · Mandate: cruise_folio_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_FLY_CRUISE_AND_STARLINK_FOLIO_AUTHORIZED · Mandate: cruise_folio_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

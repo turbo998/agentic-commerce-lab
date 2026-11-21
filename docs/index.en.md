@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`341` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`342` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (20 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (49 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (128 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (129 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (76 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (28 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (40 guides)](#tax-fx-privacy-disputes)
@@ -103,7 +103,7 @@
 | 49 | **High-Ticket Automotive, EV & Solar Split-Tender Checkout Escrow (`Tesla / Rivian / AutoFi / Plaid Transfer / Stripe`), `$1,000` Card-Deposit Cap, Lender `Stips` Funding Lock, Per-`VIN vIBAN` Wire Shield & 4-Way Digital-Key Release (`-38%` Closing Loss) Agent Architecture Selection FAQ** | [English](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.en.md) · [中文](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (128 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (129 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -237,6 +237,7 @@
 | 126 | **Fitness, Boutique Studio & MedSpa Membership, Class-Slot Hoarding & Package Proration Escrow (`Mindbody / Mariana Tek / Zenoti / ClassPass`), Prime-Slot Yield Cap, Retail-Rate Package Refund, `FTC Click-to-Cancel` & `$15/Mo` Freeze (`-36%` Studio Loss) Agent Architecture Selection FAQ** | [English](wellness-fitness-medspa-membership-class-noshow-package-proration-escrow-agent-selection-faq.en.md) · [中文](wellness-fitness-medspa-membership-class-noshow-package-proration-escrow-agent-selection-faq.md) |
 | 127 | **Limited-Edition Sneaker & Collectible Drop Raffle (`EQL / Nike SNKRS`) & Authenticated Consignment Marketplace Escrow (`StockX / GOAT / eBay AG`), Post-Close `DPBC + PAR` Sybil Bot Purge, `15%` Seller-Flake Auto-Rematch & `NTAG 424 NFC` Tamper Lock (`-37%` Drop & Resale Loss) Agent Architecture Selection FAQ** | [English](ecommerce-sneaker-collectible-drop-raffle-authentication-seller-flake-escrow-agent-selection-faq.en.md) · [中文](ecommerce-sneaker-collectible-drop-raffle-authentication-seller-flake-escrow-agent-selection-faq.md) |
 | 128 | **Prestige Beauty, Fragrance & Duty-Free `GWP` (Gift-With-Purchase), Birthday-Gift & Return-Clawback Escrow (`Sephora / Ulta / Estée Lauder / Loop Returns`), `ASC 606` Pro-Rata Invoice Split, Anti-Birthday-Bot Spend Floor, External `2ml` Trial Vial & Discovery Bounceback (`-37%` Beauty Loss) Agent Architecture Selection FAQ** | [English](ecommerce-beauty-gwp-free-sample-abuse-return-deduction-escrow-agent-selection-faq.en.md) · [中文](ecommerce-beauty-gwp-free-sample-abuse-return-deduction-escrow-agent-selection-faq.md) |
+| 129 | **Cruise Line `Fly-Cruise` Embarkation, Shore Excursion & Onboard `SeaPass` Folio Escrow (`Royal Caribbean / Carnival / NCL / Amadeus Cruise / Oracle SPMS`), `T-6h` All-Aboard Air Buffer, `PVSA` Cabotage Lock, Back-to-Ship Guarantee & `Starlink` Incremental Auth (`-36%` Voyage Loss) Agent Architecture Selection FAQ** | [English](ota-cruise-fly-cruise-embarkation-shore-excursion-onboard-folio-escrow-agent-selection-faq.en.md) · [中文](ota-cruise-fly-cruise-embarkation-shore-excursion-onboard-folio-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (76 Guides)

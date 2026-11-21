@@ -23999,6 +23999,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("high-ticket-auto-split-tender-sandbox", html_zh)
 
+    def test_ota_cruise_fly_cruise_folio_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaCruiseFlyCruiseFolioPolicyInput,
+            evaluate_ota_cruise_fly_cruise_folio_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_cruise_fly_cruise_folio_policy(
+            OtaCruiseFlyCruiseFolioPolicyInput(
+                quarterly_missed_ship_pvsa_fine_and_uncollected_onboard_folio_pool_usd=240000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_FLY_CRUISE_AND_STARLINK_FOLIO_AUTHORIZED",
+        )
+
+        air = evaluate_ota_cruise_fly_cruise_folio_policy(
+            OtaCruiseFlyCruiseFolioPolicyInput(
+                flight_arrival_under_6h_before_all_aboard_or_pvsa_breach=True
+            )
+        )
+        self.assertEqual(air["status_code"], 403)
+        self.assertEqual(
+            air["decision"],
+            "TIGHT_FLY_CRUISE_CONNECTION_OR_PVSA_CABOTAGE_BLOCK",
+        )
+
+        shore = evaluate_ota_cruise_fly_cruise_folio_policy(
+            OtaCruiseFlyCruiseFolioPolicyInput(
+                shore_excursion_return_under_120m_or_single_adult_drink_pkg_split=True
+            )
+        )
+        self.assertEqual(shore["status_code"], 422)
+        self.assertEqual(
+            shore["decision"],
+            "UNSAFE_EXCURSION_RETURN_WINDOW_OR_CABIN_PKG_SPLIT",
+        )
+
+        auth = evaluate_ota_cruise_fly_cruise_folio_policy(
+            OtaCruiseFlyCruiseFolioPolicyInput(
+                declined_at_sea_incremental_auth_without_gangway_seapass_lock=True
+            )
+        )
+        self.assertEqual(auth["status_code"], 451)
+        self.assertEqual(
+            auth["decision"],
+            "DECLINED_ONBOARD_INCREMENTAL_AUTH_GANGWAY_HOLD",
+        )
+
+        optim = evaluate_ota_cruise_fly_cruise_folio_policy(
+            OtaCruiseFlyCruiseFolioPolicyInput(
+                quarterly_missed_ship_pvsa_fine_and_uncollected_onboard_folio_pool_usd=240000.0,
+                cabin_bid_up_waterfall_and_skipped_port_tax_auto_rebate_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 86400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 153600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_cruise_fly_cruise_folio_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-cruise-fly-cruise-folio-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

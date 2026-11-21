@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg666" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <linearGradient id="hdr666" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </style>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg666)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 223 · Cruise `Fly-Cruise` Embarkation, Shore Excursion &amp; Onboard Folio Escrow</text>
+  <text x="48" y="74" class="sub">Royal Caribbean / Carnival / Amadeus Cruise / Viator · T-6h All-Aboard Air Buffer · Back-to-Ship Lock · Starlink Incremental Auth (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #666 · FAQ #342</text>
+
+  <!-- Lane 1: Same-Day Tight Fly-Cruise Connection ("Missed the Boat") & Jones Act (PVSA) Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. `Fly-Cruise` Buffer &amp; `PVSA` Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Booking Flight Landing 90m Before Sail-Away:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Flight_Arrival_Port &lt;= `All_Aboard_TS - 6.0 Hours`</text>
+  <text x="54" y="200" class="mono">(Or Enforce Day-Prior Hotel for Intl/Winter Flights!)</text>
+  <text x="44" y="223" class="body-txt">• U.S. `PVSA (46 U.S.C. § 55103)` Cabotage Check:</text>
+  <text x="54" y="243" class="mono">Block Downline US Port Join Causing $941/Pax Fine!</text>
+  <text x="44" y="266" class="body-txt">• Eliminates $8,000 non-refundable cruise losses</text>
+  <text x="54" y="286" class="body-txt">when a 2-hour airline delay causes a family of 4</text>
+  <text x="54" y="304" class="body-txt">to watch their cruise ship sail out of Miami</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 TIGHT_FLY_CRUISE_CONNECTION_OR_PVSA_CABOTAGE_BLOCK</text>
+
+  <!-- Lane 2: Shore Excursion "Pier Runner" Window & Cabin-Mate Beverage Package Sharing Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Shore-Ex Return &amp; Cabin Parity (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops 3rd-Party Tour Stranding Guests at Pier:</text>
+  <text x="442" y="182" class="mono">Require `Tour_Return_Dock &lt;= Ship_Departure - 120m`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">+ Verified `Back-to-Ship Transport Guarantee`!</text>
+  <text x="432" y="223" class="body-txt">• Stateroom Adult Beverage-Package Parity Lock:</text>
+  <text x="442" y="243" class="mono">If `Adult_1 == Unlimited_Drink_Pkg` → Require `Adult_2`</text>
+  <text x="432" y="266" class="body-txt">• Prevents 1 passenger buying an $85/day drink</text>
+  <text x="442" y="286" class="body-txt">package to pour drinks for 3 cabin-mates, and</text>
+  <text x="442" y="304" class="body-txt">auto-refunds excursions if ship skips a tender port</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNSAFE_EXCURSION_RETURN_WINDOW_OR_CABIN_PKG_SPLIT</text>
+
+  <!-- Lane 3: Disembarkation Morning $3,000 SeaPass Card Decline ("Walked Off Ship Unpaid") Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Starlink Incremental Folio Auth (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops End-of-Cruise $3,000 Declined Folio Walk-Off:</text>
+  <text x="830" y="182" class="mono">Fire Real-Time `ISO 8583 Incremental Auth` Every</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">$250 Accrued Onboard Spend Over Satellite Link!</text>
+  <text x="820" y="223" class="body-txt">• Gangway Disembarkation Beacon Lock:</text>
+  <text x="830" y="243" class="body-txt">If incremental auth declines, freezes `SeaPass`</text>
+  <text x="830" y="261" class="body-txt">casino/duty-free spend &amp; alerts gangway before exit</text>
+  <text x="820" y="284" class="body-txt">• Eliminates bad-debt write-offs from passengers</text>
+  <text x="830" y="302" class="body-txt">maxing out $100 debit cards in the ship's jewelry shop</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 DECLINED_ONBOARD_INCREMENTAL_AUTH_GANGWAY_HOLD</text>
+
+  <!-- Bottom Dynamic Cabin Bid-Up ("RoyalUp") & Port-Skip Auto-Rebate -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. `T-90d` Final-Payment Cabin Bid-Up Waterfall + Skipped-Port Tax &amp; Tour Auto-Rebate (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Sealed Cabin Bid-Up</text>
+  <text x="62" y="462" class="body-txt">Upgrades Interior → Balcony</text>
+  <text x="62" y="480" class="body-txt">→ Suite via `PlusGrade` bid</text>
+  <text x="62" y="498" class="body-txt">chain; resells freed interior</text>
+  <text x="62" y="516" class="mono">+$420 Net Yield Per Cabin</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Skipped-Port Auto-Rebate</text>
+  <text x="337" y="462" class="body-txt">High winds skip Grand Cayman</text>
+  <text x="337" y="480" class="body-txt">tender? Auto-refunds port tax</text>
+  <text x="337" y="498" class="body-txt">+ shore excursion to folio</text>
+  <text x="337" y="516" class="mono">in 5s (0 Guest Desk Queues!)</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Pre-Cruise Planner Bundle</text>
+  <text x="622" y="462" class="body-txt">Locks Wi-Fi + specialty dining</text>
+  <text x="622" y="480" class="body-txt">+ excursions 30d pre-sail;</text>
+  <text x="622" y="498" class="body-txt">lifts onboard wallet share</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">by +34% vs onboard buying</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Clean `0420` Hold Release</text>
+  <text x="907" y="462" class="body-txt">Consolidates incremental</text>
+  <text x="907" y="480" class="body-txt">holds into 1 final capture &amp;</text>
+  <text x="907" y="498" class="body-txt">releases excess auth at dock;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Cruise &amp; Folio Leakage</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Cruise &amp; Folio Loss Saved</text>
+  <text x="46" y="642" class="mono">$86,400 Saved / $240k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">0 Missed Ships</text>
+  <text x="336" y="626" class="kpi-lbl">T-6h Air Buffer &amp; PVSA Validated</text>
+  <text x="336" y="642" class="mono">120-Min Shore-Ex Return Margin</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0 Walk-Off Debt</text>
+  <text x="626" y="626" class="kpi-lbl">Live $250 Incremental Satellite Auth</text>
+  <text x="626" y="642" class="mono">GangwaySeaPass Beacon Lock</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">+$420/Cabin</text>
+  <text x="916" y="626" class="kpi-lbl">interior->Balcony->Suite Bid Chain</text>
+  <text x="916" y="642" class="mono">Instant Skipped-Port Tax Rebate</text>
+</svg>
