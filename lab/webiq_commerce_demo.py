@@ -27426,6 +27426,79 @@ def evaluate_brand_recommerce_dpp_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceReferralMarketingPolicyInput:
+    quarterly_referral_gaming_and_poaching_pool_usd: float = 95000.0
+    self_referral_household_or_card_alias_collision: bool = False
+    coupon_site_referer_leak_or_unescrowed_reward_claim: bool = False
+    brand_sem_bidding_or_annual_600_1099_cap_breach: bool = False
+    share_by_name_private_link_and_aov_threshold_ready: bool = False
+
+
+def evaluate_ecommerce_referral_marketing_policy(
+    policy_input: EcommerceReferralMarketingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_referral_gaming_and_poaching_pool_usd)
+    )
+    if policy_input.brand_sem_bidding_or_annual_600_1099_cap_breach:
+        return {
+            "status_code": 451,
+            "decision": "BRAND_SEM_BIDDING_OR_ANNUAL_600_1099_CAP_BREACH_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.self_referral_household_or_card_alias_collision:
+        return {
+            "status_code": 403,
+            "decision": "SELF_REFERRAL_HOUSEHOLD_OR_CARD_ALIAS_COLLISION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.coupon_site_referer_leak_or_unescrowed_reward_claim:
+        return {
+            "status_code": 422,
+            "decision": "COUPON_SITE_REFERER_LEAK_OR_UNESCROWED_REWARD_CLAIM_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.share_by_name_private_link_and_aov_threshold_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SHARE_BY_NAME_PRIVATE_LINK_AND_AOV_THRESHOLD_CONFIRM",
+            "mandate_token": "referral_anti_gaming_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_NET_NEW_FRIEND_REFERRAL_AUTHORIZED",
+        "mandate_token": "referral_anti_gaming_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -37557,6 +37630,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_referral_marketing_guard = {
+        "authorized_200": evaluate_ecommerce_referral_marketing_policy(
+            EcommerceReferralMarketingPolicyInput()
+        ),
+        "self_referral_household_403": evaluate_ecommerce_referral_marketing_policy(
+            EcommerceReferralMarketingPolicyInput(
+                self_referral_household_or_card_alias_collision=True
+            )
+        ),
+        "coupon_leak_or_unescrowed_422": evaluate_ecommerce_referral_marketing_policy(
+            EcommerceReferralMarketingPolicyInput(
+                coupon_site_referer_leak_or_unescrowed_reward_claim=True
+            )
+        ),
+        "brand_sem_or_1099_cap_451": evaluate_ecommerce_referral_marketing_policy(
+            EcommerceReferralMarketingPolicyInput(
+                brand_sem_bidding_or_annual_600_1099_cap_breach=True
+            )
+        ),
+        "share_by_name_aov_threshold_409": evaluate_ecommerce_referral_marketing_policy(
+            EcommerceReferralMarketingPolicyInput(
+                share_by_name_private_link_and_aov_threshold_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -37847,6 +37946,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_tax_free_exemption_guard": cross_border_tax_free_exemption_guard,
         "ecommerce_post_purchase_upsell_guard": ecommerce_post_purchase_upsell_guard,
         "brand_recommerce_dpp_escrow_guard": brand_recommerce_dpp_escrow_guard,
+        "ecommerce_referral_marketing_guard": ecommerce_referral_marketing_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -52280,6 +52380,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="recommerce-dpp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ONE_TAP_DPP_DIGITAL_CLOSET_AND_STORE_CREDIT_BONUS_CONFIRM · Mandate: brand_recommerce_dpp_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 162 E-Commerce Referral Marketing & Anti-Self-Gaming Escrow -->
+      <div class="finops-box" id="ecommerce-referral-marketing-sandbox" style="margin-top:12px;border-color:#ec4899;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🤝 老带新裂变营销 (Extole / Mention Me / ReferralCandy) 防自邀刷券与 T+30d 托管沙盒</div>
+            <div class="finops-sub">Round 162 · 五维家庭图谱反自邀锁 (HTTP 403) + 推荐奖 T+30d 退货期解冻与防优惠网截胡 (HTTP 422) + $500 年度封顶 (HTTP 451) + 实名分享净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="referral-mkt-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度老带新自邀双吃、优惠网截胡与秒退池 ($)
+            <input type="number" id="referral-mkt-gross-input" value="95000" min="10000" step="5000" oninput="recalcEcommerceReferralMarketingSandbox()" />
+          </label>
+          <label>五维家庭图谱去重 (Card PAR + USPS 地址哈希)
+            <select id="referral-mkt-self-select" onchange="recalcEcommerceReferralMarketingSandbox()">
+              <option value="pass">推荐人与新客无共享卡指纹、门牌哈希或设备 (合规)</option>
+              <option value="block_403">老客用 bob+1@gmail 小号寄自己家双吃 $40 补贴 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>推荐奖 T+30d 退货期托管与优惠网 Referer 锁
+            <select id="referral-mkt-escrow-select" onchange="recalcEcommerceReferralMarketingSandbox()">
+              <option value="pass">私域分享 + 新客签收满 30 天无退货后解冻推荐奖 (合规)</option>
+              <option value="block_422">把推荐码贴 Reddit 优惠网截胡自然客或秒退骗奖 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>品牌搜索词竞价封禁与 $500/年 IRS 免税表封顶
+            <select id="referral-mkt-cap-select" onchange="recalcEcommerceReferralMarketingSandbox()">
+              <option value="pass">无品牌词竞价 gclid 且个人年度累计奖励 &lt;=$500 (安全)</option>
+              <option value="block_451">买 Google 品牌词截流或个人年奖突破 $600 1099 红线 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Share-by-Name 实名口令与 1.3x AOV 门槛券
+            <select id="referral-mkt-opt-select" onchange="recalcEcommerceReferralMarketingSandbox()">
+              <option value="enabled" selected>按好友真名验证防爬虫 + 满 $75 减 $20 门槛锁 (-38% 浪费 / HTTP 409)</option>
+              <option value="disabled">公开静态码 + 无门槛白送 $20 被 0 元买小件薅空 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度老带新补贴与被薅总池</div>
+            <div class="finops-kpi-val" id="referral-mkt-gross-kpi">$95,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">五维去重与 T+30d 托管后净支出</div>
+            <div class="finops-kpi-val" id="referral-mkt-net-kpi" style="color:#6ee7b7;">$58,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省自邀双吃与截胡补贴</div>
+            <div class="finops-kpi-val" id="referral-mkt-savings-kpi" style="color:#38bdf8;">$36,100</div>
+          </div>
+        </div>
+        <div id="referral-mkt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SHARE_BY_NAME_PRIVATE_LINK_AND_AOV_THRESHOLD_CONFIRM · Mandate: referral_anti_gaming_optim_409
         </div>
       </div>
 
@@ -69623,6 +69780,79 @@ function recalcBrandRecommerceDppSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 AURA_DPP_AND_GRADE_A_RECOMMERCE_AUTHORIZED · Mandate: brand_recommerce_dpp_200';
+}}
+
+function recalcEcommerceReferralMarketingSandbox() {{
+  const grossInput = document.getElementById('referral-mkt-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '95000'));
+  const selfGate = document.getElementById('referral-mkt-self-select').value;
+  const escrowGate = document.getElementById('referral-mkt-escrow-select').value;
+  const capGate = document.getElementById('referral-mkt-cap-select').value;
+  const optMode = document.getElementById('referral-mkt-opt-select').value;
+
+  const grossKpi = document.getElementById('referral-mkt-gross-kpi');
+  const netKpi = document.getElementById('referral-mkt-net-kpi');
+  const savingsKpi = document.getElementById('referral-mkt-savings-kpi');
+  const statusKpi = document.getElementById('referral-mkt-status-kpi');
+  const banner = document.getElementById('referral-mkt-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (capGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 BRAND_SEM_BIDDING_OR_ANNUAL_600_1099_CAP_BREACH_HOLD · Mandate: null';
+    return;
+  }}
+  if (selfGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SELF_REFERRAL_HOUSEHOLD_OR_CARD_ALIAS_COLLISION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (escrowGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 COUPON_SITE_REFERER_LEAK_OR_UNESCROWED_REWARD_CLAIM_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SHARE_BY_NAME_PRIVATE_LINK_AND_AOV_THRESHOLD_CONFIRM · Mandate: referral_anti_gaming_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_NET_NEW_FRIEND_REFERRAL_AUTHORIZED · Mandate: referral_anti_gaming_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -19912,6 +19912,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("brand-recommerce-dpp-escrow-sandbox", html_zh)
 
+    def test_ecommerce_referral_marketing_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceReferralMarketingPolicyInput,
+            evaluate_ecommerce_referral_marketing_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_referral_marketing_policy(
+            EcommerceReferralMarketingPolicyInput(
+                quarterly_referral_gaming_and_poaching_pool_usd=95000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_NET_NEW_FRIEND_REFERRAL_AUTHORIZED",
+        )
+
+        self_ref = evaluate_ecommerce_referral_marketing_policy(
+            EcommerceReferralMarketingPolicyInput(
+                self_referral_household_or_card_alias_collision=True
+            )
+        )
+        self.assertEqual(self_ref["status_code"], 403)
+        self.assertEqual(
+            self_ref["decision"],
+            "SELF_REFERRAL_HOUSEHOLD_OR_CARD_ALIAS_COLLISION_BLOCKED",
+        )
+
+        leak = evaluate_ecommerce_referral_marketing_policy(
+            EcommerceReferralMarketingPolicyInput(
+                coupon_site_referer_leak_or_unescrowed_reward_claim=True
+            )
+        )
+        self.assertEqual(leak["status_code"], 422)
+        self.assertEqual(
+            leak["decision"],
+            "COUPON_SITE_REFERER_LEAK_OR_UNESCROWED_REWARD_CLAIM_BLOCKED",
+        )
+
+        cap = evaluate_ecommerce_referral_marketing_policy(
+            EcommerceReferralMarketingPolicyInput(
+                brand_sem_bidding_or_annual_600_1099_cap_breach=True
+            )
+        )
+        self.assertEqual(cap["status_code"], 451)
+        self.assertEqual(
+            cap["decision"],
+            "BRAND_SEM_BIDDING_OR_ANNUAL_600_1099_CAP_BREACH_HOLD",
+        )
+
+        optim = evaluate_ecommerce_referral_marketing_policy(
+            EcommerceReferralMarketingPolicyInput(
+                quarterly_referral_gaming_and_poaching_pool_usd=95000.0,
+                share_by_name_private_link_and_aov_threshold_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 36100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 58900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_referral_marketing_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-referral-marketing-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
