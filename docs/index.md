@@ -2,12 +2,12 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`309` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`310` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（18 篇）](#platform-grounding)
-- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（45 篇）](#payments-mandates)
+- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（46 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（115 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（70 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（25 篇）](#saas-finops-micropayments)
@@ -44,7 +44,7 @@
 | 18 | **电商商品主数据管理（`PIM`：Akeneo / Salsify / Syndigo / Shopify Taxonomy）、AI 供应商目录智能建品与法规召回停售托管“防大模型写标题把聚酯纤维吹成 100% 真丝引发假一赔三、防盗用野鸡 UPC 条码遭 Amazon 下架与 CPSC 召回品 60 秒全网熔断净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-pim-catalog-onboarding-spec-verification-recall-escrow-agent-selection-faq.md) · [English](ecommerce-pim-catalog-onboarding-spec-verification-recall-escrow-agent-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
-## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（45 篇）
+## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（46 篇）
 
 > 涵盖 Google AP2、Stripe SPT、Visa VIC / TAP、Mastercard Agent Pay、PayPal、UCP/ACP 协议互操作、3DS2 无浏览器挑战、FIDO2/Passkey 硬件签名及幂等防重扣架构。
 
@@ -95,6 +95,7 @@
 | 43 | **电商账户劫持（`ATO`）、已绑卡免密盗刷与修改收货地址升维核身托管（Forter / Riskified / Signifyd / Stripe Radar / Cloudflare Turnstile）防撞库登录后直接刷历史已绑卡发往销赃仓、防改邮箱静默洗空储值余额与快递中途改址拦截托管“防免 CVV 绑卡 Token 沦为黑产提款机、防误杀差旅老客与欺诈拒付包赔净省 39%”Agent 架构选型 FAQ** | [中文](ecommerce-account-takeover-ato-saved-card-address-mismatch-escrow-agent-selection-faq.md) · [English](ecommerce-account-takeover-ato-saved-card-address-mismatch-escrow-agent-selection-faq.en.md) |
 | 44 | **多支付网关编排（Multi-PSP Orchestration：Primer / Spreedly / Adyen / Stripe）、主备收单秒级容灾与借记卡低成本路由托管“防主网关超时切备选网关导致客户被双扣两笔钱、防跨境收单白交 `1.5%` 跨境罚金与美国 `Durbin` 免密借记网降费净省 39%”Agent 架构选型 FAQ** | [中文](ecommerce-multi-psp-payment-orchestration-acquirer-failover-debit-routing-escrow-agent-selection-faq.md) · [English](ecommerce-multi-psp-payment-orchestration-acquirer-failover-debit-routing-escrow-agent-selection-faq.en.md) |
 | 45 | **医疗健康与运动消费品电商 `HSA / FSA` 免税医保卡结账、`SIGIS IIAS` 混合购物车拆单与医疗必要性证明（`LMN`）托管（TrueMed / Flex / Sika Health / Stripe）防普通商户码刷医保卡 100% 被拒付、防购物车混入 1 件非医保商品致整单刷卡失败与内嵌远程医生开具 `IRS §213(d)` 证明净省 34% Agent 架构选型 FAQ** | [中文](ecommerce-hsa-fsa-tax-free-checkout-sigis-lmn-split-escrow-agent-selection-faq.md) · [English](ecommerce-hsa-fsa-tax-free-checkout-sigis-lmn-split-escrow-agent-selection-faq.en.md) |
+| 46 | **电商一键客座加速结账（One-Click Accelerated Checkout：Shop Pay / Stripe Link / PayPal Fastlane / Apple Pay）、防国际短信轰炸盗刷（`SMS Pumping Toll Fraud`）与卡组网络令牌（`Network Token`）托管“防黑产夜刷 15 万条高价验证码掏空 $45,000 短信费、防一键支付自动发往 3 年前旧公寓地址丢件与 `Passkey + DPAN` 净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-one-click-accelerated-checkout-passkey-network-token-sms-fraud-escrow-agent-selection-faq.md) · [English](ecommerce-one-click-accelerated-checkout-passkey-network-token-sms-fraud-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（115 篇）

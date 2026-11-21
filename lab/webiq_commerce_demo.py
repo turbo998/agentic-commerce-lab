@@ -29585,6 +29585,82 @@ def evaluate_b2b_tail_spend_spot_buy_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceOneClickCheckoutPolicyInput:
+    quarterly_checkout_abandonment_sms_pumping_and_stale_address_pool_usd: float = 185000.0
+    unthrottled_sms_otp_pumping_or_cross_site_phishing_relay: bool = False
+    stale_wallet_shipping_address_or_missing_subpremise_apt_number: bool = False
+    raw_fpan_expired_card_fallback_or_pdp_express_compliance_bypass: bool = False
+    passkey_fastlane_shop_pay_and_emvco_network_token_dpan_ready: bool = False
+
+
+def evaluate_ecommerce_one_click_checkout_policy(
+    policy_input: EcommerceOneClickCheckoutPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_checkout_abandonment_sms_pumping_and_stale_address_pool_usd
+        ),
+    )
+    if policy_input.raw_fpan_expired_card_fallback_or_pdp_express_compliance_bypass:
+        return {
+            "status_code": 451,
+            "decision": "RAW_FPAN_DECLINE_OR_COMPLIANCE_BYPASS_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unthrottled_sms_otp_pumping_or_cross_site_phishing_relay:
+        return {
+            "status_code": 403,
+            "decision": "SMS_PUMPING_TOLL_FRAUD_OR_OTP_RELAY_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stale_wallet_shipping_address_or_missing_subpremise_apt_number:
+        return {
+            "status_code": 422,
+            "decision": "STALE_WALLET_ADDRESS_OR_MISSING_APT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.passkey_fastlane_shop_pay_and_emvco_network_token_dpan_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PASSKEY_ACCELERATED_CHECKOUT_AND_NETWORK_TOKEN_CONFIRM",
+            "mandate_token": "one_click_checkout_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_GUEST_CHECKOUT_SESSION_AUTHORIZED",
+        "mandate_token": "one_click_checkout_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -40470,6 +40546,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_one_click_checkout_guard = {
+        "authorized_200": evaluate_ecommerce_one_click_checkout_policy(
+            EcommerceOneClickCheckoutPolicyInput()
+        ),
+        "sms_pumping_or_phishing_403": evaluate_ecommerce_one_click_checkout_policy(
+            EcommerceOneClickCheckoutPolicyInput(
+                unthrottled_sms_otp_pumping_or_cross_site_phishing_relay=True
+            )
+        ),
+        "stale_address_or_apt_422": evaluate_ecommerce_one_click_checkout_policy(
+            EcommerceOneClickCheckoutPolicyInput(
+                stale_wallet_shipping_address_or_missing_subpremise_apt_number=True
+            )
+        ),
+        "raw_fpan_or_pdp_bypass_451": evaluate_ecommerce_one_click_checkout_policy(
+            EcommerceOneClickCheckoutPolicyInput(
+                raw_fpan_expired_card_fallback_or_pdp_express_compliance_bypass=True
+            )
+        ),
+        "passkey_and_dpan_409": evaluate_ecommerce_one_click_checkout_policy(
+            EcommerceOneClickCheckoutPolicyInput(
+                passkey_fastlane_shop_pay_and_emvco_network_token_dpan_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40789,6 +40891,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_travel_price_drop_reshopping_guard": ota_travel_price_drop_reshopping_guard,
         "ecommerce_back_in_stock_waitlist_guard": ecommerce_back_in_stock_waitlist_guard,
         "b2b_tail_spend_spot_buy_guard": b2b_tail_spend_spot_buy_guard,
+        "ecommerce_one_click_checkout_guard": ecommerce_one_click_checkout_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -56875,6 +56978,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="tailspend-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 AUTONOMOUS_3BID_MICRO_RFQ_AND_SINGLE_MOR_VCN_CONFIRM · Mandate: b2b_tail_spend_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 191 E-Commerce One-Click Accelerated Checkout, Passkey & Network Token Escrow (#310) -->
+      <div class="finops-box" id="ecommerce-one-click-checkout-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">⚡ 电商一键客座加速结账、防国际短信轰炸与卡组网络令牌 (Shop Pay / Fastlane / Link / Apple Pay) 沙盒</div>
+            <div class="finops-sub">Round 191 (#310) · Passkey 优先与防 SMS Pumping 验证码轰炸锁 (HTTP 403) + 快捷钱包 3 年前旧地址与缺失公寓房号 CASS 门禁 (HTTP 422) + 卡组 DPAN 网络令牌与商详页合规钩子 (HTTP 451) + 8秒客座识别净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="oneclick-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度移动端填表弃单、SMS Pumping 短信被刷爆与一键发错旧地址损耗池 ($)
+            <input type="number" id="oneclick-gross-input" value="185000" min="10000" step="5000" oninput="recalcEcommerceOneClickCheckoutSandbox()" />
+          </label>
+          <label>FIDO2 Passkey 生物识别优先与防国际高危号段 SMS Pumping 轰炸
+            <select id="oneclick-sms-select" onchange="recalcEcommerceOneClickCheckoutSandbox()">
+              <option value="pass">优先唤起本机 Passkey 指纹/面容 + 仅允许发货国号段并开启 MNO 速率熔断 (合规)</option>
+              <option value="block_403">黑产肉鸡向 +992 等高费率国际号段狂刷 15 万条 OTP 验证码套利 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>快捷钱包陈旧地址 (Stale Address) 与公寓门牌号 (Apt/Suite) 浮层校验
+            <select id="oneclick-addr-select" onchange="recalcEcommerceOneClickCheckoutSandbox()">
+              <option value="pass">USPS CASS DPV 门牌号完整 且 跨州旧地址已在支付浮层内二次确认 (合规)</option>
+              <option value="block_422">一键按指纹直接发往钱包里 3 年前外州旧宿舍 或 多户公寓漏填 Apt 房号致退件 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>卡组织 EMVCo Network Token (DPAN) 换卡自愈与商详页快捷合规锁
+            <select id="oneclick-token-select" onchange="recalcEcommerceOneClickCheckoutSandbox()">
+              <option value="pass">全面启用 Visa/MC DPAN 动态密文(+4.2%过卡率) + 商详页直购必过年龄/定制校验 (安全)</option>
+              <option value="block_451">仍存明文旧卡号 FPAN 遇银行换卡即拒付 或 商详页快捷按钮跳过 21+ 年龄核验 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>跨商户客座邮箱毫秒识别 (Shop Pay / PayPal Fastlane / Stripe Link)
+            <select id="oneclick-opt-select" onchange="recalcEcommerceOneClickCheckoutSandbox()">
+              <option value="enabled" selected>邮箱哈希 180ms 自动唤醒跨站资料 + Passkey 8秒结账 + DPAN 提权 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统 18 个字段手动输入客座结账表单 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度结账弃单与短信反诈总损耗池</div>
+            <div class="finops-kpi-val" id="oneclick-gross-kpi">$185,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">Passkey 与 DPAN 加速后净损耗</div>
+            <div class="finops-kpi-val" id="oneclick-net-kpi" style="color:#6ee7b7;">$116,550</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回弃单毛利与短信防刷</div>
+            <div class="finops-kpi-val" id="oneclick-savings-kpi" style="color:#38bdf8;">$68,450</div>
+          </div>
+        </div>
+        <div id="oneclick-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PASSKEY_ACCELERATED_CHECKOUT_AND_NETWORK_TOKEN_CONFIRM · Mandate: one_click_checkout_escrow_optim_409
         </div>
       </div>
 
@@ -76335,6 +76495,79 @@ function recalcB2bTailSpendSpotBuySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 CATALOG_VERIFIED_SPOT_REQUISITION_AUTHORIZED · Mandate: b2b_tail_spend_escrow_200';
+}}
+
+function recalcEcommerceOneClickCheckoutSandbox() {{
+  const grossInput = document.getElementById('oneclick-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '185000'));
+  const smsGate = document.getElementById('oneclick-sms-select').value;
+  const addrGate = document.getElementById('oneclick-addr-select').value;
+  const tokenGate = document.getElementById('oneclick-token-select').value;
+  const optMode = document.getElementById('oneclick-opt-select').value;
+
+  const grossKpi = document.getElementById('oneclick-gross-kpi');
+  const netKpi = document.getElementById('oneclick-net-kpi');
+  const savingsKpi = document.getElementById('oneclick-savings-kpi');
+  const statusKpi = document.getElementById('oneclick-status-kpi');
+  const banner = document.getElementById('oneclick-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (tokenGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 RAW_FPAN_DECLINE_OR_COMPLIANCE_BYPASS_HOLD · Mandate: null';
+    return;
+  }}
+  if (smsGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SMS_PUMPING_TOLL_FRAUD_OR_OTP_RELAY_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (addrGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 STALE_WALLET_ADDRESS_OR_MISSING_APT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PASSKEY_ACCELERATED_CHECKOUT_AND_NETWORK_TOKEN_CONFIRM · Mandate: one_click_checkout_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_GUEST_CHECKOUT_SESSION_AUTHORIZED · Mandate: one_click_checkout_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

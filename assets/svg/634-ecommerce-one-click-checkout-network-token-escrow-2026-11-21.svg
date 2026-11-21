@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg634" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr634" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg634)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr634)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 191 · E-Commerce One-Click Accelerated Checkout, Passkey &amp; Network Token Escrow</text>
+  <text x="48" y="74" class="sub">Shop Pay / Stripe Link / PayPal Fastlane / Apple Pay · Anti-SMS-Pumping Gate · Stale Wallet Address Guard · DPAN Cryptogram (-37% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #634 · FAQ #310</text>
+
+  <!-- Lane 1: SMS Pumping Toll-Fraud & Cross-Site OTP Phishing Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Anti-SMS-Pumping &amp; Passkey Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Botnets Draining $45k in Premium SMS OTPs:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Prefer WebAuthn Passkey (`rpId` Hardware Bound)</text>
+  <text x="54" y="200" class="mono">Block High-Risk MNO Prefix &amp; Geo-IP Mismatch</text>
+  <text x="44" y="223" class="body-txt">• Per-ASN &amp; Per-Prefix Velocity Circuit Breaker:</text>
+  <text x="54" y="243" class="mono">Max 3 OTP/15m per IP &amp; Require Turnstile Proof</text>
+  <text x="44" y="266" class="body-txt">• Prevents rogue telecom revenue-share syndicates</text>
+  <text x="54" y="286" class="body-txt">from triggering 150,000 fake guest checkout</text>
+  <text x="54" y="304" class="body-txt">OTP texts at $0.32/SMS overnight</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 SMS_PUMPING_TOLL_FRAUD_OR_OTP_RELAY_BLOCKED</text>
+
+  <!-- Lane 2: Stale 3-Year-Old Wallet Address & Missing Apt# Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Stale Wallet Address &amp; Apt# Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops 1-Click Shipping to Old Dorm/Apartment:</text>
+  <text x="442" y="182" class="mono">Check Wallet_Address_Age &amp; IP-to-State Distance</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">USPS CASS DPV: Require Sub-Premise (`Apt/Suite`)</text>
+  <text x="432" y="223" class="body-txt">• Tax &amp; Shipping Recalculation Before Final Auth:</text>
+  <text x="442" y="243" class="mono">Re-Compute Exact ZIP Tax After Wallet Payload</text>
+  <text x="432" y="266" class="body-txt">• Eliminates "I paid with Apple Pay in 1 second</text>
+  <text x="442" y="286" class="body-txt">and it shipped to my 2023 address!" lost-parcel</text>
+  <text x="442" y="304" class="body-txt">refunds and multi-unit building RTS returns</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 STALE_WALLET_ADDRESS_OR_MISSING_APT_BLOCKED</text>
+
+  <!-- Lane 3: Expired FPAN Vault Decline & Mandatory Compliance Bypass Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Network Token &amp; Compliance Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Raw FPAN Declines &amp; Express Policy Bypass:</text>
+  <text x="830" y="182" class="mono">Enforce EMVCo Network Token (`DPAN + Cryptogram`)</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Block Express Button Bypass of Age/Hazmat/B2B Tax</text>
+  <text x="820" y="223" class="body-txt">• Product-Page Express Checkout Guardrails:</text>
+  <text x="830" y="243" class="body-txt">Injects mandatory `21+ Age / Final-Sale Terms`</text>
+  <text x="830" y="261" class="body-txt">into the wallet sheet `onShippingContactSelected`</text>
+  <text x="820" y="284" class="body-txt">• Prevents PDP express buttons from skipping</text>
+  <text x="830" y="302" class="body-txt">custom engraving fields or age-verification gates</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 RAW_FPAN_DECLINE_OR_COMPLIANCE_BYPASS_HOLD</text>
+
+  <!-- Bottom Cross-Merchant Identity Recognition & Passkey + Network Token Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Zero-Password Guest Recognition (`Fastlane / Shop Pay / Link`) + Passkey &amp; Network Token Boost (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Hashed Email Recognition</text>
+  <text x="62" y="462" class="body-txt">Recognizes 70%+ of guests via</text>
+  <text x="62" y="480" class="body-txt">network profile (`Shop Pay /</text>
+  <text x="62" y="498" class="body-txt">Fastlane / Link`) in 180ms;</text>
+  <text x="62" y="516" class="mono">+38% Guest Checkout Conversion</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② FIDO2 Passkey Step-Up</text>
+  <text x="337" y="462" class="body-txt">Replaces $0.18 SMS OTP with</text>
+  <text x="337" y="480" class="body-txt">biometric FaceID/TouchID</text>
+  <text x="337" y="498" class="body-txt">WebAuthn Passkey assertion;</text>
+  <text x="337" y="516" class="mono">0 SMS Pumping Fraud Exposure</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Live CASS Address Prompt</text>
+  <text x="622" y="462" class="body-txt">Validates wallet shipping</text>
+  <text x="622" y="480" class="body-txt">address in-sheet &amp; prompts</text>
+  <text x="622" y="498" class="body-txt">for missing `Apt/Suite #`;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">-94% Old-Address Misdeliveries</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Network Token + Cryptogram</text>
+  <text x="907" y="462" class="body-txt">Auto-updates reissued cards</text>
+  <text x="907" y="480" class="body-txt">&amp; attaches Visa/MC `DPAN`</text>
+  <text x="907" y="498" class="body-txt">cryptogram (`+4.2%` auth lift);</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Abandonment &amp; Fraud Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Checkout Drop-Off &amp; SMS Loss</text>
+  <text x="46" y="642" class="mono">$68,450 Saved / $185k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">$0 SMS Drain</text>
+  <text x="336" y="626" class="kpi-lbl">Passkey + MNO Prefix Circuit Breaker</text>
+  <text x="336" y="642" class="mono">100% Toll-Fraud Bot Immunity</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">CASS DPV Lock</text>
+  <text x="626" y="626" class="kpi-lbl">Blocks Stale &amp; Missing-Apt Addresses</text>
+  <text x="626" y="642" class="mono">In-Sheet Address Verification</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">+4.2% Auth Lift</text>
+  <text x="916" y="626" class="kpi-lbl">EMVCo Network Token Cryptograms</text>
+  <text x="916" y="642" class="mono">Auto-Heals Reissued Cards</text>
+</svg>

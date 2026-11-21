@@ -21855,6 +21855,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-tail-spend-spot-buy-sandbox", html_zh)
 
+    def test_ecommerce_one_click_checkout_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceOneClickCheckoutPolicyInput,
+            evaluate_ecommerce_one_click_checkout_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_one_click_checkout_policy(
+            EcommerceOneClickCheckoutPolicyInput(
+                quarterly_checkout_abandonment_sms_pumping_and_stale_address_pool_usd=185000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_GUEST_CHECKOUT_SESSION_AUTHORIZED",
+        )
+
+        sms = evaluate_ecommerce_one_click_checkout_policy(
+            EcommerceOneClickCheckoutPolicyInput(
+                unthrottled_sms_otp_pumping_or_cross_site_phishing_relay=True
+            )
+        )
+        self.assertEqual(sms["status_code"], 403)
+        self.assertEqual(
+            sms["decision"],
+            "SMS_PUMPING_TOLL_FRAUD_OR_OTP_RELAY_BLOCKED",
+        )
+
+        addr = evaluate_ecommerce_one_click_checkout_policy(
+            EcommerceOneClickCheckoutPolicyInput(
+                stale_wallet_shipping_address_or_missing_subpremise_apt_number=True
+            )
+        )
+        self.assertEqual(addr["status_code"], 422)
+        self.assertEqual(
+            addr["decision"],
+            "STALE_WALLET_ADDRESS_OR_MISSING_APT_BLOCKED",
+        )
+
+        token = evaluate_ecommerce_one_click_checkout_policy(
+            EcommerceOneClickCheckoutPolicyInput(
+                raw_fpan_expired_card_fallback_or_pdp_express_compliance_bypass=True
+            )
+        )
+        self.assertEqual(token["status_code"], 451)
+        self.assertEqual(
+            token["decision"],
+            "RAW_FPAN_DECLINE_OR_COMPLIANCE_BYPASS_HOLD",
+        )
+
+        optim = evaluate_ecommerce_one_click_checkout_policy(
+            EcommerceOneClickCheckoutPolicyInput(
+                quarterly_checkout_abandonment_sms_pumping_and_stale_address_pool_usd=185000.0,
+                passkey_fastlane_shop_pay_and_emvco_network_token_dpan_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 68450.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 116550.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_one_click_checkout_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-one-click-checkout-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
