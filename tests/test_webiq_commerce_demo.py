@@ -18170,6 +18170,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-freight-forwarding-ocean-escrow-sandbox", html_zh)
 
+    def test_subscribe_and_save_replenishment_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SubscribeAndSaveReplenishmentEscrowPolicyInput,
+            evaluate_subscribe_and_save_replenishment_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_subscribe_and_save_replenishment_escrow_policy(
+            SubscribeAndSaveReplenishmentEscrowPolicyInput(
+                quarterly_replenishment_subscription_and_churn_pool_usd=84000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "LOWEST_PROMO_PRICE_SHIELD_AND_DEPLETION_VERIFIED_AUTHORIZED",
+        )
+
+        creep = evaluate_subscribe_and_save_replenishment_escrow_policy(
+            SubscribeAndSaveReplenishmentEscrowPolicyInput(
+                silent_month2_price_creep_or_oos_5item_tier_downgrade_penalty=True
+            )
+        )
+        self.assertEqual(creep["status_code"], 403)
+        self.assertEqual(
+            creep["decision"],
+            "SILENT_MONTH2_PRICE_CREEP_OR_OOS_5ITEM_TIER_DOWNGRADE_BLOCKED",
+        )
+
+        overstock = evaluate_subscribe_and_save_replenishment_escrow_policy(
+            SubscribeAndSaveReplenishmentEscrowPolicyInput(
+                overstocked_pantry_blind_ship_or_unapproved_allergen_substitute=True
+            )
+        )
+        self.assertEqual(overstock["status_code"], 422)
+        self.assertEqual(
+            overstock["decision"],
+            "OVERSTOCKED_PANTRY_BLIND_SHIP_OR_UNAPPROVED_ALLERGEN_SUBSTITUTE_BLOCKED",
+        )
+
+        rosca = evaluate_subscribe_and_save_replenishment_escrow_policy(
+            SubscribeAndSaveReplenishmentEscrowPolicyInput(
+                rosca_missing_t3d_advance_billing_notice_or_cadence_violation=True
+            )
+        )
+        self.assertEqual(rosca["status_code"], 451)
+        self.assertEqual(
+            rosca["decision"],
+            "ROSCA_MISSING_T3D_ADVANCE_BILLING_NOTICE_OR_CADENCE_HOLD",
+        )
+
+        optim = evaluate_subscribe_and_save_replenishment_escrow_policy(
+            SubscribeAndSaveReplenishmentEscrowPolicyInput(
+                quarterly_replenishment_subscription_and_churn_pool_usd=84000.0,
+                passwordless_1tap_snooze_and_5item_15pct_filler_bundle_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 27720.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 56280.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("subscribe_and_save_replenishment_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("subscribe-and-save-replenishment-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

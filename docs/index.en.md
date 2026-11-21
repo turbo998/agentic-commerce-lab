@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`254` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`255` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -10,7 +10,7 @@
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (40 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (85 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (63 guides)](#b2b-procurement-erp)
-- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (22 guides)](#saas-finops-micropayments)
+- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (23 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (31 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
@@ -251,7 +251,7 @@
 | 63 | **Enterprise B2B Ocean Freight Forwarding (`Flexport / Maersk / Kuehne+Nagel`), Anti-`Demurrage & Detention` (`FMC OSRA 2022`) & `LCL-to-FCL` Consolidation Escrow (`13 CBM` Breakeven, `14d` Free Time & Terminal Slot Archive) Agent Architecture Selection FAQ** | [English](b2b-freight-forwarding-ocean-demurrage-detention-lcl-escrow-agent-selection-faq.en.md) · [中文](b2b-freight-forwarding-ocean-demurrage-detention-lcl-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (22 Guides)
+## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (23 Guides)
 
 > Covers enterprise SaaS seat governance, UUIDv7 usage metering watermarks, FTC Click-to-Cancel & retention guardrails, HTTP 402 (x402 / Stripe MPP Tempo) micropayments, and LLM token FinOps routing.
 
@@ -279,6 +279,7 @@
 | 20 | **Podcast Dynamic Ad Insertion (`DAI`), Host-Read Sponsorship & Music Royalty Split Escrow (`Spotify Megaphone / Acast / Gumball / DistroKid`) `IAB v2.2` Anti-Silent-Game-Drain Gate, `ASR` Aircheck Verification & `ISRC` Split-Sheet Agent Architecture Selection FAQ** | [English](podcast-dai-sponsorship-music-royalty-iab-escrow-agent-selection-faq.en.md) · [中文](podcast-dai-sponsorship-music-royalty-iab-escrow-agent-selection-faq.md) |
 | 21 | **SaaS Churn Retention, Anti-Cancel-Gaming & `FTC Click-to-Cancel` Escrow (`Chargebee Retention / Churnkey / Stripe Billing / Gainsight`) `12m` Save-Offer Cooldown, Telemetry Remedy Match & Payday Smart Dunning Agent Architecture Selection FAQ** | [English](saas-churn-retention-save-offer-click-to-cancel-escrow-agent-selection-faq.en.md) · [中文](saas-churn-retention-save-offer-click-to-cancel-escrow-agent-selection-faq.md) |
 | 22 | **AI-Native SaaS Usage-Based & Outcome Billing, Runaway-Loop Circuit Breaker & Prepaid Credit Rollover Escrow (`Orb / Metronome / Stripe Billing / Lago`) `<150ms` Loop Breaker, `72h` Outcome Cool-Off & `25%` Credit Rollover Agent Architecture Selection FAQ** | [English](saas-usage-based-outcome-billing-token-burn-circuit-breaker-escrow-agent-selection-faq.en.md) · [中文](saas-usage-based-outcome-billing-token-burn-circuit-breaker-escrow-agent-selection-faq.md) |
+| 23 | **E-Commerce `Subscribe & Save` Replenishment (`Amazon / Chewy Autoship / Recharge / Skio`), Anti-Overstock Churn, Anti-Price-Creep & 5-Item Tier Escrow (Passwordless `1-Tap Snooze`, OOS Tier Honor & `$3` Filler Arbitrage) Agent Architecture Selection FAQ** | [English](ecommerce-subscribe-and-save-replenishment-skip-price-creep-escrow-agent-selection-faq.en.md) · [中文](ecommerce-subscribe-and-save-replenishment-skip-price-creep-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (31 Guides)

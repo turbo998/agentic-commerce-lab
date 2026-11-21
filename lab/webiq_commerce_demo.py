@@ -25448,6 +25448,87 @@ def evaluate_b2b_freight_forwarding_ocean_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class SubscribeAndSaveReplenishmentEscrowPolicyInput:
+    """Input contract for Subscribe & Save Replenishment, Anti-Overstock Snooze & Anti-Price-Creep Escrow."""
+
+    quarterly_replenishment_subscription_and_churn_pool_usd: float = 84000.0
+    silent_month2_price_creep_or_oos_5item_tier_downgrade_penalty: bool = False
+    overstocked_pantry_blind_ship_or_unapproved_allergen_substitute: bool = False
+    rosca_missing_t3d_advance_billing_notice_or_cadence_violation: bool = False
+    mandate_signing_key_age_days: int = 30
+    passwordless_1tap_snooze_and_5item_15pct_filler_bundle_ready: bool = False
+
+
+def evaluate_subscribe_and_save_replenishment_escrow_policy(
+    policy_input: SubscribeAndSaveReplenishmentEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Subscribe & Save Replenishment, Anti-Overstock Snooze & Anti-Price-Creep Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_replenishment_subscription_and_churn_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.rosca_missing_t3d_advance_billing_notice_or_cadence_violation
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "ROSCA_MISSING_T3D_ADVANCE_BILLING_NOTICE_OR_CADENCE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.silent_month2_price_creep_or_oos_5item_tier_downgrade_penalty:
+        return {
+            "status_code": 403,
+            "decision": "SILENT_MONTH2_PRICE_CREEP_OR_OOS_5ITEM_TIER_DOWNGRADE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.overstocked_pantry_blind_ship_or_unapproved_allergen_substitute:
+        return {
+            "status_code": 422,
+            "decision": "OVERSTOCKED_PANTRY_BLIND_SHIP_OR_UNAPPROVED_ALLERGEN_SUBSTITUTE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.passwordless_1tap_snooze_and_5item_15pct_filler_bundle_ready:
+        savings = round(gross_pool * 0.33, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PASSWORDLESS_1TAP_SNOOZE_AND_5ITEM_15PCT_FILLER_BUNDLE_CONFIRM",
+            "mandate_token": "subscribe_save_replenish_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "LOWEST_PROMO_PRICE_SHIELD_AND_DEPLETION_VERIFIED_AUTHORIZED",
+        "mandate_token": "subscribe_save_replenish_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -34903,6 +34984,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    subscribe_and_save_replenishment_escrow_guard = {
+        "authorized_200": evaluate_subscribe_and_save_replenishment_escrow_policy(
+            SubscribeAndSaveReplenishmentEscrowPolicyInput()
+        ),
+        "price_creep_or_tier_drop_403": evaluate_subscribe_and_save_replenishment_escrow_policy(
+            SubscribeAndSaveReplenishmentEscrowPolicyInput(
+                silent_month2_price_creep_or_oos_5item_tier_downgrade_penalty=True
+            )
+        ),
+        "overstock_or_wrong_substitute_422": evaluate_subscribe_and_save_replenishment_escrow_policy(
+            SubscribeAndSaveReplenishmentEscrowPolicyInput(
+                overstocked_pantry_blind_ship_or_unapproved_allergen_substitute=True
+            )
+        ),
+        "rosca_missing_t3d_notice_451": evaluate_subscribe_and_save_replenishment_escrow_policy(
+            SubscribeAndSaveReplenishmentEscrowPolicyInput(
+                rosca_missing_t3d_advance_billing_notice_or_cadence_violation=True
+            )
+        ),
+        "snooze_and_5item_filler_409": evaluate_subscribe_and_save_replenishment_escrow_policy(
+            SubscribeAndSaveReplenishmentEscrowPolicyInput(
+                passwordless_1tap_snooze_and_5item_15pct_filler_bundle_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -35167,6 +35274,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_car_rental_damage_fuel_escrow_guard": ota_car_rental_damage_fuel_escrow_guard,
         "ecommerce_checkout_inventory_saga_guard": ecommerce_checkout_inventory_saga_guard,
         "b2b_freight_forwarding_ocean_escrow_guard": b2b_freight_forwarding_ocean_escrow_guard,
+        "subscribe_and_save_replenishment_escrow_guard": subscribe_and_save_replenishment_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -48058,6 +48166,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ocean-freight-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MULTI_VENDOR_ORIGIN_40HQ_CONSOLIDATION_AND_14D_FREE_TIME_CONFIRM · Mandate: b2b_freight_forwarding_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 136 Subscribe & Save Replenishment, Anti-Overstock Snooze & Anti-Price-Creep Escrow -->
+      <div class="finops-box" id="subscribe-and-save-replenishment-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📦 快消与宠粮自动补货订阅 (Subscribe &amp; Save: Skio / Recharge / Amazon / 京东周期购)、防囤货退订与防杀熟托管沙盒 (Round 136)</div>
+            <div class="finops-subtitle">实测硬控老订户最低价护盾拦截第 2 期静默涨价 35% 杀熟与缺货 1 件掉阶惩罚 (HTTP 403)、T-3d 免密码短信一键推迟(1-Tap Snooze)化解家里没吃完硬发导致的退订+涉敏商品零盲换 (HTTP 422)、FTC ROSCA 提前通知合规 (HTTP 451) 及自动补 $3 小件凑满 5 件解锁整单 85 折净省 33% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="sub-save-status-kpi">HTTP 409 · PASSWORDLESS_1TAP_SNOOZE_AND_5ITEM_15PCT_FILLER_BUNDLE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度快消品周期购补货支出与囤货退订流失总池 ($ USD)
+            <input type="range" id="sub-save-pool-slider" min="15000" max="350000" step="5000" value="84000" oninput="updateSubscribeAndSaveReplenishmentEscrowSandbox()" />
+            <span id="sub-save-pool-val" style="color:#6ee7b7; font-family:monospace;">$84,000</span>
+          </label>
+          <label>
+            老订户最低价护盾与满 5 件缺货保阶锁 (HTTP 403)
+            <select id="sub-save-price-select" onchange="updateSubscribeAndSaveReplenishmentEscrowSandbox()">
+              <option value="pass">老客续订价 &lt;= 当日散客促销价×95% + 商家缺货 1 件仍保留其余 4 件 85 折优惠 (放行)</option>
+              <option value="block">第 2 期暗涨基准价 35% 致老客买得比散客贵 或 因 $4 棉签缺货将 $240 奶粉从 85 折降回 95 折 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            消耗耗尽预测、T-3d 免密顺延与涉敏商品零盲换 (HTTP 422)
+            <select id="sub-save-snooze-select" onchange="updateSubscribeAndSaveReplenishmentEscrowSandbox()">
+              <option value="pass">余量见底才发货 + 支持免登录短信一键顺延 14 天 + 宠粮/奶粉缺货绝不盲换配方 (合规)</option>
+              <option value="block">家里还剩大半袋没吃完半夜强扣款硬发逼用户退订 或 原猫粮缺货擅自换发含过敏源新粮 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            FTC ROSCA 发货前 T-3d 强提醒通知与周期 SPT 频率锁 (HTTP 451)
+            <select id="sub-save-rosca-select" onchange="updateSubscribeAndSaveReplenishmentEscrowSandbox()">
+              <option value="clear">扣款前 3~7 天发送含精确金额与免密管理链接的通知 + 周期 SPT 锁死间隔 (正常)</option>
+              <option value="hold">未发前置提醒通知凌晨静默偷扣年费/月费 或 隐藏一键退订入口违反 FTC ROSCA (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            5 件 85 折阶梯凑单套利与多订阅同日合箱免邮寻优 (HTTP 409)
+            <select id="sub-save-opt-select" onchange="updateSubscribeAndSaveReplenishmentEscrowSandbox()">
+              <option value="enabled" selected>4 件高价品($200)自动加 1 件 $3 刚需品凑满 5 件解锁整单 85 折 + 免密顺延防退订净省 33% (HTTP 409)</option>
+              <option value="baseline">常规最低价保护与按期正常补货授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度周期购支出与退订流失池</div>
+            <div class="finops-kpi-val" id="sub-save-gross-kpi">$84,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">价格护盾与 5 件凑单后净值</div>
+            <div class="finops-kpi-val" id="sub-save-net-kpi" style="color:#6ee7b7;">$56,280</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省杀熟差价与挽回留存</div>
+            <div class="finops-kpi-val" id="sub-save-savings-kpi" style="color:#38bdf8;">$27,720</div>
+          </div>
+        </div>
+        <div id="sub-save-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PASSWORDLESS_1TAP_SNOOZE_AND_5ITEM_15PCT_FILLER_BUNDLE_CONFIRM · Mandate: subscribe_save_replenish_optim_409
         </div>
       </div>
 
@@ -63493,6 +63664,80 @@ function updateB2BFreightForwardingOceanEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ALL_IN_DOOR_TO_DOOR_TARIFF_AND_14D_FREE_TIME_AUTHORIZED · Mandate: b2b_freight_forwarding_200';
+}}
+
+function updateSubscribeAndSaveReplenishmentEscrowSandbox() {{
+  const slider = document.getElementById('sub-save-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '84000');
+  const priceMode = document.getElementById('sub-save-price-select').value;
+  const snoozeMode = document.getElementById('sub-save-snooze-select').value;
+  const roscaMode = document.getElementById('sub-save-rosca-select').value;
+  const optMode = document.getElementById('sub-save-opt-select').value;
+
+  document.getElementById('sub-save-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('sub-save-status-kpi');
+  const grossKpi = document.getElementById('sub-save-gross-kpi');
+  const netKpi = document.getElementById('sub-save-net-kpi');
+  const savingsKpi = document.getElementById('sub-save-savings-kpi');
+  const banner = document.getElementById('sub-save-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (roscaMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 ROSCA_MISSING_T3D_ADVANCE_BILLING_NOTICE_OR_CADENCE_HOLD · Mandate: null';
+    return;
+  }}
+  if (priceMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SILENT_MONTH2_PRICE_CREEP_OR_OOS_5ITEM_TIER_DOWNGRADE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (snoozeMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 OVERSTOCKED_PANTRY_BLIND_SHIP_OR_UNAPPROVED_ALLERGEN_SUBSTITUTE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.33);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PASSWORDLESS_1TAP_SNOOZE_AND_5ITEM_15PCT_FILLER_BUNDLE_CONFIRM · Mandate: subscribe_save_replenish_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 LOWEST_PROMO_PRICE_SHIELD_AND_DEPLETION_VERIFIED_AUTHORIZED · Mandate: subscribe_save_replenish_200';
 }}
 
 function updateStage1756Sandbox() {{

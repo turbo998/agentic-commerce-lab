@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg579" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+    <linearGradient id="accent579" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg579)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent579)" rx="3" />
+
+  <text x="40" y="58" class="title">快消与宠粮自动补货订阅 (Subscribe &amp; Save: Recharge / Skio / Amazon)、防囤货退订与防杀熟托管</text>
+  <text x="40" y="80" class="subtitle">Round 136 · 防首单 6 折次月静默涨价 35% 杀熟、防家里没用完硬发导致退订 &amp; 5 件阶梯凑单+动态顺延净增 33% 留存收益 (SVG 579)</text>
+
+  <!-- Left Card: 3 Subscribe & Save Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大周期购退订与客诉黑洞</text>
+  <text x="56" y="164" class="card-title">1. 首单低价诱捕 + 次月静默涨价杀熟 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 首月订阅价 $32，第 3 期商家将商品基准价调至 $48</text>
+  <text x="56" y="202" class="body">• 打完“9折订阅优惠”还要 $43.20，比页面单次现买促销价还贵!</text>
+  <text x="56" y="220" class="warn">• 顾客发现“老订户比散客买得还贵”，一怒之下退订并拒付</text>
+
+  <text x="56" y="256" class="card-title">2. 机械按日历硬发致家里堆满退订 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 顾客出差两周，家里咖啡胶囊/猫粮还剩大半袋没吃完</text>
+  <text x="56" y="294" class="body">• 系统不发 T-3d 免密短信询问，凌晨直接扣款 $85 发货</text>
+  <text x="56" y="312" class="warn">• 64% 的周期购流失是因为“囤太多用不完 (Overstock)”被迫取消!</text>
+
+  <text x="56" y="348" class="card-title">3. 凑单缺 1 件致整包 85 折降为 95 折刺客</text>
+  <text x="56" y="368" class="body">• 凑齐 5 件享 15% 折扣 (省 $28)，发货前其中 1 件 $4 棉签断货</text>
+  <text x="56" y="386" class="body">• 系统静默把剩余 4 件高价奶粉/保健品降级按 5% 折扣扣款!</text>
+  <text x="56" y="404" class="warn">• 因为缺 1 件 $4 小东西，害顾客多付 $19，违反 ROSCA 通知法</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: SILENT_PRICE_CREEP_OR_TIER_DROP_PENALTY</text>
+  <text x="70" y="502" class="warn">• HTTP 422: OVERSTOCK_BLIND_SHIP_OR_WRONG_SUBSTITUTE</text>
+  <text x="70" y="524" class="warn">• HTTP 451: ROSCA_MISSING_T3D_NOTICE_OR_CADENCE_LOCK</text>
+  <text x="70" y="546" class="mono">• HTTP 409: CONSUMPTION_SNOOZE_AND_5ITEM_TIER_LOCK_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200:LOWEST_PRICE_MATCHED_REPLENISH_AUTHORIZED</text>
+  <text x="70" y="596" class="body">铁律: 订阅到手价必须 &lt;= 当日散客促销价 × 95%!</text>
+
+  <!-- Center Card: 4-Stage Replenishment Escrow Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶快消周期购防杀熟与防囤货架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">Gate 1: 老订户最低价保护锁 (Subscriber Price Shield)</text>
+  <text x="450" y="195" class="body">• 每次扣款前自动比对当前店铺散客大促价与首次订阅基准价</text>
+  <text x="450" y="213" class="body">• 若单期涨幅 &gt;5% 未获用户显式点击确认，或贵过散客价 -&gt; HTTP 403</text>
+  <text x="450" y="231" class="mono">• 若因商家侧缺货导致凑不够 5 件，剩余 4 件照享 85 折荣誉锁!</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="282" class="card-title" fill="#6ee7b7">Gate 2: 消耗速度预测与免登录短信一键顺延 (1-Tap Snooze)</text>
+  <text x="450" y="302" class="body">• 根据家庭人口/宠物体重计算真实耗尽日 (如 15lb 狗粮够吃 42 天)</text>
+  <text x="450" y="320" class="body">• 扣款前 T-3d 发送 RCS/SMS 免登录卡片: [照常发] [推迟14天] [换口味]</text>
+  <text x="450" y="338" class="body">• 严禁断货时擅自换发含过敏源或贵价替代品 -&gt; HTTP 422</text>
+  <text x="450" y="354" class="mono">• 让囤货用户顺延 14 天而非被迫点“彻底取消订阅”，留存率 +48%!</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: FTC ROSCA 续扣前置通知与周期 SPT 锁 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 严格在扣款前 3~7 天发送含精确扣款金额与一键退订链接的通知</text>
+  <text x="450" y="437" class="body">• 支付令牌绑死 `recurring_interval` 与单期金额上限 (+5% 容差)</text>
+  <text x="450" y="455" class="mono">• 未发前置通知偷扣或禁止首单后取消的霸王合约 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#f59e0b" />
+  <text x="450" y="508" class="card-title" fill="#fcd34d">Gate 4: 5 件 85 折凑单寻优与合箱日对齐 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 当用户已订 4 件高价商品 ($180，享 95 折省 $9) 时，Agent 主动计算:</text>
+  <text x="450" y="546" class="body">• 加 1 件 $3.50 日用消耗品凑满 5 件解锁整单 85 折 (省 $27.50!)</text>
+  <text x="450" y="566" class="mono">• 将分散在月中不同日子的 3 个周期购自动对齐到同一天合箱免邮</text>
+  <text x="450" y="586" class="mono">• 凑单阶梯套利 + 1-Tap 顺延防流失 -&gt; 净省/增厚 33% 订阅价值</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大快消周期购与补货平台</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Skio / Stay Ai / Smartrr</text>
+  <text x="846" y="182" class="body">• 优势: 免密码短信一键顺延 (SMS 1-Click Skip/Delay) 与换口味</text>
+  <text x="846" y="198" class="body">• 特性: 专为 Shopify 新锐消费品设计，防囤货退订转化极高</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Recharge Subscriptions / Bold</text>
+  <text x="846" y="244" class="body">• 优势: 独立站周期购装机量最大，支持复杂阶梯折扣与捆绑包</text>
+  <text x="846" y="260" class="body">• 特性: 丰富 Webhook 生态支持自定义价格保护与库存路由</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Amazon Subscribe &amp; Save / Chewy Autoship</text>
+  <text x="846" y="306" class="body">• 标杆: 满 5 件解锁 15% 阶梯折扣；Chewy 宠物粮缺货保护极佳</text>
+  <text x="846" y="322" class="body">• 注意: 采购 Agent 需每期巡检 Amazon 第2期后基准价是否暗涨</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. 京东周期购 / 天猫享淘卡定期送</text>
+  <text x="846" y="368" class="body">• 优势: 先享后付/单期扣款，支持微信服务号一键修改下期配送日</text>
+  <text x="846" y="384" class="body">• 特性: 锁定首单承诺价不随后续市场涨价上浮</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度快消补货超支与退订流失池 ($84,000)</text>
+  <text x="860" y="456" class="body">• 传统暗涨杀熟+囤货退订+拆箱运费: $84,000/季</text>
+  <text x="860" y="476" class="mono">• T-3d 短信一键顺延挽回 64% 囤货退订: -$13,440</text>
+  <text x="860" y="496" class="mono">• 拦截第2期静默涨价杀熟与缺货掉阶惩罚: -$8,400</text>
+  <text x="860" y="516" class="mono">• 5 件 85 折凑单套利 + 同日合箱免邮: -$5,880</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净成本: $56,280 (净省/增收 $27,720 / -33%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: subscribe_save_replenish_optim_409</text>
+</svg>
