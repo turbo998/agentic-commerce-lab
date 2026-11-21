@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg607" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#05101e" />
+    </linearGradient>
+    <linearGradient id="accent607" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg607)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="#38bdf8" rx="3" />
+
+  <text x="40" y="58" class="title">多商户平台代缴税 (Marketplace Facilitator Tax) 防双重报税与 INFORM 法案托管架构 (Mirakl / Stripe)</text>
+  <text x="40" y="80" class="subtitle">Round 164 · 防把 Amazon/TikTok 已代缴州税在 ERP 里重复上缴第二遍、防漏算经济联结阈值 &amp; 税账分离净省 37% (SVG 607)</text>
+
+  <!-- Left Card: 3 Marketplace Tax & INFORM Act Disasters -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大多渠道平台税与卖家核身黑洞</text>
+  <text x="56" y="164" class="card-title">1. 把平台已代扣的税“自己又交一遍” (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 卖家在 TikTok Shop / Amazon 卖出 $500,000，平台已按美国各州</text>
+  <text x="56" y="202" class="body">  `Marketplace Facilitator (MFL)` 法律代扣并直接向州政府缴了 $40,000 税</text>
+  <text x="56" y="220" class="warn">• 订单同步进 Shopify/ERP 时未标 `MFL_Paid`，财务竟又交了 $40,000!</text>
+
+  <text x="56" y="256" class="card-title">2. 混淆“总交易额阈值”与“应缴税额” (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 在加州/德州，Amazon 平台卖出的订单虽然不用卖家再交税，但</text>
+  <text x="56" y="294" class="body">  **必须计入 $100,000 / 200单 经济联结 (Economic Nexus) 触发分母**!</text>
+  <text x="56" y="312" class="warn">• 卖家以为有 Amazon 就不算联结，结果自己独立站漏收税被重罚!</text>
+
+  <text x="56" y="348" class="card-title">3. 违反美国 INFORM Consumers Act 罚 $50,120 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 撮合平台 (Mirakl / Sharetribe) 第三方卖家在 12 个月内满 200 单且</text>
+  <text x="56" y="386" class="body">  总收入 &gt;=$5,000 时，未在 10 天内完成实名税号/银行账户核验</text>
+  <text x="56" y="404" class="warn">• 或满 $20,000 未在商品页公开卖家真实名称地址，遭 FTC 重罚!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: DUPLICATE_MFL_TAX_REMITTANCE_DOUBLE_PAY</text>
+  <text x="70" y="502" class="warn">• HTTP 422: ECONOMIC_NEXUS_GROSS_THRESHOLD_OMISSION</text>
+  <text x="70" y="524" class="warn">• HTTP 451: INFORM_CONSUMERS_ACT_5K_20K_UNVERIFIED</text>
+  <text x="70" y="546" class="mono">• HTTP 409:MFL_EXEMPT_DEDUCTION_AND_AUTO_FILING_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: RECONCILED_MFL_AND_DIRECT_TAX_LEDGER_200</text>
+  <text x="70" y="596" class="body">铁律: 平台单记入 Gross Sales 接着以 MFL Deduction 全额冲抵!</text>
+
+  <!-- Center Card: 4-Stage MFL Tax & INFORM Act Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶多渠道平台代缴税与 INFORM 托管架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ef4444" />
+  <text x="450" y="175" class="card-title" fill="#fca5a5">Gate 1: 平台代缴标志位 (`Marketplace_Collected`) 硬隔离 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• OMS 同步 Amazon / TikTok Shop / Walmart 订单入库时，强制写入</text>
+  <text x="450" y="213" class="body">  `tax_remittance_party = 'MARKETPLACE_FACILITATOR'`</text>
+  <text x="450" y="231" class="mono">• 严禁将平台代扣税额混入卖家待缴税资金池重复打款 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: 全渠道经济联结 (Nexus) 双口径计算器 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 严格按美国各州税法双轨统计: (1) 计入总门槛的州 (如 CA/TX/NY):</text>
+  <text x="450" y="320" class="body">  `Nexus_Check = Direct_Web_Sales + Marketplace_Sales &gt;= $100,000`</text>
+  <text x="450" y="338" class="body">• 一旦跨渠道总额满 $85k (85% 水位线)，立即预警开通独立站收税!</text>
+  <text x="450" y="354" class="mono">• 漏计平台销售额导致独立站已触发联结却 0 收税 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 美国 INFORM 法案 $5k/$20k 卖家冻结锁 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 12 个月满 `200 单 + $5,000`: 10 天内未验完银行账户/TIN 秒冻结算!</text>
+  <text x="450" y="437" class="body">• 年销满 `$20,000`: 强制在订单确认页向消费者披露卖家真实企业全称</text>
+  <text x="450" y="455" class="mono">  与物理地址，并挂载“一键举报可疑赃物”按钮 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: 报税表“总额申报 + MFL 免税冲抵”自动化 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 州税表申报标准动作: `Line 1 Gross Sales = $600k (含平台$500k)`，</text>
+  <text x="450" y="546" class="body">  `Line 2 MFL Deduction = -$500k`，`Line 3 Net Taxable = $100k (仅交独立站)`</text>
+  <text x="450" y="566" class="mono">• 对历史误缴的双重平台税自动生成 Amended Return 申请州政府退税</text>
+  <text x="450" y="586" class="mono">• 终结双重交税冤枉钱 + 零 Nexus 漏报罚金 -&gt; 净省 37% 税务支出</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大多渠道税务与平台合规底座</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Avalara / TaxJar / Numeral (多渠道 MFL 引擎)</text>
+  <text x="846" y="182" class="body">• 优势: 自动识别来自 Amazon / Walmart / TikTok Shop / Etsy 的订单流</text>
+  <text x="846" y="198" class="body">• 特性: 计入各州经济联结雷达，但在申报打款时自动作为 MFL 项扣除</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Stripe Connect / Adyen for Platforms</text>
+  <text x="846" y="244" class="body">• 优势: 撮合平台分账时自动切分 `Platform_Tax_Withheld` 独立进入</text>
+  <text x="846" y="260" class="body">  平台税务专户，同时内置 INFORM Act $5k/$20k 卖家身份年审流</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Mirakl / Amazon MCF 多渠道订单路由器</text>
+  <text x="846" y="306" class="body">• 优势: 当用 Amazon FBA 仓库代发 Shopify 独立站订单 (MCF) 时，精准</text>
+  <text x="846" y="322" class="body">  区分“这单是独立站交易(卖家自己报税)”而非 Amazon 平台代缴单</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Persona / Middesk (INFORM Act KYB 自动化)</text>
+  <text x="846" y="368" class="body">• 优势: 10 秒核验高销量第三方卖家 IRS TIN、银行小额打款与营业地址</text>
+  <text x="846" y="384" class="body">• 特性: 每年自动触发一次强制年度复核 (Annual Recertification)</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度多渠道双重缴税与 Nexus 漏报池 ($115,000)</text>
+  <text x="860" y="456" class="body">• 传统平台单重复交税+独立站漏报联结罚款: $115,000/季</text>
+  <text x="860" y="476" class="mono">• MFL_Paid 标志位隔离终结平台单重复上缴州税: -$23,000</text>
+  <text x="860" y="496" class="mono">• 全渠道 Gross Nexus 预警消除独立站未收税罚单: -$11,500</text>
+  <text x="860" y="516" class="mono">• 自动申报 MFL Deduction 冲抵与历史重缴退回: -$8,050</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净税务合规成本: $72,450 (净省 $42,550 / -37%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: mfl_inform_tax_escrow_optim_409</text>
+</svg>

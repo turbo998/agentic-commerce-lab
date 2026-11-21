@@ -20046,6 +20046,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-byob-bundle-escrow-sandbox", html_zh)
 
+    def test_marketplace_facilitator_tax_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            MarketplaceFacilitatorTaxEscrowPolicyInput,
+            evaluate_marketplace_facilitator_tax_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_marketplace_facilitator_tax_escrow_policy(
+            MarketplaceFacilitatorTaxEscrowPolicyInput(
+                quarterly_omnichannel_tax_and_inform_risk_pool_usd=115000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "RECONCILED_MFL_AND_DIRECT_TAX_LEDGER_AUTHORIZED",
+        )
+
+        dup = evaluate_marketplace_facilitator_tax_escrow_policy(
+            MarketplaceFacilitatorTaxEscrowPolicyInput(
+                duplicate_mfl_tax_remittance_double_payment=True
+            )
+        )
+        self.assertEqual(dup["status_code"], 403)
+        self.assertEqual(
+            dup["decision"],
+            "DUPLICATE_MFL_TAX_REMITTANCE_DOUBLE_PAYMENT_BLOCKED",
+        )
+
+        nexus = evaluate_marketplace_facilitator_tax_escrow_policy(
+            MarketplaceFacilitatorTaxEscrowPolicyInput(
+                economic_nexus_gross_threshold_or_mcf_tax_omission=True
+            )
+        )
+        self.assertEqual(nexus["status_code"], 422)
+        self.assertEqual(
+            nexus["decision"],
+            "ECONOMIC_NEXUS_GROSS_THRESHOLD_OR_MCF_TAX_OMISSION_BLOCKED",
+        )
+
+        inform = evaluate_marketplace_facilitator_tax_escrow_policy(
+            MarketplaceFacilitatorTaxEscrowPolicyInput(
+                inform_consumers_act_5k_20k_seller_unverified=True
+            )
+        )
+        self.assertEqual(inform["status_code"], 451)
+        self.assertEqual(
+            inform["decision"],
+            "INFORM_CONSUMERS_ACT_5K_20K_SELLER_UNVERIFIED_HOLD",
+        )
+
+        optim = evaluate_marketplace_facilitator_tax_escrow_policy(
+            MarketplaceFacilitatorTaxEscrowPolicyInput(
+                quarterly_omnichannel_tax_and_inform_risk_pool_usd=115000.0,
+                mfl_exempt_deduction_and_amended_refund_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 42550.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 72450.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("marketplace_facilitator_tax_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("marketplace-facilitator-tax-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -27572,6 +27572,79 @@ def evaluate_ecommerce_byob_bundle_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class MarketplaceFacilitatorTaxEscrowPolicyInput:
+    quarterly_omnichannel_tax_and_inform_risk_pool_usd: float = 115000.0
+    duplicate_mfl_tax_remittance_double_payment: bool = False
+    economic_nexus_gross_threshold_or_mcf_tax_omission: bool = False
+    inform_consumers_act_5k_20k_seller_unverified: bool = False
+    mfl_exempt_deduction_and_amended_refund_ready: bool = False
+
+
+def evaluate_marketplace_facilitator_tax_escrow_policy(
+    policy_input: MarketplaceFacilitatorTaxEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_omnichannel_tax_and_inform_risk_pool_usd)
+    )
+    if policy_input.inform_consumers_act_5k_20k_seller_unverified:
+        return {
+            "status_code": 451,
+            "decision": "INFORM_CONSUMERS_ACT_5K_20K_SELLER_UNVERIFIED_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.duplicate_mfl_tax_remittance_double_payment:
+        return {
+            "status_code": 403,
+            "decision": "DUPLICATE_MFL_TAX_REMITTANCE_DOUBLE_PAYMENT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.economic_nexus_gross_threshold_or_mcf_tax_omission:
+        return {
+            "status_code": 422,
+            "decision": "ECONOMIC_NEXUS_GROSS_THRESHOLD_OR_MCF_TAX_OMISSION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.mfl_exempt_deduction_and_amended_refund_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MFL_EXEMPT_DEDUCTION_AND_AMENDED_REFUND_CONFIRM",
+            "mandate_token": "mfl_inform_tax_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "RECONCILED_MFL_AND_DIRECT_TAX_LEDGER_AUTHORIZED",
+        "mandate_token": "mfl_inform_tax_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -37755,6 +37828,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    marketplace_facilitator_tax_escrow_guard = {
+        "authorized_200": evaluate_marketplace_facilitator_tax_escrow_policy(
+            MarketplaceFacilitatorTaxEscrowPolicyInput()
+        ),
+        "duplicate_mfl_double_pay_403": evaluate_marketplace_facilitator_tax_escrow_policy(
+            MarketplaceFacilitatorTaxEscrowPolicyInput(
+                duplicate_mfl_tax_remittance_double_payment=True
+            )
+        ),
+        "nexus_or_mcf_omission_422": evaluate_marketplace_facilitator_tax_escrow_policy(
+            MarketplaceFacilitatorTaxEscrowPolicyInput(
+                economic_nexus_gross_threshold_or_mcf_tax_omission=True
+            )
+        ),
+        "inform_act_unverified_451": evaluate_marketplace_facilitator_tax_escrow_policy(
+            MarketplaceFacilitatorTaxEscrowPolicyInput(
+                inform_consumers_act_5k_20k_seller_unverified=True
+            )
+        ),
+        "mfl_deduction_and_refund_409": evaluate_marketplace_facilitator_tax_escrow_policy(
+            MarketplaceFacilitatorTaxEscrowPolicyInput(
+                mfl_exempt_deduction_and_amended_refund_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -38047,6 +38146,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "brand_recommerce_dpp_escrow_guard": brand_recommerce_dpp_escrow_guard,
         "ecommerce_referral_marketing_guard": ecommerce_referral_marketing_guard,
         "ecommerce_byob_bundle_escrow_guard": ecommerce_byob_bundle_escrow_guard,
+        "marketplace_facilitator_tax_escrow_guard": marketplace_facilitator_tax_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -52594,6 +52694,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="byob-bundle-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CART_TRANSFORM_EXPAND_AND_TIER_UP_CLIFF_CONFIRM · Mandate: byob_bundle_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 164 Marketplace Facilitator Tax (MFL) & INFORM Act Escrow -->
+      <div class="finops-box" id="marketplace-facilitator-tax-escrow-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏛️ 多商户平台代缴税 (Marketplace Facilitator Tax) 防双重报税与 INFORM 法案托管沙盒</div>
+            <div class="finops-sub">Round 164 · 平台单 MFL_Paid 防重缴隔离锁 (HTTP 403) + 全渠道 Gross Nexus 与 FBA MCF 计税 (HTTP 422) + INFORM 法案 10d 停权锁 (HTTP 451) + 冲抵净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="mfl-tax-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度多渠道双重缴税与 Nexus 漏报罚款池 ($)
+            <input type="number" id="mfl-tax-gross-input" value="115000" min="10000" step="5000" oninput="recalcMarketplaceFacilitatorTaxSandbox()" />
+          </label>
+          <label>平台代扣代缴标志位 (MFL_Paid) 隔离
+            <select id="mfl-tax-dup-select" onchange="recalcMarketplaceFacilitatorTaxSandbox()">
+              <option value="pass">Amazon/TikTok 税款转入备查账本，商家待缴=0 (合规)</option>
+              <option value="block_403">把平台已代交的 $40,000 州税在 ERP 里重复上缴第二遍 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>全渠道经济/FBA物理联结与 MCF 代发计税
+            <select id="mfl-tax-nexus-select" onchange="recalcMarketplaceFacilitatorTaxSandbox()">
+              <option value="pass">合并统计平台销售额触发联结 + 独立站 MCF 订单照章征税 (合规)</option>
+              <option value="block_422">漏算平台流水/FBA仓物理联结或把 MCF 独立站单误当免税 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国联邦 INFORM Consumers Act ($5k/$20k)
+            <select id="mfl-tax-inform-select" onchange="recalcMarketplaceFacilitatorTaxSandbox()">
+              <option value="pass">满 $5k 10天内完成 TIN/银行核验 + 满 $20k 公开地址 (安全)</option>
+              <option value="block_451">高销卖家满 10 天未核验税号或满 $20k 匿名卖货违法 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>州税表“Gross - MFL Deduction”自动冲抵
+            <select id="mfl-tax-opt-select" onchange="recalcMarketplaceFacilitatorTaxSandbox()">
+              <option value="enabled" selected>对齐 1099-K 填报总额并全额扣除 MFL + 追回历史重缴 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">手工拉 CSV 对账且放弃追讨历史多缴税款 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度多渠道税务与罚款总池</div>
+            <div class="finops-kpi-val" id="mfl-tax-gross-kpi">$115,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">MFL 隔离与冲抵申报后净支出</div>
+            <div class="finops-kpi-val" id="mfl-tax-net-kpi" style="color:#6ee7b7;">$72,450</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省双重缴税与联结罚金</div>
+            <div class="finops-kpi-val" id="mfl-tax-savings-kpi" style="color:#38bdf8;">$42,550</div>
+          </div>
+        </div>
+        <div id="mfl-tax-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MFL_EXEMPT_DEDUCTION_AND_AMENDED_REFUND_CONFIRM · Mandate: mfl_inform_tax_escrow_optim_409
         </div>
       </div>
 
@@ -70083,6 +70240,79 @@ function recalcEcommerceByobBundleSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 SLOT_LOCKED_AND_ATP_SYNCED_BUNDLE_AUTHORIZED · Mandate: byob_bundle_escrow_200';
+}}
+
+function recalcMarketplaceFacilitatorTaxSandbox() {{
+  const grossInput = document.getElementById('mfl-tax-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '115000'));
+  const dupGate = document.getElementById('mfl-tax-dup-select').value;
+  const nexusGate = document.getElementById('mfl-tax-nexus-select').value;
+  const informGate = document.getElementById('mfl-tax-inform-select').value;
+  const optMode = document.getElementById('mfl-tax-opt-select').value;
+
+  const grossKpi = document.getElementById('mfl-tax-gross-kpi');
+  const netKpi = document.getElementById('mfl-tax-net-kpi');
+  const savingsKpi = document.getElementById('mfl-tax-savings-kpi');
+  const statusKpi = document.getElementById('mfl-tax-status-kpi');
+  const banner = document.getElementById('mfl-tax-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (informGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 INFORM_CONSUMERS_ACT_5K_20K_SELLER_UNVERIFIED_HOLD · Mandate: null';
+    return;
+  }}
+  if (dupGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DUPLICATE_MFL_TAX_REMITTANCE_DOUBLE_PAYMENT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (nexusGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 ECONOMIC_NEXUS_GROSS_THRESHOLD_OR_MCF_TAX_OMISSION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MFL_EXEMPT_DEDUCTION_AND_AMENDED_REFUND_CONFIRM · Mandate: mfl_inform_tax_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 RECONCILED_MFL_AND_DIRECT_TAX_LEDGER_AUTHORIZED · Mandate: mfl_inform_tax_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
