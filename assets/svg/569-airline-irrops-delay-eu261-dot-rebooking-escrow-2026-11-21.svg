@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg569" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#071224" />
+      <stop offset="50%" stop-color="#0e2240" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+    <linearGradient id="accent569" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg569)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent569)" rx="3" />
+
+  <text x="40" y="58" class="title">不正常航班 (IRROPS 延误/取消)、EU261 / DOT 现金退赔与跨联盟签转托管 (Navan / Amadeus / Sabre)</text>
+  <text x="40" y="80" class="subtitle">Round 126 · 防 €150 代金券诱导放弃 €600 现金赔偿、防自行买高铁票触发回程机票 No-Show 作废 &amp; 级联保房净省 31% (SVG 569)</text>
+
+  <!-- Left Card: 3 IRROPS Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大航变改签与理赔陷阱</text>
+  <text x="56" y="164" class="card-title">1. $150 旅游代金券诱骗免责协议 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 航班机械故障延误 4.5 小时，航司 App 弹窗：“点此秒领</text>
+  <text x="56" y="202" class="body">  $150 电子代金券（90天有效）”并暗藏放弃现金索赔条款</text>
+  <text x="56" y="220" class="warn">• 实则按 EU 261/2004 / UK261 法定应赔 €600 现金直退卡</text>
+
+  <text x="56" y="256" class="card-title">2. 弃乘第一段致回程国际票全作废 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 去程前段短途航班延误，旅客自行买高铁赶去枢纽机场</text>
+  <text x="56" y="294" class="body">• 未让航司在 GDS 挂 ARNK (Arrival Unknown) 保护状态</text>
+  <text x="56" y="312" class="warn">• 系统判定首段 No-Show，自动把 $4,500 洲际往返票全取消!</text>
+
+  <text x="56" y="348" class="card-title">3. 航司甩锅“天气原因”拒赔与酒店首晚罚没</text>
+  <text x="56" y="368" class="body">• 航司笼统声称“流量控制/天气”拒付 EU261 及过夜酒店</text>
+  <text x="56" y="386" class="body">• 目的地酒店因旅客凌晨 3 点才落地，按 No-Show 罚没首晚房费</text>
+  <text x="56" y="404" class="warn">• 机场 500 人排队改签时，最后 2 个外航舱位 90 秒内被抢光</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: VOUCHER_WAIVER_TRAP_OR_SELF_REBOOK_FEE</text>
+  <text x="70" y="502" class="warn">• HTTP 422: OUT_OF_SEQUENCE_COUPON_NO_SHOW_CANCEL</text>
+  <text x="70" y="524" class="warn">• HTTP 451: FAKE_WEATHER_FORCE_MAJEURE_EXCUSE_HOLD</text>
+  <text x="70" y="546" class="mono">• HTTP 409: FIM_INTERLINE_HOLD_AND_EU261_CASH_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: IRROPS_INVOLUNTARY_REPROTECT_AUTHORIZED</text>
+  <text x="70" y="596" class="body">强制挂 SK INVO 非自愿签转码，免差价/免退改费锁外航</text>
+
+  <!-- Center Card: 4-Stage IRROPS Defense Engine -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="192" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶不正常航班自动化救援流水线</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">Gate 1: 前序航班 (Inbound Tail) 预警与影子锁座</text>
+  <text x="450" y="195" class="body">• 通过 FlightAware / OAG 追踪执飞飞机注册号前序动态</text>
+  <text x="450" y="213" class="body">• 比机场大屏早 90 分钟预判失接 (MCT 跌破安全红线)</text>
+  <text x="450" y="231" class="mono">• 立即在 GDS 免费预占备选航班最后 1 个同舱座位</text>
+
+  <rect x="435" y="261" width="350" height="95" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="282" class="card-title" fill="#6ee7b7">Gate 2: 非自愿签转 (INVOL) 锁死与 ARNK 保票</text>
+  <text x="450" y="302" class="body">• 必须等待航司写入 UN/TK 航变标记后以 INVOL 免费改签</text>
+  <text x="450" y="320" class="body">• 严禁在航变前按“自愿退改”操作白交 $400 补差价 (HTTP 403)</text>
+  <text x="450" y="338" class="mono">• 改乘高铁前强制写入 ARNK 保护后续航段免遭 No-Show 作废</text>
+
+  <rect x="435" y="368" width="350" height="105" rx="8" fill="#162847" stroke="#f59e0b" />
+  <text x="450" y="389" class="card-title" fill="#fcd34d">Gate 3: METAR 气象雷达取证与 EU261/DOT 直退现金</text>
+  <text x="450" y="409" class="body">• Web IQ 自动拉取机场 METAR 报文与同地面其他航司起降率</text>
+  <text x="450" y="427" class="body">• 戳穿“假天气原因”(实为机组超时/前序故障) -&gt; HTTP 451</text>
+  <text x="450" y="445" class="body">• 美国 DOT 24h 法案: 取消/重大变更拒收代金券，强制退原卡</text>
+  <text x="450" y="463" class="mono">• 绕过抽佣 35% 的索赔中介，直连航司 API 100% 拿回 €600</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#a855f7" />
+  <text x="450" y="508" class="card-title" fill="#d8b4fe">Gate 4: 目的地酒店与专车级联保房 (Cascade Sync)</text>
+  <text x="450" y="528" class="body">• 航变一旦确认，自动向目的地酒店 PMS 发送新航班号与 ETA</text>
+  <text x="450" y="546" class="body">• 锁定 Late Check-In 保留房间至次日中午，免扣首晚房费</text>
+  <text x="450" y="566" class="mono">• 若取消改次日飞: 触发航司 Duty of Care 餐食+机场酒店虚拟卡</text>
+  <text x="450" y="586" class="mono">• 全链路救援 + 法定现金直追 -&gt; 净挽回 31% 差旅航变损失</text>
+
+  <!-- Right Card: Platform Comparison & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大航变救援与理赔生态</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Amadeus / Sabre GDS IROP API</text>
+  <text x="846" y="182" class="body">• 优势: 支持跨航司联运签转 (FIM) 与 ARNK 客票航段锁</text>
+  <text x="846" y="198" class="body">• 适用: 跨国企业 TMC 核心出票与非自愿改签底座</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Navan / Spotnana / 携程商旅</text>
+  <text x="846" y="244" class="body">• 优势: 机票-酒店-专车同一行程单级联联动，一键自助改签</text>
+  <text x="846" y="260" class="body">• 适用: 企业全员差旅中断自动救援与安置</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. FlightAware AeroAPI / Cirium</text>
+  <text x="846" y="306" class="body">• 优势: 提前 2-4 小时发现前序执飞飞机延误，抢先锁余票</text>
+  <text x="846" y="322" class="body">• 适用: 转机时间 (MCT) 跌破阈值预警</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. 直连 EU261/DOT 索赔 vs AirHelp</text>
+  <text x="846" y="368" class="body">• AirHelp 抽佣 35%~50%；企业 Agent 直连航司索赔表单</text>
+  <text x="846" y="384" class="body">• 附上 METAR + ACARS 落地开门时间戳，0 佣金全额入账</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度差旅航变与退赔损失池 ($88,000)</text>
+  <text x="860" y="456" class="body">• 传统临时高价重买+首晚罚没+漏赔: $88,000/季</text>
+  <text x="860" y="476" class="mono">• INVOL 免费跨司签转免临时买全价票: -$13,200</text>
+  <text x="860" y="496" class="mono">• EU261 / UK261 / DOT 零佣金现金追偿: -$8,800</text>
+  <text x="860" y="516" class="mono">• ARNK 保回程票 + 酒店级联免扣首晚: -$5,280</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净损耗: $60,720 (净挽回 $27,280 / -31%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: airline_irrops_eu261_mandate_optim_409</text>
+</svg>

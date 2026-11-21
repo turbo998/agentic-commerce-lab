@@ -17500,6 +17500,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("commercial-agent-platform-router-sandbox", html_zh)
 
+    def test_airline_irrops_eu261_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            AirlineIrropsEu261EscrowPolicyInput,
+            evaluate_airline_irrops_eu261_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_airline_irrops_eu261_escrow_policy(
+            AirlineIrropsEu261EscrowPolicyInput(
+                quarterly_corporate_travel_irrops_and_claim_loss_pool_usd=88000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "SK_INVO_ZERO_FEE_REPROTECTION_AND_ARNK_AUTHORIZED",
+        )
+
+        voucher = evaluate_airline_irrops_eu261_escrow_policy(
+            AirlineIrropsEu261EscrowPolicyInput(
+                voucher_waiver_trap_or_premature_voluntary_reissue_fee=True
+            )
+        )
+        self.assertEqual(voucher["status_code"], 403)
+        self.assertEqual(
+            voucher["decision"],
+            "VOUCHER_WAIVER_TRAP_OR_PREMATURE_VOLUNTARY_REISSUE_FEE_BLOCKED",
+        )
+
+        arnk = evaluate_airline_irrops_eu261_escrow_policy(
+            AirlineIrropsEu261EscrowPolicyInput(
+                out_of_sequence_rail_switch_without_gds_arnk_protection=True
+            )
+        )
+        self.assertEqual(arnk["status_code"], 422)
+        self.assertEqual(
+            arnk["decision"],
+            "OUT_OF_SEQUENCE_RAIL_SWITCH_WITHOUT_GDS_ARNK_PROTECTION_BLOCKED",
+        )
+
+        weather = evaluate_airline_irrops_eu261_escrow_policy(
+            AirlineIrropsEu261EscrowPolicyInput(
+                webiq_metar_refuted_fake_weather_force_majeure_excuse=True
+            )
+        )
+        self.assertEqual(weather["status_code"], 451)
+        self.assertEqual(
+            weather["decision"],
+            "WEBIQ_METAR_REFUTED_FAKE_WEATHER_FORCE_MAJEURE_EXCUSE_HOLD",
+        )
+
+        optim = evaluate_airline_irrops_eu261_escrow_policy(
+            AirlineIrropsEu261EscrowPolicyInput(
+                quarterly_corporate_travel_irrops_and_claim_loss_pool_usd=88000.0,
+                predictive_tail_shadow_hold_and_zero_fee_eu261_cascade_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 27280.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 60720.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("airline_irrops_eu261_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("airline-irrops-eu261-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

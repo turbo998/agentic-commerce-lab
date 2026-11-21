@@ -24638,6 +24638,87 @@ def evaluate_commercial_agent_platform_router_policy(
     }
 
 
+@dataclass(frozen=True)
+class AirlineIrropsEu261EscrowPolicyInput:
+    """Input contract for Airline IRROPS (Delay/Cancel), EU261/DOT Cash Claim & Interline Re-Protection Escrow."""
+
+    quarterly_corporate_travel_irrops_and_claim_loss_pool_usd: float = 88000.0
+    voucher_waiver_trap_or_premature_voluntary_reissue_fee: bool = False
+    out_of_sequence_rail_switch_without_gds_arnk_protection: bool = False
+    webiq_metar_refuted_fake_weather_force_majeure_excuse: bool = False
+    mandate_signing_key_age_days: int = 30
+    predictive_tail_shadow_hold_and_zero_fee_eu261_cascade_ready: bool = False
+
+
+def evaluate_airline_irrops_eu261_escrow_policy(
+    policy_input: AirlineIrropsEu261EscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Airline IRROPS, EU261/DOT Cash Claim & Interline Re-Protection Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_corporate_travel_irrops_and_claim_loss_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_metar_refuted_fake_weather_force_majeure_excuse
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_METAR_REFUTED_FAKE_WEATHER_FORCE_MAJEURE_EXCUSE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.voucher_waiver_trap_or_premature_voluntary_reissue_fee:
+        return {
+            "status_code": 403,
+            "decision": "VOUCHER_WAIVER_TRAP_OR_PREMATURE_VOLUNTARY_REISSUE_FEE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.out_of_sequence_rail_switch_without_gds_arnk_protection:
+        return {
+            "status_code": 422,
+            "decision": "OUT_OF_SEQUENCE_RAIL_SWITCH_WITHOUT_GDS_ARNK_PROTECTION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.predictive_tail_shadow_hold_and_zero_fee_eu261_cascade_ready:
+        savings = round(gross_pool * 0.31, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PREDICTIVE_TAIL_SHADOW_HOLD_AND_ZERO_FEE_EU261_CASCADE_CONFIRM",
+            "mandate_token": "airline_irrops_eu261_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "SK_INVO_ZERO_FEE_REPROTECTION_AND_ARNK_AUTHORIZED",
+        "mandate_token": "airline_irrops_eu261_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -33833,6 +33914,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    airline_irrops_eu261_escrow_guard = {
+        "authorized_200": evaluate_airline_irrops_eu261_escrow_policy(
+            AirlineIrropsEu261EscrowPolicyInput()
+        ),
+        "voucher_trap_or_voluntary_fee_403": evaluate_airline_irrops_eu261_escrow_policy(
+            AirlineIrropsEu261EscrowPolicyInput(
+                voucher_waiver_trap_or_premature_voluntary_reissue_fee=True
+            )
+        ),
+        "rail_switch_without_arnk_422": evaluate_airline_irrops_eu261_escrow_policy(
+            AirlineIrropsEu261EscrowPolicyInput(
+                out_of_sequence_rail_switch_without_gds_arnk_protection=True
+            )
+        ),
+        "fake_weather_metar_refuted_451": evaluate_airline_irrops_eu261_escrow_policy(
+            AirlineIrropsEu261EscrowPolicyInput(
+                webiq_metar_refuted_fake_weather_force_majeure_excuse=True
+            )
+        ),
+        "shadow_hold_and_zero_fee_eu261_409": evaluate_airline_irrops_eu261_escrow_policy(
+            AirlineIrropsEu261EscrowPolicyInput(
+                predictive_tail_shadow_hold_and_zero_fee_eu261_cascade_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -34087,6 +34194,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "enterprise_search_grounding_router_guard": enterprise_search_grounding_router_guard,
         "agent_payment_protocol_router_guard": agent_payment_protocol_router_guard,
         "commercial_agent_platform_router_guard": commercial_agent_platform_router_guard,
+        "airline_irrops_eu261_escrow_guard": airline_irrops_eu261_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -46348,6 +46456,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="platform-router-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 HYBRID_STUDIO_FRONT_SHELL_AND_FOUNDRY_LANGGRAPH_CORE_CONFIRM · Mandate: agent_platform_router_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 126 Airline IRROPS, EU261/DOT Cash Claim & Interline Re-Protection Escrow -->
+      <div class="finops-box" id="airline-irrops-eu261-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">✈️ 航司不正常航班 (IRROPS 延误/取消)、EU261 / DOT 现金退赔与跨联盟签转托管 (Amadeus / Sabre / Navan / 携程商旅) 救援沙盒 (Round 126)</div>
+            <div class="finops-subtitle">实测硬控拦截 $150 限时旅游代金券诱骗免责协议与航变官宣前按“自愿改签”乱补差价 (HTTP 403)、首段延误改乘高铁前强制写入 GDS ARNK 保票指令防回程国际票按 No-Show 全作废 (HTTP 422)、METAR 气象报文与同场起降率戳穿“假天气原因”拒赔 (HTTP 451) 及前序尾号提前 90m 影子占座+酒店级联保房+零佣金追回 €600 现金净省 31% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="irrops-eu261-status-kpi">HTTP 409 · PREDICTIVE_TAIL_SHADOW_HOLD_AND_ZERO_FEE_EU261_CASCADE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业差旅航变应急重买、首晚房费罚没与漏赔总池 ($ USD)
+            <input type="range" id="irrops-eu261-pool-slider" min="15000" max="400000" step="5000" value="88000" oninput="updateAirlineIrropsEu261EscrowSandbox()" />
+            <span id="irrops-eu261-pool-val" style="color:#6ee7b7; font-family:monospace;">$88,000</span>
+          </label>
+          <label>
+            拒收代金券免责弹窗与 SK INVO 非自愿免费平换审计 (HTTP 403)
+            <select id="irrops-eu261-voucher-select" onchange="updateAirlineIrropsEu261EscrowSandbox()">
+              <option value="pass">拒签 $150 代金券和解书保住 €600 现金索赔权 + 待 UN/TK 航变标志生效后 $0 差价平换 (放行)</option>
+              <option value="block">误点航司 $150 代金券弹窗放弃 €600 法定现金赔偿 或 未等航变标志提前按自愿改签交 $850 差价 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            首段改乘高铁 ARNK 顺序客票保活门禁 (HTTP 422)
+            <select id="irrops-eu261-arnk-select" onchange="updateAirlineIrropsEu261EscrowSandbox()">
+              <option value="pass">改乘高铁前强制在 GDS 剥离首段并写入 ARNK 非自愿地面保护码，100% 保住后段及回程票 (合规)</option>
+              <option value="block">未挂 ARNK 直接弃乘延误首段，导致 $4,800 后段洲际航班与回程往返票被系统按 No-Show 全取消 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ METAR 气象与 ACARS 开门时间法医验真 (HTTP 451)
+            <select id="irrops-eu261-weather-select" onchange="updateAirlineIrropsEu261EscrowSandbox()">
+              <option value="clear">核实 METAR 气象与 ACARS 舱门打开时间(&gt;=180m)，依法履行过夜酒店安置与现金退赔 (正常)</option>
+              <option value="hold">晴天同场 92% 航班正常起飞却谎称“天气不可抗力”拒付 €600 赔偿与过夜酒店 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            前序尾号 90m 影子占座、酒店级联保房与零佣金直连索赔 (HTTP 409)
+            <select id="irrops-eu261-opt-select" onchange="updateAirlineIrropsEu261EscrowSandbox()">
+              <option value="enabled" selected>前序尾号提前 90m 锁外航 FIM 余票 + 酒店 PMS 自动保首晚 + 绕过 35% 中介直追 €600 净挽回 31% (HTTP 409)</option>
+              <option value="baseline">常规 SK INVO 非自愿免费改签与 ARNK 保票授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度差旅航变与退赔风险总池</div>
+            <div class="finops-kpi-val" id="irrops-eu261-gross-kpi">$88,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">智能救援与零佣金追偿后净损</div>
+            <div class="finops-kpi-val" id="irrops-eu261-net-kpi" style="color:#6ee7b7;">$60,720</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回机酒罚金与法定赔偿</div>
+            <div class="finops-kpi-val" id="irrops-eu261-savings-kpi" style="color:#38bdf8;">$27,280</div>
+          </div>
+        </div>
+        <div id="irrops-eu261-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PREDICTIVE_TAIL_SHADOW_HOLD_AND_ZERO_FEE_EU261_CASCADE_CONFIRM · Mandate: airline_irrops_eu261_mandate_optim_409
         </div>
       </div>
 
@@ -61043,6 +61214,80 @@ function updateCommercialAgentPlatformRouterSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 GOVERNED_AGENT_PLATFORM_AND_ENTRA_OBO_AUTHORIZED · Mandate: agent_platform_router_200';
+}}
+
+function updateAirlineIrropsEu261EscrowSandbox() {{
+  const slider = document.getElementById('irrops-eu261-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '88000');
+  const voucherMode = document.getElementById('irrops-eu261-voucher-select').value;
+  const arnkMode = document.getElementById('irrops-eu261-arnk-select').value;
+  const weatherMode = document.getElementById('irrops-eu261-weather-select').value;
+  const optMode = document.getElementById('irrops-eu261-opt-select').value;
+
+  document.getElementById('irrops-eu261-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('irrops-eu261-status-kpi');
+  const grossKpi = document.getElementById('irrops-eu261-gross-kpi');
+  const netKpi = document.getElementById('irrops-eu261-net-kpi');
+  const savingsKpi = document.getElementById('irrops-eu261-savings-kpi');
+  const banner = document.getElementById('irrops-eu261-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (weatherMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_METAR_REFUTED_FAKE_WEATHER_FORCE_MAJEURE_EXCUSE_HOLD · Mandate: null';
+    return;
+  }}
+  if (voucherMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 VOUCHER_WAIVER_TRAP_OR_PREMATURE_VOLUNTARY_REISSUE_FEE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (arnkMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 OUT_OF_SEQUENCE_RAIL_SWITCH_WITHOUT_GDS_ARNK_PROTECTION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.31);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PREDICTIVE_TAIL_SHADOW_HOLD_AND_ZERO_FEE_EU261_CASCADE_CONFIRM · Mandate: airline_irrops_eu261_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 SK_INVO_ZERO_FEE_REPROTECTION_AND_ARNK_AUTHORIZED · Mandate: airline_irrops_eu261_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{
