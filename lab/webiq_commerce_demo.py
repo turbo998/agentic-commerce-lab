@@ -30345,6 +30345,82 @@ def evaluate_b2b_cpg_trade_promotion_tpm_policy(
     }
 
 
+@dataclass(frozen=True)
+class OmnichannelClientelingEndlessAislePolicyInput:
+    quarterly_oos_walkout_channel_conflict_and_vip_poaching_pool_usd: float = 175000.0
+    last_click_ad_stealing_stylist_commission_or_boris_return_docking: bool = False
+    fulfilling_store_fake_oos_rejection_or_uninspected_display_sample: bool = False
+    unmasked_personal_phone_vip_export_or_off_pos_private_payment: bool = False
+    rfid_digital_lookbook_14d_lock_and_dual_store_quota_credit_ready: bool = False
+
+
+def evaluate_omnichannel_clienteling_endless_aisle_policy(
+    policy_input: OmnichannelClientelingEndlessAislePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_oos_walkout_channel_conflict_and_vip_poaching_pool_usd
+        ),
+    )
+    if policy_input.unmasked_personal_phone_vip_export_or_off_pos_private_payment:
+        return {
+            "status_code": 451,
+            "decision": "PERSONAL_PHONE_LEAK_OR_OFF_POS_PAYMENT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.last_click_ad_stealing_stylist_commission_or_boris_return_docking:
+        return {
+            "status_code": 403,
+            "decision": "STYLIST_COMMISSION_HIJACK_OR_RETURN_DOCK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.fulfilling_store_fake_oos_rejection_or_uninspected_display_sample:
+        return {
+            "status_code": 422,
+            "decision": "STORE_HOARDING_REJECTION_OR_SCUFFED_SAMPLE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.rfid_digital_lookbook_14d_lock_and_dual_store_quota_credit_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DIGITAL_LOOKBOOK_14D_LOCK_AND_DUAL_STORE_CREDIT_CONFIRM",
+            "mandate_token": "omni_clienteling_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_OMNICHANNEL_STORE_TRANSACTION_AUTHORIZED",
+        "mandate_token": "omni_clienteling_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -41490,6 +41566,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    omnichannel_clienteling_endless_aisle_guard = {
+        "authorized_200": evaluate_omnichannel_clienteling_endless_aisle_policy(
+            OmnichannelClientelingEndlessAislePolicyInput()
+        ),
+        "ad_hijack_or_boris_dock_403": evaluate_omnichannel_clienteling_endless_aisle_policy(
+            OmnichannelClientelingEndlessAislePolicyInput(
+                last_click_ad_stealing_stylist_commission_or_boris_return_docking=True
+            )
+        ),
+        "store_hoard_or_sample_422": evaluate_omnichannel_clienteling_endless_aisle_policy(
+            OmnichannelClientelingEndlessAislePolicyInput(
+                fulfilling_store_fake_oos_rejection_or_uninspected_display_sample=True
+            )
+        ),
+        "vip_poach_or_off_pos_451": evaluate_omnichannel_clienteling_endless_aisle_policy(
+            OmnichannelClientelingEndlessAislePolicyInput(
+                unmasked_personal_phone_vip_export_or_off_pos_private_payment=True
+            )
+        ),
+        "lookbook_and_dual_credit_409": evaluate_omnichannel_clienteling_endless_aisle_policy(
+            OmnichannelClientelingEndlessAislePolicyInput(
+                rfid_digital_lookbook_14d_lock_and_dual_store_quota_credit_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -41819,6 +41921,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_pre_dispute_rdr_ethoca_guard": ecommerce_pre_dispute_rdr_ethoca_guard,
         "ecommerce_rx_eyewear_contact_lens_guard": ecommerce_rx_eyewear_contact_lens_guard,
         "b2b_cpg_trade_promotion_tpm_guard": b2b_cpg_trade_promotion_tpm_guard,
+        "omnichannel_clienteling_endless_aisle_guard": omnichannel_clienteling_endless_aisle_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -58475,6 +58578,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="cpgtpm-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SHELF_VISION_POS_SCAN_BILLBACK_AND_EDI812_DEFENSE_CONFIRM · Mandate: cpg_tpm_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 201 Omnichannel Clienteling, Endless Aisle & Commission Attribution Escrow (#320) -->
+      <div class="finops-box" id="omnichannel-clienteling-endless-aisle-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛍️ 全渠道高客单门店私人导购 (Clienteling: Tulip / NewStore / Shopify POS)、云货架与提成归因沙盒</div>
+            <div class="finops-sub">Round 201 (#320 里程碑) · 导购 Lookbook 14天跨端提成锁定与 BORIS 退货免扣门店业绩 (HTTP 403) + 云货架开单店/发货店业绩双计与孤品 4角度验真 (HTTP 422) + VIP 隐私中继号防离职拐客 (HTTP 451) + 净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="omniclient-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度门店断码走单、线上广告抢柜姐提成引发消极引流与导购离职拐走 VIP 损耗池 ($)
+            <input type="number" id="omniclient-gross-input" value="175000" min="10000" step="5000" oninput="recalcOmnichannelClientelingEndlessAisleSandbox()" />
+          </label>
+          <label>导购数字搭配册 (Lookbook Token) 14 天跨端提成锁与 BORIS 网购退门店免罚
+            <select id="omniclient-comm-select" onchange="recalcOmnichannelClientelingEndlessAisleSandbox()">
+              <option value="pass">试衣间接待后 14 天内线上成交 100% 计入导购提成 + 网购退门店不扣门店业绩反奖 $10 (合规)</option>
+              <option value="block_403">柜姐陪试穿 1 小时客户回家点广告下单被电商部抢走提成 或 网购退回门店倒扣门店销售额 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>云货架 (Endless Aisle) 双店考核计绩与门店最后 1 件陈列孤品拍照验真
+            <select id="omniclient-aisle-select" onchange="recalcOmnichannelClientelingEndlessAisleSandbox()">
+              <option value="pass">开单店与发货店双向计入 KPI 考核 + 孤品出库必拍领口/袖口 4 张无瑕照 (合规)</option>
+              <option value="block_422">B 门店为保本店周末爆款业绩谎称找不到货点拒单 或 把沾粉底液的模特样衣直接寄给 VIP (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>企业隐私中继号脱敏、严禁私卡收款与 Workday 离职秒级 VIP 衣橱移交
+            <select id="omniclient-vip-select" onchange="recalcOmnichannelClientelingEndlessAisleSandbox()">
+              <option value="pass">全程通过企业认证号沟通隐藏客户手机号 + 离职 1 秒将 VIP 衣橱移交资深顾问 (安全)</option>
+              <option value="block_451">导购用私人微信发个人收款码飞单 或 跳槽去竞品前批量导出 500 名高净值 VIP 电话 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>RFID 智能试衣间数字衣橱 (Digital Closet) 与离店 24h 一键配齐追单
+            <select id="omniclient-opt-select" onchange="recalcOmnichannelClientelingEndlessAisleSandbox()">
+              <option value="enabled" selected>试衣间 RFID 自动生成专属搭配链接 + 双店分润云货架调拨 (-37% 流失 / HTTP 409)</option>
+              <option value="disabled">传统纯线下各自为政且断码直接让客人走掉 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度门店断码与渠道内斗流失池</div>
+            <div class="finops-kpi-val" id="omniclient-gross-kpi">$175,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">14d 归因锁与双店分润后净流失</div>
+            <div class="finops-kpi-val" id="omniclient-net-kpi" style="color:#6ee7b7;">$110,250</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回断码 GMV 与 VIP 资产</div>
+            <div class="finops-kpi-val" id="omniclient-savings-kpi" style="color:#38bdf8;">$64,750</div>
+          </div>
+        </div>
+        <div id="omniclient-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DIGITAL_LOOKBOOK_14D_LOCK_AND_DUAL_STORE_CREDIT_CONFIRM · Mandate: omni_clienteling_escrow_optim_409
         </div>
       </div>
 
@@ -78665,6 +78825,79 @@ function recalcB2bCpgTradePromotionTpmSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_PLANOGRAM_AND_SCAN_REBATE_AUTHORIZED · Mandate: cpg_tpm_escrow_200';
+}}
+
+function recalcOmnichannelClientelingEndlessAisleSandbox() {{
+  const grossInput = document.getElementById('omniclient-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '175000'));
+  const commGate = document.getElementById('omniclient-comm-select').value;
+  const aisleGate = document.getElementById('omniclient-aisle-select').value;
+  const vipGate = document.getElementById('omniclient-vip-select').value;
+  const optMode = document.getElementById('omniclient-opt-select').value;
+
+  const grossKpi = document.getElementById('omniclient-gross-kpi');
+  const netKpi = document.getElementById('omniclient-net-kpi');
+  const savingsKpi = document.getElementById('omniclient-savings-kpi');
+  const statusKpi = document.getElementById('omniclient-status-kpi');
+  const banner = document.getElementById('omniclient-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vipGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PERSONAL_PHONE_LEAK_OR_OFF_POS_PAYMENT_HOLD · Mandate: null';
+    return;
+  }}
+  if (commGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 STYLIST_COMMISSION_HIJACK_OR_RETURN_DOCK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (aisleGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 STORE_HOARDING_REJECTION_OR_SCUFFED_SAMPLE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DIGITAL_LOOKBOOK_14D_LOCK_AND_DUAL_STORE_CREDIT_CONFIRM · Mandate: omni_clienteling_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_OMNICHANNEL_STORE_TRANSACTION_AUTHORIZED · Mandate: omni_clienteling_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg644" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr644" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg644)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr644)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 201 · Omnichannel Clienteling, Endless Aisle &amp; Commission Attribution Escrow</text>
+  <text x="48" y="74" class="sub">Tulip / Salesforce Retail POS / Shopify POS / NewStore · 14d Stylist Attribution Lock · 50/50 Store Split Credit · Book-of-Business Guard (-37% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #644 · FAQ #320</text>
+
+  <!-- Lane 1: Last-Click Ad Hijacking of Store Stylist Commission Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Stylist Commission Attribution Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops E-Com Ads Stealing Store Stylist Commission:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Pin `Stylist_ID + Store_ID` for 14d After Fitting</text>
+  <text x="54" y="200" class="mono">Override Last-Click Brand-Search / Coupon Hijack</text>
+  <text x="44" y="223" class="body-txt">• Online Return Against Store Commission Shield:</text>
+  <text x="54" y="243" class="mono">Do Not Dock Store A When E-Com Order Returns at Store A</text>
+  <text x="44" y="266" class="body-txt">• Eliminates channel warfare where store associates</text>
+  <text x="54" y="286" class="body-txt">refuse to send digital lookbooks or accept online</text>
+  <text x="54" y="304" class="body-txt">returns because it penalizes their store's net sales</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 STYLIST_COMMISSION_HIJACK_OR_RETURN_DOCK_BLOCKED</text>
+
+  <!-- Lane 2: Endless-Aisle Store Hoarding ("Fake OOS Cancel") & Display-Unit Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Endless-Aisle Split Credit &amp; QA Lock (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Store B Rejecting Store A's Endless-Aisle Order:</text>
+  <text x="54" y="182" class="mono"></text>
+  <text x="442" y="182" class="mono">Dual GMV Credit: `Selling_Store + Fulfilling_Store`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Require `RFID_Scan` Proof to Claim "Cannot Find Item"</text>
+  <text x="432" y="223" class="body-txt">• Last-Unit Floor-Sample Condition Photo Check:</text>
+  <text x="442" y="243" class="mono">Require 4-Angle Photo if `Store_Stock == 1 (Display)`</text>
+  <text x="432" y="266" class="body-txt">• Prevents fulfilling stores from falsely clicking</text>
+  <text x="442" y="286" class="body-txt">"Damaged/OOS" to hoard popular sizes for their own</text>
+  <text x="442" y="304" class="body-txt">walk-in weekend shoppers or shipping scuffed displays</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 STORE_HOARDING_REJECTION_OR_SCUFFED_SAMPLE_BLOCKED</text>
+
+  <!-- Lane 3: Personal Phone VIP Book-of-Business Poaching & Off-POS Payment Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. VIP Book-of-Business &amp; POS Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Departing Stylists Taking 500 VIP Contacts:</text>
+  <text x="830" y="182" class="mono">Mask Raw Customer Phone/WeChat via Enterprise Relay</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Block Personal Venmo/Zelle/WeChat Pay Links!</text>
+  <text x="820" y="223" class="body-txt">• Okta/Workday Offboarding Instant Client Reassign:</text>
+  <text x="830" y="243" class="body-txt">Auto-transfers the departing stylist's active VIP</text>
+  <text x="830" y="261" class="body-txt">wardrobe profiles to the store's senior clientelist</text>
+  <text x="820" y="284" class="body-txt">• Protects brand's highest-LTV customer relationships</text>
+  <text x="830" y="302" class="body-txt">from competitor poaching &amp; gray-market side sales</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 PERSONAL_PHONE_LEAK_OR_OFF_POS_PAYMENT_HOLD</text>
+
+  <!-- Bottom Digital Fitting-Room Lookbook & Endless-Aisle Pay-by-Link Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. RFID Fitting-Room Digital Lookbook + Endless-Aisle `Tap-to-Pay` &amp; Dual-Store Credit (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① RFID Fitting-Room Sync</text>
+  <text x="62" y="462" class="body-txt">Auto-captures every tried-on</text>
+  <text x="62" y="480" class="body-txt">garment &amp; size into a private</text>
+  <text x="62" y="498" class="body-txt">`Digital Closet` lookbook;</text>
+  <text x="62" y="516" class="mono">+42% Post-Visit Online Follow-Up</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Endless-Aisle Split Credit</text>
+  <text x="337" y="462" class="body-txt">Credits both Selling Store &amp;</text>
+  <text x="337" y="480" class="body-txt">Shipping Store toward quota</text>
+  <text x="337" y="498" class="body-txt">when rescuing OOS sizes;</text>
+  <text x="337" y="516" class="mono">-88% Store Pick Rejections</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Attribution-Pinned Pay Link</text>
+  <text x="622" y="462" class="body-txt">Embeds cryptographic `rep_id`</text>
+  <text x="622" y="480" class="body-txt">into SMS/WhatsApp checkout</text>
+  <text x="622" y="498" class="body-txt">link (`14-day attribution`);</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">100% Stylist Commission Protected</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ BORIS Return Shield</text>
+  <text x="907" y="462" class="body-txt">Credits stores a `$10` handling</text>
+  <text x="907" y="480" class="body-txt">bonus for accepting e-com</text>
+  <text x="907" y="498" class="body-txt">returns &amp; driving exchanges;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% OOS Walk-Out &amp; Churn Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly OOS Walk-Out &amp; VIP Churn Saved</text>
+  <text x="46" y="642" class="mono">$64,750 Saved / $175k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">14d Rep Lock</text>
+  <text x="336" y="626" class="kpi-lbl">Cryptographic Stylist Attribution</text>
+  <text x="336" y="642" class="mono">Defeats Last-Click Ad Cannibalization</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">Dual-Store KPI</text>
+  <text x="626" y="626" class="kpi-lbl">Selling + Fulfilling Store Quota Credit</text>
+  <text x="626" y="642" class="mono">Ends Store Inventory Hoarding</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 VIP Poaching</text>
+  <text x="916" y="626" class="kpi-lbl">Masked Clienteling Relay &amp; Offboard</text>
+  <text x="916" y="642" class="mono">🏆 320th Bilingual Guide Milestone</text>
+</svg>

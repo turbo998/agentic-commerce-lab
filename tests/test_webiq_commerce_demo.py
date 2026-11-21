@@ -22525,6 +22525,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-cpg-trade-promotion-tpm-sandbox", html_zh)
 
+    def test_omnichannel_clienteling_endless_aisle_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OmnichannelClientelingEndlessAislePolicyInput,
+            evaluate_omnichannel_clienteling_endless_aisle_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_omnichannel_clienteling_endless_aisle_policy(
+            OmnichannelClientelingEndlessAislePolicyInput(
+                quarterly_oos_walkout_channel_conflict_and_vip_poaching_pool_usd=175000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_OMNICHANNEL_STORE_TRANSACTION_AUTHORIZED",
+        )
+
+        comm = evaluate_omnichannel_clienteling_endless_aisle_policy(
+            OmnichannelClientelingEndlessAislePolicyInput(
+                last_click_ad_stealing_stylist_commission_or_boris_return_docking=True
+            )
+        )
+        self.assertEqual(comm["status_code"], 403)
+        self.assertEqual(
+            comm["decision"],
+            "STYLIST_COMMISSION_HIJACK_OR_RETURN_DOCK_BLOCKED",
+        )
+
+        aisle = evaluate_omnichannel_clienteling_endless_aisle_policy(
+            OmnichannelClientelingEndlessAislePolicyInput(
+                fulfilling_store_fake_oos_rejection_or_uninspected_display_sample=True
+            )
+        )
+        self.assertEqual(aisle["status_code"], 422)
+        self.assertEqual(
+            aisle["decision"],
+            "STORE_HOARDING_REJECTION_OR_SCUFFED_SAMPLE_BLOCKED",
+        )
+
+        vip = evaluate_omnichannel_clienteling_endless_aisle_policy(
+            OmnichannelClientelingEndlessAislePolicyInput(
+                unmasked_personal_phone_vip_export_or_off_pos_private_payment=True
+            )
+        )
+        self.assertEqual(vip["status_code"], 451)
+        self.assertEqual(
+            vip["decision"],
+            "PERSONAL_PHONE_LEAK_OR_OFF_POS_PAYMENT_HOLD",
+        )
+
+        optim = evaluate_omnichannel_clienteling_endless_aisle_policy(
+            OmnichannelClientelingEndlessAislePolicyInput(
+                quarterly_oos_walkout_channel_conflict_and_vip_poaching_pool_usd=175000.0,
+                rfid_digital_lookbook_14d_lock_and_dual_store_quota_credit_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 64750.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 110250.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("omnichannel_clienteling_endless_aisle_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("omnichannel-clienteling-endless-aisle-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
