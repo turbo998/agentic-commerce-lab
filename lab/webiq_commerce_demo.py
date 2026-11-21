@@ -30421,6 +30421,82 @@ def evaluate_omnichannel_clienteling_endless_aisle_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bSaasPredictiveChurnSeatSwapPolicyInput:
+    quarterly_enterprise_arr_contraction_and_late_churn_pool_usd: float = 190000.0
+    automated_upsell_fired_during_active_sev1_outage_or_low_csat: bool = False
+    unintercepted_t120d_bulk_data_export_or_champion_departure: bool = False
+    unapproved_acv_downsell_slash_or_asc606_cancel_side_letter: bool = False
+    acv_neutral_seat_to_ai_token_swap_and_auto_cfo_ebr_ready: bool = False
+
+
+def evaluate_b2b_saas_predictive_churn_seat_swap_policy(
+    policy_input: B2bSaasPredictiveChurnSeatSwapPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_enterprise_arr_contraction_and_late_churn_pool_usd
+        ),
+    )
+    if policy_input.unapproved_acv_downsell_slash_or_asc606_cancel_side_letter:
+        return {
+            "status_code": 451,
+            "decision": "UNAPPROVED_ACV_SLASH_OR_ASC606_SIDE_LETTER_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.automated_upsell_fired_during_active_sev1_outage_or_low_csat:
+        return {
+            "status_code": 403,
+            "decision": "ACTIVE_SEV1_OUTAGE_OR_ESCALATION_UPSELL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unintercepted_t120d_bulk_data_export_or_champion_departure:
+        return {
+            "status_code": 422,
+            "decision": "UNDETECTED_DATA_EXPORT_OR_CHAMPION_EXIT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.acv_neutral_seat_to_ai_token_swap_and_auto_cfo_ebr_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ACV_NEUTRAL_SEAT_TO_AI_SWAP_AND_T120D_RESCUE_CONFIRM",
+            "mandate_token": "b2b_saas_churn_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_HEALTHY_ENTERPRISE_TENANT_RENEWAL_AUTHORIZED",
+        "mandate_token": "b2b_saas_churn_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -41592,6 +41668,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_saas_predictive_churn_seat_swap_guard = {
+        "authorized_200": evaluate_b2b_saas_predictive_churn_seat_swap_policy(
+            B2bSaasPredictiveChurnSeatSwapPolicyInput()
+        ),
+        "p1_outage_upsell_403": evaluate_b2b_saas_predictive_churn_seat_swap_policy(
+            B2bSaasPredictiveChurnSeatSwapPolicyInput(
+                automated_upsell_fired_during_active_sev1_outage_or_low_csat=True
+            )
+        ),
+        "t120d_export_or_exit_422": evaluate_b2b_saas_predictive_churn_seat_swap_policy(
+            B2bSaasPredictiveChurnSeatSwapPolicyInput(
+                unintercepted_t120d_bulk_data_export_or_champion_departure=True
+            )
+        ),
+        "unapproved_slash_or_side_451": evaluate_b2b_saas_predictive_churn_seat_swap_policy(
+            B2bSaasPredictiveChurnSeatSwapPolicyInput(
+                unapproved_acv_downsell_slash_or_asc606_cancel_side_letter=True
+            )
+        ),
+        "acv_neutral_seat_swap_409": evaluate_b2b_saas_predictive_churn_seat_swap_policy(
+            B2bSaasPredictiveChurnSeatSwapPolicyInput(
+                acv_neutral_seat_to_ai_token_swap_and_auto_cfo_ebr_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -41922,6 +42024,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_rx_eyewear_contact_lens_guard": ecommerce_rx_eyewear_contact_lens_guard,
         "b2b_cpg_trade_promotion_tpm_guard": b2b_cpg_trade_promotion_tpm_guard,
         "omnichannel_clienteling_endless_aisle_guard": omnichannel_clienteling_endless_aisle_guard,
+        "b2b_saas_predictive_churn_seat_swap_guard": b2b_saas_predictive_churn_seat_swap_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -58635,6 +58738,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="omniclient-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DIGITAL_LOOKBOOK_14D_LOCK_AND_DUAL_STORE_CREDIT_CONFIRM · Mandate: omni_clienteling_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 202 B2B SaaS Customer Health, T-120d Churn Intervention & Seat-to-AddOn Swap Escrow (#321) -->
+      <div class="finops-box" id="b2b-saas-predictive-churn-seat-swap-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📊 企业 B2B SaaS 客户成功健康度雷达 (Gainsight / ChurnZero)、P1 故障静默与保 ACV 席位置换沙盒</div>
+            <div class="finops-sub">Round 202 (#321) · Sev-1 故障期硬件级静默自动推销流 (HTTP 403) + T-120d 全量 CSV 导出与拍板人跳槽预警 (HTTP 422) + 封杀无审批砍价与 ASC 606 阴阳邮件 (HTTP 451) + 闲置席位 1:1 换 AI 算力包净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="saaschurn-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度大客户裁员缩席降级 (Contraction)、到期前 7 天才发现迁往竞品与故障期误发推销流失池 ($)
+            <input type="number" id="saaschurn-gross-input" value="190000" min="10000" step="5000" oninput="recalcB2bSaasPredictiveChurnSeatSwapSandbox()" />
+          </label>
+          <label>在途 Sev-1 / P1 故障与低 CSAT 全局推销/涨价静默断路器
+            <select id="saaschurn-mute-select" onchange="recalcB2bSaasPredictiveChurnSeatSwapSandbox()">
+              <option value="pass">租户无未决 Sev-1 故障 或 已自动静默一切扩席推销直至 RCA 签字后 14 天 (合规)</option>
+              <option value="block_403">客户生产环境正遭遇 P1 宕机骂娘，自动化流却发邮件催加购 50 个席位引爆解约 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>T-120d 全量数据导出 (Bulk CSV Export) 与关键决策人 (Champion) 离职雷达
+            <select id="saaschurn-radar-select" onchange="recalcB2bSaasPredictiveChurnSeatSwapSandbox()">
+              <option value="pass">提前 120 天实时监控 Bulk Export、SCIM 缩权与高管跳槽并启动 VP 挽留 (合规)</option>
+              <option value="block_422">忽略管理员在 T-110d 半夜全量导出数据迁竞品信号，直到到期前 7 天才打电话 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>Deal Desk 砍价红线与严禁私签 ASC 606 “随时无责退订”阴阳补充邮件
+            <select id="saaschurn-deal-select" onchange="recalcB2bSaasPredictiveChurnSeatSwapSandbox()">
+              <option value="pass">严格执行 Give-Get 对价置换 且 零合同外非标退订承诺 (安全)</option>
+              <option value="block_451">CSM 未经审批直接同意砍半降价 40% 或 发邮件私许“随时可无责退款”破坏收入确认 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>闲置吃灰人头席位 1:1 等额置换 AI Agent 算力包 (ACV-Neutral Swap) 与自动 EBR
+            <select id="saaschurn-opt-select" onchange="recalcB2bSaasPredictiveChurnSeatSwapSandbox()">
+              <option value="enabled" selected>把 $30k 闲置人头席位 1:1 置换为 $30k AI 算力包保住 100% ACV + 自动生成 CFO ROI 报告 (-36% 流失 / HTTP 409)</option>
+              <option value="disabled">传统到期前被动挨砍席位缩减合同金额 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度企业续约缩席与流失总池</div>
+            <div class="finops-kpi-val" id="saaschurn-gross-kpi">$190,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">T-120d 雷达与等额置换后净流失</div>
+            <div class="finops-kpi-val" id="saaschurn-net-kpi" style="color:#6ee7b7;">$121,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住企业 ARR 与扩席收入</div>
+            <div class="finops-kpi-val" id="saaschurn-savings-kpi" style="color:#38bdf8;">$68,400</div>
+          </div>
+        </div>
+        <div id="saaschurn-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ACV_NEUTRAL_SEAT_TO_AI_SWAP_AND_T120D_RESCUE_CONFIRM · Mandate: b2b_saas_churn_escrow_optim_409
         </div>
       </div>
 
@@ -78898,6 +79058,79 @@ function recalcOmnichannelClientelingEndlessAisleSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_OMNICHANNEL_STORE_TRANSACTION_AUTHORIZED · Mandate: omni_clienteling_escrow_200';
+}}
+
+function recalcB2bSaasPredictiveChurnSeatSwapSandbox() {{
+  const grossInput = document.getElementById('saaschurn-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '190000'));
+  const muteGate = document.getElementById('saaschurn-mute-select').value;
+  const radarGate = document.getElementById('saaschurn-radar-select').value;
+  const dealGate = document.getElementById('saaschurn-deal-select').value;
+  const optMode = document.getElementById('saaschurn-opt-select').value;
+
+  const grossKpi = document.getElementById('saaschurn-gross-kpi');
+  const netKpi = document.getElementById('saaschurn-net-kpi');
+  const savingsKpi = document.getElementById('saaschurn-savings-kpi');
+  const statusKpi = document.getElementById('saaschurn-status-kpi');
+  const banner = document.getElementById('saaschurn-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dealGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNAPPROVED_ACV_SLASH_OR_ASC606_SIDE_LETTER_HOLD · Mandate: null';
+    return;
+  }}
+  if (muteGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ACTIVE_SEV1_OUTAGE_OR_ESCALATION_UPSELL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (radarGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNDETECTED_DATA_EXPORT_OR_CHAMPION_EXIT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ACV_NEUTRAL_SEAT_TO_AI_SWAP_AND_T120D_RESCUE_CONFIRM · Mandate: b2b_saas_churn_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_HEALTHY_ENTERPRISE_TENANT_RENEWAL_AUTHORIZED · Mandate: b2b_saas_churn_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -22592,6 +22592,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("omnichannel-clienteling-endless-aisle-sandbox", html_zh)
 
+    def test_b2b_saas_predictive_churn_seat_swap_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bSaasPredictiveChurnSeatSwapPolicyInput,
+            evaluate_b2b_saas_predictive_churn_seat_swap_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_saas_predictive_churn_seat_swap_policy(
+            B2bSaasPredictiveChurnSeatSwapPolicyInput(
+                quarterly_enterprise_arr_contraction_and_late_churn_pool_usd=190000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_HEALTHY_ENTERPRISE_TENANT_RENEWAL_AUTHORIZED",
+        )
+
+        mute = evaluate_b2b_saas_predictive_churn_seat_swap_policy(
+            B2bSaasPredictiveChurnSeatSwapPolicyInput(
+                automated_upsell_fired_during_active_sev1_outage_or_low_csat=True
+            )
+        )
+        self.assertEqual(mute["status_code"], 403)
+        self.assertEqual(
+            mute["decision"],
+            "ACTIVE_SEV1_OUTAGE_OR_ESCALATION_UPSELL_BLOCKED",
+        )
+
+        radar = evaluate_b2b_saas_predictive_churn_seat_swap_policy(
+            B2bSaasPredictiveChurnSeatSwapPolicyInput(
+                unintercepted_t120d_bulk_data_export_or_champion_departure=True
+            )
+        )
+        self.assertEqual(radar["status_code"], 422)
+        self.assertEqual(
+            radar["decision"],
+            "UNDETECTED_DATA_EXPORT_OR_CHAMPION_EXIT_BLOCKED",
+        )
+
+        deal = evaluate_b2b_saas_predictive_churn_seat_swap_policy(
+            B2bSaasPredictiveChurnSeatSwapPolicyInput(
+                unapproved_acv_downsell_slash_or_asc606_cancel_side_letter=True
+            )
+        )
+        self.assertEqual(deal["status_code"], 451)
+        self.assertEqual(
+            deal["decision"],
+            "UNAPPROVED_ACV_SLASH_OR_ASC606_SIDE_LETTER_HOLD",
+        )
+
+        optim = evaluate_b2b_saas_predictive_churn_seat_swap_policy(
+            B2bSaasPredictiveChurnSeatSwapPolicyInput(
+                quarterly_enterprise_arr_contraction_and_late_churn_pool_usd=190000.0,
+                acv_neutral_seat_to_ai_token_swap_and_auto_cfo_ebr_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 68400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 121600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_saas_predictive_churn_seat_swap_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-saas-predictive-churn-seat-swap-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
