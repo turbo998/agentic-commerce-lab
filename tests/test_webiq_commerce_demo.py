@@ -19778,6 +19778,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-tax-free-exemption-sandbox", html_zh)
 
+    def test_ecommerce_post_purchase_upsell_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommercePostPurchaseUpsellPolicyInput,
+            evaluate_ecommerce_post_purchase_upsell_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_post_purchase_upsell_policy(
+            EcommercePostPurchaseUpsellPolicyInput(
+                quarterly_upsell_split_freight_and_friction_pool_usd=105000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ATOMIC_ORDER_EDIT_MERGED_UPSELL_AUTHORIZED",
+        )
+
+        hold = evaluate_ecommerce_post_purchase_upsell_policy(
+            EcommercePostPurchaseUpsellPolicyInput(
+                wms_hold_expired_split_parcel_upsell=True
+            )
+        )
+        self.assertEqual(hold["status_code"], 403)
+        self.assertEqual(
+            hold["decision"],
+            "WMS_HOLD_EXPIRED_SPLIT_PARCEL_UPSELL_BLOCKED",
+        )
+
+        slack = evaluate_ecommerce_post_purchase_upsell_policy(
+            EcommercePostPurchaseUpsellPolicyInput(
+                different_warehouse_or_weight_tier_slack_breach=True
+            )
+        )
+        self.assertEqual(slack["status_code"], 422)
+        self.assertEqual(
+            slack["decision"],
+            "DIFFERENT_WAREHOUSE_OR_WEIGHT_TIER_SLACK_BREACH_BLOCKED",
+        )
+
+        purity = evaluate_ecommerce_post_purchase_upsell_policy(
+            EcommercePostPurchaseUpsellPolicyInput(
+                pre_payment_popup_friction_or_scam_ad_widget=True
+            )
+        )
+        self.assertEqual(purity["status_code"], 451)
+        self.assertEqual(
+            purity["decision"],
+            "PRE_PAYMENT_POPUP_FRICTION_OR_SCAM_AD_WIDGET_HOLD",
+        )
+
+        optim = evaluate_ecommerce_post_purchase_upsell_policy(
+            EcommercePostPurchaseUpsellPolicyInput(
+                quarterly_upsell_split_freight_and_friction_pool_usd=105000.0,
+                same_box_zero_marginal_freight_and_batched_capture_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 36750.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 68250.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_post_purchase_upsell_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-post-purchase-upsell-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

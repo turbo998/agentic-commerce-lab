@@ -27280,6 +27280,79 @@ def evaluate_cross_border_tax_free_exemption_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommercePostPurchaseUpsellPolicyInput:
+    quarterly_upsell_split_freight_and_friction_pool_usd: float = 105000.0
+    wms_hold_expired_split_parcel_upsell: bool = False
+    different_warehouse_or_weight_tier_slack_breach: bool = False
+    pre_payment_popup_friction_or_scam_ad_widget: bool = False
+    same_box_zero_marginal_freight_and_batched_capture_ready: bool = False
+
+
+def evaluate_ecommerce_post_purchase_upsell_policy(
+    policy_input: EcommercePostPurchaseUpsellPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_upsell_split_freight_and_friction_pool_usd)
+    )
+    if policy_input.pre_payment_popup_friction_or_scam_ad_widget:
+        return {
+            "status_code": 451,
+            "decision": "PRE_PAYMENT_POPUP_FRICTION_OR_SCAM_AD_WIDGET_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.wms_hold_expired_split_parcel_upsell:
+        return {
+            "status_code": 403,
+            "decision": "WMS_HOLD_EXPIRED_SPLIT_PARCEL_UPSELL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.different_warehouse_or_weight_tier_slack_breach:
+        return {
+            "status_code": 422,
+            "decision": "DIFFERENT_WAREHOUSE_OR_WEIGHT_TIER_SLACK_BREACH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.same_box_zero_marginal_freight_and_batched_capture_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SAME_BOX_ZERO_MARGINAL_FREIGHT_AND_BATCHED_CAPTURE_CONFIRM",
+            "mandate_token": "post_purchase_upsell_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ATOMIC_ORDER_EDIT_MERGED_UPSELL_AUTHORIZED",
+        "mandate_token": "post_purchase_upsell_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -37359,6 +37432,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_post_purchase_upsell_guard = {
+        "authorized_200": evaluate_ecommerce_post_purchase_upsell_policy(
+            EcommercePostPurchaseUpsellPolicyInput()
+        ),
+        "wms_hold_expired_split_403": evaluate_ecommerce_post_purchase_upsell_policy(
+            EcommercePostPurchaseUpsellPolicyInput(
+                wms_hold_expired_split_parcel_upsell=True
+            )
+        ),
+        "different_warehouse_or_weight_422": evaluate_ecommerce_post_purchase_upsell_policy(
+            EcommercePostPurchaseUpsellPolicyInput(
+                different_warehouse_or_weight_tier_slack_breach=True
+            )
+        ),
+        "pre_pay_popup_or_scam_ad_451": evaluate_ecommerce_post_purchase_upsell_policy(
+            EcommercePostPurchaseUpsellPolicyInput(
+                pre_payment_popup_friction_or_scam_ad_widget=True
+            )
+        ),
+        "same_box_zero_freight_capture_409": evaluate_ecommerce_post_purchase_upsell_policy(
+            EcommercePostPurchaseUpsellPolicyInput(
+                same_box_zero_marginal_freight_and_batched_capture_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -37647,6 +37746,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_apparel_sizing_escrow_guard": ecommerce_apparel_sizing_escrow_guard,
         "ecommerce_hybrid_search_merchandising_guard": ecommerce_hybrid_search_merchandising_guard,
         "cross_border_tax_free_exemption_guard": cross_border_tax_free_exemption_guard,
+        "ecommerce_post_purchase_upsell_guard": ecommerce_post_purchase_upsell_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -51966,6 +52066,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="tax-free-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DIGITAL_CUSTOMS_INSTANT_VAT_AND_THRESHOLD_BUMP_CONFIRM · Mandate: tax_free_exemption_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 160 E-Commerce Post-Purchase 1-Click Upsell & Carton-Slack Escrow -->
+      <div class="finops-box" id="ecommerce-post-purchase-upsell-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">⚡ 支付后一键追销 (Post-Purchase 1-Click Upsell：AfterSell / ReConvert) 与同箱余量合单托管沙盒</div>
+            <div class="finops-sub">Round 160 · 15m WMS 挂起窗原单合并锁 (HTTP 403) + 同仓现货与快递克重余量过滤 (HTTP 422) + 禁支付前打断弹窗 (HTTP 451) + 零运费加购净省 35% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="post-upsell-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度追销拆包双倍运费与支付打断损耗池 ($)
+            <input type="number" id="post-upsell-gross-input" value="105000" min="10000" step="5000" oninput="recalcEcommercePostPurchaseUpsellSandbox()" />
+          </label>
+          <label>15m WMS 合单挂起窗与 Order Edit 追加
+            <select id="post-upsell-hold-select" onchange="recalcEcommercePostPurchaseUpsellSandbox()">
+              <option value="pass">处于 15m ON_HOLD 窗口内原单合并 1 箱发出 (合规)</option>
+              <option value="block_403">主单已推仓库打单，$12 免邮追销变成第 2 个独立包裹亏 $8 运费 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>同发货仓现货与快递重量阶梯余量 (Weight Slack)
+            <select id="post-upsell-slack-select" onchange="recalcEcommercePostPurchaseUpsellSandbox()">
+              <option value="pass">同仓现货 + 加上追销品不跨快递计费重量档 (合规)</option>
+              <option value="block_422">追销异仓商品或超重压跨 1lb 阶梯致运费暴涨 $5.50 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>零支付前打断与感谢页外链钓鱼广告净化
+            <select id="post-upsell-purity-select" onchange="recalcEcommercePostPurchaseUpsellSandbox()">
+              <option value="pass">严格在主单付款成功后触发 + 零外部钓鱼广告网 (安全)</option>
+              <option value="block_451">点击支付前强弹全屏窗致弃单或感谢页挂流氓暗扣广告 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>零边际运费纯毛利加购与合并单次 Capture
+            <select id="post-upsell-opt-select" onchange="recalcEcommercePostPurchaseUpsellSandbox()">
+              <option value="enabled" selected>同箱 0 运费追加高毛利替换芯 + 合并清算省二次 $0.30 卡费 (-35% 损耗 / HTTP 409)</option>
+              <option value="disabled">生成独立子订单重复刷卡交两道 $0.30 网关固定费 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度追销运费与弃单损耗总池</div>
+            <div class="finops-kpi-val" id="post-upsell-gross-kpi">$105,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">15m 合箱与余量过滤后净损耗</div>
+            <div class="finops-kpi-val" id="post-upsell-net-kpi" style="color:#6ee7b7;">$68,250</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省二次包裹运费与卡费</div>
+            <div class="finops-kpi-val" id="post-upsell-savings-kpi" style="color:#38bdf8;">$36,750</div>
+          </div>
+        </div>
+        <div id="post-upsell-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SAME_BOX_ZERO_MARGINAL_FREIGHT_AND_BATCHED_CAPTURE_CONFIRM · Mandate: post_purchase_upsell_optim_409
         </div>
       </div>
 
@@ -69163,6 +69320,79 @@ function recalcCrossBorderTaxFreeExemptionSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 TIN_AND_CUSTOMS_VERIFIED_TAX_EXEMPT_AUTHORIZED · Mandate: tax_free_exemption_escrow_200';
+}}
+
+function recalcEcommercePostPurchaseUpsellSandbox() {{
+  const grossInput = document.getElementById('post-upsell-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '105000'));
+  const holdGate = document.getElementById('post-upsell-hold-select').value;
+  const slackGate = document.getElementById('post-upsell-slack-select').value;
+  const purityGate = document.getElementById('post-upsell-purity-select').value;
+  const optMode = document.getElementById('post-upsell-opt-select').value;
+
+  const grossKpi = document.getElementById('post-upsell-gross-kpi');
+  const netKpi = document.getElementById('post-upsell-net-kpi');
+  const savingsKpi = document.getElementById('post-upsell-savings-kpi');
+  const statusKpi = document.getElementById('post-upsell-status-kpi');
+  const banner = document.getElementById('post-upsell-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (purityGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PRE_PAYMENT_POPUP_FRICTION_OR_SCAM_AD_WIDGET_HOLD · Mandate: null';
+    return;
+  }}
+  if (holdGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 WMS_HOLD_EXPIRED_SPLIT_PARCEL_UPSELL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (slackGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DIFFERENT_WAREHOUSE_OR_WEIGHT_TIER_SLACK_BREACH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SAME_BOX_ZERO_MARGINAL_FREIGHT_AND_BATCHED_CAPTURE_CONFIRM · Mandate: post_purchase_upsell_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ATOMIC_ORDER_EDIT_MERGED_UPSELL_AUTHORIZED · Mandate: post_purchase_upsell_200';
 }}
 
 function updateStage1756Sandbox() {{
