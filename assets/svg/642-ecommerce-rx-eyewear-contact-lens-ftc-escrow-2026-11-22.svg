@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg642" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr642" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg642)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr642)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 199 · E-Commerce Rx Eyewear &amp; Contact Lens, FTC 8-Hour Rule &amp; Vision Insurance Escrow</text>
+  <text x="48" y="74" class="sub">Warby Parker / 1-800 Contacts / VSP / EyeMed · FTC 16 CFR 315 8-Biz-Hour Clock · AR Pupillary Distance · Live RTBC Copay (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #642 · FAQ #318</text>
+
+  <!-- Lane 1: Vision Insurance Double-Dip & Out-of-Network Reimbursement Drop-Off Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Vision Insurance &amp; Copay Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Frame/Lens Allowance Double-Dipping:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Query Live `X12 270/271` (`VSP / EyeMed / Davis`)</text>
+  <text x="54" y="200" class="mono">Place Atomic Hold on Annual `$150_Frame_Allowance`</text>
+  <text x="44" y="223" class="body-txt">• Anti-Upfront-Cash Checkout Abandonment:</text>
+  <text x="54" y="243" class="mono">Deduct Plan Benefit Live + Split HSA/FSA Copay</text>
+  <text x="44" y="266" class="body-txt">• Prevents patients from claiming the same annual</text>
+  <text x="54" y="286" class="body-txt">allowance on both glasses and contacts in the same</text>
+  <text x="54" y="304" class="body-txt">plan year (leaving merchant with payer clawbacks)</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 EXHAUSTED_VISION_ALLOWANCE_OR_DOUBLE_CLAIM_BLOCKED</text>
+
+  <!-- Lane 2: Plus-vs-Minus Cylinder Sign Flip & Missing Pupillary Distance (PD) Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Rx Sign/Axis &amp; AR `PD` Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Grinding Lenses w/ Flipped `+` vs `-` Signs:</text>
+  <text x="442" y="182" class="mono">OCR Cross-Check: `Sphere (+/-)`, `Cyl` Requires `Axis`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Block Contact Lens Base-Curve (`BC`) on Eyeglasses!</text>
+  <text x="432" y="223" class="body-txt">• Mobile AR Pupillary Distance (`PD`) Verification:</text>
+  <text x="442" y="243" class="mono">Require Dual-PD (`OD/OS`) for High-Index `&gt; ±4.00D`</text>
+  <text x="432" y="266" class="body-txt">• Eliminates 38% of lab lens remakes caused by</text>
+  <text x="442" y="286" class="body-txt">shoppers typing `+3.25` instead of `-3.25` or</text>
+  <text x="442" y="304" class="body-txt">guessing a default 63mm PD on progressive lenses</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 INVALID_RX_SIGN_AXIS_OR_MISSING_AR_PD_BLOCKED</text>
+
+  <!-- Lane 3: FTC Contact Lens Rule (16 CFR Part 315) 8-Business-Hour Prescriber Verification Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. FTC 8-Business-Hour Rx Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Shipping Contacts Before 8 Business Hours:</text>
+  <text x="830" y="182" class="mono">FTC 16 CFR Part 315: Count Prescriber Local Biz Hrs</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Pause Clock on Saturday, Sunday &amp; Federal Holidays</text>
+  <text x="820" y="223" class="body-txt">• Expired Rx &amp; Brand-Substitution Prohibition:</text>
+  <text x="830" y="243" class="body-txt">Blocks substituting private-label contact lenses</text>
+  <text x="830" y="261" class="body-txt">for the exact doctor-prescribed brand (`Acuvue`)</text>
+  <text x="820" y="284" class="body-txt">• Prevents $51,744/violation FTC penalties from</text>
+  <text x="830" y="302" class="body-txt">robocall verification spam or premature shipping</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 FTC_PART315_8BIZ_HOUR_OR_EXPIRED_RX_HOLD</text>
+
+  <!-- Bottom Tele-Optometry Rx Renewal & Automated Optical Lab Dispatch Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. In-Flow Tele-Optometry Rx Renewal + AR Virtual Try-On &amp; Optical Lab `OMA` Dispatch (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Vision OCR + Sign Guard</text>
+  <text x="62" y="462" class="body-txt">Extracts `OD/OS Sphere, Cyl,`</text>
+  <text x="62" y="480" class="body-txt">`Axis, Add &amp; Expiry` from</text>
+  <text x="62" y="498" class="body-txt">uploaded paper Rx in 400ms;</text>
+  <text x="62" y="516" class="mono">0 Manual Typing Transcription</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② 5-Min Tele-Optometry Exam</text>
+  <text x="337" y="462" class="body-txt">If Rx expired &gt;12m, launches</text>
+  <text x="337" y="480" class="body-txt">in-browser vision test signed</text>
+  <text x="337" y="498" class="body-txt">by state-licensed OD;</text>
+  <text x="622" y="516" class="mono"></text>
+  <text x="337" y="516" class="mono">Rescues 64% of Expired-Rx Carts</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ TrueDepth AR `PD` &amp; Fit</text>
+  <text x="622" y="462" class="body-txt">Measures monocular `PD` &amp;</text>
+  <text x="622" y="480" class="body-txt">segment height (`Seg Ht`) to</text>
+  <text x="622" y="498" class="body-txt">`±0.5mm` via phone camera;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">-72% Optical Center Remakes</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Live Insurance + HSA Split</text>
+  <text x="907" y="462" class="body-txt">Applies `$150` VSP allowance</text>
+  <text x="907" y="480" class="body-txt">at checkout &amp; charges net</text>
+  <text x="907" y="498" class="body-txt">copay to `HSA/FSA` card;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Remake &amp; Abandonment Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Lens Remake &amp; Rx Drop-Off</text>
+  <text x="46" y="642" class="mono">$57,600 Saved / $160k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">±0.5mm AR PD</text>
+  <text x="336" y="626" class="kpi-lbl">Camera Corneal-Reflection Measurement</text>
+  <text x="336" y="642" class="mono">Stops "+ vs -" &amp; Axis Entry Bugs</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">8-Biz-Hr Clock</text>
+  <text x="626" y="626" class="kpi-lbl">FTC 16 CFR 315 Timezone-Aware Hold</text>
+  <text x="626" y="642" class="mono">Zero Premature-Ship FTC Fines</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">Live VSP/EyeMed</text>
+  <text x="916" y="626" class="kpi-lbl">In-Cart Benefit Deduct + HSA Split</text>
+  <text x="916" y="642" class="mono">No Paper Out-of-Network Forms</text>
+</svg>

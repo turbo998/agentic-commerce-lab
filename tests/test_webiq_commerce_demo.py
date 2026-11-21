@@ -22391,6 +22391,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-pre-dispute-rdr-ethoca-sandbox", html_zh)
 
+    def test_ecommerce_rx_eyewear_contact_lens_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceRxEyewearContactLensPolicyInput,
+            evaluate_ecommerce_rx_eyewear_contact_lens_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_rx_eyewear_contact_lens_policy(
+            EcommerceRxEyewearContactLensPolicyInput(
+                quarterly_lens_remake_expired_rx_churn_and_ftc_fine_pool_usd=160000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_RX_OPTICAL_LAB_DISPATCH_AUTHORIZED",
+        )
+
+        payer = evaluate_ecommerce_rx_eyewear_contact_lens_policy(
+            EcommerceRxEyewearContactLensPolicyInput(
+                exhausted_vision_benefit_or_duplicate_frame_and_contact_claim=True
+            )
+        )
+        self.assertEqual(payer["status_code"], 403)
+        self.assertEqual(
+            payer["decision"],
+            "EXHAUSTED_VISION_ALLOWANCE_OR_DOUBLE_CLAIM_BLOCKED",
+        )
+
+        rx_err = evaluate_ecommerce_rx_eyewear_contact_lens_policy(
+            EcommerceRxEyewearContactLensPolicyInput(
+                flipped_plus_minus_sphere_missing_axis_or_unmeasured_ar_pd=True
+            )
+        )
+        self.assertEqual(rx_err["status_code"], 422)
+        self.assertEqual(
+            rx_err["decision"],
+            "INVALID_RX_SIGN_AXIS_OR_MISSING_AR_PD_BLOCKED",
+        )
+
+        ftc = evaluate_ecommerce_rx_eyewear_contact_lens_policy(
+            EcommerceRxEyewearContactLensPolicyInput(
+                premature_ship_under_8_local_business_hours_or_brand_swap=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 451)
+        self.assertEqual(
+            ftc["decision"],
+            "FTC_PART315_8BIZ_HOUR_OR_EXPIRED_RX_HOLD",
+        )
+
+        optim = evaluate_ecommerce_rx_eyewear_contact_lens_policy(
+            EcommerceRxEyewearContactLensPolicyInput(
+                quarterly_lens_remake_expired_rx_churn_and_ftc_fine_pool_usd=160000.0,
+                in_flow_tele_optometry_ar_pd_and_live_vsp_hsa_split_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 57600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 102400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_rx_eyewear_contact_lens_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-rx-eyewear-contact-lens-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
