@@ -21520,6 +21520,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-hsa-fsa-checkout-sandbox", html_zh)
 
+    def test_ecommerce_device_trade_in_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceDeviceTradeInEscrowPolicyInput,
+            evaluate_ecommerce_device_trade_in_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_device_trade_in_escrow_policy(
+            EcommerceDeviceTradeInEscrowPolicyInput(
+                quarterly_trade_in_bricked_device_grading_dispute_and_drop_pool_usd=160000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "CLEAN_IMEI_COLLATERALIZED_TRADEIN_AUTHORIZED",
+        )
+
+        imei = evaluate_ecommerce_device_trade_in_escrow_policy(
+            EcommerceDeviceTradeInEscrowPolicyInput(
+                activation_lock_fmi_mdm_on_or_unpaid_carrier_eip_imei=True
+            )
+        )
+        self.assertEqual(imei["status_code"], 403)
+        self.assertEqual(
+            imei["decision"],
+            "ACTIVATION_LOCK_MDM_OR_STOLEN_IMEI_BLOCKED",
+        )
+
+        grade = evaluate_ecommerce_device_trade_in_escrow_policy(
+            EcommerceDeviceTradeInEscrowPolicyInput(
+                unbacked_upfront_credit_or_nonconsensual_grading_downgrade_charge=True
+            )
+        )
+        self.assertEqual(grade["status_code"], 422)
+        self.assertEqual(
+            grade["decision"],
+            "UNBACKED_UPFRONT_CREDIT_OR_FORCED_DOWNGRADE_BLOCKED",
+        )
+
+        nist = evaluate_ecommerce_device_trade_in_escrow_policy(
+            EcommerceDeviceTradeInEscrowPolicyInput(
+                missing_nist_800_88_wipe_cert_or_new_device_return_cash_exploit=True
+            )
+        )
+        self.assertEqual(nist["status_code"], 451)
+        self.assertEqual(
+            nist["decision"],
+            "UNWIPED_PII_RESALE_OR_TRADEIN_CASH_EXPLOIT_HOLD",
+        )
+
+        optim = evaluate_ecommerce_device_trade_in_escrow_policy(
+            EcommerceDeviceTradeInEscrowPolicyInput(
+                quarterly_trade_in_bricked_device_grading_dispute_and_drop_pool_usd=160000.0,
+                mirror_webrtc_grading_42state_tax_offset_and_free_return_opt_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 57600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 102400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_device_trade_in_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-device-trade-in-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -29205,6 +29205,82 @@ def evaluate_ecommerce_hsa_fsa_checkout_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceDeviceTradeInEscrowPolicyInput:
+    quarterly_trade_in_bricked_device_grading_dispute_and_drop_pool_usd: float = 160000.0
+    activation_lock_fmi_mdm_on_or_unpaid_carrier_eip_imei: bool = False
+    unbacked_upfront_credit_or_nonconsensual_grading_downgrade_charge: bool = False
+    missing_nist_800_88_wipe_cert_or_new_device_return_cash_exploit: bool = False
+    mirror_webrtc_grading_42state_tax_offset_and_free_return_opt_ready: bool = False
+
+
+def evaluate_ecommerce_device_trade_in_escrow_policy(
+    policy_input: EcommerceDeviceTradeInEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_trade_in_bricked_device_grading_dispute_and_drop_pool_usd
+        ),
+    )
+    if policy_input.missing_nist_800_88_wipe_cert_or_new_device_return_cash_exploit:
+        return {
+            "status_code": 451,
+            "decision": "UNWIPED_PII_RESALE_OR_TRADEIN_CASH_EXPLOIT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.activation_lock_fmi_mdm_on_or_unpaid_carrier_eip_imei:
+        return {
+            "status_code": 403,
+            "decision": "ACTIVATION_LOCK_MDM_OR_STOLEN_IMEI_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unbacked_upfront_credit_or_nonconsensual_grading_downgrade_charge:
+        return {
+            "status_code": 422,
+            "decision": "UNBACKED_UPFRONT_CREDIT_OR_FORCED_DOWNGRADE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.mirror_webrtc_grading_42state_tax_offset_and_free_return_opt_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MIRROR_WEBRTC_42STATE_TAX_OFFSET_AND_FREE_RETURN_CONFIRM",
+            "mandate_token": "device_tradein_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "CLEAN_IMEI_COLLATERALIZED_TRADEIN_AUTHORIZED",
+        "mandate_token": "device_tradein_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -39960,6 +40036,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_device_trade_in_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_device_trade_in_escrow_policy(
+            EcommerceDeviceTradeInEscrowPolicyInput()
+        ),
+        "fmi_or_eip_locked_403": evaluate_ecommerce_device_trade_in_escrow_policy(
+            EcommerceDeviceTradeInEscrowPolicyInput(
+                activation_lock_fmi_mdm_on_or_unpaid_carrier_eip_imei=True
+            )
+        ),
+        "unbacked_or_forced_downgrade_422": evaluate_ecommerce_device_trade_in_escrow_policy(
+            EcommerceDeviceTradeInEscrowPolicyInput(
+                unbacked_upfront_credit_or_nonconsensual_grading_downgrade_charge=True
+            )
+        ),
+        "unwiped_pii_or_cash_exploit_451": evaluate_ecommerce_device_trade_in_escrow_policy(
+            EcommerceDeviceTradeInEscrowPolicyInput(
+                missing_nist_800_88_wipe_cert_or_new_device_return_cash_exploit=True
+            )
+        ),
+        "mirror_cv_and_tax_offset_409": evaluate_ecommerce_device_trade_in_escrow_policy(
+            EcommerceDeviceTradeInEscrowPolicyInput(
+                mirror_webrtc_grading_42state_tax_offset_and_free_return_opt_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40274,6 +40376,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_clm_contract_redlining_guard": b2b_clm_contract_redlining_guard,
         "ecommerce_verified_review_syndication_guard": ecommerce_verified_review_syndication_guard,
         "ecommerce_hsa_fsa_checkout_guard": ecommerce_hsa_fsa_checkout_guard,
+        "ecommerce_device_trade_in_escrow_guard": ecommerce_device_trade_in_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -56075,6 +56178,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="hsafsa-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SIGIS_DUAL_TENDER_SPLIT_EMBEDDED_LMN_AND_TPA_PACK_CONFIRM · Mandate: hsa_fsa_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 186 E-Commerce Device Trade-In, Upfront Credit & Grading Escrow (#305) -->
+      <div class="finops-box" id="ecommerce-device-trade-in-escrow-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📱 3C 数码以旧换新 (Trade-In: Apple Trade In / Phobio / 爱回收) 与结账立减担保沙盒</div>
+            <div class="finops-sub">Round 186 (#305) · 实时拦截 iCloud/MDM 激活锁与运营商欠费机 (HTTP 403) + 21d 信用卡担保与压价必给免费退回权防到手刀 (HTTP 422) + NIST 800-88 粉碎证书 (HTTP 451) + 42州净额计税净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="tradein-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度收回未解 iCloud 废砖机、到手刀强扣款拒付与事后慢返款弃单池 ($)
+            <input type="number" id="tradein-gross-input" value="160000" min="10000" step="5000" oninput="recalcEcommerceDeviceTradeInSandbox()" />
+          </label>
+          <label>GSMA 失窃库 / 运营商分期欠费 (EIP) / Find My iPhone 激活锁
+            <select id="tradein-imei-select" onchange="recalcEcommerceDeviceTradeInSandbox()">
+              <option value="pass">IMEI 无失窃无欠费 且 已关闭 Find My iPhone / 企业 MDM 锁 (合规)</option>
+              <option value="block_403">旧机未关闭 iCloud 激活锁或仍欠运营商 14 个月合约分期沦为 $0 废砖机 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>结账立减 21 天担保预授权 (SPT) 与防“到手刀”强扣款门禁
+            <select id="tradein-grade-select" onchange="recalcEcommerceDeviceTradeInSandbox()">
+              <option value="pass">绑定 21d 信用卡担保 + 若检测压价必发开箱视频并给 7天 $0 包邮退回旧机权 (合规)</option>
+              <option value="block_422">用空预付卡骗走立减补贴 或 检测仓将 $500 砍成 $140 后未经同意直接强扣客户卡 $360 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>NIST SP 800-88 数据粉碎证书与“退新机套现旧机”拦截锁
+            <select id="tradein-nist-select" onchange="recalcEcommerceDeviceTradeInSandbox()">
+              <option value="pass">签发 Blancco/ADISA 数据粉碎加密证书 + 退新机时旧机折价退为品牌储值卡 (安全)</option>
+              <option value="block_451">旧机未彻底粉碎隐私即流入二手市场 或 借退新机将已售出的旧机折价套现走人 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>30 秒手机对镜 WebRTC 屏幕自检与全美 42 州净差额计征销售税
+            <select id="tradein-opt-select" onchange="recalcEcommerceDeviceTradeInSandbox()">
+              <option value="enabled" selected>对镜 30s 验屏锁准 94% 估价 + 结账立减 $500 且仅按 $600 净差额收州税 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">先按 $1,100 全款付钱交全税，等一个月后再寄支票返款 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度废砖机与换机弃单损失总池</div>
+            <div class="finops-kpi-val" id="tradein-gross-kpi">$160,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">激活锁穿透与立减节税后净损耗</div>
+            <div class="finops-kpi-val" id="tradein-net-kpi" style="color:#6ee7b7;">$102,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省废砖坏账与拒付/弃单</div>
+            <div class="finops-kpi-val" id="tradein-savings-kpi" style="color:#38bdf8;">$57,600</div>
+          </div>
+        </div>
+        <div id="tradein-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MIRROR_WEBRTC_42STATE_TAX_OFFSET_AND_FREE_RETURN_CONFIRM · Mandate: device_tradein_escrow_optim_409
         </div>
       </div>
 
@@ -75170,6 +75330,79 @@ function recalcEcommerceHsaFsaCheckoutSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 SIGIS_IIAS_ELIGIBLE_HSA_FSA_CHECKOUT_AUTHORIZED · Mandate: hsa_fsa_escrow_200';
+}}
+
+function recalcEcommerceDeviceTradeInSandbox() {{
+  const grossInput = document.getElementById('tradein-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '160000'));
+  const imeiGate = document.getElementById('tradein-imei-select').value;
+  const gradeGate = document.getElementById('tradein-grade-select').value;
+  const nistGate = document.getElementById('tradein-nist-select').value;
+  const optMode = document.getElementById('tradein-opt-select').value;
+
+  const grossKpi = document.getElementById('tradein-gross-kpi');
+  const netKpi = document.getElementById('tradein-net-kpi');
+  const savingsKpi = document.getElementById('tradein-savings-kpi');
+  const statusKpi = document.getElementById('tradein-status-kpi');
+  const banner = document.getElementById('tradein-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (nistGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNWIPED_PII_RESALE_OR_TRADEIN_CASH_EXPLOIT_HOLD · Mandate: null';
+    return;
+  }}
+  if (imeiGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ACTIVATION_LOCK_MDM_OR_STOLEN_IMEI_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (gradeGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNBACKED_UPFRONT_CREDIT_OR_FORCED_DOWNGRADE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MIRROR_WEBRTC_42STATE_TAX_OFFSET_AND_FREE_RETURN_CONFIRM · Mandate: device_tradein_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 CLEAN_IMEI_COLLATERALIZED_TRADEIN_AUTHORIZED · Mandate: device_tradein_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
