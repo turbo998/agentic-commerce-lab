@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg671" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <linearGradient id="hdr671" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </style>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg671)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 228 · Social Group-Buying, Community Leader Cold-Chain &amp; Tiered-Rebate Escrow</text>
+  <text x="48" y="74" class="sub">Pinduoduo / Community Group Buy / Shopify GroupBuy · Anti-Fake-Cohort Graph · Tier-Break Partial Capture · Leader Cold-Box (-37% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #671 · FAQ #347</text>
+
+  <!-- Lane 1: Fake Bot Accounts Filling Group Threshold & Post-Close Cancel-All-But-1 Exploit Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Anti-Fake-Cohort &amp; Cancel Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops 1 Buyer Joining w/ 9 Burner Sub-Accounts:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Require `Distinct_Payment_PAR == Min_Group_Size`</text>
+  <text x="54" y="200" class="mono">+ Block Cancelling 9 of 10 Orders After Unlock!</text>
+  <text x="44" y="223" class="body-txt">• Atomic Group-Threshold Invalidation:</text>
+  <text x="54" y="243" class="mono">If cancellations drop `Net_Group_Size &lt; Min_Quorum`:</text>
+  <text x="54" y="261" class="mono">Void Group Discount or Hold Shipment Until Refilled</text>
+  <text x="44" y="284" class="body-txt">• Eliminates solo resellers spoofing a 10-person</text>
+  <text x="54" y="302" class="body-txt">wholesale group buy and cancelling 9 dummy orders</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 FAKE_BOT_COHORT_OR_POST_UNLOCK_MASS_CANCEL_BLOCK</text>
+
+  <!-- Lane 2: Early-Joiner Price-Drop Cancel-and-Rebuy & Failed-Group Unreleased Hold Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Tier-Break Partial Capture (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Early Joiners Paying More Than Late Joiners:</text>
+  <text x="442" y="182" class="mono">Pre-Auth Tier-1 (`$120`); If Pool Hits 500-Unit Tier-3:</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Capture Only `$85` Across ALL Joiners Atomically!</text>
+  <text x="432" y="223" class="body-txt">• Instant `0420` Void on Expired Unfilled Pools:</text>
+  <text x="442" y="243" class="mono">Release Auth Within 60s If `Pool_Timer_Expired`</text>
+  <text x="432" y="266" class="body-txt">• Eliminates early backers cancelling and re-buying</text>
+  <text x="442" y="286" class="body-txt">when the group unlocks a lower price tier, and</text>
+  <text x="442" y="304" class="body-txt">prevents 7-day frozen funds on failed group buys</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNEQUAL_TIER_CAPTURE_OR_STUCK_EXPIRED_POOL_BLOCK</text>
+
+  <!-- Lane 3: Community Pickup-Point ("Tuanzhang") Cold-Chain Spoilage & Commission Clawback Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Station Cold-Box &amp; Commission (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Community Leader (`Tuanzhang`) Freezer Gate:</text>
+  <text x="830" y="182" class="mono">Block Assigning Frozen/Chilled SKUs to Pickup</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Points Without Active `BLE Temp_Logger &lt;= 4°C`!</text>
+  <text x="820" y="223" class="body-txt">• Pickup-Verified Commission &amp; Return Custody:</text>
+  <text x="830" y="243" class="body-txt">Holds 10% leader commission until neighbor scans</text>
+  <text x="830" y="261" class="body-txt">pickup QR &amp; driver scans returned crate back to hub</text>
+  <text x="820" y="284" class="body-txt">• Stops group leaders leaving ice cream on a</text>
+  <text x="830" y="302" class="body-txt">90°F sidewalk and pocketing refunded groceries</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNREFRIGERATED_PICKUP_STATION_OR_UNRETURNED_GOODS</text>
+
+  <!-- Bottom Smart Open-Pool Auto-Match & Next-Morning Grid-Hub Consolidation -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Last-30-Min Open-Pool Liquidity Matcher + Consolidated Station Drop Shipping (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Open-Pool Auto-Match</text>
+  <text x="62" y="462" class="body-txt">At T-30m before expiry,</text>
+  <text x="62" y="480" class="body-txt">merges two half-full 2-person</text>
+  <text x="62" y="498" class="body-txt">pools in the same city;</text>
+  <text x="62" y="516" class="mono">96.8% Group Completion Rate</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② 1-Drop-for-80-Households</text>
+  <text x="337" y="462" class="body-txt">Delivers 80 neighbors' orders</text>
+  <text x="337" y="480" class="body-txt">in 1 van drop to community</text>
+  <text x="337" y="498" class="body-txt">station before 09:00 AM;</text>
+  <text x="337" y="516" class="mono">Fulfillment: $0.35 vs $5.80/Order</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Farm-to-Station Pre-Sell</text>
+  <text x="622" y="462" class="body-txt">Harvests exact cherry/steak</text>
+  <text x="622" y="480" class="body-txt">count after 23:00 cutoff;</text>
+  <text x="622" y="498" class="body-txt">zero supermarket shelf</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">shrinkage (-82% Spoilage)</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#10b981" fill-opacity="0.1" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Lowest-Tier Price Guarantee</text>
+  <text x="907" y="462" class="body-txt">Partial-captures final lowest</text>
+  <text x="907" y="480" class="body-txt">tier price across all early</text>
+  <text x="907" y="498" class="body-txt">&amp; late pool participants;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Group-Buy &amp; Cold Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Group-Buy &amp; Spoilage Saved</text>
+  <text x="46" y="642" class="mono">$74,000 Saved / $200k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">96.8% Filled</text>
+  <text x="336" y="626" class="kpi-lbl">T-30m Open-Pool Auto-Matching</text>
+  <text x="336" y="642" class="mono">Zero Fake-Bot Cohort Fraud</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">$0.35 / Order</text>
+  <text x="626" y="626" class="kpi-lbl">Consolidated Community Station Drop</text>
+  <text x="626" y="642" class="mono">BLE Cold-Box Verified &lt;=4°C</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 Rebuy Churn</text>
+  <text x="916" y="626" class="kpi-lbl">Atomic Lowest-Tier Partial Capture</text>
+  <text x="916" y="642" class="mono">60s Void on Expired Pools</text>
+</svg>

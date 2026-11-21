@@ -24334,6 +24334,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("edtech-exam-voucher-pass-guarantee-sandbox", html_zh)
 
+    def test_ecommerce_social_group_buying_community_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceSocialGroupBuyingCommunityPolicyInput,
+            evaluate_ecommerce_social_group_buying_community_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_social_group_buying_community_policy(
+            EcommerceSocialGroupBuyingCommunityPolicyInput(
+                quarterly_fake_cohort_tier_rebuy_and_station_spoilage_pool_usd=200000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_COHORT_QUORUM_AND_COLD_STATION_AUTHORIZED",
+        )
+
+        quorum = evaluate_ecommerce_social_group_buying_community_policy(
+            EcommerceSocialGroupBuyingCommunityPolicyInput(
+                fake_bot_accounts_in_cohort_or_post_unlock_cancel_below_quorum=True
+            )
+        )
+        self.assertEqual(quorum["status_code"], 403)
+        self.assertEqual(
+            quorum["decision"],
+            "FAKE_BOT_COHORT_OR_POST_UNLOCK_MASS_CANCEL_BLOCK",
+        )
+
+        tier = evaluate_ecommerce_social_group_buying_community_policy(
+            EcommerceSocialGroupBuyingCommunityPolicyInput(
+                overcharging_early_joiners_above_final_tier_or_unreleased_expired_auth=True
+            )
+        )
+        self.assertEqual(tier["status_code"], 422)
+        self.assertEqual(
+            tier["decision"],
+            "UNEQUAL_TIER_CAPTURE_OR_STUCK_EXPIRED_POOL_BLOCK",
+        )
+
+        cold = evaluate_ecommerce_social_group_buying_community_policy(
+            EcommerceSocialGroupBuyingCommunityPolicyInput(
+                assigning_chilled_sku_to_station_without_ble_cooler_or_unreturned_good=True
+            )
+        )
+        self.assertEqual(cold["status_code"], 451)
+        self.assertEqual(
+            cold["decision"],
+            "UNREFRIGERATED_PICKUP_STATION_OR_UNRETURNED_GOODS",
+        )
+
+        optim = evaluate_ecommerce_social_group_buying_community_policy(
+            EcommerceSocialGroupBuyingCommunityPolicyInput(
+                quarterly_fake_cohort_tier_rebuy_and_station_spoilage_pool_usd=200000.0,
+                t30m_open_pool_auto_match_and_lowest_tier_partial_capture_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 74000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 126000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_social_group_buying_community_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-social-group-buying-community-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

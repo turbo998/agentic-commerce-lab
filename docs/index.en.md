@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`346` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`347` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (20 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (49 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (131 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (132 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (77 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (29 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (40 guides)](#tax-fx-privacy-disputes)
@@ -103,7 +103,7 @@
 | 49 | **High-Ticket Automotive, EV & Solar Split-Tender Checkout Escrow (`Tesla / Rivian / AutoFi / Plaid Transfer / Stripe`), `$1,000` Card-Deposit Cap, Lender `Stips` Funding Lock, Per-`VIN vIBAN` Wire Shield & 4-Way Digital-Key Release (`-38%` Closing Loss) Agent Architecture Selection FAQ** | [English](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.en.md) · [中文](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (131 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (132 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -240,6 +240,7 @@
 | 129 | **Cruise Line `Fly-Cruise` Embarkation, Shore Excursion & Onboard `SeaPass` Folio Escrow (`Royal Caribbean / Carnival / NCL / Amadeus Cruise / Oracle SPMS`), `T-6h` All-Aboard Air Buffer, `PVSA` Cabotage Lock, Back-to-Ship Guarantee & `Starlink` Incremental Auth (`-36%` Voyage Loss) Agent Architecture Selection FAQ** | [English](ota-cruise-fly-cruise-embarkation-shore-excursion-onboard-folio-escrow-agent-selection-faq.en.md) · [中文](ota-cruise-fly-cruise-embarkation-shore-excursion-onboard-folio-escrow-agent-selection-faq.md) |
 | 130 | **Automotive Aftermarket & Auto-Parts E-Commerce `17-Digit VIN` Fitment (`ACES / PIES / TecDoc`), Anti-Old-Part-Swap & `Core-Charge` Escrow (`eBay Motors Guaranteed Fit / AutoZone / RockAuto`), License-Plate-to-`VIN` Decoder, Laser-Serial Return Audit & `EPA / CARB EO` Lock (`-36%` Aftermarket Loss) Agent Architecture Selection FAQ** | [English](ecommerce-auto-parts-aftermarket-vin-fitment-core-charge-escrow-agent-selection-faq.en.md) · [中文](ecommerce-auto-parts-aftermarket-vin-fitment-core-charge-escrow-agent-selection-faq.md) |
 | 131 | **Apparel, Luxury & Camera-Gear Rental Turnaround-Buffer & Deposit Escrow (`Rent the Runway / Nuuly / Lensrentals / Stripe`), Anti-Hit-and-Run `KYC`, 48-Hour Cleaning/Calibration Buffer, Depreciated `FMV` Buyout Cap & Free Backup-Size Bundling (`-36%` Rental Loss) Agent Architecture Selection FAQ** | [English](ecommerce-apparel-camera-gear-rental-turnaround-buffer-deposit-escrow-agent-selection-faq.en.md) · [中文](ecommerce-apparel-camera-gear-rental-turnaround-buffer-deposit-escrow-agent-selection-faq.md) |
+| 132 | **Social Group-Buying, Community Grocery (`Tuanzhang`) & Tiered-Drop Escrow (`Pinduoduo / Community Group Buy / Kickstarter / Shopify GroupBuy`), Anti-Fake-Cohort `PAR` Lock, Lowest-Tier Partial Capture, Station `BLE` Cold-Box Gate & `T-30m` Open-Pool Auto-Match (`-37%` Group-Buy Loss) Agent Architecture Selection FAQ** | [English](ecommerce-social-group-buying-community-leader-cold-chain-tiered-rebate-escrow-agent-selection-faq.en.md) · [中文](ecommerce-social-group-buying-community-leader-cold-chain-tiered-rebate-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (77 Guides)

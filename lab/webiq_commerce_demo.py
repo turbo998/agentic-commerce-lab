@@ -32397,6 +32397,82 @@ def evaluate_edtech_exam_voucher_pass_guarantee_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceSocialGroupBuyingCommunityPolicyInput:
+    quarterly_fake_cohort_tier_rebuy_and_station_spoilage_pool_usd: float = 200000.0
+    fake_bot_accounts_in_cohort_or_post_unlock_cancel_below_quorum: bool = False
+    overcharging_early_joiners_above_final_tier_or_unreleased_expired_auth: bool = False
+    assigning_chilled_sku_to_station_without_ble_cooler_or_unreturned_good: bool = False
+    t30m_open_pool_auto_match_and_lowest_tier_partial_capture_ready: bool = False
+
+
+def evaluate_ecommerce_social_group_buying_community_policy(
+    policy_input: EcommerceSocialGroupBuyingCommunityPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_fake_cohort_tier_rebuy_and_station_spoilage_pool_usd
+        ),
+    )
+    if policy_input.assigning_chilled_sku_to_station_without_ble_cooler_or_unreturned_good:
+        return {
+            "status_code": 451,
+            "decision": "UNREFRIGERATED_PICKUP_STATION_OR_UNRETURNED_GOODS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.fake_bot_accounts_in_cohort_or_post_unlock_cancel_below_quorum:
+        return {
+            "status_code": 403,
+            "decision": "FAKE_BOT_COHORT_OR_POST_UNLOCK_MASS_CANCEL_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.overcharging_early_joiners_above_final_tier_or_unreleased_expired_auth:
+        return {
+            "status_code": 422,
+            "decision": "UNEQUAL_TIER_CAPTURE_OR_STUCK_EXPIRED_POOL_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.t30m_open_pool_auto_match_and_lowest_tier_partial_capture_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "OPEN_POOL_AUTO_MATCH_AND_LOWEST_TIER_CAPTURE_CONFIRM",
+            "mandate_token": "social_group_buy_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_COHORT_QUORUM_AND_COLD_STATION_AUTHORIZED",
+        "mandate_token": "social_group_buy_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -44244,6 +44320,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_social_group_buying_community_guard = {
+        "authorized_200": evaluate_ecommerce_social_group_buying_community_policy(
+            EcommerceSocialGroupBuyingCommunityPolicyInput()
+        ),
+        "fake_cohort_or_cancel_403": evaluate_ecommerce_social_group_buying_community_policy(
+            EcommerceSocialGroupBuyingCommunityPolicyInput(
+                fake_bot_accounts_in_cohort_or_post_unlock_cancel_below_quorum=True
+            )
+        ),
+        "unequal_tier_or_stuck_422": evaluate_ecommerce_social_group_buying_community_policy(
+            EcommerceSocialGroupBuyingCommunityPolicyInput(
+                overcharging_early_joiners_above_final_tier_or_unreleased_expired_auth=True
+            )
+        ),
+        "no_cooler_or_unreturned_451": evaluate_ecommerce_social_group_buying_community_policy(
+            EcommerceSocialGroupBuyingCommunityPolicyInput(
+                assigning_chilled_sku_to_station_without_ble_cooler_or_unreturned_good=True
+            )
+        ),
+        "open_pool_and_tier_409": evaluate_ecommerce_social_group_buying_community_policy(
+            EcommerceSocialGroupBuyingCommunityPolicyInput(
+                t30m_open_pool_auto_match_and_lowest_tier_partial_capture_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -44600,6 +44702,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_returnable_packaging_pallet_guard": b2b_returnable_packaging_pallet_guard,
         "ecommerce_apparel_gear_rental_guard": ecommerce_apparel_gear_rental_guard,
         "edtech_exam_voucher_pass_guarantee_guard": edtech_exam_voucher_pass_guarantee_guard,
+        "ecommerce_social_group_buying_community_guard": ecommerce_social_group_buying_community_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -62795,6 +62898,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="edtechexam-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SECOND_SHOT_RETAKE_VOUCHER_AND_CENSUS_ESCROW_CONFIRM · Mandate: edtech_exam_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 228 Social Group-Buying, Community Leader Cold-Chain & Tiered-Rebate Escrow (#347) -->
+      <div class="finops-box" id="ecommerce-social-group-buying-community-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🍒 社交拼团、社区生鲜团购与阶梯集采 (拼多多 / 兴盛优选 / Shopify GroupBuy) 沙盒</div>
+            <div class="finops-sub">Round 228 (#347) · 独立卡 PAR 去重防 9个小号假凑团秒退 9单 (HTTP 403) + 阶梯团全员预授权按最终最低价 $85 统一实扣防退单重拍与 60s 解冻 (HTTP 422) + 社区自提点冰柜 BLE 探头 &lt;=4°C 准入与扫码提货解冻佣金 (HTTP 451) + 临期 30m 公海自动凑团净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="socialgroup-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度小号假凑团秒退 9单白嫖批发价、早鸟客退单重拍支付费浪费与社区无冰柜自提点生鲜化冻损耗池 ($)
+            <input type="number" id="socialgroup-gross-input" value="200000" min="10000" step="5000" oninput="recalcEcommerceSocialGroupBuyingCommunitySandbox()" />
+          </label>
+          <label>团内独立支付卡 EMVCo PAR 数量核验与成团后发货前有效人数守恒锁 (Quorum Invariant)
+            <select id="socialgroup-quorum-select" onchange="recalcEcommerceSocialGroupBuyingCommunitySandbox()">
+              <option value="pass">10 名真实独立 PAR 买家参团 + 发货前无恶意破团退单 (合规)</option>
+              <option value="block_403">二道贩子开 9 个假小号凑满 10 人团解锁 5 折批发价后秒退 9 单只留 1 单发货 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>阶梯拼团“全员预授权 + 截单按最终最低档统一部分实扣 (Partial Capture)”与流团 60s 解冻
+            <select id="socialgroup-tier-select" onchange="recalcEcommerceSocialGroupBuyingCommunitySandbox()">
+              <option value="pass">进场预授权 $120，满 500 人截单时对全员原子级仅实扣 $85 + 流团 60s 自动冲正 (合规)</option>
+              <option value="block_422">对早鸟客先实扣 $120 导致降到 $85 时 499 人集体退旧单重拍 或 流团后冻结买家资金 7 天 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>社区团长自提点蓝牙冰柜温控探头 (&lt;=4°C) 准入锁与“居民扫提货码解冻佣金 / 司机收退件”门禁
+            <select id="socialgroup-cold-select" onchange="recalcEcommerceSocialGroupBuyingCommunitySandbox()">
+              <option value="pass">自提点冰柜 BLE 探头 &lt;=4°C 在线 + 居民扫码提货解冻 10% 佣金且退件交回司机 (安全)</option>
+              <option value="block_451">把冰淇淋与冷鲜牛排派给没开冰柜的 35°C 小卖部晒化变质 或 团长私吞居民退回的水果不交还网格仓 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>距流团倒计时 30 分钟公海大厅自动配对 (Open-Pool Auto-Match) 与 1 车送 80 户集约自提
+            <select id="socialgroup-opt-select" onchange="recalcEcommerceSocialGroupBuyingCommunitySandbox()">
+              <option value="enabled" selected>T-30m 公海自动凑团(96.8%成团率) + 23:00 以销定采 + 整车送自提点($0.35/单) (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统各自苦等微信好友参团(29%流团率) + 单件独立发快递 ($5.80/单) (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度假团套利与自提冷链损耗池</div>
+            <div class="finops-kpi-val" id="socialgroup-gross-kpi">$200,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">公海凑团与最低档实扣后净损耗</div>
+            <div class="finops-kpi-val" id="socialgroup-net-kpi" style="color:#6ee7b7;">$126,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省退单手续费与生鲜报废</div>
+            <div class="finops-kpi-val" id="socialgroup-savings-kpi" style="color:#38bdf8;">$74,000</div>
+          </div>
+        </div>
+        <div id="socialgroup-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 OPEN_POOL_AUTO_MATCH_AND_LOWEST_TIER_CAPTURE_CONFIRM · Mandate: social_group_buy_escrow_optim_409
         </div>
       </div>
 
@@ -84956,6 +85116,79 @@ function recalcEdtechExamVoucherPassGuaranteeSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_LAB_DILIGENCE_AND_50MIN_CPE_AUTHORIZED · Mandate: edtech_exam_escrow_200';
+}}
+
+function recalcEcommerceSocialGroupBuyingCommunitySandbox() {{
+  const grossInput = document.getElementById('socialgroup-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '200000'));
+  const quorumGate = document.getElementById('socialgroup-quorum-select').value;
+  const tierGate = document.getElementById('socialgroup-tier-select').value;
+  const coldGate = document.getElementById('socialgroup-cold-select').value;
+  const optMode = document.getElementById('socialgroup-opt-select').value;
+
+  const grossKpi = document.getElementById('socialgroup-gross-kpi');
+  const netKpi = document.getElementById('socialgroup-net-kpi');
+  const savingsKpi = document.getElementById('socialgroup-savings-kpi');
+  const statusKpi = document.getElementById('socialgroup-status-kpi');
+  const banner = document.getElementById('socialgroup-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (coldGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNREFRIGERATED_PICKUP_STATION_OR_UNRETURNED_GOODS · Mandate: null';
+    return;
+  }}
+  if (quorumGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 FAKE_BOT_COHORT_OR_POST_UNLOCK_MASS_CANCEL_BLOCK · Mandate: null';
+    return;
+  }}
+  if (tierGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNEQUAL_TIER_CAPTURE_OR_STUCK_EXPIRED_POOL_BLOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 OPEN_POOL_AUTO_MATCH_AND_LOWEST_TIER_CAPTURE_CONFIRM · Mandate: social_group_buy_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_COHORT_QUORUM_AND_COLD_STATION_AUTHORIZED · Mandate: social_group_buy_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
