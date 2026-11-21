@@ -18907,6 +18907,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-promo-stacking-escrow-sandbox", html_zh)
 
+    def test_b2b_sow_services_vms_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BSowServicesVmsEscrowPolicyInput,
+            evaluate_b2b_sow_services_vms_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_sow_services_vms_escrow_policy(
+            B2BSowServicesVmsEscrowPolicyInput(
+                quarterly_sow_and_contingent_labor_spend_pool_usd=180000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_SES_AND_UAT_DELIVERABLE_AUTHORIZED",
+        )
+
+        staff = evaluate_b2b_sow_services_vms_escrow_policy(
+            B2BSowServicesVmsEscrowPolicyInput(
+                bait_and_switch_staff_rate_card_tier_fraud=True
+            )
+        )
+        self.assertEqual(staff["status_code"], 403)
+        self.assertEqual(
+            staff["decision"],
+            "BAIT_AND_SWITCH_STAFF_RATE_CARD_TIER_FRAUD_BLOCKED",
+        )
+
+        ghost = evaluate_b2b_sow_services_vms_escrow_policy(
+            B2BSowServicesVmsEscrowPolicyInput(
+                ghost_timesheet_or_date_only_sow_milestone=True
+            )
+        )
+        self.assertEqual(ghost["status_code"], 422)
+        self.assertEqual(
+            ghost["decision"],
+            "GHOST_TIMESHEET_OR_DATE_ONLY_SOW_MILESTONE_BLOCKED",
+        )
+
+        tenure = evaluate_b2b_sow_services_vms_escrow_policy(
+            B2BSowServicesVmsEscrowPolicyInput(
+                co_employment_tenure_breach_or_unrevoked_offboarding_iam=True
+            )
+        )
+        self.assertEqual(tenure["status_code"], 451)
+        self.assertEqual(
+            tenure["decision"],
+            "CO_EMPLOYMENT_TENURE_BREACH_OR_UNREVOKED_OFFBOARDING_IAM_HOLD",
+        )
+
+        optim = evaluate_b2b_sow_services_vms_escrow_policy(
+            B2BSowServicesVmsEscrowPolicyInput(
+                quarterly_sow_and_contingent_labor_spend_pool_usd=180000.0,
+                t_and_m_to_nte_deliverable_sow_and_volume_rebate_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 59400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 120600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_sow_services_vms_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-sow-services-vms-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg590" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#091326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+    <linearGradient id="accent590" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg590)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent590)" rx="3" />
+
+  <text x="40" y="58" class="title">企业 B2B 专业服务采购 (SOW &amp; VMS：SAP Fieldglass / Beeline) 与防幽灵工时/换人降级托管架构</text>
+  <text x="40" y="80" class="subtitle">Round 147 · 防首席专家投标后换成应届生驻场、防无 Git/Jira 产出的 40h/周幽灵工时单 &amp; 交付物挂钩结算净省 33% (SVG 590)</text>
+
+  <!-- Left Card: 3 SOW & VMS Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大专业服务与外包采购黑洞</text>
+  <text x="56" y="164" class="card-title">1. “A角投标、C角进场”调包计谋 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 供应商投标时挂 15 年经验首席架构师简历，报 $260/小时</text>
+  <text x="56" y="202" class="body">• 签完合同第 2 周借口生病调走，塞进刚毕业 1 年初级开发顶替</text>
+  <text x="56" y="220" class="warn">• 账单却照按 $260/hr L5 专家档收，套取 65% 非法职称差价!</text>
+
+  <text x="56" y="256" class="card-title">2. 幽灵工时单与“按日历混里程碑” (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 远程外包每周五准时填满 40.0 小时，但 GitHub 0 提交/Jira 0 单</text>
+  <text x="56" y="294" class="body">• 或把 SOW 里程碑写成“第 30 天付 30%、第 60 天付 40%”纯时间节点</text>
+  <text x="56" y="312" class="warn">• 钱付了 70%，代码连编译都跑不通，乙方威胁不加钱就停工!</text>
+
+  <text x="56" y="348" class="card-title">3. 超期驻场引发“事实雇佣”劳动诉讼 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 同一名外包人员在甲方连续驻场超 18–24 个月未执行强制轮休</text>
+  <text x="56" y="386" class="body">• 触发美欧 Co-Employment (共同雇主) 追缴社保/期权天价诉讼</text>
+  <text x="56" y="404" class="warn">• 或离职当天未秒断 Okta/GitHub Token 导致核心源码被拷走!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: BAIT_AND_SWITCH_STAFF_RATE_CARD_FRAUD</text>
+  <text x="70" y="502" class="warn">• HTTP 422: GHOST_TIMESHEET_OR_DATE_ONLY_MILESTONE</text>
+  <text x="70" y="524" class="warn">• HTTP 451: CO_EMPLOYMENT_TENURE_OR_UNREVOKED_IAM</text>
+  <text x="70" y="546" class="mono">• HTTP 409:T_AND_M_TO_DELIVERABLE_SOW_CAP_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: VERIFIED_SES_AND_UAT_DELIVERABLE_200</text>
+  <text x="70" y="596" class="body">铁律: 严禁审批无 CI/CD 验收证据的“纯日期里程碑”付款!</text>
+
+  <!-- Center Card: 4-Stage SOW & VMS Escrow Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶专业服务 (SOW/VMS) 托管架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">Gate 1: 实名关键人锚定与职级费率表硬锁 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• SOW 合同强制绑定 `Key_Personnel_Okta_ID` 与社保/证书哈希</text>
+  <text x="450" y="213" class="body">• 未经甲方书面重签变更单私自换人，或实际驻场职级低于账单档位:</text>
+  <text x="450" y="231" class="mono">• 立即拦截工时单入账并按实际低职级重算 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#f59e0b" />
+  <text x="450" y="282" class="card-title" fill="#fcd34d">Gate 2: 工程遥测工时核验与 UAT 交付物门禁 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• SAP Fieldglass / Beeline 工时单交叉比对 Okta 登录 + Git PR/Jira</text>
+  <text x="450" y="320" class="body">  整周 0 工程活跃度却申报 40h 满工时 -&gt; 自动挂起要求附工作证明</text>
+  <text x="450" y="338" class="body">• 里程碑付款 (SES) 必须绑定自动化测试通过率与 UAT 签字单</text>
+  <text x="450" y="354" class="mono">• 零工程产出的幽灵工时或仅凭日历到期催款 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 共同雇主 (Co-Employment) 红线与离场销权 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 自动追踪每名外包顾问累计在岗天数，距法定 18 个月红线提前 30 天</text>
+  <text x="450" y="437" class="body">  强制触发轮岗冷却或转包为独立交付型 SOW</text>
+  <text x="450" y="455" class="mono">• 末次工时结算款硬绑定“笔记本电脑归还 + IAM 令牌吊销”-&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: T&amp;M 转 NTE 封顶交付与阶梯量折 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 将无底洞的纯人天合同 (Pure T&amp;M) 重构为“带最高封顶价 (NTE) +</text>
+  <text x="450" y="546" class="body">  15% 质保尾款留置 (Holdback) 的可量化里程碑 SOW”</text>
+  <text x="450" y="566" class="mono">• 自动汇总跨部门同一家供应商累计采购额，激活 &gt;$1M 阶梯返点</text>
+  <text x="450" y="586" class="mono">• 砍掉幽灵加班费 + 杜绝换人降级 + 量折套利 -&gt; 净省 33% 支出</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大企业级 VMS 与服务采购平台</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. SAP Fieldglass + SAP S/4HANA SES</text>
+  <text x="846" y="182" class="body">• 优势: 全球最成熟的外包人力 (VMS) 与服务工作说明书 (SOW) 中枢</text>
+  <text x="846" y="198" class="body">• 特性: 强绑定服务确认单 (`Service Entry Sheet`) 与 PO 预算硬顶</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Beeline / Workday VNDLY</text>
+  <text x="846" y="244" class="body">• 优势: 深度集成 HRIS 身份库与全球各州/各国驻场任期合规预警</text>
+  <text x="846" y="260" class="body">• 特性: 实时比对各区域标准职位费率基准 (Rate Card Benchmark)</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Coupa Contingent Workforce + 合同 CLM</text>
+  <text x="846" y="306" class="body">• 优势: AI 自动扫描 SOW 条款，拦截“按自然日付款”的伪里程碑</text>
+  <text x="846" y="322" class="body">• 特性: 打通采购申请、工时审批与虚拟卡/ACH 自动结算闭环</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. 飞书项目 / Jira + Okta 遥测对账网关</text>
+  <text x="846" y="368" class="body">• 优势: 在不监控屏幕隐私的前提下，用 SSO 活跃天数与 PR 交付物</text>
+  <text x="846" y="384" class="body">• 特性: 100% 揪出“一人同时打 3 份远程工”的零产出幽灵工时单</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度研发外包与专业服务采购池 ($180,000)</text>
+  <text x="860" y="456" class="body">• 传统纯人天盲批工时+换人降级+超支: $180,000/季</text>
+  <text x="860" y="476" class="mono">• 实名职级锁杜绝初级生冒充架构师高报费率: -$23,400</text>
+  <text x="860" y="496" class="mono">• 工程遥测与 UAT 交付锁砍掉幽灵混日子工时: -$21,600</text>
+  <text x="860" y="516" class="mono">• NTE 封顶里程碑改造与跨部门汇总阶梯返点: -$14,400</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净服务支出: $120,600 (净省 $59,400 / -33%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: b2b_sow_vms_escrow_optim_409</text>
+</svg>
