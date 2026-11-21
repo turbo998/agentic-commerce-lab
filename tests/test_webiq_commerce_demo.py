@@ -23798,6 +23798,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-sneaker-drop-raffle-auth-sandbox", html_zh)
 
+    def test_b2b_sow_services_procurement_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BSowServicesProcurementPolicyInput,
+            evaluate_b2b_sow_services_procurement_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_sow_services_procurement_policy(
+            B2BSowServicesProcurementPolicyInput(
+                quarterly_bait_switch_double_billing_and_scope_creep_pool_usd=300000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_DELIVERABLE_SES_AND_NAMED_STAFF_AUTHORIZED",
+        )
+
+        staff = evaluate_b2b_sow_services_procurement_policy(
+            B2BSowServicesProcurementPolicyInput(
+                unapproved_junior_staff_substitution_or_cross_sow_over_40h_week=True
+            )
+        )
+        self.assertEqual(staff["status_code"], 403)
+        self.assertEqual(
+            staff["decision"],
+            "BAIT_AND_SWITCH_STAFF_OR_CROSS_SOW_DOUBLE_BILL",
+        )
+
+        ses = evaluate_b2b_sow_services_procurement_policy(
+            B2BSowServicesProcurementPolicyInput(
+                missing_accepted_deliverable_ses_or_burn_exceeding_progress_by_15pct=True
+            )
+        )
+        self.assertEqual(ses["status_code"], 422)
+        self.assertEqual(
+            ses["decision"],
+            "UNACCEPTED_DELIVERABLE_SES_OR_BURN_DIVERGENCE_BLOCK",
+        )
+
+        iam = evaluate_b2b_sow_services_procurement_policy(
+            B2BSowServicesProcurementPolicyInput(
+                disguised_staff_aug_coemployment_or_unrevoked_contractor_iam_on_close=True
+            )
+        )
+        self.assertEqual(iam["status_code"], 451)
+        self.assertEqual(
+            iam["decision"],
+            "CO_EMPLOYMENT_MISCLASS_OR_ACTIVE_IAM_TOKEN_HOLD",
+        )
+
+        optim = evaluate_b2b_sow_services_procurement_policy(
+            B2BSowServicesProcurementPolicyInput(
+                quarterly_bait_switch_double_billing_and_scope_creep_pool_usd=300000.0,
+                ten_pct_warranty_retainage_and_automated_change_order_diff_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 108000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 192000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_sow_services_procurement_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-sow-services-procurement-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

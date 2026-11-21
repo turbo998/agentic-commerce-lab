@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg663" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <linearGradient id="hdr663" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg663)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr663)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 220 · B2B Deliverable-Based `SOW` Services Procurement &amp; Retainage Escrow</text>
+  <text x="48" y="74" class="sub">SAP Fieldglass / Beeline / Coupa SOW / Workday · Cross-Project Double-Billing Lock · `SES` Artifact Proof · 10% Retainage (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #663 · FAQ #339</text>
+
+  <!-- Lane 1: Bait-and-Switch Junior Staffing & Cross-Project >40h Double-Billing Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Key-Personnel &amp; Double-Bill Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Billing $350/hr Partner for Junior Intern:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Verify `Git/VDI_Actor_ID == Named_SOW_Architect`</text>
+  <text x="54" y="200" class="mono">&amp; `Rate_Card_Tier &lt;= MSA_Ceiling`!</text>
+  <text x="44" y="223" class="body-txt">• Cross-SOW Concurrent Timesheet Deduplication:</text>
+  <text x="54" y="243" class="mono">Block Same Consultant Billing 40h × 3 Active SOWs!</text>
+  <text x="44" y="266" class="body-txt">• Eliminates consulting firms pitching A-team</text>
+  <text x="54" y="286" class="body-txt">principals during RFP and staffing unapproved</text>
+  <text x="54" y="304" class="body-txt">juniors at principal rates on day 1</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 BAIT_AND_SWITCH_STAFF_OR_CROSS_SOW_DOUBLE_BILL</text>
+
+  <!-- Lane 2: Budget Burn vs Milestone Completion Divergence ("90% Spent, 35% Built") & SES Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Burn-vs-Deliverable `SES` Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Paying Calendar Invoices Without Artifacts:</text>
+  <text x="442" y="182" class="mono">Require Signed `SAP ML81N Service Entry Sheet`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">+ Passed `CI/CD / UAT Deliverable Hash`!</text>
+  <text x="432" y="223" class="body-txt">• Burn-to-Progress Divergence Circuit Breaker:</text>
+  <text x="442" y="243" class="mono">Block Invoice If `Budget_Burn_Pct - Milestone_Pct &gt; 15%`</text>
+  <text x="432" y="266" class="body-txt">• Prevents T&amp;M/SOW vendors burning 95% of the</text>
+  <text x="442" y="286" class="body-txt">PO budget while only completing 40% of scope,</text>
+  <text x="442" y="304" class="body-txt">then holding the project hostage for a Change Order</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNACCEPTED_DELIVERABLE_SES_OR_BURN_DIVERGENCE_BLOCK</text>
+
+  <!-- Lane 3: Disguised Staff-Augmentation ("Rogue SOW" Co-Employment) & Unrevoked Offboard Access Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Co-Employment &amp; IAM Revoke Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Disguising Temp Staff as Fixed-Price SOW:</text>
+  <text x="830" y="182" class="mono">Flag SOWs Lacking Measurable Output Deliverables</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">(`IRS / DOL` Worker Misclassification &amp; Tenure Cap!)</text>
+  <text x="820" y="223" class="body-txt">• Final-Milestone `Okta / GitHub` Access Revocation:</text>
+  <text x="830" y="243" class="body-txt">Holds final `10%` retainage release until contractor</text>
+  <text x="830" y="261" class="body-txt">laptops, badges, and `SSO` tokens are 100% revoked</text>
+  <text x="820" y="284" class="body-txt">• Eliminates zombie contractor accounts retaining</text>
+  <text x="830" y="302" class="body-txt">production database access 6 months after SOW ends</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 CO_EMPLOYMENT_MISCLASS_OR_ACTIVE_IAM_TOKEN_HOLD</text>
+
+  <!-- Bottom 10% Warranty Retainage Holdback & MSA Rate-Card Benchmarking -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. `10%` UAT Warranty Retainage Escrow + Automated `MSA` Rate-Card Benchmarking (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① 10% Retainage Holdback</text>
+  <text x="62" y="462" class="body-txt">Withholds 10% of each</text>
+  <text x="62" y="480" class="body-txt">milestone invoice in escrow</text>
+  <text x="62" y="498" class="body-txt">until 30-day post-go-live</text>
+  <text x="62" y="516" class="mono">zero-P1 warranty passes</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② MSA Rate-Card Auto-Audit</text>
+  <text x="337" y="462" class="body-txt">Cross-checks proposed SOW</text>
+  <text x="337" y="480" class="body-txt">role rates &amp; blended margin</text>
+  <text x="337" y="498" class="body-txt">against master `MSA` ceiling;</text>
+  <text x="337" y="516" class="mono">-22% Blended Hourly Rate</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Change-Order Scope Diff</text>
+  <text x="622" y="462" class="body-txt">Compares Change Request</text>
+  <text x="622" y="480" class="body-txt">against original SOW clauses</text>
+  <text x="622" y="498" class="body-txt">to block billing for base</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">scope defects (-74% Creep)</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Auto-SES from Jira/GitHub</text>
+  <text x="907" y="462" class="body-txt">Generates `SAP ML81N SES`</text>
+  <text x="907" y="480" class="body-txt">automatically when UAT test</text>
+  <text x="907" y="498" class="body-txt">suite &amp; sign-off pass;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Services SOW Leakage</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly SOW &amp; Consulting Loss Saved</text>
+  <text x="46" y="642" class="mono">$108,000 Saved / $300k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">0 Double-Bills</text>
+  <text x="336" y="626" class="kpi-lbl">Cross-SOW Consultant Hours Capped</text>
+  <text x="336" y="642" class="mono">Blocks Bait-and-Switch Staffing</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% SES Proof</text>
+  <text x="626" y="626" class="kpi-lbl">Pay-on-Accepted-Deliverable Only</text>
+  <text x="626" y="642" class="mono">+ 10% Warranty Retainage Escrow</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 Zombie IAM</text>
+  <text x="916" y="626" class="kpi-lbl">Offboarding Revokes Okta/Git Before Pay</text>
+  <text x="916" y="642" class="mono">Eliminates Co-Employment Risk</text>
+</svg>

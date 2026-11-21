@@ -31789,6 +31789,82 @@ def evaluate_ecommerce_sneaker_drop_raffle_auth_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BSowServicesProcurementPolicyInput:
+    quarterly_bait_switch_double_billing_and_scope_creep_pool_usd: float = 300000.0
+    unapproved_junior_staff_substitution_or_cross_sow_over_40h_week: bool = False
+    missing_accepted_deliverable_ses_or_burn_exceeding_progress_by_15pct: bool = False
+    disguised_staff_aug_coemployment_or_unrevoked_contractor_iam_on_close: bool = False
+    ten_pct_warranty_retainage_and_automated_change_order_diff_ready: bool = False
+
+
+def evaluate_b2b_sow_services_procurement_policy(
+    policy_input: B2BSowServicesProcurementPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_bait_switch_double_billing_and_scope_creep_pool_usd
+        ),
+    )
+    if policy_input.disguised_staff_aug_coemployment_or_unrevoked_contractor_iam_on_close:
+        return {
+            "status_code": 451,
+            "decision": "CO_EMPLOYMENT_MISCLASS_OR_ACTIVE_IAM_TOKEN_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unapproved_junior_staff_substitution_or_cross_sow_over_40h_week:
+        return {
+            "status_code": 403,
+            "decision": "BAIT_AND_SWITCH_STAFF_OR_CROSS_SOW_DOUBLE_BILL",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missing_accepted_deliverable_ses_or_burn_exceeding_progress_by_15pct:
+        return {
+            "status_code": 422,
+            "decision": "UNACCEPTED_DELIVERABLE_SES_OR_BURN_DIVERGENCE_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ten_pct_warranty_retainage_and_automated_change_order_diff_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "WARRANTY_RETAINAGE_SES_AND_CHANGE_ORDER_DIFF_CONFIRM",
+            "mandate_token": "b2b_sow_services_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_DELIVERABLE_SES_AND_NAMED_STAFF_AUTHORIZED",
+        "mandate_token": "b2b_sow_services_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -43428,6 +43504,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_sow_services_procurement_guard = {
+        "authorized_200": evaluate_b2b_sow_services_procurement_policy(
+            B2BSowServicesProcurementPolicyInput()
+        ),
+        "bait_switch_or_double_bill_403": evaluate_b2b_sow_services_procurement_policy(
+            B2BSowServicesProcurementPolicyInput(
+                unapproved_junior_staff_substitution_or_cross_sow_over_40h_week=True
+            )
+        ),
+        "missing_ses_or_burn_gap_422": evaluate_b2b_sow_services_procurement_policy(
+            B2BSowServicesProcurementPolicyInput(
+                missing_accepted_deliverable_ses_or_burn_exceeding_progress_by_15pct=True
+            )
+        ),
+        "co_employ_or_active_iam_451": evaluate_b2b_sow_services_procurement_policy(
+            B2BSowServicesProcurementPolicyInput(
+                disguised_staff_aug_coemployment_or_unrevoked_contractor_iam_on_close=True
+            )
+        ),
+        "retainage_and_cr_diff_409": evaluate_b2b_sow_services_procurement_policy(
+            B2BSowServicesProcurementPolicyInput(
+                ten_pct_warranty_retainage_and_automated_change_order_diff_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -43776,6 +43878,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_sales_tax_holiday_exemption_guard": ecommerce_sales_tax_holiday_exemption_guard,
         "b2b_saas_cloud_marketplace_offer_guard": b2b_saas_cloud_marketplace_offer_guard,
         "ecommerce_sneaker_drop_raffle_auth_guard": ecommerce_sneaker_drop_raffle_auth_guard,
+        "b2b_sow_services_procurement_guard": b2b_sow_services_procurement_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -61515,6 +61618,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="sneakerdrop-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 KARMA_RAFFLE_AUTO_REMATCH_AND_NFC_VAULT_CONFIRM · Mandate: sneaker_drop_auth_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 220 B2B Deliverable-Based SOW Services Procurement & Retainage Escrow (#339) -->
+      <div class="finops-box" id="b2b-sow-services-procurement-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📑 企业 B2B 软件外包与专业服务工作说明书采购 (SOW: SAP Fieldglass / Beeline / Coupa) 沙盒</div>
+            <div class="finops-sub">Round 220 (#339) · 具名关键专家 Git/VDI 核验与跨项目单人 &lt;=40h/周防重锁 (HTTP 403) + 凭 UAT 验收哈希生成 SAP ML81N SES 与燃烧率偏离 15% 熔断 (HTTP 422) + 拦截假 SOW 真派遣与结项强制销除 Okta/Git 权限 (HTTP 451) + 10% 质保留置金净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="sowproc-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度外包偷换初级实习生冒充首席专家、同一顾问跨 3 个项目重复报满工时与烧光预算烂尾变更单池 ($)
+            <input type="number" id="sowproc-gross-input" value="300000" min="10000" step="10000" oninput="recalcB2BSowServicesProcurementSandbox()" />
+          </label>
+          <label>具名关键人员 (Named Key Personnel) 实名操作核验与全集团跨 SOW 周工时 &lt;=40h 去重
+            <select id="sowproc-staff-select" onchange="recalcB2BSowServicesProcurementSandbox()">
+              <option value="pass">Git/VDI 提交人匹配 SOW 具名架构师 + 全集团跨项目累计周工时 &lt;= 40h (合规)</option>
+              <option value="block_403">路演写 $350/h 首席专家进场偷换成大四实习生 或 同一项目经理在 3 个部门同时报每周 40h 收三份钱 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>基于 UAT 可交付物签发 SAP ML81N 服务确认单 (SES) 与资金消耗 vs 进度偏离度 (&lt;=15%) 门禁
+            <select id="sowproc-ses-select" onchange="recalcB2BSowServicesProcurementSandbox()">
+              <option value="pass">已通过 UAT 自动化测试生成 SAP ML81N SES + 预算消耗与里程碑进度对齐 (合规)</option>
+              <option value="block_422">PO 预算已烧掉 90% 但功能只写完 35% 企图绑架追加 $25万变更单 或 无 SES 裸票催款 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>防“假 SOW 真劳务派遣 (Co-Employment)”与结项尾款强绑定外包 Okta/GitHub 权限清零锁
+            <select id="sowproc-iam-select" onchange="recalcB2BSowServicesProcurementSandbox()">
+              <option value="pass">具备量化交付标的 + 结项时外包人员 SSO/代码库权限与门禁卡 100% 注销归还 (安全)</option>
+              <option value="block_451">无明确交付物把招驻场人头伪装成假 SOW 逃避背调 或 结项付清尾款但外包账号仍握有生产数据库权限 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>每期里程碑预扣 10% 上线质保留置金 (Warranty Retainage) 与变更单 (Change Order) 范围去重
+            <select id="sowproc-opt-select" onchange="recalcB2BSowServicesProcurementSandbox()">
+              <option value="enabled" selected>暂扣 10% 待上线 30天零 P1 故障释放 + 自动驳回原合同范围内 Bug 收费变更单 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统按自然月全额付款无质保留置金 + 人工邮件审批变更单 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度 SOW 换人虚报与烂尾变更池</div>
+            <div class="finops-kpi-val" id="sowproc-gross-kpi">$300,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">SES 交付物锁与留置金后净支出</div>
+            <div class="finops-kpi-val" id="sowproc-net-kpi" style="color:#6ee7b7;">$192,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省虚报工时与恶意变更单</div>
+            <div class="finops-kpi-val" id="sowproc-savings-kpi" style="color:#38bdf8;">$108,000</div>
+          </div>
+        </div>
+        <div id="sowproc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 WARRANTY_RETAINAGE_SES_AND_CHANGE_ORDER_DIFF_CONFIRM · Mandate: b2b_sow_services_escrow_optim_409
         </div>
       </div>
 
@@ -83092,6 +83252,79 @@ function recalcEcommerceSneakerDropRaffleAuthSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_HUMAN_DRAW_AND_NFC_AUTHENTICATED_AUTHORIZED · Mandate: sneaker_drop_auth_escrow_200';
+}}
+
+function recalcB2BSowServicesProcurementSandbox() {{
+  const grossInput = document.getElementById('sowproc-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '300000'));
+  const staffGate = document.getElementById('sowproc-staff-select').value;
+  const sesGate = document.getElementById('sowproc-ses-select').value;
+  const iamGate = document.getElementById('sowproc-iam-select').value;
+  const optMode = document.getElementById('sowproc-opt-select').value;
+
+  const grossKpi = document.getElementById('sowproc-gross-kpi');
+  const netKpi = document.getElementById('sowproc-net-kpi');
+  const savingsKpi = document.getElementById('sowproc-savings-kpi');
+  const statusKpi = document.getElementById('sowproc-status-kpi');
+  const banner = document.getElementById('sowproc-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (iamGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CO_EMPLOYMENT_MISCLASS_OR_ACTIVE_IAM_TOKEN_HOLD · Mandate: null';
+    return;
+  }}
+  if (staffGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BAIT_AND_SWITCH_STAFF_OR_CROSS_SOW_DOUBLE_BILL · Mandate: null';
+    return;
+  }}
+  if (sesGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNACCEPTED_DELIVERABLE_SES_OR_BURN_DIVERGENCE_BLOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 WARRANTY_RETAINAGE_SES_AND_CHANGE_ORDER_DIFF_CONFIRM · Mandate: b2b_sow_services_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_DELIVERABLE_SES_AND_NAMED_STAFF_AUTHORIZED · Mandate: b2b_sow_services_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
