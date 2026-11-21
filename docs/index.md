@@ -2,12 +2,12 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`340` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`341` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（20 篇）](#platform-grounding)
-- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（48 篇）](#payments-mandates)
+- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（49 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（128 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（76 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（28 篇）](#saas-finops-micropayments)
@@ -46,7 +46,7 @@
 | 20 | **全渠道高客单门店私人导购与云货架跨店调拨（Omnichannel Clienteling & Endless Aisle：Tulip / Salesforce Retail POS / Shopify POS / NewStore）、防“电商广告截胡柜姐跟进 3 天客户的佣金”与双店分润托管“防线上退到门店（BORIS）反扣门店当日业绩致店员拒收、防调出门店故意点缺货拒单囤货及防导购离职带走 500 名 VIP 净省 37%”Agent 架构选型 FAQ（🏆 第 320 篇里程碑）** | [中文](omnichannel-retail-clienteling-endless-aisle-commission-attribution-escrow-agent-selection-faq.md) · [English](omnichannel-retail-clienteling-endless-aisle-commission-attribution-escrow-agent-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
-## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（48 篇）
+## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（49 篇）
 
 > 涵盖 Google AP2、Stripe SPT、Visa VIC / TAP、Mastercard Agent Pay、PayPal、UCP/ACP 协议互操作、3DS2 无浏览器挑战、FIDO2/Passkey 硬件签名及幂等防重扣架构。
 
@@ -100,6 +100,7 @@
 | 46 | **电商一键客座加速结账（One-Click Accelerated Checkout：Shop Pay / Stripe Link / PayPal Fastlane / Apple Pay）、防国际短信轰炸盗刷（`SMS Pumping Toll Fraud`）与卡组网络令牌（`Network Token`）托管“防黑产夜刷 15 万条高价验证码掏空 $45,000 短信费、防一键支付自动发往 3 年前旧公寓地址丢件与 `Passkey + DPAN` 净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-one-click-accelerated-checkout-passkey-network-token-sms-fraud-escrow-agent-selection-faq.md) · [English](ecommerce-one-click-accelerated-checkout-passkey-network-token-sms-fraud-escrow-agent-selection-faq.en.md) |
 | 47 | **大额电商与 B2B 收银“银行直连支付（Pay-by-Bank / Open Banking A2A：Plaid Transfer / Stripe Financial Connections / Trustly / FedNow）”、防 `ACH R01` 空头账户未到账骗货与对公借记锁（`R29`）托管“防省 $100 刷卡费却在 T+4 收到银行余额不足退票致 $4,000 电脑打水漂、防企业账户开启防盗刷锁扣款失败与立减 1% 导流净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-pay-by-bank-open-banking-ach-return-r01-fednow-escrow-agent-selection-faq.md) · [English](ecommerce-pay-by-bank-open-banking-ach-return-r01-fednow-escrow-agent-selection-faq.en.md) |
 | 48 | **零售门店与全渠道移动收银（Omnichannel `SoftPOS / Tap to Pay on iPhone & Android`：Adyen Terminal API / Stripe Terminal / Square / Shopify POS）、防“内鬼店员无原单盲退（Unlinked Refund）把店里资金刷进自己银行卡”、防手输卡号（`Manual Keyed Entry`）盗刷降级与离线限额托管“防断网离线刷爆 $5,000 假卡与 `EMVCo PAR` 跨端识客净省 38%”Agent 架构选型 FAQ** | [中文](omnichannel-softpos-tap-to-pay-unlinked-refund-offline-emv-escrow-agent-selection-faq.md) · [English](omnichannel-softpos-tap-to-pay-unlinked-refund-offline-emv-escrow-agent-selection-faq.en.md) |
+| 49 | **大宗汽车、新能源直营与高端定制“定金锁单 + 银行直连首付 + 金融机构放款组合结账（High-Ticket Split-Tender Escrow：Tesla / Rivian / AutoFi / Plaid Transfer / Stripe）”、防“$55,000 整车尾款刷信用卡被扣 $1,600 手续费”、防“助贷未放款先交车（Spot-Delivery Yo-Yo Fraud）”与一车一专属 `vIBAN` 防电汇钓鱼托管“防假银行本票骗走新车与四轨资金到齐秒开手机蓝牙车钥匙净省 38%”Agent 架构选型 FAQ** | [中文](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.md) · [English](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（128 篇）

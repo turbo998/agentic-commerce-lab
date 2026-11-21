@@ -23932,6 +23932,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-beauty-gwp-sample-return-sandbox", html_zh)
 
+    def test_high_ticket_auto_split_tender_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            HighTicketAutoSplitTenderPolicyInput,
+            evaluate_high_ticket_auto_split_tender_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_high_ticket_auto_split_tender_policy(
+            HighTicketAutoSplitTenderPolicyInput(
+                quarterly_card_fee_bleed_unfunded_spot_loan_and_wire_fraud_pool_usd=280000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_SPLIT_TENDER_AND_FUNDED_LOAN_AUTHORIZED",
+        )
+
+        card = evaluate_high_ticket_auto_split_tender_policy(
+            HighTicketAutoSplitTenderPolicyInput(
+                credit_card_capture_exceeding_1000_deposit_cap_or_unsigned_build=True
+            )
+        )
+        self.assertEqual(card["status_code"], 403)
+        self.assertEqual(
+            card["decision"],
+            "CARD_BALANCE_OVER_1K_CAP_OR_UNSIGNED_DEPOSIT_BLOCK",
+        )
+
+        loan = evaluate_high_ticket_auto_split_tender_policy(
+            HighTicketAutoSplitTenderPolicyInput(
+                releasing_vehicle_before_lender_funded_token_or_unverified_payoff=True
+            )
+        )
+        self.assertEqual(loan["status_code"], 422)
+        self.assertEqual(
+            loan["decision"],
+            "UNCLEARED_LENDER_STIPS_OR_TRADEIN_PAYOFF_GAP_BLOCK",
+        )
+
+        wire = evaluate_high_ticket_auto_split_tender_policy(
+            HighTicketAutoSplitTenderPolicyInput(
+                sending_wire_pdf_via_email_or_accepting_unverified_paper_check=True
+            )
+        )
+        self.assertEqual(wire["status_code"], 451)
+        self.assertEqual(
+            wire["decision"],
+            "EMAIL_WIRE_SPOOF_RISK_OR_UNVERIFIED_CHECK_HOLD",
+        )
+
+        optim = evaluate_high_ticket_auto_split_tender_policy(
+            HighTicketAutoSplitTenderPolicyInput(
+                quarterly_card_fee_bleed_unfunded_spot_loan_and_wire_fraud_pool_usd=280000.0,
+                four_way_split_tender_viban_reconciliation_and_uwb_key_unlock_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 106400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 173600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("high_ticket_auto_split_tender_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("high-ticket-auto-split-tender-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

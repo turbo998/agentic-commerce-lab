@@ -31941,6 +31941,82 @@ def evaluate_ecommerce_beauty_gwp_sample_return_policy(
     }
 
 
+@dataclass(frozen=True)
+class HighTicketAutoSplitTenderPolicyInput:
+    quarterly_card_fee_bleed_unfunded_spot_loan_and_wire_fraud_pool_usd: float = 280000.0
+    credit_card_capture_exceeding_1000_deposit_cap_or_unsigned_build: bool = False
+    releasing_vehicle_before_lender_funded_token_or_unverified_payoff: bool = False
+    sending_wire_pdf_via_email_or_accepting_unverified_paper_check: bool = False
+    four_way_split_tender_viban_reconciliation_and_uwb_key_unlock_ready: bool = False
+
+
+def evaluate_high_ticket_auto_split_tender_policy(
+    policy_input: HighTicketAutoSplitTenderPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_card_fee_bleed_unfunded_spot_loan_and_wire_fraud_pool_usd
+        ),
+    )
+    if policy_input.sending_wire_pdf_via_email_or_accepting_unverified_paper_check:
+        return {
+            "status_code": 451,
+            "decision": "EMAIL_WIRE_SPOOF_RISK_OR_UNVERIFIED_CHECK_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.credit_card_capture_exceeding_1000_deposit_cap_or_unsigned_build:
+        return {
+            "status_code": 403,
+            "decision": "CARD_BALANCE_OVER_1K_CAP_OR_UNSIGNED_DEPOSIT_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.releasing_vehicle_before_lender_funded_token_or_unverified_payoff:
+        return {
+            "status_code": 422,
+            "decision": "UNCLEARED_LENDER_STIPS_OR_TRADEIN_PAYOFF_GAP_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.four_way_split_tender_viban_reconciliation_and_uwb_key_unlock_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FOUR_WAY_SPLIT_TENDER_SETTLED_AND_UWB_KEY_UNLOCK_CONFIRM",
+            "mandate_token": "high_ticket_auto_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_SPLIT_TENDER_AND_FUNDED_LOAN_AUTHORIZED",
+        "mandate_token": "high_ticket_auto_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -43632,6 +43708,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    high_ticket_auto_split_tender_guard = {
+        "authorized_200": evaluate_high_ticket_auto_split_tender_policy(
+            HighTicketAutoSplitTenderPolicyInput()
+        ),
+        "card_over_1k_cap_403": evaluate_high_ticket_auto_split_tender_policy(
+            HighTicketAutoSplitTenderPolicyInput(
+                credit_card_capture_exceeding_1000_deposit_cap_or_unsigned_build=True
+            )
+        ),
+        "unfunded_loan_or_lien_422": evaluate_high_ticket_auto_split_tender_policy(
+            HighTicketAutoSplitTenderPolicyInput(
+                releasing_vehicle_before_lender_funded_token_or_unverified_payoff=True
+            )
+        ),
+        "email_wire_or_check_451": evaluate_high_ticket_auto_split_tender_policy(
+            HighTicketAutoSplitTenderPolicyInput(
+                sending_wire_pdf_via_email_or_accepting_unverified_paper_check=True
+            )
+        ),
+        "four_way_uwb_key_409": evaluate_high_ticket_auto_split_tender_policy(
+            HighTicketAutoSplitTenderPolicyInput(
+                four_way_split_tender_viban_reconciliation_and_uwb_key_unlock_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -43982,6 +44084,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_sneaker_drop_raffle_auth_guard": ecommerce_sneaker_drop_raffle_auth_guard,
         "b2b_sow_services_procurement_guard": b2b_sow_services_procurement_guard,
         "ecommerce_beauty_gwp_sample_return_guard": ecommerce_beauty_gwp_sample_return_guard,
+        "high_ticket_auto_split_tender_guard": high_ticket_auto_split_tender_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -61835,6 +61938,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="beautygwp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PRO_RATA_GWP_SPLIT_EXTERNAL_VIAL_AND_BOUNCEBACK_CONFIRM · Mandate: beauty_gwp_sample_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 222 High-Ticket Automotive & Solar Split-Tender Escrow (#341) -->
+      <div class="finops-box" id="high-ticket-auto-split-tender-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🚙 大宗汽车与新能源直营“四轨组合支付 (Tesla / Rivian / AutoFi / Plaid)”与车钥匙解锁沙盒</div>
+            <div class="finops-sub">Round 222 (#341) · 单车信用卡限额 &lt;=$1,000 定金锁死防 $1,590 手续费流失 (HTTP 403) + 助贷 FUNDED 放款令牌与旧车 10天解押额直连核验 (HTTP 422) + 严禁邮件发账号仅在 Passkey App 展示一车一 vIBAN (HTTP 451) + 四轨平账自动激活手机 UWB 车钥匙净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="autosplit-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度大额车款刷信用卡 2.9% 手续费流失、助贷未放款先交车坏账与邮件电汇钓鱼/假本票池 ($)
+            <input type="number" id="autosplit-gross-input" value="280000" min="10000" step="10000" oninput="recalcHighTicketAutoSplitTenderSandbox()" />
+          </label>
+          <label>单车信用卡收款 &lt;=$1,000 定金硬上限与排产 VIN 锁单防拒付门禁
+            <select id="autosplit-card-select" onchange="recalcHighTicketAutoSplitTenderSandbox()">
+              <option value="pass">Apple Pay 仅刷 $500 锁单定金 + $54,000 尾款路由至 $5 封顶的 Plaid A2A / vIBAN (合规)</option>
+              <option value="block_403">放开收银台让买家刷 2.9% 信用卡支付 $55,000 整车尾款导致单车白白被扣 $1,595 手续费 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>汽车金融助贷 FUNDED 放款令牌核销与旧车置换 10 天准确按揭结清额 (Payoff Quote) 直连
+            <select id="autosplit-loan-select" onchange="recalcHighTicketAutoSplitTenderSandbox()">
+              <option value="pass">RouteOne/Dealertrack 已返回 FUNDED 放款令牌 + 旧车银行 API 锁定准确 10天解押净值 (合规)</option>
+              <option value="block_422">仅凭初步预批在未核验工资单/全险保单前先交车导致 5天后银行拒放款 或 旧车少算 $8,000 欠款 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>严禁邮件发送电汇 PDF (仅在 Passkey App 展示一车一专属 vIBAN) 与拒收未清算纸质本票
+            <select id="autosplit-wire-select" onchange="recalcHighTicketAutoSplitTenderSandbox()">
+              <option value="pass">Passkey App 内展示 VIN 专属 vIBAN 秒级自动认款 + OFAC/Form 8300 筛查通过 (安全)</option>
+              <option value="block_451">交付顾问发邮件 PDF 告知电汇账号被黑客篡改骗走 $45,000 或 周末收假纸质银行本票放车 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>四轨异构子账本 (定金 + 旧车净值 + A2A 首付 + 银行车贷) 100% 平账自动激活手机 UWB 车钥匙
+            <select id="autosplit-opt-select" onchange="recalcHighTicketAutoSplitTenderSandbox()">
+              <option value="enabled" selected>四轨资金分毫不差落账瞬间自动下发手机 UWB/蓝牙车钥匙与电子临牌 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统人工核对银行水单与纸质支票耗时 3 小时交钥匙 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度大宗刷卡费与未放款坏账池</div>
+            <div class="finops-kpi-val" id="autosplit-gross-kpi">$280,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">四轨 A2A 与放款硬锁后净损耗</div>
+            <div class="finops-kpi-val" id="autosplit-net-kpi" style="color:#6ee7b7;">$173,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省刷卡手续费与骗车坏账</div>
+            <div class="finops-kpi-val" id="autosplit-savings-kpi" style="color:#38bdf8;">$106,400</div>
+          </div>
+        </div>
+        <div id="autosplit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FOUR_WAY_SPLIT_TENDER_SETTLED_AND_UWB_KEY_UNLOCK_CONFIRM · Mandate: high_ticket_auto_escrow_optim_409
         </div>
       </div>
 
@@ -83558,6 +83718,79 @@ function recalcEcommerceBeautyGwpSampleReturnSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 SPLIT_RECEIPT_GWP_AND_SEALED_BEAUTY_ORDER_AUTHORIZED · Mandate: beauty_gwp_sample_escrow_200';
+}}
+
+function recalcHighTicketAutoSplitTenderSandbox() {{
+  const grossInput = document.getElementById('autosplit-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '280000'));
+  const cardGate = document.getElementById('autosplit-card-select').value;
+  const loanGate = document.getElementById('autosplit-loan-select').value;
+  const wireGate = document.getElementById('autosplit-wire-select').value;
+  const optMode = document.getElementById('autosplit-opt-select').value;
+
+  const grossKpi = document.getElementById('autosplit-gross-kpi');
+  const netKpi = document.getElementById('autosplit-net-kpi');
+  const savingsKpi = document.getElementById('autosplit-savings-kpi');
+  const statusKpi = document.getElementById('autosplit-status-kpi');
+  const banner = document.getElementById('autosplit-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (wireGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EMAIL_WIRE_SPOOF_RISK_OR_UNVERIFIED_CHECK_HOLD · Mandate: null';
+    return;
+  }}
+  if (cardGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CARD_BALANCE_OVER_1K_CAP_OR_UNSIGNED_DEPOSIT_BLOCK · Mandate: null';
+    return;
+  }}
+  if (loanGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCLEARED_LENDER_STIPS_OR_TRADEIN_PAYOFF_GAP_BLOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FOUR_WAY_SPLIT_TENDER_SETTLED_AND_UWB_KEY_UNLOCK_CONFIRM · Mandate: high_ticket_auto_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_SPLIT_TENDER_AND_FUNDED_LOAN_AUTHORIZED · Mandate: high_ticket_auto_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

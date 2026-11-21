@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg665" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <linearGradient id="hdr665" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg665)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr665)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 222 · High-Ticket Automotive &amp; Solar Split-Tender (`Card Deposit + A2A/Loan`) Escrow</text>
+  <text x="48" y="74" class="sub">Tesla / Rivian / AutoFi / Plaid Transfer / Stripe · $1k Card Deposit Cap · Per-Order vIBAN Wire · Lender Funding Lock (-38% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #665 · FAQ #341</text>
+
+  <!-- Lane 1: Full-Balance Credit-Card Swipe ($1,650 Fee Bleed) & Deposit Chargeback Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Card Deposit Cap &amp; `3DS2` Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Swiping $55,000 Car Balance on 2.9% Amex:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Card_Rail_Allowed_Max &lt;= `$1,000_Order_Fee`</text>
+  <text x="54" y="200" class="mono">Enforce `A2A / FedNow / Wire / Loan` for Balance!</text>
+  <text x="44" y="223" class="body-txt">• Non-Refundable Order Fee `3DS2` + VIN Bind:</text>
+  <text x="54" y="243" class="mono">Bind $250–$1k Card Deposit to Signed Build Sheet</text>
+  <text x="44" y="266" class="body-txt">• Eliminates $1,600 credit-card interchange bleed</text>
+  <text x="54" y="286" class="body-txt">per vehicle and defeats post-delivery deposit</text>
+  <text x="54" y="304" class="body-txt">chargebacks after VIN assignment</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 CARD_BALANCE_OVER_1K_CAP_OR_UNSIGNED_DEPOSIT_BLOCK</text>
+
+  <!-- Lane 2: Unfunded Auto-Loan Stipulations ("Yo-Yo Financing") & Trade-In Payoff Lien Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Lender Funding &amp; Lien Payoff Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Releasing Car on Unfunded "Spot Delivery":</text>
+  <text x="442" y="182" class="mono">Require `RouteOne/Dealertrack_Contract == FUNDED`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">&amp; All Lender Stipulations (`Stips`) Cleared!</text>
+  <text x="432" y="223" class="body-txt">• Live Trade-In 10-Day Bank Payoff Verification:</text>
+  <text x="442" y="243" class="mono">Verify `Old_Car_Lien_Payoff` via Lender API</text>
+  <text x="432" y="266" class="body-txt">• Prevents buyers driving off in a $60k EV before</text>
+  <text x="442" y="286" class="body-txt">the bank rejects their paystub stipulation or</text>
+  <text x="442" y="304" class="body-txt">understating their trade-in loan payoff by $8,000</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNCLEARED_LENDER_STIPS_OR_TRADEIN_PAYOFF_GAP_BLOCK</text>
+
+  <!-- Lane 3: Email PDF Wire-Instruction Spoofing (BEC) & Cashier's Check Forgery Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Anti-BEC Wire &amp; `OFAC` Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Fake Email PDF Wire Instructions (`$45k`):</text>
+  <text x="830" y="182" class="mono">Prohibit Email Wire PDFs! Display Per-VIN `vIBAN`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Inside Passkey-Authenticated Buyer App Only!</text>
+  <text x="820" y="223" class="body-txt">• Mandatory `OFAC SDN` + `IRS Form 8300` (`>$10k`):</text>
+  <text x="830" y="243" class="body-txt">Screens high-ticket buyer against `OFAC` and blocks</text>
+  <text x="830" y="261" class="body-txt">unverified paper cashier's checks at delivery</text>
+  <text x="820" y="284" class="body-txt">• Eliminates wire-interception phishing and fake</text>
+  <text x="830" y="302" class="body-txt">certified checks bouncing 5 days after handover</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 EMAIL_WIRE_SPOOF_RISK_OR_UNVERIFIED_CHECK_HOLD</text>
+
+  <!-- Bottom Multi-Source Split-Tender State Machine & Digital Key Release -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. 4-Way Atomic Split-Tender Ledger (`Card + Trade-In + Plaid A2A + Loan`) → Digital Key Unlock (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① $250 Apple Pay Lock-In</text>
+  <text x="62" y="462" class="body-txt">Instant 1-tap card deposit</text>
+  <text x="62" y="480" class="body-txt">reserves factory build slot</text>
+  <text x="62" y="498" class="body-txt">with zero friction;</text>
+  <text x="62" y="516" class="mono">+42% Configurator Conversion</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Plaid / FedNow Downpay</text>
+  <text x="337" y="462" class="body-txt">Collects $12,000 down</text>
+  <text x="337" y="480" class="body-txt">payment via Open Banking</text>
+  <text x="337" y="498" class="body-txt">A2A at `$5` flat fee vs</text>
+  <text x="337" y="516" class="mono">$348 Credit-Card Fee!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ e-Contract Loan Auto-Fund</text>
+  <text x="622" y="462" class="body-txt">e-Signs `Truth-in-Lending`</text>
+  <text x="622" y="480" class="body-txt">promissory note &amp; receives</text>
+  <text x="622" y="498" class="body-txt">instant lender wire into</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">VIN sub-ledger before pickup</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ App Digital Key Unlock</text>
+  <text x="907" y="462" class="body-txt">Activates phone `UWB/BLE`</text>
+  <text x="907" y="480" class="body-txt">car key &amp; e-Title only when</text>
+  <text x="907" y="498" class="body-txt">all 4 tenders hit 100% settled;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-38% High-Ticket Checkout Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-38.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly High-Ticket Closing Saved</text>
+  <text x="46" y="642" class="mono">$106,400 Saved / $280k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">-$1,590/Car</text>
+  <text x="336" y="626" class="kpi-lbl">Saved by Capping Card at $1k Deposit</text>
+  <text x="336" y="642" class="mono">$5 Flat Fee on $54k Balance</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0 Unfunded</text>
+  <text x="626" y="626" class="kpi-lbl">100% Lender Stip &amp; Lien Payoff Match</text>
+  <text x="626" y="642" class="mono">Zero Yo-Yo Spot-Delivery Losses</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 Wire Phish</text>
+  <text x="916" y="626" class="kpi-lbl">In-App Passkey Per-VIN vIBAN Only</text>
+  <text x="916" y="642" class="mono">Blocks Fake Cashier's Checks</text>
+</svg>
