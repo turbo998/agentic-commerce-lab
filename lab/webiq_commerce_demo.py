@@ -27718,6 +27718,79 @@ def evaluate_ecommerce_returnless_refund_policy(
     }
 
 
+@dataclass(frozen=True)
+class OmnichannelBopisCurbsidePolicyInput:
+    quarterly_bopis_fraud_and_zombie_hold_pool_usd: float = 120000.0
+    high_risk_bopis_missing_3ds2_or_static_screenshot_mule: bool = False
+    capture_before_pickup_scan_or_aged_5d_zombie_hold: bool = False
+    premature_ready_alert_before_bin_scan_or_cold_chain_thaw: bool = False
+    in_store_pickup_bounceback_pass_and_zero_freight_ready: bool = False
+
+
+def evaluate_omnichannel_bopis_curbside_policy(
+    policy_input: OmnichannelBopisCurbsidePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_bopis_fraud_and_zombie_hold_pool_usd)
+    )
+    if policy_input.premature_ready_alert_before_bin_scan_or_cold_chain_thaw:
+        return {
+            "status_code": 451,
+            "decision": "PREMATURE_READY_ALERT_BEFORE_BIN_SCAN_OR_COLD_CHAIN_THAW_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.high_risk_bopis_missing_3ds2_or_static_screenshot_mule:
+        return {
+            "status_code": 403,
+            "decision": "HIGH_RISK_BOPIS_MISSING_3DS2_OR_STATIC_SCREENSHOT_MULE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.capture_before_pickup_scan_or_aged_5d_zombie_hold:
+        return {
+            "status_code": 422,
+            "decision": "CAPTURE_BEFORE_PICKUP_SCAN_OR_AGED_5D_ZOMBIE_HOLD_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.in_store_pickup_bounceback_pass_and_zero_freight_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "IN_STORE_PICKUP_BOUNCEBACK_PASS_AND_ZERO_FREIGHT_CONFIRM",
+            "mandate_token": "bopis_curbside_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "PICK_CONFIRMED_AND_QR_CAPTURED_BOPIS_AUTHORIZED",
+        "mandate_token": "bopis_curbside_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -37953,6 +38026,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    omnichannel_bopis_curbside_guard = {
+        "authorized_200": evaluate_omnichannel_bopis_curbside_policy(
+            OmnichannelBopisCurbsidePolicyInput()
+        ),
+        "missing_3ds2_or_screenshot_mule_403": evaluate_omnichannel_bopis_curbside_policy(
+            OmnichannelBopisCurbsidePolicyInput(
+                high_risk_bopis_missing_3ds2_or_static_screenshot_mule=True
+            )
+        ),
+        "capture_before_pickup_or_5d_hold_422": evaluate_omnichannel_bopis_curbside_policy(
+            OmnichannelBopisCurbsidePolicyInput(
+                capture_before_pickup_scan_or_aged_5d_zombie_hold=True
+            )
+        ),
+        "premature_ready_or_cold_chain_451": evaluate_omnichannel_bopis_curbside_policy(
+            OmnichannelBopisCurbsidePolicyInput(
+                premature_ready_alert_before_bin_scan_or_cold_chain_thaw=True
+            )
+        ),
+        "in_store_bounceback_pass_409": evaluate_omnichannel_bopis_curbside_policy(
+            OmnichannelBopisCurbsidePolicyInput(
+                in_store_pickup_bounceback_pass_and_zero_freight_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -38247,6 +38346,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_byob_bundle_escrow_guard": ecommerce_byob_bundle_escrow_guard,
         "marketplace_facilitator_tax_escrow_guard": marketplace_facilitator_tax_escrow_guard,
         "ecommerce_returnless_refund_guard": ecommerce_returnless_refund_guard,
+        "omnichannel_bopis_curbside_guard": omnichannel_bopis_curbside_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -52908,6 +53008,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="returnless-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PARTIAL_50PCT_KEEP_OR_CHARITY_TAX_SHIELD_CONFIRM · Mandate: returnless_refund_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 166 Omnichannel BOPIS & Curbside Pickup Escrow -->
+      <div class="finops-box" id="omnichannel-bopis-curbside-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏬 全渠道门店自提与路边闪取 (BOPIS &amp; Curbside：Target Drive Up / Shopify POS) 防盗提与滞留锁库沙盒</div>
+            <div class="finops-sub">Round 166 · 高客单 3DS2 与 30s 动态码防马仔盗提 (HTTP 403) + 扫提货码才 Capture 与 5d 自动还架 (HTTP 422) + 1.5km 冷链围栏 (HTTP 451) + 店内顺手买净省 35% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="bopis-curbside-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度门店自提黑卡盗刷与滞留锁库池 ($)
+            <input type="number" id="bopis-curbside-gross-input" value="120000" min="10000" step="5000" oninput="recalcOmnichannelBopisCurbsideSandbox()" />
+          </label>
+          <label>高客单 3DS2 核身与 30s 动态提货码
+            <select id="bopis-curbside-auth-select" onchange="recalcOmnichannelBopisCurbsideSandbox()">
+              <option value="pass">&gt;$150 已过 3DS2 + App 30s 动态码 + 证件姓名一致 (合规)</option>
+              <option value="block_403">黑卡团伙选 1h 自提把静态邮件截图发给马仔抱走电脑 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>交货扫码才实扣 (Capture-on-Pickup) 与 5d 还架
+            <select id="bopis-curbside-cap-select" onchange="recalcOmnichannelBopisCurbsideSandbox()">
+              <option value="pass">线上仅 Pre-Auth 冻结 + 现场扫提货码才实扣 + 5d 自动还架 (合规)</option>
+              <option value="block_422">未提货提前扣钱引发拒付或僵尸单锁死门店爆款 15 天 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>店员实扫锁袋通知与 1.5km 冷链 GPS 围栏
+            <select id="bopis-curbside-stage-select" onchange="recalcOmnichannelBopisCurbsideSandbox()">
+              <option value="pass">店员 PDA 扫条码入柜才发码 + 冷冻品进 1.5km 围栏才出库 (安全)</option>
+              <option value="block_451">未拣货先发提货通知致客户白跑或冰淇淋提前 3h 取出化冻 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>提货屏幕“店内顺手买满 $25 减 $5”二销飞轮
+            <select id="bopis-curbside-opt-select" onchange="recalcOmnichannelBopisCurbsideSandbox()">
+              <option value="enabled" selected>省 $8.50 快递费 + 提货码附带 2h 店内顺手买立减券 (-35% 损耗 / HTTP 409)</option>
+              <option value="disabled">纯交货无店内二销引导，白白浪费高意向到店客流 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度全渠道自提盗刷与异常总池</div>
+            <div class="finops-kpi-val" id="bopis-curbside-gross-kpi">$120,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">扫码实扣与还架二销后净成本</div>
+            <div class="finops-kpi-val" id="bopis-curbside-net-kpi" style="color:#6ee7b7;">$78,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省盗提拒付、卡费与滞销</div>
+            <div class="finops-kpi-val" id="bopis-curbside-savings-kpi" style="color:#38bdf8;">$42,000</div>
+          </div>
+        </div>
+        <div id="bopis-curbside-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 IN_STORE_PICKUP_BOUNCEBACK_PASS_AND_ZERO_FREIGHT_CONFIRM · Mandate: bopis_curbside_escrow_optim_409
         </div>
       </div>
 
@@ -70543,6 +70700,79 @@ function recalcEcommerceReturnlessRefundSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 NEGATIVE_RECOVERY_VIP_KEEP_IT_AUTHORIZED · Mandate: returnless_refund_escrow_200';
+}}
+
+function recalcOmnichannelBopisCurbsideSandbox() {{
+  const grossInput = document.getElementById('bopis-curbside-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '120000'));
+  const authGate = document.getElementById('bopis-curbside-auth-select').value;
+  const capGate = document.getElementById('bopis-curbside-cap-select').value;
+  const stageGate = document.getElementById('bopis-curbside-stage-select').value;
+  const optMode = document.getElementById('bopis-curbside-opt-select').value;
+
+  const grossKpi = document.getElementById('bopis-curbside-gross-kpi');
+  const netKpi = document.getElementById('bopis-curbside-net-kpi');
+  const savingsKpi = document.getElementById('bopis-curbside-savings-kpi');
+  const statusKpi = document.getElementById('bopis-curbside-status-kpi');
+  const banner = document.getElementById('bopis-curbside-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (stageGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PREMATURE_READY_ALERT_BEFORE_BIN_SCAN_OR_COLD_CHAIN_THAW_HOLD · Mandate: null';
+    return;
+  }}
+  if (authGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 HIGH_RISK_BOPIS_MISSING_3DS2_OR_STATIC_SCREENSHOT_MULE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (capGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CAPTURE_BEFORE_PICKUP_SCAN_OR_AGED_5D_ZOMBIE_HOLD_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 IN_STORE_PICKUP_BOUNCEBACK_PASS_AND_ZERO_FREIGHT_CONFIRM · Mandate: bopis_curbside_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 PICK_CONFIRMED_AND_QR_CAPTURED_BOPIS_AUTHORIZED · Mandate: bopis_curbside_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

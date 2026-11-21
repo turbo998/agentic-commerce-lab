@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg609" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#05101e" />
+    </linearGradient>
+    <linearGradient id="accent609" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg609)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent609)" rx="3" />
+
+  <text x="40" y="58" class="title">全渠道线上下单门店自提 (BOPIS &amp; Curbside：Target Drive Up / Shopify POS) 防盗刷与滞留锁库架构</text>
+  <text x="40" y="80" class="subtitle">Round 166 · 防黑卡选 1h 门店自提抱走 $2,000 电脑、防“付款未取货”锁死门店爆款 14 天 &amp; 到店连带增购净省 35% (SVG 609)</text>
+
+  <!-- Left Card: 3 BOPIS & Curbside Disasters -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大门店自提 (BOPIS) 盗刷与卡库黑洞</text>
+  <text x="56" y="164" class="card-title">1. 黑卡选“1小时闪取”抱走高价 3C (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 盗卡团伙最怕填真实收货地址被抓，故专门选 `BOPIS 门店路边自提`!</text>
+  <text x="56" y="202" class="body">• 线上用黑卡买 $2,000 相机，40 分钟后开车到店隔窗扫码拿货跑路</text>
+  <text x="56" y="220" class="warn">• 3 天后真卡主拒付，因属于线上无卡交易 (CNP)，商家 100% 血亏!</text>
+
+  <text x="56" y="256" class="card-title">2. “未取货僵尸单”霸占门店货架与提前扣款争议 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 买家下单时直接实扣信用卡 (Capture at Checkout)，但迟迟不来取</text>
+  <text x="56" y="294" class="body">• 衣服在门店自提柜里锁了 15 天错过大促，买家还因“没拿货却已被</text>
+  <text x="56" y="312" class="warn">  扣钱出账单”直接向银行发起 `13.1 未收到商品` 拒付!</text>
+
+  <text x="56" y="348" class="card-title">3. 店员没拣到货前就发“可到店提货”通知 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 下单成功即刻发短信“快来门店取货”，买家开了 10 公里车到店</text>
+  <text x="56" y="386" class="body">• 店员去货架才发现最后 1 件刚被现场顾客买走 (Shelf Race)</text>
+  <text x="56" y="404" class="warn">• 买家白跑一趟当场暴怒投诉，或生鲜冷冻品提前拣出化冻变质!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: HIGH_RISK_BOPIS_NO_3DS_OR_ID_MISMATCH</text>
+  <text x="70" y="502" class="warn">• HTTP 422: CAPTURE_BEFORE_PICKUP_OR_AGED_HOLD_EXPIRED</text>
+  <text x="70" y="524" class="warn">• HTTP 451: PREMATURE_READY_ALERT_OR_COLD_CHAIN_THAW</text>
+  <text x="70" y="546" class="mono">• HTTP 409:IN_STORE_PICKUP_BOUNCEBACK_PASS_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: PICK_CONFIRMED_AND_QR_CAPTURED_BOPIS_200</text>
+  <text x="70" y="596" class="body">铁律: 仅预授权锁单，店员扫提货码交货瞬间才执行实扣!</text>
+
+  <!-- Center Card: 4-Stage BOPIS & Curbside Escrow Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶门店自提防盗刷、按提实扣与释库架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ef4444" />
+  <text x="450" y="175" class="card-title" fill="#fca5a5">Gate 1: 高客单自提强制 3DS2 + 现场 NFC/证件核验 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• 自提单欺诈率是快递到家的 2.7 倍! 凡 `&gt;$150` 自提单线上必过 3DS2</text>
+  <text x="450" y="213" class="body">• 到店提货必须出示 App 内每 30 秒轮换的动态二维码 + Apple Wallet</text>
+  <text x="450" y="231" class="mono">  NFC 触碰 (或核对政府驾照姓名与代领人白名单) -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: “交货扫码才实扣 (Capture-on-Pickup)” 与 5d 释库 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 线上结账仅建 `Pre-Auth Hold (capture_method=manual)`，绝不提前扣钱!</text>
+  <text x="450" y="320" class="body">• 店员将袋子交到客户手里、POS 枪扫过提货码的同一毫秒才触发 `Capture`</text>
+  <text x="450" y="338" class="body">• 满 5 天未取自动释放预授权 (`0420 Reversal`) 并通知店员还架重售!</text>
+  <text x="450" y="354" class="mono">• 未提货提前实扣资金或超 5 天僵尸单占库不释放 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 双阶段通知锁与冷链 GPS 围栏拣货 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 严格拆分 `Order Received (切勿出发!)` 与 `Picked &amp; Bagged (请来取货!)`</text>
+  <text x="450" y="437" class="body">• 冰淇淋/生鲜冷冻品必须待客户 App 进入门店 `1.5km GPS 围栏` (点击</text>
+  <text x="450" y="455" class="mono">  `I'm On My Way`) 才从冰柜取出装车，杜绝化冻与白跑 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: 提货瞬间“进店顺手买立减 $5”二销飞轮 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• BOPIS 不仅省下了 $8.50 快递费，更把高意向客人拉进了实体店门!</text>
+  <text x="450" y="546" class="body">• 在提货二维码下方直接挂载 `In-Store Bounceback Pass`：“今日在店内</text>
+  <text x="450" y="566" class="mono">  顺手加购任意商品满 $25 立减 $5 (限时 2 小时店内收银直抵)”</text>
+  <text x="450" y="586" class="mono">• 省下最后一公里快递费 + 28% 提货客当场加购 -&gt; 净省 35% 履约成本</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大门店自提与路边闪取技术底座</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Target Drive Up / Walmart Curbside Geo-Engine</text>
+  <text x="846" y="182" class="body">• 优势: 结合手机实时 ETA 导航定位，店员在车主停稳后 90 秒内送货上车</text>
+  <text x="846" y="198" class="body">• 特性: 后备箱 4 位动态 PIN 码核销后才触发银行卡最终扣款</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Shopify POS + Local Pickup API</text>
+  <text x="846" y="244" class="body">• 优势: 门店平板实时响铃提醒拣货，扫商品条码锁定入袋后才发取件信</text>
+  <text x="846" y="260" class="body">• 特性: 完美支持店内提货时顺手加购新品合并结账</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Bluedot / Radar (高精度到店地理围栏)</text>
+  <text x="846" y="306" class="body">• 优势: 误差 &lt;5 米的停车位级地理围栏，精准触发后厨现做咖啡与冷链出库</text>
+  <text x="846" y="322" class="body">• 特性: 同时核验提货手机位置与下单设备一致，拦截异地盗刷代提</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Signifyd / Forter BOPIS 专项反欺诈模型</text>
+  <text x="846" y="368" class="body">• 优势: 针对“无收货地址比对 (No AVS Shipping Match)”的自提场景</text>
+  <text x="846" y="384" class="body">  强化持卡人手机基站距离门店半径与历史到店轨迹核验</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度门店自提黑卡盗刷与滞留锁库池 ($120,000)</text>
+  <text x="860" y="456" class="body">• 传统黑卡1h提走电脑+僵尸单锁库+白跑赔付: $120,000/季</text>
+  <text x="860" y="476" class="mono">• 3DS2+动态提货码+驾照核验终结高客单盗提: -$22,800</text>
+  <text x="860" y="496" class="mono">• 交货扫码才实扣与 5 天超时自动还架重售: -$12,000</text>
+  <text x="860" y="516" class="mono">• 提货码附带“店内顺手买减$5”转化与省快递费: -$7,200</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净自提履约成本: $78,000 (净省 $42,000 / -35%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: bopis_curbside_escrow_optim_409</text>
+</svg>

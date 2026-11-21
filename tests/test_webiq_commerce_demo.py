@@ -20180,6 +20180,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-returnless-refund-sandbox", html_zh)
 
+    def test_omnichannel_bopis_curbside_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OmnichannelBopisCurbsidePolicyInput,
+            evaluate_omnichannel_bopis_curbside_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_omnichannel_bopis_curbside_policy(
+            OmnichannelBopisCurbsidePolicyInput(
+                quarterly_bopis_fraud_and_zombie_hold_pool_usd=120000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "PICK_CONFIRMED_AND_QR_CAPTURED_BOPIS_AUTHORIZED",
+        )
+
+        mule = evaluate_omnichannel_bopis_curbside_policy(
+            OmnichannelBopisCurbsidePolicyInput(
+                high_risk_bopis_missing_3ds2_or_static_screenshot_mule=True
+            )
+        )
+        self.assertEqual(mule["status_code"], 403)
+        self.assertEqual(
+            mule["decision"],
+            "HIGH_RISK_BOPIS_MISSING_3DS2_OR_STATIC_SCREENSHOT_MULE_BLOCKED",
+        )
+
+        cap = evaluate_omnichannel_bopis_curbside_policy(
+            OmnichannelBopisCurbsidePolicyInput(
+                capture_before_pickup_scan_or_aged_5d_zombie_hold=True
+            )
+        )
+        self.assertEqual(cap["status_code"], 422)
+        self.assertEqual(
+            cap["decision"],
+            "CAPTURE_BEFORE_PICKUP_SCAN_OR_AGED_5D_ZOMBIE_HOLD_BLOCKED",
+        )
+
+        stage = evaluate_omnichannel_bopis_curbside_policy(
+            OmnichannelBopisCurbsidePolicyInput(
+                premature_ready_alert_before_bin_scan_or_cold_chain_thaw=True
+            )
+        )
+        self.assertEqual(stage["status_code"], 451)
+        self.assertEqual(
+            stage["decision"],
+            "PREMATURE_READY_ALERT_BEFORE_BIN_SCAN_OR_COLD_CHAIN_THAW_HOLD",
+        )
+
+        optim = evaluate_omnichannel_bopis_curbside_policy(
+            OmnichannelBopisCurbsidePolicyInput(
+                quarterly_bopis_fraud_and_zombie_hold_pool_usd=120000.0,
+                in_store_pickup_bounceback_pass_and_zero_freight_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 42000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 78000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("omnichannel_bopis_curbside_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("omnichannel-bopis-curbside-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
