@@ -28524,6 +28524,82 @@ def evaluate_ota_airline_irops_rebooking_policy(
     }
 
 
+@dataclass(frozen=True)
+class MultiPspOrchestrationPolicyInput:
+    quarterly_payment_mdr_cross_border_fee_and_false_decline_pool_usd: float = 185000.0
+    unreversed_timeout_failover_or_hard_decline_cascade: bool = False
+    cross_border_mid_mismatch_or_duplicate_3ds2_challenge_on_failover: bool = False
+    single_psp_vault_lockin_or_refund_routed_to_wrong_acquirer_mid: bool = False
+    durbin_pinless_debit_routing_and_120ms_cavv_failover_ready: bool = False
+
+
+def evaluate_multi_psp_orchestration_policy(
+    policy_input: MultiPspOrchestrationPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_payment_mdr_cross_border_fee_and_false_decline_pool_usd
+        ),
+    )
+    if policy_input.single_psp_vault_lockin_or_refund_routed_to_wrong_acquirer_mid:
+        return {
+            "status_code": 451,
+            "decision": "SINGLE_PSP_VAULT_LOCKIN_OR_WRONG_MID_REFUND_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unreversed_timeout_failover_or_hard_decline_cascade:
+        return {
+            "status_code": 403,
+            "decision": "UNREVERSED_TIMEOUT_OR_HARD_CASCADE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cross_border_mid_mismatch_or_duplicate_3ds2_challenge_on_failover:
+        return {
+            "status_code": 422,
+            "decision": "CROSS_BORDER_MID_MISMATCH_OR_2X_3DS_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.durbin_pinless_debit_routing_and_120ms_cavv_failover_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DURBIN_PINLESS_DEBIT_AND_120MS_CAVV_FAILOVER_CONFIRM",
+            "mandate_token": "multi_psp_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "LOCAL_MID_MULTI_PSP_AUTHORIZATION_APPROVED",
+        "mandate_token": "multi_psp_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -39045,6 +39121,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    multi_psp_orchestration_guard = {
+        "authorized_200": evaluate_multi_psp_orchestration_policy(
+            MultiPspOrchestrationPolicyInput()
+        ),
+        "timeout_or_hard_cascade_403": evaluate_multi_psp_orchestration_policy(
+            MultiPspOrchestrationPolicyInput(
+                unreversed_timeout_failover_or_hard_decline_cascade=True
+            )
+        ),
+        "cross_border_mid_or_2x_3ds_422": evaluate_multi_psp_orchestration_policy(
+            MultiPspOrchestrationPolicyInput(
+                cross_border_mid_mismatch_or_duplicate_3ds2_challenge_on_failover=True
+            )
+        ),
+        "vault_lockin_or_wrong_refund_451": evaluate_multi_psp_orchestration_policy(
+            MultiPspOrchestrationPolicyInput(
+                single_psp_vault_lockin_or_refund_routed_to_wrong_acquirer_mid=True
+            )
+        ),
+        "durbin_debit_and_cavv_failover_409": evaluate_multi_psp_orchestration_policy(
+            MultiPspOrchestrationPolicyInput(
+                durbin_pinless_debit_routing_and_120ms_cavv_failover_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -39350,6 +39452,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_ddp_landed_cost_guard": cross_border_ddp_landed_cost_guard,
         "b2b_net_terms_trade_credit_guard": b2b_net_terms_trade_credit_guard,
         "ota_airline_irops_rebooking_guard": ota_airline_irops_rebooking_guard,
+        "multi_psp_orchestration_guard": multi_psp_orchestration_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -54638,6 +54741,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="irops-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 INSTANT_3OPTION_REBOOK_24H_VCN_AND_EMD_REFUND_CONFIRM · Mandate: ota_irops_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 177 Multi-PSP Payment Orchestration & Durbin Debit Routing Escrow -->
+      <div class="finops-box" id="multi-psp-orchestration-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔀 多支付网关编排 (Multi-PSP: Primer / Spreedly / Adyen / Stripe) 与借记网路由沙盒</div>
+            <div class="finops-sub">Round 177 · 主网关 504 超时必先 0420 冲正防双扣 (HTTP 403) + 本地 MID 对齐与独立 3DS2 CAVV 跨网关复用 (HTTP 422) + 中立金库与原通道退款锁 (HTTP 451) + Durbin 无密借记网净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="mpsp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度支付收单 MDR 溢价、跨境卡组罚金、单网关误杀与双扣损失池 ($)
+            <input type="number" id="mpsp-gross-input" value="185000" min="10000" step="5000" oninput="recalcMultiPspOrchestrationSandbox()" />
+          </label>
+          <label>主网关超时 (HTTP 504) 冲正互斥锁与硬拒付防级联门禁
+            <select id="mpsp-timeout-select" onchange="recalcMultiPspOrchestrationSandbox()">
+              <option value="pass">超时必先确认 0420 撤销成功再切换 + 仅级联 Code 05/91 软故障 (合规)</option>
+              <option value="block_403">主网关超时状态未决直接调备选网关导致客户被双扣两笔 或 将 51 余额不足级联重试 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>8位 BIN 本地收单主体 (Local MID) 对齐与独立 3DS2 CAVV 复用
+            <select id="mpsp-mid-select" onchange="recalcMultiPspOrchestrationSandbox()">
+              <option value="pass">英国/欧盟/巴西卡自动路由同国本地 MID + 主备切换复用同一 3DS2 CAVV (合规)</option>
+              <option value="block_422">海外卡错走美国 MID 多交 1.5% 跨境费 或 切换备选网关时逼用户做第 2 次 3DS2 验证码 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>中立 PCI 令牌金库 (Universal Vault) 与原扣款通道退款绑定
+            <select id="mpsp-vault-select" onchange="recalcMultiPspOrchestrationSandbox()">
+              <option value="pass">中立金库 + EMVCo 网络令牌 + 售后退款 100% 锚定原实际扣款 MID (安全)</option>
+              <option value="block_451">卡片锁死在单一 PSP 宕机无法切换 或 容灾成单后把退款误发给未扣款的主网关 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>美国 Durbin Reg-II 双网无密借记路由 (0.05%+$0.22) 与 120ms 无感容灾
+            <select id="mpsp-opt-select" onchange="recalcMultiPspOrchestrationSandbox()">
+              <option value="enabled" selected>美国借记卡走 Star/NYCE/Accel 省 140bps + Code 05 120ms 跨网无感挽回 (-39% 成本 / HTTP 409)</option>
+              <option value="disabled">单一 PSP 固定费率 2.4%+$0.30 且主网关风控误杀直接丢单 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度收单溢价与误杀掉单总池</div>
+            <div class="finops-kpi-val" id="mpsp-gross-kpi">$185,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">借记网降费与无感容灾后净成本</div>
+            <div class="finops-kpi-val" id="mpsp-net-kpi" style="color:#6ee7b7;">$112,850</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省收单 MDR 与挽回毛利</div>
+            <div class="finops-kpi-val" id="mpsp-savings-kpi" style="color:#38bdf8;">$72,150</div>
+          </div>
+        </div>
+        <div id="mpsp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DURBIN_PINLESS_DEBIT_AND_120MS_CAVV_FAILOVER_CONFIRM · Mandate: multi_psp_escrow_optim_409
         </div>
       </div>
 
@@ -73076,6 +73236,79 @@ function recalcOtaAirlineIropsRebookingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 WAIVER_VERIFIED_INVOL_REBOOK_AUTHORIZED · Mandate: ota_irops_escrow_200';
+}}
+
+function recalcMultiPspOrchestrationSandbox() {{
+  const grossInput = document.getElementById('mpsp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '185000'));
+  const timeoutGate = document.getElementById('mpsp-timeout-select').value;
+  const midGate = document.getElementById('mpsp-mid-select').value;
+  const vaultGate = document.getElementById('mpsp-vault-select').value;
+  const optMode = document.getElementById('mpsp-opt-select').value;
+
+  const grossKpi = document.getElementById('mpsp-gross-kpi');
+  const netKpi = document.getElementById('mpsp-net-kpi');
+  const savingsKpi = document.getElementById('mpsp-savings-kpi');
+  const statusKpi = document.getElementById('mpsp-status-kpi');
+  const banner = document.getElementById('mpsp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vaultGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 SINGLE_PSP_VAULT_LOCKIN_OR_WRONG_MID_REFUND_HOLD · Mandate: null';
+    return;
+  }}
+  if (timeoutGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNREVERSED_TIMEOUT_OR_HARD_CASCADE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (midGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CROSS_BORDER_MID_MISMATCH_OR_2X_3DS_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DURBIN_PINLESS_DEBIT_AND_120MS_CAVV_FAILOVER_CONFIRM · Mandate: multi_psp_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 LOCAL_MID_MULTI_PSP_AUTHORIZATION_APPROVED · Mandate: multi_psp_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

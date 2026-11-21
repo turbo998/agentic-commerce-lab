@@ -20917,6 +20917,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-airline-irops-rebooking-sandbox", html_zh)
 
+    def test_multi_psp_orchestration_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            MultiPspOrchestrationPolicyInput,
+            evaluate_multi_psp_orchestration_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_multi_psp_orchestration_policy(
+            MultiPspOrchestrationPolicyInput(
+                quarterly_payment_mdr_cross_border_fee_and_false_decline_pool_usd=185000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "LOCAL_MID_MULTI_PSP_AUTHORIZATION_APPROVED",
+        )
+
+        timeout = evaluate_multi_psp_orchestration_policy(
+            MultiPspOrchestrationPolicyInput(
+                unreversed_timeout_failover_or_hard_decline_cascade=True
+            )
+        )
+        self.assertEqual(timeout["status_code"], 403)
+        self.assertEqual(
+            timeout["decision"],
+            "UNREVERSED_TIMEOUT_OR_HARD_CASCADE_BLOCKED",
+        )
+
+        mid = evaluate_multi_psp_orchestration_policy(
+            MultiPspOrchestrationPolicyInput(
+                cross_border_mid_mismatch_or_duplicate_3ds2_challenge_on_failover=True
+            )
+        )
+        self.assertEqual(mid["status_code"], 422)
+        self.assertEqual(
+            mid["decision"],
+            "CROSS_BORDER_MID_MISMATCH_OR_2X_3DS_BLOCKED",
+        )
+
+        vault = evaluate_multi_psp_orchestration_policy(
+            MultiPspOrchestrationPolicyInput(
+                single_psp_vault_lockin_or_refund_routed_to_wrong_acquirer_mid=True
+            )
+        )
+        self.assertEqual(vault["status_code"], 451)
+        self.assertEqual(
+            vault["decision"],
+            "SINGLE_PSP_VAULT_LOCKIN_OR_WRONG_MID_REFUND_HOLD",
+        )
+
+        optim = evaluate_multi_psp_orchestration_policy(
+            MultiPspOrchestrationPolicyInput(
+                quarterly_payment_mdr_cross_border_fee_and_false_decline_pool_usd=185000.0,
+                durbin_pinless_debit_routing_and_120ms_cavv_failover_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 72150.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 112850.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("multi_psp_orchestration_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("multi-psp-orchestration-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
