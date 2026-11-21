@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg637" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr637" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg637)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr637)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 194 · Conversational Commerce (WhatsApp / IG DM), 24h Window &amp; In-Chat Checkout Escrow</text>
+  <text x="48" y="74" class="sub">WhatsApp Flows / Instagram DM / Manychat / SleekFlow · 24h Free Service Window · 3s Message Debounce · PCI In-Chat Pay (-37% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #637 · FAQ #313</text>
+
+  <!-- Lane 1: Meta 24-Hour Service Window Expiry & Marketing Template Overcharge Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. 24h Window &amp; Template Rate Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Paying $0.09 Marketing Fee After Hour 24:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Follow-Up Inside `22h_Free_Customer_Service_Window`</text>
+  <text x="54" y="200" class="mono">72h Free Entry-Point Window on `Click-to-WhatsApp`</text>
+  <text x="44" y="223" class="body-txt">• Utility vs. Marketing Template Hygiene:</text>
+  <text x="54" y="243" class="mono">Never Inject Promo Upsells Into `UTILITY` Receipts</text>
+  <text x="44" y="266" class="body-txt">• Prevents Meta from reclassifying $0.008 shipping</text>
+  <text x="54" y="286" class="body-txt">updates into $0.095 `MARKETING` templates or</text>
+  <text x="54" y="304" class="body-txt">firing cart reminders 10 mins after the 24h window</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 EXPIRED_24H_WINDOW_OR_TEMPLATE_RECLASS_BLOCKED</text>
+
+  <!-- Lane 2: Rapid-Fire Burst Message Debouncing & Unbound Chat Token Drain Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. 3.5s Burst Debounce &amp; Quota Lock (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops 5-Message Typing Bursts Triggering 5 LLM Calls:</text>
+  <text x="442" y="182" class="mono">Buffer Rapid User Messages in `3.5s_Debounce_Window`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Coalesce "Hi" + "Do you have" + "Size M?" → 1 Turn</text>
+  <text x="432" y="223" class="body-txt">• Non-Buyer Chitchat Token Cap:</text>
+  <text x="442" y="243" class="mono">Switch to Interactive Button Menu After 8 Free Turns</text>
+  <text x="432" y="266" class="body-txt">• Eliminates 70% wasted LLM token calls and</text>
+  <text x="442" y="286" class="body-txt">overlapping out-of-order bot replies when mobile</text>
+  <text x="442" y="304" class="body-txt">shoppers send one sentence across 4 separate texts</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNDEBOUNCED_MESSAGE_BURST_OR_TOKEN_SPAM_BLOCKED</text>
+
+  <!-- Lane 3: Plaintext Card-in-Chat PCI Violation & External Login Bounce Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. PCI In-Chat Checkout &amp; Opt-In Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Asking for PAN/CVV Inside Chat Threads:</text>
+  <text x="830" y="182" class="mono">Strictly Redact Any 16-Digit PAN Typed in Chat</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Launch Signed `WhatsApp Flow / Stripe Apple Pay`</text>
+  <text x="820" y="223" class="body-txt">• Meta Quality-Rating &amp; Opt-In Protection:</text>
+  <text x="830" y="243" class="body-txt">Blocks outbound blasts to unconsented phone</text>
+  <text x="830" y="261" class="body-txt">numbers that drop WABA Quality Rating to `RED`</text>
+  <text x="820" y="284" class="body-txt">• Prevents PCI-DSS scope contamination and</text>
+  <text x="830" y="302" class="body-txt">WhatsApp Business number bans during peak sales</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 PLAINTEXT_CARD_IN_CHAT_OR_WABA_BAN_RISK_HOLD</text>
+
+  <!-- Bottom CTWA Context Hydration & Native In-Chat Checkout Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Click-to-WhatsApp (`CTWA`) 72h Free Window + Native In-Chat Variant Picker &amp; 1-Tap Pay (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① CTWA Ad-Payload Hydration</text>
+  <text x="62" y="462" class="body-txt">Reads `referral.headline` &amp;</text>
+  <text x="62" y="480" class="body-txt">`SKU_ID` from Instagram/FB ad</text>
+  <text x="62" y="498" class="body-txt">click; unlocks 72h free chat;</text>
+  <text x="62" y="516" class="mono">$0.00 Meta Conversation Fee</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② 3.5s Message Coalescer</text>
+  <text x="337" y="462" class="body-txt">Merges rapid multi-line user</text>
+  <text x="337" y="480" class="body-txt">texts + voice notes (`Whisper`)</text>
+  <text x="337" y="498" class="body-txt">into one grounded reply;</text>
+  <text x="337" y="516" class="mono">-68% LLM &amp; Webhook Overhead</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Native WhatsApp Flow Cart</text>
+  <text x="622" y="462" class="body-txt">Renders native size/color</text>
+  <text x="622" y="480" class="body-txt">drawer inside WhatsApp/IG DM</text>
+  <text x="622" y="498" class="body-txt">without opening slow browser;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">2.8x In-Chat Cart Completion</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Hour-22 Free Cart Rescue</text>
+  <text x="907" y="462" class="body-txt">Sends 1-tap Apple Pay / Pix /</text>
+  <text x="907" y="480" class="body-txt">UPI payment link at Hour 22</text>
+  <text x="907" y="498" class="body-txt">before free window expires;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Messaging &amp; Drop-Off Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly WABA Fee &amp; Drop-Off Saved</text>
+  <text x="46" y="642" class="mono">$59,200 Saved / $160k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">Hour-22 Trigger</text>
+  <text x="336" y="626" class="kpi-lbl">Captures Free 24h Service Window</text>
+  <text x="336" y="642" class="mono">Avoids $0.09 Marketing Tariff</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">3.5s Debounce</text>
+  <text x="626" y="626" class="kpi-lbl">Coalesces Multi-Bubble Chat Bursts</text>
+  <text x="626" y="642" class="mono">Zero Out-of-Order Bot Replies</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">100% PCI Safe</text>
+  <text x="916" y="626" class="kpi-lbl">Native In-Chat Flows &amp; Payment Links</text>
+  <text x="916" y="642" class="mono">Zero Plaintext PAN in Chat Logs</text>
+</svg>

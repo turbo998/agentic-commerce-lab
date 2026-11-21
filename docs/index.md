@@ -2,11 +2,11 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`312` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`313` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
-- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（18 篇）](#platform-grounding)
+- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（19 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（46 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（115 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（70 篇）](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（18 篇）
+## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（19 篇）
 
 > 面向企业架构师的平台底座选型（Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify）、搜索接地（Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl）、目录同步屏障、A2UI 渲染隔离与可信 Bot 鉴权。
 
@@ -42,6 +42,7 @@
 | 16 | **电商个性化 AI 导购、跨品类穿搭/整屋成套搭配与购物车转化托管（Shopify Storefront MCP / Salesforce Agentforce / Amazon Rufus / Constructor.io）防“推荐的衣服点进去发现自己尺码断货”、防大模型乱搭不兼容镜头卡口/护肤酸醇冲突与一键成套加购托管“防提示词注入骗走 1 折神券、防打断高意向结账流与搭配连带率提升净省 38%”Agent 架构选型 FAQ（🏆 第 300 篇里程碑）** | [中文](ecommerce-ai-shopping-assistant-outfit-bundle-compatibility-cart-escrow-agent-selection-faq.md) · [English](ecommerce-ai-shopping-assistant-outfit-bundle-compatibility-cart-escrow-agent-selection-faq.en.md) |
 | 17 | **电商真实购买评价（`UGC Reviews`）、美国 `FTC 16 CFR Part 465` 反刷评合规与跨商超评价同步托管（Bazaarvoice / Yotpo / PowerReviews / Okendo）防“好评返现 $10 / 藏匿一星差评”遭每条罚 `$51,744`、防老链接合并变体洗白 4,000 条旧好评与一键分发至 Walmart/Target/Sephora 净省 36% Agent 架构选型 FAQ** | [中文](ecommerce-verified-reviews-ftc-part465-seeding-syndication-escrow-agent-selection-faq.md) · [English](ecommerce-verified-reviews-ftc-part465-seeding-syndication-escrow-agent-selection-faq.en.md) |
 | 18 | **电商商品主数据管理（`PIM`：Akeneo / Salsify / Syndigo / Shopify Taxonomy）、AI 供应商目录智能建品与法规召回停售托管“防大模型写标题把聚酯纤维吹成 100% 真丝引发假一赔三、防盗用野鸡 UPC 条码遭 Amazon 下架与 CPSC 召回品 60 秒全网熔断净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-pim-catalog-onboarding-spec-verification-recall-escrow-agent-selection-faq.md) · [English](ecommerce-pim-catalog-onboarding-spec-verification-recall-escrow-agent-selection-faq.en.md) |
+| 19 | **社交与私域对话式电商（Conversational Commerce：WhatsApp Business Flows / Instagram DM / 企微私域 / Manychat / SleekFlow）、24 小时免费会话窗口计费寻优与内嵌免跳出结账托管“防超 24 小时回消息被收 10 倍营销模板费、防买家连发 4 句话触发 4 次乱序大模型回复与聊天内一键 Apple Pay 净省 37%”Agent 架构选型 FAQ** | [中文](conversational-commerce-whatsapp-ig-dm-in-chat-checkout-window-escrow-agent-selection-faq.md) · [English](conversational-commerce-whatsapp-ig-dm-in-chat-checkout-window-escrow-agent-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
 ## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（46 篇）

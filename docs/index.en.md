@@ -2,11 +2,11 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`312` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`313` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
-- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (18 guides)](#platform-grounding)
+- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (19 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (46 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (115 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (70 guides)](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (18 Guides)
+## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (19 Guides)
 
 > Platform selection (Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify), real-time search grounding (Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl), catalog feed barriers, A2UI isolation, and Web Bot Auth vs WAF governance.
 
@@ -42,6 +42,7 @@
 | 16 | **E-Commerce Conversational AI Shopping Assistant, Cross-Category Outfit/Kit Styling & Cart-Conversion Escrow (`Shopify Storefront MCP / Salesforce Agentforce / Amazon Rufus / Constructor.io`), Variant-Level `ATP >= 2` Lock, Deterministic `PIM` Compatibility Graph & 1-Tap Multi-SKU Cart Hydration (`-38%` Bounce & Wrong-Buy Loss) Agent Architecture Selection FAQ (🏆 300th Guide Milestone)** | [English](ecommerce-ai-shopping-assistant-outfit-bundle-compatibility-cart-escrow-agent-selection-faq.en.md) · [中文](ecommerce-ai-shopping-assistant-outfit-bundle-compatibility-cart-escrow-agent-selection-faq.md) |
 | 17 | **E-Commerce Verified-Purchase Reviews, `FTC 16 CFR Part 465` Anti-Gating Compliance & Retail Syndication Escrow (`Bazaarvoice / Yotpo / PowerReviews / Okendo`), Sentiment-Neutral Incentives, `14-Digit GTIN` Anti-Variant-Hijack Lock & Omnichannel Syndication (`-36%` Penalty & Cold-Start Loss) Agent Architecture Selection FAQ** | [English](ecommerce-verified-reviews-ftc-part465-seeding-syndication-escrow-agent-selection-faq.en.md) · [中文](ecommerce-verified-reviews-ftc-part465-seeding-syndication-escrow-agent-selection-faq.md) |
 | 18 | **E-Commerce Product Information Management (`PIM`: `Akeneo / Salsify / Syndigo / Shopify Taxonomy`), AI Supplier-Catalog Onboarding & `CPSC / FDA` Recall Escrow, `Verified by GS1` Lock, Multimodal Label-vs-Copy Verification & 60s Recall Kill-Switch (`-37%` `SNAD` Return & Delist Loss) Agent Architecture Selection FAQ** | [English](ecommerce-pim-catalog-onboarding-spec-verification-recall-escrow-agent-selection-faq.en.md) · [中文](ecommerce-pim-catalog-onboarding-spec-verification-recall-escrow-agent-selection-faq.md) |
+| 19 | **Conversational Commerce (`WhatsApp Business Flows / Instagram DM / WeChat / Manychat / SleekFlow`), 24-Hour Free Window Optimization & In-Chat Checkout Escrow, Hour-22 Cart Rescue, `3.5s` Burst Debouncing & `PCI`-Safe Native Pay (`-37%` Messaging & Drop-Off Loss) Agent Architecture Selection FAQ** | [English](conversational-commerce-whatsapp-ig-dm-in-chat-checkout-window-escrow-agent-selection-faq.en.md) · [中文](conversational-commerce-whatsapp-ig-dm-in-chat-checkout-window-escrow-agent-selection-faq.md) |
 
 <a id="payments-mandates"></a>
 ## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (46 Guides)

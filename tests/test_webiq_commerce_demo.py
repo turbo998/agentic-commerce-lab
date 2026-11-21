@@ -22056,6 +22056,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-eu-epr-compliance-sandbox", html_zh)
 
+    def test_conversational_commerce_whatsapp_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            ConversationalCommerceWhatsappPolicyInput,
+            evaluate_conversational_commerce_whatsapp_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_conversational_commerce_whatsapp_policy(
+            ConversationalCommerceWhatsappPolicyInput(
+                quarterly_waba_template_overpay_and_chat_checkout_dropoff_pool_usd=160000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CONVERSATIONAL_COMMERCE_SESSION_AUTHORIZED",
+        )
+
+        window = evaluate_conversational_commerce_whatsapp_policy(
+            ConversationalCommerceWhatsappPolicyInput(
+                post_24h_marketing_template_blast_or_utility_promo_contamination=True
+            )
+        )
+        self.assertEqual(window["status_code"], 403)
+        self.assertEqual(
+            window["decision"],
+            "EXPIRED_24H_WINDOW_OR_TEMPLATE_RECLASS_BLOCKED",
+        )
+
+        debounce = evaluate_conversational_commerce_whatsapp_policy(
+            ConversationalCommerceWhatsappPolicyInput(
+                undebounced_multi_bubble_message_burst_or_unbounded_chitchat=True
+            )
+        )
+        self.assertEqual(debounce["status_code"], 422)
+        self.assertEqual(
+            debounce["decision"],
+            "UNDEBOUNCED_MESSAGE_BURST_OR_TOKEN_SPAM_BLOCKED",
+        )
+
+        pci = evaluate_conversational_commerce_whatsapp_policy(
+            ConversationalCommerceWhatsappPolicyInput(
+                plaintext_card_pan_in_chat_or_unconsented_waba_quality_drop=True
+            )
+        )
+        self.assertEqual(pci["status_code"], 451)
+        self.assertEqual(
+            pci["decision"],
+            "PLAINTEXT_CARD_IN_CHAT_OR_WABA_BAN_RISK_HOLD",
+        )
+
+        optim = evaluate_conversational_commerce_whatsapp_policy(
+            ConversationalCommerceWhatsappPolicyInput(
+                quarterly_waba_template_overpay_and_chat_checkout_dropoff_pool_usd=160000.0,
+                ctwa_72h_hydration_3s_debounce_and_native_in_chat_checkout_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 59200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 100800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("conversational_commerce_whatsapp_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("conversational-commerce-whatsapp-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
