@@ -23747,6 +23747,87 @@ def evaluate_b2b_rfq_msa_redline_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class AiShoppingBundlePromoEscrowPolicyInput:
+    """Input contract for AI Shopping Stylist, Cross-Category Bundle & Pro-Rata Promo Escrow."""
+
+    quarterly_ai_stylist_bundle_pool_usd: float = 190000.0
+    partial_bundle_anchor_stockout_or_incompatible_spec_pairing: bool = False
+    unapportioned_bundle_split_return_or_gwp_retention_abuse: bool = False
+    webiq_undisclosed_sponsored_ranking_or_recalled_sku_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    colocated_fc_single_box_and_high_margin_attach_ready: bool = False
+
+
+def evaluate_ai_shopping_bundle_promo_escrow_policy(
+    policy_input: AiShoppingBundlePromoEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane AI Shopping Stylist, Cross-Category Bundle & Pro-Rata Promo Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_ai_stylist_bundle_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_undisclosed_sponsored_ranking_or_recalled_sku_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_UNDISCLOSED_SPONSORED_RANKING_OR_RECALLED_SKU_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.partial_bundle_anchor_stockout_or_incompatible_spec_pairing:
+        return {
+            "status_code": 403,
+            "decision": "PARTIAL_BUNDLE_ANCHOR_STOCKOUT_OR_INCOMPATIBLE_SPEC_PAIRING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unapportioned_bundle_split_return_or_gwp_retention_abuse:
+        return {
+            "status_code": 422,
+            "decision": "UNAPPORTIONED_BUNDLE_SPLIT_RETURN_OR_GWP_RETENTION_ABUSE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.colocated_fc_single_box_and_high_margin_attach_ready:
+        savings = round(gross_pool * 0.31, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "COLOCATED_FC_SINGLE_BOX_AND_HIGH_MARGIN_ATTACH_CONFIRM",
+            "mandate_token": "ai_shopping_bundle_promo_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "COMPATIBLE_BUNDLE_AND_PRORATA_ESCROW_AUTHORIZED",
+        "mandate_token": "ai_shopping_bundle_promo_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -32656,6 +32737,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ai_shopping_bundle_promo_escrow_guard = {
+        "authorized_200": evaluate_ai_shopping_bundle_promo_escrow_policy(
+            AiShoppingBundlePromoEscrowPolicyInput()
+        ),
+        "anchor_stockout_or_incompatible_spec_403": evaluate_ai_shopping_bundle_promo_escrow_policy(
+            AiShoppingBundlePromoEscrowPolicyInput(
+                partial_bundle_anchor_stockout_or_incompatible_spec_pairing=True
+            )
+        ),
+        "unapportioned_split_return_or_gwp_abuse_422": evaluate_ai_shopping_bundle_promo_escrow_policy(
+            AiShoppingBundlePromoEscrowPolicyInput(
+                unapportioned_bundle_split_return_or_gwp_retention_abuse=True
+            )
+        ),
+        "undisclosed_sponsored_or_recalled_sku_451": evaluate_ai_shopping_bundle_promo_escrow_policy(
+            AiShoppingBundlePromoEscrowPolicyInput(
+                webiq_undisclosed_sponsored_ranking_or_recalled_sku_flag=True
+            )
+        ),
+        "colocated_fc_and_high_margin_attach_409": evaluate_ai_shopping_bundle_promo_escrow_policy(
+            AiShoppingBundlePromoEscrowPolicyInput(
+                colocated_fc_single_box_and_high_margin_attach_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -32899,6 +33006,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_returns_duty_drawback_escrow_guard": cross_border_returns_duty_drawback_escrow_guard,
         "ota_price_drop_rebooking_escrow_guard": ota_price_drop_rebooking_escrow_guard,
         "b2b_rfq_msa_redline_escrow_guard": b2b_rfq_msa_redline_escrow_guard,
+        "ai_shopping_bundle_promo_escrow_guard": ai_shopping_bundle_promo_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -44467,6 +44575,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="b2b-rfq-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CHERRY_PICK_LOT_SPLIT_AND_SHOULD_COST_REDLINE_CONFIRM · Mandate: b2b_rfq_msa_redline_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 115 AI Shopping Stylist, Cross-Category Bundle & Pro-Rata Promo Escrow -->
+      <div class="finops-box" id="ai-shopping-bundle-promo-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🛍️ 电商个性化 AI 导购 (AI Shopping Stylist)、跨品类成套搭配转化与“凑单满减拆退防薅”托管 (Shopify Sidekick / Amazon Rufus / Zalando AI / 淘宝问问) 搭配与促销沙盒 (Round 115)</div>
+            <div class="finops-subtitle">实测主锚点商品原子锁库防主品缺货仅发孤立配件+符号知识图谱拦截错配镜头卡口/护肤品酸醇猛药冲突 (HTTP 403)、最大余数法行项优惠等比例分摊+满赠礼品 (GWP) 连带扣回锁防“满 $400 减 $100 秒退 $300 凑单件”白嫖 (HTTP 422)、Web IQ FTC 16 CFR 255 竞价广告披露与召回核验 (HTTP 451) 及同仓一箱合发 (Single-FC)+引流主品搭高毛利自有配件净增 31% 贡献毛利 (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="ai-bundle-status-kpi">HTTP 409 · COLOCATED_FC_SINGLE_BOX_AND_HIGH_MARGIN_ATTACH_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度跨品类 AI 导购成套订单成本与履约总池 ($ USD)
+            <input type="range" id="ai-bundle-pool-slider" min="25000" max="800000" step="5000" value="190000" oninput="updateAiShoppingBundlePromoEscrowSandbox()" />
+            <span id="ai-bundle-pool-val" style="color:#6ee7b7; font-family:monospace;">$190,000</span>
+          </label>
+          <label>
+            主锚点商品原子锁库与跨品类规格/尺码/成分兼容审计 (HTTP 403)
+            <select id="ai-bundle-spec-select" onchange="updateAiShoppingBundlePromoEscrowSandbox()">
+              <option value="pass">All-or-Nothing 原子锁库 + 镜头卡口/成衣实测厘米尺寸/护肤品成分 100% 兼容 (放行)</option>
+              <option value="block">相机机身/西装上衣断货却单独发走背带领带 或 佳能 RF 镜头配索尼机身/高浓 A醇叠果酸烂脸 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            凑单满减行项等比例分摊与满赠礼品 (GWP) 连带退回门禁 (HTTP 422)
+            <select id="ai-bundle-promo-select" onchange="updateAiShoppingBundlePromoEscrowSandbox()">
+              <option value="pass">按最大余数法将满减券锁入每行 max_refundable + 未退满赠礼品自动扣减公允价 (合规)</option>
+              <option value="block">凑满 $400 减 $100 后秒退 $300 凑单件企图退全款 $300 或 只退主商品白嫖 $65 满赠大牌中样 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ FTC 16 CFR 255 竞价推荐标识与 CPSC/FDA 召回核验 (HTTP 451)
+            <select id="ai-bundle-ftc-select" onchange="updateAiShoppingBundlePromoEscrowSandbox()">
+              <option value="clear">AI 导购受 RMN 广告加权商品显式标注 Sponsored + 零 CPSC/FDA 召回批次 (正常)</option>
+              <option value="hold">对话流暗塞付费竞价商品伪装自然推荐违反 FTC ガイド 或 包含缺陷召回美妆电器 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            同仓一箱合发路由 (Single-FC) 与高毛利自有配件混搭寻优 (HTTP 409)
+            <select id="ai-bundle-opt-select" onchange="updateAiShoppingBundlePromoEscrowSandbox()">
+              <option value="enabled" selected>匹配同一区域中心仓现货一箱合发 (省 $14 拆包运费) + 引流主品混搭 68% 高毛利配件净增 31% (HTTP 409)</option>
+              <option value="baseline">常规符号兼容图谱校验与行项分摊标准结账授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度成套搭配履约与折扣总池</div>
+            <div class="finops-kpi-val" id="ai-bundle-gross-kpi">$190,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">同仓合箱与毛利混搭后净成本</div>
+            <div class="finops-kpi-val" id="ai-bundle-net-kpi" style="color:#6ee7b7;">$131,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净增贡献毛利与省拆单费</div>
+            <div class="finops-kpi-val" id="ai-bundle-savings-kpi" style="color:#38bdf8;">$58,900</div>
+          </div>
+        </div>
+        <div id="ai-bundle-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 COLOCATED_FC_SINGLE_BOX_AND_HIGH_MARGIN_ATTACH_CONFIRM · Mandate: ai_shopping_bundle_promo_mandate_optim_409
         </div>
       </div>
 
@@ -58348,6 +58519,80 @@ function updateB2BRfqMsaRedlineEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 COMPETITIVE_RFQ_AND_REDLINED_MSA_PO_AUTHORIZED · Mandate: b2b_rfq_msa_redline_mandate_200';
+}}
+
+function updateAiShoppingBundlePromoEscrowSandbox() {{
+  const slider = document.getElementById('ai-bundle-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '190000');
+  const specMode = document.getElementById('ai-bundle-spec-select').value;
+  const promoMode = document.getElementById('ai-bundle-promo-select').value;
+  const ftcMode = document.getElementById('ai-bundle-ftc-select').value;
+  const optMode = document.getElementById('ai-bundle-opt-select').value;
+
+  document.getElementById('ai-bundle-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('ai-bundle-status-kpi');
+  const grossKpi = document.getElementById('ai-bundle-gross-kpi');
+  const netKpi = document.getElementById('ai-bundle-net-kpi');
+  const savingsKpi = document.getElementById('ai-bundle-savings-kpi');
+  const banner = document.getElementById('ai-bundle-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ftcMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_UNDISCLOSED_SPONSORED_RANKING_OR_RECALLED_SKU_HOLD · Mandate: null';
+    return;
+  }}
+  if (specMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PARTIAL_BUNDLE_ANCHOR_STOCKOUT_OR_INCOMPATIBLE_SPEC_PAIRING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (promoMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNAPPORTIONED_BUNDLE_SPLIT_RETURN_OR_GWP_RETENTION_ABUSE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.31);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 COLOCATED_FC_SINGLE_BOX_AND_HIGH_MARGIN_ATTACH_CONFIRM · Mandate: ai_shopping_bundle_promo_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 COMPATIBLE_BUNDLE_AND_PRORATA_ESCROW_AUTHORIZED · Mandate: ai_shopping_bundle_promo_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

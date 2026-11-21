@@ -16763,6 +16763,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-rfq-msa-redline-escrow-sandbox", html_zh)
 
+    def test_ai_shopping_bundle_promo_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            AiShoppingBundlePromoEscrowPolicyInput,
+            evaluate_ai_shopping_bundle_promo_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ai_shopping_bundle_promo_escrow_policy(
+            AiShoppingBundlePromoEscrowPolicyInput(
+                quarterly_ai_stylist_bundle_pool_usd=190000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "COMPATIBLE_BUNDLE_AND_PRORATA_ESCROW_AUTHORIZED",
+        )
+
+        spec = evaluate_ai_shopping_bundle_promo_escrow_policy(
+            AiShoppingBundlePromoEscrowPolicyInput(
+                partial_bundle_anchor_stockout_or_incompatible_spec_pairing=True
+            )
+        )
+        self.assertEqual(spec["status_code"], 403)
+        self.assertEqual(
+            spec["decision"],
+            "PARTIAL_BUNDLE_ANCHOR_STOCKOUT_OR_INCOMPATIBLE_SPEC_PAIRING_BLOCKED",
+        )
+
+        promo = evaluate_ai_shopping_bundle_promo_escrow_policy(
+            AiShoppingBundlePromoEscrowPolicyInput(
+                unapportioned_bundle_split_return_or_gwp_retention_abuse=True
+            )
+        )
+        self.assertEqual(promo["status_code"], 422)
+        self.assertEqual(
+            promo["decision"],
+            "UNAPPORTIONED_BUNDLE_SPLIT_RETURN_OR_GWP_RETENTION_ABUSE_BLOCKED",
+        )
+
+        ftc = evaluate_ai_shopping_bundle_promo_escrow_policy(
+            AiShoppingBundlePromoEscrowPolicyInput(
+                webiq_undisclosed_sponsored_ranking_or_recalled_sku_flag=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 451)
+        self.assertEqual(
+            ftc["decision"],
+            "WEBIQ_UNDISCLOSED_SPONSORED_RANKING_OR_RECALLED_SKU_HOLD",
+        )
+
+        optim = evaluate_ai_shopping_bundle_promo_escrow_policy(
+            AiShoppingBundlePromoEscrowPolicyInput(
+                quarterly_ai_stylist_bundle_pool_usd=190000.0,
+                colocated_fc_single_box_and_high_margin_attach_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 58900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 131100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ai_shopping_bundle_promo_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ai-shopping-bundle-promo-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`233` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`234` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (10 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (38 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (76 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (77 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (58 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (21 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (30 guides)](#tax-fx-privacy-disputes)
@@ -82,7 +82,7 @@
 | 38 | **Music Festival & Stadium Cashless `RFID` Wristband, Anti-Tip-Creep & Auto-Refund Escrow (`Coachella / Tomorrowland / Intellitix / Front Gate`) Zero-Breakage Auto-Refund, `0%–10%` Tip Cap & `45s` Double-Tap Idempotency Agent Architecture Selection FAQ** | [English](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.en.md) · [中文](music-festival-stadium-cashless-rfid-wristband-tip-refund-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (76 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (77 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -164,6 +164,7 @@
 | 74 | **Pool Service Subscription, `CYA` Chlorine-Lock & Variable-Speed Pump Escrow (`Leslie's / Poolwerx / Pentair / Hayward`) `CYA <= 60ppm` Lock, `Spin-Touch LSI` Audit & `VSP` Affinity Law Agent Architecture Selection FAQ** | [English](pool-maintenance-subscription-cya-chlorine-lock-lsi-escrow-agent-selection-faq.en.md) · [中文](pool-maintenance-subscription-cya-chlorine-lock-lsi-escrow-agent-selection-faq.md) |
 | 75 | **Luxury Watch Secondary Market Escrow, Anti-`Frankenwatch` Movement Audit & Armored Transit (`Chrono24 / Bezel / WatchBox / Hodinkee`) Random Time-Set Liveness, `CW21` Movement/`Witschi` Gate & `Parcel Pro` Specie Agent Architecture Selection FAQ** | [English](luxury-watch-secondary-market-frankenwatch-movement-escrow-agent-selection-faq.en.md) · [中文](luxury-watch-secondary-market-frankenwatch-movement-escrow-agent-selection-faq.md) |
 | 76 | **OTA Flight & Hotel Price-Drop Rebooking, Anti-`Basic Economy` & `IATA NDC` Escrow (`Navan / Fairfly / Hopper / Ctrip Corporate`) All-In Fare Gate, `Book-Then-Cancel` `HCN` Saga & `NDC OrderChange` Seat-Preserving Agent Architecture Selection FAQ** | [English](ota-flight-hotel-price-drop-rebooking-ndc-amenity-escrow-agent-selection-faq.en.md) · [中文](ota-flight-hotel-price-drop-rebooking-ndc-amenity-escrow-agent-selection-faq.md) |
+| 77 | **E-Commerce AI Shopping Stylist, Cross-Category Bundle & Pro-Rata Promo Escrow (`Shopify Sidekick / Amazon Rufus / Zalando AI / Taobao Wenwen`) Symbolic Spec Graph, `Single-FC` Box Consolidation & Pro-Rata Split-Return Agent Architecture Selection FAQ** | [English](ecommerce-ai-shopping-stylist-cross-category-bundle-promo-escrow-agent-selection-faq.en.md) · [中文](ecommerce-ai-shopping-stylist-cross-category-bundle-promo-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (58 Guides)
