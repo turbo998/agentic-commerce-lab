@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg567" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#071321" />
+      <stop offset="50%" stop-color="#0f233f" />
+      <stop offset="100%" stop-color="#081426" />
+    </linearGradient>
+    <linearGradient id="accent567" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg567)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent567)" rx="3" />
+
+  <text x="40" y="58" class="title">Agent 支付与结账协议横向选型 (Stripe SPT vs Visa VIC vs Mastercard Agent Pay vs PayPal vs VCN)</text>
+  <text x="40" y="80" class="subtitle">Round 124 · 防明文 PAN 入上下文脱库、防后台自动下单撞上 3DS2 短信弹窗卡死 &amp; 五轨智能选路净省 33% 拒付/手续费 (SVG 567)</text>
+
+  <!-- Left Card: 3 Fatal Agent Payment Pitfalls -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大智能体支付致命痛点</text>
+  <text x="56" y="164" class="card-title">1. 明文卡号入 Prompt 与跨店盗刷 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 让用户把 16 位信用卡号 + CVV 贴进聊天框或环境变量</text>
+  <text x="56" y="202" class="body">• 一旦遭遇提示词注入，Agent 直接去黑产礼品卡店刷爆额度</text>
+  <text x="56" y="220" class="warn">• 触发 PCI-DSS v4.0 SAQ-D 重度违规与发卡行全额追偿</text>
+
+  <text x="56" y="256" class="card-title">2. 凌晨机酒降价自动锁单撞上 3DS2 短信死锁</text>
+  <text x="56" y="276" class="body">• 凌晨 3 点航司放出 $420 商务舱特价，Agent 自动发起支付</text>
+  <text x="56" y="294" class="body">• 银行弹出 3DS2 SMS OTP 验证码，用户正在睡觉无法输入</text>
+  <text x="56" y="312" class="warn">• 15 分钟锁座超时作废，无委托预授权导致 68% 异步交易失败</text>
+
+  <text x="56" y="348" class="card-title">3. 客人说“不是我让 AI 买的”友好欺诈拒付</text>
+  <text x="56" y="368" class="body">• 持卡人收到账单后反悔，向银行发起 Visa 10.4 无卡欺诈拒付</text>
+  <text x="56" y="386" class="body">• 商户拿不出持卡人针对该笔上限/品类的硬件加密签名证据</text>
+  <text x="56" y="404" class="warn">• 100% 败诉赔钱 + 每笔额外罚 $15~$25 拒付处理费</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: RAW_PAN_IN_CONTEXT_OR_UNSCOPED_TOKEN_BLOCK</text>
+  <text x="70" y="502" class="warn">• HTTP 422: ASYNC_3DS2_OTP_DEADLOCK_OR_CART_DRIFT_BLOCK</text>
+  <text x="70" y="524" class="warn">• HTTP 451: PCI_SCOPE_LEAK_OR_MISSING_TAP_SIGNATURE_HOLD</text>
+  <text x="70" y="546" class="mono">• HTTP 409: FIVE_RAIL_PAYMENT_PROTOCOL_ROUTER_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: SCOPED_SPT_VIC_MANDATE_AUTHORIZED</text>
+  <text x="70" y="596" class="body">零明文卡号接触: Agent 仅持有绑商户/绑上限的单次令牌</text>
+
+  <!-- Center Card: 5-Protocol Architecture & Mandate Flow -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="182" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">五大智能体支付轨道协同架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#6366f1" />
+  <text x="450" y="175" class="card-title" fill="#a5b4fc">轨道 1: Stripe Agent Toolkit (Shared Payment Tokens)</text>
+  <text x="450" y="195" class="body">• 适用: 平台与目标商户均在 Stripe Connect / ACP 生态内</text>
+  <text x="450" y="213" class="body">• 机制: 签发绑死 destination_account + max_amount 的 spt_ 令牌</text>
+  <text x="450" y="231" class="mono">• 零卡号暴露、免重复 3DS，单次消费后自动销毁</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">轨道 2 &amp; 3: Visa VIC (TAP) &amp; Mastercard Agent Pay</text>
+  <text x="450" y="302" class="body">• 适用: 跨收单行全网 B2C 零售/航司酒店 + 异步降价自动下单</text>
+  <text x="450" y="320" class="body">• 机制: 事先通过 Passkey/FIDO2 签署意图授权 (Intent Mandate)</text>
+  <text x="450" y="338" class="body">• 后台触发时附带卡组织加密凭证 (Cryptogram) 直通发卡行</text>
+  <text x="450" y="354" class="mono">• 享有卡组织争议责任转移 (Liability Shift) 免遭友好欺诈</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="399" class="card-title" fill="#6ee7b7">轨道 4 &amp; 5: PayPal Toolkit vs 企业预算虚拟卡 (VCN)</text>
+  <text x="450" y="419" class="body">• PayPal: 适合跨境独立站买家保护与自动同步运单号解冻资金</text>
+  <text x="450" y="437" class="body">• 企业虚拟卡 (Ramp/Brex): 适合未改造传统网页表单的 B2B 采购</text>
+  <text x="450" y="455" class="mono">• VCN 强制绑死 MCC + 首刷商户 CAID + 扣款后 60s 自动销毁</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#f59e0b" />
+  <text x="450" y="508" class="card-title" fill="#fcd34d">五轨智能选路门禁 (Payment Protocol Router)</text>
+  <text x="450" y="528" class="body">• 严禁将 16 位明文 PAN 暴露给大模型上下文 -&gt; HTTP 403</text>
+  <text x="450" y="546" class="body">• 异步无人值守交易无 FIDO2 预授权 Cryptogram -&gt; HTTP 422</text>
+  <text x="450" y="566" class="mono">• 同生态优先走 Stripe SPT; 跨网 B2C 走 Visa VIC/MC Agentic</text>
+  <text x="450" y="586" class="mono">• 传统 B2B 表单走单次 VCN (返利 1.5%) -&gt; 净省 33% 支付损耗</text>
+
+  <!-- Right Card: Protocol Comparison & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">五轨协议核心能力对比</text>
+
+  <text x="846" y="164" class="card-title" fill="#a5b4fc">1. Stripe SPT (Shared Payment Token)</text>
+  <text x="846" y="182" class="body">• 接入最快 (1天)，但要求买卖双方均支持 Stripe/ACP</text>
+  <text x="846" y="198" class="body">• 彻底脱离商户 PCI 范围，锁死单商户与精确金额</text>
+
+  <text x="846" y="226" class="card-title" fill="#38bdf8">2. Visa VIC + Trusted Agent Protocol</text>
+  <text x="846" y="244" class="body">• 全球卡网通吃，原生支持“低于 $500 自动买”委托令牌</text>
+  <text x="846" y="260" class="body">• RFC 9421 签名防 WAF 封禁 + 发卡行级争议免责</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Mastercard Agent Pay &amp; 4. PayPal</text>
+  <text x="846" y="306" class="body">• MC Agent Pay: 生物特征 Agentic Token + B2B 应付账款强项</text>
+  <text x="846" y="322" class="body">• PayPal MCP: 4 亿存量钱包免绑卡，跨境争议调解成熟</text>
+
+  <text x="846" y="350" class="card-title" fill="#6ee7b7">5. 企业预算虚拟卡 (Ramp / Brex / Issuing)</text>
+  <text x="846" y="368" class="body">• 100% 兼容老旧 B2B 网站，享 1.5% 企业卡返现</text>
+  <text x="846" y="384" class="body">• 需配 Browser-use 安全注入，无卡组织 Agentic 免责转移</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度支付损耗与拒付账单 ($110,000)</text>
+  <text x="860" y="456" class="body">• 传统无分级支付损耗与拒付池: $110,000/季</text>
+  <text x="860" y="476" class="mono">• 消除凌晨 3DS2 超时弃单挽回毛利: -$15,400</text>
+  <text x="860" y="496" class="mono">• Visa VIC / MC 硬件签名拒付免责: -$12,100</text>
+  <text x="860" y="516" class="mono">• B2B 虚拟卡 1.5% 返现与同网 SPT 降费: -$8,800</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净损耗: $73,700 (净省 $36,300 / -33%)</text>
+  <text x="860" y="574" class="body">Provenance: official_list_price + synthetic</text>
+  <text x="860" y="594" class="body">Mandate: payment_protocol_router_optim_409</text>
+</svg>

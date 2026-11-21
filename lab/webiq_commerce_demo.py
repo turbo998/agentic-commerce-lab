@@ -24476,6 +24476,87 @@ def evaluate_enterprise_search_grounding_router_policy(
     }
 
 
+@dataclass(frozen=True)
+class AgentPaymentProtocolRouterPolicyInput:
+    """Input contract for 5-Rail Agent Payment & Checkout Protocol Router (SPT / VIC / MC / PayPal / VCN)."""
+
+    quarterly_payment_friction_chargeback_and_fee_pool_usd: float = 110000.0
+    raw_pan_in_llm_context_or_unscoped_wildcard_payment_token: bool = False
+    unattended_async_3ds2_sms_otp_deadlock_or_cart_total_drift: bool = False
+    pci_dss_scope_leak_or_missing_rfc9421_tap_bot_signature: bool = False
+    mandate_signing_key_age_days: int = 30
+    five_rail_adaptive_router_and_fido2_liability_shift_ready: bool = False
+
+
+def evaluate_agent_payment_protocol_router_policy(
+    policy_input: AgentPaymentProtocolRouterPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Agent Payment & Checkout Protocol Router policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_payment_friction_chargeback_and_fee_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.pci_dss_scope_leak_or_missing_rfc9421_tap_bot_signature
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "PCI_DSS_SCOPE_LEAK_OR_MISSING_RFC9421_TAP_BOT_SIGNATURE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.raw_pan_in_llm_context_or_unscoped_wildcard_payment_token:
+        return {
+            "status_code": 403,
+            "decision": "RAW_PAN_IN_LLM_CONTEXT_OR_UNSCOPED_WILDCARD_PAYMENT_TOKEN_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unattended_async_3ds2_sms_otp_deadlock_or_cart_total_drift:
+        return {
+            "status_code": 422,
+            "decision": "UNATTENDED_ASYNC_3DS2_SMS_OTP_DEADLOCK_OR_CART_TOTAL_DRIFT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.five_rail_adaptive_router_and_fido2_liability_shift_ready:
+        savings = round(gross_pool * 0.33, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FIVE_RAIL_ADAPTIVE_ROUTER_AND_FIDO2_LIABILITY_SHIFT_CONFIRM",
+            "mandate_token": "payment_protocol_router_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "SCOPED_SPT_VIC_MANDATE_AND_ZERO_PAN_AUTHORIZED",
+        "mandate_token": "payment_protocol_router_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -33619,6 +33700,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    agent_payment_protocol_router_guard = {
+        "authorized_200": evaluate_agent_payment_protocol_router_policy(
+            AgentPaymentProtocolRouterPolicyInput()
+        ),
+        "raw_pan_or_unscoped_token_403": evaluate_agent_payment_protocol_router_policy(
+            AgentPaymentProtocolRouterPolicyInput(
+                raw_pan_in_llm_context_or_unscoped_wildcard_payment_token=True
+            )
+        ),
+        "async_3ds2_deadlock_or_drift_422": evaluate_agent_payment_protocol_router_policy(
+            AgentPaymentProtocolRouterPolicyInput(
+                unattended_async_3ds2_sms_otp_deadlock_or_cart_total_drift=True
+            )
+        ),
+        "pci_leak_or_missing_tap_451": evaluate_agent_payment_protocol_router_policy(
+            AgentPaymentProtocolRouterPolicyInput(
+                pci_dss_scope_leak_or_missing_rfc9421_tap_bot_signature=True
+            )
+        ),
+        "five_rail_router_and_liability_shift_409": evaluate_agent_payment_protocol_router_policy(
+            AgentPaymentProtocolRouterPolicyInput(
+                five_rail_adaptive_router_and_fido2_liability_shift_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -33871,6 +33978,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_software_ela_macc_escrow_guard": b2b_software_ela_macc_escrow_guard,
         "vacation_rental_str_escrow_guard": vacation_rental_str_escrow_guard,
         "enterprise_search_grounding_router_guard": enterprise_search_grounding_router_guard,
+        "agent_payment_protocol_router_guard": agent_payment_protocol_router_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -46006,6 +46114,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="search-grounding-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FIVE_ENGINE_TIERED_ROUTER_AND_FIRECRAWL_SCHEMA_CACHE_CONFIRM · Mandate: search_grounding_router_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 124 5-Rail Agent Payment & Checkout Protocol Router -->
+      <div class="finops-box" id="agent-payment-protocol-router-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">💳 Agent 支付与结账协议选型 (Stripe SPT vs Visa VIC vs Mastercard Agent Pay vs PayPal vs 企业单次 VCN) 五轨智能路由沙盒 (Round 124)</div>
+            <div class="finops-subtitle">实测硬控零 16 位明文卡号(PAN)入大模型上下文+锁死收款商户与金额上限防跨店洗钱 (HTTP 403)、白天 Passkey/FIDO2 预签署委托令牌破解凌晨 3 点机酒降价自动锁单 3DS2 短信死锁 (HTTP 422)、PCI-DSS v4.0 隔离边界与 RFC 9421 TAP 签名门禁 (HTTP 451) 及五轨自适应选路+发卡行拒付责任转移(Liability Shift)净省 33% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="payment-router-status-kpi">HTTP 409 · FIVE_RAIL_ADAPTIVE_ROUTER_AND_FIDO2_LIABILITY_SHIFT_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度支付超时弃单、友好欺诈拒付及手续费损耗总池 ($ USD)
+            <input type="range" id="payment-router-pool-slider" min="20000" max="500000" step="5000" value="110000" oninput="updateAgentPaymentProtocolRouterSandbox()" />
+            <span id="payment-router-pool-val" style="color:#6ee7b7; font-family:monospace;">$110,000</span>
+          </label>
+          <label>
+            零明文 PAN 隔离与单商户/限额硬绑定审计 (HTTP 403)
+            <select id="payment-router-pan-select" onchange="updateAgentPaymentProtocolRouterSandbox()">
+              <option value="pass">大模型仅持 spt_ / 符号句柄 + 硬绑死目标商户 destination_account 与精确上限 (放行)</option>
+              <option value="block">将 16 位明文信用卡号贴进 Prompt 上下文 或 签发可跨店买礼品卡的通配令牌 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            凌晨无人值守异步下单 FIDO2 委托与防 3DS2 短信死锁 (HTTP 422)
+            <select id="payment-router-async-select" onchange="updateAgentPaymentProtocolRouterSandbox()">
+              <option value="pass">白天 Passkey 预签 Intent Mandate + 凌晨凭 Visa VIC / MC Cryptogram 免短信直通发卡行 (合规)</option>
+              <option value="block">凌晨 3 点后台抢特价机票无委托密文撞上 3DS2 短信弹窗无人输入超时死锁 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            PCI-DSS v4.0 边界合规与 RFC 9421 TAP 防封禁签名 (HTTP 451)
+            <select id="payment-router-pci-select" onchange="updateAgentPaymentProtocolRouterSandbox()">
+              <option value="clear">TEE 沙盒隔离代填彻底脱离 SAQ-D 范围 + 附带 Visa TAP 边缘签名防 WAF 误封 (正常)</option>
+              <option value="hold">日志/记忆库泄露持卡人敏感轨道数据 或 裸爬虫强闯结账页被商户 WAF 封禁 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            五轨智能支付路由与卡组织拒付责任转移 (Liability Shift) (HTTP 409)
+            <select id="payment-router-opt-select" onchange="updateAgentPaymentProtocolRouterSandbox()">
+              <option value="enabled" selected>同网走 Stripe SPT + 跨网走 Visa VIC/MC 享拒付免责 + 传统 B2B 走单次 VCN 拿 1.5% 返现净省 33% (HTTP 409)</option>
+              <option value="baseline">常规单通道受限令牌安全结账授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度支付损耗与拒付风险总池</div>
+            <div class="finops-kpi-val" id="payment-router-gross-kpi">$110,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">五轨智能选路与免责后净损耗</div>
+            <div class="finops-kpi-val" id="payment-router-net-kpi" style="color:#6ee7b7;">$73,700</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回弃单、拒付及返利</div>
+            <div class="finops-kpi-val" id="payment-router-savings-kpi" style="color:#38bdf8;">$36,300</div>
+          </div>
+        </div>
+        <div id="payment-router-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FIVE_RAIL_ADAPTIVE_ROUTER_AND_FIDO2_LIABILITY_SHIFT_CONFIRM · Mandate: payment_protocol_router_optim_409
         </div>
       </div>
 
@@ -60553,6 +60724,80 @@ function updateEnterpriseSearchGroundingRouterSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 FRESH_SCHEMA_GROUNDED_AND_ZDR_VERIFIED_AUTHORIZED · Mandate: search_grounding_router_200';
+}}
+
+function updateAgentPaymentProtocolRouterSandbox() {{
+  const slider = document.getElementById('payment-router-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '110000');
+  const panMode = document.getElementById('payment-router-pan-select').value;
+  const asyncMode = document.getElementById('payment-router-async-select').value;
+  const pciMode = document.getElementById('payment-router-pci-select').value;
+  const optMode = document.getElementById('payment-router-opt-select').value;
+
+  document.getElementById('payment-router-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('payment-router-status-kpi');
+  const grossKpi = document.getElementById('payment-router-gross-kpi');
+  const netKpi = document.getElementById('payment-router-net-kpi');
+  const savingsKpi = document.getElementById('payment-router-savings-kpi');
+  const banner = document.getElementById('payment-router-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (pciMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 PCI_DSS_SCOPE_LEAK_OR_MISSING_RFC9421_TAP_BOT_SIGNATURE_HOLD · Mandate: null';
+    return;
+  }}
+  if (panMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 RAW_PAN_IN_LLM_CONTEXT_OR_UNSCOPED_WILDCARD_PAYMENT_TOKEN_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (asyncMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNATTENDED_ASYNC_3DS2_SMS_OTP_DEADLOCK_OR_CART_TOTAL_DRIFT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.33);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FIVE_RAIL_ADAPTIVE_ROUTER_AND_FIDO2_LIABILITY_SHIFT_CONFIRM · Mandate: payment_protocol_router_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 SCOPED_SPT_VIC_MANDATE_AND_ZERO_PAN_AUTHORIZED · Mandate: payment_protocol_router_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -17366,6 +17366,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("enterprise-search-grounding-router-sandbox", html_zh)
 
+    def test_agent_payment_protocol_router_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            AgentPaymentProtocolRouterPolicyInput,
+            evaluate_agent_payment_protocol_router_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_agent_payment_protocol_router_policy(
+            AgentPaymentProtocolRouterPolicyInput(
+                quarterly_payment_friction_chargeback_and_fee_pool_usd=110000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "SCOPED_SPT_VIC_MANDATE_AND_ZERO_PAN_AUTHORIZED",
+        )
+
+        pan = evaluate_agent_payment_protocol_router_policy(
+            AgentPaymentProtocolRouterPolicyInput(
+                raw_pan_in_llm_context_or_unscoped_wildcard_payment_token=True
+            )
+        )
+        self.assertEqual(pan["status_code"], 403)
+        self.assertEqual(
+            pan["decision"],
+            "RAW_PAN_IN_LLM_CONTEXT_OR_UNSCOPED_WILDCARD_PAYMENT_TOKEN_BLOCKED",
+        )
+
+        async_deadlock = evaluate_agent_payment_protocol_router_policy(
+            AgentPaymentProtocolRouterPolicyInput(
+                unattended_async_3ds2_sms_otp_deadlock_or_cart_total_drift=True
+            )
+        )
+        self.assertEqual(async_deadlock["status_code"], 422)
+        self.assertEqual(
+            async_deadlock["decision"],
+            "UNATTENDED_ASYNC_3DS2_SMS_OTP_DEADLOCK_OR_CART_TOTAL_DRIFT_BLOCKED",
+        )
+
+        pci = evaluate_agent_payment_protocol_router_policy(
+            AgentPaymentProtocolRouterPolicyInput(
+                pci_dss_scope_leak_or_missing_rfc9421_tap_bot_signature=True
+            )
+        )
+        self.assertEqual(pci["status_code"], 451)
+        self.assertEqual(
+            pci["decision"],
+            "PCI_DSS_SCOPE_LEAK_OR_MISSING_RFC9421_TAP_BOT_SIGNATURE_HOLD",
+        )
+
+        optim = evaluate_agent_payment_protocol_router_policy(
+            AgentPaymentProtocolRouterPolicyInput(
+                quarterly_payment_friction_chargeback_and_fee_pool_usd=110000.0,
+                five_rail_adaptive_router_and_fido2_liability_shift_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 36300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 73700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("agent_payment_protocol_router_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agent-payment-protocol-router-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
