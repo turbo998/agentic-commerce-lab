@@ -26550,6 +26550,79 @@ def evaluate_ecommerce_abandoned_cart_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceGwpBogoReturnEscrowPolicyInput:
+    quarterly_bundle_and_gwp_return_loss_pool_usd: float = 90000.0
+    unreturned_gwp_free_gift_full_refund_clawback_veto: bool = False
+    bogo_unallocated_zero_dollar_line_return_exploit: bool = False
+    missing_bundle_gift_weight_or_opened_hygiene_seal: bool = False
+    keep_gwp_at_vip_discount_deduction_ready: bool = False
+
+
+def evaluate_ecommerce_gwp_bogo_return_escrow_policy(
+    policy_input: EcommerceGwpBogoReturnEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_bundle_and_gwp_return_loss_pool_usd)
+    )
+    if policy_input.missing_bundle_gift_weight_or_opened_hygiene_seal:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_BUNDLE_GIFT_WEIGHT_OR_OPENED_HYGIENE_SEAL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unreturned_gwp_free_gift_full_refund_clawback_veto:
+        return {
+            "status_code": 403,
+            "decision": "UNRETURNED_GWP_FREE_GIFT_FULL_REFUND_CLAWBACK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bogo_unallocated_zero_dollar_line_return_exploit:
+        return {
+            "status_code": 422,
+            "decision": "BOGO_UNALLOCATED_ZERO_DOLLAR_LINE_RETURN_EXPLOIT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.keep_gwp_at_vip_discount_deduction_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "KEEP_GWP_AT_VIP_DISCOUNT_DEDUCTION_CONFIRM",
+            "mandate_token": "gwp_bogo_return_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "PRO_RATA_BUNDLE_AND_GWP_RETURN_AUTHORIZED",
+        "mandate_token": "gwp_bogo_return_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -36369,6 +36442,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_gwp_bogo_return_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_gwp_bogo_return_escrow_policy(
+            EcommerceGwpBogoReturnEscrowPolicyInput()
+        ),
+        "unreturned_gwp_clawback_403": evaluate_ecommerce_gwp_bogo_return_escrow_policy(
+            EcommerceGwpBogoReturnEscrowPolicyInput(
+                unreturned_gwp_free_gift_full_refund_clawback_veto=True
+            )
+        ),
+        "bogo_zero_dollar_exploit_422": evaluate_ecommerce_gwp_bogo_return_escrow_policy(
+            EcommerceGwpBogoReturnEscrowPolicyInput(
+                bogo_unallocated_zero_dollar_line_return_exploit=True
+            )
+        ),
+        "missing_gift_weight_or_seal_451": evaluate_ecommerce_gwp_bogo_return_escrow_policy(
+            EcommerceGwpBogoReturnEscrowPolicyInput(
+                missing_bundle_gift_weight_or_opened_hygiene_seal=True
+            )
+        ),
+        "keep_gwp_vip_deduction_409": evaluate_ecommerce_gwp_bogo_return_escrow_policy(
+            EcommerceGwpBogoReturnEscrowPolicyInput(
+                keep_gwp_at_vip_discount_deduction_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -36647,6 +36746,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_sow_services_vms_escrow_guard": b2b_sow_services_vms_escrow_guard,
         "ecommerce_shipping_protection_escrow_guard": ecommerce_shipping_protection_escrow_guard,
         "ecommerce_abandoned_cart_escrow_guard": ecommerce_abandoned_cart_escrow_guard,
+        "ecommerce_gwp_bogo_return_escrow_guard": ecommerce_gwp_bogo_return_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -50396,6 +50496,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="abandon-cart-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 EMAIL_FIRST_WATERFALL_AND_MARGIN_GATED_INCENTIVE_CONFIRM · Mandate: abandoned_cart_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 150 E-Commerce GWP & BOGO Partial-Return Escrow -->
+      <div class="finops-box" id="ecommerce-gwp-bogo-return-escrow-sandbox" style="margin-top:12px;border-color:#ec4899;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎁 电商满赠礼盒 (GWP) 与买一送一 (BOGO) 拆单退货防白嫖托管沙盒 (Loop Returns / Shopify Functions)</div>
+            <div class="finops-sub">Round 150 · 满赠失格追回赠品本金锁 (HTTP 403) + 结账按比例分摊消灭 $0 行 (HTTP 422) + 组合称重核验 (HTTP 451) + 赠品 4折留购净省 35% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="gwp-bogo-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度满赠白嫖、BOGO 拆退与拆封报废池 ($)
+            <input type="number" id="gwp-bogo-gross-input" value="90000" min="10000" step="5000" oninput="recalcEcommerceGwpBogoReturnSandbox()" />
+          </label>
+          <label>满赠门槛重算与未退赠品追回锁
+            <select id="gwp-bogo-clawback-select" onchange="recalcEcommerceGwpBogoReturnSandbox()">
+              <option value="pass">主品+赠品同退 或 扣除未退赠品分摊价 (合规)</option>
+              <option value="block_403">满 $200 送 $80 正装后仅退主商品企图 $0 白嫖赠品 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>结账期 BOGO 与多件折按比例分摊账本
+            <select id="gwp-bogo-prorate-select" onchange="recalcEcommerceGwpBogoReturnSandbox()">
+              <option value="pass">结账已按吊牌价比例分摊 ($72+$48) 无 $0 裸行项 (合规)</option>
+              <option value="block_422">利用 $0 免单行在 BOGO 中“买贵退贵”白拿卫衣 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>退货包裹“主品+赠品”组合称重核验
+            <select id="gwp-bogo-weight-select" onchange="recalcEcommerceGwpBogoReturnSandbox()">
+              <option value="pass">揽收称重含主品+赠品双件毛重或线下 Return Bar 清点 (安全)</option>
+              <option value="block_451">退货箱故意漏装赠品或塑封已拆却企图触发首扫秒退 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>已拆封赠品“Keep-the-Gift”折价留购转化
+            <select id="gwp-bogo-opt-select" onchange="recalcEcommerceGwpBogoReturnSandbox()">
+              <option value="enabled" selected>提供 VIP 4折直接抵扣留购已拆封赠品免寄回销毁 (-35% 损耗 / HTTP 409)</option>
+              <option value="disabled">强迫寄回已拆封美妆赠品入库报废并贴逆向运费 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度满赠与套装退货损耗总池</div>
+            <div class="finops-kpi-val" id="gwp-bogo-gross-kpi">$90,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">按比例分摊与折价留购后净损耗</div>
+            <div class="finops-kpi-val" id="gwp-bogo-net-kpi" style="color:#6ee7b7;">$58,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省被白嫖赠品与销毁费</div>
+            <div class="finops-kpi-val" id="gwp-bogo-savings-kpi" style="color:#38bdf8;">$31,500</div>
+          </div>
+        </div>
+        <div id="gwp-bogo-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 KEEP_GWP_AT_VIP_DISCOUNT_DEDUCTION_CONFIRM · Mandate: gwp_bogo_return_escrow_optim_409
         </div>
       </div>
 
@@ -66863,6 +67020,79 @@ function recalcEcommerceAbandonedCartSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 COMPLIANT_CART_RECOVERY_DISPATCH_AUTHORIZED · Mandate: abandoned_cart_escrow_200';
+}}
+
+function recalcEcommerceGwpBogoReturnSandbox() {{
+  const grossInput = document.getElementById('gwp-bogo-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '90000'));
+  const clawbackGate = document.getElementById('gwp-bogo-clawback-select').value;
+  const prorateGate = document.getElementById('gwp-bogo-prorate-select').value;
+  const weightGate = document.getElementById('gwp-bogo-weight-select').value;
+  const optMode = document.getElementById('gwp-bogo-opt-select').value;
+
+  const grossKpi = document.getElementById('gwp-bogo-gross-kpi');
+  const netKpi = document.getElementById('gwp-bogo-net-kpi');
+  const savingsKpi = document.getElementById('gwp-bogo-savings-kpi');
+  const statusKpi = document.getElementById('gwp-bogo-status-kpi');
+  const banner = document.getElementById('gwp-bogo-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (weightGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_BUNDLE_GIFT_WEIGHT_OR_OPENED_HYGIENE_SEAL_HOLD · Mandate: null';
+    return;
+  }}
+  if (clawbackGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNRETURNED_GWP_FREE_GIFT_FULL_REFUND_CLAWBACK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (prorateGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BOGO_UNALLOCATED_ZERO_DOLLAR_LINE_RETURN_EXPLOIT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 KEEP_GWP_AT_VIP_DISCOUNT_DEDUCTION_CONFIRM · Mandate: gwp_bogo_return_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 PRO_RATA_BUNDLE_AND_GWP_RETURN_AUTHORIZED · Mandate: gwp_bogo_return_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

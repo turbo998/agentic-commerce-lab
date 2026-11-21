@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg593" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+    <linearGradient id="accent593" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ec4899" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg593)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent593)" rx="3" />
+
+  <text x="40" y="58" class="title">电商满赠礼盒 (GWP) 与买一送一 (BOGO) 拆单部分退货防白嫖托管架构 (Loop Returns / Shopify Functions)</text>
+  <text x="40" y="80" class="subtitle">Round 150 · 防满 $200 送 $80 正装后仅退主商品白嫖赠品、防 BOGO 退高留低套利 &amp; 赠品折价留购净省 35% (SVG 593)</text>
+
+  <!-- Left Card: 3 GWP & BOGO Return Exploits -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大满赠与套装拆单退货黑洞</text>
+  <text x="56" y="164" class="card-title">1. “退掉主商品、白留 $80 赠品”套利 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 美妆大促“买满 $200 精华送价值 $80 正装眼霜 (账面写 $0.00)”</text>
+  <text x="56" y="202" class="body">• 羊毛党收货后立刻只勾选退掉 $200 精华，因为眼霜在订单行项里</text>
+  <text x="56" y="220" class="warn">  单价为 $0，传统退货系统竟全额退还 $200，白送 $80 眼霜!</text>
+
+  <text x="56" y="256" class="card-title">2. 买一送一 (BOGO)“买贵送便宜后退贵” (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 活动“买一送一(低价免单)”：买了 $120 大衣 + $80 卫衣，实付 $120</text>
+  <text x="56" y="294" class="body">• 若未在结账时将 $120 按比例分摊为大衣 $72 + 卫衣 $48:</text>
+  <text x="56" y="312" class="warn">• 买家退掉 $120 大衣拿回全款，$0 白嫖 $80 卫衣!</text>
+
+  <text x="56" y="348" class="card-title">3. 赠品/配件拆封调包或套装缺件入库 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 买手机送无线耳机套装申请整单退货，包裹寄回仓库只装了手机</text>
+  <text x="56" y="386" class="body">• 缺少赠品耳机，或把正装赠品拆封用了一半才塞回退货箱</text>
+  <text x="56" y="404" class="warn">• 若承运商首扫即秒退全款 (Instant Refund on Scan) 直接血亏!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: UNRETURNED_GWP_FREE_GIFT_CLAWBACK_VETO</text>
+  <text x="70" y="502" class="warn">• HTTP 422: BOGO_UNALLOCATED_ZERO_DOLLAR_LINE_EXPLOIT</text>
+  <text x="70" y="524" class="warn">• HTTP 451: MISSING_BUNDLE_GIFT_WEIGHT_OR_OPENED_SEAL</text>
+  <text x="70" y="546" class="mono">• HTTP 409:KEEP_GWP_AT_VIP_DISCOUNT_DEDUCTION_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: PRO_RATA_BUNDLE_AND_GWP_RETURN_200</text>
+  <text x="70" y="596" class="body">铁律: 订单行项严禁出现 $0.00 赠品，必须写入分摊价值!</text>
+
+  <!-- Center Card: 4-Stage GWP & BOGO Return Escrow Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶满赠 (GWP) 与 BOGO 防白嫖架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ef4444" />
+  <text x="450" y="175" class="card-title" fill="#fca5a5">Gate 1: 满赠门槛重算与赠品联动追回锁 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• 退货发起时实时重算: `Remaining_Kept_Total &lt; GWP_Threshold ($200)`</text>
+  <text x="450" y="213" class="body">• 自动将赠品加入必退清单 (Linked Return Group)；若买家不退赠品:</text>
+  <text x="450" y="231" class="mono">• 从主商品退款额中硬性扣减赠品挂牌分摊价 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: 结账行项消灭 $0.00 与 BOGO 按比例分摊 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 结账底层通过 Shopify Functions 将总实付额按吊牌价比例分摊到每一行:</text>
+  <text x="450" y="320" class="body">  $200 精华 + $50 赠品 (实付 $200) -&gt; 精华记 $160, 赠品记 $40!</text>
+  <text x="450" y="338" class="body">• BOGO 买 $120 送 $80 (实付 $120) -&gt; 大衣记 $72, 卫衣记 $48!</text>
+  <text x="450" y="354" class="mono">• 企图按未分摊原价退 $120 独吞 $0 免单品 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 含赠品退货禁“首扫秒退”与称重校验 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 凡含高价值 GWP 或 BOGO 的退货单，自动关闭快递首扫即退 (Instant Refund)</text>
+  <text x="450" y="437" class="body">• 必须比对承运商揽收重量 >= `Sum(Main_SKU_Weight + GWP_Weight)`</text>
+  <text x="450" y="455" class="mono">• 退货包裹重量缺失赠品或塑封已拆封污染 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: “6折优惠留购赠品”顺滑转化引擎 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 客户已拆封喜欢上赠品眼霜、只因主商品精华过敏想退货时:</text>
+  <text x="450" y="546" class="body">• 严禁生硬逼客户寄回已拆封赠品 (寄回仓库也只能销毁报废!)</text>
+  <text x="450" y="566" class="mono">• 弹窗提供“仅扣 $32 (4折特惠) 即可保留 $80 眼霜无需寄回”</text>
+  <text x="450" y="586" class="mono">• 既省下逆向运费与报废损失，又收回成本 -&gt; 净省 35% 退货损耗</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大满赠与套装退货结算引擎</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Shopify Functions (Cart Transform &amp; Discount)</text>
+  <text x="846" y="182" class="body">• 优势: 在订单创建时就将套装/满赠金额按比例写入每个子 SKU 行项</text>
+  <text x="846" y="198" class="body">• 特性: 从根源消灭 `$0.00` 赠品行导致的“退主留赠全额退款”漏洞</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Loop Returns / Narvar (Bundle Return Rules)</text>
+  <text x="846" y="244" class="body">• 优势: 原生支持识别父子绑定行项 (Parent-Child Bundle Linkage)</text>
+  <text x="846" y="260" class="body">• 特性: 勾选退主商品时自动弹窗提示“需同步退回赠品或折价留购”</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Happy Returns (Return Bar 线下当面清点)</text>
+  <text x="846" y="306" class="body">• 优势: 店员扫码核对主商品 + 赠品件数齐全后当场封袋秒退</text>
+  <text x="846" y="322" class="body">• 特性: 100% 杜绝邮寄空盒子或故意漏塞赠品的欺诈行为</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. 京东/天猫“主品退货自动扣减赠品公允价”</text>
+  <text x="846" y="368" class="body">• 优势: 订单快照锁定赠品公允价值，未随箱寄回自动从退款本金抵扣</text>
+  <text x="846" y="384" class="body">• 特性: 支持换货同尺码免退赠品，提升真实尺码不合买家体验</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度满赠白嫖、BOGO 拆退与报废池 ($90,000)</text>
+  <text x="860" y="456" class="body">• 传统 $0 赠品行被白嫖+BOGO 退贵留贱+拆封销毁: $90,000/季</text>
+  <text x="860" y="476" class="mono">• 结账行项按比例分摊消灭 $0 赠品与 BOGO 漏洞: -$16,200</text>
+  <text x="860" y="496" class="mono">• 含赠品退货称重校验拦截漏寄赠品与空盒骗退: -$9,000</text>
+  <text x="860" y="516" class="mono">• 已拆封赠品 VIP 折价留购免销毁并收回成本: -$6,300</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净退货损耗: $58,500 (净省 $31,500 / -35%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: gwp_bogo_return_escrow_optim_409</text>
+</svg>

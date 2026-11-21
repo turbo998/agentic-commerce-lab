@@ -19108,6 +19108,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-abandoned-cart-escrow-sandbox", html_zh)
 
+    def test_ecommerce_gwp_bogo_return_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceGwpBogoReturnEscrowPolicyInput,
+            evaluate_ecommerce_gwp_bogo_return_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_gwp_bogo_return_escrow_policy(
+            EcommerceGwpBogoReturnEscrowPolicyInput(
+                quarterly_bundle_and_gwp_return_loss_pool_usd=90000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "PRO_RATA_BUNDLE_AND_GWP_RETURN_AUTHORIZED",
+        )
+
+        clawback = evaluate_ecommerce_gwp_bogo_return_escrow_policy(
+            EcommerceGwpBogoReturnEscrowPolicyInput(
+                unreturned_gwp_free_gift_full_refund_clawback_veto=True
+            )
+        )
+        self.assertEqual(clawback["status_code"], 403)
+        self.assertEqual(
+            clawback["decision"],
+            "UNRETURNED_GWP_FREE_GIFT_FULL_REFUND_CLAWBACK_BLOCKED",
+        )
+
+        bogo = evaluate_ecommerce_gwp_bogo_return_escrow_policy(
+            EcommerceGwpBogoReturnEscrowPolicyInput(
+                bogo_unallocated_zero_dollar_line_return_exploit=True
+            )
+        )
+        self.assertEqual(bogo["status_code"], 422)
+        self.assertEqual(
+            bogo["decision"],
+            "BOGO_UNALLOCATED_ZERO_DOLLAR_LINE_RETURN_EXPLOIT_BLOCKED",
+        )
+
+        weight = evaluate_ecommerce_gwp_bogo_return_escrow_policy(
+            EcommerceGwpBogoReturnEscrowPolicyInput(
+                missing_bundle_gift_weight_or_opened_hygiene_seal=True
+            )
+        )
+        self.assertEqual(weight["status_code"], 451)
+        self.assertEqual(
+            weight["decision"],
+            "MISSING_BUNDLE_GIFT_WEIGHT_OR_OPENED_HYGIENE_SEAL_HOLD",
+        )
+
+        optim = evaluate_ecommerce_gwp_bogo_return_escrow_policy(
+            EcommerceGwpBogoReturnEscrowPolicyInput(
+                quarterly_bundle_and_gwp_return_loss_pool_usd=90000.0,
+                keep_gwp_at_vip_discount_deduction_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 31500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 58500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_gwp_bogo_return_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-gwp-bogo-return-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
