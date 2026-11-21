@@ -32245,6 +32245,82 @@ def evaluate_b2b_returnable_packaging_pallet_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceApparelGearRentalPolicyInput:
+    quarterly_hit_and_run_theft_late_turnaround_and_fit_refund_pool_usd: float = 190000.0
+    prepaid_burner_bin_or_unverified_kyc_on_high_value_rental: bool = False
+    missing_48h_cleaning_calibration_buffer_or_unmitigated_late_prior: bool = False
+    late_fees_exceeding_depreciated_fmv_or_charging_covered_stain: bool = False
+    free_backup_size_drop_scan_unlock_and_depreciated_keep_ready: bool = False
+
+
+def evaluate_ecommerce_apparel_gear_rental_policy(
+    policy_input: EcommerceApparelGearRentalPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_hit_and_run_theft_late_turnaround_and_fit_refund_pool_usd
+        ),
+    )
+    if policy_input.late_fees_exceeding_depreciated_fmv_or_charging_covered_stain:
+        return {
+            "status_code": 451,
+            "decision": "UNCAPPED_LATE_FEE_OVER_FMV_OR_COVERED_STAIN_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.prepaid_burner_bin_or_unverified_kyc_on_high_value_rental:
+        return {
+            "status_code": 403,
+            "decision": "BURNER_CARD_RENTAL_THEFT_OR_UNVERIFIED_ID_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missing_48h_cleaning_calibration_buffer_or_unmitigated_late_prior:
+        return {
+            "status_code": 422,
+            "decision": "TURNAROUND_CLEANING_COLLISION_OR_LATE_HANDOFF_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.free_backup_size_drop_scan_unlock_and_depreciated_keep_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FREE_BACKUP_SIZE_TURNAROUND_SWAP_AND_FMV_KEEP_CONFIRM",
+            "mandate_token": "apparel_gear_rental_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_KYC_RENTAL_AND_48H_TURNAROUND_AUTHORIZED",
+        "mandate_token": "apparel_gear_rental_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -44040,6 +44116,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_apparel_gear_rental_guard = {
+        "authorized_200": evaluate_ecommerce_apparel_gear_rental_policy(
+            EcommerceApparelGearRentalPolicyInput()
+        ),
+        "burner_theft_or_kyc_403": evaluate_ecommerce_apparel_gear_rental_policy(
+            EcommerceApparelGearRentalPolicyInput(
+                prepaid_burner_bin_or_unverified_kyc_on_high_value_rental=True
+            )
+        ),
+        "turnaround_clash_or_late_422": evaluate_ecommerce_apparel_gear_rental_policy(
+            EcommerceApparelGearRentalPolicyInput(
+                missing_48h_cleaning_calibration_buffer_or_unmitigated_late_prior=True
+            )
+        ),
+        "uncapped_late_or_stain_451": evaluate_ecommerce_apparel_gear_rental_policy(
+            EcommerceApparelGearRentalPolicyInput(
+                late_fees_exceeding_depreciated_fmv_or_charging_covered_stain=True
+            )
+        ),
+        "backup_size_and_keep_409": evaluate_ecommerce_apparel_gear_rental_policy(
+            EcommerceApparelGearRentalPolicyInput(
+                free_backup_size_drop_scan_unlock_and_depreciated_keep_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -44394,6 +44496,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_cruise_fly_cruise_folio_guard": ota_cruise_fly_cruise_folio_guard,
         "ecommerce_auto_parts_vin_core_guard": ecommerce_auto_parts_vin_core_guard,
         "b2b_returnable_packaging_pallet_guard": b2b_returnable_packaging_pallet_guard,
+        "ecommerce_apparel_gear_rental_guard": ecommerce_apparel_gear_rental_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -62475,6 +62578,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="rtppallet-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 INSTANT_EDI_OFFHIRE_AND_BACKHAUL_EMPTY_SWEEP_CONFIRM · Mandate: b2b_rtp_pallet_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 226 Apparel, Camera & Gear Rental Turnaround-Buffer & Deposit Escrow (#345) -->
+      <div class="finops-box" id="ecommerce-apparel-gear-rental-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">👗 礼服奢品与单反器材“共享租赁电商 (Rent the Runway / Nuuly / Lensrentals / 芝麻租机)”沙盒</div>
+            <div class="finops-sub">Round 226 (#345) · 高值器材(&gt;$500)屏蔽虚拟预付卡 BIN + 实名活体与 SetupIntent 授权 (HTTP 403) + 48h 洗护校准缓冲与前任超时 12h 自动切 2号备用件 (HTTP 422) + 滞纳金按周转折旧残值封顶转买断与 $5 免赔险豁免 (HTTP 451) + 免费附送备选尺码净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="gearrental-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度花 $65 租金拿虚拟废卡骗走 $3,200 镜头、前任晚退害下一任新娘婚礼断档与尺码不合退单损耗池 ($)
+            <input type="number" id="gearrental-gross-input" value="190000" min="10000" step="5000" oninput="recalcEcommerceApparelGearRentalSandbox()" />
+          </label>
+          <label>高价值租赁资产 (&gt;$500) 屏蔽虚拟预付卡 BIN/代收点与实名活体 + 折旧残值 SetupIntent 门禁
+            <select id="gearrental-kyc-select" onchange="recalcEcommerceApparelGearRentalSandbox()">
+              <option value="pass">实名活体核验通过 + 非预付实名卡绑定覆盖折旧残值的 3DS2 SetupIntent (合规)</option>
+              <option value="block_403">骗子用余额 $70 的一次性虚拟预付卡付 $65 租金把 $3,200 徕卡镜头寄到代收信箱后失联跑路 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>两单之间 48 小时专业水洗/光轴校准排期缓冲与前任超时 12h 自动调拨备用件防断档
+            <select id="gearrental-buffer-select" onchange="recalcEcommerceApparelGearRentalSandbox()">
+              <option value="pass">排期预留 &gt;=48h 洗护校准缓冲 + 前任超时未揽收立即自动切 2 号备用库存次晨达 (合规)</option>
+              <option value="block_422">无缝紧排不留干洗缓冲时间 或 前任周一赖床晚寄回导致周五婚礼新娘的礼服断供违约 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>逾期滞纳金按“周转折旧后公允残值 (Depreciated FMV)”封顶转买断与 $5 免赔险豁免锁
+            <select id="gearrental-fmv-select" onchange="recalcEcommerceApparelGearRentalSandbox()">
+              <option value="pass">滞纳金触及 12次周转后折旧残值 ($135) 即封顶转买断 + $5 免赔险豁免红酒渍/拉链小修 (安全)</option>
+              <option value="block_451">对残值仅 $120 的旧裙子按 $50/天连扣 $800 滞纳金遭起诉 或 已买免赔险仍强扣 $500 污渍费 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>晚礼服免费附送相邻尺码备选件 (Free Backup Size) 与快递柜扫码退件秒发下一箱
+            <select id="gearrental-opt-select" onchange="recalcEcommerceApparelGearRentalSandbox()">
+              <option value="enabled" selected>免费塞入相邻尺码备选(-84%不合身退单) + UPS 扫退件码秒发下箱 + 4折一键留购 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统只发单件尺码不合全额退 + 等包裹退回仓库拆包后才允许选下一箱 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度骗租失联与档期违约退单池</div>
+            <div class="finops-kpi-val" id="gearrental-gross-kpi">$190,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">实名免押与双尺码备件后净损耗</div>
+            <div class="finops-kpi-val" id="gearrental-net-kpi" style="color:#6ee7b7;">$121,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省被盗镜头与不合身退单</div>
+            <div class="finops-kpi-val" id="gearrental-savings-kpi" style="color:#38bdf8;">$68,400</div>
+          </div>
+        </div>
+        <div id="gearrental-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FREE_BACKUP_SIZE_TURNAROUND_SWAP_AND_FMV_KEEP_CONFIRM · Mandate: apparel_gear_rental_escrow_optim_409
         </div>
       </div>
 
@@ -84490,6 +84650,79 @@ function recalcB2BReturnablePackagingPalletSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_GRAI_PALLET_EXCHANGE_AND_ISPM15_AUTHORIZED · Mandate: b2b_rtp_pallet_escrow_200';
+}}
+
+function recalcEcommerceApparelGearRentalSandbox() {{
+  const grossInput = document.getElementById('gearrental-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '190000'));
+  const kycGate = document.getElementById('gearrental-kyc-select').value;
+  const bufferGate = document.getElementById('gearrental-buffer-select').value;
+  const fmvGate = document.getElementById('gearrental-fmv-select').value;
+  const optMode = document.getElementById('gearrental-opt-select').value;
+
+  const grossKpi = document.getElementById('gearrental-gross-kpi');
+  const netKpi = document.getElementById('gearrental-net-kpi');
+  const savingsKpi = document.getElementById('gearrental-savings-kpi');
+  const statusKpi = document.getElementById('gearrental-status-kpi');
+  const banner = document.getElementById('gearrental-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fmvGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCAPPED_LATE_FEE_OVER_FMV_OR_COVERED_STAIN_HOLD · Mandate: null';
+    return;
+  }}
+  if (kycGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BURNER_CARD_RENTAL_THEFT_OR_UNVERIFIED_ID_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (bufferGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 TURNAROUND_CLEANING_COLLISION_OR_LATE_HANDOFF_BLOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FREE_BACKUP_SIZE_TURNAROUND_SWAP_AND_FMV_KEEP_CONFIRM · Mandate: apparel_gear_rental_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_KYC_RENTAL_AND_48H_TURNAROUND_AUTHORIZED · Mandate: apparel_gear_rental_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

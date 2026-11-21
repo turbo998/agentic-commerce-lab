@@ -24200,6 +24200,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-returnable-packaging-pallet-sandbox", html_zh)
 
+    def test_ecommerce_apparel_gear_rental_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceApparelGearRentalPolicyInput,
+            evaluate_ecommerce_apparel_gear_rental_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_apparel_gear_rental_policy(
+            EcommerceApparelGearRentalPolicyInput(
+                quarterly_hit_and_run_theft_late_turnaround_and_fit_refund_pool_usd=190000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_KYC_RENTAL_AND_48H_TURNAROUND_AUTHORIZED",
+        )
+
+        kyc = evaluate_ecommerce_apparel_gear_rental_policy(
+            EcommerceApparelGearRentalPolicyInput(
+                prepaid_burner_bin_or_unverified_kyc_on_high_value_rental=True
+            )
+        )
+        self.assertEqual(kyc["status_code"], 403)
+        self.assertEqual(
+            kyc["decision"],
+            "BURNER_CARD_RENTAL_THEFT_OR_UNVERIFIED_ID_BLOCKED",
+        )
+
+        buffer = evaluate_ecommerce_apparel_gear_rental_policy(
+            EcommerceApparelGearRentalPolicyInput(
+                missing_48h_cleaning_calibration_buffer_or_unmitigated_late_prior=True
+            )
+        )
+        self.assertEqual(buffer["status_code"], 422)
+        self.assertEqual(
+            buffer["decision"],
+            "TURNAROUND_CLEANING_COLLISION_OR_LATE_HANDOFF_BLOCK",
+        )
+
+        fmv = evaluate_ecommerce_apparel_gear_rental_policy(
+            EcommerceApparelGearRentalPolicyInput(
+                late_fees_exceeding_depreciated_fmv_or_charging_covered_stain=True
+            )
+        )
+        self.assertEqual(fmv["status_code"], 451)
+        self.assertEqual(
+            fmv["decision"],
+            "UNCAPPED_LATE_FEE_OVER_FMV_OR_COVERED_STAIN_HOLD",
+        )
+
+        optim = evaluate_ecommerce_apparel_gear_rental_policy(
+            EcommerceApparelGearRentalPolicyInput(
+                quarterly_hit_and_run_theft_late_turnaround_and_fit_refund_pool_usd=190000.0,
+                free_backup_size_drop_scan_unlock_and_depreciated_keep_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 68400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 121600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_apparel_gear_rental_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-apparel-gear-rental-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

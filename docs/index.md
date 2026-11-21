@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`344` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`345` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（20 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（49 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（130 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（131 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（77 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（28 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（40 篇）](#tax-fx-privacy-disputes)
@@ -103,7 +103,7 @@
 | 49 | **大宗汽车、新能源直营与高端定制“定金锁单 + 银行直连首付 + 金融机构放款组合结账（High-Ticket Split-Tender Escrow：Tesla / Rivian / AutoFi / Plaid Transfer / Stripe）”、防“$55,000 整车尾款刷信用卡被扣 $1,600 手续费”、防“助贷未放款先交车（Spot-Delivery Yo-Yo Fraud）”与一车一专属 `vIBAN` 防电汇钓鱼托管“防假银行本票骗走新车与四轨资金到齐秒开手机蓝牙车钥匙净省 38%”Agent 架构选型 FAQ** | [中文](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.md) · [English](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（130 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（131 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -239,6 +239,7 @@
 | 128 | **美妆、高化香氛与免税零售“买赠小样礼包（Gift-With-Purchase `GWP`）与会员生日礼防套利（Sephora / Ulta / 雅诗兰黛 / 欧莱雅 / 天猫美妆）”、防“满 $100 送 $80 豪华赠品包后退掉正装白嫖赠品”、防“脚本注册 5,000 个今日生日假号搬空门店小样”与“正装附赠 2ml 试香管未拆塑封可二次销售”托管“防赠品缺货漏发引发整单退货与小样礼盒全额抵扣正装券净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-beauty-gwp-free-sample-abuse-return-deduction-escrow-agent-selection-faq.md) · [English](ecommerce-beauty-gwp-free-sample-abuse-return-deduction-escrow-agent-selection-faq.en.md) |
 | 129 | **邮轮母港联程机票（`Fly-Cruise`）、岸上观光团（Shore Excursions）与船上消费账单结算（Onboard `SeaPass` Folio：Royal Caribbean / Carnival / NCL / Amadeus Cruise / 携程邮轮）、防“航班晚点 2 小时眼睁睁看着邮轮开走 `$8,000` 船票作废”、防“美国《客船服务法》（`PVSA`）违规中途上下船被罚 $941/人”与公海卫星实时增量预授权托管“防下船前夜刷爆免税店而银行卡余额不足逃单与取消靠港 5 秒自动退港务税净省 36%”Agent 架构选型 FAQ** | [中文](ota-cruise-fly-cruise-embarkation-shore-excursion-onboard-folio-escrow-agent-selection-faq.md) · [English](ota-cruise-fly-cruise-embarkation-shore-excursion-onboard-folio-escrow-agent-selection-faq.en.md) |
 | 130 | **汽车零配件、轮胎与后市场电商“车牌转 17 位 `VIN` 精准适配（Auto Parts Fitment：`ACES / PIES`、eBay Motors Guaranteed Fit、AutoZone、途虎养车）”、防“把车上拆下的生锈旧发电机塞进新盒子里退货骗全款（Old-Part-in-New-Box Swap）”与再制造旧件押金（`Core Charge`）托管“防只选年款未分运动版卡钳导致买错 320mm 刹车盘退货率高达 28%、防加州违规售卖无 `CARB EO` 三元催化器被重罚与直发安装门店净省 36%”Agent 架构选型 FAQ** | [中文](ecommerce-auto-parts-aftermarket-vin-fitment-core-charge-escrow-agent-selection-faq.md) · [English](ecommerce-auto-parts-aftermarket-vin-fitment-core-charge-escrow-agent-selection-faq.en.md) |
+| 131 | **礼服奢品、单反镜头与户外装备“按天/按月共享租赁电商（Recommerce & Gear Rental：Rent the Runway / Nuuly / Lensrentals / 支付宝租机/内行租）”、防“花 $65 租金拿虚拟空卡骗走 $3,200 徕卡镜头失联”、防“上一任租客晚寄回 1 天害下一任新娘周五婚礼没礼服穿”与折旧残值封顶转买断托管“防逾期滞纳金滚雪球超原价 2 倍遭起诉、防酒渍拉链小修乱扣 $600 押金与免费附送备选尺码净省 36%”Agent 架构选型 FAQ** | [中文](ecommerce-apparel-camera-gear-rental-turnaround-buffer-deposit-escrow-agent-selection-faq.md) · [English](ecommerce-apparel-camera-gear-rental-turnaround-buffer-deposit-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（77 篇）
