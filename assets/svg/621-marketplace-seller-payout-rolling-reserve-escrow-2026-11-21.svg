@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg621" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr621" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg621)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr621)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 178 · Multi-Vendor Marketplace Split-Settlement, Rolling Reserve &amp; Seller Default Escrow</text>
+  <text x="48" y="74" class="sub">Stripe Connect / Adyen for Platforms / Mirakl · Delivery+7d Release Lock · Dynamic Rolling Reserve · Reverse-Transfer Refund (-37% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #621 · FAQ #297</text>
+
+  <!-- Lane 1: Payout-Before-Delivery & Hit-and-Run Seller Fraud Gate -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Delivery-Gated Payout &amp; Hit-and-Run Lock (403)</text>
+  <text x="44" y="162" class="body-txt">• Stops "Payout on Fake Tracking Label" Exit Scams:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Payout_Trigger = Carrier_Delivered_Scan + 7d</text>
+  <text x="54" y="200" class="body-txt">(Never release funds at label creation or T+2!)</text>
+  <text x="44" y="223" class="body-txt">• Velocity Spike &amp; Price-Dump Freeze:</text>
+  <text x="54" y="243" class="mono">If Daily_GMV &gt; 4x 30d_Avg → Hold Excess in</text>
+  <text x="54" y="261" class="mono" fill="#fca5a5">Escrow until Buyer Acceptance Confirmed</text>
+  <text x="44" y="284" class="body-txt">• Prevents rogue 3P sellers listing fake $300</text>
+  <text x="54" y="302" class="body-txt">GPUs, cashing out $150k at T+2 &amp; vanishing</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 PAYOUT_BEFORE_DELIVERY_OR_VELOCITY_SPIKE_BLOCKED</text>
+
+  <!-- Lane 2: Negative Seller Balance, Reverse-Transfer & Rolling Reserve -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Rolling Reserve &amp; Reverse-Transfer Gate (422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Platform Eating Seller Refunds/Disputes:</text>
+  <text x="442" y="182" class="mono">Maintain Rolling_Reserve &gt;= Expected_30d_RMA</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">+ 120d_Chargeback_Exposure (10%–20% Holdback)</text>
+  <text x="432" y="223" class="body-txt">• Atomic `reverse_transfer=True` on Refunds:</text>
+  <text x="442" y="243" class="body-txt">Blocks issuing buyer refunds solely from the</text>
+  <text x="442" y="261" class="body-txt">platform master account without debiting the</text>
+  <text x="442" y="279" class="body-txt">specific merchant sub-ledger + ACH debit mandate</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNRESERVED_RMA_TAIL_OR_UNREVERSED_SPLIT_BLOCKED</text>
+
+  <!-- Lane 3: PSD2 / Money-Transmitter License (MTL) & Penny-Rounding Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. MTL / PSD2 Custody &amp; Cent-Split Lock (451)</text>
+  <text x="820" y="162" class="body-txt">• Avoids Illegal Unlicensed Money Transmission:</text>
+  <text x="830" y="182" class="mono">Hold Funds in PSP Regulated FBO Escrow</text>
+  <text x="830" y="200" class="mono">(Separate Charges &amp; Transfers) — Never Commingle</text>
+  <text x="820" y="223" class="body-txt">• Largest-Remainder Multi-Seller Cent Conservation:</text>
+  <text x="830" y="243" class="mono" fill="#f9a8d4">Sum(Seller_Splits + Platform_Fee + Tax) == Cart</text>
+  <text x="830" y="261" class="body-txt">Prevents `+$0.01 / -$0.01` floating-point rounding</text>
+  <text x="830" y="279" class="body-txt">drift across 3-seller carts &amp; promo allocations</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 COMMINGLED_UNLICENSED_FLOAT_OR_CENT_DRIFT_HOLD</text>
+
+  <!-- Bottom Risk-Tiered Instant Payout & Multi-Seller Netting Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Risk-Tiered Seller Escrow (`DD+7` vs Verified Instant Payout Monetization) + Promo Co-Funding Ledger (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Delivery+7d Escrow Default</text>
+  <text x="62" y="462" class="body-txt">Funds sit in PSP FBO escrow</text>
+  <text x="62" y="480" class="body-txt">until carrier confirms delivery</text>
+  <text x="62" y="498" class="body-txt">+ 7-day inspection window;</text>
+  <text x="62" y="516" class="mono">0 Hit-and-Run Seller Losses</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Dynamic Rolling Reserve</text>
+  <text x="337" y="462" class="body-txt">Adjusts 5%–25% reserve holdback</text>
+  <text x="337" y="480" class="body-txt">daily based on live seller RMA</text>
+  <text x="337" y="498" class="body-txt">rate, dispute velocity &amp; season;</text>
+  <text x="337" y="516" class="mono">Covers 100% Post-Sale Refunds</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Promo Co-Funding Split</text>
+  <text x="622" y="462" class="body-txt">Distinguishes Platform-Funded</text>
+  <text x="622" y="480" class="body-txt">vs Seller-Funded coupons in</text>
+  <text x="622" y="498" class="body-txt">net commission calculation;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">0 Seller Commission Disputes</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ 1% Instant-Payout Monetization</text>
+  <text x="907" y="462" class="body-txt">Tier-1 trusted sellers can</text>
+  <text x="907" y="480" class="body-txt">draw down early at Carrier-Scan</text>
+  <text x="907" y="498" class="body-txt">for a `1.0%` instant fee;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Default &amp; Float Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Seller Default &amp; Float Saved</text>
+  <text x="46" y="642" class="mono">$64,750 Saved / $175k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">DD+7 Escrow</text>
+  <text x="336" y="626" class="kpi-lbl">Delivery-Date + 7-Day Payout Lock</text>
+  <text x="336" y="642" class="mono">Stops Fake-Tracking Cashouts</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">Reverse-Transfer</text>
+  <text x="626" y="626" class="kpi-lbl">Sub-Ledger Refund + Rolling Reserve</text>
+  <text x="626" y="642" class="mono">0 Orphaned Platform Refund Loss</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">PSP FBO Custody</text>
+  <text x="916" y="626" class="kpi-lbl">Zero Unlicensed MTL Commingling</text>
+  <text x="916" y="642" class="mono">100% Cent-Exact Split Ledger</text>
+</svg>

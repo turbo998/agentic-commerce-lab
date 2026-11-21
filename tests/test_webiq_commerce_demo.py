@@ -20984,6 +20984,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("multi-psp-orchestration-sandbox", html_zh)
 
+    def test_marketplace_seller_payout_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            MarketplaceSellerPayoutEscrowPolicyInput,
+            evaluate_marketplace_seller_payout_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_marketplace_seller_payout_escrow_policy(
+            MarketplaceSellerPayoutEscrowPolicyInput(
+                quarterly_seller_default_return_overdraft_and_float_pool_usd=175000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "DELIVERY_VERIFIED_MARKETPLACE_SPLIT_AUTHORIZED",
+        )
+
+        dd7 = evaluate_marketplace_seller_payout_escrow_policy(
+            MarketplaceSellerPayoutEscrowPolicyInput(
+                payout_before_carrier_delivery_or_unverified_4x_gmv_spike=True
+            )
+        )
+        self.assertEqual(dd7["status_code"], 403)
+        self.assertEqual(
+            dd7["decision"],
+            "PAYOUT_BEFORE_DELIVERY_OR_VELOCITY_SPIKE_BLOCKED",
+        )
+
+        res = evaluate_marketplace_seller_payout_escrow_policy(
+            MarketplaceSellerPayoutEscrowPolicyInput(
+                missing_rolling_reserve_or_refund_without_subledger_reversal=True
+            )
+        )
+        self.assertEqual(res["status_code"], 422)
+        self.assertEqual(
+            res["decision"],
+            "UNRESERVED_RMA_TAIL_OR_UNREVERSED_SPLIT_BLOCKED",
+        )
+
+        fbo = evaluate_marketplace_seller_payout_escrow_policy(
+            MarketplaceSellerPayoutEscrowPolicyInput(
+                unlicensed_commingled_platform_bank_float_or_cent_rounding_drift=True
+            )
+        )
+        self.assertEqual(fbo["status_code"], 451)
+        self.assertEqual(
+            fbo["decision"],
+            "COMMINGLED_UNLICENSED_FLOAT_OR_CENT_DRIFT_HOLD",
+        )
+
+        optim = evaluate_marketplace_seller_payout_escrow_policy(
+            MarketplaceSellerPayoutEscrowPolicyInput(
+                quarterly_seller_default_return_overdraft_and_float_pool_usd=175000.0,
+                dd7_fbo_escrow_dynamic_reserve_and_instant_payout_fee_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 64750.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 110250.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("marketplace_seller_payout_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("marketplace-seller-payout-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

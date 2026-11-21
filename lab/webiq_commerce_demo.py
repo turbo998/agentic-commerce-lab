@@ -28600,6 +28600,82 @@ def evaluate_multi_psp_orchestration_policy(
     }
 
 
+@dataclass(frozen=True)
+class MarketplaceSellerPayoutEscrowPolicyInput:
+    quarterly_seller_default_return_overdraft_and_float_pool_usd: float = 175000.0
+    payout_before_carrier_delivery_or_unverified_4x_gmv_spike: bool = False
+    missing_rolling_reserve_or_refund_without_subledger_reversal: bool = False
+    unlicensed_commingled_platform_bank_float_or_cent_rounding_drift: bool = False
+    dd7_fbo_escrow_dynamic_reserve_and_instant_payout_fee_ready: bool = False
+
+
+def evaluate_marketplace_seller_payout_escrow_policy(
+    policy_input: MarketplaceSellerPayoutEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_seller_default_return_overdraft_and_float_pool_usd
+        ),
+    )
+    if policy_input.unlicensed_commingled_platform_bank_float_or_cent_rounding_drift:
+        return {
+            "status_code": 451,
+            "decision": "COMMINGLED_UNLICENSED_FLOAT_OR_CENT_DRIFT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.payout_before_carrier_delivery_or_unverified_4x_gmv_spike:
+        return {
+            "status_code": 403,
+            "decision": "PAYOUT_BEFORE_DELIVERY_OR_VELOCITY_SPIKE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missing_rolling_reserve_or_refund_without_subledger_reversal:
+        return {
+            "status_code": 422,
+            "decision": "UNRESERVED_RMA_TAIL_OR_UNREVERSED_SPLIT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dd7_fbo_escrow_dynamic_reserve_and_instant_payout_fee_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DD7_FBO_ESCROW_DYNAMIC_RESERVE_AND_INSTANT_PAYOUT_CONFIRM",
+            "mandate_token": "mkt_payout_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "DELIVERY_VERIFIED_MARKETPLACE_SPLIT_AUTHORIZED",
+        "mandate_token": "mkt_payout_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -39147,6 +39223,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    marketplace_seller_payout_escrow_guard = {
+        "authorized_200": evaluate_marketplace_seller_payout_escrow_policy(
+            MarketplaceSellerPayoutEscrowPolicyInput()
+        ),
+        "pre_delivery_or_spike_403": evaluate_marketplace_seller_payout_escrow_policy(
+            MarketplaceSellerPayoutEscrowPolicyInput(
+                payout_before_carrier_delivery_or_unverified_4x_gmv_spike=True
+            )
+        ),
+        "no_reserve_or_unreversed_422": evaluate_marketplace_seller_payout_escrow_policy(
+            MarketplaceSellerPayoutEscrowPolicyInput(
+                missing_rolling_reserve_or_refund_without_subledger_reversal=True
+            )
+        ),
+        "commingled_float_or_cent_drift_451": evaluate_marketplace_seller_payout_escrow_policy(
+            MarketplaceSellerPayoutEscrowPolicyInput(
+                unlicensed_commingled_platform_bank_float_or_cent_rounding_drift=True
+            )
+        ),
+        "dd7_escrow_and_instant_fee_409": evaluate_marketplace_seller_payout_escrow_policy(
+            MarketplaceSellerPayoutEscrowPolicyInput(
+                dd7_fbo_escrow_dynamic_reserve_and_instant_payout_fee_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -39453,6 +39555,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_net_terms_trade_credit_guard": b2b_net_terms_trade_credit_guard,
         "ota_airline_irops_rebooking_guard": ota_airline_irops_rebooking_guard,
         "multi_psp_orchestration_guard": multi_psp_orchestration_guard,
+        "marketplace_seller_payout_escrow_guard": marketplace_seller_payout_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -54798,6 +54901,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="mpsp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DURBIN_PINLESS_DEBIT_AND_120MS_CAVV_FAILOVER_CONFIRM · Mandate: multi_psp_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 178 Multi-Vendor Marketplace Split-Settlement & Rolling Reserve Escrow -->
+      <div class="finops-box" id="marketplace-seller-payout-escrow-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏪 多商户平台分账清结算 (Stripe Connect / Adyen Platforms / Mirakl) 与滚动保证金沙盒</div>
+            <div class="finops-sub">Round 178 · 物流妥投 DD+7 放款与 4x 销量异动冻结 (HTTP 403) + 10-20% 滚动保证金与退款子户回冲 (HTTP 422) + FBO 防二清与美分守恒 (HTTP 451) + 分层变现净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="mktpay-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度卖家假单号跑路坏账、大促后退货穿仓垫资与分账差错池 ($)
+            <input type="number" id="mktpay-gross-input" value="175000" min="10000" step="5000" oninput="recalcMarketplaceSellerPayoutSandbox()" />
+          </label>
+          <label>物流妥投确认 + 7 天观察期 (DD+7) 与销量异动门禁
+            <select id="mktpay-dd7-select" onchange="recalcMarketplaceSellerPayoutSandbox()">
+              <option value="pass">收到承运商 DELIVERED 妥投满 7 天无纠纷才释放货款 (合规)</option>
+              <option value="block_403">新店暴涨 9 倍 GMV 填假快递单号试图在 T+2 提走 $150k 货款跑路 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>动态滚动保证金 (Rolling Reserve) 与退款子账本回冲 (reverse_transfer)
+            <select id="mktpay-res-select" onchange="recalcMarketplaceSellerPayoutSandbox()">
+              <option value="pass">按退货率锁定 15% 滚动保证金 + 退款强制 reverse_transfer=True 扣子户 (合规)</option>
+              <option value="block_422">大促后允许卖家 100% 提空余额留给平台 $50k 退货亏空或退款漏扣子账本 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>持牌 PSP FBO 监管专户防“无牌二清”与最大余数法美分守恒
+            <select id="mktpay-fbo-select" onchange="recalcMarketplaceSellerPayoutSandbox()">
+              <option value="pass">资金全流程驻留持牌 PSP FBO 专户 + 整数美分最大余数法零漂移 (安全)</option>
+              <option value="block_451">货款先进平台自有公司银行户涉嫌无牌二清/MTL 或 3 店拆单差 $0.01 不平账 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>平台/商家券精准拆账与 A+ 级优质卖家 1.0% 揽收极速提现变现
+            <select id="mktpay-opt-select" onchange="recalcMarketplaceSellerPayoutSandbox()">
+              <option value="enabled" selected>DD+7 托管 + 动态保证金 + A+ 老店付 1% 享揽收秒提现增值费 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">无差别固定周期放款且无极速提现金融增值收入 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度卖家穿仓坏账与垫资总池</div>
+            <div class="finops-kpi-val" id="mktpay-gross-kpi">$175,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">DD+7 托管与动态保证金后净损耗</div>
+            <div class="finops-kpi-val" id="mktpay-net-kpi" style="color:#6ee7b7;">$110,250</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省穿仓坏账与极速提现增收</div>
+            <div class="finops-kpi-val" id="mktpay-savings-kpi" style="color:#38bdf8;">$64,750</div>
+          </div>
+        </div>
+        <div id="mktpay-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DD7_FBO_ESCROW_DYNAMIC_RESERVE_AND_INSTANT_PAYOUT_CONFIRM · Mandate: mkt_payout_escrow_optim_409
         </div>
       </div>
 
@@ -73309,6 +73469,79 @@ function recalcMultiPspOrchestrationSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 LOCAL_MID_MULTI_PSP_AUTHORIZATION_APPROVED · Mandate: multi_psp_escrow_200';
+}}
+
+function recalcMarketplaceSellerPayoutSandbox() {{
+  const grossInput = document.getElementById('mktpay-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '175000'));
+  const dd7Gate = document.getElementById('mktpay-dd7-select').value;
+  const resGate = document.getElementById('mktpay-res-select').value;
+  const fboGate = document.getElementById('mktpay-fbo-select').value;
+  const optMode = document.getElementById('mktpay-opt-select').value;
+
+  const grossKpi = document.getElementById('mktpay-gross-kpi');
+  const netKpi = document.getElementById('mktpay-net-kpi');
+  const savingsKpi = document.getElementById('mktpay-savings-kpi');
+  const statusKpi = document.getElementById('mktpay-status-kpi');
+  const banner = document.getElementById('mktpay-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fboGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 COMMINGLED_UNLICENSED_FLOAT_OR_CENT_DRIFT_HOLD · Mandate: null';
+    return;
+  }}
+  if (dd7Gate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PAYOUT_BEFORE_DELIVERY_OR_VELOCITY_SPIKE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (resGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNRESERVED_RMA_TAIL_OR_UNREVERSED_SPLIT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DD7_FBO_ESCROW_DYNAMIC_RESERVE_AND_INSTANT_PAYOUT_CONFIRM · Mandate: mkt_payout_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 DELIVERY_VERIFIED_MARKETPLACE_SPLIT_AUTHORIZED · Mandate: mkt_payout_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
