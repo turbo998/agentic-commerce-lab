@@ -27864,6 +27864,79 @@ def evaluate_b2b_inventory_liquidation_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceFefoLotExpiryPolicyInput:
+    quarterly_expiry_spoilage_and_multipack_refund_pool_usd: float = 110000.0
+    consumption_days_exceed_remaining_lot_shelf_life: bool = False
+    fefo_lot_bypass_newer_batch_scanner_pick: bool = False
+    expired_under_60d_lot_or_summer_melt_no_cold_pack: bool = False
+    short_dated_disclosed_single_unit_flash_clearance_ready: bool = False
+
+
+def evaluate_ecommerce_fefo_lot_expiry_policy(
+    policy_input: EcommerceFefoLotExpiryPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_expiry_spoilage_and_multipack_refund_pool_usd)
+    )
+    if policy_input.expired_under_60d_lot_or_summer_melt_no_cold_pack:
+        return {
+            "status_code": 451,
+            "decision": "EXPIRED_UNDER_60D_LOT_OR_SUMMER_MELT_NO_COLD_PACK_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.consumption_days_exceed_remaining_lot_shelf_life:
+        return {
+            "status_code": 403,
+            "decision": "CONSUMPTION_DAYS_EXCEED_REMAINING_LOT_SHELF_LIFE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.fefo_lot_bypass_newer_batch_scanner_pick:
+        return {
+            "status_code": 422,
+            "decision": "FEFO_LOT_BYPASS_NEWER_BATCH_SCANNER_PICK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.short_dated_disclosed_single_unit_flash_clearance_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SHORT_DATED_DISCLOSED_SINGLE_UNIT_FLASH_CLEARANCE_CONFIRM",
+            "mandate_token": "fefo_expiry_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "FEFO_AND_CONSUMPTION_WINDOW_VERIFIED_AUTHORIZED",
+        "mandate_token": "fefo_expiry_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -38151,6 +38224,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_fefo_lot_expiry_guard = {
+        "authorized_200": evaluate_ecommerce_fefo_lot_expiry_policy(
+            EcommerceFefoLotExpiryPolicyInput()
+        ),
+        "consumption_days_exceed_lot_403": evaluate_ecommerce_fefo_lot_expiry_policy(
+            EcommerceFefoLotExpiryPolicyInput(
+                consumption_days_exceed_remaining_lot_shelf_life=True
+            )
+        ),
+        "fefo_bypass_newer_batch_422": evaluate_ecommerce_fefo_lot_expiry_policy(
+            EcommerceFefoLotExpiryPolicyInput(
+                fefo_lot_bypass_newer_batch_scanner_pick=True
+            )
+        ),
+        "expired_60d_or_summer_melt_451": evaluate_ecommerce_fefo_lot_expiry_policy(
+            EcommerceFefoLotExpiryPolicyInput(
+                expired_under_60d_lot_or_summer_melt_no_cold_pack=True
+            )
+        ),
+        "short_dated_disclosed_flash_409": evaluate_ecommerce_fefo_lot_expiry_policy(
+            EcommerceFefoLotExpiryPolicyInput(
+                short_dated_disclosed_single_unit_flash_clearance_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -38447,6 +38546,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_returnless_refund_guard": ecommerce_returnless_refund_guard,
         "omnichannel_bopis_curbside_guard": omnichannel_bopis_curbside_guard,
         "b2b_inventory_liquidation_guard": b2b_inventory_liquidation_guard,
+        "ecommerce_fefo_lot_expiry_guard": ecommerce_fefo_lot_expiry_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -53222,6 +53322,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="b2b-liq-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SEALED_VICKREY_AUCTION_AND_WEEK6_EARLY_CLOSEOUT_CONFIRM · Mandate: b2b_liquidation_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 168 E-Commerce FEFO Lot-Expiry & Consumption-Window Escrow -->
+      <div class="finops-box" id="ecommerce-fefo-lot-expiry-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💊 美妆保健与食品电商 FEFO 近效期先出 (iHerb / Manhattan WMS) 与囤货服用周期托管沙盒</div>
+            <div class="finops-sub">Round 168 · 购买件数×单瓶消耗天数动态分批 (HTTP 403) + 扫码枪 FEFO 批次硬锁 (HTTP 422) + &lt;60d 禁售与高温冰袋 (HTTP 451) + 临期明示闪购净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="fefo-exp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度过期报废销毁与大促囤货临期退单池 ($)
+            <input type="number" id="fefo-exp-gross-input" value="110000" min="10000" step="5000" oninput="recalcEcommerceFefoLotExpirySandbox()" />
+          </label>
+          <label>购买件数 × 单瓶消耗天数 (Consumption Window)
+            <select id="fefo-exp-win-select" onchange="recalcEcommerceFefoLotExpirySandbox()">
+              <option value="pass">买1瓶派130d老批次消库存 / 买4瓶(需270d)派500d新批次 (合规)</option>
+              <option value="block_403">买 4 瓶半年量鱼油却派发仅剩 55 天过期的批次遭全额仅退款 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>WMS 拣货扫码枪 GS1 (10) Lot 强校验
+            <select id="fefo-exp-scan-select" onchange="recalcEcommerceFefoLotExpirySandbox()">
+              <option value="pass">严格按系统指定 FEFO 批次号扫码出库 (合规)</option>
+              <option value="block_422">拣货员贪省事扫外侧新批次导致库底老批次放过期报废 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>&lt;60d 禁售红线、批号解码与 &gt;26°C 冰袋锁
+            <select id="fefo-exp-safe-select" onchange="recalcEcommerceFefoLotExpirySandbox()">
+              <option value="pass">&gt;=60d 效期 + 打印明文到期日 + 夏季软糖加冰袋 (安全)</option>
+              <option value="block_451">误发 &lt;60d 临期品或 35°C 高温裸发软糖融化成坨 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>iHerb 式效期公示与“临期明示限购1瓶半价闪购”
+            <select id="fefo-exp-opt-select" onchange="recalcEcommerceFefoLotExpirySandbox()">
+              <option value="enabled" selected>商品页实时展示批次到期日 + 60-150d 批次拆入单瓶5折闪购 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">隐藏真实效期且尾批拖到过期直接销毁填埋 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度效期报废与临期退单总池</div>
+            <div class="finops-kpi-val" id="fefo-exp-gross-kpi">$110,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">动态分批与单瓶闪购后净损耗</div>
+            <div class="finops-kpi-val" id="fefo-exp-net-kpi" style="color:#6ee7b7;">$69,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省过期销毁与囤货退赔</div>
+            <div class="finops-kpi-val" id="fefo-exp-savings-kpi" style="color:#38bdf8;">$40,700</div>
+          </div>
+        </div>
+        <div id="fefo-exp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SHORT_DATED_DISCLOSED_SINGLE_UNIT_FLASH_CLEARANCE_CONFIRM · Mandate: fefo_expiry_escrow_optim_409
         </div>
       </div>
 
@@ -71003,6 +71160,79 @@ function recalcB2BInventoryLiquidationSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 CHANNEL_RESTRICTED_CLOSEOUT_ESCROW_AUTHORIZED · Mandate: b2b_liquidation_escrow_200';
+}}
+
+function recalcEcommerceFefoLotExpirySandbox() {{
+  const grossInput = document.getElementById('fefo-exp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '110000'));
+  const winGate = document.getElementById('fefo-exp-win-select').value;
+  const scanGate = document.getElementById('fefo-exp-scan-select').value;
+  const safeGate = document.getElementById('fefo-exp-safe-select').value;
+  const optMode = document.getElementById('fefo-exp-opt-select').value;
+
+  const grossKpi = document.getElementById('fefo-exp-gross-kpi');
+  const netKpi = document.getElementById('fefo-exp-net-kpi');
+  const savingsKpi = document.getElementById('fefo-exp-savings-kpi');
+  const statusKpi = document.getElementById('fefo-exp-status-kpi');
+  const banner = document.getElementById('fefo-exp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (safeGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EXPIRED_UNDER_60D_LOT_OR_SUMMER_MELT_NO_COLD_PACK_HOLD · Mandate: null';
+    return;
+  }}
+  if (winGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CONSUMPTION_DAYS_EXCEED_REMAINING_LOT_SHELF_LIFE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (scanGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FEFO_LOT_BYPASS_NEWER_BATCH_SCANNER_PICK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SHORT_DATED_DISCLOSED_SINGLE_UNIT_FLASH_CLEARANCE_CONFIRM · Mandate: fefo_expiry_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 FEFO_AND_CONSUMPTION_WINDOW_VERIFIED_AUTHORIZED · Mandate: fefo_expiry_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

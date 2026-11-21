@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg611" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#05101e" />
+    </linearGradient>
+    <linearGradient id="accent611" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg611)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent611)" rx="3" />
+
+  <text x="40" y="58" class="title">美妆保健与食品电商 FEFO 近效期先出 (iHerb / 京东效期锁) 与囤货服用周期匹配托管架构</text>
+  <text x="40" y="80" class="subtitle">Round 168 · 防买 4 瓶半年量保健品收到还剩 45 天过期引发全额仅退款、防库底老批次报废 &amp; 临期明示特卖净省 37% (SVG 611)</text>
+
+  <!-- Left Card: 3 Lot Expiry & FEFO Disasters -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大效期批次与大促囤货黑洞</text>
+  <text x="56" y="164" class="card-title">1. “买 4 瓶 240 天量，收到还剩 50 天过期” (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 大促买 4 瓶 60 粒装鱼油 (需 240 天吃完)，仓库发出的批次</text>
+  <text x="56" y="202" class="body">  距离保质期仅剩 55 天 (虽未过期，但正常人绝对吃不完!)</text>
+  <text x="56" y="220" class="warn">• 买家收到拍照投诉，平台判商家全额仅退款 + 赔偿运费!</text>
+
+  <text x="56" y="256" class="card-title">2. 拣货员“拿外不拿里”致库底批次全过期 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• WMS 未开启 `GS1-128 Lot/Expiry` 强校验，拣货员贪省事随手拿</text>
+  <text x="56" y="294" class="body">  货架最外侧刚到的 2028 年新货，把里面 2027 年初的老货堵死</text>
+  <text x="56" y="312" class="warn">• 年底盘点发现库底 $80,000 精华液全过保质期，100% 销毁报废!</text>
+
+  <text x="56" y="348" class="card-title">3. 美妆批号黑话看不懂与高温仓储变质 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 跨境美妆瓶底只印钢印批号 (如 `A42`) 未翻译成明文到期日</text>
+  <text x="56" y="386" class="body">• 买家以为没有保质期是假货直接拒付；或软糖/益生菌在夏天</text>
+  <text x="56" y="404" class="warn">  发无冰袋陆运融化粘连成一整坨，遭遇食品安全集体差评!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: CONSUMPTION_DAYS_EXCEED_REMAINING_SHELF_LIFE</text>
+  <text x="70" y="502" class="warn">• HTTP 422: FEFO_LOT_BYPASS_NEWER_BATCH_PICK_BLOCKED</text>
+  <text x="70" y="524" class="warn">• HTTP 451: EXPIRED_LOT_OR_SUMMER_MELT_NO_COLD_PACK</text>
+  <text x="70" y="546" class="mono">• HTTP 409:SHORT_DATED_DISCLOSED_CLEARANCE_SINGLE_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: FEFO_AND_CONSUMPTION_WINDOW_VERIFIED_200</text>
+  <text x="70" y="596" class="body">铁律: 剩余效期必须 &gt;= `购买件数 × 单件标准使用天数 + 30天`!</text>
+
+  <!-- Center Card: 4-Stage FEFO & Consumption-Window Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶 FEFO 效期锁与囤货服用周期托管架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ef4444" />
+  <text x="450" y="175" class="card-title" fill="#fca5a5">Gate 1: “购买件数 × 单瓶使用天数”效期护栏 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• 废除死板的“剩 90 天都算合格”! 动态计算该订单所需消耗完的天数:</text>
+  <text x="450" y="213" class="body">  `Required_Days = Order_Qty × Usage_Days_Per_Unit (60d) + 30d Buffer`</text>
+  <text x="450" y="231" class="mono">• 买 4 瓶却企图发剩余效期 &lt;270 天的老批次 -&gt; 自动切新批次 HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: WMS 扫码枪 FEFO 批次硬锁 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 单瓶散买订单 (仅需 60 天用完): 强制路由至库内最早到期的合规</text>
+  <text x="450" y="320" class="body">  老批次 (`Lot #2026-A`, 剩 140 天)；拣货员若图省事扫了外侧新批次:</text>
+  <text x="450" y="338" class="body">  PDA 当场蜂鸣报错拒绝锁单! 真正实现“单买消老货、囤货发新货”!</text>
+  <text x="450" y="354" class="mono">• 拣货员违反 FEFO 跳过老批次扫新批次 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 临期红线 (&lt;60d) 禁售锁与夏季防融化冰袋 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 距到期不足 60 天自动从正价池下架；美妆批号自动解码印在电子小票</text>
+  <text x="450" y="437" class="body">• 收货地气温 &gt;26°C 时，巧克力/软糖/视黄醇强制加挂冰袋与隔热膜</text>
+  <text x="450" y="455" class="mono">• 企图发出 &lt;60d 临期品或高温裸发易融保健品 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: iHerb 式“透明效期公示 + 临期单瓶半价闪购” (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 商品详情页实时展示当前发货批次真实到期日 (`Expiration: Nov 2027`)</text>
+  <text x="450" y="546" class="body">• 当某批次距到期仅剩 120 天时，自动拆分出“透明明示效期 5 折</text>
+  <text x="450" y="566" class="mono">  单瓶自用闪购链接 (限购 1 瓶，明示到期日，0 退货争议)”</text>
+  <text x="450" y="586" class="mono">• 消灭仓库过期销毁 + 终结囤货临期退单 -&gt; 净省 37% 效期损耗</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大效期批次管理 (FEFO) 标杆底座</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. iHerb “商品页实时批次效期公示”范式</text>
+  <text x="846" y="182" class="body">• 优势: 全球保健品电商标杆，每個 SKU 页面直接显示当前仓库在发</text>
+  <text x="846" y="198" class="body">  批次的精确到期年月，转化率提升 19% 且效期类客诉降为 0</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Manhattan Active WMS / SAP EWM (FEFO)</text>
+  <text x="846" y="244" class="body">• 优势: 支持按“客户订单需求天数 (Shelf-Life Requirement)”智能分配</text>
+  <text x="846" y="260" class="body">  批次：买 1 瓶派 5 个月效期货，买 6 瓶派 18 个月效期新货</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. GS1 Application Identifier `(17) EXP` + `(10) LOT`</text>
+  <text x="846" y="306" class="body">• 优势: 采用二维 GS1 DataMatrix 码，收货与拣货扫码 1 次同时校验</text>
+  <text x="846" y="322" class="body">  GTIN 商品码 + 生产批号 + 到期日，杜绝人工看走眼发错过期件</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. 京东自营 / 盒马“临期梯度自动打折机”</text>
+  <text x="846" y="368" class="body">• 经验: 距保质期 1/3 时自动挂黄牌享 7 折、距 1/5 时享 4 折单件清仓</text>
+  <text x="846" y="384" class="body">• 特性: 100% 在过期红线前变现回收成本，实现仓库 0 过期报废</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度过期报废、囤货临期退单与融化池 ($110,000)</text>
+  <text x="860" y="456" class="body">• 传统4瓶囤货发临期被退+库底放过期报废: $110,000/季</text>
+  <text x="860" y="476" class="mono">• 购买件数×服用天数动态分批 (单买消老/囤货发新): -$20,900</text>
+  <text x="860" y="496" class="mono">• WMS 扫码枪 FEFO 强锁与临期明示单瓶半价闪购: -$12,100</text>
+  <text x="860" y="516" class="mono">• 美妆批号明文解码与高温防融化冷链包装保护: -$7,700</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净效期损耗: $69,300 (净省 $40,700 / -37%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: fefo_expiry_escrow_optim_409</text>
+</svg>

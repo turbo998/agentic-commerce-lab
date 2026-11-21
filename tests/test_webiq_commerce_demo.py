@@ -20314,6 +20314,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-inventory-liquidation-sandbox", html_zh)
 
+    def test_ecommerce_fefo_lot_expiry_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceFefoLotExpiryPolicyInput,
+            evaluate_ecommerce_fefo_lot_expiry_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_fefo_lot_expiry_policy(
+            EcommerceFefoLotExpiryPolicyInput(
+                quarterly_expiry_spoilage_and_multipack_refund_pool_usd=110000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "FEFO_AND_CONSUMPTION_WINDOW_VERIFIED_AUTHORIZED",
+        )
+
+        win = evaluate_ecommerce_fefo_lot_expiry_policy(
+            EcommerceFefoLotExpiryPolicyInput(
+                consumption_days_exceed_remaining_lot_shelf_life=True
+            )
+        )
+        self.assertEqual(win["status_code"], 403)
+        self.assertEqual(
+            win["decision"],
+            "CONSUMPTION_DAYS_EXCEED_REMAINING_LOT_SHELF_LIFE_BLOCKED",
+        )
+
+        scan = evaluate_ecommerce_fefo_lot_expiry_policy(
+            EcommerceFefoLotExpiryPolicyInput(
+                fefo_lot_bypass_newer_batch_scanner_pick=True
+            )
+        )
+        self.assertEqual(scan["status_code"], 422)
+        self.assertEqual(
+            scan["decision"],
+            "FEFO_LOT_BYPASS_NEWER_BATCH_SCANNER_PICK_BLOCKED",
+        )
+
+        safe = evaluate_ecommerce_fefo_lot_expiry_policy(
+            EcommerceFefoLotExpiryPolicyInput(
+                expired_under_60d_lot_or_summer_melt_no_cold_pack=True
+            )
+        )
+        self.assertEqual(safe["status_code"], 451)
+        self.assertEqual(
+            safe["decision"],
+            "EXPIRED_UNDER_60D_LOT_OR_SUMMER_MELT_NO_COLD_PACK_HOLD",
+        )
+
+        optim = evaluate_ecommerce_fefo_lot_expiry_policy(
+            EcommerceFefoLotExpiryPolicyInput(
+                quarterly_expiry_spoilage_and_multipack_refund_pool_usd=110000.0,
+                short_dated_disclosed_single_unit_flash_clearance_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 40700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 69300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_fefo_lot_expiry_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-fefo-lot-expiry-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
