@@ -17969,6 +17969,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-mice-hotel-block-escrow-sandbox", html_zh)
 
+    def test_ota_car_rental_damage_fuel_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaCarRentalDamageFuelEscrowPolicyInput,
+            evaluate_ota_car_rental_damage_fuel_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_car_rental_damage_fuel_escrow_policy(
+            OtaCarRentalDamageFuelEscrowPolicyInput(
+                quarterly_corporate_car_rental_and_dispute_pool_usd=78000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_C2PA_WALKAROUND_AND_FULL_TANK_RECEIPT_AUTHORIZED",
+        )
+
+        upsell = evaluate_ota_car_rental_damage_fuel_escrow_policy(
+            OtaCarRentalDamageFuelEscrowPolicyInput(
+                duplicate_counter_cdw_upsell_or_daily_toll_pass_trap=True
+            )
+        )
+        self.assertEqual(upsell["status_code"], 403)
+        self.assertEqual(
+            upsell["decision"],
+            "DUPLICATE_COUNTER_CDW_UPSELL_OR_DAILY_TOLL_PASS_TRAP_BLOCKED",
+        )
+
+        damage = evaluate_ota_car_rental_damage_fuel_escrow_policy(
+            OtaCarRentalDamageFuelEscrowPolicyInput(
+                preexisting_scratch_ai_scanner_claim_or_phantom_fuel_charge=True
+            )
+        )
+        self.assertEqual(damage["status_code"], 422)
+        self.assertEqual(
+            damage["decision"],
+            "PREEXISTING_SCRATCH_AI_SCANNER_CLAIM_OR_PHANTOM_FUEL_CHARGE_BLOCKED",
+        )
+
+        flight = evaluate_ota_car_rental_damage_fuel_escrow_policy(
+            OtaCarRentalDamageFuelEscrowPolicyInput(
+                flight_delay_noshow_cancel_or_low_soc_nighttime_ev_assignment=True
+            )
+        )
+        self.assertEqual(flight["status_code"], 451)
+        self.assertEqual(
+            flight["decision"],
+            "FLIGHT_DELAY_NOSHOW_CANCEL_OR_LOW_SOC_NIGHTTIME_EV_ASSIGNMENT_HOLD",
+        )
+
+        optim = evaluate_ota_car_rental_damage_fuel_escrow_policy(
+            OtaCarRentalDamageFuelEscrowPolicyInput(
+                quarterly_corporate_car_rental_and_dispute_pool_usd=78000.0,
+                corporate_cdp_skip_counter_and_off_airport_tax_arbitrage_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 26520.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 51480.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_car_rental_damage_fuel_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-car-rental-damage-fuel-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

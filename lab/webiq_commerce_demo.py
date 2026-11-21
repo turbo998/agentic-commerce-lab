@@ -25205,6 +25205,87 @@ def evaluate_b2b_mice_hotel_block_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaCarRentalDamageFuelEscrowPolicyInput:
+    """Input contract for OTA & Corporate Car Rental, Anti-CDW Upsell, C2PA Damage Scanner & Fuel Escrow."""
+
+    quarterly_corporate_car_rental_and_dispute_pool_usd: float = 78000.0
+    duplicate_counter_cdw_upsell_or_daily_toll_pass_trap: bool = False
+    preexisting_scratch_ai_scanner_claim_or_phantom_fuel_charge: bool = False
+    flight_delay_noshow_cancel_or_low_soc_nighttime_ev_assignment: bool = False
+    mandate_signing_key_age_days: int = 30
+    corporate_cdp_skip_counter_and_off_airport_tax_arbitrage_ready: bool = False
+
+
+def evaluate_ota_car_rental_damage_fuel_escrow_policy(
+    policy_input: OtaCarRentalDamageFuelEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane OTA & Corporate Car Rental, Anti-CDW Upsell, C2PA Damage Scanner & Fuel Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_corporate_car_rental_and_dispute_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.flight_delay_noshow_cancel_or_low_soc_nighttime_ev_assignment
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "FLIGHT_DELAY_NOSHOW_CANCEL_OR_LOW_SOC_NIGHTTIME_EV_ASSIGNMENT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.duplicate_counter_cdw_upsell_or_daily_toll_pass_trap:
+        return {
+            "status_code": 403,
+            "decision": "DUPLICATE_COUNTER_CDW_UPSELL_OR_DAILY_TOLL_PASS_TRAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.preexisting_scratch_ai_scanner_claim_or_phantom_fuel_charge:
+        return {
+            "status_code": 422,
+            "decision": "PREEXISTING_SCRATCH_AI_SCANNER_CLAIM_OR_PHANTOM_FUEL_CHARGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.corporate_cdp_skip_counter_and_off_airport_tax_arbitrage_ready:
+        savings = round(gross_pool * 0.34, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CORPORATE_CDP_SKIP_COUNTER_AND_OFF_AIRPORT_TAX_ARBITRAGE_CONFIRM",
+            "mandate_token": "ota_car_rental_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_C2PA_WALKAROUND_AND_FULL_TANK_RECEIPT_AUTHORIZED",
+        "mandate_token": "ota_car_rental_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -34582,6 +34663,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_car_rental_damage_fuel_escrow_guard = {
+        "authorized_200": evaluate_ota_car_rental_damage_fuel_escrow_policy(
+            OtaCarRentalDamageFuelEscrowPolicyInput()
+        ),
+        "duplicate_cdw_or_toll_trap_403": evaluate_ota_car_rental_damage_fuel_escrow_policy(
+            OtaCarRentalDamageFuelEscrowPolicyInput(
+                duplicate_counter_cdw_upsell_or_daily_toll_pass_trap=True
+            )
+        ),
+        "preexisting_scratch_or_phantom_fuel_422": evaluate_ota_car_rental_damage_fuel_escrow_policy(
+            OtaCarRentalDamageFuelEscrowPolicyInput(
+                preexisting_scratch_ai_scanner_claim_or_phantom_fuel_charge=True
+            )
+        ),
+        "flight_delay_noshow_or_low_ev_451": evaluate_ota_car_rental_damage_fuel_escrow_policy(
+            OtaCarRentalDamageFuelEscrowPolicyInput(
+                flight_delay_noshow_cancel_or_low_soc_nighttime_ev_assignment=True
+            )
+        ),
+        "cdp_skip_counter_and_tax_arb_409": evaluate_ota_car_rental_damage_fuel_escrow_policy(
+            OtaCarRentalDamageFuelEscrowPolicyInput(
+                corporate_cdp_skip_counter_and_off_airport_tax_arbitrage_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -34843,6 +34950,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_support_ddp_escrow_guard": cross_border_support_ddp_escrow_guard,
         "ecommerce_price_match_guarantee_escrow_guard": ecommerce_price_match_guarantee_escrow_guard,
         "b2b_mice_hotel_block_escrow_guard": b2b_mice_hotel_block_escrow_guard,
+        "ota_car_rental_damage_fuel_escrow_guard": ota_car_rental_damage_fuel_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -47545,6 +47653,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="mice-block-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ROLLING_T60_BLOCK_DROP_AND_FUTURE_EVENT_CREDIT_ROLLOVER_CONFIRM · Mandate: b2b_mice_hotel_block_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 133 OTA & Corporate Car Rental, Anti-CDW Upsell, C2PA Damage Scanner & Fuel Escrow -->
+      <div class="finops-box" id="ota-car-rental-damage-fuel-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🚗 商旅与自驾租车 (Hertz / Avis / National / 携程租车 / 租租车)、防柜台强推全险与防旧划痕/黑油费讹诈托管沙盒 (Round 133)</div>
+            <div class="finops-subtitle">实测硬控 Skip-the-Counter 免柜台直取+单次虚拟卡锁死纯租金上限拦截柜员恐吓加卖 $45/天重复全险与 $24.99/天高速盒 (HTTP 403)、出闸前 30s C2PA 环车视频与 8km 满油仪表盘小票存证反杀 AI 验车龙门架旧划痕栽赃与 $120 幽灵补油费 (HTTP 422)、IATA 航班尾号绑定防晚点 No-Show 废单涨价 (HTTP 451) 及企业 CDP 协议重订+场外取车避 22% 机场税净省 34% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="car-rental-status-kpi">HTTP 409 · CORPORATE_CDP_SKIP_COUNTER_AND_OFF_AIRPORT_TAX_ARBITRAGE_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业差旅与自驾租车、保险附加项及车损理赔总池 ($ USD)
+            <input type="range" id="car-rental-pool-slider" min="15000" max="350000" step="5000" value="78000" oninput="updateOtaCarRentalDamageFuelEscrowSandbox()" />
+            <span id="car-rental-pool-val" style="color:#6ee7b7; font-family:monospace;">$78,000</span>
+          </label>
+          <label>
+            免柜台直取 (Skip-the-Counter) 与防重复全险/ETC 盒强推 (HTTP 403)
+            <select id="car-rental-upsell-select" onchange="updateOtaCarRentalDamageFuelEscrowSandbox()">
+              <option value="pass">绑定企业 CDP 一级全险直接去车库扫码开车 + 虚拟卡锁死纯租金上限 (放行)</option>
+              <option value="block">柜员恐吓“第三方险无效”诱导盲签加购 $45/天门店险与 $24.99/天 PlatePass 高速盒 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            提还车 30s C2PA 环车视频与 8km 满油仪表盘小票存证 (HTTP 422)
+            <select id="car-rental-damage-select" onchange="updateOtaCarRentalDamageFuelEscrowSandbox()">
+              <option value="pass">出闸前视频哈希建档 + 还车满格油表(8/8)与小票同框存证，无新增车损 (合规)</option>
+              <option value="block">AI 龙门架把提车已有的轮毂旧划痕算作新伤强扣 $450 或 满油还车仍被暗扣 $120 补油费 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            实时航班尾号保车锁与拒绝深夜强派残电电车 (HTTP 451)
+            <select id="car-rental-flight-select" onchange="updateOtaCarRentalDamageFuelEscrowSandbox()">
+              <option value="clear">绑定 IATA 航班号晚点自动顺延保留 12h + 燃油车满油或电车电量 &gt;=85% (正常)</option>
+              <option value="hold">航班延误 2 小时车行按 No-Show 没收定金并坐地起价 3 倍 或 半夜派剩 22% 电量的电车 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            企业 CDP 协议价动态重订与长租场外取车避机场特许税 (HTTP 409)
+            <select id="car-rental-opt-select" onchange="updateOtaCarRentalDamageFuelEscrowSandbox()">
+              <option value="enabled" selected>免费取消期降价自动重订 + 自备便携 ETC + 5天以上长租场外店取车避 22% 机场税净省 34% (HTTP 409)</option>
+              <option value="baseline">常规免柜台直取与 C2PA 验车满油还车结算 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度差旅租车与争议风险总池</div>
+            <div class="finops-kpi-val" id="car-rental-gross-kpi">$78,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">免柜台与存证反杀后净支出</div>
+            <div class="finops-kpi-val" id="car-rental-net-kpi" style="color:#6ee7b7;">$51,480</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省重复保险、旧伤与黑油费</div>
+            <div class="finops-kpi-val" id="car-rental-savings-kpi" style="color:#38bdf8;">$26,520</div>
+          </div>
+        </div>
+        <div id="car-rental-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CORPORATE_CDP_SKIP_COUNTER_AND_OFF_AIRPORT_TAX_ARBITRAGE_CONFIRM · Mandate: ota_car_rental_escrow_optim_409
         </div>
       </div>
 
@@ -62758,6 +62929,80 @@ function updateB2BMiceHotelBlockEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 CUMULATIVE_PICKUP_AND_SIGNED_BEO_MASTER_FOLIO_AUTHORIZED · Mandate: b2b_mice_hotel_block_200';
+}}
+
+function updateOtaCarRentalDamageFuelEscrowSandbox() {{
+  const slider = document.getElementById('car-rental-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '78000');
+  const upsellMode = document.getElementById('car-rental-upsell-select').value;
+  const damageMode = document.getElementById('car-rental-damage-select').value;
+  const flightMode = document.getElementById('car-rental-flight-select').value;
+  const optMode = document.getElementById('car-rental-opt-select').value;
+
+  document.getElementById('car-rental-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('car-rental-status-kpi');
+  const grossKpi = document.getElementById('car-rental-gross-kpi');
+  const netKpi = document.getElementById('car-rental-net-kpi');
+  const savingsKpi = document.getElementById('car-rental-savings-kpi');
+  const banner = document.getElementById('car-rental-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (flightMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 FLIGHT_DELAY_NOSHOW_CANCEL_OR_LOW_SOC_NIGHTTIME_EV_ASSIGNMENT_HOLD · Mandate: null';
+    return;
+  }}
+  if (upsellMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DUPLICATE_COUNTER_CDW_UPSELL_OR_DAILY_TOLL_PASS_TRAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (damageMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PREEXISTING_SCRATCH_AI_SCANNER_CLAIM_OR_PHANTOM_FUEL_CHARGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.34);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CORPORATE_CDP_SKIP_COUNTER_AND_OFF_AIRPORT_TAX_ARBITRAGE_CONFIRM · Mandate: ota_car_rental_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_C2PA_WALKAROUND_AND_FULL_TANK_RECEIPT_AUTHORIZED · Mandate: ota_car_rental_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

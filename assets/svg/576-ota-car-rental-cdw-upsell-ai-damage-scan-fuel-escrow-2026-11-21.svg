@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg576" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+    <linearGradient id="accent576" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg576)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent576)" rx="3" />
+
+  <text x="40" y="58" class="title">商旅与自驾租车 (Hertz / Avis / 携程租车 / 租租车)、防柜台强推全险与防旧划痕/黑油费讹诈托管</text>
+  <text x="40" y="80" class="subtitle">Round 133 · 防柜台恐吓重买 $45/天 CDW 险、防还车后乱扣 $450 旧划痕/$120 满油费 &amp; 企业合约码净省 34% (SVG 576)</text>
+
+  <!-- Left Card: 3 Car Rental Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大租车柜台与还车刺客</text>
+  <text x="56" y="164" class="card-title">1. 柜台恐吓重买 $45/天门店全险 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 企业差旅协议价或白金卡已自带一级车损险 (Primary CDW)</text>
+  <text x="56" y="202" class="body">• 机场柜员连哄带骗让旅客在电子屏盲签加购 $45/天门店险</text>
+  <text x="56" y="220" class="warn">• 外加每天 $24.99 ETC 高速盒代管费，租车费直接翻倍!</text>
+
+  <text x="56" y="256" class="card-title">2. AI 验车龙门架旧伤栽赃与满油黑扣 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 提车时地下车库昏暗未拍轮毂，还车过 AI 龙门架扫出 8mm 旧痕</text>
+  <text x="56" y="294" class="body">• 离店 3 天后信用卡被强扣 $450“修车+停运损失费”</text>
+  <text x="56" y="312" class="warn">• 在机场 2 公里内加满油还车，仍被按 $9.99/加仑强收 $120 油费</text>
+
+  <text x="56" y="348" class="card-title">3. 航班晚点 2 小时按 No-Show 没收定金并涨价</text>
+  <text x="56" y="368" class="body">• 订单未绑定实时航班号，飞机延误 90 分钟落地去取车</text>
+  <text x="56" y="386" class="body">• 柜台宣称“逾时未取预订已作废，原 $55/天车已租完”</text>
+  <text x="56" y="404" class="warn">• 逼迫旅客当场按 $180/天高价重租豪华车，原定金还不退!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: DUPLICATE_CDW_UPSELL_OR_TOLL_PASS_TRAP</text>
+  <text x="70" y="502" class="warn">• HTTP 422: PREEXISTING_SCRATCH_OR_PHANTOM_FUEL_FEE</text>
+  <text x="70" y="524" class="warn">• HTTP 451: FLIGHT_DELAY_NOSHOW_OR_EV_ZERO_CHARGE_HOLD</text>
+  <text x="70" y="546" class="mono">• HTTP 409: CORPORATE_CDP_AND_SKIP_COUNTER_ESCROW_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: VERIFIED_WALKAROUND_AND_FUEL_AUTHORIZED</text>
+  <text x="70" y="596" class="body">铁律: 离场前 360度视频哈希锁 + 还车仪表盘满油GPS小票锁!</text>
+
+  <!-- Center Card: 4-Stage Car Rental Escrow Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶租车防宰客与车况存证托管架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">Gate 1: 免柜台直取 (Skip-the-Counter) 与虚拟卡锁额</text>
+  <text x="450" y="195" class="body">• 自动关联企业 CDP/AWD 协议码 (内置全额 Primary LDW/CDW)</text>
+  <text x="450" y="213" class="body">• 走 Hertz Gold / Avis Preferred 免柜台直接去车位扫码开车</text>
+  <text x="450" y="231" class="mono">• 虚拟卡额度锁死纯租金+押金，柜台私加 $45/d 保险 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="282" class="card-title" fill="#6ee7b7">Gate 2: 提还车双端 360° 视觉比对与满油小票锁</text>
+  <text x="450" y="302" class="body">• 出闸前强制引导拍摄 30s 环车视频 + 仪表盘里程/油表 (C2PA签名)</text>
+  <text x="450" y="320" class="body">• 还车时再次拍摄，AI 自动比对：提车已有的旧划痕 100% 拒赔</text>
+  <text x="450" y="338" class="body">• 离场 8km 内加油站小票 + 满格油表照片归档，防乱扣 $120 补油费</text>
+  <text x="450" y="354" class="mono">• 无前后对比铁证强扣车损或满油乱扣费 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 航班号强绑定保车与电车 (EV) 残电红线</text>
+  <text x="450" y="419" class="body">• 预订强制写入 IATA 航班号与尾号，航变延误车行法定保留 12h</text>
+  <text x="450" y="437" class="body">• 拒绝把剩 22% 电量的电车分给深夜赶路的差旅人 -&gt; HTTP 451</text>
+  <text x="450" y="455" class="mono">• 扣车押金预授权在还车无异常后 T+72h 强制自动解冻</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#f59e0b" />
+  <text x="450" y="508" class="card-title" fill="#fcd34d">Gate 4: 机场贵宾高附加税 vs 场外/同城降本寻优</text>
+  <text x="450" y="528" class="body">• 识别 7 天以上长租：机场店加收 18% 机场特许费 (Concession Fee)</text>
+  <text x="450" y="546" class="body">• 自动计算打车 10 分钟去市区店取车 + 机场店免费异地还车差价</text>
+  <text x="450" y="566" class="mono">• 自备个人/企业便携 ETC 贴卡，立省每天 $24.99 车行过路费盒子</text>
+  <text x="450" y="586" class="mono">• 砍重买保险 + 防旧伤讹诈 + 企业 CDP 重定 -&gt; 净省 34% 租车支出</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大商旅与全球租车体系</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. National Emerald / Hertz Gold / Avis</text>
+  <text x="846" y="182" class="body">• 优势: 会员走专属通道直接选车开走，0 秒接触推销柜员</text>
+  <text x="846" y="198" class="body">• 特性: 绑定企业 CDP/AWD 协议码自动内含碰撞险与年轻驾驶员豁免</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. 携程租车 / 租租车 (Zuzuche) / 神州</text>
+  <text x="846" y="244" class="body">• 优势: 中文全险闪租、取还车标准化拍照存证引导与芝麻免押</text>
+  <text x="846" y="260" class="body">• 特性: 境外租车超级补充全险价格仅为门店柜台险的 35%</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Ravin AI / UVeye 自动验车龙门架对策</text>
+  <text x="846" y="306" class="body">• 背景: 欧美机场车行部署毫米级 AI 扫描仪，连小石子崩漆都抓</text>
+  <text x="846" y="322" class="body">• 对策: 必须用提车出闸时间戳视频哈希建立不可抵赖基线</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. 企业信用卡 Primary CDW + Visa CE 3.0</text>
+  <text x="846" y="368" class="body">• 优势: 只要拒绝门店 CDW，发卡行免费提供高达 $75,000 一级车损保障</text>
+  <text x="846" y="384" class="body">• 特性: 遇乱扣满油费凭 GPS 加油小票 + 仪表盘照片 100% 拒付胜诉</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度企业差旅与自驾租车池 ($78,000)</text>
+  <text x="860" y="456" class="body">• 传统柜台被推销保险+旧伤讹诈+黑油费: $78,000/季</text>
+  <text x="860" y="476" class="mono">• 免柜台直取砍掉 $45/d 重复保险与 ETC 盒: -$12,480</text>
+  <text x="860" y="496" class="mono">• 提还车 C2PA 视频+加油小票拦截乱扣费: -$8,580</text>
+  <text x="860" y="516" class="mono">• 企业 CDP 协议价重订与场外取车省税: -$5,460</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净支出: $51,480 (净省 $26,520 / -34%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: ota_car_rental_escrow_optim_409</text>
+</svg>
