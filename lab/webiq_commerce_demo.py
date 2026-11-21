@@ -23423,6 +23423,87 @@ def evaluate_luxury_watch_movement_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class SaasChurnRetentionEscrowPolicyInput:
+    """Input contract for SaaS Churn Retention, Anti-Cancel-Gaming & FTC Click-to-Cancel Escrow."""
+
+    quarterly_at_risk_saas_arr_pool_usd: float = 140000.0
+    serial_cancel_flow_coupon_gaming_or_negative_margin_discount: bool = False
+    miscalibrated_discount_for_seasonal_pause_or_high_usage: bool = False
+    webiq_ftc_click_to_cancel_asymmetry_or_dark_pattern_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    pause_subscription_and_lite_tier_deflection_ready: bool = False
+
+
+def evaluate_saas_churn_retention_escrow_policy(
+    policy_input: SaasChurnRetentionEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane SaaS Churn Retention, Anti-Cancel-Gaming & FTC Click-to-Cancel Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_at_risk_saas_arr_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_ftc_click_to_cancel_asymmetry_or_dark_pattern_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_FTC_CLICK_TO_CANCEL_ASYMMETRY_OR_DARK_PATTERN_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.serial_cancel_flow_coupon_gaming_or_negative_margin_discount:
+        return {
+            "status_code": 403,
+            "decision": "SERIAL_CANCEL_FLOW_COUPON_GAMING_OR_NEGATIVE_MARGIN_DISCOUNT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.miscalibrated_discount_for_seasonal_pause_or_high_usage:
+        return {
+            "status_code": 422,
+            "decision": "MISCALIBRATED_DISCOUNT_FOR_SEASONAL_PAUSE_OR_HIGH_USAGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pause_subscription_and_lite_tier_deflection_ready:
+        savings = round(gross_pool * 0.34, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PAUSE_SUBSCRIPTION_AND_LITE_TIER_DEFLECTION_CONFIRM",
+            "mandate_token": "saas_churn_retention_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "TELEMETRY_MATCHED_AND_SYMMETRIC_RETENTION_AUTHORIZED",
+        "mandate_token": "saas_churn_retention_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -32228,6 +32309,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    saas_churn_retention_escrow_guard = {
+        "authorized_200": evaluate_saas_churn_retention_escrow_policy(
+            SaasChurnRetentionEscrowPolicyInput()
+        ),
+        "serial_cancel_coupon_gaming_403": evaluate_saas_churn_retention_escrow_policy(
+            SaasChurnRetentionEscrowPolicyInput(
+                serial_cancel_flow_coupon_gaming_or_negative_margin_discount=True
+            )
+        ),
+        "miscalibrated_pause_or_high_usage_discount_422": evaluate_saas_churn_retention_escrow_policy(
+            SaasChurnRetentionEscrowPolicyInput(
+                miscalibrated_discount_for_seasonal_pause_or_high_usage=True
+            )
+        ),
+        "ftc_click_to_cancel_dark_pattern_451": evaluate_saas_churn_retention_escrow_policy(
+            SaasChurnRetentionEscrowPolicyInput(
+                webiq_ftc_click_to_cancel_asymmetry_or_dark_pattern_flag=True
+            )
+        ),
+        "pause_and_lite_tier_deflection_409": evaluate_saas_churn_retention_escrow_policy(
+            SaasChurnRetentionEscrowPolicyInput(
+                pause_subscription_and_lite_tier_deflection_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -32467,6 +32574,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pool_service_cya_lsi_escrow_guard": pool_service_cya_lsi_escrow_guard,
         "b2b_security_guard_gsoc_escrow_guard": b2b_security_guard_gsoc_escrow_guard,
         "luxury_watch_movement_escrow_guard": luxury_watch_movement_escrow_guard,
+        "saas_churn_retention_escrow_guard": saas_churn_retention_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -43783,6 +43891,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="lux-watch-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 WATCHCHARTS_COMP_BID_AND_PARCEL_PRO_ARMORED_ESCROW_CONFIRM · Mandate: luxury_watch_movement_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 111 SaaS Churn Retention, Anti-Cancel-Gaming & FTC Click-to-Cancel Escrow -->
+      <div class="finops-box" id="saas-churn-retention-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🔄 订阅制 SaaS 客户续费挽留 (Churn Deflection)、防“假退订骗半价券”与 FTC 一键退订合规托管 (Chargebee Retention / Churnkey / Stripe Billing / Gainsight) 挽留与防薅沙盒 (Round 111)</div>
+            <div class="finops-subtitle">实测 12 个月跨卡指纹挽留券冷却锁+AI 套餐&gt;=20% 算力毛利底线防羊毛党每季度点取消白嫖 5 折券 (HTTP 403)、30 天活跃遥测对症路由防向季节性停用或 DAU&gt;=85% 大客户错发永久打折券 (HTTP 422)、Web IQ FTC 16 CFR 425 / 德国 BGB 两步对称一键退订核验 (HTTP 451) 及 60 天休眠保号+闲置席位缩容+发薪日智能催收挽回 34% 流失收入 (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="saas-churn-status-kpi">HTTP 409 · PAUSE_SUBSCRIPTION_AND_LITE_TIER_DEFLECTION_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度面临主动退订与被动断订风险的 SaaS ARR 池 ($ USD)
+            <input type="range" id="saas-churn-pool-slider" min="20000" max="600000" step="5000" value="140000" oninput="updateSaasChurnRetentionEscrowSandbox()" />
+            <span id="saas-churn-pool-val" style="color:#6ee7b7; font-family:monospace;">$140,000</span>
+          </label>
+          <label>
+            12 个月挽留券冷却锁与 AI 算力毛利底线审计 (HTTP 403)
+            <select id="saas-churn-gaming-select" onchange="updateSaasChurnRetentionEscrowSandbox()">
+              <option value="pass">首次真实流失挽留 + 跨卡指纹 12m 无重复领券 + AI 套餐折后毛利率&gt;=20% (放行)</option>
+              <option value="block">每 90 天点一次取消按钮套取自动 5 折券 (Cancel Gaming) 或 折后跌破 AI Token 算力成本倒贴 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            30 天产品活跃遥测 (DAU/MAU) 与退订原因对症匹配 (HTTP 422)
+            <select id="saas-churn-telemetry-select" onchange="updateSaasChurnRetentionEscrowSandbox()">
+              <option value="pass">短期不用精准推 60d 休眠保号 + 闲置席位推缩容降本 + 高粘性大客户转年付锁价 (合规)</option>
+              <option value="block">客户仅需季节性停用 2 个月却错发 6 折永久券 或 对 DAU&gt;=85% 重度企业客户盲目自动打折白送毛利 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ FTC Click-to-Cancel (16 CFR 425) 与德国 BGB 对称退订核验 (HTTP 451)
+            <select id="saas-churn-ftc-select" onchange="updateSaasChurnRetentionEscrowSandbox()">
+              <option value="clear">&lt;=2 步对称线上退订 + “直接取消”按钮同视觉权重 + 即时生成退订回执 (正常)</option>
+              <option value="hold">设计 6 层挽留迷宫弹窗/隐藏退订按钮 或 强制要求拨打人工电话/排队聊天才能退订 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            60 天休眠保号、Lite 归档版与发薪日网络令牌智能重试 (HTTP 409)
+            <select id="saas-churn-opt-select" onchange="updateSaasChurnRetentionEscrowSandbox()">
+              <option value="enabled" selected>开启 60 天 $0 休眠保号 + 闲置席位一键缩容 + Visa/MC 网络令牌发薪日智能催收挽回 34% 流失 (HTTP 409)</option>
+              <option value="baseline">常规遥测对症匹配与对称合规退订标准流程授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度面临流失风险 ARR 池</div>
+            <div class="finops-kpi-val" id="saas-churn-gross-kpi">$140,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">智能挽留与发薪日催收后净流失敞口</div>
+            <div class="finops-kpi-val" id="saas-churn-net-kpi" style="color:#6ee7b7;">$92,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回 ARR 与防薅毛利</div>
+            <div class="finops-kpi-val" id="saas-churn-savings-kpi" style="color:#38bdf8;">$47,600</div>
+          </div>
+        </div>
+        <div id="saas-churn-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PAUSE_SUBSCRIPTION_AND_LITE_TIER_DEFLECTION_CONFIRM · Mandate: saas_churn_retention_mandate_optim_409
         </div>
       </div>
 
@@ -57368,6 +57539,80 @@ function updateLuxuryWatchMovementEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 AUTHENTICATED_CALIBER_AND_INSURED_VAULT_SHIP_AUTHORIZED · Mandate: luxury_watch_movement_mandate_200';
+}}
+
+function updateSaasChurnRetentionEscrowSandbox() {{
+  const slider = document.getElementById('saas-churn-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '140000');
+  const gamingMode = document.getElementById('saas-churn-gaming-select').value;
+  const telemetryMode = document.getElementById('saas-churn-telemetry-select').value;
+  const ftcMode = document.getElementById('saas-churn-ftc-select').value;
+  const optMode = document.getElementById('saas-churn-opt-select').value;
+
+  document.getElementById('saas-churn-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('saas-churn-status-kpi');
+  const grossKpi = document.getElementById('saas-churn-gross-kpi');
+  const netKpi = document.getElementById('saas-churn-net-kpi');
+  const savingsKpi = document.getElementById('saas-churn-savings-kpi');
+  const banner = document.getElementById('saas-churn-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ftcMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_FTC_CLICK_TO_CANCEL_ASYMMETRY_OR_DARK_PATTERN_HOLD · Mandate: null';
+    return;
+  }}
+  if (gamingMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SERIAL_CANCEL_FLOW_COUPON_GAMING_OR_NEGATIVE_MARGIN_DISCOUNT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (telemetryMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MISCALIBRATED_DISCOUNT_FOR_SEASONAL_PAUSE_OR_HIGH_USAGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.34);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PAUSE_SUBSCRIPTION_AND_LITE_TIER_DEFLECTION_CONFIRM · Mandate: saas_churn_retention_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 TELEMETRY_MATCHED_AND_SYMMETRIC_RETENTION_AUTHORIZED · Mandate: saas_churn_retention_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

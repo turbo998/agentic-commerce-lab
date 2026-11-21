@@ -16495,6 +16495,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("luxury-watch-movement-escrow-sandbox", html_zh)
 
+    def test_saas_churn_retention_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaasChurnRetentionEscrowPolicyInput,
+            evaluate_saas_churn_retention_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_churn_retention_escrow_policy(
+            SaasChurnRetentionEscrowPolicyInput(
+                quarterly_at_risk_saas_arr_pool_usd=140000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "TELEMETRY_MATCHED_AND_SYMMETRIC_RETENTION_AUTHORIZED",
+        )
+
+        gaming = evaluate_saas_churn_retention_escrow_policy(
+            SaasChurnRetentionEscrowPolicyInput(
+                serial_cancel_flow_coupon_gaming_or_negative_margin_discount=True
+            )
+        )
+        self.assertEqual(gaming["status_code"], 403)
+        self.assertEqual(
+            gaming["decision"],
+            "SERIAL_CANCEL_FLOW_COUPON_GAMING_OR_NEGATIVE_MARGIN_DISCOUNT_BLOCKED",
+        )
+
+        miscalibrated = evaluate_saas_churn_retention_escrow_policy(
+            SaasChurnRetentionEscrowPolicyInput(
+                miscalibrated_discount_for_seasonal_pause_or_high_usage=True
+            )
+        )
+        self.assertEqual(miscalibrated["status_code"], 422)
+        self.assertEqual(
+            miscalibrated["decision"],
+            "MISCALIBRATED_DISCOUNT_FOR_SEASONAL_PAUSE_OR_HIGH_USAGE_BLOCKED",
+        )
+
+        ftc = evaluate_saas_churn_retention_escrow_policy(
+            SaasChurnRetentionEscrowPolicyInput(
+                webiq_ftc_click_to_cancel_asymmetry_or_dark_pattern_flag=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 451)
+        self.assertEqual(
+            ftc["decision"],
+            "WEBIQ_FTC_CLICK_TO_CANCEL_ASYMMETRY_OR_DARK_PATTERN_HOLD",
+        )
+
+        optim = evaluate_saas_churn_retention_escrow_policy(
+            SaasChurnRetentionEscrowPolicyInput(
+                quarterly_at_risk_saas_arr_pool_usd=140000.0,
+                pause_subscription_and_lite_tier_deflection_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 47600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 92400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_churn_retention_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-churn-retention-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

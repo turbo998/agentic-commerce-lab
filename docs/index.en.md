@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`229` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`230` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -10,7 +10,7 @@
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (38 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (75 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (57 guides)](#b2b-procurement-erp)
-- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 guides)](#saas-finops-micropayments)
+- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (21 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
@@ -230,7 +230,7 @@
 | 57 | **B2B Corporate Security Guard, Anti-Ghost-Post & Remote `GSOC` Escrow (`Allied Universal / Securitas / GardaWorld / Verkada`) Turnstile Biometric Parity, `BLE/IMU` Patrol Lock & AI Video `GSOC` Agent Architecture Selection FAQ** | [English](b2b-corporate-security-guard-patrol-ghost-post-gsoc-escrow-agent-selection-faq.en.md) · [中文](b2b-corporate-security-guard-patrol-ghost-post-gsoc-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (20 Guides)
+## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (21 Guides)
 
 > Covers enterprise SaaS seat governance, UUIDv7 usage metering watermarks, FTC Click-to-Cancel & retention guardrails, HTTP 402 (x402 / Stripe MPP Tempo) micropayments, and LLM token FinOps routing.
 
@@ -256,6 +256,7 @@
 | 18 | **Senior Home Care, Postpartum Nanny Placement & Elder-Care `EVV` Escrow (`Care.com / Papa / Honor / HHAeXchange / 21st Century Cures Act EVV`) Anti-Ghost-Visit `BLE` Gate, 90-Day Nanny-Churn Fee Escrow & `OIG` Registry Agent Architecture Selection FAQ** | [English](senior-homecare-nanny-evv-geofence-placement-escrow-agent-selection-faq.en.md) · [中文](senior-homecare-nanny-evv-geofence-placement-escrow-agent-selection-faq.md) |
 | 19 | **Micro-Drama `IAP`, Web-Novel Pay-Per-Chapter & Interactive Video Subscription Escrow (`ReelShort / DramaBox / ShortMax / Webnovel`) Anti-`$39.99/Week` Auto-Renewal Trap, `$14.99` Series Buyout Cap & `Web2App` Direct-Topup Agent Architecture Selection FAQ** | [English](micro-drama-webnovel-pay-per-episode-cap-weekly-sub-escrow-agent-selection-faq.en.md) · [中文](micro-drama-webnovel-pay-per-episode-cap-weekly-sub-escrow-agent-selection-faq.md) |
 | 20 | **Podcast Dynamic Ad Insertion (`DAI`), Host-Read Sponsorship & Music Royalty Split Escrow (`Spotify Megaphone / Acast / Gumball / DistroKid`) `IAB v2.2` Anti-Silent-Game-Drain Gate, `ASR` Aircheck Verification & `ISRC` Split-Sheet Agent Architecture Selection FAQ** | [English](podcast-dai-sponsorship-music-royalty-iab-escrow-agent-selection-faq.en.md) · [中文](podcast-dai-sponsorship-music-royalty-iab-escrow-agent-selection-faq.md) |
+| 21 | **SaaS Churn Retention, Anti-Cancel-Gaming & `FTC Click-to-Cancel` Escrow (`Chargebee Retention / Churnkey / Stripe Billing / Gainsight`) `12m` Save-Offer Cooldown, Telemetry Remedy Match & Payday Smart Dunning Agent Architecture Selection FAQ** | [English](saas-churn-retention-save-offer-click-to-cancel-escrow-agent-selection-faq.en.md) · [中文](saas-churn-retention-save-offer-click-to-cancel-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 Guides)
