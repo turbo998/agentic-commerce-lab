@@ -23504,6 +23504,87 @@ def evaluate_saas_churn_retention_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderReturnsDutyDrawbackEscrowPolicyInput:
+    """Input contract for Cross-Border Returns, Anti-Returnless Fraud & Duty Drawback Escrow."""
+
+    quarterly_cross_border_returns_loss_pool_usd: float = 110000.0
+    returnless_refund_abuse_or_negative_equity_air_return: bool = False
+    ftid_address_manipulation_or_empty_envelope_weight_mismatch: bool = False
+    webiq_eu_14day_withdrawal_violation_or_lithium_air_return_flag: bool = False
+    mandate_signing_key_age_days: int = 30
+    bonus_exchange_credit_and_customs_duty_drawback_ready: bool = False
+
+
+def evaluate_cross_border_returns_duty_drawback_escrow_policy(
+    policy_input: CrossBorderReturnsDutyDrawbackEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Cross-Border Returns, Anti-Returnless Fraud & Duty Drawback Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_cross_border_returns_loss_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.webiq_eu_14day_withdrawal_violation_or_lithium_air_return_flag
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "WEBIQ_EU_14DAY_WITHDRAWAL_VIOLATION_OR_LITHIUM_AIR_RETURN_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.returnless_refund_abuse_or_negative_equity_air_return:
+        return {
+            "status_code": 403,
+            "decision": "RETURNLESS_REFUND_ABUSE_OR_NEGATIVE_EQUITY_AIR_RETURN_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ftid_address_manipulation_or_empty_envelope_weight_mismatch:
+        return {
+            "status_code": 422,
+            "decision": "FTID_ADDRESS_MANIPULATION_OR_EMPTY_ENVELOPE_WEIGHT_MISMATCH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bonus_exchange_credit_and_customs_duty_drawback_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "BONUS_EXCHANGE_CREDIT_AND_CUSTOMS_DUTY_DRAWBACK_CONFIRM",
+            "mandate_token": "cross_border_returns_rma_mandate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_LOCAL_3PL_RMA_AND_EXCHANGE_AUTHORIZED",
+        "mandate_token": "cross_border_returns_rma_mandate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -32335,6 +32416,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_returns_duty_drawback_escrow_guard = {
+        "authorized_200": evaluate_cross_border_returns_duty_drawback_escrow_policy(
+            CrossBorderReturnsDutyDrawbackEscrowPolicyInput()
+        ),
+        "returnless_abuse_or_negative_air_return_403": evaluate_cross_border_returns_duty_drawback_escrow_policy(
+            CrossBorderReturnsDutyDrawbackEscrowPolicyInput(
+                returnless_refund_abuse_or_negative_equity_air_return=True
+            )
+        ),
+        "ftid_address_or_weight_mismatch_422": evaluate_cross_border_returns_duty_drawback_escrow_policy(
+            CrossBorderReturnsDutyDrawbackEscrowPolicyInput(
+                ftid_address_manipulation_or_empty_envelope_weight_mismatch=True
+            )
+        ),
+        "eu_14day_violation_or_lithium_air_451": evaluate_cross_border_returns_duty_drawback_escrow_policy(
+            CrossBorderReturnsDutyDrawbackEscrowPolicyInput(
+                webiq_eu_14day_withdrawal_violation_or_lithium_air_return_flag=True
+            )
+        ),
+        "bonus_exchange_and_duty_drawback_409": evaluate_cross_border_returns_duty_drawback_escrow_policy(
+            CrossBorderReturnsDutyDrawbackEscrowPolicyInput(
+                bonus_exchange_credit_and_customs_duty_drawback_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -32575,6 +32682,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_security_guard_gsoc_escrow_guard": b2b_security_guard_gsoc_escrow_guard,
         "luxury_watch_movement_escrow_guard": luxury_watch_movement_escrow_guard,
         "saas_churn_retention_escrow_guard": saas_churn_retention_escrow_guard,
+        "cross_border_returns_duty_drawback_escrow_guard": cross_border_returns_duty_drawback_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -43954,6 +44062,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="saas-churn-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PAUSE_SUBSCRIPTION_AND_LITE_TIER_DEFLECTION_CONFIRM · Mandate: saas_churn_retention_mandate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 112 Cross-Border Returns, Anti-Returnless Fraud & Duty Drawback Escrow -->
+      <div class="finops-box" id="cross-border-returns-duty-drawback-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">📦 跨境电商退换货售后自动化 (Cross-Border RMA)、防“AI 伪造破损图骗仅退款”与海外仓二次上架/关税退税托管 (Loop Returns / Narvar / AfterShip / 菜鸟跨境逆向) 售后与退税沙盒 (Round 112)</div>
+            <div class="finops-subtitle">实测 WebRTC 实时视频挑战防 AI 局部重绘假破损图骗仅退款+禁签发运费倒挂的跨洋直退航空单 (HTTP 403)、承运商分拣电子秤克重(±8%)+Happy Returns 地面店员扫吊牌防 FTID 篡改面单寄空信封骗全款 (HTTP 422)、Web IQ 欧盟 14 天法定撤回权与鼓包锂电禁空运核验 (HTTP 451) 及 +15% 增值换货金+美欧本地 3PL 48h 二次重发+美国海关 19 CFR 190 追回 99% 进口关税净减损 36% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="cb-rma-status-kpi">HTTP 409 · BONUS_EXCHANGE_CREDIT_AND_CUSTOMS_DUTY_DRAWBACK_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度跨境电商售后退货与逆向物流总亏损池 ($ USD)
+            <input type="range" id="cb-rma-pool-slider" min="15000" max="500000" step="5000" value="110000" oninput="updateCrossBorderReturnsDutyDrawbackEscrowSandbox()" />
+            <span id="cb-rma-pool-val" style="color:#6ee7b7; font-family:monospace;">$110,000</span>
+          </label>
+          <label>
+            实时视频防“AI 修图骗仅退款”与逆向运费单位经济模型 (HTTP 403)
+            <select id="cb-rma-returnless-select" onchange="updateCrossBorderReturnsDutyDrawbackEscrowSandbox()">
+              <option value="pass">WebRTC 实时摄像头带随机码拍摄破损视频 + 逆向边际残值为正 (放行)</option>
+              <option value="block">上传 AI 局部重绘假破损相册图骗仅退款 或 为 $24 连衣裙签发 $26 跨国 DHL 空运退货面单 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            承运商分拣中心实测克重(±8%) 与防 FTID 篡改地址核验 (HTTP 422)
+            <select id="cb-rma-ftid-select" onchange="updateCrossBorderReturnsDutyDrawbackEscrowSandbox()">
+              <option value="pass">分拣中心电子秤克重与出库 BOM 偏差&lt;=8% + Happy Returns 店员扫吊牌/海外仓 WMS 签收 (合规)</option>
+              <option value="block">FTID 篡改面单文字地址寄 15g 空纸巾给隔壁麦当劳骗自动秒退 或 调包旧衣服 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            Web IQ 欧盟 14 天法定无理由退货权 (CRD) 与锂电航空禁运核验 (HTTP 451)
+            <select id="cb-rma-eu-select" onchange="updateCrossBorderReturnsDutyDrawbackEscrowSandbox()">
+              <option value="clear">保障欧盟/英国 14 天法定撤回权 + 缺陷锂电池走地面 UN3481 合规回收 (正常)</option>
+              <option value="hold">违规剥夺欧盟消费者 14 天退货权 或 为鼓包故障充电宝/带电品签发航空退货面单 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            +15% 增值换货金、海外仓本地重发与海关 99% 退运退税 (HTTP 409)
+            <select id="cb-rma-opt-select" onchange="updateCrossBorderReturnsDutyDrawbackEscrowSandbox()">
+              <option value="enabled" selected>首屏 +15% 换货赠金留存订单 + 本地 3PL 48h 整备重发 + CBP 7501 追回 99% 进口关税净减损 36% (HTTP 409)</option>
+              <option value="baseline">常规海外仓 WMS 称重验货与标准退换货授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度跨境售后逆向总亏损池</div>
+            <div class="finops-kpi-val" id="cb-rma-gross-kpi">$110,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">换货留存与关税退回后净损耗</div>
+            <div class="finops-kpi-val" id="cb-rma-net-kpi" style="color:#6ee7b7;">$70,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回 GMV 与关税运费节省</div>
+            <div class="finops-kpi-val" id="cb-rma-savings-kpi" style="color:#38bdf8;">$39,600</div>
+          </div>
+        </div>
+        <div id="cb-rma-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 BONUS_EXCHANGE_CREDIT_AND_CUSTOMS_DUTY_DRAWBACK_CONFIRM · Mandate: cross_border_returns_rma_mandate_optim_409
         </div>
       </div>
 
@@ -57613,6 +57784,80 @@ function updateSaasChurnRetentionEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 TELEMETRY_MATCHED_AND_SYMMETRIC_RETENTION_AUTHORIZED · Mandate: saas_churn_retention_mandate_200';
+}}
+
+function updateCrossBorderReturnsDutyDrawbackEscrowSandbox() {{
+  const slider = document.getElementById('cb-rma-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '110000');
+  const returnlessMode = document.getElementById('cb-rma-returnless-select').value;
+  const ftidMode = document.getElementById('cb-rma-ftid-select').value;
+  const euMode = document.getElementById('cb-rma-eu-select').value;
+  const optMode = document.getElementById('cb-rma-opt-select').value;
+
+  document.getElementById('cb-rma-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('cb-rma-status-kpi');
+  const grossKpi = document.getElementById('cb-rma-gross-kpi');
+  const netKpi = document.getElementById('cb-rma-net-kpi');
+  const savingsKpi = document.getElementById('cb-rma-savings-kpi');
+  const banner = document.getElementById('cb-rma-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (euMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 WEBIQ_EU_14DAY_WITHDRAWAL_VIOLATION_OR_LITHIUM_AIR_RETURN_HOLD · Mandate: null';
+    return;
+  }}
+  if (returnlessMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 RETURNLESS_REFUND_ABUSE_OR_NEGATIVE_EQUITY_AIR_RETURN_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (ftidMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FTID_ADDRESS_MANIPULATION_OR_EMPTY_ENVELOPE_WEIGHT_MISMATCH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 BONUS_EXCHANGE_CREDIT_AND_CUSTOMS_DUTY_DRAWBACK_CONFIRM · Mandate: cross_border_returns_rma_mandate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_LOCAL_3PL_RMA_AND_EXCHANGE_AUTHORIZED · Mandate: cross_border_returns_rma_mandate_200';
 }}
 
 function updateStage1756Sandbox() {{

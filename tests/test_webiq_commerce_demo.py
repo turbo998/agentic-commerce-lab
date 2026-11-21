@@ -16562,6 +16562,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-churn-retention-escrow-sandbox", html_zh)
 
+    def test_cross_border_returns_duty_drawback_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderReturnsDutyDrawbackEscrowPolicyInput,
+            evaluate_cross_border_returns_duty_drawback_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_returns_duty_drawback_escrow_policy(
+            CrossBorderReturnsDutyDrawbackEscrowPolicyInput(
+                quarterly_cross_border_returns_loss_pool_usd=110000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_LOCAL_3PL_RMA_AND_EXCHANGE_AUTHORIZED",
+        )
+
+        returnless = evaluate_cross_border_returns_duty_drawback_escrow_policy(
+            CrossBorderReturnsDutyDrawbackEscrowPolicyInput(
+                returnless_refund_abuse_or_negative_equity_air_return=True
+            )
+        )
+        self.assertEqual(returnless["status_code"], 403)
+        self.assertEqual(
+            returnless["decision"],
+            "RETURNLESS_REFUND_ABUSE_OR_NEGATIVE_EQUITY_AIR_RETURN_BLOCKED",
+        )
+
+        ftid = evaluate_cross_border_returns_duty_drawback_escrow_policy(
+            CrossBorderReturnsDutyDrawbackEscrowPolicyInput(
+                ftid_address_manipulation_or_empty_envelope_weight_mismatch=True
+            )
+        )
+        self.assertEqual(ftid["status_code"], 422)
+        self.assertEqual(
+            ftid["decision"],
+            "FTID_ADDRESS_MANIPULATION_OR_EMPTY_ENVELOPE_WEIGHT_MISMATCH_BLOCKED",
+        )
+
+        eu = evaluate_cross_border_returns_duty_drawback_escrow_policy(
+            CrossBorderReturnsDutyDrawbackEscrowPolicyInput(
+                webiq_eu_14day_withdrawal_violation_or_lithium_air_return_flag=True
+            )
+        )
+        self.assertEqual(eu["status_code"], 451)
+        self.assertEqual(
+            eu["decision"],
+            "WEBIQ_EU_14DAY_WITHDRAWAL_VIOLATION_OR_LITHIUM_AIR_RETURN_HOLD",
+        )
+
+        optim = evaluate_cross_border_returns_duty_drawback_escrow_policy(
+            CrossBorderReturnsDutyDrawbackEscrowPolicyInput(
+                quarterly_cross_border_returns_loss_pool_usd=110000.0,
+                bonus_exchange_credit_and_customs_duty_drawback_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 39600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 70400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_returns_duty_drawback_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-returns-duty-drawback-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

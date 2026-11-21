@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`230` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`231` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -11,7 +11,7 @@
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（75 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（57 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（21 篇）](#saas-finops-micropayments)
-- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（29 篇）](#tax-fx-privacy-disputes)
+- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（30 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
 
@@ -259,7 +259,7 @@
 | 21 | **订阅制 SaaS 客户续费挽留（Churn Deflection）、防“假退订骗半价券”与 FTC 一键退订合规托管（Chargebee Retention / Churnkey / Stripe Billing / Gainsight）“防羊毛党每季度点一次取消白嫖 5 折挽留券、防向季节性休眠/高活跃大客户错发永久打折券及 FTC Click-to-Cancel 对称退订”Agent 架构选型 FAQ** | [中文](saas-churn-retention-save-offer-click-to-cancel-escrow-agent-selection-faq.md) · [English](saas-churn-retention-save-offer-click-to-cancel-escrow-agent-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（29 篇）
+## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（30 篇）
 
 > 聚焦 Merchant of Record（MoR）选型、跨境 HS 编码完税价（DDP）与 VAT/Sales Tax 合规、实时锁汇与 ISO 20022 多币种净额轧差、PCI-DSS v4.0.1 / GDPR 加密粉碎，以及 Visa CE 3.0 / VAMP 友好欺诈抗辩证据链。
 
@@ -294,6 +294,7 @@
 | 27 | **高等教育学费跨境缴纳、留学汇款与助学金退费清算（Higher-Ed Tuition Payment, International Student FX & Title IV Refund：Flywire / Nelnet / TouchNet / 留学缴费）“防非官方黑产 85 折代缴盗刷退学、IRS 529 免税教育专户合格科目核验与退课原路退回反洗钱（Return-to-Source）”Agent 架构选型 FAQ：终结代缴拒付开除学籍与退课洗钱实战指南** | [中文](highered-tuition-international-fx-529-refund-aml-escrow-agent-selection-faq.md) · [English](highered-tuition-international-fx-529-refund-aml-escrow-agent-selection-faq.en.md) |
 | 28 | **商业银行、信用卡中心与消金平台“智能信贷审批、额度动态调优与温和逾期催收重组”（FinTech Credit Underwriting, Anti-Bust-Out & CFPB Reg-F Hardship Restructuring：Stripe Capital / Plaid / Experian / FICO / TrueAccord）“ECOA 公平信贷拒贷归因硬门禁、防合成身份养卡爆雷（Synthetic Bust-Out）与 CFPB Reg F 7-in-7 合规免息展期”Agent 架构选型 FAQ：终结算法歧视重罚与暴力催收投诉实战指南** | [中文](fintech-credit-underwriting-bustout-regf-hardship-restructure-agent-selection-faq.md) · [English](fintech-credit-underwriting-bustout-regf-hardship-restructure-agent-selection-faq.en.md) |
 | 29 | **跨境集运、海外华人转运仓与海淘合箱清结算（Cross-Border Parcel Consolidation, Reverse-Haul Forwarding & Volumetric Weight Escrow：菜鸟国际集运 / Superbuy / Buyee / MyUS / 顺丰集运）“防转运仓故意塞大纸箱虚增 2.5 倍体积重（泡重刺客）、防合箱漏发少件死无对证与带电/美妆敏感货冲普货被扣关”Agent 架构选型 FAQ** | [中文](crossborder-parcel-consolidation-volumetric-repack-escrow-agent-selection-faq.md) · [English](crossborder-parcel-consolidation-volumetric-repack-escrow-agent-selection-faq.en.md) |
+| 30 | **跨境电商退换货售后自动化（Cross-Border RMA）、防“AI 伪造破损图骗仅退款”与海外仓二次上架/关税退税托管（Loop Returns / Narvar / AfterShip Returns / 菜鸟跨境逆向 / 万邑通）“防 AI 局部重绘假破损图骗仅退款、防 FTID 篡改面单寄 15g 空纸巾给隔壁麦当劳骗全款与 CBP 7501 追回 99% 进口关税”Agent 架构选型 FAQ** | [中文](cross-border-ecommerce-returns-rma-returnless-duty-drawback-escrow-agent-selection-faq.md) · [English](cross-border-ecommerce-returns-rma-returnless-duty-drawback-escrow-agent-selection-faq.en.md) |
 
 <a id="architecture-blueprints"></a>
 ## 七、确定性领域架构蓝图（`docs/architecture/` · 21 份）

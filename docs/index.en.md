@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`230` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`231` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -11,7 +11,7 @@
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (75 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (57 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (21 guides)](#saas-finops-micropayments)
-- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 guides)](#tax-fx-privacy-disputes)
+- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (30 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
 
@@ -259,7 +259,7 @@
 | 21 | **SaaS Churn Retention, Anti-Cancel-Gaming & `FTC Click-to-Cancel` Escrow (`Chargebee Retention / Churnkey / Stripe Billing / Gainsight`) `12m` Save-Offer Cooldown, Telemetry Remedy Match & Payday Smart Dunning Agent Architecture Selection FAQ** | [English](saas-churn-retention-save-offer-click-to-cancel-escrow-agent-selection-faq.en.md) · [中文](saas-churn-retention-save-offer-click-to-cancel-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (29 Guides)
+## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (30 Guides)
 
 > Covers Merchant of Record (MoR) vs DIY PSP, HS-code DDP landed cost & VAT/Sales Tax nexus, FX quote collars & ISO 20022 netting, ZK eligibility / PCI redaction / GDPR crypto-shredding, and Visa CE 3.0 / VAMP dispute defense.
 
@@ -294,6 +294,7 @@
 | 27 | **Higher-Ed Tuition Payment, International Student `FX`, `IRS §529` Plan & `Title IV R2T4` Refund `AML` (`Flywire / TouchNet / Nelnet / Transact Campus`) Anti-Proxy-Card Fraud Gate, `QHEE` Line-Item Split & Strict `Return-to-Source` Escrow Agent Architecture Selection FAQ** | [English](highered-tuition-international-fx-529-refund-aml-escrow-agent-selection-faq.en.md) · [中文](highered-tuition-international-fx-529-refund-aml-escrow-agent-selection-faq.md) |
 | 28 | **FinTech Credit Underwriting, Anti-`Bust-Out` Cycling & `CFPB Reg F` Hardship Restructuring (`Stripe Capital / Plaid / Experian / FICO / TrueAccord`) `ECOA Reg B` Adverse-Action Gate, `7-in-7` Contact Cap, `PACER` Bankruptcy Stay & `SCRA 6%` Escrow Agent Architecture Selection FAQ** | [English](fintech-credit-underwriting-bustout-regf-hardship-restructure-agent-selection-faq.en.md) · [中文](fintech-credit-underwriting-bustout-regf-hardship-restructure-agent-selection-faq.md) |
 | 29 | **Cross-Border Parcel Consolidation, Reverse-Haul Forwarding & Volumetric Weight Escrow (`Cainiao / Superbuy / Buyee / MyUS`) Anti-Volumetric-Padding Gate, Overhead Packing Video Hash & `IATA DGR` Split-Routing Agent Architecture Selection FAQ** | [English](crossborder-parcel-consolidation-volumetric-repack-escrow-agent-selection-faq.en.md) · [中文](crossborder-parcel-consolidation-volumetric-repack-escrow-agent-selection-faq.md) |
+| 30 | **Cross-Border E-Commerce Returns (`RMA`), Anti-`Returnless` Fraud & Customs Duty Drawback Escrow (`Loop Returns / Narvar / AfterShip / Cainiao Global`) Live `WebRTC` Anti-Inpainting, `FTID` Scale-Weight Gate & `19 CFR 190` `99%` Duty Drawback Agent Architecture Selection FAQ** | [English](cross-border-ecommerce-returns-rma-returnless-duty-drawback-escrow-agent-selection-faq.en.md) · [中文](cross-border-ecommerce-returns-rma-returnless-duty-drawback-escrow-agent-selection-faq.md) |
 
 <a id="architecture-blueprints"></a>
 ## 7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 Specs)
