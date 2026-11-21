@@ -27791,6 +27791,79 @@ def evaluate_omnichannel_bopis_curbside_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BInventoryLiquidationPolicyInput:
+    quarterly_liquidation_markdown_and_buybox_loss_pool_usd: float = 135000.0
+    online_marketplace_buybox_diversion_risk: bool = False
+    undelabeled_brand_tag_or_active_retail_upc_barcode: bool = False
+    short_expiry_cosmetic_or_recalled_hazard_pallet: bool = False
+    sealed_vickrey_auction_and_week6_early_closeout_ready: bool = False
+
+
+def evaluate_b2b_inventory_liquidation_policy(
+    policy_input: B2BInventoryLiquidationPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_liquidation_markdown_and_buybox_loss_pool_usd)
+    )
+    if policy_input.short_expiry_cosmetic_or_recalled_hazard_pallet:
+        return {
+            "status_code": 451,
+            "decision": "SHORT_EXPIRY_COSMETIC_OR_RECALLED_HAZARD_PALLET_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.online_marketplace_buybox_diversion_risk:
+        return {
+            "status_code": 403,
+            "decision": "ONLINE_MARKETPLACE_BUYBOX_DIVERSION_RISK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.undelabeled_brand_tag_or_active_retail_upc_barcode:
+        return {
+            "status_code": 422,
+            "decision": "UNDELABELED_BRAND_TAG_OR_ACTIVE_RETAIL_UPC_BARCODE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sealed_vickrey_auction_and_week6_early_closeout_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SEALED_VICKREY_AUCTION_AND_WEEK6_EARLY_CLOSEOUT_CONFIRM",
+            "mandate_token": "b2b_liquidation_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "CHANNEL_RESTRICTED_CLOSEOUT_ESCROW_AUTHORIZED",
+        "mandate_token": "b2b_liquidation_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -38052,6 +38125,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_inventory_liquidation_guard = {
+        "authorized_200": evaluate_b2b_inventory_liquidation_policy(
+            B2BInventoryLiquidationPolicyInput()
+        ),
+        "buybox_diversion_risk_403": evaluate_b2b_inventory_liquidation_policy(
+            B2BInventoryLiquidationPolicyInput(
+                online_marketplace_buybox_diversion_risk=True
+            )
+        ),
+        "undelabeled_or_active_upc_422": evaluate_b2b_inventory_liquidation_policy(
+            B2BInventoryLiquidationPolicyInput(
+                undelabeled_brand_tag_or_active_retail_upc_barcode=True
+            )
+        ),
+        "short_expiry_or_hazard_451": evaluate_b2b_inventory_liquidation_policy(
+            B2BInventoryLiquidationPolicyInput(
+                short_expiry_cosmetic_or_recalled_hazard_pallet=True
+            )
+        ),
+        "sealed_auction_and_w6_409": evaluate_b2b_inventory_liquidation_policy(
+            B2BInventoryLiquidationPolicyInput(
+                sealed_vickrey_auction_and_week6_early_closeout_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -38347,6 +38446,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "marketplace_facilitator_tax_escrow_guard": marketplace_facilitator_tax_escrow_guard,
         "ecommerce_returnless_refund_guard": ecommerce_returnless_refund_guard,
         "omnichannel_bopis_curbside_guard": omnichannel_bopis_curbside_guard,
+        "b2b_inventory_liquidation_guard": b2b_inventory_liquidation_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -53065,6 +53165,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="bopis-curbside-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 IN_STORE_PICKUP_BOUNCEBACK_PASS_AND_ZERO_FREIGHT_CONFIRM · Mandate: bopis_curbside_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 167 B2B Inventory Liquidation & Buy-Box Escrow -->
+      <div class="finops-box" id="b2b-inventory-liquidation-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📦 B2B 尾货清仓拍卖 (Ghost / B-Stock / Inturn) 防窜货砸穿 Amazon 黄金购物车与剪标托管沙盒</div>
+            <div class="finops-sub">Round 167 · 纯线下白名单与 30% 防窜货保证金 (HTTP 403) + 出库剪标与覆写原厂 UPC (HTTP 422) + &gt;=180d 效期与销毁证 (HTTP 451) + 第6周密封盲拍净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="b2b-liq-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度尾货贱卖压价与正价被窜货折损池 ($)
+            <input type="number" id="b2b-liq-gross-input" value="135000" min="15000" step="5000" oninput="recalcB2BInventoryLiquidationSandbox()" />
+          </label>
+          <label>买方线下奥莱资质与 30% 防窜货保证金
+            <select id="b2b-liq-channel-select" onchange="recalcB2BInventoryLiquidationSandbox()">
+              <option value="pass">认证纯线下折扣连锁 + 质押 30% 禁上公网保证金 (合规)</option>
+              <option value="block_403">卖给 Amazon 跟卖贩子挂 $45 抢走官方 $100 黄金购物车 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>3PL 出库物理剪标 (Cut-Label) 与覆写原厂 UPC
+            <select id="b2b-liq-upc-select" onchange="recalcB2BInventoryLiquidationSandbox()">
+              <option value="pass">洗标已剪口 + 原厂正价 UPC 已贴二级覆盖码 (合规)</option>
+              <option value="block_422">保留原厂正价吊牌与 UPC 流回旗舰店骗原价退货 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>&gt;=180 天效期红线与 CBP 监督销毁退税
+            <select id="b2b-liq-safety-select" onchange="recalcB2BInventoryLiquidationSandbox()">
+              <option value="pass">剩余保质期 &gt;=180d + 故障召回品走 CBP 监督销毁退 99% 关税 (安全)</option>
+              <option value="block_451">将剩 30 天过期美妆或漏电退货吹风机混入盲盒拍卖 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>上市第 6 周动销预警与多方密封竞拍
+            <select id="b2b-liq-opt-select" onchange="recalcB2BInventoryLiquidationSandbox()">
+              <option value="enabled" selected>第 6 周早鸟出清 + Ghost/B-Stock 50 家买方密封竞标 (-36% 折损 / HTTP 409)</option>
+              <option value="disabled">死扛到季末过季找单一尾货商 0.8 折一口价贱卖 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度尾货清仓折损与窜货总池</div>
+            <div class="finops-kpi-val" id="b2b-liq-gross-kpi">$135,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">覆码防窜与密封盲拍后净折损</div>
+            <div class="finops-kpi-val" id="b2b-liq-net-kpi" style="color:#6ee7b7;">$86,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回库存残值与正价毛利</div>
+            <div class="finops-kpi-val" id="b2b-liq-savings-kpi" style="color:#38bdf8;">$48,600</div>
+          </div>
+        </div>
+        <div id="b2b-liq-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SEALED_VICKREY_AUCTION_AND_WEEK6_EARLY_CLOSEOUT_CONFIRM · Mandate: b2b_liquidation_escrow_optim_409
         </div>
       </div>
 
@@ -70773,6 +70930,79 @@ function recalcOmnichannelBopisCurbsideSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 PICK_CONFIRMED_AND_QR_CAPTURED_BOPIS_AUTHORIZED · Mandate: bopis_curbside_escrow_200';
+}}
+
+function recalcB2BInventoryLiquidationSandbox() {{
+  const grossInput = document.getElementById('b2b-liq-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '135000'));
+  const channelGate = document.getElementById('b2b-liq-channel-select').value;
+  const upcGate = document.getElementById('b2b-liq-upc-select').value;
+  const safetyGate = document.getElementById('b2b-liq-safety-select').value;
+  const optMode = document.getElementById('b2b-liq-opt-select').value;
+
+  const grossKpi = document.getElementById('b2b-liq-gross-kpi');
+  const netKpi = document.getElementById('b2b-liq-net-kpi');
+  const savingsKpi = document.getElementById('b2b-liq-savings-kpi');
+  const statusKpi = document.getElementById('b2b-liq-status-kpi');
+  const banner = document.getElementById('b2b-liq-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (safetyGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 SHORT_EXPIRY_COSMETIC_OR_RECALLED_HAZARD_PALLET_HOLD · Mandate: null';
+    return;
+  }}
+  if (channelGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ONLINE_MARKETPLACE_BUYBOX_DIVERSION_RISK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (upcGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNDELABELED_BRAND_TAG_OR_ACTIVE_RETAIL_UPC_BARCODE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SEALED_VICKREY_AUCTION_AND_WEEK6_EARLY_CLOSEOUT_CONFIRM · Mandate: b2b_liquidation_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 CHANNEL_RESTRICTED_CLOSEOUT_ESCROW_AUTHORIZED · Mandate: b2b_liquidation_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

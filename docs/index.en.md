@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`285` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`286` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (15 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (42 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (105 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (65 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (66 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (23 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (35 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -204,7 +204,7 @@
 | 105 | **Omnichannel `BOPIS` & Curbside Pickup (`Target Drive Up / Walmart / Best Buy / Shopify POS`), Anti-Mule Pickup Fraud, `Capture-on-Pickup` & 5-Day Auto-Restock Escrow (`3DS2` + 30s Rotating QR, `1.5km` Cold-Chain Geofence & Bounceback Pass `-35%` Loss) Agent Architecture Selection FAQ** | [English](omnichannel-bopis-curbside-pickup-fraud-aged-hold-escrow-agent-selection-faq.en.md) · [中文](omnichannel-bopis-curbside-pickup-fraud-aged-hold-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (65 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (66 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -275,6 +275,7 @@
 | 63 | **Enterprise B2B Ocean Freight Forwarding (`Flexport / Maersk / Kuehne+Nagel`), Anti-`Demurrage & Detention` (`FMC OSRA 2022`) & `LCL-to-FCL` Consolidation Escrow (`13 CBM` Breakeven, `14d` Free Time & Terminal Slot Archive) Agent Architecture Selection FAQ** | [English](b2b-freight-forwarding-ocean-demurrage-detention-lcl-escrow-agent-selection-faq.en.md) · [中文](b2b-freight-forwarding-ocean-demurrage-detention-lcl-escrow-agent-selection-faq.md) |
 | 64 | **Enterprise Corporate Swag, Promotional Merchandise & Commercial Print Procurement (`4imprint / Printful / SwagUp / Sendoso`), `Pantone Delta-E <= 2.0` Pre-Press Lock & On-Demand Size-Redemption Escrow Agent Architecture Selection FAQ** | [English](b2b-corporate-swag-print-pantone-proof-ondemand-kit-escrow-agent-selection-faq.en.md) · [中文](b2b-corporate-swag-print-pantone-proof-ondemand-kit-escrow-agent-selection-faq.md) |
 | 65 | **Enterprise B2B Services Procurement & Contingent Labor `VMS` (`SAP Fieldglass / Beeline / Coupa / Workday VNDLY`), Anti-"Bait-and-Switch" Staffing & Deliverable-Backed `SOW` Escrow (`Worker_Okta_ID` Tier Lock, Telemetry Timesheets & `-33%` Spend) Agent Architecture Selection FAQ** | [English](b2b-sow-services-contingent-labor-vms-milestone-timesheet-escrow-agent-selection-faq.en.md) · [中文](b2b-sow-services-contingent-labor-vms-milestone-timesheet-escrow-agent-selection-faq.md) |
+| 66 | **B2B Inventory Liquidation & Off-Price Closeout (`Ghost / B-Stock / Inturn`), Anti-Amazon-`Buy-Box` Cannibalization & Mandatory `De-Labeling / UPC` Escrow (`30%` Diversion Bond, `UPC` Barcode Overwrite & Week-6 Sealed Auction `-36%` Loss) Agent Architecture Selection FAQ** | [English](b2b-inventory-liquidation-closeout-anti-buybox-cannibalization-escrow-agent-selection-faq.en.md) · [中文](b2b-inventory-liquidation-closeout-anti-buybox-cannibalization-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (23 Guides)

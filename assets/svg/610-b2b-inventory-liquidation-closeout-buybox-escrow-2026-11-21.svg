@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg610" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#05101e" />
+    </linearGradient>
+    <linearGradient id="accent610" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg610)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent610)" rx="3" />
+
+  <text x="40" y="58" class="title">B2B 尾货清仓拍卖 (B-Stock / Ghost / Inturn) 防窜货砸穿 Amazon 黄金购物车与剪标托管架构</text>
+  <text x="40" y="80" class="subtitle">Round 167 · 防 2 折清仓尾货被二道贩子挂上 Amazon 抢走官方 Buy Box、防未剪标外流 &amp; 季中盲拍净挽回 36% (SVG 610)</text>
+
+  <!-- Left Card: 3 Inventory Liquidation Disasters -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大企业尾货清仓与窜货灾难</text>
+  <text x="56" y="164" class="card-title">1. 2折清仓尾货反杀官方 Amazon Buy Box (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 品牌把过季积压品以 $15 (原价 $100) 批给某尾货商，口头约定仅线下卖</text>
+  <text x="56" y="202" class="body">• 尾货商转手在 Amazon 跟卖官方 ASIN 挂 $45，直接抢走黄金购物车!</text>
+  <text x="56" y="220" class="warn">• 导致品牌官方正价链接销量暴跌 70%，清仓赚小钱亏掉大头正价利润!</text>
+
+  <text x="56" y="256" class="card-title">2. 带品牌标的残次/退货尾货未剪标流入地摊 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 高奢与名牌服饰将微瑕退货整托盘按斤称重卖给回收商</text>
+  <text x="56" y="294" class="body">• 未执行物理剪标 (De-Labeling) 或涂黑原厂 UPC 条形码</text>
+  <text x="56" y="312" class="warn">• 买家在地摊花 $20 买到带完整吊牌的衣服再拿回专柜骗全额原价退货!</text>
+
+  <text x="56" y="348" class="card-title">3. 过期美妆/召回家电违规流入二级市场 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 距离保质期不足 60 天的防晒霜或含安全隐患的退货小家电</text>
+  <text x="56" y="386" class="body">• 被混在盲盒托盘 (Mystery Pallet) 里拍卖，买家使用后过敏/起火</text>
+  <text x="56" y="404" class="warn">• 品牌方承担产品严格侵权责任 (Strict Liability) 赔偿数百万美元!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: ONLINE_MARKETPLACE_BUYBOX_DIVERSION_RISK</text>
+  <text x="70" y="502" class="warn">• HTTP 422: UNDELABELED_BRAND_TAG_OR_ACTIVE_UPC_BARCODE</text>
+  <text x="70" y="524" class="warn">• HTTP 451: SHORT_EXPIRY_COSMETIC_OR_HAZARD_PALLET</text>
+  <text x="70" y="546" class="mono">• HTTP 409:SEALED_VICKREY_AUCTION_AND_W6_LIQUIDATE_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: CHANNEL_RESTRICTED_CLOSEOUT_ESCROW_200</text>
+  <text x="70" y="596" class="body">铁律: 尾货出库必划掉原厂 UPC 码并签立禁挂公网电商押金契约!</text>
+
+  <!-- Center Card: 4-Stage Inventory Liquidation Escrow Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶企业尾货清仓防窜货与残值托管架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ef4444" />
+  <text x="450" y="175" class="card-title" fill="#fca5a5">Gate 1: 禁上公网电商契约与批次暗码溯源锁 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• 尾货受让方必须通过 KYB 认证为纯线下折扣店 (如 TJ Maxx / Ross)</text>
+  <text x="450" y="213" class="body">  或指定海外闭环区域，并质押 30% 防窜货履约保证金 (Escrow Bond)</text>
+  <text x="450" y="231" class="mono">• 企图卖给无实体店的 Amazon/eBay 跟卖黄牛 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: 出库物理剪标与原厂 UPC 条码覆写锁 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 仓库出库前强制执行两道防倒流工序: (1) 服装内侧洗标/主标剪口</text>
+  <text x="450" y="320" class="body">  (Cut-Label) 或加盖不可擦除 `FINAL SALE / OUTLET` 紫外荧光章；</text>
+  <text x="450" y="338" class="body">  (2) 用二级市场专用贴纸完全覆盖原厂 `GS1 UPC` (使专柜 POS 扫不出!)</text>
+  <text x="450" y="354" class="mono">• 未完成剪标或保留原厂正价 UPC 条码企图出库 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 效期红线 (&gt;=180天) 与环保销毁认证 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 食品/美妆/保健品清仓强制核验剩余保质期 `&gt;= 180 天`</text>
+  <text x="450" y="437" class="body">• 临期变质、破损漏液或安全召回品 100% 剔除出拍卖包，转交持牌</text>
+  <text x="450" y="455" class="mono">  环保销毁商出具 `Certificate of Destruction` -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: 第 6 周动销预警与私密密封竞价 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 别等季末过季变成 1 折废布才清仓! 在上市第 6 周识别动销率</text>
+  <text x="450" y="546" class="body">  (Sell-Through &lt; 25%) 的慢销款，立即在 Ghost / B-Stock 发起</text>
+  <text x="450" y="566" class="mono">  多买家密封次价竞拍 (Vickrey Auction，比单一尾货商压价多卖 45%!)</text>
+  <text x="450" y="586" class="mono">• 零正价渠道窜货 + 季中竞拍回血 -&gt; 净增 36% 尾货回收残值</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大企业级尾货清仓与控渠平台</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Ghost (B2B 私密时尚与美妆库存交易所)</text>
+  <text x="846" y="182" class="body">• 优势: 品牌可完全隐去公开搜索，仅向白名单内的全球线下奥莱/折扣商</text>
+  <text x="846" y="198" class="body">  定向展示库存，且强制执行地域与禁上 Amazon 条款</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. B-Stock Solutions (全球最大 B2B 清仓竞拍网)</text>
+  <text x="846" y="244" class="body">• 优势: 通过数千名认证 B2B 买方实时竞标，将传统“被 1 家尾货商</text>
+  <text x="846" y="260" class="body">  一口价压到 0.8 折”的回收率拉升至 2.2–3.5 折</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Inturn / NuORDER (大宗过季库存协同)</text>
+  <text x="846" y="306" class="body">• 优势: 直接对接 ERP 自动生成分尺码齐码包 (Assortment Packs)</text>
+  <text x="846" y="322" class="body">• 特性: 告别 Excel 满天飞，一键测算各渠道回收毛利与仓储占压成本</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. 唯品会 / 荟品仓“限时特卖受控闪购”</text>
+  <text x="846" y="368" class="body">• 经验: 在封闭式闪购周期内集中出清断码库存，活动结束链接即下架</text>
+  <text x="846" y="384" class="body">• 特性: 避免在综合比价搜索网留下永久低价历史锚点</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度尾货贱卖压价与正价被窜货池 ($135,000)</text>
+  <text x="860" y="456" class="body">• 传统尾货窜货砸穿Amazon正价+1折贱卖: $135,000/季</text>
+  <text x="860" y="476" class="mono">• 禁上公网电商保证金与覆写 UPC 保护正价盘: -$24,300</text>
+  <text x="860" y="496" class="mono">• 第 6 周动销预警 + B-Stock/Ghost 多方密封竞拍: -$16,200</text>
+  <text x="860" y="516" class="mono">• 剪标防倒流专柜骗退与临期品合规处置: -$8,100</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净清仓折损: $86,400 (净省 $48,600 / -36%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: b2b_liquidation_escrow_optim_409</text>
+</svg>

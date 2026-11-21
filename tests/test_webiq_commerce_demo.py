@@ -20247,6 +20247,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("omnichannel-bopis-curbside-sandbox", html_zh)
 
+    def test_b2b_inventory_liquidation_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BInventoryLiquidationPolicyInput,
+            evaluate_b2b_inventory_liquidation_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_inventory_liquidation_policy(
+            B2BInventoryLiquidationPolicyInput(
+                quarterly_liquidation_markdown_and_buybox_loss_pool_usd=135000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "CHANNEL_RESTRICTED_CLOSEOUT_ESCROW_AUTHORIZED",
+        )
+
+        buybox = evaluate_b2b_inventory_liquidation_policy(
+            B2BInventoryLiquidationPolicyInput(
+                online_marketplace_buybox_diversion_risk=True
+            )
+        )
+        self.assertEqual(buybox["status_code"], 403)
+        self.assertEqual(
+            buybox["decision"],
+            "ONLINE_MARKETPLACE_BUYBOX_DIVERSION_RISK_BLOCKED",
+        )
+
+        upc = evaluate_b2b_inventory_liquidation_policy(
+            B2BInventoryLiquidationPolicyInput(
+                undelabeled_brand_tag_or_active_retail_upc_barcode=True
+            )
+        )
+        self.assertEqual(upc["status_code"], 422)
+        self.assertEqual(
+            upc["decision"],
+            "UNDELABELED_BRAND_TAG_OR_ACTIVE_RETAIL_UPC_BARCODE_BLOCKED",
+        )
+
+        safety = evaluate_b2b_inventory_liquidation_policy(
+            B2BInventoryLiquidationPolicyInput(
+                short_expiry_cosmetic_or_recalled_hazard_pallet=True
+            )
+        )
+        self.assertEqual(safety["status_code"], 451)
+        self.assertEqual(
+            safety["decision"],
+            "SHORT_EXPIRY_COSMETIC_OR_RECALLED_HAZARD_PALLET_HOLD",
+        )
+
+        optim = evaluate_b2b_inventory_liquidation_policy(
+            B2BInventoryLiquidationPolicyInput(
+                quarterly_liquidation_markdown_and_buybox_loss_pool_usd=135000.0,
+                sealed_vickrey_auction_and_week6_early_closeout_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 48600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 86400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_inventory_liquidation_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-inventory-liquidation-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
