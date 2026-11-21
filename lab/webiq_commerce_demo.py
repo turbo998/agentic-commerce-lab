@@ -26623,6 +26623,79 @@ def evaluate_ecommerce_gwp_bogo_return_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaHotelRateParityEscrowPolicyInput:
+    quarterly_hotel_ota_commission_and_parity_loss_pool_usd: float = 135000.0
+    bedbank_wholesale_unbundled_rate_undercut_leakage: bool = False
+    unauthorized_corporate_code_or_points_broker_swap: bool = False
+    mismatched_cancellation_policy_brg_arbitrage_claim: bool = False
+    direct_booking_price_match_and_perk_stack_ready: bool = False
+
+
+def evaluate_ota_hotel_rate_parity_escrow_policy(
+    policy_input: OtaHotelRateParityEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_hotel_ota_commission_and_parity_loss_pool_usd)
+    )
+    if policy_input.mismatched_cancellation_policy_brg_arbitrage_claim:
+        return {
+            "status_code": 451,
+            "decision": "MISMATCHED_CANCELLATION_POLICY_BRG_ARBITRAGE_CLAIM_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bedbank_wholesale_unbundled_rate_undercut_leakage:
+        return {
+            "status_code": 403,
+            "decision": "BEDBANK_WHOLESALE_UNBUNDLED_RATE_UNDERCUT_LEAKAGE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unauthorized_corporate_code_or_points_broker_swap:
+        return {
+            "status_code": 422,
+            "decision": "UNAUTHORIZED_CORPORATE_CODE_OR_POINTS_BROKER_SWAP_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.direct_booking_price_match_and_perk_stack_ready:
+        savings = round(gross_pool * 0.34, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DIRECT_BOOKING_PRICE_MATCH_AND_PERK_STACK_CONFIRM",
+            "mandate_token": "ota_hotel_parity_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "PARITY_VERIFIED_DIRECT_OR_CORP_BOOKING_AUTHORIZED",
+        "mandate_token": "ota_hotel_parity_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -36468,6 +36541,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_hotel_rate_parity_escrow_guard = {
+        "authorized_200": evaluate_ota_hotel_rate_parity_escrow_policy(
+            OtaHotelRateParityEscrowPolicyInput()
+        ),
+        "bedbank_undercut_leakage_403": evaluate_ota_hotel_rate_parity_escrow_policy(
+            OtaHotelRateParityEscrowPolicyInput(
+                bedbank_wholesale_unbundled_rate_undercut_leakage=True
+            )
+        ),
+        "unauthorized_corp_code_or_broker_422": evaluate_ota_hotel_rate_parity_escrow_policy(
+            OtaHotelRateParityEscrowPolicyInput(
+                unauthorized_corporate_code_or_points_broker_swap=True
+            )
+        ),
+        "mismatched_cxl_brg_arbitrage_451": evaluate_ota_hotel_rate_parity_escrow_policy(
+            OtaHotelRateParityEscrowPolicyInput(
+                mismatched_cancellation_policy_brg_arbitrage_claim=True
+            )
+        ),
+        "direct_price_match_perk_stack_409": evaluate_ota_hotel_rate_parity_escrow_policy(
+            OtaHotelRateParityEscrowPolicyInput(
+                direct_booking_price_match_and_perk_stack_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -36747,6 +36846,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_shipping_protection_escrow_guard": ecommerce_shipping_protection_escrow_guard,
         "ecommerce_abandoned_cart_escrow_guard": ecommerce_abandoned_cart_escrow_guard,
         "ecommerce_gwp_bogo_return_escrow_guard": ecommerce_gwp_bogo_return_escrow_guard,
+        "ota_hotel_rate_parity_escrow_guard": ota_hotel_rate_parity_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -50553,6 +50653,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="gwp-bogo-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 KEEP_GWP_AT_VIP_DISCOUNT_DEDUCTION_CONFIRM · Mandate: gwp_bogo_return_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 151 Hotel Rate Parity & Direct Booking Escrow -->
+      <div class="finops-box" id="ota-hotel-rate-parity-escrow-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏨 酒店价格一致性 (Rate Parity)、防批发商串货破价与官网直订权益托管沙盒 (Lighthouse / Fornova / SynXis)</div>
+            <div class="finops-sub">Round 151 · 分位水印溯源断房 (HTTP 403) + 企业协议码邮箱 OTP (HTTP 422) + BRG 五维同构锁 (HTTP 451) + 官网直订免 18% 佣金净省 34% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="hotel-parity-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度酒店渠道佣金、串货破价与协议盗刷池 ($)
+            <input type="number" id="hotel-parity-gross-input" value="135000" min="15000" step="5000" oninput="recalcOtaHotelRateParitySandbox()" />
+          </label>
+          <label>B2B 房券批发商 (Bedbank) 分位水印监控
+            <select id="hotel-parity-bedbank-select" onchange="recalcOtaHotelRateParitySandbox()">
+              <option value="pass">批发商严格遵守机酒打包不公开规则 (合规)</option>
+              <option value="block_403">Bedbank 把 $120 盲盒底价拆包挂公网 $145 砸穿官网 $200 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>企业差旅协议码 (@company.com OTP) 与积分房核身
+            <select id="hotel-parity-corp-select" onchange="recalcOtaHotelRateParitySandbox()">
+              <option value="pass">企业邮箱 OTP 核身通过 或 TMC 官方差旅通道 (合规)</option>
+              <option value="block_422">散客盗用小红书搜来的 500 强协议码或房贩倒卖积分房 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>BRG 买贵必赔“五维条款同构”门禁
+            <select id="hotel-parity-brg-select" onchange="recalcOtaHotelRateParitySandbox()">
+              <option value="pass">同房型+同含早+同免费取消截止时间+含全税费对等 (安全)</option>
+              <option value="block_451">拿“不可退无早裸价房”碰瓷官网“可退含早全包房”骗免费房 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>官网直订实时比价匹配与餐饮/升房礼遇
+            <select id="hotel-parity-opt-select" onchange="recalcOtaHotelRateParitySandbox()">
+              <option value="enabled" selected>官网实时匹配最低价 + 赠双早/延迟退房省 18% OTA 佣金 (-34% 成本 / HTTP 409)</option>
+              <option value="disabled">无官网比价挽留任由直客流失至第三方 OTA 被抽 18% 佣金 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度渠道佣金与破价损耗总池</div>
+            <div class="finops-kpi-val" id="hotel-parity-gross-kpi">$135,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">水印断房与直订挽留后净成本</div>
+            <div class="finops-kpi-val" id="hotel-parity-net-kpi" style="color:#6ee7b7;">$89,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省 OTA 佣金与串货差价</div>
+            <div class="finops-kpi-val" id="hotel-parity-savings-kpi" style="color:#38bdf8;">$45,900</div>
+          </div>
+        </div>
+        <div id="hotel-parity-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DIRECT_BOOKING_PRICE_MATCH_AND_PERK_STACK_CONFIRM · Mandate: ota_hotel_parity_escrow_optim_409
         </div>
       </div>
 
@@ -67093,6 +67250,79 @@ function recalcEcommerceGwpBogoReturnSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 PRO_RATA_BUNDLE_AND_GWP_RETURN_AUTHORIZED · Mandate: gwp_bogo_return_escrow_200';
+}}
+
+function recalcOtaHotelRateParitySandbox() {{
+  const grossInput = document.getElementById('hotel-parity-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '135000'));
+  const bedbankGate = document.getElementById('hotel-parity-bedbank-select').value;
+  const corpGate = document.getElementById('hotel-parity-corp-select').value;
+  const brgGate = document.getElementById('hotel-parity-brg-select').value;
+  const optMode = document.getElementById('hotel-parity-opt-select').value;
+
+  const grossKpi = document.getElementById('hotel-parity-gross-kpi');
+  const netKpi = document.getElementById('hotel-parity-net-kpi');
+  const savingsKpi = document.getElementById('hotel-parity-savings-kpi');
+  const statusKpi = document.getElementById('hotel-parity-status-kpi');
+  const banner = document.getElementById('hotel-parity-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (brgGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISMATCHED_CANCELLATION_POLICY_BRG_ARBITRAGE_CLAIM_HOLD · Mandate: null';
+    return;
+  }}
+  if (bedbankGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BEDBANK_WHOLESALE_UNBUNDLED_RATE_UNDERCUT_LEAKAGE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (corpGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNAUTHORIZED_CORPORATE_CODE_OR_POINTS_BROKER_SWAP_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.34);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DIRECT_BOOKING_PRICE_MATCH_AND_PERK_STACK_CONFIRM · Mandate: ota_hotel_parity_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 PARITY_VERIFIED_DIRECT_OR_CORP_BOOKING_AUTHORIZED · Mandate: ota_hotel_parity_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

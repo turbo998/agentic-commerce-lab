@@ -19175,6 +19175,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-gwp-bogo-return-escrow-sandbox", html_zh)
 
+    def test_ota_hotel_rate_parity_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaHotelRateParityEscrowPolicyInput,
+            evaluate_ota_hotel_rate_parity_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_hotel_rate_parity_escrow_policy(
+            OtaHotelRateParityEscrowPolicyInput(
+                quarterly_hotel_ota_commission_and_parity_loss_pool_usd=135000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "PARITY_VERIFIED_DIRECT_OR_CORP_BOOKING_AUTHORIZED",
+        )
+
+        bedbank = evaluate_ota_hotel_rate_parity_escrow_policy(
+            OtaHotelRateParityEscrowPolicyInput(
+                bedbank_wholesale_unbundled_rate_undercut_leakage=True
+            )
+        )
+        self.assertEqual(bedbank["status_code"], 403)
+        self.assertEqual(
+            bedbank["decision"],
+            "BEDBANK_WHOLESALE_UNBUNDLED_RATE_UNDERCUT_LEAKAGE_BLOCKED",
+        )
+
+        corp = evaluate_ota_hotel_rate_parity_escrow_policy(
+            OtaHotelRateParityEscrowPolicyInput(
+                unauthorized_corporate_code_or_points_broker_swap=True
+            )
+        )
+        self.assertEqual(corp["status_code"], 422)
+        self.assertEqual(
+            corp["decision"],
+            "UNAUTHORIZED_CORPORATE_CODE_OR_POINTS_BROKER_SWAP_BLOCKED",
+        )
+
+        brg = evaluate_ota_hotel_rate_parity_escrow_policy(
+            OtaHotelRateParityEscrowPolicyInput(
+                mismatched_cancellation_policy_brg_arbitrage_claim=True
+            )
+        )
+        self.assertEqual(brg["status_code"], 451)
+        self.assertEqual(
+            brg["decision"],
+            "MISMATCHED_CANCELLATION_POLICY_BRG_ARBITRAGE_CLAIM_HOLD",
+        )
+
+        optim = evaluate_ota_hotel_rate_parity_escrow_policy(
+            OtaHotelRateParityEscrowPolicyInput(
+                quarterly_hotel_ota_commission_and_parity_loss_pool_usd=135000.0,
+                direct_booking_price_match_and_perk_stack_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 45900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 89100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_hotel_rate_parity_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-hotel-rate-parity-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
