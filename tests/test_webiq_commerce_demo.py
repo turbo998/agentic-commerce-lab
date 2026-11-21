@@ -24468,6 +24468,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-supplier-tooling-mold-amortization-sandbox", html_zh)
 
+    def test_ota_theme_park_ski_resort_ticketing_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OTAThemeParkSkiResortTicketingPolicyInput,
+            evaluate_ota_theme_park_ski_resort_ticketing_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_theme_park_ski_resort_ticketing_policy(
+            OTAThemeParkSkiResortTicketingPolicyInput(
+                quarterly_pass_sharing_express_oversell_and_weather_dispute_pool_usd=220000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_TURNSTILE_RFID_AND_OHRC_EXPRESS_AUTHORIZED",
+        )
+
+        rfid = evaluate_ota_theme_park_ski_resort_ticketing_policy(
+            OTAThemeParkSkiResortTicketingPolicyInput(
+                parking_lot_pass_sharing_handoff_or_unscanned_bot_queue_snipe=True
+            )
+        )
+        self.assertEqual(rfid["status_code"], 403)
+        self.assertEqual(
+            rfid["decision"],
+            "PASS_SHARING_HANDOFF_OR_BOT_QUEUE_SNIPE_BLOCKED",
+        )
+
+        ohrc = evaluate_ota_theme_park_ski_resort_ticketing_policy(
+            OTAThemeParkSkiResortTicketingPolicyInput(
+                express_lane_exceeds_20pct_ohrc_or_uncompensated_ride_downtime=True
+            )
+        )
+        self.assertEqual(ohrc["status_code"], 422)
+        self.assertEqual(
+            ohrc["decision"],
+            "EXPRESS_LANE_OVERALLOCATION_OR_UNREFUNDED_DOWN_RIDE",
+        )
+
+        height = evaluate_ota_theme_park_ski_resort_ticketing_policy(
+            OTAThemeParkSkiResortTicketingPolicyInput(
+                child_below_min_height_for_thrill_ill_or_uncredited_50pct_weather_hold=True
+            )
+        )
+        self.assertEqual(height["status_code"], 451)
+        self.assertEqual(
+            height["decision"],
+            "CHILD_HEIGHT_RESTRICTION_OR_WEATHER_CLOSURE_HOLD",
+        )
+
+        optim = evaluate_ota_theme_park_ski_resort_ticketing_policy(
+            OTAThemeParkSkiResortTicketingPolicyInput(
+                quarterly_pass_sharing_express_oversell_and_weather_dispute_pool_usd=220000.0,
+                dynamic_crowd_fnb_steering_and_citypass_scan_split_escrow_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 79200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 140800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_theme_park_ski_resort_ticketing_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-theme-park-ski-resort-ticketing-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

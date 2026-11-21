@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg673" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg673)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 230 · Theme Park, Ski Resort &amp; Express-Lane Ticketing Escrow</text>
+  <text x="48" y="74" class="sub">Disney Lightning Lane / Vail Epic / accesso / Klook · Express Ratio Cap (`&lt;=20%`) · Weather/Lift-Down Credit · `RFID` Biometric Lock (-36%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #673 · FAQ #349</text>
+
+  <!-- Lane 1: Pass-Sharing ("Handing Ski Pass / Multi-Day Ticket to a Friend in the Parking Lot") & Bot Scalping -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Turnstile Biometric/RFID Lock (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Parking-Lot Pass Swapping &amp; Rental Resale:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Bind `First_Gate_Entry` to `Facial_Template_Hash`</text>
+  <text x="54" y="200" class="mono">or `UHF_RFID_Jacket_Height_Profile`!</text>
+  <text x="44" y="223" class="body-txt">• Stops `7:00 AM` Lightning-Lane Bot Sniping:</text>
+  <text x="54" y="243" class="mono">Require `In-Park_Gate_Scan` Before Intra-Day Drop</text>
+  <text x="44" y="266" class="body-txt">• Eliminates brokers renting out 4-day hopper</text>
+  <text x="54" y="286" class="body-txt">passes or season ski passes to 4 different</text>
+  <text x="54" y="304" class="body-txt">tourists across the week</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 PASS_SHARING_HANDOFF_OR_BOT_QUEUE_SNIPE_BLOCKED</text>
+
+  <!-- Lane 2: Overselling Express Lanes ("FastPass Line Is 75 Mins!") & Ride Breakdown No-Recovery -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Express-Lane `20%` Capacity Cap (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Overselling Paid Express / Lightning Lanes:</text>
+  <text x="442" y="182" class="mono" fill="#fcd34d">Hard-Cap `Express_Allotment &lt;= 20%` of `OHRC`</text>
+  <text x="442" y="200" class="mono">(Operational Hourly Ride Capacity)!</text>
+  <text x="432" y="223" class="body-txt">• Instant Ride-Breakdown "Anytime Recovery Pass":</text>
+  <text x="442" y="243" class="mono">Auto-Convert `14:00 Slot` to `Any-Ride_Pass` or</text>
+  <text x="442" y="261" class="mono">Auto-Refund `$28` Single-Ride `ILL` if Down &gt;45m</text>
+  <text x="432" y="284" class="body-txt">• Prevents guest fury when a `$39` Express pass</text>
+  <text x="442" y="302" class="body-txt">waits 65 minutes or the coaster breaks down</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 EXPRESS_LANE_OVERALLOCATION_OR_UNREFUNDED_DOWN_RIDE</text>
+
+  <!-- Lane 3: Child Height-Restriction Rejection at Turnstile & Weather/Lift Closure Escrow -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Child Height &amp; Weather Shield (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Pre-Checkout Child Height &amp; `Rider Switch` Gate:</text>
+  <text x="830" y="182" class="mono">Block Selling `$25 Thrill-Coaster ILL` for Child</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">`Profile_Height &lt; 122cm (48")` + Issue RiderSwap!</text>
+  <text x="820" y="223" class="body-txt">• Severe Weather / `>=50%` Ski-Lift Wind-Hold Shield:</text>
+  <text x="830" y="243" class="body-txt">If typhoon/lightning/blizzard closes `&gt;=50%` of</text>
+  <text x="830" y="261" class="body-txt">major attractions/lifts for `&gt;120m`, auto-issue</text>
+  <text x="830" y="279" class="body-txt">1-Year Rain-Check Voucher or Pro-Rata Refund!</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 CHILD_HEIGHT_RESTRICTION_OR_WEATHER_CLOSURE_HOLD</text>
+
+  <!-- Bottom Dynamic Crowd-Balancing & Multi-Attraction City Pass Pro-Rata Settlement -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Dynamic Crowd-Load Balancing + Multi-Attraction `CityPass` Scan-Weighted Settlement (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Real-Time Wait Balancing</text>
+  <text x="62" y="462" class="body-txt">Pushes `$5` F&amp;B credit or</text>
+  <text x="62" y="480" class="body-txt">bonus show slot to steer</text>
+  <text x="62" y="498" class="body-txt">crowds away from 90-min</text>
+  <text x="62" y="516" class="mono">bottleneck lands (-28% Wait)</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② `CityPass` Redemption Split</text>
+  <text x="337" y="462" class="body-txt">Settles multi-venue pass</text>
+  <text x="337" y="480" class="body-txt">revenue strictly on verified</text>
+  <text x="337" y="498" class="body-txt">turnstile scans (`Pay-on-Scan`)</text>
+  <text x="337" y="516" class="mono">with pro-rata breakage share</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Direct-to-Lift Apple Wallet</text>
+  <text x="622" y="462" class="body-txt">Issues `NFC Express Mode`</text>
+  <text x="622" y="480" class="body-txt">or `BLE` mobile ski pass</text>
+  <text x="622" y="498" class="body-txt">skipping ticket-window</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">lines completely (0 Queue)</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Parametric Weather Cover</text>
+  <text x="907" y="462" class="body-txt">Embeds `$6` parametric</text>
+  <text x="907" y="480" class="body-txt">rain/wind-hold cover that</text>
+  <text x="907" y="498" class="body-txt">auto-pays if `&gt;15mm` rain;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Refund &amp; Scalping Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Ticketing &amp; Dispute Saved</text>
+  <text x="46" y="642" class="mono">$79,200 Saved / $220k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">&lt;=20% OHRC</text>
+  <text x="336" y="626" class="kpi-lbl">Express-Lane Ratio Guaranteed</text>
+  <text x="336" y="642" class="mono">Wait Time &lt;= 15 Mins SLA</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% Auto-Sub</text>
+  <text x="626" y="626" class="kpi-lbl">Ride-Down Recovery Pass / Refund</text>
+  <text x="626" y="642" class="mono">Zero Guest Service Desk Lines</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 Pass-Swap</text>
+  <text x="916" y="626" class="kpi-lbl">Biometric / UHF-RFID Gate Binding</text>
+  <text x="916" y="642" class="mono">Child Height Pre-Check &amp; Swap</text>
+</svg>

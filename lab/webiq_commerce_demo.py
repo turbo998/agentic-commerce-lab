@@ -32549,6 +32549,82 @@ def evaluate_b2b_supplier_tooling_mold_amortization_policy(
     }
 
 
+@dataclass(frozen=True)
+class OTAThemeParkSkiResortTicketingPolicyInput:
+    quarterly_pass_sharing_express_oversell_and_weather_dispute_pool_usd: float = 220000.0
+    parking_lot_pass_sharing_handoff_or_unscanned_bot_queue_snipe: bool = False
+    express_lane_exceeds_20pct_ohrc_or_uncompensated_ride_downtime: bool = False
+    child_below_min_height_for_thrill_ill_or_uncredited_50pct_weather_hold: bool = False
+    dynamic_crowd_fnb_steering_and_citypass_scan_split_escrow_ready: bool = False
+
+
+def evaluate_ota_theme_park_ski_resort_ticketing_policy(
+    policy_input: OTAThemeParkSkiResortTicketingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_pass_sharing_express_oversell_and_weather_dispute_pool_usd
+        ),
+    )
+    if policy_input.child_below_min_height_for_thrill_ill_or_uncredited_50pct_weather_hold:
+        return {
+            "status_code": 451,
+            "decision": "CHILD_HEIGHT_RESTRICTION_OR_WEATHER_CLOSURE_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.parking_lot_pass_sharing_handoff_or_unscanned_bot_queue_snipe:
+        return {
+            "status_code": 403,
+            "decision": "PASS_SHARING_HANDOFF_OR_BOT_QUEUE_SNIPE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.express_lane_exceeds_20pct_ohrc_or_uncompensated_ride_downtime:
+        return {
+            "status_code": 422,
+            "decision": "EXPRESS_LANE_OVERALLOCATION_OR_UNREFUNDED_DOWN_RIDE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dynamic_crowd_fnb_steering_and_citypass_scan_split_escrow_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DYNAMIC_CROWD_STEERING_AND_CITYPASS_SCAN_SPLIT_CONFIRM",
+            "mandate_token": "ota_themepark_ski_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_TURNSTILE_RFID_AND_OHRC_EXPRESS_AUTHORIZED",
+        "mandate_token": "ota_themepark_ski_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -44448,6 +44524,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_theme_park_ski_resort_ticketing_guard = {
+        "authorized_200": evaluate_ota_theme_park_ski_resort_ticketing_policy(
+            OTAThemeParkSkiResortTicketingPolicyInput()
+        ),
+        "pass_swap_or_bot_403": evaluate_ota_theme_park_ski_resort_ticketing_policy(
+            OTAThemeParkSkiResortTicketingPolicyInput(
+                parking_lot_pass_sharing_handoff_or_unscanned_bot_queue_snipe=True
+            )
+        ),
+        "express_overalloc_or_down_422": evaluate_ota_theme_park_ski_resort_ticketing_policy(
+            OTAThemeParkSkiResortTicketingPolicyInput(
+                express_lane_exceeds_20pct_ohrc_or_uncompensated_ride_downtime=True
+            )
+        ),
+        "child_height_or_weather_451": evaluate_ota_theme_park_ski_resort_ticketing_policy(
+            OTAThemeParkSkiResortTicketingPolicyInput(
+                child_below_min_height_for_thrill_ill_or_uncredited_50pct_weather_hold=True
+            )
+        ),
+        "crowd_steer_and_citypass_409": evaluate_ota_theme_park_ski_resort_ticketing_policy(
+            OTAThemeParkSkiResortTicketingPolicyInput(
+                dynamic_crowd_fnb_steering_and_citypass_scan_split_escrow_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -44806,6 +44908,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "edtech_exam_voucher_pass_guarantee_guard": edtech_exam_voucher_pass_guarantee_guard,
         "ecommerce_social_group_buying_community_guard": ecommerce_social_group_buying_community_guard,
         "b2b_supplier_tooling_mold_amortization_guard": b2b_supplier_tooling_mold_amortization_guard,
+        "ota_theme_park_ski_resort_ticketing_guard": ota_theme_park_ski_resort_ticketing_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -63115,6 +63218,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="toolingmold-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SPLIT_PIR_AMORTIZATION_SHUTOFF_AND_BAILMENT_CONFIRM · Mandate: b2b_tooling_mold_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 230 Theme Park, Ski Resort & Express-Lane Ticketing Escrow (#349) -->
+      <div class="finops-box" id="ota-theme-park-ski-resort-ticketing-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎢 主题乐园、滑雪场季卡与景区优速通动态票务 (Disney Lightning Lane / Vail Epic / accesso / Skidata) 沙盒</div>
+            <div class="finops-sub">Round 230 (#349) · 首刷闸机生物/RFID身高轮廓绑定防停车场换人租卡与入园抢票锁 (HTTP 403) + 优速通配额硬锁实时运力 &lt;=20% OHRC 与设备停机秒发全园恢复券/自动退款 (HTTP 422) + 购前儿童身高红线拦截签发父母 Rider Switch 与 &gt;=50% 天气停运补偿 (HTTP 451) + $5 餐饮券削峰与 CityPass 扫码分账净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="themepark-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度黄牛购买滑雪季卡/多日联票在停车场按天日租逃票、优速通超卖及设备停机拒付与儿童身高不达标闸机退票损耗池 ($)
+            <input type="number" id="themepark-gross-input" value="220000" min="10000" step="5000" oninput="recalcOTAThemeParkSkiResortTicketingSandbox()" />
+          </label>
+          <label>首刷闸机生物哈希 / Skidata UHF-RFID 身高雪服轮廓绑定与入园激活预约锁 (Tapped-In Gate Lock)
+            <select id="themepark-rfid-select" onchange="recalcOTAThemeParkSkiResortTicketingSandbox()">
+              <option value="pass">首道闸机绑定不可逆特征与身高轮廓 + 已刷物理大门票入园后激活园内预约 (合规)</option>
+              <option value="block_403">上午滑完在停车场把季卡和雪服脱给别人下午继续刷 或 未刷大门票入园用园外脚本早 7 点秒光快通 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>付费优速通配额硬锁实时开启轨道运力 (&lt;=20% Live OHRC) 与设备 101 故障停机零人工自动补偿
+            <select id="themepark-ohrc-select" onchange="recalcOTAThemeParkSkiResortTicketingSandbox()">
+              <option value="pass">快通售卖严锁 &lt;=20% 实时运力 (排队&lt;=15m) + 过山车停机 &gt;45m 秒发全园通用券或闭园自动原路退 (合规)</option>
+              <option value="block_422">节假日无底线超卖优速通致排 75 分钟 或 设备故障停机后不给自动转全园通用券逼游客排 1 小时客服台 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>购票前儿童身高安全红线 (122cm) 校验、父母轮流乘骑券 (Rider Switch) 与极端天气 (&gt;=50% 停运) 保障
+            <select id="themepark-height-select" onchange="recalcOTAThemeParkSkiResortTicketingSandbox()">
+              <option value="pass">自动免除 116cm 幼童刺激项目快通费并签发父母 Rider Switch + 台风/暴风停运 &gt;=50% 缆车自动发重游券 (安全)</option>
+              <option value="block_451">放任家长给 116cm 幼童买限高 122cm 过山车 $25 快通到门口被拦哭闹 或 大风停运 70% 缆车拒不退改 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>拥堵片区 $5 餐饮券动态引流削峰与城市多景点通票 (CityPass) 按真实闸机扫码 (Pay-on-Scan) 清分
+            <select id="themepark-opt-select" onchange="recalcOTAThemeParkSkiResortTicketingSandbox()">
+              <option value="enabled" selected>$5 餐饮券动态分流(-28%峰值排队) + CityPass 按实刷扫码权重分账 + Apple Wallet 免换票直刷 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统静态放任热门区排 120 分钟队 + 人工窗口换纸质票 + 联票粗放固定比例分账 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度逃票与快通停机退赔损耗池</div>
+            <div class="finops-kpi-val" id="themepark-gross-kpi">$220,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">运力锁与自动恢复后净损耗</div>
+            <div class="finops-kpi-val" id="themepark-net-kpi" style="color:#6ee7b7;">$140,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省黄牛逃票与拒付客诉</div>
+            <div class="finops-kpi-val" id="themepark-savings-kpi" style="color:#38bdf8;">$79,200</div>
+          </div>
+        </div>
+        <div id="themepark-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DYNAMIC_CROWD_STEERING_AND_CITYPASS_SCAN_SPLIT_CONFIRM · Mandate: ota_themepark_ski_escrow_optim_409
         </div>
       </div>
 
@@ -85422,6 +85582,79 @@ function recalcB2BSupplierToolingMoldAmortizationSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_PPAP_BAILMENT_AND_BOUNDED_AMORTIZATION_AUTHORIZED · Mandate: b2b_tooling_mold_escrow_200';
+}}
+
+function recalcOTAThemeParkSkiResortTicketingSandbox() {{
+  const grossInput = document.getElementById('themepark-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '220000'));
+  const rfidGate = document.getElementById('themepark-rfid-select').value;
+  const ohrcGate = document.getElementById('themepark-ohrc-select').value;
+  const heightGate = document.getElementById('themepark-height-select').value;
+  const optMode = document.getElementById('themepark-opt-select').value;
+
+  const grossKpi = document.getElementById('themepark-gross-kpi');
+  const netKpi = document.getElementById('themepark-net-kpi');
+  const savingsKpi = document.getElementById('themepark-savings-kpi');
+  const statusKpi = document.getElementById('themepark-status-kpi');
+  const banner = document.getElementById('themepark-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (heightGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CHILD_HEIGHT_RESTRICTION_OR_WEATHER_CLOSURE_HOLD · Mandate: null';
+    return;
+  }}
+  if (rfidGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PASS_SHARING_HANDOFF_OR_BOT_QUEUE_SNIPE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (ohrcGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 EXPRESS_LANE_OVERALLOCATION_OR_UNREFUNDED_DOWN_RIDE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DYNAMIC_CROWD_STEERING_AND_CITYPASS_SCAN_SPLIT_CONFIRM · Mandate: ota_themepark_ski_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_TURNSTILE_RFID_AND_OHRC_EXPRESS_AUTHORIZED · Mandate: ota_themepark_ski_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
