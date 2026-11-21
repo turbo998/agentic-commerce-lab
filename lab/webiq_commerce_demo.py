@@ -27353,6 +27353,79 @@ def evaluate_ecommerce_post_purchase_upsell_policy(
     }
 
 
+@dataclass(frozen=True)
+class BrandRecommerceDppEscrowPolicyInput:
+    quarterly_recommerce_fraud_and_cut_label_pool_usd: float = 110000.0
+    counterfeit_entrupy_or_dpp_chip_signature_mismatch: bool = False
+    cut_care_label_or_uninspected_grade_payout_claim: bool = False
+    missing_eu_espr_dpp_or_recalled_product_batch: bool = False
+    one_tap_dpp_digital_closet_and_store_credit_bonus_ready: bool = False
+
+
+def evaluate_brand_recommerce_dpp_escrow_policy(
+    policy_input: BrandRecommerceDppEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_recommerce_fraud_and_cut_label_pool_usd)
+    )
+    if policy_input.missing_eu_espr_dpp_or_recalled_product_batch:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_EU_ESPR_DPP_OR_RECALLED_PRODUCT_BATCH_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.counterfeit_entrupy_or_dpp_chip_signature_mismatch:
+        return {
+            "status_code": 403,
+            "decision": "COUNTERFEIT_ENTRUPY_OR_DPP_CHIP_SIGNATURE_MISMATCH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cut_care_label_or_uninspected_grade_payout_claim:
+        return {
+            "status_code": 422,
+            "decision": "CUT_CARE_LABEL_OR_UNINSPECTED_GRADE_PAYOUT_CLAIM_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.one_tap_dpp_digital_closet_and_store_credit_bonus_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ONE_TAP_DPP_DIGITAL_CLOSET_AND_STORE_CREDIT_BONUS_CONFIRM",
+            "mandate_token": "brand_recommerce_dpp_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "AURA_DPP_AND_GRADE_A_RECOMMERCE_AUTHORIZED",
+        "mandate_token": "brand_recommerce_dpp_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -37458,6 +37531,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    brand_recommerce_dpp_escrow_guard = {
+        "authorized_200": evaluate_brand_recommerce_dpp_escrow_policy(
+            BrandRecommerceDppEscrowPolicyInput()
+        ),
+        "counterfeit_entrupy_or_chip_403": evaluate_brand_recommerce_dpp_escrow_policy(
+            BrandRecommerceDppEscrowPolicyInput(
+                counterfeit_entrupy_or_dpp_chip_signature_mismatch=True
+            )
+        ),
+        "cut_care_label_or_grade_422": evaluate_brand_recommerce_dpp_escrow_policy(
+            BrandRecommerceDppEscrowPolicyInput(
+                cut_care_label_or_uninspected_grade_payout_claim=True
+            )
+        ),
+        "missing_eu_espr_dpp_451": evaluate_brand_recommerce_dpp_escrow_policy(
+            BrandRecommerceDppEscrowPolicyInput(
+                missing_eu_espr_dpp_or_recalled_product_batch=True
+            )
+        ),
+        "digital_closet_credit_bonus_409": evaluate_brand_recommerce_dpp_escrow_policy(
+            BrandRecommerceDppEscrowPolicyInput(
+                one_tap_dpp_digital_closet_and_store_credit_bonus_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -37747,6 +37846,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_hybrid_search_merchandising_guard": ecommerce_hybrid_search_merchandising_guard,
         "cross_border_tax_free_exemption_guard": cross_border_tax_free_exemption_guard,
         "ecommerce_post_purchase_upsell_guard": ecommerce_post_purchase_upsell_guard,
+        "brand_recommerce_dpp_escrow_guard": brand_recommerce_dpp_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -52123,6 +52223,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="post-upsell-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SAME_BOX_ZERO_MARGINAL_FREIGHT_AND_BATCHED_CAPTURE_CONFIRM · Mandate: post_purchase_upsell_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 161 Brand-Owned Recommerce & EU DPP Escrow -->
+      <div class="finops-box" id="brand-recommerce-dpp-escrow-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">♻️ 品牌官方二手转售 (Trove / Archive)、欧盟数字产品护照 (EU DPP) 与显微鉴定托管沙盒 (Entrupy)</div>
+            <div class="finops-sub">Round 161 · NTAG 424 NFC/Entrupy 显微防假 (HTTP 403) + 寄前完整水洗标 CV 预审 (HTTP 422) + 欧盟 ESPR 护照锁 (HTTP 451) + 数字衣橱净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="recommerce-dpp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度二手假货调包、剪标废衣运费与流失池 ($)
+            <input type="number" id="recommerce-dpp-gross-input" value="110000" min="10000" step="5000" oninput="recalcBrandRecommerceDppSandbox()" />
+          </label>
+          <label>NFC/DPP 芯片验签与 Entrupy 显微鉴定
+            <select id="recommerce-dpp-auth-select" onchange="recalcBrandRecommerceDppSandbox()">
+              <option value="pass">NTAG 424 NFC 动态签名匹配 + Entrupy 显微真品 (合规)</option>
+              <option value="block_403">拿微商高仿假包寄回官方以旧换新骗走 $200 购物卡 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>寄前完整成分水洗标 (Care Label) 与入库定级
+            <select id="recommerce-dpp-care-select" onchange="recalcBrandRecommerceDppSandbox()">
+              <option value="pass">水洗标完好未剪 + 入库臭氧除菌定级 Grade A/B (合规)</option>
+              <option value="block_422">剪掉成分洗标无法合规二销或破洞旧衣谎报 99 新 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>欧盟 ESPR 2024/1781 数字产品护照 (DPP)
+            <select id="recommerce-dpp-espr-select" onchange="recalcBrandRecommerceDppSandbox()">
+              <option value="pass">具备完整碳足迹/纤维溯源 JSON-LD 护照且非召回款 (安全)</option>
+              <option value="block_451">缺失欧盟 ESPR 强制数字护照或误上架安全召回批次 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>App 数字衣橱一键官图上架与储值卡加赠
+            <select id="recommerce-dpp-opt-select" onchange="recalcBrandRecommerceDppSandbox()">
+              <option value="enabled" selected>1 秒复用原厂官图挂牌 + 选品牌储值卡享 +30% 换新奖励 (-36% 成本 / HTTP 409)</option>
+              <option value="disabled">让老客自己拍丑照去闲鱼/Poshmark 卖现金流失复购 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度二手回收与客户流失总池</div>
+            <div class="finops-kpi-val" id="recommerce-dpp-gross-kpi">$110,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">芯片验真与储值飞轮后净成本</div>
+            <div class="finops-kpi-val" id="recommerce-dpp-net-kpi" style="color:#6ee7b7;">$70,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省假货赔付、运费与CAC</div>
+            <div class="finops-kpi-val" id="recommerce-dpp-savings-kpi" style="color:#38bdf8;">$39,600</div>
+          </div>
+        </div>
+        <div id="recommerce-dpp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ONE_TAP_DPP_DIGITAL_CLOSET_AND_STORE_CREDIT_BONUS_CONFIRM · Mandate: brand_recommerce_dpp_optim_409
         </div>
       </div>
 
@@ -69393,6 +69550,79 @@ function recalcEcommercePostPurchaseUpsellSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ATOMIC_ORDER_EDIT_MERGED_UPSELL_AUTHORIZED · Mandate: post_purchase_upsell_200';
+}}
+
+function recalcBrandRecommerceDppSandbox() {{
+  const grossInput = document.getElementById('recommerce-dpp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '110000'));
+  const authGate = document.getElementById('recommerce-dpp-auth-select').value;
+  const careGate = document.getElementById('recommerce-dpp-care-select').value;
+  const esprGate = document.getElementById('recommerce-dpp-espr-select').value;
+  const optMode = document.getElementById('recommerce-dpp-opt-select').value;
+
+  const grossKpi = document.getElementById('recommerce-dpp-gross-kpi');
+  const netKpi = document.getElementById('recommerce-dpp-net-kpi');
+  const savingsKpi = document.getElementById('recommerce-dpp-savings-kpi');
+  const statusKpi = document.getElementById('recommerce-dpp-status-kpi');
+  const banner = document.getElementById('recommerce-dpp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (esprGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_EU_ESPR_DPP_OR_RECALLED_PRODUCT_BATCH_HOLD · Mandate: null';
+    return;
+  }}
+  if (authGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 COUNTERFEIT_ENTRUPY_OR_DPP_CHIP_SIGNATURE_MISMATCH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (careGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CUT_CARE_LABEL_OR_UNINSPECTED_GRADE_PAYOUT_CLAIM_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ONE_TAP_DPP_DIGITAL_CLOSET_AND_STORE_CREDIT_BONUS_CONFIRM · Mandate: brand_recommerce_dpp_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 AURA_DPP_AND_GRADE_A_RECOMMERCE_AUTHORIZED · Mandate: brand_recommerce_dpp_200';
 }}
 
 function updateStage1756Sandbox() {{

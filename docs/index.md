@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`279` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`280` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（15 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（42 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（100 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（101 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（65 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（23 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（34 篇）](#tax-fx-privacy-disputes)
@@ -91,7 +91,7 @@
 | 42 | **电子礼品卡与品牌储值卡（Digital Gift Cards & Stored Value：Rise.ai / Blackhawk / Apple Gift Card / 京东E卡）防黑卡洗钱、防“8折买卡再8折买货”无限套利与沉淀资金（Escheatment）托管“防黑卡买 $500 电子卡 3 分钟变现留给商家 200% 拒付、防优惠码买礼品卡死循环与双账本隔离净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.md) · [English](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（100 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（101 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -197,6 +197,7 @@
 | 98 | **付费会员（Paid Membership：Prime / 88VIP / 京东PLUS / Inveterate）防“职业代购蹭无限免邮”、积分防撞库盗刷与退会扣减已享权益托管“防 $99 会员卡一年发 600 个异地地址亏穿 $12,000 运费、防下单秒拿积分再用积分买货后退原单与高毛利加价购净省 38%”Agent 架构选型 FAQ** | [中文](ecommerce-loyalty-paid-membership-free-shipping-abuse-points-ato-escrow-agent-selection-faq.md) · [English](ecommerce-loyalty-paid-membership-free-shipping-abuse-points-ato-escrow-agent-selection-faq.en.md) |
 | 99 | **服装鞋履 AI 尺码推荐与虚拟试穿（AI Sizing & Virtual Try-On：True Fit / Bold Metrics / Google VTO）、防“同款连拍 S/M/L 三件退两件（Bracketing）”与退货偏码自愈托管“防买 3 退 2 吃光整单毛利并锁死大促黄金库存、防全站套用一张假尺码表与跨品牌精准锁码净省 39%”Agent 架构选型 FAQ** | [中文](ecommerce-apparel-ai-sizing-virtual-tryon-bracketing-return-escrow-agent-selection-faq.md) · [English](ecommerce-apparel-ai-sizing-virtual-tryon-bracketing-return-escrow-agent-selection-faq.en.md) |
 | 100 | **电商支付后一键追销（Post-Purchase 1-Click Upsell：Shopify Checkout Extensibility / AfterSell / ReConvert）与同箱余量合单托管“防主订单已推仓库导致 $12 追销品单独发第 2 个包裹倒赔 $8 运费、防异仓超重拆箱与零边际运费加购净省 35%”Agent 架构选型 FAQ** | [中文](ecommerce-post-purchase-one-click-upsell-carton-slack-merge-escrow-agent-selection-faq.md) · [English](ecommerce-post-purchase-one-click-upsell-carton-slack-merge-escrow-agent-selection-faq.en.md) |
+| 101 | **品牌官方二手转售（Brand Recommerce：Trove / Archive / 始祖鸟 ReBIRD / Lululemon Like New）、欧盟数字产品护照（`EU DPP`）与 AI 显微鉴定托管“防高仿 A 货骗取官方以旧换新补贴、防剪掉洗标的破旧衣服骗高档储值卡与数字衣橱一键转卖净省 36%”Agent 架构选型 FAQ** | [中文](brand-recommerce-resale-eu-dpp-passport-entrupy-escrow-agent-selection-faq.md) · [English](brand-recommerce-resale-eu-dpp-passport-entrupy-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（65 篇）

@@ -19845,6 +19845,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-post-purchase-upsell-sandbox", html_zh)
 
+    def test_brand_recommerce_dpp_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            BrandRecommerceDppEscrowPolicyInput,
+            evaluate_brand_recommerce_dpp_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_brand_recommerce_dpp_escrow_policy(
+            BrandRecommerceDppEscrowPolicyInput(
+                quarterly_recommerce_fraud_and_cut_label_pool_usd=110000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "AURA_DPP_AND_GRADE_A_RECOMMERCE_AUTHORIZED",
+        )
+
+        fake = evaluate_brand_recommerce_dpp_escrow_policy(
+            BrandRecommerceDppEscrowPolicyInput(
+                counterfeit_entrupy_or_dpp_chip_signature_mismatch=True
+            )
+        )
+        self.assertEqual(fake["status_code"], 403)
+        self.assertEqual(
+            fake["decision"],
+            "COUNTERFEIT_ENTRUPY_OR_DPP_CHIP_SIGNATURE_MISMATCH_BLOCKED",
+        )
+
+        care = evaluate_brand_recommerce_dpp_escrow_policy(
+            BrandRecommerceDppEscrowPolicyInput(
+                cut_care_label_or_uninspected_grade_payout_claim=True
+            )
+        )
+        self.assertEqual(care["status_code"], 422)
+        self.assertEqual(
+            care["decision"],
+            "CUT_CARE_LABEL_OR_UNINSPECTED_GRADE_PAYOUT_CLAIM_BLOCKED",
+        )
+
+        espr = evaluate_brand_recommerce_dpp_escrow_policy(
+            BrandRecommerceDppEscrowPolicyInput(
+                missing_eu_espr_dpp_or_recalled_product_batch=True
+            )
+        )
+        self.assertEqual(espr["status_code"], 451)
+        self.assertEqual(
+            espr["decision"],
+            "MISSING_EU_ESPR_DPP_OR_RECALLED_PRODUCT_BATCH_HOLD",
+        )
+
+        optim = evaluate_brand_recommerce_dpp_escrow_policy(
+            BrandRecommerceDppEscrowPolicyInput(
+                quarterly_recommerce_fraud_and_cut_label_pool_usd=110000.0,
+                one_tap_dpp_digital_closet_and_store_credit_bonus_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 39600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 70400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("brand_recommerce_dpp_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("brand-recommerce-dpp-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
