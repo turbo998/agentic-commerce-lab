@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`290` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`291` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (15 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (42 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (107 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (108 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (67 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (24 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (35 guides)](#tax-fx-privacy-disputes)
@@ -91,7 +91,7 @@
 | 42 | **E-Commerce Digital Gift Cards, Stored-Value Wallets & Corporate Gifting (`Rise.ai / Blackhawk / Stripe / Govalo`), Anti-Triangulation Fraud & `CARD Act / Escheatment` Escrow (`3DS2` Cascade Revocation, Promo-on-Gift-Card Ban & Dual Ledger `-37%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.en.md) · [中文](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (107 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (108 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -204,6 +204,7 @@
 | 105 | **Omnichannel `BOPIS` & Curbside Pickup (`Target Drive Up / Walmart / Best Buy / Shopify POS`), Anti-Mule Pickup Fraud, `Capture-on-Pickup` & 5-Day Auto-Restock Escrow (`3DS2` + 30s Rotating QR, `1.5km` Cold-Chain Geofence & Bounceback Pass `-35%` Loss) Agent Architecture Selection FAQ** | [English](omnichannel-bopis-curbside-pickup-fraud-aged-hold-escrow-agent-selection-faq.en.md) · [中文](omnichannel-bopis-curbside-pickup-fraud-aged-hold-escrow-agent-selection-faq.md) |
 | 106 | **E-Commerce `FEFO` Lot-Expiry Management (`iHerb / Manhattan WMS / NetSuite`), Multi-Pack Consumption-Window Gate & Disclosed Short-Dated Clearance Escrow (`Qty × Usage_Days` Lot Match, `GS1 (10)` Scanner Lock & `Max-1` Flash Sale `-37%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-fefo-lot-expiry-consumption-window-markdown-escrow-agent-selection-faq.en.md) · [中文](ecommerce-fefo-lot-expiry-consumption-window-markdown-escrow-agent-selection-faq.md) |
 | 107 | **E-Commerce Extended Warranty, Accidental Damage Protection (`ADP`) & Serial-Bound Claim Escrow (`Extend / Clyde / Mulberry / AppleCare+`), `GS1 (21)` Serial/IMEI Binding, Retroactive Crash-Fraud Lock & Store-Credit Replacement Flywheel (`-37%` Claim Leakage) Agent Architecture Selection FAQ** | [English](ecommerce-extended-warranty-accidental-damage-serial-claim-escrow-agent-selection-faq.en.md) · [中文](ecommerce-extended-warranty-accidental-damage-serial-claim-escrow-agent-selection-faq.md) |
+| 108 | **Retail Media Network (`RMN`: `Amazon Ads / Walmart Connect / Target Roundel / Instacart`) Sponsored Bidding, `Buy-Box` & Regional `OOS` Auto-Pause, and Incremental `iROAS / POAS` Escrow (`-38%` Wasted Ad Spend) Agent Architecture Selection FAQ** | [English](retail-media-network-rmn-buybox-oos-incrementality-bid-escrow-agent-selection-faq.en.md) · [中文](retail-media-network-rmn-buybox-oos-incrementality-bid-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (67 Guides)

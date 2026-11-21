@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg615" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0d1e34"/>
+      <stop offset="100%" stop-color="#071321"/>
+    </linearGradient>
+    <linearGradient id="hdr615" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg615)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr615)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 172 · Retail Media Network (RMN) Sponsored Ads, Buy-Box OOS Pause &amp; iROAS Escrow</text>
+  <text x="48" y="74" class="sub">Amazon Ads / Walmart Connect / Target Roundel / Instacart · Buy-Box &amp; Regional OOS Breaker · Organic #1 Cannibalization Cap (-38% Waste)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #615 · FAQ #291</text>
+
+  <!-- Lane 1: Buy-Box Loss & Regional OOS Ad Breaker -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Buy-Box Loss &amp; Regional OOS Breaker (403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Paying CPC to Send Traffic to 3P Resellers:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">If 1P/Brand_Buy_Box_Win_Rate &lt; 85% → Pause Bid</text>
+  <text x="44" y="205" class="body-txt">• Regional Store / Zip-Code Inventory Gate:</text>
+  <text x="54" y="225" class="mono">Require Zip_Store_ATP &gt;= 4 &amp; Core_Sizes &gt;= 60%</text>
+  <text x="54" y="243" class="body-txt">Halts Instacart/Walmart ads in out-of-stock zips</text>
+  <text x="44" y="266" class="body-txt">• Delivery-Promise Conversion Cliff Guard:</text>
+  <text x="54" y="286" class="body-txt">Auto-pauses ASIN bids when FBA transfer lag</text>
+  <text x="54" y="304" class="body-txt">pushes badge from `Prime 2-Day` to `&gt;7 Days`</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 BUY_BOX_LOST_OR_REGIONAL_OOS_AD_WASTE_BLOCKED</text>
+
+  <!-- Lane 2: Organic Rank #1 Cannibalization & TACoS Floor -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Organic #1 Cannibalization &amp; iROAS Gate (422)</text>
+  <text x="432" y="162" class="body-txt">• Exposes Fake "12x ROAS" on Branded Search Terms:</text>
+  <text x="442" y="182" class="mono">When Organic_Rank == #1 &amp; Competitor_Conquest == 0</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Cap Brand-Keyword Bid &lt;= $0.25 Defense Floor</text>
+  <text x="432" y="223" class="body-txt">• Contribution-Margin `Breakeven ACoS` Ceiling:</text>
+  <text x="442" y="243" class="mono">Max_CPC = CVR × (Net_Price - COGS - FBA_Fee)</text>
+  <text x="432" y="266" class="body-txt">• Blocks Agency "Broad-Match Brand Stuffing":</text>
+  <text x="442" y="286" class="body-txt">Enforces negative exact-match brand exclusions</text>
+  <text x="442" y="304" class="body-txt">inside Non-Branded Acquisition (`NTB`) campaigns</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 ORGANIC_RANK1_CANNIBALIZATION_OR_LOSS_BID_BLOCKED</text>
+
+  <!-- Lane 3: Midnight Budget Drain, Click-Farm & Co-Op Double-Charge -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Midnight Click-Drain &amp; Co-Op Audit Lock (451)</text>
+  <text x="820" y="162" class="body-txt">• Stops `00:00–05:00 AM` Bot &amp; Window-Shopper Drain:</text>
+  <text x="830" y="182" class="mono">Dayparting: 00:00-05:30 Bid Multiplier = 0.25x</text>
+  <text x="830" y="200" class="body-txt">Preserves 88% of daily budget for prime buying hrs</text>
+  <text x="820" y="223" class="body-txt">• JBP Co-Op Trade-Fund vs Retail Media Double-Bill:</text>
+  <text x="830" y="243" class="mono" fill="#f9a8d4">Reconcile Vendor Central Co-Op vs RMN Invoice</text>
+  <text x="820" y="266" class="body-txt">• Competitor Scraper &amp; Invalid Click Filter (`IVT`):</text>
+  <text x="830" y="286" class="body-txt">Flags `&gt;5x CTR` with `0% Add-to-Cart` anomalies</text>
+  <text x="830" y="304" class="body-txt">for Amazon Marketing Stream invalid-click credit</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 MIDNIGHT_BOT_DRAIN_OR_COOP_DOUBLE_CHARGE_HOLD</text>
+
+  <!-- Bottom AMC New-to-Brand (NTB) & Hourly Stream Bidding Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Real-Time Marketing Stream Hourly Dayparting + AMC New-to-Brand (NTB) Bidding + Conquesting (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Sub-Minute Buy-Box &amp; ATP Sync</text>
+  <text x="62" y="462" class="body-txt">Ingests SP-API `AnyOfferChanged`</text>
+  <text x="62" y="480" class="body-txt">&amp; store inventory webhooks to</text>
+  <text x="62" y="498" class="body-txt">pause/resume bids in &lt;30s;</text>
+  <text x="62" y="516" class="mono">0 CPC Spent on OOS / 3P Hijack</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Geo-Holdout iROAS Calibration</text>
+  <text x="337" y="462" class="body-txt">Shifts budget from zero-lift</text>
+  <text x="337" y="480" class="body-txt">branded keywords to category</text>
+  <text x="337" y="498" class="body-txt">generic &amp; competitor OOS ASINs;</text>
+  <text x="337" y="516" class="mono">+44% True Incremental NTB Sales</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Net-Margin POAS Bid Engine</text>
+  <text x="622" y="462" class="body-txt">Bids on Profit-on-Ad-Spend</text>
+  <text x="622" y="480" class="body-txt">(`POAS = Gross_Margin - Returns`)</text>
+  <text x="622" y="498" class="body-txt">rather than vanity top-line GMV</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">Protects Contribution Margin</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Competitor Price/OOS Conquest</text>
+  <text x="907" y="462" class="body-txt">Detects when rival ASIN raises</text>
+  <text x="907" y="480" class="body-txt">price or loses Prime badge &amp;</text>
+  <text x="907" y="498" class="body-txt">boosts Product-Targeting bid</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-38% Wasted RMN Ad Spend</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-38.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Wasted RMN Spend Saved</text>
+  <text x="46" y="642" class="mono">$68,400 Saved / $180k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">&gt;=85% Buy-Box</text>
+  <text x="336" y="626" class="kpi-lbl">Real-Time SP-API Bid Breaker</text>
+  <text x="336" y="642" class="mono">0 Traffic Paid for 3P Hijackers</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">iROAS &amp; POAS</text>
+  <text x="626" y="626" class="kpi-lbl">Incremental Net-Profit Bidding</text>
+  <text x="626" y="642" class="mono">Stops Branded Self-Cannibalizing</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">Hourly Stream</text>
+  <text x="916" y="626" class="kpi-lbl">Anti-Midnight Bot Budget Shield</text>
+  <text x="916" y="642" class="mono">88% Budget in Peak CVR Windows</text>
+</svg>

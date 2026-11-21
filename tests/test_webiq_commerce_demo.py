@@ -20582,6 +20582,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-extended-warranty-sandbox", html_zh)
 
+    def test_retail_media_network_bidding_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            RetailMediaNetworkBiddingPolicyInput,
+            evaluate_retail_media_network_bidding_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_retail_media_network_bidding_policy(
+            RetailMediaNetworkBiddingPolicyInput(
+                quarterly_wasted_rmn_ad_spend_and_brand_cannibalization_pool_usd=180000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "INCREMENTAL_BUY_BOX_VERIFIED_RMN_BID_AUTHORIZED",
+        )
+
+        buybox = evaluate_retail_media_network_bidding_policy(
+            RetailMediaNetworkBiddingPolicyInput(
+                buy_box_lost_or_regional_store_oos_or_slow_delivery_badge=True
+            )
+        )
+        self.assertEqual(buybox["status_code"], 403)
+        self.assertEqual(
+            buybox["decision"],
+            "BUY_BOX_LOST_OR_REGIONAL_OOS_AD_WASTE_BLOCKED",
+        )
+
+        poas = evaluate_retail_media_network_bidding_policy(
+            RetailMediaNetworkBiddingPolicyInput(
+                organic_rank1_brand_keyword_cannibalization_or_negative_poas=True
+            )
+        )
+        self.assertEqual(poas["status_code"], 422)
+        self.assertEqual(
+            poas["decision"],
+            "ORGANIC_RANK1_CANNIBALIZATION_OR_LOSS_BID_BLOCKED",
+        )
+
+        midnight = evaluate_retail_media_network_bidding_policy(
+            RetailMediaNetworkBiddingPolicyInput(
+                midnight_bot_budget_drain_or_jbp_coop_trade_fund_double_charge=True
+            )
+        )
+        self.assertEqual(midnight["status_code"], 451)
+        self.assertEqual(
+            midnight["decision"],
+            "MIDNIGHT_BOT_DRAIN_OR_COOP_DOUBLE_CHARGE_HOLD",
+        )
+
+        optim = evaluate_retail_media_network_bidding_policy(
+            RetailMediaNetworkBiddingPolicyInput(
+                quarterly_wasted_rmn_ad_spend_and_brand_cannibalization_pool_usd=180000.0,
+                hourly_stream_dayparting_ntb_poas_and_competitor_oos_conquest_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 68400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 111600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("retail_media_network_bidding_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("retail-media-network-bidding-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
