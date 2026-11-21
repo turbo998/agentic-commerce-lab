@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`351` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`352` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (20 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (49 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (133 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (134 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (79 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (29 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (41 guides)](#tax-fx-privacy-disputes)
@@ -103,7 +103,7 @@
 | 49 | **High-Ticket Automotive, EV & Solar Split-Tender Checkout Escrow (`Tesla / Rivian / AutoFi / Plaid Transfer / Stripe`), `$1,000` Card-Deposit Cap, Lender `Stips` Funding Lock, Per-`VIN vIBAN` Wire Shield & 4-Way Digital-Key Release (`-38%` Closing Loss) Agent Architecture Selection FAQ** | [English](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.en.md) · [中文](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (133 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (134 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -242,6 +242,7 @@
 | 131 | **Apparel, Luxury & Camera-Gear Rental Turnaround-Buffer & Deposit Escrow (`Rent the Runway / Nuuly / Lensrentals / Stripe`), Anti-Hit-and-Run `KYC`, 48-Hour Cleaning/Calibration Buffer, Depreciated `FMV` Buyout Cap & Free Backup-Size Bundling (`-36%` Rental Loss) Agent Architecture Selection FAQ** | [English](ecommerce-apparel-camera-gear-rental-turnaround-buffer-deposit-escrow-agent-selection-faq.en.md) · [中文](ecommerce-apparel-camera-gear-rental-turnaround-buffer-deposit-escrow-agent-selection-faq.md) |
 | 132 | **Social Group-Buying, Community Grocery (`Tuanzhang`) & Tiered-Drop Escrow (`Pinduoduo / Community Group Buy / Kickstarter / Shopify GroupBuy`), Anti-Fake-Cohort `PAR` Lock, Lowest-Tier Partial Capture, Station `BLE` Cold-Box Gate & `T-30m` Open-Pool Auto-Match (`-37%` Group-Buy Loss) Agent Architecture Selection FAQ** | [English](ecommerce-social-group-buying-community-leader-cold-chain-tiered-rebate-escrow-agent-selection-faq.en.md) · [中文](ecommerce-social-group-buying-community-leader-cold-chain-tiered-rebate-escrow-agent-selection-faq.md) |
 | 133 | **Theme Park, Ski Resort & Express-Lane Dynamic Ticketing Escrow (`Disney Lightning Lane / Universal Express / Vail Epic Pass / accesso / Skidata / Klook`), Anti-Pass-Sharing `RFID` Lock, `<=20% OHRC` Express Capacity Cap, Ride-Downtime Auto-Recovery & Weather-Closure Shield (`-36%` Revenue Loss) Agent Architecture Selection FAQ** | [English](ota-theme-park-ski-resort-dynamic-ticketing-fastpass-weather-escrow-agent-selection-faq.en.md) · [中文](ota-theme-park-ski-resort-dynamic-ticketing-fastpass-weather-escrow-agent-selection-faq.md) |
+| 134 | **Optical Eyewear, Prescription Lenses & Contact-Lens Subscription Escrow (`Warby Parker / Zenni Optical / 1-800 Contacts / EssilorLuxottica / VSP`), `ARKit` `±0.5mm` Dual-`PD` Gate, Contact-Lens `BC/DIA` & High-Index Lock, `FTC FCLCA` 8-Business-Hour Verification & `VSP + HSA` Split (`-37%` Remake & Churn Loss) Agent Architecture Selection FAQ** | [English](ecommerce-optical-eyewear-contact-lens-fclca-pd-tryon-escrow-agent-selection-faq.en.md) · [中文](ecommerce-optical-eyewear-contact-lens-fclca-pd-tryon-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (79 Guides)

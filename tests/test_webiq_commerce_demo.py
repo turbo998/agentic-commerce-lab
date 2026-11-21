@@ -24669,6 +24669,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-epr-packaging-weee-battery-sandbox", html_zh)
 
+    def test_ecommerce_optical_eyewear_contact_lens_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceOpticalEyewearContactLensPolicyInput,
+            evaluate_ecommerce_optical_eyewear_contact_lens_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_optical_eyewear_contact_lens_policy(
+            EcommerceOpticalEyewearContactLensPolicyInput(
+                quarterly_lens_remake_fclca_fine_and_expired_rx_churn_pool_usd=210000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ARKIT_PD_AND_FCLCA_8HR_OPTICAL_AUTHORIZED",
+        )
+
+        pd = evaluate_ecommerce_optical_eyewear_contact_lens_policy(
+            EcommerceOpticalEyewearContactLensPolicyInput(
+                rx_sign_mismatch_missing_axis_or_unverified_progressive_dual_pd=True
+            )
+        )
+        self.assertEqual(pd["status_code"], 403)
+        self.assertEqual(
+            pd["decision"],
+            "INVALID_RX_SIGN_AXIS_OR_UNVERIFIED_PROGRESSIVE_PD",
+        )
+
+        bcdia = evaluate_ecommerce_optical_eyewear_contact_lens_policy(
+            EcommerceOpticalEyewearContactLensPolicyInput(
+                using_eyeglass_rx_for_contacts_or_high_myopia_low_index_rimless=True
+            )
+        )
+        self.assertEqual(bcdia["status_code"], 422)
+        self.assertEqual(
+            bcdia["decision"],
+            "EYEGLASS_RX_FOR_CONTACTS_OR_INDEX_FRAME_MISMATCH",
+        )
+
+        fclca = evaluate_ecommerce_optical_eyewear_contact_lens_policy(
+            EcommerceOpticalEyewearContactLensPolicyInput(
+                expired_optical_rx_or_shipping_before_fclca_8_business_hours=True
+            )
+        )
+        self.assertEqual(fclca["status_code"], 451)
+        self.assertEqual(
+            fclca["decision"],
+            "EXPIRED_OPTICAL_RX_OR_FCLCA_8HR_WINDOW_PENDING",
+        )
+
+        optim = evaluate_ecommerce_optical_eyewear_contact_lens_policy(
+            EcommerceOpticalEyewearContactLensPolicyInput(
+                quarterly_lens_remake_fclca_fine_and_expired_rx_churn_pool_usd=210000.0,
+                in_flow_tele_optometry_renewal_and_vsp_hsa_split_escrow_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 77700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 132300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_optical_eyewear_contact_lens_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-optical-eyewear-contact-lens-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

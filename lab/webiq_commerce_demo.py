@@ -32777,6 +32777,82 @@ def evaluate_cross_border_epr_packaging_weee_battery_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceOpticalEyewearContactLensPolicyInput:
+    quarterly_lens_remake_fclca_fine_and_expired_rx_churn_pool_usd: float = 210000.0
+    rx_sign_mismatch_missing_axis_or_unverified_progressive_dual_pd: bool = False
+    using_eyeglass_rx_for_contacts_or_high_myopia_low_index_rimless: bool = False
+    expired_optical_rx_or_shipping_before_fclca_8_business_hours: bool = False
+    in_flow_tele_optometry_renewal_and_vsp_hsa_split_escrow_ready: bool = False
+
+
+def evaluate_ecommerce_optical_eyewear_contact_lens_policy(
+    policy_input: EcommerceOpticalEyewearContactLensPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_lens_remake_fclca_fine_and_expired_rx_churn_pool_usd
+        ),
+    )
+    if policy_input.expired_optical_rx_or_shipping_before_fclca_8_business_hours:
+        return {
+            "status_code": 451,
+            "decision": "EXPIRED_OPTICAL_RX_OR_FCLCA_8HR_WINDOW_PENDING",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.rx_sign_mismatch_missing_axis_or_unverified_progressive_dual_pd:
+        return {
+            "status_code": 403,
+            "decision": "INVALID_RX_SIGN_AXIS_OR_UNVERIFIED_PROGRESSIVE_PD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.using_eyeglass_rx_for_contacts_or_high_myopia_low_index_rimless:
+        return {
+            "status_code": 422,
+            "decision": "EYEGLASS_RX_FOR_CONTACTS_OR_INDEX_FRAME_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.in_flow_tele_optometry_renewal_and_vsp_hsa_split_escrow_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TELE_OPTOMETRY_RENEWAL_AND_VSP_HSA_SPLIT_CONFIRM",
+            "mandate_token": "optical_eyewear_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ARKIT_PD_AND_FCLCA_8HR_OPTICAL_AUTHORIZED",
+        "mandate_token": "optical_eyewear_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -44754,6 +44830,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_optical_eyewear_contact_lens_guard = {
+        "authorized_200": evaluate_ecommerce_optical_eyewear_contact_lens_policy(
+            EcommerceOpticalEyewearContactLensPolicyInput()
+        ),
+        "rx_sign_or_no_pd_403": evaluate_ecommerce_optical_eyewear_contact_lens_policy(
+            EcommerceOpticalEyewearContactLensPolicyInput(
+                rx_sign_mismatch_missing_axis_or_unverified_progressive_dual_pd=True
+            )
+        ),
+        "no_bc_dia_or_index_422": evaluate_ecommerce_optical_eyewear_contact_lens_policy(
+            EcommerceOpticalEyewearContactLensPolicyInput(
+                using_eyeglass_rx_for_contacts_or_high_myopia_low_index_rimless=True
+            )
+        ),
+        "expired_rx_or_fclca_8h_451": evaluate_ecommerce_optical_eyewear_contact_lens_policy(
+            EcommerceOpticalEyewearContactLensPolicyInput(
+                expired_optical_rx_or_shipping_before_fclca_8_business_hours=True
+            )
+        ),
+        "tele_od_and_vsp_hsa_409": evaluate_ecommerce_optical_eyewear_contact_lens_policy(
+            EcommerceOpticalEyewearContactLensPolicyInput(
+                in_flow_tele_optometry_renewal_and_vsp_hsa_split_escrow_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -45115,6 +45217,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_theme_park_ski_resort_ticketing_guard": ota_theme_park_ski_resort_ticketing_guard,
         "b2b_tradeshow_booth_sponsorship_drayage_guard": b2b_tradeshow_booth_sponsorship_drayage_guard,
         "cross_border_epr_packaging_weee_battery_guard": cross_border_epr_packaging_weee_battery_guard,
+        "ecommerce_optical_eyewear_contact_lens_guard": ecommerce_optical_eyewear_contact_lens_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -63595,6 +63698,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="eurepr-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FBA_OUTER_BOX_CARVEOUT_AND_ECO_MODULATION_BONUS_CONFIRM · Mandate: cross_border_epr_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 233 Optical Eyewear, FCLCA Contact-Lens Rx & AR PD Escrow (#352) -->
+      <div class="finops-box" id="ecommerce-optical-eyewear-contact-lens-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">👓 视光配镜、隐形眼镜订阅与渐进多焦点镜片电商 (Warby Parker / Zenni / 1-800 Contacts / VSP) 沙盒</div>
+            <div class="finops-sub">Round 233 (#352) · 验光单 OCR 正负号/散光轴位互锁与渐进片 ARKit ±0.5mm 双瞳距 (HTTP 403) + 隐形专属 BC/DIA 四要素与高度数 1.67/1.74 匹配锁 (HTTP 422) + FTC FCLCA 眼科诊所时区 8个营业小时核验与过期处方门禁 (HTTP 451) + 10m 远程续方与 VSP+HSA 拆单净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="optical-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度手填反近视/远视正负号或自测瞳距偏差致 $380 渐进镜片报废重配、FTC FCLCA 违规罚款与处方到期断订流失池 ($)
+            <input type="number" id="optical-gross-input" value="210000" min="10000" step="5000" oninput="recalcEcommerceOpticalEyewearContactLensSandbox()" />
+          </label>
+          <label>验光单 OCR 正负号 (+/-) 及散光轴位 (Axis 1°-180°) 交叉校验与渐进多焦点 ARKit 单眼双瞳距 (Dual-PD) 门禁
+            <select id="optical-pd-select" onchange="recalcEcommerceOpticalEyewearContactLensSandbox()">
+              <option value="pass">OCR 校验屈光度正负号与轴位完整 + ARKit TrueDepth 锁定 ±0.5mm 双瞳距与佩戴瞳高 (合规)</option>
+              <option value="block_403">顾客把近视 -3.25 手填成远视 +3.25 / 有散光漏填轴位 或 $380 渐进片拿塑料尺乱测瞳距致眩晕报废 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>隐形眼镜专属处方四要素 (Brand + Power + 基弧 BC + 直径 DIA) 与高度数/无框架高折射率 (1.67/1.74) 锁
+            <select id="optical-bcdia-select" onchange="recalcEcommerceOpticalEyewearContactLensSandbox()">
+              <option value="pass">隐形眼镜核验完整 Brand+BC 8.5+DIA 14.0 + -5.75D 高度数自动锁死 1.67 超薄高韧镜片 (合规)</option>
+              <option value="block_422">拿无基弧 BC 的普通框架眼镜验光单直接买隐形眼镜 或 -7.00D 大无框镜架选配易碎 8mm 厚 1.50 低折片 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国 FTC FCLCA (16 CFR Part 315) 眼科诊所时区 8个营业小时被动核验锁与处方有效期门禁
+            <select id="optical-fclca-select" onchange="recalcEcommerceOpticalEyewearContactLensSandbox()">
+              <option value="pass">处方在 12/24 个月有效期内 + 诊所被动核验严格走满医生时区 8 个营业小时才放行实扣发货 (安全)</option>
+              <option value="block_451">拿着 2 年前过期处方继续发隐形眼镜订阅 或 未等满诊所时区 8 个营业小时就抢先扣款发货招致 $50k FTC 罚单 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>结账内嵌 10 分钟持牌眼科医生远程续方 (Tele-Optometry) 与 VSP 视力险 + HSA 免税卡自动拆单
+            <select id="optical-opt-select" onchange="recalcEcommerceOpticalEyewearContactLensSandbox()">
+              <option value="enabled" selected>过期处方 10m 手机远程续方(留存84%) + 先扣 $150 VSP 福利再刷 HSA 免税卡 + 8盒年抛立减$100 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">处方过期直接拒单赶客去线下医院 + 全额刷普通信用卡事后手工寄纸质理赔表 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度车房重配与处方到期流失池</div>
+            <div class="finops-kpi-val" id="optical-gross-kpi">$210,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">3D瞳距与远程续方后净损耗</div>
+            <div class="finops-kpi-val" id="optical-net-kpi" style="color:#6ee7b7;">$132,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省镜片报废与断订流失</div>
+            <div class="finops-kpi-val" id="optical-savings-kpi" style="color:#38bdf8;">$77,700</div>
+          </div>
+        </div>
+        <div id="optical-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TELE_OPTOMETRY_RENEWAL_AND_VSP_HSA_SPLIT_CONFIRM · Mandate: optical_eyewear_escrow_optim_409
         </div>
       </div>
 
@@ -86121,6 +86281,79 @@ function recalcCrossBorderEPRPackagingWEEEBatterySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_TARE_BOM_AND_LUCID_WEEE_UIN_AUTHORIZED · Mandate: cross_border_epr_escrow_200';
+}}
+
+function recalcEcommerceOpticalEyewearContactLensSandbox() {{
+  const grossInput = document.getElementById('optical-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '210000'));
+  const pdGate = document.getElementById('optical-pd-select').value;
+  const bcdiaGate = document.getElementById('optical-bcdia-select').value;
+  const fclcaGate = document.getElementById('optical-fclca-select').value;
+  const optMode = document.getElementById('optical-opt-select').value;
+
+  const grossKpi = document.getElementById('optical-gross-kpi');
+  const netKpi = document.getElementById('optical-net-kpi');
+  const savingsKpi = document.getElementById('optical-savings-kpi');
+  const statusKpi = document.getElementById('optical-status-kpi');
+  const banner = document.getElementById('optical-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fclcaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EXPIRED_OPTICAL_RX_OR_FCLCA_8HR_WINDOW_PENDING · Mandate: null';
+    return;
+  }}
+  if (pdGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INVALID_RX_SIGN_AXIS_OR_UNVERIFIED_PROGRESSIVE_PD · Mandate: null';
+    return;
+  }}
+  if (bcdiaGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 EYEGLASS_RX_FOR_CONTACTS_OR_INDEX_FRAME_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TELE_OPTOMETRY_RENEWAL_AND_VSP_HSA_SPLIT_CONFIRM · Mandate: optical_eyewear_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_ARKIT_PD_AND_FCLCA_8HR_OPTICAL_AUTHORIZED · Mandate: optical_eyewear_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

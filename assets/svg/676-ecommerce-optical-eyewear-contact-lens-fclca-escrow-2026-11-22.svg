@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg676" x1="0%" y1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; #94a3b8; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg676)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 233 · Optical Eyewear, `FCLCA` Contact-Lens `Rx` &amp; `AR` `PD` Escrow</text>
+  <text x="48" y="74" class="sub">Warby Parker / 1-800 Contacts / Zenni / VSP · `8-Business-Hour FCLCA` Timer · `AR` `±0.5mm PD` Gate · `HSA/VSP` Split (-37%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #676 · FAQ #352</text>
+
+  <!-- Lane 1: Sign-Confusion (+/- Cylinder Transpose Error) & Bad Self-Measured PD (+/-5mm) on Progressive Lenses -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. `Rx` Sign &amp; `AR PD` Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops `SPH / CYL (+/-)` Sign-Entry &amp; Axis Errors:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Cross-Check Manual Entry vs `Rx_OCR_Scan` &amp;</text>
+  <text x="54" y="200" class="mono">Require `Axis (001°-180°)` Whenever `CYL != 0`!</text>
+  <text x="44" y="223" class="body-txt">• Stops Unverified Ruler `PD` on `$380` Progressives:</text>
+  <text x="54" y="243" class="mono">Require `ARKit/TrueDepth Dual-PD + Seg_Height`</text>
+  <text x="44" y="266" class="body-txt">• Eliminates custom ground progressive lenses</text>
+  <text x="54" y="286" class="body-txt">being scrapped because a buyer typed `+3.25`</text>
+  <text x="54" y="304" class="body-txt">instead of `-3.25` or guessed `PD = 63mm`</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 INVALID_RX_SIGN_AXIS_OR_UNVERIFIED_PROGRESSIVE_PD</text>
+
+  <!-- Lane 2: Using Eyeglass Rx for Contact Lenses (Missing Base Curve BC / Diameter DIA / Brand) & High-Index Frame Mismatch -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Contact-`BC/DIA` &amp; Index Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Blocks Fulfilling Contacts From an Eyeglass `Rx`:</text>
+  <text x="442" y="182" class="mono">Require Exact `Brand + Base_Curve (BC) + DIA`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">(Eyeglass Vertex Distance != Cornea Fit!)</text>
+  <text x="432" y="223" class="body-txt">• High-Myopia (`&lt; -6.00D`) Rimless/Thick-Edge Gate:</text>
+  <text x="442" y="243" class="mono">Enforce `1.67 / 1.74 High-Index` on `&gt;55mm` Frames</text>
+  <text x="432" y="266" class="body-txt">• Prevents "Coke-bottle" 8mm thick polycarbonate</text>
+  <text x="442" y="286" class="body-txt">lenses cracking drill-mount frames or buyers</text>
+  <text x="442" y="304" class="body-txt">ordering contacts without a contact-lens fitting</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 EYEGLASS_RX_FOR_CONTACTS_OR_INDEX_FRAME_MISMATCH</text>
+
+  <!-- Lane 3: FTC FCLCA 8-Business-Hour Verification Rule & Expired Prescription Guard -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `FTC FCLCA 8-Biz-Hr` Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Strict `16 CFR Part 315 (FCLCA)` Compliance:</text>
+  <text x="830" y="182" class="mono">Hold Contact-Lens Capture/Ship Until Prescriber</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Confirms or `8_Prescriber_Business_Hours` Elapse!</text>
+  <text x="820" y="223" class="body-txt">• Blocks Expired `Rx` (`&gt;12/24m` State Statutory Limit):</text>
+  <text x="830" y="243" class="body-txt">Never ship contact-lens subscriptions on an</text>
+  <text x="830" y="261" class="body-txt">expired `Rx` or use robotic robocalls that fail</text>
+  <text x="830" y="279" class="body-txt">FTC audibility rules (`$50,120/violation` fine!)</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 EXPIRED_OPTICAL_RX_OR_FCLCA_8HR_WINDOW_PENDING</text>
+
+  <!-- Bottom Tele-Optometry Renewal, VSP/EyeMed + HSA Split & Lens-Only Frame Reuse -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. In-Cart `Tele-Optometry` `Rx` Renewal + `VSP/EyeMed` + `HSA/FSA` 3-Way Split (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① 10-Min Tele-Exam Renewal</text>
+  <text x="62" y="462" class="body-txt">Routes expiring contact-lens</text>
+  <text x="62" y="480" class="body-txt">subscribers to a `$20`</text>
+  <text x="62" y="498" class="body-txt">OD-reviewed smartphone</text>
+  <text x="62" y="516" class="mono">vision test (Saves 84% Sub)</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② `VSP / EyeMed + HSA` Split</text>
+  <text x="337" y="462" class="body-txt">Applies `$150` vision plan</text>
+  <text x="337" y="480" class="body-txt">frame allowance first, then</text>
+  <text x="337" y="498" class="body-txt">bills remaining copay to</text>
+  <text x="337" y="516" class="mono">tax-free `HSA/FSA` card!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Lens-Reader Neutralization</text>
+  <text x="622" y="462" class="body-txt">Reads existing glasses `Rx`</text>
+  <text x="622" y="480" class="body-txt">via phone screen + camera</text>
+  <text x="622" y="498" class="body-txt">(`Lensometer App`) when</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">paper `Rx` is lost!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Annual-Supply Rebate</text>
+  <text x="907" y="462" class="body-txt">Instant-applies `$100`</text>
+  <text x="907" y="480" class="body-txt">manufacturer 8-box rebate</text>
+  <text x="907" y="498" class="body-txt">at checkout instead of</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Lab Remake &amp; Churn</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Lens-Remake &amp; Churn Saved</text>
+  <text x="46" y="642" class="mono">$77,700 Saved / $210k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">±0.5mm PD</text>
+  <text x="336" y="626" class="kpi-lbl">ARKit TrueDepth Dual-PD + SegHt</text>
+  <text x="336" y="642" class="mono">-78% Progressive Lens Remakes</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% FCLCA</text>
+  <text x="626" y="626" class="kpi-lbl">8-Business-Hour Passive Verify</text>
+  <text x="626" y="642" class="mono">Zero $50,120 FTC Violations</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">84% Retained</text>
+  <text x="916" y="626" class="kpi-lbl">In-Flow Tele-Optometry Renewal</text>
+  <text x="916" y="642" class="mono">VSP + HSA Tax-Free Auto-Split</text>
+</svg>
