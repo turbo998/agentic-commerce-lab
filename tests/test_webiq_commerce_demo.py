@@ -18706,6 +18706,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-multi-currency-fx-escrow-sandbox", html_zh)
 
+    def test_white_glove_furniture_delivery_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            WhiteGloveFurnitureDeliveryEscrowPolicyInput,
+            evaluate_white_glove_furniture_delivery_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_white_glove_furniture_delivery_escrow_policy(
+            WhiteGloveFurnitureDeliveryEscrowPolicyInput(
+                quarterly_furniture_and_appliance_delivery_pool_usd=108000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_3D_CLEARANCE_AND_WHITE_GLOVE_ROOM_OF_CHOICE_AUTHORIZED",
+        )
+
+        curb = evaluate_white_glove_furniture_delivery_escrow_policy(
+            WhiteGloveFurnitureDeliveryEscrowPolicyInput(
+                curbside_dump_over_35kg_or_onsite_stair_bracket_extortion=True
+            )
+        )
+        self.assertEqual(curb["status_code"], 403)
+        self.assertEqual(
+            curb["decision"],
+            "CURBSIDE_DUMP_OVER_35KG_OR_ONSITE_STAIR_BRACKET_EXTORTION_BLOCKED",
+        )
+
+        dim = evaluate_white_glove_furniture_delivery_escrow_policy(
+            WhiteGloveFurnitureDeliveryEscrowPolicyInput(
+                crated_dimension_exceeds_3d_elevator_diagonal_or_door_turn=True
+            )
+        )
+        self.assertEqual(dim["status_code"], 422)
+        self.assertEqual(
+            dim["decision"],
+            "CRATED_DIMENSION_EXCEEDS_3D_ELEVATOR_DIAGONAL_OR_DOOR_TURN_BLOCKED",
+        )
+
+        coi = evaluate_white_glove_furniture_delivery_escrow_policy(
+            WhiteGloveFurnitureDeliveryEscrowPolicyInput(
+                missing_building_coi_freight_permit_or_cpsc_sturdy_antitip_anchor=True
+            )
+        )
+        self.assertEqual(coi["status_code"], 451)
+        self.assertEqual(
+            coi["decision"],
+            "MISSING_BUILDING_COI_PERMIT_OR_CPSC_STURDY_ANTITIP_ANCHOR_HOLD",
+        )
+
+        optim = evaluate_white_glove_furniture_delivery_escrow_policy(
+            WhiteGloveFurnitureDeliveryEscrowPolicyInput(
+                quarterly_furniture_and_appliance_delivery_pool_usd=108000.0,
+                modular_kd_swap_and_backhaul_old_item_haul_away_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 37800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 70200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("white_glove_furniture_delivery_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("white-glove-furniture-delivery-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

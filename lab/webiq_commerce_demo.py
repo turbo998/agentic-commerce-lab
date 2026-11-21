@@ -26096,6 +26096,87 @@ def evaluate_cross_border_multi_currency_fx_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class WhiteGloveFurnitureDeliveryEscrowPolicyInput:
+    """Input contract for White-Glove Furniture & Appliance Delivery, 3D Elevator Clearance & Haul-Away Escrow."""
+
+    quarterly_furniture_and_appliance_delivery_pool_usd: float = 108000.0
+    curbside_dump_over_35kg_or_onsite_stair_bracket_extortion: bool = False
+    crated_dimension_exceeds_3d_elevator_diagonal_or_door_turn: bool = False
+    missing_building_coi_freight_permit_or_cpsc_sturdy_antitip_anchor: bool = False
+    mandate_signing_key_age_days: int = 30
+    modular_kd_swap_and_backhaul_old_item_haul_away_ready: bool = False
+
+
+def evaluate_white_glove_furniture_delivery_escrow_policy(
+    policy_input: WhiteGloveFurnitureDeliveryEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane White-Glove Furniture & Appliance Delivery, 3D Elevator Clearance & Haul-Away Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_furniture_and_appliance_delivery_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.missing_building_coi_freight_permit_or_cpsc_sturdy_antitip_anchor
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "MISSING_BUILDING_COI_PERMIT_OR_CPSC_STURDY_ANTITIP_ANCHOR_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.curbside_dump_over_35kg_or_onsite_stair_bracket_extortion:
+        return {
+            "status_code": 403,
+            "decision": "CURBSIDE_DUMP_OVER_35KG_OR_ONSITE_STAIR_BRACKET_EXTORTION_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.crated_dimension_exceeds_3d_elevator_diagonal_or_door_turn:
+        return {
+            "status_code": 422,
+            "decision": "CRATED_DIMENSION_EXCEEDS_3D_ELEVATOR_DIAGONAL_OR_DOOR_TURN_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.modular_kd_swap_and_backhaul_old_item_haul_away_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MODULAR_KD_SWAP_AND_BACKHAUL_OLD_ITEM_HAUL_AWAY_CONFIRM",
+            "mandate_token": "white_glove_delivery_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_3D_CLEARANCE_AND_WHITE_GLOVE_ROOM_OF_CHOICE_AUTHORIZED",
+        "mandate_token": "white_glove_delivery_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -35759,6 +35840,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    white_glove_furniture_delivery_escrow_guard = {
+        "authorized_200": evaluate_white_glove_furniture_delivery_escrow_policy(
+            WhiteGloveFurnitureDeliveryEscrowPolicyInput()
+        ),
+        "curbside_dump_or_stair_extortion_403": evaluate_white_glove_furniture_delivery_escrow_policy(
+            WhiteGloveFurnitureDeliveryEscrowPolicyInput(
+                curbside_dump_over_35kg_or_onsite_stair_bracket_extortion=True
+            )
+        ),
+        "elevator_diagonal_clearance_fail_422": evaluate_white_glove_furniture_delivery_escrow_policy(
+            WhiteGloveFurnitureDeliveryEscrowPolicyInput(
+                crated_dimension_exceeds_3d_elevator_diagonal_or_door_turn=True
+            )
+        ),
+        "missing_coi_or_antitip_anchor_451": evaluate_white_glove_furniture_delivery_escrow_policy(
+            WhiteGloveFurnitureDeliveryEscrowPolicyInput(
+                missing_building_coi_freight_permit_or_cpsc_sturdy_antitip_anchor=True
+            )
+        ),
+        "modular_kd_and_haul_away_409": evaluate_white_glove_furniture_delivery_escrow_policy(
+            WhiteGloveFurnitureDeliveryEscrowPolicyInput(
+                modular_kd_swap_and_backhaul_old_item_haul_away_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -36031,6 +36138,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "floral_gift_delivery_escrow_guard": floral_gift_delivery_escrow_guard,
         "b2b_corporate_swag_print_escrow_guard": b2b_corporate_swag_print_escrow_guard,
         "cross_border_multi_currency_fx_escrow_guard": cross_border_multi_currency_fx_escrow_guard,
+        "white_glove_furniture_delivery_escrow_guard": white_glove_furniture_delivery_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -49426,6 +49534,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="fx-escrow-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 LIKE_FOR_LIKE_MULTI_CURRENCY_NETTING_AND_WHOLESALE_FX_CONFIRM · Mandate: cross_border_fx_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 144 White-Glove Furniture & Appliance Delivery, 3D Elevator Clearance & Haul-Away Escrow -->
+      <div class="finops-box" id="white-glove-furniture-delivery-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">🛋️ 大件家具家电送装一体 (Wayfair / IKEA / 京东大件 / 万师傅)、防电梯卡死退货与防坐地起价托管沙盒 (Round 144)</div>
+            <div class="finops-subtitle">实测硬控 &gt;35kg 重物拉黑路边卸货(Curbside)强制一口价入室组装含拆木架清垃圾+封顶挂架辅材费 (HTTP 403)、购前 3D 电梯轿厢对角线与门框转弯半径校验防 2.4m 沙发卡在 1 楼倒赔 $380 往返退货费 (HTTP 422)、物业 $2M COI 货梯通行证与 CPSC 高柜防倾倒墙锚 (HTTP 451) 及分体模块款切换+返程车顺路拉走旧床垫净省 35% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="white-glove-status-kpi">HTTP 409 · MODULAR_KD_SWAP_AND_BACKHAUL_OLD_ITEM_HAUL_AWAY_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度企业办公家具、大件家居与巨幕电视送装采购总池 ($ USD)
+            <input type="range" id="white-glove-pool-slider" min="20000" max="450000" step="5000" value="108000" oninput="updateWhiteGloveFurnitureDeliveryEscrowSandbox()" />
+            <span id="white-glove-pool-val" style="color:#6ee7b7; font-family:monospace;">$108,000</span>
+          </label>
+          <label>
+            一口价入室组装含木架清运 (Room-of-Choice) 与辅材封顶 (HTTP 403)
+            <select id="white-glove-curb-select" onchange="updateWhiteGloveFurnitureDeliveryEscrowSandbox()">
+              <option value="pass">包干入室摆放+当场组装+100% 清运带走木架纸箱泡沫 + 挂架辅材前置锁价 (放行)</option>
+              <option value="block">200斤餐桌默认扔小区门口马路牙子不管索要 $180 现金搬楼费 或 现场强收 $160 电视挂架费 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            购前 3D 电梯轿厢对角线、门框与楼梯拐角通关校验 (HTTP 422)
+            <select id="white-glove-dim-select" onchange="updateWhiteGloveFurnitureDeliveryEscrowSandbox()">
+              <option value="pass">带包装长宽高 &lt; 电梯门对角线余量 + 预留双开门冰箱两侧 5cm 散热开门间隙 (合规)</option>
+              <option value="block">未测电梯深度盲发 2.45m 整装沙发卡在 1 楼进不去，退货被迫倒贴 15% 折旧费与 $280 专车费 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            物业 $2M COI 货梯通行证与 CPSC STURDY 高柜防倾倒墙锚 (HTTP 451)
+            <select id="white-glove-coi-select" onchange="updateWhiteGloveFurnitureDeliveryEscrowSandbox()">
+              <option value="clear">提前 48h 办妥大厦物业 COI 货梯预约 + &gt;=68cm 斗柜/书架上传防倾倒墙锚固定照 (正常)</option>
+              <option value="hold">未办物业 COI 保险单被写字楼保安拒之门外产生二次派车费 或 高柜未打防倾倒墙锚 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            超长款自动转分体模块版 (KD) 与送新返程车顺路拉走旧家具 (HTTP 409)
+            <select id="white-glove-opt-select" onchange="updateWhiteGloveFurnitureDeliveryEscrowSandbox()">
+              <option value="enabled" selected>卡电梯风险自动换分箱模块款 + 复用送新返程车 $20 顺路拉走旧床垫/旧冰箱 + 独立安装竞价净省 35% (HTTP 409)</option>
+              <option value="baseline">常规 3D 电梯通关核验与白手套入室安装结算 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度大件家具家电与送装总池</div>
+            <div class="finops-kpi-val" id="white-glove-gross-kpi">$108,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">3D 通关与送新拉旧后净支出</div>
+            <div class="finops-kpi-val" id="white-glove-net-kpi" style="color:#6ee7b7;">$70,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省卡电梯退货费与清运费</div>
+            <div class="finops-kpi-val" id="white-glove-savings-kpi" style="color:#38bdf8;">$37,800</div>
+          </div>
+        </div>
+        <div id="white-glove-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MODULAR_KD_SWAP_AND_BACKHAUL_OLD_ITEM_HAUL_AWAY_CONFIRM · Mandate: white_glove_delivery_optim_409
         </div>
       </div>
 
@@ -65453,6 +65624,80 @@ function updateCrossBorderMultiCurrencyFxEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 LOCAL_CURRENCY_AND_ISO4217_EXPONENT_VERIFIED_AUTHORIZED · Mandate: cross_border_fx_escrow_200';
+}}
+
+function updateWhiteGloveFurnitureDeliveryEscrowSandbox() {{
+  const slider = document.getElementById('white-glove-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '108000');
+  const curbMode = document.getElementById('white-glove-curb-select').value;
+  const dimMode = document.getElementById('white-glove-dim-select').value;
+  const coiMode = document.getElementById('white-glove-coi-select').value;
+  const optMode = document.getElementById('white-glove-opt-select').value;
+
+  document.getElementById('white-glove-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('white-glove-status-kpi');
+  const grossKpi = document.getElementById('white-glove-gross-kpi');
+  const netKpi = document.getElementById('white-glove-net-kpi');
+  const savingsKpi = document.getElementById('white-glove-savings-kpi');
+  const banner = document.getElementById('white-glove-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (coiMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 MISSING_BUILDING_COI_PERMIT_OR_CPSC_STURDY_ANTITIP_ANCHOR_HOLD · Mandate: null';
+    return;
+  }}
+  if (curbMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CURBSIDE_DUMP_OVER_35KG_OR_ONSITE_STAIR_BRACKET_EXTORTION_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (dimMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CRATED_DIMENSION_EXCEEDS_3D_ELEVATOR_DIAGONAL_OR_DOOR_TURN_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MODULAR_KD_SWAP_AND_BACKHAUL_OLD_ITEM_HAUL_AWAY_CONFIRM · Mandate: white_glove_delivery_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_3D_CLEARANCE_AND_WHITE_GLOVE_ROOM_OF_CHOICE_AUTHORIZED · Mandate: white_glove_delivery_200';
 }}
 
 function updateStage1756Sandbox() {{

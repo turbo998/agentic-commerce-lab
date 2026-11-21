@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg587" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+    <linearGradient id="accent587" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg587)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent587)" rx="3" />
+
+  <text x="40" y="58" class="title">大件家具家电送装一体 (Wayfair / IKEA / 京东大件 / 万师傅)、防电梯卡死退货与防坐地起价托管</text>
+  <text x="40" y="80" class="subtitle">Round 144 · 防 2.3m 沙发进不去电梯倒赔 $380 往返运费、防楼下坐地起价收搬楼费 &amp; 送装拆旧一体净省 35% (SVG 587)</text>
+
+  <!-- Left Card: 3 Big-Ticket Furniture & Appliance Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大大件家居履约噩梦</text>
+  <text x="56" y="164" class="card-title">1. 电梯/门框对角线卡死倒赔 $380 (HTTP 422)</text>
+  <text x="56" y="184" class="body">• 买 $2,400 的 2.35m 整装真皮沙发或双开门冰箱，未算外包装</text>
+  <text x="56" y="202" class="body">  三维与老小区电梯轿厢对角线，送到楼下发现根本进不去!</text>
+  <text x="56" y="220" class="warn">• 退货被扣 15% 折旧费 ($360) + 往返干线大件物流费 $280!</text>
+
+  <text x="56" y="256" class="card-title">2. 扔马路牙子不管与私收搬楼加急费 (HTTP 403)</text>
+  <text x="56" y="276" class="body">• 默认物流为 `Curbside (仅卸到路边)`，200斤餐桌扔公寓大门口</text>
+  <text x="56" y="294" class="body">• 或司机以“超高费/拆包装费/挂架费”名义当场索要 $180 现金</text>
+  <text x="56" y="312" class="warn">• 送货与安装分属两拨人，沙发在客厅放了 5 天安装师傅才来!</text>
+
+  <text x="56" y="348" class="card-title">3. 物业禁入无保险证明 (COI) 与旧床垫无处扔</text>
+  <text x="56" y="368" class="body">• 高档写字楼/公寓物业要求货车出示 $2M 责任险证明 (COI)</text>
+  <text x="56" y="386" class="body">  且仅允许周二至周四 10:00-15:00 走货运电梯，违者保安拦门</text>
+  <text x="56" y="404" class="warn">• 新床垫到了，旧床垫司机拒拉，市政大件垃圾罚款 $250 (HTTP 451)</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: CURBSIDE_DUMP_OR_UNBUNDLED_STAIR_EXTORTION</text>
+  <text x="70" y="502" class="warn">• HTTP 422: ELEVATOR_DOOR_DIAGONAL_CLEARANCE_FAILURE</text>
+  <text x="70" y="524" class="warn">• HTTP 451: MISSING_BUILDING_COI_OR_ANTI_TIP_SAFETY_HOLD</text>
+  <text x="70" y="546" class="mono">• HTTP 409: MODULAR_KD_SPLIT_AND_HAUL_AWAY_BUNDLE_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: WHITE_GLOVE_ROOM_OF_CHOICE_AUTHORIZED</text>
+  <text x="70" y="596" class="body">铁律: 装车前必算电梯对角线 + 拆包清垃圾拍水平仪照才放款!</text>
+
+  <!-- Center Card: 4-Stage White-Glove Delivery Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶大件三维通关校验与送装拆旧架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="175" class="card-title" fill="#38bdf8">Gate 1: 入户组装包干锁 (Room-of-Choice + Trash Removal)</text>
+  <text x="450" y="195" class="body">• 严禁超过 35kg 的大家具默认走路边卸货 (Curbside Delivery)</text>
+  <text x="450" y="213" class="body">• 强制绑定“搬运入室+当场组装+带走全部木架泡沫纸箱”一口价</text>
+  <text x="450" y="231" class="mono">• 现场私收上楼费或高价电视挂架耗材刺客 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#10b981" />
+  <text x="450" y="282" class="card-title" fill="#6ee7b7">Gate 2: 电梯/门框/楼梯拐角 3D 几何通关计算器 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 下单前强制校验: `箱体长L &lt; 电梯门对角线 D_door - 5cm`</text>
+  <text x="450" y="320" class="body">  且 `旋转半径 R &lt; 电梯进深 × 走廊宽度` (含冰箱散热预留 5cm)</text>
+  <text x="450" y="338" class="body">• 若整装大沙发进不去电梯 -&gt; 立即拦截并自动推荐模块化分体款 (KD)</text>
+  <text x="450" y="354" class="mono">• 未校验电梯门宽盲发整装超长大件 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 物业 COI 保险单预审与高柜防倾倒锁 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 提前 48h 自动向公寓/大厦物业发送承运商 COI 保单并锁货梯时段</text>
+  <text x="450" y="437" class="body">• 超过 68cm 高的儿童斗柜/书架强制核验 CPSC STURDY 防倾倒墙锚</text>
+  <text x="450" y="455" class="mono">• 无物业货梯通行证或高柜未打墙锚防倾倒固定 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#f59e0b" />
+  <text x="450" y="508" class="card-title" fill="#fcd34d">Gate 4: 送新拆旧同车拉走与鲁班/万师傅竞价 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 利用送新家具返程空车顺便拉走旧床垫/旧冰箱 (仅收 $20 vs 专叫</text>
+  <text x="450" y="546" class="body">  垃圾清运公司 $150!)，家电同步申领 15%~20% 以旧换新绿色国补</text>
+  <text x="450" y="566" class="mono">• 标品家具与第三方专业安装平台 (万师傅/TaskRabbit) 拆开比价</text>
+  <text x="450" y="586" class="mono">• 0 进不去退货费 + 返程顺路清旧 + 安装比价 -&gt; 净省 35% 成本</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大大件家居送装与清运栈</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. 京东大件物流 / 菜鸟家装 (送装拆旧一体)</text>
+  <text x="846" y="182" class="body">• 优势: 行业标杆“送货、安装、拆旧、带走包装垃圾”一次上门全搞定</text>
+  <text x="846" y="198" class="body">• 特性: 公开透明的辅材收费标准表，杜绝师傅现场乱收支架费</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Wayfair White Glove / Ryder Last Mile</text>
+  <text x="846" y="244" class="body">• 优势: 北美大件分三级 (Curbside / Threshold / White Glove)</text>
+  <text x="846" y="260" class="body">• 注意: 采购 Agent 必须显式锁定 `Room of Choice + Assembly`</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. 万师傅 / 鲁班到家 / TaskRabbit (独立安装)</text>
+  <text x="846" y="306" class="body">• 优势: 品牌原厂安装费往往溢价 100%，拆开叫认证师傅立省一半</text>
+  <text x="846" y="322" class="body">• 特性: 完工后强制上传 4 张安装成品照与防倾倒固定照才解冻工费</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. 模块化分体家具 (Burrow / Lovesac / 源氏木语 KD)</text>
+  <text x="846" y="368" class="body">• 优势: 将 2.4m 大沙发拆成 4 个标准快递箱，老破小楼梯 100% 进得去</text>
+  <text x="846" y="384" class="body">• 特性: 彻底免除 $300 吊车吊装上楼费与高昂专车干线物流费</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度大件家具家电采购与送装池 ($108,000)</text>
+  <text x="860" y="456" class="body">• 传统卡电梯退货费+坐地起价+单独请清运: $108,000/季</text>
+  <text x="860" y="476" class="mono">• 3D 电梯对角线预检消除进不去退货折旧费: -$16,200</text>
+  <text x="860" y="496" class="mono">• 送新返程顺路拉走旧家具 + 绿色换新国补: -$11,880</text>
+  <text x="860" y="516" class="mono">• 拦截现场乱收搬楼/支架费与独立安装竞价: -$9,720</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净支出: $70,200 (净省 $37,800 / -35%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: white_glove_delivery_optim_409</text>
+</svg>
