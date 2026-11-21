@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`323` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`324` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (20 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (46 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (120 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (72 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (73 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (27 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (38 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -228,7 +228,7 @@
 | 120 | **E-Commerce Wedding & Baby Gift Registry, Group Gifting & Anti-Triangulation Escrow (`Babylist / Zola / Amazon Registry / Shopify`), 20-Minute Duplicate-Gift Mutex, Pre-Shipment Digital Swap & Fraud-Safe Completion Discount (`-35%` Return & Fraud Loss) Agent Architecture Selection FAQ** | [English](ecommerce-gift-registry-group-gifting-duplicate-lock-triangulation-escrow-agent-selection-faq.en.md) · [中文](ecommerce-gift-registry-group-gifting-duplicate-lock-triangulation-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (72 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (73 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -306,6 +306,7 @@
 | 70 | **Enterprise B2B Tail-Spend & Spot-Buy Automation, Anti-Smurfing Split-PO Guard & Autonomous Micro-RFQ Escrow (`Fairmarkit / Amazon Business / Coupa / Zip`), 14-Day Split-Order Rollup, Contract Catalog Redirect & Single-Creditor `VCN` Settlement (`-34%` Tail Spend) Agent Architecture Selection FAQ** | [English](b2b-tail-spend-spot-buy-maverick-spend-split-po-escrow-agent-selection-faq.en.md) · [中文](b2b-tail-spend-spot-buy-maverick-spend-split-po-escrow-agent-selection-faq.md) |
 | 71 | **Enterprise B2B Index-Based Formula Pricing, `Should-Cost BOM` Pass-Through & Deflation-Clawback Escrow (`SAP Ariba / Coupa / Mintec / ICIS / Fastmarkets`), Anti-"Rocket-and-Feather" Ratchet, Component-Weight Scaling & Automated `SAP PIR` Sync (`-35%` Commodity Spend) Agent Architecture Selection FAQ** | [English](b2b-index-based-formula-pricing-commodity-pass-through-should-cost-escrow-agent-selection-faq.en.md) · [中文](b2b-index-based-formula-pricing-commodity-pass-through-should-cost-escrow-agent-selection-faq.md) |
 | 72 | **B2B CPG Trade Promotion Management (`TPM`), `EDI 852` Scan-Based Billback & Shelf-Vision Escrow (`SAP TPM / Salesforce CG Cloud / Trax / Crisp`), Anti-"Phantom Endcap" Vision Gate, Forward-Buying Cap & `EDI 812` Deduction Defense (`-35%` Trade Spend) Agent Architecture Selection FAQ** | [English](b2b-cpg-trade-promotion-management-tpm-scan-billback-shelf-vision-escrow-agent-selection-faq.en.md) · [中文](b2b-cpg-trade-promotion-management-tpm-scan-billback-shelf-vision-escrow-agent-selection-faq.md) |
+| 73 | **B2B Dealer & Franchisee Portal, `Co-Op / MDF` Proof-of-Performance Audit & Warranty-Claim Escrow (`Salesforce B2B Commerce / SAP Commerce / Tavant / Channeltivity`), Direct-to-Media `MDF`, `IoT` Fault-Code + Field-Destroy Video Lock & 60-Day Net-of-Return Rebate (`-36%` Channel Loss) Agent Architecture Selection FAQ** | [English](b2b-dealer-franchise-portal-mdf-coop-audit-warranty-claim-escrow-agent-selection-faq.en.md) · [中文](b2b-dealer-franchise-portal-mdf-coop-audit-warranty-claim-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (27 Guides)

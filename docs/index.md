@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`323` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`324` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（20 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（46 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（120 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（72 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（73 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（27 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（38 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -228,7 +228,7 @@
 | 120 | **电商婚礼/新生儿心愿单与多人众筹送礼（Gift Registry & Group Gifting：Babylist / Zola / Amazon Registry / Target）、防“3 位亲友同时买重同一台 $800 婴儿车”、防黑卡假心愿单洗钱（Triangulation Fraud）与发货前数字拆礼置换（Pre-Ship Digital Swap）托管“防新人在度蜜月包裹堆满大堂被偷、防凑份子差 $100 卡死发不出货与净省 35% 逆向物流损耗”Agent 架构选型 FAQ** | [中文](ecommerce-gift-registry-group-gifting-duplicate-lock-triangulation-escrow-agent-selection-faq.md) · [English](ecommerce-gift-registry-group-gifting-duplicate-lock-triangulation-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（72 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（73 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -306,6 +306,7 @@
 | 70 | **企业 B2B 长尾零星采购（Tail-Spend Management & Spot Buy：Fairmarkit / Amazon Business / Coupa / Zip）、防“化整为零拆单逃避审批（Split-Order Smurfing）”与目录外自动三家比价托管“防把 $28,000 采购拆成 3 笔 $9,500 绕过 VP 审批、防放着年框协议价不买去零售店高价野采与免建一次性供应商档案净省 34%”Agent 架构选型 FAQ** | [中文](b2b-tail-spend-spot-buy-maverick-spend-split-po-escrow-agent-selection-faq.md) · [English](b2b-tail-spend-spot-buy-maverick-spend-split-po-escrow-agent-selection-faq.en.md) |
 | 71 | **企业 B2B 大宗商品与包材“指数挂钩公式调价（Index-Based Formula Pricing：SAP Ariba / Coupa / Mintec / ICIS / Fastmarkets）”、应该成本（`Should-Cost BOM`）权重传导与下行跌价自动追回托管“防供应商在原料涨价时秒发涨价函、原料暴跌 20% 时装死不降价（棘轮效应），防拿 40% 原料涨幅给 100% 成品全额涨价净省 35%”Agent 架构选型 FAQ** | [中文](b2b-index-based-formula-pricing-commodity-pass-through-should-cost-escrow-agent-selection-faq.md) · [English](b2b-index-based-formula-pricing-commodity-pass-through-should-cost-escrow-agent-selection-faq.en.md) |
 | 72 | **快消品牌与商超零售“渠道促销费用管理（Trade Promotion Management `TPM`：SAP TPM / Salesforce CG Cloud / Anaplan / Trax）”、门店端架 AI 视觉验真与收银实销返利（`Scan-Based Billback`）托管“防交了 $50,000 端架堆头费货却锁在商超后仓没摆出来、防经销商趁 8 折档期狂囤 1 万箱过后倒卖窜货与拦截无合同扣款净省 35%”Agent 架构选型 FAQ** | [中文](b2b-cpg-trade-promotion-management-tpm-scan-billback-shelf-vision-escrow-agent-selection-faq.md) · [English](b2b-cpg-trade-promotion-management-tpm-scan-billback-shelf-vision-escrow-agent-selection-faq.en.md) |
+| 73 | **品牌经销商与特许加盟门户（B2B Dealer & Franchisee Portal：Salesforce B2B Commerce / SAP Commerce / Tavant）、联合营销基金（`Co-Op / MDF`）核销防骗补与售后保修旧件索赔（`Warranty Claim`）托管“防经销商找熟人开假广告发票或夹带竞品骗走 $40,000 市场补贴、防维修站谎报好零件损坏骗领免费原厂备件倒卖与防季末冲量次月退货套返利净省 36%”Agent 架构选型 FAQ** | [中文](b2b-dealer-franchise-portal-mdf-coop-audit-warranty-claim-escrow-agent-selection-faq.md) · [English](b2b-dealer-franchise-portal-mdf-coop-audit-warranty-claim-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（27 篇）

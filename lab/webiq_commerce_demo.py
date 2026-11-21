@@ -30649,6 +30649,82 @@ def evaluate_ecommerce_gift_registry_group_gifting_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bDealerPortalMdfWarrantyPolicyInput:
+    quarterly_mdf_fraud_phantom_warranty_and_rebate_stuffing_pool_usd: float = 190000.0
+    unapproved_mdf_claim_or_competitor_shared_ad_below_50pct_share: bool = False
+    warranty_part_claim_without_iot_fault_log_or_field_destroy_proof: bool = False
+    eoq_order_stuffing_followed_by_return_dropping_rebate_tier: bool = False
+    direct_media_mdf_field_destroy_vision_and_60d_net_rebate_ready: bool = False
+
+
+def evaluate_b2b_dealer_portal_mdf_warranty_policy(
+    policy_input: B2bDealerPortalMdfWarrantyPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_mdf_fraud_phantom_warranty_and_rebate_stuffing_pool_usd
+        ),
+    )
+    if policy_input.eoq_order_stuffing_followed_by_return_dropping_rebate_tier:
+        return {
+            "status_code": 451,
+            "decision": "EOQ_STUFF_AND_RETURN_REBATE_GAMING_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unapproved_mdf_claim_or_competitor_shared_ad_below_50pct_share:
+        return {
+            "status_code": 403,
+            "decision": "UNAPPROVED_MDF_OR_COMPETITOR_AD_CLAIM_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.warranty_part_claim_without_iot_fault_log_or_field_destroy_proof:
+        return {
+            "status_code": 422,
+            "decision": "PHANTOM_WARRANTY_PART_OR_LABOR_PADDING_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.direct_media_mdf_field_destroy_vision_and_60d_net_rebate_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DIRECT_MDF_FIELD_DESTROY_WARRANTY_AND_NET_REBATE_CONFIRM",
+            "mandate_token": "dealer_portal_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_DEALER_MDF_AND_WARRANTY_CLAIM_AUTHORIZED",
+        "mandate_token": "dealer_portal_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -41898,6 +41974,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_dealer_portal_mdf_warranty_guard = {
+        "authorized_200": evaluate_b2b_dealer_portal_mdf_warranty_policy(
+            B2bDealerPortalMdfWarrantyPolicyInput()
+        ),
+        "unapproved_mdf_or_rival_403": evaluate_b2b_dealer_portal_mdf_warranty_policy(
+            B2bDealerPortalMdfWarrantyPolicyInput(
+                unapproved_mdf_claim_or_competitor_shared_ad_below_50pct_share=True
+            )
+        ),
+        "phantom_warranty_part_422": evaluate_b2b_dealer_portal_mdf_warranty_policy(
+            B2bDealerPortalMdfWarrantyPolicyInput(
+                warranty_part_claim_without_iot_fault_log_or_field_destroy_proof=True
+            )
+        ),
+        "eoq_stuff_and_return_451": evaluate_b2b_dealer_portal_mdf_warranty_policy(
+            B2bDealerPortalMdfWarrantyPolicyInput(
+                eoq_order_stuffing_followed_by_return_dropping_rebate_tier=True
+            )
+        ),
+        "direct_mdf_and_destroy_409": evaluate_b2b_dealer_portal_mdf_warranty_policy(
+            B2bDealerPortalMdfWarrantyPolicyInput(
+                direct_media_mdf_field_destroy_vision_and_60d_net_rebate_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -42231,6 +42333,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_saas_predictive_churn_seat_swap_guard": b2b_saas_predictive_churn_seat_swap_guard,
         "ondemand_home_services_marketplace_guard": ondemand_home_services_marketplace_guard,
         "ecommerce_gift_registry_group_gifting_guard": ecommerce_gift_registry_group_gifting_guard,
+        "b2b_dealer_portal_mdf_warranty_guard": b2b_dealer_portal_mdf_warranty_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -59115,6 +59218,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="registry-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PRE_SHIP_DIGITAL_SWAP_AND_GROUP_GIFT_POOL_CONFIRM · Mandate: gift_registry_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 205 B2B Dealer & Franchisee Portal, Co-Op/MDF Audit & Warranty-Claim Escrow (#324) -->
+      <div class="finops-box" id="b2b-dealer-portal-mdf-warranty-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🚗 品牌 B2B 经销商门户 (Salesforce B2B / Tavant)、MDF 联合营销防骗补与售后保修索赔沙盒</div>
+            <div class="finops-sub">Round 205 (#324) · MDF 事前预批与本品版面 &gt;=50% 零竞品视觉审计 (HTTP 403) + 保修绑定 IoT 故障码与旧件剪线销毁视频 (HTTP 422) + 阶梯返利 T+60d 扣除退货净额重算 (HTTP 451) + 直投媒体与免寄旧件净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="dealer-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度经销商假广告发票骗 MDF、维修站没坏报坏骗原厂新备件与季末冲量退货套返利池 ($)
+            <input type="number" id="dealer-gross-input" value="190000" min="10000" step="5000" oninput="recalcB2bDealerPortalMdfWarrantySandbox()" />
+          </label>
+          <label>Co-Op / MDF 联合营销基金事前预批与排面占比 (&gt;=50% 且零竞品) 视觉审计
+            <select id="dealer-mdf-select" onchange="recalcB2bDealerPortalMdfWarrantySandbox()">
+              <option value="pass">持有事前 Pre-Approval 号 + 本品牌画面占比 &gt;=50% 零竞品 + 直连媒体 API (合规)</option>
+              <option value="block_403">找熟人图文店虚开 $40k 假发票 或 印了含 3 家竞品的传单来找厂家报销 100% 费用 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>售后保修索赔绑定 IoT/OBD 硬件故障码与旧件实时剪线销毁视频 (Field-Destroy)
+            <select id="dealer-warranty-select" onchange="recalcB2bDealerPortalMdfWarrantySandbox()">
+              <option value="pass">云端已上报真实硬件故障码 + 旧件序列号铭牌已拍剪断视频 + 原厂标准工时 (合规)</option>
+              <option value="block_422">机器无故障码却谎报换 $220 主板骗领原厂新件倒卖 或 手填夸大 3 倍保修工时 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>季度阶梯返利 T+60d 扣除退货净额 (Net-of-Return) 与 2:1 滞销换货锁
+            <select id="dealer-rebate-select" onchange="recalcB2bDealerPortalMdfWarrantySandbox()">
+              <option value="pass">季末满 60 天扣除退货后按净出货额结算返利 + 滞销换货 &lt;=5% 绑 2:1 新单 (安全)</option>
+              <option value="block_451">12月30日狂下 $500k 订单骗取最高档 8% 返利支票，1月5日立刻退货 $250k (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>门户内嵌直连媒体投流台与免寄旧件 3 秒视频核销
+            <select id="dealer-opt-select" onchange="recalcB2bDealerPortalMdfWarrantySandbox()">
+              <option value="enabled" selected>总部账户直付本地广告 API + 剪线视频省 80% 旧件寄回运费 + 净额返利 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统线下收纸质发票报销且全量破旧零件花快递费寄回总部 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度渠道 MDF 骗补与假保修总池</div>
+            <div class="finops-kpi-val" id="dealer-gross-kpi">$190,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">故障码与净额返利托管后净支出</div>
+            <div class="finops-kpi-val" id="dealer-net-kpi" style="color:#6ee7b7;">$121,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省渠道骗补、假保修与旧件运费</div>
+            <div class="finops-kpi-val" id="dealer-savings-kpi" style="color:#38bdf8;">$68,400</div>
+          </div>
+        </div>
+        <div id="dealer-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DIRECT_MDF_FIELD_DESTROY_WARRANTY_AND_NET_REBATE_CONFIRM · Mandate: dealer_portal_escrow_optim_409
         </div>
       </div>
 
@@ -79597,6 +79757,79 @@ function recalcEcommerceGiftRegistryGroupGiftingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_REGISTRY_GIFT_PURCHASE_AUTHORIZED · Mandate: gift_registry_escrow_200';
+}}
+
+function recalcB2bDealerPortalMdfWarrantySandbox() {{
+  const grossInput = document.getElementById('dealer-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '190000'));
+  const mdfGate = document.getElementById('dealer-mdf-select').value;
+  const warrantyGate = document.getElementById('dealer-warranty-select').value;
+  const rebateGate = document.getElementById('dealer-rebate-select').value;
+  const optMode = document.getElementById('dealer-opt-select').value;
+
+  const grossKpi = document.getElementById('dealer-gross-kpi');
+  const netKpi = document.getElementById('dealer-net-kpi');
+  const savingsKpi = document.getElementById('dealer-savings-kpi');
+  const statusKpi = document.getElementById('dealer-status-kpi');
+  const banner = document.getElementById('dealer-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (rebateGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EOQ_STUFF_AND_RETURN_REBATE_GAMING_HOLD · Mandate: null';
+    return;
+  }}
+  if (mdfGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNAPPROVED_MDF_OR_COMPETITOR_AD_CLAIM_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (warrantyGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PHANTOM_WARRANTY_PART_OR_LABOR_PADDING_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DIRECT_MDF_FIELD_DESTROY_WARRANTY_AND_NET_REBATE_CONFIRM · Mandate: dealer_portal_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_DEALER_MDF_AND_WARRANTY_CLAIM_AUTHORIZED · Mandate: dealer_portal_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -22793,6 +22793,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-gift-registry-group-gifting-sandbox", html_zh)
 
+    def test_b2b_dealer_portal_mdf_warranty_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bDealerPortalMdfWarrantyPolicyInput,
+            evaluate_b2b_dealer_portal_mdf_warranty_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_dealer_portal_mdf_warranty_policy(
+            B2bDealerPortalMdfWarrantyPolicyInput(
+                quarterly_mdf_fraud_phantom_warranty_and_rebate_stuffing_pool_usd=190000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_DEALER_MDF_AND_WARRANTY_CLAIM_AUTHORIZED",
+        )
+
+        mdf = evaluate_b2b_dealer_portal_mdf_warranty_policy(
+            B2bDealerPortalMdfWarrantyPolicyInput(
+                unapproved_mdf_claim_or_competitor_shared_ad_below_50pct_share=True
+            )
+        )
+        self.assertEqual(mdf["status_code"], 403)
+        self.assertEqual(
+            mdf["decision"],
+            "UNAPPROVED_MDF_OR_COMPETITOR_AD_CLAIM_BLOCKED",
+        )
+
+        warranty = evaluate_b2b_dealer_portal_mdf_warranty_policy(
+            B2bDealerPortalMdfWarrantyPolicyInput(
+                warranty_part_claim_without_iot_fault_log_or_field_destroy_proof=True
+            )
+        )
+        self.assertEqual(warranty["status_code"], 422)
+        self.assertEqual(
+            warranty["decision"],
+            "PHANTOM_WARRANTY_PART_OR_LABOR_PADDING_BLOCKED",
+        )
+
+        rebate = evaluate_b2b_dealer_portal_mdf_warranty_policy(
+            B2bDealerPortalMdfWarrantyPolicyInput(
+                eoq_order_stuffing_followed_by_return_dropping_rebate_tier=True
+            )
+        )
+        self.assertEqual(rebate["status_code"], 451)
+        self.assertEqual(
+            rebate["decision"],
+            "EOQ_STUFF_AND_RETURN_REBATE_GAMING_HOLD",
+        )
+
+        optim = evaluate_b2b_dealer_portal_mdf_warranty_policy(
+            B2bDealerPortalMdfWarrantyPolicyInput(
+                quarterly_mdf_fraud_phantom_warranty_and_rebate_stuffing_pool_usd=190000.0,
+                direct_media_mdf_field_destroy_vision_and_60d_net_rebate_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 68400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 121600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_dealer_portal_mdf_warranty_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-dealer-portal-mdf-warranty-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
