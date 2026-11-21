@@ -26258,6 +26258,79 @@ def evaluate_virtual_waiting_room_fair_queue_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommercePromoStackingEscrowPolicyInput:
+    quarterly_promo_subsidy_and_glitch_risk_pool_usd: float = 115000.0
+    stacked_discount_below_cogs_margin_floor_glitch: bool = False
+    leaked_static_code_or_pre_ship_filler_cancel_abuse: bool = False
+    velocity_spike_10x_circuit_breaker_or_gift_card_cashout: bool = False
+    propensity_minimum_discount_uplift_elasticity_ready: bool = False
+
+
+def evaluate_ecommerce_promo_stacking_escrow_policy(
+    policy_input: EcommercePromoStackingEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_promo_subsidy_and_glitch_risk_pool_usd)
+    )
+    if policy_input.velocity_spike_10x_circuit_breaker_or_gift_card_cashout:
+        return {
+            "status_code": 451,
+            "decision": "VELOCITY_SPIKE_CIRCUIT_BREAKER_OR_GIFT_CARD_CASHOUT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stacked_discount_below_cogs_margin_floor_glitch:
+        return {
+            "status_code": 403,
+            "decision": "STACKED_DISCOUNT_BELOW_COGS_MARGIN_FLOOR_GLITCH_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.leaked_static_code_or_pre_ship_filler_cancel_abuse:
+        return {
+            "status_code": 422,
+            "decision": "LEAKED_STATIC_CODE_OR_PRE_SHIP_FILLER_CANCEL_ABUSE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.propensity_minimum_discount_uplift_elasticity_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PROPENSITY_MINIMUM_DISCOUNT_UPLIFT_ELASTICITY_CONFIRM",
+            "mandate_token": "ecommerce_promo_stacking_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "MUTEX_VERIFIED_PROFITABLE_PROMO_AUTHORIZED",
+        "mandate_token": "ecommerce_promo_stacking_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -35973,6 +36046,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_promo_stacking_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_promo_stacking_escrow_policy(
+            EcommercePromoStackingEscrowPolicyInput()
+        ),
+        "stacked_below_cogs_floor_403": evaluate_ecommerce_promo_stacking_escrow_policy(
+            EcommercePromoStackingEscrowPolicyInput(
+                stacked_discount_below_cogs_margin_floor_glitch=True
+            )
+        ),
+        "leaked_static_code_or_filler_cancel_422": evaluate_ecommerce_promo_stacking_escrow_policy(
+            EcommercePromoStackingEscrowPolicyInput(
+                leaked_static_code_or_pre_ship_filler_cancel_abuse=True
+            )
+        ),
+        "velocity_spike_or_gift_card_451": evaluate_ecommerce_promo_stacking_escrow_policy(
+            EcommercePromoStackingEscrowPolicyInput(
+                velocity_spike_10x_circuit_breaker_or_gift_card_cashout=True
+            )
+        ),
+        "propensity_uplift_elasticity_409": evaluate_ecommerce_promo_stacking_escrow_policy(
+            EcommercePromoStackingEscrowPolicyInput(
+                propensity_minimum_discount_uplift_elasticity_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -36247,6 +36346,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_multi_currency_fx_escrow_guard": cross_border_multi_currency_fx_escrow_guard,
         "white_glove_furniture_delivery_escrow_guard": white_glove_furniture_delivery_escrow_guard,
         "virtual_waiting_room_fair_queue_guard": virtual_waiting_room_fair_queue_guard,
+        "ecommerce_promo_stacking_escrow_guard": ecommerce_promo_stacking_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -49768,6 +49868,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="waiting-room-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PRE_QUEUE_RANDOM_SHUFFLE_AND_EDGE_BULKHEAD_THROTTLE_CONFIRM · Mandate: virtual_waiting_room_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 146 E-Commerce Promo & Coupon Stacking Escrow -->
+      <div class="finops-box" id="ecommerce-promo-stacking-escrow-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎟️ 电商大促优惠券互斥引擎、价格笼子 (Price Cage) 与防静态码外泄托管沙盒 (Talon.One / Voucherify / Shopify Functions)</div>
+            <div class="finops-sub">Round 146 · 底层 COGS × 85% 价格笼子 (HTTP 403) + User_ID 单次加密码/防凑单秒退 (HTTP 422) + 10x 流速熔断与 Uplift 弹性发券净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="promo-stack-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度促销补贴浪费与破价风险池 ($)
+            <input type="number" id="promo-stack-gross-input" value="115000" min="10000" step="5000" oninput="recalcEcommercePromoStackingSandbox()" />
+          </label>
+          <label>收银台价格笼子 (Price Cage &gt;= COGS × 85%)
+            <select id="promo-stack-cage-select" onchange="recalcEcommercePromoStackingSandbox()">
+              <option value="pass">折后实付单价高于 COGS 成本 × 85% 底线 (合规)</option>
+              <option value="block_403">多券叠加击穿成本底线变“$4 买手机”破价漏洞 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>单次绑定加密码与未发货凑单同退锁
+            <select id="promo-stack-code-select" onchange="recalcEcommercePromoStackingSandbox()">
+              <option value="pass">绑定 User_ID 单次加密码 + 满减凑单完整 (合规)</option>
+              <option value="block_422">跨账号盗刷泄露静态码 VIP50 或未发货秒退凑单品 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>活动预算池流速熔断与硬通货黑名单
+            <select id="promo-stack-vel-select" onchange="recalcEcommercePromoStackingSandbox()">
+              <option value="pass">核销流速正常 + 已排除礼品卡/黄金硬通货 (安全)</option>
+              <option value="block_451">5m 核销速率 &gt;10x 疑似进羊毛群或买礼品卡套现 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>购买倾向弹性发券 (Uplift Modeling)
+            <select id="promo-stack-opt-select" onchange="recalcEcommercePromoStackingSandbox()">
+              <option value="enabled" selected>自然老客免发多余券 + 犹豫客精准最小补贴 (-36% 浪费 / HTTP 409)</option>
+              <option value="disabled">全场无差别弹窗粗暴派发 20% 折扣券 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度促销补贴与破价风险总池</div>
+            <div class="finops-kpi-val" id="promo-stack-gross-kpi">$115,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">价格笼子与弹性发券后净支出</div>
+            <div class="finops-kpi-val" id="promo-stack-net-kpi" style="color:#6ee7b7;">$73,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省破价亏损与无效补贴</div>
+            <div class="finops-kpi-val" id="promo-stack-savings-kpi" style="color:#38bdf8;">$41,400</div>
+          </div>
+        </div>
+        <div id="promo-stack-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PROPENSITY_MINIMUM_DISCOUNT_UPLIFT_ELASTICITY_CONFIRM · Mandate: ecommerce_promo_stacking_optim_409
         </div>
       </div>
 
@@ -65943,6 +66100,79 @@ function updateVirtualWaitingRoomFairQueueSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 ONE_USER_ONE_SLOT_AND_SKU_PINNED_HMAC_PASS_AUTHORIZED · Mandate: virtual_waiting_room_200';
+}}
+
+function recalcEcommercePromoStackingSandbox() {{
+  const grossInput = document.getElementById('promo-stack-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '115000'));
+  const cageGate = document.getElementById('promo-stack-cage-select').value;
+  const codeGate = document.getElementById('promo-stack-code-select').value;
+  const velGate = document.getElementById('promo-stack-vel-select').value;
+  const optMode = document.getElementById('promo-stack-opt-select').value;
+
+  const grossKpi = document.getElementById('promo-stack-gross-kpi');
+  const netKpi = document.getElementById('promo-stack-net-kpi');
+  const savingsKpi = document.getElementById('promo-stack-savings-kpi');
+  const statusKpi = document.getElementById('promo-stack-status-kpi');
+  const banner = document.getElementById('promo-stack-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (velGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 VELOCITY_SPIKE_CIRCUIT_BREAKER_OR_GIFT_CARD_CASHOUT_HOLD · Mandate: null';
+    return;
+  }}
+  if (cageGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 STACKED_DISCOUNT_BELOW_COGS_MARGIN_FLOOR_GLITCH_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (codeGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 LEAKED_STATIC_CODE_OR_PRE_SHIP_FILLER_CANCEL_ABUSE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PROPENSITY_MINIMUM_DISCOUNT_UPLIFT_ELASTICITY_CONFIRM · Mandate: ecommerce_promo_stacking_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 MUTEX_VERIFIED_PROFITABLE_PROMO_AUTHORIZED · Mandate: ecommerce_promo_stacking_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -18840,6 +18840,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("virtual-waiting-room-fair-queue-sandbox", html_zh)
 
+    def test_ecommerce_promo_stacking_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommercePromoStackingEscrowPolicyInput,
+            evaluate_ecommerce_promo_stacking_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_promo_stacking_escrow_policy(
+            EcommercePromoStackingEscrowPolicyInput(
+                quarterly_promo_subsidy_and_glitch_risk_pool_usd=115000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "MUTEX_VERIFIED_PROFITABLE_PROMO_AUTHORIZED",
+        )
+
+        cage = evaluate_ecommerce_promo_stacking_escrow_policy(
+            EcommercePromoStackingEscrowPolicyInput(
+                stacked_discount_below_cogs_margin_floor_glitch=True
+            )
+        )
+        self.assertEqual(cage["status_code"], 403)
+        self.assertEqual(
+            cage["decision"],
+            "STACKED_DISCOUNT_BELOW_COGS_MARGIN_FLOOR_GLITCH_BLOCKED",
+        )
+
+        code = evaluate_ecommerce_promo_stacking_escrow_policy(
+            EcommercePromoStackingEscrowPolicyInput(
+                leaked_static_code_or_pre_ship_filler_cancel_abuse=True
+            )
+        )
+        self.assertEqual(code["status_code"], 422)
+        self.assertEqual(
+            code["decision"],
+            "LEAKED_STATIC_CODE_OR_PRE_SHIP_FILLER_CANCEL_ABUSE_BLOCKED",
+        )
+
+        vel = evaluate_ecommerce_promo_stacking_escrow_policy(
+            EcommercePromoStackingEscrowPolicyInput(
+                velocity_spike_10x_circuit_breaker_or_gift_card_cashout=True
+            )
+        )
+        self.assertEqual(vel["status_code"], 451)
+        self.assertEqual(
+            vel["decision"],
+            "VELOCITY_SPIKE_CIRCUIT_BREAKER_OR_GIFT_CARD_CASHOUT_HOLD",
+        )
+
+        optim = evaluate_ecommerce_promo_stacking_escrow_policy(
+            EcommercePromoStackingEscrowPolicyInput(
+                quarterly_promo_subsidy_and_glitch_risk_pool_usd=115000.0,
+                propensity_minimum_discount_uplift_elasticity_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 41400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 73600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_promo_stacking_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-promo-stacking-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
