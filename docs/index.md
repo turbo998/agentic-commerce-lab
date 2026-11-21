@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`300` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`301` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（16 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（44 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（111 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（112 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（68 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（25 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（36 篇）](#tax-fx-privacy-disputes)
@@ -94,7 +94,7 @@
 | 44 | **多支付网关编排（Multi-PSP Orchestration：Primer / Spreedly / Adyen / Stripe）、主备收单秒级容灾与借记卡低成本路由托管“防主网关超时切备选网关导致客户被双扣两笔钱、防跨境收单白交 `1.5%` 跨境罚金与美国 `Durbin` 免密借记网降费净省 39%”Agent 架构选型 FAQ** | [中文](ecommerce-multi-psp-payment-orchestration-acquirer-failover-debit-routing-escrow-agent-selection-faq.md) · [English](ecommerce-multi-psp-payment-orchestration-acquirer-failover-debit-routing-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（111 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（112 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -211,6 +211,7 @@
 | 109 | **航司与 OTA 航班大面积延误/取消（`IROPS`）、全自动免费改签与 `US DOT / EU261` 退赔食宿托管（Amadeus Nevio / Sabre IROPS / Navan / Hopper HTS / 携程/飞猪航变引擎）防无航司豁免码盲目改签遭开 `$450` `ADM` 罚单、防“既免费改签又全额退票”双吃与机场电子餐宿虚拟卡托管“防首段延误致酒店按 No-Show 强扣房费、防天气延误错赔 `€600` 与自助改签净省 38%”Agent 架构选型 FAQ** | [中文](ota-airline-irops-flight-disruption-rebooking-eu261-dot-escrow-agent-selection-faq.md) · [English](ota-airline-irops-flight-disruption-rebooking-eu261-dot-escrow-agent-selection-faq.en.md) |
 | 110 | **多商户电商平台分账清结算、卖家滚动保证金（`Rolling Reserve`）与妥投压款防跑路托管（Stripe Connect / Adyen for Platforms / Mirakl Payout / 微信电商收付通）防“填假快递单号 T+2 提现跑路”、防大促后卖家提空账户留给平台百万退货亏空与无牌二清合规托管“防平台自己倒贴子商户退款、防多店拆单 1 美分舍入不平账与分层放款净省 37%”Agent 架构选型 FAQ** | [中文](marketplace-seller-payout-rolling-reserve-split-settlement-escrow-agent-selection-faq.md) · [English](marketplace-seller-payout-rolling-reserve-split-settlement-escrow-agent-selection-faq.en.md) |
 | 111 | **电商发货前自助改单（Pre-Ship Order Editing：Cleverific / Order Editing / Gorgias / Manhattan WMS）、修改尺码/门牌号与仓库波次互锁托管“防客服刚退完钱仓库又把包裹发走（财货两空）、防黑卡过审后找客服改发外省销赃地址与免退单原地换码净省 36%”Agent 架构选型 FAQ** | [中文](ecommerce-pre-ship-order-editing-address-size-swap-wms-lock-escrow-agent-selection-faq.md) · [English](ecommerce-pre-ship-order-editing-address-size-swap-wms-lock-escrow-agent-selection-faq.en.md) |
+| 112 | **电商小包快递账单审计、3D 装箱防“体积重（`DIM`）刺客”与超时延误自动索赔托管（Shipium / EasyPost / LateShipment / 71lbs / Manhattan Cartonization）防打包员随手拿大纸箱把 0.5 磅 T 恤按 12 磅体积重计费、防快递公司激光扫描鼓包多收钱与陆运替代空运净省 35% Agent 架构选型 FAQ** | [中文](ecommerce-parcel-shipping-audit-dim-cartonization-carrier-refund-escrow-agent-selection-faq.md) · [English](ecommerce-parcel-shipping-audit-dim-cartonization-carrier-refund-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（68 篇）

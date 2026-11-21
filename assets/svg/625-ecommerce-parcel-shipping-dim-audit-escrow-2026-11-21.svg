@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg625" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#081423"/>
+    </linearGradient>
+    <linearGradient id="hdr625" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg625)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr625)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 182 · E-Commerce Parcel Shipping Audit, 3D Cartonization DIM Shield &amp; GSR Refund Escrow</text>
+  <text x="48" y="74" class="sub">Shipium / EasyPost / LateShipment / 71lbs · 3D Bin-Pack DIM Divisor 139 Lock · EDI 210 Surcharge Audit · GSR Auto-Claim (-35% Cost)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #625 · FAQ #301</text>
+
+  <!-- Lane 1: 3D Cartonization & DIM Weight Divisor 139 Breaker -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. 3D Cartonization &amp; DIM Weight Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Packing 1 lb T-Shirt in a 12 lb DIM Box:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">DIM_Weight = ceil((L × W × H) / 139)</text>
+  <text x="54" y="200" class="mono">Require Box_Scan_ID == WMS_3D_Optimal_Carton</text>
+  <text x="44" y="223" class="body-txt">• Poly-Mailer Eligibility Enforcement:</text>
+  <text x="54" y="243" class="mono">Soft_Goods (Apparel/Plush) → Force Poly_Bag</text>
+  <text x="44" y="266" class="body-txt">• Cubic Tier &amp; `Additional Handling ($31.50)` Cap:</text>
+  <text x="54" y="286" class="body-txt">Blocks selecting corrugated cartons where</text>
+  <text x="54" y="304" class="body-txt">longest side `&gt;48"` or `L + 2(W+H) &gt; 105"`</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 OVERSIZED_CARTON_DIM_PENALTY_SCAN_BLOCKED</text>
+
+  <!-- Lane 2: USPS RDI Pre-Check & EDI 210 Laser-DIM Dispute Gate -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. EDI 210 Surcharge &amp; Laser-DIM Audit (422)</text>
+  <text x="432" y="162" class="body-txt">• Stops `$22.50 Address Correction` &amp; `$5.85 Resi`:</text>
+  <text x="442" y="182" class="mono">Validate USPS_RDI (Resi vs Comm) + ZIP+4</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Before Printing Carrier Label</text>
+  <text x="432" y="223" class="body-txt">• Defeats Carrier Tunnel Laser-Scanner Inflation:</text>
+  <text x="442" y="243" class="mono">If Carrier_EDI210_DIM &gt; WMS_Master_Box_Spec:</text>
+  <text x="442" y="261" class="body-txt">Auto-dispute w/ CAD Box Spec + Pack-Out Photo</text>
+  <text x="432" y="284" class="body-txt">• Catches duplicate billing on voided/unmanifested</text>
+  <text x="442" y="302" class="body-txt">labels &amp; wrong Peak/Fuel Surcharge table tiers</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNVERIFIED_RDI_SURCHARGE_OR_DIM_OVERBILL_BLOCKED</text>
+
+  <!-- Lane 3: Guaranteed Service Refund (GSR) & Waiver Trap Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. GSR Late-Refund &amp; Contract Waiver Lock (451)</text>
+  <text x="820" y="162" class="body-txt">• Reclaims 100% Freight on Late Express Parcels:</text>
+  <text x="830" y="182" class="mono">If Actual_Delivery &gt; Commit_Time (even +60s):</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">File Automated GSR Claim Within 15-Day Window</text>
+  <text x="820" y="223" class="body-txt">• Blocks Carrier "2% Discount for GSR Waiver" Trap:</text>
+  <text x="830" y="243" class="body-txt">Flags carrier contract addenda that trade away</text>
+  <text x="830" y="261" class="body-txt">6%–9% late-refund rights for a 1.5% base discount</text>
+  <text x="820" y="284" class="body-txt">• Stops paying Next-Day Air on Friday when</text>
+  <text x="830" y="302" class="body-txt">destination has no Saturday delivery (`2-Day OK`)</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNCLAIMED_LATE_GSR_OR_WAIVER_ADDENDUM_HOLD</text>
+
+  <!-- Bottom Time-in-Transit Rate Shopping & Regional Carrier Injection Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Delivery-Date-Driven Rate Shopping (Ground vs Air Downgrade) + Regional Carrier Injection + EDI 210 Recon (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Air-to-Ground TNT Downgrade</text>
+  <text x="62" y="462" class="body-txt">When Zone 2/3 Ground reaches</text>
+  <text x="62" y="480" class="body-txt">buyer in 2 days, auto-downgrades</text>
+  <text x="62" y="498" class="body-txt">$28 2-Day Air to $8 Ground;</text>
+  <text x="62" y="516" class="mono">Saves $20/Box w/ Same Delivery!</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② 3D Carton &amp; Poly-Bag Match</text>
+  <text x="337" y="462" class="body-txt">Solves 3D bin-packing in 12ms</text>
+  <text x="337" y="480" class="body-txt">&amp; enforces pack-station box</text>
+  <text x="337" y="498" class="body-txt">barcode scan before label;</text>
+  <text x="337" y="516" class="mono">-29% Billable DIM Weight</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Regional Carrier Injection</text>
+  <text x="622" y="462" class="body-txt">Routes dense metro zones to</text>
+  <text x="622" y="480" class="body-txt">`OnTrac / Veho / Better Trucks /`</text>
+  <text x="622" y="498" class="body-txt">`USPS Ground Advantage`;</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">Bypasses Duopoly Residential Fee</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Automated EDI 210 &amp; GSR</text>
+  <text x="907" y="462" class="body-txt">Audits 100% of weekly carrier</text>
+  <text x="907" y="480" class="body-txt">invoices against label quote</text>
+  <text x="907" y="498" class="body-txt">&amp; files GSR late claims;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-35% Outbound Parcel Cost</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-35.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Parcel Freight &amp; Audit Saved</text>
+  <text x="46" y="642" class="mono">$59,500 Saved / $170k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">DIM Divisor 139</text>
+  <text x="336" y="626" class="kpi-lbl">3D Bin-Pack &amp; Poly-Bag Lock</text>
+  <text x="336" y="642" class="mono">0 "Shipping Air" Overcharges</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">EDI 210 Audit</text>
+  <text x="626" y="626" class="kpi-lbl">Laser-DIM &amp; Surcharge Dispute</text>
+  <text x="626" y="642" class="mono">Reclaims 4-7% Invoice Errors</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">15d GSR Claim</text>
+  <text x="916" y="626" class="kpi-lbl">100% Late-Express Money Back</text>
+  <text x="916" y="642" class="mono">Plus Zone-2 Ground Downgrade</text>
+</svg>

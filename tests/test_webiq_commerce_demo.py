@@ -21252,6 +21252,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-ai-shopping-assistant-sandbox", html_zh)
 
+    def test_ecommerce_parcel_shipping_audit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceParcelShippingAuditPolicyInput,
+            evaluate_ecommerce_parcel_shipping_audit_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_parcel_shipping_audit_policy(
+            EcommerceParcelShippingAuditPolicyInput(
+                quarterly_parcel_dim_waste_surcharge_and_unclaimed_gsr_pool_usd=170000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "CARTONIZED_PARCEL_LABEL_AND_INVOICE_AUTHORIZED",
+        )
+
+        dim = evaluate_ecommerce_parcel_shipping_audit_policy(
+            EcommerceParcelShippingAuditPolicyInput(
+                oversized_carton_dim_penalty_or_soft_goods_not_in_poly_bag=True
+            )
+        )
+        self.assertEqual(dim["status_code"], 403)
+        self.assertEqual(
+            dim["decision"],
+            "OVERSIZED_CARTON_DIM_PENALTY_SCAN_BLOCKED",
+        )
+
+        edi = evaluate_ecommerce_parcel_shipping_audit_policy(
+            EcommerceParcelShippingAuditPolicyInput(
+                unverified_usps_rdi_address_fee_or_edi210_laser_dim_overcharge=True
+            )
+        )
+        self.assertEqual(edi["status_code"], 422)
+        self.assertEqual(
+            edi["decision"],
+            "UNVERIFIED_RDI_SURCHARGE_OR_DIM_OVERBILL_BLOCKED",
+        )
+
+        gsr = evaluate_ecommerce_parcel_shipping_audit_policy(
+            EcommerceParcelShippingAuditPolicyInput(
+                unclaimed_15d_late_gsr_refund_or_predatory_gsr_waiver_addendum=True
+            )
+        )
+        self.assertEqual(gsr["status_code"], 451)
+        self.assertEqual(
+            gsr["decision"],
+            "UNCLAIMED_LATE_GSR_OR_WAIVER_ADDENDUM_HOLD",
+        )
+
+        optim = evaluate_ecommerce_parcel_shipping_audit_policy(
+            EcommerceParcelShippingAuditPolicyInput(
+                quarterly_parcel_dim_waste_surcharge_and_unclaimed_gsr_pool_usd=170000.0,
+                tnt_air_to_ground_downgrade_regional_carrier_and_edi210_audit_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 59500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 110500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_parcel_shipping_audit_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-parcel-shipping-audit-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

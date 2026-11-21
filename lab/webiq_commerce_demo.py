@@ -28901,6 +28901,82 @@ def evaluate_ecommerce_ai_shopping_assistant_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceParcelShippingAuditPolicyInput:
+    quarterly_parcel_dim_waste_surcharge_and_unclaimed_gsr_pool_usd: float = 170000.0
+    oversized_carton_dim_penalty_or_soft_goods_not_in_poly_bag: bool = False
+    unverified_usps_rdi_address_fee_or_edi210_laser_dim_overcharge: bool = False
+    unclaimed_15d_late_gsr_refund_or_predatory_gsr_waiver_addendum: bool = False
+    tnt_air_to_ground_downgrade_regional_carrier_and_edi210_audit_ready: bool = False
+
+
+def evaluate_ecommerce_parcel_shipping_audit_policy(
+    policy_input: EcommerceParcelShippingAuditPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_parcel_dim_waste_surcharge_and_unclaimed_gsr_pool_usd
+        ),
+    )
+    if policy_input.unclaimed_15d_late_gsr_refund_or_predatory_gsr_waiver_addendum:
+        return {
+            "status_code": 451,
+            "decision": "UNCLAIMED_LATE_GSR_OR_WAIVER_ADDENDUM_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.oversized_carton_dim_penalty_or_soft_goods_not_in_poly_bag:
+        return {
+            "status_code": 403,
+            "decision": "OVERSIZED_CARTON_DIM_PENALTY_SCAN_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unverified_usps_rdi_address_fee_or_edi210_laser_dim_overcharge:
+        return {
+            "status_code": 422,
+            "decision": "UNVERIFIED_RDI_SURCHARGE_OR_DIM_OVERBILL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tnt_air_to_ground_downgrade_regional_carrier_and_edi210_audit_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TNT_AIR_TO_GROUND_REGIONAL_MIX_AND_EDI210_AUDIT_CONFIRM",
+            "mandate_token": "parcel_audit_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "CARTONIZED_PARCEL_LABEL_AND_INVOICE_AUTHORIZED",
+        "mandate_token": "parcel_audit_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -39552,6 +39628,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_parcel_shipping_audit_guard = {
+        "authorized_200": evaluate_ecommerce_parcel_shipping_audit_policy(
+            EcommerceParcelShippingAuditPolicyInput()
+        ),
+        "oversized_carton_dim_403": evaluate_ecommerce_parcel_shipping_audit_policy(
+            EcommerceParcelShippingAuditPolicyInput(
+                oversized_carton_dim_penalty_or_soft_goods_not_in_poly_bag=True
+            )
+        ),
+        "unverified_rdi_or_laser_dim_422": evaluate_ecommerce_parcel_shipping_audit_policy(
+            EcommerceParcelShippingAuditPolicyInput(
+                unverified_usps_rdi_address_fee_or_edi210_laser_dim_overcharge=True
+            )
+        ),
+        "unclaimed_gsr_or_waiver_451": evaluate_ecommerce_parcel_shipping_audit_policy(
+            EcommerceParcelShippingAuditPolicyInput(
+                unclaimed_15d_late_gsr_refund_or_predatory_gsr_waiver_addendum=True
+            )
+        ),
+        "tnt_downgrade_and_audit_409": evaluate_ecommerce_parcel_shipping_audit_policy(
+            EcommerceParcelShippingAuditPolicyInput(
+                tnt_air_to_ground_downgrade_regional_carrier_and_edi210_audit_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -39862,6 +39964,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_pre_ship_order_edit_guard": ecommerce_pre_ship_order_edit_guard,
         "b2b_saas_renewal_rightsizing_guard": b2b_saas_renewal_rightsizing_guard,
         "ecommerce_ai_shopping_assistant_guard": ecommerce_ai_shopping_assistant_guard,
+        "ecommerce_parcel_shipping_audit_guard": ecommerce_parcel_shipping_audit_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -55435,6 +55538,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="aistyl-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 STOREFRONT_MCP_1TAP_OUTFIT_AND_LOW_RMA_MARGIN_RANK_CONFIRM · Mandate: ai_stylist_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 182 E-Commerce Parcel Shipping Audit, 3D DIM & GSR Refund Escrow (#301) -->
+      <div class="finops-box" id="ecommerce-parcel-shipping-audit-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📦 电商小包快递账单审计、3D 装箱防体积重 (Shipium / LateShipment / EasyPost) 沙盒</div>
+            <div class="finops-sub">Round 182 (#301) · 3D 装箱与防水袋条码锁 (HTTP 403) + USPS RDI 地址清洗与 EDI 210 激光涨尺驳回 (HTTP 422) + 15d 晚到 GSR 全额退费 (HTTP 451) + 空降陆路由净省 35% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="parcel-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度大纸箱体积重 (DIM) 浪费、近距离盲发空运、改址罚金与漏报 GSR 池 ($)
+            <input type="number" id="parcel-gross-input" value="170000" min="10000" step="5000" oninput="recalcEcommerceParcelShippingAuditSandbox()" />
+          </label>
+          <label>WMS 3D 装箱求解与打包台纸箱/防水袋条码互锁
+            <select id="parcel-dim-select" onchange="recalcEcommerceParcelShippingAuditSandbox()">
+              <option value="pass">打包台扫描 3D 算法指定的最小纸箱或软货防水袋 (零体积重浪费)</option>
+              <option value="block_403">打包员随手抓 6 号大纸箱装 0.8磅卫衣导致按 12磅体积重扣 $18 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>打单前 USPS RDI 住宅标志清洗与 EDI 210 激光鼓包对账
+            <select id="parcel-edi-select" onchange="recalcEcommerceParcelShippingAuditSandbox()">
+              <option value="pass">打单前校验 RDI + ZIP+4 且 EDI 210 尺寸与纸箱 CAD 规格一致 (合规)</option>
+              <option value="block_422">未查 RDI 被收 $22.50 地址更正费 或 激光扫描因胶带翘起多算 2 英寸乱扣费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>15 天窗口期准点达延误 (GSR) 全额退费与禁签豁免霸王条款
+            <select id="parcel-gsr-select" onchange="recalcEcommerceParcelShippingAuditSandbox()">
+              <option value="pass">迟到 &gt;=60 秒自动提报 100% GSR 退费 且 拒绝签署放弃索赔权补充协议 (安全)</option>
+              <option value="block_451">快件迟到超过 15 天未申诉白丢全额退费 或 为 1% 折扣签放弃 GSR 霸王条款 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Zone 2/3 近距离“空降陆 (Air-to-Ground)”时效路由与区域快递混配
+            <select id="parcel-opt-select" onchange="recalcEcommerceParcelShippingAuditSandbox()">
+              <option value="enabled" selected>Zone 2/3 自动将 $26 空运降级为次日达 $8 陆运/Veho + 全自动 EDI 210 索赔 (-35% 运费 / HTTP 409)</option>
+              <option value="disabled">按服务名称静态绑定昂贵空运且月底自动扣款不审账单 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度小包溢价与错收费总池</div>
+            <div class="finops-kpi-val" id="parcel-gross-kpi">$170,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">3D 锁箱与空降陆审计后净运费</div>
+            <div class="finops-kpi-val" id="parcel-net-kpi" style="color:#6ee7b7;">$110,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省体积重、空运差价与退费</div>
+            <div class="finops-kpi-val" id="parcel-savings-kpi" style="color:#38bdf8;">$59,500</div>
+          </div>
+        </div>
+        <div id="parcel-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TNT_AIR_TO_GROUND_REGIONAL_MIX_AND_EDI210_AUDIT_CONFIRM · Mandate: parcel_audit_escrow_optim_409
         </div>
       </div>
 
@@ -74238,6 +74398,79 @@ function recalcEcommerceAiShoppingAssistantSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 GROUNDED_VARIANT_COMPATIBLE_STYLING_AUTHORIZED · Mandate: ai_stylist_escrow_200';
+}}
+
+function recalcEcommerceParcelShippingAuditSandbox() {{
+  const grossInput = document.getElementById('parcel-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '170000'));
+  const dimGate = document.getElementById('parcel-dim-select').value;
+  const ediGate = document.getElementById('parcel-edi-select').value;
+  const gsrGate = document.getElementById('parcel-gsr-select').value;
+  const optMode = document.getElementById('parcel-opt-select').value;
+
+  const grossKpi = document.getElementById('parcel-gross-kpi');
+  const netKpi = document.getElementById('parcel-net-kpi');
+  const savingsKpi = document.getElementById('parcel-savings-kpi');
+  const statusKpi = document.getElementById('parcel-status-kpi');
+  const banner = document.getElementById('parcel-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (gsrGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCLAIMED_LATE_GSR_OR_WAIVER_ADDENDUM_HOLD · Mandate: null';
+    return;
+  }}
+  if (dimGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 OVERSIZED_CARTON_DIM_PENALTY_SCAN_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (ediGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNVERIFIED_RDI_SURCHARGE_OR_DIM_OVERBILL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TNT_AIR_TO_GROUND_REGIONAL_MIX_AND_EDI210_AUDIT_CONFIRM · Mandate: parcel_audit_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 CARTONIZED_PARCEL_LABEL_AND_INVOICE_AUTHORIZED · Mandate: parcel_audit_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
