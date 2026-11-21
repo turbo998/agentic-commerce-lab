@@ -18505,6 +18505,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-chargeback-ce30-escrow-sandbox", html_zh)
 
+    def test_floral_gift_delivery_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            FloralGiftDeliveryEscrowPolicyInput,
+            evaluate_floral_gift_delivery_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_floral_gift_delivery_escrow_policy(
+            FloralGiftDeliveryEscrowPolicyInput(
+                quarterly_floral_and_corporate_gifting_pool_usd=65000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "BLOOMSNAP_VERIFIED_AND_PRE_1630_OFFICE_GIFT_AUTHORIZED",
+        )
+
+        fee = evaluate_floral_gift_delivery_escrow_policy(
+            FloralGiftDeliveryEscrowPolicyInput(
+                holiday_wire_junk_fee_or_diy_cardboard_box_vase_upsell=True
+            )
+        )
+        self.assertEqual(fee["status_code"], 403)
+        self.assertEqual(
+            fee["decision"],
+            "HOLIDAY_WIRE_JUNK_FEE_OR_DIY_CARDBOARD_BOX_VASE_UPSELL_BLOCKED",
+        )
+
+        photo = evaluate_floral_gift_delivery_escrow_policy(
+            FloralGiftDeliveryEscrowPolicyInput(
+                missing_predispatch_bloomsnap_or_carnation_stem_count_shortfall=True
+            )
+        )
+        self.assertEqual(photo["status_code"], 422)
+        self.assertEqual(
+            photo["decision"],
+            "MISSING_PREDISPATCH_BLOOMSNAP_OR_CARNATION_STEM_COUNT_SHORTFALL_BLOCKED",
+        )
+
+        safety = evaluate_floral_gift_delivery_escrow_policy(
+            FloralGiftDeliveryEscrowPolicyInput(
+                commercial_office_delivery_after_1630_or_feline_toxic_lily_sku=True
+            )
+        )
+        self.assertEqual(safety["status_code"], 451)
+        self.assertEqual(
+            safety["decision"],
+            "COMMERCIAL_OFFICE_DELIVERY_AFTER_1630_OR_FELINE_TOXIC_LILY_HOLD",
+        )
+
+        optim = evaluate_floral_gift_delivery_escrow_policy(
+            FloralGiftDeliveryEscrowPolicyInput(
+                quarterly_floral_and_corporate_gifting_pool_usd=65000.0,
+                direct_3km_local_florist_bypass_wire_commission_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 22100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 42900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("floral_gift_delivery_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("floral-gift-delivery-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg584" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a1124" />
+      <stop offset="50%" stop-color="#131f3e" />
+      <stop offset="100%" stop-color="#070e1c" />
+    </linearGradient>
+    <linearGradient id="accent584" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ec4899" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg584)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent584)" rx="3" />
+
+  <text x="40" y="58" class="title">鲜花蛋糕与节日同城礼赠 (1-800-Flowers / 美团闪购 / DoorDash)、防货不对板与出餐实拍托管</text>
+  <text x="40" y="80" class="subtitle">Round 141 · 防情人节 $120 玫瑰被私换 $20 康乃馨、防下班后 21:00 才送到写字楼 &amp; 本地花店直连净省 34% (SVG 584)</text>
+
+  <!-- Left Card: 3 Floral & Gift Delivery Traps -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大鲜花礼赠翻车黑洞</text>
+  <text x="56" y="164" class="card-title">1. “等值替换条款”把玫瑰换成廉价草花 (HTTP 422)</text>
+  <text x="56" y="184" class="body">• 买家花 $120 订 24 支厄瓜多尔红玫瑰，花店利用小字条款</text>
+  <text x="56" y="202" class="body">  “鲜花缺货可替换”，私自发去 10 支蔫玫瑰+大把廉价康乃馨</text>
+  <text x="56" y="220" class="warn">• 甚至连盒子装的“DIY 未插花材”直接联邦快递扔门口!</text>
+
+  <text x="56" y="256" class="card-title">2. 写字楼地址晚上 8 点才送到 (Office Cutoff)</text>
+  <text x="56" y="276" class="body">• 七夕/情人节送去女友/客户公司写字楼，平台承诺“当日达”</text>
+  <text x="56" y="294" class="body">• 结果骑手 20:45 才送到，收件人 17:30 已下班回家度周末</text>
+  <text x="56" y="312" class="warn">• 鲜花在物业前台闷放两天彻底枯死，节日惊喜变惊吓!</text>
+
+  <text x="56" y="348" class="card-title">3. 结账突袭 $29.99 节日附加费与转单抽成 40%</text>
+  <text x="56" y="368" class="body">• 首页标价 $49.99，结账最后一步加收 $19.99 配送费 + $14.99</text>
+  <text x="56" y="386" class="body">  情人节高峰费 + $9.99 服务费 + 默认勾选 $18 玻璃花瓶</text>
+  <text x="56" y="404" class="warn">• 全国集单网 (Wire Service) 抽走 35% 佣金，落到本地店仅剩 $30</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: HOLIDAY_SURGE_JUNK_FEE_OR_VASE_UPSELL</text>
+  <text x="70" y="502" class="warn">• HTTP 422: PRE_DISPATCH_PHOTO_STEM_COUNT_MISMATCH</text>
+  <text x="70" y="524" class="warn">• HTTP 451: OFFICE_ADDRESS_AFTER_1700_OR_PET_TOXIC_LILY</text>
+  <text x="70" y="546" class="mono">• HTTP 409: DIRECT_LOCAL_FLORIST_BYPASS_WIRE_CUT_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: BLOOMSNAP_VERIFIED_ON_TIME_GIFT_200</text>
+  <text x="70" y="596" class="body">铁律: 骑手取件前强制拍成品实拍图 (BloomSnap) 过视觉核验!</text>
+
+  <!-- Center Card: 4-Stage Floral & Gift Escrow Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶鲜花礼赠出餐实拍与时效托管架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ec4899" />
+  <text x="450" y="175" class="card-title" fill="#f472b6">Gate 1: 全包一口价与剔除默认花瓶/贺卡捆绑 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• 拦截结账页突袭叠加 &gt;25% 的“情人节高峰服务费+管理费”</text>
+  <text x="450" y="213" class="body">• 自动取消默认勾选的 $18 高溢价普通玻璃瓶与 $6 印刷卡片</text>
+  <text x="450" y="231" class="mono">• 严禁将“快递纸箱未插花材 (Shipped in a Box)”伪装成花艺师现插!</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: 出店前成品实拍视觉点数锁 (BloomSnap CV Gate)</text>
+  <text x="450" y="302" class="body">• 花艺师包好花束呼叫骑手前，强制上传 1 张高清成品实拍照</text>
+  <text x="450" y="320" class="body">• 视觉模型自动清点主花朵数 (如 &gt;=24 朵玫瑰) 与花材品种一致性</text>
+  <text x="450" y="338" class="body">• 私自把玫瑰换成康乃馨或朵数缩水 &gt;10% -&gt; HTTP 422 拒付重做!</text>
+  <text x="450" y="354" class="mono">• 实拍图同步发给买花人审阅，杜绝“买家秀与卖家秀”惨剧</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 商业写字楼 16:30 截单锁与养猫家庭百合禁令</text>
+  <text x="450" y="419" class="body">• 识别收件地址为商业大厦/办公室: 强制锁死 16:30 前送达 SLA</text>
+  <text x="450" y="437" class="body">• 若收件人养猫: 100% 物理拉黑含百合花 (Lilium 致猫急性肾衰!) 花束</text>
+  <text x="450" y="455" class="mono">• 预计 17:00 后才送到写字楼或含宠物剧毒花材 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: 绕过全国转单中介 (Wire Service) 直连本地店</text>
+  <text x="450" y="528" class="body">• 传统全国花网收你 $100，自己抽成 $35，只转 $65 给收件地小花店</text>
+  <text x="450" y="546" class="body">• Agent 根据收件地址 3km 半径，通过美团闪购 / DoorDash /</text>
+  <text x="450" y="566" class="mono">  BloomNation 直连本地高分实体花店，100% 预算全买进花材里!</text>
+  <text x="450" y="586" class="mono">• 砍掉 35% 转单抽成 + 拦截花瓶捆绑 -&gt; 净省 34% 礼赠采购支出</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大鲜花与即时礼赠渠道</text>
+
+  <text x="846" y="164" class="card-title" fill="#ec4899">1. BloomNation / Lovingly (直连本地花艺师)</text>
+  <text x="846" y="182" class="body">• 优势: 零转单中介盘剥，原生自带 `BloomSnap` 发货前实拍图确认</text>
+  <text x="846" y="198" class="body">• 特性: 所见即所得，花材丰满度比传统集单网高出 40%</text>
+
+  <text x="846" y="226" class="card-title" fill="#38bdf8">2. 美团闪购 / 饿了么 / DoorDash / Instacart</text>
+  <text x="846" y="244" class="body">• 优势: 30~60 分钟专人闪送，骑手实时 GPS 轨迹精确到分钟</text>
+  <text x="846" y="260" class="body">• 特性: 支持商家打包前在聊天框先发实拍图确认再呼叫专送</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. 1-800-Flowers / FTD / Teleflora (传统转单网)</text>
+  <text x="846" y="306" class="body">• 风险: 高额结账服务费 ($20+) 与层层转包抽成导致花束缩水</text>
+  <text x="846" y="322" class="body">• 注意: 必须分清 `Local Florist Delivered` 与 `Shipped in a Box`</text>
+
+  <text x="846" y="350" class="card-title" fill="#6ee7b7">4. 企业礼赠平台 (Sendoso / Reachdesk / 京东企礼)</text>
+  <text x="846" y="368" class="body">• 优势: 收件人先在链接里自己确认当前收货地址与时间窗口再发货</text>
+  <text x="846" y="384" class="body">• 特性: 100% 避免送到老办公地址或客户出差期间鲜花烂在门口</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度商务客户礼赠与节日鲜花池 ($65,000)</text>
+  <text x="860" y="456" class="body">• 传统转单网抽成+货不对板退单+迟到作废: $65,000/季</text>
+  <text x="860" y="476" class="mono">• 绕过 35% 全国转单中介直连 3km 实体花店: -$11,050</text>
+  <text x="860" y="496" class="mono">• 剥离 $25 节日附加费与默认勾选花瓶捆绑: -$6,500</text>
+  <text x="860" y="516" class="mono">• 出店实拍视觉验真与写字楼 16:30 截单锁: -$4,550</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净支出: $42,900 (净省 $22,100 / -34%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: floral_gift_delivery_optim_409</text>
+</svg>

@@ -25853,6 +25853,87 @@ def evaluate_ecommerce_chargeback_ce30_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class FloralGiftDeliveryEscrowPolicyInput:
+    """Input contract for Floral, Cake & Same-Day Holiday Gift Delivery, BloomSnap Vision & Office Cutoff Escrow."""
+
+    quarterly_floral_and_corporate_gifting_pool_usd: float = 65000.0
+    holiday_wire_junk_fee_or_diy_cardboard_box_vase_upsell: bool = False
+    missing_predispatch_bloomsnap_or_carnation_stem_count_shortfall: bool = False
+    commercial_office_delivery_after_1630_or_feline_toxic_lily_sku: bool = False
+    mandate_signing_key_age_days: int = 30
+    direct_3km_local_florist_bypass_wire_commission_ready: bool = False
+
+
+def evaluate_floral_gift_delivery_escrow_policy(
+    policy_input: FloralGiftDeliveryEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Floral, Cake & Same-Day Holiday Gift Delivery, BloomSnap Vision & Office Cutoff Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_floral_and_corporate_gifting_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.commercial_office_delivery_after_1630_or_feline_toxic_lily_sku
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "COMMERCIAL_OFFICE_DELIVERY_AFTER_1630_OR_FELINE_TOXIC_LILY_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.holiday_wire_junk_fee_or_diy_cardboard_box_vase_upsell:
+        return {
+            "status_code": 403,
+            "decision": "HOLIDAY_WIRE_JUNK_FEE_OR_DIY_CARDBOARD_BOX_VASE_UPSELL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missing_predispatch_bloomsnap_or_carnation_stem_count_shortfall:
+        return {
+            "status_code": 422,
+            "decision": "MISSING_PREDISPATCH_BLOOMSNAP_OR_CARNATION_STEM_COUNT_SHORTFALL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.direct_3km_local_florist_bypass_wire_commission_ready:
+        savings = round(gross_pool * 0.34, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DIRECT_3KM_LOCAL_FLORIST_BYPASS_WIRE_COMMISSION_CONFIRM",
+            "mandate_token": "floral_gift_delivery_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "BLOOMSNAP_VERIFIED_AND_PRE_1630_OFFICE_GIFT_AUTHORIZED",
+        "mandate_token": "floral_gift_delivery_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -35438,6 +35519,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    floral_gift_delivery_escrow_guard = {
+        "authorized_200": evaluate_floral_gift_delivery_escrow_policy(
+            FloralGiftDeliveryEscrowPolicyInput()
+        ),
+        "wire_junk_fee_or_diy_box_403": evaluate_floral_gift_delivery_escrow_policy(
+            FloralGiftDeliveryEscrowPolicyInput(
+                holiday_wire_junk_fee_or_diy_cardboard_box_vase_upsell=True
+            )
+        ),
+        "missing_bloomsnap_or_carnation_swap_422": evaluate_floral_gift_delivery_escrow_policy(
+            FloralGiftDeliveryEscrowPolicyInput(
+                missing_predispatch_bloomsnap_or_carnation_stem_count_shortfall=True
+            )
+        ),
+        "late_office_or_toxic_lily_451": evaluate_floral_gift_delivery_escrow_policy(
+            FloralGiftDeliveryEscrowPolicyInput(
+                commercial_office_delivery_after_1630_or_feline_toxic_lily_sku=True
+            )
+        ),
+        "direct_3km_florist_bypass_409": evaluate_floral_gift_delivery_escrow_policy(
+            FloralGiftDeliveryEscrowPolicyInput(
+                direct_3km_local_florist_bypass_wire_commission_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -35707,6 +35814,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "live_event_ticketing_escrow_guard": live_event_ticketing_escrow_guard,
         "ecommerce_bnpl_margin_refund_escrow_guard": ecommerce_bnpl_margin_refund_escrow_guard,
         "ecommerce_chargeback_ce30_escrow_guard": ecommerce_chargeback_ce30_escrow_guard,
+        "floral_gift_delivery_escrow_guard": floral_gift_delivery_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -48913,6 +49021,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ce30-escrow-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 RDR_ETHOCA_AUTO_DEFLECT_AND_CE30_MULTIMODAL_DOSSIER_CONFIRM · Mandate: chargeback_ce30_rdr_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 141 Floral, Cake & Same-Day Holiday Gift Delivery, BloomSnap Vision & Office Cutoff Escrow -->
+      <div class="finops-box" id="floral-gift-delivery-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">💐 鲜花蛋糕与节日同城礼赠 (BloomNation / 美团闪购 / DoorDash / 1-800-Flowers)、防货不对板与出店实拍托管沙盒 (Round 141)</div>
+            <div class="finops-subtitle">实测硬控剥离结账 $29 节日高峰附加费、默认勾选 $18 花瓶与“快递纸箱未插花草”陷阱 (HTTP 403)、骑手取件前强制上传 BloomSnap 成品实拍图过 AI 视觉数花头防把玫瑰私换廉价康乃馨 (HTTP 422)、商业写字楼 16:30 截单锁与养猫家庭 100% 禁百合花 (HTTP 451) 及绕过 35% 全国转单网直连 3km 实体店净省 34% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="floral-gift-status-kpi">HTTP 409 · DIRECT_3KM_LOCAL_FLORIST_BYPASS_WIRE_COMMISSION_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度商务客户节日礼篮与同城鲜花蛋糕总预算池 ($ USD)
+            <input type="range" id="floral-gift-pool-slider" min="10000" max="300000" step="5000" value="65000" oninput="updateFloralGiftDeliveryEscrowSandbox()" />
+            <span id="floral-gift-pool-val" style="color:#6ee7b7; font-family:monospace;">$65,000</span>
+          </label>
+          <label>
+            全包一口价、取消默认花瓶捆绑与禁发快递纸箱生花草 (HTTP 403)
+            <select id="floral-gift-fee-select" onchange="updateFloralGiftDeliveryEscrowSandbox()">
+              <option value="pass">本地花艺师精装现插手捧花 + 剥离 $18 默认玻璃瓶与 $25 节日服务费 (放行)</option>
+              <option value="block">结账最后一步突袭加收 $29.99 情人节高峰费 或 把未插生花枝装联邦快递纸箱扔门口 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            出店前 BloomSnap 成品实拍与 AI 视觉朵数/品种核验 (HTTP 422)
+            <select id="floral-gift-photo-select" onchange="updateFloralGiftDeliveryEscrowSandbox()">
+              <option value="pass">呼叫骑手前上传成品实拍图 + AI 清点 &gt;=24 朵红玫瑰无缩水并同步发买方预览 (合规)</option>
+              <option value="block">花店借口缺货把 $120 厄瓜多尔玫瑰私换成廉价康乃馨 或 朵数缩水 30% 不拍实拍图盲发 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            商业写字楼 16:30 下班截单锁与养猫家庭百合花禁令 (HTTP 451)
+            <select id="floral-gift-safety-select" onchange="updateFloralGiftDeliveryEscrowSandbox()">
+              <option value="clear">写字楼地址确保 16:30 前送达办公桌 + 养宠家庭 100% 选用无百合安全花材 (正常)</option>
+              <option value="hold">晚上 20:45 才送到已下班空写字楼致鲜花枯死 或 向养猫家庭配送致死性肾毒性百合花 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            绕过 35% 全国转单中介 (Wire Service) 直连 3km 实体花店 (HTTP 409)
+            <select id="floral-gift-opt-select" onchange="updateFloralGiftDeliveryEscrowSandbox()">
+              <option value="enabled" selected>砍掉全国集单网 35% 转单抽成，直连收件地 3km 内高分实体花店 100% 预算买花材净省 34% (HTTP 409)</option>
+              <option value="baseline">常规 BloomSnap 实拍核验与按时妥投授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度商务与节日礼赠总预算池</div>
+            <div class="finops-kpi-val" id="floral-gift-gross-kpi">$65,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">直连本地店与实拍验真后净支出</div>
+            <div class="finops-kpi-val" id="floral-gift-net-kpi" style="color:#6ee7b7;">$42,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省转单抽成与货不对板</div>
+            <div class="finops-kpi-val" id="floral-gift-savings-kpi" style="color:#38bdf8;">$22,100</div>
+          </div>
+        </div>
+        <div id="floral-gift-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DIRECT_3KM_LOCAL_FLORIST_BYPASS_WIRE_COMMISSION_CONFIRM · Mandate: floral_gift_delivery_optim_409
         </div>
       </div>
 
@@ -64718,6 +64889,80 @@ function updateEcommerceChargebackCe30EscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VISA_CE30_2OF4_MATCH_AND_DISPUTE_MUTEX_AUTHORIZED · Mandate: chargeback_ce30_rdr_200';
+}}
+
+function updateFloralGiftDeliveryEscrowSandbox() {{
+  const slider = document.getElementById('floral-gift-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '65000');
+  const feeMode = document.getElementById('floral-gift-fee-select').value;
+  const photoMode = document.getElementById('floral-gift-photo-select').value;
+  const safetyMode = document.getElementById('floral-gift-safety-select').value;
+  const optMode = document.getElementById('floral-gift-opt-select').value;
+
+  document.getElementById('floral-gift-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('floral-gift-status-kpi');
+  const grossKpi = document.getElementById('floral-gift-gross-kpi');
+  const netKpi = document.getElementById('floral-gift-net-kpi');
+  const savingsKpi = document.getElementById('floral-gift-savings-kpi');
+  const banner = document.getElementById('floral-gift-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (safetyMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 COMMERCIAL_OFFICE_DELIVERY_AFTER_1630_OR_FELINE_TOXIC_LILY_HOLD · Mandate: null';
+    return;
+  }}
+  if (feeMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 HOLIDAY_WIRE_JUNK_FEE_OR_DIY_CARDBOARD_BOX_VASE_UPSELL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (photoMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MISSING_PREDISPATCH_BLOOMSNAP_OR_CARNATION_STEM_COUNT_SHORTFALL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.34);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DIRECT_3KM_LOCAL_FLORIST_BYPASS_WIRE_COMMISSION_CONFIRM · Mandate: floral_gift_delivery_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 BLOOMSNAP_VERIFIED_AND_PRE_1630_OFFICE_GIFT_AUTHORIZED · Mandate: floral_gift_delivery_200';
 }}
 
 function updateStage1756Sandbox() {{
