@@ -29281,6 +29281,82 @@ def evaluate_ecommerce_device_trade_in_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommercePimCatalogOnboardingPolicyInput:
+    quarterly_snad_return_gtin_delist_and_onboarding_labor_pool_usd: float = 165000.0
+    unverified_gs1_gtin_prefix_or_duplicate_golden_sku_split: bool = False
+    title_copy_contradicts_packaging_ocr_or_missing_dimensions: bool = False
+    active_cpsc_fda_recall_match_or_missing_cpc_ul_prop65_cert: bool = False
+    vision_grounded_taxonomy_mapper_and_gdsn_ucp_syndication_ready: bool = False
+
+
+def evaluate_ecommerce_pim_catalog_onboarding_policy(
+    policy_input: EcommercePimCatalogOnboardingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_snad_return_gtin_delist_and_onboarding_labor_pool_usd
+        ),
+    )
+    if policy_input.active_cpsc_fda_recall_match_or_missing_cpc_ul_prop65_cert:
+        return {
+            "status_code": 451,
+            "decision": "RECALLED_LOT_OR_MISSING_CPC_UL_PROP65_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unverified_gs1_gtin_prefix_or_duplicate_golden_sku_split:
+        return {
+            "status_code": 403,
+            "decision": "INVALID_GS1_GTIN_PREFIX_OR_DUPLICATE_SKU_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.title_copy_contradicts_packaging_ocr_or_missing_dimensions:
+        return {
+            "status_code": 422,
+            "decision": "TITLE_VS_LABEL_SPEC_MISMATCH_OR_MISSING_ATTR_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.vision_grounded_taxonomy_mapper_and_gdsn_ucp_syndication_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "VISION_GROUNDED_TAXONOMY_AND_GDSN_UCP_SYNDICATION_CONFIRM",
+            "mandate_token": "pim_onboarding_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "GS1_VERIFIED_GOLDEN_SKU_SYNDICATION_AUTHORIZED",
+        "mandate_token": "pim_onboarding_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -40062,6 +40138,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_pim_catalog_onboarding_guard = {
+        "authorized_200": evaluate_ecommerce_pim_catalog_onboarding_policy(
+            EcommercePimCatalogOnboardingPolicyInput()
+        ),
+        "bad_gs1_or_duplicate_403": evaluate_ecommerce_pim_catalog_onboarding_policy(
+            EcommercePimCatalogOnboardingPolicyInput(
+                unverified_gs1_gtin_prefix_or_duplicate_golden_sku_split=True
+            )
+        ),
+        "copy_ocr_mismatch_422": evaluate_ecommerce_pim_catalog_onboarding_policy(
+            EcommercePimCatalogOnboardingPolicyInput(
+                title_copy_contradicts_packaging_ocr_or_missing_dimensions=True
+            )
+        ),
+        "cpsc_recall_or_no_cert_451": evaluate_ecommerce_pim_catalog_onboarding_policy(
+            EcommercePimCatalogOnboardingPolicyInput(
+                active_cpsc_fda_recall_match_or_missing_cpc_ul_prop65_cert=True
+            )
+        ),
+        "vision_pim_and_gdsn_409": evaluate_ecommerce_pim_catalog_onboarding_policy(
+            EcommercePimCatalogOnboardingPolicyInput(
+                vision_grounded_taxonomy_mapper_and_gdsn_ucp_syndication_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -40377,6 +40479,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_verified_review_syndication_guard": ecommerce_verified_review_syndication_guard,
         "ecommerce_hsa_fsa_checkout_guard": ecommerce_hsa_fsa_checkout_guard,
         "ecommerce_device_trade_in_escrow_guard": ecommerce_device_trade_in_escrow_guard,
+        "ecommerce_pim_catalog_onboarding_guard": ecommerce_pim_catalog_onboarding_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -56235,6 +56338,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="tradein-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MIRROR_WEBRTC_42STATE_TAX_OFFSET_AND_FREE_RETURN_CONFIRM · Mandate: device_tradein_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 187 E-Commerce PIM Catalog Onboarding, Spec-Vision & CPSC Recall Escrow (#306) -->
+      <div class="finops-box" id="ecommerce-pim-catalog-onboarding-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🗂️ 电商 PIM 商品主数据建品、视觉验真与 CPSC 召回熔断 (Akeneo / Salsify / Syndigo) 沙盒</div>
+            <div class="finops-sub">Round 187 (#306) · Verified by GS1 防 Amazon 8572 下架与哈希去重 (HTTP 403) + 洗水标 OCR 反查 AI 材质幻觉 (HTTP 422) + CPSC 召回 60s 锁仓与 CPC/UL 证书 (HTTP 451) + 全渠道分发净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="pim-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度货不对板 (SNAD) 退货、GS1 条码下架、召回罚款与人工建品池 ($)
+            <input type="number" id="pim-gross-input" value="165000" min="10000" step="5000" oninput="recalcEcommercePimCatalogOnboardingSandbox()" />
+          </label>
+          <label>Verified by GS1 品牌前缀归属与黄金 SKU 去重门禁
+            <select id="pim-gs1-select" onchange="recalcEcommercePimCatalogOnboardingSandbox()">
+              <option value="pass">GTIN-14 校验位正确 + GS1 前缀归属品牌方 + 唯一黄金主记录 (合规)</option>
+              <option value="block_403">盗用第三方转让的野鸡 UPC 条码遭 Amazon Error 8572 下架 或 1 款商品重复建 5 个 SKU (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>多模态洗水标/铭牌 OCR 真值 vs AI 生成标题文案校验
+            <select id="pim-ocr-select" onchange="recalcEcommercePimCatalogOnboardingSandbox()">
+              <option value="pass">AI 标题卖点与实物洗水标/营养表 OCR 100% 一致 + 长宽高毛重齐全 (合规)</option>
+              <option value="block_422">洗水标实拍图写 97% 聚酯纤维，大模型看图瞎编“100% 桑蚕丝”引发假一赔三退货 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>US CPSC / FDA 实时召回 60秒熔断与 CPC / UL 2849 / Prop 65 证书
+            <select id="pim-cpsc-select" onchange="recalcEcommercePimCatalogOnboardingSandbox()">
+              <option value="pass">零官方召回匹配 + 玩具 CPC / 锂电 UL 2849 / 加州 Prop 65 警示齐备 (安全)</option>
+              <option value="block_451">CPSC 已发布含铅/起火召回仍继续接单发货 或 漏传儿童 CPC / 锂电 UL 报告 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>供应商脏 CSV 8分钟自动映射标准类目树与 GDSN / AI UCP 分发
+            <select id="pim-opt-select" onchange="recalcEcommercePimCatalogOnboardingSandbox()">
+              <option value="enabled" selected>视觉验真 + 8分钟自动映射 Amazon/Walmart GDSN 与 AI 导购 UCP JSON-LD (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">人工花 14 天手工搬砖改 4 套平台 Excel 模板 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度货不对板退货与建品总池</div>
+            <div class="finops-kpi-val" id="pim-gross-kpi">$165,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">视觉验真与全渠道同步后净损耗</div>
+            <div class="finops-kpi-val" id="pim-net-kpi" style="color:#6ee7b7;">$103,950</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省 SNAD 退货与人工工时</div>
+            <div class="finops-kpi-val" id="pim-savings-kpi" style="color:#38bdf8;">$61,050</div>
+          </div>
+        </div>
+        <div id="pim-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 VISION_GROUNDED_TAXONOMY_AND_GDSN_UCP_SYNDICATION_CONFIRM · Mandate: pim_onboarding_escrow_optim_409
         </div>
       </div>
 
@@ -75403,6 +75563,79 @@ function recalcEcommerceDeviceTradeInSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 CLEAN_IMEI_COLLATERALIZED_TRADEIN_AUTHORIZED · Mandate: device_tradein_escrow_200';
+}}
+
+function recalcEcommercePimCatalogOnboardingSandbox() {{
+  const grossInput = document.getElementById('pim-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '165000'));
+  const gs1Gate = document.getElementById('pim-gs1-select').value;
+  const ocrGate = document.getElementById('pim-ocr-select').value;
+  const cpscGate = document.getElementById('pim-cpsc-select').value;
+  const optMode = document.getElementById('pim-opt-select').value;
+
+  const grossKpi = document.getElementById('pim-gross-kpi');
+  const netKpi = document.getElementById('pim-net-kpi');
+  const savingsKpi = document.getElementById('pim-savings-kpi');
+  const statusKpi = document.getElementById('pim-status-kpi');
+  const banner = document.getElementById('pim-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (cpscGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 RECALLED_LOT_OR_MISSING_CPC_UL_PROP65_HOLD · Mandate: null';
+    return;
+  }}
+  if (gs1Gate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INVALID_GS1_GTIN_PREFIX_OR_DUPLICATE_SKU_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (ocrGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 TITLE_VS_LABEL_SPEC_MISMATCH_OR_MISSING_ATTR_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 VISION_GROUNDED_TAXONOMY_AND_GDSN_UCP_SYNDICATION_CONFIRM · Mandate: pim_onboarding_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 GS1_VERIFIED_GOLDEN_SKU_SYNDICATION_AUTHORIZED · Mandate: pim_onboarding_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

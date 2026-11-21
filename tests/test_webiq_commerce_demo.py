@@ -21587,6 +21587,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-device-trade-in-escrow-sandbox", html_zh)
 
+    def test_ecommerce_pim_catalog_onboarding_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommercePimCatalogOnboardingPolicyInput,
+            evaluate_ecommerce_pim_catalog_onboarding_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_pim_catalog_onboarding_policy(
+            EcommercePimCatalogOnboardingPolicyInput(
+                quarterly_snad_return_gtin_delist_and_onboarding_labor_pool_usd=165000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "GS1_VERIFIED_GOLDEN_SKU_SYNDICATION_AUTHORIZED",
+        )
+
+        gs1 = evaluate_ecommerce_pim_catalog_onboarding_policy(
+            EcommercePimCatalogOnboardingPolicyInput(
+                unverified_gs1_gtin_prefix_or_duplicate_golden_sku_split=True
+            )
+        )
+        self.assertEqual(gs1["status_code"], 403)
+        self.assertEqual(
+            gs1["decision"],
+            "INVALID_GS1_GTIN_PREFIX_OR_DUPLICATE_SKU_BLOCKED",
+        )
+
+        ocr = evaluate_ecommerce_pim_catalog_onboarding_policy(
+            EcommercePimCatalogOnboardingPolicyInput(
+                title_copy_contradicts_packaging_ocr_or_missing_dimensions=True
+            )
+        )
+        self.assertEqual(ocr["status_code"], 422)
+        self.assertEqual(
+            ocr["decision"],
+            "TITLE_VS_LABEL_SPEC_MISMATCH_OR_MISSING_ATTR_BLOCKED",
+        )
+
+        cpsc = evaluate_ecommerce_pim_catalog_onboarding_policy(
+            EcommercePimCatalogOnboardingPolicyInput(
+                active_cpsc_fda_recall_match_or_missing_cpc_ul_prop65_cert=True
+            )
+        )
+        self.assertEqual(cpsc["status_code"], 451)
+        self.assertEqual(
+            cpsc["decision"],
+            "RECALLED_LOT_OR_MISSING_CPC_UL_PROP65_HOLD",
+        )
+
+        optim = evaluate_ecommerce_pim_catalog_onboarding_policy(
+            EcommercePimCatalogOnboardingPolicyInput(
+                quarterly_snad_return_gtin_delist_and_onboarding_labor_pool_usd=165000.0,
+                vision_grounded_taxonomy_mapper_and_gdsn_ucp_syndication_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 61050.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 103950.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_pim_catalog_onboarding_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-pim-catalog-onboarding-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
