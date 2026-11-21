@@ -27937,6 +27937,79 @@ def evaluate_ecommerce_fefo_lot_expiry_policy(
     }
 
 
+@dataclass(frozen=True)
+class CorporateExpenseCardAuditPolicyInput:
+    quarterly_out_of_policy_spend_and_audit_labor_pool_usd: float = 120000.0
+    out_of_policy_mcc_or_off_trip_weekend_swipe: bool = False
+    unitemized_credit_slip_gift_card_or_duplicate_receipt_hash: bool = False
+    ai_synthetic_fake_receipt_or_fcpa_gov_meal_violation: bool = False
+    direct_folio_auto_match_and_personal_overage_split_ready: bool = False
+
+
+def evaluate_corporate_expense_card_audit_policy(
+    policy_input: CorporateExpenseCardAuditPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_out_of_policy_spend_and_audit_labor_pool_usd)
+    )
+    if policy_input.ai_synthetic_fake_receipt_or_fcpa_gov_meal_violation:
+        return {
+            "status_code": 451,
+            "decision": "AI_SYNTHETIC_RECEIPT_OR_FCPA_GOV_MEAL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.out_of_policy_mcc_or_off_trip_weekend_swipe:
+        return {
+            "status_code": 403,
+            "decision": "OUT_OF_POLICY_MCC_OR_OFF_TRIP_SWIPE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unitemized_credit_slip_gift_card_or_duplicate_receipt_hash:
+        return {
+            "status_code": 422,
+            "decision": "UNITEMIZED_GIFT_CARD_OR_DUPLICATE_CLAIM_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.direct_folio_auto_match_and_personal_overage_split_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DIRECT_FOLIO_AUTO_MATCH_AND_PERSONAL_OVERAGE_SPLIT_CONFIRM",
+            "mandate_token": "corp_expense_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "COMPLIANT_CORP_EXPENSE_POSTING_AUTHORIZED",
+        "mandate_token": "corp_expense_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -38250,6 +38323,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    corporate_expense_card_audit_guard = {
+        "authorized_200": evaluate_corporate_expense_card_audit_policy(
+            CorporateExpenseCardAuditPolicyInput()
+        ),
+        "off_trip_mcc_swipe_403": evaluate_corporate_expense_card_audit_policy(
+            CorporateExpenseCardAuditPolicyInput(
+                out_of_policy_mcc_or_off_trip_weekend_swipe=True
+            )
+        ),
+        "unitemized_or_duplicate_422": evaluate_corporate_expense_card_audit_policy(
+            CorporateExpenseCardAuditPolicyInput(
+                unitemized_credit_slip_gift_card_or_duplicate_receipt_hash=True
+            )
+        ),
+        "ai_fake_receipt_or_fcpa_451": evaluate_corporate_expense_card_audit_policy(
+            CorporateExpenseCardAuditPolicyInput(
+                ai_synthetic_fake_receipt_or_fcpa_gov_meal_violation=True
+            )
+        ),
+        "direct_folio_and_split_409": evaluate_corporate_expense_card_audit_policy(
+            CorporateExpenseCardAuditPolicyInput(
+                direct_folio_auto_match_and_personal_overage_split_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -38547,6 +38646,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "omnichannel_bopis_curbside_guard": omnichannel_bopis_curbside_guard,
         "b2b_inventory_liquidation_guard": b2b_inventory_liquidation_guard,
         "ecommerce_fefo_lot_expiry_guard": ecommerce_fefo_lot_expiry_guard,
+        "corporate_expense_card_audit_guard": corporate_expense_card_audit_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -53379,6 +53479,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="fefo-exp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SHORT_DATED_DISCLOSED_SINGLE_UNIT_FLASH_CLEARANCE_CONFIRM · Mandate: fefo_expiry_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 169 Corporate Expense Card, Receipt OCR & Policy Audit Escrow -->
+      <div class="finops-box" id="corporate-expense-card-audit-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💳 企业商旅与费用报销卡智能审计 (Ramp / Brex / Navan Expense / Concur) 托管沙盒</div>
+            <div class="finops-sub">Round 169 · 刷卡前 50ms 行程与 MCC 硬锁 (HTTP 403) + 明细水单 OCR 拆行与跨渠道防重哈希 (HTTP 422) + AI 假票与 FCPA 合规锁 (HTTP 451) + 直连免贴票净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="corp-exp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度违规超标消费、重复报销与财务审单人工成本池 ($)
+            <input type="number" id="corp-exp-gross-input" value="120000" min="10000" step="5000" oninput="recalcCorporateExpenseCardAuditSandbox()" />
+          </label>
+          <label>刷卡前 50ms ISO 8583 行程时窗与 MCC 差标门禁
+            <select id="corp-exp-mcc-select" onchange="recalcCorporateExpenseCardAuditSandbox()">
+              <option value="pass">差旅行程时窗内且属于机酒/餐饮/交通白名单 MCC (合规)</option>
+              <option value="block_403">周末非出差时段刷夜店酒吧 (MCC 5813) 或奢侈品超差标 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>明细水单 OCR 行项目剥离与跨渠道四元组防重哈希
+            <select id="corp-exp-ocr-select" onchange="recalcCorporateExpenseCardAuditSandbox()">
+              <option value="pass">电子明细水单齐全 + 剥离迷你吧红酒 + 全域唯一哈希校验通过 (合规)</option>
+              <option value="block_422">只传 POS 刷卡签购单掩盖超市礼品卡或“刷公司卡又拿纸质票报现金”双吃 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>AI 合成假小票数字取证与 FCPA / 医生 NPI 宴请红线
+            <select id="corp-exp-safe-select" onchange="recalcCorporateExpenseCardAuditSandbox()">
+              <option value="pass">真实热敏/电子税票 + 参会人合规 + 50% 餐饮税抵自动拆账 (安全)</option>
+              <option value="block_451">检出 AIGC 伪造小票图片或未审批超标宴请政府官员/医生 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>航司/酒店/打车/邮箱直连免贴票与个人超标 ACH 自动分账
+            <select id="corp-exp-opt-select" onchange="recalcCorporateExpenseCardAuditSandbox()">
+              <option value="enabled" selected>Uber/酒店/Gmail 3秒自动拉取水单 + 迷你吧/升舱自动扣个人卡 (-38% 成本 / HTTP 409)</option>
+              <option value="disabled">传统人工拍照贴票 + 财务月底手工抽检催票 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度超标漏损与审单成本总池</div>
+            <div class="finops-kpi-val" id="corp-exp-gross-kpi">$120,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">刷卡前锁卡与免贴票直连后净成本</div>
+            <div class="finops-kpi-val" id="corp-exp-net-kpi" style="color:#6ee7b7;">$74,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省违规费用与财务工时</div>
+            <div class="finops-kpi-val" id="corp-exp-savings-kpi" style="color:#38bdf8;">$45,600</div>
+          </div>
+        </div>
+        <div id="corp-exp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DIRECT_FOLIO_AUTO_MATCH_AND_PERSONAL_OVERAGE_SPLIT_CONFIRM · Mandate: corp_expense_escrow_optim_409
         </div>
       </div>
 
@@ -71233,6 +71390,79 @@ function recalcEcommerceFefoLotExpirySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 FEFO_AND_CONSUMPTION_WINDOW_VERIFIED_AUTHORIZED · Mandate: fefo_expiry_escrow_200';
+}}
+
+function recalcCorporateExpenseCardAuditSandbox() {{
+  const grossInput = document.getElementById('corp-exp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '120000'));
+  const mccGate = document.getElementById('corp-exp-mcc-select').value;
+  const ocrGate = document.getElementById('corp-exp-ocr-select').value;
+  const safeGate = document.getElementById('corp-exp-safe-select').value;
+  const optMode = document.getElementById('corp-exp-opt-select').value;
+
+  const grossKpi = document.getElementById('corp-exp-gross-kpi');
+  const netKpi = document.getElementById('corp-exp-net-kpi');
+  const savingsKpi = document.getElementById('corp-exp-savings-kpi');
+  const statusKpi = document.getElementById('corp-exp-status-kpi');
+  const banner = document.getElementById('corp-exp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (safeGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 AI_SYNTHETIC_RECEIPT_OR_FCPA_GOV_MEAL_HOLD · Mandate: null';
+    return;
+  }}
+  if (mccGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 OUT_OF_POLICY_MCC_OR_OFF_TRIP_SWIPE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (ocrGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNITEMIZED_GIFT_CARD_OR_DUPLICATE_CLAIM_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DIRECT_FOLIO_AUTO_MATCH_AND_PERSONAL_OVERAGE_SPLIT_CONFIRM · Mandate: corp_expense_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 COMPLIANT_CORP_EXPENSE_POSTING_AUTHORIZED · Mandate: corp_expense_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -20381,6 +20381,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-fefo-lot-expiry-sandbox", html_zh)
 
+    def test_corporate_expense_card_audit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CorporateExpenseCardAuditPolicyInput,
+            evaluate_corporate_expense_card_audit_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_corporate_expense_card_audit_policy(
+            CorporateExpenseCardAuditPolicyInput(
+                quarterly_out_of_policy_spend_and_audit_labor_pool_usd=120000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "COMPLIANT_CORP_EXPENSE_POSTING_AUTHORIZED",
+        )
+
+        mcc = evaluate_corporate_expense_card_audit_policy(
+            CorporateExpenseCardAuditPolicyInput(
+                out_of_policy_mcc_or_off_trip_weekend_swipe=True
+            )
+        )
+        self.assertEqual(mcc["status_code"], 403)
+        self.assertEqual(
+            mcc["decision"],
+            "OUT_OF_POLICY_MCC_OR_OFF_TRIP_SWIPE_BLOCKED",
+        )
+
+        ocr = evaluate_corporate_expense_card_audit_policy(
+            CorporateExpenseCardAuditPolicyInput(
+                unitemized_credit_slip_gift_card_or_duplicate_receipt_hash=True
+            )
+        )
+        self.assertEqual(ocr["status_code"], 422)
+        self.assertEqual(
+            ocr["decision"],
+            "UNITEMIZED_GIFT_CARD_OR_DUPLICATE_CLAIM_BLOCKED",
+        )
+
+        safe = evaluate_corporate_expense_card_audit_policy(
+            CorporateExpenseCardAuditPolicyInput(
+                ai_synthetic_fake_receipt_or_fcpa_gov_meal_violation=True
+            )
+        )
+        self.assertEqual(safe["status_code"], 451)
+        self.assertEqual(
+            safe["decision"],
+            "AI_SYNTHETIC_RECEIPT_OR_FCPA_GOV_MEAL_HOLD",
+        )
+
+        optim = evaluate_corporate_expense_card_audit_policy(
+            CorporateExpenseCardAuditPolicyInput(
+                quarterly_out_of_policy_spend_and_audit_labor_pool_usd=120000.0,
+                direct_folio_auto_match_and_personal_overage_split_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 45600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 74400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("corporate_expense_card_audit_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("corporate-expense-card-audit-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

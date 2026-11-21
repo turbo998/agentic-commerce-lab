@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg612" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#07111e"/>
+      <stop offset="50%" stop-color="#0d1e32"/>
+      <stop offset="100%" stop-color="#091524"/>
+    </linearGradient>
+    <linearGradient id="hdr612" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg612)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="url(#hdr612)" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 169 · Corporate Expense Card, Receipt OCR &amp; Policy Audit Escrow (Ramp / Brex / Navan / Concur)</text>
+  <text x="48" y="74" class="sub">Trip-Scoped Pre-Auth MCC Lock · Level-III / OCR Line-Item Alcohol &amp; Gift-Card Split · Cross-Channel Duplicate Receipt Hash (-38% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #612 · FAQ #288</text>
+
+  <!-- Lane 1: Pre-Swipe Card Controls -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Pre-Swipe Trip &amp; MCC Card Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops "Audit-After-Reimbursement" leakage:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Card_State == Active ONLY during Trip_Window</text>
+  <text x="44" y="205" class="body-txt">• Real-Time ISO 8583 Webhook Authorization (`50ms`):</text>
+  <text x="54" y="225" class="mono">Allow MCC ∈ {Air, Hotel, Dining, Ground}</text>
+  <text x="54" y="243" class="mono" fill="#fca5a5">Block Nightclub(5813) / Luxury / Spa / Weekend</text>
+  <text x="44" y="266" class="body-txt">• City-Tier Per-Diem Daily Cap (`$85-$125/day`):</text>
+  <text x="54" y="286" class="body-txt">Declines over-budget swipes at POS terminal or</text>
+  <text x="54" y="304" class="body-txt">auto-splits overage to employee personal card</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 OUT_OF_POLICY_MCC_OR_OFF_TRIP_SWIPE_BLOCKED</text>
+
+  <!-- Lane 2: OCR Line-Item & Duplicate Hash Gate -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. OCR Line-Item &amp; Duplicate Hash Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Defeats "Credit-Card Slip Only" (Non-Itemized):</text>
+  <text x="442" y="182" class="mono">Require Itemized_Folio_Lines &gt;= 1 for &gt;$75</text>
+  <text x="432" y="205" class="body-txt">• Unbundled Personal &amp; Unallowable Items:</text>
+  <text x="442" y="225" class="mono" fill="#fcd34d">Strip Minibar / In-Room Movie / Gift_Card</text>
+  <text x="432" y="248" class="body-txt">• Cross-Channel Duplicate Receipt Fingerprint:</text>
+  <text x="442" y="268" class="mono">Hash(Merchant_TIN, Timestamp±5m, Total, Items)</text>
+  <text x="442" y="286" class="body-txt">Blocks employee charging Corp Card AND filing</text>
+  <text x="442" y="304" class="body-txt">the paper receipt as out-of-pocket cash claim</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNITEMIZED_GIFT_CARD_OR_DUPLICATE_CLAIM_BLOCKED</text>
+
+  <!-- Lane 3: IRS Accountable Plan, FCPA & AI Fake Receipt Gate -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. IRS §274, FCPA &amp; AI-Fake Receipt Lock (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• AI-Generated Fake Receipt Forensics:</text>
+  <text x="830" y="182" class="mono">Check EXIF + Thermal_Font + POS_Tax_Math</text>
+  <text x="820" y="205" class="body-txt">• IRS §274(d) &amp; Entertainment / Alcohol Tax Split:</text>
+  <text x="830" y="225" class="mono" fill="#f9a8d4">Meals 50% Deductible vs Entertainment 0%</text>
+  <text x="820" y="248" class="body-txt">• FCPA / UK Bribery Act Public Official Cap:</text>
+  <text x="830" y="268" class="body-txt">Blocks meals/gifts to `Gov/SOE/HCP (NPI)`</text>
+  <text x="830" y="286" class="body-txt">contacts above `$50` without Legal Pre-Clearance</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 AI_SYNTHETIC_RECEIPT_OR_FCPA_GOV_MEAL_HOLD</text>
+
+  <!-- Bottom Escrow & Zero-Touch ERP GL Sync Architecture -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Direct Visa/Mastercard Level-III + Gmail/Uber/Lyft/Hotel Auto-Match &amp; NetSuite/Workday Payroll Clawback (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Zero-Touch Auto-Receipt</text>
+  <text x="62" y="462" class="body-txt">Direct API pulls itemized folio</text>
+  <text x="62" y="480" class="body-txt">from Uber, Lyft, Delta, Marriott</text>
+  <text x="62" y="498" class="body-txt">&amp; Gmail/M365 in 3 seconds;</text>
+  <text x="62" y="516" class="mono">84% Swipes Need 0 Employee Work</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Calendar &amp; CRM Attendee Sync</text>
+  <text x="337" y="462" class="body-txt">Auto-populates meal attendees</text>
+  <text x="337" y="480" class="body-txt">from Outlook/Google Calendar</text>
+  <text x="337" y="498" class="body-txt">+ Salesforce Opportunity ID</text>
+  <text x="337" y="516" class="mono">Per-Head Cap = Total / N_Guests</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ 72h Card Freeze &amp; Personal Split</text>
+  <text x="622" y="462" class="body-txt">Missing receipt &gt;72h auto-pauses</text>
+  <text x="622" y="480" class="body-txt">card; personal minibar/upgrade</text>
+  <text x="622" y="498" class="body-txt">auto-collected via employee ACH</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">0 Finance Nudge Emails Sent</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Multi-Line ERP GL &amp; VAT Recovery</text>
+  <text x="907" y="462" class="body-txt">Splits 1 hotel bill into Room,</text>
+  <text x="907" y="480" class="body-txt">Meals (50%), Tax &amp; Personal GL</text>
+  <text x="907" y="498" class="body-txt">+ reclaims EU/UK foreign VAT</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-38% Out-of-Policy &amp; Audit Cost</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-38.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Leakage &amp; Audit Savings</text>
+  <text x="46" y="642" class="mono">$45,600 Saved / $120k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">50ms ISO 8583</text>
+  <text x="336" y="626" class="kpi-lbl">Pre-Swipe MCC &amp; Per-Diem Gate</text>
+  <text x="336" y="642" class="mono">0 Post-Trip Clawback Disputes</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">SHA-256 Folio</text>
+  <text x="626" y="626" class="kpi-lbl">Cross-Channel Duplicate Blocker</text>
+  <text x="626" y="642" class="mono">Blocks Card + Cash Double-Dip</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">IRS §274 &amp; FCPA</text>
+  <text x="916" y="626" class="kpi-lbl">AI-Receipt Forensics &amp; Gov Cap</text>
+  <text x="916" y="642" class="mono">100% Audit-Ready ERP Posting</text>
+</svg>
