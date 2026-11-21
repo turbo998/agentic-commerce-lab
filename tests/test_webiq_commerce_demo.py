@@ -19443,6 +19443,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-dom-split-shipment-escrow-sandbox", html_zh)
 
+    def test_livestream_video_commerce_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            LivestreamVideoCommerceEscrowPolicyInput,
+            evaluate_livestream_video_commerce_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_livestream_video_commerce_escrow_policy(
+            LivestreamVideoCommerceEscrowPolicyInput(
+                quarterly_livestream_ad_burn_and_glitch_pool_usd=130000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "DUAL_SIGNED_FLASH_LINK_AUTHORIZED",
+        )
+
+        glitch = evaluate_livestream_video_commerce_escrow_policy(
+            LivestreamVideoCommerceEscrowPolicyInput(
+                livestream_fat_finger_decimal_price_glitch=True
+            )
+        )
+        self.assertEqual(glitch["status_code"], 403)
+        self.assertEqual(
+            glitch["decision"],
+            "LIVESTREAM_FAT_FINGER_DECIMAL_PRICE_GLITCH_BLOCKED",
+        )
+
+        ad_burn = evaluate_livestream_video_commerce_escrow_policy(
+            LivestreamVideoCommerceEscrowPolicyInput(
+                instant_cancel_fake_gmv_ad_burn_attack=True
+            )
+        )
+        self.assertEqual(ad_burn["status_code"], 422)
+        self.assertEqual(
+            ad_burn["decision"],
+            "INSTANT_CANCEL_FAKE_GMV_AD_BURN_ATTACK_BLOCKED",
+        )
+
+        asr = evaluate_livestream_video_commerce_escrow_policy(
+            LivestreamVideoCommerceEscrowPolicyInput(
+                prohibited_medical_claim_or_fake_msrp_anchor=True
+            )
+        )
+        self.assertEqual(asr["status_code"], 451)
+        self.assertEqual(
+            asr["decision"],
+            "PROHIBITED_MEDICAL_CLAIM_OR_FAKE_MSRP_ANCHOR_HOLD",
+        )
+
+        optim = evaluate_livestream_video_commerce_escrow_policy(
+            LivestreamVideoCommerceEscrowPolicyInput(
+                quarterly_livestream_ad_burn_and_glitch_pool_usd=130000.0,
+                net_settled_roas_bid_and_180s_flash_recycle_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 46800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 83200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("livestream_video_commerce_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("livestream-video-commerce-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

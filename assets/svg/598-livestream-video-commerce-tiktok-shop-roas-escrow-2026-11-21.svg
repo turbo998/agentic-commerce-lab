@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg598" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#091326" />
+      <stop offset="50%" stop-color="#112244" />
+      <stop offset="100%" stop-color="#06101e" />
+    </linearGradient>
+    <linearGradient id="accent598" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ec4899" />
+      <stop offset="50%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg598)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent598)" rx="3" />
+
+  <text x="40" y="58" class="title">直播电商与短视频直购 (TikTok Shop / YouTube Shopping) 防改价乌龙与投流 ROI 熔断架构</text>
+  <text x="40" y="80" class="subtitle">Round 155 · 防中控手抖把 $299 输成 $29.9 上车 5 秒亏百万、防凑单秒退骗投流 &amp; 净 GMV 广告联动净省 36% (SVG 598)</text>
+
+  <!-- Left Card: 3 Livestream Commerce Disasters -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大直播带货与投流破产黑洞</text>
+  <text x="56" y="164" class="card-title">1. 中控改价少打一个“0” 5 秒被薅光 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 直播间现场临时改价上链接，运营手忙脚乱把 $290 输成 $29.0</text>
+  <text x="56" y="202" class="body">• 监控机器人 5 秒内扫走 15,000 单；不发货被平台扣保证金封店，</text>
+  <text x="56" y="220" class="warn">  发货则倒贴 400 万人民币直接破产!</text>
+
+  <text x="56" y="256" class="card-title">2. “秒拍秒退”虚假 GMV 诱导千川烧干预算 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 黑产或竞对水军涌入直播间狂拍 500 单，付款后 3 分钟内全部秒退</text>
+  <text x="56" y="294" class="body">• 广告算法误以为该直播间转化率爆表，自动放大 10 倍付费投流预算</text>
+  <text x="56" y="312" class="warn">• 烧光 $30,000 投流费，下播一看真实净成交 (Net GMV) 只有 $2,000!</text>
+
+  <text x="56" y="348" class="card-title">3. 主播口嗨绝对化违禁词遭平台断播封号 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 主播激动脱口而出“100% 治脱发 / FDA 认证神药 / 全网最低价”</text>
+  <text x="56" y="386" class="body">• 或先改高吊牌价到 $999 再划掉卖 $99 违反虚假原价法规</text>
+  <text x="56" y="404" class="warn">• 触发 TikTok Shop 违规积分扣满 48 分，冻结全部货款 90 天!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: LIVESTREAM_FAT_FINGER_DECIMAL_PRICE_GLITCH</text>
+  <text x="70" y="502" class="warn">• HTTP 422: INSTANT_CANCEL_FAKE_GMV_AD_BURN_ATTACK</text>
+  <text x="70" y="524" class="warn">• HTTP 451: PROHIBITED_MEDICAL_CLAIM_OR_FAKE_MSRP</text>
+  <text x="70" y="546" class="mono">• HTTP 409:NET_SETTLED_ROAS_BID_AND_FLASH_RELEASE_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: DUAL_SIGNED_FLASH_LINK_AUTHORIZED_200</text>
+  <text x="70" y="596" class="body">铁律: 直播间临时改价跌幅 &gt;30% 必过双人复核与 COGS 铁闸!</text>
+
+  <!-- Center Card: 4-Stage Livestream Commerce Escrow Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶直播闪购控价与净 ROI 投流架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ef4444" />
+  <text x="450" y="175" class="card-title" fill="#fca5a5">Gate 1: 直播小黄车“小数点防抖锁”与批次硬顶 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• 中控台改价若低于日常价 60% 或低于 `ERP_COGS × 0.90`，系统拒绝</text>
+  <text x="450" y="213" class="body">  一键上架! 福利秒杀品强制物理隔离在独立 `Max_Qty = 50` 福袋池</text>
+  <text x="450" y="231" class="mono">• 手抖少输一位数或福利价未设库存上限 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: 剔除“30m 秒退单”的净 GMV 投流回路 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 严禁把“刚拍下就秒退”的虚假水分 GMV 回传给广告竞价引擎 (CAPI)!</text>
+  <text x="450" y="320" class="body">• 实时监测 `15分钟秒退率 &gt; 25%` (疑似刷单骗投流或黑产凑单):</text>
+  <text x="450" y="338" class="body">  毫秒级自动降权/暂停付费流量计划，防止广告费打水漂</text>
+  <text x="450" y="354" class="mono">• 秒退率暴冲导致真实净 ROI 跌破盈亏线 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: ASR 实时语音违禁词消音与划线价审计 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 推流端加挂 200ms 延迟 ASR 语音识别: 检出医疗功效/绝对化用语立即</text>
+  <text x="450" y="437" class="body">  在提词器红屏警告并自动切备用贴片；数字人直播强制标注 AIGC 水印</text>
+  <text x="450" y="455" class="mono">• 划线原价无近 30 天真实成交记录或口播违规 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: 180 秒未付自动释库与净毛利竞价 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 直播间“拍下占库不付款”锁定时间从 30 分钟缩短至 `180 秒`</text>
+  <text x="450" y="546" class="body">  超时未付立即释放回小黄车并弹窗提醒仍在直播间的在线观众抢购!</text>
+  <text x="450" y="566" class="mono">• 按 `Net Settled Margin ROAS` (扣退货+达人佣金后净毛利) 动态加投</text>
+  <text x="450" y="586" class="mono">• 零改价破产 + 砍掉虚假秒退投流浪费 -&gt; 净省 36% 直播获客成本</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大直播与视频电商技术底座</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. TikTok Shop Open API + GMV Max</text>
+  <text x="846" y="182" class="body">• 优势: 原生打通短视频/直播购物车与广告自动出价闭环</text>
+  <text x="846" y="198" class="body">• 特性: 支持 Campaign Flash Sale 独立库存池与最低价保护</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. YouTube Shopping + Shopify Live Sync</text>
+  <text x="846" y="244" class="body">• 优势: 视频下方原生挂载 Shopify 实时价格与库存标签</text>
+  <text x="846" y="260" class="body">• 特性: 结账直接受 Shopify 底层价格笼子与防超卖锁保护</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. 巨量千川 / 阿里妈妈“净成交 (Net-Pay) 控本”</text>
+  <text x="846" y="306" class="body">• 经验: 摒弃只看表面成交额的浅层转化目标，改用扣除当场秒退单</text>
+  <text x="846" y="322" class="body">  与历史品类退货率后的“真实净结算 ROI”驱动自动放量</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Whatnot / Bambuser 实时竞拍预授权引擎</text>
+  <text x="846" y="368" class="body">• 优势: 进直播间参与闪购/竞拍前预先绑定 Apple Pay / SPT 预授权</text>
+  <text x="846" y="384" class="body">• 特性: 喊中即秒级实扣，彻底消灭“恶意拍下不付款占空库存”</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度直播间改价乌龙、秒退烧投流与占库池 ($130,000)</text>
+  <text x="860" y="456" class="body">• 传统中控输错价+秒退虚假GMV烧广告+占库: $130,000/季</text>
+  <text x="860" y="476" class="mono">• 剔除秒退单的 Net-ROAS 投流熔断省广告费: -$22,100</text>
+  <text x="860" y="496" class="mono">• 小数点防抖锁与独立福利池杜绝改价破产: -$14,300</text>
+  <text x="860" y="516" class="mono">• 180s 超时未付极速释库重售与 ASR 合规防封: -$10,400</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净直播投流成本: $83,200 (净省 $46,800 / -36%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: livestream_commerce_escrow_optim_409</text>
+</svg>
