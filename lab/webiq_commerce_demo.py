@@ -26842,6 +26842,79 @@ def evaluate_ecommerce_digital_gift_card_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceDomSplitShipmentEscrowPolicyInput:
+    quarterly_dom_split_freight_and_short_pick_pool_usd: float = 150000.0
+    excessive_split_shipment_freight_deficit_wipeout: bool = False
+    store_single_unit_display_short_pick_risk: bool = False
+    hazmat_air_routing_or_co_dependent_bundle_split: bool = False
+    single_node_consolidation_incentive_and_clearance_ready: bool = False
+
+
+def evaluate_ecommerce_dom_split_shipment_escrow_policy(
+    policy_input: EcommerceDomSplitShipmentEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_dom_split_freight_and_short_pick_pool_usd)
+    )
+    if policy_input.hazmat_air_routing_or_co_dependent_bundle_split:
+        return {
+            "status_code": 451,
+            "decision": "HAZMAT_AIR_ROUTING_OR_CO_DEPENDENT_BUNDLE_SPLIT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.excessive_split_shipment_freight_deficit_wipeout:
+        return {
+            "status_code": 403,
+            "decision": "EXCESSIVE_SPLIT_SHIPMENT_FREIGHT_DEFICIT_WIPEOUT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.store_single_unit_display_short_pick_risk:
+        return {
+            "status_code": 422,
+            "decision": "STORE_SINGLE_UNIT_DISPLAY_SHORT_PICK_RISK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.single_node_consolidation_incentive_and_clearance_ready:
+        savings = round(gross_pool * 0.35, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SINGLE_NODE_CONSOLIDATION_INCENTIVE_AND_CLEARANCE_CONFIRM",
+            "mandate_token": "dom_split_shipment_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "MARGIN_POSITIVE_DOM_FULFILLMENT_AUTHORIZED",
+        "mandate_token": "dom_split_shipment_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -36765,6 +36838,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_dom_split_shipment_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_dom_split_shipment_escrow_policy(
+            EcommerceDomSplitShipmentEscrowPolicyInput()
+        ),
+        "excessive_split_freight_deficit_403": evaluate_ecommerce_dom_split_shipment_escrow_policy(
+            EcommerceDomSplitShipmentEscrowPolicyInput(
+                excessive_split_shipment_freight_deficit_wipeout=True
+            )
+        ),
+        "store_single_unit_short_pick_422": evaluate_ecommerce_dom_split_shipment_escrow_policy(
+            EcommerceDomSplitShipmentEscrowPolicyInput(
+                store_single_unit_display_short_pick_risk=True
+            )
+        ),
+        "hazmat_air_or_bundle_split_451": evaluate_ecommerce_dom_split_shipment_escrow_policy(
+            EcommerceDomSplitShipmentEscrowPolicyInput(
+                hazmat_air_routing_or_co_dependent_bundle_split=True
+            )
+        ),
+        "consolidation_incentive_and_clearance_409": evaluate_ecommerce_dom_split_shipment_escrow_policy(
+            EcommerceDomSplitShipmentEscrowPolicyInput(
+                single_node_consolidation_incentive_and_clearance_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -37047,6 +37146,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_hotel_rate_parity_escrow_guard": ota_hotel_rate_parity_escrow_guard,
         "ecommerce_preorder_deposit_escrow_guard": ecommerce_preorder_deposit_escrow_guard,
         "ecommerce_digital_gift_card_escrow_guard": ecommerce_digital_gift_card_escrow_guard,
+        "ecommerce_dom_split_shipment_escrow_guard": ecommerce_dom_split_shipment_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -51024,6 +51124,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="gift-card-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DUAL_LEDGER_GIFTCO_BREAKAGE_AND_ACH_RELOAD_CONFIRM · Mandate: digital_gift_card_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 154 E-Commerce DOM Split-Shipment & Store ATP Escrow -->
+      <div class="finops-box" id="ecommerce-dom-split-shipment-escrow-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🚚 分布式订单路由 (DOM：Manhattan / Fluent Commerce)、防拆单运费吞穿毛利与门店安全水位托管沙盒</div>
+            <div class="finops-sub">Round 154 · 单仓齐发优先与拆单毛利锁 (HTTP 403) + 实体店 OnHand&gt;=3 缓冲 (HTTP 422) + 危化品陆运锁 (HTTP 451) + 合包返礼金净省 35% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="dom-split-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度多仓拆单快递超支与门店拒单重发池 ($)
+            <input type="number" id="dom-split-gross-input" value="150000" min="15000" step="5000" oninput="recalcEcommerceDomSplitShipmentSandbox()" />
+          </label>
+          <label>单仓一箱齐发优先与拆单净毛利锁
+            <select id="dom-split-margin-select" onchange="recalcEcommerceDomSplitShipmentSandbox()">
+              <option value="pass">优先中央大仓 1 箱齐发且运费 &lt;=70% 订单毛利 (合规)</option>
+              <option value="block_403">$55 免邮小单拆成 4 个包裹付 $34 首重费倒赔 $16 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>线下实体店安全库存水位缓冲 (OnHand &gt;= 3)
+            <select id="dom-split-store-select" onchange="recalcEcommerceDomSplitShipmentSandbox()">
+              <option value="pass">仅向库存 &gt;=3 件门店派单 (屏蔽最后 2 件展示样机)</option>
+              <option value="block_422">把线上单派给仅剩 1 件残次样机的门店遭 42% 拒单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>航空禁运危化品 (Hazmat) 陆运锁与齐套同发
+            <select id="dom-split-hazmat-select" onchange="recalcEcommerceDomSplitShipmentSandbox()">
+              <option value="pass">含香水/锂电强制走陆运仓 + 主辅件齐套同发 (安全)</option>
+              <option value="block_451">香水/移动电源误配空运次日达或主辅件缺货单发配件 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>结账页“合箱返 $3 礼金”与滞销门店清仓加权
+            <select id="dom-split-opt-select" onchange="recalcEcommerceDomSplitShipmentSandbox()">
+              <option value="enabled" selected>引导单箱合发返 $3 积分 + 优先消耗季末滞销店库存 (-35% 成本 / HTTP 409)</option>
+              <option value="disabled">无合包激励且忽略门店库存周转龄期 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度多仓拆单与门店异常总池</div>
+            <div class="finops-kpi-val" id="dom-split-gross-kpi">$150,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">合包优化与安全水位后净成本</div>
+            <div class="finops-kpi-val" id="dom-split-net-kpi" style="color:#6ee7b7;">$97,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省多箱首重费与拒单重发</div>
+            <div class="finops-kpi-val" id="dom-split-savings-kpi" style="color:#38bdf8;">$52,500</div>
+          </div>
+        </div>
+        <div id="dom-split-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SINGLE_NODE_CONSOLIDATION_INCENTIVE_AND_CLEARANCE_CONFIRM · Mandate: dom_split_shipment_escrow_optim_409
         </div>
       </div>
 
@@ -67783,6 +67940,79 @@ function recalcEcommerceDigitalGiftCardSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 3DS2_VERIFIED_CLOSED_LOOP_GIFT_CARD_AUTHORIZED · Mandate: digital_gift_card_escrow_200';
+}}
+
+function recalcEcommerceDomSplitShipmentSandbox() {{
+  const grossInput = document.getElementById('dom-split-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '150000'));
+  const marginGate = document.getElementById('dom-split-margin-select').value;
+  const storeGate = document.getElementById('dom-split-store-select').value;
+  const hazmatGate = document.getElementById('dom-split-hazmat-select').value;
+  const optMode = document.getElementById('dom-split-opt-select').value;
+
+  const grossKpi = document.getElementById('dom-split-gross-kpi');
+  const netKpi = document.getElementById('dom-split-net-kpi');
+  const savingsKpi = document.getElementById('dom-split-savings-kpi');
+  const statusKpi = document.getElementById('dom-split-status-kpi');
+  const banner = document.getElementById('dom-split-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (hazmatGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 HAZMAT_AIR_ROUTING_OR_CO_DEPENDENT_BUNDLE_SPLIT_HOLD · Mandate: null';
+    return;
+  }}
+  if (marginGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 EXCESSIVE_SPLIT_SHIPMENT_FREIGHT_DEFICIT_WIPEOUT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (storeGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 STORE_SINGLE_UNIT_DISPLAY_SHORT_PICK_RISK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.35);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SINGLE_NODE_CONSOLIDATION_INCENTIVE_AND_CLEARANCE_CONFIRM · Mandate: dom_split_shipment_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 MARGIN_POSITIVE_DOM_FULFILLMENT_AUTHORIZED · Mandate: dom_split_shipment_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -19376,6 +19376,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-digital-gift-card-escrow-sandbox", html_zh)
 
+    def test_ecommerce_dom_split_shipment_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceDomSplitShipmentEscrowPolicyInput,
+            evaluate_ecommerce_dom_split_shipment_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_dom_split_shipment_escrow_policy(
+            EcommerceDomSplitShipmentEscrowPolicyInput(
+                quarterly_dom_split_freight_and_short_pick_pool_usd=150000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "MARGIN_POSITIVE_DOM_FULFILLMENT_AUTHORIZED",
+        )
+
+        split = evaluate_ecommerce_dom_split_shipment_escrow_policy(
+            EcommerceDomSplitShipmentEscrowPolicyInput(
+                excessive_split_shipment_freight_deficit_wipeout=True
+            )
+        )
+        self.assertEqual(split["status_code"], 403)
+        self.assertEqual(
+            split["decision"],
+            "EXCESSIVE_SPLIT_SHIPMENT_FREIGHT_DEFICIT_WIPEOUT_BLOCKED",
+        )
+
+        store = evaluate_ecommerce_dom_split_shipment_escrow_policy(
+            EcommerceDomSplitShipmentEscrowPolicyInput(
+                store_single_unit_display_short_pick_risk=True
+            )
+        )
+        self.assertEqual(store["status_code"], 422)
+        self.assertEqual(
+            store["decision"],
+            "STORE_SINGLE_UNIT_DISPLAY_SHORT_PICK_RISK_BLOCKED",
+        )
+
+        hazmat = evaluate_ecommerce_dom_split_shipment_escrow_policy(
+            EcommerceDomSplitShipmentEscrowPolicyInput(
+                hazmat_air_routing_or_co_dependent_bundle_split=True
+            )
+        )
+        self.assertEqual(hazmat["status_code"], 451)
+        self.assertEqual(
+            hazmat["decision"],
+            "HAZMAT_AIR_ROUTING_OR_CO_DEPENDENT_BUNDLE_SPLIT_HOLD",
+        )
+
+        optim = evaluate_ecommerce_dom_split_shipment_escrow_policy(
+            EcommerceDomSplitShipmentEscrowPolicyInput(
+                quarterly_dom_split_freight_and_short_pick_pool_usd=150000.0,
+                single_node_consolidation_incentive_and_clearance_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 52500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 97500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_dom_split_shipment_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-dom-split-shipment-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg597" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0e2240" />
+      <stop offset="100%" stop-color="#05101e" />
+    </linearGradient>
+    <linearGradient id="accent597" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg597)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent597)" rx="3" />
+
+  <text x="40" y="58" class="title">分布式订单路由 (DOM：Manhattan / Fluent Commerce)、防拆单运费吞噬毛利与门店前置仓托管架构</text>
+  <text x="40" y="80" class="subtitle">Round 154 · 防 $55 免邮单拆成 4 个包裹亏掉 $32 运费、防门店最后 1 件样机无货砍单 &amp; 利润感知合单净省 35% (SVG 597)</text>
+
+  <!-- Left Card: 3 DOM & Split-Shipment Disasters -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大多仓拆单与门店发货黑洞</text>
+  <text x="56" y="164" class="card-title">1. “1单拆4箱”快递首重费吞穿整单毛利 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 客户凑满 $50 免邮门槛买了 4 件小商品 (总毛利 $18)</text>
+  <text x="56" y="202" class="body">• 蠢笨 DOM 仅按距离最近分配：由东/西/南/北 4 个仓各发 1 个包裹</text>
+  <text x="56" y="220" class="warn">• 产生 4 笔 $8.50 快递首重费 ($34)，履约一单净亏 $16!</text>
+
+  <text x="56" y="256" class="card-title">2. 派单给门店“最后 1 件库存”惨遭拒单 (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 线上订单被路由至线下旗舰店发货 (Ship-from-Store)，账面库存=1</text>
+  <text x="56" y="294" class="body">• 店员拣货时发现那 1 件要么是破损展示样机、要么已被逛街顾客拿在手里</text>
+  <text x="56" y="312" class="warn">• 订单在 3 家门店间来回踢皮球拒单 (Short-Pick)，延误 5 天遭退单!</text>
+
+  <text x="56" y="348" class="card-title">3. 跨洲空运危险品 (香水/锂电池) 遭航司退件 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 买家勾选“次日达空运 (Next-Day Air)”，购物车含含酒精香水或移动电源</text>
+  <text x="56" y="386" class="body">• 拆单引擎未校验 `ORM-D / IATA Hazmat` 航空禁运属性直接出空运单</text>
+  <text x="56" y="404" class="warn">• 包裹在机场安检被安检扣留退回并罚款，次日达承诺彻底违约!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: EXCESSIVE_SPLIT_SHIPMENT_FREIGHT_DEFICIT</text>
+  <text x="70" y="502" class="warn">• HTTP 422: STORE_SINGLE_UNIT_DISPLAY_SHORT_PICK_RISK</text>
+  <text x="70" y="524" class="warn">• HTTP 451: HAZMAT_AIR_ROUTING_OR_CROSS_BORDER_SPLIT</text>
+  <text x="70" y="546" class="mono">• HTTP 409:SINGLE_NODE_CONSOLIDATION_INCENTIVE_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: MARGIN_POSITIVE_DOM_FULFILLMENT_200</text>
+  <text x="70" y="596" class="body">铁律: 拆单后累计运费严禁超过订单贡献毛利的 70%!</text>
+
+  <!-- Center Card: 4-Stage DOM & Split-Shipment Architecture -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶分布式订单路由 (DOM) 防亏架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ef4444" />
+  <text x="450" y="175" class="card-title" fill="#fca5a5">Gate 1: 拆单次数硬上限与净毛利铁闸 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• 实时计算每种拆单拓扑的 `Net_Margin = Gross_Margin - Sum(Box_Freight)`</text>
+  <text x="450" y="213" class="body">• 宁可从稍远但齐全的中央大仓 (CDC) 1 箱发出，也绝不拆成 3 个近仓包裹!</text>
+  <text x="450" y="231" class="mono">• 拆单导致总运费击穿订单毛利或超 Max_Splits=2 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: 门店安全库存水位缓冲 (Safety Stock &gt;= 3) (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 线下零售门店由于存在顾客试穿、样机磨损与盘点滞后，严禁暴露最后 2 件!</text>
+  <text x="450" y="320" class="body">• 仅当门店 `On_Hand_Qty &gt;= 3` 时才允许参与线上 Ship-from-Store 抢单</text>
+  <text x="450" y="338" class="body">• 防止“线上派单给仅剩 1 件的门店”引发高达 42% 的拣货拒单率</text>
+  <text x="450" y="354" class="mono">• 企图向库存 &lt;3 件的实体门店派发线上履约单 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 危险品陆运强锁与主辅件同包约束 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 含香水/气雾剂/大容量锂电行项强制降级路由至 `Ground 陆运仓`</text>
+  <text x="450" y="437" class="body">• 强依赖组合 (如床架+床垫、相机机身+镜头) 禁止跨周期异地分开发货</text>
+  <text x="450" y="455" class="mono">• 航空禁运品误配空运或跨关区拆单导致重复清关费 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: 结账页“合包奖励 $3 积分”与调拨合单 (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 仿 Amazon Day Delivery: 在结账页主动提示“选单包裹合并达 (晚1天到，</text>
+  <text x="450" y="546" class="body">  立返 $3 购物金)”-&gt; 68% 非急用买家欣然接受，省下 $9 第二箱首重费!</text>
+  <text x="450" y="566" class="mono">• 优先派单给季末积压高滞销率的门店帮其清库存免调拨费</text>
+  <text x="450" y="586" class="mono">• 砍掉碎片拆单运费 + 消灭门店拒单重发 -&gt; 净省 35% 履约成本</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大分布式订单管理 (DOM) 引擎</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Manhattan Active Omni / IBM Sterling OMS</text>
+  <text x="846" y="182" class="body">• 优势: 全球大型全渠道零售标杆，支持综合运费、毛利、清仓权重的</text>
+  <text x="846" y="198" class="body">  多目标线性规划寻优，毫秒级算出全网最低成本出货组合</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Fluent Commerce / Salesforce Order Mgmt</text>
+  <text x="846" y="244" class="body">• 优势: 云原生可编排路由工作流，原生内置按品类/门店设置动态安全水位</text>
+  <text x="846" y="260" class="body">• 特性: 完美支持虚拟库存池隔离与门店拣货超时自动顺移</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Shopify Order Routing API (Custom Rules)</text>
+  <text x="846" y="306" class="body">• 优势: 原生内置 `Minimize Split Fulfillments` 最小化拆单算子</text>
+  <text x="846" y="322" class="body">• 特性: 支持通过 Function 注入自定义毛利护栏与就近发货区匹配</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Amazon Day / 京东“多件合箱绿色配送”</text>
+  <text x="846" y="368" class="body">• 经验: 把“是否拆单”的选择权通过小额数字激励让渡给消费者，将</text>
+  <text x="846" y="384" class="body">  平均每单包裹数从 1.65 压降至 1.12，每年省下数十亿美元快递费</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度拆单快递超支与门店拒单重发池 ($150,000)</text>
+  <text x="860" y="456" class="body">• 传统按最近距离盲拆4箱+门店缺货踢皮球: $150,000/季</text>
+  <text x="860" y="476" class="mono">• 优先整单齐全大仓出货与拆单毛利硬锁: -$25,500</text>
+  <text x="860" y="496" class="mono">• 门店安全库存 &gt;=3 水位锁消灭 85% 拣货拒单: -$15,000</text>
+  <text x="860" y="516" class="mono">• 结账页合包返 $3 礼金与积压门店清仓路由: -$12,000</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净履约运费成本: $97,500 (净省 $52,500 / -35%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: dom_split_shipment_escrow_optim_409</text>
+</svg>

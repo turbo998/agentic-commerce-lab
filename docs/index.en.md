@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`272` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`273` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (14 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (42 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (95 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (96 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (65 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (23 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (33 guides)](#tax-fx-privacy-disputes)
@@ -90,7 +90,7 @@
 | 42 | **E-Commerce Digital Gift Cards, Stored-Value Wallets & Corporate Gifting (`Rise.ai / Blackhawk / Stripe / Govalo`), Anti-Triangulation Fraud & `CARD Act / Escheatment` Escrow (`3DS2` Cascade Revocation, Promo-on-Gift-Card Ban & Dual Ledger `-37%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.en.md) · [中文](ecommerce-digital-gift-card-fraud-triangulation-escheatment-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (95 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (96 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -191,6 +191,7 @@
 | 93 | **E-Commerce Gift-With-Purchase (`GWP`), `BOGO` & Multi-Buy Bundle Partial-Return Clawback Escrow (`Shopify Functions / Loop Returns / Happy Returns`) Checkout Pro-Rata Line Allocation, Unreturned-Gift Clawback & `Keep-the-Gift` Deduction (`-35%` Loss) Agent Architecture Selection FAQ** | [English](ecommerce-gwp-free-gift-bogo-bundle-partial-return-clawback-escrow-agent-selection-faq.en.md) · [中文](ecommerce-gwp-free-gift-bogo-bundle-partial-return-clawback-escrow-agent-selection-faq.md) |
 | 94 | **Hotel Rate Parity Monitoring, Anti-`Bedbank` Wholesale Leakage & Direct-Booking Conversion Escrow (`Lighthouse / Fornova / Sabre SynXis / Triptease`) Cent-Level Rate Watermarking, `@company.com` Corporate OTP & Direct Perk Stack (`-34%` Cost) Agent Architecture Selection FAQ** | [English](ota-hotel-rate-parity-bedbank-leakage-direct-booking-escrow-agent-selection-faq.en.md) · [中文](ota-hotel-rate-parity-bedbank-leakage-direct-booking-escrow-agent-selection-faq.md) |
 | 95 | **E-Commerce Pre-Order Deposit Expansion, Balance-Due Ceiling Lock & `FTC 16 CFR §435` Delay-Consent Escrow (`Purple Dot / Shopify Selling Plans / Stripe`) `SHA-256` Balance Ceiling, Atomic Dual-Refund & `Waitlist Rollover` (`-36%` Cost) Agent Architecture Selection FAQ** | [English](ecommerce-preorder-deposit-expansion-ftc-delay-consent-escrow-agent-selection-faq.en.md) · [中文](ecommerce-preorder-deposit-expansion-ftc-delay-consent-escrow-agent-selection-faq.md) |
+| 96 | **E-Commerce Distributed Order Management (`DOM`: `Manhattan Active Omni / Fluent Commerce / Shopify Routing`), Anti-Split-Shipment Margin Wipeout & Store Safety-Stock Escrow (`Minimize-Splits` Margin Lock, Store `On_Hand >= 3` Buffer & `-35%` Cost) Agent Architecture Selection FAQ** | [English](ecommerce-distributed-order-management-dom-split-shipment-margin-escrow-agent-selection-faq.en.md) · [中文](ecommerce-distributed-order-management-dom-split-shipment-margin-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (65 Guides)
