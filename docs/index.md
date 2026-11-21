@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`345` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`346` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构护栏蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -10,7 +10,7 @@
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（49 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（131 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（77 篇）](#b2b-procurement-erp)
-- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（28 篇）](#saas-finops-micropayments)
+- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（29 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（40 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
@@ -327,7 +327,7 @@
 | 77 | **企业 B2B 可循环物流包装、周转折叠筐与共享托盘池结算（Returnable Transport Packaging `RTP` & Pallet Pool：CHEP 集保 / IFCO / EPAL 欧标托盘 / 招商路凯 / `SAP LEIH`）、防“送货司机卸下 22 块蓝托盘却顺手拉走 30 块空托盘（Dock Over-Pickup）”、防“货早发给商超了托盘公司还在收供应商每日滞留租金”与 `ISPM-15` 跨境熏蒸检疫托管“防拿 $5 烂白木托盘顶替 $38 欧标托盘与返程顺路带回空筐净省 35%”Agent 架构选型 FAQ** | [中文](b2b-returnable-transport-packaging-rtp-pallet-pool-deposit-demurrage-escrow-agent-selection-faq.md) · [English](b2b-returnable-transport-packaging-rtp-pallet-pool-deposit-demurrage-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（28 篇）
+## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（29 篇）
 
 > 涵盖企业 SaaS 席位与影子 IT 治理、高频 Token/API 用量水位线幂等计费、FTC 一键退订（Click-to-Cancel）与挽留护栏、HTTP 402（x402 / Stripe MPP Tempo）亚美分流式微支付及推理 FinOps 成本路由。
 
@@ -361,6 +361,7 @@
 | 26 | **订阅制 SaaS 与 AI 应用“免费试用转付费（Free-Trial-to-Paid：Stripe Billing / RevenueCat / Chargebee / Paddle）”、防 `$0.01` 虚拟废卡无限白嫖算力与 `FTC / 加州 ARL` 试用期满提前通知托管“防羊毛党用一次性空卡注册 500 个小号刷爆 GPU 额度第 14 天 100% 扣款失败、防对 0 登录用户静默扣 $299 年费引发拒付封号与反向试用净省 36%”Agent 架构选型 FAQ** | [中文](saas-free-trial-conversion-virtual-card-abuse-ftc-notice-escrow-agent-selection-faq.md) · [English](saas-free-trial-conversion-virtual-card-abuse-ftc-notice-escrow-agent-selection-faq.en.md) |
 | 27 | **企业 B2B SaaS 客户成功健康度预警（Predictive Churn Intervention：Gainsight / ChurnZero / Totango / Stripe Billing）、防 `P1` 故障期盲目催扩席与“闲置席位等额置换 AI 用量包（ACV-Neutral Seat Swap）”托管“防客户已全量导出 CSV 迁往竞品才在到期前 7 天打电话、防 CSM 私签随时退订阴阳邮件与保住 100% 合同额净省 36%”Agent 架构选型 FAQ** | [中文](b2b-saas-customer-health-predictive-churn-seat-to-addon-swap-escrow-agent-selection-faq.md) · [English](b2b-saas-customer-health-predictive-churn-seat-to-addon-swap-escrow-agent-selection-faq.en.md) |
 | 28 | **B2B SaaS 云市场专属私密报价与云承诺额消纳（Cloud Marketplace Private Offers & Commit Drawdown：`AWS Marketplace EDP / Microsoft MACC / GCP / Tackle.io / Clazar`）、渠道商代售授权（`CPPO`）净底价锁、用量上报 1 小时死线与租户激活绑定托管“防客户手握 $50 万即将过期的云厂商 MACC 额度销售却傻走传统采购流程被法务卡死 4 个月、防客户在 AWS 控制台点了订阅却未绑 SaaS 账号变成幽灵空单与净增效 38%”Agent 架构选型 FAQ** | [中文](b2b-saas-cloud-marketplace-private-offer-macc-edp-drawdown-cppo-escrow-agent-selection-faq.md) · [English](b2b-saas-cloud-marketplace-private-offer-macc-edp-drawdown-cppo-escrow-agent-selection-faq.en.md) |
+| 29 | **在线职业考培、IT 认证考试券与企业培训报销（EdTech Certification Voucher, `Pass-Guarantee` & `CEU/CPE` Tuition Escrow：Coursera / Pearson VUE / Guild Education / Workday Learning）、防“报名 $2,400 不过包退班第一天扒光题库就弃考骗全额退款”、防“领走 $300 官方考试券挂闲鱼倒卖”与继续教育（`NASBA / ACCME`）反倍速挂机托管“防买 2,000 个企业学习账号 65% 吃灰、防刚报销完 $10,000 MBA 学费第二天就跳槽去竞对与免费送补考券代替退全款净省 36%”Agent 架构选型 FAQ** | [中文](edtech-certification-exam-voucher-pass-guarantee-ceu-tuition-escrow-agent-selection-faq.md) · [English](edtech-certification-exam-voucher-pass-guarantee-ceu-tuition-escrow-agent-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（40 篇）

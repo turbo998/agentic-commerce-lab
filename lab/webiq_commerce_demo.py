@@ -32321,6 +32321,82 @@ def evaluate_ecommerce_apparel_gear_rental_policy(
     }
 
 
+@dataclass(frozen=True)
+class EdtechExamVoucherPassGuaranteePolicyInput:
+    quarterly_pass_guarantee_abuse_voucher_resale_and_shelfware_pool_usd: float = 170000.0
+    pass_guarantee_refund_without_90pct_labs_or_early_voucher_resale: bool = False
+    unreclaimed_45d_idle_corporate_seats_or_untaxed_over_5250_tuition: bool = False
+    fast_forward_16x_cpe_script_or_virtual_machine_proctor_cheat: bool = False
+    second_shot_retake_voucher_and_registrar_census_date_escrow_ready: bool = False
+
+
+def evaluate_edtech_exam_voucher_pass_guarantee_policy(
+    policy_input: EdtechExamVoucherPassGuaranteePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_pass_guarantee_abuse_voucher_resale_and_shelfware_pool_usd
+        ),
+    )
+    if policy_input.fast_forward_16x_cpe_script_or_virtual_machine_proctor_cheat:
+        return {
+            "status_code": 451,
+            "decision": "FAST_FORWARD_CPE_SCRIPT_OR_PROCTOR_VM_CHEAT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pass_guarantee_refund_without_90pct_labs_or_early_voucher_resale:
+        return {
+            "status_code": 403,
+            "decision": "INCOMPLETE_STUDY_LABS_OR_EXAM_VOUCHER_RESALE_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unreclaimed_45d_idle_corporate_seats_or_untaxed_over_5250_tuition:
+        return {
+            "status_code": 422,
+            "decision": "IDLE_LD_SEAT_HOARDING_OR_UNTAXED_OVER_5250_BLOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.second_shot_retake_voucher_and_registrar_census_date_escrow_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SECOND_SHOT_RETAKE_VOUCHER_AND_CENSUS_ESCROW_CONFIRM",
+            "mandate_token": "edtech_exam_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_LAB_DILIGENCE_AND_50MIN_CPE_AUTHORIZED",
+        "mandate_token": "edtech_exam_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -44142,6 +44218,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    edtech_exam_voucher_pass_guarantee_guard = {
+        "authorized_200": evaluate_edtech_exam_voucher_pass_guarantee_policy(
+            EdtechExamVoucherPassGuaranteePolicyInput()
+        ),
+        "free_rider_or_resale_403": evaluate_edtech_exam_voucher_pass_guarantee_policy(
+            EdtechExamVoucherPassGuaranteePolicyInput(
+                pass_guarantee_refund_without_90pct_labs_or_early_voucher_resale=True
+            )
+        ),
+        "idle_seat_or_sec127_422": evaluate_edtech_exam_voucher_pass_guarantee_policy(
+            EdtechExamVoucherPassGuaranteePolicyInput(
+                unreclaimed_45d_idle_corporate_seats_or_untaxed_over_5250_tuition=True
+            )
+        ),
+        "fast_forward_or_vm_451": evaluate_edtech_exam_voucher_pass_guarantee_policy(
+            EdtechExamVoucherPassGuaranteePolicyInput(
+                fast_forward_16x_cpe_script_or_virtual_machine_proctor_cheat=True
+            )
+        ),
+        "retake_and_census_409": evaluate_edtech_exam_voucher_pass_guarantee_policy(
+            EdtechExamVoucherPassGuaranteePolicyInput(
+                second_shot_retake_voucher_and_registrar_census_date_escrow_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -44497,6 +44599,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_auto_parts_vin_core_guard": ecommerce_auto_parts_vin_core_guard,
         "b2b_returnable_packaging_pallet_guard": b2b_returnable_packaging_pallet_guard,
         "ecommerce_apparel_gear_rental_guard": ecommerce_apparel_gear_rental_guard,
+        "edtech_exam_voucher_pass_guarantee_guard": edtech_exam_voucher_pass_guarantee_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -62635,6 +62738,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="gearrental-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FREE_BACKUP_SIZE_TURNAROUND_SWAP_AND_FMV_KEEP_CONFIRM · Mandate: apparel_gear_rental_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 227 EdTech Certification Voucher, Pass-Guarantee & CEU/CPE Tuition Escrow (#346) -->
+      <div class="finops-box" id="edtech-exam-voucher-pass-guarantee-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎓 在线职业考培“不过包退协议 (Pass-Guarantee)”、Pearson VUE 考试券与企业学费 (Guild / CPE) 沙盒</div>
+            <div class="finops-sub">Round 227 (#346) · 模考 &gt;=80分按需实名铸造考试券防闲鱼倒卖与 90%实验+真实未过成绩单退费锁 (HTTP 403) + 45天闲置企业席位自动池化与大学 Day-21 退选日/IRS §127 税盾 (HTTP 422) + NASBA 50分钟墙钟时长与 OnVUE 反虚拟机代考 (HTTP 451) + 首考惜败送 $150 二战补考券净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="edtechexam-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度报名 $2,400 包过班扒完题库弃考骗退费、首日 $300 考试券被倒卖与企业 65% 僵尸学习账号损耗池 ($)
+            <input type="number" id="edtechexam-gross-input" value="170000" min="10000" step="5000" oninput="recalcEdtechExamVoucherPassGuaranteeSandbox()" />
+          </label>
+          <label>包过协议班勤勉尽责三要素 (&gt;=90%实验 + &gt;=80%模考 + 真实到考成绩单) 与考试券按需铸造
+            <select id="edtechexam-diligence-select" onchange="recalcEdtechExamVoucherPassGuaranteeSandbox()">
+              <option value="pass">模考 &gt;=80% 动态签发实名考试券 + 完整实操与官方成绩单核验通过 (合规)</option>
+              <option value="block_403">首日把 $300 官方考试码挂闲鱼卖掉、实操仅做 10% 直接弃考却索要 100% 退还 $2,400 学费 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>企业 L&amp;D 学习席位 45 天休眠自动回收重分配与高校退选日 (Census Date) / IRS §127 ($5,250) 税盾
+            <select id="edtechexam-seat-select" onchange="recalcEdtechExamVoucherPassGuaranteeSandbox()">
+              <option value="pass">45天未登录席位自动回收流转 + 高校 Day-21 锁学籍后直付院校且超 $5,250 自动计税 (合规)</option>
+              <option value="block_422">2,000 个企业账号 65% 全年吃灰 或 员工刚拿走 $10,000 学费报销就去学校退课套现/次日跳槽 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>NASBA / ACCME 继续教育每学分 50 分钟服务端墙钟时长与 OnVUE 远程监考反虚拟机代考
+            <select id="edtechexam-cpe-select" onchange="recalcEdtechExamVoucherPassGuaranteeSandbox()">
+              <option value="pass">服务端真实满 50m/学分且通过 3 次随机活体点击 + 监考零虚拟机/HDMI 分屏 (安全)</option>
+              <option value="block_451">用浏览器 16 倍速脚本 4 分钟刷完 60 分钟必修课骗 CPE 学分证 或 用虚拟机分屏找枪手代考 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>首考差 &lt;10% 惜败优先发放“$150 免费二战补考券 + AI 薄弱域特训”代替退 $2,400 全款
+            <select id="edtechexam-opt-select" onchange="recalcEdtechExamVoucherPassGuaranteeSandbox()">
+              <option value="enabled" selected>首考惜败自动送 $150 二战券+AI 特训(82%二战考过保住 $2,250 学费) + 45d 席位池化 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统报名首日群发静态考试码 + 首考差 2 分没过也直接全额退还 $2,400 学费 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度包过班骗退与僵尸席位损耗池</div>
+            <div class="finops-kpi-val" id="edtechexam-gross-kpi">$170,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">准入铸券与二战补考挽留后净耗</div>
+            <div class="finops-kpi-val" id="edtechexam-net-kpi" style="color:#6ee7b7;">$108,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省协议退费与考试券流失</div>
+            <div class="finops-kpi-val" id="edtechexam-savings-kpi" style="color:#38bdf8;">$61,200</div>
+          </div>
+        </div>
+        <div id="edtechexam-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SECOND_SHOT_RETAKE_VOUCHER_AND_CENSUS_ESCROW_CONFIRM · Mandate: edtech_exam_escrow_optim_409
         </div>
       </div>
 
@@ -84723,6 +84883,79 @@ function recalcEcommerceApparelGearRentalSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_KYC_RENTAL_AND_48H_TURNAROUND_AUTHORIZED · Mandate: apparel_gear_rental_escrow_200';
+}}
+
+function recalcEdtechExamVoucherPassGuaranteeSandbox() {{
+  const grossInput = document.getElementById('edtechexam-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '170000'));
+  const diligenceGate = document.getElementById('edtechexam-diligence-select').value;
+  const seatGate = document.getElementById('edtechexam-seat-select').value;
+  const cpeGate = document.getElementById('edtechexam-cpe-select').value;
+  const optMode = document.getElementById('edtechexam-opt-select').value;
+
+  const grossKpi = document.getElementById('edtechexam-gross-kpi');
+  const netKpi = document.getElementById('edtechexam-net-kpi');
+  const savingsKpi = document.getElementById('edtechexam-savings-kpi');
+  const statusKpi = document.getElementById('edtechexam-status-kpi');
+  const banner = document.getElementById('edtechexam-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (cpeGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FAST_FORWARD_CPE_SCRIPT_OR_PROCTOR_VM_CHEAT_HOLD · Mandate: null';
+    return;
+  }}
+  if (diligenceGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INCOMPLETE_STUDY_LABS_OR_EXAM_VOUCHER_RESALE_BLOCK · Mandate: null';
+    return;
+  }}
+  if (seatGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 IDLE_LD_SEAT_HOARDING_OR_UNTAXED_OVER_5250_BLOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SECOND_SHOT_RETAKE_VOUCHER_AND_CENSUS_ESCROW_CONFIRM · Mandate: edtech_exam_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_LAB_DILIGENCE_AND_50MIN_CPE_AUTHORIZED · Mandate: edtech_exam_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

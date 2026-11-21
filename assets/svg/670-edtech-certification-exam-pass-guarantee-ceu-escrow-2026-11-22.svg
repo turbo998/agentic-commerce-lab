@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg670" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <linearGradient id="hdr670" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </style>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg670)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 227 · EdTech Certification Voucher, `Pass-Guarantee` &amp; `CEU/CPE` Tuition Escrow</text>
+  <text x="48" y="74" class="sub">Coursera / Pearson VUE / Guild / Workday Learning · Diligence-Gated Pass Guarantee · NASBA/ACCME Seat-Time Lock (-36% Loss)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #670 · FAQ #346</text>
+
+  <!-- Lane 1: "Pass-Guarantee" Free-Rider Refund Abuse (0% Labs Done / Exam No-Show) Guard -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. `Pass-Guarantee` Diligence Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Refunding $2,400 When Student Did 0 Work:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Require `Lab_Completion &gt;= 90%` &amp; `Mock_Exam &gt;= 80%`</text>
+  <text x="54" y="200" class="mono">&amp; `Official_PearsonVUE_Score_Report == FAILED`!</text>
+  <text x="44" y="223" class="body-txt">• Stops Exam-Voucher Resale before Course Progress:</text>
+  <text x="54" y="243" class="mono">Hold $300 Exam Voucher Until Mock Readiness Pass!</text>
+  <text x="44" y="266" class="body-txt">• Eliminates free-riders downloading all PDF study</text>
+  <text x="54" y="286" class="body-txt">guides on Day 1, skipping the exam, and demanding</text>
+  <text x="54" y="304" class="body-txt">a 100% "Pass Guarantee" tuition refund</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 INCOMPLETE_STUDY_LABS_OR_EXAM_VOUCHER_RESALE_BLOCK</text>
+
+  <!-- Lane 2: Corporate L&D Shelfware Seats (60d Inactive) & IRS §127 Tuition Tax Cap Guard -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Dynamic Seat Pool &amp; `§127` Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Paying for 65% Unclaimed L&amp;D Licenses:</text>
+  <text x="442" y="182" class="mono">Reclaim &amp; Re-Pool Seat If `Days_Since_Login &gt; 45d`!</text>
+  <text x="432" y="205" class="body-txt">• `IRS § 127 ($5,250/Yr)` Tax-Free Tuition Cap:</text>
+  <text x="442" y="225" class="mono" fill="#fcd34d">Auto-Route Reimbursements &gt; $5,250 to Taxable</text>
+  <text x="442" y="243" class="mono" fill="#fcd34d">Payroll Withholding + 12-Mo Clawback Agreement!</text>
+  <text x="432" y="266" class="body-txt">• Prevents employees collecting $10,000 tuition</text>
+  <text x="442" y="286" class="body-txt">reimbursement on Friday and resigning to join</text>
+  <text x="442" y="304" class="body-txt">a competitor on Monday</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 IDLE_LD_SEAT_HOARDING_OR_UNTAXED_OVER_5250_BLOCK</text>
+
+  <!-- Lane 3: NASBA / ACCME Continuing-Ed (CPE/CME) 16x Video-Speed Bot & Proctor Proxy Lock -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `NASBA CPE` Seat-Time &amp; Proctor (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• `NASBA / ACCME / State Bar` Credit Audit Lock:</text>
+  <text x="830" y="182" class="mono">Require `50_Min_Active_Time` + `3_Attention_Checks`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Per 1.0 CPE Credit (Blocks 16x Background Scripts!)</text>
+  <text x="820" y="223" class="body-txt">• Remote Proctoring (`OnVUE`) VM / HDMI Mirror Block:</text>
+  <text x="830" y="243" class="body-txt">Detects virtual machines, secondary HDMI splitters,</text>
+  <text x="830" y="261" class="body-txt">and deepfake proxy test-takers before issuing cert</text>
+  <text x="820" y="284" class="body-txt">• Protects provider's accreditation license from</text>
+  <text x="830" y="302" class="body-txt">revocation by medical, legal, and CPA boards</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 FAST_FORWARD_CPE_SCRIPT_OR_PROCTOR_VM_CHEAT_HOLD</text>
+
+  <!-- Bottom Free Retake Voucher First & Direct-to-School Guild Tuition Escrow -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Free Second-Shot Exam Retake Voucher + Direct-to-University Drop-Date Escrow (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Free Retake Before Refund</text>
+  <text x="62" y="462" class="body-txt">If diligent student fails</text>
+  <text x="62" y="480" class="body-txt">Attempt #1 by &lt;10%, issues</text>
+  <text x="62" y="498" class="body-txt">$150 Retake Voucher + AI tutor</text>
+  <text x="62" y="516" class="mono">vs $2,400 Cash Refund (82% Pass!)</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Census Drop-Date Escrow</text>
+  <text x="337" y="462" class="body-txt">Employer pays university</text>
+  <text x="337" y="480" class="body-txt">only after Day-21 Registrar</text>
+  <text x="337" y="498" class="body-txt">`Add/Drop Census Date`;</text>
+  <text x="337" y="516" class="mono">0 Refunds on Dropped Classes</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Just-in-Time Voucher Mint</text>
+  <text x="622" y="462" class="body-txt">Mints `AWS / CompTIA / PMP`</text>
+  <text x="622" y="480" class="body-txt">exam code only when mock</text>
+  <text x="622" y="498" class="body-txt">score &gt;= 80%; zero expired</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">unused $300 exam vouchers</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ OpenBadges 3.0 Verifiable</text>
+  <text x="907" y="462" class="body-txt">Signs W3C cryptographic</text>
+  <text x="907" y="480" class="body-txt">`CEU/CPE` credential synced</text>
+  <text x="907" y="498" class="body-txt">directly to state licensing;</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% EdTech &amp; L&amp;D Leakage</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly EdTech &amp; L&amp;D Loss Saved</text>
+  <text x="46" y="642" class="mono">$61,200 Saved / $170k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">0 Voucher Theft</text>
+  <text x="336" y="626" class="kpi-lbl">80% Mock-Exam Readiness Unlock</text>
+  <text x="336" y="642" class="mono">82% Pass on Free Retake Shot</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">3.2x Seat Util</text>
+  <text x="626" y="626" class="kpi-lbl">45-Day Idle L&amp;D License Re-Pooling</text>
+  <text x="626" y="642" class="mono">IRS §127 $5,250 Tax Cap Clean</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">100% NASBA</text>
+  <text x="916" y="626" class="kpi-lbl">50-Min Seat-Time &amp; Attention Verified</text>
+  <text x="916" y="642" class="mono">Blocks 16x Script &amp; VM Proxy</text>
+</svg>

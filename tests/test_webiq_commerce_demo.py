@@ -24267,6 +24267,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-apparel-gear-rental-sandbox", html_zh)
 
+    def test_edtech_exam_voucher_pass_guarantee_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EdtechExamVoucherPassGuaranteePolicyInput,
+            evaluate_edtech_exam_voucher_pass_guarantee_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_edtech_exam_voucher_pass_guarantee_policy(
+            EdtechExamVoucherPassGuaranteePolicyInput(
+                quarterly_pass_guarantee_abuse_voucher_resale_and_shelfware_pool_usd=170000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_LAB_DILIGENCE_AND_50MIN_CPE_AUTHORIZED",
+        )
+
+        diligence = evaluate_edtech_exam_voucher_pass_guarantee_policy(
+            EdtechExamVoucherPassGuaranteePolicyInput(
+                pass_guarantee_refund_without_90pct_labs_or_early_voucher_resale=True
+            )
+        )
+        self.assertEqual(diligence["status_code"], 403)
+        self.assertEqual(
+            diligence["decision"],
+            "INCOMPLETE_STUDY_LABS_OR_EXAM_VOUCHER_RESALE_BLOCK",
+        )
+
+        seat = evaluate_edtech_exam_voucher_pass_guarantee_policy(
+            EdtechExamVoucherPassGuaranteePolicyInput(
+                unreclaimed_45d_idle_corporate_seats_or_untaxed_over_5250_tuition=True
+            )
+        )
+        self.assertEqual(seat["status_code"], 422)
+        self.assertEqual(
+            seat["decision"],
+            "IDLE_LD_SEAT_HOARDING_OR_UNTAXED_OVER_5250_BLOCK",
+        )
+
+        cpe = evaluate_edtech_exam_voucher_pass_guarantee_policy(
+            EdtechExamVoucherPassGuaranteePolicyInput(
+                fast_forward_16x_cpe_script_or_virtual_machine_proctor_cheat=True
+            )
+        )
+        self.assertEqual(cpe["status_code"], 451)
+        self.assertEqual(
+            cpe["decision"],
+            "FAST_FORWARD_CPE_SCRIPT_OR_PROCTOR_VM_CHEAT_HOLD",
+        )
+
+        optim = evaluate_edtech_exam_voucher_pass_guarantee_policy(
+            EdtechExamVoucherPassGuaranteePolicyInput(
+                quarterly_pass_guarantee_abuse_voucher_resale_and_shelfware_pool_usd=170000.0,
+                second_shot_retake_voucher_and_registrar_census_date_escrow_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 61200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 108800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("edtech_exam_voucher_pass_guarantee_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("edtech-exam-voucher-pass-guarantee-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
