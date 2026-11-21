@@ -27134,6 +27134,79 @@ def evaluate_ecommerce_apparel_sizing_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceHybridSearchMerchandisingPolicyInput:
+    quarterly_search_bounce_and_wrong_spec_return_pool_usd: float = 120000.0
+    swiss_cheese_broken_size_curve_top_rank: bool = False
+    vector_model_compatibility_or_negation_miss: bool = False
+    negative_net_margin_or_toxic_return_rate_boost: bool = False
+    profit_weighted_rrf_hybrid_rerank_ready: bool = False
+
+
+def evaluate_ecommerce_hybrid_search_merchandising_policy(
+    policy_input: EcommerceHybridSearchMerchandisingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_search_bounce_and_wrong_spec_return_pool_usd)
+    )
+    if policy_input.negative_net_margin_or_toxic_return_rate_boost:
+        return {
+            "status_code": 451,
+            "decision": "NEGATIVE_NET_MARGIN_OR_TOXIC_RETURN_RATE_BOOST_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.swiss_cheese_broken_size_curve_top_rank:
+        return {
+            "status_code": 403,
+            "decision": "SWISS_CHEESE_BROKEN_SIZE_CURVE_TOP_RANK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.vector_model_compatibility_or_negation_miss:
+        return {
+            "status_code": 422,
+            "decision": "VECTOR_MODEL_COMPATIBILITY_OR_NEGATION_MISS_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.profit_weighted_rrf_hybrid_rerank_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PROFIT_WEIGHTED_RRF_HYBRID_RERANK_CONFIRM",
+            "mandate_token": "hybrid_search_merch_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "EXACT_SPEC_AND_SIZE_ATP_SEARCH_AUTHORIZED",
+        "mandate_token": "hybrid_search_merch_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -37161,6 +37234,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_hybrid_search_merchandising_guard = {
+        "authorized_200": evaluate_ecommerce_hybrid_search_merchandising_policy(
+            EcommerceHybridSearchMerchandisingPolicyInput()
+        ),
+        "swiss_cheese_size_curve_403": evaluate_ecommerce_hybrid_search_merchandising_policy(
+            EcommerceHybridSearchMerchandisingPolicyInput(
+                swiss_cheese_broken_size_curve_top_rank=True
+            )
+        ),
+        "vector_model_or_negation_miss_422": evaluate_ecommerce_hybrid_search_merchandising_policy(
+            EcommerceHybridSearchMerchandisingPolicyInput(
+                vector_model_compatibility_or_negation_miss=True
+            )
+        ),
+        "negative_margin_or_toxic_return_451": evaluate_ecommerce_hybrid_search_merchandising_policy(
+            EcommerceHybridSearchMerchandisingPolicyInput(
+                negative_net_margin_or_toxic_return_rate_boost=True
+            )
+        ),
+        "profit_weighted_rrf_rerank_409": evaluate_ecommerce_hybrid_search_merchandising_policy(
+            EcommerceHybridSearchMerchandisingPolicyInput(
+                profit_weighted_rrf_hybrid_rerank_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -37447,6 +37546,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "livestream_video_commerce_escrow_guard": livestream_video_commerce_escrow_guard,
         "ecommerce_loyalty_paid_vip_escrow_guard": ecommerce_loyalty_paid_vip_escrow_guard,
         "ecommerce_apparel_sizing_escrow_guard": ecommerce_apparel_sizing_escrow_guard,
+        "ecommerce_hybrid_search_merchandising_guard": ecommerce_hybrid_search_merchandising_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -51652,6 +51752,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="apparel-size-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CROSS_BRAND_FIT_GRAPH_AND_INSTANT_EXCHANGE_CONFIRM · Mandate: apparel_ai_sizing_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 158 E-Commerce Hybrid Search & Merchandising Escrow -->
+      <div class="finops-box" id="ecommerce-hybrid-search-merchandising-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔍 电商混合搜索与智能导购重排 (Constructor.io / Algolia / Vertex Retail) 防断码霸屏与毛利托管沙盒</div>
+            <div class="finops-sub">Round 158 · 黄金尺码齐码率 &gt;=40% 门禁 (HTTP 403) + NER 型号/否定词布尔硬过滤 (HTTP 422) + 高退货毒药款封禁 (HTTP 451) + 期望净毛利重排净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="hybrid-search-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度站内搜索断码跳失与买错型号退货池 ($)
+            <input type="number" id="hybrid-search-gross-input" value="120000" min="10000" step="5000" oninput="recalcEcommerceHybridSearchMerchSandbox()" />
+          </label>
+          <label>黄金尺码齐码率 (Size-Curve &gt;= 40%) 门禁
+            <select id="hybrid-search-size-select" onchange="recalcEcommerceHybridSearchMerchSandbox()">
+              <option value="pass">首屏商品核心尺码 (S/M/L) 齐全且匹配用户尺码 (合规)</option>
+              <option value="block_403">仅剩 1 件 XXXL 的“瑞士奶酪断码僵尸款”霸占首屏第 1 名 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>前置 NER 型号/价格/否定词布尔硬过滤
+            <select id="hybrid-search-ner-select" onchange="recalcEcommerceHybridSearchMerchSandbox()">
+              <option value="pass">精确提取 iPhone 16 Pro / 无糖 / &lt;$30 倒排硬过滤 + RRF (合规)</option>
+              <option value="block_422">纯向量检索把 iPhone 15 壳或含糖品排前面导致买错 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>高退货毒药款 (&gt;45%) 与负毛利引流品降权
+            <select id="hybrid-search-toxic-select" onchange="recalcEcommerceHybridSearchMerchSandbox()">
+              <option value="pass">首屏商品净毛利为正且 30 天退货率健康 (安全)</option>
+              <option value="block_451">65% 退货率标题党劣质款或负毛利品抢占 C 位 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>期望净贡献毛利 (Relevance × CVR × Net_Margin) 重排
+            <select id="hybrid-search-opt-select" onchange="recalcEcommerceHybridSearchMerchSandbox()">
+              <option value="enabled" selected>RRF 混合检索 + 扣除预期退货成本后净毛利重排 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">仅按历史累计毛销量或纯点击率 (CTR) 静态排序 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度搜索跳失与买错退货总池</div>
+            <div class="finops-kpi-val" id="hybrid-search-gross-kpi">$120,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">齐码过滤与净毛利重排后损耗</div>
+            <div class="finops-kpi-val" id="hybrid-search-net-kpi" style="color:#6ee7b7;">$75,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省断码空点与买错退货</div>
+            <div class="finops-kpi-val" id="hybrid-search-savings-kpi" style="color:#38bdf8;">$44,400</div>
+          </div>
+        </div>
+        <div id="hybrid-search-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PROFIT_WEIGHTED_RRF_HYBRID_RERANK_CONFIRM · Mandate: hybrid_search_merch_optim_409
         </div>
       </div>
 
@@ -68703,6 +68860,79 @@ function recalcEcommerceApparelSizingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 GARMENT_SPEC_VERIFIED_SINGLE_SIZE_AUTHORIZED · Mandate: apparel_ai_sizing_escrow_200';
+}}
+
+function recalcEcommerceHybridSearchMerchSandbox() {{
+  const grossInput = document.getElementById('hybrid-search-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '120000'));
+  const sizeGate = document.getElementById('hybrid-search-size-select').value;
+  const nerGate = document.getElementById('hybrid-search-ner-select').value;
+  const toxicGate = document.getElementById('hybrid-search-toxic-select').value;
+  const optMode = document.getElementById('hybrid-search-opt-select').value;
+
+  const grossKpi = document.getElementById('hybrid-search-gross-kpi');
+  const netKpi = document.getElementById('hybrid-search-net-kpi');
+  const savingsKpi = document.getElementById('hybrid-search-savings-kpi');
+  const statusKpi = document.getElementById('hybrid-search-status-kpi');
+  const banner = document.getElementById('hybrid-search-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (toxicGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 NEGATIVE_NET_MARGIN_OR_TOXIC_RETURN_RATE_BOOST_HOLD · Mandate: null';
+    return;
+  }}
+  if (sizeGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SWISS_CHEESE_BROKEN_SIZE_CURVE_TOP_RANK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (nerGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 VECTOR_MODEL_COMPATIBILITY_OR_NEGATION_MISS_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PROFIT_WEIGHTED_RRF_HYBRID_RERANK_CONFIRM · Mandate: hybrid_search_merch_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 EXACT_SPEC_AND_SIZE_ATP_SEARCH_AUTHORIZED · Mandate: hybrid_search_merch_200';
 }}
 
 function updateStage1756Sandbox() {{

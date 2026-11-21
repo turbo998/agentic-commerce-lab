@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg601" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081326" />
+      <stop offset="50%" stop-color="#0f2342" />
+      <stop offset="100%" stop-color="#05101e" />
+    </linearGradient>
+    <linearGradient id="accent601" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="50%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 21.5px; font-weight: 800; fill: #f8fafc; }
+      .subtitle { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #e2e8f0; }
+      .body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .warn { font-family: 'Consolas', monospace; font-size: 11.5px; fill: #fca5a5; }
+      .badge { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; font-weight: 700; fill: #0f172a; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg601)" rx="16" />
+  <rect x="24" y="20" width="1152" height="6" fill="url(#accent601)" rx="3" />
+
+  <text x="40" y="58" class="title">电商混合搜索与智能导购重排 (Constructor.io / Algolia / Vertex Retail) 防断码霸屏与毛利托管架构</text>
+  <text x="40" y="80" class="subtitle">Round 158 · 防纯向量检索搞混型号参数、防仅剩 XXXL 的断码僵尸款霸占首屏 &amp; 毛利感知重排净增 37% (SVG 601)</text>
+
+  <!-- Left Card: 3 Search & Merchandising Disasters -->
+  <rect x="40" y="102" width="350" height="535" rx="12" fill="#111c33" stroke="#ef4444" stroke-width="1.5" />
+  <rect x="56" y="118" width="156" height="24" rx="6" fill="#ef4444" />
+  <text x="66" y="134" class="badge" fill="#ffffff">三大站内搜索与导购转化黑洞</text>
+  <text x="56" y="164" class="card-title">1. “瑞士奶酪断码僵尸款”霸占首屏 (HTTP 403)</text>
+  <text x="56" y="184" class="body">• 某爆款球鞋因为历史销量高，一直排在搜索结果第 1 名</text>
+  <text x="56" y="202" class="body">• 但黄金尺码 (40–44码) 早已断货，全仓只剩 1 双 48 码巨人鞋!</text>
+  <text x="56" y="220" class="warn">• 98% 用户点进去发现自己尺码无货失望离开，浪费 40% 首屏流量!</text>
+
+  <text x="56" y="256" class="card-title">2. 纯向量语义搜索“吃掉型号与预算词” (HTTP 422)</text>
+  <text x="56" y="276" class="body">• 用户搜 `iPhone 16 Pro 手机壳 低于 $30` 或 `无糖蛋白粉`</text>
+  <text x="56" y="294" class="body">• 纯 Embedding 向量相似度把 `iPhone 15 壳 ($55)` 和 `含糖增肌粉`</text>
+  <text x="56" y="312" class="warn">  排在前面 -&gt; 买家没细看一键下单，收货后 100% 买错愤怒退货!</text>
+
+  <text x="56" y="348" class="card-title">3. 零毛利引流品与高退货毒药款吸干曝光 (HTTP 451)</text>
+  <text x="56" y="368" class="body">• 传统按点击率 (CTR) 或总销量排序：把亏本赚吆喝的 $1.99 引流款</text>
+  <text x="56" y="386" class="body">  或退货率高达 65% 的标题党劣质款推上首页 C 位</text>
+  <text x="56" y="404" class="warn">• 卖得越多亏得越惨，高毛利正价新品却沉在第 8 页无人问津!</text>
+
+  <rect x="56" y="432" width="318" height="186" rx="8" fill="#0b1324" stroke="#334155" />
+  <text x="70" y="456" class="card-title" fill="#fca5a5">拦截状态码映射 (Deterministic Gate)</text>
+  <text x="70" y="480" class="warn">• HTTP 403: SWISS_CHEESE_BROKEN_SIZE_CURVE_TOP_RANK</text>
+  <text x="70" y="502" class="warn">• HTTP 422: VECTOR_MODEL_COMPATIBILITY_OR_NEGATION_MISS</text>
+  <text x="70" y="524" class="warn">• HTTP 451: NEGATIVE_NET_MARGIN_OR_TOXIC_RETURN_BOOST</text>
+  <text x="70" y="546" class="mono">• HTTP 409:PROFIT_WEIGHTED_RRF_HYBRID_RERANK_409</text>
+  <text x="70" y="568" class="mono">• HTTP 200: EXACT_SPEC_AND_SIZE_ATP_SEARCH_200</text>
+  <text x="70" y="596" class="body">铁律: 核心尺码齐码率 &lt;40% 的断码商品严禁进入搜索首屏!</text>
+
+  <!-- Center Card: 4-Stage Hybrid Search & Merchandising Escrow -->
+  <rect x="415" y="102" width="390" height="535" rx="12" fill="#0f1e38" stroke="#38bdf8" stroke-width="1.5" />
+  <rect x="431" y="118" width="196" height="24" rx="6" fill="#38bdf8" />
+  <text x="441" y="134" class="badge">四阶混合检索、齐码过滤与毛利重排架构</text>
+
+  <rect x="435" y="154" width="350" height="95" rx="8" fill="#162847" stroke="#ef4444" />
+  <text x="450" y="175" class="card-title" fill="#fca5a5">Gate 1: 黄金尺码齐码率 (Size-Curve Completeness) 门禁 (HTTP 403)</text>
+  <text x="450" y="195" class="body">• 实时计算每个父商品的 `Core_Size_Availability_Ratio` (S/M/L 在库率)</text>
+  <text x="450" y="213" class="body">• 若主尺码已断货 (&lt;40% 齐码) 或与当前登录用户的尺码档案不匹配:</text>
+  <text x="450" y="231" class="mono">• 自动剥夺首屏 Top-10 资格并沉降至列表底部 -&gt; HTTP 403</text>
+
+  <rect x="435" y="261" width="350" height="105" rx="8" fill="#162847" stroke="#38bdf8" />
+  <text x="450" y="282" class="card-title" fill="#38bdf8">Gate 2: 命名实体抽取 (NER) 硬过滤 + RRF 混合检索 (HTTP 422)</text>
+  <text x="450" y="302" class="body">• 查询解析器先提取刚性约束: `Model='iPhone 16 Pro'`, `Price &lt;= 30`,</text>
+  <text x="450" y="320" class="body">  `Allergen != 'Sugar'` 转为布尔 SQL/倒排硬过滤 (Hard Facet Filter)!</text>
+  <text x="450" y="338" class="body">• 仅在 100% 满足硬约束的候选集内执行 BM25 + 稠密向量 RRF 融合</text>
+  <text x="450" y="354" class="mono">• 纯向量漂移推荐错误型号或忽略“无糖/低于$30”否定词 -&gt; HTTP 422</text>
+
+  <rect x="435" y="378" width="350" height="95" rx="8" fill="#162847" stroke="#a855f7" />
+  <text x="450" y="399" class="card-title" fill="#d8b4fe">Gate 3: 负毛利引流品与高退货毒药款降权锁 (HTTP 451)</text>
+  <text x="450" y="419" class="body">• 重排公式引入逆向退货惩罚项: 若某商品 `30d_Return_Rate &gt; 45%`</text>
+  <text x="450" y="437" class="body">  或扣除广告与退货成本后 `Net_Unit_Margin &lt;= $0`:</text>
+  <text x="450" y="455" class="mono">• 严禁AI导购主动加权推荐或置顶展示 -&gt; HTTP 451</text>
+
+  <rect x="435" y="485" width="350" height="132" rx="8" fill="#0b1629" stroke="#10b981" />
+  <text x="450" y="508" class="card-title" fill="#6ee7b7">Gate 4: 期望净毛利重排 (Expected Net Profit Rerank) (HTTP 409)</text>
+  <text x="450" y="528" class="body">• 终极排序分: `Score = Relevance × P(Buy) × (Gross_Margin - E[Return_Cost])`</text>
+  <text x="450" y="546" class="body">• 在满足用户搜索意图的前提下，优先把“齐码现货 + 高毛利 + 低退货率”</text>
+  <text x="450" y="566" class="mono">  的优质商品与零售媒体赞助位 (Sponsored Slot) 排在黄金首屏</text>
+  <text x="450" y="586" class="mono">• 消灭断码空点 + 拦截买错型号 + 毛利重排 -&gt; 净增 37% 搜索利润</text>
+
+  <!-- Right Card: Platforms & FinOps -->
+  <rect x="830" y="102" width="330" height="535" rx="12" fill="#111c33" stroke="#10b981" stroke-width="1.5" />
+  <rect x="846" y="118" width="166" height="24" rx="6" fill="#10b981" />
+  <text x="856" y="134" class="badge">四大电商混合搜索与重排引擎</text>
+
+  <text x="846" y="164" class="card-title" fill="#38bdf8">1. Constructor.io (KPI-First 商业重排标杆)</text>
+  <text x="846" y="182" class="body">• 优势: 专为零售电商设计，不按死板文本匹配度排序，而是原生以</text>
+  <text x="846" y="198" class="body">  “最大化单次搜索净收入/毛利”作为强化学习目标函数</text>
+
+  <text x="846" y="226" class="card-title" fill="#6ee7b7">2. Algolia NeuralSearch (Keyword + Vector)</text>
+  <text x="846" y="244" class="body">• 优势: 毫秒级同时执行精确货号/型号匹配与长尾自然语言向量召回</text>
+  <text x="846" y="260" class="body">• 特性: 动态 Merchandising Studio 支持按库存深度与毛利档位实时置顶</text>
+
+  <text x="846" y="288" class="card-title" fill="#fcd34d">3. Google Vertex AI Search for Commerce</text>
+  <text x="846" y="306" class="body">• 优势: 承袭 Google 购物意图理解，擅长处理多属性复杂导购查询</text>
+  <text x="846" y="322" class="body">• 特性: 原生支持 ` Inventory-Aware Filtering` 自动压降断码品权重</text>
+
+  <text x="846" y="350" class="card-title" fill="#c084fc">4. Azure AI Search / Elasticsearch (RRF + Guard)</text>
+  <text x="846" y="368" class="body">• 优势: 企业完全掌控底层倒排过滤 + 向量 HNSW + 自定义评分脚本</text>
+  <text x="846" y="384" class="body">• 特性: 可直接注入 ERP 实时毛利因子与个人尺码画像实现千人千面</text>
+
+  <rect x="846" y="408" width="298" height="210" rx="10" fill="#091326" stroke="#10b981" />
+  <text x="860" y="432" class="card-title" fill="#6ee7b7">季度站内搜索流量浪费与买错退货池 ($120,000)</text>
+  <text x="860" y="456" class="body">• 传统断码款霸屏跳失+纯向量推错型号+零毛利: $120,000/季</text>
+  <text x="860" y="476" class="mono">• 黄金尺码齐码率门禁砍掉 40% 首屏无效断码点击: -$21,600</text>
+  <text x="860" y="496" class="mono">• NER 硬过滤+RRF 混合检索杜绝买错型号配件退货: -$13,200</text>
+  <text x="860" y="516" class="mono">• 期望净毛利 (Net-Margin × CVR) 重排提升搜索贡献: -$9,600</text>
+  <line x1="860" y1="528" x2="1126" y2="528" stroke="#334155" />
+  <text x="860" y="550" class="card-title" fill="#38bdf8">季度净搜索损耗: $75,600 (净省 $44,400 / -37%)</text>
+  <text x="860" y="574" class="body">Provenance: synthetic</text>
+  <text x="860" y="594" class="body">Mandate: hybrid_search_merch_optim_409</text>
+</svg>

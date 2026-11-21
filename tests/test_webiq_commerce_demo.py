@@ -19644,6 +19644,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-apparel-sizing-escrow-sandbox", html_zh)
 
+    def test_ecommerce_hybrid_search_merchandising_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceHybridSearchMerchandisingPolicyInput,
+            evaluate_ecommerce_hybrid_search_merchandising_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_hybrid_search_merchandising_policy(
+            EcommerceHybridSearchMerchandisingPolicyInput(
+                quarterly_search_bounce_and_wrong_spec_return_pool_usd=120000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "EXACT_SPEC_AND_SIZE_ATP_SEARCH_AUTHORIZED",
+        )
+
+        swiss = evaluate_ecommerce_hybrid_search_merchandising_policy(
+            EcommerceHybridSearchMerchandisingPolicyInput(
+                swiss_cheese_broken_size_curve_top_rank=True
+            )
+        )
+        self.assertEqual(swiss["status_code"], 403)
+        self.assertEqual(
+            swiss["decision"],
+            "SWISS_CHEESE_BROKEN_SIZE_CURVE_TOP_RANK_BLOCKED",
+        )
+
+        ner = evaluate_ecommerce_hybrid_search_merchandising_policy(
+            EcommerceHybridSearchMerchandisingPolicyInput(
+                vector_model_compatibility_or_negation_miss=True
+            )
+        )
+        self.assertEqual(ner["status_code"], 422)
+        self.assertEqual(
+            ner["decision"],
+            "VECTOR_MODEL_COMPATIBILITY_OR_NEGATION_MISS_BLOCKED",
+        )
+
+        toxic = evaluate_ecommerce_hybrid_search_merchandising_policy(
+            EcommerceHybridSearchMerchandisingPolicyInput(
+                negative_net_margin_or_toxic_return_rate_boost=True
+            )
+        )
+        self.assertEqual(toxic["status_code"], 451)
+        self.assertEqual(
+            toxic["decision"],
+            "NEGATIVE_NET_MARGIN_OR_TOXIC_RETURN_RATE_BOOST_HOLD",
+        )
+
+        optim = evaluate_ecommerce_hybrid_search_merchandising_policy(
+            EcommerceHybridSearchMerchandisingPolicyInput(
+                quarterly_search_bounce_and_wrong_spec_return_pool_usd=120000.0,
+                profit_weighted_rrf_hybrid_rerank_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 44400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 75600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_hybrid_search_merchandising_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-hybrid-search-merchandising-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
