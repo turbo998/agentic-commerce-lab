@@ -18639,6 +18639,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-corporate-swag-print-escrow-sandbox", html_zh)
 
+    def test_cross_border_multi_currency_fx_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderMultiCurrencyFxEscrowPolicyInput,
+            evaluate_cross_border_multi_currency_fx_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_multi_currency_fx_escrow_policy(
+            CrossBorderMultiCurrencyFxEscrowPolicyInput(
+                quarterly_cross_border_fx_spread_and_conversion_pool_usd=118000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "LOCAL_CURRENCY_AND_ISO4217_EXPONENT_VERIFIED_AUTHORIZED",
+        )
+
+        dcc = evaluate_cross_border_multi_currency_fx_escrow_policy(
+            CrossBorderMultiCurrencyFxEscrowPolicyInput(
+                predatory_dcc_home_currency_markup_over_150bps=True
+            )
+        )
+        self.assertEqual(dcc["status_code"], 403)
+        self.assertEqual(
+            dcc["decision"],
+            "PREDATORY_DCC_HOME_CURRENCY_MARKUP_OVER_150BPS_BLOCKED",
+        )
+
+        iso = evaluate_cross_border_multi_currency_fx_escrow_policy(
+            CrossBorderMultiCurrencyFxEscrowPolicyInput(
+                iso4217_zero_decimal_jpy_krw_100x_multiplier_bug=True
+            )
+        )
+        self.assertEqual(iso["status_code"], 422)
+        self.assertEqual(
+            iso["decision"],
+            "ISO4217_ZERO_DECIMAL_JPY_KRW_100X_MULTIPLIER_BUG_BLOCKED",
+        )
+
+        quote = evaluate_cross_border_multi_currency_fx_escrow_policy(
+            CrossBorderMultiCurrencyFxEscrowPolicyInput(
+                expired_fx_quote_token_or_unhedged_cross_currency_refund=True
+            )
+        )
+        self.assertEqual(quote["status_code"], 451)
+        self.assertEqual(
+            quote["decision"],
+            "EXPIRED_FX_QUOTE_TOKEN_OR_UNHEDGED_CROSS_CURRENCY_REFUND_HOLD",
+        )
+
+        optim = evaluate_cross_border_multi_currency_fx_escrow_policy(
+            CrossBorderMultiCurrencyFxEscrowPolicyInput(
+                quarterly_cross_border_fx_spread_and_conversion_pool_usd=118000.0,
+                like_for_like_multi_currency_netting_and_wholesale_fx_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 42480.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 75520.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_multi_currency_fx_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-multi-currency-fx-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -26015,6 +26015,87 @@ def evaluate_b2b_corporate_swag_print_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderMultiCurrencyFxEscrowPolicyInput:
+    """Input contract for Cross-Border Multi-Currency Checkout, Anti-DCC & ISO 4217 Zero-Decimal Escrow."""
+
+    quarterly_cross_border_fx_spread_and_conversion_pool_usd: float = 118000.0
+    predatory_dcc_home_currency_markup_over_150bps: bool = False
+    iso4217_zero_decimal_jpy_krw_100x_multiplier_bug: bool = False
+    expired_fx_quote_token_or_unhedged_cross_currency_refund: bool = False
+    mandate_signing_key_age_days: int = 30
+    like_for_like_multi_currency_netting_and_wholesale_fx_ready: bool = False
+
+
+def evaluate_cross_border_multi_currency_fx_escrow_policy(
+    policy_input: CrossBorderMultiCurrencyFxEscrowPolicyInput,
+) -> dict[str, Any]:
+    """Evaluate 5-lane Cross-Border Multi-Currency Checkout, Anti-DCC & ISO 4217 Zero-Decimal Escrow policy."""
+    gross_pool = max(
+        float(policy_input.quarterly_cross_border_fx_spread_and_conversion_pool_usd),
+        0.0,
+    )
+    if (
+        policy_input.expired_fx_quote_token_or_unhedged_cross_currency_refund
+        or int(policy_input.mandate_signing_key_age_days) > 180
+    ):
+        return {
+            "status_code": 451,
+            "decision": "EXPIRED_FX_QUOTE_TOKEN_OR_UNHEDGED_CROSS_CURRENCY_REFUND_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.predatory_dcc_home_currency_markup_over_150bps:
+        return {
+            "status_code": 403,
+            "decision": "PREDATORY_DCC_HOME_CURRENCY_MARKUP_OVER_150BPS_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.iso4217_zero_decimal_jpy_krw_100x_multiplier_bug:
+        return {
+            "status_code": 422,
+            "decision": "ISO4217_ZERO_DECIMAL_JPY_KRW_100X_MULTIPLIER_BUG_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.like_for_like_multi_currency_netting_and_wholesale_fx_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "LIKE_FOR_LIKE_MULTI_CURRENCY_NETTING_AND_WHOLESALE_FX_CONFIRM",
+            "mandate_token": "cross_border_fx_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "LOCAL_CURRENCY_AND_ISO4217_EXPONENT_VERIFIED_AUTHORIZED",
+        "mandate_token": "cross_border_fx_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -35652,6 +35733,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_multi_currency_fx_escrow_guard = {
+        "authorized_200": evaluate_cross_border_multi_currency_fx_escrow_policy(
+            CrossBorderMultiCurrencyFxEscrowPolicyInput()
+        ),
+        "predatory_dcc_markup_403": evaluate_cross_border_multi_currency_fx_escrow_policy(
+            CrossBorderMultiCurrencyFxEscrowPolicyInput(
+                predatory_dcc_home_currency_markup_over_150bps=True
+            )
+        ),
+        "zero_decimal_100x_bug_422": evaluate_cross_border_multi_currency_fx_escrow_policy(
+            CrossBorderMultiCurrencyFxEscrowPolicyInput(
+                iso4217_zero_decimal_jpy_krw_100x_multiplier_bug=True
+            )
+        ),
+        "expired_fx_quote_or_refund_451": evaluate_cross_border_multi_currency_fx_escrow_policy(
+            CrossBorderMultiCurrencyFxEscrowPolicyInput(
+                expired_fx_quote_token_or_unhedged_cross_currency_refund=True
+            )
+        ),
+        "like_for_like_netting_409": evaluate_cross_border_multi_currency_fx_escrow_policy(
+            CrossBorderMultiCurrencyFxEscrowPolicyInput(
+                like_for_like_multi_currency_netting_and_wholesale_fx_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -35923,6 +36030,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_chargeback_ce30_escrow_guard": ecommerce_chargeback_ce30_escrow_guard,
         "floral_gift_delivery_escrow_guard": floral_gift_delivery_escrow_guard,
         "b2b_corporate_swag_print_escrow_guard": b2b_corporate_swag_print_escrow_guard,
+        "cross_border_multi_currency_fx_escrow_guard": cross_border_multi_currency_fx_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -49255,6 +49363,69 @@ def render_webiq_live_demo_html(
         </div>
         <div id="swag-print-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ONDEMAND_SIZE_REDEMPTION_POD_AND_EXACT_QTY_LOCK_CONFIRM · Mandate: b2b_corporate_swag_print_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 143 Cross-Border Multi-Currency Checkout, Anti-DCC & ISO 4217 Zero-Decimal Escrow -->
+      <div class="finops-box" id="cross-border-multi-currency-fx-escrow-sandbox">
+        <div class="finops-header">
+          <div>
+            <div class="finops-title">💱 跨境多币种结账与智能锁汇 (Adyen Like-for-Like / Airwallex / Stripe / Wise)、防 DCC 6.5% 加点与防日元百倍错扣沙盒 (Round 143)</div>
+            <div class="finops-subtitle">实测硬控买方强制选当地原币种拦截加点 &gt;150bps 的动态货币转换(DCC)汇率刺客 (HTTP 403)、ISO 4217 小数指数查表锁防把 JPY/KRW 零小数位货币误乘 100 倍刷爆日本客户信用卡 (HTTP 422)、有界锁汇令牌与原币池退货对冲 (HTTP 451) 及 Like-for-Like 多币种同名账户收支自然轧差+0.25% 批发锁汇净省 36% (HTTP 409)</div>
+          </div>
+          <span class="verdict-pill" id="fx-escrow-status-kpi">HTTP 409 · LIKE_FOR_LIKE_MULTI_CURRENCY_NETTING_AND_WHOLESALE_FX_CONFIRM</span>
+        </div>
+        <div class="finops-controls">
+          <label>
+            季度跨境双向换汇磨损、DCC 恶霸加点与退货汇损总池 ($ USD)
+            <input type="range" id="fx-escrow-pool-slider" min="20000" max="500000" step="5000" value="118000" oninput="updateCrossBorderMultiCurrencyFxEscrowSandbox()" />
+            <span id="fx-escrow-pool-val" style="color:#6ee7b7; font-family:monospace;">$118,000</span>
+          </label>
+          <label>
+            买方结账反动态货币转换 (Anti-DCC &lt;=150bps) 审计 (HTTP 403)
+            <select id="fx-escrow-dcc-select" onchange="updateCrossBorderMultiCurrencyFxEscrowSandbox()">
+              <option value="pass">100% 锁定商户当地原币种(EUR/JPY/GBP)走卡组织银行间中价结算 (放行)</option>
+              <option value="block">误点收银台诱导的“以母币 USD 结算(DCC)”被暗扣 6.5% 恶霸汇率加点 (HTTP 403 阻断)</option>
+            </select>
+          </label>
+          <label>
+            ISO 4217 零小数位货币指数校验与等值美元看门狗 (HTTP 422)
+            <select id="fx-escrow-iso-select" onchange="updateCrossBorderMultiCurrencyFxEscrowSandbox()">
+              <option value="pass">JPY/KRW/VND 严格按 Exponent=0 整数直传 + 折合美元偏离度 &lt;=8% (合规)</option>
+              <option value="block">沿用美元 *100 逻辑把 ¥1,500 日元传成 ¥150,000 造成 100 倍天价超扣事故 (HTTP 422 拦截)</option>
+            </select>
+          </label>
+          <label>
+            有界锁汇令牌 (fx_quote_id) 与跨月退货同币种对冲门禁 (HTTP 451)
+            <select id="fx-escrow-quote-select" onchange="updateCrossBorderMultiCurrencyFxEscrowSandbox()">
+              <option value="clear">锁汇令牌在 15m~24h 有效期内 + 售后退货直接从同币种欧元/日元余额池扣减 (正常)</option>
+              <option value="hold">锁汇令牌已过期裸跑汇率跳水 或 单一美元户退欧元货款遭遇 4% 双向换汇加汇率暴涨倒贴 (HTTP 451 熔断)</option>
+            </select>
+          </label>
+          <label>
+            Like-for-Like 原币留存入账与 Airwallex 0.25% 批发锁汇寻优 (HTTP 409)
+            <select id="fx-escrow-opt-select" onchange="updateCrossBorderMultiCurrencyFxEscrowSandbox()">
+              <option value="enabled" selected>欧元/英镑/日元原币入账直付当地海外仓与广告费免双向 4% 换汇 + 盈余走 0.25% 批发锁汇净省 36% (HTTP 409)</option>
+              <option value="baseline">常规当地原币种结算与 ISO 4217 强类型校验授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度跨境换汇磨损与 DCC 总池</div>
+            <div class="finops-kpi-val" id="fx-escrow-gross-kpi">$118,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原币自然轧差与批发锁汇后净损</div>
+            <div class="finops-kpi-val" id="fx-escrow-net-kpi" style="color:#6ee7b7;">$75,520</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省双向换汇与 DCC 加点</div>
+            <div class="finops-kpi-val" id="fx-escrow-savings-kpi" style="color:#38bdf8;">$42,480</div>
+          </div>
+        </div>
+        <div id="fx-escrow-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 LIKE_FOR_LIKE_MULTI_CURRENCY_NETTING_AND_WHOLESALE_FX_CONFIRM · Mandate: cross_border_fx_escrow_optim_409
         </div>
       </div>
 
@@ -65208,6 +65379,80 @@ function updateB2BCorporateSwagPrintEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 PANTONE_DELTA_E_VERIFIED_AND_EXACT_QTY_PRINT_AUTHORIZED · Mandate: b2b_corporate_swag_print_200';
+}}
+
+function updateCrossBorderMultiCurrencyFxEscrowSandbox() {{
+  const slider = document.getElementById('fx-escrow-pool-slider');
+  if (!slider) return;
+  const gross = parseFloat(slider.value || '118000');
+  const dccMode = document.getElementById('fx-escrow-dcc-select').value;
+  const isoMode = document.getElementById('fx-escrow-iso-select').value;
+  const quoteMode = document.getElementById('fx-escrow-quote-select').value;
+  const optMode = document.getElementById('fx-escrow-opt-select').value;
+
+  document.getElementById('fx-escrow-pool-val').textContent = '$' + gross.toLocaleString('en-US');
+  const statusKpi = document.getElementById('fx-escrow-status-kpi');
+  const grossKpi = document.getElementById('fx-escrow-gross-kpi');
+  const netKpi = document.getElementById('fx-escrow-net-kpi');
+  const savingsKpi = document.getElementById('fx-escrow-savings-kpi');
+  const banner = document.getElementById('fx-escrow-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (quoteMode === 'hold') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#d8b4fe';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(168, 85, 247, 0.16)';
+    banner.style.borderColor = 'rgba(168, 85, 247, 0.45)';
+    banner.style.color = '#e9d5ff';
+    banner.textContent = 'HTTP 451 EXPIRED_FX_QUOTE_TOKEN_OR_UNHEDGED_CROSS_CURRENCY_REFUND_HOLD · Mandate: null';
+    return;
+  }}
+  if (dccMode === 'block') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#fca5a5';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PREDATORY_DCC_HOME_CURRENCY_MARKUP_OVER_150BPS_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (isoMode === 'block') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fdba74';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 ISO4217_ZERO_DECIMAL_JPY_KRW_100X_MULTIPLIER_BUG_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 LIKE_FOR_LIKE_MULTI_CURRENCY_NETTING_AND_WHOLESALE_FX_CONFIRM · Mandate: cross_border_fx_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 LOCAL_CURRENCY_AND_ISO4217_EXPONENT_VERIFIED_AUTHORIZED · Mandate: cross_border_fx_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
