@@ -26696,6 +26696,79 @@ def evaluate_ota_hotel_rate_parity_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommercePreorderDepositEscrowPolicyInput:
+    quarterly_preorder_overstock_and_delay_risk_pool_usd: float = 125000.0
+    post_deposit_base_price_hike_or_unfair_forfeit: bool = False
+    orphan_deposit_refund_or_expired_preauth_no_grace: bool = False
+    ftc_mail_order_rule_delay_without_explicit_optin: bool = False
+    c2m_deposit_moq_batching_and_waitlist_rollover_ready: bool = False
+
+
+def evaluate_ecommerce_preorder_deposit_escrow_policy(
+    policy_input: EcommercePreorderDepositEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0, float(policy_input.quarterly_preorder_overstock_and_delay_risk_pool_usd)
+    )
+    if policy_input.ftc_mail_order_rule_delay_without_explicit_optin:
+        return {
+            "status_code": 451,
+            "decision": "FTC_MAIL_ORDER_RULE_DELAY_WITHOUT_EXPLICIT_OPTIN_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.post_deposit_base_price_hike_or_unfair_forfeit:
+        return {
+            "status_code": 403,
+            "decision": "POST_DEPOSIT_BASE_PRICE_HIKE_OR_UNFAIR_FORFEIT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.orphan_deposit_refund_or_expired_preauth_no_grace:
+        return {
+            "status_code": 422,
+            "decision": "ORPHAN_DEPOSIT_REFUND_OR_EXPIRED_PREAUTH_NO_GRACE_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.c2m_deposit_moq_batching_and_waitlist_rollover_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "C2M_DEPOSIT_MOQ_BATCHING_AND_WAITLIST_ROLLOVER_CONFIRM",
+            "mandate_token": "preorder_deposit_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "HASH_LOCKED_DEPOSIT_AND_BALANCE_AUTHORIZED",
+        "mandate_token": "preorder_deposit_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -36567,6 +36640,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_preorder_deposit_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_preorder_deposit_escrow_policy(
+            EcommercePreorderDepositEscrowPolicyInput()
+        ),
+        "post_deposit_price_hike_403": evaluate_ecommerce_preorder_deposit_escrow_policy(
+            EcommercePreorderDepositEscrowPolicyInput(
+                post_deposit_base_price_hike_or_unfair_forfeit=True
+            )
+        ),
+        "orphan_deposit_or_expired_preauth_422": evaluate_ecommerce_preorder_deposit_escrow_policy(
+            EcommercePreorderDepositEscrowPolicyInput(
+                orphan_deposit_refund_or_expired_preauth_no_grace=True
+            )
+        ),
+        "ftc_delay_without_optin_451": evaluate_ecommerce_preorder_deposit_escrow_policy(
+            EcommercePreorderDepositEscrowPolicyInput(
+                ftc_mail_order_rule_delay_without_explicit_optin=True
+            )
+        ),
+        "c2m_moq_and_waitlist_rollover_409": evaluate_ecommerce_preorder_deposit_escrow_policy(
+            EcommercePreorderDepositEscrowPolicyInput(
+                c2m_deposit_moq_batching_and_waitlist_rollover_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -36847,6 +36946,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_abandoned_cart_escrow_guard": ecommerce_abandoned_cart_escrow_guard,
         "ecommerce_gwp_bogo_return_escrow_guard": ecommerce_gwp_bogo_return_escrow_guard,
         "ota_hotel_rate_parity_escrow_guard": ota_hotel_rate_parity_escrow_guard,
+        "ecommerce_preorder_deposit_escrow_guard": ecommerce_preorder_deposit_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -50710,6 +50810,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="hotel-parity-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DIRECT_BOOKING_PRICE_MATCH_AND_PERK_STACK_CONFIRM · Mandate: ota_hotel_parity_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 152 E-Commerce Pre-Order Deposit & FTC Delay Escrow -->
+      <div class="finops-box" id="ecommerce-preorder-deposit-escrow-sandbox" style="margin-top:12px;border-color:#a855f7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">⏳ 电商预售定金膨胀 (Pre-Order Deposit)、尾款锁价与 FTC 延期合规托管沙盒 (Purple Dot / Shopify)</div>
+            <div class="finops-sub">Round 152 · 定金快照尾款上限锁 (HTTP 403) + 48h 换卡宽限与双单同退 (HTTP 422) + FTC §435 延期二次同意 (HTTP 451) + C2M 候补净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="preorder-dep-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度预售盲目备货清仓与违约风险池 ($)
+            <input type="number" id="preorder-dep-gross-input" value="125000" min="15000" step="5000" oninput="recalcEcommercePreorderDepositSandbox()" />
+          </label>
+          <label>定金快照 SHA-256 尾款最高上限锁
+            <select id="preorder-dep-price-select" onchange="recalcEcommercePreorderDepositSandbox()">
+              <option value="pass">尾款严格锚定定金日快照上限 ($300) 且向下保价 (合规)</option>
+              <option value="block_403">交完 $50 定金后尾款期偷偷把商品原价调高 $80 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>48h 尾款换卡宽限期与定金+尾款原子双退
+            <select id="preorder-dep-refund-select" onchange="recalcEcommercePreorderDepositSandbox()">
+              <option value="pass">长效 off_session 令牌 + 48h 宽限 + 退货双单同退 (合规)</option>
+              <option value="block_422">退货只退尾款漏退首笔定金或无宽限期秒吞定金 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国 FTC 16 CFR §435 延期二次显式同意锁
+            <select id="preorder-dep-ftc-select" onchange="recalcEcommercePreorderDepositSandbox()">
+              <option value="pass">按期发货 或 延期已获买家显式点击 Opt-In 同意 (安全)</option>
+              <option value="block_451">延期超 30 天仅发通告未获买家显式同意还不退定金 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>C2M 定金排产与弃单自动顺延 Waitlist
+            <select id="preorder-dep-opt-select" onchange="recalcEcommercePreorderDepositSandbox()">
+              <option value="enabled" selected>C2M 按定金排产 + 弃付尾款名额秒转候补全款客 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">拍脑袋盲目备货 10,000 件导致滞销尾货 5 折清仓 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度预售备货与延期风险总池</div>
+            <div class="finops-kpi-val" id="preorder-dep-gross-kpi">$125,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">C2M 排产与候补顺延后净成本</div>
+            <div class="finops-kpi-val" id="preorder-dep-net-kpi" style="color:#6ee7b7;">$80,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省尾货清仓与弃单损失</div>
+            <div class="finops-kpi-val" id="preorder-dep-savings-kpi" style="color:#38bdf8;">$45,000</div>
+          </div>
+        </div>
+        <div id="preorder-dep-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 C2M_DEPOSIT_MOQ_BATCHING_AND_WAITLIST_ROLLOVER_CONFIRM · Mandate: preorder_deposit_escrow_optim_409
         </div>
       </div>
 
@@ -67323,6 +67480,79 @@ function recalcOtaHotelRateParitySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 PARITY_VERIFIED_DIRECT_OR_CORP_BOOKING_AUTHORIZED · Mandate: ota_hotel_parity_escrow_200';
+}}
+
+function recalcEcommercePreorderDepositSandbox() {{
+  const grossInput = document.getElementById('preorder-dep-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '125000'));
+  const priceGate = document.getElementById('preorder-dep-price-select').value;
+  const refundGate = document.getElementById('preorder-dep-refund-select').value;
+  const ftcGate = document.getElementById('preorder-dep-ftc-select').value;
+  const optMode = document.getElementById('preorder-dep-opt-select').value;
+
+  const grossKpi = document.getElementById('preorder-dep-gross-kpi');
+  const netKpi = document.getElementById('preorder-dep-net-kpi');
+  const savingsKpi = document.getElementById('preorder-dep-savings-kpi');
+  const statusKpi = document.getElementById('preorder-dep-status-kpi');
+  const banner = document.getElementById('preorder-dep-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ftcGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FTC_MAIL_ORDER_RULE_DELAY_WITHOUT_EXPLICIT_OPTIN_HOLD · Mandate: null';
+    return;
+  }}
+  if (priceGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 POST_DEPOSIT_BASE_PRICE_HIKE_OR_UNFAIR_FORFEIT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (refundGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 ORPHAN_DEPOSIT_REFUND_OR_EXPIRED_PREAUTH_NO_GRACE_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 C2M_DEPOSIT_MOQ_BATCHING_AND_WAITLIST_ROLLOVER_CONFIRM · Mandate: preorder_deposit_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 HASH_LOCKED_DEPOSIT_AND_BALANCE_AUTHORIZED · Mandate: preorder_deposit_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

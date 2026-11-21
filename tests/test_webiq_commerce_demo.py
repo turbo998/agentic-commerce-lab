@@ -19242,6 +19242,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-hotel-rate-parity-escrow-sandbox", html_zh)
 
+    def test_ecommerce_preorder_deposit_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommercePreorderDepositEscrowPolicyInput,
+            evaluate_ecommerce_preorder_deposit_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_preorder_deposit_escrow_policy(
+            EcommercePreorderDepositEscrowPolicyInput(
+                quarterly_preorder_overstock_and_delay_risk_pool_usd=125000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "HASH_LOCKED_DEPOSIT_AND_BALANCE_AUTHORIZED",
+        )
+
+        hike = evaluate_ecommerce_preorder_deposit_escrow_policy(
+            EcommercePreorderDepositEscrowPolicyInput(
+                post_deposit_base_price_hike_or_unfair_forfeit=True
+            )
+        )
+        self.assertEqual(hike["status_code"], 403)
+        self.assertEqual(
+            hike["decision"],
+            "POST_DEPOSIT_BASE_PRICE_HIKE_OR_UNFAIR_FORFEIT_BLOCKED",
+        )
+
+        orphan = evaluate_ecommerce_preorder_deposit_escrow_policy(
+            EcommercePreorderDepositEscrowPolicyInput(
+                orphan_deposit_refund_or_expired_preauth_no_grace=True
+            )
+        )
+        self.assertEqual(orphan["status_code"], 422)
+        self.assertEqual(
+            orphan["decision"],
+            "ORPHAN_DEPOSIT_REFUND_OR_EXPIRED_PREAUTH_NO_GRACE_BLOCKED",
+        )
+
+        ftc = evaluate_ecommerce_preorder_deposit_escrow_policy(
+            EcommercePreorderDepositEscrowPolicyInput(
+                ftc_mail_order_rule_delay_without_explicit_optin=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 451)
+        self.assertEqual(
+            ftc["decision"],
+            "FTC_MAIL_ORDER_RULE_DELAY_WITHOUT_EXPLICIT_OPTIN_HOLD",
+        )
+
+        optim = evaluate_ecommerce_preorder_deposit_escrow_policy(
+            EcommercePreorderDepositEscrowPolicyInput(
+                quarterly_preorder_overstock_and_delay_risk_pool_usd=125000.0,
+                c2m_deposit_moq_batching_and_waitlist_rollover_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 45000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 80000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_preorder_deposit_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-preorder-deposit-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
