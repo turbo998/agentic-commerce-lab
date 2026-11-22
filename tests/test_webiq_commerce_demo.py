@@ -27148,6 +27148,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("pay-by-bank-open-banking-nsf-sandbox", html_zh)
 
+    def test_ota_hotel_rate_parity_resort_fee_walk_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OTAHotelRateParityResortFeeWalkEscrowPolicyInput,
+            evaluate_ota_hotel_rate_parity_resort_fee_walk_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_hotel_rate_parity_resort_fee_walk_escrow_policy(
+            OTAHotelRateParityResortFeeWalkEscrowPolicyInput(
+                quarterly_resort_fee_bait_walk_rebook_and_price_drop_pool_usd=260000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ALL_IN_HOTEL_PARITY_AND_PMS_HCN_AUTHORIZED",
+        )
+
+        hcn = evaluate_ota_hotel_rate_parity_resort_fee_walk_escrow_policy(
+            OTAHotelRateParityResortFeeWalkEscrowPolicyInput(
+                unbundled_bedbank_rate_leak_or_missing_pms_hcn_at_t48h=True
+            )
+        )
+        self.assertEqual(hcn["status_code"], 403)
+        self.assertEqual(
+            hcn["decision"],
+            "WHOLESALE_BEDBANK_RATE_LEAK_OR_MISSING_PMS_HCN_CONFIRMATION",
+        )
+
+        ftc = evaluate_ota_hotel_rate_parity_resort_fee_walk_escrow_policy(
+            OTAHotelRateParityResortFeeWalkEscrowPolicyInput(
+                drip_resort_or_cleaning_fee_omitted_from_ftc_all_in_rank=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 422)
+        self.assertEqual(
+            ftc["decision"],
+            "FTC_PART464_DRIP_RESORT_FEE_OMISSION_IN_ALL_IN_SORT_RANK",
+        )
+
+        walk = evaluate_ota_hotel_rate_parity_resort_fee_walk_escrow_policy(
+            OTAHotelRateParityResortFeeWalkEscrowPolicyInput(
+                flight_delay_past_2100_without_pms_late_arrival_hold_lock=True
+            )
+        )
+        self.assertEqual(walk["status_code"], 451)
+        self.assertEqual(
+            walk["decision"],
+            "FLIGHT_DELAY_NO_SHOW_RELEASE_WITHOUT_PMS_LATE_ARRIVAL_HOLD",
+        )
+
+        optim = evaluate_ota_hotel_rate_parity_resort_fee_walk_escrow_policy(
+            OTAHotelRateParityResortFeeWalkEscrowPolicyInput(
+                quarterly_resort_fee_bait_walk_rebook_and_price_drop_pool_usd=260000.0,
+                all_in_corporate_lra_and_atomic_price_drop_rebook_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 98800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 161200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_hotel_rate_parity_resort_fee_walk_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-hotel-rate-parity-resort-fee-walk-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

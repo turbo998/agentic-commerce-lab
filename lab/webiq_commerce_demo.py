@@ -35633,6 +35633,82 @@ def evaluate_pay_by_bank_open_banking_nsf_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class OTAHotelRateParityResortFeeWalkEscrowPolicyInput:
+    quarterly_resort_fee_bait_walk_rebook_and_price_drop_pool_usd: float = 260000.0
+    unbundled_bedbank_rate_leak_or_missing_pms_hcn_at_t48h: bool = False
+    drip_resort_or_cleaning_fee_omitted_from_ftc_all_in_rank: bool = False
+    flight_delay_past_2100_without_pms_late_arrival_hold_lock: bool = False
+    all_in_corporate_lra_and_atomic_price_drop_rebook_ready: bool = False
+
+
+def evaluate_ota_hotel_rate_parity_resort_fee_walk_escrow_policy(
+    policy_input: OTAHotelRateParityResortFeeWalkEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_resort_fee_bait_walk_rebook_and_price_drop_pool_usd
+        ),
+    )
+    if policy_input.flight_delay_past_2100_without_pms_late_arrival_hold_lock:
+        return {
+            "status_code": 451,
+            "decision": "FLIGHT_DELAY_NO_SHOW_RELEASE_WITHOUT_PMS_LATE_ARRIVAL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unbundled_bedbank_rate_leak_or_missing_pms_hcn_at_t48h:
+        return {
+            "status_code": 403,
+            "decision": "WHOLESALE_BEDBANK_RATE_LEAK_OR_MISSING_PMS_HCN_CONFIRMATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.drip_resort_or_cleaning_fee_omitted_from_ftc_all_in_rank:
+        return {
+            "status_code": 422,
+            "decision": "FTC_PART464_DRIP_RESORT_FEE_OMISSION_IN_ALL_IN_SORT_RANK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.all_in_corporate_lra_and_atomic_price_drop_rebook_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ALL_IN_RESORT_FEE_PARITY_AND_PMS_HCN_PRICE_DROP_REBOOK_CONFIRM",
+            "mandate_token": "ota_hotel_parity_hcn_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ALL_IN_HOTEL_PARITY_AND_PMS_HCN_AUTHORIZED",
+        "mandate_token": "ota_hotel_parity_hcn_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -48572,6 +48648,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_hotel_rate_parity_resort_fee_walk_guard = {
+        "authorized_200": evaluate_ota_hotel_rate_parity_resort_fee_walk_escrow_policy(
+            OTAHotelRateParityResortFeeWalkEscrowPolicyInput()
+        ),
+        "bedbank_leak_or_missing_hcn_403": evaluate_ota_hotel_rate_parity_resort_fee_walk_escrow_policy(
+            OTAHotelRateParityResortFeeWalkEscrowPolicyInput(
+                unbundled_bedbank_rate_leak_or_missing_pms_hcn_at_t48h=True
+            )
+        ),
+        "ftc_drip_resort_fee_omission_422": evaluate_ota_hotel_rate_parity_resort_fee_walk_escrow_policy(
+            OTAHotelRateParityResortFeeWalkEscrowPolicyInput(
+                drip_resort_or_cleaning_fee_omitted_from_ftc_all_in_rank=True
+            )
+        ),
+        "flight_delay_no_show_walk_451": evaluate_ota_hotel_rate_parity_resort_fee_walk_escrow_policy(
+            OTAHotelRateParityResortFeeWalkEscrowPolicyInput(
+                flight_delay_past_2100_without_pms_late_arrival_hold_lock=True
+            )
+        ),
+        "all_in_lra_atomic_rebook_409": evaluate_ota_hotel_rate_parity_resort_fee_walk_escrow_policy(
+            OTAHotelRateParityResortFeeWalkEscrowPolicyInput(
+                all_in_corporate_lra_and_atomic_price_drop_rebook_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48970,6 +49072,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_clm_contract_redline_guard": b2b_clm_contract_redline_guard,
         "cross_border_multilingual_return_duty_drawback_guard": cross_border_multilingual_return_duty_drawback_guard,
         "pay_by_bank_open_banking_nsf_guard": pay_by_bank_open_banking_nsf_guard,
+        "ota_hotel_rate_parity_resort_fee_walk_guard": ota_hotel_rate_parity_resort_fee_walk_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -69559,6 +69662,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="pbb-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 INSTANT_BANK_PUSH_ROUTING_AND_MDR_SPLIT_INCENTIVE_CONFIRM · Mandate: pay_by_bank_instant_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 270 OTA Hotel Rate Parity, FTC Part 464 Resort Fee & PMS HCN Escrow (#389) -->
+      <div class="finops-box" id="ota-hotel-rate-parity-resort-fee-walk-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏨 OTA 与企业差旅酒店比价改签、FTC Part 464 度假村费穿透与 PMS HCN 核验 (DerbySoft / Expedia / Sabre) 沙盒</div>
+            <div class="finops-sub">Round 270 (#389 · SVG #713) · 阻断违规拆卖批发商盲盒价与入住前48h缺失酒店原生 Opera PMS HCN 防半夜到店无房 (HTTP 403) + 强制累加到店必付 Resort/Destination/Cleaning Fee 全包排序 (HTTP 422) + 关联航班延误注入跨夜保房锁与 Walk 索赔 (HTTP 451) + 免度假村费企业协议价与“先拿新HCN再退旧单”降价改签净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="otahcn-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度到店被强收隐形度假村费 ($55/晚)、二道贩子丢单致半夜高价重订及错失入住前降价改签损失池 ($)
+            <input type="number" id="otahcn-gross-input" value="260000" min="10000" step="5000" oninput="recalcOTAHotelRateParityResortFeeWalkSandbox()" />
+          </label>
+          <label>B2B 批发床位库 (Bedbank Package Rate) 防违规拆卖与入住前 48 小时 (T-48h) 酒店原生 PMS HCN 核验门禁
+            <select id="otahcn-hcn-select" onchange="recalcOTAHotelRateParityResortFeeWalkSandbox()">
+              <option value="pass">严禁单卖机酒打包盲盒房 + 入住前48h 100% 校验取得酒店 Opera PMS 原生确认号 HCN (安全)</option>
+              <option value="block_403">违规拆卖批发商打包价 或 仅有代理商内部凭证号未同步酒店 PMS 致员工半夜到店无房 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>美国 FTC 16 CFR Part 464 垃圾费禁令全包总价排序 (Base + Tax + Mandatory Resort/Destination/Cleaning Fee) 门禁
+            <select id="otahcn-ftc-select" onchange="recalcOTAHotelRateParityResortFeeWalkSandbox()">
+              <option value="pass">严格按含全部到店强制附加费的 All-In 总价排序，并自动识别企业 LRA 协议免度假村费权益 (合规)</option>
+              <option value="block_422">被 $149 裸房价钓鱼排第一，漏算到店强收的 $55/晚度假村费反比全包企业协议价贵 $46/晚 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>前序关联航班延误过 21:00 跨夜保房指令 (PMS Late-Arrival Hold) 与企业协议超售拒住赔偿 (Walk Clause) 门禁
+            <select id="otahcn-walk-select" onchange="recalcOTAHotelRateParityResortFeeWalkSandbox()">
+              <option value="pass">航班延误自动向酒店 PMS 注入 VCN 担保跨夜锁房指令 + 强制执行超售首晚免单与同级安置 (安全)</option>
+              <option value="block_451">航班晚点至凌晨 01:00 未通知酒店 PMS，房间在 23:00 夜审时被当成 No-Show 释放卖给散客 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>企业 LRA 全包最优协议价匹配 + 入住前降价 (&gt;=$25) “先锁定新 HCN 再取消旧预订”零断房自动重订
+            <select id="otahcn-opt-select" onchange="recalcOTAHotelRateParityResortFeeWalkSandbox()">
+              <option value="enabled" selected>全包总价选优免除 $55/晚度假村费 + 每日扫描降价原子换单零断房 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">按表面裸房价盲订且预订后永不监控降价重订机会 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度隐形度假村费与断房损失池</div>
+            <div class="finops-kpi-val" id="otahcn-gross-kpi">$260,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">全包选优与原子降价改签后净支出</div>
+            <div class="finops-kpi-val" id="otahcn-net-kpi" style="color:#6ee7b7;">$161,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省度假村费与降价重订红利</div>
+            <div class="finops-kpi-val" id="otahcn-savings-kpi" style="color:#38bdf8;">$98,800</div>
+          </div>
+        </div>
+        <div id="otahcn-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ALL_IN_RESORT_FEE_PARITY_AND_PMS_HCN_PRICE_DROP_REBOOK_CONFIRM · Mandate: ota_hotel_parity_hcn_optim_409
         </div>
       </div>
 
@@ -94786,6 +94946,79 @@ function recalcPayByBankOpenBankingNSFSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_INSTANT_PAY_BY_BANK_SETTLEMENT_AUTHORIZED · Mandate: pay_by_bank_instant_200';
+}}
+
+function recalcOTAHotelRateParityResortFeeWalkSandbox() {{
+  const grossInput = document.getElementById('otahcn-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '260000'));
+  const hcnGate = document.getElementById('otahcn-hcn-select').value;
+  const ftcGate = document.getElementById('otahcn-ftc-select').value;
+  const walkGate = document.getElementById('otahcn-walk-select').value;
+  const optMode = document.getElementById('otahcn-opt-select').value;
+
+  const grossKpi = document.getElementById('otahcn-gross-kpi');
+  const netKpi = document.getElementById('otahcn-net-kpi');
+  const savingsKpi = document.getElementById('otahcn-savings-kpi');
+  const statusKpi = document.getElementById('otahcn-status-kpi');
+  const banner = document.getElementById('otahcn-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (walkGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FLIGHT_DELAY_NO_SHOW_RELEASE_WITHOUT_PMS_LATE_ARRIVAL_HOLD · Mandate: null';
+    return;
+  }}
+  if (hcnGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 WHOLESALE_BEDBANK_RATE_LEAK_OR_MISSING_PMS_HCN_CONFIRMATION · Mandate: null';
+    return;
+  }}
+  if (ftcGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FTC_PART464_DRIP_RESORT_FEE_OMISSION_IN_ALL_IN_SORT_RANK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ALL_IN_RESORT_FEE_PARITY_AND_PMS_HCN_PRICE_DROP_REBOOK_CONFIRM · Mandate: ota_hotel_parity_hcn_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_ALL_IN_HOTEL_PARITY_AND_PMS_HCN_AUTHORIZED · Mandate: ota_hotel_parity_hcn_200';
 }}
 
 function updateStage1756Sandbox() {{
