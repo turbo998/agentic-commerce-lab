@@ -27014,6 +27014,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-clm-contract-redline-sandbox", html_zh)
 
+    def test_cross_border_multilingual_return_duty_drawback_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderMultilingualReturnDutyDrawbackPolicyInput,
+            evaluate_cross_border_multilingual_return_duty_drawback_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_multilingual_return_duty_drawback_policy(
+            CrossBorderMultilingualReturnDutyDrawbackPolicyInput(
+                quarterly_reverse_air_freight_double_duty_and_fx_pool_usd=280000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CROSS_BORDER_RETURN_AND_CAPTURE_FX_REFUND_AUTHORIZED",
+        )
+
+        econ = evaluate_cross_border_multilingual_return_duty_drawback_policy(
+            CrossBorderMultilingualReturnDutyDrawbackPolicyInput(
+                individual_air_return_exceeds_resale_or_unverified_keep_abuse=True
+            )
+        )
+        self.assertEqual(econ["status_code"], 403)
+        self.assertEqual(
+            econ["decision"],
+            "INDIVIDUAL_AIR_RETURN_EXCEEDING_NET_RESALE_VALUE_OR_KEEP_ABUSE",
+        )
+
+        customs = evaluate_cross_border_multilingual_return_duty_drawback_policy(
+            CrossBorderMultilingualReturnDutyDrawbackPolicyInput(
+                missing_original_export_entry_link_for_duty_drawback=True
+            )
+        )
+        self.assertEqual(customs["status_code"], 422)
+        self.assertEqual(
+            customs["decision"],
+            "MISSING_ORIGINAL_EXPORT_CUSTOMS_ENTRY_LINK_FOR_DUTY_DRAWBACK",
+        )
+
+        fx = evaluate_cross_border_multilingual_return_duty_drawback_policy(
+            CrossBorderMultilingualReturnDutyDrawbackPolicyInput(
+                fx_spot_rate_refund_arbitrage_or_eu_14d_withdrawal_violation=True
+            )
+        )
+        self.assertEqual(fx["status_code"], 451)
+        self.assertEqual(
+            fx["decision"],
+            "FX_SPOT_REFUND_ARBITRAGE_OR_EU_14D_WITHDRAWAL_RIGHT_VIOLATION",
+        )
+
+        optim = evaluate_cross_border_multilingual_return_duty_drawback_policy(
+            CrossBorderMultilingualReturnDutyDrawbackPolicyInput(
+                quarterly_reverse_air_freight_double_duty_and_fx_pool_usd=280000.0,
+                regional_hub_consolidation_and_duty_drawback_manifest_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 106400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 173600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_multilingual_return_duty_drawback_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-multilingual-return-duty-drawback-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -35483,6 +35483,82 @@ def evaluate_b2b_clm_contract_redline_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderMultilingualReturnDutyDrawbackPolicyInput:
+    quarterly_reverse_air_freight_double_duty_and_fx_pool_usd: float = 280000.0
+    individual_air_return_exceeds_resale_or_unverified_keep_abuse: bool = False
+    missing_original_export_entry_link_for_duty_drawback: bool = False
+    fx_spot_rate_refund_arbitrage_or_eu_14d_withdrawal_violation: bool = False
+    regional_hub_consolidation_and_duty_drawback_manifest_ready: bool = False
+
+
+def evaluate_cross_border_multilingual_return_duty_drawback_policy(
+    policy_input: CrossBorderMultilingualReturnDutyDrawbackPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_reverse_air_freight_double_duty_and_fx_pool_usd
+        ),
+    )
+    if policy_input.fx_spot_rate_refund_arbitrage_or_eu_14d_withdrawal_violation:
+        return {
+            "status_code": 451,
+            "decision": "FX_SPOT_REFUND_ARBITRAGE_OR_EU_14D_WITHDRAWAL_RIGHT_VIOLATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.individual_air_return_exceeds_resale_or_unverified_keep_abuse:
+        return {
+            "status_code": 403,
+            "decision": "INDIVIDUAL_AIR_RETURN_EXCEEDING_NET_RESALE_VALUE_OR_KEEP_ABUSE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missing_original_export_entry_link_for_duty_drawback:
+        return {
+            "status_code": 422,
+            "decision": "MISSING_ORIGINAL_EXPORT_CUSTOMS_ENTRY_LINK_FOR_DUTY_DRAWBACK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.regional_hub_consolidation_and_duty_drawback_manifest_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "REGIONAL_HUB_CONSOLIDATION_AND_DUTY_DRAWBACK_MANIFEST_CONFIRM",
+            "mandate_token": "cross_border_return_fx_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CROSS_BORDER_RETURN_AND_CAPTURE_FX_REFUND_AUTHORIZED",
+        "mandate_token": "cross_border_return_fx_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -48370,6 +48446,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_multilingual_return_duty_drawback_guard = {
+        "authorized_200": evaluate_cross_border_multilingual_return_duty_drawback_policy(
+            CrossBorderMultilingualReturnDutyDrawbackPolicyInput()
+        ),
+        "negative_margin_air_return_403": evaluate_cross_border_multilingual_return_duty_drawback_policy(
+            CrossBorderMultilingualReturnDutyDrawbackPolicyInput(
+                individual_air_return_exceeds_resale_or_unverified_keep_abuse=True
+            )
+        ),
+        "missing_export_entry_link_422": evaluate_cross_border_multilingual_return_duty_drawback_policy(
+            CrossBorderMultilingualReturnDutyDrawbackPolicyInput(
+                missing_original_export_entry_link_for_duty_drawback=True
+            )
+        ),
+        "fx_spot_arbitrage_or_eu14d_451": evaluate_cross_border_multilingual_return_duty_drawback_policy(
+            CrossBorderMultilingualReturnDutyDrawbackPolicyInput(
+                fx_spot_rate_refund_arbitrage_or_eu_14d_withdrawal_violation=True
+            )
+        ),
+        "regional_hub_drawback_409": evaluate_cross_border_multilingual_return_duty_drawback_policy(
+            CrossBorderMultilingualReturnDutyDrawbackPolicyInput(
+                regional_hub_consolidation_and_duty_drawback_manifest_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48766,6 +48868,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_wismo_in_transit_refund_claim_guard": ecommerce_wismo_in_transit_refund_claim_guard,
         "saas_ecommerce_lifecycle_marketing_uplift_guard": saas_ecommerce_lifecycle_marketing_uplift_guard,
         "b2b_clm_contract_redline_guard": b2b_clm_contract_redline_guard,
+        "cross_border_multilingual_return_duty_drawback_guard": cross_border_multilingual_return_duty_drawback_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -69241,6 +69344,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="clmred-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PLAYBOOK_FALLBACK_CLAUSE_SWAP_AND_T120D_RENEWAL_CAP_CONFIRM · Mandate: clm_contract_redline_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 268 Cross-Border Multilingual Support, Return Consolidation & Duty Drawback Escrow (#387) -->
+      <div class="finops-box" id="cross-border-multilingual-return-duty-drawback-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🌍 跨境电商多语种智能客服、海外本地集货退货与退运免税退税 (ZigZag / Rebound / Loop + Adyen) 沙盒</div>
+            <div class="finops-sub">Round 268 (#387 · SVG #711) · 单票逆向净回收精算阻断负毛利跨国空运面单与仅退款滥用 (HTTP 403) + 原出口报关单号(9610/9810)与美欧退运免税(19 USC 1313 / RGR)强绑定 (HTTP 422) + 原始扣款锁汇(capture_fx_rate)与欧盟14天法定退货窗 (HTTP 451) + 海外本地仓质检重售与集拼退税净省38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="xbret-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度单件跨国直邮空运退货倒挂、退货回国未关联原报关单被二次征收进口税及多币种现汇退款滑点损失池 ($)
+            <input type="number" id="xbret-gross-input" value="280000" min="10000" step="5000" oninput="recalcCrossBorderMultilingualReturnDutyDrawbackSandbox()" />
+          </label>
+          <label>单票逆向净回收值 (Net Recovery) 精算门禁与“仅退款不退货 (Keep-the-Item)”防薅锁
+            <select id="xbret-econ-select" onchange="recalcCrossBorderMultilingualReturnDutyDrawbackSandbox()">
+              <option value="pass">严禁为净回收值&lt;0的商品开跨国空运单；仅退款限&lt;$25且每账户12个月&lt;=1次 (安全)</option>
+              <option value="block_403">为 €30 卫衣自动生成 €27 柏林直寄深圳 DHL 空运退货单 或 向高危账号无限批仅退款 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>原出口报关单号 (Original Export Entry ID) 与美区 19 USC 1313(c) / 欧盟 RGR 退运免税清单门禁
+            <select id="xbret-customs-select" onchange="recalcCrossBorderMultilingualReturnDutyDrawbackSandbox()">
+              <option value="pass">退运包裹100%绑定原 9610/9810 出口报关单号、HS编码与 CBP 7501 税单实现免税复进口 (合规)</option>
+              <option value="block_422">跨国退货缺失原出口报关单号关联，被海关当成全新一般贸易进口二次征收 18% 关税与增值税 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>多币种退款原始交易锁汇 (capture_fx_rate) 与欧盟 14 天法定无理由退货权 (Directive 2011/83/EU) 门禁
+            <select id="xbret-fx-select" onchange="recalcCrossBorderMultilingualReturnDutyDrawbackSandbox()">
+              <option value="pass">严格按原支付流水 capture_fx_rate 原路退回原币种 + 確定性国别法规表保障欧盟 14天退货权 (安全)</option>
+              <option value="block_451">按退款当日现汇跨币种套利结算 或 德语/法语 AI 幻觉非法拒绝欧盟 14 天法定无理由退货 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>目的国本地退货中心 (ZigZag / Rebound) 分级质检本地重售 (74%) + 托盘级保税集拼退税协同
+            <select id="xbret-opt-select" onchange="recalcCrossBorderMultilingualReturnDutyDrawbackSandbox()">
+              <option value="enabled" selected>路由至美/欧本地仓 $6.80 本地退货质检并本地二次发货 + 高货值托盘集拼退税 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">所有海外退件一律单票发国际快递寄回原产国且不申报 Duty Drawback 退税 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度跨境逆向运费与二次税损池</div>
+            <div class="finops-kpi-val" id="xbret-gross-kpi">$280,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">本地集货重售与退税后净支出</div>
+            <div class="finops-kpi-val" id="xbret-net-kpi" style="color:#6ee7b7;">$173,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省逆向运费与二次关税</div>
+            <div class="finops-kpi-val" id="xbret-savings-kpi" style="color:#38bdf8;">$106,400</div>
+          </div>
+        </div>
+        <div id="xbret-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 REGIONAL_HUB_CONSOLIDATION_AND_DUTY_DRAWBACK_MANIFEST_CONFIRM · Mandate: cross_border_return_fx_optim_409
         </div>
       </div>
 
@@ -94322,6 +94482,79 @@ function recalcB2BCLMContractRedlineSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_PLAYBOOK_COMPLIANT_MSA_AND_RENEWAL_AUTHORIZED · Mandate: clm_contract_redline_200';
+}}
+
+function recalcCrossBorderMultilingualReturnDutyDrawbackSandbox() {{
+  const grossInput = document.getElementById('xbret-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '280000'));
+  const econGate = document.getElementById('xbret-econ-select').value;
+  const customsGate = document.getElementById('xbret-customs-select').value;
+  const fxGate = document.getElementById('xbret-fx-select').value;
+  const optMode = document.getElementById('xbret-opt-select').value;
+
+  const grossKpi = document.getElementById('xbret-gross-kpi');
+  const netKpi = document.getElementById('xbret-net-kpi');
+  const savingsKpi = document.getElementById('xbret-savings-kpi');
+  const statusKpi = document.getElementById('xbret-status-kpi');
+  const banner = document.getElementById('xbret-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fxGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FX_SPOT_REFUND_ARBITRAGE_OR_EU_14D_WITHDRAWAL_RIGHT_VIOLATION · Mandate: null';
+    return;
+  }}
+  if (econGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INDIVIDUAL_AIR_RETURN_EXCEEDING_NET_RESALE_VALUE_OR_KEEP_ABUSE · Mandate: null';
+    return;
+  }}
+  if (customsGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MISSING_ORIGINAL_EXPORT_CUSTOMS_ENTRY_LINK_FOR_DUTY_DRAWBACK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 REGIONAL_HUB_CONSOLIDATION_AND_DUTY_DRAWBACK_MANIFEST_CONFIRM · Mandate: cross_border_return_fx_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CROSS_BORDER_RETURN_AND_CAPTURE_FX_REFUND_AUTHORIZED · Mandate: cross_border_return_fx_200';
 }}
 
 function updateStage1756Sandbox() {{
