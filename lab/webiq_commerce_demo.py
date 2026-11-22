@@ -33841,6 +33841,82 @@ def evaluate_ota_hotel_direct_points_cash_upgrade_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceBoxlessReturnQRInstantExchangePolicyInput:
+    quarterly_return_freight_ftid_fraud_and_refund_churn_pool_usd: float = 240000.0
+    ftid_address_tamper_or_carrier_scale_weight_mismatch_over_12pct: bool = False
+    uncollateralized_instant_exchange_or_bonus_credit_cashout: bool = False
+    instant_refund_on_uninspected_sealed_box_without_bar_upc_scan: bool = False
+    boxless_return_bar_tote_consolidation_and_shop_now_bonus_ready: bool = False
+
+
+def evaluate_ecommerce_boxless_return_qr_instant_exchange_policy(
+    policy_input: EcommerceBoxlessReturnQRInstantExchangePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_return_freight_ftid_fraud_and_refund_churn_pool_usd
+        ),
+    )
+    if policy_input.instant_refund_on_uninspected_sealed_box_without_bar_upc_scan:
+        return {
+            "status_code": 451,
+            "decision": "UNVERIFIED_SEALED_BOX_OR_GARMENT_UPC_TAG_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ftid_address_tamper_or_carrier_scale_weight_mismatch_over_12pct:
+        return {
+            "status_code": 403,
+            "decision": "FTID_ADDRESS_TAMPER_OR_CARRIER_SCALE_WEIGHT_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncollateralized_instant_exchange_or_bonus_credit_cashout:
+        return {
+            "status_code": 422,
+            "decision": "UNCOLLATERALIZED_INSTANT_EXCHANGE_OR_BONUS_CASHOUT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.boxless_return_bar_tote_consolidation_and_shop_now_bonus_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "BOXLESS_TOTE_CONSOLIDATION_AND_SHOP_NOW_EXCHANGE_CONFIRM",
+            "mandate_token": "boxless_return_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_RETURN_BAR_UPC_AND_SCALE_WEIGHT_AUTHORIZED",
+        "mandate_token": "boxless_return_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -46182,6 +46258,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_boxless_return_qr_instant_exchange_guard = {
+        "authorized_200": evaluate_ecommerce_boxless_return_qr_instant_exchange_policy(
+            EcommerceBoxlessReturnQRInstantExchangePolicyInput()
+        ),
+        "ftid_or_weight_403": evaluate_ecommerce_boxless_return_qr_instant_exchange_policy(
+            EcommerceBoxlessReturnQRInstantExchangePolicyInput(
+                ftid_address_tamper_or_carrier_scale_weight_mismatch_over_12pct=True
+            )
+        ),
+        "unbacked_or_bonus_422": evaluate_ecommerce_boxless_return_qr_instant_exchange_policy(
+            EcommerceBoxlessReturnQRInstantExchangePolicyInput(
+                uncollateralized_instant_exchange_or_bonus_credit_cashout=True
+            )
+        ),
+        "sealed_box_no_scan_451": evaluate_ecommerce_boxless_return_qr_instant_exchange_policy(
+            EcommerceBoxlessReturnQRInstantExchangePolicyInput(
+                instant_refund_on_uninspected_sealed_box_without_bar_upc_scan=True
+            )
+        ),
+        "tote_shop_now_409": evaluate_ecommerce_boxless_return_qr_instant_exchange_policy(
+            EcommerceBoxlessReturnQRInstantExchangePolicyInput(
+                boxless_return_bar_tote_consolidation_and_shop_now_bonus_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -46557,6 +46659,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_baby_maternity_cpsc_diaper_sizeup_guard": ecommerce_baby_maternity_cpsc_diaper_sizeup_guard,
         "b2b_ap_virtual_card_stp_surcharge_rebate_guard": b2b_ap_virtual_card_stp_surcharge_rebate_guard,
         "ota_hotel_direct_points_cash_upgrade_guard": ota_hotel_direct_points_cash_upgrade_guard,
+        "ecommerce_boxless_return_qr_instant_exchange_guard": ecommerce_boxless_return_qr_instant_exchange_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -65835,6 +65938,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="hotelloy-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DYNAMIC_AWARD_REPRICING_AND_T24H_SUITE_AUCTION_CONFIRM · Mandate: hotel_loyalty_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 247 E-Commerce Boxless QR Return Bar, Anti-FTID & Instant-Exchange Escrow (#366) -->
+      <div class="finops-box" id="ecommerce-boxless-return-qr-instant-exchange-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📦 零售电商免包装退货吧台、防 FTID 空包与即时换购 (Happy Returns / Loop Returns / Narvar / UPS Store) 沙盒</div>
+            <div class="finops-sub">Round 247 (#366) · 免打单柜台 QR 码与分拣中心电子秤重量 (±12% BOM) 防 FTID 门禁 (HTTP 403) + 先行换货 14天 SPT 预授权质押与 +$15 奖励金剥离锁 (HTTP 422) + 退货吧台店员当面扫吊牌 UPC 验真 (HTTP 451) + 35件周转箱集拼回仓(-42%运费)与全店换购留存 44% 净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="boxlessret-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度黑产 PS 篡改 PDF 面单寄 15g 空纸巾骗走 $850 秒退 (FTID)、单件独立纸箱高昂退货运费与退款流失毛利池 ($)
+            <input type="number" id="boxlessret-gross-input" value="240000" min="10000" step="5000" oninput="recalcEcommerceBoxlessReturnQRInstantExchangeSandbox()" />
+          </label>
+          <label>废除可编辑 PDF 面单 (仅发柜台 Broker QR) 与快递分拣中心电子秤实测克重 (±12% BOM) / 月台 ZIP+4 门禁
+            <select id="boxlessret-ftid-select" onchange="recalcEcommerceBoxlessReturnQRInstantExchangeSandbox()">
+              <option value="pass">下发不可篡改的柜台 QR 码 + 分拣线称重 840g 与出库 BOM 克重一致且妥投 9位邮编匹配总仓 (零 FTID)</option>
+              <option value="block_403">黑产用 PS 把 PDF 面单收件地址改成隔壁麦当劳寄 15g 餐巾纸骗系统触发 $850 在途秒退 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>先行换货 (Instant Exchange) 14天信用卡预授权质押 (SPT Hold) 与 +$15 换货奖励金双账本剥离防套现门禁
+            <select id="boxlessret-hold-select" onchange="recalcEcommerceBoxlessReturnQRInstantExchangeSandbox()">
+              <option value="pass">挂载 $120 信用卡 14d 预授权担保后立即先行发新货 + 二次退货自动剥离 $15 非现金奖励金仅退本金 (合规)</option>
+              <option value="block_422">无有效卡预授权担保就先行发出换货商品致钱货两空 或 羊毛党领 +$15 换购补贴买新衣后二次退货套现 $15 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>免包装退货吧台 (Boxless Return Bar) 店员当面检查实物并扫描衣服水洗标/吊牌 UPC 条码门禁
+            <select id="boxlessret-bar-select" onchange="recalcEcommerceBoxlessReturnQRInstantExchangeSandbox()">
+              <option value="pass">顾客拎裸衣去 Happy Returns / 驿站由店员当面扫对吊牌 UPC 装入防拆袋后 3 秒解冻担保/放行秒退 (安全)</option>
+              <option value="block_451">顾客自己拿胶带封死盲盒纸箱里面塞件地摊破 T 恤扔进快递柜企图触发交件即秒退 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>驿站 35 件环保周转箱干线合箱集拼 (-42% 逆向运费) + “+$15 Shop-Now 全店跨品类换购 (留存 44% 营收)”
+            <select id="boxlessret-opt-select" onchange="recalcEcommerceBoxlessReturnQRInstantExchangeSandbox()">
+              <option value="enabled" selected>35 件裸衣合装 1 个周转箱集拼回仓(-42% 运费) + +$15 引导全店换购留住 44% 退货额 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">无周转箱集拼与全店换购奖励金的单件散寄退货 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度退货运费与FTID欺诈池</div>
+            <div class="finops-kpi-val" id="boxlessret-gross-kpi">$240,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">吧台扫码与合箱集拼后净损耗</div>
+            <div class="finops-kpi-val" id="boxlessret-net-kpi" style="color:#6ee7b7;">$148,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省空包骗退与逆向运费</div>
+            <div class="finops-kpi-val" id="boxlessret-savings-kpi" style="color:#38bdf8;">$91,200</div>
+          </div>
+        </div>
+        <div id="boxlessret-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 BOXLESS_TOTE_CONSOLIDATION_AND_SHOP_NOW_EXCHANGE_CONFIRM · Mandate: boxless_return_escrow_optim_409
         </div>
       </div>
 
@@ -89383,6 +89543,79 @@ function recalcOTAHotelDirectPointsCashUpgradeSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CPP_HURDLE_AND_PMS_SUITE_LOCK_AUTHORIZED · Mandate: hotel_loyalty_escrow_200';
+}}
+
+function recalcEcommerceBoxlessReturnQRInstantExchangeSandbox() {{
+  const grossInput = document.getElementById('boxlessret-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '240000'));
+  const ftidGate = document.getElementById('boxlessret-ftid-select').value;
+  const holdGate = document.getElementById('boxlessret-hold-select').value;
+  const barGate = document.getElementById('boxlessret-bar-select').value;
+  const optMode = document.getElementById('boxlessret-opt-select').value;
+
+  const grossKpi = document.getElementById('boxlessret-gross-kpi');
+  const netKpi = document.getElementById('boxlessret-net-kpi');
+  const savingsKpi = document.getElementById('boxlessret-savings-kpi');
+  const statusKpi = document.getElementById('boxlessret-status-kpi');
+  const banner = document.getElementById('boxlessret-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (barGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNVERIFIED_SEALED_BOX_OR_GARMENT_UPC_TAG_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (ftidGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 FTID_ADDRESS_TAMPER_OR_CARRIER_SCALE_WEIGHT_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (holdGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCOLLATERALIZED_INSTANT_EXCHANGE_OR_BONUS_CASHOUT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 BOXLESS_TOTE_CONSOLIDATION_AND_SHOP_NOW_EXCHANGE_CONFIRM · Mandate: boxless_return_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_RETURN_BAR_UPC_AND_SCALE_WEIGHT_AUTHORIZED · Mandate: boxless_return_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

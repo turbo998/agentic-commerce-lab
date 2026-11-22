@@ -25607,6 +25607,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-hotel-direct-points-cash-upgrade-sandbox", html_zh)
 
+    def test_ecommerce_boxless_return_qr_instant_exchange_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceBoxlessReturnQRInstantExchangePolicyInput,
+            evaluate_ecommerce_boxless_return_qr_instant_exchange_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_boxless_return_qr_instant_exchange_policy(
+            EcommerceBoxlessReturnQRInstantExchangePolicyInput(
+                quarterly_return_freight_ftid_fraud_and_refund_churn_pool_usd=240000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_RETURN_BAR_UPC_AND_SCALE_WEIGHT_AUTHORIZED",
+        )
+
+        ftid = evaluate_ecommerce_boxless_return_qr_instant_exchange_policy(
+            EcommerceBoxlessReturnQRInstantExchangePolicyInput(
+                ftid_address_tamper_or_carrier_scale_weight_mismatch_over_12pct=True
+            )
+        )
+        self.assertEqual(ftid["status_code"], 403)
+        self.assertEqual(
+            ftid["decision"],
+            "FTID_ADDRESS_TAMPER_OR_CARRIER_SCALE_WEIGHT_MISMATCH",
+        )
+
+        hold = evaluate_ecommerce_boxless_return_qr_instant_exchange_policy(
+            EcommerceBoxlessReturnQRInstantExchangePolicyInput(
+                uncollateralized_instant_exchange_or_bonus_credit_cashout=True
+            )
+        )
+        self.assertEqual(hold["status_code"], 422)
+        self.assertEqual(
+            hold["decision"],
+            "UNCOLLATERALIZED_INSTANT_EXCHANGE_OR_BONUS_CASHOUT",
+        )
+
+        bar = evaluate_ecommerce_boxless_return_qr_instant_exchange_policy(
+            EcommerceBoxlessReturnQRInstantExchangePolicyInput(
+                instant_refund_on_uninspected_sealed_box_without_bar_upc_scan=True
+            )
+        )
+        self.assertEqual(bar["status_code"], 451)
+        self.assertEqual(
+            bar["decision"],
+            "UNVERIFIED_SEALED_BOX_OR_GARMENT_UPC_TAG_MISMATCH",
+        )
+
+        optim = evaluate_ecommerce_boxless_return_qr_instant_exchange_policy(
+            EcommerceBoxlessReturnQRInstantExchangePolicyInput(
+                quarterly_return_freight_ftid_fraud_and_refund_churn_pool_usd=240000.0,
+                boxless_return_bar_tote_consolidation_and_shop_now_bonus_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 91200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 148800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_boxless_return_qr_instant_exchange_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-boxless-return-qr-instant-exchange-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

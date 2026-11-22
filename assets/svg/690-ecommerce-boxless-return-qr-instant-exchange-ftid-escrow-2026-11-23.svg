@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg690" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg690)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 247 · E-Commerce Boxless `QR` Return Bar, Anti-`FTID` &amp; Instant-Exchange Escrow</text>
+  <text x="48" y="74" class="sub">Happy Returns / Loop Returns / Narvar / UPS Store · In-Person Barcode Check · `FTID` Scale-Weight Gate · Bonus Credit Lock (-38%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #690 · FAQ #366</text>
+
+  <!-- Lane 1: FTID (Fake Tracking ID) Label Tampering & Empty-Envelope Weight Mismatch -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Anti-`FTID` &amp; Scale-Weight Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops `FTID` Label Edits &amp; `15g` Empty Envelopes:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Verify `Carrier_Induct_Weight == BOM_Weight ±12%`</text>
+  <text x="54" y="200" class="mono">&amp; `Dest_ZIP9 == Official_3PL_Dock_Geofence`!</text>
+  <text x="44" y="223" class="body-txt">• Bans Editable PDF Labels on High-Risk SKUs:</text>
+  <text x="54" y="243" class="mono">Issue Tamper-Proof `Counter_Broker_QR_Code_Only`</text>
+  <text x="44" y="266" class="body-txt">• Eliminates fraudsters editing a return label</text>
+  <text x="54" y="286" class="body-txt">to mail a paper clip to a nearby address so</text>
+  <text x="54" y="304" class="body-txt">tracking shows "Delivered" on an `$850` jacket</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 FTID_ADDRESS_TAMPER_OR_CARRIER_SCALE_WEIGHT_MISMATCH</text>
+
+  <!-- Lane 2: Uncollateralized Instant-Exchange Credit Abuse & Bonus-Credit Cash-Out Gaming -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Collateral &amp; Bonus-Credit Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Blocks Unbacked Instant-Exchange Shipments:</text>
+  <text x="442" y="182" class="mono">Require `14-Day Card Auth_Hold (SPT)` Before</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Shipping Replacement Item Ahead of Return!</text>
+  <text x="432" y="223" class="body-txt">• Stops `+$15 Bonus Credit` Cash-Out Arbitrage:</text>
+  <text x="442" y="243" class="mono">Strip `Promo_Bonus_Credit` on 2nd-Hop Cash Refund</text>
+  <text x="432" y="266" class="body-txt">• Prevents a buyer claiming `$100 + $15 bonus`</text>
+  <text x="442" y="286" class="body-txt">exchange credit, ordering a `$115` item, and</text>
+  <text x="442" y="304" class="body-txt">returning the second item for `$115` cash</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNCOLLATERALIZED_INSTANT_EXCHANGE_OR_BONUS_CASHOUT</text>
+
+  <!-- Lane 3: Blind Sealed-Box Drop-Off (Brick/Old Rags in Box) vs Return-Bar Associate Item Scan -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Return-Bar Item-Scan Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Blind Refunds on Sealed Cardboard Boxes:</text>
+  <text x="830" y="182" class="mono">Hold Instant Refund Until `Return_Bar_Associate`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Scans `Garment_UPC_Tag / Serial` in Person!</text>
+  <text x="820" y="223" class="body-txt">• Blocks Fast-Fashion Swap in Luxury Packaging:</text>
+  <text x="830" y="243" class="body-txt">Prevents issuing a `$400` instant refund at a</text>
+  <text x="830" y="261" class="body-txt">drop-off kiosk when the customer stuffed a `$5`</text>
+  <text x="830" y="279" class="body-txt">thrift-store T-shirt inside a taped cardboard box</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNVERIFIED_SEALED_BOX_OR_GARMENT_UPC_TAG_MISMATCH</text>
+
+  <!-- Bottom Boxless Return Bar Consolidated Tote, Bonus Shop-Now Credit & Keep-Item Threshold -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Boxless Return-Bar Tote Consolidation + `Shop Now` Bonus Credit + Dynamic Keep-It (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Boxless Return-Bar `QR`</text>
+  <text x="62" y="462" class="body-txt">Staff scans loose item</text>
+  <text x="62" y="480" class="body-txt">`UPC` at `UPS Store / Staples`</text>
+  <text x="62" y="498" class="body-txt">&amp; bags it on the spot</text>
+  <text x="62" y="516" class="mono">100% Verified Instant Refund!</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② 35-Item Consolidated Tote</text>
+  <text x="337" y="462" class="body-txt">Packs 35 individual returns</text>
+  <text x="337" y="480" class="body-txt">into 1 reusable tote shipped</text>
+  <text x="337" y="498" class="body-txt">bulk to the 3PL warehouse</text>
+  <text x="337" y="516" class="mono">-42% Reverse Parcel Freight!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ `+$15` Shop-Now Exchange</text>
+  <text x="622" y="462" class="body-txt">Offers `+$15` bonus credit</text>
+  <text x="622" y="480" class="body-txt">to shop the full catalog</text>
+  <text x="622" y="498" class="body-txt">instead of taking a refund</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">Retains 44% of Revenue!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Net-Recovery Keep-It Rule</text>
+  <text x="907" y="462" class="body-txt">Grants returnless refund</text>
+  <text x="907" y="480" class="body-txt">only when `Resale_Margin &lt;`</text>
+  <text x="907" y="498" class="body-txt">`Freight + Restock` &amp; `LTV`</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-38% Return Fraud &amp; Freight</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-38.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Return Freight, Fraud &amp; Refund Loss Saved</text>
+  <text x="46" y="642" class="mono">$91,200 Saved / $240k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">0% FTID Loss</text>
+  <text x="336" y="626" class="kpi-lbl">QR Broker Code + ±12% Scale Gate</text>
+  <text x="336" y="642" class="mono">Zero Tampered PDF Label Scams</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">-42% Freight</text>
+  <text x="626" y="626" class="kpi-lbl">Boxless Return-Bar Tote Consolidation</text>
+  <text x="626" y="642" class="mono">In-Person Garment UPC Verified</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">44% Retained</text>
+  <text x="916" y="626" class="kpi-lbl">Shop-Now Bonus Credit Conversion</text>
+  <text x="916" y="642" class="mono">100% Bonus Cash-Out Shield</text>
+</svg>
