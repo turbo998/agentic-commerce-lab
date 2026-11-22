@@ -12623,6 +12623,1982 @@
       "independently_reproduced": false
     }
   },
+  "ecommerce_footwear_3d_foot_scan_bracketing_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_3D_FOOT_SCAN_AND_WIDTH_LAST_AUTHORIZED",
+      "mandate_token": "footwear_3d_scan_escrow_200",
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "bracketing_or_last_403": {
+      "status_code": 403,
+      "decision": "MULTI_SIZE_BRACKETING_OR_UNMAPPED_BRAND_LAST",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "width_or_gait_422": {
+      "status_code": 422,
+      "decision": "WIDTH_LAST_CONFLICT_OR_PRONATION_SHOE_MISMATCH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "worn_outsole_or_seal_451": {
+      "status_code": 451,
+      "decision": "OUTSOLE_TREAD_ABRASION_OR_BROKEN_SOLE_SEAL_HOLD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "single_pair_insole_409": {
+      "status_code": 409,
+      "decision": "SINGLE_PAIR_3D_FIT_AND_ARCH_INSOLE_BUNDLE_CONFIRM",
+      "mandate_token": "footwear_3d_scan_escrow_optim_409",
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 151200.0,
+      "quarterly_savings_usd": 88800.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "b2b_shadow_it_employee_card_saas_sprawl_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VETTED_PILOT_VCN_AND_ZDR_DPA_SAAS_AUTHORIZED",
+      "mandate_token": "b2b_shadow_saas_escrow_200",
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "duplicate_ela_403": {
+      "status_code": 403,
+      "decision": "DUPLICATE_SHADOW_SAAS_SWIPE_OVER_EXISTING_ELA",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "orphan_or_annual_422": {
+      "status_code": 422,
+      "decision": "TERMINATED_EMPLOYEE_ORPHAN_CARD_OR_ANNUAL_LOCK",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "no_zdr_or_sso_451": {
+      "status_code": 451,
+      "decision": "UNVETTED_SHADOW_AI_NO_ZDR_DPA_OR_MISSING_SSO",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "ela_merge_scim_409": {
+      "status_code": 409,
+      "decision": "FIVE_USER_ELA_CONSOLIDATION_AND_SCIM_REHARVEST_CONFIRM",
+      "mandate_token": "b2b_shadow_saas_escrow_optim_409",
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 173600.0,
+      "quarterly_savings_usd": 106400.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "ota_high_speed_rail_air_rail_interline_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "OFFICIAL_WAITLIST_AND_AIR_RAIL_INTERLINE_AUTHORIZED",
+      "mandate_token": "ota_rail_interline_escrow_200",
+      "gross_quarterly_pool_usd": 190000.0,
+      "net_Execution_cost_usd": 190000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "booster_or_cutoff_403": {
+      "status_code": 403,
+      "decision": "FAKE_WAITLIST_BOOSTER_FEE_OR_BORDER_CUTOFF_RISK",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 190000.0,
+      "net_Execution_cost_usd": 190000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "unprotected_air_rail_422": {
+      "status_code": 422,
+      "decision": "UNPROTECTED_AIR_RAIL_SPLIT_OR_SCATTERED_COACH_SEAT",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 190000.0,
+      "net_Execution_cost_usd": 190000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "no_railcard_or_delay_451": {
+      "status_code": 451,
+      "decision": "UNVERIFIED_DISCOUNT_RAILCARD_OR_UNCLAIMED_DELAY_COMP",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 190000.0,
+      "net_Execution_cost_usd": 190000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "splitsave_modal_409": {
+      "status_code": 409,
+      "decision": "SAME_SEAT_SPLITSAVE_AND_MODAL_SHIFT_CONFIRM",
+      "mandate_token": "ota_rail_interline_escrow_optim_409",
+      "gross_quarterly_pool_usd": 190000.0,
+      "net_Execution_cost_usd": 121600.0,
+      "quarterly_savings_usd": 68400.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "agentic_payment_cit_mit_network_token_retry_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "LINKED_CIT_TRACE_ID_AND_DPAN_TAVV_MIT_AUTHORIZED",
+      "mandate_token": "cit_mit_token_escrow_200",
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "missing_cit_trace_403": {
+      "status_code": 403,
+      "decision": "MISSING_INITIAL_CIT_TRACE_ID_OR_MIT_FLAG_MISMATCH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "static_fpan_or_cap_422": {
+      "status_code": 422,
+      "decision": "STATIC_FPAN_WITHOUT_DPAN_CRYPTOGRAM_OR_CAP_BREACH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "cat1_mac03_retry_451": {
+      "status_code": 451,
+      "decision": "HARD_DECLINE_CAT1_MAC03_OR_15_RETRY_LIMIT_BREACH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "vts_payday_retry_409": {
+      "status_code": 409,
+      "decision": "NETWORK_TOKEN_LIFECYCLE_AND_PAYDAY_SMART_RETRY_CONFIRM",
+      "mandate_token": "cit_mit_token_escrow_optim_409",
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 155000.0,
+      "quarterly_savings_usd": 95000.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "commercial_search_grounding_price_verify_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_LIVE_BROWSE_AND_GTIN_JSONLD_QUOTE_AUTHORIZED",
+      "mandate_token": "search_grounding_escrow_200",
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 220000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "stale_snippet_403": {
+      "status_code": 403,
+      "decision": "STALE_SEARCH_SNIPPET_OR_LIVE_CRAWL_NOT_VERIFIED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 220000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "gtin_accessory_trap_422": {
+      "status_code": 422,
+      "decision": "GTIN_CONDITION_MISMATCH_OR_ACCESSORY_PRICE_TRAP",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 220000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "dom_injection_recall_451": {
+      "status_code": 451,
+      "decision": "HIDDEN_DOM_PROMPT_INJECTION_OR_RECALL_SAFETY_HOLD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 220000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "passage_top3_browse_409": {
+      "status_code": 409,
+      "decision": "TWO_STAGE_PASSAGE_RECALL_AND_TOP3_LIVE_BROWSE_CONFIRM",
+      "mandate_token": "search_grounding_escrow_optim_409",
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 129800.0,
+      "quarterly_savings_usd": 90200.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "b2b_distributor_rebate_ship_debit_price_prot_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_SELL_THROUGH_AND_LOT_WAC_REBATE_AUTHORIZED",
+      "mandate_token": "b2b_rebate_escrow_200",
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "stuffing_or_rma_403": {
+      "status_code": 403,
+      "decision": "CHANNEL_STUFFING_RETURN_GAMING_OR_UNPAID_INVOICE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "double_dip_or_wac_422": {
+      "status_code": 422,
+      "decision": "SHIP_AND_DEBIT_VOLUME_REBATE_DOUBLE_DIP_OR_WAC_INFLATION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "phantom_price_prot_451": {
+      "status_code": 451,
+      "decision": "PHANTOM_PRICE_PROTECTION_STOCK_OR_AGED_LOT_CLAIM",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "stepped_ar_credit_409": {
+      "status_code": 409,
+      "decision": "STEPPED_TIER_EDI849_AND_AR_CREDIT_MEMO_OFFSET_CONFIRM",
+      "mandate_token": "b2b_rebate_escrow_optim_409",
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 198400.0,
+      "quarterly_savings_usd": 111600.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "ecommerce_alcohol_age_verify_dram_shop_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_PDF417_AND_SOVOS_THREE_TIER_ALCOHOL_AUTHORIZED",
+      "mandate_token": "alcohol_escrow_200",
+      "gross_quarterly_pool_usd": 200000.0,
+      "net_Execution_cost_usd": 200000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "contactless_or_no_pdf417_403": {
+      "status_code": 403,
+      "decision": "CONTACTLESS_DROP_OR_UNSCANNED_21PLUS_ID_AT_DOOR",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 200000.0,
+      "net_Execution_cost_usd": 200000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "three_tier_or_dry_zip_422": {
+      "status_code": 422,
+      "decision": "THREE_TIER_STATE_BAN_OR_ANNUAL_CASE_LIMIT_EXCEEDED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 200000.0,
+      "net_Execution_cost_usd": 200000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "heatwave_or_no_asr_451": {
+      "status_code": 451,
+      "decision": "HEATWAVE_COOKED_WINE_RISK_OR_MISSING_CARRIER_ASR",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 200000.0,
+      "net_Execution_cost_usd": 200000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "local_route_ac_hub_409": {
+      "status_code": 409,
+      "decision": "THREE_TIER_LOCAL_ROUTE_AND_AC_HOLD_LOCATION_CONFIRM",
+      "mandate_token": "alcohol_escrow_optim_409",
+      "gross_quarterly_pool_usd": 200000.0,
+      "net_Execution_cost_usd": 126000.0,
+      "quarterly_savings_usd": 74000.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "enterprise_agent_platform_orchestration_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_OBO_RLS_AND_DURABLE_SAGA_PLATFORM_AUTHORIZED",
+      "mandate_token": "agent_platform_escrow_200",
+      "gross_quarterly_pool_usd": 300000.0,
+      "net_Execution_cost_usd": 300000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "god_mode_or_dlp_403": {
+      "status_code": 403,
+      "decision": "GOD_MODE_SERVICE_PRINCIPAL_OR_DLP_EGRESS_BREACH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 300000.0,
+      "net_Execution_cost_usd": 300000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "stateless_partial_write_422": {
+      "status_code": 422,
+      "decision": "STATELESS_PARTIAL_ERP_WRITE_WITHOUT_SAGA_ROLLBACK",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 300000.0,
+      "net_Execution_cost_usd": 300000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "public_credit_burn_451": {
+      "status_code": 451,
+      "decision": "PUBLIC_TRAFFIC_CREDIT_BURN_OR_UNAPPROVED_ERP_MUTATION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 300000.0,
+      "net_Execution_cost_usd": 300000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "composable_hybrid_409": {
+      "status_code": 409,
+      "decision": "COMPOSABLE_FOUNDRY_LANGGRAPH_COPILOT_STUDIO_HYBRID_CONFIRM",
+      "mandate_token": "agent_platform_escrow_optim_409",
+      "gross_quarterly_pool_usd": 300000.0,
+      "net_Execution_cost_usd": 183000.0,
+      "quarterly_savings_usd": 117000.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "b2b_saas_cpq_multi_year_ramp_deal_desk_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_RAMP_SCHEDULE_AND_ASC606_SSP_CPQ_AUTHORIZED",
+      "mandate_token": "b2b_saas_cpq_escrow_200",
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "rogue_opt_out_403": {
+      "status_code": 403,
+      "decision": "ROGUE_OPT_OUT_SIDE_LETTER_OR_PERPETUAL_PROMO_LOCK",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "ramp_or_ssp_422": {
+      "status_code": 422,
+      "decision": "RAMP_BILLING_SCHEDULE_DESYNC_OR_SSP_CORRIDOR_BREACH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "punitive_3x_overage_451": {
+      "status_code": 451,
+      "decision": "PUNITIVE_3X_OVERAGE_BILL_SHOCK_WITHOUT_TIER_TRUEUP",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "burst_trueup_deal_409": {
+      "status_code": 409,
+      "decision": "DEAL_ROOM_AND_RETROACTIVE_BURST_TO_ACV_TRUEUP_CONFIRM",
+      "mandate_token": "b2b_saas_cpq_escrow_optim_409",
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 163800.0,
+      "quarterly_savings_usd": 96200.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "cross_border_b2b_vat_vies_peppol_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_VIES_CONSULTATION_AND_PEPPOL_XML_AUTHORIZED",
+      "mandate_token": "b2b_vat_peppol_escrow_200",
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "spoof_vat_or_no_ref_403": {
+      "status_code": 403,
+      "decision": "INVALID_VIES_VAT_OR_SPOOFED_ENTITY_NAME_MISMATCH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "domestic_zero_vat_422": {
+      "status_code": 422,
+      "decision": "DOMESTIC_SHIP_FROM_TO_SAME_COUNTRY_REVERSE_CHARGE_BAN",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "plain_pdf_ctc_451": {
+      "status_code": 451,
+      "decision": "UNCLEARED_CTC_EINVOICE_OR_PLAIN_PDF_REJECTION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "vies_hold_peppol_409": {
+      "status_code": 409,
+      "decision": "VIES_AUTH_HOLD_PEPPOL_XML_AND_AUTO_ESL_CONFIRM",
+      "mandate_token": "b2b_vat_peppol_escrow_optim_409",
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 147200.0,
+      "quarterly_savings_usd": 82800.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "ecommerce_baby_maternity_cpsc_diaper_sizeup_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_FRESH_CARSEAT_DOM_AND_CPSIA_BABY_AUTHORIZED",
+      "mandate_token": "baby_maternity_escrow_200",
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "restock_or_dom_403": {
+      "status_code": 403,
+      "decision": "RETURNED_CARSEAT_FORMULA_RESTOCK_OR_DOM_AGED_BAN",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "outgrown_or_adapter_422": {
+      "status_code": 422,
+      "decision": "OUTGROWN_DIAPER_STAGE_OR_MISSING_STROLLER_ADAPTER",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "cpsc_recall_451": {
+      "status_code": 451,
+      "decision": "CPSC_FDA_INFANT_RECALL_OR_MISSING_CPSIA_REGISTRATION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "sizeup_aca_pump_409": {
+      "status_code": 409,
+      "decision": "PROACTIVE_SIZEUP_FREE_SWAP_AND_ACA_DME_PUMP_CONFIRM",
+      "mandate_token": "baby_maternity_escrow_optim_409",
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 144900.0,
+      "quarterly_savings_usd": 85100.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "b2b_ap_virtual_card_stp_surcharge_rebate_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_ZERO_SURCHARGE_AND_STP_LEVEL3_VCN_AUTHORIZED",
+      "mandate_token": "b2b_ap_vcn_stp_escrow_200",
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "negative_surcharge_403": {
+      "status_code": 403,
+      "decision": "NEGATIVE_ARBITRAGE_VENDOR_CARD_SURCHARGE_EXCEEDS_REBATE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "email_vcn_or_no_l3_422": {
+      "status_code": 422,
+      "decision": "PLAINTEXT_EMAIL_VCN_OR_MISSING_LEVEL3_LARGE_TICKET_DATA",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "stale_14d_vcn_451": {
+      "status_code": 451,
+      "decision": "UNCLAIMED_14D_STALE_VCN_FLOAT_OR_AMOUNT_MISMATCH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "stp_three_rail_409": {
+      "status_code": 409,
+      "decision": "STP_ACQUIRER_PUSH_AND_THREE_RAIL_YIELD_OPTIMIZER_CONFIRM",
+      "mandate_token": "b2b_ap_vcn_stp_escrow_optim_409",
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 167400.0,
+      "quarterly_savings_usd": 102600.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "ota_hotel_direct_points_cash_upgrade_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_CPP_HURDLE_AND_PMS_SUITE_LOCK_AUTHORIZED",
+      "mandate_token": "hotel_loyalty_escrow_200",
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 220000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "low_cpp_or_split_403": {
+      "status_code": 403,
+      "decision": "SUB_FLOOR_CPP_POINT_BURN_OR_SPLIT_5TH_NIGHT_LOSS",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 220000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "unassigned_pms_or_fee_422": {
+      "status_code": 422,
+      "decision": "UNASSIGNED_PMS_UPGRADE_CAPTURE_OR_AWARD_RESORT_FEE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 220000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "broker_ato_or_fnc_451": {
+      "status_code": 451,
+      "decision": "BROKER_SECOND_GUEST_ATO_OR_CANCELED_FNC_FORFEITURE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 220000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "reprice_t24h_suite_409": {
+      "status_code": 409,
+      "decision": "DYNAMIC_AWARD_REPRICING_AND_T24H_SUITE_AUCTION_CONFIRM",
+      "mandate_token": "hotel_loyalty_escrow_optim_409",
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 140800.0,
+      "quarterly_savings_usd": 79200.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "ecommerce_boxless_return_qr_instant_exchange_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_RETURN_BAR_UPC_AND_SCALE_WEIGHT_AUTHORIZED",
+      "mandate_token": "boxless_return_escrow_200",
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "ftid_or_weight_403": {
+      "status_code": 403,
+      "decision": "FTID_ADDRESS_TAMPER_OR_CARRIER_SCALE_WEIGHT_MISMATCH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "unbacked_or_bonus_422": {
+      "status_code": 422,
+      "decision": "UNCOLLATERALIZED_INSTANT_EXCHANGE_OR_BONUS_CASHOUT",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "sealed_box_no_scan_451": {
+      "status_code": 451,
+      "decision": "UNVERIFIED_SEALED_BOX_OR_GARMENT_UPC_TAG_MISMATCH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "tote_shop_now_409": {
+      "status_code": 409,
+      "decision": "BOXLESS_TOTE_CONSOLIDATION_AND_SHOP_NOW_EXCHANGE_CONFIRM",
+      "mandate_token": "boxless_return_escrow_optim_409",
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 148800.0,
+      "quarterly_savings_usd": 91200.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "b2b_indirect_procurement_unspsc_punchout_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_CONTRACT_CATALOG_AND_BASE_UOM_AUTHORIZED",
+      "mandate_token": "b2b_indirect_escrow_200",
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "free_text_or_unspsc_403": {
+      "status_code": 403,
+      "decision": "FREE_TEXT_BYPASS_OF_CONTRACT_CATALOG_OR_BAD_UNSPSC",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "uom_24x_or_closet_422": {
+      "status_code": 422,
+      "decision": "UOM_CASE_EACH_MULTIPLIER_ERROR_OR_IDLE_STOCKROOM",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "rogue_3p_or_gift_451": {
+      "status_code": 451,
+      "decision": "UNAUTHORIZED_3P_MARKETPLACE_SELLER_OR_RESTRICTED_SKU",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "weekly_merge_generic_409": {
+      "status_code": 409,
+      "decision": "WEEKLY_BUILDING_MERGE_AND_GENERIC_BRAND_SWAP_CONFIRM",
+      "mandate_token": "b2b_indirect_escrow_optim_409",
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 153600.0,
+      "quarterly_savings_usd": 86400.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "saas_ai_prepaid_credit_wallet_fefo_topup_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_FEFO_WATERFALL_AND_PREFLIGHT_HOLD_AUTHORIZED",
+      "mandate_token": "prepaid_wallet_escrow_200",
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "topup_drain_403": {
+      "status_code": 403,
+      "decision": "RUNAWAY_AUTO_TOPUP_VELOCITY_OR_MONTHLY_CAP_BREACH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "non_fefo_or_overdraft_422": {
+      "status_code": 422,
+      "decision": "NON_FEFO_BUCKET_DRAWDOWN_OR_CONCURRENT_WALLET_OVERDRAFT",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "premature_rev_451": {
+      "status_code": 451,
+      "decision": "PREMATURE_PREPAID_REVENUE_OR_PROMO_GRANT_GL_MIX",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "rollover_micro_usd_409": {
+      "status_code": 409,
+      "decision": "RENEWAL_ROLLOVER_AND_MICRO_USD_PREFLIGHT_LEDGER_CONFIRM",
+      "mandate_token": "prepaid_wallet_escrow_optim_409",
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 155000.0,
+      "quarterly_savings_usd": 95000.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "omnichannel_retail_markdown_broken_size_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_CLUSTER_GLIDEPATH_AND_OMNIBUS_ANCHOR_AUTHORIZED",
+      "mandate_token": "omnichannel_markdown_escrow_200",
+      "gross_quarterly_pool_usd": 320000.0,
+      "net_Execution_cost_usd": 320000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "price_protection_clawback_403": {
+      "status_code": 403,
+      "decision": "PRICE_PROTECTION_CLAWBACK_OR_BRAND_FLOOR_BREACH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 320000.0,
+      "net_Execution_cost_usd": 320000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "blanket_markdown_high_str_422": {
+      "status_code": 422,
+      "decision": "BLANKET_MARKDOWN_ON_HIGH_VELOCITY_CLUSTER_OR_CORE_SIZE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 320000.0,
+      "net_Execution_cost_usd": 320000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "fake_omnibus_anchor_451": {
+      "status_code": 451,
+      "decision": "EU_OMNIBUS_30D_LOWEST_PRICE_OR_FTC_FAKE_ANCHOR_VIOLATION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 320000.0,
+      "net_Execution_cost_usd": 320000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "broken_size_pool_409": {
+      "status_code": 409,
+      "decision": "BROKEN_SIZE_CONSOLIDATION_AND_PHASED_GLIDEPATH_CONFIRM",
+      "mandate_token": "omnichannel_markdown_escrow_optim_409",
+      "gross_quarterly_pool_usd": 320000.0,
+      "net_Execution_cost_usd": 201600.0,
+      "quarterly_savings_usd": 118400.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "b2b_corporate_travel_per_diem_folio_vat_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_FOLIO_SPLIT_AND_STATUTORY_PER_DIEM_AUTHORIZED",
+      "mandate_token": "corp_te_perdiem_escrow_200",
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "minibar_spa_folio_403": {
+      "status_code": 403,
+      "decision": "PERSONAL_FOLIO_INCIDENTAL_MINIBAR_SPA_ON_CORP_CARD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "meal_double_dip_422": {
+      "status_code": 422,
+      "decision": "PER_DIEM_FREE_MEAL_DOUBLE_DIP_OR_FIRST_LAST_DAY_OVERCLAIM",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "missing_vat_header_451": {
+      "status_code": 451,
+      "decision": "MISSING_CORP_VAT_INVOICE_HEADER_OR_UNTAXED_PER_DIEM_EXCESS",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "beat_the_cap_vat_409": {
+      "status_code": 409,
+      "decision": "BEAT_THE_CAP_HOTEL_SAVINGS_SHARE_AND_VAT_RECLAIM_CONFIRM",
+      "mandate_token": "corp_te_perdiem_escrow_optim_409",
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 144900.0,
+      "quarterly_savings_usd": 85100.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "cross_border_bonded_1210_customs_179_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_CUSTOMS_179_THREE_WAY_MATCH_AND_QUOTA_AUTHORIZED",
+      "mandate_token": "cbec_1210_customs_escrow_200",
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "quota_or_daigou_403": {
+      "status_code": 403,
+      "decision": "ANNUAL_26K_SINGLE_5K_QUOTA_EXCEEDED_OR_DAIGOU_SMUGGLING_SPLIT",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "payer_id_mismatch_422": {
+      "status_code": 422,
+      "decision": "CUSTOMS_179_BUYER_PAYER_ID_MISMATCH_OR_THREE_WAY_PUSH_FAIL",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "non_positive_or_return_451": {
+      "status_code": 451,
+      "decision": "NON_POSITIVE_LIST_SKU_OR_NON_BONDED_RETURN_TAX_FORFEITURE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "sub_order_bonded_return_409": {
+      "status_code": 409,
+      "decision": "BONDED_1210_VS_GENERAL_TRADE_TAX_ROUTING_AND_QUOTA_RESTORE_CONFIRM",
+      "mandate_token": "cbec_1210_customs_escrow_optim_409",
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 170100.0,
+      "quarterly_savings_usd": 99900.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "b2b_o2c_ar_cash_app_short_pay_credit_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_CASH_APP_AND_INSURED_CREDIT_LIMIT_AUTHORIZED",
+      "mandate_token": "b2b_o2c_ar_escrow_200",
+      "gross_quarterly_pool_usd": 350000.0,
+      "net_Execution_cost_usd": 350000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "blind_short_pay_writeoff_403": {
+      "status_code": 403,
+      "decision": "INVALID_SHORT_PAY_DEDUCTION_WITHOUT_POD_OR_PROMO_PROOF",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 350000.0,
+      "net_Execution_cost_usd": 350000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "unapplied_cash_false_hold_422": {
+      "status_code": 422,
+      "decision": "UNAPPLIED_CASH_PENDING_MATCH_OR_BLIND_CREDIT_HOLD_ON_PAID_BUYER",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 350000.0,
+      "net_Execution_cost_usd": 350000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "uninsured_mep_shipment_451": {
+      "status_code": 451,
+      "decision": "CREDIT_INSURANCE_LIMIT_REVOKED_OR_MEP_OVERDUE_SHIPMENT_VIOLATION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 350000.0,
+      "net_Execution_cost_usd": 350000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "split_credit_pay_by_bank_409": {
+      "status_code": 409,
+      "decision": "PARTIAL_CREDIT_LIMIT_RELEASE_WITH_PAY_BY_BANK_SPLIT_CONFIRM",
+      "mandate_token": "b2b_o2c_ar_escrow_optim_409",
+      "gross_quarterly_pool_usd": 350000.0,
+      "net_Execution_cost_usd": 217000.0,
+      "quarterly_savings_usd": 133000.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "omnichannel_esl_dynamic_pricing_sco_shrink_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_ESL_SYNC_AND_MULTIMODAL_SCO_AUTHORIZED",
+      "mandate_token": "omnichannel_esl_sco_escrow_200",
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 290000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "ticket_switching_shrink_403": {
+      "status_code": 403,
+      "decision": "SCO_TICKET_SWITCHING_PLU_SPOOF_OR_UNSCANNED_RFID_SHRINK",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 290000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "bob_or_blind_audit_422": {
+      "status_code": 422,
+      "decision": "BLIND_FULL_CART_AUDIT_FRICTION_OR_BOTTOM_OF_BASKET_BYPASS",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 290000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "esl_pos_upward_race_451": {
+      "status_code": 451,
+      "decision": "ESL_POS_UPWARD_PRICE_RACE_OR_SCANNER_ACCURACY_LAW_VIOLATION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 290000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "pick_to_light_archway_409": {
+      "status_code": 409,
+      "decision": "ESL_PICK_TO_LIGHT_AND_SCAN_GO_ARCHWAY_FAST_LANE_CONFIRM",
+      "mandate_token": "omnichannel_esl_sco_escrow_optim_409",
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 182700.0,
+      "quarterly_savings_usd": 107300.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "commercial_grounding_supplier_risk_price_intel_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_AUTHORITATIVE_GROUNDING_AND_CLEAN_SUPPLIER_AUTHORIZED",
+      "mandate_token": "commercial_grounding_intel_200",
+      "gross_quarterly_pool_usd": 210000.0,
+      "net_Execution_cost_usd": 210000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "supplier_adverse_media_403": {
+      "status_code": 403,
+      "decision": "VERIFIED_SUPPLIER_ADVERSE_MEDIA_SANCTIONS_OR_INSOLVENCY_HIT",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 210000.0,
+      "net_Execution_cost_usd": 210000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "stale_content_farm_422": {
+      "status_code": 422,
+      "decision": "UNVERIFIED_CONTENT_FARM_SOURCE_OR_STALE_REPORT_DATA_VINTAGE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 210000.0,
+      "net_Execution_cost_usd": 210000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "paywall_tdmrep_violation_451": {
+      "status_code": 451,
+      "decision": "UNAUTHORIZED_PAYWALL_BYPASS_OR_TDMREP_ROBOTS_COPYRIGHT_VIOLATION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 210000.0,
+      "net_Execution_cost_usd": 210000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "three_tier_funnel_409": {
+      "status_code": 409,
+      "decision": "THREE_TIER_GROUNDING_FUNNEL_AND_DIFF_ONLY_CRAWL_CONFIRM",
+      "mandate_token": "commercial_grounding_intel_optim_409",
+      "gross_quarterly_pool_usd": 210000.0,
+      "net_Execution_cost_usd": 123900.0,
+      "quarterly_savings_usd": 86100.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "agent_payment_split_shipment_multi_capture_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_TIERED_HITL_AND_MULTI_CAPTURE_LIFECYCLE_AUTHORIZED",
+      "mandate_token": "split_capture_payment_escrow_200",
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "missing_hitl_or_smurfing_403": {
+      "status_code": 403,
+      "decision": "TIERED_HITL_STEPUP_MISSING_OR_SMURFING_APPROVAL_BYPASS",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "premature_final_capture_422": {
+      "status_code": 422,
+      "decision": "PREMATURE_FINAL_CAPTURE_CLOSING_REMAINING_SPLIT_SHIPMENTS",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "expired_auth_misuse_451": {
+      "status_code": 451,
+      "decision": "EXPIRED_AUTH_LATE_PRESENTMENT_OR_UNRELEASED_HOLD_MISUSE_FEE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "jit_pack_multi_capture_409": {
+      "status_code": 409,
+      "decision": "JIT_SHIPMENT_SCOPED_TOKEN_AND_MULTI_CAPTURE_ROUTING_CONFIRM",
+      "mandate_token": "split_capture_payment_escrow_optim_409",
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 173600.0,
+      "quarterly_savings_usd": 106400.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "omnichannel_atp_channel_ringfencing_asn_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_CHANNEL_RINGFENCE_AND_CLEARED_ASN_ATP_AUTHORIZED",
+      "mandate_token": "omnichannel_atp_escrow_200",
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "mirror_oversell_403": {
+      "status_code": 403,
+      "decision": "MULTI_CHANNEL_100PCT_MIRROR_OVERSELL_OR_ODR_PENALTY_RISK",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "uncleared_po_atp_422": {
+      "status_code": 422,
+      "decision": "UNVERIFIED_IN_TRANSIT_PO_EXPOSED_AS_GUARANTEED_ATP",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "b2b_ringfence_or_ftc_451": {
+      "status_code": 451,
+      "decision": "B2B_SLA_RINGFENCE_BREACH_OR_FTC_435_SHIPPING_DELAY_VIOLATION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "zip_edd_cart_ttl_409": {
+      "status_code": 409,
+      "decision": "ZIP_AWARE_EDD_NODE_PROMISE_AND_ADAPTIVE_CART_TTL_CONFIRM",
+      "mandate_token": "omnichannel_atp_escrow_optim_409",
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 192200.0,
+      "quarterly_savings_usd": 117800.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "b2b_combinatorial_sourcing_tco_dual_award_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_COMBINATORIAL_TCO_AND_DUAL_SOURCE_AWARD_AUTHORIZED",
+      "mandate_token": "b2b_combinatorial_sourcing_200",
+      "gross_quarterly_pool_usd": 380000.0,
+      "net_Execution_cost_usd": 380000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "lowball_or_100pct_solo_403": {
+      "status_code": 403,
+      "decision": "ABNORMALLY_LOW_LOWBALL_BID_OR_SINGLE_SOURCE_100PCT_CONCENTRATION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 380000.0,
+      "net_Execution_cost_usd": 380000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "sub_moq_cherry_pick_422": {
+      "status_code": 422,
+      "decision": "FRAGMENTED_CHERRY_PICKING_BELOW_SUPPLIER_MOQ_OR_BROKEN_BUNDLE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 380000.0,
+      "net_Execution_cost_usd": 380000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "coi_or_un_ndad_cad_451": {
+      "status_code": 451,
+      "decision": "CONFLICT_OF_INTEREST_BIDDER_OR_UNSIGNED_NDA_CAD_LEAK",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 380000.0,
+      "net_Execution_cost_usd": 380000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "milp_tco_dual_award_409": {
+      "status_code": 409,
+      "decision": "MILP_HOLISTIC_TCO_SOLVER_AND_70_30_DUAL_AWARD_CONFIRM",
+      "mandate_token": "b2b_combinatorial_sourcing_optim_409",
+      "gross_quarterly_pool_usd": 380000.0,
+      "net_Execution_cost_usd": 243200.0,
+      "quarterly_savings_usd": 136800.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "saas_plg_seat_fair_billing_coterm_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_ASYMMETRIC_PRORATION_AND_EXACT_COTERM_AUTHORIZED",
+      "mandate_token": "saas_plg_fair_billing_200",
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 220000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "weekend_upgrade_arbitrage_403": {
+      "status_code": 403,
+      "decision": "MID_CYCLE_UPGRADE_BURST_EXPORT_AND_IMMEDIATE_DOWNGRADE_ARBITRAGE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 220000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "inactive_or_guest_seat_422": {
+      "status_code": 422,
+      "decision": "ZERO_ACTIVITY_SEAT_CHARGE_OR_EXTERNAL_GUEST_BILLED_AS_FULL_ADMIN",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 220000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "coterm_drift_or_sca_451": {
+      "status_code": 451,
+      "decision": "INEXACT_COTERM_PRORATION_DRIFT_OR_UNAUTHENTICATED_EXPANSION_CHARGE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 220000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "fair_billing_tier_stepdown_409": {
+      "status_code": 409,
+      "decision": "FAIR_BILLING_ACTIVE_CREDIT_AND_VOLUME_TIER_STEPDOWN_CONFIRM",
+      "mandate_token": "saas_plg_fair_billing_optim_409",
+      "gross_quarterly_pool_usd": 220000.0,
+      "net_Execution_cost_usd": 138600.0,
+      "quarterly_savings_usd": 81400.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "enterprise_crm_erp_quote_to_order_saga_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_IDEMPOTENT_CRM_ERP_SYNC_AND_PRICE_PARITY_AUTHORIZED",
+      "mandate_token": "crm_erp_order_saga_200",
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "price_mismatch_drift_403": {
+      "status_code": 403,
+      "decision": "CRM_QUOTE_VS_ERP_SIMULATED_ORDER_PRICE_MISMATCH_DRIFT",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "blind_timeout_retry_422": {
+      "status_code": 422,
+      "decision": "DUPLICATE_CRM_TO_ERP_ORDER_CREATION_WITHOUT_IDEMPOTENCY_READBACK",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "post_pgi_in_place_edit_451": {
+      "status_code": 451,
+      "decision": "ORDER_AMENDMENT_BLOCKED_AFTER_WMS_PICK_OR_PGI_COMMIT",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "outbox_cash_commission_409": {
+      "status_code": 409,
+      "decision": "TRANSACTIONAL_OUTBOX_SAGA_AND_CASH_COLLECTED_COMMISSION_CONFIRM",
+      "mandate_token": "crm_erp_order_saga_optim_409",
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 161200.0,
+      "quarterly_savings_usd": 98800.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "cross_border_export_9810_vat_rebate_fx_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_FOUR_STREAM_MATCH_AND_FX_CORRIDOR_AUTHORIZED",
+      "mandate_token": "cbec_export_9810_rebate_200",
+      "gross_quarterly_pool_usd": 340000.0,
+      "net_Execution_cost_usd": 340000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "abnormal_fx_cost_403": {
+      "status_code": 403,
+      "decision": "ABNORMAL_EXPORT_FX_COST_RATIO_TAX_AUDIT_REDLINE_BREACH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 340000.0,
+      "net_Execution_cost_usd": 340000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "unit_or_name_mismatch_422": {
+      "status_code": 422,
+      "decision": "CUSTOMS_DECLARATION_VS_VAT_INVOICE_UNIT_OR_HS_NAME_MISMATCH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 340000.0,
+      "net_Execution_cost_usd": 340000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "unreconciled_9810_pre_rebate_451": {
+      "status_code": 451,
+      "decision": "OVERSEAS_WAREHOUSE_9810_UNSOLD_PRE_REBATE_OR_FX_UNRECONCILED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 340000.0,
+      "net_Execution_cost_usd": 340000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "dual_track_9810_9610_409": {
+      "status_code": 409,
+      "decision": "DUAL_TRACK_9810_PRE_REBATE_AND_9610_TAX_EXEMPT_ROUTING_CONFIRM",
+      "mandate_token": "cbec_export_9810_rebate_optim_409",
+      "gross_quarterly_pool_usd": 340000.0,
+      "net_Execution_cost_usd": 207400.0,
+      "quarterly_savings_usd": 132600.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "ota_airline_ancillary_emd_dot260_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_ALL_IN_FARE_AND_COUPLED_EMD_A_AUTHORIZED",
+      "mandate_token": "ota_ancillary_emd_escrow_200",
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "orphaned_emd_exchange_403": {
+      "status_code": 403,
+      "decision": "ORPHANED_EMD_A_ANCILLARY_ON_TICKET_EXCHANGE_OR_VOID",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "basic_economy_bait_422": {
+      "status_code": 422,
+      "decision": "NAKED_BASIC_ECONOMY_BAIT_EXCEEDS_ALL_IN_MAIN_CABIN_BUNDLE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "equipment_swap_dot260_451": {
+      "status_code": 451,
+      "decision": "EQUIPMENT_SWAP_SEAT_DOWNGRADE_OR_DOT_260_BAG_DELAY_UNREFUNDED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 240000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "ffp_waiver_prepaid_bag_409": {
+      "status_code": 409,
+      "decision": "FFP_COBRAND_WAIVER_MATCH_AND_PREPAID_BAG_DISCOUNT_CONFIRM",
+      "mandate_token": "ota_ancillary_emd_escrow_optim_409",
+      "gross_quarterly_pool_usd": 240000.0,
+      "net_Execution_cost_usd": 151200.0,
+      "quarterly_savings_usd": 88800.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "b2b_cpfr_rolling_forecast_bullwhip_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_TIME_FENCE_CORRIDOR_AND_DAMPED_POS_FORECAST_AUTHORIZED",
+      "mandate_token": "b2b_cpfr_horizon_escrow_200",
+      "gross_quarterly_pool_usd": 360000.0,
+      "net_Execution_cost_usd": 360000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "frozen_slushy_breach_403": {
+      "status_code": 403,
+      "decision": "FROZEN_ZONE_PO_CANCELLATION_OR_SLUSHY_HORIZON_CORRIDOR_BREACH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 360000.0,
+      "net_Execution_cost_usd": 360000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "bullwhip_promo_spike_422": {
+      "status_code": 422,
+      "decision": "BULLWHIP_PHANTOM_SPIKE_AMPLIFICATION_WITHOUT_POS_SELL_THROUGH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 360000.0,
+      "net_Execution_cost_usd": 360000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "phantom_shortage_ncnr_451": {
+      "status_code": 451,
+      "decision": "PHANTOM_SHORTAGE_OVER_FORECAST_GAMING_WITHOUT_NCNR_DEPOSIT",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 360000.0,
+      "net_Execution_cost_usd": 360000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "family_mix_swap_409": {
+      "status_code": 409,
+      "decision": "PRODUCT_FAMILY_CAPACITY_SWAP_AND_POS_SHARED_BUFFER_REDUCTION_CONFIRM",
+      "mandate_token": "b2b_cpfr_horizon_escrow_optim_409",
+      "gross_quarterly_pool_usd": 360000.0,
+      "net_Execution_cost_usd": 226800.0,
+      "quarterly_savings_usd": 133200.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "ecommerce_visual_search_shop_the_look_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_BBOX_CROP_AND_IN_SIZE_VISUAL_MATCH_AUTHORIZED",
+      "mandate_token": "visual_search_stylist_200",
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "size_oos_top_match_403": {
+      "status_code": 403,
+      "decision": "VISUAL_TOP_MATCH_OUT_OF_STOCK_IN_USER_SIZE_OR_PRICE_SHOCK",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "uncropped_background_422": {
+      "status_code": 422,
+      "decision": "UNCROPPED_FULL_SCENE_IMAGE_EMBEDDING_BACKGROUND_POLLUTION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "visual_injection_or_bipa_451": {
+      "status_code": 451,
+      "decision": "VISUAL_PROMPT_INJECTION_OR_UNREDACTED_BIOMETRIC_FACE_BIPA_RISK",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 230000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "shop_the_look_bundle_409": {
+      "status_code": 409,
+      "decision": "SHOP_THE_LOOK_HOTSPOT_CROP_AND_IN_SIZE_TWIN_BUNDLE_CONFIRM",
+      "mandate_token": "visual_search_stylist_optim_409",
+      "gross_quarterly_pool_usd": 230000.0,
+      "net_Execution_cost_usd": 142600.0,
+      "quarterly_savings_usd": 87400.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "ecommerce_wismo_in_transit_refund_claim_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_CARRIER_INTERCEPT_AND_AUTO_CLAIM_RESOLUTION_AUTHORIZED",
+      "mandate_token": "wismo_carrier_claim_200",
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "in_transit_double_dip_403": {
+      "status_code": 403,
+      "decision": "IN_TRANSIT_REFUND_OR_RESHIP_WITHOUT_CARRIER_INTERCEPT_DOUBLE_DIP",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "premature_scan_refund_422": {
+      "status_code": 422,
+      "decision": "PREMATURE_DELIVERED_SCAN_INSTANT_REFUND_OR_UNVERIFIED_DNA_CLAIM",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "unfiled_claim_or_affidavit_451": {
+      "status_code": 451,
+      "decision": "UNFILED_CARRIER_LOST_CLAIM_FORFEITURE_OR_HIGH_VALUE_DNA_NO_AFFIDAVIT",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 250000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "proactive_locker_claim_409": {
+      "status_code": 409,
+      "decision": "PROACTIVE_WISMO_DELAY_APOLOGY_AND_CARRIER_CLAIM_AUTO_FILE_CONFIRM",
+      "mandate_token": "wismo_carrier_claim_optim_409",
+      "gross_quarterly_pool_usd": 250000.0,
+      "net_Execution_cost_usd": 155000.0,
+      "quarterly_savings_usd": 95000.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "saas_ecommerce_lifecycle_marketing_uplift_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_CAUSAL_UPLIFT_AND_COMPLIANT_JOURNEY_AUTHORIZED",
+      "mandate_token": "lifecycle_marketing_uplift_200",
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "sure_thing_or_sleeping_dog_403": {
+      "status_code": 403,
+      "decision": "COUPON_CANNIBALIZATION_ON_SURE_THINGS_OR_SLEEPING_DOG_CHURN_TRIGGER",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "frequency_cap_collision_422": {
+      "status_code": 422,
+      "decision": "GLOBAL_FREQUENCY_CAP_BREACH_OR_UNARBITRATED_MULTI_FLOW_COLLISION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "tcpa_or_rfc8058_spam_451": {
+      "status_code": 451,
+      "decision": "TCPA_QUIET_HOURS_VIOLATION_OR_GMAIL_03PCT_SPAM_THRESHOLD_BREACH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 270000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "channel_waterfall_uplift_409": {
+      "status_code": 409,
+      "decision": "CHANNEL_COST_WATERFALL_AND_CAUSAL_UPLIFT_PERSUADABLE_ONLY_CONFIRM",
+      "mandate_token": "lifecycle_marketing_uplift_optim_409",
+      "gross_quarterly_pool_usd": 270000.0,
+      "net_Execution_cost_usd": 164700.0,
+      "quarterly_savings_usd": 105300.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "b2b_clm_contract_redline_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_PLAYBOOK_COMPLIANT_MSA_AND_RENEWAL_AUTHORIZED",
+      "mandate_token": "clm_contract_redline_200",
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "uncapped_liability_or_freeform_403": {
+      "status_code": 403,
+      "decision": "UNCAPPED_LIABILITY_OR_UNAUTHORIZED_FREEFORM_CLAUSE_HALLUCINATION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "missing_dpa_or_hostile_venue_422": {
+      "status_code": 422,
+      "decision": "MISSING_MANDATORY_DPA_SOC2_ANNEX_OR_HOSTILE_GOVERNING_LAW_VENUE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "evergreen_autorenewal_or_uplift_451": {
+      "status_code": 451,
+      "decision": "EVERGREEN_AUTORENEWAL_TRAP_OR_UNCAPPED_ANNUAL_PRICE_UPLIFT",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 310000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "playbook_tier2_fallback_t120d_409": {
+      "status_code": 409,
+      "decision": "PLAYBOOK_FALLBACK_CLAUSE_SWAP_AND_T120D_RENEWAL_CAP_CONFIRM",
+      "mandate_token": "clm_contract_redline_optim_409",
+      "gross_quarterly_pool_usd": 310000.0,
+      "net_Execution_cost_usd": 192200.0,
+      "quarterly_savings_usd": 117800.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "cross_border_multilingual_return_duty_drawback_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_CROSS_BORDER_RETURN_AND_CAPTURE_FX_REFUND_AUTHORIZED",
+      "mandate_token": "cross_border_return_fx_200",
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "negative_margin_air_return_403": {
+      "status_code": 403,
+      "decision": "INDIVIDUAL_AIR_RETURN_EXCEEDING_NET_RESALE_VALUE_OR_KEEP_ABUSE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "missing_export_entry_link_422": {
+      "status_code": 422,
+      "decision": "MISSING_ORIGINAL_EXPORT_CUSTOMS_ENTRY_LINK_FOR_DUTY_DRAWBACK",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "fx_spot_arbitrage_or_eu14d_451": {
+      "status_code": 451,
+      "decision": "FX_SPOT_REFUND_ARBITRAGE_OR_EU_14D_WITHDRAWAL_RIGHT_VIOLATION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 280000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "regional_hub_drawback_409": {
+      "status_code": 409,
+      "decision": "REGIONAL_HUB_CONSOLIDATION_AND_DUTY_DRAWBACK_MANIFEST_CONFIRM",
+      "mandate_token": "cross_border_return_fx_optim_409",
+      "gross_quarterly_pool_usd": 280000.0,
+      "net_Execution_cost_usd": 173600.0,
+      "quarterly_savings_usd": 106400.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "pay_by_bank_open_banking_nsf_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_INSTANT_PAY_BY_BANK_SETTLEMENT_AUTHORIZED",
+      "mandate_token": "pay_by_bank_instant_200",
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 290000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "unsettled_ach_pull_shipment_403": {
+      "status_code": 403,
+      "decision": "UNSETTLED_ACH_PULL_SHIPMENT_OR_R01_NSF_BOUNCE_EXPOSURE",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 290000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "live_balance_or_owner_mismatch_422": {
+      "status_code": 422,
+      "decision": "OPEN_BANKING_LIVE_BALANCE_SHORTFALL_OR_OWNER_MISMATCH",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 290000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "unverified_external_iban_refund_451": {
+      "status_code": 451,
+      "decision": "IRREVOCABLE_INSTANT_PUSH_REFUND_TO_UNVERIFIED_EXTERNAL_IBAN",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 290000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "instant_bank_push_mdr_split_409": {
+      "status_code": 409,
+      "decision": "INSTANT_BANK_PUSH_ROUTING_AND_MDR_SPLIT_INCENTIVE_CONFIRM",
+      "mandate_token": "pay_by_bank_instant_optim_409",
+      "gross_quarterly_pool_usd": 290000.0,
+      "net_Execution_cost_usd": 174000.0,
+      "quarterly_savings_usd": 116000.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "ota_hotel_rate_parity_resort_fee_walk_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_ALL_IN_HOTEL_PARITY_AND_PMS_HCN_AUTHORIZED",
+      "mandate_token": "ota_hotel_parity_hcn_200",
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "bedbank_leak_or_missing_hcn_403": {
+      "status_code": 403,
+      "decision": "WHOLESALE_BEDBANK_RATE_LEAK_OR_MISSING_PMS_HCN_CONFIRMATION",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "ftc_drip_resort_fee_omission_422": {
+      "status_code": 422,
+      "decision": "FTC_PART464_DRIP_RESORT_FEE_OMISSION_IN_ALL_IN_SORT_RANK",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "flight_delay_no_show_walk_451": {
+      "status_code": 451,
+      "decision": "FLIGHT_DELAY_NO_SHOW_RELEASE_WITHOUT_PMS_LATE_ARRIVAL_HOLD",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 260000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "all_in_lra_atomic_rebook_409": {
+      "status_code": 409,
+      "decision": "ALL_IN_RESORT_FEE_PARITY_AND_PMS_HCN_PRICE_DROP_REBOOK_CONFIRM",
+      "mandate_token": "ota_hotel_parity_hcn_optim_409",
+      "gross_quarterly_pool_usd": 260000.0,
+      "net_Execution_cost_usd": 161200.0,
+      "quarterly_savings_usd": 98800.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
+  "retail_media_network_bidding_poas_guard": {
+    "authorized_200": {
+      "status_code": 200,
+      "decision": "VERIFIED_INCREMENTAL_POAS_AND_IN_STOCK_RMN_BID_AUTHORIZED",
+      "mandate_token": "rmn_sponsored_poas_200",
+      "gross_quarterly_pool_usd": 320000.0,
+      "net_Execution_cost_usd": 320000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "buy_box_lost_or_stockout_403": {
+      "status_code": 403,
+      "decision": "BUY_BOX_LOST_OR_CORE_SIZE_STOCKOUT_AD_SPEND_BLEED",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 320000.0,
+      "net_Execution_cost_usd": 320000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "branded_cannibalization_low_iroas_422": {
+      "status_code": 422,
+      "decision": "BRANDED_KEYWORD_ORGANIC_CANNIBALIZATION_LOW_IROAS",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 320000.0,
+      "net_Execution_cost_usd": 320000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "cpc_exceeds_post_return_poas_451": {
+      "status_code": 451,
+      "decision": "AD_CPC_EXCEEDING_SKU_POST_RETURN_CONTRIBUTION_MARGIN_FLOOR",
+      "mandate_token": null,
+      "gross_quarterly_pool_usd": 320000.0,
+      "net_Execution_cost_usd": 320000.0,
+      "quarterly_savings_usd": 0.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    },
+    "inventory_synced_poas_dayparting_409": {
+      "status_code": 409,
+      "decision": "BUY_BOX_INVENTORY_GUARD_AND_INCREMENTAL_POAS_BIDDING_CONFIRM",
+      "mandate_token": "rmn_sponsored_poas_optim_409",
+      "gross_quarterly_pool_usd": 320000.0,
+      "net_Execution_cost_usd": 195200.0,
+      "quarterly_savings_usd": 124800.0,
+      "provenance": "synthetic",
+      "independently_reproduced": false
+    }
+  },
   "scenarios": [
     {
       "id": "W01",
