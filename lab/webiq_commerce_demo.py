@@ -33309,6 +33309,82 @@ def evaluate_b2b_distributor_rebate_ship_debit_price_prot_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceAlcoholAgeVerifyDramShopPolicyInput:
+    quarterly_alcohol_sting_fine_cooked_wine_and_asr_return_pool_usd: float = 200000.0
+    contactless_doorstep_drop_or_unscanned_pdf417_id_at_handoff: bool = False
+    three_tier_state_ban_dry_zip9_or_annual_liter_cap_exceeded: bool = False
+    route_temp_over_27c_without_cold_chain_or_missing_carrier_asr: bool = False
+    compliant_three_tier_local_route_and_ac_pickup_hub_ready: bool = False
+
+
+def evaluate_ecommerce_alcohol_age_verify_dram_shop_policy(
+    policy_input: EcommerceAlcoholAgeVerifyDramShopPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_alcohol_sting_fine_cooked_wine_and_asr_return_pool_usd
+        ),
+    )
+    if policy_input.route_temp_over_27c_without_cold_chain_or_missing_carrier_asr:
+        return {
+            "status_code": 451,
+            "decision": "HEATWAVE_COOKED_WINE_RISK_OR_MISSING_CARRIER_ASR",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.contactless_doorstep_drop_or_unscanned_pdf417_id_at_handoff:
+        return {
+            "status_code": 403,
+            "decision": "CONTACTLESS_DROP_OR_UNSCANNED_21PLUS_ID_AT_DOOR",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.three_tier_state_ban_dry_zip9_or_annual_liter_cap_exceeded:
+        return {
+            "status_code": 422,
+            "decision": "THREE_TIER_STATE_BAN_OR_ANNUAL_CASE_LIMIT_EXCEEDED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.compliant_three_tier_local_route_and_ac_pickup_hub_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "THREE_TIER_LOCAL_ROUTE_AND_AC_HOLD_LOCATION_CONFIRM",
+            "mandate_token": "alcohol_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_PDF417_AND_SOVOS_THREE_TIER_ALCOHOL_AUTHORIZED",
+        "mandate_token": "alcohol_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -45468,6 +45544,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_alcohol_age_verify_dram_shop_guard = {
+        "authorized_200": evaluate_ecommerce_alcohol_age_verify_dram_shop_policy(
+            EcommerceAlcoholAgeVerifyDramShopPolicyInput()
+        ),
+        "contactless_or_no_pdf417_403": evaluate_ecommerce_alcohol_age_verify_dram_shop_policy(
+            EcommerceAlcoholAgeVerifyDramShopPolicyInput(
+                contactless_doorstep_drop_or_unscanned_pdf417_id_at_handoff=True
+            )
+        ),
+        "three_tier_or_dry_zip_422": evaluate_ecommerce_alcohol_age_verify_dram_shop_policy(
+            EcommerceAlcoholAgeVerifyDramShopPolicyInput(
+                three_tier_state_ban_dry_zip9_or_annual_liter_cap_exceeded=True
+            )
+        ),
+        "heatwave_or_no_asr_451": evaluate_ecommerce_alcohol_age_verify_dram_shop_policy(
+            EcommerceAlcoholAgeVerifyDramShopPolicyInput(
+                route_temp_over_27c_without_cold_chain_or_missing_carrier_asr=True
+            )
+        ),
+        "local_route_ac_hub_409": evaluate_ecommerce_alcohol_age_verify_dram_shop_policy(
+            EcommerceAlcoholAgeVerifyDramShopPolicyInput(
+                compliant_three_tier_local_route_and_ac_pickup_hub_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -45836,6 +45938,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_payment_cit_mit_network_token_retry_guard": agentic_payment_cit_mit_network_token_retry_guard,
         "commercial_search_grounding_price_verify_guard": commercial_search_grounding_price_verify_guard,
         "b2b_distributor_rebate_ship_debit_price_prot_guard": b2b_distributor_rebate_ship_debit_price_prot_guard,
+        "ecommerce_alcohol_age_verify_dram_shop_guard": ecommerce_alcohol_age_verify_dram_shop_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -64715,6 +64818,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="distirebate-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 STEPPED_TIER_EDI849_AND_AR_CREDIT_MEMO_OFFSET_CONFIRM · Mandate: b2b_rebate_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 240 Alcohol, Wine-Club & Instant-Delivery 21+ PDF417, 3-Tier & Thermal Escrow (#359) -->
+      <div class="finops-box" id="ecommerce-alcohol-age-verify-dram-shop-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🍷 酒水即时零售、名庄红酒俱乐部与受控品配送 (Total Wine / Instacart / Uber Eats / ReserveBar / Sovos) 沙盒</div>
+            <div class="finops-sub">Round 240 (#359) · 禁选放门口无接触配送与骑手端 PDF417 驾照背码扫描/清醒确认 (HTTP 403) + Sovos 三层分销法 (Three-Tier) / 禁酒邮编 ZIP+4 与年度限购升数锁 (HTTP 422) + 干线 &gt;=27°C 高温防煮酒与快递 21+ ASR 锁 (HTTP 451) + 本地持牌店代发与 22°C 空调自提点代收净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="alcohol21-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度放门口无接触配送遭 ABC 便衣钓鱼吊销酒牌罚款、夏季 35°C 普通陆运煮坏 $420 名庄红酒与白天 21+ 无人签收退件池 ($)
+            <input type="number" id="alcohol21-gross-input" value="200000" min="10000" step="5000" oninput="recalcEcommerceAlcoholAgeVerifyDramShopSandbox()" />
+          </label>
+          <label>含酒订单 100% 禁用“放门口无接触配送”与骑手端强制摄像头扫描 21+ 驾照背面 AAMVA PDF417 二维码门禁
+            <select id="alcohol21-pdf417-select" onchange="recalcEcommerceAlcoholAgeVerifyDramShopSandbox()">
+              <option value="pass">强制当面交接 + 摄像头实扫未过期 21+ 驾照背面 PDF417 条码 + 确认收件人清醒未醉酒 (合规)</option>
+              <option value="block_403">大学生选放门口无接触投递 或 骑手怕退回白跑在 App 里手动瞎填 1990-01-01 假生日把酒交给便衣 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>Sovos ShipCompliant 美国三层分销法 (Three-Tier)、禁酒县 9位邮编 (Dry ZIP+4) 与个人年度购酒升数上限门禁
+            <select id="alcohol21-sovos-select" onchange="recalcEcommerceAlcoholAgeVerifyDramShopSandbox()">
+              <option value="pass">收货 ZIP+4 属合法配送区、未超州个人年度加仑上限，且烈酒自动转本地持牌 Tier-3 零售商履约 (合规)</option>
+              <option value="block_422">外州酒厂违法直邮威士忌至犹他/德州禁直邮州 或 发往禁酒镇 Dry Precinct / 突破个人年度限购箱数 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>干线途经气象 &gt;=27°C (80°F) 防煮酒熔断与快递公司强制 21+ 成人签收 (Adult Signature Required) 服务码门禁
+            <select id="alcohol21-thermal-select" onchange="recalcEcommerceAlcoholAgeVerifyDramShopSandbox()">
+              <option value="pass">途经超 27°C 自动切全程温控冷链车(或免费酒窖暂存) + 面单硬编码 FedEx/UPS 21+ ASR 服务码 (安全)</option>
+              <option value="block_451">7月高温 35°C 发普通铁皮快递车把 $420 纳帕红酒煮沸顶塞变酸 或 快递面单漏挂 21+ 成人签收标 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>烈酒官网转本地持牌门店 1h 合规闪送 + 上班族一键改寄 22°C 空调 Walgreens/FedEx 自提点 + 骑手拒交 1.5x 补贴
+            <select id="alcohol21-opt-select" onchange="recalcEcommerceAlcoholAgeVerifyDramShopSandbox()">
+              <option value="enabled" selected>本地持牌店合规代发 + 改寄 22°C 恒温自提点(-68% 白天退件) + 骑手拒交违规客发 1.5x 返程费 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">无恒温自提点分流与三层分销代发的常规住宅日间派送 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度罚单、煮酒与退件损耗池</div>
+            <div class="finops-kpi-val" id="alcohol21-gross-kpi">$200,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">扫码核龄与恒温自提后净损耗</div>
+            <div class="finops-kpi-val" id="alcohol21-net-kpi" style="color:#6ee7b7;">$126,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省吊销罚金与煮酒退件</div>
+            <div class="finops-kpi-val" id="alcohol21-savings-kpi" style="color:#38bdf8;">$74,000</div>
+          </div>
+        </div>
+        <div id="alcohol21-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 THREE_TIER_LOCAL_ROUTE_AND_AC_HOLD_LOCATION_CONFIRM · Mandate: alcohol_escrow_optim_409
         </div>
       </div>
 
@@ -87752,6 +87912,79 @@ function recalcB2BDistributorRebateShipDebitPriceProtSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_SELL_THROUGH_AND_LOT_WAC_REBATE_AUTHORIZED · Mandate: b2b_rebate_escrow_200';
+}}
+
+function recalcEcommerceAlcoholAgeVerifyDramShopSandbox() {{
+  const grossInput = document.getElementById('alcohol21-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '200000'));
+  const pdf417Gate = document.getElementById('alcohol21-pdf417-select').value;
+  const sovosGate = document.getElementById('alcohol21-sovos-select').value;
+  const thermalGate = document.getElementById('alcohol21-thermal-select').value;
+  const optMode = document.getElementById('alcohol21-opt-select').value;
+
+  const grossKpi = document.getElementById('alcohol21-gross-kpi');
+  const netKpi = document.getElementById('alcohol21-net-kpi');
+  const savingsKpi = document.getElementById('alcohol21-savings-kpi');
+  const statusKpi = document.getElementById('alcohol21-status-kpi');
+  const banner = document.getElementById('alcohol21-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (thermalGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 HEATWAVE_COOKED_WINE_RISK_OR_MISSING_CARRIER_ASR · Mandate: null';
+    return;
+  }}
+  if (pdf417Gate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CONTACTLESS_DROP_OR_UNSCANNED_21PLUS_ID_AT_DOOR · Mandate: null';
+    return;
+  }}
+  if (sovosGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 THREE_TIER_STATE_BAN_OR_ANNUAL_CASE_LIMIT_EXCEEDED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 THREE_TIER_LOCAL_ROUTE_AND_AC_HOLD_LOCATION_CONFIRM · Mandate: alcohol_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_PDF417_AND_SOVOS_THREE_TIER_ALCOHOL_AUTHORIZED · Mandate: alcohol_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

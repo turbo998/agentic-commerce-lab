@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg683" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg683)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 240 · Alcohol, Wine-Club &amp; Instant-Delivery `21+ PDF417`, `3-Tier` &amp; Thermal Escrow</text>
+  <text x="48" y="74" class="sub">Total Wine / Instacart / Uber Eats / ReserveBar / Sovos ShipCompliant · `PDF417` Hand-Off · `3-Tier` Routing · `>=27°C` Cold-Chain (-37%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #683 · FAQ #359</text>
+
+  <!-- Lane 1: Contactless "Leave at Door" Minor Stings & Courier Typing Fake Birthdates (1990-01-01) -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Doorstep `PDF417` &amp; `21+` Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Hard-Disables "Leave at Door" on Alcohol/Vape:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Require Live `AAMVA PDF417 Barcode / mDL Scan`</text>
+  <text x="54" y="200" class="mono">+ `Dram_Shop_Sobriety_Attestation` at Door!</text>
+  <text x="44" y="223" class="body-txt">• Blocks Manual Courier `1990-01-01` DOB Bypass:</text>
+  <text x="54" y="243" class="mono">Require Cryptographic `ID_Expiry &gt; Today`</text>
+  <text x="44" y="266" class="body-txt">• Eliminates ABC/ATF undercover minor sting</text>
+  <text x="54" y="286" class="body-txt">operations revoking a retailer's liquor license</text>
+  <text x="54" y="304" class="body-txt">because a courier left vodka on a front porch</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 CONTACTLESS_DROP_OR_UNSCANNED_21PLUS_ID_AT_DOOR</text>
+
+  <!-- Lane 2: US Three-Tier System Direct-Shipping Felonies, Dry-County ZIP+4 & State Case Volume Caps -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. `3-Tier` &amp; `Dry-ZIP+4` Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Blocks Unlicensed Out-of-State Spirit Shipping:</text>
+  <text x="442" y="182" class="mono">Enforce `Sovos_ShipCompliant_DTC_Permit` +</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">`Dry_County_ZIP9` + `State_Annual_Liter_Cap`!</text>
+  <text x="432" y="223" class="body-txt">• Sunday / Blue-Law Municipal Sale-Hour Lock:</text>
+  <text x="442" y="243" class="mono">Check `Local_Ordinance_Curfew_Window` by Store</text>
+  <text x="432" y="266" class="body-txt">• Prevents a California distillery illegally</text>
+  <text x="442" y="286" class="body-txt">shipping bourbon via standard parcel to Utah/</text>
+  <text x="442" y="304" class="body-txt">Texas or exceeding a buyer's 24-case state cap</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 THREE_TIER_STATE_BAN_OR_ANNUAL_CASE_LIMIT_EXCEEDED</text>
+
+  <!-- Lane 3: Summer Heatwave (>27°C / 80°F) Cooked Fine Wine & Uncompensated Failed-Delivery Return -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `&gt;27°C` Cooked-Wine Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops `$400` Napa Wine Boiling in Ground Trucks:</text>
+  <text x="830" y="182" class="mono">Hold Ground Ship When `Route_Max_Temp &gt;= 27°C`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">(`80°F`) Unless `Cold_Chain_Reefer` Selected!</text>
+  <text x="820" y="223" class="body-txt">• Mandatory `Adult_Signature_Required (ASR)` Carrier:</text>
+  <text x="830" y="243" class="body-txt">Blocks shipping wine clubs without `FedEx/UPS`</text>
+  <text x="830" y="261" class="body-txt">`21+ ASR` service code or baking cases in</text>
+  <text x="830" y="279" class="body-txt">Arizona/Texas summer hubs (cork push spoilage!)</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 HEATWAVE_COOKED_WINE_RISK_OR_MISSING_CARRIER_ASR</text>
+
+  <!-- Bottom Compliant 3-Tier Local Retailer Routing, Weather Hold-to-Autumn & Paid Return Trip Protection -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Compliant `3-Tier` Local Retailer Fulfillment + `FedEx Hold-at-Location` + Paid Return Shield (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① `3-Tier` Local Store Route</text>
+  <text x="62" y="462" class="body-txt">Routes brand website orders</text>
+  <text x="62" y="480" class="body-txt">to a licensed in-state</text>
+  <text x="62" y="498" class="body-txt">Tier-3 retailer (`ReserveBar`</text>
+  <text x="62" y="516" class="mono">/ `DoorDash`) for legal 1h delivery!</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② `A/C Hold-at-Location`</text>
+  <text x="337" y="462" class="body-txt">Redirects wine-club shipments</text>
+  <text x="337" y="480" class="body-txt">to climate-controlled `FedEx`</text>
+  <text x="337" y="498" class="body-txt">/`Walgreens` pickup hubs so</text>
+  <text x="337" y="516" class="mono">0 daytime missed-ASR returns!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Paid Refusal Return Incentive</text>
+  <text x="622" y="462" class="body-txt">Automatically pays couriers</text>
+  <text x="622" y="480" class="body-txt">`1.5x` return-trip fee when</text>
+  <text x="622" y="498" class="body-txt">refusing an underage or</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">intoxicated buyer!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Excise &amp; Bottle-Deposit Calc</text>
+  <text x="907" y="462" class="body-txt">Computes per-liter proof</text>
+  <text x="907" y="480" class="body-txt">gallon excise tax + state</text>
+  <text x="907" y="498" class="body-txt">`CRV` bottle deposit</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Fine &amp; Spoilage Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Fine, Spoilage &amp; Return Loss Saved</text>
+  <text x="46" y="642" class="mono">$74,000 Saved / $200k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% PDF417</text>
+  <text x="336" y="626" class="kpi-lbl">Doorstep AAMVA Barcode + Sobriety</text>
+  <text x="336" y="642" class="mono">Zero Minor Sting License Losses</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">50-State Legal</text>
+  <text x="626" y="626" class="kpi-lbl">Sovos ShipCompliant + 3-Tier Route</text>
+  <text x="626" y="642" class="mono">Zero Unlicensed Felony Shipments</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 Cooked Wine</text>
+  <text x="916" y="626" class="kpi-lbl">&lt;27°C Cold-Chain + Hold-at-Location</text>
+  <text x="916" y="642" class="mono">-68% Daytime Missed-ASR Returns</text>
+</svg>

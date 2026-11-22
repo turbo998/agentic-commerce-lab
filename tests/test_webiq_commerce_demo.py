@@ -25138,6 +25138,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-distributor-rebate-ship-debit-price-prot-sandbox", html_zh)
 
+    def test_ecommerce_alcohol_age_verify_dram_shop_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceAlcoholAgeVerifyDramShopPolicyInput,
+            evaluate_ecommerce_alcohol_age_verify_dram_shop_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_alcohol_age_verify_dram_shop_policy(
+            EcommerceAlcoholAgeVerifyDramShopPolicyInput(
+                quarterly_alcohol_sting_fine_cooked_wine_and_asr_return_pool_usd=200000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_PDF417_AND_SOVOS_THREE_TIER_ALCOHOL_AUTHORIZED",
+        )
+
+        drop = evaluate_ecommerce_alcohol_age_verify_dram_shop_policy(
+            EcommerceAlcoholAgeVerifyDramShopPolicyInput(
+                contactless_doorstep_drop_or_unscanned_pdf417_id_at_handoff=True
+            )
+        )
+        self.assertEqual(drop["status_code"], 403)
+        self.assertEqual(
+            drop["decision"],
+            "CONTACTLESS_DROP_OR_UNSCANNED_21PLUS_ID_AT_DOOR",
+        )
+
+        tier = evaluate_ecommerce_alcohol_age_verify_dram_shop_policy(
+            EcommerceAlcoholAgeVerifyDramShopPolicyInput(
+                three_tier_state_ban_dry_zip9_or_annual_liter_cap_exceeded=True
+            )
+        )
+        self.assertEqual(tier["status_code"], 422)
+        self.assertEqual(
+            tier["decision"],
+            "THREE_TIER_STATE_BAN_OR_ANNUAL_CASE_LIMIT_EXCEEDED",
+        )
+
+        heat = evaluate_ecommerce_alcohol_age_verify_dram_shop_policy(
+            EcommerceAlcoholAgeVerifyDramShopPolicyInput(
+                route_temp_over_27c_without_cold_chain_or_missing_carrier_asr=True
+            )
+        )
+        self.assertEqual(heat["status_code"], 451)
+        self.assertEqual(
+            heat["decision"],
+            "HEATWAVE_COOKED_WINE_RISK_OR_MISSING_CARRIER_ASR",
+        )
+
+        optim = evaluate_ecommerce_alcohol_age_verify_dram_shop_policy(
+            EcommerceAlcoholAgeVerifyDramShopPolicyInput(
+                quarterly_alcohol_sting_fine_cooked_wine_and_asr_return_pool_usd=200000.0,
+                compliant_three_tier_local_route_and_ac_pickup_hub_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 74000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 126000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_alcohol_age_verify_dram_shop_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-alcohol-age-verify-dram-shop-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

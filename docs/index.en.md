@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`358` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`359` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (21 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (50 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (136 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (137 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (81 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (29 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (41 guides)](#tax-fx-privacy-disputes)
@@ -105,7 +105,7 @@
 | 50 | **Agentic `CIT-to-MIT` Card-on-File, `EMVCo Network Token` (`DPAN + TAVV`) & Smart-Retry Escrow (`Stripe SPT / Visa VIC / Adyen / Checkout.com`), 15-Digit `CIT Trace-ID` Linking, `Cat-1 / MAC-03` Zero-Retry Circuit Breaker & Payday Recovery (`-38%` Decline & Churn Loss) Agent Architecture Selection FAQ** | [English](agentic-payment-card-on-file-cit-mit-network-token-cryptogram-retry-escrow-agent-selection-faq.en.md) · [中文](agentic-payment-card-on-file-cit-mit-network-token-cryptogram-retry-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (136 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (137 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -247,6 +247,7 @@
 | 134 | **Optical Eyewear, Prescription Lenses & Contact-Lens Subscription Escrow (`Warby Parker / Zenni Optical / 1-800 Contacts / EssilorLuxottica / VSP`), `ARKit` `±0.5mm` Dual-`PD` Gate, Contact-Lens `BC/DIA` & High-Index Lock, `FTC FCLCA` 8-Business-Hour Verification & `VSP + HSA` Split (`-37%` Remake & Churn Loss) Agent Architecture Selection FAQ** | [English](ecommerce-optical-eyewear-contact-lens-fclca-pd-tryon-escrow-agent-selection-faq.en.md) · [中文](ecommerce-optical-eyewear-contact-lens-fclca-pd-tryon-escrow-agent-selection-faq.md) |
 | 135 | **Footwear & Athletic E-Commerce `3D Foot Scan` (`Volumental / Fit Predictor / Nike / Brooks / New Balance`), Anti-`Size-Bracketing` Gate, `2E/4E` Width & Pronation Alignment & Arch-Insole Bundle (`-37%` Return & Stockout Loss) Agent Architecture Selection FAQ** | [English](ecommerce-footwear-apparel-3d-foot-scan-half-size-bracketing-insole-escrow-agent-selection-faq.en.md) · [中文](ecommerce-footwear-apparel-3d-foot-scan-half-size-bracketing-insole-escrow-agent-selection-faq.md) |
 | 136 | **OTA & Corporate Travel High-Speed Rail, `Air-Rail Interline` & `EU 2021/782` Delay Escrow (`Trainline / Amadeus Rail / Eurostar / DB Rail&Fly / Ctrip / 12306`), Official `$0` Waitlist, Protected Intermodal `PNR`, Same-Seat `SplitSave` & Auto Delay-Repay (`-36%` Travel Loss) Agent Architecture Selection FAQ** | [English](ota-high-speed-rail-air-rail-interline-seat-selection-delay-rebooking-escrow-agent-selection-faq.en.md) · [中文](ota-high-speed-rail-air-rail-interline-seat-selection-delay-rebooking-escrow-agent-selection-faq.md) |
+| 137 | **Alcohol, Wine-Club & Age-Restricted Instant-Delivery Escrow (`Total Wine / Instacart / Uber Eats / ReserveBar / Sovos ShipCompliant`), Doorstep `AAMVA PDF417` Scan, `3-Tier` `ZIP+4` Compliance & `>=27°C` Thermal Cold-Chain (`-37%` Fine & Spoilage Loss) Agent Architecture Selection FAQ** | [English](ecommerce-grocery-alcohol-tobacco-age-verification-dram-shop-curbside-escrow-agent-selection-faq.en.md) · [中文](ecommerce-grocery-alcohol-tobacco-age-verification-dram-shop-curbside-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (81 Guides)
