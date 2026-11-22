@@ -34383,6 +34383,86 @@ def evaluate_b2b_o2c_ar_cash_app_short_pay_credit_policy(
     }
 
 
+@dataclass(frozen=True)
+class OmnichannelESLDynamicPricingSCOShrinkPolicyInput:
+    quarterly_sco_shrink_scanner_accuracy_fine_and_pick_labor_pool_usd: float = 290000.0
+    sco_ticket_switching_plu_4011_banana_spoof_or_unscanned_rfid: bool = False
+    unscanned_bottom_of_basket_item_or_blind_full_bag_search_on_green_cart: bool = False
+    pos_price_raised_above_esl_shelf_price_within_45m_shopper_grace_window: bool = False
+    esl_pick_to_light_led_and_scan_go_ai_exit_archway_ready: bool = False
+
+
+def evaluate_omnichannel_esl_dynamic_pricing_sco_shrink_policy(
+    policy_input: OmnichannelESLDynamicPricingSCOShrinkPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_sco_shrink_scanner_accuracy_fine_and_pick_labor_pool_usd
+        ),
+    )
+    if (
+        policy_input.pos_price_raised_above_esl_shelf_price_within_45m_shopper_grace_window
+    ):
+        return {
+            "status_code": 451,
+            "decision": "ESL_POS_UPWARD_PRICE_RACE_OR_SCANNER_ACCURACY_LAW_VIOLATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sco_ticket_switching_plu_4011_banana_spoof_or_unscanned_rfid:
+        return {
+            "status_code": 403,
+            "decision": "SCO_TICKET_SWITCHING_PLU_SPOOF_OR_UNSCANNED_RFID_SHRINK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if (
+        policy_input.unscanned_bottom_of_basket_item_or_blind_full_bag_search_on_green_cart
+    ):
+        return {
+            "status_code": 422,
+            "decision": "BLIND_FULL_CART_AUDIT_FRICTION_OR_BOTTOM_OF_BASKET_BYPASS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.esl_pick_to_light_led_and_scan_go_ai_exit_archway_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ESL_PICK_TO_LIGHT_AND_SCAN_GO_ARCHWAY_FAST_LANE_CONFIRM",
+            "mandate_token": "omnichannel_esl_sco_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ESL_SYNC_AND_MULTIMODAL_SCO_AUTHORIZED",
+        "mandate_token": "omnichannel_esl_sco_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -46906,6 +46986,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    omnichannel_esl_dynamic_pricing_sco_shrink_guard = {
+        "authorized_200": evaluate_omnichannel_esl_dynamic_pricing_sco_shrink_policy(
+            OmnichannelESLDynamicPricingSCOShrinkPolicyInput()
+        ),
+        "ticket_switching_shrink_403": evaluate_omnichannel_esl_dynamic_pricing_sco_shrink_policy(
+            OmnichannelESLDynamicPricingSCOShrinkPolicyInput(
+                sco_ticket_switching_plu_4011_banana_spoof_or_unscanned_rfid=True
+            )
+        ),
+        "bob_or_blind_audit_422": evaluate_omnichannel_esl_dynamic_pricing_sco_shrink_policy(
+            OmnichannelESLDynamicPricingSCOShrinkPolicyInput(
+                unscanned_bottom_of_basket_item_or_blind_full_bag_search_on_green_cart=True
+            )
+        ),
+        "esl_pos_upward_race_451": evaluate_omnichannel_esl_dynamic_pricing_sco_shrink_policy(
+            OmnichannelESLDynamicPricingSCOShrinkPolicyInput(
+                pos_price_raised_above_esl_shelf_price_within_45m_shopper_grace_window=True
+            )
+        ),
+        "pick_to_light_archway_409": evaluate_omnichannel_esl_dynamic_pricing_sco_shrink_policy(
+            OmnichannelESLDynamicPricingSCOShrinkPolicyInput(
+                esl_pick_to_light_led_and_scan_go_ai_exit_archway_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -47288,6 +47394,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_corporate_travel_per_diem_folio_vat_guard": b2b_corporate_travel_per_diem_folio_vat_guard,
         "cross_border_bonded_1210_customs_179_guard": cross_border_bonded_1210_customs_179_guard,
         "b2b_o2c_ar_cash_app_short_pay_credit_guard": b2b_o2c_ar_cash_app_short_pay_credit_guard,
+        "omnichannel_esl_dynamic_pricing_sco_shrink_guard": omnichannel_esl_dynamic_pricing_sco_shrink_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -66965,6 +67072,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="b2bo2c-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PARTIAL_CREDIT_LIMIT_RELEASE_WITH_PAY_BY_BANK_SPLIT_CONFIRM · Mandate: b2b_o2c_ar_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 254 Omnichannel ESL Dynamic Pricing, SCO & Scan-and-Go Shrink Escrow (#373) -->
+      <div class="finops-box" id="omnichannel-esl-dynamic-pricing-sco-shrink-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏷️ 商超电子价签动态调价 (ESL)、自助收银防损 (SCO) 与 Scan &amp; Go 视觉拱门 (Vusion / Hanshow / Everseen) 沙盒</div>
+            <div class="finops-sub">Round 254 (#373) · 自助收银顶置视觉+±8g秤+RFID拦截 $0.99 香蕉码贴 $85 牛排掉包 (HTTP 403) + 购物车底层(BoB)漏扫拦截与免翻包分级抽检 (HTTP 422) + 电子价签涨价 45分钟在店低价缓冲锁防低标高结重罚 (HTTP 451) + ESL 闪灯拣货提速 42% 与 3秒无感过拱门净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="eslsco-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度自助收银贴标掉包/假香蕉码货损、动态涨价“低标高结”计量罚单及门店慢速寻架拣货人工损耗池 ($)
+            <input type="number" id="eslsco-gross-input" value="290000" min="10000" step="5000" oninput="recalcOmnichannelESLDynamicPricingSCOShrinkSandbox()" />
+          </label>
+          <label>自助收银 (SCO) 顶置计算机视觉 (Everseen) + 装袋台克重 (±8g) + 高值商品 UHF RFID 防贴标掉包门禁
+            <select id="eslsco-vision-select" onchange="recalcOmnichannelESLDynamicPricingSCOShrinkSandbox()">
+              <option value="pass">条码类别、顶置视觉轮廓、装袋台实测克重与内置 UHF RFID 四维核验 100% 匹配 (安全)</option>
+              <option value="block_403">把 $0.99 散装土豆条码贴在 $85 谷饲牛排或 $199 乐高盒上扫码 或 手选 PLU 4011 香蕉称重 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>购物车底层支架漏扫检测 (Bottom-of-Basket BoB) 与手机 Scan &amp; Go 出口 AI 视觉拱门分级抽检门禁
+            <select id="eslsco-bob-select" onchange="recalcOmnichannelESLDynamicPricingSCOShrinkSandbox()">
+              <option value="pass">AI 视觉拱门 100% 校验通过会员直接亮绿灯 3秒免停步离店，仅对底层疑似漏扫单品靶向核验 (合规)</option>
+              <option value="block_422">购物车底层藏一箱未扫码 $42 精酿啤酒蒙混过关 或 对合规会员一刀切拦截花 5分钟翻包全检 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>电子价签 (ESL) 与 POS 不对称事务顺序及营业期涨价“45分钟在店顾客低价保护缓冲窗” (NIST HB-130) 门禁
+            <select id="eslsco-esl-select" onchange="recalcOmnichannelESLDynamicPricingSCOShrinkSandbox()">
+              <option value="pass">降价先改 POS 后刷 ESL；涨价先确认 100% ESL 刷新回执并在 45m 缓冲期内按 min(旧价,新价) 结算 (安全)</option>
+              <option value="block_451">顾客看货架标 $4.99 放进推车，后台无缓冲秒涨 POS 到 $5.49 导致收银台“低标高结”违法受罚 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>电子价签高频 LED 闪灯辅助 O2O 拣货 (Pick-to-Light 提速 42%) + Scan &amp; Go 专属临期出清与无感离店
+            <select id="eslsco-opt-select" onchange="recalcOmnichannelESLDynamicPricingSCOShrinkSandbox()">
+              <option value="enabled" selected>开启 ESL 多色 LED 闪灯引导店员极速拣货(+42%) + 3秒过 AI 视觉拱门 + 非对抗视频提醒 (-37% 综合损耗 / HTTP 409)</option>
+              <option value="disabled">店员肉眼找货架盲拣且出口安排人工拿马克笔逐张画纸质小票 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度SCO货损与拣货罚单池</div>
+            <div class="finops-kpi-val" id="eslsco-gross-kpi">$290,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">多模态防损与闪灯拣货后净损</div>
+            <div class="finops-kpi-val" id="eslsco-net-kpi" style="color:#6ee7b7;">$182,700</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省门店防损与拣货人力</div>
+            <div class="finops-kpi-val" id="eslsco-savings-kpi" style="color:#38bdf8;">$107,300</div>
+          </div>
+        </div>
+        <div id="eslsco-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ESL_PICK_TO_LIGHT_AND_SCAN_GO_ARCHWAY_FAST_LANE_CONFIRM · Mandate: omnichannel_esl_sco_escrow_optim_409
         </div>
       </div>
 
@@ -91024,6 +91188,79 @@ function recalcB2BO2CARCashAppShortPayCreditSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CASH_APP_AND_INSURED_CREDIT_LIMIT_AUTHORIZED · Mandate: b2b_o2c_ar_escrow_200';
+}}
+
+function recalcOmnichannelESLDynamicPricingSCOShrinkSandbox() {{
+  const grossInput = document.getElementById('eslsco-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '290000'));
+  const visionGate = document.getElementById('eslsco-vision-select').value;
+  const bobGate = document.getElementById('eslsco-bob-select').value;
+  const eslGate = document.getElementById('eslsco-esl-select').value;
+  const optMode = document.getElementById('eslsco-opt-select').value;
+
+  const grossKpi = document.getElementById('eslsco-gross-kpi');
+  const netKpi = document.getElementById('eslsco-net-kpi');
+  const savingsKpi = document.getElementById('eslsco-savings-kpi');
+  const statusKpi = document.getElementById('eslsco-status-kpi');
+  const banner = document.getElementById('eslsco-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (eslGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 ESL_POS_UPWARD_PRICE_RACE_OR_SCANNER_ACCURACY_LAW_VIOLATION · Mandate: null';
+    return;
+  }}
+  if (visionGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SCO_TICKET_SWITCHING_PLU_SPOOF_OR_UNSCANNED_RFID_SHRINK · Mandate: null';
+    return;
+  }}
+  if (bobGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BLIND_FULL_CART_AUDIT_FRICTION_OR_BOTTOM_OF_BASKET_BYPASS · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ESL_PICK_TO_LIGHT_AND_SCAN_GO_ARCHWAY_FAST_LANE_CONFIRM · Mandate: omnichannel_esl_sco_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_ESL_SYNC_AND_MULTIMODAL_SCO_AUTHORIZED · Mandate: omnichannel_esl_sco_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

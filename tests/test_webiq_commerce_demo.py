@@ -26076,6 +26076,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-o2c-ar-cash-app-short-pay-credit-sandbox", html_zh)
 
+    def test_omnichannel_esl_dynamic_pricing_sco_shrink_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OmnichannelESLDynamicPricingSCOShrinkPolicyInput,
+            evaluate_omnichannel_esl_dynamic_pricing_sco_shrink_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_omnichannel_esl_dynamic_pricing_sco_shrink_policy(
+            OmnichannelESLDynamicPricingSCOShrinkPolicyInput(
+                quarterly_sco_shrink_scanner_accuracy_fine_and_pick_labor_pool_usd=290000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ESL_SYNC_AND_MULTIMODAL_SCO_AUTHORIZED",
+        )
+
+        vision = evaluate_omnichannel_esl_dynamic_pricing_sco_shrink_policy(
+            OmnichannelESLDynamicPricingSCOShrinkPolicyInput(
+                sco_ticket_switching_plu_4011_banana_spoof_or_unscanned_rfid=True
+            )
+        )
+        self.assertEqual(vision["status_code"], 403)
+        self.assertEqual(
+            vision["decision"],
+            "SCO_TICKET_SWITCHING_PLU_SPOOF_OR_UNSCANNED_RFID_SHRINK",
+        )
+
+        bob = evaluate_omnichannel_esl_dynamic_pricing_sco_shrink_policy(
+            OmnichannelESLDynamicPricingSCOShrinkPolicyInput(
+                unscanned_bottom_of_basket_item_or_blind_full_bag_search_on_green_cart=True
+            )
+        )
+        self.assertEqual(bob["status_code"], 422)
+        self.assertEqual(
+            bob["decision"],
+            "BLIND_FULL_CART_AUDIT_FRICTION_OR_BOTTOM_OF_BASKET_BYPASS",
+        )
+
+        esl = evaluate_omnichannel_esl_dynamic_pricing_sco_shrink_policy(
+            OmnichannelESLDynamicPricingSCOShrinkPolicyInput(
+                pos_price_raised_above_esl_shelf_price_within_45m_shopper_grace_window=True
+            )
+        )
+        self.assertEqual(esl["status_code"], 451)
+        self.assertEqual(
+            esl["decision"],
+            "ESL_POS_UPWARD_PRICE_RACE_OR_SCANNER_ACCURACY_LAW_VIOLATION",
+        )
+
+        optim = evaluate_omnichannel_esl_dynamic_pricing_sco_shrink_policy(
+            OmnichannelESLDynamicPricingSCOShrinkPolicyInput(
+                quarterly_sco_shrink_scanner_accuracy_fine_and_pick_labor_pool_usd=290000.0,
+                esl_pick_to_light_led_and_scan_go_ai_exit_archway_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 107300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 182700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("omnichannel_esl_dynamic_pricing_sco_shrink_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("omnichannel-esl-dynamic-pricing-sco-shrink-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

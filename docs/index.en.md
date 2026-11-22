@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`372` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`373` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (22 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (51 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (141 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (142 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (84 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (31 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (43 guides)](#tax-fx-privacy-disputes)
@@ -107,7 +107,7 @@
 | 51 | **Enterprise B2B Accounts Payable (`AP`) Virtual Card Straight-Through Processing (`STP`: `Boost Payment / Visa Commercial Pay / Mastercard Track / Coupa Pay / BILL`), Anti-Surcharge Gate & `Large-Ticket Level-3` Rebate Escrow (`-38%` AP Cost) Agent Architecture Selection FAQ** | [English](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.en.md) · [中文](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (141 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (142 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -254,6 +254,7 @@
 | 139 | **Hotel Direct & OTA `Points + Cash`, `5th Night Free` & Pre-Arrival Room-Upgrade Bidding Escrow (`Marriott Bonvoy / Hilton Honors / Plusgrade / Oracle Opera Nor1`), `CPP >= 0.80¢` Floor, `T-24h PMS` Suite Lock & Dynamic Award Re-Pricing (`-36%` Loyalty & RevPAR Loss) Agent Architecture Selection FAQ** | [English](ota-hotel-direct-booking-Fifth-night-free-points-cash-room-upgrade-escrow-agent-selection-faq.en.md) · [中文](ota-hotel-direct-booking-Fifth-night-free-points-cash-room-upgrade-escrow-agent-selection-faq.md) |
 | 140 | **E-Commerce Boxless `QR` Return Bar, Anti-`FTID` Empty-Envelope & Instant-Exchange Escrow (`Happy Returns / Loop Returns / Narvar / UPS Store`), In-Person `UPC` Scan, `±12%` Scale-Weight Gate & `14d SPT` Collateral (`-38%` Return Fraud & Freight) Agent Architecture Selection FAQ** | [English](ecommerce-boxless-return-drop-off-qr-instant-exchange-ftid-weight-escrow-agent-selection-faq.en.md) · [中文](ecommerce-boxless-return-drop-off-qr-instant-exchange-ftid-weight-escrow-agent-selection-faq.md) |
 | 141 | **Omnichannel Retail End-of-Season Markdown Optimization, Broken-Size Consolidation & `EU Omnibus Art. 6a` Reference-Price Escrow (`Revionics / Blue Yonder Luminate Pricing / Competera / Centric Pricing / Manhattan Active`), 14d Price-Protection Shield, Store-Cluster `STR` Gate & Endless-Aisle Size Pool (`-37%` Margin Erosion) Agent Architecture Selection FAQ** | [English](omnichannel-retail-season-markdown-broken-size-consolidation-omnibus-escrow-agent-selection-faq.en.md) · [中文](omnichannel-retail-season-markdown-broken-size-consolidation-omnibus-escrow-agent-selection-faq.md) |
+| 142 | **Omnichannel Retail Electronic Shelf Label (`ESL`) Dynamic Pricing, Self-Checkout (`SCO`) & `Scan & Go` Shrink Escrow (`VusionGroup / Pricer / Hanshow vs. NCR Voyix / Toshiba / Everseen`), 45-Min `NIST HB-130` Upward Price Grace Lock, Overhead Vision + `RFID` Anti-Ticket-Switching & `Pick-to-Light` + AI Exit Archway (`-37%` Shrink & Labor Loss) Agent Architecture Selection FAQ** | [English](omnichannel-retail-esl-dynamic-pricing-self-checkout-scan-go-shrink-escrow-agent-selection-faq.en.md) · [中文](omnichannel-retail-esl-dynamic-pricing-self-checkout-scan-go-shrink-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (84 Guides)
