@@ -34463,6 +34463,84 @@ def evaluate_omnichannel_esl_dynamic_pricing_sco_shrink_policy(
     }
 
 
+@dataclass(frozen=True)
+class CommercialGroundingSupplierRiskPriceIntelPolicyInput:
+    quarterly_grounding_api_burn_and_bad_intel_procurement_loss_pool_usd: float = (
+        210000.0
+    )
+    lei_duns_resolved_supplier_hit_by_insolvency_fire_or_sanctions: bool = False
+    relying_on_seo_content_farm_or_stale_2022_data_with_spoofed_header: bool = False
+    bypassing_paywall_via_proxy_or_violating_w3c_tdmrep_robots: bool = False
+    three_tier_webiq_passage_exa_firecrawl_diff_funnel_ready: bool = False
+
+
+def evaluate_commercial_grounding_supplier_risk_price_intel_policy(
+    policy_input: CommercialGroundingSupplierRiskPriceIntelPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_grounding_api_burn_and_bad_intel_procurement_loss_pool_usd
+        ),
+    )
+    if policy_input.bypassing_paywall_via_proxy_or_violating_w3c_tdmrep_robots:
+        return {
+            "status_code": 451,
+            "decision": "UNAUTHORIZED_PAYWALL_BYPASS_OR_TDMREP_ROBOTS_COPYRIGHT_VIOLATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.lei_duns_resolved_supplier_hit_by_insolvency_fire_or_sanctions:
+        return {
+            "status_code": 403,
+            "decision": "VERIFIED_SUPPLIER_ADVERSE_MEDIA_SANCTIONS_OR_INSOLVENCY_HIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.relying_on_seo_content_farm_or_stale_2022_data_with_spoofed_header:
+        return {
+            "status_code": 422,
+            "decision": "UNVERIFIED_CONTENT_FARM_SOURCE_OR_STALE_REPORT_DATA_VINTAGE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.three_tier_webiq_passage_exa_firecrawl_diff_funnel_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "THREE_TIER_GROUNDING_FUNNEL_AND_DIFF_ONLY_CRAWL_CONFIRM",
+            "mandate_token": "commercial_grounding_intel_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_AUTHORITATIVE_GROUNDING_AND_CLEAN_SUPPLIER_AUTHORIZED",
+        "mandate_token": "commercial_grounding_intel_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -47012,6 +47090,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    commercial_grounding_supplier_risk_price_intel_guard = {
+        "authorized_200": evaluate_commercial_grounding_supplier_risk_price_intel_policy(
+            CommercialGroundingSupplierRiskPriceIntelPolicyInput()
+        ),
+        "supplier_adverse_media_403": evaluate_commercial_grounding_supplier_risk_price_intel_policy(
+            CommercialGroundingSupplierRiskPriceIntelPolicyInput(
+                lei_duns_resolved_supplier_hit_by_insolvency_fire_or_sanctions=True
+            )
+        ),
+        "stale_content_farm_422": evaluate_commercial_grounding_supplier_risk_price_intel_policy(
+            CommercialGroundingSupplierRiskPriceIntelPolicyInput(
+                relying_on_seo_content_farm_or_stale_2022_data_with_spoofed_header=True
+            )
+        ),
+        "paywall_tdmrep_violation_451": evaluate_commercial_grounding_supplier_risk_price_intel_policy(
+            CommercialGroundingSupplierRiskPriceIntelPolicyInput(
+                bypassing_paywall_via_proxy_or_violating_w3c_tdmrep_robots=True
+            )
+        ),
+        "three_tier_funnel_409": evaluate_commercial_grounding_supplier_risk_price_intel_policy(
+            CommercialGroundingSupplierRiskPriceIntelPolicyInput(
+                three_tier_webiq_passage_exa_firecrawl_diff_funnel_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -47395,6 +47499,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_bonded_1210_customs_179_guard": cross_border_bonded_1210_customs_179_guard,
         "b2b_o2c_ar_cash_app_short_pay_credit_guard": b2b_o2c_ar_cash_app_short_pay_credit_guard,
         "omnichannel_esl_dynamic_pricing_sco_shrink_guard": omnichannel_esl_dynamic_pricing_sco_shrink_guard,
+        "commercial_grounding_supplier_risk_price_intel_guard": commercial_grounding_supplier_risk_price_intel_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -67129,6 +67234,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="eslsco-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ESL_PICK_TO_LIGHT_AND_SCAN_GO_ARCHWAY_FAST_LANE_CONFIRM · Mandate: omnichannel_esl_sco_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 255 Commercial Search Grounding for Supplier Risk, Price Intel & Research (#374) -->
+      <div class="finops-box" id="commercial-grounding-supplier-risk-price-intel-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🌐 商业搜索接地：供应商舆情尽调、竞品比价与研报采集 (Web IQ vs. Sonar Pro vs. Exa vs. Firecrawl) 沙盒</div>
+            <div class="finops-sub">Round 255 (#374) · LEI/DUNS 法人实体消歧与打款前 72h 破产/火灾/制裁熔断 (HTTP 403) + 剔除 SEO 内容农场与“2026标题装2022旧数据”年份核验 (HTTP 422) + 严守 W3C TDMRep/robots.txt 与禁破付费墙 (HTTP 451) + 90% Web IQ Passage 三级漏斗削减 85.9% Token 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="commgnd-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度全量调用高价整页爬虫烧穿预算、被内容农场过期数据误导高位锁价及向昨夜停产冻结供应商误打预付款损失池 ($)
+            <input type="number" id="commgnd-gross-input" value="210000" min="10000" step="5000" oninput="recalcCommercialGroundingSupplierRiskPriceIntelSandbox()" />
+          </label>
+          <label>LEI / DUNS 四要素法人实体消歧 (防同名公司误报) 与大额打款前 72h 突发破产/停产/制裁舆情熔断门禁
+            <select id="commgnd-risk-select" onchange="recalcCommercialGroundingSupplierRiskPriceIntelSandbox()">
+              <option value="pass">绑定 LEI/注册地精确剔除同名异地企业噪音，且目标供应商过去 72h 无停产/破产/制裁命中 (安全)</option>
+              <option value="block_403">Web IQ 绑定 LEI 检出目标供应商昨晚刚因工厂爆炸被法院冻结账户，立即冻结 $450,000 预付款 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>信源权威度分级 (Tier-1/2 vs 内容农场)、原文逐字引文切片 (quote_span) 与正文统计数据真实年份 (Data Vintage) 门禁
+            <select id="commgnd-vintage-select" onchange="recalcCommercialGroundingSupplierRiskPriceIntelSandbox()">
+              <option value="pass">仅采信权威监管/交易所/行业信源，强制附带原文切片且表格统计期 &lt;= 90天 (合规)</option>
+              <option value="block_422">采信无署名 Affiliate 返利软文 或 网页标题写“[2026最新]”但正文表格实为 2022 年过期数据 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>W3C TDMRep (tdm-reservation: 1) / robots.txt 版权保留协议与严禁挂载住宅代理破解付费墙/登录态门禁
+            <select id="commgnd-copyright-select" onchange="recalcCommercialGroundingSupplierRiskPriceIntelSandbox()">
+              <option value="pass">严格遵循 robots.txt 与 W3C TDMRep 版权声明，使用 Microsoft Web IQ 合规商业接地索引 (安全)</option>
+              <option value="block_451">挂载住宅代理 IP 暴力破解媒体付费研报墙、绕过 CAPTCHA 或强爬声明 tdm-reservation: 1 页面 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>三级商业搜索接地成本漏斗 (90% Web IQ Passage -&gt; 7% Exa/Tavily -&gt; 3% Diff-Only Firecrawl/Browse)
+            <select id="commgnd-opt-select" onchange="recalcCommercialGroundingSupplierRiskPriceIntelSandbox()">
+              <option value="enabled" selected>90% 走 Web IQ Passage 切片 (-85.9% Token) + 7% Exa 语义寻源 + 3% ETag 变更页深爬 (-41% 成本 / HTTP 409)</option>
+              <option value="disabled">所有日常价格与舆情巡检均全量拉取整页 Markdown 或调用高价 Deep Research (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度全页硬爬与假情报亏损池</div>
+            <div class="finops-kpi-val" id="commgnd-gross-kpi">$210,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">三级漏斗与实体核验后净支出</div>
+            <div class="finops-kpi-val" id="commgnd-net-kpi" style="color:#6ee7b7;">$123,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省API账单与风险拦截</div>
+            <div class="finops-kpi-val" id="commgnd-savings-kpi" style="color:#38bdf8;">$86,100</div>
+          </div>
+        </div>
+        <div id="commgnd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 THREE_TIER_GROUNDING_FUNNEL_AND_DIFF_ONLY_CRAWL_CONFIRM · Mandate: commercial_grounding_intel_optim_409
         </div>
       </div>
 
@@ -91261,6 +91423,79 @@ function recalcOmnichannelESLDynamicPricingSCOShrinkSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_ESL_SYNC_AND_MULTIMODAL_SCO_AUTHORIZED · Mandate: omnichannel_esl_sco_escrow_200';
+}}
+
+function recalcCommercialGroundingSupplierRiskPriceIntelSandbox() {{
+  const grossInput = document.getElementById('commgnd-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '210000'));
+  const riskGate = document.getElementById('commgnd-risk-select').value;
+  const vintageGate = document.getElementById('commgnd-vintage-select').value;
+  const copyrightGate = document.getElementById('commgnd-copyright-select').value;
+  const optMode = document.getElementById('commgnd-opt-select').value;
+
+  const grossKpi = document.getElementById('commgnd-gross-kpi');
+  const netKpi = document.getElementById('commgnd-net-kpi');
+  const savingsKpi = document.getElementById('commgnd-savings-kpi');
+  const statusKpi = document.getElementById('commgnd-status-kpi');
+  const banner = document.getElementById('commgnd-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (copyrightGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNAUTHORIZED_PAYWALL_BYPASS_OR_TDMREP_ROBOTS_COPYRIGHT_VIOLATION · Mandate: null';
+    return;
+  }}
+  if (riskGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 VERIFIED_SUPPLIER_ADVERSE_MEDIA_SANCTIONS_OR_INSOLVENCY_HIT · Mandate: null';
+    return;
+  }}
+  if (vintageGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNVERIFIED_CONTENT_FARM_SOURCE_OR_STALE_REPORT_DATA_VINTAGE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 THREE_TIER_GROUNDING_FUNNEL_AND_DIFF_ONLY_CRAWL_CONFIRM · Mandate: commercial_grounding_intel_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_AUTHORITATIVE_GROUNDING_AND_CLEAN_SUPPLIER_AUTHORIZED · Mandate: commercial_grounding_intel_200';
 }}
 
 function updateStage1756Sandbox() {{

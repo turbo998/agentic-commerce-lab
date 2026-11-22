@@ -26143,6 +26143,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("omnichannel-esl-dynamic-pricing-sco-shrink-sandbox", html_zh)
 
+    def test_commercial_grounding_supplier_risk_price_intel_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CommercialGroundingSupplierRiskPriceIntelPolicyInput,
+            evaluate_commercial_grounding_supplier_risk_price_intel_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_commercial_grounding_supplier_risk_price_intel_policy(
+            CommercialGroundingSupplierRiskPriceIntelPolicyInput(
+                quarterly_grounding_api_burn_and_bad_intel_procurement_loss_pool_usd=210000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_AUTHORITATIVE_GROUNDING_AND_CLEAN_SUPPLIER_AUTHORIZED",
+        )
+
+        risk = evaluate_commercial_grounding_supplier_risk_price_intel_policy(
+            CommercialGroundingSupplierRiskPriceIntelPolicyInput(
+                lei_duns_resolved_supplier_hit_by_insolvency_fire_or_sanctions=True
+            )
+        )
+        self.assertEqual(risk["status_code"], 403)
+        self.assertEqual(
+            risk["decision"],
+            "VERIFIED_SUPPLIER_ADVERSE_MEDIA_SANCTIONS_OR_INSOLVENCY_HIT",
+        )
+
+        vintage = evaluate_commercial_grounding_supplier_risk_price_intel_policy(
+            CommercialGroundingSupplierRiskPriceIntelPolicyInput(
+                relying_on_seo_content_farm_or_stale_2022_data_with_spoofed_header=True
+            )
+        )
+        self.assertEqual(vintage["status_code"], 422)
+        self.assertEqual(
+            vintage["decision"],
+            "UNVERIFIED_CONTENT_FARM_SOURCE_OR_STALE_REPORT_DATA_VINTAGE",
+        )
+
+        copyright_err = evaluate_commercial_grounding_supplier_risk_price_intel_policy(
+            CommercialGroundingSupplierRiskPriceIntelPolicyInput(
+                bypassing_paywall_via_proxy_or_violating_w3c_tdmrep_robots=True
+            )
+        )
+        self.assertEqual(copyright_err["status_code"], 451)
+        self.assertEqual(
+            copyright_err["decision"],
+            "UNAUTHORIZED_PAYWALL_BYPASS_OR_TDMREP_ROBOTS_COPYRIGHT_VIOLATION",
+        )
+
+        optim = evaluate_commercial_grounding_supplier_risk_price_intel_policy(
+            CommercialGroundingSupplierRiskPriceIntelPolicyInput(
+                quarterly_grounding_api_burn_and_bad_intel_procurement_loss_pool_usd=210000.0,
+                three_tier_webiq_passage_exa_firecrawl_diff_funnel_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 86100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 123900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("commercial_grounding_supplier_risk_price_intel_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("commercial-grounding-supplier-risk-price-intel-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
