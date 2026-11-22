@@ -34301,6 +34301,88 @@ def evaluate_cross_border_bonded_1210_customs_179_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BO2CARCashAppShortPayCreditPolicyInput:
+    quarterly_short_pay_writeoff_uninsured_default_and_false_hold_pool_usd: float = (
+        350000.0
+    )
+    auto_writing_off_retail_short_pay_deduction_despite_signed_pod: bool = False
+    locking_new_order_on_credit_hold_while_wire_sits_in_unapplied_cash: bool = False
+    shipping_on_net_terms_after_credit_insurer_limit_revoked_or_past_60d_mep: bool = (
+        False
+    )
+    insured_net60_plus_pay_by_bank_split_and_auto_pod_dispute_ready: bool = False
+
+
+def evaluate_b2b_o2c_ar_cash_app_short_pay_credit_policy(
+    policy_input: B2BO2CARCashAppShortPayCreditPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_short_pay_writeoff_uninsured_default_and_false_hold_pool_usd
+        ),
+    )
+    if (
+        policy_input.shipping_on_net_terms_after_credit_insurer_limit_revoked_or_past_60d_mep
+    ):
+        return {
+            "status_code": 451,
+            "decision": "CREDIT_INSURANCE_LIMIT_REVOKED_OR_MEP_OVERDUE_SHIPMENT_VIOLATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.auto_writing_off_retail_short_pay_deduction_despite_signed_pod:
+        return {
+            "status_code": 403,
+            "decision": "INVALID_SHORT_PAY_DEDUCTION_WITHOUT_POD_OR_PROMO_PROOF",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.locking_new_order_on_credit_hold_while_wire_sits_in_unapplied_cash:
+        return {
+            "status_code": 422,
+            "decision": "UNAPPLIED_CASH_PENDING_MATCH_OR_BLIND_CREDIT_HOLD_ON_PAID_BUYER",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.insured_net60_plus_pay_by_bank_split_and_auto_pod_dispute_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PARTIAL_CREDIT_LIMIT_RELEASE_WITH_PAY_BY_BANK_SPLIT_CONFIRM",
+            "mandate_token": "b2b_o2c_ar_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CASH_APP_AND_INSURED_CREDIT_LIMIT_AUTHORIZED",
+        "mandate_token": "b2b_o2c_ar_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -46798,6 +46880,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_o2c_ar_cash_app_short_pay_credit_guard = {
+        "authorized_200": evaluate_b2b_o2c_ar_cash_app_short_pay_credit_policy(
+            B2BO2CARCashAppShortPayCreditPolicyInput()
+        ),
+        "blind_short_pay_writeoff_403": evaluate_b2b_o2c_ar_cash_app_short_pay_credit_policy(
+            B2BO2CARCashAppShortPayCreditPolicyInput(
+                auto_writing_off_retail_short_pay_deduction_despite_signed_pod=True
+            )
+        ),
+        "unapplied_cash_false_hold_422": evaluate_b2b_o2c_ar_cash_app_short_pay_credit_policy(
+            B2BO2CARCashAppShortPayCreditPolicyInput(
+                locking_new_order_on_credit_hold_while_wire_sits_in_unapplied_cash=True
+            )
+        ),
+        "uninsured_mep_shipment_451": evaluate_b2b_o2c_ar_cash_app_short_pay_credit_policy(
+            B2BO2CARCashAppShortPayCreditPolicyInput(
+                shipping_on_net_terms_after_credit_insurer_limit_revoked_or_past_60d_mep=True
+            )
+        ),
+        "split_credit_pay_by_bank_409": evaluate_b2b_o2c_ar_cash_app_short_pay_credit_policy(
+            B2BO2CARCashAppShortPayCreditPolicyInput(
+                insured_net60_plus_pay_by_bank_split_and_auto_pod_dispute_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -47179,6 +47287,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "omnichannel_retail_markdown_broken_size_guard": omnichannel_retail_markdown_broken_size_guard,
         "b2b_corporate_travel_per_diem_folio_vat_guard": b2b_corporate_travel_per_diem_folio_vat_guard,
         "cross_border_bonded_1210_customs_179_guard": cross_border_bonded_1210_customs_179_guard,
+        "b2b_o2c_ar_cash_app_short_pay_credit_guard": b2b_o2c_ar_cash_app_short_pay_credit_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -66799,6 +66908,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="cbec1210-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 BONDED_1210_VS_GENERAL_TRADE_TAX_ROUTING_AND_QUOTA_RESTORE_CONFIRM · Mandate: cbec_1210_customs_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 253 B2B O2C, AR Cash Application, Short-Pay & Credit Insurance Escrow (#372) -->
+      <div class="finops-box" id="b2b-o2c-ar-cash-app-short-pay-credit-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏦 企业 B2B 订单到收款 (O2C)、应收智能核销、商超短付抗辩与信用保险 (HighRadius / Esker / Allianz Trade) 沙盒</div>
+            <div class="finops-sub">Round 253 (#372) · 商超短付扣款 (Short-Pay) 签收单 POD/BOL 验真与反盲目核销 (HTTP 403) + 在途未认领汇款 (Unapplied Cash) 子集和秒配防误锁单 (HTTP 422) + 安联/科法斯信保实时保额与 MEP 60天逾期停发锁 (HTTP 451) + 保额内 Net-60 + 超额 Pay-by-Bank 1.5% 现结折扣分拆放行净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="b2bo2c-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度商超无理短付被盲目核销、超信保 MEP 60天违约发货遭拒赔及钱已到账未对平误锁大客户新单池 ($)
+            <input type="number" id="b2bo2c-gross-input" value="350000" min="10000" step="5000" oninput="recalcB2BO2CARCashAppShortPayCreditSandbox()" />
+          </label>
+          <label>大型商超买方短付扣款 (Short-Pay / OTIF Deduction) 承运商签收单 (Signed POD/BOL) 验真与自动申诉门禁
+            <select id="b2bo2c-shortpay-select" onchange="recalcB2BO2CARCashAppShortPayCreditSandbox()">
+              <option value="pass">核对买方盖章足额签收单 (Signed POD) 拦截无理短付，自动打包三单证据上传买方门户追回 78% 扣款 (安全)</option>
+              <option value="block_403">买方汇款少付 $8,500 谎称收货短少，AR Agent 不查签收单直接自动坏账核销抹平 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>多通道汇款通知 (ISO 20022 camt.054 / Portal) 子集和秒级核销与防误伤式信用锁单 (Credit Hold) 门禁
+            <select id="b2bo2c-cashapp-select" onchange="recalcB2BO2CARCashAppShortPayCreditSandbox()">
+              <option value="pass">锁单前先用确定性子集和求解器秒级配平客户在途未认领汇款 ($191.5k)，实时释放授信额度 (合规)</option>
+              <option value="block_422">客户电汇已进银行因附言截断挂在暂收款，ERP 却以额度爆表盲目锁死客户 $180k 紧急补货新单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>贸易信用保险 (Allianz Trade / Coface / 中国信保) 实时有效保额与 MEP 60天最长逾期硬停发门禁
+            <select id="b2bo2c-ins-select" onchange="recalcB2BO2CARCashAppShortPayCreditSandbox()">
+              <option value="pass">买方无超 MEP 60天逾期发票且赊销敞口严格处于信保实时有效批复保额之内 (安全)</option>
+              <option value="block_451">买方旧账已逾期 72天突破信保 MEP 60天停发红线 或 保额已被撤销仍强行赊销发货导致拒赔 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>超保额旺季大单“信保额度内 Net-60 + 超额部分实时银行直付 (Pay-by-Bank 享 1.5% 现结折扣)”分拆放单
+            <select id="b2bo2c-opt-select" onchange="recalcB2BO2CARCashAppShortPayCreditSandbox()">
+              <option value="enabled" selected>保额内 $120k 走信保 Net-60 + 超额 $60k 走实时 Pay-by-Bank 享 1.5% 折扣秒放单 + 自动 POD 追款 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">超信用保额整单人工挂起等待审批且手工邮件催收核销 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度短付核销与拒赔锁单损失</div>
+            <div class="finops-kpi-val" id="b2bo2c-gross-kpi">$350,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">秒级核销与POD申诉后净损耗</div>
+            <div class="finops-kpi-val" id="b2bo2c-net-kpi" style="color:#6ee7b7;">$217,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省短付追回与防丢单</div>
+            <div class="finops-kpi-val" id="b2bo2c-savings-kpi" style="color:#38bdf8;">$133,000</div>
+          </div>
+        </div>
+        <div id="b2bo2c-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PARTIAL_CREDIT_LIMIT_RELEASE_WITH_PAY_BY_BANK_SPLIT_CONFIRM · Mandate: b2b_o2c_ar_escrow_optim_409
         </div>
       </div>
 
@@ -90785,6 +90951,79 @@ function recalcCrossBorderBonded1210Customs179Sandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CUSTOMS_179_THREE_WAY_MATCH_AND_QUOTA_AUTHORIZED · Mandate: cbec_1210_customs_escrow_200';
+}}
+
+function recalcB2BO2CARCashAppShortPayCreditSandbox() {{
+  const grossInput = document.getElementById('b2bo2c-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '350000'));
+  const shortpayGate = document.getElementById('b2bo2c-shortpay-select').value;
+  const cashappGate = document.getElementById('b2bo2c-cashapp-select').value;
+  const insGate = document.getElementById('b2bo2c-ins-select').value;
+  const optMode = document.getElementById('b2bo2c-opt-select').value;
+
+  const grossKpi = document.getElementById('b2bo2c-gross-kpi');
+  const netKpi = document.getElementById('b2bo2c-net-kpi');
+  const savingsKpi = document.getElementById('b2bo2c-savings-kpi');
+  const statusKpi = document.getElementById('b2bo2c-status-kpi');
+  const banner = document.getElementById('b2bo2c-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (insGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CREDIT_INSURANCE_LIMIT_REVOKED_OR_MEP_OVERDUE_SHIPMENT_VIOLATION · Mandate: null';
+    return;
+  }}
+  if (shortpayGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INVALID_SHORT_PAY_DEDUCTION_WITHOUT_POD_OR_PROMO_PROOF · Mandate: null';
+    return;
+  }}
+  if (cashappGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNAPPLIED_CASH_PENDING_MATCH_OR_BLIND_CREDIT_HOLD_ON_PAID_BUYER · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PARTIAL_CREDIT_LIMIT_RELEASE_WITH_PAY_BY_BANK_SPLIT_CONFIRM · Mandate: b2b_o2c_ar_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CASH_APP_AND_INSURED_CREDIT_LIMIT_AUTHORIZED · Mandate: b2b_o2c_ar_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

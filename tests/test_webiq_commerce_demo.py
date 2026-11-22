@@ -26009,6 +26009,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-bonded-1210-customs-179-sandbox", html_zh)
 
+    def test_b2b_o2c_ar_cash_app_short_pay_credit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BO2CARCashAppShortPayCreditPolicyInput,
+            evaluate_b2b_o2c_ar_cash_app_short_pay_credit_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_o2c_ar_cash_app_short_pay_credit_policy(
+            B2BO2CARCashAppShortPayCreditPolicyInput(
+                quarterly_short_pay_writeoff_uninsured_default_and_false_hold_pool_usd=350000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CASH_APP_AND_INSURED_CREDIT_LIMIT_AUTHORIZED",
+        )
+
+        shortpay = evaluate_b2b_o2c_ar_cash_app_short_pay_credit_policy(
+            B2BO2CARCashAppShortPayCreditPolicyInput(
+                auto_writing_off_retail_short_pay_deduction_despite_signed_pod=True
+            )
+        )
+        self.assertEqual(shortpay["status_code"], 403)
+        self.assertEqual(
+            shortpay["decision"],
+            "INVALID_SHORT_PAY_DEDUCTION_WITHOUT_POD_OR_PROMO_PROOF",
+        )
+
+        cashapp = evaluate_b2b_o2c_ar_cash_app_short_pay_credit_policy(
+            B2BO2CARCashAppShortPayCreditPolicyInput(
+                locking_new_order_on_credit_hold_while_wire_sits_in_unapplied_cash=True
+            )
+        )
+        self.assertEqual(cashapp["status_code"], 422)
+        self.assertEqual(
+            cashapp["decision"],
+            "UNAPPLIED_CASH_PENDING_MATCH_OR_BLIND_CREDIT_HOLD_ON_PAID_BUYER",
+        )
+
+        ins = evaluate_b2b_o2c_ar_cash_app_short_pay_credit_policy(
+            B2BO2CARCashAppShortPayCreditPolicyInput(
+                shipping_on_net_terms_after_credit_insurer_limit_revoked_or_past_60d_mep=True
+            )
+        )
+        self.assertEqual(ins["status_code"], 451)
+        self.assertEqual(
+            ins["decision"],
+            "CREDIT_INSURANCE_LIMIT_REVOKED_OR_MEP_OVERDUE_SHIPMENT_VIOLATION",
+        )
+
+        optim = evaluate_b2b_o2c_ar_cash_app_short_pay_credit_policy(
+            B2BO2CARCashAppShortPayCreditPolicyInput(
+                quarterly_short_pay_writeoff_uninsured_default_and_false_hold_pool_usd=350000.0,
+                insured_net60_plus_pay_by_bank_split_and_auto_pod_dispute_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 133000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 217000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_o2c_ar_cash_app_short_pay_credit_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-o2c-ar-cash-app-short-pay-credit-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
