@@ -25540,6 +25540,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-ap-virtual-card-stp-surcharge-rebate-sandbox", html_zh)
 
+    def test_ota_hotel_direct_points_cash_upgrade_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OTAHotelDirectPointsCashUpgradePolicyInput,
+            evaluate_ota_hotel_direct_points_cash_upgrade_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_hotel_direct_points_cash_upgrade_policy(
+            OTAHotelDirectPointsCashUpgradePolicyInput(
+                quarterly_loyalty_point_leakage_and_upgrade_dispute_pool_usd=220000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CPP_HURDLE_AND_PMS_SUITE_LOCK_AUTHORIZED",
+        )
+
+        cpp = evaluate_ota_hotel_direct_points_cash_upgrade_policy(
+            OTAHotelDirectPointsCashUpgradePolicyInput(
+                sub_floor_cpp_redemption_or_split_five_night_award_stay=True
+            )
+        )
+        self.assertEqual(cpp["status_code"], 403)
+        self.assertEqual(
+            cpp["decision"],
+            "SUB_FLOOR_CPP_POINT_BURN_OR_SPLIT_5TH_NIGHT_LOSS",
+        )
+
+        pms = evaluate_ota_hotel_direct_points_cash_upgrade_policy(
+            OTAHotelDirectPointsCashUpgradePolicyInput(
+                capturing_upgrade_bid_before_pms_room_lock_or_award_resort_fee=True
+            )
+        )
+        self.assertEqual(pms["status_code"], 422)
+        self.assertEqual(
+            pms["decision"],
+            "UNASSIGNED_PMS_UPGRADE_CAPTURE_OR_AWARD_RESORT_FEE",
+        )
+
+        ato = evaluate_ota_hotel_direct_points_cash_upgrade_policy(
+            OTAHotelDirectPointsCashUpgradePolicyInput(
+                unverified_second_guest_name_swap_or_expired_fnc_forfeiture=True
+            )
+        )
+        self.assertEqual(ato["status_code"], 451)
+        self.assertEqual(
+            ato["decision"],
+            "BROKER_SECOND_GUEST_ATO_OR_CANCELED_FNC_FORFEITURE",
+        )
+
+        optim = evaluate_ota_hotel_direct_points_cash_upgrade_policy(
+            OTAHotelDirectPointsCashUpgradePolicyInput(
+                quarterly_loyalty_point_leakage_and_upgrade_dispute_pool_usd=220000.0,
+                dynamic_award_repricing_and_t24h_pms_suite_auction_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 79200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 140800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_hotel_direct_points_cash_upgrade_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-hotel-direct-points-cash-upgrade-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

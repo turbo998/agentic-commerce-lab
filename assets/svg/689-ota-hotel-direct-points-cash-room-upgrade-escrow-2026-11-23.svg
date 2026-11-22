@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg689" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg689)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 246 · Hotel Direct `Points+Cash`, `5th-Night-Free` &amp; `Plusgrade / Nor1` Upgrade Escrow</text>
+  <text x="48" y="74" class="sub">Marriott Bonvoy / Hilton Honors / Oracle Opera Nor1 / Plusgrade · `CPP &gt;= 0.8¢` Floor · `5th-Night` Merge · `T-24h` Suite Clear (-36%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #689 · FAQ #365</text>
+
+  <!-- Lane 1: Sub-Floor Cents-Per-Point (CPP < 0.8c) Burn & Splitting a 5-Night Stay Losing "5th Night Free" -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. `CPP` Floor &amp; `5th-Night` Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Blocks Burning Points Below `CPP` Valuation Floor:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Require `Redemption_CPP == (Cash_Net - Taxes) /`</text>
+  <text x="54" y="200" class="mono">`Points &gt;= Hurdle_Floor (0.80¢ / 1.50¢)`!</text>
+  <text x="44" y="223" class="body-txt">• Prevents Splitting 5-Night Award Stays:</text>
+  <text x="54" y="243" class="mono">Enforce Single `5-Night PNR` for `5th_Night_Free`</text>
+  <text x="44" y="266" class="body-txt">• Stops naive agents burning `100,000` points for</text>
+  <text x="54" y="286" class="body-txt">a `$320` roadside motel (`0.32¢/pt`) or losing</text>
+  <text x="54" y="304" class="body-txt">80,000 points by booking `2 + 3` separate nights</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 SUB_FLOOR_CPP_POINT_BURN_OR_SPLIT_5TH_NIGHT_LOSS</text>
+
+  <!-- Lane 2: Paid Standby Upgrade (Nor1 / Plusgrade) Capturing Before Opera PMS Room Assignment & Resort-Fee Double-Billing -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. `PMS` Suite Lock &amp; Resort-Fee Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Never Capture Upgrade Bid Before `PMS` Room Lock:</text>
+  <text x="442" y="182" class="mono">Require `Opera_PMS_Room_Assigned == True` &amp;</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Verify `Unobstructed_View / Non_Connecting`!</text>
+  <text x="432" y="223" class="body-txt">• Blocks Illegally Charging `$55` Resort Fee on Awards:</text>
+  <text x="442" y="243" class="mono">Enforce `$0_Resort_Fee` on `Hilton/Hyatt Awards`</text>
+  <text x="432" y="266" class="body-txt">• Prevents charging a guest `$150/night` for an</text>
+  <text x="442" y="286" class="body-txt">Ocean Suite upgrade only for the front desk to</text>
+  <text x="442" y="304" class="body-txt">say "Sorry, suites are sold out" at check-in</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNASSIGNED_PMS_UPGRADE_CAPTURE_OR_AWARD_RESORT_FEE</text>
+
+  <!-- Lane 3: Third-Party Mileage-Broker Guest Name Swap (ATO) & Expired-Points Forfeiture on Cancellation -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Broker `ATO` &amp; Expiry Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Gray-Market Broker "Second-Guest" Swaps:</text>
+  <text x="830" y="182" class="mono">Require `FIDO2_StepUp` When Adding Unrelated</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">`2nd_CheckIn_Guest` on High-Value Award Stays!</text>
+  <text x="820" y="223" class="body-txt">• 30-Day Grace Extension on Canceled Award Points:</text>
+  <text x="830" y="243" class="body-txt">Prevents points or Free-Night Certificates (`FNC`)</text>
+  <text x="830" y="261" class="body-txt">from instantly expiring into thin air when a</text>
+  <text x="830" y="279" class="body-txt">hotel or flight cancellation forces a rebook</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 BROKER_SECOND_GUEST_ATO_OR_CANCELED_FNC_FORFEITURE</text>
+
+  <!-- Bottom Dynamic Points+Cash Slider, T-24h Unsold Suite Clearing & Award Rate-Drop Re-Book -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Optimal `Points+Cash` Frontier + `T-24h` Unsold Suite Auction + Dynamic Award Re-Pricing (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① `Points+Cash` Pareto Slider</text>
+  <text x="62" y="462" class="body-txt">Solves exact mix of points</text>
+  <text x="62" y="480" class="body-txt">vs cash that maximizes</text>
+  <text x="62" y="498" class="body-txt">`CPP &gt;= 1.15¢` while hitting</text>
+  <text x="62" y="516" class="mono">5th-Night-Free thresholds!</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② `T-24h` Unsold Suite Clear</text>
+  <text x="337" y="462" class="body-txt">Clears `Plusgrade / Nor1`</text>
+  <text x="337" y="480" class="body-txt">paid bids *after* complimentary</text>
+  <text x="337" y="498" class="body-txt">Elite upgrades at `T-24h`</text>
+  <text x="337" y="516" class="mono">+$42 RevPAR Pure Margin!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Award Point-Drop Re-Price</text>
+  <text x="622" y="462" class="body-txt">Monitors dynamic award</text>
+  <text x="622" y="480" class="body-txt">pricing (`85k -&gt; 68k pts`)</text>
+  <text x="622" y="498" class="body-txt">&amp; auto-refunds the `17,000`</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">point difference in-place!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Attribute-Based Room (`ABS`)</text>
+  <text x="907" y="462" class="body-txt">Lets guests pay `+$18` for</text>
+  <text x="907" y="480" class="body-txt">exact attributes (`High`</text>
+  <text x="907" y="498" class="body-txt">`Floor`, `Away from Elevator`)</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Loyalty &amp; RevPAR Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Loyalty Leakage &amp; Upgrade Loss Saved</text>
+  <text x="46" y="642" class="mono">$79,200 Saved / $220k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">&gt;=0.80¢ CPP</text>
+  <text x="336" y="626" class="kpi-lbl">Minimum Point Redemption Hurdle</text>
+  <text x="336" y="642" class="mono">100% 5th-Night-Free Captured</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% PMS Lock</text>
+  <text x="626" y="626" class="kpi-lbl">Capture Only After Suite Assigned</text>
+  <text x="626" y="642" class="mono">Zero Check-In Downgrade Disputes</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">-17k Pts Saved</text>
+  <text x="916" y="626" class="kpi-lbl">In-Place Dynamic Award Re-Pricing</text>
+  <text x="916" y="642" class="mono">Zero Broker 2nd-Guest ATO</text>
+</svg>

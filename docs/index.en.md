@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`364` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`365` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (22 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (51 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (138 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (139 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (81 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (30 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (42 guides)](#tax-fx-privacy-disputes)
@@ -107,7 +107,7 @@
 | 51 | **Enterprise B2B Accounts Payable (`AP`) Virtual Card Straight-Through Processing (`STP`: `Boost Payment / Visa Commercial Pay / Mastercard Track / Coupa Pay / BILL`), Anti-Surcharge Gate & `Large-Ticket Level-3` Rebate Escrow (`-38%` AP Cost) Agent Architecture Selection FAQ** | [English](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.en.md) · [中文](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (138 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (139 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -251,6 +251,7 @@
 | 136 | **OTA & Corporate Travel High-Speed Rail, `Air-Rail Interline` & `EU 2021/782` Delay Escrow (`Trainline / Amadeus Rail / Eurostar / DB Rail&Fly / Ctrip / 12306`), Official `$0` Waitlist, Protected Intermodal `PNR`, Same-Seat `SplitSave` & Auto Delay-Repay (`-36%` Travel Loss) Agent Architecture Selection FAQ** | [English](ota-high-speed-rail-air-rail-interline-seat-selection-delay-rebooking-escrow-agent-selection-faq.en.md) · [中文](ota-high-speed-rail-air-rail-interline-seat-selection-delay-rebooking-escrow-agent-selection-faq.md) |
 | 137 | **Alcohol, Wine-Club & Age-Restricted Instant-Delivery Escrow (`Total Wine / Instacart / Uber Eats / ReserveBar / Sovos ShipCompliant`), Doorstep `AAMVA PDF417` Scan, `3-Tier` `ZIP+4` Compliance & `>=27°C` Thermal Cold-Chain (`-37%` Fine & Spoilage Loss) Agent Architecture Selection FAQ** | [English](ecommerce-grocery-alcohol-tobacco-age-verification-dram-shop-curbside-escrow-agent-selection-faq.en.md) · [中文](ecommerce-grocery-alcohol-tobacco-age-verification-dram-shop-curbside-escrow-agent-selection-faq.md) |
 | 138 | **Baby, Maternity & Juvenile Gear E-Commerce Escrow (`Babylist / Target Baby Registry / Amazon Baby / Aeroflow`), Car-Seat & Formula Zero-Restock Gate, `WHO` Growth-Curve Diaper `Size-Up`, `CPSC §104` Recall & `ACA $0 DME` Breast Pump (`-37%` Churn & Return Loss) Agent Architecture Selection FAQ** | [English](ecommerce-baby-maternity-gear-cpsc-recall-car-seat-expiry-diaper-sizeup-escrow-agent-selection-faq.en.md) · [中文](ecommerce-baby-maternity-gear-cpsc-recall-car-seat-expiry-diaper-sizeup-escrow-agent-selection-faq.md) |
+| 139 | **Hotel Direct & OTA `Points + Cash`, `5th Night Free` & Pre-Arrival Room-Upgrade Bidding Escrow (`Marriott Bonvoy / Hilton Honors / Plusgrade / Oracle Opera Nor1`), `CPP >= 0.80¢` Floor, `T-24h PMS` Suite Lock & Dynamic Award Re-Pricing (`-36%` Loyalty & RevPAR Loss) Agent Architecture Selection FAQ** | [English](ota-hotel-direct-booking-Fifth-night-free-points-cash-room-upgrade-escrow-agent-selection-faq.en.md) · [中文](ota-hotel-direct-booking-Fifth-night-free-points-cash-room-upgrade-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (81 Guides)

@@ -33765,6 +33765,82 @@ def evaluate_b2b_ap_virtual_card_stp_surcharge_rebate_policy(
     }
 
 
+@dataclass(frozen=True)
+class OTAHotelDirectPointsCashUpgradePolicyInput:
+    quarterly_loyalty_point_leakage_and_upgrade_dispute_pool_usd: float = 220000.0
+    sub_floor_cpp_redemption_or_split_five_night_award_stay: bool = False
+    capturing_upgrade_bid_before_pms_room_lock_or_award_resort_fee: bool = False
+    unverified_second_guest_name_swap_or_expired_fnc_forfeiture: bool = False
+    dynamic_award_repricing_and_t24h_pms_suite_auction_ready: bool = False
+
+
+def evaluate_ota_hotel_direct_points_cash_upgrade_policy(
+    policy_input: OTAHotelDirectPointsCashUpgradePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_loyalty_point_leakage_and_upgrade_dispute_pool_usd
+        ),
+    )
+    if policy_input.unverified_second_guest_name_swap_or_expired_fnc_forfeiture:
+        return {
+            "status_code": 451,
+            "decision": "BROKER_SECOND_GUEST_ATO_OR_CANCELED_FNC_FORFEITURE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sub_floor_cpp_redemption_or_split_five_night_award_stay:
+        return {
+            "status_code": 403,
+            "decision": "SUB_FLOOR_CPP_POINT_BURN_OR_SPLIT_5TH_NIGHT_LOSS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.capturing_upgrade_bid_before_pms_room_lock_or_award_resort_fee:
+        return {
+            "status_code": 422,
+            "decision": "UNASSIGNED_PMS_UPGRADE_CAPTURE_OR_AWARD_RESORT_FEE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dynamic_award_repricing_and_t24h_pms_suite_auction_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DYNAMIC_AWARD_REPRICING_AND_T24H_SUITE_AUCTION_CONFIRM",
+            "mandate_token": "hotel_loyalty_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CPP_HURDLE_AND_PMS_SUITE_LOCK_AUTHORIZED",
+        "mandate_token": "hotel_loyalty_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -46080,6 +46156,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_hotel_direct_points_cash_upgrade_guard = {
+        "authorized_200": evaluate_ota_hotel_direct_points_cash_upgrade_policy(
+            OTAHotelDirectPointsCashUpgradePolicyInput()
+        ),
+        "low_cpp_or_split_403": evaluate_ota_hotel_direct_points_cash_upgrade_policy(
+            OTAHotelDirectPointsCashUpgradePolicyInput(
+                sub_floor_cpp_redemption_or_split_five_night_award_stay=True
+            )
+        ),
+        "unassigned_pms_or_fee_422": evaluate_ota_hotel_direct_points_cash_upgrade_policy(
+            OTAHotelDirectPointsCashUpgradePolicyInput(
+                capturing_upgrade_bid_before_pms_room_lock_or_award_resort_fee=True
+            )
+        ),
+        "broker_ato_or_fnc_451": evaluate_ota_hotel_direct_points_cash_upgrade_policy(
+            OTAHotelDirectPointsCashUpgradePolicyInput(
+                unverified_second_guest_name_swap_or_expired_fnc_forfeiture=True
+            )
+        ),
+        "reprice_t24h_suite_409": evaluate_ota_hotel_direct_points_cash_upgrade_policy(
+            OTAHotelDirectPointsCashUpgradePolicyInput(
+                dynamic_award_repricing_and_t24h_pms_suite_auction_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -46454,6 +46556,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_b2b_vat_vies_peppol_guard": cross_border_b2b_vat_vies_peppol_guard,
         "ecommerce_baby_maternity_cpsc_diaper_sizeup_guard": ecommerce_baby_maternity_cpsc_diaper_sizeup_guard,
         "b2b_ap_virtual_card_stp_surcharge_rebate_guard": b2b_ap_virtual_card_stp_surcharge_rebate_guard,
+        "ota_hotel_direct_points_cash_upgrade_guard": ota_hotel_direct_points_cash_upgrade_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -65675,6 +65778,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="apvcnstp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 STP_ACQUIRER_PUSH_AND_THREE_RAIL_YIELD_OPTIMIZER_CONFIRM · Mandate: b2b_ap_vcn_stp_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 246 Hotel Direct Points+Cash, 5th-Night-Free & Plusgrade/Nor1 Upgrade Escrow (#365) -->
+      <div class="finops-box" id="ota-hotel-direct-points-cash-upgrade-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏨 酒店集团官渠常旅客 Points+Cash、住四免一与竞价升舱 (Marriott / Hilton / Plusgrade / Oracle Opera Nor1) 沙盒</div>
+            <div class="finops-sub">Round 246 (#365) · 每积分价值 (CPP &gt;=0.80¢) 底线与连住 5 晚住四免一合并锁 (HTTP 403) + T-24h Opera PMS 物理套房号锁定后实扣与积分房 $0 度假村费 (HTTP 422) + 添加第二同住人 FIDO2 防黄牛盗刷与退订房券 30天复活锁 (HTTP 451) + 积分动态降价原位退差与尾房出清净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="hotelloy-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 0.32¢ 贱卖积分或拆单弄丢住四免一、竞价升舱提前扣款到店却无套房拒付、以及票代添加第二同住人盗刷池 ($)
+            <input type="number" id="hotelloy-gross-input" value="220000" min="10000" step="5000" oninput="recalcOTAHotelDirectPointsCashUpgradeSandbox()" />
+          </label>
+          <label>每积分含税含度假村费真实价值 (Real CPP &gt;=0.80¢) 保底红线与连住 5 晚“住四免一 (5th Night Free)”合并门禁
+            <select id="hotelloy-cpp-select" onchange="recalcOTAHotelDirectPointsCashUpgradeSandbox()">
+              <option value="pass">核算真实 CPP = 1.14¢ &gt;= 0.80¢ 底线 + 5 晚连续入住合并单一 PNR 自动免除第 5 晚 70,000 积分 (合规)</option>
+              <option value="block_403">拿 10万积分换 $320 郊区酒店(仅 0.32¢/分冥币价) 或 将 5 晚行程拆成 2+3 两单白白丢掉第 5 晚免费福利 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>入住前竞价升舱 (Plusgrade / Nor1) 绑定 T-24h Opera PMS 物理锁房号后实扣与全积分房 $0 度假村费门禁
+            <select id="hotelloy-pms-select" onchange="recalcOTAHotelDirectPointsCashUpgradeSandbox()">
+              <option value="pass">T-24h 先保高卡免费升房，在 Opera PMS 锁死无遮挡 Suite 1201 后才扣取升舱费 + 抹除 $275 积分房度假村费 (合规)</option>
+              <option value="block_422">未分配具体房号就提前 4 天实扣 $600 升舱费到店却说套房满了 或 全积分兑换房晚违规加收 $55/晚度假村费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>积分房添加非同姓“第二入住人”强制 FIDO2 生物核身防黄牛倒卖与退订过期房券 (FNC) 30 天复活期门禁
+            <select id="hotelloy-ato-select" onchange="recalcOTAHotelDirectPointsCashUpgradeSandbox()">
+              <option value="pass">本人入住(或添加同住人通过 FIDO2 Passkey 强核身) + 因航变退订已过原到期日的房券自动顺延 30 天 (安全)</option>
+              <option value="block_451">撞库黑客/黄牛借添加陌生“第二入住人”把盗刷的 $1,200 积分房挂闲鱼倒卖 或 退订时直接没收过期房券 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>动态积分降价原位自动退差 (In-Place Award Re-Pricing -20k 分) + T-24h 空置套房出清 (+$42 RevPAR) + ABS 属性选房
+            <select id="hotelloy-opt-select" onchange="recalcOTAHotelDirectPointsCashUpgradeSandbox()">
+              <option value="enabled" selected>积分从 70k 跌至 65k/晚自动 Modify 原位退回 20,000 分 + T-24h 闲置套房竞价出清 + +$18 选高层安静房 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">无动态积分降价监控与属性化选房的常规常旅客预订 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度积分贬值与升舱拒付池</div>
+            <div class="finops-kpi-val" id="hotelloy-gross-kpi">$220,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">CPP保底与PMS锁房后净损耗</div>
+            <div class="finops-kpi-val" id="hotelloy-net-kpi" style="color:#6ee7b7;">$140,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省积分流失与拒付赔付</div>
+            <div class="finops-kpi-val" id="hotelloy-savings-kpi" style="color:#38bdf8;">$79,200</div>
+          </div>
+        </div>
+        <div id="hotelloy-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DYNAMIC_AWARD_REPRICING_AND_T24H_SUITE_AUCTION_CONFIRM · Mandate: hotel_loyalty_escrow_optim_409
         </div>
       </div>
 
@@ -89150,6 +89310,79 @@ function recalcB2BAPVirtualCardSTPSurchargeRebateSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_ZERO_SURCHARGE_AND_STP_LEVEL3_VCN_AUTHORIZED · Mandate: b2b_ap_vcn_stp_escrow_200';
+}}
+
+function recalcOTAHotelDirectPointsCashUpgradeSandbox() {{
+  const grossInput = document.getElementById('hotelloy-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '220000'));
+  const cppGate = document.getElementById('hotelloy-cpp-select').value;
+  const pmsGate = document.getElementById('hotelloy-pms-select').value;
+  const atoGate = document.getElementById('hotelloy-ato-select').value;
+  const optMode = document.getElementById('hotelloy-opt-select').value;
+
+  const grossKpi = document.getElementById('hotelloy-gross-kpi');
+  const netKpi = document.getElementById('hotelloy-net-kpi');
+  const savingsKpi = document.getElementById('hotelloy-savings-kpi');
+  const statusKpi = document.getElementById('hotelloy-status-kpi');
+  const banner = document.getElementById('hotelloy-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (atoGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 BROKER_SECOND_GUEST_ATO_OR_CANCELED_FNC_FORFEITURE · Mandate: null';
+    return;
+  }}
+  if (cppGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SUB_FLOOR_CPP_POINT_BURN_OR_SPLIT_5TH_NIGHT_LOSS · Mandate: null';
+    return;
+  }}
+  if (pmsGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNASSIGNED_PMS_UPGRADE_CAPTURE_OR_AWARD_RESORT_FEE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DYNAMIC_AWARD_REPRICING_AND_T24H_SUITE_AUCTION_CONFIRM · Mandate: hotel_loyalty_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CPP_HURDLE_AND_PMS_SUITE_LOCK_AUTHORIZED · Mandate: hotel_loyalty_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

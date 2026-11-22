@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`364` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`365` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（22 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（51 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（138 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（139 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（81 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（30 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（42 篇）](#tax-fx-privacy-disputes)
@@ -107,7 +107,7 @@
 | 51 | **企业 B2B 应付账款（`AP`）供应商虚拟卡直通式清算（`STP Virtual Card`：`Boost Payment / Visa Commercial Pay / Mastercard Track / Coupa Pay / BILL`）、防“贪图 `1.5%` 虚拟卡返现却被供应商反收 `3.0%` 刷卡附加费（Surcharge）倒亏 `1.5%`”、防“把 16 位卡号发邮件让供应商手工敲 POS 机触发 `Level-1` 高费率拒收”与大额 `Level-3` 降费直充托管“防虚拟卡超 14 天未刷占压授信池与 `VCN vs 早付 ACH` 净收益寻优净省 38%”Agent 架构选型 FAQ** | [中文](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.md) · [English](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（138 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（139 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -251,6 +251,7 @@
 | 136 | **OTA 与企业差旅“高铁、跨国铁路与空铁联运智能规划（High-Speed Rail & Air-Rail Interline：`Trainline / Amadeus Rail / Eurostar / Deutsche Bahn Rail&Fly / 携程火车票 / 12306`）”、防“第三方抢票加速包暗扣 $25 却慢于官方免费候补”、防“非联程机票+特价高铁因航班晚点致 $240 车票作废”与同车免换座分段买票（`SplitSave`）/欧盟 `EU 2021/782` 晚点自动退赔托管“防买错老年/青年折扣卡上车被罚 €120 与 4 小时内空改铁净省 36%”Agent 架构选型 FAQ** | [中文](ota-high-speed-rail-air-rail-interline-seat-selection-delay-rebooking-escrow-agent-selection-faq.md) · [English](ota-high-speed-rail-air-rail-interline-seat-selection-delay-rebooking-escrow-agent-selection-faq.en.md) |
 | 137 | **酒水即时零售、名庄红酒俱乐部与受控年龄商品配送（Alcohol, Wine Club & Age-Restricted Delivery：`Total Wine / Instacart / Uber Eats / ReserveBar / Sovos ShipCompliant / 美团闪购酒水`）、防“未成年人选无接触放门口害门店被吊销酒牌”、防“违反美国三层分销法（`Three-Tier System`）跨州私寄烈酒遭重罪起诉”与夏季 `>27°C` 煮酒熔断托管“防骑手怕白跑强行手输假生日交货与温控自提点代收净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-grocery-alcohol-tobacco-age-verification-dram-shop-curbside-escrow-agent-selection-faq.md) · [English](ecommerce-grocery-alcohol-tobacco-age-verification-dram-shop-curbside-escrow-agent-selection-faq.en.md) |
 | 138 | **母婴电商、儿童安全座椅/婴儿车与纸尿裤奶粉周期购（Baby, Maternity & Juvenile Gear E-Commerce：`Babylist / Target Baby Registry / Amazon Baby / Aeroflow / 孩子王 / 天猫母婴`）、防“把退回的儿童安全座椅或一段奶粉二次上架重售”、防“宝宝已长到 16 磅还在按月傻发 NB 新生儿小码纸尿裤致整单退订”与美国 `CPSIA §104` 召回自动登记 + 医保 `$0` 免费吸奶器（`ACA DME`）托管“防买错婴儿车转接器退货与月龄生长曲线自动升码净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-baby-maternity-gear-cpsc-recall-car-seat-expiry-diaper-sizeup-escrow-agent-selection-faq.md) · [English](ecommerce-baby-maternity-gear-cpsc-recall-car-seat-expiry-diaper-sizeup-escrow-agent-selection-faq.en.md) |
+| 139 | **酒旅航司与酒店集团官渠直销“常旅客积分+现金混合支付（`Points + Cash`）、住四免一（`5th Night Free`）与入住前动态房型竞价升舱（`Plusgrade / Oracle Opera Nor1`）”清结算托管（`Marriott Bonvoy / Hilton Honors / Hyatt / 华住会 / 携程`）、防“AI 把积分用出 0.3 美分冥币价值或拆单弄丢住四免一”、防“竞价升舱先扣 $300 到店却被告知套房已满”与动态积分降价退差（`Dynamic Award Re-Pricing`）托管“防黄牛借‘添加同住人’盗刷积分房与闲置套房出清净省 36%”Agent 架构选型 FAQ** | [中文](ota-hotel-direct-booking-Fifth-night-free-points-cash-room-upgrade-escrow-agent-selection-faq.md) · [English](ota-hotel-direct-booking-Fifth-night-free-points-cash-room-upgrade-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（81 篇）
