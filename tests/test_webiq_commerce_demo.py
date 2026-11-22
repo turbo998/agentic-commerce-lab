@@ -25071,6 +25071,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("commercial-search-grounding-price-verify-sandbox", html_zh)
 
+    def test_b2b_distributor_rebate_ship_debit_price_prot_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BDistributorRebateShipDebitPriceProtPolicyInput,
+            evaluate_b2b_distributor_rebate_ship_debit_price_prot_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_distributor_rebate_ship_debit_price_prot_policy(
+            B2BDistributorRebateShipDebitPriceProtPolicyInput(
+                quarterly_channel_rebate_ship_debit_and_price_prot_pool_usd=310000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_SELL_THROUGH_AND_LOT_WAC_REBATE_AUTHORIZED",
+        )
+
+        stuffing = evaluate_b2b_distributor_rebate_ship_debit_price_prot_policy(
+            B2BDistributorRebateShipDebitPriceProtPolicyInput(
+                quarter_end_stuffing_return_gaming_or_unpaid_ar_accrual=True
+            )
+        )
+        self.assertEqual(stuffing["status_code"], 403)
+        self.assertEqual(
+            stuffing["decision"],
+            "CHANNEL_STUFFING_RETURN_GAMING_OR_UNPAID_INVOICE",
+        )
+
+        wac = evaluate_b2b_distributor_rebate_ship_debit_price_prot_policy(
+            B2BDistributorRebateShipDebitPriceProtPolicyInput(
+                ship_and_debit_volume_rebate_double_dip_or_list_wac_inflation=True
+            )
+        )
+        self.assertEqual(wac["status_code"], 422)
+        self.assertEqual(
+            wac["decision"],
+            "SHIP_AND_DEBIT_VOLUME_REBATE_DOUBLE_DIP_OR_WAC_INFLATION",
+        )
+
+        fifo = evaluate_b2b_distributor_rebate_ship_debit_price_prot_policy(
+            B2BDistributorRebateShipDebitPriceProtPolicyInput(
+                phantom_price_protection_onhand_or_over_60d_fifo_aged_stock=True
+            )
+        )
+        self.assertEqual(fifo["status_code"], 451)
+        self.assertEqual(
+            fifo["decision"],
+            "PHANTOM_PRICE_PROTECTION_STOCK_OR_AGED_LOT_CLAIM",
+        )
+
+        optim = evaluate_b2b_distributor_rebate_ship_debit_price_prot_policy(
+            B2BDistributorRebateShipDebitPriceProtPolicyInput(
+                quarterly_channel_rebate_ship_debit_and_price_prot_pool_usd=310000.0,
+                stepped_marginal_tier_and_open_ar_credit_memo_offset_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 111600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 198400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_distributor_rebate_ship_debit_price_prot_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-distributor-rebate-ship-debit-price-prot-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

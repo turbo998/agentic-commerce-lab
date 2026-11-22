@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg682" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg682)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 239 · B2B Distributor Tiered Rebates, `Ship-and-Debit` &amp; `Price Protection` Escrow</text>
+  <text x="48" y="74" class="sub">Enable / SAP Vistex / Flintfox / Model N · `Sell-Through` Netting · `EDI 844/849` Stack Mutex · `FIFO` Price-Protection (-36%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #682 · FAQ #358</text>
+
+  <!-- Lane 1: Quarter-End Channel Stuffing & Post-Rebate Return Gaming (Dec 30 Buy -> Jan 5 RMA) -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. `Sell-Through` &amp; Return Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Dec 30 Buy / Jan 5 Return Tier Gaming:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Accrue Tiered Rebates on `Net_Paid_Sell_Through`</text>
+  <text x="54" y="200" class="mono">+ Enforce `45-Day Post-Close Return Hold`!</text>
+  <text x="44" y="223" class="body-txt">• Retroactive Cliff vs Marginal Tier Guard:</text>
+  <text x="54" y="243" class="mono">Recalculate Tier Retroactively on Any Q1 RMA</text>
+  <text x="44" y="266" class="body-txt">• Eliminates distributors placing a fake `$500k`</text>
+  <text x="54" y="286" class="body-txt">order on Dec 30 just to unlock an `8%` retro</text>
+  <text x="54" y="304" class="body-txt">rebate on `$5M` annual spend and returning it</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 CHANNEL_STUFFING_RETURN_GAMING_OR_UNPAID_INVOICE</text>
+
+  <!-- Lane 2: Double-Dipping Ship-and-Debit (EDI 844) + Back-End Volume Rebate on the Same Invoice Line -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. `EDI 844` Stack Mutex Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Blocks `Ship-and-Debit` + Volume Rebate Stack:</text>
+  <text x="442" y="182" class="mono">Exclude `SPA / EDI_844_Claimed_Serial_Numbers`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">From Back-End Volume Rebate Accrual Pool!</text>
+  <text x="432" y="223" class="body-txt">• Verified Wholesale Acquisition Cost (`WAC`) Base:</text>
+  <text x="442" y="243" class="mono">Debit_Claim = `Actual_Net_Paid_Lot_Price - SPA`</text>
+  <text x="432" y="266" class="body-txt">• Prevents distributors claiming a `$40` special</text>
+  <text x="442" y="286" class="body-txt">pricing billback against High List Price when</text>
+  <text x="442" y="304" class="body-txt">they bought the lot on a `-15%` promo deal</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 SHIP_AND_DEBIT_VOLUME_REBATE_DOUBLE_DIP_OR_WAC_INFLATION</text>
+
+  <!-- Lane 3: Phantom Inventory Price-Protection Claims (Claiming Price-Drop Credit on Already-Sold Stock) -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `FIFO Price-Protection` Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Phantom On-Hand Price-Protection Claims:</text>
+  <text x="830" y="182" class="mono">Verify `Eligible_Stock = min(EDI_852_OnHand,`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">`Cumulative_Ship_In - Cumulative_POS_Out)`!</text>
+  <text x="820" y="223" class="body-txt">• Enforces 60-Day `FIFO` Purchase-Window Cap:</text>
+  <text x="830" y="243" class="body-txt">Blocks distributors inflating warehouse counts</text>
+  <text x="830" y="261" class="body-txt">when a vendor announces a `15%` MSRP price cut</text>
+  <text x="830" y="279" class="body-txt">to pocket `$120k` in unearned credit memos</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 PHANTOM_PRICE_PROTECTION_STOCK_OR_AGED_LOT_CLAIM</text>
+
+  <!-- Bottom Automated ASC 606 Accrual, Near-Tier Nudge & Credit-Memo-First Offset -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Stepped-Tier Structuring + `EDI 849` Auto-Reconcile + Credit-Memo Open-AR Offset (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Marginal vs Retro Modeling</text>
+  <text x="62" y="462" class="body-txt">Replaces dangerous `$1`</text>
+  <text x="62" y="480" class="body-txt">retroactive margin cliffs</text>
+  <text x="62" y="498" class="body-txt">with stepped marginal</text>
+  <text x="62" y="516" class="mono">growth-mix rebate bands!</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Automated `EDI 849` Response</text>
+  <text x="337" y="462" class="body-txt">Line-by-line auto-adjudicates</text>
+  <text x="337" y="480" class="body-txt">`EDI 844` claims in `400ms`</text>
+  <text x="337" y="498" class="body-txt">and returns `EDI 849`</text>
+  <text x="337" y="516" class="mono">approved/adjusted codes!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Open-AR Credit-Memo Offset</text>
+  <text x="622" y="462" class="body-txt">Settles approved rebates</text>
+  <text x="622" y="480" class="body-txt">as `Credit Memos` against</text>
+  <text x="622" y="498" class="body-txt">next PO/AR balance instead</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">of raw wire cash drain!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ High-Margin Mix Nudge</text>
+  <text x="907" y="462" class="body-txt">Alerts dealers at `92%` of</text>
+  <text x="907" y="480" class="body-txt">tier threshold with high-</text>
+  <text x="907" y="498" class="body-txt">margin SKU top-up carts</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Rebate Leakage</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Channel Rebate &amp; Debit Leakage Saved</text>
+  <text x="46" y="642" class="mono">$111,600 Saved / $310k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% Netted</text>
+  <text x="336" y="626" class="kpi-lbl">45-Day Post-Close Return Clawback</text>
+  <text x="336" y="642" class="mono">Zero Dec-30 Stuffing Gaming</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0 Double-Dip</text>
+  <text x="626" y="626" class="kpi-lbl">EDI 844 SPA vs Volume Tier Mutex</text>
+  <text x="626" y="642" class="mono">Actual Lot WAC Cost Basis</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">FIFO Verified</text>
+  <text x="916" y="626" class="kpi-lbl">Ship-In Minus POS-Out Stock Cap</text>
+  <text x="916" y="642" class="mono">Zero Phantom Price-Drop Claims</text>
+</svg>

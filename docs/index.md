@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`357` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`358` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（21 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（50 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（136 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（80 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（81 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（29 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（41 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -249,7 +249,7 @@
 | 136 | **OTA 与企业差旅“高铁、跨国铁路与空铁联运智能规划（High-Speed Rail & Air-Rail Interline：`Trainline / Amadeus Rail / Eurostar / Deutsche Bahn Rail&Fly / 携程火车票 / 12306`）”、防“第三方抢票加速包暗扣 $25 却慢于官方免费候补”、防“非联程机票+特价高铁因航班晚点致 $240 车票作废”与同车免换座分段买票（`SplitSave`）/欧盟 `EU 2021/782` 晚点自动退赔托管“防买错老年/青年折扣卡上车被罚 €120 与 4 小时内空改铁净省 36%”Agent 架构选型 FAQ** | [中文](ota-high-speed-rail-air-rail-interline-seat-selection-delay-rebooking-escrow-agent-selection-faq.md) · [English](ota-high-speed-rail-air-rail-interline-seat-selection-delay-rebooking-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（80 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（81 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -335,6 +335,7 @@
 | 78 | **企业 B2B 定制开模、专用工装模具与按件摊销结算（Supplier Tooling, Molds & Amortization Escrow：`SAP FI-AA / Ariba / Coupa / PPAP`）、防“$180,000 模具费早在第 10 万件就摊销回本了，代工厂却装糊涂继续在第 11–25 万件上每件多收 $1.80（僵尸摊销费 Zombie Amortization）”、防“代工厂偷拿品牌方私模夜班生产山寨货倒卖”与 `UCC-1` 模具借用物权铭牌托管“防未过 `PPAP` 量产验收就付清模具尾款与防供应商破产扣押模具敲诈净省 36%”Agent 架构选型 FAQ** | [中文](b2b-supplier-tooling-mold-amortization-ppap-bailment-escrow-agent-selection-faq.md) · [English](b2b-supplier-tooling-mold-amortization-ppap-bailment-escrow-agent-selection-faq.en.md) |
 | 79 | **企业 B2B 展会赞助、特装展台搭建、场馆进场搬运费（`Drayage`）与扫码潜客（`MQL`）托管（Trade Show Sponsorship, Booth Fabrication & Lead-Retrieval Escrow：`Cvent / Freeman / GES / Captello / Salesforce`）、防“花 $80,000 赞助包保 100 个高管潜客，结果主办方塞进 60 个领帆布袋的学生和竞品销售充数”、防“场馆总包把 10 个零散纸箱按每个保底 200 磅收 $18,000 天价叉车搬运费”与 `NFPA 701` 防火阻燃预审托管“防开展当天被消防官封展台与提前 30 天锁早鸟水电 + 模块化铝架复用净省 37%”Agent 架构选型 FAQ** | [中文](b2b-tradeshow-booth-sponsorship-drayage-lead-retrieval-icp-escrow-agent-selection-faq.md) · [English](b2b-tradeshow-booth-sponsorship-drayage-lead-retrieval-icp-escrow-agent-selection-faq.en.md) |
 | 80 | **企业 B2B 采购与 IT 治理“影子 AI 与商务卡零散 SaaS 泛滥拦截（Shadow IT & Card-Swiped SaaS Sprawl：`Zylo / Productiv / Ramp / Brex / Microsoft Entra ID`）”、防“公司已买企业年框员工还在刷部门卡按零售价重复订同款软件”、防“离职员工遗留幽灵订阅连扣 9 个月”与满 5 人自动合并企业年框（`ELA`）托管“防私买无零数据留存（`ZDR`）野鸡 AI 泄露源码与 `SCIM` 自动回收净省 38%”Agent 架构选型 FAQ** | [中文](b2b-shadow-it-employee-card-saas-sprawl-sso-scim-consolidation-escrow-agent-selection-faq.md) · [English](b2b-shadow-it-employee-card-saas-sprawl-sso-scim-consolidation-escrow-agent-selection-faq.en.md) |
+| 81 | **企业 B2B 分销渠道“阶梯销售返利（Volume Tiered Rebates）、特价出货补差（Ship-and-Debit `EDI 844 / 849`）与库存跌价保护（Price Protection）”清结算托管（`Enable / SAP Vistex / Flintfox / Model N / Salesforce Rebate Management`）、防“经销商 12 月 30 日压货冲上 8% 全额追溯返利档、1 月 5 日领完钱立刻退货（Quarter-End Return Gaming）”、防“一笔订单既领前端特价补差又算后端年终返利双吃”与在库 `FIFO` 价保核销托管“防官降时虚报库存水位骗补 $120,000 与贷项通知单冲抵净省 36%”Agent 架构选型 FAQ** | [中文](b2b-distributor-rebate-ship-and-debit-price-protection-inventory-escrow-agent-selection-faq.md) · [English](b2b-distributor-rebate-ship-and-debit-price-protection-inventory-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（29 篇）
