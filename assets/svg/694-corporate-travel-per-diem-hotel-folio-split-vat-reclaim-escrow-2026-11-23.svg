@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg694" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070b14"/>
+      <stop offset="55%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="accent694" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="760" fill="url(#bg694)"/>
+  <rect x="24" y="20" width="1232" height="720" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1232" height="6" rx="3" fill="url(#accent694)"/>
+
+  <!-- Header -->
+  <text x="52" y="62" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="700">
+    Corporate T&amp;E Per-Diem (`GSA / BMF`), Hotel Folio Split &amp; Cross-Border VAT Reclaim Escrow (#370 Milestone)
+  </text>
+  <text x="52" y="88" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13.5">
+    Round 251 · Navan vs. SAP Concur vs. Brex vs. Ramp vs. BlueDot · Auto Folio Personal Split, Free-Meal Per-Diem Deduction, EU 8th/13th VAT Header &amp; Beat-the-Cap Rewards (-37%)
+  </text>
+  <rect x="1015" y="44" width="210" height="34" rx="8" fill="#451a03" stroke="#f59e0b" stroke-width="1.4"/>
+  <text x="1120" y="66" text-anchor="middle" fill="#fde68a" font-family="Consolas, monospace" font-size="12.5" font-weight="700">
+    🏆 MILESTONE #370 · R251
+  </text>
+
+  <!-- Left Column: Trip & Folio Telemetry -->
+  <rect x="48" y="112" width="350" height="596" rx="12" fill="#111827" stroke="#38bdf8" stroke-width="1.4"/>
+  <text x="68" y="144" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    1. T&amp;E Folio &amp; Per-Diem Telemetry
+  </text>
+  <text x="68" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Level-3 Hotel Folio, Attendee Graph &amp; Tax Headers
+  </text>
+
+  <rect x="68" y="186" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="210" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    🏨 Level-3 Hotel Folio Parser
+  </text>
+  <text x="84" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Room &amp; Tax: $980 (Corp Virtual Card)
+  </text>
+  <text x="84" y="252" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Minibar / Spa / VOD: $280 (Personal Split)
+  </text>
+  <text x="84" y="272" fill="#38bdf8" font-family="Consolas, monospace" font-size="11.5">
+    folio_personal_split: Instant Co-Charge
+  </text>
+
+  <rect x="68" y="314" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="338" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    🍽️ GSA M&amp;IE / German BMF Per-Diem
+  </text>
+  <text x="84" y="360" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • First &amp; Last travel day: Mandatory 75%
+  </text>
+  <text x="84" y="380" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Deducts hotel breakfast &amp; hosted dinners
+  </text>
+  <text x="84" y="400" fill="#f59e0b" font-family="Consolas, monospace" font-size="11.5">
+    BMF Deduction: -20% Bkfst / -40% Dinner
+  </text>
+
+  <rect x="68" y="442" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="466" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    🧾 EU 8th/13th Directive VAT &amp; IRS §62(c)
+  </text>
+  <text x="84" y="488" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Injects Corp Legal Name + VAT ID into PMS
+  </text>
+  <text x="84" y="508" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Recovers 19%-20% UK/EU hotel &amp; event VAT
+  </text>
+  <text x="84" y="528" fill="#34d399" font-family="Consolas, monospace" font-size="11.5">
+    IRS Accountable Plan: W-2 Excess Split
+  </text>
+
+  <rect x="68" y="570" width="310" height="116" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-dasharray="4 3"/>
+  <text x="84" y="594" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    🎯 Target Commercial Outcomes
+  </text>
+  <text x="84" y="616" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Zero minibar/spa leakage onto corp GL
+  </text>
+  <text x="84" y="636" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Zero double-dipping on hosted client meals
+  </text>
+  <text x="84" y="656" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • 37% net T&amp;E savings via Beat-the-Cap + VAT
+  </text>
+
+  <!-- Center Column: 4-Gate Fiduciary Control Plane -->
+  <rect x="424" y="112" width="432" height="596" rx="12" fill="#111827" stroke="#f59e0b" stroke-width="1.6"/>
+  <text x="446" y="144" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    2. T&amp;E Per-Diem &amp; Folio Control Plane
+  </text>
+  <text x="446" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Deterministic Folio Split, Meal Dedup &amp; Tax Recovery Gates
+  </text>
+
+  <!-- Gate 1: HTTP 403 -->
+  <rect x="444" y="184" width="392" height="114" rx="8" fill="#1f1224" stroke="#ef4444" stroke-width="1.3"/>
+  <text x="460" y="208" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 1 · Hotel Folio Personal Split Gate (HTTP 403)
+  </text>
+  <text x="460" y="230" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Blocks charging Minibar, Spa, In-Room Movies, or Lounge
+  </text>
+  <text x="460" y="248" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    alcohol to corporate card; routes to linked personal card.
+  </text>
+  <text x="460" y="274" fill="#f87171" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    PERSONAL_FOLIO_INCIDENTAL_MINIBAR_SPA_ON_CORP_CARD
+  </text>
+
+  <!-- Gate 2: HTTP 422 -->
+  <rect x="444" y="312" width="392" height="114" rx="8" fill="#231815" stroke="#f97316" stroke-width="1.3"/>
+  <text x="460" y="336" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 2 · GSA / BMF Per-Diem Meal Dedup (HTTP 422)
+  </text>
+  <text x="460" y="358" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Enforces 75% first/last-day rate and deducts complimentary
+  </text>
+  <text x="460" y="376" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    hotel breakfast or cross-attendee hosted client dinners.
+  </text>
+  <text x="460" y="402" fill="#fb923c" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    PER_DIEM_FREE_MEAL_DOUBLE_DIP_OR_FIRST_LAST_DAY_OVERCLAIM
+  </text>
+
+  <!-- Gate 3: HTTP 451 -->
+  <rect x="444" y="440" width="392" height="114" rx="8" fill="#27121b" stroke="#f43f5e" stroke-width="1.3"/>
+  <text x="460" y="464" fill="#fda4af" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 3 · VAT Header &amp; IRS §62(c) Gate (HTTP 451)
+  </text>
+  <text x="460" y="486" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Requires corporate legal name + VAT ID on foreign hotel
+  </text>
+  <text x="460" y="504" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    invoices and routes per-diem excess above GSA to W-2 tax.
+  </text>
+  <text x="460" y="530" fill="#fb7185" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    MISSING_CORP_VAT_INVOICE_HEADER_OR_UNTAXED_PER_DIEM_EXCESS
+  </text>
+
+  <!-- Gate 4: HTTP 409 -->
+  <rect x="444" y="568" width="392" height="118" rx="8" fill="#062e26" stroke="#10b981" stroke-width="1.5"/>
+  <text x="460" y="592" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 4 · Beat-the-Cap &amp; VAT Reclaim (HTTP 409)
+  </text>
+  <text x="460" y="614" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Rewards traveler 30% of savings below city hotel cap +
+  </text>
+  <text x="460" y="632" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    auto-files EU 8th/13th Directive 20% VAT reclaim (-37%).
+  </text>
+  <text x="460" y="660" fill="#34d399" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    Mandate: corp_te_perdiem_escrow_optim_409
+  </text>
+
+  <!-- Right Column: Platform Matrix & FinOps -->
+  <rect x="882" y="112" width="350" height="596" rx="12" fill="#111827" stroke="#34d399" stroke-width="1.4"/>
+  <text x="902" y="144" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    3. Platform Comparison &amp; T&amp;E Savings
+  </text>
+  <text x="902" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    T&amp;E Card, Expense &amp; VAT Reclaim Selection
+  </text>
+
+  <rect x="902" y="186" width="310" height="116" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="918" y="210" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    ✈️ Navan / Brex Empower / Ramp Travel
+  </text>
+  <text x="918" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Native Beat-the-Cap hotel rewards &amp; virtual cards
+  </text>
+  <text x="918" y="252" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Instant personal co-card split at hotel checkout
+  </text>
+  <text x="918" y="272" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Best for modern high-velocity global enterprises
+  </text>
+
+  <rect x="902" y="316" width="310" height="116" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="918" y="340" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    🌍 SAP Concur + BlueDot / Taxback Intl
+  </text>
+  <text x="918" y="362" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Statutory German BMF / Austria / GSA per-diems
+  </text>
+  <text x="918" y="382" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Automated EU 8th/13th Directive VAT recovery
+  </text>
+  <text x="918" y="402" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Deep SAP S/4HANA &amp; Workday payroll integration
+  </text>
+
+  <rect x="902" y="446" width="310" height="240" rx="8" fill="#091926" stroke="#38bdf8" stroke-width="1.3"/>
+  <text x="918" y="472" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    💰 Quarterly T&amp;E Optimization KPI
+  </text>
+  <text x="918" y="500" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Gross Folio Leakage, Meal Double-Dip &amp; Lost VAT:
+  </text>
+  <text x="918" y="522" fill="#f8fafc" font-family="Consolas, monospace" font-size="18" font-weight="700">
+    $230,000 / quarter
+  </text>
+  <text x="918" y="552" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    After Auto-Split, Per-Diem Dedup &amp; VAT Reclaim:
+  </text>
+  <text x="918" y="574" fill="#6ee7b7" font-family="Consolas, monospace" font-size="18" font-weight="700">
+    $144,900 (-37% Net Saved)
+  </text>
+  <text x="918" y="606" fill="#38bdf8" font-family="Consolas, monospace" font-size="15" font-weight="700">
+    Quarterly Savings: $85,100
+  </text>
+  <text x="918" y="636" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Foreign VAT recovery rate: 12% -&gt; 89%
+  </text>
+  <text x="918" y="656" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Manual expense report filing time: 0 mins
+  </text>
+</svg>

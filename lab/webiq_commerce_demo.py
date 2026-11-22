@@ -34147,6 +34147,82 @@ def evaluate_omnichannel_retail_markdown_broken_size_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BCorporateTravelPerDiemFolioVATPolicyInput:
+    quarterly_folio_incidental_meal_double_dip_and_lost_vat_pool_usd: float = 230000.0
+    hotel_folio_contains_minibar_spa_or_vod_on_corporate_card: bool = False
+    claiming_full_per_diem_despite_included_meals_or_100pct_travel_day: bool = False
+    foreign_hotel_invoice_missing_corp_vat_id_or_untaxed_excess_per_diem: bool = False
+    beat_the_cap_hotel_savings_share_and_eu_vat_auto_reclaim_ready: bool = False
+
+
+def evaluate_b2b_corporate_travel_per_diem_folio_vat_policy(
+    policy_input: B2BCorporateTravelPerDiemFolioVATPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_folio_incidental_meal_double_dip_and_lost_vat_pool_usd
+        ),
+    )
+    if policy_input.foreign_hotel_invoice_missing_corp_vat_id_or_untaxed_excess_per_diem:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_CORP_VAT_INVOICE_HEADER_OR_UNTAXED_PER_DIEM_EXCESS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hotel_folio_contains_minibar_spa_or_vod_on_corporate_card:
+        return {
+            "status_code": 403,
+            "decision": "PERSONAL_FOLIO_INCIDENTAL_MINIBAR_SPA_ON_CORP_CARD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.claiming_full_per_diem_despite_included_meals_or_100pct_travel_day:
+        return {
+            "status_code": 422,
+            "decision": "PER_DIEM_FREE_MEAL_DOUBLE_DIP_OR_FIRST_LAST_DAY_OVERCLAIM",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.beat_the_cap_hotel_savings_share_and_eu_vat_auto_reclaim_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "BEAT_THE_CAP_HOTEL_SAVINGS_SHARE_AND_VAT_RECLAIM_CONFIRM",
+            "mandate_token": "corp_te_perdiem_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_FOLIO_SPLIT_AND_STATUTORY_PER_DIEM_AUTHORIZED",
+        "mandate_token": "corp_te_perdiem_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -46592,6 +46668,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_corporate_travel_per_diem_folio_vat_guard = {
+        "authorized_200": evaluate_b2b_corporate_travel_per_diem_folio_vat_policy(
+            B2BCorporateTravelPerDiemFolioVATPolicyInput()
+        ),
+        "minibar_spa_folio_403": evaluate_b2b_corporate_travel_per_diem_folio_vat_policy(
+            B2BCorporateTravelPerDiemFolioVATPolicyInput(
+                hotel_folio_contains_minibar_spa_or_vod_on_corporate_card=True
+            )
+        ),
+        "meal_double_dip_422": evaluate_b2b_corporate_travel_per_diem_folio_vat_policy(
+            B2BCorporateTravelPerDiemFolioVATPolicyInput(
+                claiming_full_per_diem_despite_included_meals_or_100pct_travel_day=True
+            )
+        ),
+        "missing_vat_header_451": evaluate_b2b_corporate_travel_per_diem_folio_vat_policy(
+            B2BCorporateTravelPerDiemFolioVATPolicyInput(
+                foreign_hotel_invoice_missing_corp_vat_id_or_untaxed_excess_per_diem=True
+            )
+        ),
+        "beat_the_cap_vat_409": evaluate_b2b_corporate_travel_per_diem_folio_vat_policy(
+            B2BCorporateTravelPerDiemFolioVATPolicyInput(
+                beat_the_cap_hotel_savings_share_and_eu_vat_auto_reclaim_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -46971,6 +47073,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_indirect_procurement_unspsc_punchout_guard": b2b_indirect_procurement_unspsc_punchout_guard,
         "saas_ai_prepaid_credit_wallet_fefo_topup_guard": saas_ai_prepaid_credit_wallet_fefo_topup_guard,
         "omnichannel_retail_markdown_broken_size_guard": omnichannel_retail_markdown_broken_size_guard,
+        "b2b_corporate_travel_per_diem_folio_vat_guard": b2b_corporate_travel_per_diem_folio_vat_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -66477,6 +66580,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="omnimd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 BROKEN_SIZE_CONSOLIDATION_AND_PHASED_GLIDEPATH_CONFIRM · Mandate: omnichannel_markdown_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 251 Corporate Travel Per-Diem, Hotel Folio Split & VAT Reclaim Escrow (#370 Milestone) -->
+      <div class="finops-box" id="b2b-corporate-travel-per-diem-folio-vat-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业差旅定额餐补 (GSA / BMF)、酒店水单公私秒拆与跨国 VAT 退税 (Navan / Concur / Brex / BlueDot) 沙盒</div>
+            <div class="finops-sub">Round 251 (🏆 #370 里程碑) · 退房 Level-3 水单迷你吧/SPA 公私秒拆并扣个人副卡 (HTTP 403) + GSA/BMF 首尾日 75% 折算与含早/招待晚宴跨单去重 (HTTP 422) + 欧盟 8th/13th VAT 企业法人税号抬头锁与超限补贴转薪资计税 (HTTP 451) + 低于城市上限订房返现 (Beat-the-Cap) 与海外 20% VAT 自动退税净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="corptevat-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度酒店水单夹带迷你吧/SPA 混报、吃免费早与蹭客户晚宴还领全额餐补及欧洲差旅 20% VAT 废票弃退池 ($)
+            <input type="number" id="corptevat-gross-input" value="230000" min="10000" step="5000" oninput="recalcB2BCorporateTravelPerDiemFolioVATSandbox()" />
+          </label>
+          <label>酒店三级水单 (Level-3 e-Folio) 公私秒级拆账与个人副卡 (Personal Backup Card) 自动分流门禁
+            <select id="corptevat-folio-select" onchange="recalcB2BCorporateTravelPerDiemFolioVATSandbox()">
+              <option value="pass">合规房费与城市税走企业虚拟卡免填单入账 + 迷你吧/SPA 秒级拆给员工个人副卡 (安全)</option>
+              <option value="block_403">员工退房把 $320 迷你吧香槟、客房电影与伴侣 SPA 混在房费汇总签购单里刷公司卡核销 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>GSA M&amp;IE / 德国 BMF 首尾日 75% 折算与酒店含早 / 同事商务招待晚宴参会人图谱 (Attendee Graph) 去重门禁
+            <select id="corptevat-perdiem-select" onchange="recalcB2BCorporateTravelPerDiemFolioVATSandbox()">
+              <option value="pass">首尾日按 75% 折算并自动核减房价已含早餐(-20%)及已在主管招待单报销的晚餐(-40%) (合规)</option>
+              <option value="block_422">吃着酒店免费双早又蹭了同事报销的 $650 客户招待晚宴，回来还按 100% 全额申领每天 $86 补贴 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>欧盟 8th/13th Directive 跨国差旅发票企业法人税号抬头锁与 IRS §62(c) 超标补贴转薪资计税门禁
+            <select id="corptevat-vat-select" onchange="recalcB2BCorporateTravelPerDiemFolioVATSandbox()">
+              <option value="pass">预订期自动向酒店 PMS 注入公司法定名称与 VAT 税号 + 超 GSA 上限补贴自动进 W-2 计税 (安全)</option>
+              <option value="block_451">伦敦/慕尼黑酒店水单抬头写员工个人名字致 20% 欧洲 VAT 退税作废 或 超标补贴漏报个税 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>低于城市上限订房享 30% 节支分成奖励 (Beat-the-Cap Rewards) + 海外差旅 20% VAT 自动退税申报
+            <select id="corptevat-opt-select" onchange="recalcB2BCorporateTravelPerDiemFolioVATSandbox()">
+              <option value="enabled" selected>预订低于城市上限 $100/晚酒店奖励员工 $30 礼品卡 + 自动向 BlueDot/Taxback 申报退回 20% 海外 VAT (-37% 净成本 / HTTP 409)</option>
+              <option value="disabled">员工贴着城市最高上限顶格订房且不开启跨国小额水单 VAT 自动回收 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度水单混报与弃退税损失池</div>
+            <div class="finops-kpi-val" id="corptevat-gross-kpi">$230,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">公私秒拆与VAT退税后净支出</div>
+            <div class="finops-kpi-val" id="corptevat-net-kpi" style="color:#6ee7b7;">$144,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省差旅与追回海外VAT</div>
+            <div class="finops-kpi-val" id="corptevat-savings-kpi" style="color:#38bdf8;">$85,100</div>
+          </div>
+        </div>
+        <div id="corptevat-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 BEAT_THE_CAP_HOTEL_SAVINGS_SHARE_AND_VAT_RECLAIM_CONFIRM · Mandate: corp_te_perdiem_escrow_optim_409
         </div>
       </div>
 
@@ -90317,6 +90477,79 @@ function recalcOmnichannelRetailMarkdownBrokenSizeSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CLUSTER_GLIDEPATH_AND_OMNIBUS_ANCHOR_AUTHORIZED · Mandate: omnichannel_markdown_escrow_200';
+}}
+
+function recalcB2BCorporateTravelPerDiemFolioVATSandbox() {{
+  const grossInput = document.getElementById('corptevat-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '230000'));
+  const folioGate = document.getElementById('corptevat-folio-select').value;
+  const perdiemGate = document.getElementById('corptevat-perdiem-select').value;
+  const vatGate = document.getElementById('corptevat-vat-select').value;
+  const optMode = document.getElementById('corptevat-opt-select').value;
+
+  const grossKpi = document.getElementById('corptevat-gross-kpi');
+  const netKpi = document.getElementById('corptevat-net-kpi');
+  const savingsKpi = document.getElementById('corptevat-savings-kpi');
+  const statusKpi = document.getElementById('corptevat-status-kpi');
+  const banner = document.getElementById('corptevat-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vatGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_CORP_VAT_INVOICE_HEADER_OR_UNTAXED_PER_DIEM_EXCESS · Mandate: null';
+    return;
+  }}
+  if (folioGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PERSONAL_FOLIO_INCIDENTAL_MINIBAR_SPA_ON_CORP_CARD · Mandate: null';
+    return;
+  }}
+  if (perdiemGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PER_DIEM_FREE_MEAL_DOUBLE_DIP_OR_FIRST_LAST_DAY_OVERCLAIM · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 BEAT_THE_CAP_HOTEL_SAVINGS_SHARE_AND_VAT_RECLAIM_CONFIRM · Mandate: corp_te_perdiem_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_FOLIO_SPLIT_AND_STATUTORY_PER_DIEM_AUTHORIZED · Mandate: corp_te_perdiem_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -25875,6 +25875,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("omnichannel-retail-markdown-broken-size-sandbox", html_zh)
 
+    def test_b2b_corporate_travel_per_diem_folio_vat_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BCorporateTravelPerDiemFolioVATPolicyInput,
+            evaluate_b2b_corporate_travel_per_diem_folio_vat_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_corporate_travel_per_diem_folio_vat_policy(
+            B2BCorporateTravelPerDiemFolioVATPolicyInput(
+                quarterly_folio_incidental_meal_double_dip_and_lost_vat_pool_usd=230000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_FOLIO_SPLIT_AND_STATUTORY_PER_DIEM_AUTHORIZED",
+        )
+
+        folio = evaluate_b2b_corporate_travel_per_diem_folio_vat_policy(
+            B2BCorporateTravelPerDiemFolioVATPolicyInput(
+                hotel_folio_contains_minibar_spa_or_vod_on_corporate_card=True
+            )
+        )
+        self.assertEqual(folio["status_code"], 403)
+        self.assertEqual(
+            folio["decision"],
+            "PERSONAL_FOLIO_INCIDENTAL_MINIBAR_SPA_ON_CORP_CARD",
+        )
+
+        perdiem = evaluate_b2b_corporate_travel_per_diem_folio_vat_policy(
+            B2BCorporateTravelPerDiemFolioVATPolicyInput(
+                claiming_full_per_diem_despite_included_meals_or_100pct_travel_day=True
+            )
+        )
+        self.assertEqual(perdiem["status_code"], 422)
+        self.assertEqual(
+            perdiem["decision"],
+            "PER_DIEM_FREE_MEAL_DOUBLE_DIP_OR_FIRST_LAST_DAY_OVERCLAIM",
+        )
+
+        vat = evaluate_b2b_corporate_travel_per_diem_folio_vat_policy(
+            B2BCorporateTravelPerDiemFolioVATPolicyInput(
+                foreign_hotel_invoice_missing_corp_vat_id_or_untaxed_excess_per_diem=True
+            )
+        )
+        self.assertEqual(vat["status_code"], 451)
+        self.assertEqual(
+            vat["decision"],
+            "MISSING_CORP_VAT_INVOICE_HEADER_OR_UNTAXED_PER_DIEM_EXCESS",
+        )
+
+        optim = evaluate_b2b_corporate_travel_per_diem_folio_vat_policy(
+            B2BCorporateTravelPerDiemFolioVATPolicyInput(
+                quarterly_folio_incidental_meal_double_dip_and_lost_vat_pool_usd=230000.0,
+                beat_the_cap_hotel_savings_share_and_eu_vat_auto_reclaim_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 85100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 144900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_corporate_travel_per_diem_folio_vat_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-corporate-travel-per-diem-folio-vat-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

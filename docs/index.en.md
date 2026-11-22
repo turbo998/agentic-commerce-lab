@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`369` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`370` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (22 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (51 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (141 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (82 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (83 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (31 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (42 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -256,7 +256,7 @@
 | 141 | **Omnichannel Retail End-of-Season Markdown Optimization, Broken-Size Consolidation & `EU Omnibus Art. 6a` Reference-Price Escrow (`Revionics / Blue Yonder Luminate Pricing / Competera / Centric Pricing / Manhattan Active`), 14d Price-Protection Shield, Store-Cluster `STR` Gate & Endless-Aisle Size Pool (`-37%` Margin Erosion) Agent Architecture Selection FAQ** | [English](omnichannel-retail-season-markdown-broken-size-consolidation-omnibus-escrow-agent-selection-faq.en.md) · [中文](omnichannel-retail-season-markdown-broken-size-consolidation-omnibus-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (82 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (83 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -344,6 +344,7 @@
 | 80 | **Enterprise B2B `Shadow IT / Shadow AI` & Corporate-Card SaaS Sprawl Escrow (`Zylo / Productiv / Ramp / Brex / Microsoft Entra ID`), Pre-Swipe `ELA` Deduplication, `Workday T+0` `VCN` Freeze, `Zero-Data-Retention` Gate & `>=5-User` Auto-Consolidation (`-38%` SaaS Waste) Agent Architecture Selection FAQ** | [English](b2b-shadow-it-employee-card-saas-sprawl-sso-scim-consolidation-escrow-agent-selection-faq.en.md) · [中文](b2b-shadow-it-employee-card-saas-sprawl-sso-scim-consolidation-escrow-agent-selection-faq.md) |
 | 81 | **Enterprise B2B Distributor Tiered Rebates, `Ship-and-Debit` (`EDI 844 / 849`) & Inventory `Price Protection` Escrow (`Enable / SAP Vistex / Flintfox / Model N`), `Sell-Through` Return Hold, Actual-Lot `WAC` Mutex & `60d FIFO` Ledger (`-36%` Channel Leakage) Agent Architecture Selection FAQ** | [English](b2b-distributor-rebate-ship-and-debit-price-protection-inventory-escrow-agent-selection-faq.en.md) · [中文](b2b-distributor-rebate-ship-and-debit-price-protection-inventory-escrow-agent-selection-faq.md) |
 | 82 | **Enterprise B2B Indirect Procurement, `UNSPSC` Catalog Deduplication, `UOM` (`CS vs. EA`) & `Guided Buying` Escrow (`Amazon Business / Staples Advantage / Coupa / SAP Ariba`), Free-Text-to-Catalog Swap, Internal IT-Closet Reuse & Weekly Dock Consolidation (`-36%` Indirect Spend) Agent Architecture Selection FAQ** | [English](b2b-indirect-procurement-office-supplies-catalog-unspsc-punchout-consolidation-escrow-agent-selection-faq.en.md) · [中文](b2b-indirect-procurement-office-supplies-catalog-unspsc-punchout-consolidation-escrow-agent-selection-faq.md) |
+| 83 | **🏆 Corporate Travel & Expense (`T&E`) Per-Diem (`GSA M&IE / German BMF`), Hotel `Level-3 Folio` Personal Split & Cross-Border `VAT Reclaim` Escrow (`Navan / SAP Concur / Brex / Ramp / BlueDot / Taxback`), Personal Backup-Card Split, Attendee-Graph Meal Dedup, `EU 8th/13th` VAT Header & `Beat-the-Cap` Rewards (`-37%` T&E Leakage) Agent Architecture Selection FAQ** | [English](b2b-corporate-travel-per-diem-hotel-folio-split-vat-reclaim-escrow-agent-selection-faq.en.md) · [中文](b2b-corporate-travel-per-diem-hotel-folio-split-vat-reclaim-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (31 Guides)
