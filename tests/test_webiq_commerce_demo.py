@@ -24937,6 +24937,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-high-speed-rail-air-rail-interline-sandbox", html_zh)
 
+    def test_agentic_payment_cit_mit_network_token_retry_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            AgenticPaymentCITMITNetworkTokenRetryPolicyInput,
+            evaluate_agentic_payment_cit_mit_network_token_retry_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_agentic_payment_cit_mit_network_token_retry_policy(
+            AgenticPaymentCITMITNetworkTokenRetryPolicyInput(
+                quarterly_mit_false_decline_expired_card_and_retry_fine_pool_usd=250000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "LINKED_CIT_TRACE_ID_AND_DPAN_TAVV_MIT_AUTHORIZED",
+        )
+
+        trace = evaluate_agentic_payment_cit_mit_network_token_retry_policy(
+            AgenticPaymentCITMITNetworkTokenRetryPolicyInput(
+                background_mit_charge_missing_initial_cit_trace_id_or_flag=True
+            )
+        )
+        self.assertEqual(trace["status_code"], 403)
+        self.assertEqual(
+            trace["decision"],
+            "MISSING_INITIAL_CIT_TRACE_ID_OR_MIT_FLAG_MISMATCH",
+        )
+
+        dpan = evaluate_agentic_payment_cit_mit_network_token_retry_policy(
+            AgenticPaymentCITMITNetworkTokenRetryPolicyInput(
+                static_fpan_without_dpan_tavv_cryptogram_or_exceeds_cit_cap=True
+            )
+        )
+        self.assertEqual(dpan["status_code"], 422)
+        self.assertEqual(
+            dpan["decision"],
+            "STATIC_FPAN_WITHOUT_DPAN_CRYPTOGRAM_OR_CAP_BREACH",
+        )
+
+        mac03 = evaluate_agentic_payment_cit_mit_network_token_retry_policy(
+            AgenticPaymentCITMITNetworkTokenRetryPolicyInput(
+                retrying_visa_cat1_mc_mac03_hard_decline_or_over_15_attempts=True
+            )
+        )
+        self.assertEqual(mac03["status_code"], 451)
+        self.assertEqual(
+            mac03["decision"],
+            "HARD_DECLINE_CAT1_MAC03_OR_15_RETRY_LIMIT_BREACH",
+        )
+
+        optim = evaluate_agentic_payment_cit_mit_network_token_retry_policy(
+            AgenticPaymentCITMITNetworkTokenRetryPolicyInput(
+                quarterly_mit_false_decline_expired_card_and_retry_fine_pool_usd=250000.0,
+                vts_mdes_auto_update_and_payday_smart_retry_fallback_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 95000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 155000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("agentic_payment_cit_mit_network_token_retry_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-payment-cit-mit-network-token-retry-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

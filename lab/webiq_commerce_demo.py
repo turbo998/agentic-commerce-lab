@@ -33081,6 +33081,82 @@ def evaluate_ota_high_speed_rail_air_rail_interline_policy(
     }
 
 
+@dataclass(frozen=True)
+class AgenticPaymentCITMITNetworkTokenRetryPolicyInput:
+    quarterly_mit_false_decline_expired_card_and_retry_fine_pool_usd: float = 250000.0
+    background_mit_charge_missing_initial_cit_trace_id_or_flag: bool = False
+    static_fpan_without_dpan_tavv_cryptogram_or_exceeds_cit_cap: bool = False
+    retrying_visa_cat1_mc_mac03_hard_decline_or_over_15_attempts: bool = False
+    vts_mdes_auto_update_and_payday_smart_retry_fallback_ready: bool = False
+
+
+def evaluate_agentic_payment_cit_mit_network_token_retry_policy(
+    policy_input: AgenticPaymentCITMITNetworkTokenRetryPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_mit_false_decline_expired_card_and_retry_fine_pool_usd
+        ),
+    )
+    if policy_input.retrying_visa_cat1_mc_mac03_hard_decline_or_over_15_attempts:
+        return {
+            "status_code": 451,
+            "decision": "HARD_DECLINE_CAT1_MAC03_OR_15_RETRY_LIMIT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.background_mit_charge_missing_initial_cit_trace_id_or_flag:
+        return {
+            "status_code": 403,
+            "decision": "MISSING_INITIAL_CIT_TRACE_ID_OR_MIT_FLAG_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.static_fpan_without_dpan_tavv_cryptogram_or_exceeds_cit_cap:
+        return {
+            "status_code": 422,
+            "decision": "STATIC_FPAN_WITHOUT_DPAN_CRYPTOGRAM_OR_CAP_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.vts_mdes_auto_update_and_payday_smart_retry_fallback_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "NETWORK_TOKEN_LIFECYCLE_AND_PAYDAY_SMART_RETRY_CONFIRM",
+            "mandate_token": "cit_mit_token_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "LINKED_CIT_TRACE_ID_AND_DPAN_TAVV_MIT_AUTHORIZED",
+        "mandate_token": "cit_mit_token_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -45162,6 +45238,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    agentic_payment_cit_mit_network_token_retry_guard = {
+        "authorized_200": evaluate_agentic_payment_cit_mit_network_token_retry_policy(
+            AgenticPaymentCITMITNetworkTokenRetryPolicyInput()
+        ),
+        "missing_cit_trace_403": evaluate_agentic_payment_cit_mit_network_token_retry_policy(
+            AgenticPaymentCITMITNetworkTokenRetryPolicyInput(
+                background_mit_charge_missing_initial_cit_trace_id_or_flag=True
+            )
+        ),
+        "static_fpan_or_cap_422": evaluate_agentic_payment_cit_mit_network_token_retry_policy(
+            AgenticPaymentCITMITNetworkTokenRetryPolicyInput(
+                static_fpan_without_dpan_tavv_cryptogram_or_exceeds_cit_cap=True
+            )
+        ),
+        "cat1_mac03_retry_451": evaluate_agentic_payment_cit_mit_network_token_retry_policy(
+            AgenticPaymentCITMITNetworkTokenRetryPolicyInput(
+                retrying_visa_cat1_mc_mac03_hard_decline_or_over_15_attempts=True
+            )
+        ),
+        "vts_payday_retry_409": evaluate_agentic_payment_cit_mit_network_token_retry_policy(
+            AgenticPaymentCITMITNetworkTokenRetryPolicyInput(
+                vts_mdes_auto_update_and_payday_smart_retry_fallback_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -45527,6 +45629,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_footwear_3d_foot_scan_bracketing_guard": ecommerce_footwear_3d_foot_scan_bracketing_guard,
         "b2b_shadow_it_employee_card_saas_sprawl_guard": b2b_shadow_it_employee_card_saas_sprawl_guard,
         "ota_high_speed_rail_air_rail_interline_guard": ota_high_speed_rail_air_rail_interline_guard,
+        "agentic_payment_cit_mit_network_token_retry_guard": agentic_payment_cit_mit_network_token_retry_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -64235,6 +64338,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="otarail-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SAME_SEAT_SPLITSAVE_AND_MODAL_SHIFT_CONFIRM · Mandate: ota_rail_interline_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 237 Agentic CIT-to-MIT Network Token, Trace-ID Chain & Smart-Retry Escrow (#356) -->
+      <div class="finops-box" id="agentic-payment-cit-mit-network-token-retry-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💳 智能体免密代扣 CIT-to-MIT 网络令牌与发薪日智能重扣 (Stripe SPT / Visa VIC / Adyen / Checkout.com) 沙盒</div>
+            <div class="finops-sub">Round 237 (#356) · 后台 MIT 标志与首次 CIT 15位卡组原始交易 ID (Trace-ID) 锚定 (HTTP 403) + EMVCo 网络令牌 (DPAN+TAVV) 与 CIT 授权上限锁 (HTTP 422) + 卡组硬拒付 (Visa Cat-1 / MC MAC 03) 零重试熔断与 15次/30d 红线 (HTTP 451) + VTS/MDES 实时换卡同步与发薪日择时重扣净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="citmit-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度凌晨自动锁单漏传 CIT Trace-ID 被发卡行误杀拒付 (22% 失败率)、实体卡到期换卡断订流失与卡组超频重试罚单池 ($)
+            <input type="number" id="citmit-gross-input" value="250000" min="10000" step="5000" oninput="recalcAgenticPaymentCITMITNetworkTokenRetrySandbox()" />
+          </label>
+          <label>后台无人值守代扣 (MIT) 子类型标识与首次在场 CIT 15位卡组原始交易流水号 (Initial Scheme Transaction ID) 链式绑定门禁
+            <select id="citmit-trace-select" onchange="recalcAgenticPaymentCITMITNetworkTokenRetrySandbox()">
+              <option value="pass">显式标记 MIT (Unscheduled/Recurring) + 精确回传首次 3DS2 CIT 的 15位 Visa TID / MC Banknet Ref (免 3DS 秒过)</option>
+              <option value="block_403">Agent 凌晨 3 点扣款漏传 MIT 标识与首次 CIT 原始流水号，被发卡行当成无 CVV 盗刷拒付或半夜弹 3DS 死锁 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>EMVCo 卡组网络令牌 (DPAN) 单次动态密码文 (TAVV / DTVV) 与 MIT 扣款不超 CIT 授权上限门禁
+            <select id="citmit-dpan-select" onchange="recalcAgenticPaymentCITMITNetworkTokenRetrySandbox()">
+              <option value="pass">升级 VTS/MDES 网络令牌动态签发 TAVV 密码文 (-12 bps 交换费) 且本次扣款 $460 &lt;= $500 授权上限 (合规)</option>
+              <option value="block_422">仍存静态明文卡号 FPAN 导致用户换卡后扣款失败 或 后台 Agent 越权发起超过 $500 预授权上限的扣款 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>卡组硬拒付代码 (Visa Category-1 / Mastercard MAC 03) 零重试熔断器与单卡 30 天 &lt;=15 次重试上限锁
+            <select id="citmit-mac03-select" onchange="recalcAgenticPaymentCITMITNetworkTokenRetrySandbox()">
+              <option value="pass">收到 Cat-1 / MAC 03 (挂失/销户/撤权) 0ms 永久熔断零重试 + 软拒付 30 天严格 &lt;=14 次 (零罚单)</option>
+              <option value="block_451">对已挂失注销卡 (MAC 03) 或超 15 次软拒付开启 while 死循环暴力重刷，触发 $5/次卡组重罚与封 MID 风险 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>VTS/MDES 实时换卡无感更新 (+4.8% 通过率) + 发薪日 (1号/15号/周五) 智能择时重扣 + 备用支付轨兜底
+            <select id="citmit-opt-select" onchange="recalcAgenticPaymentCITMITNetworkTokenRetrySandbox()">
+              <option value="enabled" selected>实体卡补办毫秒级同步 DPAN + 余额不足卡准 1号/15号发薪日重扣(挽回41%) + 备用钱包无缝切换 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">无发薪日择时重扣与备用钱包兜底的基础单次 MIT 扣款 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度后台代扣拒付流失与罚金池</div>
+            <div class="finops-kpi-val" id="citmit-gross-kpi">$250,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">网络令牌与智能重扣后净损耗</div>
+            <div class="finops-kpi-val" id="citmit-net-kpi" style="color:#6ee7b7;">$155,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省误杀拒付、断订与罚单</div>
+            <div class="finops-kpi-val" id="citmit-savings-kpi" style="color:#38bdf8;">$95,000</div>
+          </div>
+        </div>
+        <div id="citmit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 NETWORK_TOKEN_LIFECYCLE_AND_PAYDAY_SMART_RETRY_CONFIRM · Mandate: cit_mit_token_escrow_optim_409
         </div>
       </div>
 
@@ -87053,6 +87213,79 @@ function recalcOTAHighSpeedRailAirRailInterlineSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 OFFICIAL_WAITLIST_AND_AIR_RAIL_INTERLINE_AUTHORIZED · Mandate: ota_rail_interline_escrow_200';
+}}
+
+function recalcAgenticPaymentCITMITNetworkTokenRetrySandbox() {{
+  const grossInput = document.getElementById('citmit-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '250000'));
+  const traceGate = document.getElementById('citmit-trace-select').value;
+  const dpanGate = document.getElementById('citmit-dpan-select').value;
+  const mac03Gate = document.getElementById('citmit-mac03-select').value;
+  const optMode = document.getElementById('citmit-opt-select').value;
+
+  const grossKpi = document.getElementById('citmit-gross-kpi');
+  const netKpi = document.getElementById('citmit-net-kpi');
+  const savingsKpi = document.getElementById('citmit-savings-kpi');
+  const statusKpi = document.getElementById('citmit-status-kpi');
+  const banner = document.getElementById('citmit-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (mac03Gate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 HARD_DECLINE_CAT1_MAC03_OR_15_RETRY_LIMIT_BREACH · Mandate: null';
+    return;
+  }}
+  if (traceGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MISSING_INITIAL_CIT_TRACE_ID_OR_MIT_FLAG_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (dpanGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 STATIC_FPAN_WITHOUT_DPAN_CRYPTOGRAM_OR_CAP_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 NETWORK_TOKEN_LIFECYCLE_AND_PAYDAY_SMART_RETRY_CONFIRM · Mandate: cit_mit_token_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 LINKED_CIT_TRACE_ID_AND_DPAN_TAVV_MIT_AUTHORIZED · Mandate: cit_mit_token_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

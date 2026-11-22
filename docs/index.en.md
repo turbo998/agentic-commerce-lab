@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`355` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`356` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (20 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (49 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (50 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (136 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (80 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (29 guides)](#saas-finops-micropayments)
@@ -46,7 +46,7 @@
 | 20 | **Omnichannel Retail Clienteling, Endless-Aisle Store Fulfillment & Commission-Attribution Escrow (`Tulip / Salesforce Retail POS / Shopify POS / NewStore`), 14-Day Stylist Lookbook Lock, Dual-Store Quota Credit & VIP Book-of-Business Shield (`-37%` OOS & Churn Loss) Agent Architecture Selection FAQ (🏆 320th Guide Milestone)** | [English](omnichannel-retail-clienteling-endless-aisle-commission-attribution-escrow-agent-selection-faq.en.md) · [中文](omnichannel-retail-clienteling-endless-aisle-commission-attribution-escrow-agent-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (49 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (50 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -101,6 +101,7 @@
 | 47 | **E-Commerce & B2B Pay-by-Bank (`Open Banking A2A`: `Plaid Transfer / Stripe Financial Connections / Trustly / FedNow`), Anti-`ACH R01` Kiting & Corporate `R29` Escrow, `1.25x` Live Balance Gate, `vIBAN` Push Fallback & `1%` Instant Cashback Steer (`-37%` Payment Loss) Agent Architecture Selection FAQ** | [English](ecommerce-pay-by-bank-open-banking-ach-return-r01-fednow-escrow-agent-selection-faq.en.md) · [中文](ecommerce-pay-by-bank-open-banking-ach-return-r01-fednow-escrow-agent-selection-faq.md) |
 | 48 | **Omnichannel `SoftPOS` (`Tap to Pay on iPhone & Android`), Anti-Unlinked-Refund Embezzlement & Offline `EMV` Escrow (`Adyen Terminal API / Stripe Terminal / Shopify POS / Square`), Referenced-Refund `EMVCo PAR` Lock, Manual Keyed-Entry Veto & `$150` `SAF` Cap (`-38%` Store Payment Loss) Agent Architecture Selection FAQ** | [English](omnichannel-softpos-tap-to-pay-unlinked-refund-offline-emv-escrow-agent-selection-faq.en.md) · [中文](omnichannel-softpos-tap-to-pay-unlinked-refund-offline-emv-escrow-agent-selection-faq.md) |
 | 49 | **High-Ticket Automotive, EV & Solar Split-Tender Checkout Escrow (`Tesla / Rivian / AutoFi / Plaid Transfer / Stripe`), `$1,000` Card-Deposit Cap, Lender `Stips` Funding Lock, Per-`VIN vIBAN` Wire Shield & 4-Way Digital-Key Release (`-38%` Closing Loss) Agent Architecture Selection FAQ** | [English](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.en.md) · [中文](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.md) |
+| 50 | **Agentic `CIT-to-MIT` Card-on-File, `EMVCo Network Token` (`DPAN + TAVV`) & Smart-Retry Escrow (`Stripe SPT / Visa VIC / Adyen / Checkout.com`), 15-Digit `CIT Trace-ID` Linking, `Cat-1 / MAC-03` Zero-Retry Circuit Breaker & Payday Recovery (`-38%` Decline & Churn Loss) Agent Architecture Selection FAQ** | [English](agentic-payment-card-on-file-cit-mit-network-token-cryptogram-retry-escrow-agent-selection-faq.en.md) · [中文](agentic-payment-card-on-file-cit-mit-network-token-cryptogram-retry-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (136 Guides)

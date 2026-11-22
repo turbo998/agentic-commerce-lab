@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg680" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg680)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 237 · Agentic `CIT-to-MIT` Network Token, `Trace-ID` Chain &amp; Smart-Retry Escrow</text>
+  <text x="48" y="74" class="sub">Stripe SPT / Visa VIC / Adyen / Checkout.com · `CIT Trace-ID` Anchor · `DPAN + TAVV` Lifecycle · `MAC-03` Retry Breaker (-38%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #680 · FAQ #356</text>
+
+  <!-- Lane 1: Background Agent MIT Charge Disguised as CIT or Missing Initial Scheme Transaction ID -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. `CIT-to-MIT` `Trace-ID` Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Background Agent Charges Flagged as `CIT`:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Require `MIT_Indicator + Initial_CIT_Scheme_TxID`</text>
+  <text x="54" y="200" class="mono">(`15-Digit Visa TID / MC Banknet Ref`)!</text>
+  <text x="44" y="223" class="body-txt">• PSD2 SCA `MIT` Exemption Integrity:</text>
+  <text x="54" y="243" class="mono">Bind `3DS2_CAVV_Origin` to `Mandate_Scope_Type`</text>
+  <text x="44" y="266" class="body-txt">• Eliminates 22% false issuer declines &amp; 3DS2</text>
+  <text x="54" y="286" class="body-txt">soft-declines at 3 AM when an autonomous agent</text>
+  <text x="54" y="304" class="body-txt">settles a price-drop or split-shipment order</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 MISSING_INITIAL_CIT_TRACE_ID_OR_MIT_FLAG_MISMATCH</text>
+
+  <!-- Lane 2: Raw Static PAN Vaulting (Expired Card Churn) & MIT Amount Exceeding CIT Ceiling -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. `DPAN + TAVV` &amp; Cap Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Blocks Static Raw `FPAN` Storage &amp; Over-Cap `MIT`:</text>
+  <text x="442" y="182" class="mono">Require `EMVCo_Network_Token (DPAN) + Fresh_TAVV`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">&amp; Enforce `MIT_Amount &lt;= CIT_Mandate_Max_Cap`!</text>
+  <text x="432" y="223" class="body-txt">• Category-Mismatch (`Recurring` vs `Unscheduled`):</text>
+  <text x="442" y="243" class="mono">Match `MIT_SubType` (`R` Recurring vs `U` Unsched)</text>
+  <text x="432" y="266" class="body-txt">• Prevents subscription churn when a buyer's</text>
+  <text x="442" y="286" class="body-txt">physical plastic card is lost/reissued and stops</text>
+  <text x="442" y="304" class="body-txt">variable usage charges exceeding the agreed cap</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 STATIC_FPAN_WITHOUT_DPAN_CRYPTOGRAM_OR_CAP_BREACH</text>
+
+  <!-- Lane 3: Visa Category-1 / Mastercard MAC-03 Hard-Decline Retry Fines & >15 Attempts/30d -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" rx="12" height="36" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `Cat-1 / MAC-03` Retry Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Zero-Tolerance Hard-Decline Circuit Breaker:</text>
+  <text x="830" y="182" class="mono">Halt Immediately on `Visa Cat-1 / MC MAC 03`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">(`Stolen Card / Closed Account / Revoked Mandate`)!</text>
+  <text x="820" y="223" class="body-txt">• Enforces `&lt;=15 Retries / 30 Rolling Days` Cap:</text>
+  <text x="830" y="243" class="body-txt">Blocks runaway agent retry loops that rack up</text>
+  <text x="830" y="261" class="body-txt">`$0.10–$5.00/attempt` card-network excessive</text>
+  <text x="830" y="279" class="body-txt">retry fines and trigger MID termination</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 HARD_DECLINE_CAT1_MAC03_OR_15_RETRY_LIMIT_BREACH</text>
+
+  <!-- Bottom Network Token Auto-Lifecycle, Payday ML Smart Retry & Backup Wallet Fallback -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. `EMVCo Network Token` Auto-Update + Payday Smart Retry + Backup `Pay-by-Bank` Fallback (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① `VTS / MDES` Token Lifecycle</text>
+  <text x="62" y="462" class="body-txt">Auto-updates underlying</text>
+  <text x="62" y="480" class="body-txt">`FPAN` expiry &amp; number</text>
+  <text x="62" y="498" class="body-txt">in real time via issuer</text>
+  <text x="62" y="516" class="mono">+4.8% Auth Rate Uplift</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Payday-Aware Smart Dunning</text>
+  <text x="337" y="462" class="body-txt">Schedules `Cat-2` (`NSF`)</text>
+  <text x="337" y="480" class="body-txt">soft-decline retries on</text>
+  <text x="337" y="498" class="body-txt">1st / 15th / Friday local</text>
+  <text x="337" y="516" class="mono">payroll deposit windows!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Lower `Token Interchange`</text>
+  <text x="622" y="462" class="body-txt">Saves `10–15 bps` vs raw</text>
+  <text x="622" y="480" class="body-txt">card-on-file `PAN` fees</text>
+  <text x="622" y="498" class="body-txt">by passing cryptographic</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">per-tx `TAVV / DTVV`!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Backup Rail Auto-Failover</text>
+  <text x="907" y="462" class="body-txt">Falls back to pre-consented</text>
+  <text x="907" y="480" class="body-txt">secondary wallet / `A2A`</text>
+  <text x="907" y="498" class="body-txt">or sends 1-Tap Apple Pay</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-38% Decline &amp; Fee Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-38.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Decline, Churn &amp; Retry Loss Saved</text>
+  <text x="46" y="642" class="mono">$95,000 Saved / $250k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">+4.8% Auth</text>
+  <text x="336" y="626" class="kpi-lbl">EMVCo Network Token + CIT Trace</text>
+  <text x="336" y="642" class="mono">Zero 3 AM 3DS2 Soft-Declines</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">$0 Retry Fine</text>
+  <text x="626" y="626" class="kpi-lbl">Instant Cat-1 / MAC-03 Circuit Breaker</text>
+  <text x="626" y="642" class="mono">Strict &lt;=15 Retries / 30d Cap</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">-12 bps MDR</text>
+  <text x="916" y="626" class="kpi-lbl">Tokenized Cryptogram Interchange</text>
+  <text x="916" y="642" class="mono">Payday ML Recovery +41%</text>
+</svg>
