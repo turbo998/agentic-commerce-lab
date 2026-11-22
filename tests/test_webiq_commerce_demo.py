@@ -25674,6 +25674,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-boxless-return-qr-instant-exchange-sandbox", html_zh)
 
+    def test_b2b_indirect_procurement_unspsc_punchout_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BIndirectProcurementUNSPSCPunchOutPolicyInput,
+            evaluate_b2b_indirect_procurement_unspsc_punchout_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_indirect_procurement_unspsc_punchout_policy(
+            B2BIndirectProcurementUNSPSCPunchOutPolicyInput(
+                quarterly_free_text_markup_uom_error_and_parcel_freight_pool_usd=240000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CONTRACT_CATALOG_AND_BASE_UOM_AUTHORIZED",
+        )
+
+        freetext = evaluate_b2b_indirect_procurement_unspsc_punchout_policy(
+            B2BIndirectProcurementUNSPSCPunchOutPolicyInput(
+                free_text_pr_bypassing_contract_catalog_or_wrong_unspsc_gl=True
+            )
+        )
+        self.assertEqual(freetext["status_code"], 403)
+        self.assertEqual(
+            freetext["decision"],
+            "FREE_TEXT_BYPASS_OF_CONTRACT_CATALOG_OR_BAD_UNSPSC",
+        )
+
+        uom = evaluate_b2b_indirect_procurement_unspsc_punchout_policy(
+            B2BIndirectProcurementUNSPSCPunchOutPolicyInput(
+                uom_case_vs_each_24x_overorder_or_idle_internal_stock_ignored=True
+            )
+        )
+        self.assertEqual(uom["status_code"], 422)
+        self.assertEqual(
+            uom["decision"],
+            "UOM_CASE_EACH_MULTIPLIER_ERROR_OR_IDLE_STOCKROOM",
+        )
+
+        seller = evaluate_b2b_indirect_procurement_unspsc_punchout_policy(
+            B2BIndirectProcurementUNSPSCPunchOutPolicyInput(
+                unauthorized_3p_marketplace_seller_or_restricted_personal_sku=True
+            )
+        )
+        self.assertEqual(seller["status_code"], 451)
+        self.assertEqual(
+            seller["decision"],
+            "UNAUTHORIZED_3P_MARKETPLACE_SELLER_OR_RESTRICTED_SKU",
+        )
+
+        optim = evaluate_b2b_indirect_procurement_unspsc_punchout_policy(
+            B2BIndirectProcurementUNSPSCPunchOutPolicyInput(
+                quarterly_free_text_markup_uom_error_and_parcel_freight_pool_usd=240000.0,
+                weekly_building_delivery_merge_and_generic_brand_swap_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 86400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 153600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_indirect_procurement_unspsc_punchout_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-indirect-procurement-unspsc-punchout-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

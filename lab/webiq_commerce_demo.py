@@ -33917,6 +33917,82 @@ def evaluate_ecommerce_boxless_return_qr_instant_exchange_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BIndirectProcurementUNSPSCPunchOutPolicyInput:
+    quarterly_free_text_markup_uom_error_and_parcel_freight_pool_usd: float = 240000.0
+    free_text_pr_bypassing_contract_catalog_or_wrong_unspsc_gl: bool = False
+    uom_case_vs_each_24x_overorder_or_idle_internal_stock_ignored: bool = False
+    unauthorized_3p_marketplace_seller_or_restricted_personal_sku: bool = False
+    weekly_building_delivery_merge_and_generic_brand_swap_ready: bool = False
+
+
+def evaluate_b2b_indirect_procurement_unspsc_punchout_policy(
+    policy_input: B2BIndirectProcurementUNSPSCPunchOutPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_free_text_markup_uom_error_and_parcel_freight_pool_usd
+        ),
+    )
+    if policy_input.unauthorized_3p_marketplace_seller_or_restricted_personal_sku:
+        return {
+            "status_code": 451,
+            "decision": "UNAUTHORIZED_3P_MARKETPLACE_SELLER_OR_RESTRICTED_SKU",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.free_text_pr_bypassing_contract_catalog_or_wrong_unspsc_gl:
+        return {
+            "status_code": 403,
+            "decision": "FREE_TEXT_BYPASS_OF_CONTRACT_CATALOG_OR_BAD_UNSPSC",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uom_case_vs_each_24x_overorder_or_idle_internal_stock_ignored:
+        return {
+            "status_code": 422,
+            "decision": "UOM_CASE_EACH_MULTIPLIER_ERROR_OR_IDLE_STOCKROOM",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.weekly_building_delivery_merge_and_generic_brand_swap_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "WEEKLY_BUILDING_MERGE_AND_GENERIC_BRAND_SWAP_CONFIRM",
+            "mandate_token": "b2b_indirect_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CONTRACT_CATALOG_AND_BASE_UOM_AUTHORIZED",
+        "mandate_token": "b2b_indirect_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -46284,6 +46360,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_indirect_procurement_unspsc_punchout_guard = {
+        "authorized_200": evaluate_b2b_indirect_procurement_unspsc_punchout_policy(
+            B2BIndirectProcurementUNSPSCPunchOutPolicyInput()
+        ),
+        "free_text_or_unspsc_403": evaluate_b2b_indirect_procurement_unspsc_punchout_policy(
+            B2BIndirectProcurementUNSPSCPunchOutPolicyInput(
+                free_text_pr_bypassing_contract_catalog_or_wrong_unspsc_gl=True
+            )
+        ),
+        "uom_24x_or_closet_422": evaluate_b2b_indirect_procurement_unspsc_punchout_policy(
+            B2BIndirectProcurementUNSPSCPunchOutPolicyInput(
+                uom_case_vs_each_24x_overorder_or_idle_internal_stock_ignored=True
+            )
+        ),
+        "rogue_3p_or_gift_451": evaluate_b2b_indirect_procurement_unspsc_punchout_policy(
+            B2BIndirectProcurementUNSPSCPunchOutPolicyInput(
+                unauthorized_3p_marketplace_seller_or_restricted_personal_sku=True
+            )
+        ),
+        "weekly_merge_generic_409": evaluate_b2b_indirect_procurement_unspsc_punchout_policy(
+            B2BIndirectProcurementUNSPSCPunchOutPolicyInput(
+                weekly_building_delivery_merge_and_generic_brand_swap_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -46660,6 +46762,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_ap_virtual_card_stp_surcharge_rebate_guard": b2b_ap_virtual_card_stp_surcharge_rebate_guard,
         "ota_hotel_direct_points_cash_upgrade_guard": ota_hotel_direct_points_cash_upgrade_guard,
         "ecommerce_boxless_return_qr_instant_exchange_guard": ecommerce_boxless_return_qr_instant_exchange_guard,
+        "b2b_indirect_procurement_unspsc_punchout_guard": b2b_indirect_procurement_unspsc_punchout_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -65995,6 +66098,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="boxlessret-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 BOXLESS_TOTE_CONSOLIDATION_AND_SHOP_NOW_EXCHANGE_CONFIRM · Mandate: boxless_return_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 248 B2B Indirect Procurement, UNSPSC Dedup, UOM & Guided Buying Escrow (#367) -->
+      <div class="finops-box" id="b2b-indirect-procurement-unspsc-punchout-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🖇️ 企业 B2B 间接寻源、办公 IT 耗材目录与 UOM 防错 (Amazon Business / Staples / Coupa / SAP Ariba) 沙盒</div>
+            <div class="finops-sub">Round 248 (#367) · 自由文本 PR 自动替换为 -38% 协议目录 SKU 与 8位 UNSPSC 科目锁 (HTTP 403) + 计量单位 (CS整箱 vs EA单件) 24倍错单拦截与 IT 闲置库房优先调拨 (HTTP 422) + 屏蔽非授权 3P 小店与私人违禁品 (HTTP 451) + 同楼每周五集拼送货与自有品牌平替净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="indirectp2p-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度员工绕过协议目录提自由文本高价野采 (+42%)、CS/EA 箱件搞反买多 24 倍、忽略 IT 库房闲置显示器与每日零散运费池 ($)
+            <input type="number" id="indirectp2p-gross-input" value="240000" min="10000" step="5000" oninput="recalcB2BIndirectProcurementUNSPSCPunchOutSandbox()" />
+          </label>
+          <label>自由文本请购单 (Free-Text PR) 厂商型号 (MPN / GTIN) 自动替换为协议目录 SKU 与 8位 UNSPSC 总账科目门禁
+            <select id="indirectp2p-catalog-select" onchange="recalcB2BIndirectProcurementUNSPSCPunchOutSandbox()">
+              <option value="pass">150ms 识别自由文本 MPN 自动替换为 $52 协议目录硒鼓 (-38%) + 自动映射精准 8位 UNSPSC 与 SAP GL 科目 (合规)</option>
+              <option value="block_403">放着 $52 协议目录不买手写自由文本申请去买 $89 零售硒鼓 或 乱选错误 UNSPSC 科目挪用预算 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>计量单位 (ANSI X12 UOM: CS 整箱 vs EA 单件) 90天用量换算锁与内部闲置 IT 储物间 (IT Closet) 优先调拨门禁
+            <select id="indirectp2p-uom-select" onchange="recalcB2BIndirectProcurementUNSPSCPunchOutSandbox()">
+              <option value="pass">换算最小单品数拦截超量 + 请购 5 台显示器优先从公司 IT 储物间离职收回良品库 $0 调拨领用 (合规)</option>
+              <option value="block_422">想买 50 盒纸结果误选 50 箱 CS 买回 1,200 盒塞爆走廊 或 IT 库房躺着 40 台闲置显示器还在花 $4,500 买新的 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>cXML PunchOut 严禁无资质第三方黄牛卖家 (1P / Authorized OEM Only) 与私人消费品拦截门禁
+            <select id="indirectp2p-seller-select" onchange="recalcB2BIndirectProcurementUNSPSCPunchOutSandbox()">
+              <option value="pass">仅限官方自营或认证品牌授权商 + 拦截购物卡/游戏机等私人违禁品且报价 &lt;=24h 实时有效 (安全)</option>
+              <option value="block_451">员工在 PunchOut 商城选了无资质个人小店山寨电源线 或 在办公耗材单里夹带购买超市购物卡/游戏手柄 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>同办公楼每周五整托盘集拼配送 (免除 $8.99/单运费) + 协议自有品牌平替 (-32% 单价) + 月度 1 张汇总 EDI 810
+            <select id="indirectp2p-opt-select" onchange="recalcB2BIndirectProcurementUNSPSCPunchOutSandbox()">
+              <option value="enabled" selected>全楼小单合并至每周五免邮整托盘统配(-78% 包裹) + 一键平替协议自有品牌(-32%) + 月底 1 张汇总发票 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">无同楼每周合单统配与自有品牌平替的每日零散下单 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度间接野采与零散运费池</div>
+            <div class="finops-kpi-val" id="indirectp2p-gross-kpi">$240,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">目录替换与周五统配后净支出</div>
+            <div class="finops-kpi-val" id="indirectp2p-net-kpi" style="color:#6ee7b7;">$153,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省野采溢价与快递费</div>
+            <div class="finops-kpi-val" id="indirectp2p-savings-kpi" style="color:#38bdf8;">$86,400</div>
+          </div>
+        </div>
+        <div id="indirectp2p-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 WEEKLY_BUILDING_MERGE_AND_GENERIC_BRAND_SWAP_CONFIRM · Mandate: b2b_indirect_escrow_optim_409
         </div>
       </div>
 
@@ -89616,6 +89776,79 @@ function recalcEcommerceBoxlessReturnQRInstantExchangeSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_RETURN_BAR_UPC_AND_SCALE_WEIGHT_AUTHORIZED · Mandate: boxless_return_escrow_200';
+}}
+
+function recalcB2BIndirectProcurementUNSPSCPunchOutSandbox() {{
+  const grossInput = document.getElementById('indirectp2p-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '240000'));
+  const catalogGate = document.getElementById('indirectp2p-catalog-select').value;
+  const uomGate = document.getElementById('indirectp2p-uom-select').value;
+  const sellerGate = document.getElementById('indirectp2p-seller-select').value;
+  const optMode = document.getElementById('indirectp2p-opt-select').value;
+
+  const grossKpi = document.getElementById('indirectp2p-gross-kpi');
+  const netKpi = document.getElementById('indirectp2p-net-kpi');
+  const savingsKpi = document.getElementById('indirectp2p-savings-kpi');
+  const statusKpi = document.getElementById('indirectp2p-status-kpi');
+  const banner = document.getElementById('indirectp2p-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (sellerGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNAUTHORIZED_3P_MARKETPLACE_SELLER_OR_RESTRICTED_SKU · Mandate: null';
+    return;
+  }}
+  if (catalogGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 FREE_TEXT_BYPASS_OF_CONTRACT_CATALOG_OR_BAD_UNSPSC · Mandate: null';
+    return;
+  }}
+  if (uomGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UOM_CASE_EACH_MULTIPLIER_ERROR_OR_IDLE_STOCKROOM · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 WEEKLY_BUILDING_MERGE_AND_GENERIC_BRAND_SWAP_CONFIRM · Mandate: b2b_indirect_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CONTRACT_CATALOG_AND_BASE_UOM_AUTHORIZED · Mandate: b2b_indirect_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

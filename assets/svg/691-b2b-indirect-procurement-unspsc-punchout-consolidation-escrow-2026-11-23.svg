@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg691" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg691)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 248 · B2B Indirect Procurement, `UNSPSC` Dedup, `UOM` &amp; `Guided Buying` Escrow</text>
+  <text x="48" y="74" class="sub">Amazon Business / Staples Advantage / Coupa / SAP Ariba · `MPN/GTIN` Dedup · `CS vs EA` UOM Gate · Weekly Dock Merge (-36%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #691 · FAQ #367</text>
+
+  <!-- Lane 1: Free-Text Requisition Bypassing Contract Catalogs (+42% Retail Markup & Duplicate Master Data) -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. `MPN/UNSPSC` Catalog Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Free-Text `PR` Bypassing Contract Catalogs:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Match `Manufacturer_Part_No (MPN) / GTIN` &amp;</text>
+  <text x="54" y="200" class="mono">Swap Free-Text Request to `-38% Contract_SKU`!</text>
+  <text x="44" y="223" class="body-txt">• Blocks Incorrect `UNSPSC` GL Tax/Expense Coding:</text>
+  <text x="54" y="243" class="mono">Auto-Classify `8-Digit UNSPSC` -&gt; `SAP GL_Code`</text>
+  <text x="44" y="266" class="body-txt">• Eliminates employees typing a free-text request</text>
+  <text x="54" y="286" class="body-txt">to buy `$89` retail printer toner when the</text>
+  <text x="54" y="304" class="body-txt">contract catalog has the exact same MPN for `$52`</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 FREE_TEXT_BYPASS_OF_CONTRACT_CATALOG_OR_BAD_UNSPSC</text>
+
+  <!-- Lane 2: Unit-of-Measure (UOM: Case CS vs Each EA) 24x Over-Order & Surplus Internal Stock -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. `UOM (CS vs EA)` &amp; Stock Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Ordering `50 Cases` Instead of `50 Each`:</text>
+  <text x="442" y="182" class="mono">Verify `ANSI_X12_UOM (EA / BX / CS / PK)` &amp;</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Check `Total_Base_Units &lt;= 90d_Dept_Burn_Rate`!</text>
+  <text x="432" y="223" class="body-txt">• Checks Internal Stockroom / IT Closet First:</text>
+  <text x="442" y="243" class="mono">Require `Internal_Stockroom_OnHand == 0`</text>
+  <text x="432" y="266" class="body-txt">• Prevents an admin ordering `50 CS` (1,200</text>
+  <text x="442" y="286" class="body-txt">boxes of copy paper) by mistake or buying new</text>
+  <text x="442" y="304" class="body-txt">monitors while 40 sit idle in the IT closet</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UOM_CASE_EACH_MULTIPLIER_ERROR_OR_IDLE_STOCKROOM</text>
+
+  <!-- Lane 3: Unapproved Marketplace Third-Party Resellers & Stale cXML PunchOut Carts -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Seller `KYB` &amp; `PunchOut` Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Blocks Unvetted 3P Marketplace Gray-Market Sellers:</text>
+  <text x="830" y="182" class="mono">Enforce `Authorized_Reseller / Direct_OEM_Only`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">+ `cXML_PunchOut_Quote_TTL &lt;= 24_Hours`!</text>
+  <text x="820" y="223" class="body-txt">• Enforces Restricted Category Policy Guardrails:</text>
+  <text x="830" y="243" class="body-txt">Holds checkout when an employee adds consumer</text>
+  <text x="830" y="261" class="body-txt">gift cards, gaming consoles, or uncertified</text>
+  <text x="830" y="279" class="body-txt">lithium power banks to an office-supply `PO`</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNAUTHORIZED_3P_MARKETPLACE_SELLER_OR_RESTRICTED_SKU</text>
+
+  <!-- Bottom Weekly Building-Level Delivery Consolidation, Generic Equivalent Swap & Summary Invoice -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Building-Wide Weekly Cart Consolidation + Generic-Brand Swap + Monthly Summary `EDI 810` (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Weekly Building Consolidation</text>
+  <text x="62" y="462" class="body-txt">Batches 35 small office</text>
+  <text x="62" y="480" class="body-txt">orders across floors into</text>
+  <text x="62" y="498" class="body-txt">1 Friday pallet delivery</text>
+  <text x="62" y="516" class="mono">-$8.99/Order Shipping Fee!</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Preferred Generic Swap</text>
+  <text x="337" y="462" class="body-txt">Auto-swaps retail-brand</text>
+  <text x="337" y="480" class="body-txt">sticky notes/cables to</text>
+  <text x="337" y="498" class="body-txt">contract house-brand</text>
+  <text x="337" y="516" class="mono">equivalents (-32% Unit Cost)!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Internal Closet Re-Harvest</text>
+  <text x="622" y="462" class="body-txt">Routes monitor/dock/headset</text>
+  <text x="622" y="480" class="body-txt">requests to returned</text>
+  <text x="622" y="498" class="body-txt">offboarded IT stockroom</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">$0 New CapEx Spend!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Consolidated Monthly `810`</text>
+  <text x="907" y="462" class="body-txt">Replaces 1,200 micro-invoices</text>
+  <text x="907" y="480" class="body-txt">with 1 summary `EDI 810`</text>
+  <text x="907" y="498" class="body-txt">grouped by cost center</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Indirect Spend Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Indirect Spend &amp; Freight Saved</text>
+  <text x="46" y="642" class="mono">$86,400 Saved / $240k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% Contract</text>
+  <text x="336" y="626" class="kpi-lbl">Free-Text PR to Catalog Auto-Swap</text>
+  <text x="336" y="642" class="mono">Zero +42% Off-Contract Markups</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">0 UOM Errors</text>
+  <text x="626" y="626" class="kpi-lbl">Case (CS) vs Each (EA) Multiplier Lock</text>
+  <text x="626" y="642" class="mono">Internal IT Closet Checked First</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">-78% Parcels</text>
+  <text x="916" y="626" class="kpi-lbl">Weekly Building Delivery Day Merge</text>
+  <text x="916" y="642" class="mono">1 Monthly Summary EDI 810</text>
+</svg>
