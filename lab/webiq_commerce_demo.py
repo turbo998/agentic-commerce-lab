@@ -33157,6 +33157,82 @@ def evaluate_agentic_payment_cit_mit_network_token_retry_policy(
     }
 
 
+@dataclass(frozen=True)
+class CommercialSearchGroundingPriceVerifyPolicyInput:
+    quarterly_search_api_token_burn_and_stale_price_drift_pool_usd: float = 220000.0
+    quoting_checkout_from_cached_snippet_without_live_browse: bool = False
+    gtin_condition_mismatch_accessory_trap_or_hidden_shipping: bool = False
+    hidden_dom_prompt_injection_or_active_cpsc_fda_recall_hit: bool = False
+    two_stage_webiq_passage_recall_and_top3_live_browse_ready: bool = False
+
+
+def evaluate_commercial_search_grounding_price_verify_policy(
+    policy_input: CommercialSearchGroundingPriceVerifyPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_search_api_token_burn_and_stale_price_drift_pool_usd
+        ),
+    )
+    if policy_input.hidden_dom_prompt_injection_or_active_cpsc_fda_recall_hit:
+        return {
+            "status_code": 451,
+            "decision": "HIDDEN_DOM_PROMPT_INJECTION_OR_RECALL_SAFETY_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.quoting_checkout_from_cached_snippet_without_live_browse:
+        return {
+            "status_code": 403,
+            "decision": "STALE_SEARCH_SNIPPET_OR_LIVE_CRAWL_NOT_VERIFIED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.gtin_condition_mismatch_accessory_trap_or_hidden_shipping:
+        return {
+            "status_code": 422,
+            "decision": "GTIN_CONDITION_MISMATCH_OR_ACCESSORY_PRICE_TRAP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.two_stage_webiq_passage_recall_and_top3_live_browse_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TWO_STAGE_PASSAGE_RECALL_AND_TOP3_LIVE_BROWSE_CONFIRM",
+            "mandate_token": "search_grounding_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_LIVE_BROWSE_AND_GTIN_JSONLD_QUOTE_AUTHORIZED",
+        "mandate_token": "search_grounding_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -45264,6 +45340,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    commercial_search_grounding_price_verify_guard = {
+        "authorized_200": evaluate_commercial_search_grounding_price_verify_policy(
+            CommercialSearchGroundingPriceVerifyPolicyInput()
+        ),
+        "stale_snippet_403": evaluate_commercial_search_grounding_price_verify_policy(
+            CommercialSearchGroundingPriceVerifyPolicyInput(
+                quoting_checkout_from_cached_snippet_without_live_browse=True
+            )
+        ),
+        "gtin_accessory_trap_422": evaluate_commercial_search_grounding_price_verify_policy(
+            CommercialSearchGroundingPriceVerifyPolicyInput(
+                gtin_condition_mismatch_accessory_trap_or_hidden_shipping=True
+            )
+        ),
+        "dom_injection_recall_451": evaluate_commercial_search_grounding_price_verify_policy(
+            CommercialSearchGroundingPriceVerifyPolicyInput(
+                hidden_dom_prompt_injection_or_active_cpsc_fda_recall_hit=True
+            )
+        ),
+        "passage_top3_browse_409": evaluate_commercial_search_grounding_price_verify_policy(
+            CommercialSearchGroundingPriceVerifyPolicyInput(
+                two_stage_webiq_passage_recall_and_top3_live_browse_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -45630,6 +45732,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_shadow_it_employee_card_saas_sprawl_guard": b2b_shadow_it_employee_card_saas_sprawl_guard,
         "ota_high_speed_rail_air_rail_interline_guard": ota_high_speed_rail_air_rail_interline_guard,
         "agentic_payment_cit_mit_network_token_retry_guard": agentic_payment_cit_mit_network_token_retry_guard,
+        "commercial_search_grounding_price_verify_guard": commercial_search_grounding_price_verify_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -64395,6 +64498,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="citmit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 NETWORK_TOKEN_LIFECYCLE_AND_PAYDAY_SMART_RETRY_CONFIRM · Mandate: cit_mit_token_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 238 Commercial Search Grounding & Live Price/Stock Verification (#357) -->
+      <div class="finops-box" id="commercial-search-grounding-price-verify-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔍 实时商业搜索、全网比价与网页接地选型 (Microsoft Web IQ vs Perplexity vs Tavily vs Exa vs Firecrawl) 沙盒</div>
+            <div class="finops-sub">Round 238 (#357) · 结账前 Web IQ /v3/browse 实时爬取 (liveCrawlSucceeded=true) 门禁 (HTTP 403) + JSON-LD 14位 GTIN/全新成色与防配件低价陷阱锁 (HTTP 422) + 隐藏 DOM 提示词注入剥离与 CPSC 召回拦截 (HTTP 451) + Passage 初筛(-7.1x Token) -&gt; Top-3 Browse 三级漏斗净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="groundverify-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度全量跑无头浏览器/整页抓取烧穿 Token 预算、轻信 7 天前搜索缓存旧价致结账跳价弃单与配件误当整机赔付池 ($)
+            <input type="number" id="groundverify-gross-input" value="220000" min="10000" step="5000" oninput="recalcCommercialSearchGroundingPriceVerifySandbox()" />
+          </label>
+          <label>结账前强制 Web IQ /v3/browse 实时落地页重抓 (liveCrawlSucceeded == true) 与实时在库 (InStock) 核验门禁
+            <select id="groundverify-live-select" onchange="recalcCommercialSearchGroundingPriceVerifySandbox()">
+              <option value="pass">Top-3 决胜报价经 /v3/browse 实时确认 liveCrawlSucceeded=true 且 InStock 现货一致 (零跳价)</option>
+              <option value="block_403">仅凭 Perplexity / Tavily 7天前搜索索引缓存的过期大促摘要价直接签发支付令牌致结账跳价 29% 弃单 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>落地页 Schema.org/Product JSON-LD 14位 GTIN 条码、全新成色 (NewCondition) 与含运费总到手价对齐锁
+            <select id="groundverify-gtin-select" onchange="recalcCommercialSearchGroundingPriceVerifySandbox()">
+              <option value="pass">14位 GTIN 与 NewCondition 100% 匹配目标主机，并按 商品净价+运费+税费 真实到手总价排序 (合规)</option>
+              <option value="block_422">把同页面下拉框默认的 $149 扩展坞配件/官翻机当成 $1,199 全新笔记本最低价 或 忽略 $85 隐藏运费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>隐藏 DOM 提示词注入 (display:none / font-size:0) 清洗沙盒、SEO 软文农场过滤与 CPSC/FDA 安全召回门禁
+            <select id="groundverify-dom-select" onchange="recalcCommercialSearchGroundingPriceVerifySandbox()">
+              <option value="pass">确定性沙盒剥离隐藏 CSS 提示词注入 + 过滤无库存返利软文站 + CPSC/FDA 零召回命中 (安全)</option>
+              <option value="block_451">网页暗藏白色小字 IGNORE MANDATE 企图劫持收款商户 或 并发检索命中 CPSC/FDA 紧急安全召回令 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>三级 FinOps 接地漏斗：Stage 1 Web IQ Passage 广域召回 (-7.1x Token) -&gt; Stage 2 Top-3 Browse -&gt; 禁搜索跑 Browser
+            <select id="groundverify-opt-select" onchange="recalcCommercialSearchGroundingPriceVerifySandbox()">
+              <option value="enabled" selected>Stage1 用 Web IQ passage+Exa 毫秒初筛(省7.1x Token/快2.75x) + Stage2 仅 Top-3 实时 Browse (-41% 成本 / HTTP 409)</option>
+              <option value="disabled">无分级切片与缓存复用的单点常规实时核验 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度搜索Token与跳价弃单池</div>
+            <div class="finops-kpi-val" id="groundverify-gross-kpi">$220,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">三级漏斗与GTIN锁价后净支出</div>
+            <div class="finops-kpi-val" id="groundverify-net-kpi" style="color:#6ee7b7;">$129,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省API账单与跳价损耗</div>
+            <div class="finops-kpi-val" id="groundverify-savings-kpi" style="color:#38bdf8;">$90,200</div>
+          </div>
+        </div>
+        <div id="groundverify-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TWO_STAGE_PASSAGE_RECALL_AND_TOP3_LIVE_BROWSE_CONFIRM · Mandate: search_grounding_escrow_optim_409
         </div>
       </div>
 
@@ -87286,6 +87446,79 @@ function recalcAgenticPaymentCITMITNetworkTokenRetrySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 LINKED_CIT_TRACE_ID_AND_DPAN_TAVV_MIT_AUTHORIZED · Mandate: cit_mit_token_escrow_200';
+}}
+
+function recalcCommercialSearchGroundingPriceVerifySandbox() {{
+  const grossInput = document.getElementById('groundverify-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '220000'));
+  const liveGate = document.getElementById('groundverify-live-select').value;
+  const gtinGate = document.getElementById('groundverify-gtin-select').value;
+  const domGate = document.getElementById('groundverify-dom-select').value;
+  const optMode = document.getElementById('groundverify-opt-select').value;
+
+  const grossKpi = document.getElementById('groundverify-gross-kpi');
+  const netKpi = document.getElementById('groundverify-net-kpi');
+  const savingsKpi = document.getElementById('groundverify-savings-kpi');
+  const statusKpi = document.getElementById('groundverify-status-kpi');
+  const banner = document.getElementById('groundverify-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (domGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 HIDDEN_DOM_PROMPT_INJECTION_OR_RECALL_SAFETY_HOLD · Mandate: null';
+    return;
+  }}
+  if (liveGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 STALE_SEARCH_SNIPPET_OR_LIVE_CRAWL_NOT_VERIFIED · Mandate: null';
+    return;
+  }}
+  if (gtinGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 GTIN_CONDITION_MISMATCH_OR_ACCESSORY_PRICE_TRAP · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TWO_STAGE_PASSAGE_RECALL_AND_TOP3_LIVE_BROWSE_CONFIRM · Mandate: search_grounding_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_LIVE_BROWSE_AND_GTIN_JSONLD_QUOTE_AUTHORIZED · Mandate: search_grounding_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

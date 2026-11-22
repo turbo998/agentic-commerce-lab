@@ -25004,6 +25004,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-payment-cit-mit-network-token-retry-sandbox", html_zh)
 
+    def test_commercial_search_grounding_price_verify_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CommercialSearchGroundingPriceVerifyPolicyInput,
+            evaluate_commercial_search_grounding_price_verify_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_commercial_search_grounding_price_verify_policy(
+            CommercialSearchGroundingPriceVerifyPolicyInput(
+                quarterly_search_api_token_burn_and_stale_price_drift_pool_usd=220000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_LIVE_BROWSE_AND_GTIN_JSONLD_QUOTE_AUTHORIZED",
+        )
+
+        stale = evaluate_commercial_search_grounding_price_verify_policy(
+            CommercialSearchGroundingPriceVerifyPolicyInput(
+                quoting_checkout_from_cached_snippet_without_live_browse=True
+            )
+        )
+        self.assertEqual(stale["status_code"], 403)
+        self.assertEqual(
+            stale["decision"],
+            "STALE_SEARCH_SNIPPET_OR_LIVE_CRAWL_NOT_VERIFIED",
+        )
+
+        gtin = evaluate_commercial_search_grounding_price_verify_policy(
+            CommercialSearchGroundingPriceVerifyPolicyInput(
+                gtin_condition_mismatch_accessory_trap_or_hidden_shipping=True
+            )
+        )
+        self.assertEqual(gtin["status_code"], 422)
+        self.assertEqual(
+            gtin["decision"],
+            "GTIN_CONDITION_MISMATCH_OR_ACCESSORY_PRICE_TRAP",
+        )
+
+        dom = evaluate_commercial_search_grounding_price_verify_policy(
+            CommercialSearchGroundingPriceVerifyPolicyInput(
+                hidden_dom_prompt_injection_or_active_cpsc_fda_recall_hit=True
+            )
+        )
+        self.assertEqual(dom["status_code"], 451)
+        self.assertEqual(
+            dom["decision"],
+            "HIDDEN_DOM_PROMPT_INJECTION_OR_RECALL_SAFETY_HOLD",
+        )
+
+        optim = evaluate_commercial_search_grounding_price_verify_policy(
+            CommercialSearchGroundingPriceVerifyPolicyInput(
+                quarterly_search_api_token_burn_and_stale_price_drift_pool_usd=220000.0,
+                two_stage_webiq_passage_recall_and_top3_live_browse_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 90200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 129800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("commercial_search_grounding_price_verify_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("commercial-search-grounding-price-verify-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
