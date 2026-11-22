@@ -25942,6 +25942,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-corporate-travel-per-diem-folio-vat-sandbox", html_zh)
 
+    def test_cross_border_bonded_1210_customs_179_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderBonded1210Customs179PolicyInput,
+            evaluate_cross_border_bonded_1210_customs_179_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_bonded_1210_customs_179_policy(
+            CrossBorderBonded1210Customs179PolicyInput(
+                quarterly_customs_179_mismatch_quota_hold_and_return_tax_loss_pool_usd=270000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CUSTOMS_179_THREE_WAY_MATCH_AND_QUOTA_AUTHORIZED",
+        )
+
+        quota = evaluate_cross_border_bonded_1210_customs_179_policy(
+            CrossBorderBonded1210Customs179PolicyInput(
+                exceeds_5k_single_or_26k_annual_quota_or_daigou_smuggling_split=True
+            )
+        )
+        self.assertEqual(quota["status_code"], 403)
+        self.assertEqual(
+            quota["decision"],
+            "ANNUAL_26K_SINGLE_5K_QUOTA_EXCEEDED_OR_DAIGOU_SMUGGLING_SPLIT",
+        )
+
+        payer = evaluate_cross_border_bonded_1210_customs_179_policy(
+            CrossBorderBonded1210Customs179PolicyInput(
+                order_buyer_id_differs_from_wechat_alipay_payer_realname_id=True
+            )
+        )
+        self.assertEqual(payer["status_code"], 422)
+        self.assertEqual(
+            payer["decision"],
+            "CUSTOMS_179_BUYER_PAYER_ID_MISMATCH_OR_THREE_WAY_PUSH_FAIL",
+        )
+
+        bonded = evaluate_cross_border_bonded_1210_customs_179_policy(
+            CrossBorderBonded1210Customs179PolicyInput(
+                sku_outside_cbec_positive_list_or_return_routed_to_non_bonded_3pl=True
+            )
+        )
+        self.assertEqual(bonded["status_code"], 451)
+        self.assertEqual(
+            bonded["decision"],
+            "NON_POSITIVE_LIST_SKU_OR_NON_BONDED_RETURN_TAX_FORFEITURE",
+        )
+
+        optim = evaluate_cross_border_bonded_1210_customs_179_policy(
+            CrossBorderBonded1210Customs179PolicyInput(
+                quarterly_customs_179_mismatch_quota_hold_and_return_tax_loss_pool_usd=270000.0,
+                sub_order_customs_split_and_30d_bonded_return_tax_restore_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 99900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 170100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_bonded_1210_customs_179_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-bonded-1210-customs-179-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -34223,6 +34223,84 @@ def evaluate_b2b_corporate_travel_per_diem_folio_vat_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderBonded1210Customs179PolicyInput:
+    quarterly_customs_179_mismatch_quota_hold_and_return_tax_loss_pool_usd: float = (
+        270000.0
+    )
+    exceeds_5k_single_or_26k_annual_quota_or_daigou_smuggling_split: bool = False
+    order_buyer_id_differs_from_wechat_alipay_payer_realname_id: bool = False
+    sku_outside_cbec_positive_list_or_return_routed_to_non_bonded_3pl: bool = False
+    sub_order_customs_split_and_30d_bonded_return_tax_restore_ready: bool = False
+
+
+def evaluate_cross_border_bonded_1210_customs_179_policy(
+    policy_input: CrossBorderBonded1210Customs179PolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_customs_179_mismatch_quota_hold_and_return_tax_loss_pool_usd
+        ),
+    )
+    if policy_input.sku_outside_cbec_positive_list_or_return_routed_to_non_bonded_3pl:
+        return {
+            "status_code": 451,
+            "decision": "NON_POSITIVE_LIST_SKU_OR_NON_BONDED_RETURN_TAX_FORFEITURE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.exceeds_5k_single_or_26k_annual_quota_or_daigou_smuggling_split:
+        return {
+            "status_code": 403,
+            "decision": "ANNUAL_26K_SINGLE_5K_QUOTA_EXCEEDED_OR_DAIGOU_SMUGGLING_SPLIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.order_buyer_id_differs_from_wechat_alipay_payer_realname_id:
+        return {
+            "status_code": 422,
+            "decision": "CUSTOMS_179_BUYER_PAYER_ID_MISMATCH_OR_THREE_WAY_PUSH_FAIL",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sub_order_customs_split_and_30d_bonded_return_tax_restore_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "BONDED_1210_VS_GENERAL_TRADE_TAX_ROUTING_AND_QUOTA_RESTORE_CONFIRM",
+            "mandate_token": "cbec_1210_customs_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CUSTOMS_179_THREE_WAY_MATCH_AND_QUOTA_AUTHORIZED",
+        "mandate_token": "cbec_1210_customs_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -46694,6 +46772,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_bonded_1210_customs_179_guard = {
+        "authorized_200": evaluate_cross_border_bonded_1210_customs_179_policy(
+            CrossBorderBonded1210Customs179PolicyInput()
+        ),
+        "quota_or_daigou_403": evaluate_cross_border_bonded_1210_customs_179_policy(
+            CrossBorderBonded1210Customs179PolicyInput(
+                exceeds_5k_single_or_26k_annual_quota_or_daigou_smuggling_split=True
+            )
+        ),
+        "payer_id_mismatch_422": evaluate_cross_border_bonded_1210_customs_179_policy(
+            CrossBorderBonded1210Customs179PolicyInput(
+                order_buyer_id_differs_from_wechat_alipay_payer_realname_id=True
+            )
+        ),
+        "non_positive_or_return_451": evaluate_cross_border_bonded_1210_customs_179_policy(
+            CrossBorderBonded1210Customs179PolicyInput(
+                sku_outside_cbec_positive_list_or_return_routed_to_non_bonded_3pl=True
+            )
+        ),
+        "sub_order_bonded_return_409": evaluate_cross_border_bonded_1210_customs_179_policy(
+            CrossBorderBonded1210Customs179PolicyInput(
+                sub_order_customs_split_and_30d_bonded_return_tax_restore_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -47074,6 +47178,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_ai_prepaid_credit_wallet_fefo_topup_guard": saas_ai_prepaid_credit_wallet_fefo_topup_guard,
         "omnichannel_retail_markdown_broken_size_guard": omnichannel_retail_markdown_broken_size_guard,
         "b2b_corporate_travel_per_diem_folio_vat_guard": b2b_corporate_travel_per_diem_folio_vat_guard,
+        "cross_border_bonded_1210_customs_179_guard": cross_border_bonded_1210_customs_179_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -66637,6 +66742,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="corptevat-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 BEAT_THE_CAP_HOTEL_SAVINGS_SHARE_AND_VAT_RECLAIM_CONFIRM · Mandate: corp_te_perdiem_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 252 Cross-Border Bonded 1210, Customs 179 3-Way Match & Quota Escrow (#371) -->
+      <div class="finops-box" id="cross-border-bonded-1210-customs-179-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛃 跨境进口保税仓 (1210 / 9610)、海关 179号三单对碰与 ¥26,000 额度税务 (天猫国际 / 京东国际 / 菜鸟保税) 沙盒</div>
+            <div class="finops-sub">Round 252 (#371) · 单笔¥5k/年度¥26k额度锁与防代购同址拆单走私 (HTTP 403) + 收银台前置订购人==支付人实名一致与 verDept=3 校验 (HTTP 422) + 正面清单 10位 HS 编码与 30天保税退货中心仓复入区锁 (HTTP 451) + 微信/支付宝子单拆报关与保税退货秒退税回额度净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="cbec1210-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度夫妻实名错位卡关拆包、超 ¥26,000 年度额度退单及保税退货错寄普通国内仓导致 9.1% 综合税作废池 ($)
+            <input type="number" id="cbec1210-gross-input" value="270000" min="10000" step="5000" oninput="recalcCrossBorderBonded1210Customs179Sandbox()" />
+          </label>
+          <label>个人单笔 ¥5,000 / 年度 ¥26,000 免税额度预检与防代购盗用身份证同址/同手机号拆单走私门禁
+            <select id="cbec1210-quota-select" onchange="recalcCrossBorderBonded1210Customs179Sandbox()">
+              <option value="pass">个人年度剩余额度充足且无多身份证集中发往同一收货手机号/地址的代购走私特征 (安全)</option>
+              <option value="block_403">多件合计超 ¥5,000 未拆单 或 代购用 40 个不同老人身份证下单发往同一收货地址洗货走私 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>海关总署 179号公告“订购人身份证 == 微信/支付宝支付人实名”收银台前置绑定与三单对碰门禁
+            <select id="cbec1210-payer-select" onchange="recalcCrossBorderBonded1210Customs179Sandbox()">
+              <option value="pass">收银台强校验支付人实名与订单订购人 100% 一致，拿到 verDept=3 推单回执后再下发 WMS 拣货 (合规)</option>
+              <option value="block_422">拿老婆身份证填单却刷老公实名微信付款，导致海关三单对碰失败包裹卡死在保税区闸口 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>《跨境进口正面清单》10位 HS 编码准入与放行 30 日内原状退回保税退货中心仓 (CEB621) 门禁
+            <select id="cbec1210-bonded-select" onchange="recalcCrossBorderBonded1210Customs179Sandbox()">
+              <option value="pass">SKU 属于正面清单准入目录 + 30天内无理由退货 100% 路由回原保税区退货中心仓退税 (安全)</option>
+              <option value="block_451">非正面清单违禁品入保税仓 或 把保税退货寄回国内普通仓导致 9.1% 进口综合税永久作废 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>多件超 ¥5,000 自动子单拆报关 (customdeclareorder) / 完税仓混合路由 + 保税退货秒级恢复个人额度
+            <select id="cbec1210-opt-select" onchange="recalcCrossBorderBonded1210Customs179Sandbox()">
+              <option value="enabled" selected>多件超 ¥5k 自动拆分子单或分流国内完税仓 + 30天退货入区全额退回综合税并秒恢复年度额度 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">单仓死板报错不拆单且不开启退货中心仓税单核注与额度秒级恢复 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度三单错位卡关与弃税池</div>
+            <div class="finops-kpi-val" id="cbec1210-gross-kpi">$270,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">收银台实名锁与退税后净损</div>
+            <div class="finops-kpi-val" id="cbec1210-net-kpi" style="color:#6ee7b7;">$170,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省卡关拆包与追回税款</div>
+            <div class="finops-kpi-val" id="cbec1210-savings-kpi" style="color:#38bdf8;">$99,900</div>
+          </div>
+        </div>
+        <div id="cbec1210-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 BONDED_1210_VS_GENERAL_TRADE_TAX_ROUTING_AND_QUOTA_RESTORE_CONFIRM · Mandate: cbec_1210_customs_escrow_optim_409
         </div>
       </div>
 
@@ -90550,6 +90712,79 @@ function recalcB2BCorporateTravelPerDiemFolioVATSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_FOLIO_SPLIT_AND_STATUTORY_PER_DIEM_AUTHORIZED · Mandate: corp_te_perdiem_escrow_200';
+}}
+
+function recalcCrossBorderBonded1210Customs179Sandbox() {{
+  const grossInput = document.getElementById('cbec1210-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '270000'));
+  const quotaGate = document.getElementById('cbec1210-quota-select').value;
+  const payerGate = document.getElementById('cbec1210-payer-select').value;
+  const bondedGate = document.getElementById('cbec1210-bonded-select').value;
+  const optMode = document.getElementById('cbec1210-opt-select').value;
+
+  const grossKpi = document.getElementById('cbec1210-gross-kpi');
+  const netKpi = document.getElementById('cbec1210-net-kpi');
+  const savingsKpi = document.getElementById('cbec1210-savings-kpi');
+  const statusKpi = document.getElementById('cbec1210-status-kpi');
+  const banner = document.getElementById('cbec1210-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (bondedGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 NON_POSITIVE_LIST_SKU_OR_NON_BONDED_RETURN_TAX_FORFEITURE · Mandate: null';
+    return;
+  }}
+  if (quotaGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ANNUAL_26K_SINGLE_5K_QUOTA_EXCEEDED_OR_DAIGOU_SMUGGLING_SPLIT · Mandate: null';
+    return;
+  }}
+  if (payerGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CUSTOMS_179_BUYER_PAYER_ID_MISMATCH_OR_THREE_WAY_PUSH_FAIL · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 BONDED_1210_VS_GENERAL_TRADE_TAX_ROUTING_AND_QUOTA_RESTORE_CONFIRM · Mandate: cbec_1210_customs_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CUSTOMS_179_THREE_WAY_MATCH_AND_QUOTA_AUTHORIZED · Mandate: cbec_1210_customs_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
