@@ -35331,6 +35331,82 @@ def evaluate_ecommerce_wismo_in_transit_refund_claim_policy(
     }
 
 
+@dataclass(frozen=True)
+class SaaSECommerceLifecycleMarketingUpliftPolicyInput:
+    quarterly_sure_thing_coupon_waste_sms_burn_and_churn_pool_usd: float = 270000.0
+    sending_discount_to_sure_things_or_waking_dormant_sleeping_dogs: bool = False
+    multi_journey_collision_exceeding_global_24h_frequency_cap: bool = False
+    sms_sent_during_tcpa_quiet_hours_or_email_missing_rfc8058_unsub: bool = False
+    h1_free_push_to_h18_persuadable_sms_channel_waterfall_ready: bool = False
+
+
+def evaluate_saas_ecommerce_lifecycle_marketing_uplift_policy(
+    policy_input: SaaSECommerceLifecycleMarketingUpliftPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_sure_thing_coupon_waste_sms_burn_and_churn_pool_usd
+        ),
+    )
+    if policy_input.sms_sent_during_tcpa_quiet_hours_or_email_missing_rfc8058_unsub:
+        return {
+            "status_code": 451,
+            "decision": "TCPA_QUIET_HOURS_VIOLATION_OR_GMAIL_03PCT_SPAM_THRESHOLD_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sending_discount_to_sure_things_or_waking_dormant_sleeping_dogs:
+        return {
+            "status_code": 403,
+            "decision": "COUPON_CANNIBALIZATION_ON_SURE_THINGS_OR_SLEEPING_DOG_CHURN_TRIGGER",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.multi_journey_collision_exceeding_global_24h_frequency_cap:
+        return {
+            "status_code": 422,
+            "decision": "GLOBAL_FREQUENCY_CAP_BREACH_OR_UNARBITRATED_MULTI_FLOW_COLLISION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.h1_free_push_to_h18_persuadable_sms_channel_waterfall_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CHANNEL_COST_WATERFALL_AND_CAUSAL_UPLIFT_PERSUADABLE_ONLY_CONFIRM",
+            "mandate_token": "lifecycle_marketing_uplift_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CAUSAL_UPLIFT_AND_COMPLIANT_JOURNEY_AUTHORIZED",
+        "mandate_token": "lifecycle_marketing_uplift_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -48166,6 +48242,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    saas_ecommerce_lifecycle_marketing_uplift_guard = {
+        "authorized_200": evaluate_saas_ecommerce_lifecycle_marketing_uplift_policy(
+            SaaSECommerceLifecycleMarketingUpliftPolicyInput()
+        ),
+        "sure_thing_or_sleeping_dog_403": evaluate_saas_ecommerce_lifecycle_marketing_uplift_policy(
+            SaaSECommerceLifecycleMarketingUpliftPolicyInput(
+                sending_discount_to_sure_things_or_waking_dormant_sleeping_dogs=True
+            )
+        ),
+        "frequency_cap_collision_422": evaluate_saas_ecommerce_lifecycle_marketing_uplift_policy(
+            SaaSECommerceLifecycleMarketingUpliftPolicyInput(
+                multi_journey_collision_exceeding_global_24h_frequency_cap=True
+            )
+        ),
+        "tcpa_or_rfc8058_spam_451": evaluate_saas_ecommerce_lifecycle_marketing_uplift_policy(
+            SaaSECommerceLifecycleMarketingUpliftPolicyInput(
+                sms_sent_during_tcpa_quiet_hours_or_email_missing_rfc8058_unsub=True
+            )
+        ),
+        "channel_waterfall_uplift_409": evaluate_saas_ecommerce_lifecycle_marketing_uplift_policy(
+            SaaSECommerceLifecycleMarketingUpliftPolicyInput(
+                h1_free_push_to_h18_persuadable_sms_channel_waterfall_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48560,6 +48662,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_cpfr_rolling_forecast_bullwhip_guard": b2b_cpfr_rolling_forecast_bullwhip_guard,
         "ecommerce_visual_search_shop_the_look_guard": ecommerce_visual_search_shop_the_look_guard,
         "ecommerce_wismo_in_transit_refund_claim_guard": ecommerce_wismo_in_transit_refund_claim_guard,
+        "saas_ecommerce_lifecycle_marketing_uplift_guard": saas_ecommerce_lifecycle_marketing_uplift_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -68921,6 +69024,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="wismo-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PROACTIVE_WISMO_DELAY_APOLOGY_AND_CARRIER_CLAIM_AUTO_FILE_CONFIRM · Mandate: wismo_carrier_claim_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 266 SaaS & Retail Lifecycle Marketing, Causal Uplift & TCPA Escrow (#385) -->
+      <div class="finops-box" id="saas-ecommerce-lifecycle-marketing-uplift-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎯 订阅制 SaaS 与零售智能营销编排、因果推断发券 (Causal Uplift) 与 TCPA 合规 (Braze / Klaviyo / D365) 沙盒</div>
+            <div class="finops-sub">Round 266 (#385) · 因果 Uplift 四象限禁给必买老客发券与禁唤醒休眠订户退订 (HTTP 403) + 跨画布 24h&lt;=1条全局频控与优先级仲裁 (HTTP 422) + 收件人本地时区 8am-8pm 宵禁(TCPA)与 RFC 8058 一键退订锁 (HTTP 451) + H+1 免费Push免券 -&gt; H+18 犹豫客付费短信瀑布流净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="lifemkt-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度给本来就会原价买的死忠粉乱发 8折券白送毛利、发促销信惊醒休眠订户退订及全量狂发高价国际短信损失池 ($)
+            <input type="number" id="lifemkt-gross-input" value="270000" min="10000" step="5000" oninput="recalcSaaSECommerceLifecycleMarketingUpliftSandbox()" />
+          </label>
+          <label>因果推断四象限 (Persuadables 可说服犹豫客 vs Sure Things 必买客 vs Sleeping Dogs 惊醒退订客) 发券门禁
+            <select id="lifemkt-uplift-select" onchange="recalcSaaSECommerceLifecycleMarketingUpliftSandbox()">
+              <option value="pass">仅向 Persuadables 发折扣码；Sure Things 推免券新品；Sleeping Dogs 强制静默保护续费 (安全)</option>
+              <option value="block_403">向自然购买率 88% 的必买老客发 8折神券白送毛利 或 发信惊醒 2,000 名静默自动续费订户退订 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>跨旅程全局频次硬上限 (24h &lt;= 1条 / 7d &lt;= 3条) 与多画布碰撞业务价值优先级仲裁门禁
+            <select id="lifemkt-freq-select" onchange="recalcSaaSECommerceLifecycleMarketingUpliftSandbox()">
+              <option value="pass">弃购挽回、浏览召回与周促同时命中时仅放行最高优的 1 条，严守 24h 冷却锁 (合规)</option>
+              <option value="block_422">4 个独立营销 Agent 在同一天向同一名用户连轰 6 条短信与邮件引发 STOP 永久退订潮 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国 TCPA 双锚点 (手机号区号+收货邮编) 本地 08:00–20:00 宵禁锁与 Gmail RFC 8058 / &lt;0.25% 垃圾率门禁
+            <select id="lifemkt-tcpa-select" onchange="recalcSaaSECommerceLifecycleMarketingUpliftSandbox()">
+              <option value="pass">区号与邮编双时区均处于 8am-8pm 白昼窗 + 携带 RFC 8058 一键退订头且隔离 90天僵尸邮箱 (安全)</option>
+              <option value="block_451">按总部加州时间 18:15 群发致美东用户在晚 21:15 收到短信违反 TCPA 或垃圾投诉率突破 0.30% (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>两阶段渠道与折扣成本瀑布流 (H+1 免费 Push/Email 免券提醒 -&gt; H+18 仅对犹豫客发付费 SMS + 9折券)
+            <select id="lifemkt-opt-select" onchange="recalcSaaSECommerceLifecycleMarketingUpliftSandbox()">
+              <option value="enabled" selected>H+1 用 $0 成本 Push/Email 免券捞回 55% 必买客，H+18 仅对未买犹豫客发付费 SMS+9折码 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">弃购第 1 小时即全量调用 $0.045 国际短信向所有人无差别发放 85 折优惠码 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度乱发券与短信退订损失池</div>
+            <div class="finops-kpi-val" id="lifemkt-gross-kpi">$270,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">因果分群与渠道瀑布后净支出</div>
+            <div class="finops-kpi-val" id="lifemkt-net-kpi" style="color:#6ee7b7;">$164,700</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省毛利折让与短信账单</div>
+            <div class="finops-kpi-val" id="lifemkt-savings-kpi" style="color:#38bdf8;">$105,300</div>
+          </div>
+        </div>
+        <div id="lifemkt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CHANNEL_COST_WATERFALL_AND_CAUSAL_UPLIFT_PERSUADABLE_ONLY_CONFIRM · Mandate: lifecycle_marketing_uplift_optim_409
         </div>
       </div>
 
@@ -93856,6 +94016,79 @@ function recalcECommerceWISMOInTransitRefundClaimSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CARRIER_INTERCEPT_AND_AUTO_CLAIM_RESOLUTION_AUTHORIZED · Mandate: wismo_carrier_claim_200';
+}}
+
+function recalcSaaSECommerceLifecycleMarketingUpliftSandbox() {{
+  const grossInput = document.getElementById('lifemkt-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '270000'));
+  const upliftGate = document.getElementById('lifemkt-uplift-select').value;
+  const freqGate = document.getElementById('lifemkt-freq-select').value;
+  const tcpaGate = document.getElementById('lifemkt-tcpa-select').value;
+  const optMode = document.getElementById('lifemkt-opt-select').value;
+
+  const grossKpi = document.getElementById('lifemkt-gross-kpi');
+  const netKpi = document.getElementById('lifemkt-net-kpi');
+  const savingsKpi = document.getElementById('lifemkt-savings-kpi');
+  const statusKpi = document.getElementById('lifemkt-status-kpi');
+  const banner = document.getElementById('lifemkt-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (tcpaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 TCPA_QUIET_HOURS_VIOLATION_OR_GMAIL_03PCT_SPAM_THRESHOLD_BREACH · Mandate: null';
+    return;
+  }}
+  if (upliftGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 COUPON_CANNIBALIZATION_ON_SURE_THINGS_OR_SLEEPING_DOG_CHURN_TRIGGER · Mandate: null';
+    return;
+  }}
+  if (freqGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 GLOBAL_FREQUENCY_CAP_BREACH_OR_UNARBITRATED_MULTI_FLOW_COLLISION · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CHANNEL_COST_WATERFALL_AND_CAUSAL_UPLIFT_PERSUADABLE_ONLY_CONFIRM · Mandate: lifecycle_marketing_uplift_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CAUSAL_UPLIFT_AND_COMPLIANT_JOURNEY_AUTHORIZED · Mandate: lifecycle_marketing_uplift_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -26880,6 +26880,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-wismo-in-transit-refund-claim-sandbox", html_zh)
 
+    def test_saas_ecommerce_lifecycle_marketing_uplift_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaaSECommerceLifecycleMarketingUpliftPolicyInput,
+            evaluate_saas_ecommerce_lifecycle_marketing_uplift_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_ecommerce_lifecycle_marketing_uplift_policy(
+            SaaSECommerceLifecycleMarketingUpliftPolicyInput(
+                quarterly_sure_thing_coupon_waste_sms_burn_and_churn_pool_usd=270000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CAUSAL_UPLIFT_AND_COMPLIANT_JOURNEY_AUTHORIZED",
+        )
+
+        uplift = evaluate_saas_ecommerce_lifecycle_marketing_uplift_policy(
+            SaaSECommerceLifecycleMarketingUpliftPolicyInput(
+                sending_discount_to_sure_things_or_waking_dormant_sleeping_dogs=True
+            )
+        )
+        self.assertEqual(uplift["status_code"], 403)
+        self.assertEqual(
+            uplift["decision"],
+            "COUPON_CANNIBALIZATION_ON_SURE_THINGS_OR_SLEEPING_DOG_CHURN_TRIGGER",
+        )
+
+        freq = evaluate_saas_ecommerce_lifecycle_marketing_uplift_policy(
+            SaaSECommerceLifecycleMarketingUpliftPolicyInput(
+                multi_journey_collision_exceeding_global_24h_frequency_cap=True
+            )
+        )
+        self.assertEqual(freq["status_code"], 422)
+        self.assertEqual(
+            freq["decision"],
+            "GLOBAL_FREQUENCY_CAP_BREACH_OR_UNARBITRATED_MULTI_FLOW_COLLISION",
+        )
+
+        tcpa = evaluate_saas_ecommerce_lifecycle_marketing_uplift_policy(
+            SaaSECommerceLifecycleMarketingUpliftPolicyInput(
+                sms_sent_during_tcpa_quiet_hours_or_email_missing_rfc8058_unsub=True
+            )
+        )
+        self.assertEqual(tcpa["status_code"], 451)
+        self.assertEqual(
+            tcpa["decision"],
+            "TCPA_QUIET_HOURS_VIOLATION_OR_GMAIL_03PCT_SPAM_THRESHOLD_BREACH",
+        )
+
+        optim = evaluate_saas_ecommerce_lifecycle_marketing_uplift_policy(
+            SaaSECommerceLifecycleMarketingUpliftPolicyInput(
+                quarterly_sure_thing_coupon_waste_sms_burn_and_churn_pool_usd=270000.0,
+                h1_free_push_to_h18_persuadable_sms_channel_waterfall_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 105300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 164700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_ecommerce_lifecycle_marketing_uplift_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-ecommerce-lifecycle-marketing-uplift-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
