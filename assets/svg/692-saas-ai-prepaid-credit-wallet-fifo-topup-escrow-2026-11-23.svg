@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg692" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg692)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 249 · AI SaaS Prepaid Credit Wallet, `FEFO` Waterfall &amp; `Auto-Top-Up` Escrow</text>
+  <text x="48" y="74" class="sub">Orb / Metronome / Stripe Billing / Lago / OpenAI Credits · `FEFO` Grant Drawdown · `Auto-Top-Up` Velocity Cap · Pre-Flight Hold (-38%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #692 · FAQ #368</text>
+
+  <!-- Lane 1: Runaway Auto-Top-Up Wallet Drain (Leaked API Key or Agent Loop Triggering 50x $500 Recharges) -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. `Auto-Top-Up` Velocity Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Runaway Loop / Leaked-Key Card Drains:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Enforce `Max_TopUps_Per_24h &lt;= 2` &amp;</text>
+  <text x="54" y="200" class="mono">`Monthly_TopUp_Hard_Ceiling &lt;= Mandate_Cap`!</text>
+  <text x="44" y="223" class="body-txt">• Anomaly Velocity Breaker (`&gt;5x` Hourly Burn):</text>
+  <text x="54" y="243" class="mono">Pause Auto-Recharge on New IP / Key Leak Spike</text>
+  <text x="44" y="266" class="body-txt">• Prevents a leaked GitHub API key or infinite</text>
+  <text x="54" y="286" class="body-txt">agent loop triggering 50 consecutive `$500`</text>
+  <text x="54" y="304" class="body-txt">auto-recharges (`$25,000` chargeback!) at 2 AM</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 RUNAWAY_AUTO_TOPUP_VELOCITY_OR_MONTHLY_CAP_BREACH</text>
+
+  <!-- Lane 2: Wrong Credit Bucket Drawdown Order (Burning Paid Cash Credits Before Expiring Promo Grants) & Concurrent Overdraft -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. `FEFO` Grant &amp; Pre-Hold Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Never Burn Paid Credits Before Expiring Promos:</text>
+  <text x="54" y="182" x="442" class="mono">Enforce `FEFO_Waterfall (Earliest_Expiry_First`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">`- &gt; Promo_Grant -&gt; Rollover -&gt; Paid_Commit)`!</text>
+  <text x="432" y="223" class="body-txt">• Pre-Flight `max_tokens` Reservation Lock:</text>
+  <text x="442" y="243" class="mono">Encumber `Estimated_Cost` Before Streaming LLM</text>
+  <text x="432" y="266" class="body-txt">• Stops 200 concurrent API calls against a `$2`</text>
+  <text x="442" y="286" class="body-txt">wallet balance driving the account to `-$380`</text>
+  <text x="442" y="304" class="body-txt">negative bad debt before metering catches up</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 NON_FEFO_BUCKET_DRAWDOWN_OR_CONCURRENT_WALLET_OVERDRAFT</text>
+
+  <!-- Lane 3: Premature ASC 606 Breakage Revenue Recognition & Unamortized Free-Promo Cost -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `ASC 606` Breakage &amp; Tax Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Blocks Booking Prepaid Wallet Top-Up as Day-1 Rev:</text>
+  <text x="830" y="182" class="mono">Record Top-Up as `Contract_Liability (Deferred)`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">&amp; Recognize Strictly on `Proportional_Consumption`!</text>
+  <text x="820" y="223" class="body-txt">• Separates `$0` Promo Grants From Deferred Cash:</text>
+  <text x="830" y="243" class="body-txt">Holds general-ledger posting if `$500` startup</text>
+  <text x="830" y="261" class="body-txt">promo credits are mistakenly booked as recognized</text>
+  <text x="830" y="279" class="body-txt">GAAP revenue (`$0` consideration received!)</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 PREMATURE_PREPAID_REVENUE_OR_PROMO_GRANT_GL_MIX</text>
+
+  <!-- Bottom Renewal Rollover Retention, Sub-Cent Integer Micro-Credit Ledger & Volume Tier Bonus -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Renewal-Conditioned Credit Rollover + Sub-Cent `10^-6` Ledger + Tiered Preload Bonus (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Renewal-Gated Rollover</text>
+  <text x="62" y="462" class="body-txt">Rolls over up to `25%` of</text>
+  <text x="62" y="480" class="body-txt">unused annual credits into</text>
+  <text x="62" y="498" class="body-txt">Year 2 when customer</text>
+  <text x="62" y="516" class="mono">renews on time (-62% Churn)!</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② `10^-6 USD` Micro-Ledger</text>
+  <text x="337" y="462" class="body-txt">Tracks token usage in</text>
+  <text x="337" y="480" class="body-txt">integer micro-dollars</text>
+  <text x="337" y="498" class="body-txt">(`1 Credit = $0.000001`)</text>
+  <text x="337" y="516" class="mono">Zero Float Rounding Drift!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Pre-Flight Token Hold</text>
+  <text x="622" y="462" class="body-txt">Reserves `prompt + max_tok`</text>
+  <text x="622" y="480" class="body-txt">in Redis in `2ms` &amp; settles</text>
+  <text x="622" y="498" class="body-txt">exact actual tokens on</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">stream completion!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Low-Balance Commit Upsell</text>
+  <text x="907" y="462" class="body-txt">At `20%` balance, offers</text>
+  <text x="907" y="480" class="body-txt">`-15%` volume discount to</text>
+  <text x="907" y="498" class="body-txt">upgrade to annual commit</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-38% Bad-Debt &amp; Churn Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-38.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Overdraft, Drain &amp; Churn Saved</text>
+  <text x="46" y="642" class="mono">$95,000 Saved / $250k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% FEFO</text>
+  <text x="336" y="626" class="kpi-lbl">Earliest-Expiring Promo Burned First</text>
+  <text x="336" y="642" class="mono">Zero Expired-Grant Disputes</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">$0 Overdraft</text>
+  <text x="626" y="626" class="kpi-lbl">2ms Pre-Flight Token Encumbrance</text>
+  <text x="626" y="642" class="mono">Zero Concurrent Negative Balances</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">0 Drain Loops</text>
+  <text x="916" y="626" class="kpi-lbl">&lt;=2 Auto-Top-Ups/24h Velocity Cap</text>
+  <text x="916" y="642" class="mono">100% ASC 606 Deferred Compliance</text>
+</svg>

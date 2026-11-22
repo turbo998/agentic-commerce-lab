@@ -25741,6 +25741,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-indirect-procurement-unspsc-punchout-sandbox", html_zh)
 
+    def test_saas_ai_prepaid_credit_wallet_fefo_topup_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaaSAIPrepaidCreditWalletFEFOTopUpPolicyInput,
+            evaluate_saas_ai_prepaid_credit_wallet_fefo_topup_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_ai_prepaid_credit_wallet_fefo_topup_policy(
+            SaaSAIPrepaidCreditWalletFEFOTopUpPolicyInput(
+                quarterly_wallet_overdraft_topup_drain_and_expiry_churn_pool_usd=250000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_FEFO_WATERFALL_AND_PREFLIGHT_HOLD_AUTHORIZED",
+        )
+
+        topup = evaluate_saas_ai_prepaid_credit_wallet_fefo_topup_policy(
+            SaaSAIPrepaidCreditWalletFEFOTopUpPolicyInput(
+                runaway_auto_topup_velocity_or_monthly_hard_cap_breach=True
+            )
+        )
+        self.assertEqual(topup["status_code"], 403)
+        self.assertEqual(
+            topup["decision"],
+            "RUNAWAY_AUTO_TOPUP_VELOCITY_OR_MONTHLY_CAP_BREACH",
+        )
+
+        fefo = evaluate_saas_ai_prepaid_credit_wallet_fefo_topup_policy(
+            SaaSAIPrepaidCreditWalletFEFOTopUpPolicyInput(
+                burning_paid_credits_before_expiring_promo_or_concurrent_overdraft=True
+            )
+        )
+        self.assertEqual(fefo["status_code"], 422)
+        self.assertEqual(
+            fefo["decision"],
+            "NON_FEFO_BUCKET_DRAWDOWN_OR_CONCURRENT_WALLET_OVERDRAFT",
+        )
+
+        asc = evaluate_saas_ai_prepaid_credit_wallet_fefo_topup_policy(
+            SaaSAIPrepaidCreditWalletFEFOTopUpPolicyInput(
+                recognizing_prepaid_topup_on_day1_or_mixing_zero_cost_promo_gl=True
+            )
+        )
+        self.assertEqual(asc["status_code"], 451)
+        self.assertEqual(
+            asc["decision"],
+            "PREMATURE_PREPAID_REVENUE_OR_PROMO_GRANT_GL_MIX",
+        )
+
+        optim = evaluate_saas_ai_prepaid_credit_wallet_fefo_topup_policy(
+            SaaSAIPrepaidCreditWalletFEFOTopUpPolicyInput(
+                quarterly_wallet_overdraft_topup_drain_and_expiry_churn_pool_usd=250000.0,
+                renewal_conditioned_25pct_rollover_and_micro_usd_ledger_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 95000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 155000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_ai_prepaid_credit_wallet_fefo_topup_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-ai-prepaid-credit-wallet-fefo-topup-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

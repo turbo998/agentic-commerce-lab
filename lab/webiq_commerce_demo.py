@@ -33993,6 +33993,82 @@ def evaluate_b2b_indirect_procurement_unspsc_punchout_policy(
     }
 
 
+@dataclass(frozen=True)
+class SaaSAIPrepaidCreditWalletFEFOTopUpPolicyInput:
+    quarterly_wallet_overdraft_topup_drain_and_expiry_churn_pool_usd: float = 250000.0
+    runaway_auto_topup_velocity_or_monthly_hard_cap_breach: bool = False
+    burning_paid_credits_before_expiring_promo_or_concurrent_overdraft: bool = False
+    recognizing_prepaid_topup_on_day1_or_mixing_zero_cost_promo_gl: bool = False
+    renewal_conditioned_25pct_rollover_and_micro_usd_ledger_ready: bool = False
+
+
+def evaluate_saas_ai_prepaid_credit_wallet_fefo_topup_policy(
+    policy_input: SaaSAIPrepaidCreditWalletFEFOTopUpPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_wallet_overdraft_topup_drain_and_expiry_churn_pool_usd
+        ),
+    )
+    if policy_input.recognizing_prepaid_topup_on_day1_or_mixing_zero_cost_promo_gl:
+        return {
+            "status_code": 451,
+            "decision": "PREMATURE_PREPAID_REVENUE_OR_PROMO_GRANT_GL_MIX",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.runaway_auto_topup_velocity_or_monthly_hard_cap_breach:
+        return {
+            "status_code": 403,
+            "decision": "RUNAWAY_AUTO_TOPUP_VELOCITY_OR_MONTHLY_CAP_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.burning_paid_credits_before_expiring_promo_or_concurrent_overdraft:
+        return {
+            "status_code": 422,
+            "decision": "NON_FEFO_BUCKET_DRAWDOWN_OR_CONCURRENT_WALLET_OVERDRAFT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.renewal_conditioned_25pct_rollover_and_micro_usd_ledger_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "RENEWAL_ROLLOVER_AND_MICRO_USD_PREFLIGHT_LEDGER_CONFIRM",
+            "mandate_token": "prepaid_wallet_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_FEFO_WATERFALL_AND_PREFLIGHT_HOLD_AUTHORIZED",
+        "mandate_token": "prepaid_wallet_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -46386,6 +46462,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    saas_ai_prepaid_credit_wallet_fefo_topup_guard = {
+        "authorized_200": evaluate_saas_ai_prepaid_credit_wallet_fefo_topup_policy(
+            SaaSAIPrepaidCreditWalletFEFOTopUpPolicyInput()
+        ),
+        "topup_drain_403": evaluate_saas_ai_prepaid_credit_wallet_fefo_topup_policy(
+            SaaSAIPrepaidCreditWalletFEFOTopUpPolicyInput(
+                runaway_auto_topup_velocity_or_monthly_hard_cap_breach=True
+            )
+        ),
+        "non_fefo_or_overdraft_422": evaluate_saas_ai_prepaid_credit_wallet_fefo_topup_policy(
+            SaaSAIPrepaidCreditWalletFEFOTopUpPolicyInput(
+                burning_paid_credits_before_expiring_promo_or_concurrent_overdraft=True
+            )
+        ),
+        "premature_rev_451": evaluate_saas_ai_prepaid_credit_wallet_fefo_topup_policy(
+            SaaSAIPrepaidCreditWalletFEFOTopUpPolicyInput(
+                recognizing_prepaid_topup_on_day1_or_mixing_zero_cost_promo_gl=True
+            )
+        ),
+        "rollover_micro_usd_409": evaluate_saas_ai_prepaid_credit_wallet_fefo_topup_policy(
+            SaaSAIPrepaidCreditWalletFEFOTopUpPolicyInput(
+                renewal_conditioned_25pct_rollover_and_micro_usd_ledger_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -46763,6 +46865,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_hotel_direct_points_cash_upgrade_guard": ota_hotel_direct_points_cash_upgrade_guard,
         "ecommerce_boxless_return_qr_instant_exchange_guard": ecommerce_boxless_return_qr_instant_exchange_guard,
         "b2b_indirect_procurement_unspsc_punchout_guard": b2b_indirect_procurement_unspsc_punchout_guard,
+        "saas_ai_prepaid_credit_wallet_fefo_topup_guard": saas_ai_prepaid_credit_wallet_fefo_topup_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -66155,6 +66258,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="indirectp2p-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 WEEKLY_BUILDING_MERGE_AND_GENERIC_BRAND_SWAP_CONFIRM · Mandate: b2b_indirect_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 249 AI SaaS Prepaid Credit Wallet, FEFO Waterfall & Auto-Top-Up Escrow (#368) -->
+      <div class="finops-box" id="saas-ai-prepaid-credit-wallet-fefo-topup-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🪙 AI 与云原生 SaaS 预充值积分钱包、FEFO 瀑布流与防刷爆 (Orb / Metronome / Stripe Billing / Lago) 沙盒</div>
+            <div class="finops-sub">Round 249 (#368) · Auto-Top-Up 24h &lt;=2次上限与 5x 突刺熔断 (HTTP 403) + FEFO (最早到期-&gt;$0赠金-&gt;付费池) 扣减瀑布与 2ms 并发预冻结锁 (HTTP 422) + ASC 606 预收款递延负债与 $0 赠金隔离 (HTTP 451) + 按时续约 25% 余额顺延与 10^-6 微美分账本净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="prepaidwal-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度高并发流式请求把 $2 余额刷成 -$380 透支坏账、Key 泄露半夜连充 50 笔 $500 遭拒付及年底积分清零退订池 ($)
+            <input type="number" id="prepaidwal-gross-input" value="250000" min="10000" step="5000" oninput="recalcSaaSAIPrepaidCreditWalletFEFOTopUpSandbox()" />
+          </label>
+          <label>自动续充 (Auto-Top-Up) 24小时触发次数上限 (&lt;=2次)、月度硬封顶与 5x 算力暴增熔断门禁
+            <select id="prepaidwal-topup-select" onchange="recalcSaaSAIPrepaidCreditWalletFEFOTopUpSandbox()">
+              <option value="pass">强制绑定月度充值硬上限 + 24h 内自动续充 &lt;=2 次且无异常速率突刺 (安全)</option>
+              <option value="block_403">API Key 泄露或 Agent 死循环在凌晨 15 分钟内连续触发 50 次 $500 自动续充刷爆客户信用卡 $25,000 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>多积分池 FEFO (最早到期优先 -&gt; $0 促销赠金 -&gt; 付费现金池) 瀑布扣减与流式请求前 2ms 预冻结门禁
+            <select id="prepaidwal-fefo-select" onchange="recalcSaaSAIPrepaidCreditWalletFEFOTopUpSandbox()">
+              <option value="pass">优先扣减即将到期的 $200 免费赠金保住 1年期现金池 + 进 GPU 前 2ms 预冻结 max_tokens 实现 $0 透支 (合规)</option>
+              <option value="block_422">按创建时间 FIFO 先扣光了 1年后到期的真金白银却让明天到期的赠金作废 或 200 并发把 $2 余额刷成 -$378 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>ASC 606 预充值合同负债 (Deferred Revenue) 递延确认与 $0 免费促销赠金总账隔离门禁
+            <select id="prepaidwal-asc606-select" onchange="recalcSaaSAIPrepaidCreditWalletFEFOTopUpSandbox()">
+              <option value="pass">充值日 100% 记入递延收入负债按消耗/沉淀率确认 + $0 赠金桶消耗严格记为 $0 营业收入 (安全)</option>
+              <option value="block_451">把客户预充的 $10,000 在充值当天直接确认为利润表收入 或 把 $0 赠送积分消耗算进主营业务收入暴雷 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>按时续约享 25% 剩余积分免费顺延 (Renewal-Conditioned Rollover -62% 退订) + 10^-6 微美分整数账本
+            <select id="prepaidwal-opt-select" onchange="recalcSaaSAIPrepaidCreditWalletFEFOTopUpSandbox()">
+              <option value="enabled" selected>按时续约免费顺延 25% 未用完年框积分(-62% 退订) + 10^-6 微美分整数零尾差 + 20% 余额引导年框 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">年底到期 100% 强制清零作废且无年框升档引导的常规钱包 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度透支坏账与盗刷退订池</div>
+            <div class="finops-kpi-val" id="prepaidwal-gross-kpi">$250,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">2ms预冻结与FEFO后净损耗</div>
+            <div class="finops-kpi-val" id="prepaidwal-net-kpi" style="color:#6ee7b7;">$155,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省并发透支与到期流失</div>
+            <div class="finops-kpi-val" id="prepaidwal-savings-kpi" style="color:#38bdf8;">$95,000</div>
+          </div>
+        </div>
+        <div id="prepaidwal-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 RENEWAL_ROLLOVER_AND_MICRO_USD_PREFLIGHT_LEDGER_CONFIRM · Mandate: prepaid_wallet_escrow_optim_409
         </div>
       </div>
 
@@ -89849,6 +90009,79 @@ function recalcB2BIndirectProcurementUNSPSCPunchOutSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CONTRACT_CATALOG_AND_BASE_UOM_AUTHORIZED · Mandate: b2b_indirect_escrow_200';
+}}
+
+function recalcSaaSAIPrepaidCreditWalletFEFOTopUpSandbox() {{
+  const grossInput = document.getElementById('prepaidwal-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '250000'));
+  const topupGate = document.getElementById('prepaidwal-topup-select').value;
+  const fefoGate = document.getElementById('prepaidwal-fefo-select').value;
+  const asc606Gate = document.getElementById('prepaidwal-asc606-select').value;
+  const optMode = document.getElementById('prepaidwal-opt-select').value;
+
+  const grossKpi = document.getElementById('prepaidwal-gross-kpi');
+  const netKpi = document.getElementById('prepaidwal-net-kpi');
+  const savingsKpi = document.getElementById('prepaidwal-savings-kpi');
+  const statusKpi = document.getElementById('prepaidwal-status-kpi');
+  const banner = document.getElementById('prepaidwal-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (asc606Gate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PREMATURE_PREPAID_REVENUE_OR_PROMO_GRANT_GL_MIX · Mandate: null';
+    return;
+  }}
+  if (topupGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 RUNAWAY_AUTO_TOPUP_VELOCITY_OR_MONTHLY_CAP_BREACH · Mandate: null';
+    return;
+  }}
+  if (fefoGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 NON_FEFO_BUCKET_DRAWDOWN_OR_CONCURRENT_WALLET_OVERDRAFT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 RENEWAL_ROLLOVER_AND_MICRO_USD_PREFLIGHT_LEDGER_CONFIRM · Mandate: prepaid_wallet_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_FEFO_WATERFALL_AND_PREFLIGHT_HOLD_AUTHORIZED · Mandate: prepaid_wallet_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
