@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg705" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070b14"/>
+      <stop offset="55%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="accent705" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="760" fill="url(#bg705)"/>
+  <rect x="24" y="20" width="1232" height="720" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1232" height="6" rx="3" fill="url(#accent705)"/>
+
+  <!-- Header -->
+  <text x="52" y="62" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="700">
+    OTA &amp; Airline Ancillary (`EMD-A`), All-In Fare Comparison &amp; `US DOT Part 260` Refund Escrow (#381)
+  </text>
+  <text x="52" y="88" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13.5">
+    Round 262 · IATA NDC v21.3 / ATPCO Routehappy / Amadeus / Sabre / Navan · True All-In Bag+Seat Calc, EMD-A Re-Association, Equipment-Swap Refund &amp; FFP Waiver (-37%)
+  </text>
+  <rect x="1035" y="44" width="190" height="34" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.2"/>
+  <text x="1130" y="66" text-anchor="middle" fill="#6ee7b7" font-family="Consolas, monospace" font-size="12.5" font-weight="700">
+    ROUND 262 · GUIDE #381
+  </text>
+
+  <!-- Left Column: Fare Families, EMD-A & DOT Signals -->
+  <rect x="48" y="112" width="350" height="596" rx="12" fill="#111827" stroke="#38bdf8" stroke-width="1.4"/>
+  <text x="68" y="144" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    1. Fare Family &amp; `EMD-A` Signals
+  </text>
+  <text x="68" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Branded Fares, ICW Coupon Pointers &amp; Bag Telemetry
+  </text>
+
+  <rect x="68" y="186" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="210" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    🧳 True All-In Landed Fare Calc
+  </text>
+  <text x="84" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Basic Economy: $99 + $75 Bag + $35 Seat = $209
+  </text>
+  <text x="84" y="252" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Main Cabin Bundle: $159 (Incl. Bag + Seat + Flex)
+  </text>
+  <text x="84" y="272" fill="#38bdf8" font-family="Consolas, monospace" font-size="11.5">
+    all_in_winner: Main Cabin (-$50 Saved)
+  </text>
+
+  <rect x="68" y="314" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="338" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    🔗 `e-Ticket ↔ EMD-A` ICW Pointer
+  </text>
+  <text x="84" y="360" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Links Seat/Bag EMD-A to 13-digit e-Ticket
+  </text>
+  <text x="84" y="380" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Auto re-associates EMD-A on flight exchange
+  </text>
+  <text x="84" y="400" fill="#818cf8" font-family="Consolas, monospace" font-size="11.5">
+    orphaned_emd_coupons: 0
+  </text>
+
+  <rect x="68" y="442" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="466" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    ⚖️ `US DOT 14 CFR Part 260` Refunds
+  </text>
+  <text x="84" y="488" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Equipment swap: Exit Row -&gt; 28B Middle Seat
+  </text>
+  <text x="84" y="508" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Checked bag delayed &gt;12h domestic / &gt;15h intl
+  </text>
+  <text x="84" y="528" fill="#34d399" font-family="Consolas, monospace" font-size="11.5">
+    dot_part260_auto_refund: 100% Cash
+  </text>
+
+  <rect x="68" y="570" width="310" height="116" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-dasharray="4 3"/>
+  <text x="84" y="594" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    🎯 Target Commercial Outcomes
+  </text>
+  <text x="84" y="616" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Zero airport gate $95 bag-fee ambushes
+  </text>
+  <text x="84" y="636" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Zero lost EMD-A seat/bag vouchers on rebooking
+  </text>
+  <text x="84" y="656" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • 37% reduction in ancillary &amp; disruption loss
+  </text>
+
+  <!-- Center Column: 4-Gate Fiduciary Control Plane -->
+  <rect x="424" y="112" width="432" height="596" rx="12" fill="#111827" stroke="#818cf8" stroke-width="1.6"/>
+  <text x="446" y="144" fill="#a5b4fc" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    2. Airline Ancillary &amp; `EMD-A` Control Plane
+  </text>
+  <text x="446" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Deterministic All-In Fare, EMD Coupling &amp; DOT 260 Gates
+  </text>
+
+  <!-- Gate 1: HTTP 403 -->
+  <rect x="444" y="184" width="392" height="114" rx="8" fill="#1f1224" stroke="#ef4444" stroke-width="1.3"/>
+  <text x="460" y="208" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 1 · Atomic `e-Ticket ↔ EMD-A` Sync (HTTP 403)
+  </text>
+  <text x="460" y="230" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Blocks exchanging or voiding an e-Ticket without atomically
+  </text>
+  <text x="460" y="248" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    re-associating or refunding linked Seat/Bag `EMD-A` coupons.
+  </text>
+  <text x="460" y="274" fill="#f87171" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    ORPHANED_EMD_A_ANCILLARY_ON_TICKET_EXCHANGE_OR_VOID
+  </text>
+
+  <!-- Gate 2: HTTP 422 -->
+  <rect x="444" y="312" width="392" height="114" rx="8" fill="#231815" stroke="#f97316" stroke-width="1.3"/>
+  <text x="460" y="336" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 2 · True All-In Fare Comparison Gate (HTTP 422)
+  </text>
+  <text x="460" y="358" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Blocks booking naked Basic Economy when adding traveler's
+  </text>
+  <text x="460" y="376" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    required carry-on/checked bag exceeds Main Cabin bundle.
+  </text>
+  <text x="460" y="402" fill="#fb923c" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    NAKED_BASIC_ECONOMY_BAIT_EXCEEDS_ALL_IN_MAIN_CABIN_BUNDLE
+  </text>
+
+  <!-- Gate 3: HTTP 451 -->
+  <rect x="444" y="440" width="392" height="114" rx="8" fill="#27121b" stroke="#f43f5e" stroke-width="1.3"/>
+  <text x="460" y="464" fill="#fda4af" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 3 · `DOT Part 260` Ancillary Refund Gate (HTTP 451)
+  </text>
+  <text x="460" y="486" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Mandates automatic cash refund when aircraft swap downgrades
+  </text>
+  <text x="460" y="504" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    paid extra-legroom seat or bag is delayed &gt;12h/15h.
+  </text>
+  <text x="460" y="530" fill="#fb7185" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    EQUIPMENT_SWAP_SEAT_DOWNGRADE_OR_DOT_260_BAG_DELAY_UNREFUNDED
+  </text>
+
+  <!-- Gate 4: HTTP 409 -->
+  <rect x="444" y="568" width="392" height="118" rx="8" fill="#062e26" stroke="#10b981" stroke-width="1.5"/>
+  <text x="460" y="592" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 4 · FFP/Co-Brand Waiver &amp; Pre-Pay (HTTP 409)
+  </text>
+  <text x="460" y="614" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Applies Gold FFP / Co-Brand Card free bag waiver + pre-books
+  </text>
+  <text x="460" y="632" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    extra bag at T-24h NDC rate (-40% vs airport counter, -37%).
+  </text>
+  <text x="460" y="660" fill="#34d399" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    Mandate: ota_ancillary_emd_escrow_optim_409
+  </text>
+
+  <!-- Right Column: Platform Matrix & FinOps -->
+  <rect x="882" y="112" width="350" height="596" rx="12" fill="#111827" stroke="#34d399" stroke-width="1.4"/>
+  <text x="902" y="144" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    3. `NDC / GDS` Ancillary Stack &amp; KPIs
+  </text>
+  <text x="902" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    IATA NDC v21.3 vs. ATPCO Routehappy vs. Legacy EDIFACT
+  </text>
+
+  <rect x="902" y="186" width="310" height="116" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="918" y="210" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    ✈️ IATA NDC v21.3 + ONE Order
+  </text>
+  <text x="918" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Dynamic continuous seat/bag bundle pricing
+  </text>
+  <text x="918" y="252" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Unified `OrderID` replaces fragile PNR + EMD split
+  </text>
+  <text x="918" y="272" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Recognizes FFP tier waivers at offer generation
+  </text>
+
+  <rect x="902" y="316" width="310" height="116" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="918" y="340" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    💺 ATPCO Routehappy + Amadeus / Sabre
+  </text>
+  <text x="918" y="362" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Structured UPAs (seat pitch inches, Wi-Fi speed)
+  </text>
+  <text x="918" y="382" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Automated `EMD-A` exchange &amp; DOT 260 refund hooks
+  </text>
+  <text x="918" y="402" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Best for multi-GDS OTA &amp; corporate TMC engines
+  </text>
+
+  <rect x="902" y="446" width="310" height="240" rx="8" fill="#091926" stroke="#38bdf8" stroke-width="1.3"/>
+  <text x="918" y="472" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    💰 Quarterly Ancillary Optimization KPI
+  </text>
+  <text x="918" y="500" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Gross Gate Bag Fines, Orphaned EMDs &amp; Bait Fares:
+  </text>
+  <text x="918" y="522" fill="#f8fafc" font-family="Consolas, monospace" font-size="18" font-weight="700">
+    $240,000 / quarter
+  </text>
+  <text x="918" y="552" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    After All-In Calc, EMD Sync &amp; FFP Waiver:
+  </text>
+  <text x="918" y="574" fill="#6ee7b7" font-family="Consolas, monospace" font-size="18" font-weight="700">
+    $151,200 (-37% Net Saved)
+  </text>
+  <text x="918" y="606" fill="#38bdf8" font-family="Consolas, monospace" font-size="15" font-weight="700">
+    Quarterly Savings: $88,800
+  </text>
+  <text x="918" y="636" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Airport gate bag-penalty incidence: 0.0%
+  </text>
+  <text x="918" y="656" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Equipment-swap seat refund recovery: 100%
+  </text>
+</svg>

@@ -35019,6 +35019,84 @@ def evaluate_cross_border_export_9810_vat_rebate_fx_policy(
     }
 
 
+@dataclass(frozen=True)
+class OTAAirlineAncillaryEMDDOT260PolicyInput:
+    quarterly_gate_bag_fine_orphaned_emd_and_unrefunded_swap_pool_usd: float = 240000.0
+    exchanging_eticket_without_atomic_emd_a_reassociation_or_refund: bool = False
+    naked_basic_economy_plus_required_bag_seat_exceeds_main_cabin: bool = False
+    aircraft_swap_downgrades_paid_seat_or_bag_delayed_over_12h_unrefunded: bool = False
+    ffp_cobrand_free_bag_waiver_and_t24h_prepaid_ndc_rate_ready: bool = False
+
+
+def evaluate_ota_airline_ancillary_emd_dot260_policy(
+    policy_input: OTAAirlineAncillaryEMDDOT260PolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_gate_bag_fine_orphaned_emd_and_unrefunded_swap_pool_usd
+        ),
+    )
+    if (
+        policy_input.aircraft_swap_downgrades_paid_seat_or_bag_delayed_over_12h_unrefunded
+    ):
+        return {
+            "status_code": 451,
+            "decision": "EQUIPMENT_SWAP_SEAT_DOWNGRADE_OR_DOT_260_BAG_DELAY_UNREFUNDED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.exchanging_eticket_without_atomic_emd_a_reassociation_or_refund:
+        return {
+            "status_code": 403,
+            "decision": "ORPHANED_EMD_A_ANCILLARY_ON_TICKET_EXCHANGE_OR_VOID",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.naked_basic_economy_plus_required_bag_seat_exceeds_main_cabin:
+        return {
+            "status_code": 422,
+            "decision": "NAKED_BASIC_ECONOMY_BAIT_EXCEEDS_ALL_IN_MAIN_CABIN_BUNDLE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ffp_cobrand_free_bag_waiver_and_t24h_prepaid_ndc_rate_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FFP_COBRAND_WAIVER_MATCH_AND_PREPAID_BAG_DISCOUNT_CONFIRM",
+            "mandate_token": "ota_ancillary_emd_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ALL_IN_FARE_AND_COUPLED_EMD_A_AUTHORIZED",
+        "mandate_token": "ota_ancillary_emd_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -47750,6 +47828,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_airline_ancillary_emd_dot260_guard = {
+        "authorized_200": evaluate_ota_airline_ancillary_emd_dot260_policy(
+            OTAAirlineAncillaryEMDDOT260PolicyInput()
+        ),
+        "orphaned_emd_exchange_403": evaluate_ota_airline_ancillary_emd_dot260_policy(
+            OTAAirlineAncillaryEMDDOT260PolicyInput(
+                exchanging_eticket_without_atomic_emd_a_reassociation_or_refund=True
+            )
+        ),
+        "basic_economy_bait_422": evaluate_ota_airline_ancillary_emd_dot260_policy(
+            OTAAirlineAncillaryEMDDOT260PolicyInput(
+                naked_basic_economy_plus_required_bag_seat_exceeds_main_cabin=True
+            )
+        ),
+        "equipment_swap_dot260_451": evaluate_ota_airline_ancillary_emd_dot260_policy(
+            OTAAirlineAncillaryEMDDOT260PolicyInput(
+                aircraft_swap_downgrades_paid_seat_or_bag_delayed_over_12h_unrefunded=True
+            )
+        ),
+        "ffp_waiver_prepaid_bag_409": evaluate_ota_airline_ancillary_emd_dot260_policy(
+            OTAAirlineAncillaryEMDDOT260PolicyInput(
+                ffp_cobrand_free_bag_waiver_and_t24h_prepaid_ndc_rate_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48140,6 +48244,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_plg_seat_fair_billing_coterm_guard": saas_plg_seat_fair_billing_coterm_guard,
         "enterprise_crm_erp_quote_to_order_saga_guard": enterprise_crm_erp_quote_to_order_saga_guard,
         "cross_border_export_9810_vat_rebate_fx_guard": cross_border_export_9810_vat_rebate_fx_guard,
+        "ota_airline_ancillary_emd_dot260_guard": ota_airline_ancillary_emd_dot260_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -68273,6 +68378,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="cbec9810-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DUAL_TRACK_9810_PRE_REBATE_AND_9610_TAX_EXEMPT_ROUTING_CONFIRM · Mandate: cbec_export_9810_rebate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 262 OTA & Airline Ancillary EMD-A, All-In Fare & DOT Part 260 Refund Escrow (#381) -->
+      <div class="finops-box" id="ota-airline-ancillary-emd-dot260-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">✈️ OTA 与企业商旅机票附加服务 (EMD-A)、全包运价对碰与 DOT 260 退费 (IATA NDC / Routehappy / Navan) 沙盒</div>
+            <div class="finops-sub">Round 262 (#381) · 改签主票强制同步重关联或退还已买行李/选座 EMD-A (HTTP 403) + 含必带行李选座的全包落地价对碰防 $99 基础经济舱鱼饵 (HTTP 422) + 换机型丢加长座或行李延误 &gt;12h 按 DOT Part 260 自动退现 (HTTP 451) + 常旅客金卡/联名卡免首件行李去重与线上6折预购净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="otaemd-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度误买 $99 基础经济舱在登机口被罚天价行李费、改签弄丢已付选座/行李 EMD-A 及换机型降座未追回退款池 ($)
+            <input type="number" id="otaemd-gross-input" value="240000" min="10000" step="5000" oninput="recalcOTAAirlineAncillaryEMDDOT260Sandbox()" />
+          </label>
+          <label>主客票 (13位 e-Ticket) 退改签与关联附加服务单 (EMD-A: 选座/行李/Wi-Fi) 原子重挂接 (Re-Association) 门禁
+            <select id="otaemd-emd-select" onchange="recalcOTAAirlineAncillaryEMDDOT260Sandbox()">
+              <option value="pass">改签换开新票号时 500ms 内原子将名下 OPEN 状态 EMD-A 重新挂接至新票号或原路退还 (安全)</option>
+              <option value="block_403">只改签了主客票 e-Ticket 却把 $79 选座与 $40 行李 EMD-A 遗留在作废旧票上致旅客去机场重交钱 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>基于旅客出行行李画像的“真实全包总价 (True All-In Fare)”比价与防 Basic Economy 低价鱼饵门禁
+            <select id="otaemd-allin-select" onchange="recalcOTAAirlineAncillaryEMDDOT260Sandbox()">
+              <option value="pass">叠加必带登机箱与托运行李后比价，自动过滤总价倒挂的裸票并锁定 $159 Main Cabin 全包运价 (合规)</option>
+              <option value="block_422">盲选 $99 Basic Economy 裸票，到机场补 $75 行李+$35 选座总计 $209 反比全包经济舱贵 $50 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>临时换飞机机型 (Equipment Swap) 座位物理属性降级与美国 DOT 14 CFR Part 260 行李延误 (&gt;12h) 自动退费门禁
+            <select id="otaemd-dot-select" onchange="recalcOTAAirlineAncillaryEMDDOT260Sandbox()">
+              <option value="pass">Routehappy 检出换机型座位降级或 WorldTracer 行李延误 &gt;12h 时，免人工申诉自动退还 100% 现金 (安全)</option>
+              <option value="block_451">航司换机型把 $89 加长出口座甩到 28B 普通中间座 或 付费托运行李延误 18小时却拒不自动退费 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>常旅客精英卡 (FFP Gold) / 航司联名信用卡首件免费行李自动抵扣 + 起飞前 24h 线上 NDC 早鸟行李 6 折锁价
+            <select id="otaemd-opt-select" onchange="recalcOTAAirlineAncillaryEMDDOT260Sandbox()">
+              <option value="enabled" selected>自动识别金卡/联名卡首件免托运费($0)屏蔽重复购买 + 超额行李提前 24h 按 NDC 6折预购 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">无视常旅客与联名卡免费行李权益弹窗诱导重复购买且去机场柜台按全价买行李 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度登机口罚金与孤儿EMD池</div>
+            <div class="finops-kpi-val" id="otaemd-gross-kpi">$240,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">全包比价与DOT退费后净支出</div>
+            <div class="finops-kpi-val" id="otaemd-net-kpi" style="color:#6ee7b7;">$151,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省行李冤枉钱与退费追回</div>
+            <div class="finops-kpi-val" id="otaemd-savings-kpi" style="color:#38bdf8;">$88,800</div>
+          </div>
+        </div>
+        <div id="otaemd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FFP_COBRAND_WAIVER_MATCH_AND_PREPAID_BAG_DISCOUNT_CONFIRM · Mandate: ota_ancillary_emd_escrow_optim_409
         </div>
       </div>
 
@@ -92916,6 +93078,79 @@ function recalcCrossBorderExport9810VATRebateFXSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_FOUR_STREAM_MATCH_AND_FX_CORRIDOR_AUTHORIZED · Mandate: cbec_export_9810_rebate_200';
+}}
+
+function recalcOTAAirlineAncillaryEMDDOT260Sandbox() {{
+  const grossInput = document.getElementById('otaemd-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '240000'));
+  const emdGate = document.getElementById('otaemd-emd-select').value;
+  const allinGate = document.getElementById('otaemd-allin-select').value;
+  const dotGate = document.getElementById('otaemd-dot-select').value;
+  const optMode = document.getElementById('otaemd-opt-select').value;
+
+  const grossKpi = document.getElementById('otaemd-gross-kpi');
+  const netKpi = document.getElementById('otaemd-net-kpi');
+  const savingsKpi = document.getElementById('otaemd-savings-kpi');
+  const statusKpi = document.getElementById('otaemd-status-kpi');
+  const banner = document.getElementById('otaemd-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dotGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EQUIPMENT_SWAP_SEAT_DOWNGRADE_OR_DOT_260_BAG_DELAY_UNREFUNDED · Mandate: null';
+    return;
+  }}
+  if (emdGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ORPHANED_EMD_A_ANCILLARY_ON_TICKET_EXCHANGE_OR_VOID · Mandate: null';
+    return;
+  }}
+  if (allinGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 NAKED_BASIC_ECONOMY_BAIT_EXCEEDS_ALL_IN_MAIN_CABIN_BUNDLE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FFP_COBRAND_WAIVER_MATCH_AND_PREPAID_BAG_DISCOUNT_CONFIRM · Mandate: ota_ancillary_emd_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_ALL_IN_FARE_AND_COUPLED_EMD_A_AUTHORIZED · Mandate: ota_ancillary_emd_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

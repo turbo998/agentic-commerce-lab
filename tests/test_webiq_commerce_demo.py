@@ -26612,6 +26612,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-export-9810-vat-rebate-fx-sandbox", html_zh)
 
+    def test_ota_airline_ancillary_emd_dot260_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OTAAirlineAncillaryEMDDOT260PolicyInput,
+            evaluate_ota_airline_ancillary_emd_dot260_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_airline_ancillary_emd_dot260_policy(
+            OTAAirlineAncillaryEMDDOT260PolicyInput(
+                quarterly_gate_bag_fine_orphaned_emd_and_unrefunded_swap_pool_usd=240000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ALL_IN_FARE_AND_COUPLED_EMD_A_AUTHORIZED",
+        )
+
+        emd = evaluate_ota_airline_ancillary_emd_dot260_policy(
+            OTAAirlineAncillaryEMDDOT260PolicyInput(
+                exchanging_eticket_without_atomic_emd_a_reassociation_or_refund=True
+            )
+        )
+        self.assertEqual(emd["status_code"], 403)
+        self.assertEqual(
+            emd["decision"],
+            "ORPHANED_EMD_A_ANCILLARY_ON_TICKET_EXCHANGE_OR_VOID",
+        )
+
+        bait = evaluate_ota_airline_ancillary_emd_dot260_policy(
+            OTAAirlineAncillaryEMDDOT260PolicyInput(
+                naked_basic_economy_plus_required_bag_seat_exceeds_main_cabin=True
+            )
+        )
+        self.assertEqual(bait["status_code"], 422)
+        self.assertEqual(
+            bait["decision"],
+            "NAKED_BASIC_ECONOMY_BAIT_EXCEEDS_ALL_IN_MAIN_CABIN_BUNDLE",
+        )
+
+        dot = evaluate_ota_airline_ancillary_emd_dot260_policy(
+            OTAAirlineAncillaryEMDDOT260PolicyInput(
+                aircraft_swap_downgrades_paid_seat_or_bag_delayed_over_12h_unrefunded=True
+            )
+        )
+        self.assertEqual(dot["status_code"], 451)
+        self.assertEqual(
+            dot["decision"],
+            "EQUIPMENT_SWAP_SEAT_DOWNGRADE_OR_DOT_260_BAG_DELAY_UNREFUNDED",
+        )
+
+        optim = evaluate_ota_airline_ancillary_emd_dot260_policy(
+            OTAAirlineAncillaryEMDDOT260PolicyInput(
+                quarterly_gate_bag_fine_orphaned_emd_and_unrefunded_swap_pool_usd=240000.0,
+                ffp_cobrand_free_bag_waiver_and_t24h_prepaid_ndc_rate_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 88800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 151200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_airline_ancillary_emd_dot260_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-airline-ancillary-emd-dot260-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

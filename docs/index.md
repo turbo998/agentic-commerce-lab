@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`380` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`381` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（24 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（52 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（143 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（144 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（85 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（32 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（44 篇）](#tax-fx-privacy-disputes)
@@ -110,7 +110,7 @@
 | 52 | **智能体五大支付轨道（`Stripe SPT vs. Visa VIC vs. Mastercard Agent Pay vs. PayPal Agentic vs. 企业预算虚拟卡 VCN`）、多仓拆单分批清算（`Split-Shipment Multi-Capture`）与三级人工确认边界（`Tiered HITL`）选型 FAQ：防“第 1 个包裹发货扣 $40 时误传 `final_capture=true` 或发单次销毁虚拟卡导致第 2 个包裹无钱可扣”、防“超 7 天预授权过期强扣招致 `0.15%` 罚金与 `10.2` 拒付”与远期包裹入库打包瞬间 `JIT MIT` 授权净省 38% 实战指南** | [中文](agent-payment-split-shipment-multi-capture-auth-expiry-hitl-tier-escrow-selection-faq.md) · [English](agent-payment-split-shipment-multi-capture-auth-expiry-hitl-tier-escrow-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（143 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（144 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -259,6 +259,7 @@
 | 141 | **全渠道服装与百货零售“季末阶梯清仓动态调价（End-of-Season Markdown Optimization）、断码孤品跨店集拼与欧盟 `Omnibus Art. 6a` 30 天最低价合规托管（`Revionics / Blue Yonder Luminate Pricing / Competera / Centric Pricing / Manhattan Active`）”、防“全国一刀切 5 折白送北方畅销店与黄金尺码 22% 毛利”、防“刚卖完 1,400 件正价第 4 天就大降价引发 14 天价保退差与退旧买新穿仓”与门店单件 `XS/XXL` 孤品虚拟集拼回线上齐码池按 75 折变现净省 37% Agent 架构选型 FAQ** | [中文](omnichannel-retail-season-markdown-broken-size-consolidation-omnibus-escrow-agent-selection-faq.md) · [English](omnichannel-retail-season-markdown-broken-size-consolidation-omnibus-escrow-agent-selection-faq.en.md) |
 | 142 | **商超与全渠道零售“电子价签动态调价（`ESL`: `VusionGroup / Pricer / 汉朔 Hanshow`）、自助收银（`SCO`）与手机扫码购（`Scan & Go`: `NCR Voyix / Toshiba / Everseen / 山姆会员店`）”防损与价格合规托管、防“顾客看货架标 $4.99 放进推车后台无缓冲涨到 $5.49 致收银台低标高结违法被重罚（`NIST HB-130`）”、防“把 $0.99 香蕉/土豆条码贴在 $85 谷饲牛排或 $199 乐高盒上自助扫码盗窃（Ticket-Switching）”与电子价签 `LED Pick-to-Light` 闪灯拣货（提速 42%）+ 出口 AI 视觉拱门 3 秒无感离店净省 37% Agent 架构选型 FAQ** | [中文](omnichannel-retail-esl-dynamic-pricing-self-checkout-scan-go-shrink-escrow-agent-selection-faq.md) · [English](omnichannel-retail-esl-dynamic-pricing-self-checkout-scan-go-shrink-escrow-agent-selection-faq.en.md) |
 | 143 | **🏆 全渠道零售与 B2B 供应链“实时可承诺库存（Real-Time `ATP / Future-ATP`）、跨平台防超卖隔离池（Channel Ringfencing）与在途 `ASN` 预售交期（`EDD`）”编排选型 FAQ（`IBM Sterling Inventory Visibility vs. Manhattan Active vs. Fluent Commerce vs. Dynamics 365 Inventory Visibility` · 🏆 第 700 张架构图里程碑）：防“尾库 <=15% 仍按 100% 同步给 4 个平台致直播爆单超卖封店”、防“把海上未清关 PO 当现货卖”与邮编级毫秒就近交期（`ZIP-3 EDD`）净省 38% 实战指南** | [中文](omnichannel-atp-inventory-visibility-channel-ringfencing-in-transit-asn-escrow-agent-selection-faq.md) · [English](omnichannel-atp-inventory-visibility-channel-ringfencing-in-transit-asn-escrow-agent-selection-faq.en.md) |
+| 144 | **OTA 与企业商旅“机票附加服务（Airline Ancillaries & `EMD-A`：行李/选座/Wi-Fi）、防基础经济舱（`Basic Economy`）隐藏行李费倒挂与美国 `DOT 14 CFR Part 260` 换机型降舱/行李延误自动退费”托管（`IATA NDC v21.3 / ATPCO Routehappy / Amadeus / Sabre / Navan / 携程`）、防“盲买 $99 裸票去登机口补 $110 行李选座费反比全包经济舱贵 $50”、防“改签主票弄丢已付选座/行李 `EMD-A`”与常旅客金卡/联名卡免首件行李去重净省 37% Agent 架构选型 FAQ** | [中文](ota-airline-ancillary-emd-basic-economy-all-in-fare-dot260-refund-escrow-agent-selection-faq.md) · [English](ota-airline-ancillary-emd-basic-economy-all-in-fare-dot260-refund-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（85 篇）
