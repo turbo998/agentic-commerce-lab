@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg686" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg686)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 243 · Cross-Border B2B `VAT VIES`, `Reverse-Charge` &amp; `Peppol / CTC` e-Invoicing Escrow</text>
+  <text x="48" y="74" class="sub">Avalara / Sovos / Pagero / Vertex / Stripe Tax · `VIES Consultation ID` · `Ship-From != Ship-To` Gate · `EN 16931 XML` (-36%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #686 · FAQ #362</text>
+
+  <!-- Lane 1: Spoofed Third-Party VAT Number (Typing IKEA/Siemens VAT ID) & Missing VIES Consultation Number -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Live `VIES` &amp; Name Match Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Consumers Spoofing Famous Corp `VAT IDs`:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Verify `Live_VIES_Active + Legal_Name_Fuzzy &gt;= 88%`</text>
+  <text x="54" y="200" class="mono">+ Archive `VIES_Consultation_Reference_ID`!</text>
+  <text x="44" y="223" class="body-txt">• Blocks Format-Only Regex Check Bypass:</text>
+  <text x="54" y="243" class="mono">Require Corporate Domain / Billing Address Match</text>
+  <text x="44" y="266" class="body-txt">• Eliminates tax auditors disallowing `0% VAT`</text>
+  <text x="54" y="286" class="body-txt">because a consumer typed Siemens' `DE` VAT ID</text>
+  <text x="54" y="304" class="body-txt">to buy `$5,000` laptops tax-free (21% back-tax!)</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 INVALID_VIES_VAT_OR_SPOOFED_ENTITY_NAME_MISMATCH</text>
+
+  <!-- Lane 2: Domestic Warehouse Fulfillment Falsely Treated as Cross-Border 0% Reverse Charge -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. `Ship-From != Ship-To` Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Blocks `0% Reverse Charge` on Domestic Shipments:</text>
+  <text x="442" y="182" class="mono">Require `Origin_EU_State != Dest_EU_State` +</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">`2_Independent_Cross_Border_Transport_Proofs`!</text>
+  <text x="432" y="223" class="body-txt">• Enforces Statutory Invoice Citation (`Art. 196`):</text>
+  <text x="442" y="243" class="mono">Print Mandatory `Reverse Charge / Intra-EU` Text</text>
+  <text x="432" y="266" class="body-txt">• Prevents a seller shipping from a German 3PL</text>
+  <text x="442" y="286" class="body-txt">warehouse to a German business buyer at `0%`</text>
+  <text x="442" y="304" class="body-txt">(which legally requires charging `19% DE MwSt`!)</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 DOMESTIC_SHIP_FROM_TO_SAME_COUNTRY_REVERSE_CHARGE_BAN</text>
+
+  <!-- Lane 3: Sending Illegal Plain PDF Instead of Government CTC / Peppol XML e-Invoice -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `Peppol / CTC XML` Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Blocks Non-Compliant Email PDFs in `CTC` States:</text>
+  <text x="830" y="182" class="mono">Require `EN_16931_UBL_XML` (`Peppol / Italy SDI`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">/ `Germany XRechnung / Brazil NF-e / MX CFDI`)!</text>
+  <text x="820" y="223" class="body-txt">• Requires Government Clearance `UUID` Before Ship:</text>
+  <text x="830" y="243" class="body-txt">Holds truck dispatch in Brazil/Mexico/Italy if</text>
+  <text x="830" y="261" class="body-txt">the tax authority portal has not returned a</text>
+  <text x="830" y="279" class="body-txt">cryptographically stamped clearance `UUID`</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNCLEARED_CTC_EINVOICE_OR_PLAIN_PDF_REJECTION</text>
+
+  <!-- Bottom Cached VIES Failover + Instant Tax-Hold Release + Automated Intrastat / EC Sales List -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. `VIES` Downtime Auth-Hold Fallback + Single `Peppol` API + Automated `EC Sales List` (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① `VIES` Outage Auth-Hold</text>
+  <text x="62" y="462" class="body-txt">When EU `VIES` SOAP API is</text>
+  <text x="62" y="480" class="body-txt">down, places a 24h `Auth`</text>
+  <text x="62" y="498" class="body-txt">`Hold` on VAT &amp; releases</text>
+  <text x="62" y="516" class="mono">once `VIES` recovers!</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Unified `Peppol` Access Point</text>
+  <text x="337" y="462" class="body-txt">Converts ERP JSON into</text>
+  <text x="337" y="480" class="body-txt">`Peppol BIS 3.0`, `SDI`,</text>
+  <text x="337" y="498" class="body-txt">`ZUGFeRD` &amp; `CFDI` via 1</text>
+  <text x="337" y="516" class="mono">-45 Days Faster B2B DSO!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ `Art. 45a` Transport Proof</text>
+  <text x="622" y="462" class="body-txt">Auto-binds signed carrier</text>
+  <text x="622" y="480" class="body-txt">`CMR / POD` + freight</text>
+  <text x="622" y="498" class="body-txt">invoice to the `VIES`</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">audit dossier!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Auto `ESL &amp; Intrastat` Sync</text>
+  <text x="907" y="462" class="body-txt">Reconciles `EC Sales List`</text>
+  <text x="907" y="480" class="body-txt">(`ESL`) against monthly</text>
+  <text x="907" y="498" class="body-txt">`VAT` return to prevent</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Tax Audit &amp; DSO Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Back-Tax, Fine &amp; DSO Loss Saved</text>
+  <text x="46" y="642" class="mono">$82,800 Saved / $230k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">100% VIES ID</text>
+  <text x="336" y="626" class="kpi-lbl">Consultation Ref + Entity Match</text>
+  <text x="336" y="642" class="mono">Zero 21% Back-Tax Assessments</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% EN 16931</text>
+  <text x="626" y="626" class="kpi-lbl">Peppol / SDI / XRechnung / NF-e</text>
+  <text x="626" y="642" class="mono">Zero Rejected PDF Invoices</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">99.9% Uptime</text>
+  <text x="916" y="626" class="kpi-lbl">VIES Outage Auth-Hold Failover</text>
+  <text x="916" y="642" class="mono">Zero Cart Abandonment on Outage</text>
+</svg>

@@ -33537,6 +33537,82 @@ def evaluate_b2b_saas_cpq_multi_year_ramp_deal_desk_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderB2BVATVIESPeppolPolicyInput:
+    quarterly_back_tax_assessment_fine_and_rejected_pdf_dso_pool_usd: float = 230000.0
+    invalid_vies_vat_missing_consultation_id_or_entity_name_spoof: bool = False
+    domestic_same_country_ship_at_zero_vat_or_missing_cmr_proof: bool = False
+    plain_pdf_invoice_in_mandatory_peppol_sdi_nfe_ctc_jurisdiction: bool = False
+    vies_outage_auth_hold_peppol_xml_and_auto_ec_sales_list_ready: bool = False
+
+
+def evaluate_cross_border_b2b_vat_vies_peppol_policy(
+    policy_input: CrossBorderB2BVATVIESPeppolPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_back_tax_assessment_fine_and_rejected_pdf_dso_pool_usd
+        ),
+    )
+    if policy_input.plain_pdf_invoice_in_mandatory_peppol_sdi_nfe_ctc_jurisdiction:
+        return {
+            "status_code": 451,
+            "decision": "UNCLEARED_CTC_EINVOICE_OR_PLAIN_PDF_REJECTION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.invalid_vies_vat_missing_consultation_id_or_entity_name_spoof:
+        return {
+            "status_code": 403,
+            "decision": "INVALID_VIES_VAT_OR_SPOOFED_ENTITY_NAME_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.domestic_same_country_ship_at_zero_vat_or_missing_cmr_proof:
+        return {
+            "status_code": 422,
+            "decision": "DOMESTIC_SHIP_FROM_TO_SAME_COUNTRY_REVERSE_CHARGE_BAN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.vies_outage_auth_hold_peppol_xml_and_auto_ec_sales_list_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "VIES_AUTH_HOLD_PEPPOL_XML_AND_AUTO_ESL_CONFIRM",
+            "mandate_token": "b2b_vat_peppol_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_VIES_CONSULTATION_AND_PEPPOL_XML_AUTHORIZED",
+        "mandate_token": "b2b_vat_peppol_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -45774,6 +45850,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_b2b_vat_vies_peppol_guard = {
+        "authorized_200": evaluate_cross_border_b2b_vat_vies_peppol_policy(
+            CrossBorderB2BVATVIESPeppolPolicyInput()
+        ),
+        "spoof_vat_or_no_ref_403": evaluate_cross_border_b2b_vat_vies_peppol_policy(
+            CrossBorderB2BVATVIESPeppolPolicyInput(
+                invalid_vies_vat_missing_consultation_id_or_entity_name_spoof=True
+            )
+        ),
+        "domestic_zero_vat_422": evaluate_cross_border_b2b_vat_vies_peppol_policy(
+            CrossBorderB2BVATVIESPeppolPolicyInput(
+                domestic_same_country_ship_at_zero_vat_or_missing_cmr_proof=True
+            )
+        ),
+        "plain_pdf_ctc_451": evaluate_cross_border_b2b_vat_vies_peppol_policy(
+            CrossBorderB2BVATVIESPeppolPolicyInput(
+                plain_pdf_invoice_in_mandatory_peppol_sdi_nfe_ctc_jurisdiction=True
+            )
+        ),
+        "vies_hold_peppol_409": evaluate_cross_border_b2b_vat_vies_peppol_policy(
+            CrossBorderB2BVATVIESPeppolPolicyInput(
+                vies_outage_auth_hold_peppol_xml_and_auto_ec_sales_list_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -46145,6 +46247,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_alcohol_age_verify_dram_shop_guard": ecommerce_alcohol_age_verify_dram_shop_guard,
         "enterprise_agent_platform_orchestration_guard": enterprise_agent_platform_orchestration_guard,
         "b2b_saas_cpq_multi_year_ramp_deal_desk_guard": b2b_saas_cpq_multi_year_ramp_deal_desk_guard,
+        "cross_border_b2b_vat_vies_peppol_guard": cross_border_b2b_vat_vies_peppol_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -65195,6 +65298,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="saascpq-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DEAL_ROOM_AND_RETROACTIVE_BURST_TO_ACV_TRUEUP_CONFIRM · Mandate: b2b_saas_cpq_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 243 Cross-Border B2B VAT VIES, Reverse-Charge & Peppol e-Invoicing Escrow (#362) -->
+      <div class="finops-box" id="cross-border-b2b-vat-vies-peppol-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🇪🇺 跨境 B2B 欧盟 VIES 税号核验、反向征收与 Peppol 实时电子发票 (Avalara / Sovos / Pagero / Stripe Tax) 沙盒</div>
+            <div class="finops-sub">Round 243 (#362) · VIES 实时验活 + 公司法定名称 &gt;=88% 匹配与 16位查询回执号存证 (HTTP 403) + 发货国 != 收货国 (Ship-From != Ship-To) 跨境轨迹与 e-CMR 证据锁 (HTTP 422) + 政府强制 Peppol/SDI/NF-e XML 通关锁 (HTTP 451) + VIES 宕机 24h 税额预授权兜底与自动 ESL 净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="viespeppol-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度个人冒用西门子/宜家 VAT 税号骗 0% 免税致卖家被追缴 21% 税款、同国海外仓发货漏收税与发 PDF 发票被拒付拖欠池 ($)
+            <input type="number" id="viespeppol-gross-input" value="230000" min="10000" step="5000" oninput="recalcCrossBorderB2BVATVIESPeppolSandbox()" />
+          </label>
+          <label>欧盟 VIES / 英国 HMRC 实时在线验活、法定公司名称模糊匹配 (&gt;=88%) 与 16位 Consultation Number 存证门禁
+            <select id="viespeppol-vies-select" onchange="recalcCrossBorderB2BVATVIESPeppolSandbox()">
+              <option value="pass">传入卖方税号获取 16位 VIES 查询举证号 + 注册公司全称/地址与买方收货主体匹配度 94% &gt;= 88% (合规)</option>
+              <option value="block_403">个人买家拿 Gmail 邮箱百度搜出西门子公开 DE 税号填进结账框骗取 0% VAT 免税购买笔记本 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>多海外仓实际发货国 != 收货国 (Ship-From != Ship-To) 跨境位移校验与 Art. 45a 双份货运证明 / 法定条文门禁
+            <select id="viespeppol-origin-select" onchange="recalcCrossBorderB2BVATVIESPeppolSandbox()">
+              <option value="pass">荷兰阿姆斯特丹仓发往法国企业 (NL -&gt; FR) + 自动印制 Art. 138/196 法条并绑定签署版 e-CMR 运单 (合规)</option>
+              <option value="block_422">从德国 3PL 海外仓直接发给德国本地企业 (DE -&gt; DE 同国交易) 却错误套用跨国 0% Reverse Charge 漏收 19% 税 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>政府强制实时电子发票 (Peppol BIS 3.0 / 意大利 SDI / 德国 EN 16931 / 巴西 NF-e) 结构化 XML 清算赋码门禁
+            <select id="viespeppol-xml-select" onchange="recalcCrossBorderB2BVATVIESPeppolSandbox()">
+              <option value="pass">自动生成 EN 16931 UBL XML 经 Peppol / SDI / SEFAZ 政府网关实时验签赋码 UUID 后放行出库 (安全)</option>
+              <option value="block_451">向意大利/德国/巴西企业客户仅发传统邮件 PDF 发票遭客户 AP 合法拒付 或 未获税局 UUID 强行发车被扣 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>VIES 周末宕机“24h 税额独立预授权冻结”零弃单兜底 + 单一 Peppol API 直通买方 ERP + 月度 EC Sales List 自动申报
+            <select id="viespeppol-opt-select" onchange="recalcCrossBorderB2BVATVIESPeppolSandbox()">
+              <option value="enabled" selected>VIES 维护时先冻结税额验通秒解冻(0弃单) + Peppol XML 直投买方 AP(-45d DSO) + 自动生成 ESL (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">无 VIES 宕机预授权兜底与自动 EC Sales List 对账的常规跨境开票 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度补税罚款与拒付拖欠池</div>
+            <div class="finops-kpi-val" id="viespeppol-gross-kpi">$230,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">VIES存证与Peppol通关后净损耗</div>
+            <div class="finops-kpi-val" id="viespeppol-net-kpi" style="color:#6ee7b7;">$147,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省21%补税与坏账占压</div>
+            <div class="finops-kpi-val" id="viespeppol-savings-kpi" style="color:#38bdf8;">$82,800</div>
+          </div>
+        </div>
+        <div id="viespeppol-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 VIES_AUTH_HOLD_PEPPOL_XML_AND_AUTO_ESL_CONFIRM · Mandate: b2b_vat_peppol_escrow_optim_409
         </div>
       </div>
 
@@ -88451,6 +88611,79 @@ function recalcB2BSaaSCPQMultiYearRampDealDeskSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_RAMP_SCHEDULE_AND_ASC606_SSP_CPQ_AUTHORIZED · Mandate: b2b_saas_cpq_escrow_200';
+}}
+
+function recalcCrossBorderB2BVATVIESPeppolSandbox() {{
+  const grossInput = document.getElementById('viespeppol-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '230000'));
+  const viesGate = document.getElementById('viespeppol-vies-select').value;
+  const originGate = document.getElementById('viespeppol-origin-select').value;
+  const xmlGate = document.getElementById('viespeppol-xml-select').value;
+  const optMode = document.getElementById('viespeppol-opt-select').value;
+
+  const grossKpi = document.getElementById('viespeppol-gross-kpi');
+  const netKpi = document.getElementById('viespeppol-net-kpi');
+  const savingsKpi = document.getElementById('viespeppol-savings-kpi');
+  const statusKpi = document.getElementById('viespeppol-status-kpi');
+  const banner = document.getElementById('viespeppol-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (xmlGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCLEARED_CTC_EINVOICE_OR_PLAIN_PDF_REJECTION · Mandate: null';
+    return;
+  }}
+  if (viesGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INVALID_VIES_VAT_OR_SPOOFED_ENTITY_NAME_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (originGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DOMESTIC_SHIP_FROM_TO_SAME_COUNTRY_REVERSE_CHARGE_BAN · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 VIES_AUTH_HOLD_PEPPOL_XML_AND_AUTO_ESL_CONFIRM · Mandate: b2b_vat_peppol_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_VIES_CONSULTATION_AND_PEPPOL_XML_AUTHORIZED · Mandate: b2b_vat_peppol_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

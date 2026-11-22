@@ -25339,6 +25339,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-saas-cpq-multi-year-ramp-deal-desk-sandbox", html_zh)
 
+    def test_cross_border_b2b_vat_vies_peppol_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderB2BVATVIESPeppolPolicyInput,
+            evaluate_cross_border_b2b_vat_vies_peppol_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_b2b_vat_vies_peppol_policy(
+            CrossBorderB2BVATVIESPeppolPolicyInput(
+                quarterly_back_tax_assessment_fine_and_rejected_pdf_dso_pool_usd=230000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_VIES_CONSULTATION_AND_PEPPOL_XML_AUTHORIZED",
+        )
+
+        spoof = evaluate_cross_border_b2b_vat_vies_peppol_policy(
+            CrossBorderB2BVATVIESPeppolPolicyInput(
+                invalid_vies_vat_missing_consultation_id_or_entity_name_spoof=True
+            )
+        )
+        self.assertEqual(spoof["status_code"], 403)
+        self.assertEqual(
+            spoof["decision"],
+            "INVALID_VIES_VAT_OR_SPOOFED_ENTITY_NAME_MISMATCH",
+        )
+
+        domestic = evaluate_cross_border_b2b_vat_vies_peppol_policy(
+            CrossBorderB2BVATVIESPeppolPolicyInput(
+                domestic_same_country_ship_at_zero_vat_or_missing_cmr_proof=True
+            )
+        )
+        self.assertEqual(domestic["status_code"], 422)
+        self.assertEqual(
+            domestic["decision"],
+            "DOMESTIC_SHIP_FROM_TO_SAME_COUNTRY_REVERSE_CHARGE_BAN",
+        )
+
+        pdf = evaluate_cross_border_b2b_vat_vies_peppol_policy(
+            CrossBorderB2BVATVIESPeppolPolicyInput(
+                plain_pdf_invoice_in_mandatory_peppol_sdi_nfe_ctc_jurisdiction=True
+            )
+        )
+        self.assertEqual(pdf["status_code"], 451)
+        self.assertEqual(
+            pdf["decision"],
+            "UNCLEARED_CTC_EINVOICE_OR_PLAIN_PDF_REJECTION",
+        )
+
+        optim = evaluate_cross_border_b2b_vat_vies_peppol_policy(
+            CrossBorderB2BVATVIESPeppolPolicyInput(
+                quarterly_back_tax_assessment_fine_and_rejected_pdf_dso_pool_usd=230000.0,
+                vies_outage_auth_hold_peppol_xml_and_auto_ec_sales_list_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 82800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 147200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_b2b_vat_vies_peppol_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-b2b-vat-vies-peppol-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
