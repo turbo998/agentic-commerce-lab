@@ -35559,6 +35559,80 @@ def evaluate_cross_border_multilingual_return_duty_drawback_policy(
     }
 
 
+@dataclass(frozen=True)
+class PayByBankOpenBankingNSFEscrowPolicyInput:
+    quarterly_card_mdr_and_ach_r01_nsf_bounce_pool_usd: float = 290000.0
+    instant_shipment_on_unsettled_ach_pull_without_guarantee: bool = False
+    open_banking_live_balance_shortfall_or_owner_name_mismatch: bool = False
+    irrevocable_instant_push_refund_to_unverified_external_iban: bool = False
+    instant_bank_push_routing_with_1pct_buyer_mdr_split_ready: bool = False
+
+
+def evaluate_pay_by_bank_open_banking_nsf_escrow_policy(
+    policy_input: PayByBankOpenBankingNSFEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(policy_input.quarterly_card_mdr_and_ach_r01_nsf_bounce_pool_usd),
+    )
+    if policy_input.irrevocable_instant_push_refund_to_unverified_external_iban:
+        return {
+            "status_code": 451,
+            "decision": "IRREVOCABLE_INSTANT_PUSH_REFUND_TO_UNVERIFIED_EXTERNAL_IBAN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.instant_shipment_on_unsettled_ach_pull_without_guarantee:
+        return {
+            "status_code": 403,
+            "decision": "UNSETTLED_ACH_PULL_SHIPMENT_OR_R01_NSF_BOUNCE_EXPOSURE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.open_banking_live_balance_shortfall_or_owner_name_mismatch:
+        return {
+            "status_code": 422,
+            "decision": "OPEN_BANKING_LIVE_BALANCE_SHORTFALL_OR_OWNER_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.instant_bank_push_routing_with_1pct_buyer_mdr_split_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "INSTANT_BANK_PUSH_ROUTING_AND_MDR_SPLIT_INCENTIVE_CONFIRM",
+            "mandate_token": "pay_by_bank_instant_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_INSTANT_PAY_BY_BANK_SETTLEMENT_AUTHORIZED",
+        "mandate_token": "pay_by_bank_instant_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -48472,6 +48546,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    pay_by_bank_open_banking_nsf_guard = {
+        "authorized_200": evaluate_pay_by_bank_open_banking_nsf_escrow_policy(
+            PayByBankOpenBankingNSFEscrowPolicyInput()
+        ),
+        "unsettled_ach_pull_shipment_403": evaluate_pay_by_bank_open_banking_nsf_escrow_policy(
+            PayByBankOpenBankingNSFEscrowPolicyInput(
+                instant_shipment_on_unsettled_ach_pull_without_guarantee=True
+            )
+        ),
+        "live_balance_or_owner_mismatch_422": evaluate_pay_by_bank_open_banking_nsf_escrow_policy(
+            PayByBankOpenBankingNSFEscrowPolicyInput(
+                open_banking_live_balance_shortfall_or_owner_name_mismatch=True
+            )
+        ),
+        "unverified_external_iban_refund_451": evaluate_pay_by_bank_open_banking_nsf_escrow_policy(
+            PayByBankOpenBankingNSFEscrowPolicyInput(
+                irrevocable_instant_push_refund_to_unverified_external_iban=True
+            )
+        ),
+        "instant_bank_push_mdr_split_409": evaluate_pay_by_bank_open_banking_nsf_escrow_policy(
+            PayByBankOpenBankingNSFEscrowPolicyInput(
+                instant_bank_push_routing_with_1pct_buyer_mdr_split_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48869,6 +48969,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_ecommerce_lifecycle_marketing_uplift_guard": saas_ecommerce_lifecycle_marketing_uplift_guard,
         "b2b_clm_contract_redline_guard": b2b_clm_contract_redline_guard,
         "cross_border_multilingual_return_duty_drawback_guard": cross_border_multilingual_return_duty_drawback_guard,
+        "pay_by_bank_open_banking_nsf_guard": pay_by_bank_open_banking_nsf_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -69401,6 +69502,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="xbret-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 REGIONAL_HUB_CONSOLIDATION_AND_DUTY_DRAWBACK_MANIFEST_CONFIRM · Mandate: cross_border_return_fx_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 269 Pay-by-Bank & Open Banking, NSF Shield & MDR Escrow (#388) -->
+      <div class="finops-box" id="pay-by-bank-open-banking-nsf-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏦 高客单电商与 B2B 实时网银直连 (Pay-by-Bank: FedNow / SEPA Instant)、防 ACH R01 退票与 MDR 分润 (Plaid / Tink / Stripe) 沙盒</div>
+            <div class="finops-sub">Round 269 (#388 · SVG #712) · 阻断未清算 T+3 异步 ACH Pull 提前发货防 R01 余额不足退票骗货 (HTTP 403) + 开放银行实时余额(&gt;=1.10x)与户名KYC核验 (HTTP 422) + 不可撤销通道原账号闭环退款锁 (HTTP 451) + 高客单 1.0% 买家分润立减替代 2.9% 信用卡净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="pbb-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度高客单信用卡 2.9% 通道费 (MDR)、异步 ACH R01 余额不足退票货款全损及 $35/笔退票罚金池 ($)
+            <input type="number" id="pbb-gross-input" value="290000" min="10000" step="5000" oninput="recalcPayByBankOpenBankingNSFSandbox()" />
+          </label>
+          <label>未清算异步银行代扣 (Standard ACH Pull / SEPA DD) 出库冻结门禁与实时推式清算要求
+            <select id="pbb-ship-select" onchange="recalcPayByBankOpenBankingNSFSandbox()">
+              <option value="pass">高值商品强制走 FedNow/SEPA Instant 6秒不可撤销清算 或 待异步 ACH 落袋后发货 (安全)</option>
+              <option value="block_403">在 T+3 普通 ACH Pull 仅返回 Pending 时秒发 $4,200 电脑，3天后遭 R01 余额不足退票 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>开放银行实时可用余额安全垫 (Available Balance &gt;= 1.10x Order) 与账户实名主体核验 (Plaid Signal / Tink)
+            <select id="pbb-bal-select" onchange="recalcPayByBankOpenBankingNSFSandbox()">
+              <option value="pass">实时可用余额 &gt;= 订单额 1.10 倍且银行预留 KYC 户名与买方实名一致 (合规)</option>
+              <option value="block_422">账户实时余额不足订单金额 或 盗绑他人支票账户导致高频退票与 $35 银行罚单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>实时不可撤销清算通道 (FedNow / RTP / SEPA Instant) 原付款账号闭环退款锁 (Source IBAN Lock)
+            <select id="pbb-refund-select" onchange="recalcPayByBankOpenBankingNSFSandbox()">
+              <option value="pass">100% 锁定原交易付款方 IBAN/Routing+Account 原路退回并通过 CoP 户名核验 (安全)</option>
+              <option value="block_451">轻信工单诱导将不可撤销实时退款打往未核验的外部新银行账号造成永久资损 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>高客单 (&gt;=$500) 实时网银直连 (FedNow / SEPA Instant) + 1.0% 买家分润立减替代 2.9% 商业信用卡
+            <select id="pbb-opt-select" onchange="recalcPayByBankOpenBankingNSFSandbox()">
+              <option value="enabled" selected>给买家立减 1.0% 引导切换至 $1.50 封顶实时网银，商家净省 1.6%+ MDR 且零拒付 (-40% 损耗 / HTTP 409)</option>
+              <option value="disabled">全量依赖 2.9% 高费率信用卡与无实时余额校验的传统异步 ACH 代扣 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度信用卡MDR与ACH退票损失池</div>
+            <div class="finops-kpi-val" id="pbb-gross-kpi">$290,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">实时网银分润与防退票后净支出</div>
+            <div class="finops-kpi-val" id="pbb-net-kpi" style="color:#6ee7b7;">$174,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省刷卡手续费与退票坏账</div>
+            <div class="finops-kpi-val" id="pbb-savings-kpi" style="color:#38bdf8;">$116,000</div>
+          </div>
+        </div>
+        <div id="pbb-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 INSTANT_BANK_PUSH_ROUTING_AND_MDR_SPLIT_INCENTIVE_CONFIRM · Mandate: pay_by_bank_instant_optim_409
         </div>
       </div>
 
@@ -94555,6 +94713,79 @@ function recalcCrossBorderMultilingualReturnDutyDrawbackSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CROSS_BORDER_RETURN_AND_CAPTURE_FX_REFUND_AUTHORIZED · Mandate: cross_border_return_fx_200';
+}}
+
+function recalcPayByBankOpenBankingNSFSandbox() {{
+  const grossInput = document.getElementById('pbb-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '290000'));
+  const shipGate = document.getElementById('pbb-ship-select').value;
+  const balGate = document.getElementById('pbb-bal-select').value;
+  const refundGate = document.getElementById('pbb-refund-select').value;
+  const optMode = document.getElementById('pbb-opt-select').value;
+
+  const grossKpi = document.getElementById('pbb-gross-kpi');
+  const netKpi = document.getElementById('pbb-net-kpi');
+  const savingsKpi = document.getElementById('pbb-savings-kpi');
+  const statusKpi = document.getElementById('pbb-status-kpi');
+  const banner = document.getElementById('pbb-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (refundGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 IRREVOCABLE_INSTANT_PUSH_REFUND_TO_UNVERIFIED_EXTERNAL_IBAN · Mandate: null';
+    return;
+  }}
+  if (shipGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNSETTLED_ACH_PULL_SHIPMENT_OR_R01_NSF_BOUNCE_EXPOSURE · Mandate: null';
+    return;
+  }}
+  if (balGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 OPEN_BANKING_LIVE_BALANCE_SHORTFALL_OR_OWNER_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 INSTANT_BANK_PUSH_ROUTING_AND_MDR_SPLIT_INCENTIVE_CONFIRM · Mandate: pay_by_bank_instant_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_INSTANT_PAY_BY_BANK_SETTLEMENT_AUTHORIZED · Mandate: pay_by_bank_instant_200';
 }}
 
 function updateStage1756Sandbox() {{

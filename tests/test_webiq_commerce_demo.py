@@ -27081,6 +27081,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-multilingual-return-duty-drawback-sandbox", html_zh)
 
+    def test_pay_by_bank_open_banking_nsf_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            PayByBankOpenBankingNSFEscrowPolicyInput,
+            evaluate_pay_by_bank_open_banking_nsf_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_pay_by_bank_open_banking_nsf_escrow_policy(
+            PayByBankOpenBankingNSFEscrowPolicyInput(
+                quarterly_card_mdr_and_ach_r01_nsf_bounce_pool_usd=290000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_INSTANT_PAY_BY_BANK_SETTLEMENT_AUTHORIZED",
+        )
+
+        ship = evaluate_pay_by_bank_open_banking_nsf_escrow_policy(
+            PayByBankOpenBankingNSFEscrowPolicyInput(
+                instant_shipment_on_unsettled_ach_pull_without_guarantee=True
+            )
+        )
+        self.assertEqual(ship["status_code"], 403)
+        self.assertEqual(
+            ship["decision"],
+            "UNSETTLED_ACH_PULL_SHIPMENT_OR_R01_NSF_BOUNCE_EXPOSURE",
+        )
+
+        bal = evaluate_pay_by_bank_open_banking_nsf_escrow_policy(
+            PayByBankOpenBankingNSFEscrowPolicyInput(
+                open_banking_live_balance_shortfall_or_owner_name_mismatch=True
+            )
+        )
+        self.assertEqual(bal["status_code"], 422)
+        self.assertEqual(
+            bal["decision"],
+            "OPEN_BANKING_LIVE_BALANCE_SHORTFALL_OR_OWNER_MISMATCH",
+        )
+
+        refund = evaluate_pay_by_bank_open_banking_nsf_escrow_policy(
+            PayByBankOpenBankingNSFEscrowPolicyInput(
+                irrevocable_instant_push_refund_to_unverified_external_iban=True
+            )
+        )
+        self.assertEqual(refund["status_code"], 451)
+        self.assertEqual(
+            refund["decision"],
+            "IRREVOCABLE_INSTANT_PUSH_REFUND_TO_UNVERIFIED_EXTERNAL_IBAN",
+        )
+
+        optim = evaluate_pay_by_bank_open_banking_nsf_escrow_policy(
+            PayByBankOpenBankingNSFEscrowPolicyInput(
+                quarterly_card_mdr_and_ach_r01_nsf_bounce_pool_usd=290000.0,
+                instant_bank_push_routing_with_1pct_buyer_mdr_split_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 116000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 174000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("pay_by_bank_open_banking_nsf_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("pay-by-bank-open-banking-nsf-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
