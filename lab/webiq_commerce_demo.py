@@ -34939,6 +34939,86 @@ def evaluate_enterprise_crm_erp_quote_to_order_saga_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderExport9810VATRebateFXPolicyInput:
+    quarterly_forfeited_13pct_vat_rebate_and_fx_audit_hold_pool_usd: float = 340000.0
+    export_fx_cost_ratio_breaches_statutory_tax_fraud_corridor: bool = False
+    customs_declaration_vs_vat_invoice_hs_name_or_statutory_unit_mismatch: bool = False
+    unreconciled_9810_departure_pre_rebate_unsold_or_missing_fx_past_apr30: bool = False
+    dual_track_9810_3d_pre_rebate_and_9610_tax_exempt_split_ready: bool = False
+
+
+def evaluate_cross_border_export_9810_vat_rebate_fx_policy(
+    policy_input: CrossBorderExport9810VATRebateFXPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_forfeited_13pct_vat_rebate_and_fx_audit_hold_pool_usd
+        ),
+    )
+    if (
+        policy_input.unreconciled_9810_departure_pre_rebate_unsold_or_missing_fx_past_apr30
+    ):
+        return {
+            "status_code": 451,
+            "decision": "OVERSEAS_WAREHOUSE_9810_UNSOLD_PRE_REBATE_OR_FX_UNRECONCILED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.export_fx_cost_ratio_breaches_statutory_tax_fraud_corridor:
+        return {
+            "status_code": 403,
+            "decision": "ABNORMAL_EXPORT_FX_COST_RATIO_TAX_AUDIT_REDLINE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if (
+        policy_input.customs_declaration_vs_vat_invoice_hs_name_or_statutory_unit_mismatch
+    ):
+        return {
+            "status_code": 422,
+            "decision": "CUSTOMS_DECLARATION_VS_VAT_INVOICE_UNIT_OR_HS_NAME_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dual_track_9810_3d_pre_rebate_and_9610_tax_exempt_split_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DUAL_TRACK_9810_PRE_REBATE_AND_9610_TAX_EXEMPT_ROUTING_CONFIRM",
+            "mandate_token": "cbec_export_9810_rebate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_FOUR_STREAM_MATCH_AND_FX_CORRIDOR_AUTHORIZED",
+        "mandate_token": "cbec_export_9810_rebate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -47644,6 +47724,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_export_9810_vat_rebate_fx_guard = {
+        "authorized_200": evaluate_cross_border_export_9810_vat_rebate_fx_policy(
+            CrossBorderExport9810VATRebateFXPolicyInput()
+        ),
+        "abnormal_fx_cost_403": evaluate_cross_border_export_9810_vat_rebate_fx_policy(
+            CrossBorderExport9810VATRebateFXPolicyInput(
+                export_fx_cost_ratio_breaches_statutory_tax_fraud_corridor=True
+            )
+        ),
+        "unit_or_name_mismatch_422": evaluate_cross_border_export_9810_vat_rebate_fx_policy(
+            CrossBorderExport9810VATRebateFXPolicyInput(
+                customs_declaration_vs_vat_invoice_hs_name_or_statutory_unit_mismatch=True
+            )
+        ),
+        "unreconciled_9810_pre_rebate_451": evaluate_cross_border_export_9810_vat_rebate_fx_policy(
+            CrossBorderExport9810VATRebateFXPolicyInput(
+                unreconciled_9810_departure_pre_rebate_unsold_or_missing_fx_past_apr30=True
+            )
+        ),
+        "dual_track_9810_9610_409": evaluate_cross_border_export_9810_vat_rebate_fx_policy(
+            CrossBorderExport9810VATRebateFXPolicyInput(
+                dual_track_9810_3d_pre_rebate_and_9610_tax_exempt_split_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48033,6 +48139,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_combinatorial_sourcing_tco_dual_award_guard": b2b_combinatorial_sourcing_tco_dual_award_guard,
         "saas_plg_seat_fair_billing_coterm_guard": saas_plg_seat_fair_billing_coterm_guard,
         "enterprise_crm_erp_quote_to_order_saga_guard": enterprise_crm_erp_quote_to_order_saga_guard,
+        "cross_border_export_9810_vat_rebate_fx_guard": cross_border_export_9810_vat_rebate_fx_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -68109,6 +68216,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="crmerp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TRANSACTIONAL_OUTBOX_SAGA_AND_CASH_COLLECTED_COMMISSION_CONFIRM · Mandate: crm_erp_order_saga_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 261 Cross-Border Export 9810, 13% VAT Pre-Rebate & FX Cost Escrow (#380 Milestone) -->
+      <div class="finops-box" id="cross-border-export-9810-vat-rebate-fx-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 跨境出口海外仓 (9810 / 9710)、13% 增值税离境即退与换汇成本稽核 (领星 / 电子口岸 / 金税四期) 沙盒</div>
+            <div class="finops-sub">Round 261 (🏆 #380 里程碑) · 出口换汇成本 (FX Cost Ratio) 税务红线走廊 [¥5.10, ¥7.60] 锁 (HTTP 403) + 报关单与13%进项专票四要素 (HS-10+品名+法定单位+数量) 同源锁 (HTTP 422) + 9810 离境预退税次年4月30日前海外仓实销收汇核销 (HTTP 451) + 有票9810三天预退税与无票9610免征不退双轨分流净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="cbec9810-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度报关单与工厂专票品名/千克单位差一字痛失 13% 出口退税、换汇成本越界触发骗税锁单及 9810 未售核销罚金池 ($)
+            <input type="number" id="cbec9810-gross-input" value="340000" min="10000" step="5000" oninput="recalcCrossBorderExport9810VATRebateFXSandbox()" />
+          </label>
+          <label>出口换汇成本 (FX Cost Ratio = 国内不含税进货人民币 / 报关 FOB 美元价) 税务安全走廊 ([¥5.10, ¥7.60]/$1) 门禁
+            <select id="cbec9810-fxcost-select" onchange="recalcCrossBorderExport9810VATRebateFXSandbox()">
+              <option value="pass">按公允内部转移定价申报 FOB 离岸价，换汇成本处于 ¥5.10–¥7.60/$1 USD 安全走廊内 (安全)</option>
+              <option value="block_403">为省目的港关税将 ¥700k 货物低报为 FOB $72k 致换汇成本飙至 ¥9.72/$1 触发金税四期骗税稽查 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>海关出口报关单 (H2018) 与上游工厂 13% 增值税进项专用发票“四要素 (HS-10+品名+法定单位+数量)”同源对齐门禁
+            <select id="cbec9810-tuple-select" onchange="recalcCrossBorderExport9810VATRebateFXSandbox()">
+              <option value="pass">由跨境 ERP 根据海关 HS-10 字典一键同源生成工厂开票规范 (含第一法定单位 kg) 与报关草单 (合规)</option>
+              <option value="block_422">工厂专票单位开“个”而报关单第一法定计量单位报“千克”或品名差两个字导致 13% 退税被拒 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>9810 海外仓“离境即退 (预退税)”次年 4 月 30 日前平台真实销售订单与阳光收汇水单 FIFO 核销门禁
+            <select id="cbec9810-recon-select" onchange="recalcCrossBorderExport9810VATRebateFXSandbox()">
+              <option value="pass">按 FIFO 自动关联 Amazon FBA 实销单与 Airwallex 收汇单，未售销毁尾货在 T-45d 自动调减预退税 (安全)</option>
+              <option value="block_451">领走 9810 离境预退税后海外仓滞销销毁或超次年 4月30日未完成实销收汇核销遭取消一类资质 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>同集装箱“有 13% 专票主力标品走 9810 离境 3 天极速预退税 + 1688 无票长尾配件走 9610/1039 免征不退”双轨分流
+            <select id="cbec9810-opt-select" onchange="recalcCrossBorderExport9810VATRebateFXSandbox()">
+              <option value="enabled" selected>有票主力品走 9810 离境 3 工作日拿回 13% 现金流 + 无票配件同柜拆单走综试区 9610 免征不退 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">等海外仓 120天卖完才后置申报退税且无票配件混报或弃单 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度弃退税与换汇锁单损失</div>
+            <div class="finops-kpi-val" id="cbec9810-gross-kpi">$340,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">四要素同源与9810分流后净损</div>
+            <div class="finops-kpi-val" id="cbec9810-net-kpi" style="color:#6ee7b7;">$207,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净增效13%退税与合规收益</div>
+            <div class="finops-kpi-val" id="cbec9810-savings-kpi" style="color:#38bdf8;">$132,600</div>
+          </div>
+        </div>
+        <div id="cbec9810-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DUAL_TRACK_9810_PRE_REBATE_AND_9610_TAX_EXEMPT_ROUTING_CONFIRM · Mandate: cbec_export_9810_rebate_optim_409
         </div>
       </div>
 
@@ -92679,6 +92843,79 @@ function recalcEnterpriseCRMERPQuoteToOrderSagaSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_IDEMPOTENT_CRM_ERP_SYNC_AND_PRICE_PARITY_AUTHORIZED · Mandate: crm_erp_order_saga_200';
+}}
+
+function recalcCrossBorderExport9810VATRebateFXSandbox() {{
+  const grossInput = document.getElementById('cbec9810-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '340000'));
+  const fxcostGate = document.getElementById('cbec9810-fxcost-select').value;
+  const tupleGate = document.getElementById('cbec9810-tuple-select').value;
+  const reconGate = document.getElementById('cbec9810-recon-select').value;
+  const optMode = document.getElementById('cbec9810-opt-select').value;
+
+  const grossKpi = document.getElementById('cbec9810-gross-kpi');
+  const netKpi = document.getElementById('cbec9810-net-kpi');
+  const savingsKpi = document.getElementById('cbec9810-savings-kpi');
+  const statusKpi = document.getElementById('cbec9810-status-kpi');
+  const banner = document.getElementById('cbec9810-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (reconGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 OVERSEAS_WAREHOUSE_9810_UNSOLD_PRE_REBATE_OR_FX_UNRECONCILED · Mandate: null';
+    return;
+  }}
+  if (fxcostGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ABNORMAL_EXPORT_FX_COST_RATIO_TAX_AUDIT_REDLINE_BREACH · Mandate: null';
+    return;
+  }}
+  if (tupleGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CUSTOMS_DECLARATION_VS_VAT_INVOICE_UNIT_OR_HS_NAME_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DUAL_TRACK_9810_PRE_REBATE_AND_9610_TAX_EXEMPT_ROUTING_CONFIRM · Mandate: cbec_export_9810_rebate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_FOUR_STREAM_MATCH_AND_FX_CORRIDOR_AUTHORIZED · Mandate: cbec_export_9810_rebate_200';
 }}
 
 function updateStage1756Sandbox() {{

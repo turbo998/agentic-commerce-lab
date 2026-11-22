@@ -26545,6 +26545,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("enterprise-crm-erp-quote-to-order-saga-sandbox", html_zh)
 
+    def test_cross_border_export_9810_vat_rebate_fx_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderExport9810VATRebateFXPolicyInput,
+            evaluate_cross_border_export_9810_vat_rebate_fx_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_export_9810_vat_rebate_fx_policy(
+            CrossBorderExport9810VATRebateFXPolicyInput(
+                quarterly_forfeited_13pct_vat_rebate_and_fx_audit_hold_pool_usd=340000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_FOUR_STREAM_MATCH_AND_FX_CORRIDOR_AUTHORIZED",
+        )
+
+        fxcost = evaluate_cross_border_export_9810_vat_rebate_fx_policy(
+            CrossBorderExport9810VATRebateFXPolicyInput(
+                export_fx_cost_ratio_breaches_statutory_tax_fraud_corridor=True
+            )
+        )
+        self.assertEqual(fxcost["status_code"], 403)
+        self.assertEqual(
+            fxcost["decision"],
+            "ABNORMAL_EXPORT_FX_COST_RATIO_TAX_AUDIT_REDLINE_BREACH",
+        )
+
+        tuple_err = evaluate_cross_border_export_9810_vat_rebate_fx_policy(
+            CrossBorderExport9810VATRebateFXPolicyInput(
+                customs_declaration_vs_vat_invoice_hs_name_or_statutory_unit_mismatch=True
+            )
+        )
+        self.assertEqual(tuple_err["status_code"], 422)
+        self.assertEqual(
+            tuple_err["decision"],
+            "CUSTOMS_DECLARATION_VS_VAT_INVOICE_UNIT_OR_HS_NAME_MISMATCH",
+        )
+
+        recon = evaluate_cross_border_export_9810_vat_rebate_fx_policy(
+            CrossBorderExport9810VATRebateFXPolicyInput(
+                unreconciled_9810_departure_pre_rebate_unsold_or_missing_fx_past_apr30=True
+            )
+        )
+        self.assertEqual(recon["status_code"], 451)
+        self.assertEqual(
+            recon["decision"],
+            "OVERSEAS_WAREHOUSE_9810_UNSOLD_PRE_REBATE_OR_FX_UNRECONCILED",
+        )
+
+        optim = evaluate_cross_border_export_9810_vat_rebate_fx_policy(
+            CrossBorderExport9810VATRebateFXPolicyInput(
+                quarterly_forfeited_13pct_vat_rebate_and_fx_audit_hold_pool_usd=340000.0,
+                dual_track_9810_3d_pre_rebate_and_9610_tax_exempt_split_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 132600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 207400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_export_9810_vat_rebate_fx_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-export-9810-vat-rebate-fx-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

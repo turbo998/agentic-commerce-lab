@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`379` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`380` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -11,7 +11,7 @@
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (143 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (85 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (32 guides)](#saas-finops-micropayments)
-- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (43 guides)](#tax-fx-privacy-disputes)
+- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (44 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
 
@@ -394,7 +394,7 @@
 | 32 | **SaaS `PLG` Seat Expansion, Slack-Style `Fair Billing` Active Credit & Co-Term Proration Escrow (`Stripe Billing vs. Zuora vs. Chargebee vs. Paddle`), Period-End Downgrade Arbitrage Lock, External-Domain Free Guest Gate, Exact UTC Second `Co-Terming` & 100-Seat Tier Step-Down (`-37%` Proration & Churn Loss) Agent Architecture Selection FAQ** | [English](saas-plg-seat-expansion-fair-billing-coterm-proration-anti-arbitrage-escrow-agent-selection-faq.en.md) · [中文](saas-plg-seat-expansion-fair-billing-coterm-proration-anti-arbitrage-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (43 Guides)
+## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (44 Guides)
 
 > Covers Merchant of Record (MoR) vs DIY PSP, HS-code DDP landed cost & VAT/Sales Tax nexus, FX quote collars & ISO 20022 netting, ZK eligibility / PCI redaction / GDPR crypto-shredding, and Visa CE 3.0 / VAMP dispute defense.
 
@@ -443,6 +443,7 @@
 | 41 | **Cross-Border EU `EPR` Packaging, `WEEE` & Battery Eco-Fee Escrow (`Germany LUCID VerpackG / France Citeo UIN / Spain RD 1055 / Amazon EPR / Lizenzero`), Packaging-`BOM` Tare Grammage Split, Anti-Double-Filing `PRO` Mutex, `LUCID / WEEE` Listing Gate & `Eco-Modulation` Bonus (`-36%` Compliance Spend) Agent Architecture Selection FAQ** | [English](cross-border-epr-packaging-weee-battery-lucid-citeo-ecofee-escrow-agent-selection-faq.en.md) · [中文](cross-border-epr-packaging-weee-battery-lucid-citeo-ecofee-escrow-agent-selection-faq.md) |
 | 42 | **Cross-Border B2B `VAT VIES`, `Reverse-Charge` (`Art. 196 / 138`) & `Peppol / CTC` e-Invoicing Escrow (`Avalara / Sovos / Pagero / Vertex / Stripe Tax`), `VIES Consultation ID` + Entity Match, `Ship-From != Ship-To` Lock & `EN 16931 XML` Clearance (`-36%` Tax & `DSO` Loss) Agent Architecture Selection FAQ** | [English](cross-border-b2b-vat-vies-reverse-charge-peppol-einvoicing-escrow-agent-selection-faq.en.md) · [中文](cross-border-b2b-vat-vies-reverse-charge-peppol-einvoicing-escrow-agent-selection-faq.md) |
 | 43 | **Cross-Border Bonded Import E-Commerce (`1210 / 9610`), Customs Announcement `179` 3-Way Match (`Order == Payment == Waybill`) & `¥5,000 / ¥26,000` Quota Escrow (`Tmall Global / JD Worldwide / Cainiao Bonded / WeChat Pay & Alipay Customs Push`), Pre-Auth `Buyer==Payer` ID Lock, Anti-`Daigou` Smuggling Graph & 30-Day Bonded Return Tax Restore (`-37%` Hold & Tax Loss) Agent Architecture Selection FAQ** | [English](cross-border-import-bonded-1210-customs-179-three-way-match-quota-escrow-agent-selection-faq.en.md) · [中文](cross-border-import-bonded-1210-customs-179-three-way-match-quota-escrow-agent-selection-faq.md) |
+| 44 | **🏆 Cross-Border Export Overseas Warehouse (`9810 / 9710 / 9610`), `13%` VAT Departure Pre-Rebate & `FX Cost Ratio` Audit Escrow (`China E-Port Single Window / Golden Tax IV / Lingxing ERP / Alibaba OneTouch` · 🏆 380th Guide Milestone), Single-Source 4-Tuple (`HS-10 + kg/pcs Unit`) Lock, `[¥5.10, ¥7.60]` `FX Cost` Corridor & Dual-Track `9810 + 9610` Split (`-39%` Rebate & Compliance Loss) Agent Architecture Selection FAQ** | [English](cross-border-export-9810-overseas-warehouse-vat-rebate-fx-cost-reconciliation-escrow-agent-selection-faq.en.md) · [中文](cross-border-export-9810-overseas-warehouse-vat-rebate-fx-cost-reconciliation-escrow-agent-selection-faq.md) |
 
 <a id="architecture-blueprints"></a>
 ## 7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 Specs)
