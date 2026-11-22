@@ -26746,6 +26746,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-cpfr-rolling-forecast-bullwhip-sandbox", html_zh)
 
+    def test_ecommerce_visual_search_shop_the_look_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            ECommerceVisualSearchShopTheLookPolicyInput,
+            evaluate_ecommerce_visual_search_shop_the_look_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_visual_search_shop_the_look_policy(
+            ECommerceVisualSearchShopTheLookPolicyInput(
+                quarterly_oos_visual_click_bounce_and_bipa_privacy_loss_pool_usd=230000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_BBOX_CROP_AND_IN_SIZE_VISUAL_MATCH_AUTHORIZED",
+        )
+
+        size_oos = evaluate_ecommerce_visual_search_shop_the_look_policy(
+            ECommerceVisualSearchShopTheLookPolicyInput(
+                ranking_top_visual_match_that_is_out_of_stock_in_user_size=True
+            )
+        )
+        self.assertEqual(size_oos["status_code"], 403)
+        self.assertEqual(
+            size_oos["decision"],
+            "VISUAL_TOP_MATCH_OUT_OF_STOCK_IN_USER_SIZE_OR_PRICE_SHOCK",
+        )
+
+        bbox = evaluate_ecommerce_visual_search_shop_the_look_policy(
+            ECommerceVisualSearchShopTheLookPolicyInput(
+                embedding_uncropped_full_scene_image_with_70pct_background_noise=True
+            )
+        )
+        self.assertEqual(bbox["status_code"], 422)
+        self.assertEqual(
+            bbox["decision"],
+            "UNCROPPED_FULL_SCENE_IMAGE_EMBEDDING_BACKGROUND_POLLUTION",
+        )
+
+        bipa = evaluate_ecommerce_visual_search_shop_the_look_policy(
+            ECommerceVisualSearchShopTheLookPolicyInput(
+                image_contains_adversarial_prompt_injection_or_unblurred_face=True
+            )
+        )
+        self.assertEqual(bipa["status_code"], 451)
+        self.assertEqual(
+            bipa["decision"],
+            "VISUAL_PROMPT_INJECTION_OR_UNREDACTED_BIOMETRIC_FACE_BIPA_RISK",
+        )
+
+        optim = evaluate_ecommerce_visual_search_shop_the_look_policy(
+            ECommerceVisualSearchShopTheLookPolicyInput(
+                quarterly_oos_visual_click_bounce_and_bipa_privacy_loss_pool_usd=230000.0,
+                shop_the_look_multi_hotspot_and_in_size_twin_bundle_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 87400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 142600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_visual_search_shop_the_look_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-visual-search-shop-the-look-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
