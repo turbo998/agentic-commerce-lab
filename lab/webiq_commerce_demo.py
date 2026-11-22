@@ -34621,6 +34621,86 @@ def evaluate_agent_payment_split_shipment_multi_capture_policy(
     }
 
 
+@dataclass(frozen=True)
+class OmnichannelATPChannelRingfencingASNPolicyInput:
+    quarterly_marketplace_oversell_fine_b2b_sla_and_delay_loss_pool_usd: float = (
+        310000.0
+    )
+    broadcasting_100pct_tail_stock_across_multiple_marketplaces: bool = False
+    exposing_unshipped_or_uncleared_ocean_po_as_guaranteed_atp: bool = False
+    raiding_contracted_b2b_sla_ringfence_or_violating_ftc_435_delay_refund: bool = False
+    zip3_edd_node_promising_and_10m_adaptive_cart_lock_recycle_ready: bool = False
+
+
+def evaluate_omnichannel_atp_channel_ringfencing_asn_policy(
+    policy_input: OmnichannelATPChannelRingfencingASNPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_marketplace_oversell_fine_b2b_sla_and_delay_loss_pool_usd
+        ),
+    )
+    if (
+        policy_input.raiding_contracted_b2b_sla_ringfence_or_violating_ftc_435_delay_refund
+    ):
+        return {
+            "status_code": 451,
+            "decision": "B2B_SLA_RINGFENCE_BREACH_OR_FTC_435_SHIPPING_DELAY_VIOLATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.broadcasting_100pct_tail_stock_across_multiple_marketplaces:
+        return {
+            "status_code": 403,
+            "decision": "MULTI_CHANNEL_100PCT_MIRROR_OVERSELL_OR_ODR_PENALTY_RISK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.exposing_unshipped_or_uncleared_ocean_po_as_guaranteed_atp:
+        return {
+            "status_code": 422,
+            "decision": "UNVERIFIED_IN_TRANSIT_PO_EXPOSED_AS_GUARANTEED_ATP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.zip3_edd_node_promising_and_10m_adaptive_cart_lock_recycle_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ZIP_AWARE_EDD_NODE_PROMISE_AND_ADAPTIVE_CART_TTL_CONFIRM",
+            "mandate_token": "omnichannel_atp_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CHANNEL_RINGFENCE_AND_CLEARED_ASN_ATP_AUTHORIZED",
+        "mandate_token": "omnichannel_atp_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -47222,6 +47302,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    omnichannel_atp_channel_ringfencing_asn_guard = {
+        "authorized_200": evaluate_omnichannel_atp_channel_ringfencing_asn_policy(
+            OmnichannelATPChannelRingfencingASNPolicyInput()
+        ),
+        "mirror_oversell_403": evaluate_omnichannel_atp_channel_ringfencing_asn_policy(
+            OmnichannelATPChannelRingfencingASNPolicyInput(
+                broadcasting_100pct_tail_stock_across_multiple_marketplaces=True
+            )
+        ),
+        "uncleared_po_atp_422": evaluate_omnichannel_atp_channel_ringfencing_asn_policy(
+            OmnichannelATPChannelRingfencingASNPolicyInput(
+                exposing_unshipped_or_uncleared_ocean_po_as_guaranteed_atp=True
+            )
+        ),
+        "b2b_ringfence_or_ftc_451": evaluate_omnichannel_atp_channel_ringfencing_asn_policy(
+            OmnichannelATPChannelRingfencingASNPolicyInput(
+                raiding_contracted_b2b_sla_ringfence_or_violating_ftc_435_delay_refund=True
+            )
+        ),
+        "zip_edd_cart_ttl_409": evaluate_omnichannel_atp_channel_ringfencing_asn_policy(
+            OmnichannelATPChannelRingfencingASNPolicyInput(
+                zip3_edd_node_promising_and_10m_adaptive_cart_lock_recycle_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -47607,6 +47713,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "omnichannel_esl_dynamic_pricing_sco_shrink_guard": omnichannel_esl_dynamic_pricing_sco_shrink_guard,
         "commercial_grounding_supplier_risk_price_intel_guard": commercial_grounding_supplier_risk_price_intel_guard,
         "agent_payment_split_shipment_multi_capture_guard": agent_payment_split_shipment_multi_capture_guard,
+        "omnichannel_atp_channel_ringfencing_asn_guard": omnichannel_atp_channel_ringfencing_asn_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -67455,6 +67562,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="splitcap-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 JIT_SHIPMENT_SCOPED_TOKEN_AND_MULTI_CAPTURE_ROUTING_CONFIRM · Mandate: split_capture_payment_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 257 Omnichannel Real-Time ATP, Channel Ringfencing & In-Transit ASN Escrow (#376 · SVG #700) -->
+      <div class="finops-box" id="omnichannel-atp-channel-ringfencing-asn-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 全渠道实时可承诺库存 (ATP)、防超卖隔离池与在途 ASN 预售 (IBM Sterling / Manhattan / D365 IV) 沙盒</div>
+            <div class="finops-sub">Round 257 (#376 · 🏆 SVG #700 里程碑) · 尾库 &lt;=15% 断崖撤回公域锁回主站防超卖封店 (HTTP 403) + 在途 Future-ATP 强制要求清关后 EDI 856 ASN 与 20% 打折缓冲 (HTTP 422) + B2B 合同保供专池物理隔离与 FTC 16 CFR 435 延误必退 (HTTP 451) + 邮编级毫秒 EDD 与 10m 软锁回收净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="omniatp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度多平台 100% 镜像广播直播爆单超卖罚单、未清关海运单跳票退单及 B2B 保供专池被 C 端抽干违约池 ($)
+            <input type="number" id="omniatp-gross-input" value="310000" min="10000" step="5000" oninput="recalcOmnichannelATPChannelRingfencingASNSandbox()" />
+          </label>
+          <label>三段式水位自适应广播与“尾库 &lt;=15% 断崖清零公域 (TikTok/Amazon)、100% 独占锁回品牌主站”防超卖门禁
+            <select id="omniatp-cliff-select" onchange="recalcOmnichannelATPChannelRingfencingASNSandbox()">
+              <option value="pass">尾库跌至 &lt;=15% 时 500ms 内将公域平台可售量清零安全下架，最后尾货独占锁定在 DTC 主站 (安全)</option>
+              <option value="block_403">仅剩 45 件尾货仍按 100% 同时同步给 TikTok/Amazon/天猫/独立站，直播爆单瞬间超卖 800 件遭封店 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>在途可承诺库存 (Future-ATP) 承运商 EDI 856 ASN 进口清关放行验真与 20% 风险打折 (Haircut) 门禁
+            <select id="omniatp-asn-select" onchange="recalcOmnichannelATPChannelRingfencingASNSandbox()">
+              <option value="pass">仅将已办结进口清关并取得国内干线 EDI 856 ASN 的在途货按 80% 折算率释放进 Future-ATP (合规)</option>
+              <option value="block_422">把尚在海上漂甚至工厂未发货的纸面 PO 全额当成“5天必达现货 ATP”承诺给消费者 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>B2B 大客户合同保供专池 (B2B SLA Ringfence) 硬物理隔离与美国 FTC 16 CFR Part 435 交期延误自动退赔门禁
+            <select id="omniatp-b2b-select" onchange="recalcOmnichannelATPChannelRingfencingASNSandbox()">
+              <option value="pass">物理锁死 300 件医院/KA 合同保供专池不被 C 端穿透 + 交期延误未获显式同意自动 100% 原路退款 (安全)</option>
+              <option value="block_451">C 端秒杀活动抽干 B2B 合同保供池致大客户断供索赔 或 预售延误超 30天违反 FTC 强留客户资金 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>商品详情页按买家邮编 (ZIP-3) 毫秒级就近仓交期承诺 (Guaranteed EDD) + 10分钟僵尸购物车软锁回收
+            <select id="omniatp-opt-select" onchange="recalcOmnichannelATPChannelRingfencingASNSandbox()">
+              <option value="enabled" selected>14ms 内存算就近仓 ZIP-3 精准送达日(+14% 转化) + 大促未付软锁 10m 动态释放 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">全站展示笼统“3-7个工作日发货”且未付款购物车锁死库存长达 60 分钟 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度跨平台超卖与断供违约池</div>
+            <div class="finops-kpi-val" id="omniatp-gross-kpi">$310,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">断崖收口与内存ATP后净损</div>
+            <div class="finops-kpi-val" id="omniatp-net-kpi" style="color:#6ee7b7;">$192,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省超卖罚单与转化增益</div>
+            <div class="finops-kpi-val" id="omniatp-savings-kpi" style="color:#38bdf8;">$117,800</div>
+          </div>
+        </div>
+        <div id="omniatp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ZIP_AWARE_EDD_NODE_PROMISE_AND_ADAPTIVE_CART_TTL_CONFIRM · Mandate: omnichannel_atp_escrow_optim_409
         </div>
       </div>
 
@@ -91733,6 +91897,79 @@ function recalcAgentPaymentSplitShipmentMultiCaptureSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_TIERED_HITL_AND_MULTI_CAPTURE_LIFECYCLE_AUTHORIZED · Mandate: split_capture_payment_escrow_200';
+}}
+
+function recalcOmnichannelATPChannelRingfencingASNSandbox() {{
+  const grossInput = document.getElementById('omniatp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '310000'));
+  const cliffGate = document.getElementById('omniatp-cliff-select').value;
+  const asnGate = document.getElementById('omniatp-asn-select').value;
+  const b2bGate = document.getElementById('omniatp-b2b-select').value;
+  const optMode = document.getElementById('omniatp-opt-select').value;
+
+  const grossKpi = document.getElementById('omniatp-gross-kpi');
+  const netKpi = document.getElementById('omniatp-net-kpi');
+  const savingsKpi = document.getElementById('omniatp-savings-kpi');
+  const statusKpi = document.getElementById('omniatp-status-kpi');
+  const banner = document.getElementById('omniatp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (b2bGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 B2B_SLA_RINGFENCE_BREACH_OR_FTC_435_SHIPPING_DELAY_VIOLATION · Mandate: null';
+    return;
+  }}
+  if (cliffGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MULTI_CHANNEL_100PCT_MIRROR_OVERSELL_OR_ODR_PENALTY_RISK · Mandate: null';
+    return;
+  }}
+  if (asnGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNVERIFIED_IN_TRANSIT_PO_EXPOSED_AS_GUARANTEED_ATP · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ZIP_AWARE_EDD_NODE_PROMISE_AND_ADAPTIVE_CART_TTL_CONFIRM · Mandate: omnichannel_atp_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CHANNEL_RINGFENCE_AND_CLEARED_ASN_ATP_AUTHORIZED · Mandate: omnichannel_atp_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

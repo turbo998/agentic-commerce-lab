@@ -26277,6 +26277,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agent-payment-split-shipment-multi-capture-sandbox", html_zh)
 
+    def test_omnichannel_atp_channel_ringfencing_asn_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OmnichannelATPChannelRingfencingASNPolicyInput,
+            evaluate_omnichannel_atp_channel_ringfencing_asn_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_omnichannel_atp_channel_ringfencing_asn_policy(
+            OmnichannelATPChannelRingfencingASNPolicyInput(
+                quarterly_marketplace_oversell_fine_b2b_sla_and_delay_loss_pool_usd=310000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CHANNEL_RINGFENCE_AND_CLEARED_ASN_ATP_AUTHORIZED",
+        )
+
+        cliff = evaluate_omnichannel_atp_channel_ringfencing_asn_policy(
+            OmnichannelATPChannelRingfencingASNPolicyInput(
+                broadcasting_100pct_tail_stock_across_multiple_marketplaces=True
+            )
+        )
+        self.assertEqual(cliff["status_code"], 403)
+        self.assertEqual(
+            cliff["decision"],
+            "MULTI_CHANNEL_100PCT_MIRROR_OVERSELL_OR_ODR_PENALTY_RISK",
+        )
+
+        asn = evaluate_omnichannel_atp_channel_ringfencing_asn_policy(
+            OmnichannelATPChannelRingfencingASNPolicyInput(
+                exposing_unshipped_or_uncleared_ocean_po_as_guaranteed_atp=True
+            )
+        )
+        self.assertEqual(asn["status_code"], 422)
+        self.assertEqual(
+            asn["decision"],
+            "UNVERIFIED_IN_TRANSIT_PO_EXPOSED_AS_GUARANTEED_ATP",
+        )
+
+        b2b = evaluate_omnichannel_atp_channel_ringfencing_asn_policy(
+            OmnichannelATPChannelRingfencingASNPolicyInput(
+                raiding_contracted_b2b_sla_ringfence_or_violating_ftc_435_delay_refund=True
+            )
+        )
+        self.assertEqual(b2b["status_code"], 451)
+        self.assertEqual(
+            b2b["decision"],
+            "B2B_SLA_RINGFENCE_BREACH_OR_FTC_435_SHIPPING_DELAY_VIOLATION",
+        )
+
+        optim = evaluate_omnichannel_atp_channel_ringfencing_asn_policy(
+            OmnichannelATPChannelRingfencingASNPolicyInput(
+                quarterly_marketplace_oversell_fine_b2b_sla_and_delay_loss_pool_usd=310000.0,
+                zip3_edd_node_promising_and_10m_adaptive_cart_lock_recycle_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 117800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 192200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("omnichannel_atp_channel_ringfencing_asn_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("omnichannel-atp-channel-ringfencing-asn-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

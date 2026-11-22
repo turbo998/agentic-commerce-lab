@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg700" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070b14"/>
+      <stop offset="55%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="accent700" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="760" fill="url(#bg700)"/>
+  <rect x="24" y="20" width="1232" height="720" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1232" height="6" rx="3" fill="url(#accent700)"/>
+
+  <!-- Header -->
+  <text x="52" y="62" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="700">
+    Omnichannel Real-Time `ATP`, Channel Ringfencing &amp; In-Transit `ASN` Future-Inventory Escrow (#376 · 🏆 SVG #700)
+  </text>
+  <text x="52" y="88" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13.5">
+    Round 257 · IBM Sterling vs. Manhattan Active vs. Fluent Commerce vs. D365 Inventory Visibility · Anti-Oversell Cliff, ASN Haircut, B2B Ringfence &amp; ZIP-to-EDD (-38%)
+  </text>
+  <rect x="1010" y="44" width="215" height="34" rx="8" fill="#451a03" stroke="#f59e0b" stroke-width="1.4"/>
+  <text x="1117" y="66" text-anchor="middle" fill="#fde68a" font-family="Consolas, monospace" font-size="12.5" font-weight="700">
+    🏆 SVG #700 · GUIDE #376
+  </text>
+
+  <!-- Left Column: Multi-Channel Demand & Supply Signals -->
+  <rect x="48" y="112" width="350" height="596" rx="12" fill="#111827" stroke="#38bdf8" stroke-width="1.4"/>
+  <text x="68" y="144" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    1. Multi-Channel `ATP` &amp; `ASN` Signals
+  </text>
+  <text x="68" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Channel Feeds, In-Transit EDI 856 &amp; B2B SLA Pools
+  </text>
+
+  <rect x="68" y="186" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="210" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    📡 Channel Exposure &amp; Low-Stock Cliff
+  </text>
+  <text x="84" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Amazon / TikTok / Walmart / Shopify DTC
+  </text>
+  <text x="84" y="252" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Last 15% ATP auto-retracted to 1 channel
+  </text>
+  <text x="84" y="272" fill="#38bdf8" font-family="Consolas, monospace" font-size="11.5">
+    channel_oversell_rate: 0.00% (ODR Safe)
+  </text>
+
+  <rect x="68" y="314" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="338" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    🚢 In-Transit `EDI 856 ASN` Future-ATP
+  </text>
+  <text x="84" y="360" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Requires customs-cleared ASN (not raw PO)
+  </text>
+  <text x="84" y="380" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Applies 20% safety haircut on in-transit qty
+  </text>
+  <text x="84" y="400" fill="#f59e0b" font-family="Consolas, monospace" font-size="11.5">
+    future_atp = cleared_asn_qty * 0.80
+  </text>
+
+  <rect x="68" y="442" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="466" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    🛡️ B2B SLA Ringfence &amp; FTC Part 435
+  </text>
+  <text x="84" y="488" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Hard-isolates B2B contracted hospital/KA stock
+  </text>
+  <text x="84" y="508" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • FTC 16 CFR 435 delay opt-in or auto-refund
+  </text>
+  <text x="84" y="528" fill="#34d399" font-family="Consolas, monospace" font-size="11.5">
+    b2b_ringfence_protected: 100%
+  </text>
+
+  <rect x="68" y="570" width="310" height="116" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-dasharray="4 3"/>
+  <text x="84" y="594" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    🎯 Target Commercial Outcomes
+  </text>
+  <text x="84" y="616" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Zero TikTok/Amazon &gt;2.5% ODR suspensions
+  </text>
+  <text x="84" y="636" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • +14% PDP conversion via ZIP-3 Guaranteed EDD
+  </text>
+  <text x="84" y="656" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • 38% reduction in oversell fines &amp; split freight
+  </text>
+
+  <!-- Center Column: 4-Gate Fiduciary Control Plane -->
+  <rect x="424" y="112" width="432" height="596" rx="12" fill="#111827" stroke="#f59e0b" stroke-width="1.6"/>
+  <text x="446" y="144" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    2. Omnichannel `ATP` Fiduciary Control Plane
+  </text>
+  <text x="446" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Deterministic Channel Cliff, ASN Haircut &amp; Ringfence Gates
+  </text>
+
+  <!-- Gate 1: HTTP 403 -->
+  <rect x="444" y="184" width="392" height="114" rx="8" fill="#1f1224" stroke="#ef4444" stroke-width="1.3"/>
+  <text x="460" y="208" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 1 · Anti-100%-Mirror Oversell Cliff (HTTP 403)
+  </text>
+  <text x="460" y="230" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Blocks broadcasting 100% of low/tail stock simultaneously to
+  </text>
+  <text x="460" y="248" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    TikTok, Amazon, and DTC; retracts tail to 1 primary channel.
+  </text>
+  <text x="460" y="274" fill="#f87171" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    MULTI_CHANNEL_100PCT_MIRROR_OVERSELL_OR_ODR_PENALTY_RISK
+  </text>
+
+  <!-- Gate 2: HTTP 422 -->
+  <rect x="444" y="312" width="392" height="114" rx="8" fill="#231815" stroke="#f97316" stroke-width="1.3"/>
+  <text x="460" y="336" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 2 · Verified `ASN` Future-ATP Gate (HTTP 422)
+  </text>
+  <text x="460" y="358" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Blocks promising unshipped/uncleared supplier POs as live
+  </text>
+  <text x="460" y="376" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    ATP; requires customs-cleared EDI 856 ASN with 20% haircut.
+  </text>
+  <text x="460" y="402" fill="#fb923c" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    UNVERIFIED_IN_TRANSIT_PO_EXPOSED_AS_GUARANTEED_ATP
+  </text>
+
+  <!-- Gate 3: HTTP 451 -->
+  <rect x="444" y="440" width="392" height="114" rx="8" fill="#27121b" stroke="#f43f5e" stroke-width="1.3"/>
+  <text x="460" y="464" fill="#fda4af" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 3 · B2B SLA Ringfence &amp; FTC 435 Gate (HTTP 451)
+  </text>
+  <text x="460" y="486" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Blocks raiding contracted B2B SLA reserve stock for B2C flash
+  </text>
+  <text x="460" y="504" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    sales or holding delayed preorder funds without FTC opt-in.
+  </text>
+  <text x="460" y="530" fill="#fb7185" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    B2B_SLA_RINGFENCE_BREACH_OR_FTC_435_SHIPPING_DELAY_VIOLATION
+  </text>
+
+  <!-- Gate 4: HTTP 409 -->
+  <rect x="444" y="568" width="392" height="118" rx="8" fill="#062e26" stroke="#10b981" stroke-width="1.5"/>
+  <text x="460" y="592" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 4 · ZIP-3 EDD &amp; Adaptive Cart TTL (HTTP 409)
+  </text>
+  <text x="460" y="614" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Computes sub-20ms ZIP-to-Node EDD at PDP + recycles idle
+  </text>
+  <text x="460" y="632" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    cart holds in 10m during flash drops (-38% oversell &amp; loss).
+  </text>
+  <text x="460" y="660" fill="#34d399" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    Mandate: omnichannel_atp_escrow_optim_409
+  </text>
+
+  <!-- Right Column: Platform Matrix & FinOps -->
+  <rect x="882" y="112" width="350" height="596" rx="12" fill="#111827" stroke="#34d399" stroke-width="1.4"/>
+  <text x="902" y="144" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    3. `ATP` Engine Matrix &amp; FinOps
+  </text>
+  <text x="902" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    IBM Sterling vs. Manhattan vs. Fluent vs. D365 IV
+  </text>
+
+  <rect x="902" y="186" width="310" height="116" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="918" y="210" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    🏢 IBM Sterling / Manhattan Active Inventory
+  </text>
+  <text x="918" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • 100,000+ RPS in-memory global ATP &amp; EDD engine
+  </text>
+  <text x="918" y="252" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Granular channel segmentation &amp; Future-ATP rules
+  </text>
+  <text x="918" y="272" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Best for Tier-1 global retailers &amp; 500+ node networks
+  </text>
+
+  <rect x="902" y="316" width="310" height="116" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="918" y="340" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    ⚡ D365 Inventory Visibility / Fluent Commerce
+  </text>
+  <text x="918" y="362" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • In-memory microservice decoupled from ERP DB lock
+  </text>
+  <text x="918" y="382" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Native B2B/B2C ringfenced pools &amp; soft reservations
+  </text>
+  <text x="918" y="402" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Best for composable omnichannel &amp; B2B+B2C brands
+  </text>
+
+  <rect x="902" y="446" width="310" height="240" rx="8" fill="#091926" stroke="#38bdf8" stroke-width="1.3"/>
+  <text x="918" y="472" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    💰 Quarterly ATP &amp; Ringfence FinOps KPI
+  </text>
+  <text x="918" y="500" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Gross Oversell Fines, B2B SLA Penalties &amp; Lost Sales:
+  </text>
+  <text x="918" y="522" fill="#f8fafc" font-family="Consolas, monospace" font-size="18" font-weight="700">
+    $310,000 / quarter
+  </text>
+  <text x="918" y="552" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    After Channel Cliff, ASN Haircut &amp; ZIP-EDD:
+  </text>
+  <text x="918" y="574" fill="#6ee7b7" font-family="Consolas, monospace" font-size="18" font-weight="700">
+    $192,200 (-38% Net Saved)
+  </text>
+  <text x="918" y="606" fill="#38bdf8" font-family="Consolas, monospace" font-size="15" font-weight="700">
+    Quarterly Savings: $117,800
+  </text>
+  <text x="918" y="636" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • ATP query p99 latency: 14 ms (in-memory)
+  </text>
+  <text x="918" y="656" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Cross-marketplace oversell rate: 0.00%
+  </text>
+</svg>
