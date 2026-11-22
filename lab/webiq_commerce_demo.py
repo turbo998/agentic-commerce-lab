@@ -32929,6 +32929,82 @@ def evaluate_ecommerce_footwear_3d_foot_scan_bracketing_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BShadowITEmployeeCardSaaSSprawlPolicyInput:
+    quarterly_shadow_saas_card_sprawl_and_orphan_renewal_pool_usd: float = 280000.0
+    retail_card_swipe_for_tool_with_existing_central_ela_seats: bool = False
+    terminated_employee_orphan_vcn_or_unapproved_annual_commit: bool = False
+    unvetted_shadow_ai_missing_zdr_dpa_soc2_or_saml_sso: bool = False
+    five_user_auto_ela_consolidation_and_scim_reharvest_ready: bool = False
+
+
+def evaluate_b2b_shadow_it_employee_card_saas_sprawl_policy(
+    policy_input: B2BShadowITEmployeeCardSaaSSprawlPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_shadow_saas_card_sprawl_and_orphan_renewal_pool_usd
+        ),
+    )
+    if policy_input.unvetted_shadow_ai_missing_zdr_dpa_soc2_or_saml_sso:
+        return {
+            "status_code": 451,
+            "decision": "UNVETTED_SHADOW_AI_NO_ZDR_DPA_OR_MISSING_SSO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.retail_card_swipe_for_tool_with_existing_central_ela_seats:
+        return {
+            "status_code": 403,
+            "decision": "DUPLICATE_SHADOW_SAAS_SWIPE_OVER_EXISTING_ELA",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.terminated_employee_orphan_vcn_or_unapproved_annual_commit:
+        return {
+            "status_code": 422,
+            "decision": "TERMINATED_EMPLOYEE_ORPHAN_CARD_OR_ANNUAL_LOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.five_user_auto_ela_consolidation_and_scim_reharvest_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FIVE_USER_ELA_CONSOLIDATION_AND_SCIM_REHARVEST_CONFIRM",
+            "mandate_token": "b2b_shadow_saas_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VETTED_PILOT_VCN_AND_ZDR_DPA_SAAS_AUTHORIZED",
+        "mandate_token": "b2b_shadow_saas_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -44958,6 +45034,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_shadow_it_employee_card_saas_sprawl_guard = {
+        "authorized_200": evaluate_b2b_shadow_it_employee_card_saas_sprawl_policy(
+            B2BShadowITEmployeeCardSaaSSprawlPolicyInput()
+        ),
+        "duplicate_ela_403": evaluate_b2b_shadow_it_employee_card_saas_sprawl_policy(
+            B2BShadowITEmployeeCardSaaSSprawlPolicyInput(
+                retail_card_swipe_for_tool_with_existing_central_ela_seats=True
+            )
+        ),
+        "orphan_or_annual_422": evaluate_b2b_shadow_it_employee_card_saas_sprawl_policy(
+            B2BShadowITEmployeeCardSaaSSprawlPolicyInput(
+                terminated_employee_orphan_vcn_or_unapproved_annual_commit=True
+            )
+        ),
+        "no_zdr_or_sso_451": evaluate_b2b_shadow_it_employee_card_saas_sprawl_policy(
+            B2BShadowITEmployeeCardSaaSSprawlPolicyInput(
+                unvetted_shadow_ai_missing_zdr_dpa_soc2_or_saml_sso=True
+            )
+        ),
+        "ela_merge_scim_409": evaluate_b2b_shadow_it_employee_card_saas_sprawl_policy(
+            B2BShadowITEmployeeCardSaaSSprawlPolicyInput(
+                five_user_auto_ela_consolidation_and_scim_reharvest_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -45321,6 +45423,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_epr_packaging_weee_battery_guard": cross_border_epr_packaging_weee_battery_guard,
         "ecommerce_optical_eyewear_contact_lens_guard": ecommerce_optical_eyewear_contact_lens_guard,
         "ecommerce_footwear_3d_foot_scan_bracketing_guard": ecommerce_footwear_3d_foot_scan_bracketing_guard,
+        "b2b_shadow_it_employee_card_saas_sprawl_guard": b2b_shadow_it_employee_card_saas_sprawl_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -63915,6 +64018,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="footwear3d-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SINGLE_PAIR_3D_FIT_AND_ARCH_INSOLE_BUNDLE_CONFIRM · Mandate: footwear_3d_scan_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 235 B2B Shadow IT / Shadow AI Card-Sprawl, SSO/SCIM & ELA Consolidation Escrow (#354) -->
+      <div class="finops-box" id="b2b-shadow-it-employee-card-saas-sprawl-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛡️ 企业 B2B 影子 AI 与商务卡零散 SaaS 泛滥拦截 (Zylo / Productiv / Ramp / Brex / Microsoft Entra ID) 沙盒</div>
+            <div class="finops-sub">Round 235 (#354) · 刷卡前 MCC 5734/7372 匹配中央 ELA 席位池与 5 秒 SSO 导流 (HTTP 403) + 1 商 1 卡 1 责任人绑定 Workday T+0 离职冻卡与禁签年框锁 (HTTP 422) + 影子 AI 零数据留存 (ZDR DPA) / SOC2 / SAML SSO 门禁 (HTTP 451) + 满 5 人自动合并企业年框 (-30%) 与 SCIM 回收净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="shadowsaas-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度员工在公司已有企业年框下重复刷零售卡、离职员工遗留幽灵订阅连扣 9 个月与零散 AI 工具高价损耗池 ($)
+            <input type="number" id="shadowsaas-gross-input" value="280000" min="10000" step="5000" oninput="recalcB2BShadowITEmployeeCardSaaSSprawlSandbox()" />
+          </label>
+          <label>商务卡刷卡前 MCC 5734 / 7372 商户描述符实时匹配公司中央企业年框 (Central ELA) 席位池与 5 秒 SSO 发放门禁
+            <select id="shadowsaas-ela-select" onchange="recalcB2BShadowITEmployeeCardSaaSSprawlSandbox()">
+              <option value="pass">刷卡前 85ms 比对中央 ELA 目录，已有同款或标准企业工具即刻导流至 Entra ID 自动发放免费席位 (合规)</option>
+              <option value="block_403">IT 已买千人 Figma / M365 Copilot 企业年框且有余量，45 名员工仍各自刷部门卡按 $30/月 零售价重复买个人版 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>一供应商一专属虚拟卡一在职责任人 (1-Vendor-1-Owner VCN) 绑定 Workday HRIS 离职 T+0 冻卡与禁签年度锁死门禁
+            <select id="shadowsaas-hris-select" onchange="recalcB2BShadowITEmployeeCardSaaSSprawlSandbox()">
+              <option value="pass">每张 SaaS 虚拟卡唯一绑定在职 Workday_ID，离职当日 T+0 自动清零冻卡且限制月付上限 (合规)</option>
+              <option value="block_422">员工离职 6 个月后其名下未接 SCIM 的影子 SaaS 仍在静默扣刷部门公卡 或 普通员工擅自刷 $1,200 不可退年付 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>影子 AI 零数据留存协议 (Zero-Data-Retention DPA)、SOC 2 Type II 与高危 OAuth / SAML SSO 门禁
+            <select id="shadowsaas-zdr-select" onchange="recalcB2BShadowITEmployeeCardSaaSSprawlSandbox()">
+              <option value="pass">已核验 AI 厂商签署 Zero-Data-Retention (不训练公有模型) DPA + SOC 2 Type II + SAML SSO 强制登录 (安全)</option>
+              <option value="block_451">员工私刷 $20 消费级野鸡 AI 工具并点 OAuth 授权读取全公司 GitHub 源码/财报且默认喂给公有大模型训练 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>跨部门满 >=5 人零散刷卡自动触发采购 Agent 合并升级企业年框 (ELA -30% + 散卡余额冲抵) 与 30d SCIM 闲置退席
+            <select id="shadowsaas-opt-select" onchange="recalcB2BShadowITEmployeeCardSaaSSprawlSandbox()">
+              <option value="enabled" selected>满 5 人自动合并升级含 SSO/SCIM 的 7 折企业年框(100% 冲抵散卡未用余额) + 封禁 Concur 个人贴票走私 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">少于 5 人的早期独立沙盒月度虚拟卡试点且不合并年框 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度影子SaaS与重复刷卡池</div>
+            <div class="finops-kpi-val" id="shadowsaas-gross-kpi">$280,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">刷卡拦截与合并ELA后净支出</div>
+            <div class="finops-kpi-val" id="shadowsaas-net-kpi" style="color:#6ee7b7;">$173,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省重复散买与幽灵续费</div>
+            <div class="finops-kpi-val" id="shadowsaas-savings-kpi" style="color:#38bdf8;">$106,400</div>
+          </div>
+        </div>
+        <div id="shadowsaas-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FIVE_USER_ELA_CONSOLIDATION_AND_SCIM_REHARVEST_CONFIRM · Mandate: b2b_shadow_saas_escrow_optim_409
         </div>
       </div>
 
@@ -86587,6 +86747,79 @@ function recalcEcommerceFootwear3DFootScanBracketingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_3D_FOOT_SCAN_AND_WIDTH_LAST_AUTHORIZED · Mandate: footwear_3d_scan_escrow_200';
+}}
+
+function recalcB2BShadowITEmployeeCardSaaSSprawlSandbox() {{
+  const grossInput = document.getElementById('shadowsaas-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '280000'));
+  const elaGate = document.getElementById('shadowsaas-ela-select').value;
+  const hrisGate = document.getElementById('shadowsaas-hris-select').value;
+  const zdrGate = document.getElementById('shadowsaas-zdr-select').value;
+  const optMode = document.getElementById('shadowsaas-opt-select').value;
+
+  const grossKpi = document.getElementById('shadowsaas-gross-kpi');
+  const netKpi = document.getElementById('shadowsaas-net-kpi');
+  const savingsKpi = document.getElementById('shadowsaas-savings-kpi');
+  const statusKpi = document.getElementById('shadowsaas-status-kpi');
+  const banner = document.getElementById('shadowsaas-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (zdrGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNVETTED_SHADOW_AI_NO_ZDR_DPA_OR_MISSING_SSO · Mandate: null';
+    return;
+  }}
+  if (elaGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DUPLICATE_SHADOW_SAAS_SWIPE_OVER_EXISTING_ELA · Mandate: null';
+    return;
+  }}
+  if (hrisGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 TERMINATED_EMPLOYEE_ORPHAN_CARD_OR_ANNUAL_LOCK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FIVE_USER_ELA_CONSOLIDATION_AND_SCIM_REHARVEST_CONFIRM · Mandate: b2b_shadow_saas_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VETTED_PILOT_VCN_AND_ZDR_DPA_SAAS_AUTHORIZED · Mandate: b2b_shadow_saas_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

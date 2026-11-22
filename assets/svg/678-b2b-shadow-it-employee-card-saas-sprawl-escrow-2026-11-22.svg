@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg678" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg678)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 235 · B2B `Shadow IT / Shadow AI` Card-Sprawl, `SSO/SCIM` &amp; `ELA` Consolidation Escrow</text>
+  <text x="48" y="74" class="sub">Zylo / Productiv / Ramp / Brex / Microsoft Entra ID · Pre-Swipe `MCC 5734` Gate · `Zero-Data-Retention DPA` · `SCIM` Revoke (-38%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #678 · FAQ #354</text>
+
+  <!-- Lane 1: Duplicate Shadow SaaS Card Swipes When Enterprise ELA Already Exists -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Pre-Swipe `ELA` Dedup Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Employees Buying Retail Seats on P-Cards:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Intercept `MCC 5734/7372` Merchant Descriptor</text>
+  <text x="54" y="200" class="mono">&amp; Cross-Check `Central_ELA_License_Pool`!</text>
+  <text x="44" y="223" class="body-txt">• Auto-Provisions Existing Enterprise Seat:</text>
+  <text x="54" y="243" class="mono">Route to `Entra ID SSO Group` in 5 Seconds</text>
+  <text x="44" y="266" class="body-txt">• Eliminates 45 employees paying `$30/mo` retail</text>
+  <text x="54" y="286" class="body-txt">on corporate cards for Figma/Notion/Copilot</text>
+  <text x="54" y="304" class="body-txt">when IT already has unused prepaid ELA seats</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 DUPLICATE_SHADOW_SAAS_SWIPE_OVER_EXISTING_ELA</text>
+
+  <!-- Lane 2: Orphaned Ex-Employee Recurring Card Charges & Unapproved Annual Lock-In -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. `HRIS/SCIM` Offboard Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Blocks Ex-Employee Zombie Card Subscriptions:</text>
+  <text x="442" y="182" class="mono">Bind `1_Vendor_1_Owner_VCN` to `Workday_Status`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">(Auto-Freeze VCN on Termination Day `T+0`!)</text>
+  <text x="432" y="223" class="body-txt">• Blocks Unauthorized Annual Auto-Renew Commits:</text>
+  <text x="442" y="243" class="mono">Enforce Monthly Cap Unless Procurement Signs PO</text>
+  <text x="432" y="266" class="body-txt">• Prevents departed staff's personal corporate</text>
+  <text x="442" y="286" class="body-txt">cards silently billing `$499/mo` SaaS tools for</text>
+  <text x="442" y="304" class="body-txt">9 months after they leave the company</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 TERMINATED_EMPLOYEE_ORPHAN_CARD_OR_ANNUAL_LOCK</text>
+
+  <!-- Lane 3: Unvetted Shadow AI Model Training Leak (Missing Zero-Data-Retention DPA / SOC2 / SAML SSO) -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `Shadow AI ZDR` &amp; `SSO` Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Blocks Unvetted Consumer AI Training on IP:</text>
+  <text x="830" y="182" class="mono">Require `Zero_Data_Retention_DPA + SOC2_Type2`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Before Approving Any GenAI / OAuth Scope!</text>
+  <text x="820" y="223" class="body-txt">• Stops "SSO Tax" Password-Sharing Workarounds:</text>
+  <text x="830" y="243" class="body-txt">Holds checkout when a team buys Pro-tier</text>
+  <text x="830" y="261" class="body-txt">accounts without `SAML/OIDC SSO` or grants</text>
+  <text x="830" y="279" class="body-txt">read/write OAuth to production GitHub/M365</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNVETTED_SHADOW_AI_NO_ZDR_DPA_OR_MISSING_SSO</text>
+
+  <!-- Bottom >=5-User Auto-Consolidation into Enterprise ELA, Pro-Rata Credit & Expense-Report Block -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. `&gt;=5 Swipes` Auto-Consolidation to Enterprise `ELA` + Pro-Rata Credit + `SCIM` Harvest (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① `&gt;=5` Swipes Trigger `ELA`</text>
+  <text x="62" y="462" class="body-txt">Detects 5+ employees buying</text>
+  <text x="62" y="480" class="body-txt">the same tool on cards &amp;</text>
+  <text x="62" y="498" class="body-txt">auto-consolidates into a</text>
+  <text x="62" y="516" class="mono">-30% Volume Enterprise Deal</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Pro-Rata Retail Credit</text>
+  <text x="337" y="462" class="body-txt">Requires vendor to credit</text>
+  <text x="337" y="480" class="body-txt">100% of unused individual</text>
+  <text x="337" y="498" class="body-txt">card balances toward the</text>
+  <text x="337" y="516" class="mono">new central master invoice!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Expense-Reimbursement Block</text>
+  <text x="622" y="462" class="body-txt">Blocks employees bypassing</text>
+  <text x="622" y="480" class="body-txt">IT by expensing SaaS on</text>
+  <text x="622" y="498" class="body-txt">personal cards in `Concur`</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">100% SAM Visibility!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ 30-Day `SCIM` Re-Harvest</text>
+  <text x="907" y="462" class="body-txt">Reclaims seats with zero</text>
+  <text x="907" y="480" class="body-txt">`Entra OIDC` logins in 30d</text>
+  <text x="907" y="498" class="body-txt">for the next requester</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-38% Shadow SaaS Waste</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-38.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Shadow SaaS &amp; Card Waste Saved</text>
+  <text x="46" y="642" class="mono">$106,400 Saved / $280k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">5-Sec SSO</text>
+  <text x="336" y="626" class="kpi-lbl">Pre-Swipe Central ELA Redirect</text>
+  <text x="336" y="642" class="mono">Zero Duplicate Retail Swipes</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% ZDR</text>
+  <text x="626" y="626" class="kpi-lbl">Zero-Data-Retention AI DPA Gate</text>
+  <text x="626" y="642" class="mono">Zero Consumer AI IP Leakage</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">T+0 Freeze</text>
+  <text x="916" y="626" class="kpi-lbl">Workday-to-VCN Offboard Kill-Switch</text>
+  <text x="916" y="642" class="mono">Zero Orphan Ex-Staff Subscriptions</text>
+</svg>

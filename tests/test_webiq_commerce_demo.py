@@ -24803,6 +24803,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-footwear-3d-foot-scan-bracketing-sandbox", html_zh)
 
+    def test_b2b_shadow_it_employee_card_saas_sprawl_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BShadowITEmployeeCardSaaSSprawlPolicyInput,
+            evaluate_b2b_shadow_it_employee_card_saas_sprawl_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_shadow_it_employee_card_saas_sprawl_policy(
+            B2BShadowITEmployeeCardSaaSSprawlPolicyInput(
+                quarterly_shadow_saas_card_sprawl_and_orphan_renewal_pool_usd=280000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VETTED_PILOT_VCN_AND_ZDR_DPA_SAAS_AUTHORIZED",
+        )
+
+        dup = evaluate_b2b_shadow_it_employee_card_saas_sprawl_policy(
+            B2BShadowITEmployeeCardSaaSSprawlPolicyInput(
+                retail_card_swipe_for_tool_with_existing_central_ela_seats=True
+            )
+        )
+        self.assertEqual(dup["status_code"], 403)
+        self.assertEqual(
+            dup["decision"],
+            "DUPLICATE_SHADOW_SAAS_SWIPE_OVER_EXISTING_ELA",
+        )
+
+        orphan = evaluate_b2b_shadow_it_employee_card_saas_sprawl_policy(
+            B2BShadowITEmployeeCardSaaSSprawlPolicyInput(
+                terminated_employee_orphan_vcn_or_unapproved_annual_commit=True
+            )
+        )
+        self.assertEqual(orphan["status_code"], 422)
+        self.assertEqual(
+            orphan["decision"],
+            "TERMINATED_EMPLOYEE_ORPHAN_CARD_OR_ANNUAL_LOCK",
+        )
+
+        zdr = evaluate_b2b_shadow_it_employee_card_saas_sprawl_policy(
+            B2BShadowITEmployeeCardSaaSSprawlPolicyInput(
+                unvetted_shadow_ai_missing_zdr_dpa_soc2_or_saml_sso=True
+            )
+        )
+        self.assertEqual(zdr["status_code"], 451)
+        self.assertEqual(
+            zdr["decision"],
+            "UNVETTED_SHADOW_AI_NO_ZDR_DPA_OR_MISSING_SSO",
+        )
+
+        optim = evaluate_b2b_shadow_it_employee_card_saas_sprawl_policy(
+            B2BShadowITEmployeeCardSaaSSprawlPolicyInput(
+                quarterly_shadow_saas_card_sprawl_and_orphan_renewal_pool_usd=280000.0,
+                five_user_auto_ela_consolidation_and_scim_reharvest_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 106400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 173600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_shadow_it_employee_card_saas_sprawl_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-shadow-it-employee-card-saas-sprawl-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
