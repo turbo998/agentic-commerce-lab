@@ -26813,6 +26813,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-visual-search-shop-the-look-sandbox", html_zh)
 
+    def test_ecommerce_wismo_in_transit_refund_claim_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            ECommerceWISMOInTransitRefundClaimPolicyInput,
+            evaluate_ecommerce_wismo_in_transit_refund_claim_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_wismo_in_transit_refund_claim_policy(
+            ECommerceWISMOInTransitRefundClaimPolicyInput(
+                quarterly_double_dip_refund_premature_scan_and_unclaimed_loss_pool_usd=250000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CARRIER_INTERCEPT_AND_AUTO_CLAIM_RESOLUTION_AUTHORIZED",
+        )
+
+        intercept = evaluate_ecommerce_wismo_in_transit_refund_claim_policy(
+            ECommerceWISMOInTransitRefundClaimPolicyInput(
+                refunding_in_transit_parcel_without_carrier_delivery_intercept=True
+            )
+        )
+        self.assertEqual(intercept["status_code"], 403)
+        self.assertEqual(
+            intercept["decision"],
+            "IN_TRANSIT_REFUND_OR_RESHIP_WITHOUT_CARRIER_INTERCEPT_DOUBLE_DIP",
+        )
+
+        premature = evaluate_ecommerce_wismo_in_transit_refund_claim_policy(
+            ECommerceWISMOInTransitRefundClaimPolicyInput(
+                instant_refund_within_36h_of_gps_matched_premature_delivered_scan=True
+            )
+        )
+        self.assertEqual(premature["status_code"], 422)
+        self.assertEqual(
+            premature["decision"],
+            "PREMATURE_DELIVERED_SCAN_INSTANT_REFUND_OR_UNVERIFIED_DNA_CLAIM",
+        )
+
+        claim = evaluate_ecommerce_wismo_in_transit_refund_claim_policy(
+            ECommerceWISMOInTransitRefundClaimPolicyInput(
+                payout_without_auto_carrier_claim_or_missing_high_value_dna_affidavit=True
+            )
+        )
+        self.assertEqual(claim["status_code"], 451)
+        self.assertEqual(
+            claim["decision"],
+            "UNFILED_CARRIER_LOST_CLAIM_FORFEITURE_OR_HIGH_VALUE_DNA_NO_AFFIDAVIT",
+        )
+
+        optim = evaluate_ecommerce_wismo_in_transit_refund_claim_policy(
+            ECommerceWISMOInTransitRefundClaimPolicyInput(
+                quarterly_double_dip_refund_premature_scan_and_unclaimed_loss_pool_usd=250000.0,
+                proactive_24h_delay_deflection_and_secure_locker_reship_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 95000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 155000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_wismo_in_transit_refund_claim_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-wismo-in-transit-refund-claim-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

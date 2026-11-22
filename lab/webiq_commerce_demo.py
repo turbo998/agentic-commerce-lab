@@ -35251,6 +35251,86 @@ def evaluate_ecommerce_visual_search_shop_the_look_policy(
     }
 
 
+@dataclass(frozen=True)
+class ECommerceWISMOInTransitRefundClaimPolicyInput:
+    quarterly_double_dip_refund_premature_scan_and_unclaimed_loss_pool_usd: float = (
+        250000.0
+    )
+    refunding_in_transit_parcel_without_carrier_delivery_intercept: bool = False
+    instant_refund_within_36h_of_gps_matched_premature_delivered_scan: bool = False
+    payout_without_auto_carrier_claim_or_missing_high_value_dna_affidavit: bool = False
+    proactive_24h_delay_deflection_and_secure_locker_reship_ready: bool = False
+
+
+def evaluate_ecommerce_wismo_in_transit_refund_claim_policy(
+    policy_input: ECommerceWISMOInTransitRefundClaimPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_double_dip_refund_premature_scan_and_unclaimed_loss_pool_usd
+        ),
+    )
+    if (
+        policy_input.payout_without_auto_carrier_claim_or_missing_high_value_dna_affidavit
+    ):
+        return {
+            "status_code": 451,
+            "decision": "UNFILED_CARRIER_LOST_CLAIM_FORFEITURE_OR_HIGH_VALUE_DNA_NO_AFFIDAVIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.refunding_in_transit_parcel_without_carrier_delivery_intercept:
+        return {
+            "status_code": 403,
+            "decision": "IN_TRANSIT_REFUND_OR_RESHIP_WITHOUT_CARRIER_INTERCEPT_DOUBLE_DIP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.instant_refund_within_36h_of_gps_matched_premature_delivered_scan:
+        return {
+            "status_code": 422,
+            "decision": "PREMATURE_DELIVERED_SCAN_INSTANT_REFUND_OR_UNVERIFIED_DNA_CLAIM",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.proactive_24h_delay_deflection_and_secure_locker_reship_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PROACTIVE_WISMO_DELAY_APOLOGY_AND_CARRIER_CLAIM_AUTO_FILE_CONFIRM",
+            "mandate_token": "wismo_carrier_claim_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CARRIER_INTERCEPT_AND_AUTO_CLAIM_RESOLUTION_AUTHORIZED",
+        "mandate_token": "wismo_carrier_claim_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -48060,6 +48140,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_wismo_in_transit_refund_claim_guard = {
+        "authorized_200": evaluate_ecommerce_wismo_in_transit_refund_claim_policy(
+            ECommerceWISMOInTransitRefundClaimPolicyInput()
+        ),
+        "in_transit_double_dip_403": evaluate_ecommerce_wismo_in_transit_refund_claim_policy(
+            ECommerceWISMOInTransitRefundClaimPolicyInput(
+                refunding_in_transit_parcel_without_carrier_delivery_intercept=True
+            )
+        ),
+        "premature_scan_refund_422": evaluate_ecommerce_wismo_in_transit_refund_claim_policy(
+            ECommerceWISMOInTransitRefundClaimPolicyInput(
+                instant_refund_within_36h_of_gps_matched_premature_delivered_scan=True
+            )
+        ),
+        "unfiled_claim_or_affidavit_451": evaluate_ecommerce_wismo_in_transit_refund_claim_policy(
+            ECommerceWISMOInTransitRefundClaimPolicyInput(
+                payout_without_auto_carrier_claim_or_missing_high_value_dna_affidavit=True
+            )
+        ),
+        "proactive_locker_claim_409": evaluate_ecommerce_wismo_in_transit_refund_claim_policy(
+            ECommerceWISMOInTransitRefundClaimPolicyInput(
+                proactive_24h_delay_deflection_and_secure_locker_reship_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48453,6 +48559,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_airline_ancillary_emd_dot260_guard": ota_airline_ancillary_emd_dot260_guard,
         "b2b_cpfr_rolling_forecast_bullwhip_guard": b2b_cpfr_rolling_forecast_bullwhip_guard,
         "ecommerce_visual_search_shop_the_look_guard": ecommerce_visual_search_shop_the_look_guard,
+        "ecommerce_wismo_in_transit_refund_claim_guard": ecommerce_wismo_in_transit_refund_claim_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -68757,6 +68864,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="vissearch-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SHOP_THE_LOOK_HOTSPOT_CROP_AND_IN_SIZE_TWIN_BUNDLE_CONFIRM · Mandate: visual_search_stylist_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 265 E-Commerce WISMO, In-Transit Refund Double-Dip Shield & Carrier Claim Escrow (#384) -->
+      <div class="finops-box" id="ecommerce-wismo-in-transit-refund-claim-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📦 电商售后包裹追踪 (WISMO)、防在途退款钱货双吃与快递丢件自动索赔 (Narvar / AfterShip / Gorgias) 沙盒</div>
+            <div class="finops-sub">Round 265 (#384) · 在途停更包裹退款/补发前强制执行承运商在途拦截 RTS (HTTP 403) + 投递 GPS &lt;=50m 与 vPOD 吻合时强制 36小时假签收冷静窗 (HTTP 422) + 对客赔付必同步向快递公司立案索赔与 &gt;$300 签宣誓书 (HTTP 451) + 延误 24h 主动安抚降 68% 工单与安全自提柜补发净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="wismo-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度在途停更包裹刚退完款次日买家又签收白拿、快递员提前假扫 1小时内误赔 62% 订单及漏向快递公司索赔损失池 ($)
+            <input type="number" id="wismo-gross-input" value="250000" min="10000" step="5000" oninput="recalcECommerceWISMOInTransitRefundClaimSandbox()" />
+          </label>
+          <label>在途停更包裹 (IN_TRANSIT) 法定观察期 (国内7天/跨境14天) 与退款前强制承运商在途拦截 (Carrier Intercept RTS) 门禁
+            <select id="wismo-intercept-select" onchange="recalcECommerceWISMOInTransitRefundClaimSandbox()">
+              <option value="pass">满观察期且先调 UPS/FedEx Delivery Intercept 成功锁死包裹退回仓库后才放行退款或补发 (安全)</option>
+              <option value="block_403">包裹在途停更 4天未做在途拦截就直接退还 $240 全款，3天后包裹恢复派送被买家免费签收双吃 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>显示已签收未收到 (DNA) 的投递 GPS 围栏 (&lt;=50m) + 门口实拍照 (vPOD) 核验与 36 小时提前假扫冷静窗门禁
+            <select id="wismo-vpod-select" onchange="recalcECommerceWISMOInTransitRefundClaimSandbox()">
+              <option value="pass">GPS &gt;150m 真错投秒补发；GPS &lt;=50m 且门垫吻合时启动 36h 观察窗自动消解 62% 快递员提前假扫 (合规)</option>
+              <option value="block_422">刚扫 Delivered 20 分钟 (GPS 与门牌完全吻合)，AI 客服不设冷静期当场秒赔 $180 被黑产套利 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>对客赔付后 100% 原子联动承运商 API 丢件理赔立卷与 &gt;$300 高值 DNA 数字未收货宣誓书 (DOR Affidavit) 门禁
+            <select id="wismo-claim-select" onchange="recalcECommerceWISMOInTransitRefundClaimSandbox()">
+              <option value="pass">批准赔付同时自动打包成本发票与运单向 UPS/FedEx 追回 84% 赔款 + &gt;$300 强制签电子宣誓书 (安全)</option>
+              <option value="block_451">商家自掏腰包给买家退了款却忘在 30天死线前向快递公司索赔 或 $350 DNA 免签宣誓书直接退现 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>干线延误 &gt;24h 主动多语种安抚发券 (-68% WISMO 工单) + 门口被盗补发单强制改投安全自提柜 (Access Point / Locker)
+            <select id="wismo-opt-select" onchange="recalcECommerceWISMOInTransitRefundClaimSandbox()">
+              <option value="enabled" selected>延误 24h 主动发消息安抚(-68% 进线) + 补发包裹改投附近安全快递柜防二次被盗 + 自动快递索赔 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">被动等买家进线投诉且补发包裹继续扔在同一个无监控大门口再次被偷 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度在途双吃与弃赔损失池</div>
+            <div class="finops-kpi-val" id="wismo-gross-kpi">$250,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">在途拦截与自动索赔后净损</div>
+            <div class="finops-kpi-val" id="wismo-net-kpi" style="color:#6ee7b7;">$155,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省双吃拦截与快递追偿</div>
+            <div class="finops-kpi-val" id="wismo-savings-kpi" style="color:#38bdf8;">$95,000</div>
+          </div>
+        </div>
+        <div id="wismo-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PROACTIVE_WISMO_DELAY_APOLOGY_AND_CARRIER_CLAIM_AUTO_FILE_CONFIRM · Mandate: wismo_carrier_claim_optim_409
         </div>
       </div>
 
@@ -93619,6 +93783,79 @@ function recalcECommerceVisualSearchShopTheLookSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_BBOX_CROP_AND_IN_SIZE_VISUAL_MATCH_AUTHORIZED · Mandate: visual_search_stylist_200';
+}}
+
+function recalcECommerceWISMOInTransitRefundClaimSandbox() {{
+  const grossInput = document.getElementById('wismo-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '250000'));
+  const interceptGate = document.getElementById('wismo-intercept-select').value;
+  const vpodGate = document.getElementById('wismo-vpod-select').value;
+  const claimGate = document.getElementById('wismo-claim-select').value;
+  const optMode = document.getElementById('wismo-opt-select').value;
+
+  const grossKpi = document.getElementById('wismo-gross-kpi');
+  const netKpi = document.getElementById('wismo-net-kpi');
+  const savingsKpi = document.getElementById('wismo-savings-kpi');
+  const statusKpi = document.getElementById('wismo-status-kpi');
+  const banner = document.getElementById('wismo-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (claimGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNFILED_CARRIER_LOST_CLAIM_FORFEITURE_OR_HIGH_VALUE_DNA_NO_AFFIDAVIT · Mandate: null';
+    return;
+  }}
+  if (interceptGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 IN_TRANSIT_REFUND_OR_RESHIP_WITHOUT_CARRIER_INTERCEPT_DOUBLE_DIP · Mandate: null';
+    return;
+  }}
+  if (vpodGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PREMATURE_DELIVERED_SCAN_INSTANT_REFUND_OR_UNVERIFIED_DNA_CLAIM · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PROACTIVE_WISMO_DELAY_APOLOGY_AND_CARRIER_CLAIM_AUTO_FILE_CONFIRM · Mandate: wismo_carrier_claim_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CARRIER_INTERCEPT_AND_AUTO_CLAIM_RESOLUTION_AUTHORIZED · Mandate: wismo_carrier_claim_200';
 }}
 
 function updateStage1756Sandbox() {{
