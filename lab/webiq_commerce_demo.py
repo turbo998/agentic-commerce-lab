@@ -33385,6 +33385,82 @@ def evaluate_ecommerce_alcohol_age_verify_dram_shop_policy(
     }
 
 
+@dataclass(frozen=True)
+class EnterpriseAgentPlatformOrchestrationPolicyInput:
+    quarterly_platform_credit_burn_and_partial_erp_write_pool_usd: float = 300000.0
+    god_mode_service_principal_bypassing_rls_or_dlp_egress: bool = False
+    stateless_cross_erp_payment_flow_without_saga_rollback: bool = False
+    public_anonymous_traffic_on_per_conv_credits_or_no_hitl: bool = False
+    composable_foundry_slm_langgraph_and_copilot_studio_ready: bool = False
+
+
+def evaluate_enterprise_agent_platform_orchestration_policy(
+    policy_input: EnterpriseAgentPlatformOrchestrationPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_platform_credit_burn_and_partial_erp_write_pool_usd
+        ),
+    )
+    if policy_input.public_anonymous_traffic_on_per_conv_credits_or_no_hitl:
+        return {
+            "status_code": 451,
+            "decision": "PUBLIC_TRAFFIC_CREDIT_BURN_OR_UNAPPROVED_ERP_MUTATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.god_mode_service_principal_bypassing_rls_or_dlp_egress:
+        return {
+            "status_code": 403,
+            "decision": "GOD_MODE_SERVICE_PRINCIPAL_OR_DLP_EGRESS_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stateless_cross_erp_payment_flow_without_saga_rollback:
+        return {
+            "status_code": 422,
+            "decision": "STATELESS_PARTIAL_ERP_WRITE_WITHOUT_SAGA_ROLLBACK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.composable_foundry_slm_langgraph_and_copilot_studio_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "COMPOSABLE_FOUNDRY_LANGGRAPH_COPILOT_STUDIO_HYBRID_CONFIRM",
+            "mandate_token": "agent_platform_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_OBO_RLS_AND_DURABLE_SAGA_PLATFORM_AUTHORIZED",
+        "mandate_token": "agent_platform_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -45570,6 +45646,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    enterprise_agent_platform_orchestration_guard = {
+        "authorized_200": evaluate_enterprise_agent_platform_orchestration_policy(
+            EnterpriseAgentPlatformOrchestrationPolicyInput()
+        ),
+        "god_mode_or_dlp_403": evaluate_enterprise_agent_platform_orchestration_policy(
+            EnterpriseAgentPlatformOrchestrationPolicyInput(
+                god_mode_service_principal_bypassing_rls_or_dlp_egress=True
+            )
+        ),
+        "stateless_partial_write_422": evaluate_enterprise_agent_platform_orchestration_policy(
+            EnterpriseAgentPlatformOrchestrationPolicyInput(
+                stateless_cross_erp_payment_flow_without_saga_rollback=True
+            )
+        ),
+        "public_credit_burn_451": evaluate_enterprise_agent_platform_orchestration_policy(
+            EnterpriseAgentPlatformOrchestrationPolicyInput(
+                public_anonymous_traffic_on_per_conv_credits_or_no_hitl=True
+            )
+        ),
+        "composable_hybrid_409": evaluate_enterprise_agent_platform_orchestration_policy(
+            EnterpriseAgentPlatformOrchestrationPolicyInput(
+                composable_foundry_slm_langgraph_and_copilot_studio_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -45939,6 +46041,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "commercial_search_grounding_price_verify_guard": commercial_search_grounding_price_verify_guard,
         "b2b_distributor_rebate_ship_debit_price_prot_guard": b2b_distributor_rebate_ship_debit_price_prot_guard,
         "ecommerce_alcohol_age_verify_dram_shop_guard": ecommerce_alcohol_age_verify_dram_shop_guard,
+        "enterprise_agent_platform_orchestration_guard": enterprise_agent_platform_orchestration_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -64875,6 +64978,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="alcohol21-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 THREE_TIER_LOCAL_ROUTE_AND_AC_HOLD_LOCATION_CONFIRM · Mandate: alcohol_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 241 Enterprise Agent Platform & Cross-ERP Orchestration (#360 Milestone) -->
+      <div class="finops-box" id="enterprise-agent-platform-orchestration-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业商业智能体四大平台选型与跨 ERP 编排 (Copilot Studio vs Foundry/LangGraph vs Agentforce vs Shopify) 沙盒</div>
+            <div class="finops-sub">Round 241 (#360 里程碑) · Entra OAuth 2.0 OBO 行级权限 (RLS) 与连接器 DLP 围栏 (HTTP 403) + LangGraph 跨支付/ERP 持久化两阶段 Saga 自动冲正 (HTTP 422) + 公网流量防烧穿 $2/次会话包与高危写操作 HITL 锁 (HTTP 451) + 前店 Foundry+Shopify / 中枢 LangGraph / 后厂 Copilot Studio 组合净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="agentplat-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度公网百万级导购闲聊误打向 $2/次会话包账单、无状态流跨 Stripe 扣款后 SAP 建单失败导致的单边挂账赔付池 ($)
+            <input type="number" id="agentplat-gross-input" value="300000" min="10000" step="5000" oninput="recalcEnterpriseAgentPlatformOrchestrationSandbox()" />
+          </label>
+          <label>Microsoft Entra Agent ID + OAuth 2.0 On-Behalf-Of (OBO) 真实用户行级权限 (RLS) 与连接器 DLP 防泄漏门禁
+            <select id="agentplat-obo-select" onchange="recalcEnterpriseAgentPlatformOrchestrationSandbox()">
+              <option value="pass">全链路透传登录用户 OBO 令牌由 D365/Salesforce/SAP 数据库底层执行 RLS 隔离 + DLP 禁连外部未知 Webhook (合规)</option>
+              <option value="block_403">图省事用全局管理员 Service Principal 裸连 CRM/ERP 被一句话套出全库 VIP 批发底价 或 违规外传数据 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>跨支付网关与 ERP 多步写操作 (Shopify 锁库 -&gt; Stripe 扣款 -&gt; SAP/D365 建单) 持久化 Saga 与自动回滚门禁
+            <select id="agentplat-saga-select" onchange="recalcEnterpriseAgentPlatformOrchestrationSandbox()">
+              <option value="pass">下沉至 Foundry + LangGraph 持久化状态机执行 Auth Hold -&gt; SAP SO -&gt; Capture，ERP 超时自动冲正退款 (零死账)</option>
+              <option value="block_422">用无状态线性拖拽流先扣走客户 $4,500 再调 SAP BAPI 建单，遇锁表报错导致钱扣了却无订单也无回滚 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>公网匿名高频浏览流量计费隔离 ($0.002 Token vs $2.00 Conversation) 与 &gt;$200 高危写操作人类确认 (HITL) 门禁
+            <select id="agentplat-burn-select" onchange="recalcEnterpriseAgentPlatformOrchestrationSandbox()">
+              <option value="pass">公网导购走 Foundry 轻量 Token 池 ($0.002/次) + &gt;$200 退款/改价强制推送 Teams/CRM 人类审批卡片 (安全)</option>
+              <option value="block_451">把 50 万次公网只逛不买闲聊直接打到 $2/次低代码套件烧穿预算 或 Agent 擅自批复大额仅退款/改合同 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>“前店 Foundry SLM + Shopify MCP、中枢 LangGraph Saga、后厂 Copilot Studio / Agentforce”四平台可组合架构
+            <select id="agentplat-opt-select" onchange="recalcEnterpriseAgentPlatformOrchestrationSandbox()">
+              <option value="enabled" selected>前店 $0.002/次扛 90% 公网导购 + 中枢 LangGraph 保事务守恒 + 后厂 Teams/CRM 1键审批 (-39% TCO / HTTP 409)</option>
+              <option value="disabled">不启用前店 SLM 分流与跨平台 MCP 协同的单一平台重度部署 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度平台许可与跨ERP掉单池</div>
+            <div class="finops-kpi-val" id="agentplat-gross-kpi">$300,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">前店后厂组合路由后净TCO</div>
+            <div class="finops-kpi-val" id="agentplat-net-kpi" style="color:#6ee7b7;">$183,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省会话包与幽灵扣款</div>
+            <div class="finops-kpi-val" id="agentplat-savings-kpi" style="color:#38bdf8;">$117,000</div>
+          </div>
+        </div>
+        <div id="agentplat-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 COMPOSABLE_FOUNDRY_LANGGRAPH_COPILOT_STUDIO_HYBRID_CONFIRM · Mandate: agent_platform_escrow_optim_409
         </div>
       </div>
 
@@ -87985,6 +88145,79 @@ function recalcEcommerceAlcoholAgeVerifyDramShopSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_PDF417_AND_SOVOS_THREE_TIER_ALCOHOL_AUTHORIZED · Mandate: alcohol_escrow_200';
+}}
+
+function recalcEnterpriseAgentPlatformOrchestrationSandbox() {{
+  const grossInput = document.getElementById('agentplat-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '300000'));
+  const oboGate = document.getElementById('agentplat-obo-select').value;
+  const sagaGate = document.getElementById('agentplat-saga-select').value;
+  const burnGate = document.getElementById('agentplat-burn-select').value;
+  const optMode = document.getElementById('agentplat-opt-select').value;
+
+  const grossKpi = document.getElementById('agentplat-gross-kpi');
+  const netKpi = document.getElementById('agentplat-net-kpi');
+  const savingsKpi = document.getElementById('agentplat-savings-kpi');
+  const statusKpi = document.getElementById('agentplat-status-kpi');
+  const banner = document.getElementById('agentplat-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (burnGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PUBLIC_TRAFFIC_CREDIT_BURN_OR_UNAPPROVED_ERP_MUTATION · Mandate: null';
+    return;
+  }}
+  if (oboGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 GOD_MODE_SERVICE_PRINCIPAL_OR_DLP_EGRESS_BREACH · Mandate: null';
+    return;
+  }}
+  if (sagaGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 STATELESS_PARTIAL_ERP_WRITE_WITHOUT_SAGA_ROLLBACK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 COMPOSABLE_FOUNDRY_LANGGRAPH_COPILOT_STUDIO_HYBRID_CONFIRM · Mandate: agent_platform_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_OBO_RLS_AND_DURABLE_SAGA_PLATFORM_AUTHORIZED · Mandate: agent_platform_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

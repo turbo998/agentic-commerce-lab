@@ -25205,6 +25205,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-alcohol-age-verify-dram-shop-sandbox", html_zh)
 
+    def test_enterprise_agent_platform_orchestration_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EnterpriseAgentPlatformOrchestrationPolicyInput,
+            evaluate_enterprise_agent_platform_orchestration_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_enterprise_agent_platform_orchestration_policy(
+            EnterpriseAgentPlatformOrchestrationPolicyInput(
+                quarterly_platform_credit_burn_and_partial_erp_write_pool_usd=300000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_OBO_RLS_AND_DURABLE_SAGA_PLATFORM_AUTHORIZED",
+        )
+
+        obo = evaluate_enterprise_agent_platform_orchestration_policy(
+            EnterpriseAgentPlatformOrchestrationPolicyInput(
+                god_mode_service_principal_bypassing_rls_or_dlp_egress=True
+            )
+        )
+        self.assertEqual(obo["status_code"], 403)
+        self.assertEqual(
+            obo["decision"],
+            "GOD_MODE_SERVICE_PRINCIPAL_OR_DLP_EGRESS_BREACH",
+        )
+
+        saga = evaluate_enterprise_agent_platform_orchestration_policy(
+            EnterpriseAgentPlatformOrchestrationPolicyInput(
+                stateless_cross_erp_payment_flow_without_saga_rollback=True
+            )
+        )
+        self.assertEqual(saga["status_code"], 422)
+        self.assertEqual(
+            saga["decision"],
+            "STATELESS_PARTIAL_ERP_WRITE_WITHOUT_SAGA_ROLLBACK",
+        )
+
+        burn = evaluate_enterprise_agent_platform_orchestration_policy(
+            EnterpriseAgentPlatformOrchestrationPolicyInput(
+                public_anonymous_traffic_on_per_conv_credits_or_no_hitl=True
+            )
+        )
+        self.assertEqual(burn["status_code"], 451)
+        self.assertEqual(
+            burn["decision"],
+            "PUBLIC_TRAFFIC_CREDIT_BURN_OR_UNAPPROVED_ERP_MUTATION",
+        )
+
+        optim = evaluate_enterprise_agent_platform_orchestration_policy(
+            EnterpriseAgentPlatformOrchestrationPolicyInput(
+                quarterly_platform_credit_burn_and_partial_erp_write_pool_usd=300000.0,
+                composable_foundry_slm_langgraph_and_copilot_studio_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 117000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 183000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("enterprise_agent_platform_orchestration_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("enterprise-agent-platform-orchestration-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
