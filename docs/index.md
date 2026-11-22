@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`376` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`377` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（23 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（52 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（143 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（84 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（85 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（31 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（43 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -260,7 +260,7 @@
 | 143 | **🏆 全渠道零售与 B2B 供应链“实时可承诺库存（Real-Time `ATP / Future-ATP`）、跨平台防超卖隔离池（Channel Ringfencing）与在途 `ASN` 预售交期（`EDD`）”编排选型 FAQ（`IBM Sterling Inventory Visibility vs. Manhattan Active vs. Fluent Commerce vs. Dynamics 365 Inventory Visibility` · 🏆 第 700 张架构图里程碑）：防“尾库 <=15% 仍按 100% 同步给 4 个平台致直播爆单超卖封店”、防“把海上未清关 PO 当现货卖”与邮编级毫秒就近交期（`ZIP-3 EDD`）净省 38% 实战指南** | [中文](omnichannel-atp-inventory-visibility-channel-ringfencing-in-transit-asn-escrow-agent-selection-faq.md) · [English](omnichannel-atp-inventory-visibility-channel-ringfencing-in-transit-asn-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（84 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（85 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -350,6 +350,7 @@
 | 82 | **企业 B2B 间接寻源、办公 IT 耗材目录（`Guided Buying & PunchOut`：`Amazon Business / Staples Advantage / Coupa / SAP Ariba / 京东企业购`）、防“放着 6 折年框目录不买手写自由文本请购单（`Free-Text PR`）高价野采”、防“把 1 箱 24 件（`CS`）当成 1 单件（`EA`）错下 24 倍天量订单”与同楼宇每周五集拼配送托管“防 IT 库房躺着 40 台闲置显示器还在买新的与平替品牌自动替换净省 36%”Agent 架构选型 FAQ** | [中文](b2b-indirect-procurement-office-supplies-catalog-unspsc-punchout-consolidation-escrow-agent-selection-faq.md) · [English](b2b-indirect-procurement-office-supplies-catalog-unspsc-punchout-consolidation-escrow-agent-selection-faq.en.md) |
 | 83 | **🏆 企业差旅餐补定额（`GSA M&IE / 德国 BMF` Per-Diem）、酒店水单公私秒级拆账（`Hotel Folio Split`）与跨国增值税退税（`EU 8th/13th Directive VAT Reclaim`）托管（`Navan / SAP Concur / Brex / Ramp / BlueDot / Taxback`）、防“吃了酒店免费早餐和同事报销的 $650 招待晚宴还按 100% 全额申领每日差旅补贴”、防“把 $320 迷你吧香槟与客房 SPA 混进房费签购单刷公司卡”与低于城市上限订房享 30% 节支返现（`Beat-the-Cap`）+ 海外 20% VAT 自动退税净省 37% Agent 架构选型 FAQ** | [中文](b2b-corporate-travel-per-diem-hotel-folio-split-vat-reclaim-escrow-agent-selection-faq.md) · [English](b2b-corporate-travel-per-diem-hotel-folio-split-vat-reclaim-escrow-agent-selection-faq.en.md) |
 | 84 | **企业 B2B 订单到收款（`O2C`）、应收账款智能核销（`AR Cash Application`）、商超短付扣款抗辩（`Short-Pay Deduction`）与贸易信用保险（`Allianz Trade / Coface / Atradius`）超限放单托管（`HighRadius / Esker / Billtrust / Tesorio / SAP FSCM`）、防“客户 $191.5k 电汇已进银行挂在暂收款却误把客户新单锁死在信用冻结”、防“商超谎称少货短付 $8,500 被自动坏账抹平”与保额内 `Net-60` + 超额 `Pay-by-Bank` 1.5% 现结折扣分拆放单净省 38% Agent 架构选型 FAQ** | [中文](b2b-order-to-cash-ar-cash-application-short-pay-deduction-credit-insurance-escrow-agent-selection-faq.md) · [English](b2b-order-to-cash-ar-cash-application-short-pay-deduction-credit-insurance-escrow-agent-selection-faq.en.md) |
+| 85 | **企业 B2B 组合寻源优化（`Combinatorial Sourcing Optimization`）、防“低于 BOM 成本自杀式恶意抢标（Abnormally Low Tender）”与 `70/30` 双源主备授标托管（`Keelvar vs. Coupa CSO vs. SAP Ariba Guided Sourcing vs. Fairmarkit`）、防“逐行挑最低价把 80 个 SKU 拆碎给 35 家供应商致不足 MOQ 拒单且零担运费翻倍”、防“100% 独家中标给亏损价新厂遭量产期断供勒索涨价”与含关税/账期 `WACC`/质量 `PPM` 的 `Holistic TCO` 线性规划求解净省 36% Agent 架构选型 FAQ** | [中文](b2b-combinatorial-sourcing-optimization-tco-dual-award-lowball-escrow-agent-selection-faq.md) · [English](b2b-combinatorial-sourcing-optimization-tco-dual-award-lowball-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（31 篇）

@@ -34701,6 +34701,88 @@ def evaluate_omnichannel_atp_channel_ringfencing_asn_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BCombinatorialSourcingTCODualAwardPolicyInput:
+    quarterly_cherry_pick_freight_lowball_default_and_tco_loss_pool_usd: float = (
+        380000.0
+    )
+    bid_below_bom_should_cost_floor_or_100pct_single_source_concentration: bool = False
+    cherry_picking_below_supplier_moq_or_breaking_conditional_bundle: bool = False
+    bidder_matches_employee_coi_graph_or_cad_released_without_signed_nda: bool = False
+    milp_holistic_tco_solver_and_70_30_dual_source_award_ready: bool = False
+
+
+def evaluate_b2b_combinatorial_sourcing_tco_dual_award_policy(
+    policy_input: B2BCombinatorialSourcingTCODualAwardPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_cherry_pick_freight_lowball_default_and_tco_loss_pool_usd
+        ),
+    )
+    if (
+        policy_input.bidder_matches_employee_coi_graph_or_cad_released_without_signed_nda
+    ):
+        return {
+            "status_code": 451,
+            "decision": "CONFLICT_OF_INTEREST_BIDDER_OR_UNSIGNED_NDA_CAD_LEAK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if (
+        policy_input.bid_below_bom_should_cost_floor_or_100pct_single_source_concentration
+    ):
+        return {
+            "status_code": 403,
+            "decision": "ABNORMALLY_LOW_LOWBALL_BID_OR_SINGLE_SOURCE_100PCT_CONCENTRATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cherry_picking_below_supplier_moq_or_breaking_conditional_bundle:
+        return {
+            "status_code": 422,
+            "decision": "FRAGMENTED_CHERRY_PICKING_BELOW_SUPPLIER_MOQ_OR_BROKEN_BUNDLE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.milp_holistic_tco_solver_and_70_30_dual_source_award_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MILP_HOLISTIC_TCO_SOLVER_AND_70_30_DUAL_AWARD_CONFIRM",
+            "mandate_token": "b2b_combinatorial_sourcing_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_COMBINATORIAL_TCO_AND_DUAL_SOURCE_AWARD_AUTHORIZED",
+        "mandate_token": "b2b_combinatorial_sourcing_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -47328,6 +47410,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_combinatorial_sourcing_tco_dual_award_guard = {
+        "authorized_200": evaluate_b2b_combinatorial_sourcing_tco_dual_award_policy(
+            B2BCombinatorialSourcingTCODualAwardPolicyInput()
+        ),
+        "lowball_or_100pct_solo_403": evaluate_b2b_combinatorial_sourcing_tco_dual_award_policy(
+            B2BCombinatorialSourcingTCODualAwardPolicyInput(
+                bid_below_bom_should_cost_floor_or_100pct_single_source_concentration=True
+            )
+        ),
+        "sub_moq_cherry_pick_422": evaluate_b2b_combinatorial_sourcing_tco_dual_award_policy(
+            B2BCombinatorialSourcingTCODualAwardPolicyInput(
+                cherry_picking_below_supplier_moq_or_breaking_conditional_bundle=True
+            )
+        ),
+        "coi_or_un_ndad_cad_451": evaluate_b2b_combinatorial_sourcing_tco_dual_award_policy(
+            B2BCombinatorialSourcingTCODualAwardPolicyInput(
+                bidder_matches_employee_coi_graph_or_cad_released_without_signed_nda=True
+            )
+        ),
+        "milp_tco_dual_award_409": evaluate_b2b_combinatorial_sourcing_tco_dual_award_policy(
+            B2BCombinatorialSourcingTCODualAwardPolicyInput(
+                milp_holistic_tco_solver_and_70_30_dual_source_award_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -47714,6 +47822,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "commercial_grounding_supplier_risk_price_intel_guard": commercial_grounding_supplier_risk_price_intel_guard,
         "agent_payment_split_shipment_multi_capture_guard": agent_payment_split_shipment_multi_capture_guard,
         "omnichannel_atp_channel_ringfencing_asn_guard": omnichannel_atp_channel_ringfencing_asn_guard,
+        "b2b_combinatorial_sourcing_tco_dual_award_guard": b2b_combinatorial_sourcing_tco_dual_award_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -67619,6 +67728,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="omniatp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ZIP_AWARE_EDD_NODE_PROMISE_AND_ADAPTIVE_CART_TTL_CONFIRM · Mandate: omnichannel_atp_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 258 B2B Combinatorial Sourcing, Holistic TCO & 70/30 Dual-Award Escrow (#377) -->
+      <div class="finops-box" id="b2b-combinatorial-sourcing-tco-dual-award-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🧮 企业 B2B 组合寻源优化 (MILP)、防自杀式抢标与 70/30 双源授标 (Keelvar / Coupa CSO / SAP Ariba) 沙盒</div>
+            <div class="finops-sub">Round 258 (#377) · BOM 应有成本底线防恶意低价抢标与 70/30 双源主备分包锁 (HTTP 403) + 组合捆绑包完整性与最小授标额 (MOQ/FTL) 门禁 (HTTP 422) + 发标前 NDA 签章锁与投标方股权利益冲突 (COI) 穿透 (HTTP 451) + 含关税/账期WACC/质量PPM的 Holistic TCO 求解净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="b2bcso-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度逐行挑最低价拆碎 MOQ 致零担运费翻倍、误授自杀式低价标遭中途断供加价及忽略账期/次品隐性 TCO 损失池 ($)
+            <input type="number" id="b2bcso-gross-input" value="380000" min="10000" step="5000" oninput="recalcB2BCombinatorialSourcingTCODualAwardSandbox()" />
+          </label>
+          <label>原材料指数 BOM 应有成本底线 (Should-Cost Floor) 防恶意低价抢标与核心物料 70/30 双源主备分包门禁
+            <select id="b2bcso-lowball-select" onchange="recalcB2BCombinatorialSourcingTCODualAwardSandbox()">
+              <option value="pass">投标价处于合理 BOM 成本区间 + 核心大宗物料强制按 70% 主供 + 30% 备供双源分包 (安全)</option>
+              <option value="block_403">新厂报出低于铝锭原材料成本 28% 的自杀价企图独吞 100% 份额并在量产期停工勒索涨价 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>条件捆绑报价完整性 (Expressive Bundle Bid) 与供应商开机最小起订额 / 整车满载 (MOQ / FTL) 硬约束门禁
+            <select id="b2bcso-moq-select" onchange="recalcB2BCombinatorialSourcingTCODualAwardSandbox()">
+              <option value="pass">调用 MILP 组合优化器保持条件捆绑折扣包完整，且每家获授金额均 &gt;= $25k 开机 MOQ (合规)</option>
+              <option value="block_422">像算 Excel MIN() 一样把 80 个 SKU 拆碎给 35 家供应商导致 22 家不足 MOQ 拒单且零担运费翻倍 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>发标前保密协议 (NDA) 双签锁与投标方工商股权/员工亲属利益冲突 (COI Graph) 穿透审查门禁
+            <select id="b2bcso-coi-select" onchange="recalcB2BCombinatorialSourcingTCODualAwardSandbox()">
+              <option value="pass">已完成 NDA 数字签章后才解锁新品 CAD 图纸 + 投标方实控人与内部员工零关联冲突 (安全)</option>
+              <option value="block_451">投标商实控人/收款卡与内部项目审批人存在亲属关联 (COI) 或未签 NDA 即外发机密 CAD 图纸 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>全生命周期到岸净成本 (Holistic TCO = 出厂价 + 关税运费 - Net90 账期WACC收益 + 历史PPM不良返工成本) MILP 求解
+            <select id="b2bcso-opt-select" onchange="recalcB2BCombinatorialSourcingTCODualAwardSandbox()">
+              <option value="enabled" selected>纳入 Net-90 账期折现收益(8% WACC)与 PPM 质量成本运行 MILP 组合求解 + 70/30 双源落地 (-36% TCO / HTTP 409)</option>
+              <option value="disabled">仅按出厂裸单价手工比价且不计算账期资金成本与质量不良率隐性损耗 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度碎片拆单与断供溢价池</div>
+            <div class="finops-kpi-val" id="b2bcso-gross-kpi">$380,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">MILP组合优化与双源后净成本</div>
+            <div class="finops-kpi-val" id="b2bcso-net-kpi" style="color:#6ee7b7;">$243,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省综合TCO与防断供</div>
+            <div class="finops-kpi-val" id="b2bcso-savings-kpi" style="color:#38bdf8;">$136,800</div>
+          </div>
+        </div>
+        <div id="b2bcso-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MILP_HOLISTIC_TCO_SOLVER_AND_70_30_DUAL_AWARD_CONFIRM · Mandate: b2b_combinatorial_sourcing_optim_409
         </div>
       </div>
 
@@ -91970,6 +92136,79 @@ function recalcOmnichannelATPChannelRingfencingASNSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CHANNEL_RINGFENCE_AND_CLEARED_ASN_ATP_AUTHORIZED · Mandate: omnichannel_atp_escrow_200';
+}}
+
+function recalcB2BCombinatorialSourcingTCODualAwardSandbox() {{
+  const grossInput = document.getElementById('b2bcso-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '380000'));
+  const lowballGate = document.getElementById('b2bcso-lowball-select').value;
+  const moqGate = document.getElementById('b2bcso-moq-select').value;
+  const coiGate = document.getElementById('b2bcso-coi-select').value;
+  const optMode = document.getElementById('b2bcso-opt-select').value;
+
+  const grossKpi = document.getElementById('b2bcso-gross-kpi');
+  const netKpi = document.getElementById('b2bcso-net-kpi');
+  const savingsKpi = document.getElementById('b2bcso-savings-kpi');
+  const statusKpi = document.getElementById('b2bcso-status-kpi');
+  const banner = document.getElementById('b2bcso-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (coiGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CONFLICT_OF_INTEREST_BIDDER_OR_UNSIGNED_NDA_CAD_LEAK · Mandate: null';
+    return;
+  }}
+  if (lowballGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ABNORMALLY_LOW_LOWBALL_BID_OR_SINGLE_SOURCE_100PCT_CONCENTRATION · Mandate: null';
+    return;
+  }}
+  if (moqGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FRAGMENTED_CHERRY_PICKING_BELOW_SUPPLIER_MOQ_OR_BROKEN_BUNDLE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MILP_HOLISTIC_TCO_SOLVER_AND_70_30_DUAL_AWARD_CONFIRM · Mandate: b2b_combinatorial_sourcing_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_COMBINATORIAL_TCO_AND_DUAL_SOURCE_AWARD_AUTHORIZED · Mandate: b2b_combinatorial_sourcing_200';
 }}
 
 function updateStage1756Sandbox() {{

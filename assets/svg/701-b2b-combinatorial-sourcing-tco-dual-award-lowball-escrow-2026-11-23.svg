@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg701" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070b14"/>
+      <stop offset="55%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="accent701" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="760" fill="url(#bg701)"/>
+  <rect x="24" y="20" width="1232" height="720" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1232" height="6" rx="3" fill="url(#accent701)"/>
+
+  <!-- Header -->
+  <text x="52" y="62" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="700">
+    Enterprise B2B Combinatorial Sourcing (`MILP`), Holistic `TCO` &amp; `70/30` Dual-Award Escrow (#377)
+  </text>
+  <text x="52" y="88" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13.5">
+    Round 258 · Keelvar vs. Coupa CSO vs. SAP Ariba Guided Sourcing vs. Fairmarkit · Anti-Lowball Should-Cost Floor, MOQ Bundle Constraint, COI Graph &amp; TCO Solver (-36%)
+  </text>
+  <rect x="1035" y="44" width="190" height="34" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.2"/>
+  <text x="1130" y="66" text-anchor="middle" fill="#6ee7b7" font-family="Consolas, monospace" font-size="12.5" font-weight="700">
+    ROUND 258 · GUIDE #377
+  </text>
+
+  <!-- Left Column: Bid Matrix & TCO Signals -->
+  <rect x="48" y="112" width="350" height="596" rx="12" fill="#111827" stroke="#38bdf8" stroke-width="1.4"/>
+  <text x="68" y="144" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    1. Expressive Bids &amp; `TCO` Signals
+  </text>
+  <text x="68" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Should-Cost BOM, Bundle Tiers &amp; WACC Payment Terms
+  </text>
+
+  <rect x="68" y="186" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="210" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    📉 Should-Cost &amp; Lowball Detector
+  </text>
+  <text x="84" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Raw material BOM floor: $8.20 / unit
+  </text>
+  <text x="84" y="252" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Flags predatory $5.90 lowball (-28% below BOM)
+  </text>
+  <text x="84" y="272" fill="#38bdf8" font-family="Consolas, monospace" font-size="11.5">
+    max_single_vendor_share: &lt;= 70%
+  </text>
+
+  <rect x="68" y="314" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="338" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    📦 Combinatorial Bundles &amp; MOQ
+  </text>
+  <text x="84" y="360" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Prevents splitting 120 SKUs to 48 vendors
+  </text>
+  <text x="84" y="380" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Enforces Full-Truckload (FTL) &amp; MOQ floors
+  </text>
+  <text x="84" y="400" fill="#818cf8" font-family="Consolas, monospace" font-size="11.5">
+    award_usd &gt;= supplier_moq_floor_usd
+  </text>
+
+  <rect x="68" y="442" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="466" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    🧮 Holistic Net Landed `TCO` Formula
+  </text>
+  <text x="84" y="488" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Unit Price + Duty + Freight + PPM Defect Cost
+  </text>
+  <text x="84" y="508" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Minus Net-90 Working-Capital Benefit (8% WACC)
+  </text>
+  <text x="84" y="528" fill="#34d399" font-family="Consolas, monospace" font-size="11.5">
+    true_landed_tco_usd: MILP Objective
+  </text>
+
+  <rect x="68" y="570" width="310" height="116" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-dasharray="4 3"/>
+  <text x="84" y="594" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    🎯 Target Commercial Outcomes
+  </text>
+  <text x="84" y="616" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Zero lowball mid-contract hostage price hikes
+  </text>
+  <text x="84" y="636" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Zero sub-MOQ LTL freight explosions
+  </text>
+  <text x="84" y="656" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • 36% reduction in holistic B2B sourcing TCO
+  </text>
+
+  <!-- Center Column: 4-Gate Fiduciary Control Plane -->
+  <rect x="424" y="112" width="432" height="596" rx="12" fill="#111827" stroke="#818cf8" stroke-width="1.6"/>
+  <text x="446" y="144" fill="#a5b4fc" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    2. Combinatorial Sourcing Control Plane
+  </text>
+  <text x="446" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Deterministic Should-Cost, Bundle MOQ &amp; COI Gates
+  </text>
+
+  <!-- Gate 1: HTTP 403 -->
+  <rect x="444" y="184" width="392" height="114" rx="8" fill="#1f1224" stroke="#ef4444" stroke-width="1.3"/>
+  <text x="460" y="208" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 1 · Anti-Lowball &amp; 70/30 Dual-Source (HTTP 403)
+  </text>
+  <text x="460" y="230" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Blocks awarding 100% volume to predatory bids &gt;15% below
+  </text>
+  <text x="460" y="248" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    raw-material BOM Should-Cost or single-source concentration.
+  </text>
+  <text x="460" y="274" fill="#f87171" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    ABNORMALLY_LOW_LOWBALL_BID_OR_SINGLE_SOURCE_100PCT_CONCENTRATION
+  </text>
+
+  <!-- Gate 2: HTTP 422 -->
+  <rect x="444" y="312" width="392" height="114" rx="8" fill="#231815" stroke="#f97316" stroke-width="1.3"/>
+  <text x="460" y="336" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 2 · Bundle Integrity &amp; MOQ Gate (HTTP 422)
+  </text>
+  <text x="460" y="358" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Blocks line-by-line cherry-picking that breaks conditional
+  </text>
+  <text x="460" y="376" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    bundle discounts or awards sub-MOQ / LTL fragments.
+  </text>
+  <text x="460" y="402" fill="#fb923c" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    FRAGMENTED_CHERRY_PICKING_BELOW_SUPPLIER_MOQ_OR_BROKEN_BUNDLE
+  </text>
+
+  <!-- Gate 3: HTTP 451 -->
+  <rect x="444" y="440" width="392" height="114" rx="8" fill="#27121b" stroke="#f43f5e" stroke-width="1.3"/>
+  <text x="460" y="464" fill="#fda4af" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 3 · COI Graph &amp; NDA CAD-Release Gate (HTTP 451)
+  </text>
+  <text x="460" y="486" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Blocks sharing confidential CAD drawings before signed NDA
+  </text>
+  <text x="460" y="504" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    or awarding to shell vendors linked to buyer employees (COI).
+  </text>
+  <text x="460" y="530" fill="#fb7185" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    CONFLICT_OF_INTEREST_BIDDER_OR_UNSIGNED_NDA_CAD_LEAK
+  </text>
+
+  <!-- Gate 4: HTTP 409 -->
+  <rect x="444" y="568" width="392" height="118" rx="8" fill="#062e26" stroke="#10b981" stroke-width="1.5"/>
+  <text x="460" y="592" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 4 · MILP Holistic TCO &amp; 70/30 Award (HTTP 409)
+  </text>
+  <text x="460" y="614" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Solves MILP across unit price, duty, FTL freight, Net-90 WACC
+  </text>
+  <text x="460" y="632" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    &amp; PPM defect cost with 70/30 dual-source split (-36% TCO).
+  </text>
+  <text x="460" y="660" fill="#34d399" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    Mandate: b2b_combinatorial_sourcing_optim_409
+  </text>
+
+  <!-- Right Column: Platform Matrix & FinOps -->
+  <rect x="882" y="112" width="350" height="596" rx="12" fill="#111827" stroke="#34d399" stroke-width="1.4"/>
+  <text x="902" y="144" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    3. Sourcing Engine Matrix &amp; FinOps
+  </text>
+  <text x="902" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Keelvar vs. Coupa CSO vs. SAP Ariba vs. Fairmarkit
+  </text>
+
+  <rect x="902" y="186" width="310" height="116" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="918" y="210" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    🧮 Keelvar / Coupa CSO (Combinatorial)
+  </text>
+  <text x="918" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Industrial MILP solver for 10,000+ lane/SKU lots
+  </text>
+  <text x="918" y="252" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Expressive bundle bids &amp; 70/30 risk-split rules
+  </text>
+  <text x="918" y="272" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Best for strategic direct materials &amp; ocean/truck RFQ
+  </text>
+
+  <rect x="902" y="316" width="310" height="116" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="918" y="340" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    ⚡ SAP Ariba Guided / Fairmarkit
+  </text>
+  <text x="918" y="362" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Ariba: Deep SAP BOM Should-Cost &amp; contract CLM
+  </text>
+  <text x="918" y="382" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Fairmarkit: Autonomous tail-spend 3-bid RFQ bots
+  </text>
+  <text x="918" y="402" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Best for ERP-integrated direct + tail automation
+  </text>
+
+  <rect x="902" y="446" width="310" height="240" rx="8" fill="#091926" stroke="#38bdf8" stroke-width="1.3"/>
+  <text x="918" y="472" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    💰 Quarterly Sourcing Optimization KPI
+  </text>
+  <text x="918" y="500" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Gross Cherry-Pick Freight, Lowball &amp; TCO Loss:
+  </text>
+  <text x="918" y="522" fill="#f8fafc" font-family="Consolas, monospace" font-size="18" font-weight="700">
+    $380,000 / quarter
+  </text>
+  <text x="918" y="552" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    After MILP Holistic TCO &amp; 70/30 Dual-Award:
+  </text>
+  <text x="918" y="574" fill="#6ee7b7" font-family="Consolas, monospace" font-size="18" font-weight="700">
+    $243,200 (-36% Net Saved)
+  </text>
+  <text x="918" y="606" fill="#38bdf8" font-family="Consolas, monospace" font-size="15" font-weight="700">
+    Quarterly Savings: $136,800
+  </text>
+  <text x="918" y="636" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Mid-contract supplier default rate: 0.0%
+  </text>
+  <text x="918" y="656" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Sourcing award cycle time: 6 wks -&gt; 4 days
+  </text>
+</svg>

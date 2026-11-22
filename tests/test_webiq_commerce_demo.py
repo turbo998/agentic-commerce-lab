@@ -26344,6 +26344,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("omnichannel-atp-channel-ringfencing-asn-sandbox", html_zh)
 
+    def test_b2b_combinatorial_sourcing_tco_dual_award_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BCombinatorialSourcingTCODualAwardPolicyInput,
+            evaluate_b2b_combinatorial_sourcing_tco_dual_award_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_combinatorial_sourcing_tco_dual_award_policy(
+            B2BCombinatorialSourcingTCODualAwardPolicyInput(
+                quarterly_cherry_pick_freight_lowball_default_and_tco_loss_pool_usd=380000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_COMBINATORIAL_TCO_AND_DUAL_SOURCE_AWARD_AUTHORIZED",
+        )
+
+        lowball = evaluate_b2b_combinatorial_sourcing_tco_dual_award_policy(
+            B2BCombinatorialSourcingTCODualAwardPolicyInput(
+                bid_below_bom_should_cost_floor_or_100pct_single_source_concentration=True
+            )
+        )
+        self.assertEqual(lowball["status_code"], 403)
+        self.assertEqual(
+            lowball["decision"],
+            "ABNORMALLY_LOW_LOWBALL_BID_OR_SINGLE_SOURCE_100PCT_CONCENTRATION",
+        )
+
+        moq = evaluate_b2b_combinatorial_sourcing_tco_dual_award_policy(
+            B2BCombinatorialSourcingTCODualAwardPolicyInput(
+                cherry_picking_below_supplier_moq_or_breaking_conditional_bundle=True
+            )
+        )
+        self.assertEqual(moq["status_code"], 422)
+        self.assertEqual(
+            moq["decision"],
+            "FRAGMENTED_CHERRY_PICKING_BELOW_SUPPLIER_MOQ_OR_BROKEN_BUNDLE",
+        )
+
+        coi = evaluate_b2b_combinatorial_sourcing_tco_dual_award_policy(
+            B2BCombinatorialSourcingTCODualAwardPolicyInput(
+                bidder_matches_employee_coi_graph_or_cad_released_without_signed_nda=True
+            )
+        )
+        self.assertEqual(coi["status_code"], 451)
+        self.assertEqual(
+            coi["decision"],
+            "CONFLICT_OF_INTEREST_BIDDER_OR_UNSIGNED_NDA_CAD_LEAK",
+        )
+
+        optim = evaluate_b2b_combinatorial_sourcing_tco_dual_award_policy(
+            B2BCombinatorialSourcingTCODualAwardPolicyInput(
+                quarterly_cherry_pick_freight_lowball_default_and_tco_loss_pool_usd=380000.0,
+                milp_holistic_tco_solver_and_70_30_dual_source_award_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 136800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 243200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_combinatorial_sourcing_tco_dual_award_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-combinatorial-sourcing-tco-dual-award-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
