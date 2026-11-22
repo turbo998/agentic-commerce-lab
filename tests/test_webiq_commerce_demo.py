@@ -24870,6 +24870,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-shadow-it-employee-card-saas-sprawl-sandbox", html_zh)
 
+    def test_ota_high_speed_rail_air_rail_interline_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OTAHighSpeedRailAirRailInterlinePolicyInput,
+            evaluate_ota_high_speed_rail_air_rail_interline_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_high_speed_rail_air_rail_interline_policy(
+            OTAHighSpeedRailAirRailInterlinePolicyInput(
+                quarterly_rail_booster_missed_connection_and_overpay_pool_usd=190000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "OFFICIAL_WAITLIST_AND_AIR_RAIL_INTERLINE_AUTHORIZED",
+        )
+
+        booster = evaluate_ota_high_speed_rail_air_rail_interline_policy(
+            OTAHighSpeedRailAirRailInterlinePolicyInput(
+                paid_third_party_waitlist_booster_or_sub_75m_border_rail_cutoff=True
+            )
+        )
+        self.assertEqual(booster["status_code"], 403)
+        self.assertEqual(
+            booster["decision"],
+            "FAKE_WAITLIST_BOOSTER_FEE_OR_BORDER_CUTOFF_RISK",
+        )
+
+        interline = evaluate_ota_high_speed_rail_air_rail_interline_policy(
+            OTAHighSpeedRailAirRailInterlinePolicyInput(
+                unprotected_nonflex_rail_after_flight_or_scattered_family_seats=True
+            )
+        )
+        self.assertEqual(interline["status_code"], 422)
+        self.assertEqual(
+            interline["decision"],
+            "UNPROTECTED_AIR_RAIL_SPLIT_OR_SCATTERED_COACH_SEAT",
+        )
+
+        railcard = evaluate_ota_high_speed_rail_air_rail_interline_policy(
+            OTAHighSpeedRailAirRailInterlinePolicyInput(
+                unverified_discount_railcard_fare_or_unclaimed_eu_delay_repay=True
+            )
+        )
+        self.assertEqual(railcard["status_code"], 451)
+        self.assertEqual(
+            railcard["decision"],
+            "UNVERIFIED_DISCOUNT_RAILCARD_OR_UNCLAIMED_DELAY_COMP",
+        )
+
+        optim = evaluate_ota_high_speed_rail_air_rail_interline_policy(
+            OTAHighSpeedRailAirRailInterlinePolicyInput(
+                quarterly_rail_booster_missed_connection_and_overpay_pool_usd=190000.0,
+                compliant_same_seat_splitsave_and_4hr_modal_shift_escrow_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 68400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 121600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_high_speed_rail_air_rail_interline_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-high-speed-rail-air-rail-interline-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

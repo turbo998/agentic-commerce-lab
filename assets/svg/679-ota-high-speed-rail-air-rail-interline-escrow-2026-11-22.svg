@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg679" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg679)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 236 · OTA High-Speed Rail, `Air-Rail Interline` &amp; `EU 2021/782` Delay Escrow</text>
+  <text x="48" y="74" class="sub">Trainline / Amadeus Rail / Eurostar / DB Rail&amp;Fly / Ctrip · Anti-Fake-Booster Gate · `IATA+UIC` Interline Lock · SplitSave (-36%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #679 · FAQ #355</text>
+
+  <!-- Lane 1: Predatory "VIP Ticket-Grabbing Booster Packs" & Eurostar Border-Control Cutoff Miss -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Anti-Booster &amp; Cutoff Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Blocks Fake `$25` "VIP Speed-Boost" Add-Ons:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Route Sold-Out Trains to `$0 Official_Waitlist`</text>
+  <text x="54" y="200" class="mono">&amp; Strip Pre-Checked Junk Insurance Bundles!</text>
+  <text x="44" y="223" class="body-txt">• Enforces Cross-Border Rail Border Cutoff (`T-60m`):</text>
+  <text x="54" y="243" class="mono">Require `&gt;=75m` Buffer on `Eurostar / Cross-Border`</text>
+  <text x="44" y="266" class="body-txt">• Prevents travelers paying `$25` for useless</text>
+  <text x="54" y="286" class="body-txt">polling scripts or missing UK/Schengen border</text>
+  <text x="54" y="304" class="body-txt">gates at London St Pancras / Paris Gare du Nord</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 FAKE_WAITLIST_BOOSTER_FEE_OR_BORDER_CUTOFF_RISK</text>
+
+  <!-- Lane 2: Unprotected Separate Air + Rail Tickets (Missed Train After Flight Delay) & Coach/Seat Split -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. `Air-Rail Interline` &amp; Seat Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Blocks Unprotected Non-Flex Rail After Flights:</text>
+  <text x="442" y="182" class="mono">Require `IATA_UIC_Through_PNR (DB Rail&amp;Fly /</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">TGV Air)` or `Flex_Rail` When Connecting Air!</text>
+  <text x="432" y="223" class="body-txt">• Family / Quiet-Coach &amp; Forward-Facing Seat Lock:</text>
+  <text x="442" y="243" class="mono">Verify `Adjacent_Seats_Same_Coach` Before Capture</text>
+  <text x="432" y="266" class="body-txt">• Stops a 2-hour flight delay into Frankfurt or</text>
+  <text x="442" y="286" class="body-txt">Paris wiping out a `$240` train ticket or</text>
+  <text x="442" y="304" class="body-txt">scattering parent and toddler across 2 coaches</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 UNPROTECTED_AIR_RAIL_SPLIT_OR_SCATTERED_COACH_SEAT</text>
+
+  <!-- Lane 3: Unclaimed EU 2021/782 & UK Delay-Repay Statutory Compensation & Railcard Fine Guard -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `Delay Repay` &amp; Railcard Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Enforces `EU Reg 2021/782` &amp; UK `Delay Repay`:</text>
+  <text x="830" y="182" class="mono">Auto-Claim `25% (&gt;=60m)` / `50% (&gt;=120m)` Cash</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Refund + `HOTNAT / AJC` Next-Train Hop!</text>
+  <text x="820" y="223" class="body-txt">• Blocks Unverified Discount `Railcard / Bahncard`:</text>
+  <text x="830" y="243" class="body-txt">Prevents booking a `1/3 Off Railcard` or `Bahncard`</text>
+  <text x="830" y="261" class="body-txt">fare when the traveler holds no valid pass</text>
+  <text x="830" y="279" class="body-txt">(saving a `€120+` onboard inspector penalty fare!)</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNVERIFIED_DISCOUNT_RAILCARD_OR_UNCLAIMED_DELAY_COMP</text>
+
+  <!-- Bottom Compliant Split-Ticketing (Same Seat), <4h Rail-vs-Air Modal Shift & Instant Seat-Swap -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Compliant Same-Seat `SplitSave` Ticketing + `&lt;4h` City-Center Rail-vs-Air Shift (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Same-Train `SplitSave`</text>
+  <text x="62" y="462" class="body-txt">Splits fare at intermediate</text>
+  <text x="62" y="480" class="body-txt">Calling-At station on the</text>
+  <text x="62" y="498" class="body-txt">exact same train &amp; seat</text>
+  <text x="62" y="516" class="mono">-34% Legal Fare Arbitrage</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② `&lt;4h` Rail-vs-Air Shift</text>
+  <text x="337" y="462" class="body-txt">Compares city-center-to-</text>
+  <text x="337" y="480" class="body-txt">center time + `$90` airport</text>
+  <text x="337" y="498" class="body-txt">taxis + bag fees + `85%`</text>
+  <text x="337" y="516" class="mono">lower Scope-3 CO2e!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ `HOTNAT / AJC` Auto-Rebook</text>
+  <text x="622" y="462" class="body-txt">Instantly endorses missed</text>
+  <text x="622" y="480" class="body-txt">international rail connections</text>
+  <text x="622" y="498" class="body-txt">onto the next high-speed</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">departure at $0 fee!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Auto `Delay Repay` Filing</text>
+  <text x="907" y="462" class="body-txt">Monitors live arrival GPS</text>
+  <text x="907" y="480" class="body-txt">&amp; auto-credits `25%–50%`</text>
+  <text x="907" y="498" class="body-txt">delay refunds to wallet</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-36% Rail &amp; T&amp;E Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-36.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Rail &amp; Interline Loss Saved</text>
+  <text x="46" y="642" class="mono">$68,400 Saved / $190k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">$0 Booster</text>
+  <text x="336" y="626" class="kpi-lbl">Direct Official Waitlist Queue</text>
+  <text x="336" y="642" class="mono">Zero $25 Fake Speed-Pack Fees</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% Protected</text>
+  <text x="626" y="626" class="kpi-lbl">IATA+UIC Air-Rail &amp; HOTNAT Seal</text>
+  <text x="626" y="642" class="mono">Zero Voided Missed Connections</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">-34% SplitSave</text>
+  <text x="916" y="626" class="kpi-lbl">Same-Seat Calling-At Fare Split</text>
+  <text x="916" y="642" class="mono">Auto EU 2021/782 Delay Refund</text>
+</svg>

@@ -33005,6 +33005,82 @@ def evaluate_b2b_shadow_it_employee_card_saas_sprawl_policy(
     }
 
 
+@dataclass(frozen=True)
+class OTAHighSpeedRailAirRailInterlinePolicyInput:
+    quarterly_rail_booster_missed_connection_and_overpay_pool_usd: float = 190000.0
+    paid_third_party_waitlist_booster_or_sub_75m_border_rail_cutoff: bool = False
+    unprotected_nonflex_rail_after_flight_or_scattered_family_seats: bool = False
+    unverified_discount_railcard_fare_or_unclaimed_eu_delay_repay: bool = False
+    compliant_same_seat_splitsave_and_4hr_modal_shift_escrow_ready: bool = False
+
+
+def evaluate_ota_high_speed_rail_air_rail_interline_policy(
+    policy_input: OTAHighSpeedRailAirRailInterlinePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_rail_booster_missed_connection_and_overpay_pool_usd
+        ),
+    )
+    if policy_input.unverified_discount_railcard_fare_or_unclaimed_eu_delay_repay:
+        return {
+            "status_code": 451,
+            "decision": "UNVERIFIED_DISCOUNT_RAILCARD_OR_UNCLAIMED_DELAY_COMP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.paid_third_party_waitlist_booster_or_sub_75m_border_rail_cutoff:
+        return {
+            "status_code": 403,
+            "decision": "FAKE_WAITLIST_BOOSTER_FEE_OR_BORDER_CUTOFF_RISK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unprotected_nonflex_rail_after_flight_or_scattered_family_seats:
+        return {
+            "status_code": 422,
+            "decision": "UNPROTECTED_AIR_RAIL_SPLIT_OR_SCATTERED_COACH_SEAT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.compliant_same_seat_splitsave_and_4hr_modal_shift_escrow_ready:
+        savings = round(gross_pool * 0.36, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SAME_SEAT_SPLITSAVE_AND_MODAL_SHIFT_CONFIRM",
+            "mandate_token": "ota_rail_interline_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "OFFICIAL_WAITLIST_AND_AIR_RAIL_INTERLINE_AUTHORIZED",
+        "mandate_token": "ota_rail_interline_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -45060,6 +45136,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_high_speed_rail_air_rail_interline_guard = {
+        "authorized_200": evaluate_ota_high_speed_rail_air_rail_interline_policy(
+            OTAHighSpeedRailAirRailInterlinePolicyInput()
+        ),
+        "booster_or_cutoff_403": evaluate_ota_high_speed_rail_air_rail_interline_policy(
+            OTAHighSpeedRailAirRailInterlinePolicyInput(
+                paid_third_party_waitlist_booster_or_sub_75m_border_rail_cutoff=True
+            )
+        ),
+        "unprotected_air_rail_422": evaluate_ota_high_speed_rail_air_rail_interline_policy(
+            OTAHighSpeedRailAirRailInterlinePolicyInput(
+                unprotected_nonflex_rail_after_flight_or_scattered_family_seats=True
+            )
+        ),
+        "no_railcard_or_delay_451": evaluate_ota_high_speed_rail_air_rail_interline_policy(
+            OTAHighSpeedRailAirRailInterlinePolicyInput(
+                unverified_discount_railcard_fare_or_unclaimed_eu_delay_repay=True
+            )
+        ),
+        "splitsave_modal_409": evaluate_ota_high_speed_rail_air_rail_interline_policy(
+            OTAHighSpeedRailAirRailInterlinePolicyInput(
+                compliant_same_seat_splitsave_and_4hr_modal_shift_escrow_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -45424,6 +45526,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_optical_eyewear_contact_lens_guard": ecommerce_optical_eyewear_contact_lens_guard,
         "ecommerce_footwear_3d_foot_scan_bracketing_guard": ecommerce_footwear_3d_foot_scan_bracketing_guard,
         "b2b_shadow_it_employee_card_saas_sprawl_guard": b2b_shadow_it_employee_card_saas_sprawl_guard,
+        "ota_high_speed_rail_air_rail_interline_guard": ota_high_speed_rail_air_rail_interline_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -64075,6 +64178,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="shadowsaas-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FIVE_USER_ELA_CONSOLIDATION_AND_SCIM_REHARVEST_CONFIRM · Mandate: b2b_shadow_saas_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 236 OTA High-Speed Rail, Air-Rail Interline & EU 2021/782 Delay Escrow (#355) -->
+      <div class="finops-box" id="ota-high-speed-rail-air-rail-interline-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🚄 OTA 与企业差旅高铁、跨国铁路与空铁联运 (Trainline / Amadeus Rail / Eurostar / DB Rail&amp;Fly / 12306) 沙盒</div>
+            <div class="finops-sub">Round 236 (#355) · 剔除 $25 付费抢票加速包直连官方 $0 候补与 Eurostar T-75m 边检关闸锁 (HTTP 403) + 空铁换乘 IATA+UIC 联程保护与同车正向连座预锁 (HTTP 422) + 铁路折扣卡 (Railcard/Bahncard) 验真与欧盟 EU 2021/782 晚点自动退赔 (HTTP 451) + 同车免换座 SplitSave 分段票与 4h 空改铁净省 36% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="otarail-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度第三方抢票加速包智商税、国际航班晚点导致分开买的特价高铁票作废、未拆票买高峰全价与漏领晚点退赔池 ($)
+            <input type="number" id="otarail-gross-input" value="190000" min="10000" step="5000" oninput="recalcOTAHighSpeedRailAirRailInterlineSandbox()" />
+          </label>
+          <label>第三方付费抢票加速包清零直连官方 $0 免费候补与跨境高铁 (Eurostar) T-75m 边检安检关闸门禁
+            <select id="otarail-booster-select" onchange="recalcOTAHighSpeedRailAirRailInterlineSandbox()">
+              <option value="pass">100% 剔除 $25 假加速包直连官方免费候补 (成功率 88%) + 伦敦/巴黎 Eurostar 预留 >=75 分钟边检缓冲 (合规)</option>
+              <option value="block_403">第三方购票页默认勾选 $25 VIP 光速抢票加速包与捆绑险 或 Eurostar 发车前 20 分钟才到站被边检关闸拒载 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>空铁换乘强制绑定 IATA + UIC 联程保护客票 (DB Rail&amp;Fly / TGV Air) 与车厢座位图同车正向连座预锁门禁
+            <select id="otarail-interline-select" onchange="recalcOTAHighSpeedRailAirRailInterlineSandbox()">
+              <option value="pass">航班衔接高铁强制出 DB Rail&amp;Fly 联程保护票(晚点免费改乘下一班) + OSDM 预锁同车正向连座 (合规)</option>
+              <option value="block_422">跨洋航班落地分开买不可退特价高铁票因晚点 $240 车票全废 或 母子同行被分到 3 号与 8 号不同车厢 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>折扣铁路卡 (UK Railcard / DB Bahncard) 持卡核验与欧盟 EU 2021/782 / UK Delay Repay 晚点自动退赔门禁
+            <select id="otarail-railcard-select" onchange="recalcOTAHighSpeedRailAirRailInterlineSandbox()">
+              <option value="pass">已校验旅客持有有效 Bahncard/Railcard 证件 + 晚点 >=60m 自动触发 HOTNAT 签转并申领 25%-50% 退赔 (安全)</option>
+              <option value="block_451">比价脚本误买需持 Bahncard 的半价票致旅客上车被罚 €120 或 列车晚点 2 小时放弃申领 50% 现金退赔 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>同车同座合规分段出票 (Compliant SplitSave -34%) 与 &lt;4 小时城际走廊“市中心到市中心”空改铁 (Modal Shift)
+            <select id="otarail-opt-select" onchange="recalcOTAHighSpeedRailAirRailInterlineSandbox()">
+              <option value="enabled" selected>经停站合法拆分车票且锁死同一座位免挪窝(-34% 票价) + &lt;4h 走廊高铁替飞机省 $90 机场打车费 (-36% 损耗 / HTTP 409)</option>
+              <option value="disabled">不启用经停站同座分段票与空改铁比选的常规点对点全价购票 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度铁旅误车与高价损耗池</div>
+            <div class="finops-kpi-val" id="otarail-gross-kpi">$190,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">空铁联运与分段拆票后净支出</div>
+            <div class="finops-kpi-val" id="otarail-net-kpi" style="color:#6ee7b7;">$121,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省误车作废与票面差价</div>
+            <div class="finops-kpi-val" id="otarail-savings-kpi" style="color:#38bdf8;">$68,400</div>
+          </div>
+        </div>
+        <div id="otarail-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SAME_SEAT_SPLITSAVE_AND_MODAL_SHIFT_CONFIRM · Mandate: ota_rail_interline_escrow_optim_409
         </div>
       </div>
 
@@ -86820,6 +86980,79 @@ function recalcB2BShadowITEmployeeCardSaaSSprawlSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VETTED_PILOT_VCN_AND_ZDR_DPA_SAAS_AUTHORIZED · Mandate: b2b_shadow_saas_escrow_200';
+}}
+
+function recalcOTAHighSpeedRailAirRailInterlineSandbox() {{
+  const grossInput = document.getElementById('otarail-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '190000'));
+  const boosterGate = document.getElementById('otarail-booster-select').value;
+  const interlineGate = document.getElementById('otarail-interline-select').value;
+  const railcardGate = document.getElementById('otarail-railcard-select').value;
+  const optMode = document.getElementById('otarail-opt-select').value;
+
+  const grossKpi = document.getElementById('otarail-gross-kpi');
+  const netKpi = document.getElementById('otarail-net-kpi');
+  const savingsKpi = document.getElementById('otarail-savings-kpi');
+  const statusKpi = document.getElementById('otarail-status-kpi');
+  const banner = document.getElementById('otarail-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (railcardGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNVERIFIED_DISCOUNT_RAILCARD_OR_UNCLAIMED_DELAY_COMP · Mandate: null';
+    return;
+  }}
+  if (boosterGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 FAKE_WAITLIST_BOOSTER_FEE_OR_BORDER_CUTOFF_RISK · Mandate: null';
+    return;
+  }}
+  if (interlineGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNPROTECTED_AIR_RAIL_SPLIT_OR_SCATTERED_COACH_SEAT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.36);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SAME_SEAT_SPLITSAVE_AND_MODAL_SHIFT_CONFIRM · Mandate: ota_rail_interline_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 OFFICIAL_WAITLIST_AND_AIR_RAIL_INTERLINE_AUTHORIZED · Mandate: ota_rail_interline_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
