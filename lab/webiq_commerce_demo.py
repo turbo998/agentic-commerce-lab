@@ -35407,6 +35407,82 @@ def evaluate_saas_ecommerce_lifecycle_marketing_uplift_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BCLMContractRedlinePolicyInput:
+    quarterly_legal_counsel_zombie_renewal_and_price_hike_pool_usd: float = 310000.0
+    uncapped_liability_accepted_or_freeform_clause_hallucinated: bool = False
+    missing_mandatory_gdpr_dpa_soc2_or_hostile_governing_law: bool = False
+    evergreen_90d_autorenewal_trap_or_uncapped_cpi_uplift: bool = False
+    playbook_tier2_fallback_swap_and_t120d_renewal_cap_ready: bool = False
+
+
+def evaluate_b2b_clm_contract_redline_policy(
+    policy_input: B2BCLMContractRedlinePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_legal_counsel_zombie_renewal_and_price_hike_pool_usd
+        ),
+    )
+    if policy_input.evergreen_90d_autorenewal_trap_or_uncapped_cpi_uplift:
+        return {
+            "status_code": 451,
+            "decision": "EVERGREEN_AUTORENEWAL_TRAP_OR_UNCAPPED_ANNUAL_PRICE_UPLIFT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncapped_liability_accepted_or_freeform_clause_hallucinated:
+        return {
+            "status_code": 403,
+            "decision": "UNCAPPED_LIABILITY_OR_UNAUTHORIZED_FREEFORM_CLAUSE_HALLUCINATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missing_mandatory_gdpr_dpa_soc2_or_hostile_governing_law:
+        return {
+            "status_code": 422,
+            "decision": "MISSING_MANDATORY_DPA_SOC2_ANNEX_OR_HOSTILE_GOVERNING_LAW_VENUE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.playbook_tier2_fallback_swap_and_t120d_renewal_cap_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PLAYBOOK_FALLBACK_CLAUSE_SWAP_AND_T120D_RENEWAL_CAP_CONFIRM",
+            "mandate_token": "clm_contract_redline_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_PLAYBOOK_COMPLIANT_MSA_AND_RENEWAL_AUTHORIZED",
+        "mandate_token": "clm_contract_redline_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -48268,6 +48344,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_clm_contract_redline_guard = {
+        "authorized_200": evaluate_b2b_clm_contract_redline_policy(
+            B2BCLMContractRedlinePolicyInput()
+        ),
+        "uncapped_liability_or_freeform_403": evaluate_b2b_clm_contract_redline_policy(
+            B2BCLMContractRedlinePolicyInput(
+                uncapped_liability_accepted_or_freeform_clause_hallucinated=True
+            )
+        ),
+        "missing_dpa_or_hostile_venue_422": evaluate_b2b_clm_contract_redline_policy(
+            B2BCLMContractRedlinePolicyInput(
+                missing_mandatory_gdpr_dpa_soc2_or_hostile_governing_law=True
+            )
+        ),
+        "evergreen_autorenewal_or_uplift_451": evaluate_b2b_clm_contract_redline_policy(
+            B2BCLMContractRedlinePolicyInput(
+                evergreen_90d_autorenewal_trap_or_uncapped_cpi_uplift=True
+            )
+        ),
+        "playbook_tier2_fallback_t120d_409": evaluate_b2b_clm_contract_redline_policy(
+            B2BCLMContractRedlinePolicyInput(
+                playbook_tier2_fallback_swap_and_t120d_renewal_cap_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48663,6 +48765,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_visual_search_shop_the_look_guard": ecommerce_visual_search_shop_the_look_guard,
         "ecommerce_wismo_in_transit_refund_claim_guard": ecommerce_wismo_in_transit_refund_claim_guard,
         "saas_ecommerce_lifecycle_marketing_uplift_guard": saas_ecommerce_lifecycle_marketing_uplift_guard,
+        "b2b_clm_contract_redline_guard": b2b_clm_contract_redline_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -69081,6 +69184,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="lifemkt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CHANNEL_COST_WATERFALL_AND_CAUSAL_UPLIFT_PERSUADABLE_ONLY_CONFIRM · Mandate: lifecycle_marketing_uplift_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 267 B2B CLM Contract Redline, Fallback Clause & Auto-Renewal Escrow (#386) -->
+      <div class="finops-box" id="b2b-clm-contract-redline-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">⚖️ 企业 B2B 合同生命周期管理 (CLM) 条款初审修订、预设退让条款库与防自动续约/涨价陷阱 (Icertis / Ironclad / DocuSign IAM) 沙盒</div>
+            <div class="finops-sub">Round 267 (#386 · SVG #710) · 全文基线Diff防暗删12个月赔偿上限与禁AI自由造句 (HTTP 403) + 强制GDPR/CCPA DPA附件与管辖地核验 (HTTP 422) + 拦截提前90天通知自动续约(Evergreen)与8%-10%涨价暗桩 (HTTP 451) + 一键替换Tier-2标准退让条款并锁定T-120d提醒与&lt;=3%涨幅净省38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="clmred-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度外部律所审同外包费、错过90天解约窗口被强制自动续约及续约单价暴涨 8%-10% 损失池 ($)
+            <input type="number" id="clmred-gross-input" value="310000" min="10000" step="5000" oninput="recalcB2BCLMContractRedlineSandbox()" />
+          </label>
+          <label>服务端基线全文比对防暗改、责任上限 (LoL Cap &gt;= 12m Fees) 与法务 Playbook“只选不写”门禁
+            <select id="clmred-lol-select" onchange="recalcB2BCLMContractRedlineSandbox()">
+              <option value="pass">100% 服务端全文 Diff 揪出未标红暗改 + 仅从 GC 预审 Tier-1/Tier-2 标准库调取条款 (安全)</option>
+              <option value="block_403">供应商暗删 12 个月费用赔偿上限且 AI 擅自自由造句放弃间接损失免责保护 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>强制性数据处理协议 (GDPR Art. 28 / CCPA DPA)、SOC 2 Type II 审计权与管辖法院红线门禁
+            <select id="clmred-dpa-select" onchange="recalcB2BCLMContractRedlineSandbox()">
+              <option value="pass">涉及客户/员工 PII 的合同已完整挂载签署版 DPA (含24h通报SLA) 且管辖地合规 (合规)</option>
+              <option value="block_422">采购云端 HR/CRM 系统缺失 GDPR/CCPA DPA 附件 或 管辖地被篡改为高风险境外仲裁机构 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>隐蔽自动续约条款 (Evergreen 90-Day Notice) 与续约无上限涨价 (Uncapped Price Escalator) 门禁
+            <select id="clmred-renew-select" onchange="recalcB2BCLMContractRedlineSandbox()">
+              <option value="pass">修订为到期书面确认续签(Opt-In) 或 锁定续约涨幅 &lt;= min(CPI, 3%) 并写入 ERP T-120d 提醒 (安全)</option>
+              <option value="block_451">合同暗藏“提前90天未书面解约即自动续签1年且单价上浮 9%”霸王条款 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>GC 预审 Tier-2 退让条款一键替换 (2x 年费相互上限) + ERP T-120d/T-90d 续约日历与 3% CPI 涨幅封顶协同
+            <select id="clmred-opt-select" onchange="recalcB2BCLMContractRedlineSandbox()">
+              <option value="enabled" selected>自动插入 Tier-2 退让条款 + 锁定续约涨幅 &lt;=3% 并在 SAP Ariba 创建 T-120d 续约评估单 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">全部合同移交外部按小时计费律所人工逐字审阅且不设 ERP 到期预警 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度律所外包与续约被坑风险池</div>
+            <div class="finops-kpi-val" id="clmred-gross-kpi">$310,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">Playbook退让与续约封顶后净支出</div>
+            <div class="finops-kpi-val" id="clmred-net-kpi" style="color:#6ee7b7;">$192,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省律所费与幽灵续约涨价</div>
+            <div class="finops-kpi-val" id="clmred-savings-kpi" style="color:#38bdf8;">$117,800</div>
+          </div>
+        </div>
+        <div id="clmred-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PLAYBOOK_FALLBACK_CLAUSE_SWAP_AND_T120D_RENEWAL_CAP_CONFIRM · Mandate: clm_contract_redline_optim_409
         </div>
       </div>
 
@@ -94089,6 +94249,79 @@ function recalcSaaSECommerceLifecycleMarketingUpliftSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CAUSAL_UPLIFT_AND_COMPLIANT_JOURNEY_AUTHORIZED · Mandate: lifecycle_marketing_uplift_200';
+}}
+
+function recalcB2BCLMContractRedlineSandbox() {{
+  const grossInput = document.getElementById('clmred-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '310000'));
+  const lolGate = document.getElementById('clmred-lol-select').value;
+  const dpaGate = document.getElementById('clmred-dpa-select').value;
+  const renewGate = document.getElementById('clmred-renew-select').value;
+  const optMode = document.getElementById('clmred-opt-select').value;
+
+  const grossKpi = document.getElementById('clmred-gross-kpi');
+  const netKpi = document.getElementById('clmred-net-kpi');
+  const savingsKpi = document.getElementById('clmred-savings-kpi');
+  const statusKpi = document.getElementById('clmred-status-kpi');
+  const banner = document.getElementById('clmred-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (renewGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EVERGREEN_AUTORENEWAL_TRAP_OR_UNCAPPED_ANNUAL_PRICE_UPLIFT · Mandate: null';
+    return;
+  }}
+  if (lolGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNCAPPED_LIABILITY_OR_UNAUTHORIZED_FREEFORM_CLAUSE_HALLUCINATION · Mandate: null';
+    return;
+  }}
+  if (dpaGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MISSING_MANDATORY_DPA_SOC2_ANNEX_OR_HOSTILE_GOVERNING_LAW_VENUE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PLAYBOOK_FALLBACK_CLAUSE_SWAP_AND_T120D_RENEWAL_CAP_CONFIRM · Mandate: clm_contract_redline_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_PLAYBOOK_COMPLIANT_MSA_AND_RENEWAL_AUTHORIZED · Mandate: clm_contract_redline_200';
 }}
 
 function updateStage1756Sandbox() {{

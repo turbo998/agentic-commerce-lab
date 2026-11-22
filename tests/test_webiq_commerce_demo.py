@@ -26947,6 +26947,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-ecommerce-lifecycle-marketing-uplift-sandbox", html_zh)
 
+    def test_b2b_clm_contract_redline_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BCLMContractRedlinePolicyInput,
+            evaluate_b2b_clm_contract_redline_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_clm_contract_redline_policy(
+            B2BCLMContractRedlinePolicyInput(
+                quarterly_legal_counsel_zombie_renewal_and_price_hike_pool_usd=310000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_PLAYBOOK_COMPLIANT_MSA_AND_RENEWAL_AUTHORIZED",
+        )
+
+        lol = evaluate_b2b_clm_contract_redline_policy(
+            B2BCLMContractRedlinePolicyInput(
+                uncapped_liability_accepted_or_freeform_clause_hallucinated=True
+            )
+        )
+        self.assertEqual(lol["status_code"], 403)
+        self.assertEqual(
+            lol["decision"],
+            "UNCAPPED_LIABILITY_OR_UNAUTHORIZED_FREEFORM_CLAUSE_HALLUCINATION",
+        )
+
+        dpa = evaluate_b2b_clm_contract_redline_policy(
+            B2BCLMContractRedlinePolicyInput(
+                missing_mandatory_gdpr_dpa_soc2_or_hostile_governing_law=True
+            )
+        )
+        self.assertEqual(dpa["status_code"], 422)
+        self.assertEqual(
+            dpa["decision"],
+            "MISSING_MANDATORY_DPA_SOC2_ANNEX_OR_HOSTILE_GOVERNING_LAW_VENUE",
+        )
+
+        renew = evaluate_b2b_clm_contract_redline_policy(
+            B2BCLMContractRedlinePolicyInput(
+                evergreen_90d_autorenewal_trap_or_uncapped_cpi_uplift=True
+            )
+        )
+        self.assertEqual(renew["status_code"], 451)
+        self.assertEqual(
+            renew["decision"],
+            "EVERGREEN_AUTORENEWAL_TRAP_OR_UNCAPPED_ANNUAL_PRICE_UPLIFT",
+        )
+
+        optim = evaluate_b2b_clm_contract_redline_policy(
+            B2BCLMContractRedlinePolicyInput(
+                quarterly_legal_counsel_zombie_renewal_and_price_hike_pool_usd=310000.0,
+                playbook_tier2_fallback_swap_and_t120d_renewal_cap_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 117800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 192200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_clm_contract_redline_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-clm-contract-redline-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
