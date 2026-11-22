@@ -25808,6 +25808,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-ai-prepaid-credit-wallet-fefo-topup-sandbox", html_zh)
 
+    def test_omnichannel_retail_markdown_broken_size_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OmnichannelRetailMarkdownBrokenSizePolicyInput,
+            evaluate_omnichannel_retail_markdown_broken_size_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_omnichannel_retail_markdown_broken_size_policy(
+            OmnichannelRetailMarkdownBrokenSizePolicyInput(
+                quarterly_blanket_markdown_margin_giveaway_and_orphan_loss_pool_usd=320000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CLUSTER_GLIDEPATH_AND_OMNIBUS_ANCHOR_AUTHORIZED",
+        )
+
+        clawback = evaluate_omnichannel_retail_markdown_broken_size_policy(
+            OmnichannelRetailMarkdownBrokenSizePolicyInput(
+                price_drop_triggers_14d_price_protection_clawback_or_floor_breach=True
+            )
+        )
+        self.assertEqual(clawback["status_code"], 403)
+        self.assertEqual(
+            clawback["decision"],
+            "PRICE_PROTECTION_CLAWBACK_OR_BRAND_FLOOR_BREACH",
+        )
+
+        cluster = evaluate_omnichannel_retail_markdown_broken_size_policy(
+            OmnichannelRetailMarkdownBrokenSizePolicyInput(
+                blanket_50pct_markdown_on_high_str_cluster_or_complete_size_curve=True
+            )
+        )
+        self.assertEqual(cluster["status_code"], 422)
+        self.assertEqual(
+            cluster["decision"],
+            "BLANKET_MARKDOWN_ON_HIGH_VELOCITY_CLUSTER_OR_CORE_SIZE",
+        )
+
+        omnibus = evaluate_omnichannel_retail_markdown_broken_size_policy(
+            OmnichannelRetailMarkdownBrokenSizePolicyInput(
+                strikethrough_reference_price_exceeds_30d_lowest_omnibus_anchor=True
+            )
+        )
+        self.assertEqual(omnibus["status_code"], 451)
+        self.assertEqual(
+            omnibus["decision"],
+            "EU_OMNIBUS_30D_LOWEST_PRICE_OR_FTC_FAKE_ANCHOR_VIOLATION",
+        )
+
+        optim = evaluate_omnichannel_retail_markdown_broken_size_policy(
+            OmnichannelRetailMarkdownBrokenSizePolicyInput(
+                quarterly_blanket_markdown_margin_giveaway_and_orphan_loss_pool_usd=320000.0,
+                broken_size_online_virtual_pool_consolidation_and_glidepath_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 118400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 201600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("omnichannel_retail_markdown_broken_size_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("omnichannel-retail-markdown-broken-size-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

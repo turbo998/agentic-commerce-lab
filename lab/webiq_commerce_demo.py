@@ -34069,6 +34069,84 @@ def evaluate_saas_ai_prepaid_credit_wallet_fefo_topup_policy(
     }
 
 
+@dataclass(frozen=True)
+class OmnichannelRetailMarkdownBrokenSizePolicyInput:
+    quarterly_blanket_markdown_margin_giveaway_and_orphan_loss_pool_usd: float = (
+        320000.0
+    )
+    price_drop_triggers_14d_price_protection_clawback_or_floor_breach: bool = False
+    blanket_50pct_markdown_on_high_str_cluster_or_complete_size_curve: bool = False
+    strikethrough_reference_price_exceeds_30d_lowest_omnibus_anchor: bool = False
+    broken_size_online_virtual_pool_consolidation_and_glidepath_ready: bool = False
+
+
+def evaluate_omnichannel_retail_markdown_broken_size_policy(
+    policy_input: OmnichannelRetailMarkdownBrokenSizePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_blanket_markdown_margin_giveaway_and_orphan_loss_pool_usd
+        ),
+    )
+    if policy_input.strikethrough_reference_price_exceeds_30d_lowest_omnibus_anchor:
+        return {
+            "status_code": 451,
+            "decision": "EU_OMNIBUS_30D_LOWEST_PRICE_OR_FTC_FAKE_ANCHOR_VIOLATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.price_drop_triggers_14d_price_protection_clawback_or_floor_breach:
+        return {
+            "status_code": 403,
+            "decision": "PRICE_PROTECTION_CLAWBACK_OR_BRAND_FLOOR_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.blanket_50pct_markdown_on_high_str_cluster_or_complete_size_curve:
+        return {
+            "status_code": 422,
+            "decision": "BLANKET_MARKDOWN_ON_HIGH_VELOCITY_CLUSTER_OR_CORE_SIZE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.broken_size_online_virtual_pool_consolidation_and_glidepath_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "BROKEN_SIZE_CONSOLIDATION_AND_PHASED_GLIDEPATH_CONFIRM",
+            "mandate_token": "omnichannel_markdown_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CLUSTER_GLIDEPATH_AND_OMNIBUS_ANCHOR_AUTHORIZED",
+        "mandate_token": "omnichannel_markdown_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -46488,6 +46566,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    omnichannel_retail_markdown_broken_size_guard = {
+        "authorized_200": evaluate_omnichannel_retail_markdown_broken_size_policy(
+            OmnichannelRetailMarkdownBrokenSizePolicyInput()
+        ),
+        "price_protection_clawback_403": evaluate_omnichannel_retail_markdown_broken_size_policy(
+            OmnichannelRetailMarkdownBrokenSizePolicyInput(
+                price_drop_triggers_14d_price_protection_clawback_or_floor_breach=True
+            )
+        ),
+        "blanket_markdown_high_str_422": evaluate_omnichannel_retail_markdown_broken_size_policy(
+            OmnichannelRetailMarkdownBrokenSizePolicyInput(
+                blanket_50pct_markdown_on_high_str_cluster_or_complete_size_curve=True
+            )
+        ),
+        "fake_omnibus_anchor_451": evaluate_omnichannel_retail_markdown_broken_size_policy(
+            OmnichannelRetailMarkdownBrokenSizePolicyInput(
+                strikethrough_reference_price_exceeds_30d_lowest_omnibus_anchor=True
+            )
+        ),
+        "broken_size_pool_409": evaluate_omnichannel_retail_markdown_broken_size_policy(
+            OmnichannelRetailMarkdownBrokenSizePolicyInput(
+                broken_size_online_virtual_pool_consolidation_and_glidepath_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -46866,6 +46970,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_boxless_return_qr_instant_exchange_guard": ecommerce_boxless_return_qr_instant_exchange_guard,
         "b2b_indirect_procurement_unspsc_punchout_guard": b2b_indirect_procurement_unspsc_punchout_guard,
         "saas_ai_prepaid_credit_wallet_fefo_topup_guard": saas_ai_prepaid_credit_wallet_fefo_topup_guard,
+        "omnichannel_retail_markdown_broken_size_guard": omnichannel_retail_markdown_broken_size_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -66315,6 +66420,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="prepaidwal-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 RENEWAL_ROLLOVER_AND_MICRO_USD_PREFLIGHT_LEDGER_CONFIRM · Mandate: prepaid_wallet_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 250 Omnichannel Retail Markdown, Broken-Size Consolidation & Omnibus Escrow (#369) -->
+      <div class="finops-box" id="omnichannel-retail-markdown-broken-size-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🧥 全渠道鞋服与百货季末阶梯清仓、断码孤品集拼与 Omnibus 合规 (Revionics / Competera / Manhattan Active) 沙盒</div>
+            <div class="finops-sub">Round 250 (#369) · 过去 14 天正价订单价保退差与退旧买新熔断 (HTTP 403) + 温区门店周售罄率(STR)与黄金尺码一刀切保护 (HTTP 422) + 欧盟 Omnibus Art. 6a 过去 30 天最低价划线锁 (HTTP 451) + 门店断码孤品虚拟集拼回线上齐码池按 75 折变现净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="omnimd-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度全国一刀切 5 折误伤北方畅销店、正价波峰后直降引发 14 天价保挤兑及门店断码孤品 3 折贱卖损失池 ($)
+            <input type="number" id="omnimd-gross-input" value="320000" min="10000" step="5000" oninput="recalcOmnichannelRetailMarkdownBrokenSizeSandbox()" />
+          </label>
+          <label>过去 14 天正价成交订单池价保退差 (Price Adjustment) 与退货重买逆向运费穿仓门禁
+            <select id="omnimd-clawback-select" onchange="recalcOmnichannelRetailMarkdownBrokenSizeSandbox()">
+              <option value="pass">已避开正价波峰 14 天价保窗口 或 改用跨品类多件满减券不触发单品价保 (安全)</option>
+              <option value="block_403">刚卖出 1,400 件 $200 正价第 4 天就直降到 $110 导致价保退差与退旧买新吃光增量毛利 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>温区/商圈门店聚类周售罄率 (STR) 与核心黄金尺码 (S/M/L/XL) 齐套率弹性保护门禁
+            <select id="omnimd-cluster-select" onchange="recalcOmnichannelRetailMarkdownBrokenSizeSandbox()">
+              <option value="pass">畅销寒冷区门店维持正价，仅对滞销温暖区门店与断码边缘尺码下发差异化阶梯折扣 (合规)</option>
+              <option value="block_422">对周售罄率高达 84% 且 M/L 黄金尺码充足的北方畅销门店一刀切同步打 5 折白送毛利 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>欧盟 Omnibus Directive Art. 6a 过去 30 天历史最低价锚定与 FTC 防先涨后降门禁
+            <select id="omnimd-omnibus-select" onchange="recalcOmnichannelRetailMarkdownBrokenSizeSandbox()">
+              <option value="pass">促销划线基准价严格 &lt;= 过去 30 天内该渠道实际最低成交价 $149 (安全)</option>
+              <option value="block_451">降价前先把 $149 商品偷偷拉高到 $240 挂两天再标“5折特惠 $120”触犯欧盟 Omnibus (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>门店单件断码孤品 (XS/XXL) 虚拟集拼回线上全尺码池 (Endless-Aisle Pool) 替代门店 3 折花车贱卖
+            <select id="omnimd-opt-select" onchange="recalcOmnichannelRetailMarkdownBrokenSizeSandbox()">
+              <option value="enabled" selected>将 45 家门店单件 XS/XXL 孤品汇入线上凑成 94% 齐码池按 75 折售出替代门店 3 折贱卖 (-37% 毛利损耗 / HTTP 409)</option>
+              <option value="disabled">各门店各自就地打折处理断码尾货且不开启跨店虚拟齐码池集拼 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度一刀切降价与孤品贱卖池</div>
+            <div class="finops-kpi-val" id="omnimd-gross-kpi">$320,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">分温区滑翔与齐码集拼后净损</div>
+            <div class="finops-kpi-val" id="omnimd-net-kpi" style="color:#6ee7b7;">$201,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回清仓与价保毛利</div>
+            <div class="finops-kpi-val" id="omnimd-savings-kpi" style="color:#38bdf8;">$118,400</div>
+          </div>
+        </div>
+        <div id="omnimd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 BROKEN_SIZE_CONSOLIDATION_AND_PHASED_GLIDEPATH_CONFIRM · Mandate: omnichannel_markdown_escrow_optim_409
         </div>
       </div>
 
@@ -90082,6 +90244,79 @@ function recalcSaaSAIPrepaidCreditWalletFEFOTopUpSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_FEFO_WATERFALL_AND_PREFLIGHT_HOLD_AUTHORIZED · Mandate: prepaid_wallet_escrow_200';
+}}
+
+function recalcOmnichannelRetailMarkdownBrokenSizeSandbox() {{
+  const grossInput = document.getElementById('omnimd-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '320000'));
+  const clawbackGate = document.getElementById('omnimd-clawback-select').value;
+  const clusterGate = document.getElementById('omnimd-cluster-select').value;
+  const omnibusGate = document.getElementById('omnimd-omnibus-select').value;
+  const optMode = document.getElementById('omnimd-opt-select').value;
+
+  const grossKpi = document.getElementById('omnimd-gross-kpi');
+  const netKpi = document.getElementById('omnimd-net-kpi');
+  const savingsKpi = document.getElementById('omnimd-savings-kpi');
+  const statusKpi = document.getElementById('omnimd-status-kpi');
+  const banner = document.getElementById('omnimd-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (omnibusGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EU_OMNIBUS_30D_LOWEST_PRICE_OR_FTC_FAKE_ANCHOR_VIOLATION · Mandate: null';
+    return;
+  }}
+  if (clawbackGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PRICE_PROTECTION_CLAWBACK_OR_BRAND_FLOOR_BREACH · Mandate: null';
+    return;
+  }}
+  if (clusterGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BLANKET_MARKDOWN_ON_HIGH_VELOCITY_CLUSTER_OR_CORE_SIZE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 BROKEN_SIZE_CONSOLIDATION_AND_PHASED_GLIDEPATH_CONFIRM · Mandate: omnichannel_markdown_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CLUSTER_GLIDEPATH_AND_OMNIBUS_ANCHOR_AUTHORIZED · Mandate: omnichannel_markdown_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
