@@ -26478,6 +26478,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-plg-seat-fair-billing-coterm-sandbox", html_zh)
 
+    def test_enterprise_crm_erp_quote_to_order_saga_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EnterpriseCRMERPQuoteToOrderSagaPolicyInput,
+            evaluate_enterprise_crm_erp_quote_to_order_saga_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_enterprise_crm_erp_quote_to_order_saga_policy(
+            EnterpriseCRMERPQuoteToOrderSagaPolicyInput(
+                quarterly_twin_order_freight_price_drift_and_commission_loss_pool_usd=260000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_IDEMPOTENT_CRM_ERP_SYNC_AND_PRICE_PARITY_AUTHORIZED",
+        )
+
+        price = evaluate_enterprise_crm_erp_quote_to_order_saga_policy(
+            EnterpriseCRMERPQuoteToOrderSagaPolicyInput(
+                erp_simulated_net_price_drifts_from_signed_crm_quote_price=True
+            )
+        )
+        self.assertEqual(price["status_code"], 403)
+        self.assertEqual(
+            price["decision"],
+            "CRM_QUOTE_VS_ERP_SIMULATED_ORDER_PRICE_MISMATCH_DRIFT",
+        )
+
+        idem = evaluate_enterprise_crm_erp_quote_to_order_saga_policy(
+            EnterpriseCRMERPQuoteToOrderSagaPolicyInput(
+                blind_post_retry_after_erp_timeout_without_bstkd_idempotency_readback=True
+            )
+        )
+        self.assertEqual(idem["status_code"], 422)
+        self.assertEqual(
+            idem["decision"],
+            "DUPLICATE_CRM_TO_ERP_ORDER_CREATION_WITHOUT_IDEMPOTENCY_READBACK",
+        )
+
+        wms = evaluate_enterprise_crm_erp_quote_to_order_saga_policy(
+            EnterpriseCRMERPQuoteToOrderSagaPolicyInput(
+                mutating_order_lines_in_place_after_wms_pick_confirmed_or_pgi=True
+            )
+        )
+        self.assertEqual(wms["status_code"], 451)
+        self.assertEqual(
+            wms["decision"],
+            "ORDER_AMENDMENT_BLOCKED_AFTER_WMS_PICK_OR_PGI_COMMIT",
+        )
+
+        optim = evaluate_enterprise_crm_erp_quote_to_order_saga_policy(
+            EnterpriseCRMERPQuoteToOrderSagaPolicyInput(
+                quarterly_twin_order_freight_price_drift_and_commission_loss_pool_usd=260000.0,
+                transactional_outbox_saga_and_ar_cash_collected_commission_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 98800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 161200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("enterprise_crm_erp_quote_to_order_saga_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("enterprise-crm-erp-quote-to-order-saga-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg703" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070b14"/>
+      <stop offset="55%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="accent703" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="760" fill="url(#bg703)"/>
+  <rect x="24" y="20" width="1232" height="720" rx="16" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+  <rect x="24" y="20" width="1232" height="6" rx="3" fill="url(#accent703)"/>
+
+  <!-- Header -->
+  <text x="52" y="62" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="700">
+    Enterprise `CRM-to-ERP` Quote-to-Order Sync, Cent-Parity &amp; `WMS` Amendment Saga (#379)
+  </text>
+  <text x="52" y="88" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13.5">
+    Round 260 · Salesforce + SAP S/4HANA vs. Microsoft D365 Sales &amp; F&amp;O vs. HubSpot + NetSuite · BSTKD Idempotency, Simulate Parity, PGI Lock &amp; Cash-Commission Saga (-38%)
+  </text>
+  <rect x="1035" y="44" width="190" height="34" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.2"/>
+  <text x="1130" y="66" text-anchor="middle" fill="#6ee7b7" font-family="Consolas, monospace" font-size="12.5" font-weight="700">
+    ROUND 260 · GUIDE #379
+  </text>
+
+  <!-- Left Column: CRM, ERP & WMS Signals -->
+  <rect x="48" y="112" width="350" height="596" rx="12" fill="#111827" stroke="#38bdf8" stroke-width="1.4"/>
+  <text x="68" y="144" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    1. `CRM ↔ ERP ↔ WMS` Signals
+  </text>
+  <text x="68" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Signed Quote Hash, BAPI Simulate &amp; WMS Pick State
+  </text>
+
+  <rect x="68" y="186" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="210" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    🔑 Deterministic `BSTKD` Idempotency
+  </text>
+  <text x="84" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Key: `SHA256(crm_quote_id || rev_no)`
+  </text>
+  <text x="84" y="252" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Read-before-retry on 5s BAPI timeout
+  </text>
+  <text x="84" y="272" fill="#38bdf8" font-family="Consolas, monospace" font-size="11.5">
+    duplicate_erp_sales_orders: 0
+  </text>
+
+  <rect x="68" y="314" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="338" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    💲 `CRM == ERP` Simulate Cent-Parity
+  </text>
+  <text x="84" y="360" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Runs `BAPI_SALESORDER_SIMULATE` pre-commit
+  </text>
+  <text x="84" y="380" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Verifies manual discount override (`PN00`)
+  </text>
+  <text x="84" y="400" fill="#f59e0b" font-family="Consolas, monospace" font-size="11.5">
+    abs(crm_cents - erp_sim_cents) == 0
+  </text>
+
+  <rect x="68" y="442" width="310" height="112" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="84" y="466" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    🏭 WMS `PICK / PGI` Amendment Lock
+  </text>
+  <text x="84" y="488" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Locks line edits once `WMS_PICK_CONFIRMED`
+  </text>
+  <text x="84" y="508" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Routes post-PGI edits to Carrier/RMA Saga
+  </text>
+  <text x="84" y="528" fill="#34d399" font-family="Consolas, monospace" font-size="11.5">
+    split_brain_amendments: 0.0%
+  </text>
+
+  <rect x="68" y="570" width="310" height="116" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-dasharray="4 3"/>
+  <text x="84" y="594" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    🎯 Target Architectural Outcomes
+  </text>
+  <text x="84" y="616" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Zero double-shipped $180k timeout orders
+  </text>
+  <text x="84" y="636" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Zero unrecovered commissions on bad debt
+  </text>
+  <text x="84" y="656" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • 38% reduction in Quote-to-Cash sync loss
+  </text>
+
+  <!-- Center Column: 4-Gate Fiduciary Control Plane -->
+  <rect x="424" y="112" width="432" height="596" rx="12" fill="#111827" stroke="#f59e0b" stroke-width="1.6"/>
+  <text x="446" y="144" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    2. `CRM-to-ERP` Saga Fiduciary Control Plane
+  </text>
+  <text x="446" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Deterministic Parity, Idempotency &amp; WMS State-Lock Gates
+  </text>
+
+  <!-- Gate 1: HTTP 403 -->
+  <rect x="444" y="184" width="392" height="114" rx="8" fill="#1f1224" stroke="#ef4444" stroke-width="1.3"/>
+  <text x="460" y="208" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 1 · `CRM == ERP` Price-Parity Gate (HTTP 403)
+  </text>
+  <text x="460" y="230" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Blocks committing ERP order if `BAPI_SALESORDER_SIMULATE`
+  </text>
+  <text x="460" y="248" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    reverts signed CRM $82 special price back to $110 list price.
+  </text>
+  <text x="460" y="274" fill="#f87171" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    CRM_QUOTE_VS_ERP_SIMULATED_ORDER_PRICE_MISMATCH_DRIFT
+  </text>
+
+  <!-- Gate 2: HTTP 422 -->
+  <rect x="444" y="312" width="392" height="114" rx="8" fill="#231815" stroke="#f97316" stroke-width="1.3"/>
+  <text x="460" y="336" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 2 · `BSTKD` Timeout Idempotency Gate (HTTP 422)
+  </text>
+  <text x="460" y="358" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Blocks blind POST retries after ERP 5s timeout without first
+  </text>
+  <text x="460" y="376" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    querying `ExternalQuoteId` (`BSTKD`) to prevent twin orders.
+  </text>
+  <text x="460" y="402" fill="#fb923c" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    DUPLICATE_CRM_TO_ERP_ORDER_CREATION_WITHOUT_IDEMPOTENCY_READBACK
+  </text>
+
+  <!-- Gate 3: HTTP 451 -->
+  <rect x="444" y="440" width="392" height="114" rx="8" fill="#27121b" stroke="#f43f5e" stroke-width="1.3"/>
+  <text x="460" y="464" fill="#fda4af" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 3 · Post-Pick / `PGI` Amendment Lock (HTTP 451)
+  </text>
+  <text x="460" y="486" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Blocks mutating CRM/ERP order lines after WMS pick-confirm
+  </text>
+  <text x="460" y="504" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    or Post Goods Issue (`PGI`); routes to RMA/Carrier Saga.
+  </text>
+  <text x="460" y="530" fill="#fb7185" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    ORDER_AMENDMENT_BLOCKED_AFTER_WMS_PICK_OR_PGI_COMMIT
+  </text>
+
+  <!-- Gate 4: HTTP 409 -->
+  <rect x="444" y="568" width="392" height="118" rx="8" fill="#062e26" stroke="#10b981" stroke-width="1.5"/>
+  <text x="460" y="592" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    Gate 4 · Outbox Saga &amp; Cash-Commission (HTTP 409)
+  </text>
+  <text x="460" y="614" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Transactional Outbox sync + releases 50% sales commission
+  </text>
+  <text x="460" y="632" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    only upon `AR_CASH_APPLIED` (-38% sync &amp; clawback loss).
+  </text>
+  <text x="460" y="660" fill="#34d399" font-family="Consolas, monospace" font-size="11.5" font-weight="700">
+    Mandate: crm_erp_order_saga_optim_409
+  </text>
+
+  <!-- Right Column: Platform Matrix & FinOps -->
+  <rect x="882" y="112" width="350" height="596" rx="12" fill="#111827" stroke="#34d399" stroke-width="1.4"/>
+  <text x="902" y="144" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">
+    3. `CRM ↔ ERP` Stack Matrix &amp; KPIs
+  </text>
+  <text x="902" y="166" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    D365 Dual-Write vs. Salesforce + SAP vs. HubSpot + NetSuite
+  </text>
+
+  <rect x="902" y="186" width="310" height="116" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="918" y="210" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    🔷 Microsoft D365 Sales + F&amp;O (`Dual-Write`)
+  </text>
+  <text x="918" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Bi-directional Dataverse &lt;-&gt; F&amp;O transaction sync
+  </text>
+  <text x="918" y="252" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Shared unified pricing &amp; WHS pick-status lock
+  </text>
+  <text x="918" y="272" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Best for unified Microsoft enterprise stack
+  </text>
+
+  <rect x="902" y="316" width="310" height="116" rx="8" fill="#1e293b" stroke="#475569"/>
+  <text x="918" y="340" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    ☁️ Salesforce Revenue Cloud + SAP S/4HANA
+  </text>
+  <text x="918" y="362" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • MuleSoft / Event-Driven Outbox + `BAPI_SIMULATE`
+  </text>
+  <text x="918" y="382" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.8">
+    • Enforces `BSTKD` unique customer reference key
+  </text>
+  <text x="918" y="402" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Best for global heterogeneous CRM + SAP landscapes
+  </text>
+
+  <rect x="902" y="446" width="310" height="240" rx="8" fill="#091926" stroke="#38bdf8" stroke-width="1.3"/>
+  <text x="918" y="472" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    💰 Quarterly Quote-to-Cash Saga KPI
+  </text>
+  <text x="918" y="500" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    Gross Twin-Order Freight, Price Drift &amp; Clawbacks:
+  </text>
+  <text x="918" y="522" fill="#f8fafc" font-family="Consolas, monospace" font-size="18" font-weight="700">
+    $260,000 / quarter
+  </text>
+  <text x="918" y="552" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    After Simulate Parity, BSTKD Lock &amp; Outbox Saga:
+  </text>
+  <text x="918" y="574" fill="#6ee7b7" font-family="Consolas, monospace" font-size="18" font-weight="700">
+    $161,200 (-38% Net Saved)
+  </text>
+  <text x="918" y="606" fill="#38bdf8" font-family="Consolas, monospace" font-size="15" font-weight="700">
+    Quarterly Savings: $98,800
+  </text>
+  <text x="918" y="636" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Invoice price-mismatch rejections: 0.0%
+  </text>
+  <text x="918" y="656" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Bad-debt commission leakage: -92%
+  </text>
+</svg>

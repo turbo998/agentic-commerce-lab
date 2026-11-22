@@ -2,11 +2,11 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`378` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`379` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
-- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (23 guides)](#platform-grounding)
+- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (24 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (52 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (143 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (85 guides)](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (23 Guides)
+## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (24 Guides)
 
 > Platform selection (Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify), real-time search grounding (Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl), catalog feed barriers, A2UI isolation, and Web Bot Auth vs WAF governance.
 
@@ -47,6 +47,7 @@
 | 21 | **Commercial Search Grounding & Live Price/Stock Verification (`Microsoft Web IQ vs. Perplexity Sonar Pro vs. Tavily vs. Exa vs. Firecrawl / Browser-Use`), `liveCrawlSucceeded` Gate, `14-Digit GTIN` Parity & 3-Tier Funnel (`-41%` API & Price-Drift Loss) Agent Architecture Selection FAQ** | [English](commercial-search-grounding-price-stock-verification-webiq-perplexity-tavily-exa-firecrawl-selection-faq.en.md) · [中文](commercial-search-grounding-price-stock-verification-webiq-perplexity-tavily-exa-firecrawl-selection-faq.md) |
 | 22 | **Enterprise Commercial Agent Platform & Cross-ERP Orchestration Selection (`Microsoft Copilot Studio + Dynamics 365` vs. `Azure AI Foundry + Semantic Kernel / LangGraph` vs. `Salesforce Agentforce` vs. `Shopify Sidekick / Storefront MCP`), `Entra OBO` `RLS` Gate, Durable `Saga Outbox` & "Front-Store / Back-Factory" Hybrid (`-39%` TCO) Agent Architecture Selection FAQ (🏆 360th Guide Milestone)** | [English](enterprise-agent-platform-copilot-studio-foundry-langgraph-agentforce-shopify-orchestration-selection-faq.en.md) · [中文](enterprise-agent-platform-copilot-studio-foundry-langgraph-agentforce-shopify-orchestration-selection-faq.md) |
 | 23 | **Commercial Search Grounding for Supplier Risk, Competitor Price Intelligence & Market Research (`Microsoft Web IQ vs. Perplexity Sonar Pro vs. Exa vs. Tavily vs. Firecrawl`), `LEI / DUNS` 4-Tuple Adverse-Media Freeze, In-Text Data-Vintage Gate, `W3C TDMRep` Compliance & 3-Tier Funnel (`-85.9%` Tokens / `-41%` Cost) Agent Architecture Selection FAQ** | [English](commercial-grounding-supplier-risk-competitor-price-market-research-webiq-sonar-exa-firecrawl-selection-faq.en.md) · [中文](commercial-grounding-supplier-risk-competitor-price-market-research-webiq-sonar-exa-firecrawl-selection-faq.md) |
+| 24 | **Enterprise `CRM-to-ERP` Quote-to-Order Idempotent Sync, Cent-Parity & `WMS` Amendment Saga (`Salesforce + SAP S/4HANA vs. Microsoft Dynamics 365 Dual-Write vs. HubSpot + NetSuite`), Pre-Commit `BAPI_SALESORDER_SIMULATE` Parity, `BSTKD` Read-Before-Retry Lock, Post-`PGI` Edit Freeze & Cash-Collected Commission (`-38%` Quote-to-Cash Loss) Agent Architecture Selection FAQ** | [English](enterprise-crm-erp-quote-to-order-idempotent-sync-price-parity-wms-saga-selection-faq.en.md) · [中文](enterprise-crm-erp-quote-to-order-idempotent-sync-price-parity-wms-saga-selection-faq.md) |
 
 <a id="payments-mandates"></a>
 ## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (52 Guides)

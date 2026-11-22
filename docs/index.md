@@ -2,11 +2,11 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`378` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`379` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
-- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（23 篇）](#platform-grounding)
+- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（24 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（52 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（143 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（85 篇）](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（23 篇）
+## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（24 篇）
 
 > 面向企业架构师的平台底座选型（Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify）、搜索接地（Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl）、目录同步屏障、A2UI 渲染隔离与可信 Bot 鉴权。
 
@@ -47,6 +47,7 @@
 | 21 | **实时商业搜索、全网比价与网页接地（Commercial Search Grounding & Live Price Verification：`Microsoft Web IQ vs. Perplexity Sonar Pro vs. Tavily vs. Exa vs. Firecrawl / Browser-Use`）横向选型 FAQ：防“拿搜索引擎 7 天前缓存旧价下单跳价”、防“把 $149 配件当成 $1,199 整机现货”与双阶段 `Passage + Browse` 分层路由净省 41% 实战指南** | [中文](commercial-search-grounding-price-stock-verification-webiq-perplexity-tavily-exa-firecrawl-selection-faq.md) · [English](commercial-search-grounding-price-stock-verification-webiq-perplexity-tavily-exa-firecrawl-selection-faq.en.md) |
 | 22 | **企业商业智能体构建平台与跨系统编排横向选型（`Microsoft Copilot Studio + Dynamics 365` vs. `Azure AI Foundry + Semantic Kernel / LangGraph` vs. `Salesforce Agentforce` vs. `Shopify Sidekick / Storefront MCP`）实战指南（🏆 第 360 篇里程碑）：防“公网导购闲聊烧穿 $2/次会话包”、防“低代码跨 ERP 扣款成功却漏建单”与“前店后厂”组合架构净省 39% Agent 架构选型 FAQ** | [中文](enterprise-agent-platform-copilot-studio-foundry-langgraph-agentforce-shopify-orchestration-selection-faq.md) · [English](enterprise-agent-platform-copilot-studio-foundry-langgraph-agentforce-shopify-orchestration-selection-faq.en.md) |
 | 23 | **企业采购舆情尽调、竞品比价与行业研报采集“实时商业搜索与网页接地（`Microsoft Web IQ vs. Perplexity Sonar Pro vs. Exa vs. Tavily vs. Firecrawl`）”选型对比与受托控制面 FAQ：防“内容农场把 2022 年旧数据改标题伪装成 `[2026最新]` 误导采购锁价”、防“同名异地企业诉讼乌龙误杀或漏检供应商昨夜停产火灾打款 $450k”与 `90% Web IQ Passage` 三级漏斗削减 85.9% Token 净省 41% 实战指南** | [中文](commercial-grounding-supplier-risk-competitor-price-market-research-webiq-sonar-exa-firecrawl-selection-faq.md) · [English](commercial-grounding-supplier-risk-competitor-price-market-research-webiq-sonar-exa-firecrawl-selection-faq.en.md) |
+| 24 | **企业 `CRM` 到 `ERP` 赢单转销售订单（`Quote-to-Order`）、接口超时防重发双车货与跨系统改单补偿（`Saga`）选型 FAQ（`Salesforce + SAP S/4HANA vs. Microsoft Dynamics 365 Dual-Write vs. HubSpot + NetSuite`）：防“CRM 签字特批价落入 SAP 跳回目录原价开出错票”、防“5秒超时未回读直接二次 POST 建出双胞胎订单发两车货”、防“WMS 已拣货/已出库(PGI)仍原地删减订单”与实收回款触发后 50% 销售提成净省 38% 实战指南** | [中文](enterprise-crm-erp-quote-to-order-idempotent-sync-price-parity-wms-saga-selection-faq.md) · [English](enterprise-crm-erp-quote-to-order-idempotent-sync-price-parity-wms-saga-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
 ## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（52 篇）

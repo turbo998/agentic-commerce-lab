@@ -34859,6 +34859,86 @@ def evaluate_saas_plg_seat_fair_billing_coterm_policy(
     }
 
 
+@dataclass(frozen=True)
+class EnterpriseCRMERPQuoteToOrderSagaPolicyInput:
+    quarterly_twin_order_freight_price_drift_and_commission_loss_pool_usd: float = (
+        260000.0
+    )
+    erp_simulated_net_price_drifts_from_signed_crm_quote_price: bool = False
+    blind_post_retry_after_erp_timeout_without_bstkd_idempotency_readback: bool = False
+    mutating_order_lines_in_place_after_wms_pick_confirmed_or_pgi: bool = False
+    transactional_outbox_saga_and_ar_cash_collected_commission_ready: bool = False
+
+
+def evaluate_enterprise_crm_erp_quote_to_order_saga_policy(
+    policy_input: EnterpriseCRMERPQuoteToOrderSagaPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_twin_order_freight_price_drift_and_commission_loss_pool_usd
+        ),
+    )
+    if policy_input.mutating_order_lines_in_place_after_wms_pick_confirmed_or_pgi:
+        return {
+            "status_code": 451,
+            "decision": "ORDER_AMENDMENT_BLOCKED_AFTER_WMS_PICK_OR_PGI_COMMIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.erp_simulated_net_price_drifts_from_signed_crm_quote_price:
+        return {
+            "status_code": 403,
+            "decision": "CRM_QUOTE_VS_ERP_SIMULATED_ORDER_PRICE_MISMATCH_DRIFT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if (
+        policy_input.blind_post_retry_after_erp_timeout_without_bstkd_idempotency_readback
+    ):
+        return {
+            "status_code": 422,
+            "decision": "DUPLICATE_CRM_TO_ERP_ORDER_CREATION_WITHOUT_IDEMPOTENCY_READBACK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.transactional_outbox_saga_and_ar_cash_collected_commission_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TRANSACTIONAL_OUTBOX_SAGA_AND_CASH_COLLECTED_COMMISSION_CONFIRM",
+            "mandate_token": "crm_erp_order_saga_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_IDEMPOTENT_CRM_ERP_SYNC_AND_PRICE_PARITY_AUTHORIZED",
+        "mandate_token": "crm_erp_order_saga_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -47538,6 +47618,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    enterprise_crm_erp_quote_to_order_saga_guard = {
+        "authorized_200": evaluate_enterprise_crm_erp_quote_to_order_saga_policy(
+            EnterpriseCRMERPQuoteToOrderSagaPolicyInput()
+        ),
+        "price_mismatch_drift_403": evaluate_enterprise_crm_erp_quote_to_order_saga_policy(
+            EnterpriseCRMERPQuoteToOrderSagaPolicyInput(
+                erp_simulated_net_price_drifts_from_signed_crm_quote_price=True
+            )
+        ),
+        "blind_timeout_retry_422": evaluate_enterprise_crm_erp_quote_to_order_saga_policy(
+            EnterpriseCRMERPQuoteToOrderSagaPolicyInput(
+                blind_post_retry_after_erp_timeout_without_bstkd_idempotency_readback=True
+            )
+        ),
+        "post_pgi_in_place_edit_451": evaluate_enterprise_crm_erp_quote_to_order_saga_policy(
+            EnterpriseCRMERPQuoteToOrderSagaPolicyInput(
+                mutating_order_lines_in_place_after_wms_pick_confirmed_or_pgi=True
+            )
+        ),
+        "outbox_cash_commission_409": evaluate_enterprise_crm_erp_quote_to_order_saga_policy(
+            EnterpriseCRMERPQuoteToOrderSagaPolicyInput(
+                transactional_outbox_saga_and_ar_cash_collected_commission_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -47926,6 +48032,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "omnichannel_atp_channel_ringfencing_asn_guard": omnichannel_atp_channel_ringfencing_asn_guard,
         "b2b_combinatorial_sourcing_tco_dual_award_guard": b2b_combinatorial_sourcing_tco_dual_award_guard,
         "saas_plg_seat_fair_billing_coterm_guard": saas_plg_seat_fair_billing_coterm_guard,
+        "enterprise_crm_erp_quote_to_order_saga_guard": enterprise_crm_erp_quote_to_order_saga_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -67945,6 +68052,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="saasplg-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FAIR_BILLING_ACTIVE_CREDIT_AND_VOLUME_TIER_STEPDOWN_CONFIRM · Mandate: saas_plg_fair_billing_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 260 Enterprise CRM-to-ERP Quote-to-Order Sync, Cent-Parity & WMS Saga (#379) -->
+      <div class="finops-box" id="enterprise-crm-erp-quote-to-order-saga-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔄 企业 CRM 到 ERP 赢单转订单 (Quote-to-Order)、分位对碰与 WMS 改单 Saga (Salesforce + SAP / D365) 沙盒</div>
+            <div class="finops-sub">Round 260 (#379) · 建单前 BAPI_SALESORDER_SIMULATE 模拟对碰防特批价跳回目录高价 (HTTP 403) + 唯一幂等键 BSTKD 与 5s 超时先查后写防发双车货 (HTTP 422) + WMS 拣货/发货过账(PGI)后锁死原地改单 (HTTP 451) + 事务发件箱与 AR 实收回款释放后50%销售提成净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="crmerp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 ERP 建单接口 5秒超时盲目重试生成双胞胎订单发两车货、CRM 特批价落 ERP 跳回高价遭拒付及坏账提成流失池 ($)
+            <input type="number" id="crmerp-gross-input" value="260000" min="10000" step="5000" oninput="recalcEnterpriseCRMERPQuoteToOrderSagaSandbox()" />
+          </label>
+          <label>建单前 ERP 模拟算价 (BAPI_SALESORDER_SIMULATE) 与 CRM 客户签字报价单逐行美分零漂移对碰门禁
+            <select id="crmerp-price-select" onchange="recalcEnterpriseCRMERPQuoteToOrderSagaSandbox()">
+              <option value="pass">正式落库前运行 Simulate 校验 CRM 签字净额 == ERP 模拟净额 (美分零误差) 并锁死 PN00 覆盖码 (安全)</option>
+              <option value="block_403">CRM 签字特批价 $82,000 落入 SAP 时因漏传手工覆盖码重算成 $110,000 原价并向客户发出错票 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>确定性业务幂等键 (BSTKD = SHA256(quote_id || rev_no)) 与 5秒网关超时“先读后写 (Read-Before-Retry)”门禁
+            <select id="crmerp-idem-select" onchange="recalcEnterpriseCRMERPQuoteToOrderSagaSandbox()">
+              <option value="pass">写入唯一 BSTKD 索引，遇到 5s 超时强制先执行 GET 查重确认未落库后才重试 (合规)</option>
+              <option value="block_422">SAP 建单 5秒超时未返回但后台已提交，Agent 不查重直接二次 POST 建出双胞胎订单发两车货 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>仓库 WMS 拣货确认 (PICK_CONFIRMED) 与发货过账 (PGI) 后原地改单互锁及 RMA 补偿门禁
+            <select id="crmerp-wms-select" onchange="recalcEnterpriseCRMERPQuoteToOrderSagaSandbox()">
+              <option value="pass">WMS 开始拣货后立即锁死 CRM/ERP 订单行原地编辑，变更请求自动转入承运商拦截或关联 RMA Saga (安全)</option>
+              <option value="block_451">货已装车出库 (PGI)，客服 Agent 却在 CRM 里原地把数量从 100箱改成 60箱导致少收 40箱钱 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>异步事务发件箱 (Transactional Outbox) + 财务实收回款核销 (AR_CASH_APPLIED) 触发后 50% 销售提成释放
+            <select id="crmerp-opt-select" onchange="recalcEnterpriseCRMERPQuoteToOrderSagaSandbox()">
+              <option value="enabled" selected>持久化 Outbox 抗 ERP 停机 + 发货付 50% 提成、待客户实收打款核销再发后 50% 提成 (-38% 资损 / HTTP 409)</option>
+              <option value="disabled">同步直连无 Outbox 缓冲且商机点 Closed-Won 当月即全额发放 100% 销售提成 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度重单错票与坏账提成池</div>
+            <div class="finops-kpi-val" id="crmerp-gross-kpi">$260,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">模拟对碰与幂等Saga后净损</div>
+            <div class="finops-kpi-val" id="crmerp-net-kpi" style="color:#6ee7b7;">$161,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省重发运费与提成追回</div>
+            <div class="finops-kpi-val" id="crmerp-savings-kpi" style="color:#38bdf8;">$98,800</div>
+          </div>
+        </div>
+        <div id="crmerp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TRANSACTIONAL_OUTBOX_SAGA_AND_CASH_COLLECTED_COMMISSION_CONFIRM · Mandate: crm_erp_order_saga_optim_409
         </div>
       </div>
 
@@ -92442,6 +92606,79 @@ function recalcSaaSPLGSeatFairBillingCoTermSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_ASYMMETRIC_PRORATION_AND_EXACT_COTERM_AUTHORIZED · Mandate: saas_plg_fair_billing_200';
+}}
+
+function recalcEnterpriseCRMERPQuoteToOrderSagaSandbox() {{
+  const grossInput = document.getElementById('crmerp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '260000'));
+  const priceGate = document.getElementById('crmerp-price-select').value;
+  const idemGate = document.getElementById('crmerp-idem-select').value;
+  const wmsGate = document.getElementById('crmerp-wms-select').value;
+  const optMode = document.getElementById('crmerp-opt-select').value;
+
+  const grossKpi = document.getElementById('crmerp-gross-kpi');
+  const netKpi = document.getElementById('crmerp-net-kpi');
+  const savingsKpi = document.getElementById('crmerp-savings-kpi');
+  const statusKpi = document.getElementById('crmerp-status-kpi');
+  const banner = document.getElementById('crmerp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (wmsGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 ORDER_AMENDMENT_BLOCKED_AFTER_WMS_PICK_OR_PGI_COMMIT · Mandate: null';
+    return;
+  }}
+  if (priceGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CRM_QUOTE_VS_ERP_SIMULATED_ORDER_PRICE_MISMATCH_DRIFT · Mandate: null';
+    return;
+  }}
+  if (idemGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DUPLICATE_CRM_TO_ERP_ORDER_CREATION_WITHOUT_IDEMPOTENCY_READBACK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TRANSACTIONAL_OUTBOX_SAGA_AND_CASH_COLLECTED_COMMISSION_CONFIRM · Mandate: crm_erp_order_saga_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_IDEMPOTENT_CRM_ERP_SYNC_AND_PRICE_PARITY_AUTHORIZED · Mandate: crm_erp_order_saga_200';
 }}
 
 function updateStage1756Sandbox() {{
