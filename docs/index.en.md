@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`374` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`375` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (23 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (51 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (52 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (142 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (84 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (31 guides)](#saas-finops-micropayments)
@@ -49,7 +49,7 @@
 | 23 | **Commercial Search Grounding for Supplier Risk, Competitor Price Intelligence & Market Research (`Microsoft Web IQ vs. Perplexity Sonar Pro vs. Exa vs. Tavily vs. Firecrawl`), `LEI / DUNS` 4-Tuple Adverse-Media Freeze, In-Text Data-Vintage Gate, `W3C TDMRep` Compliance & 3-Tier Funnel (`-85.9%` Tokens / `-41%` Cost) Agent Architecture Selection FAQ** | [English](commercial-grounding-supplier-risk-competitor-price-market-research-webiq-sonar-exa-firecrawl-selection-faq.en.md) · [中文](commercial-grounding-supplier-risk-competitor-price-market-research-webiq-sonar-exa-firecrawl-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (51 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (52 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -106,6 +106,7 @@
 | 49 | **High-Ticket Automotive, EV & Solar Split-Tender Checkout Escrow (`Tesla / Rivian / AutoFi / Plaid Transfer / Stripe`), `$1,000` Card-Deposit Cap, Lender `Stips` Funding Lock, Per-`VIN vIBAN` Wire Shield & 4-Way Digital-Key Release (`-38%` Closing Loss) Agent Architecture Selection FAQ** | [English](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.en.md) · [中文](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.md) |
 | 50 | **Agentic `CIT-to-MIT` Card-on-File, `EMVCo Network Token` (`DPAN + TAVV`) & Smart-Retry Escrow (`Stripe SPT / Visa VIC / Adyen / Checkout.com`), 15-Digit `CIT Trace-ID` Linking, `Cat-1 / MAC-03` Zero-Retry Circuit Breaker & Payday Recovery (`-38%` Decline & Churn Loss) Agent Architecture Selection FAQ** | [English](agentic-payment-card-on-file-cit-mit-network-token-cryptogram-retry-escrow-agent-selection-faq.en.md) · [中文](agentic-payment-card-on-file-cit-mit-network-token-cryptogram-retry-escrow-agent-selection-faq.md) |
 | 51 | **Enterprise B2B Accounts Payable (`AP`) Virtual Card Straight-Through Processing (`STP`: `Boost Payment / Visa Commercial Pay / Mastercard Track / Coupa Pay / BILL`), Anti-Surcharge Gate & `Large-Ticket Level-3` Rebate Escrow (`-38%` AP Cost) Agent Architecture Selection FAQ** | [English](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.en.md) · [中文](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.md) |
+| 52 | **Agent Payment Protocols (`Stripe SPT vs. Visa VIC vs. Mastercard Agent Pay vs. PayPal Agentic vs. B2B VCN`), Split-Shipment Multi-Capture & Tiered `HITL` Authorization Escrow, `final_capture=false` Partial-Ship Lock, 7-Day Auth-Expiry `0420` Shield & Pack-Time `JIT MIT` Auth (`-38%` Split-Order Payment Loss) Selection FAQ** | [English](agent-payment-split-shipment-multi-capture-auth-expiry-hitl-tier-escrow-selection-faq.en.md) · [中文](agent-payment-split-shipment-multi-capture-auth-expiry-hitl-tier-escrow-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (142 Guides)

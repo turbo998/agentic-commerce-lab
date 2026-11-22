@@ -26210,6 +26210,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("commercial-grounding-supplier-risk-price-intel-sandbox", html_zh)
 
+    def test_agent_payment_split_shipment_multi_capture_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            AgentPaymentSplitShipmentMultiCapturePolicyInput,
+            evaluate_agent_payment_split_shipment_multi_capture_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_agent_payment_split_shipment_multi_capture_policy(
+            AgentPaymentSplitShipmentMultiCapturePolicyInput(
+                quarterly_orphaned_split_capture_auth_misuse_and_smurfing_loss_pool_usd=280000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_TIERED_HITL_AND_MULTI_CAPTURE_LIFECYCLE_AUTHORIZED",
+        )
+
+        hitl = evaluate_agent_payment_split_shipment_multi_capture_policy(
+            AgentPaymentSplitShipmentMultiCapturePolicyInput(
+                missing_tier3_fido2_spc_signature_or_24h_rolling_smurfing_split=True
+            )
+        )
+        self.assertEqual(hitl["status_code"], 403)
+        self.assertEqual(
+            hitl["decision"],
+            "TIERED_HITL_STEPUP_MISSING_OR_SMURFING_APPROVAL_BYPASS",
+        )
+
+        multi = evaluate_agent_payment_split_shipment_multi_capture_policy(
+            AgentPaymentSplitShipmentMultiCapturePolicyInput(
+                passing_final_capture_true_on_partial_shipment_or_single_use_vcn=True
+            )
+        )
+        self.assertEqual(multi["status_code"], 422)
+        self.assertEqual(
+            multi["decision"],
+            "PREMATURE_FINAL_CAPTURE_CLOSING_REMAINING_SPLIT_SHIPMENTS",
+        )
+
+        expiry = evaluate_agent_payment_split_shipment_multi_capture_policy(
+            AgentPaymentSplitShipmentMultiCapturePolicyInput(
+                capturing_expired_7d_auth_hold_or_stacking_hold_without_0420_reversal=True
+            )
+        )
+        self.assertEqual(expiry["status_code"], 451)
+        self.assertEqual(
+            expiry["decision"],
+            "EXPIRED_AUTH_LATE_PRESENTMENT_OR_UNRELEASED_HOLD_MISUSE_FEE",
+        )
+
+        optim = evaluate_agent_payment_split_shipment_multi_capture_policy(
+            AgentPaymentSplitShipmentMultiCapturePolicyInput(
+                quarterly_orphaned_split_capture_auth_misuse_and_smurfing_loss_pool_usd=280000.0,
+                shipment_scoped_sub_tokens_and_pack_time_jit_mit_auth_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 106400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 173600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("agent_payment_split_shipment_multi_capture_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agent-payment-split-shipment-multi-capture-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

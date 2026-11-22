@@ -34541,6 +34541,86 @@ def evaluate_commercial_grounding_supplier_risk_price_intel_policy(
     }
 
 
+@dataclass(frozen=True)
+class AgentPaymentSplitShipmentMultiCapturePolicyInput:
+    quarterly_orphaned_split_capture_auth_misuse_and_smurfing_loss_pool_usd: float = (
+        280000.0
+    )
+    missing_tier3_fido2_spc_signature_or_24h_rolling_smurfing_split: bool = False
+    passing_final_capture_true_on_partial_shipment_or_single_use_vcn: bool = False
+    capturing_expired_7d_auth_hold_or_stacking_hold_without_0420_reversal: bool = False
+    shipment_scoped_sub_tokens_and_pack_time_jit_mit_auth_ready: bool = False
+
+
+def evaluate_agent_payment_split_shipment_multi_capture_policy(
+    policy_input: AgentPaymentSplitShipmentMultiCapturePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_orphaned_split_capture_auth_misuse_and_smurfing_loss_pool_usd
+        ),
+    )
+    if (
+        policy_input.capturing_expired_7d_auth_hold_or_stacking_hold_without_0420_reversal
+    ):
+        return {
+            "status_code": 451,
+            "decision": "EXPIRED_AUTH_LATE_PRESENTMENT_OR_UNRELEASED_HOLD_MISUSE_FEE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missing_tier3_fido2_spc_signature_or_24h_rolling_smurfing_split:
+        return {
+            "status_code": 403,
+            "decision": "TIERED_HITL_STEPUP_MISSING_OR_SMURFING_APPROVAL_BYPASS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.passing_final_capture_true_on_partial_shipment_or_single_use_vcn:
+        return {
+            "status_code": 422,
+            "decision": "PREMATURE_FINAL_CAPTURE_CLOSING_REMAINING_SPLIT_SHIPMENTS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.shipment_scoped_sub_tokens_and_pack_time_jit_mit_auth_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "JIT_SHIPMENT_SCOPED_TOKEN_AND_MULTI_CAPTURE_ROUTING_CONFIRM",
+            "mandate_token": "split_capture_payment_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_TIERED_HITL_AND_MULTI_CAPTURE_LIFECYCLE_AUTHORIZED",
+        "mandate_token": "split_capture_payment_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -47116,6 +47196,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    agent_payment_split_shipment_multi_capture_guard = {
+        "authorized_200": evaluate_agent_payment_split_shipment_multi_capture_policy(
+            AgentPaymentSplitShipmentMultiCapturePolicyInput()
+        ),
+        "missing_hitl_or_smurfing_403": evaluate_agent_payment_split_shipment_multi_capture_policy(
+            AgentPaymentSplitShipmentMultiCapturePolicyInput(
+                missing_tier3_fido2_spc_signature_or_24h_rolling_smurfing_split=True
+            )
+        ),
+        "premature_final_capture_422": evaluate_agent_payment_split_shipment_multi_capture_policy(
+            AgentPaymentSplitShipmentMultiCapturePolicyInput(
+                passing_final_capture_true_on_partial_shipment_or_single_use_vcn=True
+            )
+        ),
+        "expired_auth_misuse_451": evaluate_agent_payment_split_shipment_multi_capture_policy(
+            AgentPaymentSplitShipmentMultiCapturePolicyInput(
+                capturing_expired_7d_auth_hold_or_stacking_hold_without_0420_reversal=True
+            )
+        ),
+        "jit_pack_multi_capture_409": evaluate_agent_payment_split_shipment_multi_capture_policy(
+            AgentPaymentSplitShipmentMultiCapturePolicyInput(
+                shipment_scoped_sub_tokens_and_pack_time_jit_mit_auth_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -47500,6 +47606,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_o2c_ar_cash_app_short_pay_credit_guard": b2b_o2c_ar_cash_app_short_pay_credit_guard,
         "omnichannel_esl_dynamic_pricing_sco_shrink_guard": omnichannel_esl_dynamic_pricing_sco_shrink_guard,
         "commercial_grounding_supplier_risk_price_intel_guard": commercial_grounding_supplier_risk_price_intel_guard,
+        "agent_payment_split_shipment_multi_capture_guard": agent_payment_split_shipment_multi_capture_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -67291,6 +67398,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="commgnd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 THREE_TIER_GROUNDING_FUNNEL_AND_DIFF_ONLY_CRAWL_CONFIRM · Mandate: commercial_grounding_intel_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 256 Agent Payment Split-Shipment Multi-Capture & Tiered HITL Escrow (#375) -->
+      <div class="finops-box" id="agent-payment-split-shipment-multi-capture-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💳 五大 Agent 支付轨道 (SPT / VIC / MC / PayPal / VCN)、多仓拆单分批扣款与三级 HITL 沙盒</div>
+            <div class="finops-sub">Round 256 (#375) · 三级 HITL 强核身 (FIDO2 SPC) 与 24h 防拆微单绕过 (HTTP 403) + 多包裹部分清算 final_capture=false 锁与禁发单次虚拟卡 (HTTP 422) + 7天预授权到期 0420 冲正防 0.15% 误用罚金 (HTTP 451) + 远期包裹入库打包瞬间 JIT MIT 授权净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="splitcap-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度首包扣款误关剩余预授权导致后续包裹白送、超 7 天预授权过期掉单罚金及拆微单越权盗刷损失池 ($)
+            <input type="number" id="splitcap-gross-input" value="280000" min="10000" step="5000" oninput="recalcAgentPaymentSplitShipmentMultiCaptureSandbox()" />
+          </label>
+          <label>三级人工确认边界 (Tier-1 &lt;$100 免密 / Tier-2 卡片确认 / Tier-3 &gt;$1,000 FIDO2 SPC) 与 24h 滚动累计防拆单门禁
+            <select id="splitcap-hitl-select" onchange="recalcAgentPaymentSplitShipmentMultiCaptureSandbox()">
+              <option value="pass">超 $1,000 大单或改收货地址已完成 FIDO2 SPC 硬件生物识别签名且 24h 滚动累计未超限 (安全)</option>
+              <option value="block_403">Agent 把 $2,400 未批采购拆成 25 笔 $96 微单企图绕过 Tier-3 硬件指纹审批 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>多仓拆单部分清算状态机 (final_capture = (unshipped_items == 0)) 与企业虚拟卡 (VCN) 多笔限额门禁
+            <select id="splitcap-multi-select" onchange="recalcAgentPaymentSplitShipmentMultiCaptureSandbox()">
+              <option value="pass">仍有未发包裹时强制 final_capture=false 保活主预授权 + 拆单采购签发 PO-Scoped 限额多次卡 (合规)</option>
+              <option value="block_422">第 1 个包裹发货扣 $40 时误传 final_capture=true 或用单次销毁虚拟卡导致第 2 个包裹无钱可扣 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>7天信用卡预授权冻结到期自动冲正 (ISO 8583 0420) 与防延迟清算 (Late Presentment 0.15% 罚金) 门禁
+            <select id="splitcap-expiry-select" onchange="recalcAgentPaymentSplitShipmentMultiCaptureSandbox()">
+              <option value="pass">预授权在 7天有效期内完成清算 或 临期先发 0420 冲正释放旧冻结再发起关联 MIT 新授权 (安全)</option>
+              <option value="block_451">备货 18 天直接对早已过期的第 1 天 Auth 强行清算招致 10.2 拒付 或 未冲正旧冻结双倍锁死客户卡额度 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>按包裹粒度拆分子令牌 + 远期预售/调拨包裹“WMS 扫码打包瞬间 JIT MIT 授权”路由
+            <select id="splitcap-opt-select" onchange="recalcAgentPaymentSplitShipmentMultiCaptureSandbox()">
+              <option value="enabled" selected>现货包裹立即清算 + 远期包裹存 $0 CIT Trace-ID 待 WMS 打包台扫码瞬间实时 MIT 锁额 (-38% 掉单损耗 / HTTP 409)</option>
+              <option value="disabled">下单当天全额冻结所有远期包裹额度且不启用打包台 JIT 授权 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度拆单掉单与过期罚金池</div>
+            <div class="finops-kpi-val" id="splitcap-gross-kpi">$280,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">多笔锁与JIT授权后净损耗</div>
+            <div class="finops-kpi-val" id="splitcap-net-kpi" style="color:#6ee7b7;">$173,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省拆单坏账与卡组罚金</div>
+            <div class="finops-kpi-val" id="splitcap-savings-kpi" style="color:#38bdf8;">$106,400</div>
+          </div>
+        </div>
+        <div id="splitcap-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 JIT_SHIPMENT_SCOPED_TOKEN_AND_MULTI_CAPTURE_ROUTING_CONFIRM · Mandate: split_capture_payment_escrow_optim_409
         </div>
       </div>
 
@@ -91496,6 +91660,79 @@ function recalcCommercialGroundingSupplierRiskPriceIntelSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_AUTHORITATIVE_GROUNDING_AND_CLEAN_SUPPLIER_AUTHORIZED · Mandate: commercial_grounding_intel_200';
+}}
+
+function recalcAgentPaymentSplitShipmentMultiCaptureSandbox() {{
+  const grossInput = document.getElementById('splitcap-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '280000'));
+  const hitlGate = document.getElementById('splitcap-hitl-select').value;
+  const multiGate = document.getElementById('splitcap-multi-select').value;
+  const expiryGate = document.getElementById('splitcap-expiry-select').value;
+  const optMode = document.getElementById('splitcap-opt-select').value;
+
+  const grossKpi = document.getElementById('splitcap-gross-kpi');
+  const netKpi = document.getElementById('splitcap-net-kpi');
+  const savingsKpi = document.getElementById('splitcap-savings-kpi');
+  const statusKpi = document.getElementById('splitcap-status-kpi');
+  const banner = document.getElementById('splitcap-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (expiryGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EXPIRED_AUTH_LATE_PRESENTMENT_OR_UNRELEASED_HOLD_MISUSE_FEE · Mandate: null';
+    return;
+  }}
+  if (hitlGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 TIERED_HITL_STEPUP_MISSING_OR_SMURFING_APPROVAL_BYPASS · Mandate: null';
+    return;
+  }}
+  if (multiGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PREMATURE_FINAL_CAPTURE_CLOSING_REMAINING_SPLIT_SHIPMENTS · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 JIT_SHIPMENT_SCOPED_TOKEN_AND_MULTI_CAPTURE_ROUTING_CONFIRM · Mandate: split_capture_payment_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_TIERED_HITL_AND_MULTI_CAPTURE_LIFECYCLE_AUTHORIZED · Mandate: split_capture_payment_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
