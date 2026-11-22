@@ -25406,6 +25406,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-b2b-vat-vies-peppol-sandbox", html_zh)
 
+    def test_ecommerce_baby_maternity_cpsc_diaper_sizeup_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceBabyMaternityCPSCDiaperSizeUpPolicyInput,
+            evaluate_ecommerce_baby_maternity_cpsc_diaper_sizeup_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_baby_maternity_cpsc_diaper_sizeup_policy(
+            EcommerceBabyMaternityCPSCDiaperSizeUpPolicyInput(
+                quarterly_diaper_churn_stroller_return_and_carseat_aging_pool_usd=230000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_FRESH_CARSEAT_DOM_AND_CPSIA_BABY_AUTHORIZED",
+        )
+
+        safety = evaluate_ecommerce_baby_maternity_cpsc_diaper_sizeup_policy(
+            EcommerceBabyMaternityCPSCDiaperSizeUpPolicyInput(
+                restocking_returned_carseat_formula_or_dom_over_12_months=True
+            )
+        )
+        self.assertEqual(safety["status_code"], 403)
+        self.assertEqual(
+            safety["decision"],
+            "RETURNED_CARSEAT_FORMULA_RESTOCK_OR_DOM_AGED_BAN",
+        )
+
+        sizeup = evaluate_ecommerce_baby_maternity_cpsc_diaper_sizeup_policy(
+            EcommerceBabyMaternityCPSCDiaperSizeUpPolicyInput(
+                shipping_outgrown_diaper_size_or_missing_stroller_carseat_adapter=True
+            )
+        )
+        self.assertEqual(sizeup["status_code"], 422)
+        self.assertEqual(
+            sizeup["decision"],
+            "OUTGROWN_DIAPER_STAGE_OR_MISSING_STROLLER_ADAPTER",
+        )
+
+        cpsc = evaluate_ecommerce_baby_maternity_cpsc_diaper_sizeup_policy(
+            EcommerceBabyMaternityCPSCDiaperSizeUpPolicyInput(
+                active_cpsc_fda_infant_recall_or_missing_cpsia_104_registration=True
+            )
+        )
+        self.assertEqual(cpsc["status_code"], 451)
+        self.assertEqual(
+            cpsc["decision"],
+            "CPSC_FDA_INFANT_RECALL_OR_MISSING_CPSIA_REGISTRATION",
+        )
+
+        optim = evaluate_ecommerce_baby_maternity_cpsc_diaper_sizeup_policy(
+            EcommerceBabyMaternityCPSCDiaperSizeUpPolicyInput(
+                quarterly_diaper_churn_stroller_return_and_carseat_aging_pool_usd=230000.0,
+                proactive_growth_sizeup_free_box_swap_and_aca_dme_pump_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 85100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 144900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_baby_maternity_cpsc_diaper_sizeup_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-baby-maternity-cpsc-diaper-sizeup-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg687" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg687)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 244 · Baby &amp; Maternity Gear, `CPSC / FMVSS 213` Safety &amp; Diaper `Size-Up` Escrow</text>
+  <text x="48" y="74" class="sub">Babylist / Target Baby / Amazon Baby / Aeroflow · `Car-Seat No-Resell` Lock · `WHO` Growth Size-Up · `ACA DME` Pump (-37%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #687 · FAQ #363</text>
+
+  <!-- Lane 1: Returned Car-Seat / Breast-Pump Restock Ban & Infant Formula Tamper / FEFO Lot Lock -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Car-Seat &amp; Formula Safety Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• 100% Ban on Reselling Returned Car Seats/Formula:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Route Returned `FMVSS_213_Car_Seat / Formula`</text>
+  <text x="54" y="200" class="mono">&amp; `Single-User_Breast_Pump` to `DESTROY_RECYCLE`!</text>
+  <text x="44" y="223" class="body-txt">• Car-Seat Remaining Plastic Useful Life (`&gt;=5 Yr`):</text>
+  <text x="54" y="243" class="mono">Verify `Manufacture_DOM_Age &lt;= 12_Months` at Ship</text>
+  <text x="44" y="266" class="body-txt">• Eliminates catastrophic liability from restocking</text>
+  <text x="54" y="286" class="body-txt">a returned car seat with hidden crash micro-cracks</text>
+  <text x="54" y="304" class="body-txt">or shipping a seat with only 2 years of life left</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 RETURNED_CARSEAT_FORMULA_RESTOCK_OR_DOM_AGED_BAN</text>
+
+  <!-- Lane 2: Outgrown Diaper / Formula Stage Autoship Churn & Stroller-to-CarSeat Adapter Mismatch -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. Growth `Size-Up` &amp; Adapter Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Stops Shipping Outgrown `Size N / Size 1` Diapers:</text>
+  <text x="442" y="182" class="mono">Track `Baby_DOB_Weight_Curve` &amp; Prompt</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">`Size_1 -&gt; Size_2` Upgrade Before Auto-Renew!</text>
+  <text x="432" y="223" class="body-txt">• Stroller ↔ Infant Car-Seat Click-In Adapter Lock:</text>
+  <text x="442" y="243" class="mono">Verify `UPPAbaby / Nuna / Bugaboo` Ring Adapter</text>
+  <text x="432" y="266" class="body-txt">• Prevents new parents canceling `Autoship`</text>
+  <text x="442" y="286" class="body-txt">because 200 newborn diapers arrived after the</text>
+  <text x="442" y="304" class="body-txt">baby hit 15 lbs, or car seats not clicking in</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 OUTGROWN_DIAPER_STAGE_OR_MISSING_STROLLER_ADAPTER</text>
+
+  <!-- Lane 3: CPSC / JPMA Inclined-Sleeper & Formula Recall + CPSIA Registration Card Binding -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `CPSC §104` Recall &amp; Lot Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Enforces `CPSIA Section 104` Safety Registration:</text>
+  <text x="830" y="182" class="mono">Auto-Register `Buyer_Contact + Serial_Lot_ID`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">With Manufacturer &amp; Screen `CPSC / FDA Recalls`!</text>
+  <text x="820" y="223" class="body-txt">• Blocks Banned Inclined Sleepers / Crib Bumpers:</text>
+  <text x="830" y="243" class="body-txt">Holds checkout if an item hits an active `CPSC`</text>
+  <text x="830" y="261" class="body-txt">safe-sleep ban (`16 CFR 1236`) or `FDA` powdered</text>
+  <text x="830" y="279" class="body-txt">infant formula batch recall (`Cronobacter` alert)</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 CPSC_FDA_INFANT_RECALL_OR_MISSING_CPSIA_REGISTRATION</text>
+
+  <!-- Bottom Unopened Diaper-Size Free Swap, ACA $0 Insurance Breast Pump & Registry Completion -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. Unopened Diaper-Size Free Swap + `ACA $0 DME` Breast Pump + `EDD` Registry Completion (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① Unopened Diaper Size Swap</text>
+  <text x="62" y="462" class="body-txt">Swaps unopened outgrown</text>
+  <text x="62" y="480" class="body-txt">`Size 1` boxes for `Size 2`</text>
+  <text x="62" y="498" class="body-txt">at `$0` fee while updating</text>
+  <text x="62" y="516" class="mono">future `Autoship` size!</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② `ACA DME` `$0` Breast Pump</text>
+  <text x="337" y="462" class="body-txt">Verifies commercial health</text>
+  <text x="337" y="480" class="body-txt">plan (`E0603 HCPCS`) to</text>
+  <text x="337" y="498" class="body-txt">bill `$220` hospital-grade</text>
+  <text x="337" y="516" class="mono">pump at `$0` copay!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ `T-60d EDD` Completion</text>
+  <text x="622" y="462" class="body-txt">Unlocks `15%` Registry</text>
+  <text x="622" y="480" class="body-txt">Completion Discount 60d</text>
+  <text x="622" y="498" class="body-txt">before due date + 365-day</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">extended gift return!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Car-Seat Trade-In Credit</text>
+  <text x="907" y="462" class="body-txt">Recycles expired infant</text>
+  <text x="907" y="480" class="body-txt">bucket seats for a `20%`</text>
+  <text x="907" y="498" class="body-txt">convertible booster</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Churn &amp; Return Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Autoship Churn &amp; Gear Return Saved</text>
+  <text x="46" y="642" class="mono">$85,100 Saved / $230k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">0% Restock</text>
+  <text x="336" y="626" class="kpi-lbl">Returned Car-Seat &amp; Formula Ban</text>
+  <text x="336" y="642" class="mono">&gt;=5-Yr Remaining DOM Life</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">+52% LTV</text>
+  <text x="626" y="626" class="kpi-lbl">Proactive WHO Weight Diaper Size-Up</text>
+  <text x="626" y="642" class="mono">Zero Outgrown Box Cancellations</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">100% CPSIA</text>
+  <text x="916" y="626" class="kpi-lbl">Auto Recall Card &amp; ACA $0 Pump</text>
+  <text x="916" y="642" class="mono">Zero Banned Sleeper Sales</text>
+</svg>

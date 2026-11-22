@@ -33613,6 +33613,82 @@ def evaluate_cross_border_b2b_vat_vies_peppol_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceBabyMaternityCPSCDiaperSizeUpPolicyInput:
+    quarterly_diaper_churn_stroller_return_and_carseat_aging_pool_usd: float = 230000.0
+    restocking_returned_carseat_formula_or_dom_over_12_months: bool = False
+    shipping_outgrown_diaper_size_or_missing_stroller_carseat_adapter: bool = False
+    active_cpsc_fda_infant_recall_or_missing_cpsia_104_registration: bool = False
+    proactive_growth_sizeup_free_box_swap_and_aca_dme_pump_ready: bool = False
+
+
+def evaluate_ecommerce_baby_maternity_cpsc_diaper_sizeup_policy(
+    policy_input: EcommerceBabyMaternityCPSCDiaperSizeUpPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_diaper_churn_stroller_return_and_carseat_aging_pool_usd
+        ),
+    )
+    if policy_input.active_cpsc_fda_infant_recall_or_missing_cpsia_104_registration:
+        return {
+            "status_code": 451,
+            "decision": "CPSC_FDA_INFANT_RECALL_OR_MISSING_CPSIA_REGISTRATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.restocking_returned_carseat_formula_or_dom_over_12_months:
+        return {
+            "status_code": 403,
+            "decision": "RETURNED_CARSEAT_FORMULA_RESTOCK_OR_DOM_AGED_BAN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.shipping_outgrown_diaper_size_or_missing_stroller_carseat_adapter:
+        return {
+            "status_code": 422,
+            "decision": "OUTGROWN_DIAPER_STAGE_OR_MISSING_STROLLER_ADAPTER",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.proactive_growth_sizeup_free_box_swap_and_aca_dme_pump_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PROACTIVE_SIZEUP_FREE_SWAP_AND_ACA_DME_PUMP_CONFIRM",
+            "mandate_token": "baby_maternity_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_FRESH_CARSEAT_DOM_AND_CPSIA_BABY_AUTHORIZED",
+        "mandate_token": "baby_maternity_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -45876,6 +45952,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_baby_maternity_cpsc_diaper_sizeup_guard = {
+        "authorized_200": evaluate_ecommerce_baby_maternity_cpsc_diaper_sizeup_policy(
+            EcommerceBabyMaternityCPSCDiaperSizeUpPolicyInput()
+        ),
+        "restock_or_dom_403": evaluate_ecommerce_baby_maternity_cpsc_diaper_sizeup_policy(
+            EcommerceBabyMaternityCPSCDiaperSizeUpPolicyInput(
+                restocking_returned_carseat_formula_or_dom_over_12_months=True
+            )
+        ),
+        "outgrown_or_adapter_422": evaluate_ecommerce_baby_maternity_cpsc_diaper_sizeup_policy(
+            EcommerceBabyMaternityCPSCDiaperSizeUpPolicyInput(
+                shipping_outgrown_diaper_size_or_missing_stroller_carseat_adapter=True
+            )
+        ),
+        "cpsc_recall_451": evaluate_ecommerce_baby_maternity_cpsc_diaper_sizeup_policy(
+            EcommerceBabyMaternityCPSCDiaperSizeUpPolicyInput(
+                active_cpsc_fda_infant_recall_or_missing_cpsia_104_registration=True
+            )
+        ),
+        "sizeup_aca_pump_409": evaluate_ecommerce_baby_maternity_cpsc_diaper_sizeup_policy(
+            EcommerceBabyMaternityCPSCDiaperSizeUpPolicyInput(
+                proactive_growth_sizeup_free_box_swap_and_aca_dme_pump_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -46248,6 +46350,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "enterprise_agent_platform_orchestration_guard": enterprise_agent_platform_orchestration_guard,
         "b2b_saas_cpq_multi_year_ramp_deal_desk_guard": b2b_saas_cpq_multi_year_ramp_deal_desk_guard,
         "cross_border_b2b_vat_vies_peppol_guard": cross_border_b2b_vat_vies_peppol_guard,
+        "ecommerce_baby_maternity_cpsc_diaper_sizeup_guard": ecommerce_baby_maternity_cpsc_diaper_sizeup_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -65355,6 +65458,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="viespeppol-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 VIES_AUTH_HOLD_PEPPOL_XML_AND_AUTO_ESL_CONFIRM · Mandate: b2b_vat_peppol_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 244 Baby & Maternity Gear, CPSC Safety & Diaper Size-Up Escrow (#363) -->
+      <div class="finops-box" id="ecommerce-baby-maternity-cpsc-diaper-sizeup-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🍼 母婴电商、儿童安全座椅/推车与纸尿裤奶粉周期购 (Babylist / Target Baby / Amazon Baby / Aeroflow) 沙盒</div>
+            <div class="finops-sub">Round 244 (#363) · 退回安全座椅/奶粉 100% 禁重售锁与座椅 DOM &lt;=12个月门禁 (HTTP 403) + WHO 体重曲线纸尿裤自动升码与推车提篮转接环锁 (HTTP 422) + CPSC/FDA 禁售召回与 CPSIA §104 自动登记 (HTTP 451) + 未拆封尿裤 $0 换大码与 ACA 医保 $0 吸奶器净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="babymat-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度宝宝长大后继续傻发 NB/S1 小码纸尿裤致 48% 周期购退订、跨品牌推车漏买转接环退货与过期安全座椅报损池 ($)
+            <input type="number" id="babymat-gross-input" value="230000" min="10000" step="5000" oninput="recalcEcommerceBabyMaternityCPSCDiaperSizeUpSandbox()" />
+          </label>
+          <label>退回儿童安全座椅 (FMVSS 213) / 配方奶粉 / 个人吸奶器 100% 禁二次上架锁与安全座椅生产日期 (DOM &lt;=12m) 门禁
+            <select id="babymat-safety-select" onchange="recalcEcommerceBabyMaternityCPSCDiaperSizeUpSandbox()">
+              <option value="pass">退回安全座椅与奶粉 100% 路由销毁/回收拆解池 + 出库安全座椅 DOM 距今仅 4 个月保足 &gt;=5 年寿命 (合规)</option>
+              <option value="block_403">仓库将顾客退回的安全座椅或一段奶粉重新上架卖给下一个妈妈 或 发出一台积压 30 个月寿命缩水的座椅 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>基于宝宝出生日 (DOB) 与 WHO 生长曲线的纸尿裤周期购主动升码 (Size-Up) 与跨品牌推车↔提篮转接器门禁
+            <select id="babymat-sizeup-select" onchange="recalcEcommerceBabyMaternityCPSCDiaperSizeUpSandbox()">
+              <option value="pass">满 10 周(14.5磅)续订前 5 天主动提醒从 Size 1 升为 Size 2 + UPPAbaby 推车配 Nuna 提篮自动配齐转接环 (合规)</option>
+              <option value="block_422">宝宝已 16 磅还在按月傻发 200 片 NB 新生儿纸尿裤逼爸妈取消订阅 或 $1,300 推车+提篮漏配 $55 转接环 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国 CPSC 安全睡眠禁令 (&gt;10° 哄睡摇椅/床围)、FDA 奶粉批次召回与 CPSIA §104 召回卡自动绑定门禁
+            <select id="babymat-cpsc-select" onchange="recalcEcommerceBabyMaternityCPSCDiaperSizeUpSandbox()">
+              <option value="pass">零 CPSC/FDA 召回命中 + 出库自动绑定消费者手机与奶粉批号/婴儿床序列号完成 CPSIA §104 备案 (安全)</option>
+              <option value="block_451">上架已被 CPSC 禁售的 &gt;10° 倾斜睡眠摇椅/防撞床围 或 奶粉命中阪崎肠杆菌召回批号/漏绑召回卡 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>未拆封穿小纸尿裤 $0 免费换大码 + 美国 ACA DME (HCPCS E0603) 商业医保 $0 领 $220 吸奶器 + EDD 85折兜底
+            <select id="babymat-opt-select" onchange="recalcEcommerceBabyMaternityCPSCDiaperSizeUpSandbox()">
+              <option value="enabled" selected>未拆封小码尿裤免费换大码(+52% LTV) + 30s 核销医保 $0 领双边电动吸奶器 + 预产期前 60d 解锁 15% 补齐券 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">无主动升码换箱与医保 $0 吸奶器核销的普通母婴零售结账 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度尿裤断订与大件退货池</div>
+            <div class="finops-kpi-val" id="babymat-gross-kpi">$230,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">生长升码与安全锁后净损耗</div>
+            <div class="finops-kpi-val" id="babymat-net-kpi" style="color:#6ee7b7;">$144,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省周期购流失与退货</div>
+            <div class="finops-kpi-val" id="babymat-savings-kpi" style="color:#38bdf8;">$85,100</div>
+          </div>
+        </div>
+        <div id="babymat-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PROACTIVE_SIZEUP_FREE_SWAP_AND_ACA_DME_PUMP_CONFIRM · Mandate: baby_maternity_escrow_optim_409
         </div>
       </div>
 
@@ -88684,6 +88844,79 @@ function recalcCrossBorderB2BVATVIESPeppolSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_VIES_CONSULTATION_AND_PEPPOL_XML_AUTHORIZED · Mandate: b2b_vat_peppol_escrow_200';
+}}
+
+function recalcEcommerceBabyMaternityCPSCDiaperSizeUpSandbox() {{
+  const grossInput = document.getElementById('babymat-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '230000'));
+  const safetyGate = document.getElementById('babymat-safety-select').value;
+  const sizeupGate = document.getElementById('babymat-sizeup-select').value;
+  const cpscGate = document.getElementById('babymat-cpsc-select').value;
+  const optMode = document.getElementById('babymat-opt-select').value;
+
+  const grossKpi = document.getElementById('babymat-gross-kpi');
+  const netKpi = document.getElementById('babymat-net-kpi');
+  const savingsKpi = document.getElementById('babymat-savings-kpi');
+  const statusKpi = document.getElementById('babymat-status-kpi');
+  const banner = document.getElementById('babymat-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (cpscGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CPSC_FDA_INFANT_RECALL_OR_MISSING_CPSIA_REGISTRATION · Mandate: null';
+    return;
+  }}
+  if (safetyGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 RETURNED_CARSEAT_FORMULA_RESTOCK_OR_DOM_AGED_BAN · Mandate: null';
+    return;
+  }}
+  if (sizeupGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 OUTGROWN_DIAPER_STAGE_OR_MISSING_STROLLER_ADAPTER · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PROACTIVE_SIZEUP_FREE_SWAP_AND_ACA_DME_PUMP_CONFIRM · Mandate: baby_maternity_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_FRESH_CARSEAT_DOM_AND_CPSIA_BABY_AUTHORIZED · Mandate: baby_maternity_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
