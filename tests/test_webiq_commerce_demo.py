@@ -26411,6 +26411,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-combinatorial-sourcing-tco-dual-award-sandbox", html_zh)
 
+    def test_saas_plg_seat_fair_billing_coterm_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaaSPLGSeatFairBillingCoTermPolicyInput,
+            evaluate_saas_plg_seat_fair_billing_coterm_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_plg_seat_fair_billing_coterm_policy(
+            SaaSPLGSeatFairBillingCoTermPolicyInput(
+                quarterly_proration_arbitrage_and_seat_shock_churn_pool_usd=220000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ASYMMETRIC_PRORATION_AND_EXACT_COTERM_AUTHORIZED",
+        )
+
+        arb = evaluate_saas_plg_seat_fair_billing_coterm_policy(
+            SaaSPLGSeatFairBillingCoTermPolicyInput(
+                mid_cycle_upgrade_burst_export_followed_by_immediate_downgrade_refund=True
+            )
+        )
+        self.assertEqual(arb["status_code"], 403)
+        self.assertEqual(
+            arb["decision"],
+            "MID_CYCLE_UPGRADE_BURST_EXPORT_AND_IMMEDIATE_DOWNGRADE_ARBITRAGE",
+        )
+
+        guest = evaluate_saas_plg_seat_fair_billing_coterm_policy(
+            SaaSPLGSeatFairBillingCoTermPolicyInput(
+                charging_full_admin_price_for_zero_activity_seat_or_external_guest=True
+            )
+        )
+        self.assertEqual(guest["status_code"], 422)
+        self.assertEqual(
+            guest["decision"],
+            "ZERO_ACTIVITY_SEAT_CHARGE_OR_EXTERNAL_GUEST_BILLED_AS_FULL_ADMIN",
+        )
+
+        coterm = evaluate_saas_plg_seat_fair_billing_coterm_policy(
+            SaaSPLGSeatFairBillingCoTermPolicyInput(
+                using_30_360_coterm_drift_or_skipping_psd2_sca_on_large_expansion=True
+            )
+        )
+        self.assertEqual(coterm["status_code"], 451)
+        self.assertEqual(
+            coterm["decision"],
+            "INEXACT_COTERM_PRORATION_DRIFT_OR_UNAUTHENTICATED_EXPANSION_CHARGE",
+        )
+
+        optim = evaluate_saas_plg_seat_fair_billing_coterm_policy(
+            SaaSPLGSeatFairBillingCoTermPolicyInput(
+                quarterly_proration_arbitrage_and_seat_shock_churn_pool_usd=220000.0,
+                fair_billing_inactive_credit_and_100seat_volume_tier_stepdown_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 81400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 138600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_plg_seat_fair_billing_coterm_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-plg-seat-fair-billing-coterm-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

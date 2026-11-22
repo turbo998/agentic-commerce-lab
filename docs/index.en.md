@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`377` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`378` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -10,7 +10,7 @@
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (52 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (143 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (85 guides)](#b2b-procurement-erp)
-- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (31 guides)](#saas-finops-micropayments)
+- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (32 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (43 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
@@ -353,7 +353,7 @@
 | 85 | **Enterprise B2B Combinatorial Sourcing Optimization (`MILP`), Anti-Lowball `Should-Cost` Floor & `70/30` Dual-Award Escrow (`Keelvar vs. Coupa CSO vs. SAP Ariba Guided Sourcing vs. Fairmarkit`), Expressive Bundle & `MOQ` Gate, Beneficial-Owner `COI` Audit & Holistic Landed `TCO` Solver (`-36%` Sourcing TCO) Agent Architecture Selection FAQ** | [English](b2b-combinatorial-sourcing-optimization-tco-dual-award-lowball-escrow-agent-selection-faq.en.md) · [中文](b2b-combinatorial-sourcing-optimization-tco-dual-award-lowball-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (31 Guides)
+## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (32 Guides)
 
 > Covers enterprise SaaS seat governance, UUIDv7 usage metering watermarks, FTC Click-to-Cancel & retention guardrails, HTTP 402 (x402 / Stripe MPP Tempo) micropayments, and LLM token FinOps routing.
 
@@ -390,6 +390,7 @@
 | 29 | **EdTech Certification Voucher, `Pass-Guarantee` Bootcamp & `CEU / CPE` Tuition Escrow (`Coursera / Pearson VUE / Guild Education / Workday Learning`), Diligence-Gated Refund Lock, Just-in-Time Exam Voucher Minting, `NASBA` 50-Min Seat-Time Gate & `IRS § 127` Tuition Escrow (`-36%` EdTech & L&D Loss) Agent Architecture Selection FAQ** | [English](edtech-certification-exam-voucher-pass-guarantee-ceu-tuition-escrow-agent-selection-faq.en.md) · [中文](edtech-certification-exam-voucher-pass-guarantee-ceu-tuition-escrow-agent-selection-faq.md) |
 | 30 | **Enterprise B2B SaaS `CPQ`, Multi-Year `Ramp Deals` & `ASC 606` Deal-Desk Escrow (`Salesforce Revenue Cloud / DealHub / Zuora / Stripe Billing`), Anti-Side-Letter Gate, `SSP ±15%` Corridor & Retroactive Burst-to-Commit True-Up (`-37%` Deal Leakage) Agent Architecture Selection FAQ** | [English](b2b-saas-cpq-multi-year-ramp-deal-desk-overage-cap-escrow-agent-selection-faq.en.md) · [中文](b2b-saas-cpq-multi-year-ramp-deal-desk-overage-cap-escrow-agent-selection-faq.md) |
 | 31 | **AI & Cloud-Native SaaS Prepaid Credit Wallet, `FEFO` Drawdown Waterfall & Anti-Runaway `Auto-Top-Up` Escrow (`Orb / Metronome / Stripe Billing Credit Grants / Lago`), `2ms` Pre-Flight Token Hold, `ASC 606` Proportional Breakage & Renewal-Conditioned `25%` Rollover (`-38%` Overdraft & Churn Leakage) Agent Architecture Selection FAQ** | [English](saas-ai-prepaid-credit-wallet-fifo-drawdown-auto-topup-breakage-escrow-agent-selection-faq.en.md) · [中文](saas-ai-prepaid-credit-wallet-fifo-drawdown-auto-topup-breakage-escrow-agent-selection-faq.md) |
+| 32 | **SaaS `PLG` Seat Expansion, Slack-Style `Fair Billing` Active Credit & Co-Term Proration Escrow (`Stripe Billing vs. Zuora vs. Chargebee vs. Paddle`), Period-End Downgrade Arbitrage Lock, External-Domain Free Guest Gate, Exact UTC Second `Co-Terming` & 100-Seat Tier Step-Down (`-37%` Proration & Churn Loss) Agent Architecture Selection FAQ** | [English](saas-plg-seat-expansion-fair-billing-coterm-proration-anti-arbitrage-escrow-agent-selection-faq.en.md) · [中文](saas-plg-seat-expansion-fair-billing-coterm-proration-anti-arbitrage-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (43 Guides)

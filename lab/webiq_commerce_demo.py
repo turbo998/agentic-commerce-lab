@@ -34783,6 +34783,82 @@ def evaluate_b2b_combinatorial_sourcing_tco_dual_award_policy(
     }
 
 
+@dataclass(frozen=True)
+class SaaSPLGSeatFairBillingCoTermPolicyInput:
+    quarterly_proration_arbitrage_and_seat_shock_churn_pool_usd: float = 220000.0
+    mid_cycle_upgrade_burst_export_followed_by_immediate_downgrade_refund: bool = False
+    charging_full_admin_price_for_zero_activity_seat_or_external_guest: bool = False
+    using_30_360_coterm_drift_or_skipping_psd2_sca_on_large_expansion: bool = False
+    fair_billing_inactive_credit_and_100seat_volume_tier_stepdown_ready: bool = False
+
+
+def evaluate_saas_plg_seat_fair_billing_coterm_policy(
+    policy_input: SaaSPLGSeatFairBillingCoTermPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(policy_input.quarterly_proration_arbitrage_and_seat_shock_churn_pool_usd),
+    )
+    if policy_input.using_30_360_coterm_drift_or_skipping_psd2_sca_on_large_expansion:
+        return {
+            "status_code": 451,
+            "decision": "INEXACT_COTERM_PRORATION_DRIFT_OR_UNAUTHENTICATED_EXPANSION_CHARGE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if (
+        policy_input.mid_cycle_upgrade_burst_export_followed_by_immediate_downgrade_refund
+    ):
+        return {
+            "status_code": 403,
+            "decision": "MID_CYCLE_UPGRADE_BURST_EXPORT_AND_IMMEDIATE_DOWNGRADE_ARBITRAGE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.charging_full_admin_price_for_zero_activity_seat_or_external_guest:
+        return {
+            "status_code": 422,
+            "decision": "ZERO_ACTIVITY_SEAT_CHARGE_OR_EXTERNAL_GUEST_BILLED_AS_FULL_ADMIN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.fair_billing_inactive_credit_and_100seat_volume_tier_stepdown_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FAIR_BILLING_ACTIVE_CREDIT_AND_VOLUME_TIER_STEPDOWN_CONFIRM",
+            "mandate_token": "saas_plg_fair_billing_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ASYMMETRIC_PRORATION_AND_EXACT_COTERM_AUTHORIZED",
+        "mandate_token": "saas_plg_fair_billing_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -47436,6 +47512,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    saas_plg_seat_fair_billing_coterm_guard = {
+        "authorized_200": evaluate_saas_plg_seat_fair_billing_coterm_policy(
+            SaaSPLGSeatFairBillingCoTermPolicyInput()
+        ),
+        "weekend_upgrade_arbitrage_403": evaluate_saas_plg_seat_fair_billing_coterm_policy(
+            SaaSPLGSeatFairBillingCoTermPolicyInput(
+                mid_cycle_upgrade_burst_export_followed_by_immediate_downgrade_refund=True
+            )
+        ),
+        "inactive_or_guest_seat_422": evaluate_saas_plg_seat_fair_billing_coterm_policy(
+            SaaSPLGSeatFairBillingCoTermPolicyInput(
+                charging_full_admin_price_for_zero_activity_seat_or_external_guest=True
+            )
+        ),
+        "coterm_drift_or_sca_451": evaluate_saas_plg_seat_fair_billing_coterm_policy(
+            SaaSPLGSeatFairBillingCoTermPolicyInput(
+                using_30_360_coterm_drift_or_skipping_psd2_sca_on_large_expansion=True
+            )
+        ),
+        "fair_billing_tier_stepdown_409": evaluate_saas_plg_seat_fair_billing_coterm_policy(
+            SaaSPLGSeatFairBillingCoTermPolicyInput(
+                fair_billing_inactive_credit_and_100seat_volume_tier_stepdown_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -47823,6 +47925,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agent_payment_split_shipment_multi_capture_guard": agent_payment_split_shipment_multi_capture_guard,
         "omnichannel_atp_channel_ringfencing_asn_guard": omnichannel_atp_channel_ringfencing_asn_guard,
         "b2b_combinatorial_sourcing_tco_dual_award_guard": b2b_combinatorial_sourcing_tco_dual_award_guard,
+        "saas_plg_seat_fair_billing_coterm_guard": saas_plg_seat_fair_billing_coterm_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -67785,6 +67888,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="b2bcso-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MILP_HOLISTIC_TCO_SOLVER_AND_70_30_DUAL_AWARD_CONFIRM · Mandate: b2b_combinatorial_sourcing_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 259 SaaS PLG Seat Expansion, Fair Billing & Co-Term Proration Escrow (#378) -->
+      <div class="finops-box" id="saas-plg-seat-fair-billing-coterm-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">👥 订阅制 SaaS 自助扩席 (PLG)、Fair Billing 零活跃抵免与精确 Co-Terming (Stripe / Zuora / Chargebee) 沙盒</div>
+            <div class="finops-sub">Round 259 (#378) · 升档秒扣款与降档排期周期末防周末升档跑批退钱套利 (HTTP 403) + 外部邮箱默认免费访客与零活跃席位自动抵免 (HTTP 422) + UTC 秒级精确 Co-Terming 折算与欧洲 PSD2 SCA 确认 (HTTP 451) + 满百席自动阶梯降单价与闲置抵扣金结转净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="saasplg-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度周六升档 $999 企业版跑完批量导出周日秒降档骗走 93% 退费、误邀外部访客产生天价账单退订及 Co-Term 尾差争议池 ($)
+            <input type="number" id="saasplg-gross-input" value="220000" min="10000" step="5000" oninput="recalcSaaSPLGSeatFairBillingCoTermSandbox()" />
+          </label>
+          <label>不对称升降档折算状态机 (升档同步付款秒生效 vs 降档通过 SubscriptionSchedule 排期至周期末生效) 门禁
+            <select id="saasplg-arb-select" onchange="recalcSaaSPLGSeatFairBillingCoTermSandbox()">
+              <option value="pass">升档收齐补差款后解锁权限，降档与缩席一律排期在 current_period_end 生效不退当期现金 (安全)</option>
+              <option value="block_403">周五升档至 $999/月企业版导出 20万条数据，周日申请按天折算退回 $933 白嫖高阶配额 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>外部邮箱域名自动识别为免费只读访客 (Free Guest) 与 Slack 式 Fair Billing 零活跃席位自动抵免门禁
+            <select id="saasplg-guest-select" onchange="recalcSaaSPLGSeatFairBillingCoTermSandbox()">
+              <option value="pass">非企业域名只读协作默认归为 $0 外部访客 + 整月 0 活跃新增席位自动返还下月抵扣金 (合规)</option>
+              <option value="block_422">员工分享链接误把 40 名外部合作方或 0 登录实习生按 $45/月全价管理员直接静默扣款 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>年中增购同日到期 (Co-Terming) 精确 UTC 秒级 (Actual/Actual) 折算与欧洲大额扩席 PSD2 SCA 确认门禁
+            <select id="saasplg-coterm-select" onchange="recalcSaaSPLGSeatFairBillingCoTermSandbox()">
+              <option value="pass">按主合同精确起止秒数比例计算 Co-Term 补差美分 (符合 ASC 606) 且大额扩席经 PO/SCA 确认 (安全)</option>
+              <option value="block_451">用粗糙 30/360 天数算闰年并单致日单价漂移违反 ASC 606 或未经 SCA 确认超限免密强扣欧洲客户 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Slack 式 Fair Billing 闲置天数自动转下期抵扣金 + 累计满 100 席自动触发全单 85 折阶梯降价 (Volume Step-Down)
+            <select id="saasplg-opt-select" onchange="recalcSaaSPLGSeatFairBillingCoTermSandbox()">
+              <option value="enabled" selected>闲置席位天数自动生成 Credit Memo 冲抵下月账单 + 跨 100 席自动全单降价 15% 引导转年框 (-37% 流失 / HTTP 409)</option>
+              <option value="disabled">不提供零活跃席位自动抵免且散买扩席不触发阶梯单价重算 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度折算套利与误邀退订池</div>
+            <div class="finops-kpi-val" id="saasplg-gross-kpi">$220,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">期末降档锁与公平计费后净损</div>
+            <div class="finops-kpi-val" id="saasplg-net-kpi" style="color:#6ee7b7;">$138,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省套利挽回与NDR增益</div>
+            <div class="finops-kpi-val" id="saasplg-savings-kpi" style="color:#38bdf8;">$81,400</div>
+          </div>
+        </div>
+        <div id="saasplg-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FAIR_BILLING_ACTIVE_CREDIT_AND_VOLUME_TIER_STEPDOWN_CONFIRM · Mandate: saas_plg_fair_billing_optim_409
         </div>
       </div>
 
@@ -92209,6 +92369,79 @@ function recalcB2BCombinatorialSourcingTCODualAwardSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_COMBINATORIAL_TCO_AND_DUAL_SOURCE_AWARD_AUTHORIZED · Mandate: b2b_combinatorial_sourcing_200';
+}}
+
+function recalcSaaSPLGSeatFairBillingCoTermSandbox() {{
+  const grossInput = document.getElementById('saasplg-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '220000'));
+  const arbGate = document.getElementById('saasplg-arb-select').value;
+  const guestGate = document.getElementById('saasplg-guest-select').value;
+  const cotermGate = document.getElementById('saasplg-coterm-select').value;
+  const optMode = document.getElementById('saasplg-opt-select').value;
+
+  const grossKpi = document.getElementById('saasplg-gross-kpi');
+  const netKpi = document.getElementById('saasplg-net-kpi');
+  const savingsKpi = document.getElementById('saasplg-savings-kpi');
+  const statusKpi = document.getElementById('saasplg-status-kpi');
+  const banner = document.getElementById('saasplg-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (cotermGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 INEXACT_COTERM_PRORATION_DRIFT_OR_UNAUTHENTICATED_EXPANSION_CHARGE · Mandate: null';
+    return;
+  }}
+  if (arbGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MID_CYCLE_UPGRADE_BURST_EXPORT_AND_IMMEDIATE_DOWNGRADE_ARBITRAGE · Mandate: null';
+    return;
+  }}
+  if (guestGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 ZERO_ACTIVITY_SEAT_CHARGE_OR_EXTERNAL_GUEST_BILLED_AS_FULL_ADMIN · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FAIR_BILLING_ACTIVE_CREDIT_AND_VOLUME_TIER_STEPDOWN_CONFIRM · Mandate: saas_plg_fair_billing_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_ASYMMETRIC_PRORATION_AND_EXACT_COTERM_AUTHORIZED · Mandate: saas_plg_fair_billing_200';
 }}
 
 function updateStage1756Sandbox() {{

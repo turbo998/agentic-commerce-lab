@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`377` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`378` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -10,7 +10,7 @@
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（52 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（143 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（85 篇）](#b2b-procurement-erp)
-- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（31 篇）](#saas-finops-micropayments)
+- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（32 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（43 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
@@ -353,7 +353,7 @@
 | 85 | **企业 B2B 组合寻源优化（`Combinatorial Sourcing Optimization`）、防“低于 BOM 成本自杀式恶意抢标（Abnormally Low Tender）”与 `70/30` 双源主备授标托管（`Keelvar vs. Coupa CSO vs. SAP Ariba Guided Sourcing vs. Fairmarkit`）、防“逐行挑最低价把 80 个 SKU 拆碎给 35 家供应商致不足 MOQ 拒单且零担运费翻倍”、防“100% 独家中标给亏损价新厂遭量产期断供勒索涨价”与含关税/账期 `WACC`/质量 `PPM` 的 `Holistic TCO` 线性规划求解净省 36% Agent 架构选型 FAQ** | [中文](b2b-combinatorial-sourcing-optimization-tco-dual-award-lowball-escrow-agent-selection-faq.md) · [English](b2b-combinatorial-sourcing-optimization-tco-dual-award-lowball-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（31 篇）
+## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（32 篇）
 
 > 涵盖企业 SaaS 席位与影子 IT 治理、高频 Token/API 用量水位线幂等计费、FTC 一键退订（Click-to-Cancel）与挽留护栏、HTTP 402（x402 / Stripe MPP Tempo）亚美分流式微支付及推理 FinOps 成本路由。
 
@@ -390,6 +390,7 @@
 | 29 | **在线职业考培、IT 认证考试券与企业培训报销（EdTech Certification Voucher, `Pass-Guarantee` & `CEU/CPE` Tuition Escrow：Coursera / Pearson VUE / Guild Education / Workday Learning）、防“报名 $2,400 不过包退班第一天扒光题库就弃考骗全额退款”、防“领走 $300 官方考试券挂闲鱼倒卖”与继续教育（`NASBA / ACCME`）反倍速挂机托管“防买 2,000 个企业学习账号 65% 吃灰、防刚报销完 $10,000 MBA 学费第二天就跳槽去竞对与免费送补考券代替退全款净省 36%”Agent 架构选型 FAQ** | [中文](edtech-certification-exam-voucher-pass-guarantee-ceu-tuition-escrow-agent-selection-faq.md) · [English](edtech-certification-exam-voucher-pass-guarantee-ceu-tuition-escrow-agent-selection-faq.en.md) |
 | 30 | **企业 B2B SaaS 配置报价（`CPQ`）、多年阶梯爬坡合同（`Multi-Year Ramp Deals`）与交易台（Deal Desk：`Salesforce Revenue Cloud / DealHub / Zuora / Stripe Billing`）托管、防“销售为冲季末提成在备注栏私塞‘随时无责退订’导致 $600k 合同无法确认收入（`ASC 606`）”、防“签约首日误按第 3 年满编席位全额扣款”与突发超额用量“免罚息转签扩容包（Retroactive Burst True-Up）”托管“防 3 倍惩罚性超额账单吓跑大客户与报价周期缩短 65% 净省 37%”Agent 架构选型 FAQ** | [中文](b2b-saas-cpq-multi-year-ramp-deal-desk-overage-cap-escrow-agent-selection-faq.md) · [English](b2b-saas-cpq-multi-year-ramp-deal-desk-overage-cap-escrow-agent-selection-faq.en.md) |
 | 31 | **AI 与云原生 SaaS 预充值积分钱包（Prepaid Credit Wallet）、多批次先进先出（`FEFO`）消耗瀑布与防“自动续充（`Auto-Top-Up`）死循环刷爆信用卡”托管（`Orb / Metronome / Stripe Billing Credit Grants / Lago`）、防“先扣光客户 1 年有效期的真金白银充值池，却让明天到期的免费赠送积分白白过期作废”、防“高并发流式请求把 $2 余额刷成 -$380 负数透支坏账”与到期沉淀（Breakage）按 `ASC 606` 比例确认收入托管“防年底积分强制清零引发大客户集体退订与 2ms 预冻结锁净省 38%”Agent 架构选型 FAQ** | [中文](saas-ai-prepaid-credit-wallet-fifo-drawdown-auto-topup-breakage-escrow-agent-selection-faq.md) · [English](saas-ai-prepaid-credit-wallet-fifo-drawdown-auto-topup-breakage-escrow-agent-selection-faq.en.md) |
+| 32 | **订阅制 SaaS 与协同软件“产品驱动自助扩席（`PLG` Seat Expansion）、`Fair Billing` 零活跃席位自动抵免与防‘周末升档跑批、周一降档退钱’套利托管（`Stripe Billing / Zuora / Chargebee / Paddle`）”、防“员工分享链接误把 40 名外部合作方加为 $45/月付费席位产生天价账单退订”、防“年中增购同日到期（`Co-Terming`）用 30/360 粗算产生 `ASC 606` 尾差”与满百席自动阶梯降单价净省 37% Agent 架构选型 FAQ** | [中文](saas-plg-seat-expansion-fair-billing-coterm-proration-anti-arbitrage-escrow-agent-selection-faq.md) · [English](saas-plg-seat-expansion-fair-billing-coterm-proration-anti-arbitrage-escrow-agent-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（43 篇）
