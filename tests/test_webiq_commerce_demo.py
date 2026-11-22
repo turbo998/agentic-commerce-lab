@@ -25272,6 +25272,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("enterprise-agent-platform-orchestration-sandbox", html_zh)
 
+    def test_b2b_saas_cpq_multi_year_ramp_deal_desk_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BSaaSCPQMultiYearRampDealDeskPolicyInput,
+            evaluate_b2b_saas_cpq_multi_year_ramp_deal_desk_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_saas_cpq_multi_year_ramp_deal_desk_policy(
+            B2BSaaSCPQMultiYearRampDealDeskPolicyInput(
+                quarterly_cpq_ssp_carveout_ramp_error_and_overage_churn_pool_usd=260000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_RAMP_SCHEDULE_AND_ASC606_SSP_CPQ_AUTHORIZED",
+        )
+
+        optout = evaluate_b2b_saas_cpq_multi_year_ramp_deal_desk_policy(
+            B2BSaaSCPQMultiYearRampDealDeskPolicyInput(
+                rogue_free_text_convenience_opt_out_or_perpetual_promo_lock=True
+            )
+        )
+        self.assertEqual(optout["status_code"], 403)
+        self.assertEqual(
+            optout["decision"],
+            "ROGUE_OPT_OUT_SIDE_LETTER_OR_PERPETUAL_PROMO_LOCK",
+        )
+
+        ramp = evaluate_b2b_saas_cpq_multi_year_ramp_deal_desk_policy(
+            B2BSaaSCPQMultiYearRampDealDeskPolicyInput(
+                ramp_schedule_day1_full_bill_desync_or_ssp_corridor_breach=True
+            )
+        )
+        self.assertEqual(ramp["status_code"], 422)
+        self.assertEqual(
+            ramp["decision"],
+            "RAMP_BILLING_SCHEDULE_DESYNC_OR_SSP_CORRIDOR_BREACH",
+        )
+
+        overage = evaluate_b2b_saas_cpq_multi_year_ramp_deal_desk_policy(
+            B2BSaaSCPQMultiYearRampDealDeskPolicyInput(
+                punitive_3x_overage_auto_invoice_without_retroactive_trueup=True
+            )
+        )
+        self.assertEqual(overage["status_code"], 451)
+        self.assertEqual(
+            overage["decision"],
+            "PUNITIVE_3X_OVERAGE_BILL_SHOCK_WITHOUT_TIER_TRUEUP",
+        )
+
+        optim = evaluate_b2b_saas_cpq_multi_year_ramp_deal_desk_policy(
+            B2BSaaSCPQMultiYearRampDealDeskPolicyInput(
+                quarterly_cpq_ssp_carveout_ramp_error_and_overage_churn_pool_usd=260000.0,
+                automated_deal_room_and_retroactive_burst_to_acv_trueup_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 96200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 163800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_saas_cpq_multi_year_ramp_deal_desk_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-saas-cpq-multi-year-ramp-deal-desk-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

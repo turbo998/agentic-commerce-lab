@@ -33461,6 +33461,82 @@ def evaluate_enterprise_agent_platform_orchestration_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BSaaSCPQMultiYearRampDealDeskPolicyInput:
+    quarterly_cpq_ssp_carveout_ramp_error_and_overage_churn_pool_usd: float = 260000.0
+    rogue_free_text_convenience_opt_out_or_perpetual_promo_lock: bool = False
+    ramp_schedule_day1_full_bill_desync_or_ssp_corridor_breach: bool = False
+    punitive_3x_overage_auto_invoice_without_retroactive_trueup: bool = False
+    automated_deal_room_and_retroactive_burst_to_acv_trueup_ready: bool = False
+
+
+def evaluate_b2b_saas_cpq_multi_year_ramp_deal_desk_policy(
+    policy_input: B2BSaaSCPQMultiYearRampDealDeskPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_cpq_ssp_carveout_ramp_error_and_overage_churn_pool_usd
+        ),
+    )
+    if policy_input.punitive_3x_overage_auto_invoice_without_retroactive_trueup:
+        return {
+            "status_code": 451,
+            "decision": "PUNITIVE_3X_OVERAGE_BILL_SHOCK_WITHOUT_TIER_TRUEUP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.rogue_free_text_convenience_opt_out_or_perpetual_promo_lock:
+        return {
+            "status_code": 403,
+            "decision": "ROGUE_OPT_OUT_SIDE_LETTER_OR_PERPETUAL_PROMO_LOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ramp_schedule_day1_full_bill_desync_or_ssp_corridor_breach:
+        return {
+            "status_code": 422,
+            "decision": "RAMP_BILLING_SCHEDULE_DESYNC_OR_SSP_CORRIDOR_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.automated_deal_room_and_retroactive_burst_to_acv_trueup_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DEAL_ROOM_AND_RETROACTIVE_BURST_TO_ACV_TRUEUP_CONFIRM",
+            "mandate_token": "b2b_saas_cpq_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_RAMP_SCHEDULE_AND_ASC606_SSP_CPQ_AUTHORIZED",
+        "mandate_token": "b2b_saas_cpq_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -45672,6 +45748,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_saas_cpq_multi_year_ramp_deal_desk_guard = {
+        "authorized_200": evaluate_b2b_saas_cpq_multi_year_ramp_deal_desk_policy(
+            B2BSaaSCPQMultiYearRampDealDeskPolicyInput()
+        ),
+        "rogue_opt_out_403": evaluate_b2b_saas_cpq_multi_year_ramp_deal_desk_policy(
+            B2BSaaSCPQMultiYearRampDealDeskPolicyInput(
+                rogue_free_text_convenience_opt_out_or_perpetual_promo_lock=True
+            )
+        ),
+        "ramp_or_ssp_422": evaluate_b2b_saas_cpq_multi_year_ramp_deal_desk_policy(
+            B2BSaaSCPQMultiYearRampDealDeskPolicyInput(
+                ramp_schedule_day1_full_bill_desync_or_ssp_corridor_breach=True
+            )
+        ),
+        "punitive_3x_overage_451": evaluate_b2b_saas_cpq_multi_year_ramp_deal_desk_policy(
+            B2BSaaSCPQMultiYearRampDealDeskPolicyInput(
+                punitive_3x_overage_auto_invoice_without_retroactive_trueup=True
+            )
+        ),
+        "burst_trueup_deal_409": evaluate_b2b_saas_cpq_multi_year_ramp_deal_desk_policy(
+            B2BSaaSCPQMultiYearRampDealDeskPolicyInput(
+                automated_deal_room_and_retroactive_burst_to_acv_trueup_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -46042,6 +46144,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_distributor_rebate_ship_debit_price_prot_guard": b2b_distributor_rebate_ship_debit_price_prot_guard,
         "ecommerce_alcohol_age_verify_dram_shop_guard": ecommerce_alcohol_age_verify_dram_shop_guard,
         "enterprise_agent_platform_orchestration_guard": enterprise_agent_platform_orchestration_guard,
+        "b2b_saas_cpq_multi_year_ramp_deal_desk_guard": b2b_saas_cpq_multi_year_ramp_deal_desk_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -65035,6 +65138,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="agentplat-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 COMPOSABLE_FOUNDRY_LANGGRAPH_COPILOT_STUDIO_HYBRID_CONFIRM · Mandate: agent_platform_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 242 B2B SaaS CPQ, Multi-Year Ramp Deals & ASC 606 Deal-Desk Escrow (#361) -->
+      <div class="finops-box" id="b2b-saas-cpq-multi-year-ramp-deal-desk-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📑 企业 B2B SaaS CPQ 配置报价、多年爬坡合同与 ASC 606 交易台 (DealHub / Revenue Cloud / Zuora / Stripe) 沙盒</div>
+            <div class="finops-sub">Round 242 (#361) · 禁填自由文本无责退订 (Opt-Out) 与终身锁死 3折底价门禁 (HTTP 403) + 多年爬坡时间切片 (Y1-&gt;Y2-&gt;Y3) 三端同步与 ASC 606 SSP (±15%) 走廊锁 (HTTP 422) + 惩罚性 3x 超额账单熔断器 (HTTP 451) + 15秒秒批与超额转签 2年扩容包净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="saascpq-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度销售在备注栏偷塞无责退订致 $600k 合同无法确认收入、白送实施费冲减软件 ARR 与 3x 超额罚单吓跑大客户池 ($)
+            <input type="number" id="saascpq-gross-input" value="260000" min="10000" step="5000" oninput="recalcB2BSaaSCPQMultiYearRampDealDeskSandbox()" />
+          </label>
+          <label>报价单自由文本特殊备注框 (Special Terms) 封锁与无责退订 (Termination for Convenience) / 终身锁价拦截门禁
+            <select id="saascpq-optout-select" onchange="recalcB2BSaaSCPQMultiYearRampDealDeskSandbox()">
+              <option value="pass">禁用自由文本备注、采用法务标准条款积木，100% 满足 ASC 606 三年可执行合同确认标准 (合规)</option>
+              <option value="block_403">销售为冲 Q4 提成在备注栏手写“前 6 个月可随时无责退订”或“首年 3 折永久适用所有续约” (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>多年爬坡时间切片 (Stepped Ramp Segments) CPQ==Billing==IAM 三端对齐与 ASC 606 SSP (±15%) 独立售价走廊锁
+            <select id="saascpq-ramp-select" onchange="recalcB2BSaaSCPQMultiYearRampDealDeskSandbox()">
+              <option value="pass">显式锁定 Y1:500 -&gt; Y2:1500 -&gt; Y3:3000 分期开票切片 + 人工实施费折扣严格保持在 SSP ±15% 走廊内 (合规)</option>
+              <option value="block_422">签约第 1 天误按第 3 年 3,000 席位全额开出 $300k 错票 或 100% 白送 $80k 实施服务击穿 SSP 吃掉软件 ARR (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>惩罚性 3.0x 超额用量账单冲击熔断器 (Overage Bill-Shock &gt;=25% ACV) 与 14 天缓冲窗口门禁
+            <select id="saascpq-overage-select" onchange="recalcB2BSaaSCPQMultiYearRampDealDeskSandbox()">
+              <option value="pass">超额 &gt;=25% 自动挂起惩罚性账单并开启 14 天免罚息缓冲期引导追溯升档 (安全)</option>
+              <option value="block_451">客户双十一流量冲高触发 3.0x 惩罚性超额费被直接扣走 $95,000，致客户暴怒拒付并在年底 100% 退订 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>口袋净毛利 &gt;=72% 标准单 15 秒自动秒批 + “免 3x 超额罚单转签 2 年扩容包 (Burst-to-ACV True-Up)” + 按秒并期
+            <select id="saascpq-opt-select" onchange="recalcB2BSaaSCPQMultiYearRampDealDeskSandbox()">
+              <option value="enabled" selected>15s 零人工秒批(-65% 周期) + 免除 $95k 超额罚单直接转签 $180k 两年扩容 ARR + 按秒 Co-Term (-37% 漏损 / HTTP 409)</option>
+              <option value="disabled">无自助超额转签扩容与 15 秒自动批单的常规交易台流程 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度CPQ毛利漏损与超额流失池</div>
+            <div class="finops-kpi-val" id="saascpq-gross-kpi">$260,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">SSP锁死与追溯升档后净损耗</div>
+            <div class="finops-kpi-val" id="saascpq-net-kpi" style="color:#6ee7b7;">$163,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省ARR冲减与退订流失</div>
+            <div class="finops-kpi-val" id="saascpq-savings-kpi" style="color:#38bdf8;">$96,200</div>
+          </div>
+        </div>
+        <div id="saascpq-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DEAL_ROOM_AND_RETROACTIVE_BURST_TO_ACV_TRUEUP_CONFIRM · Mandate: b2b_saas_cpq_escrow_optim_409
         </div>
       </div>
 
@@ -88218,6 +88378,79 @@ function recalcEnterpriseAgentPlatformOrchestrationSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_OBO_RLS_AND_DURABLE_SAGA_PLATFORM_AUTHORIZED · Mandate: agent_platform_escrow_200';
+}}
+
+function recalcB2BSaaSCPQMultiYearRampDealDeskSandbox() {{
+  const grossInput = document.getElementById('saascpq-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '260000'));
+  const optoutGate = document.getElementById('saascpq-optout-select').value;
+  const rampGate = document.getElementById('saascpq-ramp-select').value;
+  const overageGate = document.getElementById('saascpq-overage-select').value;
+  const optMode = document.getElementById('saascpq-opt-select').value;
+
+  const grossKpi = document.getElementById('saascpq-gross-kpi');
+  const netKpi = document.getElementById('saascpq-net-kpi');
+  const savingsKpi = document.getElementById('saascpq-savings-kpi');
+  const statusKpi = document.getElementById('saascpq-status-kpi');
+  const banner = document.getElementById('saascpq-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (overageGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PUNITIVE_3X_OVERAGE_BILL_SHOCK_WITHOUT_TIER_TRUEUP · Mandate: null';
+    return;
+  }}
+  if (optoutGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ROGUE_OPT_OUT_SIDE_LETTER_OR_PERPETUAL_PROMO_LOCK · Mandate: null';
+    return;
+  }}
+  if (rampGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 RAMP_BILLING_SCHEDULE_DESYNC_OR_SSP_CORRIDOR_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DEAL_ROOM_AND_RETROACTIVE_BURST_TO_ACV_TRUEUP_CONFIRM · Mandate: b2b_saas_cpq_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_RAMP_SCHEDULE_AND_ASC606_SSP_CPQ_AUTHORIZED · Mandate: b2b_saas_cpq_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
