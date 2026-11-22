@@ -26679,6 +26679,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-airline-ancillary-emd-dot260-sandbox", html_zh)
 
+    def test_b2b_cpfr_rolling_forecast_bullwhip_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BCPFRRollingForecastBullwhipPolicyInput,
+            evaluate_b2b_cpfr_rolling_forecast_bullwhip_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_cpfr_rolling_forecast_bullwhip_policy(
+            B2BCPFRRollingForecastBullwhipPolicyInput(
+                quarterly_bullwhip_overstock_and_eo_material_liability_pool_usd=360000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_TIME_FENCE_CORRIDOR_AND_DAMPED_POS_FORECAST_AUTHORIZED",
+        )
+
+        fence = evaluate_b2b_cpfr_rolling_forecast_bullwhip_policy(
+            B2BCPFRRollingForecastBullwhipPolicyInput(
+                cutting_firm_po_inside_w1_w4_frozen_zone_or_exceeding_slushy_corridor=True
+            )
+        )
+        self.assertEqual(fence["status_code"], 403)
+        self.assertEqual(
+            fence["decision"],
+            "FROZEN_ZONE_PO_CANCELLATION_OR_SLUSHY_HORIZON_CORRIDOR_BREACH",
+        )
+
+        bullwhip = evaluate_b2b_cpfr_rolling_forecast_bullwhip_policy(
+            B2BCPFRRollingForecastBullwhipPolicyInput(
+                extrapolating_one_off_promo_spike_into_multi_week_bullwhip_po=True
+            )
+        )
+        self.assertEqual(bullwhip["status_code"], 422)
+        self.assertEqual(
+            bullwhip["decision"],
+            "BULLWHIP_PHANTOM_SPIKE_AMPLIFICATION_WITHOUT_POS_SELL_THROUGH",
+        )
+
+        ncnr = evaluate_b2b_cpfr_rolling_forecast_bullwhip_policy(
+            B2BCPFRRollingForecastBullwhipPolicyInput(
+                biased_buyer_submitting_phantom_shortage_surge_without_ncnr_deposit=True
+            )
+        )
+        self.assertEqual(ncnr["status_code"], 451)
+        self.assertEqual(
+            ncnr["decision"],
+            "PHANTOM_SHORTAGE_OVER_FORECAST_GAMING_WITHOUT_NCNR_DEPOSIT",
+        )
+
+        optim = evaluate_b2b_cpfr_rolling_forecast_bullwhip_policy(
+            B2BCPFRRollingForecastBullwhipPolicyInput(
+                quarterly_bullwhip_overstock_and_eo_material_liability_pool_usd=360000.0,
+                shared_bom_product_family_mix_swap_and_pos_buffer_reduction_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 133200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 226800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_cpfr_rolling_forecast_bullwhip_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-cpfr-rolling-forecast-bullwhip-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

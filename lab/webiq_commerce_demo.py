@@ -35097,6 +35097,84 @@ def evaluate_ota_airline_ancillary_emd_dot260_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BCPFRRollingForecastBullwhipPolicyInput:
+    quarterly_bullwhip_overstock_and_eo_material_liability_pool_usd: float = 360000.0
+    cutting_firm_po_inside_w1_w4_frozen_zone_or_exceeding_slushy_corridor: bool = False
+    extrapolating_one_off_promo_spike_into_multi_week_bullwhip_po: bool = False
+    biased_buyer_submitting_phantom_shortage_surge_without_ncnr_deposit: bool = False
+    shared_bom_product_family_mix_swap_and_pos_buffer_reduction_ready: bool = False
+
+
+def evaluate_b2b_cpfr_rolling_forecast_bullwhip_policy(
+    policy_input: B2BCPFRRollingForecastBullwhipPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_bullwhip_overstock_and_eo_material_liability_pool_usd
+        ),
+    )
+    if policy_input.biased_buyer_submitting_phantom_shortage_surge_without_ncnr_deposit:
+        return {
+            "status_code": 451,
+            "decision": "PHANTOM_SHORTAGE_OVER_FORECAST_GAMING_WITHOUT_NCNR_DEPOSIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if (
+        policy_input.cutting_firm_po_inside_w1_w4_frozen_zone_or_exceeding_slushy_corridor
+    ):
+        return {
+            "status_code": 403,
+            "decision": "FROZEN_ZONE_PO_CANCELLATION_OR_SLUSHY_HORIZON_CORRIDOR_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.extrapolating_one_off_promo_spike_into_multi_week_bullwhip_po:
+        return {
+            "status_code": 422,
+            "decision": "BULLWHIP_PHANTOM_SPIKE_AMPLIFICATION_WITHOUT_POS_SELL_THROUGH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.shared_bom_product_family_mix_swap_and_pos_buffer_reduction_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PRODUCT_FAMILY_CAPACITY_SWAP_AND_POS_SHARED_BUFFER_REDUCTION_CONFIRM",
+            "mandate_token": "b2b_cpfr_horizon_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_TIME_FENCE_CORRIDOR_AND_DAMPED_POS_FORECAST_AUTHORIZED",
+        "mandate_token": "b2b_cpfr_horizon_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -47854,6 +47932,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_cpfr_rolling_forecast_bullwhip_guard = {
+        "authorized_200": evaluate_b2b_cpfr_rolling_forecast_bullwhip_policy(
+            B2BCPFRRollingForecastBullwhipPolicyInput()
+        ),
+        "frozen_slushy_breach_403": evaluate_b2b_cpfr_rolling_forecast_bullwhip_policy(
+            B2BCPFRRollingForecastBullwhipPolicyInput(
+                cutting_firm_po_inside_w1_w4_frozen_zone_or_exceeding_slushy_corridor=True
+            )
+        ),
+        "bullwhip_promo_spike_422": evaluate_b2b_cpfr_rolling_forecast_bullwhip_policy(
+            B2BCPFRRollingForecastBullwhipPolicyInput(
+                extrapolating_one_off_promo_spike_into_multi_week_bullwhip_po=True
+            )
+        ),
+        "phantom_shortage_ncnr_451": evaluate_b2b_cpfr_rolling_forecast_bullwhip_policy(
+            B2BCPFRRollingForecastBullwhipPolicyInput(
+                biased_buyer_submitting_phantom_shortage_surge_without_ncnr_deposit=True
+            )
+        ),
+        "family_mix_swap_409": evaluate_b2b_cpfr_rolling_forecast_bullwhip_policy(
+            B2BCPFRRollingForecastBullwhipPolicyInput(
+                shared_bom_product_family_mix_swap_and_pos_buffer_reduction_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -48245,6 +48349,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "enterprise_crm_erp_quote_to_order_saga_guard": enterprise_crm_erp_quote_to_order_saga_guard,
         "cross_border_export_9810_vat_rebate_fx_guard": cross_border_export_9810_vat_rebate_fx_guard,
         "ota_airline_ancillary_emd_dot260_guard": ota_airline_ancillary_emd_dot260_guard,
+        "b2b_cpfr_rolling_forecast_bullwhip_guard": b2b_cpfr_rolling_forecast_bullwhip_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -68435,6 +68540,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="otaemd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FFP_COBRAND_WAIVER_MATCH_AND_PREPAID_BAG_DISCOUNT_CONFIRM · Mandate: ota_ancillary_emd_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 263 B2B CPFR Rolling Forecast, Anti-Bullwhip & NCNR Capacity Escrow (#382) -->
+      <div class="finops-box" id="b2b-cpfr-rolling-forecast-bullwhip-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏭 企业 B2B 供应链协同预测 (CPFR)、EDI 830 冻结窗与防牛鞭效应 (Kinaxis / SAP IBP / o9) 沙盒</div>
+            <div class="finops-sub">Round 263 (#382) · EDI 830 冻结区(W1-W4 0%)禁砍单与半流态区(W5-W8 ±20%)走廊锁防呆滞料 E&amp;O 索赔 (HTTP 403) + 剥离单日直播脉冲锁死牛鞭比 &lt;=1.25 (HTTP 422) + 历史预测高偏差买方超2倍提报强制交 15% NCNR 押金 (HTTP 451) + 共享通用BOM同产线跨型号无损置换净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="b2bcpfr-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 W1-W4 冻结期单方面砍单赔付代工厂呆滞料 (E&amp;O)、1天促销脉冲被放大 4倍导致爆仓及紧缺期虚报逃单损失池 ($)
+            <input type="number" id="b2bcpfr-gross-input" value="360000" min="10000" step="5000" oninput="recalcB2BCPFRRollingForecastBullwhipSandbox()" />
+          </label>
+          <label>EDI 830 三区滚动时间围栏 (W1-W4 刚性冻结 0% / W5-W8 半流态 ±20% / W9+ 液态) 合同承诺走廊门禁
+            <select id="b2bcpfr-fence-select" onchange="recalcB2BCPFRRollingForecastBullwhipSandbox()">
+              <option value="pass">严守 W1-W4 冻结期总量不减，单品滞销自动转入同产线共享通用 BOM 的姐妹型号置换 (安全)</option>
+              <option value="block_403">在 W3 刚性排产期内直接砍掉 4,000 台已投料订单引发代工厂 $85,000 专用料呆滞 (E&amp;O) 索赔 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>终端门店 POS 自然动销锚定、促销脉冲剥离与牛鞭方差比 (Bullwhip Ratio = Var(Order)/Var(POS) &lt;= 1.25) 门禁
+            <select id="b2bcpfr-bullwhip-select" onchange="recalcB2BCPFRRollingForecastBullwhipSandbox()">
+              <option value="pass">自动剥离周末 1天直播闪促脉冲，按真实自然 POS 斜率平滑生成未来 12 周预测 (合规)</option>
+              <option value="block_422">把 1天闪促多卖 3,000 台当成永久趋势逐级放大 3.5倍向工厂狂下 12周长单导致 60天后爆仓 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>历史预测准确度 (1-WAPE) 诚实度配额权重与超基线抢产能 15% 不可撤销定金 (NCNR Deposit) 门禁
+            <select id="b2bcpfr-ncnr-select" onchange="recalcB2BCPFRRollingForecastBullwhipSandbox()">
+              <option value="pass">按历史提货履约率分配基础紧缺配额 + 超基线 2x 需求已签 NCNR 协议并缴纳 15% 保证金 (安全)</option>
+              <option value="block_451">历史虚报偏差率达 38% 的经销商在缺货期虚报 5倍泡沫需求抢配额且拒交 15% NCNR 押金 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>共享 92% 通用主板/电机的“同产品族跨色码/跨型号无损产能置换 (Mix Swap)” + 共享 POS 砍掉 45% 重复安全库存
+            <select id="b2bcpfr-opt-select" onchange="recalcB2BCPFRRollingForecastBullwhipSandbox()">
+              <option value="enabled" selected>保持工厂总工时与通用物料不变，将滞销黑款 1:1 置换为畅销白款($0 E&amp;O) + 共享POS降库存 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">各 SKU 独立死板锁定不可跨型号置换且上下游各自叠加双层防御性安全库存 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度牛鞭爆仓与呆滞索赔池</div>
+            <div class="finops-kpi-val" id="b2bcpfr-gross-kpi">$360,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">POS阻尼与同族置换后净损耗</div>
+            <div class="finops-kpi-val" id="b2bcpfr-net-kpi" style="color:#6ee7b7;">$226,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省呆滞罚金与库存积压</div>
+            <div class="finops-kpi-val" id="b2bcpfr-savings-kpi" style="color:#38bdf8;">$133,200</div>
+          </div>
+        </div>
+        <div id="b2bcpfr-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PRODUCT_FAMILY_CAPACITY_SWAP_AND_POS_SHARED_BUFFER_REDUCTION_CONFIRM · Mandate: b2b_cpfr_horizon_escrow_optim_409
         </div>
       </div>
 
@@ -93151,6 +93313,79 @@ function recalcOTAAirlineAncillaryEMDDOT260Sandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_ALL_IN_FARE_AND_COUPLED_EMD_A_AUTHORIZED · Mandate: ota_ancillary_emd_escrow_200';
+}}
+
+function recalcB2BCPFRRollingForecastBullwhipSandbox() {{
+  const grossInput = document.getElementById('b2bcpfr-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '360000'));
+  const fenceGate = document.getElementById('b2bcpfr-fence-select').value;
+  const bullwhipGate = document.getElementById('b2bcpfr-bullwhip-select').value;
+  const ncnrGate = document.getElementById('b2bcpfr-ncnr-select').value;
+  const optMode = document.getElementById('b2bcpfr-opt-select').value;
+
+  const grossKpi = document.getElementById('b2bcpfr-gross-kpi');
+  const netKpi = document.getElementById('b2bcpfr-net-kpi');
+  const savingsKpi = document.getElementById('b2bcpfr-savings-kpi');
+  const statusKpi = document.getElementById('b2bcpfr-status-kpi');
+  const banner = document.getElementById('b2bcpfr-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ncnrGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PHANTOM_SHORTAGE_OVER_FORECAST_GAMING_WITHOUT_NCNR_DEPOSIT · Mandate: null';
+    return;
+  }}
+  if (fenceGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 FROZEN_ZONE_PO_CANCELLATION_OR_SLUSHY_HORIZON_CORRIDOR_BREACH · Mandate: null';
+    return;
+  }}
+  if (bullwhipGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BULLWHIP_PHANTOM_SPIKE_AMPLIFICATION_WITHOUT_POS_SELL_THROUGH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PRODUCT_FAMILY_CAPACITY_SWAP_AND_POS_SHARED_BUFFER_REDUCTION_CONFIRM · Mandate: b2b_cpfr_horizon_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_TIME_FENCE_CORRIDOR_AND_DAMPED_POS_FORECAST_AUTHORIZED · Mandate: b2b_cpfr_horizon_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

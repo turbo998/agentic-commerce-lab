@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`381` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`382` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (24 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (52 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (144 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (85 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (86 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (32 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (44 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -262,7 +262,7 @@
 | 144 | **OTA & Corporate Travel Airline Ancillaries (`EMD-A`), Basic-Economy All-In Fare Comparison & `US DOT 14 CFR Part 260` Refund Escrow (`IATA NDC v21.3 / ATPCO Routehappy / Amadeus / Sabre / Navan`), Persona-Aware All-In Bag/Seat Calc, Atomic `e-Ticket ↔ EMD-A` Exchange Sync & `FFP`/Co-Brand Waiver (`-37%` Ancillary Loss) Agent Architecture Selection FAQ** | [English](ota-airline-ancillary-emd-basic-economy-all-in-fare-dot260-refund-escrow-agent-selection-faq.en.md) · [中文](ota-airline-ancillary-emd-basic-economy-all-in-fare-dot260-refund-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (85 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (86 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -353,6 +353,7 @@
 | 83 | **🏆 Corporate Travel & Expense (`T&E`) Per-Diem (`GSA M&IE / German BMF`), Hotel `Level-3 Folio` Personal Split & Cross-Border `VAT Reclaim` Escrow (`Navan / SAP Concur / Brex / Ramp / BlueDot / Taxback`), Personal Backup-Card Split, Attendee-Graph Meal Dedup, `EU 8th/13th` VAT Header & `Beat-the-Cap` Rewards (`-37%` T&E Leakage) Agent Architecture Selection FAQ** | [English](b2b-corporate-travel-per-diem-hotel-folio-split-vat-reclaim-escrow-agent-selection-faq.en.md) · [中文](b2b-corporate-travel-per-diem-hotel-folio-split-vat-reclaim-escrow-agent-selection-faq.md) |
 | 84 | **Enterprise B2B Order-to-Cash (`O2C`), `AR` Cash Application, Short-Pay Deduction Defense & Trade Credit Insurance Escrow (`HighRadius / Esker / Billtrust / Allianz Trade / Coface`), Pre-Hold `Unapplied Cash` Subset-Sum Match, Signed `POD / BOL` Dispute Filing, `MEP 60d` Stop-Ship & Split Credit Release (`-38%` O2C Loss) Agent Architecture Selection FAQ** | [English](b2b-order-to-cash-ar-cash-application-short-pay-deduction-credit-insurance-escrow-agent-selection-faq.en.md) · [中文](b2b-order-to-cash-ar-cash-application-short-pay-deduction-credit-insurance-escrow-agent-selection-faq.md) |
 | 85 | **Enterprise B2B Combinatorial Sourcing Optimization (`MILP`), Anti-Lowball `Should-Cost` Floor & `70/30` Dual-Award Escrow (`Keelvar vs. Coupa CSO vs. SAP Ariba Guided Sourcing vs. Fairmarkit`), Expressive Bundle & `MOQ` Gate, Beneficial-Owner `COI` Audit & Holistic Landed `TCO` Solver (`-36%` Sourcing TCO) Agent Architecture Selection FAQ** | [English](b2b-combinatorial-sourcing-optimization-tco-dual-award-lowball-escrow-agent-selection-faq.en.md) · [中文](b2b-combinatorial-sourcing-optimization-tco-dual-award-lowball-escrow-agent-selection-faq.md) |
+| 86 | **Enterprise B2B `CPFR` Rolling Forecast (`EDI 830`), Anti-Bullwhip Damping & `NCNR` Capacity Escrow (`SAP IBP vs. Kinaxis RapidResponse vs. o9 Solutions vs. Blue Yonder`), `W1–W4 Frozen / W5–W8 Slushy` Time-Fence Lock, De-Promotionalized `POS` Damper (`BWR <= 1.25`), `15% NCNR` Surge Deposit & Shared-BOM Family Mix Swap (`-37%` `E&O` & Overstock Loss) Agent Architecture Selection FAQ** | [English](b2b-cpfr-rolling-forecast-horizon-bullwhip-damping-ncnr-capacity-escrow-agent-selection-faq.en.md) · [中文](b2b-cpfr-rolling-forecast-horizon-bullwhip-damping-ncnr-capacity-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (32 Guides)
