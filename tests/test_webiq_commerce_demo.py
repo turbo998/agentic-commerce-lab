@@ -24736,6 +24736,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-optical-eyewear-contact-lens-sandbox", html_zh)
 
+    def test_ecommerce_footwear_3d_foot_scan_bracketing_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceFootwear3DFootScanBracketingPolicyInput,
+            evaluate_ecommerce_footwear_3d_foot_scan_bracketing_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_footwear_3d_foot_scan_bracketing_policy(
+            EcommerceFootwear3DFootScanBracketingPolicyInput(
+                quarterly_footwear_bracketing_return_and_stockout_pool_usd=240000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_3D_FOOT_SCAN_AND_WIDTH_LAST_AUTHORIZED",
+        )
+
+        bracket = evaluate_ecommerce_footwear_3d_foot_scan_bracketing_policy(
+            EcommerceFootwear3DFootScanBracketingPolicyInput(
+                multi_size_same_sku_bracketing_or_unmapped_brand_last_drift=True
+            )
+        )
+        self.assertEqual(bracket["status_code"], 403)
+        self.assertEqual(
+            bracket["decision"],
+            "MULTI_SIZE_BRACKETING_OR_UNMAPPED_BRAND_LAST",
+        )
+
+        width = evaluate_ecommerce_footwear_3d_foot_scan_bracketing_policy(
+            EcommerceFootwear3DFootScanBracketingPolicyInput(
+                wide_2e_4e_foot_in_narrow_last_or_pronation_gait_mismatch=True
+            )
+        )
+        self.assertEqual(width["status_code"], 422)
+        self.assertEqual(
+            width["decision"],
+            "WIDTH_LAST_CONFLICT_OR_PRONATION_SHOE_MISMATCH",
+        )
+
+        outsole = evaluate_ecommerce_footwear_3d_foot_scan_bracketing_policy(
+            EcommerceFootwear3DFootScanBracketingPolicyInput(
+                outdoor_outsole_tread_abrasion_or_broken_sole_tryon_seal=True
+            )
+        )
+        self.assertEqual(outsole["status_code"], 451)
+        self.assertEqual(
+            outsole["decision"],
+            "OUTSOLE_TREAD_ABRASION_OR_BROKEN_SOLE_SEAL_HOLD",
+        )
+
+        optim = evaluate_ecommerce_footwear_3d_foot_scan_bracketing_policy(
+            EcommerceFootwear3DFootScanBracketingPolicyInput(
+                quarterly_footwear_bracketing_return_and_stockout_pool_usd=240000.0,
+                single_pair_3d_fit_guarantee_and_arch_insole_bundle_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 88800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 151200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_footwear_3d_foot_scan_bracketing_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-footwear-3d-foot-scan-bracketing-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

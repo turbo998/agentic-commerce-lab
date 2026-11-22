@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg677" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg677)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 234 · Footwear `3D Foot Scan`, Anti-`Size-Bracketing` &amp; Gait/Width Escrow</text>
+  <text x="48" y="74" class="sub">Volumental / Fit Predictor / Nike / Brooks / New Balance · `±1.5mm` 3D Last Match · `2E/4E` Width Gate · Pronation Insole Bundle (-37%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #677 · FAQ #353</text>
+
+  <!-- Lane 1: Multi-Size Bracketing (Ordering US 9 / 9.5 / 10 of Same SKU) & Brand-to-Brand Last Drift -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. `3D Scan` &amp; Anti-Bracketing Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Unchecked 3-Size Same-SKU Bracketing:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Detect `&gt;=2 Adjacent Sizes` (US 9 / 9.5 / 10)</text>
+  <text x="54" y="200" class="mono">&amp; Enforce `A4 Paper 3D Foot Scan (±1.5mm)`!</text>
+  <text x="44" y="223" class="body-txt">• Cross-Brand Last-to-Last Normalization:</text>
+  <text x="54" y="243" class="mono">Map `Mondopoint_mm + Instep_Height` to Exact</text>
+  <text x="44" y="266" class="body-txt">• Eliminates 42% footwear return rates &amp; golden</text>
+  <text x="54" y="286" class="body-txt">size stockouts caused by shoppers buying 3 pairs</text>
+  <text x="54" y="304" class="body-txt">just to try on at home and return 2 pairs</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 MULTI_SIZE_BRACKETING_OR_UNMAPPED_BRAND_LAST</text>
+
+  <!-- Lane 2: Width / Pronation Biomechanical Mismatch (2E/4E Foot in Narrow D Last) & Custom Embroidery Final-Sale Lock -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. `2E/4E` Width &amp; Gait Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Blocks Wide-Foot (`2E / 4E`) Buying Narrow `D` Last:</text>
+  <text x="442" y="182" class="mono">Require `Ball_Girth_Ratio &lt;= Last_Width_Spec`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">(Stops Buying +1.5 Sizes Longer for Width!)</text>
+  <text x="432" y="223" class="body-txt">• Overpronation / Flat-Arch Carbon-Plate Guard:</text>
+  <text x="442" y="243" class="mono">Block Unstable Racing Shoes for Severe Overpronation</text>
+  <text x="432" y="266" class="body-txt">• Prevents heel-slip blisters, plantar fasciitis</text>
+  <text x="442" y="286" class="body-txt">complaints, and unconfirmed custom-ID (`Nike By</text>
+  <text x="442" y="304" class="body-txt">You`) personalized embroidery return disputes</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 WIDTH_LAST_CONFLICT_OR_PRONATION_SHOE_MISMATCH</text>
+
+  <!-- Lane 3: Worn-Outsole Wardrobing & Broken Sole-Seal Tag Return Fraud -->
+  <rect x="804" y="106" width="368" height="250" width-attr="368" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. Outsole-Wear &amp; Tag Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Stops Outdoor-Run Wardrobing &amp; Old-Shoe Swaps:</text>
+  <text x="830" y="182" class="mono">Require Intact `Outsole_Tamper_Sticker` + AI</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">Tread-Lug &amp; Midsole-Crease Vision Check!</text>
+  <text x="820" y="223" class="body-txt">• Factory Box Barcode &amp; Size-Tag Parity:</text>
+  <text x="830" y="243" class="body-txt">Holds instant refund when a buyer runs a 10K</text>
+  <text x="830" y="261" class="body-txt">race in `$250` carbon marathon shoes or swaps</text>
+  <text x="830" y="279" class="body-txt">dirty worn shoes into the new shoebox</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 OUTSOLE_TREAD_ABRASION_OR_BROKEN_SOLE_SEAL_HOLD</text>
+
+  <!-- Bottom Split-Size Asymmetry Fulfillment, Instant Size-Exchange & Biomechanical Insole Bundle -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. 3D Last Match + Free Instant Half-Size Exchange + Arch-Insole &amp; Sock Cross-Sell Bundle (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① 1-Pair 3D Confidence Guarantee</text>
+  <text x="62" y="462" class="body-txt">Replaces 3-pair bracketing</text>
+  <text x="62" y="480" class="body-txt">with single-size 3D match</text>
+  <text x="62" y="498" class="body-txt">+ free priority half-size</text>
+  <text x="62" y="516" class="mono">cross-ship swap (-74% Bracketing)</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② Left/Right Asymmetry Fit</text>
+  <text x="337" y="462" class="body-txt">Fits to the larger foot +</text>
+  <text x="337" y="480" class="body-txt">includes a `2.5mm` forefoot</text>
+  <text x="337" y="498" class="body-txt">volume-reducer shim or</text>
+  <text x="337" y="516" class="mono">split-size pair program!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ Arch Insole + Tech Sock Bundle</text>
+  <text x="622" y="462" class="body-txt">Pairs 3D arch-height scan</text>
+  <text x="622" y="480" class="body-txt">with Low/Med/High orthotic</text>
+  <text x="622" y="498" class="body-txt">insoles (`Superfeet/Currex`)</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">+26% Attach AOV Uplift!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Mileage Replacement Trigger</text>
+  <text x="907" y="462" class="body-txt">Syncs with `Strava / Garmin`</text>
+  <text x="907" y="480" class="body-txt">at `350 miles` midsole</text>
+  <text x="907" y="498" class="body-txt">foam fatigue for 1-click</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-37% Return &amp; Stockout Loss</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-37.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly Return &amp; Stockout Loss Saved</text>
+  <text x="46" y="642" class="mono">$88,800 Saved / $240k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">±1.5mm 3D</text>
+  <text x="336" y="626" class="kpi-lbl">Smartphone A4 Foot &amp; Arch Scan</text>
+  <text x="336" y="642" class="mono">-74% Multi-Size Bracketing</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% 2E/4E</text>
+  <text x="626" y="626" class="kpi-lbl">Ball-Girth Width &amp; Gait Alignment</text>
+  <text x="626" y="642" class="mono">Zero Narrow-Last Blister Returns</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">+26% AOV</text>
+  <text x="916" y="626" class="kpi-lbl">3D Arch Insole &amp; Blister-Sock Attach</text>
+  <text x="916" y="642" class="mono">Strava 350-Mile Reorder Sync</text>
+</svg>

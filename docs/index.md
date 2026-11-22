@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`352` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`353` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（20 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（49 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（134 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（135 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（79 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（29 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（41 篇）](#tax-fx-privacy-disputes)
@@ -103,7 +103,7 @@
 | 49 | **大宗汽车、新能源直营与高端定制“定金锁单 + 银行直连首付 + 金融机构放款组合结账（High-Ticket Split-Tender Escrow：Tesla / Rivian / AutoFi / Plaid Transfer / Stripe）”、防“$55,000 整车尾款刷信用卡被扣 $1,600 手续费”、防“助贷未放款先交车（Spot-Delivery Yo-Yo Fraud）”与一车一专属 `vIBAN` 防电汇钓鱼托管“防假银行本票骗走新车与四轨资金到齐秒开手机蓝牙车钥匙净省 38%”Agent 架构选型 FAQ** | [中文](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.md) · [English](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（134 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（135 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -243,6 +243,7 @@
 | 132 | **社交拼团、社区生鲜团购与阶梯众筹集采（Social Group-Buying & Community Grocery：拼多多 / 兴盛优选 / 美团优选 / Kickstarter / Shopify GroupBuy）、防“二道贩子开 9 个假小号凑满 10 人团拿 5 折批发价后秒退 9 单（Cancel-All-But-One Exploit）”、防“早鸟参团客见满 500 人降价 $35 集体退单重拍”与社区团长自提点冷链托管“防无冰柜团长把和牛冰淇淋扔 35°C 门口化冻变质与临期 30 分钟公海自动凑团净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-social-group-buying-community-leader-cold-chain-tiered-rebate-escrow-agent-selection-faq.md) · [English](ecommerce-social-group-buying-community-leader-cold-chain-tiered-rebate-escrow-agent-selection-faq.en.md) |
 | 133 | **主题乐园、滑雪场季卡与景区快速通行证动态票务结算（Theme Park, Ski Resort & Express-Lane Ticketing：`Disney Lightning Lane / Universal Express / Vail Epic Pass / accesso / Klook`）、防“黄牛在停车场把 4 日联票或滑雪季卡换给 4 批不同游客轮流刷（Pass-Sharing Fraud）”、防“花 $39 买了优速通结果因为超售排了 70 分钟或项目故障停机钱白花”与儿童身高/台风停运保障托管“防到过山车门口差 2cm 被拦哭闹与动态客流调峰净省 36%”Agent 架构选型 FAQ** | [中文](ota-theme-park-ski-resort-dynamic-ticketing-fastpass-weather-escrow-agent-selection-faq.md) · [English](ota-theme-park-ski-resort-dynamic-ticketing-fastpass-weather-escrow-agent-selection-faq.en.md) |
 | 134 | **视光配镜、隐形眼镜订阅与渐进多焦点镜片电商（Optical Eyewear, Prescription Lenses & Contact-Lens Subscription：`Warby Parker / Zenni Optical / 1-800 Contacts / EssilorLuxottica / VSP`）、防“顾客填反近视/远视正负号或自己拿尺子量错瞳距（`PD ±5mm`）导致 $380 定制渐进镜片戴上头晕全部报废重配”、防“拿框架眼镜验光单直接乱卖隐形眼镜（缺基弧 `BC`）”与美国 `FTC FCLCA` 8 工作小时处方核验托管“防处方过期断订流失与手机 `ARKit` 测双瞳距 + 视力险 `HSA` 自动拆单净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-optical-eyewear-contact-lens-fclca-pd-tryon-escrow-agent-selection-faq.md) · [English](ecommerce-optical-eyewear-contact-lens-fclca-pd-tryon-escrow-agent-selection-faq.en.md) |
+| 135 | **运动鞋服与鞋履电商“手机 `3D` 足部扫描选码（Footwear `3D Foot Scan` & Last Matching：`Volumental / Fit Predictor / Nike / Brooks / New Balance / 安踏/李宁`）”、防“同款连买 3 个尺码试穿退 2 双（`Size-Bracketing` 42% 退货率）”、防“宽脚背（`2E/4E`）硬买大一码标准楦掉跟磨泡”与步态足弓鞋垫连带转化托管“防穿出门跑完 10 公里马拉松再蹭免邮退货与 `Strava` 里程复购净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-footwear-apparel-3d-foot-scan-half-size-bracketing-insole-escrow-agent-selection-faq.md) · [English](ecommerce-footwear-apparel-3d-foot-scan-half-size-bracketing-insole-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（79 篇）

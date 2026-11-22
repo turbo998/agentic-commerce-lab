@@ -32853,6 +32853,82 @@ def evaluate_ecommerce_optical_eyewear_contact_lens_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceFootwear3DFootScanBracketingPolicyInput:
+    quarterly_footwear_bracketing_return_and_stockout_pool_usd: float = 240000.0
+    multi_size_same_sku_bracketing_or_unmapped_brand_last_drift: bool = False
+    wide_2e_4e_foot_in_narrow_last_or_pronation_gait_mismatch: bool = False
+    outdoor_outsole_tread_abrasion_or_broken_sole_tryon_seal: bool = False
+    single_pair_3d_fit_guarantee_and_arch_insole_bundle_ready: bool = False
+
+
+def evaluate_ecommerce_footwear_3d_foot_scan_bracketing_policy(
+    policy_input: EcommerceFootwear3DFootScanBracketingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_footwear_bracketing_return_and_stockout_pool_usd
+        ),
+    )
+    if policy_input.outdoor_outsole_tread_abrasion_or_broken_sole_tryon_seal:
+        return {
+            "status_code": 451,
+            "decision": "OUTSOLE_TREAD_ABRASION_OR_BROKEN_SOLE_SEAL_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.multi_size_same_sku_bracketing_or_unmapped_brand_last_drift:
+        return {
+            "status_code": 403,
+            "decision": "MULTI_SIZE_BRACKETING_OR_UNMAPPED_BRAND_LAST",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.wide_2e_4e_foot_in_narrow_last_or_pronation_gait_mismatch:
+        return {
+            "status_code": 422,
+            "decision": "WIDTH_LAST_CONFLICT_OR_PRONATION_SHOE_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.single_pair_3d_fit_guarantee_and_arch_insole_bundle_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SINGLE_PAIR_3D_FIT_AND_ARCH_INSOLE_BUNDLE_CONFIRM",
+            "mandate_token": "footwear_3d_scan_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_3D_FOOT_SCAN_AND_WIDTH_LAST_AUTHORIZED",
+        "mandate_token": "footwear_3d_scan_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -44856,6 +44932,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_footwear_3d_foot_scan_bracketing_guard = {
+        "authorized_200": evaluate_ecommerce_footwear_3d_foot_scan_bracketing_policy(
+            EcommerceFootwear3DFootScanBracketingPolicyInput()
+        ),
+        "bracketing_or_last_403": evaluate_ecommerce_footwear_3d_foot_scan_bracketing_policy(
+            EcommerceFootwear3DFootScanBracketingPolicyInput(
+                multi_size_same_sku_bracketing_or_unmapped_brand_last_drift=True
+            )
+        ),
+        "width_or_gait_422": evaluate_ecommerce_footwear_3d_foot_scan_bracketing_policy(
+            EcommerceFootwear3DFootScanBracketingPolicyInput(
+                wide_2e_4e_foot_in_narrow_last_or_pronation_gait_mismatch=True
+            )
+        ),
+        "worn_outsole_or_seal_451": evaluate_ecommerce_footwear_3d_foot_scan_bracketing_policy(
+            EcommerceFootwear3DFootScanBracketingPolicyInput(
+                outdoor_outsole_tread_abrasion_or_broken_sole_tryon_seal=True
+            )
+        ),
+        "single_pair_insole_409": evaluate_ecommerce_footwear_3d_foot_scan_bracketing_policy(
+            EcommerceFootwear3DFootScanBracketingPolicyInput(
+                single_pair_3d_fit_guarantee_and_arch_insole_bundle_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -45218,6 +45320,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_tradeshow_booth_sponsorship_drayage_guard": b2b_tradeshow_booth_sponsorship_drayage_guard,
         "cross_border_epr_packaging_weee_battery_guard": cross_border_epr_packaging_weee_battery_guard,
         "ecommerce_optical_eyewear_contact_lens_guard": ecommerce_optical_eyewear_contact_lens_guard,
+        "ecommerce_footwear_3d_foot_scan_bracketing_guard": ecommerce_footwear_3d_foot_scan_bracketing_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -63755,6 +63858,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="optical-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TELE_OPTOMETRY_RENEWAL_AND_VSP_HSA_SPLIT_CONFIRM · Mandate: optical_eyewear_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 234 Footwear 3D Foot Scan, Anti-Size-Bracketing & Gait/Width Escrow (#353) -->
+      <div class="finops-box" id="ecommerce-footwear-3d-foot-scan-bracketing-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">👟 运动鞋服与鞋履电商手机 3D 足部扫描选码与防多码试穿 (Volumental / Fit Predictor / Nike / Brooks) 沙盒</div>
+            <div class="finops-sub">Round 234 (#353) · 同款多邻近尺码包圆 (Size-Bracketing) 拦截与 A4 纸 ±1.5mm 3D 鞋楦映射 (HTTP 403) + 2E/4E 宽楦对齐与扁平足步态/定制刺绣锁 (HTTP 422) + 鞋底防拆封贴与外底花纹磨损 AI 视觉验真 (HTTP 451) + 单双免忧极速换半码与 3D 足弓鞋垫连带加购净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="footwear3d-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度同款连拍 3 个尺码试穿退 2 双 (Size-Bracketing 42% 退货率) 双向运费、黄金尺码断码缺货与穿出门跑完 10K 磨损退货池 ($)
+            <input type="number" id="footwear3d-gross-input" value="240000" min="10000" step="5000" oninput="recalcEcommerceFootwear3DFootScanBracketingSandbox()" />
+          </label>
+          <label>同款多邻近尺码包圆试穿 (Size-Bracketing >=2 Adjacent Sizes) 拦截与手机 A4 纸 3D 足部扫描 / 跨品牌鞋楦映射门禁
+            <select id="footwear3d-bracket-select" onchange="recalcEcommerceFootwear3DFootScanBracketingSandbox()">
+              <option value="pass">A4 纸 30 秒 3D 足扫 (±1.5mm) 对齐目标 3D 鞋楦内腔锁定唯一合脚尺码 US 9.5 (砍掉 74% 多码试穿)</option>
+              <option value="block_403">顾客拿不准尺码同一款鞋同时加购 US 9.0 / 9.5 / 10.0 三双回家试穿锁死黄金库存且未交试穿押金 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>前掌跖围宽楦 (D / 2E / 4E) 强制匹配与扁平足过度外翻步态 (Overpronation) / 个性化刺绣不可退锁
+            <select id="footwear3d-width-select" onchange="recalcEcommerceFootwear3DFootScanBracketingSandbox()">
+              <option value="pass">108mm 宽脚背自动切换 2E Wide 宽楦库存 + 低足弓匹配稳定支撑系跑鞋 + 大小脚配 2.5mm 半码垫 (合规)</option>
+              <option value="block_422">2E 宽脚硬买大一码标准窄 D 楦致掉跟磨泡 或 严重扁平足初跑者误选高危无支撑碳板竞速鞋 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>鞋底室内试穿易碎封签 (Outsole Try-On Sticker) 与外底橡胶花纹磨损 / 中底深折痕 AI 视觉退货验真门禁
+            <select id="footwear3d-outsole-select" onchange="recalcEcommerceFootwear3DFootScanBracketingSandbox()">
+              <option value="pass">退货微距照核验鞋底试穿封签完好且外底橡胶防滑齿零柏油路磨损 (安全)</option>
+              <option value="block_451">买家穿 $250 碳板鞋跑完周末 10K 比赛撕毁鞋底封签、外底花纹磨损后擦干净骗全新全额退款 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>单双精准选码送“先发新码免忧极速换半码” + 3D 足弓支撑鞋垫 (Superfeet/Currex) 连带包 + Strava 500 公里复购
+            <select id="footwear3d-opt-select" onchange="recalcEcommerceFootwear3DFootScanBracketingSandbox()">
+              <option value="enabled" selected>只买 1 双享顺丰先发换半码 + 一键配齐 $45 匹配足弓鞋垫与防泡袜 (+26% AOV) + Strava 350mi 换新 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">无 3D 足弓鞋垫连带与里程追踪的普通单双购鞋结账 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度多码试穿退货与断码池</div>
+            <div class="finops-kpi-val" id="footwear3d-gross-kpi">$240,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">3D选码与宽楦对齐后净损耗</div>
+            <div class="finops-kpi-val" id="footwear3d-net-kpi" style="color:#6ee7b7;">$151,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省退货运费与断码流失</div>
+            <div class="finops-kpi-val" id="footwear3d-savings-kpi" style="color:#38bdf8;">$88,800</div>
+          </div>
+        </div>
+        <div id="footwear3d-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SINGLE_PAIR_3D_FIT_AND_ARCH_INSOLE_BUNDLE_CONFIRM · Mandate: footwear_3d_scan_escrow_optim_409
         </div>
       </div>
 
@@ -86354,6 +86514,79 @@ function recalcEcommerceOpticalEyewearContactLensSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_ARKIT_PD_AND_FCLCA_8HR_OPTICAL_AUTHORIZED · Mandate: optical_eyewear_escrow_200';
+}}
+
+function recalcEcommerceFootwear3DFootScanBracketingSandbox() {{
+  const grossInput = document.getElementById('footwear3d-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '240000'));
+  const bracketGate = document.getElementById('footwear3d-bracket-select').value;
+  const widthGate = document.getElementById('footwear3d-width-select').value;
+  const outsoleGate = document.getElementById('footwear3d-outsole-select').value;
+  const optMode = document.getElementById('footwear3d-opt-select').value;
+
+  const grossKpi = document.getElementById('footwear3d-gross-kpi');
+  const netKpi = document.getElementById('footwear3d-net-kpi');
+  const savingsKpi = document.getElementById('footwear3d-savings-kpi');
+  const statusKpi = document.getElementById('footwear3d-status-kpi');
+  const banner = document.getElementById('footwear3d-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (outsoleGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 OUTSOLE_TREAD_ABRASION_OR_BROKEN_SOLE_SEAL_HOLD · Mandate: null';
+    return;
+  }}
+  if (bracketGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MULTI_SIZE_BRACKETING_OR_UNMAPPED_BRAND_LAST · Mandate: null';
+    return;
+  }}
+  if (widthGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 WIDTH_LAST_CONFLICT_OR_PRONATION_SHOE_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SINGLE_PAIR_3D_FIT_AND_ARCH_INSOLE_BUNDLE_CONFIRM · Mandate: footwear_3d_scan_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_3D_FOOT_SCAN_AND_WIDTH_LAST_AUTHORIZED · Mandate: footwear_3d_scan_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
