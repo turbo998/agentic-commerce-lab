@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" width="1200" height="675">
+  <defs>
+    <linearGradient id="bg688" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06101e"/>
+      <stop offset="50%" stop-color="#0b1d33"/>
+      <stop offset="100%" stop-color="#071324"/>
+    </linearGradient>
+    <style>
+      .title { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 22px; font-weight: 800; fill: #f8fafc; }
+      .sub { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; fill: #94a3b8; }
+      .card-hdr { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; font-weight: 700; fill: #f8fafc; }
+      .body-txt { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 12px; fill: #cbd5e1; }
+      .mono { font-family: 'Consolas', 'Courier New', monospace; font-size: 11.5px; fill: #6ee7b7; }
+      .kpi-num { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 20px; font-weight: 800; }
+      .kpi-lbl { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: #94a3b8; }
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg688)"/>
+  <rect x="28" y="22" width="1144" height="68" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="48" y="51" class="title">Round 245 · B2B `AP` Virtual Card `STP`, Anti-Surcharge &amp; `Large-Ticket L3` Rebate Escrow</text>
+  <text x="48" y="74" class="sub">Boost Payment / Visa Commercial Pay / Mastercard Track / Coupa Pay / BILL · Surcharge Gate · `STP` Push · `L3` Rate (-38%)</text>
+  <rect x="1010" y="36" width="142" height="36" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="1081" y="59" text-anchor="middle" class="mono" fill="#a7f3d0">SVG #688 · FAQ #364</text>
+
+  <!-- Lane 1: Paying 3.0% Supplier Card Surcharge to Earn 1.5% VCN Rebate (-1.5% Net Loss) -->
+  <rect x="28" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ef4444" stroke-width="1.5"/>
+  <rect x="28" y="106" width="368" height="36" rx="12" fill="#450a0a"/>
+  <text x="44" y="129" class="card-hdr" fill="#fca5a5">1. Surcharge vs Rebate Gate (HTTP 403)</text>
+  <text x="44" y="162" class="body-txt">• Stops Paying `3.0%` Surcharge for `1.5%` Rebate:</text>
+  <text x="54" y="182" class="mono" fill="#fca5a5">Require `Vendor_Card_Surcharge_Bps == 0` or</text>
+  <text x="54" y="200" class="mono">`Net_VCN_Rebate_Bps &gt; Surcharge_Bps`!</text>
+  <text x="44" y="223" class="body-txt">• Enforces Card-Network Surcharge Rules:</text>
+  <text x="54" y="243" class="mono">Block Illegal Debit Surcharges &amp; `&gt;3.0%` Caps</text>
+  <text x="44" y="266" class="body-txt">• Eliminates AP teams blindly paying a `$100k`</text>
+  <text x="54" y="286" class="body-txt">invoice by virtual card to earn `$1,500` rebate</text>
+  <text x="54" y="304" class="body-txt">while the vendor tacks on a `$3,000` card fee</text>
+  <rect x="44" y="318" width="336" height="26" rx="6" fill="#2a1215"/>
+  <text x="54" y="335" class="mono" fill="#f87171">403 NEGATIVE_ARBITRAGE_VENDOR_CARD_SURCHARGE_EXCEEDS_REBATE</text>
+
+  <!-- Lane 2: Plaintext Email Virtual Cards (PCI Breach + Manual Key-Entry Declines) vs Straight-Through Processing (STP) -->
+  <rect x="416" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#f59e0b" stroke-width="1.5"/>
+  <rect x="416" y="106" width="368" height="36" rx="12" fill="#451a03"/>
+  <text x="432" y="129" class="card-hdr" fill="#fcd34d">2. `STP` Push &amp; `L3` Data Gate (HTTP 422)</text>
+  <text x="432" y="162" class="body-txt">• Bans Emailing Raw 16-Digit `VCN` Numbers:</text>
+  <text x="442" y="182" class="mono">Enforce `Straight_Through_Processing (STP)`</text>
+  <text x="442" y="200" class="mono" fill="#fcd34d">Direct-to-Acquirer Push or `PCI_Vault_Link`!</text>
+  <text x="432" y="223" class="body-txt">• Mandatory `Level-3 / Large-Ticket` Data Injection:</text>
+  <text x="442" y="243" class="mono">Attach `Tax_Amt + Commodity_Code + Invoice_ID`</text>
+  <text x="432" y="266" class="body-txt">• Prevents suppliers rejecting virtual cards due</text>
+  <text x="442" y="286" class="body-txt">to manual POS typing labor and `3.15%` Level-1</text>
+  <text x="442" y="304" class="body-txt">downgrade rates (qualifies for `1.20%` L3 rate!)</text>
+  <rect x="432" y="318" width="336" height="26" rx="6" fill="#2e1d09"/>
+  <text x="442" y="335" class="mono" fill="#fbbf24">422 PLAINTEXT_EMAIL_VCN_OR_MISSING_LEVEL3_LARGE_TICKET_DATA</text>
+
+  <!-- Lane 3: Unclaimed / Expired Ghost VCN Float (>14 Days Unswiped) & Partial-Invoice Over-Capture -->
+  <rect x="804" y="106" width="368" height="250" rx="12" fill="#111c2d" stroke="#ec4899" stroke-width="1.5"/>
+  <rect x="804" y="106" width="368" height="36" rx="12" fill="#500724"/>
+  <text x="820" y="129" class="card-hdr" fill="#f472b6">3. `14d` Stale `VCN` &amp; Exact-Cent Gate (HTTP 451)</text>
+  <text x="820" y="162" class="body-txt">• Auto-Sweeps Unclaimed `VCNs` After 14 Days:</text>
+  <text x="830" y="182" class="mono">Enforce `Exact_Cent_Lock (Max == Min == Net_AP)`</text>
+  <text x="830" y="200" class="mono" fill="#f9a8d4">&amp; Auto-Cancel/Reroute Unswiped `VCN` at `T+14d`!</text>
+  <text x="820" y="223" class="body-txt">• Eliminates Month-End Uncashed `VCN` Float:</text>
+  <text x="830" y="243" class="txt body-txt">Stops millions of dollars in credit-line</text>
+  <text x="830" y="261" class="body-txt">capacity sitting tied up in forgotten email</text>
+  <text x="830" y="279" class="body-txt">inboxes while suppliers claim "late payment"</text>
+  <rect x="820" y="318" width="336" height="26" rx="6" fill="#320b1e"/>
+  <text x="830" y="335" class="mono" fill="#f472b6">451 UNCLAIMED_14D_STALE_VCN_FLOAT_OR_AMOUNT_MISMATCH</text>
+
+  <!-- Bottom 3-Rail Treasury Optimizer: STP VCN Rebate vs Dynamic Discounting ACH vs Float Extension -->
+  <rect x="28" y="374" width="1144" height="182" rx="12" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="48" y="401" class="card-hdr" fill="#38bdf8">4. 3-Rail AP Yield Optimizer: `STP Virtual Card` (`+1.6%`) vs `Early-Pay ACH` (`+2.0%`) + `ISO 20022` Remit (HTTP 409)</text>
+
+  <rect x="48" y="418" width="255" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="62" y="440" class="card-hdr">① `STP` Direct Acquirer Push</text>
+  <text x="62" y="462" class="body-txt">Injects `VCN` + `L3` data</text>
+  <text x="62" y="480" class="body-txt">directly into the supplier's</text>
+  <text x="62" y="498" class="body-txt">merchant account (`Boost /`</text>
+  <text x="62" y="516" class="mono">`Visa BCP`) w/ 0 human typing!</text>
+
+  <rect x="323" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="337" y="440" class="card-hdr">② `VCN` vs `ACH` Yield Router</text>
+  <text x="337" y="462" class="body-txt">Picks `0%-Surcharge VCN`</text>
+  <text x="337" y="480" class="body-txt">(`+1.6%` rebate + `30d` card</text>
+  <text x="337" y="498" class="body-txt">float) or `2/10 Net 30 ACH`</text>
+  <text x="337" y="516" class="mono">when vendor surcharges cards!</text>
+
+  <rect x="608" y="418" width="265" height="120" rx="8" fill="#1e293b" stroke="#334155"/>
+  <text x="622" y="440" class="card-hdr">③ `Large-Ticket` Split/Merge</text>
+  <text x="622" y="462" class="body-txt">Bundles invoices `&gt;= $10,000`</text>
+  <text x="622" y="480" class="body-txt">to unlock `Visa/MC Large`</text>
+  <text x="622" y="498" class="body-txt">`Ticket` (`~1.20% + $35`) so</text>
+  <text x="622" y="516" class="mono" fill="#6ee7b7">82% of vendors accept VCN!</text>
+
+  <rect x="893" y="418" width="259" height="120" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <text x="907" y="440" class="card-hdr" fill="#6ee7b7">④ Auto `EDI 820` ERP Recon</text>
+  <text x="907" y="462" class="body-txt">Posts line-level remittance</text>
+  <text x="907" y="480" class="body-txt">advice (`EDI 820 / camt.054`)</text>
+  <text x="907" y="498" class="body-txt">into supplier `AR` &amp; buyer</text>
+  <text x="907" y="516" class="mono" fill="#38bdf8">-38% AP Cost &amp; +1.6% Rebate</text>
+
+  <!-- KPI Footer -->
+  <rect x="28" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="46" y="604" class="kpi-num" fill="#38bdf8">-38.0%</text>
+  <text x="46" y="626" class="kpi-lbl">Quarterly AP Surcharge &amp; Float Loss Saved</text>
+  <text x="46" y="642" class="mono">$102,600 Saved / $270k Pool</text>
+
+  <rect x="318" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="336" y="604" class="kpi-num" fill="#10b981">0% Surcharge</text>
+  <text x="336" y="626" class="kpi-lbl">Negative-Arbitrage Surcharge Block</text>
+  <text x="336" y="642" class="mono">Auto-Fallback to Discounted ACH</text>
+
+  <rect x="608" y="572" width="272" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="626" y="604" class="kpi-num" fill="#f59e0b">100% STP L3</text>
+  <text x="626" y="626" class="kpi-lbl">Zero Manual POS Keying by Vendor</text>
+  <text x="626" y="642" class="mono">-140 bps Vendor MDR via L3</text>
+
+  <rect x="898" y="572" width="274" height="80" rx="10" fill="#111c2d" stroke="#1e293b"/>
+  <text x="916" y="604" class="kpi-num" fill="#f472b6">+30d DPO</text>
+  <text x="916" y="626" class="kpi-lbl">Day-1 Vendor Pay + 30d Card Float</text>
+  <text x="916" y="642" class="mono">Zero 14d Unclaimed Ghost VCNs</text>
+</svg>

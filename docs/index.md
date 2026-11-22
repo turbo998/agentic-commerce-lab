@@ -2,12 +2,12 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`363` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`364` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（22 篇）](#platform-grounding)
-- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（50 篇）](#payments-mandates)
+- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（51 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（138 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（81 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（30 篇）](#saas-finops-micropayments)
@@ -48,7 +48,7 @@
 | 22 | **企业商业智能体构建平台与跨系统编排横向选型（`Microsoft Copilot Studio + Dynamics 365` vs. `Azure AI Foundry + Semantic Kernel / LangGraph` vs. `Salesforce Agentforce` vs. `Shopify Sidekick / Storefront MCP`）实战指南（🏆 第 360 篇里程碑）：防“公网导购闲聊烧穿 $2/次会话包”、防“低代码跨 ERP 扣款成功却漏建单”与“前店后厂”组合架构净省 39% Agent 架构选型 FAQ** | [中文](enterprise-agent-platform-copilot-studio-foundry-langgraph-agentforce-shopify-orchestration-selection-faq.md) · [English](enterprise-agent-platform-copilot-studio-foundry-langgraph-agentforce-shopify-orchestration-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
-## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（50 篇）
+## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（51 篇）
 
 > 涵盖 Google AP2、Stripe SPT、Visa VIC / TAP、Mastercard Agent Pay、PayPal、UCP/ACP 协议互操作、3DS2 无浏览器挑战、FIDO2/Passkey 硬件签名及幂等防重扣架构。
 
@@ -104,6 +104,7 @@
 | 48 | **零售门店与全渠道移动收银（Omnichannel `SoftPOS / Tap to Pay on iPhone & Android`：Adyen Terminal API / Stripe Terminal / Square / Shopify POS）、防“内鬼店员无原单盲退（Unlinked Refund）把店里资金刷进自己银行卡”、防手输卡号（`Manual Keyed Entry`）盗刷降级与离线限额托管“防断网离线刷爆 $5,000 假卡与 `EMVCo PAR` 跨端识客净省 38%”Agent 架构选型 FAQ** | [中文](omnichannel-softpos-tap-to-pay-unlinked-refund-offline-emv-escrow-agent-selection-faq.md) · [English](omnichannel-softpos-tap-to-pay-unlinked-refund-offline-emv-escrow-agent-selection-faq.en.md) |
 | 49 | **大宗汽车、新能源直营与高端定制“定金锁单 + 银行直连首付 + 金融机构放款组合结账（High-Ticket Split-Tender Escrow：Tesla / Rivian / AutoFi / Plaid Transfer / Stripe）”、防“$55,000 整车尾款刷信用卡被扣 $1,600 手续费”、防“助贷未放款先交车（Spot-Delivery Yo-Yo Fraud）”与一车一专属 `vIBAN` 防电汇钓鱼托管“防假银行本票骗走新车与四轨资金到齐秒开手机蓝牙车钥匙净省 38%”Agent 架构选型 FAQ** | [中文](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.md) · [English](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.en.md) |
 | 50 | **智能体免密代扣、周期补货与分批发货“持卡人发起（`CIT`）转商户发起（`MIT`）网络令牌（`EMVCo Network Token`）与初始交易 `Trace ID` 链式绑定（`Stripe SPT / Visa VIC / Adyen / Checkout.com`）”、防“AI 凌晨自动锁单漏传 `MIT` 标识与初始 `Scheme Transaction ID` 被发卡行当盗刷拒付（22% 失败率）”、防“实体卡挂失换新致订阅断供”与卡组硬拒付（`Cat-1 / MAC 03`）零重试熔断托管“防死循环重试遭 Visa/MC 重罚与发薪日择时重扣净省 38%”Agent 架构选型 FAQ** | [中文](agentic-payment-card-on-file-cit-mit-network-token-cryptogram-retry-escrow-agent-selection-faq.md) · [English](agentic-payment-card-on-file-cit-mit-network-token-cryptogram-retry-escrow-agent-selection-faq.en.md) |
+| 51 | **企业 B2B 应付账款（`AP`）供应商虚拟卡直通式清算（`STP Virtual Card`：`Boost Payment / Visa Commercial Pay / Mastercard Track / Coupa Pay / BILL`）、防“贪图 `1.5%` 虚拟卡返现却被供应商反收 `3.0%` 刷卡附加费（Surcharge）倒亏 `1.5%`”、防“把 16 位卡号发邮件让供应商手工敲 POS 机触发 `Level-1` 高费率拒收”与大额 `Level-3` 降费直充托管“防虚拟卡超 14 天未刷占压授信池与 `VCN vs 早付 ACH` 净收益寻优净省 38%”Agent 架构选型 FAQ** | [中文](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.md) · [English](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（138 篇）

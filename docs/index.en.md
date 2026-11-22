@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`363` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`364` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (22 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (50 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (51 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (138 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (81 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (30 guides)](#saas-finops-micropayments)
@@ -48,7 +48,7 @@
 | 22 | **Enterprise Commercial Agent Platform & Cross-ERP Orchestration Selection (`Microsoft Copilot Studio + Dynamics 365` vs. `Azure AI Foundry + Semantic Kernel / LangGraph` vs. `Salesforce Agentforce` vs. `Shopify Sidekick / Storefront MCP`), `Entra OBO` `RLS` Gate, Durable `Saga Outbox` & "Front-Store / Back-Factory" Hybrid (`-39%` TCO) Agent Architecture Selection FAQ (🏆 360th Guide Milestone)** | [English](enterprise-agent-platform-copilot-studio-foundry-langgraph-agentforce-shopify-orchestration-selection-faq.en.md) · [中文](enterprise-agent-platform-copilot-studio-foundry-langgraph-agentforce-shopify-orchestration-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (50 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (51 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -104,6 +104,7 @@
 | 48 | **Omnichannel `SoftPOS` (`Tap to Pay on iPhone & Android`), Anti-Unlinked-Refund Embezzlement & Offline `EMV` Escrow (`Adyen Terminal API / Stripe Terminal / Shopify POS / Square`), Referenced-Refund `EMVCo PAR` Lock, Manual Keyed-Entry Veto & `$150` `SAF` Cap (`-38%` Store Payment Loss) Agent Architecture Selection FAQ** | [English](omnichannel-softpos-tap-to-pay-unlinked-refund-offline-emv-escrow-agent-selection-faq.en.md) · [中文](omnichannel-softpos-tap-to-pay-unlinked-refund-offline-emv-escrow-agent-selection-faq.md) |
 | 49 | **High-Ticket Automotive, EV & Solar Split-Tender Checkout Escrow (`Tesla / Rivian / AutoFi / Plaid Transfer / Stripe`), `$1,000` Card-Deposit Cap, Lender `Stips` Funding Lock, Per-`VIN vIBAN` Wire Shield & 4-Way Digital-Key Release (`-38%` Closing Loss) Agent Architecture Selection FAQ** | [English](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.en.md) · [中文](high-ticket-automotive-luxury-split-tender-deposit-wire-loan-escrow-agent-selection-faq.md) |
 | 50 | **Agentic `CIT-to-MIT` Card-on-File, `EMVCo Network Token` (`DPAN + TAVV`) & Smart-Retry Escrow (`Stripe SPT / Visa VIC / Adyen / Checkout.com`), 15-Digit `CIT Trace-ID` Linking, `Cat-1 / MAC-03` Zero-Retry Circuit Breaker & Payday Recovery (`-38%` Decline & Churn Loss) Agent Architecture Selection FAQ** | [English](agentic-payment-card-on-file-cit-mit-network-token-cryptogram-retry-escrow-agent-selection-faq.en.md) · [中文](agentic-payment-card-on-file-cit-mit-network-token-cryptogram-retry-escrow-agent-selection-faq.md) |
+| 51 | **Enterprise B2B Accounts Payable (`AP`) Virtual Card Straight-Through Processing (`STP`: `Boost Payment / Visa Commercial Pay / Mastercard Track / Coupa Pay / BILL`), Anti-Surcharge Gate & `Large-Ticket Level-3` Rebate Escrow (`-38%` AP Cost) Agent Architecture Selection FAQ** | [English](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.en.md) · [中文](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (138 Guides)

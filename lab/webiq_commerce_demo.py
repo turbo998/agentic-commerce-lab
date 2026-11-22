@@ -33689,6 +33689,82 @@ def evaluate_ecommerce_baby_maternity_cpsc_diaper_sizeup_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BAPVirtualCardSTPSurchargeRebatePolicyInput:
+    quarterly_ap_surcharge_loss_missed_rebate_and_stale_float_pool_usd: float = 270000.0
+    vendor_card_surcharge_exceeds_vcn_rebate_negative_arbitrage: bool = False
+    plaintext_email_vcn_or_missing_level3_large_ticket_data: bool = False
+    unclaimed_vcn_over_14_days_or_non_exact_cent_amount_lock: bool = False
+    stp_acquirer_push_and_three_rail_ap_yield_optimizer_ready: bool = False
+
+
+def evaluate_b2b_ap_virtual_card_stp_surcharge_rebate_policy(
+    policy_input: B2BAPVirtualCardSTPSurchargeRebatePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_ap_surcharge_loss_missed_rebate_and_stale_float_pool_usd
+        ),
+    )
+    if policy_input.unclaimed_vcn_over_14_days_or_non_exact_cent_amount_lock:
+        return {
+            "status_code": 451,
+            "decision": "UNCLAIMED_14D_STALE_VCN_FLOAT_OR_AMOUNT_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.vendor_card_surcharge_exceeds_vcn_rebate_negative_arbitrage:
+        return {
+            "status_code": 403,
+            "decision": "NEGATIVE_ARBITRAGE_VENDOR_CARD_SURCHARGE_EXCEEDS_REBATE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.plaintext_email_vcn_or_missing_level3_large_ticket_data:
+        return {
+            "status_code": 422,
+            "decision": "PLAINTEXT_EMAIL_VCN_OR_MISSING_LEVEL3_LARGE_TICKET_DATA",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stp_acquirer_push_and_three_rail_ap_yield_optimizer_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "STP_ACQUIRER_PUSH_AND_THREE_RAIL_YIELD_OPTIMIZER_CONFIRM",
+            "mandate_token": "b2b_ap_vcn_stp_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ZERO_SURCHARGE_AND_STP_LEVEL3_VCN_AUTHORIZED",
+        "mandate_token": "b2b_ap_vcn_stp_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -45978,6 +46054,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_ap_virtual_card_stp_surcharge_rebate_guard = {
+        "authorized_200": evaluate_b2b_ap_virtual_card_stp_surcharge_rebate_policy(
+            B2BAPVirtualCardSTPSurchargeRebatePolicyInput()
+        ),
+        "negative_surcharge_403": evaluate_b2b_ap_virtual_card_stp_surcharge_rebate_policy(
+            B2BAPVirtualCardSTPSurchargeRebatePolicyInput(
+                vendor_card_surcharge_exceeds_vcn_rebate_negative_arbitrage=True
+            )
+        ),
+        "email_vcn_or_no_l3_422": evaluate_b2b_ap_virtual_card_stp_surcharge_rebate_policy(
+            B2BAPVirtualCardSTPSurchargeRebatePolicyInput(
+                plaintext_email_vcn_or_missing_level3_large_ticket_data=True
+            )
+        ),
+        "stale_14d_vcn_451": evaluate_b2b_ap_virtual_card_stp_surcharge_rebate_policy(
+            B2BAPVirtualCardSTPSurchargeRebatePolicyInput(
+                unclaimed_vcn_over_14_days_or_non_exact_cent_amount_lock=True
+            )
+        ),
+        "stp_three_rail_409": evaluate_b2b_ap_virtual_card_stp_surcharge_rebate_policy(
+            B2BAPVirtualCardSTPSurchargeRebatePolicyInput(
+                stp_acquirer_push_and_three_rail_ap_yield_optimizer_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -46351,6 +46453,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_saas_cpq_multi_year_ramp_deal_desk_guard": b2b_saas_cpq_multi_year_ramp_deal_desk_guard,
         "cross_border_b2b_vat_vies_peppol_guard": cross_border_b2b_vat_vies_peppol_guard,
         "ecommerce_baby_maternity_cpsc_diaper_sizeup_guard": ecommerce_baby_maternity_cpsc_diaper_sizeup_guard,
+        "b2b_ap_virtual_card_stp_surcharge_rebate_guard": b2b_ap_virtual_card_stp_surcharge_rebate_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -65515,6 +65618,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="babymat-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PROACTIVE_SIZEUP_FREE_SWAP_AND_ACA_DME_PUMP_CONFIRM · Mandate: baby_maternity_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 245 B2B AP Virtual Card STP, Anti-Surcharge & Large-Ticket L3 Rebate Escrow (#364) -->
+      <div class="finops-box" id="b2b-ap-virtual-card-stp-surcharge-rebate-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏦 企业 B2B 应付账款 (AP) 虚拟卡 STP 直通清算与大额 Level-3 返现 (Boost / Visa BCP / Coupa Pay / BILL) 沙盒</div>
+            <div class="finops-sub">Round 245 (#364) · 刷卡附加费 (Surcharge) vs 虚拟卡返现净套利门禁 (HTTP 403) + 禁发邮件明文卡号与 STP 直推 + Large-Ticket Level-3 数据注入 (HTTP 422) + 精确美分锁与 14天未刷僵尸 VCN 自动回收 (HTTP 451) + STP 虚拟卡(+1.6%返现+30d账期) vs 早付 ACH 三轨司库寻优净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="apvcnstp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度为拿 1.5% 虚拟卡返现却被供应商反收 3% 刷卡附加费倒亏池、大供应商拒收邮件卡错失返现与僵尸卡占压额度池 ($)
+            <input type="number" id="apvcnstp-gross-input" value="270000" min="10000" step="5000" oninput="recalcB2BAPVirtualCardSTPSurchargeRebateSandbox()" />
+          </label>
+          <label>供应商刷卡附加费 (Credit Card Surcharge) vs 发卡行虚拟卡现金返点 (Rebate) 净套利计算门禁
+            <select id="apvcnstp-surcharge-select" onchange="recalcB2BAPVirtualCardSTPSurchargeRebateSandbox()">
+              <option value="pass">核验供应商 Card_Surcharge == 0% (净赚 160 bps 银行返现 + 35天免息信用卡账期浮存)</option>
+              <option value="block_403">为贪图 1.5% ($1,500) 刷卡返现强行用虚拟卡付 $100k 发票，结果被供应商反收 3.0% ($3,000) 附加费净亏 $1,500 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>直通式处理 (Straight-Through Processing STP) 免手输推送与大额商业卡 (Large-Ticket Level-3) 数据注入门禁
+            <select id="apvcnstp-stp-select" onchange="recalcB2BAPVirtualCardSTPSurchargeRebateSandbox()">
+              <option value="pass">通过 Boost / Visa BCP STP 接口连同完整 Level-3 行项直推供应商收单行，解锁 1.20% 大额低费率且零人工敲卡 (合规)</option>
+              <option value="block_422">把 16 位明文卡号发在邮件正文让供应商财务手工敲 POS 机 或 漏传 Level-3 数据触发 3.15% 惩罚费率遭拒收 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>精确到美分单次定额锁 (Min == Max == Net_Invoice) 与满 14 天未刷僵尸虚拟卡 (Ghost VCN) 自动注销回收门禁
+            <select id="apvcnstp-stale-select" onchange="recalcB2BAPVirtualCardSTPSurchargeRebateSandbox()">
+              <option value="pass">额度精确到美分单次即焚 + 超过 14 天未刷自动注销释放银行授信池并改走 ACH (安全)</option>
+              <option value="block_451">25% 邮件虚拟卡躺在收件箱 30 天无人刷取白白锁死公司数百万银行授信额度 或 未锁死单次精确金额 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>三轨司库收益寻优器 (STP 虚拟卡 [+1.6% 返现+30d 账期] vs 2/10 Net 30 早付 ACH [+2.0%] vs 到期 ACH) + EDI 820 对账
+            <select id="apvcnstp-opt-select" onchange="recalcB2BAPVirtualCardSTPSurchargeRebateSandbox()">
+              <option value="enabled" selected>STP 直充让 82% 供应商乐意收卡(+1.6% 返现) + 加收附加费供应商自动切 2% 早付 ACH + EDI 820 自动销账 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">无三轨套利比选与 EDI 820 自动回写的单通道虚拟卡付款 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度AP附加费倒亏与错失返现池</div>
+            <div class="finops-kpi-val" id="apvcnstp-gross-kpi">$270,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">STP直推与三轨寻优后净损耗</div>
+            <div class="finops-kpi-val" id="apvcnstp-net-kpi" style="color:#6ee7b7;">$167,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省附加费与增厚返现</div>
+            <div class="finops-kpi-val" id="apvcnstp-savings-kpi" style="color:#38bdf8;">$102,600</div>
+          </div>
+        </div>
+        <div id="apvcnstp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 STP_ACQUIRER_PUSH_AND_THREE_RAIL_YIELD_OPTIMIZER_CONFIRM · Mandate: b2b_ap_vcn_stp_escrow_optim_409
         </div>
       </div>
 
@@ -88917,6 +89077,79 @@ function recalcEcommerceBabyMaternityCPSCDiaperSizeUpSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_FRESH_CARSEAT_DOM_AND_CPSIA_BABY_AUTHORIZED · Mandate: baby_maternity_escrow_200';
+}}
+
+function recalcB2BAPVirtualCardSTPSurchargeRebateSandbox() {{
+  const grossInput = document.getElementById('apvcnstp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '270000'));
+  const surchargeGate = document.getElementById('apvcnstp-surcharge-select').value;
+  const stpGate = document.getElementById('apvcnstp-stp-select').value;
+  const staleGate = document.getElementById('apvcnstp-stale-select').value;
+  const optMode = document.getElementById('apvcnstp-opt-select').value;
+
+  const grossKpi = document.getElementById('apvcnstp-gross-kpi');
+  const netKpi = document.getElementById('apvcnstp-net-kpi');
+  const savingsKpi = document.getElementById('apvcnstp-savings-kpi');
+  const statusKpi = document.getElementById('apvcnstp-status-kpi');
+  const banner = document.getElementById('apvcnstp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (staleGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCLAIMED_14D_STALE_VCN_FLOAT_OR_AMOUNT_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (surchargeGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 NEGATIVE_ARBITRAGE_VENDOR_CARD_SURCHARGE_EXCEEDS_REBATE · Mandate: null';
+    return;
+  }}
+  if (stpGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PLAINTEXT_EMAIL_VCN_OR_MISSING_LEVEL3_LARGE_TICKET_DATA · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 STP_ACQUIRER_PUSH_AND_THREE_RAIL_YIELD_OPTIMIZER_CONFIRM · Mandate: b2b_ap_vcn_stp_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_ZERO_SURCHARGE_AND_STP_LEVEL3_VCN_AUTHORIZED · Mandate: b2b_ap_vcn_stp_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

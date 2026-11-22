@@ -25473,6 +25473,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-baby-maternity-cpsc-diaper-sizeup-sandbox", html_zh)
 
+    def test_b2b_ap_virtual_card_stp_surcharge_rebate_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BAPVirtualCardSTPSurchargeRebatePolicyInput,
+            evaluate_b2b_ap_virtual_card_stp_surcharge_rebate_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_ap_virtual_card_stp_surcharge_rebate_policy(
+            B2BAPVirtualCardSTPSurchargeRebatePolicyInput(
+                quarterly_ap_surcharge_loss_missed_rebate_and_stale_float_pool_usd=270000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ZERO_SURCHARGE_AND_STP_LEVEL3_VCN_AUTHORIZED",
+        )
+
+        surcharge = evaluate_b2b_ap_virtual_card_stp_surcharge_rebate_policy(
+            B2BAPVirtualCardSTPSurchargeRebatePolicyInput(
+                vendor_card_surcharge_exceeds_vcn_rebate_negative_arbitrage=True
+            )
+        )
+        self.assertEqual(surcharge["status_code"], 403)
+        self.assertEqual(
+            surcharge["decision"],
+            "NEGATIVE_ARBITRAGE_VENDOR_CARD_SURCHARGE_EXCEEDS_REBATE",
+        )
+
+        stp = evaluate_b2b_ap_virtual_card_stp_surcharge_rebate_policy(
+            B2BAPVirtualCardSTPSurchargeRebatePolicyInput(
+                plaintext_email_vcn_or_missing_level3_large_ticket_data=True
+            )
+        )
+        self.assertEqual(stp["status_code"], 422)
+        self.assertEqual(
+            stp["decision"],
+            "PLAINTEXT_EMAIL_VCN_OR_MISSING_LEVEL3_LARGE_TICKET_DATA",
+        )
+
+        stale = evaluate_b2b_ap_virtual_card_stp_surcharge_rebate_policy(
+            B2BAPVirtualCardSTPSurchargeRebatePolicyInput(
+                unclaimed_vcn_over_14_days_or_non_exact_cent_amount_lock=True
+            )
+        )
+        self.assertEqual(stale["status_code"], 451)
+        self.assertEqual(
+            stale["decision"],
+            "UNCLAIMED_14D_STALE_VCN_FLOAT_OR_AMOUNT_MISMATCH",
+        )
+
+        optim = evaluate_b2b_ap_virtual_card_stp_surcharge_rebate_policy(
+            B2BAPVirtualCardSTPSurchargeRebatePolicyInput(
+                quarterly_ap_surcharge_loss_missed_rebate_and_stale_float_pool_usd=270000.0,
+                stp_acquirer_push_and_three_rail_ap_yield_optimizer_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 102600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 167400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_ap_virtual_card_stp_surcharge_rebate_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-ap-virtual-card-stp-surcharge-rebate-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
