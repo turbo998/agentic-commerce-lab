@@ -27215,6 +27215,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-hotel-rate-parity-resort-fee-walk-sandbox", html_zh)
 
+    def test_retail_media_network_bidding_poas_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            RetailMediaNetworkBiddingPOASEscrowPolicyInput,
+            evaluate_retail_media_network_bidding_poas_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_retail_media_network_bidding_poas_escrow_policy(
+            RetailMediaNetworkBiddingPOASEscrowPolicyInput(
+                quarterly_rmn_stockout_bleed_cannibalization_and_loss_pool_usd=320000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_INCREMENTAL_POAS_AND_IN_STOCK_RMN_BID_AUTHORIZED",
+        )
+
+        buybox = evaluate_retail_media_network_bidding_poas_escrow_policy(
+            RetailMediaNetworkBiddingPOASEscrowPolicyInput(
+                bidding_on_buy_box_lost_or_core_size_stockout_sku=True
+            )
+        )
+        self.assertEqual(buybox["status_code"], 403)
+        self.assertEqual(
+            buybox["decision"],
+            "BUY_BOX_LOST_OR_CORE_SIZE_STOCKOUT_AD_SPEND_BLEED",
+        )
+
+        iroas = evaluate_retail_media_network_bidding_poas_escrow_policy(
+            RetailMediaNetworkBiddingPOASEscrowPolicyInput(
+                excessive_branded_keyword_spend_with_low_causal_iroas=True
+            )
+        )
+        self.assertEqual(iroas["status_code"], 422)
+        self.assertEqual(
+            iroas["decision"],
+            "BRANDED_KEYWORD_ORGANIC_CANNIBALIZATION_LOW_IROAS",
+        )
+
+        poas = evaluate_retail_media_network_bidding_poas_escrow_policy(
+            RetailMediaNetworkBiddingPOASEscrowPolicyInput(
+                cpc_bid_exceeds_sku_post_return_contribution_margin_poas=True
+            )
+        )
+        self.assertEqual(poas["status_code"], 451)
+        self.assertEqual(
+            poas["decision"],
+            "AD_CPC_EXCEEDING_SKU_POST_RETURN_CONTRIBUTION_MARGIN_FLOOR",
+        )
+
+        optim = evaluate_retail_media_network_bidding_poas_escrow_policy(
+            RetailMediaNetworkBiddingPOASEscrowPolicyInput(
+                quarterly_rmn_stockout_bleed_cannibalization_and_loss_pool_usd=320000.0,
+                inventory_synced_poas_bidding_and_ntb_dayparting_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 124800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 195200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("retail_media_network_bidding_poas_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("retail-media-network-bidding-poas-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

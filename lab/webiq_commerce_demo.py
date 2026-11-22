@@ -35709,6 +35709,82 @@ def evaluate_ota_hotel_rate_parity_resort_fee_walk_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class RetailMediaNetworkBiddingPOASEscrowPolicyInput:
+    quarterly_rmn_stockout_bleed_cannibalization_and_loss_pool_usd: float = 320000.0
+    bidding_on_buy_box_lost_or_core_size_stockout_sku: bool = False
+    excessive_branded_keyword_spend_with_low_causal_iroas: bool = False
+    cpc_bid_exceeds_sku_post_return_contribution_margin_poas: bool = False
+    inventory_synced_poas_bidding_and_ntb_dayparting_ready: bool = False
+
+
+def evaluate_retail_media_network_bidding_poas_escrow_policy(
+    policy_input: RetailMediaNetworkBiddingPOASEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_rmn_stockout_bleed_cannibalization_and_loss_pool_usd
+        ),
+    )
+    if policy_input.cpc_bid_exceeds_sku_post_return_contribution_margin_poas:
+        return {
+            "status_code": 451,
+            "decision": "AD_CPC_EXCEEDING_SKU_POST_RETURN_CONTRIBUTION_MARGIN_FLOOR",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bidding_on_buy_box_lost_or_core_size_stockout_sku:
+        return {
+            "status_code": 403,
+            "decision": "BUY_BOX_LOST_OR_CORE_SIZE_STOCKOUT_AD_SPEND_BLEED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.excessive_branded_keyword_spend_with_low_causal_iroas:
+        return {
+            "status_code": 422,
+            "decision": "BRANDED_KEYWORD_ORGANIC_CANNIBALIZATION_LOW_IROAS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.inventory_synced_poas_bidding_and_ntb_dayparting_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "BUY_BOX_INVENTORY_GUARD_AND_INCREMENTAL_POAS_BIDDING_CONFIRM",
+            "mandate_token": "rmn_sponsored_poas_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_INCREMENTAL_POAS_AND_IN_STOCK_RMN_BID_AUTHORIZED",
+        "mandate_token": "rmn_sponsored_poas_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -48674,6 +48750,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    retail_media_network_bidding_poas_guard = {
+        "authorized_200": evaluate_retail_media_network_bidding_poas_escrow_policy(
+            RetailMediaNetworkBiddingPOASEscrowPolicyInput()
+        ),
+        "buy_box_lost_or_stockout_403": evaluate_retail_media_network_bidding_poas_escrow_policy(
+            RetailMediaNetworkBiddingPOASEscrowPolicyInput(
+                bidding_on_buy_box_lost_or_core_size_stockout_sku=True
+            )
+        ),
+        "branded_cannibalization_low_iroas_422": evaluate_retail_media_network_bidding_poas_escrow_policy(
+            RetailMediaNetworkBiddingPOASEscrowPolicyInput(
+                excessive_branded_keyword_spend_with_low_causal_iroas=True
+            )
+        ),
+        "cpc_exceeds_post_return_poas_451": evaluate_retail_media_network_bidding_poas_escrow_policy(
+            RetailMediaNetworkBiddingPOASEscrowPolicyInput(
+                cpc_bid_exceeds_sku_post_return_contribution_margin_poas=True
+            )
+        ),
+        "inventory_synced_poas_dayparting_409": evaluate_retail_media_network_bidding_poas_escrow_policy(
+            RetailMediaNetworkBiddingPOASEscrowPolicyInput(
+                inventory_synced_poas_bidding_and_ntb_dayparting_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -49073,6 +49175,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_multilingual_return_duty_drawback_guard": cross_border_multilingual_return_duty_drawback_guard,
         "pay_by_bank_open_banking_nsf_guard": pay_by_bank_open_banking_nsf_guard,
         "ota_hotel_rate_parity_resort_fee_walk_guard": ota_hotel_rate_parity_resort_fee_walk_guard,
+        "retail_media_network_bidding_poas_guard": retail_media_network_bidding_poas_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -69719,6 +69822,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="otahcn-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ALL_IN_RESORT_FEE_PARITY_AND_PMS_HCN_PRICE_DROP_REBOOK_CONFIRM · Mandate: ota_hotel_parity_hcn_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 271 (🏆 #390 Milestone) Retail Media Network Bidding, iROAS & POAS Escrow -->
+      <div class="finops-box" id="retail-media-network-bidding-poas-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 零售媒体网络 (RMN: Amazon Ads / Walmart Connect / Criteo) 智能竞价、iROAS 与净毛利 POAS (第390篇里程碑) 沙盒</div>
+            <div class="finops-sub">Round 271 (🏆 #390 · SVG #714) · 丢黄金购物车(Buy Box&lt;85%)或黄金码断码(&lt;5d周转)45秒秒级停投防替跟卖引流 (HTTP 403) + 自然排名第1时品牌词防自残与因果增量 iROAS&gt;=1.8x 门禁 (HTTP 422) + 扣退货与COGS后净毛利 POAS 底线锁 (HTTP 451) + 满码高毛利款分时 Dayparting 竞价净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="rmnpoas-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度丢 Buy Box 替跟卖白烧广告费、黄金码断码空烧、品牌词自残洗自然流量及高退货微利款负 POAS 爆量损失池 ($)
+            <input type="number" id="rmnpoas-gross-input" value="320000" min="10000" step="5000" oninput="recalcRetailMediaNetworkBiddingPOASSandbox()" />
+          </label>
+          <label>黄金购物车占有率 (Buy-Box Win Rate &gt;= 85%) 与核心尺码可售周转天数 (DoC &gt;= 5d) 秒级熔断门禁
+            <select id="rmnpoas-buybox-select" onchange="recalcRetailMediaNetworkBiddingPOASSandbox()">
+              <option value="pass">Buy Box 胜率 &gt;= 85% 且 M/L 黄金码齐码可售周转 &gt;= 5 天方可参竞 (安全)</option>
+              <option value="block_403">被低价跟卖抢走 Buy Box 或主力尺码断码仍以 $3.80 CPC 全速烧钱替竞品引流 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>品牌词防自残 (Branded Keyword Cap &lt;= 15%) 与因果增量归因 (Incremental iROAS &gt;= 1.8x) 门禁
+            <select id="rmnpoas-iroas-select" onchange="recalcRetailMediaNetworkBiddingPOASSandbox()">
+              <option value="pass">自然搜索第1名时严控品牌词占比 &lt;=15%，主力预算投向 New-to-Brand 品类拉新词 (合规)</option>
+              <option value="block_422">将 70% 预算砸向自然排第1的品牌词刷出虚假 12x ROAS，真实增量 iROAS 仅 0.6x (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>扣除 COGS、FBA 履约费与退货损耗后的净毛利投产比 (Post-Return Net POAS &gt;= 1.35x) 出价上限门禁
+            <select id="rmnpoas-poas-select" onchange="recalcRetailMediaNetworkBiddingPOASSandbox()">
+              <option value="pass">严格按扣退货后真实净毛利 POAS &gt;= 1.35x 反推最高 CPC 出价上限 (安全)</option>
+              <option value="block_451">对净毛利仅 14% 的高退货微利款按 4.5x 表面 ROAS 放量，导致 POAS=0.63x 卖一单亏一单 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>库存与净毛利联动预算平移 + Amazon Marketing Stream 分小时转化高峰 (Dayparting) 竞价寻优
+            <select id="rmnpoas-opt-select" onchange="recalcRetailMediaNetworkBiddingPOASSandbox()">
+              <option value="enabled" selected>45秒熔断断码款并将预算平移至高 POAS 满码主力款 + 分时高峰加价 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">全天24小时按全店统一表面 Gross ROAS 盲目竞价且不联动库存与退货率 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度RMN空烧与负毛利投放损失池</div>
+            <div class="finops-kpi-val" id="rmnpoas-gross-kpi">$320,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">POAS毛利锁与库存熔断后净支出</div>
+            <div class="finops-kpi-val" id="rmnpoas-net-kpi" style="color:#6ee7b7;">$195,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省无效广告费与毛利倒贴</div>
+            <div class="finops-kpi-val" id="rmnpoas-savings-kpi" style="color:#38bdf8;">$124,800</div>
+          </div>
+        </div>
+        <div id="rmnpoas-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 BUY_BOX_INVENTORY_GUARD_AND_INCREMENTAL_POAS_BIDDING_CONFIRM · Mandate: rmn_sponsored_poas_optim_409
         </div>
       </div>
 
@@ -95019,6 +95179,79 @@ function recalcOTAHotelRateParityResortFeeWalkSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_ALL_IN_HOTEL_PARITY_AND_PMS_HCN_AUTHORIZED · Mandate: ota_hotel_parity_hcn_200';
+}}
+
+function recalcRetailMediaNetworkBiddingPOASSandbox() {{
+  const grossInput = document.getElementById('rmnpoas-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '320000'));
+  const buyboxGate = document.getElementById('rmnpoas-buybox-select').value;
+  const iroasGate = document.getElementById('rmnpoas-iroas-select').value;
+  const poasGate = document.getElementById('rmnpoas-poas-select').value;
+  const optMode = document.getElementById('rmnpoas-opt-select').value;
+
+  const grossKpi = document.getElementById('rmnpoas-gross-kpi');
+  const netKpi = document.getElementById('rmnpoas-net-kpi');
+  const savingsKpi = document.getElementById('rmnpoas-savings-kpi');
+  const statusKpi = document.getElementById('rmnpoas-status-kpi');
+  const banner = document.getElementById('rmnpoas-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (poasGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 AD_CPC_EXCEEDING_SKU_POST_RETURN_CONTRIBUTION_MARGIN_FLOOR · Mandate: null';
+    return;
+  }}
+  if (buyboxGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BUY_BOX_LOST_OR_CORE_SIZE_STOCKOUT_AD_SPEND_BLEED · Mandate: null';
+    return;
+  }}
+  if (iroasGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BRANDED_KEYWORD_ORGANIC_CANNIBALIZATION_LOW_IROAS · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 BUY_BOX_INVENTORY_GUARD_AND_INCREMENTAL_POAS_BIDDING_CONFIRM · Mandate: rmn_sponsored_poas_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_INCREMENTAL_POAS_AND_IN_STOCK_RMN_BID_AUTHORIZED · Mandate: rmn_sponsored_poas_200';
 }}
 
 function updateStage1756Sandbox() {{

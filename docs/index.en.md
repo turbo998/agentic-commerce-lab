@@ -2,11 +2,11 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`389` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`390` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
-- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (25 guides)](#platform-grounding)
+- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (26 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (53 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (146 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (87 guides)](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (25 Guides)
+## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (26 Guides)
 
 > Platform selection (Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify), real-time search grounding (Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl), catalog feed barriers, A2UI isolation, and Web Bot Auth vs WAF governance.
 
@@ -49,6 +49,7 @@
 | 23 | **Commercial Search Grounding for Supplier Risk, Competitor Price Intelligence & Market Research (`Microsoft Web IQ vs. Perplexity Sonar Pro vs. Exa vs. Tavily vs. Firecrawl`), `LEI / DUNS` 4-Tuple Adverse-Media Freeze, In-Text Data-Vintage Gate, `W3C TDMRep` Compliance & 3-Tier Funnel (`-85.9%` Tokens / `-41%` Cost) Agent Architecture Selection FAQ** | [English](commercial-grounding-supplier-risk-competitor-price-market-research-webiq-sonar-exa-firecrawl-selection-faq.en.md) · [中文](commercial-grounding-supplier-risk-competitor-price-market-research-webiq-sonar-exa-firecrawl-selection-faq.md) |
 | 24 | **Enterprise `CRM-to-ERP` Quote-to-Order Idempotent Sync, Cent-Parity & `WMS` Amendment Saga (`Salesforce + SAP S/4HANA vs. Microsoft Dynamics 365 Dual-Write vs. HubSpot + NetSuite`), Pre-Commit `BAPI_SALESORDER_SIMULATE` Parity, `BSTKD` Read-Before-Retry Lock, Post-`PGI` Edit Freeze & Cash-Collected Commission (`-38%` Quote-to-Cash Loss) Agent Architecture Selection FAQ** | [English](enterprise-crm-erp-quote-to-order-idempotent-sync-price-parity-wms-saga-selection-faq.en.md) · [中文](enterprise-crm-erp-quote-to-order-idempotent-sync-price-parity-wms-saga-selection-faq.md) |
 | 25 | **E-Commerce Multimodal Visual Search, `Shop-the-Look` Object Detection & In-Size Twin Grounding (`Syte.ai vs. ViSenze vs. Google Vertex AI Vision vs. SigLIP + Qdrant`), Foreground `BBox` Crop, Inline `user_size_atp > 0` Vector Pre-Filter, Edge `BIPA` Face-Blur & 1-Tap Outfit Bundle (`-38%` Bounce & Privacy Loss) Agent Architecture Selection FAQ** | [English](ecommerce-multimodal-visual-search-shop-the-look-in-size-twin-grounding-agent-selection-faq.en.md) · [中文](ecommerce-multimodal-visual-search-shop-the-look-in-size-twin-grounding-agent-selection-faq.md) |
+| 26 | **🏆 E-Commerce & Marketplace Retail Media Network (`RMN`: `Amazon Ads / Walmart Connect / Criteo / Koddi`) Sponsored Bidding, Causal `iROAS` Attribution & Buy-Box / Stockout / Post-Return `POAS` Escrow (🏆 390th Bilingual Guide Milestone), Sub-60s `Buy-Box` & Size-Curve Pause, Branded Cannibalization Cap & Net `POAS >= 1.35x` Dayparting (`-39%` Ad Waste & Margin Bleed) Agent Architecture Selection FAQ** | [English](retail-media-network-rmn-sponsored-bidding-iroas-stockout-margin-escrow-agent-selection-faq.en.md) · [中文](retail-media-network-rmn-sponsored-bidding-iroas-stockout-margin-escrow-agent-selection-faq.md) |
 
 <a id="payments-mandates"></a>
 ## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (53 Guides)
