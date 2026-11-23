@@ -30498,6 +30498,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("fleet-fuel-ev-roaming-sandbox", html_zh)
 
+    def test_b2b_vms_contingent_sow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bVmsContingentSowPolicyInput,
+            evaluate_b2b_vms_contingent_sow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_vms_contingent_sow_policy(
+            B2bVmsContingentSowPolicyInput(
+                quarterly_rogue_sow_markup_ghost_hours_and_tenure_risk_pool_usd=380000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_VMS_CONTINGENT_LABOR_AND_SOW_SES_AUTHORIZED",
+        )
+
+        rogue = evaluate_b2b_vms_contingent_sow_policy(
+            B2bVmsContingentSowPolicyInput(
+                rogue_disguised_sow_bypassing_vms_rate_card_and_headcount=True
+            )
+        )
+        self.assertEqual(rogue["status_code"], 403)
+        self.assertEqual(
+            rogue["decision"],
+            "ROGUE_DISGUISED_SOW_BYPASSING_VMS_RATE_CARD_AND_HEADCOUNT_CAP",
+        )
+
+        ses = evaluate_b2b_vms_contingent_sow_policy(
+            B2bVmsContingentSowPolicyInput(
+                unverified_erp_ses_milestone_or_ghost_vdi_timesheet=True
+            )
+        )
+        self.assertEqual(ses["status_code"], 422)
+        self.assertEqual(
+            ses["decision"],
+            "UNVERIFIED_ERP_SES_MILESTONE_OR_GHOST_VDI_TIMESHEET_DISCREPANCY",
+        )
+
+        tenure = evaluate_b2b_vms_contingent_sow_policy(
+            B2bVmsContingentSowPolicyInput(
+                co_employment_tenure_cliff_breach_or_zombie_contractor_iam=True
+            )
+        )
+        self.assertEqual(tenure["status_code"], 451)
+        self.assertEqual(
+            tenure["decision"],
+            "CO_EMPLOYMENT_TENURE_CLIFF_BREACH_OR_ZOMBIE_CONTRACTOR_IAM_TOKEN",
+        )
+
+        optim = evaluate_b2b_vms_contingent_sow_policy(
+            B2bVmsContingentSowPolicyInput(
+                quarterly_rogue_sow_markup_ghost_hours_and_tenure_risk_pool_usd=380000.0,
+                vms_rate_card_deliverable_ses_and_tenure_scim_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 148200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 231800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_vms_contingent_sow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-vms-contingent-sow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

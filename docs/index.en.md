@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`438` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`439` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (30 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (57 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (166 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (95 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (96 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (39 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (51 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -295,7 +295,7 @@
 | 166 | **Hospitality & Restaurant Pay-at-Table POS (`Toast / Square for Restaurants / Adyen Hospitality / Sunday / 7shifts`), Split-Check Concurrency Mutex, Pre-Tax Tip Base & `FLSA § 203(m)` Tip-Pooling Escrow (`-38%` Walkout, Tip Dispute & DOL Penalty Loss) FAQ** | [English](hospitality-pos-pay-at-table-split-check-mutex-flsa-tip-pool-escrow-selection-faq.en.md) · [中文](hospitality-pos-pay-at-table-split-check-mutex-flsa-tip-pool-escrow-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (95 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (96 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -396,6 +396,7 @@
 | 93 | **Enterprise B2B Distributor Rebates, `Ship-and-Debit / SPA` (`EDI 844 / 849`) & Anti-Retroactive Tier-Cliff Escrow (`Enable.com vs. Vistex / SAP S/4HANA vs. Model N vs. Zilliant`), `EDI 867` Serial + `FIFO` Lot-Cost Lock, Stepped Marginal Brackets & `T+45d` Net-Volume `Credit Memo` (`-39%` SPA & Cliff Loss) FAQ** | [English](b2b-distributor-rebate-ship-and-debit-edi844-retroactive-tier-cliff-escrow-selection-faq.en.md) · [中文](b2b-distributor-rebate-ship-and-debit-edi844-retroactive-tier-cliff-escrow-selection-faq.md) |
 | 94 | **🏆 B2B Vendor-Managed Inventory (`VMI`) & Scan-Based Trading (`SBT` / Consignment: `SPS Commerce / SAP S/4HANA MRKO / TrueCommerce / EDI 852` · 🏆 750th SVG Diagram & 200th Sandbox Milestone), `<=1.5%` Shrinkage Cap, Poisson `Zero-Scan` Phantom-Stock Heal & Wholesale Cost Lock (`-38%` Shrink & OOS Loss) FAQ** | [English](b2b-vmi-consignment-scan-based-trading-edi852-shrinkage-cap-escrow-selection-faq.en.md) · [中文](b2b-vmi-consignment-scan-based-trading-edi852-shrinkage-cap-escrow-selection-faq.md) |
 | 95 | **Enterprise B2B Supply Chain Finance (`SCF`): Reverse Factoring vs. Dynamic Discounting (`SAP Taulia / PrimeRevenue / C2FO / Kyriba`), `FASB ASC 405-50` Debt-Reclassification Guard, Post-`QA` `90% IPU` Credit-Note Dilution Buffer & `WACC` Hybrid Funding Switch (`-39%` Dilution & Yield Loss) FAQ** | [English](b2b-scf-reverse-factoring-asc405-ipu-credit-note-netting-escrow-selection-faq.en.md) · [中文](b2b-scf-reverse-factoring-asc405-ipu-credit-note-netting-escrow-selection-faq.md) |
+| 96 | **Enterprise Contingent Workforce (`VMS`) & Services Procurement (`SOW`: `SAP Fieldglass vs. Beeline vs. Workday VNDLY vs. Coupa CWM`), Anti-`Rogue SOW` Rate-Card Guard, Deliverable-Gated `ERP SES` & `18/24m` Co-Employment Tenure + `SCIM` Escrow (`-39%` Markup & Ghost-Hour Loss) FAQ** | [English](b2b-vms-contingent-labor-sow-milestone-ses-coemployment-escrow-selection-faq.en.md) · [中文](b2b-vms-contingent-labor-sow-milestone-ses-coemployment-escrow-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (39 Guides)

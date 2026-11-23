@@ -39427,6 +39427,82 @@ def evaluate_fleet_fuel_ev_roaming_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bVmsContingentSowPolicyInput:
+    quarterly_rogue_sow_markup_ghost_hours_and_tenure_risk_pool_usd: float = 380000.0
+    rogue_disguised_sow_bypassing_vms_rate_card_and_headcount: bool = False
+    unverified_erp_ses_milestone_or_ghost_vdi_timesheet: bool = False
+    co_employment_tenure_cliff_breach_or_zombie_contractor_iam: bool = False
+    vms_rate_card_deliverable_ses_and_tenure_scim_ready: bool = False
+
+
+def evaluate_b2b_vms_contingent_sow_policy(
+    policy_input: B2bVmsContingentSowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_rogue_sow_markup_ghost_hours_and_tenure_risk_pool_usd
+        ),
+    )
+    if policy_input.co_employment_tenure_cliff_breach_or_zombie_contractor_iam:
+        return {
+            "status_code": 451,
+            "decision": "CO_EMPLOYMENT_TENURE_CLIFF_BREACH_OR_ZOMBIE_CONTRACTOR_IAM_TOKEN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.rogue_disguised_sow_bypassing_vms_rate_card_and_headcount:
+        return {
+            "status_code": 403,
+            "decision": "ROGUE_DISGUISED_SOW_BYPASSING_VMS_RATE_CARD_AND_HEADCOUNT_CAP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unverified_erp_ses_milestone_or_ghost_vdi_timesheet:
+        return {
+            "status_code": 422,
+            "decision": "UNVERIFIED_ERP_SES_MILESTONE_OR_GHOST_VDI_TIMESHEET_DISCREPANCY",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.vms_rate_card_deliverable_ses_and_tenure_scim_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "VMS_RATE_CARD_DELIVERABLE_SES_AND_TENURE_IAM_ESCROW_CONFIRM",
+            "mandate_token": "b2b_vms_contingent_sow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_VMS_CONTINGENT_LABOR_AND_SOW_SES_AUTHORIZED",
+        "mandate_token": "b2b_vms_contingent_sow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -53666,6 +53742,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_vms_contingent_sow_guard = {
+        "authorized_200": evaluate_b2b_vms_contingent_sow_policy(
+            B2bVmsContingentSowPolicyInput()
+        ),
+        "rogue_disguised_sow_403": evaluate_b2b_vms_contingent_sow_policy(
+            B2bVmsContingentSowPolicyInput(
+                rogue_disguised_sow_bypassing_vms_rate_card_and_headcount=True
+            )
+        ),
+        "unverified_ses_or_ghost_hours_422": evaluate_b2b_vms_contingent_sow_policy(
+            B2bVmsContingentSowPolicyInput(
+                unverified_erp_ses_milestone_or_ghost_vdi_timesheet=True
+            )
+        ),
+        "co_employment_or_zombie_iam_451": evaluate_b2b_vms_contingent_sow_policy(
+            B2bVmsContingentSowPolicyInput(
+                co_employment_tenure_cliff_breach_or_zombie_contractor_iam=True
+            )
+        ),
+        "vms_rate_card_ses_scim_409": evaluate_b2b_vms_contingent_sow_policy(
+            B2bVmsContingentSowPolicyInput(
+                vms_rate_card_deliverable_ses_and_tenure_scim_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -54114,6 +54216,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_ftz_duty_drawback_guard": cross_border_ftz_duty_drawback_guard,
         "hospitality_pos_split_tip_guard": hospitality_pos_split_tip_guard,
         "fleet_fuel_ev_roaming_guard": fleet_fuel_ev_roaming_guard,
+        "b2b_vms_contingent_sow_guard": b2b_vms_contingent_sow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -77553,6 +77656,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="fltev-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TELEMATICS_PINNED_FLEET_FUEL_EV_PLUG_AND_CHARGE_0420_CONFIRM · Mandate: fleet_fuel_ev_roaming_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 320 (#439 · SVG #763) Enterprise VMS Contingent Labor & SOW Milestone SES -->
+      <div class="finops-box" id="b2b-vms-contingent-sow-sandbox" style="margin-top:12px;border-color:#4f46e5;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">👔 企业外部用工与专业服务采购 (SAP Fieldglass / Beeline / Workday VNDLY) SOW、SES 与工期沙盒</div>
+            <div class="finops-sub">Round 320 (#439 · SVG #763) · NLP 条款审查拦截将驻场人力外包伪装成咨询 SOW 绕过费率卡与编制 (HTTP 403) + 绑定 Jira UAT / Git 构建哈希与 VDI 活跃度才允许签发 SAP 服务录入单 SES (HTTP 422) + 18/24 个月联合雇佣工期断崖与 SCIM 到期秒撤权 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="vmssow-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度假 SOW 人头溢价、多头兼职幽灵工时及超时留用事实雇佣合规风险池 ($)
+            <input type="number" id="vmssow-gross-input" value="380000" min="10000" step="5000" oninput="recalcB2bVmsContingentSowSandbox()" />
+          </label>
+          <label>采购入口 SOW vs. Staff Augmentation 条款实质审查与 VMS 标准费率卡门禁
+            <select id="vmssow-rogue-select" onchange="recalcB2bVmsContingentSowSandbox()">
+              <option value="pass">严格校验量化交付物与质保责任，无交付物的人天外包一律路由回 VMS 套用 $115/hr 费率卡 (合规)</option>
+              <option value="block_403">业务部门为绕过 HR 编制冻结，把 $115/hr 驻场外包包装成 $185/hr 的假咨询 SOW (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>ERP 服务录入单 (SAP ML81N SES) 交付物哈希绑定与驻场工时 VDI / 门禁遥测对账门禁
+            <select id="vmssow-ses-select" onchange="recalcB2bVmsContingentSowSandbox()">
+              <option value="pass">强制绑定已签名 UAT 单号 + Git Release 哈希并核对 VDI 在线时长吻合才生成 ERP SES (安全)</option>
+              <option value="block_422">周五闭眼秒批无代码产出的 $85k 里程碑，或周 VDI 在线仅 4 小时却报满 40 小时工时 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>跨挂靠商 18/24 个月联合雇佣 (Co-Employment) 工期断崖与工单到期 SCIM 自动销权门禁
+            <select id="vmssow-tenure-select" onchange="recalcB2bVmsContingentSowSandbox()">
+              <option value="pass">按唯一身份哈希追踪跨供应商累计工期 (&lt;=18/24m)，并在工单结束瞬间自动吊销 Entra/GitHub 令牌 (合规)</option>
+              <option value="block_451">同一外包换壳连续驻场 36 个月触发事实雇佣集体诉讼，或离场后 v- 账号权限仍未注销 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>VMS 标准费率卡分流 + 交付物绑定 ERP SES + 工期与 SCIM 权限闭环编排
+            <select id="vmssow-opt-select" onchange="recalcB2bVmsContingentSowSandbox()">
+              <option value="enabled" selected>启用假 SOW 拦截 + 遥测绑定 SES + 工期 SCIM 闭环 (-39% 外包损耗 / HTTP 409)</option>
+              <option value="disabled">各部门手工签 PDF 合同并由经理邮件审批工时表 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度外包溢价与幽灵工时池</div>
+            <div class="finops-kpi-val" id="vmssow-gross-kpi">$380,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">VMS费率卡与SES后净支出</div>
+            <div class="finops-kpi-val" id="vmssow-net-kpi" style="color:#6ee7b7;">$231,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省外部用工与服务预算</div>
+            <div class="finops-kpi-val" id="vmssow-savings-kpi" style="color:#38bdf8;">$148,200</div>
+          </div>
+        </div>
+        <div id="vmssow-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 VMS_RATE_CARD_DELIVERABLE_SES_AND_TENURE_IAM_ESCROW_CONFIRM · Mandate: b2b_vms_contingent_sow_optim_409
         </div>
       </div>
 
@@ -106430,6 +106590,79 @@ function recalcFleetFuelEvRoamingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_FLEET_FUEL_AND_EV_ROAMING_AUTHORIZED · Mandate: fleet_fuel_ev_roaming_200';
+}}
+
+function recalcB2bVmsContingentSowSandbox() {{
+  const grossInput = document.getElementById('vmssow-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '380000'));
+  const rogueGate = document.getElementById('vmssow-rogue-select').value;
+  const sesGate = document.getElementById('vmssow-ses-select').value;
+  const tenureGate = document.getElementById('vmssow-tenure-select').value;
+  const optMode = document.getElementById('vmssow-opt-select').value;
+
+  const grossKpi = document.getElementById('vmssow-gross-kpi');
+  const netKpi = document.getElementById('vmssow-net-kpi');
+  const savingsKpi = document.getElementById('vmssow-savings-kpi');
+  const statusKpi = document.getElementById('vmssow-status-kpi');
+  const banner = document.getElementById('vmssow-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (tenureGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CO_EMPLOYMENT_TENURE_CLIFF_BREACH_OR_ZOMBIE_CONTRACTOR_IAM_TOKEN · Mandate: null';
+    return;
+  }}
+  if (rogueGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ROGUE_DISGUISED_SOW_BYPASSING_VMS_RATE_CARD_AND_HEADCOUNT_CAP · Mandate: null';
+    return;
+  }}
+  if (sesGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNVERIFIED_ERP_SES_MILESTONE_OR_GHOST_VDI_TIMESHEET_DISCREPANCY · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 VMS_RATE_CARD_DELIVERABLE_SES_AND_TENURE_IAM_ESCROW_CONFIRM · Mandate: b2b_vms_contingent_sow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_VMS_CONTINGENT_LABOR_AND_SOW_SES_AUTHORIZED · Mandate: b2b_vms_contingent_sow_200';
 }}
 
 function updateStage1756Sandbox() {{
