@@ -28421,6 +28421,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-ap-three-way-match-scf-sandbox", html_zh)
 
+    def test_marketplace_split_settlement_reserve_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            MarketplaceSplitSettlementReservePolicyInput,
+            evaluate_marketplace_split_settlement_reserve_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_marketplace_split_settlement_reserve_policy(
+            MarketplaceSplitSettlementReservePolicyInput(
+                quarterly_bustout_fraud_penny_drift_and_clawback_pool_usd=330000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_HAMILTON_SPLIT_AND_DELIVERY_RESERVE_AUTHORIZED",
+        )
+
+        vpod = evaluate_marketplace_split_settlement_reserve_policy(
+            MarketplaceSplitSettlementReservePolicyInput(
+                tracking_only_premature_payout_or_bustout_spike=True
+            )
+        )
+        self.assertEqual(vpod["status_code"], 403)
+        self.assertEqual(
+            vpod["decision"],
+            "TRACKING_ONLY_PREMATURE_PAYOUT_OR_BUST_OUT_VELOCITY_SPIKE",
+        )
+
+        penny = evaluate_marketplace_split_settlement_reserve_policy(
+            MarketplaceSplitSettlementReservePolicyInput(
+                floating_point_split_penny_drift_unbalanced_ledger=True
+            )
+        )
+        self.assertEqual(penny["status_code"], 422)
+        self.assertEqual(
+            penny["decision"],
+            "FLOATING_POINT_SPLIT_PENNY_DRIFT_OR_UNBALANCED_LEDGER",
+        )
+
+        res = evaluate_marketplace_split_settlement_reserve_policy(
+            MarketplaceSplitSettlementReservePolicyInput(
+                uncollateralized_zero_reserve_or_clawback_insolvency=True
+            )
+        )
+        self.assertEqual(res["status_code"], 451)
+        self.assertEqual(
+            res["decision"],
+            "UNCOLLATERALIZED_ZERO_RESERVE_PAYOUT_OR_CLAWBACK_INSOLVENCY",
+        )
+
+        optim = evaluate_marketplace_split_settlement_reserve_policy(
+            MarketplaceSplitSettlementReservePolicyInput(
+                quarterly_bustout_fraud_penny_drift_and_clawback_pool_usd=330000.0,
+                largest_remainder_conservation_and_vpod_reserve_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 128700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 201300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("marketplace_split_settlement_reserve_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("marketplace-split-settlement-reserve-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

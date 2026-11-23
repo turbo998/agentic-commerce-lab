@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`407` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`408` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (29 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (55 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (151 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (152 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (90 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (35 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (47 guides)](#tax-fx-privacy-disputes)
@@ -118,7 +118,7 @@
 | 55 | **E-Commerce Embedded `BNPL` (`Affirm vs. Klarna vs. Afterpay vs. PayPal Pay in 4`), `MDR` Margin-Floor Gate (`>=18%`), Isolated `A2UI WebView` `TILA` Handover, Carrier `First-Scan` Autopay Snooze & `Tail-First` Partial-Return Re-Amortization (`-37%` BNPL MDR & Dispute Loss) Agent Architecture Selection FAQ** | [English](ecommerce-bnpl-klarna-affirm-afterpay-mdr-margin-floor-partial-return-reamortization-selection-faq.en.md) · [中文](ecommerce-bnpl-klarna-affirm-afterpay-mdr-margin-floor-partial-return-reamortization-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (151 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (152 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -275,6 +275,7 @@
 | 149 | **Omnichannel Retail `BOPIS` & Curbside Pickup (`Manhattan Active Omni vs. Fluent Commerce vs. NewStore vs. Shopify POS`), `On-Hand >= 2 / RFID` Phantom-Stock Safety Buffer, Staged-Bin Scan Gate, Handover-Time Capture with 7-Day Auto-Release & `$5` In-Store Pickup Upsell (`-38%` Short-Pick & Freight Loss) Agent Architecture Selection FAQ** | [English](omnichannel-bopis-curbside-pickup-phantom-stock-buffer-unclaimed-release-escrow-agent-selection-faq.en.md) · [中文](omnichannel-bopis-curbside-pickup-phantom-stock-buffer-unclaimed-release-escrow-agent-selection-faq.md) |
 | 150 | **E-Commerce Post-Purchase `RMA`, Anti-`Returnless Refund` Abuse, `Bonus Exchange Credit` Non-Cashout Lock & Carrier `First-Scan` Escrow (`Loop Returns vs. Narvar vs. ReturnGO vs. AfterShip Returns`), `1-per-365d EMVCo PAR` Keep-Item Cap, Principal-vs-Bonus Dual Ledger & 7-Day WMS Size Hold (`-39%` Refund Drain & RMA Fraud) Agent Architecture Selection FAQ** | [English](ecommerce-rma-returnless-refund-abuse-bonus-exchange-credit-first-scan-escrow-agent-selection-faq.en.md) · [中文](ecommerce-rma-returnless-refund-abuse-bonus-exchange-credit-first-scan-escrow-agent-selection-faq.md) |
 | 151 | **E-Commerce Personalized AI Shopping Stylist & Cross-Category Bundle Conversion (`Shopify Storefront MCP vs. Constructor.io vs. Salesforce Agentforce vs. Custom PIM Graph`), `PIM` Mount/Ingredient Compatibility Lock, User-Size `ATP >= 2` Co-Location Gate, `Pro-Rata` Bundle-Break Return Clawback & 1-Tap `cartLinesAdd` (`-38%` Bundle Return & Bounce Loss) Agent Architecture Selection FAQ** | [English](ecommerce-ai-shopping-stylist-cross-category-bundle-compatibility-pro-rata-return-escrow-selection-faq.en.md) · [中文](ecommerce-ai-shopping-stylist-cross-category-bundle-compatibility-pro-rata-return-escrow-selection-faq.md) |
+| 152 | **Multi-Vendor Marketplace Split-Settlement (`Stripe Connect vs. Adyen for Platforms vs. Mirakl Payout vs. Hyperwallet`), Destination-`ZIP+4 vPOD` Anti-Bust-Out Escrow, Hamilton Largest-Remainder Penny Conservation & 30-Day Rolling Reserve Clawback Waterfall (`-39%` Seller Fraud & Bad-Debt Loss) Agent Architecture Selection FAQ** | [English](marketplace-split-settlement-stripe-connect-adyen-mirakl-bustout-reserve-penny-conservation-faq.en.md) · [中文](marketplace-split-settlement-stripe-connect-adyen-mirakl-bustout-reserve-penny-conservation-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (90 Guides)

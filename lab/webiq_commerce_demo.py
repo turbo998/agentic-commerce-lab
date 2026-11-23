@@ -37077,6 +37077,82 @@ def evaluate_b2b_ap_three_way_match_dynamic_discount_policy(
     }
 
 
+@dataclass(frozen=True)
+class MarketplaceSplitSettlementReservePolicyInput:
+    quarterly_bustout_fraud_penny_drift_and_clawback_pool_usd: float = 330000.0
+    tracking_only_premature_payout_or_bustout_spike: bool = False
+    floating_point_split_penny_drift_unbalanced_ledger: bool = False
+    uncollateralized_zero_reserve_or_clawback_insolvency: bool = False
+    largest_remainder_conservation_and_vpod_reserve_ready: bool = False
+
+
+def evaluate_marketplace_split_settlement_reserve_policy(
+    policy_input: MarketplaceSplitSettlementReservePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_bustout_fraud_penny_drift_and_clawback_pool_usd
+        ),
+    )
+    if policy_input.uncollateralized_zero_reserve_or_clawback_insolvency:
+        return {
+            "status_code": 451,
+            "decision": "UNCOLLATERALIZED_ZERO_RESERVE_PAYOUT_OR_CLAWBACK_INSOLVENCY",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tracking_only_premature_payout_or_bustout_spike:
+        return {
+            "status_code": 403,
+            "decision": "TRACKING_ONLY_PREMATURE_PAYOUT_OR_BUST_OUT_VELOCITY_SPIKE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.floating_point_split_penny_drift_unbalanced_ledger:
+        return {
+            "status_code": 422,
+            "decision": "FLOATING_POINT_SPLIT_PENNY_DRIFT_OR_UNBALANCED_LEDGER",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.largest_remainder_conservation_and_vpod_reserve_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "LARGEST_REMAINDER_PENNY_CONSERVATION_AND_VPOD_RESERVE_CONFIRM",
+            "mandate_token": "marketplace_split_reserve_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_HAMILTON_SPLIT_AND_DELIVERY_RESERVE_AUTHORIZED",
+        "mandate_token": "marketplace_split_reserve_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -50510,6 +50586,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    marketplace_split_settlement_reserve_guard = {
+        "authorized_200": evaluate_marketplace_split_settlement_reserve_policy(
+            MarketplaceSplitSettlementReservePolicyInput()
+        ),
+        "tracking_only_or_bustout_spike_403": evaluate_marketplace_split_settlement_reserve_policy(
+            MarketplaceSplitSettlementReservePolicyInput(
+                tracking_only_premature_payout_or_bustout_spike=True
+            )
+        ),
+        "floating_point_penny_drift_422": evaluate_marketplace_split_settlement_reserve_policy(
+            MarketplaceSplitSettlementReservePolicyInput(
+                floating_point_split_penny_drift_unbalanced_ledger=True
+            )
+        ),
+        "zero_reserve_or_clawback_insolvency_451": evaluate_marketplace_split_settlement_reserve_policy(
+            MarketplaceSplitSettlementReservePolicyInput(
+                uncollateralized_zero_reserve_or_clawback_insolvency=True
+            )
+        ),
+        "largest_remainder_vpod_reserve_409": evaluate_marketplace_split_settlement_reserve_policy(
+            MarketplaceSplitSettlementReservePolicyInput(
+                largest_remainder_conservation_and_vpod_reserve_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -50927,6 +51029,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_bnpl_mdr_reamortize_guard": ecommerce_bnpl_mdr_reamortize_guard,
         "ecommerce_chargeback_ce30_rdr_mutex_guard": ecommerce_chargeback_ce30_rdr_mutex_guard,
         "b2b_ap_three_way_match_scf_guard": b2b_ap_three_way_match_scf_guard,
+        "marketplace_split_settlement_reserve_guard": marketplace_split_settlement_reserve_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -72599,6 +72702,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ap3way-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 AUTOMATED_THREE_WAY_MATCH_AND_DYNAMIC_DISCOUNT_YIELD_CONFIRM · Mandate: b2b_ap_three_way_match_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 289 (#408) Marketplace Split-Settlement, Bust-Out Reserve & Penny Conservation -->
+      <div class="finops-box" id="marketplace-split-settlement-reserve-sandbox" style="margin-top:12px;border-color:#6366f1;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">⚖️ 多商户平台拆单分账与保证金托管 (Stripe Connect / Adyen for Platforms / Mirakl / Hyperwallet) 沙盒</div>
+            <div class="finops-sub">Round 289 (#408 · SVG #732) · 收货邮编 ZIP+4 真实妥投 (vPOD) 与销量 5x 突增冻结防卖家填假单号爆仓跑路 (HTTP 403) + 汉密尔顿最大余数法防 $100/3 丢 1 美分账本失衡 (HTTP 422) + 15% 滚动保证金与三级追偿防卖家提空账户后退货坏账 (HTTP 451) + 跨店缺货局部重算净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="mktsplit-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度养号卖家填假单号 T+1 套现跑路、卖家提空余额后发生退货由平台垫付及分账美分尾差损失池 ($)
+            <input type="number" id="mktsplit-gross-input" value="330000" min="10000" step="5000" oninput="recalcMarketplaceSplitSettlementReserveSandbox()" />
+          </label>
+          <label>收货地址 ZIP+4 真实物流妥投核验 (Destination-Matched vPOD) 与卖家销量突增 5x 防爆仓门禁
+            <select id="mktsplit-vpod-select" onchange="recalcMarketplaceSplitSettlementReserveSandbox()">
+              <option value="pass">必须核验买家 ZIP+4 真实妥投 + 过 7 天退货期方释放分账，销量暴增 5x 自动转 T+14 审核 (安全)</option>
+              <option value="block_403">卖家花 $0.50 买同城假快递单号上传即触发 T+1 秒放款，卷走 $300k 货款跑路 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>跨店分账与平台满减券分摊的汉密尔顿最大余数美分守恒 (Largest-Remainder Penny Conservation) 门禁
+            <select id="mktsplit-penny-select" onchange="recalcMarketplaceSplitSettlementReserveSandbox()">
+              <option value="pass">全链路整数美分运算 + 最大余数法确保 Sum(子店分账 + 平台佣金) == 实收美分数 (合规)</option>
+              <option value="block_422">使用浮点数 round(100/3, 2) 导致 3×$33.33=$99.99 每单凭空丢失 1 美分无法平账 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>30 天动态滚动风险准备金 (10%~20% Rolling Reserve) 与售后退款三级负余额追偿瀑布门禁
+            <select id="mktsplit-reserve-select" onchange="recalcMarketplaceSplitSettlementReserveSandbox()">
+              <option value="pass">每笔自动留存 15% 进入 30 天滚动保证金池，退货依次冲抵在途款-&gt;保证金-&gt;银行借记 (安全)</option>
+              <option value="block_451">零保证金允许卖家 100% 提空账户，买家第 15 天退货时平台自掏腰包全额垫付 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>跨店合并购物车单店缺货局部捕获 (Partial-OOS Sub-Order Capture) + source_transaction 强关联分账
+            <select id="mktsplit-opt-select" onchange="recalcMarketplaceSplitSettlementReserveSandbox()">
+              <option value="enabled" selected>单店缺货仅实扣已发货子店金额并自动重算佣金 + 妥投滚动保证金托管 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">1 家子店缺货导致整笔 3 店合并订单全部作废重拍且无滚动保证金防护 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度爆仓跑路与追偿坏账损失池</div>
+            <div class="finops-kpi-val" id="mktsplit-gross-kpi">$330,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">妥投托管与滚动保证金后净损耗</div>
+            <div class="finops-kpi-val" id="mktsplit-net-kpi" style="color:#6ee7b7;">$201,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省平台垫付坏账与尾差</div>
+            <div class="finops-kpi-val" id="mktsplit-savings-kpi" style="color:#38bdf8;">$128,700</div>
+          </div>
+        </div>
+        <div id="mktsplit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 LARGEST_REMAINDER_PENNY_CONSERVATION_AND_VPOD_RESERVE_CONFIRM · Mandate: marketplace_split_reserve_optim_409
         </div>
       </div>
 
@@ -99213,6 +99373,79 @@ function recalcB2BApThreeWayMatchScfSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_LINE_LEVEL_THREE_WAY_MATCH_AND_VMF_IBAN_AUTHORIZED · Mandate: b2b_ap_three_way_match_200';
+}}
+
+function recalcMarketplaceSplitSettlementReserveSandbox() {{
+  const grossInput = document.getElementById('mktsplit-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '330000'));
+  const vpodGate = document.getElementById('mktsplit-vpod-select').value;
+  const pennyGate = document.getElementById('mktsplit-penny-select').value;
+  const reserveGate = document.getElementById('mktsplit-reserve-select').value;
+  const optMode = document.getElementById('mktsplit-opt-select').value;
+
+  const grossKpi = document.getElementById('mktsplit-gross-kpi');
+  const netKpi = document.getElementById('mktsplit-net-kpi');
+  const savingsKpi = document.getElementById('mktsplit-savings-kpi');
+  const statusKpi = document.getElementById('mktsplit-status-kpi');
+  const banner = document.getElementById('mktsplit-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (reserveGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCOLLATERALIZED_ZERO_RESERVE_PAYOUT_OR_CLAWBACK_INSOLVENCY · Mandate: null';
+    return;
+  }}
+  if (vpodGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 TRACKING_ONLY_PREMATURE_PAYOUT_OR_BUST_OUT_VELOCITY_SPIKE · Mandate: null';
+    return;
+  }}
+  if (pennyGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FLOATING_POINT_SPLIT_PENNY_DRIFT_OR_UNBALANCED_LEDGER · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 LARGEST_REMAINDER_PENNY_CONSERVATION_AND_VPOD_RESERVE_CONFIRM · Mandate: marketplace_split_reserve_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_HAMILTON_SPLIT_AND_DELIVERY_RESERVE_AUTHORIZED · Mandate: marketplace_split_reserve_200';
 }}
 
 function updateStage1756Sandbox() {{
