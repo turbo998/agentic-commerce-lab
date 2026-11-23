@@ -30900,6 +30900,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-reman-core-deposit-sandbox", html_zh)
 
+    def test_proptech_lease_cam_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            ProptechLeaseCamEscrowPolicyInput,
+            evaluate_proptech_lease_cam_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_proptech_lease_cam_escrow_policy(
+            ProptechLeaseCamEscrowPolicyInput(
+                quarterly_cam_overcharge_deposit_penalty_and_eviction_reset_pool_usd=330000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_PROPTECH_LEASE_FBO_AND_CAM_AUDIT_AUTHORIZED",
+        )
+
+        evict = evaluate_proptech_lease_cam_escrow_policy(
+            ProptechLeaseCamEscrowPolicyInput(
+                partial_rent_accepted_during_active_eviction_waiving_rights=True
+            )
+        )
+        self.assertEqual(evict["status_code"], 403)
+        self.assertEqual(
+            evict["decision"],
+            "PARTIAL_RENT_ACCEPTANCE_DURING_ACTIVE_EVICTION_WAIVING_LEGAL_RIGHTS",
+        )
+
+        fbo = evaluate_proptech_lease_cam_escrow_policy(
+            ProptechLeaseCamEscrowPolicyInput(
+                commingled_security_deposit_or_missed_14d_refund_deadline=True
+            )
+        )
+        self.assertEqual(fbo["status_code"], 422)
+        self.assertEqual(
+            fbo["decision"],
+            "COMMINGLED_SECURITY_DEPOSIT_OR_MISSED_14D_ITEMIZED_REFUND_DEADLINE",
+        )
+
+        cam = evaluate_proptech_lease_cam_escrow_policy(
+            ProptechLeaseCamEscrowPolicyInput(
+                uncapped_cam_capex_passthrough_or_inflated_percentage_rent_base=True
+            )
+        )
+        self.assertEqual(cam["status_code"], 451)
+        self.assertEqual(
+            cam["decision"],
+            "UNCAPPED_CAM_CAPEX_PASS_THROUGH_OR_INFLATED_PERCENTAGE_RENT_SALES_BASE",
+        )
+
+        optim = evaluate_proptech_lease_cam_escrow_policy(
+            ProptechLeaseCamEscrowPolicyInput(
+                quarterly_cam_overcharge_deposit_penalty_and_eviction_reset_pool_usd=330000.0,
+                full_balance_lock_fbo_deposit_and_cam_cap_audit_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 128700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 201300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("proptech_lease_cam_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("proptech-lease-cam-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -39883,6 +39883,82 @@ def evaluate_ecommerce_reman_core_deposit_policy(
     }
 
 
+@dataclass(frozen=True)
+class ProptechLeaseCamEscrowPolicyInput:
+    quarterly_cam_overcharge_deposit_penalty_and_eviction_reset_pool_usd: float = 330000.0
+    partial_rent_accepted_during_active_eviction_waiving_rights: bool = False
+    commingled_security_deposit_or_missed_14d_refund_deadline: bool = False
+    uncapped_cam_capex_passthrough_or_inflated_percentage_rent_base: bool = False
+    full_balance_lock_fbo_deposit_and_cam_cap_audit_ready: bool = False
+
+
+def evaluate_proptech_lease_cam_escrow_policy(
+    policy_input: ProptechLeaseCamEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_cam_overcharge_deposit_penalty_and_eviction_reset_pool_usd
+        ),
+    )
+    if policy_input.uncapped_cam_capex_passthrough_or_inflated_percentage_rent_base:
+        return {
+            "status_code": 451,
+            "decision": "UNCAPPED_CAM_CAPEX_PASS_THROUGH_OR_INFLATED_PERCENTAGE_RENT_SALES_BASE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.partial_rent_accepted_during_active_eviction_waiving_rights:
+        return {
+            "status_code": 403,
+            "decision": "PARTIAL_RENT_ACCEPTANCE_DURING_ACTIVE_EVICTION_WAIVING_LEGAL_RIGHTS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.commingled_security_deposit_or_missed_14d_refund_deadline:
+        return {
+            "status_code": 422,
+            "decision": "COMMINGLED_SECURITY_DEPOSIT_OR_MISSED_14D_ITEMIZED_REFUND_DEADLINE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.full_balance_lock_fbo_deposit_and_cam_cap_audit_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FULL_BALANCE_DEFAULT_LOCK_FBO_DEPOSIT_AND_CAM_CAP_AUDIT_CONFIRM",
+            "mandate_token": "proptech_lease_cam_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_PROPTECH_LEASE_FBO_AND_CAM_AUDIT_AUTHORIZED",
+        "mandate_token": "proptech_lease_cam_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -54278,6 +54354,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    proptech_lease_cam_escrow_guard = {
+        "authorized_200": evaluate_proptech_lease_cam_escrow_policy(
+            ProptechLeaseCamEscrowPolicyInput()
+        ),
+        "partial_rent_eviction_waiver_403": evaluate_proptech_lease_cam_escrow_policy(
+            ProptechLeaseCamEscrowPolicyInput(
+                partial_rent_accepted_during_active_eviction_waiving_rights=True
+            )
+        ),
+        "commingled_deposit_or_14d_422": evaluate_proptech_lease_cam_escrow_policy(
+            ProptechLeaseCamEscrowPolicyInput(
+                commingled_security_deposit_or_missed_14d_refund_deadline=True
+            )
+        ),
+        "uncapped_cam_or_sales_base_451": evaluate_proptech_lease_cam_escrow_policy(
+            ProptechLeaseCamEscrowPolicyInput(
+                uncapped_cam_capex_passthrough_or_inflated_percentage_rent_base=True
+            )
+        ),
+        "full_balance_fbo_cam_409": evaluate_proptech_lease_cam_escrow_policy(
+            ProptechLeaseCamEscrowPolicyInput(
+                full_balance_lock_fbo_deposit_and_cam_cap_audit_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -54732,6 +54834,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_cruise_resort_folio_guard": ota_cruise_resort_folio_guard,
         "b2b_healthcare_gpo_340b_guard": b2b_healthcare_gpo_340b_guard,
         "ecommerce_reman_core_deposit_guard": ecommerce_reman_core_deposit_guard,
+        "proptech_lease_cam_escrow_guard": proptech_lease_cam_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -78513,6 +78616,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="remancore-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ACES_VIN_FITMENT_DEFERRED_CORE_MIT_AND_CASTING_GRADE_CONFIRM · Mandate: ecommerce_reman_core_deposit_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 326 (#445 · SVG #769) PropTech Lease, Deposit Escrow & Retail CAM Audit -->
+      <div class="finops-box" id="proptech-lease-cam-escrow-sandbox" style="margin-top:12px;border-color:#0f766e;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏢 商业地产、购物中心门店租约与长租公寓 (Yardi Voyager / AppFolio / MRI / Bilt) 押金与 CAM 沙盒</div>
+            <div class="finops-sub">Round 326 (#445 · SVG #769) · 逾期清退诉讼期 100% 拒收部分房租防法定放弃驱逐权 (HTTP 403) + 租客押金物理隔离至 FBO 独立计息信托户并设退租 14天自动释放锁防三倍赔偿 (HTTP 422) + 零售门店 CAM 结算单剥离业主屋顶 CapEx、执行 5% 涨幅顶并净化提成租金净销售额 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="proptch-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度商场门店违规摊派 CAM 资本支出、押金混同三倍罚单及逾期清退作废损失池 ($)
+            <input type="number" id="proptch-gross-input" value="330000" min="10000" step="5000" oninput="recalcProptechLeaseCamEscrowSandbox()" />
+          </label>
+          <label>逾期法律清退期 (Eviction / Pay-or-Quit Pending) 在线门户拒收部分房租 (Full-Balance Lock) 门禁
+            <select id="proptch-evict-select" onchange="recalcProptechLeaseCamEscrowSandbox()">
+              <option value="pass">进入清退通知期即锁死 100% 全额不可撤销收款模式，拒收任何小额部分转账 (安全)</option>
+              <option value="block_403">欠租 $4,500 老赖在开庭前转入 $50 被系统自动收下，触发法定放弃驱逐权致 90 天诉讼作废 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>租房押金独立计息信托专户 (Segregated FBO Escrow) 与退租 14 天法定退还死线门禁
+            <select id="proptch-fbo-select" onchange="recalcProptechLeaseCamEscrowSandbox()">
+              <option value="pass">一客一户 FBO 独立计息，退租满 14 天未上传维修商发票哈希则自动全额退回本息 (合规)</option>
+              <option value="block_422">将押金混入公司日常经营账户或退租超 14 天未附发票扣款，触发州法 2-3 倍惩罚性赔偿 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>连锁零售门店商场物业费 (CAM 5% Cap) 剥离业主 CapEx 与提成租金 (Percentage Rent) 净额门禁
+            <select id="proptch-cam-select" onchange="recalcProptechLeaseCamEscrowSandbox()">
+              <option value="pass">自动剥离商场屋顶翻修 CapEx、锁死 5% 可控涨幅顶，并从 POS 销售额扣除退货/税额后再算提成租金 (安全)</option>
+              <option value="block_451">替商场业主 $120k 停车场重铺 CapEx 买单，或把消费税/礼品卡算进 6% 提成租金基数 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>逾期全额收款锁 + FBO 独立计息押金托管 + 商业门店 CAM/提成租金审计编排
+            <select id="proptch-opt-select" onchange="recalcProptechLeaseCamEscrowSandbox()">
+              <option value="enabled" selected>启用逾期全额锁 + FBO 押金托管 + CAM/提成租金审计 (-39% 地产损耗 / HTTP 409)</option>
+              <option value="disabled">开放式任意金额收款 + 人工核对商场年终 CAM 账单 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度CAM超支与押金罚单池</div>
+            <div class="finops-kpi-val" id="proptch-gross-kpi">$330,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">FBO托管与CAM审计后净成本</div>
+            <div class="finops-kpi-val" id="proptch-net-kpi" style="color:#6ee7b7;">$201,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省门店租约与物业资金</div>
+            <div class="finops-kpi-val" id="proptch-savings-kpi" style="color:#38bdf8;">$128,700</div>
+          </div>
+        </div>
+        <div id="proptch-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FULL_BALANCE_DEFAULT_LOCK_FBO_DEPOSIT_AND_CAM_CAP_AUDIT_CONFIRM · Mandate: proptech_lease_cam_escrow_optim_409
         </div>
       </div>
 
@@ -107828,6 +107988,79 @@ function recalcEcommerceRemanCoreDepositSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_ACES_FITMENT_AND_CORE_DEPOSIT_ESCROW_AUTHORIZED · Mandate: ecommerce_reman_core_deposit_200';
+}}
+
+function recalcProptechLeaseCamEscrowSandbox() {{
+  const grossInput = document.getElementById('proptch-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '330000'));
+  const evictGate = document.getElementById('proptch-evict-select').value;
+  const fboGate = document.getElementById('proptch-fbo-select').value;
+  const camGate = document.getElementById('proptch-cam-select').value;
+  const optMode = document.getElementById('proptch-opt-select').value;
+
+  const grossKpi = document.getElementById('proptch-gross-kpi');
+  const netKpi = document.getElementById('proptch-net-kpi');
+  const savingsKpi = document.getElementById('proptch-savings-kpi');
+  const statusKpi = document.getElementById('proptch-status-kpi');
+  const banner = document.getElementById('proptch-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (camGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCAPPED_CAM_CAPEX_PASS_THROUGH_OR_INFLATED_PERCENTAGE_RENT_SALES_BASE · Mandate: null';
+    return;
+  }}
+  if (evictGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PARTIAL_RENT_ACCEPTANCE_DURING_ACTIVE_EVICTION_WAIVING_LEGAL_RIGHTS · Mandate: null';
+    return;
+  }}
+  if (fboGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 COMMINGLED_SECURITY_DEPOSIT_OR_MISSED_14D_ITEMIZED_REFUND_DEADLINE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FULL_BALANCE_DEFAULT_LOCK_FBO_DEPOSIT_AND_CAM_CAP_AUDIT_CONFIRM · Mandate: proptech_lease_cam_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_PROPTECH_LEASE_FBO_AND_CAM_AUDIT_AUTHORIZED · Mandate: proptech_lease_cam_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{

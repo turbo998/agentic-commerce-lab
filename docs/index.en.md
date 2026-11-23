@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`444` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`445` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (31 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (57 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (169 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (97 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (98 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (39 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (51 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -299,7 +299,7 @@
 | 169 | **Automotive & Electronics Remanufactured Core-Charge Deposit Escrow, Advanced Replacement `RMA` & `ACES / PIES` `VIN` Fitment (`RockAuto / AutoZone / Apple Express RMA / SAP Reman`), 30-Day `CIT->MIT` Deferred Core Hold & `OEM Casting ID` Grading (`-38%` Freight, MDR & Swap Loss) FAQ** | [English](ecommerce-reman-core-charge-deposit-aces-pies-fitment-deferred-capture-selection-faq.en.md) · [中文](ecommerce-reman-core-charge-deposit-aces-pies-fitment-deferred-capture-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (97 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (98 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -402,6 +402,7 @@
 | 95 | **Enterprise B2B Supply Chain Finance (`SCF`): Reverse Factoring vs. Dynamic Discounting (`SAP Taulia / PrimeRevenue / C2FO / Kyriba`), `FASB ASC 405-50` Debt-Reclassification Guard, Post-`QA` `90% IPU` Credit-Note Dilution Buffer & `WACC` Hybrid Funding Switch (`-39%` Dilution & Yield Loss) FAQ** | [English](b2b-scf-reverse-factoring-asc405-ipu-credit-note-netting-escrow-selection-faq.en.md) · [中文](b2b-scf-reverse-factoring-asc405-ipu-credit-note-netting-escrow-selection-faq.md) |
 | 96 | **Enterprise Contingent Workforce (`VMS`) & Services Procurement (`SOW`: `SAP Fieldglass vs. Beeline vs. Workday VNDLY vs. Coupa CWM`), Anti-`Rogue SOW` Rate-Card Guard, Deliverable-Gated `ERP SES` & `18/24m` Co-Employment Tenure + `SCIM` Escrow (`-39%` Markup & Ghost-Hour Loss) FAQ** | [English](b2b-vms-contingent-labor-sow-milestone-ses-coemployment-escrow-selection-faq.en.md) · [中文](b2b-vms-contingent-labor-sow-milestone-ses-coemployment-escrow-selection-faq.md) |
 | 97 | **Healthcare B2B Supply Chain (`GPO Tiering`, `HRSA 340B` Split-Billing & Surgical Implant `FDA UDI` Consignment: `GHX / Vizient / Premier / MacroHelix / Workday Healthcare`), Anti-`Medicaid` Duplicate-Discount Shield & `Bill-Only` Scan-to-PO (`-39%` WAC & OR Leakage) FAQ** | [English](b2b-healthcare-gpo-340b-split-billing-medicaid-shield-udi-consignment-selection-faq.en.md) · [中文](b2b-healthcare-gpo-340b-split-billing-medicaid-shield-udi-consignment-selection-faq.md) |
+| 98 | **Commercial & Multifamily PropTech Lease Administration, Retail `CAM` Reconciliation & Security Deposit Escrow (`Yardi Voyager / MRI Software / AppFolio / RealPage / Bilt`), Anti-Eviction-Waiver Partial-Rent Lock & `FBO` Trust (`-39%` CAM & Deposit Penalty Loss) FAQ** | [English](proptech-commercial-lease-cam-reconciliation-security-deposit-escrow-selection-faq.en.md) · [中文](proptech-commercial-lease-cam-reconciliation-security-deposit-escrow-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (39 Guides)
