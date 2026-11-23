@@ -38749,6 +38749,82 @@ def evaluate_digital_pharmacy_telehealth_erx_policy(
     }
 
 
+@dataclass(frozen=True)
+class OmnichannelLuxuryClientelingPolicyInput:
+    quarterly_moto_fraud_store_hoarding_and_walkout_pool_usd: float = 330000.0
+    moto_manual_card_keying_or_unverified_pay_by_link_address: bool = False
+    zero_fulfilling_store_split_or_rfid_active_fake_short_pick: bool = False
+    quota_sku_annual_cap_breach_or_staff_discount_third_party_card: bool = False
+    pay_by_link_3ds2_rfid_lock_and_dual_store_split_ready: bool = False
+
+
+def evaluate_omnichannel_luxury_clienteling_policy(
+    policy_input: OmnichannelLuxuryClientelingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_moto_fraud_store_hoarding_and_walkout_pool_usd
+        ),
+    )
+    if policy_input.quota_sku_annual_cap_breach_or_staff_discount_third_party_card:
+        return {
+            "status_code": 451,
+            "decision": "QUOTA_SKU_ANNUAL_HOUSEHOLD_CAP_BREACH_OR_STAFF_DISCOUNT_THIRD_PARTY_CARD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.moto_manual_card_keying_or_unverified_pay_by_link_address:
+        return {
+            "status_code": 403,
+            "decision": "MOTO_MANUAL_CARD_KEYING_OR_UNVERIFIED_PAY_BY_LINK_SHIP_TO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.zero_fulfilling_store_split_or_rfid_active_fake_short_pick:
+        return {
+            "status_code": 422,
+            "decision": "ENDLESS_AISLE_ZERO_FULFILLMENT_SPLIT_OR_RFID_ACTIVE_SHORT_PICK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pay_by_link_3ds2_rfid_lock_and_dual_store_split_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PAY_BY_LINK_3DS2_RFID_LOCK_AND_DUAL_STORE_COMMISSION_SPLIT_CONFIRM",
+            "mandate_token": "luxury_clienteling_endless_aisle_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CLIENTELING_PAY_BY_LINK_AND_SPLIT_AUTHORIZED",
+        "mandate_token": "luxury_clienteling_endless_aisle_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -52754,6 +52830,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    omnichannel_luxury_clienteling_guard = {
+        "authorized_200": evaluate_omnichannel_luxury_clienteling_policy(
+            OmnichannelLuxuryClientelingPolicyInput()
+        ),
+        "moto_or_unverified_link_403": evaluate_omnichannel_luxury_clienteling_policy(
+            OmnichannelLuxuryClientelingPolicyInput(
+                moto_manual_card_keying_or_unverified_pay_by_link_address=True
+            )
+        ),
+        "store_hoarding_or_fake_shortpick_422": evaluate_omnichannel_luxury_clienteling_policy(
+            OmnichannelLuxuryClientelingPolicyInput(
+                zero_fulfilling_store_split_or_rfid_active_fake_short_pick=True
+            )
+        ),
+        "quota_breach_or_staff_abuse_451": evaluate_omnichannel_luxury_clienteling_policy(
+            OmnichannelLuxuryClientelingPolicyInput(
+                quota_sku_annual_cap_breach_or_staff_discount_third_party_card=True
+            )
+        ),
+        "pay_by_link_3ds2_dual_split_409": evaluate_omnichannel_luxury_clienteling_policy(
+            OmnichannelLuxuryClientelingPolicyInput(
+                pay_by_link_3ds2_rfid_lock_and_dual_store_split_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -53193,6 +53295,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "embedded_shipping_parametric_insurance_guard": embedded_shipping_parametric_insurance_guard,
         "multi_currency_fx_treasury_guard": multi_currency_fx_treasury_guard,
         "digital_pharmacy_telehealth_erx_guard": digital_pharmacy_telehealth_erx_guard,
+        "omnichannel_luxury_clienteling_guard": omnichannel_luxury_clienteling_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -76119,6 +76222,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="phmerx-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 AUTOMATED_PBM_COPAY_COB_AND_MON_WED_COLD_CHAIN_DISPATCH_CONFIRM · Mandate: telehealth_pharmacy_erx_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 311 (#430 Milestone) Omnichannel Luxury Clienteling & Endless-Aisle -->
+      <div class="finops-box" id="omnichannel-luxury-clienteling-sandbox" style="margin-top:12px;border-color:#d97706;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 奢品与全渠道新零售 VIP 导购、云货架调货与双店分佣 (Tulip / NewStore / Adyen Pay-by-Link · 第 430 篇里程碑) 沙盒</div>
+            <div class="finops-sub">Round 311 (#430 Milestone · SVG #754) · 取缔电话 MOTO 手输卡号并强制 3DS2/Apple Pay Pay-by-Link 与备案地址锁 (HTTP 403) + 销售店 75% / 发货店 25% 双店分佣与 RFID 在库防假缺货锁 (HTTP 422) + 全球配额款 EMVCo PAR 年度限购与员工内购折人卡合一 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="luxcli-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度门店远程 MOTO 手输卡号盗刷拒付、外地门店藏货拒发 (Short-Pick) 流失及配额款代购窜货池 ($)
+            <input type="number" id="luxcli-gross-input" value="330000" min="10000" step="5000" oninput="recalcOmnichannelLuxuryClientelingSandbox()" />
+          </label>
+          <label>远程 VIP 收款方式：30m 3DS2 / Apple Pay Pay-by-Link 与 AVS/CRM 历史备案地址门禁
+            <select id="luxcli-pbl-select" onchange="recalcOmnichannelLuxuryClientelingSandbox()">
+              <option value="pass">严禁电话手输卡号，一律发送 3DS2/Apple Pay 加密链接并核验 VIP 历史备案住址 (安全)</option>
+              <option value="block_403">导购在电话里记下 16 位卡号手工敲进 POS 机并寄往陌生转运仓遭 $8,500 拒付 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>云货架跨店调货 (Endless-Aisle) 销售店 75% / 发货店 25% 分佣与 RFID 在库防假缺货门禁
+            <select id="luxcli-split-select" onchange="recalcOmnichannelLuxuryClientelingSandbox()">
+              <option value="pass">75%/25% 双店分佣 + 100% 同计发货店 KPI，且 RFID 在库商品禁止无审批点缺货 (合规)</option>
+              <option value="block_422">100% 业绩只归销售店导致外地发货店店长故意谎报“找不到货”藏匿黄金尺码 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>全球配货限量款 (Quota Bag/Watch) Passport + EMVCo PAR 年度限购与员工内购折门禁
+            <select id="luxcli-quota-select" onchange="recalcOmnichannelLuxuryClientelingSandbox()">
+              <option value="pass">全球穿透核验 Passport+PAR 年度配额，且员工内购折强制刷员工本人实名卡 (安全)</option>
+              <option value="block_451">代购跨城市多店突破年度限购配额，或内鬼导购拿员工内购折代刷黄牛银行卡 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>30m RFID 锁库 + 3DS2 Pay-by-Link + 双店分佣全渠道导购编排
+            <select id="luxcli-opt-select" onchange="recalcOmnichannelLuxuryClientelingSandbox()">
+              <option value="enabled" selected>启用 3DS2 Pay-by-Link + 75/25 双店分佣 + 全球 PAR 配额锁 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">电话人工手输卡号收款且跨店调货零发货店激励 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度远程拒付与跨店拒发池</div>
+            <div class="finops-kpi-val" id="luxcli-gross-kpi">$330,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">Pay-by-Link与双店分佣后净成本</div>
+            <div class="finops-kpi-val" id="luxcli-net-kpi" style="color:#6ee7b7;">$201,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回断码GMV与拒付</div>
+            <div class="finops-kpi-val" id="luxcli-savings-kpi" style="color:#38bdf8;">$128,700</div>
+          </div>
+        </div>
+        <div id="luxcli-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PAY_BY_LINK_3DS2_RFID_LOCK_AND_DUAL_STORE_COMMISSION_SPLIT_CONFIRM · Mandate: luxury_clienteling_endless_aisle_optim_409
         </div>
       </div>
 
@@ -104339,6 +104499,79 @@ function recalcDigitalPharmacyTelehealthErxSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_NCPDP_ERX_COB_AND_COLD_CHAIN_AUTHORIZED · Mandate: telehealth_pharmacy_erx_200';
+}}
+
+function recalcOmnichannelLuxuryClientelingSandbox() {{
+  const grossInput = document.getElementById('luxcli-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '330000'));
+  const pblGate = document.getElementById('luxcli-pbl-select').value;
+  const splitGate = document.getElementById('luxcli-split-select').value;
+  const quotaGate = document.getElementById('luxcli-quota-select').value;
+  const optMode = document.getElementById('luxcli-opt-select').value;
+
+  const grossKpi = document.getElementById('luxcli-gross-kpi');
+  const netKpi = document.getElementById('luxcli-net-kpi');
+  const savingsKpi = document.getElementById('luxcli-savings-kpi');
+  const statusKpi = document.getElementById('luxcli-status-kpi');
+  const banner = document.getElementById('luxcli-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (quotaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 QUOTA_SKU_ANNUAL_HOUSEHOLD_CAP_BREACH_OR_STAFF_DISCOUNT_THIRD_PARTY_CARD · Mandate: null';
+    return;
+  }}
+  if (pblGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MOTO_MANUAL_CARD_KEYING_OR_UNVERIFIED_PAY_BY_LINK_SHIP_TO · Mandate: null';
+    return;
+  }}
+  if (splitGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 ENDLESS_AISLE_ZERO_FULFILLMENT_SPLIT_OR_RFID_ACTIVE_SHORT_PICK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PAY_BY_LINK_3DS2_RFID_LOCK_AND_DUAL_STORE_COMMISSION_SPLIT_CONFIRM · Mandate: luxury_clienteling_endless_aisle_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CLIENTELING_PAY_BY_LINK_AND_SPLIT_AUTHORIZED · Mandate: luxury_clienteling_endless_aisle_200';
 }}
 
 function updateStage1756Sandbox() {{

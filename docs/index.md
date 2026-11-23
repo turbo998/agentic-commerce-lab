@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`429` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`430` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（30 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（56 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（161 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（162 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（94 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（38 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（50 篇）](#tax-fx-privacy-disputes)
@@ -120,7 +120,7 @@
 | 56 | **多支付网关智能编排（`Multi-PSP Orchestration`: `Primer / Spreedly / Gr4vy vs. Adyen + Stripe + Checkout.com 双活收单`）、`8 位 BIN` 本土收单路由、美国 `Durbin Reg II` 免密借记网（`STAR / NYCE / Pulse`）降费与防主备超时切换双倍扣款（`0420 Failover Mutex`）净省 39% 架构选型 FAQ** | [中文](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.md) · [English](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（161 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（162 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -287,6 +287,7 @@
 | 159 | **企业会展商旅（`MICE & Group Travel`: `Cvent Passkey / Groupize / Amadeus Delphi / Navan Events`）、酒店团队切房消化率违约金护栏（`Room-Block Attrition Cutoff`）、防参会者私订外流漏算与团体机票 `T-72h` 免费更名净省 38% Agent 架构选型 FAQ** | [中文](ota-corporate-mice-group-hotel-block-attrition-cutoff-ndc-name-change-selection-faq.md) · [English](ota-corporate-mice-group-hotel-block-attrition-cutoff-ndc-name-change-selection-faq.en.md) |
 | 160 | **电商结账嵌入式包裹保价与酒旅参数化天气/延误微保险（`Embedded Shipping Protection & Parametric Insurance`: `Route / Corso vs. Cover Genius XCover / Sensible Weather`）、防默认勾选暗扣违规（`EU CRD Art. 22 / CA SB-478`）、防“保险+商家”双吃与一键补发新单复购飞轮净省 38% Agent 架构选型 FAQ** | [中文](embedded-shipping-protection-parametric-insurance-optin-subrogation-escrow-selection-faq.md) · [English](embedded-shipping-protection-parametric-insurance-optin-subrogation-escrow-selection-faq.en.md) |
 | 161 | **数字医疗电商、处方药周期购与在线药房清算（`Digital Pharmacy & Telehealth Commerce`: `Amazon Pharmacy / Truepill / Ro / Hims & Hers + Surescripts NCPDP / CoverMyMeds`）、联邦医保 `AKS` 反回扣防火墙、主险+药企共付卡（`PBM + Copay Card COB`）拆分与 `GLP-1` 冷链周一至周三发货锁净省 39% Agent 架构选型 FAQ** | [中文](digital-pharmacy-telehealth-ncpdp-erx-prior-auth-glp1-coldchain-copay-selection-faq.md) · [English](digital-pharmacy-telehealth-ncpdp-erx-prior-auth-glp1-coldchain-copay-selection-faq.en.md) |
+| 162 | **🏆 奢品与全渠道新零售 VIP 导购、云货架跨店调货与远程支付链接（`Luxury Clienteling & Endless-Aisle`: `Tulip / NewStore / Salesforce POS + Adyen Pay-by-Link` · 🏆 第 430 篇双语里程碑）：取缔电话 `MOTO` 手输卡号、跨店调货 `75/25` 双店分佣破除藏货拒发与全球配货 `EMVCo PAR` 限购锁净省 39% Agent 架构选型 FAQ** | [中文](omnichannel-luxury-clienteling-endless-aisle-pay-by-link-split-commission-selection-faq.md) · [English](omnichannel-luxury-clienteling-endless-aisle-pay-by-link-split-commission-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（94 篇）

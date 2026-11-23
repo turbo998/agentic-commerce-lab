@@ -29895,6 +29895,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("digital-pharmacy-telehealth-erx-sandbox", html_zh)
 
+    def test_omnichannel_luxury_clienteling_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OmnichannelLuxuryClientelingPolicyInput,
+            evaluate_omnichannel_luxury_clienteling_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_omnichannel_luxury_clienteling_policy(
+            OmnichannelLuxuryClientelingPolicyInput(
+                quarterly_moto_fraud_store_hoarding_and_walkout_pool_usd=330000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CLIENTELING_PAY_BY_LINK_AND_SPLIT_AUTHORIZED",
+        )
+
+        moto = evaluate_omnichannel_luxury_clienteling_policy(
+            OmnichannelLuxuryClientelingPolicyInput(
+                moto_manual_card_keying_or_unverified_pay_by_link_address=True
+            )
+        )
+        self.assertEqual(moto["status_code"], 403)
+        self.assertEqual(
+            moto["decision"],
+            "MOTO_MANUAL_CARD_KEYING_OR_UNVERIFIED_PAY_BY_LINK_SHIP_TO",
+        )
+
+        hoard = evaluate_omnichannel_luxury_clienteling_policy(
+            OmnichannelLuxuryClientelingPolicyInput(
+                zero_fulfilling_store_split_or_rfid_active_fake_short_pick=True
+            )
+        )
+        self.assertEqual(hoard["status_code"], 422)
+        self.assertEqual(
+            hoard["decision"],
+            "ENDLESS_AISLE_ZERO_FULFILLMENT_SPLIT_OR_RFID_ACTIVE_SHORT_PICK",
+        )
+
+        quota = evaluate_omnichannel_luxury_clienteling_policy(
+            OmnichannelLuxuryClientelingPolicyInput(
+                quota_sku_annual_cap_breach_or_staff_discount_third_party_card=True
+            )
+        )
+        self.assertEqual(quota["status_code"], 451)
+        self.assertEqual(
+            quota["decision"],
+            "QUOTA_SKU_ANNUAL_HOUSEHOLD_CAP_BREACH_OR_STAFF_DISCOUNT_THIRD_PARTY_CARD",
+        )
+
+        optim = evaluate_omnichannel_luxury_clienteling_policy(
+            OmnichannelLuxuryClientelingPolicyInput(
+                quarterly_moto_fraud_store_hoarding_and_walkout_pool_usd=330000.0,
+                pay_by_link_3ds2_rfid_lock_and_dual_store_split_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 128700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 201300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("omnichannel_luxury_clienteling_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("omnichannel-luxury-clienteling-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
