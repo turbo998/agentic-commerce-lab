@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`441` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`442` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (31 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (57 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (167 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (168 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (96 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (39 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (51 guides)](#tax-fx-privacy-disputes)
@@ -122,7 +122,7 @@
 | 57 | **Commercial Fleet Fuel Cards & EV Charging Roaming (`WEX / Fleetcor / Stripe Issuing Fleet / Hubject ISO 15118 / OCPI 2.2.1`), Telematics `GPS + CAN-Bus` Fuel-Theft Lock, Instant `$175 AFD` `0420` Release & Idle-Fee Cap (`-39%` Fuel Slippage & Roaming Loss) FAQ** | [English](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.en.md) · [中文](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (167 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (168 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -295,6 +295,7 @@
 | 165 | **OTA Rail & Multimodal Interline Ticketing (`UIC OSDM / IATA Air-Rail Intermodal`: `Trainline / Rail Europe / Lufthansa Express Rail / Amtrak`), `CIV / HOTNAT` Connection Protection, `NRCoT 14.2` Split-Ticketing & Automated `Delay Repay` Escrow (`-38%` Multimodal Travel Loss) FAQ** | [English](ota-rail-multimodal-interline-osdm-civ-protection-split-ticket-delay-repay-selection-faq.en.md) · [中文](ota-rail-multimodal-interline-osdm-civ-protection-split-ticket-delay-repay-selection-faq.md) |
 | 166 | **Hospitality & Restaurant Pay-at-Table POS (`Toast / Square for Restaurants / Adyen Hospitality / Sunday / 7shifts`), Split-Check Concurrency Mutex, Pre-Tax Tip Base & `FLSA § 203(m)` Tip-Pooling Escrow (`-38%` Walkout, Tip Dispute & DOL Penalty Loss) FAQ** | [English](hospitality-pos-pay-at-table-split-check-mutex-flsa-tip-pool-escrow-selection-faq.en.md) · [中文](hospitality-pos-pay-at-table-split-check-mutex-flsa-tip-pool-escrow-selection-faq.md) |
 | 167 | **E-Commerce Build-Your-Own Bundle (`BYOB`) & Curated Subscription Boxes (`Shopify Cart Transform / Recharge Bundles / Skio / SAP BOM`), Slot `COGS` Margin Floor, Component `ATP` Explosion & Partial-Return Unbundling Clawback (`-38%` Bundle Margin & Return Abuse Loss) FAQ** | [English](ecommerce-byob-bundle-cogs-floor-atp-explosion-prorata-return-clawback-selection-faq.en.md) · [中文](ecommerce-byob-bundle-cogs-floor-atp-explosion-prorata-return-clawback-selection-faq.md) |
+| 168 | **🏆 Cruise Line & All-Inclusive Resort Closed-Loop Folio (`Oracle Hospitality Cruise SPMS / OceanMedallion / Royal Caribbean / Viator ShoreEx` · 🏆 1,320th Unit Test Milestone), Nightly Satellite Incremental Auth, `All-Aboard - 90m` Shore-Excursion Bond & `OBC` Waterfall (`-38%` Walk-Off & ShoreEx Loss) FAQ** | [English](ota-cruise-resort-closed-loop-folio-satellite-auth-shore-excursion-obc-selection-faq.en.md) · [中文](ota-cruise-resort-closed-loop-folio-satellite-auth-shore-excursion-obc-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (96 Guides)

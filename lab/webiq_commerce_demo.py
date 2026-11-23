@@ -39655,6 +39655,82 @@ def evaluate_ecommerce_byob_bundle_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaCruiseResortFolioPolicyInput:
+    quarterly_walkoff_bad_debt_missed_ship_and_obc_dispute_pool_usd: float = 230000.0
+    unbacked_onboard_folio_without_rolling_incremental_auth: bool = False
+    shore_excursion_all_aboard_buffer_under_90m_or_no_port_skip_refund: bool = False
+    wrong_obc_burn_order_or_territorial_waters_tax_violation: bool = False
+    rolling_satellite_auth_90m_shoreex_and_obc_fifo_ready: bool = False
+
+
+def evaluate_ota_cruise_resort_folio_policy(
+    policy_input: OtaCruiseResortFolioPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_walkoff_bad_debt_missed_ship_and_obc_dispute_pool_usd
+        ),
+    )
+    if policy_input.wrong_obc_burn_order_or_territorial_waters_tax_violation:
+        return {
+            "status_code": 451,
+            "decision": "WRONG_OBC_BURN_WATERFALL_OR_TERRITORIAL_WATERS_TAX_VIOLATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unbacked_onboard_folio_without_rolling_incremental_auth:
+        return {
+            "status_code": 403,
+            "decision": "UNBACKED_ONBOARD_FOLIO_INCREMENTAL_AUTH_FAILURE_OR_GANGWAY_WALKOFF",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.shore_excursion_all_aboard_buffer_under_90m_or_no_port_skip_refund:
+        return {
+            "status_code": 422,
+            "decision": "SHORE_EXCURSION_ALL_ABOARD_BUFFER_UNDER_90M_OR_NO_MISSED_PORT_REFUND",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.rolling_satellite_auth_90m_shoreex_and_obc_fifo_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ROLLING_SATELLITE_AUTH_90M_SHOREEX_BOND_AND_OBC_FIFO_CONFIRM",
+            "mandate_token": "ota_cruise_resort_folio_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CRUISE_RESORT_FOLIO_AND_SHOREEX_AUTHORIZED",
+        "mandate_token": "ota_cruise_resort_folio_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -53972,6 +54048,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_cruise_resort_folio_guard = {
+        "authorized_200": evaluate_ota_cruise_resort_folio_policy(
+            OtaCruiseResortFolioPolicyInput()
+        ),
+        "unbacked_folio_walkoff_403": evaluate_ota_cruise_resort_folio_policy(
+            OtaCruiseResortFolioPolicyInput(
+                unbacked_onboard_folio_without_rolling_incremental_auth=True
+            )
+        ),
+        "tight_shoreex_buffer_422": evaluate_ota_cruise_resort_folio_policy(
+            OtaCruiseResortFolioPolicyInput(
+                shore_excursion_all_aboard_buffer_under_90m_or_no_port_skip_refund=True
+            )
+        ),
+        "wrong_obc_or_port_tax_451": evaluate_ota_cruise_resort_folio_policy(
+            OtaCruiseResortFolioPolicyInput(
+                wrong_obc_burn_order_or_territorial_waters_tax_violation=True
+            )
+        ),
+        "rolling_auth_shoreex_obc_409": evaluate_ota_cruise_resort_folio_policy(
+            OtaCruiseResortFolioPolicyInput(
+                rolling_satellite_auth_90m_shoreex_and_obc_fifo_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -54423,6 +54525,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_vms_contingent_sow_guard": b2b_vms_contingent_sow_guard,
         "agentic_six_protocol_interop_guard": agentic_six_protocol_interop_guard,
         "ecommerce_byob_bundle_guard": ecommerce_byob_bundle_guard,
+        "ota_cruise_resort_folio_guard": ota_cruise_resort_folio_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -78033,6 +78136,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="byob-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SLOT_COGS_FLOOR_WASM_ATP_EXPLOSION_AND_UNBUNDLING_ESCROW_CONFIRM · Mandate: ecommerce_byob_bundle_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 323 (#442 · SVG #766) Cruise & Resort Closed-Loop Folio, ShoreEx & OBC -->
+      <div class="finops-box" id="ota-cruise-resort-folio-sandbox" style="margin-top:12px;border-color:#0284c7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🚢 国际邮轮与海岛度假村闭环挂账 (Oracle Cruise SPMS / OceanMedallion / Viator ShoreEx) 沙盒</div>
+            <div class="finops-sub">Round 323 (#442 · SVG #766 · 🏆 1,320th Test Milestone) · 公海 Starlink 卫星每晚 ISO 8583 增量预授权与下船舷梯闸机防逃单锁 (HTTP 403) + 岸上观光 All-Aboard - 90m 返港缓冲与 AIS 跳港 100% 自动退费担保 (HTTP 422) + 先扣不可退促销 OBC 后扣可退现金 OBC 瀑布及 12 海里领海税率围栏 (HTTP 451) + 净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="cruise-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度邮轮离船刷卡失败逃单坏账、岸上观光误船/跳港理赔及 OBC 扣错调账损耗池 ($)
+            <input type="number" id="cruise-gross-input" value="230000" min="10000" step="5000" oninput="recalcOtaCruiseResortFolioSandbox()" />
+          </label>
+          <label>公海航行期间房卡/手环每晚滚动增量预授权 (Rolling Incremental Auth) 与下船闸机联动门禁
+            <select id="cruise-auth-select" onchange="recalcOtaCruiseResortFolioSandbox()">
+              <option value="pass">每满 $150 或每晚发起卫星增量预授权，失败即冻免税店挂账并联动下船舷梯红灯拦截 (安全)</option>
+              <option value="block_403">绑 $50 预付卡在公海赊购 $3,800 名表，第 7 天下船后才扣款失败形成 100% 逃单坏账 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>停靠港岸上观光 (Shore Excursions) All-Aboard - 90m 返港缓冲与 AIS 跳港秒退契约门禁
+            <select id="cruise-shore-select" onchange="recalcOtaCruiseResortFolioSandbox()">
+              <option value="pass">强制返港早于关舱门 90m，且锁定误船飞下一港机票担保与船长跳港 100% 自动退款 (合规)</option>
+              <option value="block_422">推荐仅留 15m 缓冲的野生包车致堵车误船遗弃异国，或大风跳港地接社拒不退费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>船上消费金 (OBC) 双桶扣减瀑布 (先不可退赠金、后可退现金) 与 12 海里领海计税门禁
+            <select id="cruise-obc-select" onchange="recalcOtaCruiseResortFolioSandbox()">
+              <option value="pass">100% 先扣 Non-Refundable 促销赠金再扣可退现金 OBC，并按 12nm AIS 切换港内税率 (合规)</option>
+              <option value="block_451">先扣光游客 $150 可退真金白银让 $200 赠金过期作废，或在靠港领海内违规免税售卖 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>卫星滚动增量预授权 + 90m 防误船跳港托管 + 双桶 OBC 优先瀑布全链路编排
+            <select id="cruise-opt-select" onchange="recalcOtaCruiseResortFolioSandbox()">
+              <option value="enabled" selected>启用卫星滚动预授权 + 90m 岸上游担保 + OBC 优先瀑布 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">离船日单次扣款 + 普通无担保岸上拼团 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度离船坏账与岸上游理赔池</div>
+            <div class="finops-kpi-val" id="cruise-gross-kpi">$230,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">滚动预授权与托管后净成本</div>
+            <div class="finops-kpi-val" id="cruise-net-kpi" style="color:#6ee7b7;">$142,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住船上营收与口碑</div>
+            <div class="finops-kpi-val" id="cruise-savings-kpi" style="color:#38bdf8;">$87,400</div>
+          </div>
+        </div>
+        <div id="cruise-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ROLLING_SATELLITE_AUTH_90M_SHOREEX_BOND_AND_OBC_FIFO_CONFIRM · Mandate: ota_cruise_resort_folio_optim_409
         </div>
       </div>
 
@@ -107129,6 +107289,79 @@ function recalcEcommerceByobBundleSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_BYOB_BUNDLE_EXPLOSION_AND_UNBUNDLING_AUTHORIZED · Mandate: ecommerce_byob_bundle_200';
+}}
+
+function recalcOtaCruiseResortFolioSandbox() {{
+  const grossInput = document.getElementById('cruise-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '230000'));
+  const authGate = document.getElementById('cruise-auth-select').value;
+  const shoreGate = document.getElementById('cruise-shore-select').value;
+  const obcGate = document.getElementById('cruise-obc-select').value;
+  const optMode = document.getElementById('cruise-opt-select').value;
+
+  const grossKpi = document.getElementById('cruise-gross-kpi');
+  const netKpi = document.getElementById('cruise-net-kpi');
+  const savingsKpi = document.getElementById('cruise-savings-kpi');
+  const statusKpi = document.getElementById('cruise-status-kpi');
+  const banner = document.getElementById('cruise-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (obcGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 WRONG_OBC_BURN_WATERFALL_OR_TERRITORIAL_WATERS_TAX_VIOLATION · Mandate: null';
+    return;
+  }}
+  if (authGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNBACKED_ONBOARD_FOLIO_INCREMENTAL_AUTH_FAILURE_OR_GANGWAY_WALKOFF · Mandate: null';
+    return;
+  }}
+  if (shoreGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SHORE_EXCURSION_ALL_ABOARD_BUFFER_UNDER_90M_OR_NO_MISSED_PORT_REFUND · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ROLLING_SATELLITE_AUTH_90M_SHOREEX_BOND_AND_OBC_FIFO_CONFIRM · Mandate: ota_cruise_resort_folio_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CRUISE_RESORT_FOLIO_AND_SHOREEX_AUTHORIZED · Mandate: ota_cruise_resort_folio_200';
 }}
 
 function updateStage1756Sandbox() {{

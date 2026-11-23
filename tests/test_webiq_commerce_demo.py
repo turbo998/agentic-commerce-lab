@@ -30699,6 +30699,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-byob-bundle-sandbox", html_zh)
 
+    def test_ota_cruise_resort_folio_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaCruiseResortFolioPolicyInput,
+            evaluate_ota_cruise_resort_folio_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_cruise_resort_folio_policy(
+            OtaCruiseResortFolioPolicyInput(
+                quarterly_walkoff_bad_debt_missed_ship_and_obc_dispute_pool_usd=230000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CRUISE_RESORT_FOLIO_AND_SHOREEX_AUTHORIZED",
+        )
+
+        walkoff = evaluate_ota_cruise_resort_folio_policy(
+            OtaCruiseResortFolioPolicyInput(
+                unbacked_onboard_folio_without_rolling_incremental_auth=True
+            )
+        )
+        self.assertEqual(walkoff["status_code"], 403)
+        self.assertEqual(
+            walkoff["decision"],
+            "UNBACKED_ONBOARD_FOLIO_INCREMENTAL_AUTH_FAILURE_OR_GANGWAY_WALKOFF",
+        )
+
+        shore = evaluate_ota_cruise_resort_folio_policy(
+            OtaCruiseResortFolioPolicyInput(
+                shore_excursion_all_aboard_buffer_under_90m_or_no_port_skip_refund=True
+            )
+        )
+        self.assertEqual(shore["status_code"], 422)
+        self.assertEqual(
+            shore["decision"],
+            "SHORE_EXCURSION_ALL_ABOARD_BUFFER_UNDER_90M_OR_NO_MISSED_PORT_REFUND",
+        )
+
+        obc = evaluate_ota_cruise_resort_folio_policy(
+            OtaCruiseResortFolioPolicyInput(
+                wrong_obc_burn_order_or_territorial_waters_tax_violation=True
+            )
+        )
+        self.assertEqual(obc["status_code"], 451)
+        self.assertEqual(
+            obc["decision"],
+            "WRONG_OBC_BURN_WATERFALL_OR_TERRITORIAL_WATERS_TAX_VIOLATION",
+        )
+
+        optim = evaluate_ota_cruise_resort_folio_policy(
+            OtaCruiseResortFolioPolicyInput(
+                quarterly_walkoff_bad_debt_missed_ship_and_obc_dispute_pool_usd=230000.0,
+                rolling_satellite_auth_90m_shoreex_and_obc_fifo_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 87400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 142600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_cruise_resort_folio_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-cruise-resort-folio-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
