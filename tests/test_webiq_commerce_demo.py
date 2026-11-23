@@ -28555,6 +28555,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-usage-metering-x402-mpp-sandbox", html_zh)
 
+    def test_cross_border_ddp_mor_sor_customs_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderDdpMorSorCustomsPolicyInput,
+            evaluate_cross_border_ddp_mor_sor_customs_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_ddp_mor_sor_customs_policy(
+            CrossBorderDdpMorSorCustomsPolicyInput(
+                quarterly_ddu_refusal_msrp_duty_and_mor_fee_pool_usd=320000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_10DIGIT_HTS_NET_PAID_DDP_CUSTOMS_AUTHORIZED",
+        )
+
+        ddu = evaluate_cross_border_ddp_mor_sor_customs_policy(
+            CrossBorderDdpMorSorCustomsPolicyInput(
+                ddu_unpaid_duty_doorstep_brokerage_refusal_risk=True
+            )
+        )
+        self.assertEqual(ddu["status_code"], 403)
+        self.assertEqual(
+            ddu["decision"],
+            "DDU_UNPAID_DUTY_DOORSTEP_BROKERAGE_SHOCK_AND_REFUSAL_RISK",
+        )
+
+        hts = evaluate_cross_border_ddp_mor_sor_customs_policy(
+            CrossBorderDdpMorSorCustomsPolicyInput(
+                truncated_6digit_hs_code_or_missing_origin_coo=True
+            )
+        )
+        self.assertEqual(hts["status_code"], 422)
+        self.assertEqual(
+            hts["decision"],
+            "TRUNCATED_6DIGIT_HS_CODE_OR_MISSING_COUNTRY_OF_ORIGIN_COO",
+        )
+
+        inv = evaluate_cross_border_ddp_mor_sor_customs_policy(
+            CrossBorderDdpMorSorCustomsPolicyInput(
+                invoice_msrp_overvaluation_or_fake_5usd_undervaluation=True
+            )
+        )
+        self.assertEqual(inv["status_code"], 451)
+        self.assertEqual(
+            inv["decision"],
+            "COMMERCIAL_INVOICE_MSRP_OVERVALUATION_OR_FAKE_5USD_UNDERVALUATION",
+        )
+
+        optim = evaluate_cross_border_ddp_mor_sor_customs_policy(
+            CrossBorderDdpMorSorCustomsPolicyInput(
+                quarterly_ddu_refusal_msrp_duty_and_mor_fee_pool_usd=320000.0,
+                hybrid_mor_sor_routing_and_net_paid_ioss_ddp_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 121600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 198400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_ddp_mor_sor_customs_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-ddp-mor-sor-customs-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

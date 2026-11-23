@@ -37229,6 +37229,82 @@ def evaluate_saas_usage_metering_x402_mpp_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderDdpMorSorCustomsPolicyInput:
+    quarterly_ddu_refusal_msrp_duty_and_mor_fee_pool_usd: float = 320000.0
+    ddu_unpaid_duty_doorstep_brokerage_refusal_risk: bool = False
+    truncated_6digit_hs_code_or_missing_origin_coo: bool = False
+    invoice_msrp_overvaluation_or_fake_5usd_undervaluation: bool = False
+    hybrid_mor_sor_routing_and_net_paid_ioss_ddp_ready: bool = False
+
+
+def evaluate_cross_border_ddp_mor_sor_customs_policy(
+    policy_input: CrossBorderDdpMorSorCustomsPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_ddu_refusal_msrp_duty_and_mor_fee_pool_usd
+        ),
+    )
+    if policy_input.invoice_msrp_overvaluation_or_fake_5usd_undervaluation:
+        return {
+            "status_code": 451,
+            "decision": "COMMERCIAL_INVOICE_MSRP_OVERVALUATION_OR_FAKE_5USD_UNDERVALUATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ddu_unpaid_duty_doorstep_brokerage_refusal_risk:
+        return {
+            "status_code": 403,
+            "decision": "DDU_UNPAID_DUTY_DOORSTEP_BROKERAGE_SHOCK_AND_REFUSAL_RISK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.truncated_6digit_hs_code_or_missing_origin_coo:
+        return {
+            "status_code": 422,
+            "decision": "TRUNCATED_6DIGIT_HS_CODE_OR_MISSING_COUNTRY_OF_ORIGIN_COO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hybrid_mor_sor_routing_and_net_paid_ioss_ddp_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "HYBRID_MOR_SOR_ROUTING_AND_NET_PAID_IOSS_DDP_CONFIRM",
+            "mandate_token": "crossborder_ddp_mor_sor_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_10DIGIT_HTS_NET_PAID_DDP_CUSTOMS_AUTHORIZED",
+        "mandate_token": "crossborder_ddp_mor_sor_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -50714,6 +50790,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_ddp_mor_sor_customs_guard = {
+        "authorized_200": evaluate_cross_border_ddp_mor_sor_customs_policy(
+            CrossBorderDdpMorSorCustomsPolicyInput()
+        ),
+        "ddu_doorstep_refusal_403": evaluate_cross_border_ddp_mor_sor_customs_policy(
+            CrossBorderDdpMorSorCustomsPolicyInput(
+                ddu_unpaid_duty_doorstep_brokerage_refusal_risk=True
+            )
+        ),
+        "truncated_hs_or_missing_coo_422": evaluate_cross_border_ddp_mor_sor_customs_policy(
+            CrossBorderDdpMorSorCustomsPolicyInput(
+                truncated_6digit_hs_code_or_missing_origin_coo=True
+            )
+        ),
+        "msrp_overvaluation_or_fake_5usd_451": evaluate_cross_border_ddp_mor_sor_customs_policy(
+            CrossBorderDdpMorSorCustomsPolicyInput(
+                invoice_msrp_overvaluation_or_fake_5usd_undervaluation=True
+            )
+        ),
+        "hybrid_mor_sor_net_paid_ddp_409": evaluate_cross_border_ddp_mor_sor_customs_policy(
+            CrossBorderDdpMorSorCustomsPolicyInput(
+                hybrid_mor_sor_routing_and_net_paid_ioss_ddp_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -51133,6 +51235,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_ap_three_way_match_scf_guard": b2b_ap_three_way_match_scf_guard,
         "marketplace_split_settlement_reserve_guard": marketplace_split_settlement_reserve_guard,
         "saas_usage_metering_x402_mpp_guard": saas_usage_metering_x402_mpp_guard,
+        "cross_border_ddp_mor_sor_customs_guard": cross_border_ddp_mor_sor_customs_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -72919,6 +73022,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="mtr402-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 WHOLE_CENT_ALIGNED_MPP_ROLLUP_AND_UUIDV7_EXACTLY_ONCE_CONFIRM · Mandate: usage_metering_x402_mpp_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 291 (🏆 #410 Milestone) Cross-Border DDP Landed Cost & MoR vs SoR Selection -->
+      <div class="finops-box" id="cross-border-ddp-mor-sor-customs-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 跨境电商完税交货 DDP 与全球名义商户选型 (Global-e / Paddle vs Zonos / Avalara + Stripe Tax · 第410篇里程碑) 沙盒</div>
+            <div class="finops-sub">Round 291 (🏆 #410 · SVG #734) · 强制预收 DDP 完税价防 DDU 门口被加收 $18 快递代垫费引发 34% 拒收 (HTTP 403) + 目的国 10 位 HTSUS/TARIC 与原产国 CoO 硬校验 (HTTP 422) + 报关发票按折后实付净额对齐保住 &lt;=€150 IOSS 免关税资格 (HTTP 451) + 核心国 SoR + 长尾国 MoR 混合路由净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="ddpmor-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度发未完税 DDU 包裹遭买家门口拒收退运、按优惠前原价报关冲破 IOSS 免税线多交冤枉税及高额 MoR 费率池 ($)
+            <input type="number" id="ddpmor-gross-input" value="320000" min="10000" step="5000" oninput="recalcCrossBorderDdpMorSorCustomsSandbox()" />
+          </label>
+          <label>超免税额 (De Minimis) 跨境包裹完税交货 (DDP) 结账锁价与防 DDU 门口代垫费拒收门禁
+            <select id="ddpmor-ddu-select" onchange="recalcCrossBorderDdpMorSorCustomsSandbox()">
+              <option value="pass">结账页强制计算并预收 100% 担保的 DDP 完税到手价，派件上门零额外收费 (安全)</option>
+              <option value="block_403">裸发未完税 DDU 包裹导致快递上门强收关税 + $18 代垫手续费引发 34% 拒收弃件 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>目的国 10 位海关税则号 (US HTSUS / EU TARIC) 与 2 位 ISO 原产国代码 (Country of Origin CoO) 门禁
+            <select id="ddpmor-hts-select" onchange="recalcCrossBorderDdpMorSorCustomsSandbox()">
+              <option value="pass">全量商品绑定目的国 10 位税则号与原产国 CoO，精准适用自贸协定与附加税率 (合规)</option>
+              <option value="block_422">仅传 6 位粗粒度通用 HS 编码或笼统填写 Apparel 触发美国 CBP Type 86 扣关 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>电子商业发票 (Commercial Invoice) 折后实付净额对齐与加密 EDI H7 通道绑定欧盟 IOSS 税号门禁
+            <select id="ddpmor-inv-select" onchange="recalcCrossBorderDdpMorSorCustomsSandbox()">
+              <option value="pass">报关单显式扣除促销折扣按实付 €135 申报保住 &lt;=€150 IOSS 免关税，且加密传输 IOSS (安全)</option>
+              <option value="block_451">按打折前原价 €165 报关冲破 €150 IOSS 红线多交 12% 关税，或虚假低报 $5 遭罚没 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>核心主力市场 (&gt;$1.5M/国) 自持 SoR (Zonos/Avalara + 自有收单) + 长尾 150 国全托管 MoR 混合路由
+            <select id="ddpmor-opt-select" onchange="recalcCrossBorderDdpMorSorCustomsSandbox()">
+              <option value="enabled" selected>核心国走 SoR 立省 3% 通道费 + 长尾国走 MoR 免报税 + 航空主单集拼直注 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">全量成熟市场盲目交 6.5% MoR 抽成且散件直邮不走干线集拼 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度DDU拒收与冤枉税费损耗池</div>
+            <div class="finops-kpi-val" id="ddpmor-gross-kpi">$320,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">混合MoR/SoR与净额报关后净成本</div>
+            <div class="finops-kpi-val" id="ddpmor-net-kpi" style="color:#6ee7b7;">$198,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省拒收运费与通道抽成</div>
+            <div class="finops-kpi-val" id="ddpmor-savings-kpi" style="color:#38bdf8;">$121,600</div>
+          </div>
+        </div>
+        <div id="ddpmor-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 HYBRID_MOR_SOR_ROUTING_AND_NET_PAID_IOSS_DDP_CONFIRM · Mandate: crossborder_ddp_mor_sor_optim_409
         </div>
       </div>
 
@@ -99679,6 +99839,79 @@ function recalcSaaSUsageMeteringX402MppSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_UUIDV7_METERING_AND_MICROPAYMENT_RAIL_AUTHORIZED · Mandate: usage_metering_x402_mpp_200';
+}}
+
+function recalcCrossBorderDdpMorSorCustomsSandbox() {{
+  const grossInput = document.getElementById('ddpmor-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '320000'));
+  const dduGate = document.getElementById('ddpmor-ddu-select').value;
+  const htsGate = document.getElementById('ddpmor-hts-select').value;
+  const invGate = document.getElementById('ddpmor-inv-select').value;
+  const optMode = document.getElementById('ddpmor-opt-select').value;
+
+  const grossKpi = document.getElementById('ddpmor-gross-kpi');
+  const netKpi = document.getElementById('ddpmor-net-kpi');
+  const savingsKpi = document.getElementById('ddpmor-savings-kpi');
+  const statusKpi = document.getElementById('ddpmor-status-kpi');
+  const banner = document.getElementById('ddpmor-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (invGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 COMMERCIAL_INVOICE_MSRP_OVERVALUATION_OR_FAKE_5USD_UNDERVALUATION · Mandate: null';
+    return;
+  }}
+  if (dduGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DDU_UNPAID_DUTY_DOORSTEP_BROKERAGE_SHOCK_AND_REFUSAL_RISK · Mandate: null';
+    return;
+  }}
+  if (htsGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 TRUNCATED_6DIGIT_HS_CODE_OR_MISSING_COUNTRY_OF_ORIGIN_COO · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 HYBRID_MOR_SOR_ROUTING_AND_NET_PAID_IOSS_DDP_CONFIRM · Mandate: crossborder_ddp_mor_sor_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_10DIGIT_HTS_NET_PAID_DDP_CUSTOMS_AUTHORIZED · Mandate: crossborder_ddp_mor_sor_200';
 }}
 
 function updateStage1756Sandbox() {{
