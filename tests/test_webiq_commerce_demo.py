@@ -29024,6 +29024,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("conversational-whatsapp-dm-commerce-sandbox", html_zh)
 
+    def test_multi_psp_orchestration_routing_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            MultiPspOrchestrationRoutingPolicyInput,
+            evaluate_multi_psp_orchestration_routing_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_multi_psp_orchestration_routing_policy(
+            MultiPspOrchestrationRoutingPolicyInput(
+                quarterly_false_decline_crossborder_and_debit_mdr_pool_usd=340000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_MULTI_PSP_LOCAL_BIN_AND_FAILOVER_AUTHORIZED",
+        )
+
+        timeout = evaluate_multi_psp_orchestration_routing_policy(
+            MultiPspOrchestrationRoutingPolicyInput(
+                unreversed_primary_timeout_failover_double_charge=True
+            )
+        )
+        self.assertEqual(timeout["status_code"], 403)
+        self.assertEqual(
+            timeout["decision"],
+            "UNREVERSED_PRIMARY_PSP_TIMEOUT_FAILOVER_DOUBLE_CHARGE_RISK",
+        )
+
+        retry = evaluate_multi_psp_orchestration_routing_policy(
+            MultiPspOrchestrationRoutingPolicyInput(
+                cat1_or_mac03_hard_decline_illegal_cascade_retry=True
+            )
+        )
+        self.assertEqual(retry["status_code"], 422)
+        self.assertEqual(
+            retry["decision"],
+            "CARD_SCHEME_CAT1_OR_MAC03_HARD_DECLINE_ILLEGAL_CASCADE_RETRY",
+        )
+
+        route = evaluate_multi_psp_orchestration_routing_policy(
+            MultiPspOrchestrationRoutingPolicyInput(
+                cross_border_acquiring_or_unrouted_durbin_debit_leakage=True
+            )
+        )
+        self.assertEqual(route["status_code"], 451)
+        self.assertEqual(
+            route["decision"],
+            "CROSS_BORDER_ACQUIRING_LEAKAGE_OR_UNROUTED_DURBIN_DEBIT_OVERPAY",
+        )
+
+        optim = evaluate_multi_psp_orchestration_routing_policy(
+            MultiPspOrchestrationRoutingPolicyInput(
+                quarterly_false_decline_crossborder_and_debit_mdr_pool_usd=340000.0,
+                local_8digit_bin_durbin_pinless_and_safe_failover_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 132600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 207400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("multi_psp_orchestration_routing_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("multi-psp-orchestration-routing-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

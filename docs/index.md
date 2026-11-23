@@ -2,12 +2,12 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`416` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`417` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（30 篇）](#platform-grounding)
-- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（55 篇）](#payments-mandates)
+- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（56 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（155 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（92 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（36 篇）](#saas-finops-micropayments)
@@ -56,7 +56,7 @@
 | 30 | **电商防爬反欺诈与可信智能体边缘身份认证（`Trusted Agent Identity`: `Cloudflare Web Bot Auth / RFC 9421 vs. Visa Trusted Agent Protocol (TAP) vs. Akamai / DataDome vs. 传统 WAF 验证码`）、防黄牛伪造 `User-Agent` 绕过防爬、防误弹图形验证码封杀真买家代购 Agent 与双车道边缘分流净省 40% 架构选型 FAQ** | [中文](trusted-agent-identity-rfc9421-visa-tap-cloudflare-web-bot-auth-vs-waf-captcha-selection-faq.md) · [English](trusted-agent-identity-rfc9421-visa-tap-cloudflare-web-bot-auth-vs-waf-captcha-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
-## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（55 篇）
+## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（56 篇）
 
 > 涵盖 Google AP2、Stripe SPT、Visa VIC / TAP、Mastercard Agent Pay、PayPal、UCP/ACP 协议互操作、3DS2 无浏览器挑战、FIDO2/Passkey 硬件签名及幂等防重扣架构。
 
@@ -117,6 +117,7 @@
 | 53 | **高客单电商与 B2B 账单“账户对账户实时直连支付（`Pay-by-Bank / Open Banking`：`FedNow & RTP vs. SEPA Instant vs. UK Faster Payments`）、防 `ACH R01` 余额不足退票骗货（`Plaid Signal / Stripe Financial Connections / Tink`）与信用卡 `2.9% MDR` 分润返现替代”托管、防“在 `T+3` 普通 ACH 代扣未清算落袋前秒发 $4,200 电脑致 3 天后退票货款两空”、防“向未核验外部 IBAN 发起不可撤销实时退款”与 `1.0%` 买家立减分润净省 40% Agent 架构选型 FAQ** | [中文](pay-by-bank-open-banking-fednow-sepa-instant-nsf-bounce-escrow-agent-selection-faq.md) · [English](pay-by-bank-open-banking-fednow-sepa-instant-nsf-bounce-escrow-agent-selection-faq.en.md) |
 | 54 | **Agent 支付与结账协议深度选型（`Stripe SPT vs. Visa Intelligent Commerce (VIC) vs. Mastercard Agent Pay vs. PayPal Agentic Toolkit vs. 企业预算虚拟卡 VCN`）、预授权金额微漂移走廊（`Over-Capture Drift Corridor`）与无感 `FIDO2` 强核身托管“防跨店重放静态卡号、防 `+$0.45` 州税或称重尾差触发整单拒付、防凌晨自动下单撞上 3DS2 短信死锁与五轨智能路由净省 38%”Agent 架构选型 FAQ** | [中文](agent-payment-checkout-protocol-spt-vic-mastercard-paypal-vcn-authorization-drift-escrow-selection-faq.md) · [English](agent-payment-checkout-protocol-spt-vic-mastercard-paypal-vcn-authorization-drift-escrow-selection-faq.en.md) |
 | 55 | **电商嵌入式先买后付（`Embedded BNPL`：`Affirm / Klarna / Afterpay / PayPal Pay in 4`）、商家贴息费率（`MDR 4.5%–6.5%`）毛利门禁、受控 `A2UI WebView` 信贷核身交接与部分退货尾期优先冲抵重算（`Tail-First Re-Amortization`）托管“防 6.5% 商家贴息吞穿 8% 微利 3C 利润、防大模型在聊天窗违规收集 SSN/生日、防退货寄出后次日仍被自动扣第 2 期款与先冲销第 4/3 期未付本金净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-bnpl-klarna-affirm-afterpay-mdr-margin-floor-partial-return-reamortization-selection-faq.md) · [English](ecommerce-bnpl-klarna-affirm-afterpay-mdr-margin-floor-partial-return-reamortization-selection-faq.en.md) |
+| 56 | **多支付网关智能编排（`Multi-PSP Orchestration`: `Primer / Spreedly / Gr4vy vs. Adyen + Stripe + Checkout.com 双活收单`）、`8 位 BIN` 本土收单路由、美国 `Durbin Reg II` 免密借记网（`STAR / NYCE / Pulse`）降费与防主备超时切换双倍扣款（`0420 Failover Mutex`）净省 39% 架构选型 FAQ** | [中文](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.md) · [English](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（155 篇）

@@ -37761,6 +37761,82 @@ def evaluate_conversational_whatsapp_dm_commerce_policy(
     }
 
 
+@dataclass(frozen=True)
+class MultiPspOrchestrationRoutingPolicyInput:
+    quarterly_false_decline_crossborder_and_debit_mdr_pool_usd: float = 340000.0
+    unreversed_primary_timeout_failover_double_charge: bool = False
+    cat1_or_mac03_hard_decline_illegal_cascade_retry: bool = False
+    cross_border_acquiring_or_unrouted_durbin_debit_leakage: bool = False
+    local_8digit_bin_durbin_pinless_and_safe_failover_ready: bool = False
+
+
+def evaluate_multi_psp_orchestration_routing_policy(
+    policy_input: MultiPspOrchestrationRoutingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_false_decline_crossborder_and_debit_mdr_pool_usd
+        ),
+    )
+    if policy_input.cross_border_acquiring_or_unrouted_durbin_debit_leakage:
+        return {
+            "status_code": 451,
+            "decision": "CROSS_BORDER_ACQUIRING_LEAKAGE_OR_UNROUTED_DURBIN_DEBIT_OVERPAY",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unreversed_primary_timeout_failover_double_charge:
+        return {
+            "status_code": 403,
+            "decision": "UNREVERSED_PRIMARY_PSP_TIMEOUT_FAILOVER_DOUBLE_CHARGE_RISK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cat1_or_mac03_hard_decline_illegal_cascade_retry:
+        return {
+            "status_code": 422,
+            "decision": "CARD_SCHEME_CAT1_OR_MAC03_HARD_DECLINE_ILLEGAL_CASCADE_RETRY",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.local_8digit_bin_durbin_pinless_and_safe_failover_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "LOCAL_8DIGIT_BIN_DURBIN_PINLESS_AND_SAFE_FAILOVER_CONFIRM",
+            "mandate_token": "multi_psp_orchestration_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_MULTI_PSP_LOCAL_BIN_AND_FAILOVER_AUTHORIZED",
+        "mandate_token": "multi_psp_orchestration_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -51428,6 +51504,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    multi_psp_orchestration_routing_guard = {
+        "authorized_200": evaluate_multi_psp_orchestration_routing_policy(
+            MultiPspOrchestrationRoutingPolicyInput()
+        ),
+        "unreversed_timeout_double_charge_403": evaluate_multi_psp_orchestration_routing_policy(
+            MultiPspOrchestrationRoutingPolicyInput(
+                unreversed_primary_timeout_failover_double_charge=True
+            )
+        ),
+        "cat1_or_mac03_illegal_retry_422": evaluate_multi_psp_orchestration_routing_policy(
+            MultiPspOrchestrationRoutingPolicyInput(
+                cat1_or_mac03_hard_decline_illegal_cascade_retry=True
+            )
+        ),
+        "crossborder_or_unrouted_durbin_451": evaluate_multi_psp_orchestration_routing_policy(
+            MultiPspOrchestrationRoutingPolicyInput(
+                cross_border_acquiring_or_unrouted_durbin_debit_leakage=True
+            )
+        ),
+        "local_bin_durbin_safe_failover_409": evaluate_multi_psp_orchestration_routing_policy(
+            MultiPspOrchestrationRoutingPolicyInput(
+                local_8digit_bin_durbin_pinless_and_safe_failover_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -51854,6 +51956,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_promo_loyalty_2pc_guard": ecommerce_promo_loyalty_2pc_guard,
         "b2b_trade_credit_factoring_guard": b2b_trade_credit_factoring_guard,
         "conversational_whatsapp_dm_commerce_guard": conversational_whatsapp_dm_commerce_guard,
+        "multi_psp_orchestration_routing_guard": multi_psp_orchestration_routing_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -74039,6 +74142,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="convchat-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DEBOUNCED_TURN_24H_WINDOW_AND_NATIVE_IN_CHAT_WALLET_CHECKOUT_CONFIRM · Mandate: conversational_whatsapp_dm_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 298 (#417) Multi-PSP Orchestration, 8-Digit BIN & Durbin PINless Debit -->
+      <div class="finops-box" id="multi-psp-orchestration-routing-sandbox" style="margin-top:12px;border-color:#4f46e5;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔀 多支付网关智能编排 (Primer / Spreedly vs Adyen + Stripe + Checkout.com) 沙盒</div>
+            <div class="finops-sub">Round 298 (#417 · SVG #741) · 主网关 HTTP 504 超时强制先查单并确认 ISO 8583 0420 冲正防双倍扣款 (HTTP 403) + Visa Cat-1 / Mastercard MAC-03 硬拒付零重试熔断防卡组罚款 (HTTP 422) + 8-Digit BIN 本土 MID 与美国 Durbin 免密借记网 (STAR/NYCE/Pulse) 降费 (HTTP 451) + 独立 3DS2 CAVV 容灾净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="multipsp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度单一网关宕机/误拒掉单、1.5% 跨境收单罚金、美国借记卡高费率及违规重试罚金池 ($)
+            <input type="number" id="multipsp-gross-input" value="340000" min="10000" step="5000" oninput="recalcMultiPspOrchestrationSandbox()" />
+          </label>
+          <label>主网关 (Primary PSP) HTTP 504 超时防双扣互锁 (Pre-Failover 0420 Technical Reversal Mutex) 门禁
+            <select id="multipsp-timeout-select" onchange="recalcMultiPspOrchestrationSandbox()">
+              <option value="pass">主网关超时必须先确认 Cancel / ISO 8583 0420 冲正成功后再切换备网关 (安全)</option>
+              <option value="block_403">主网关 504 超时未查单冲正即立刻发往备网关重扣导致消费者被双倍扣款 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>卡组织硬拒付 (Visa Category-1 挂失/无效卡 & Mastercard MAC 03/21) 零重试熔断门禁
+            <select id="multipsp-retry-select" onchange="recalcMultiPspOrchestrationSandbox()">
+              <option value="pass">仅对 05/91 软拒付携带原 3DS2 CAVV 切备网关；命中 Cat-1/MAC-03 立即熔断 (合规)</option>
+              <option value="block_422">对 43 Stolen Card / MAC 03 硬拒付盲目轮询 3 家收单行触发卡组高额罚单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>8-Digit BIN 本土收单主体 (Local MID) 匹配与美国 Regulation II (Durbin) 免密借记网络门禁
+            <select id="multipsp-route-select" onchange="recalcMultiPspOrchestrationSandbox()">
+              <option value="pass">按 8 位 BIN 匹配本土收单 MID 并把美国受监管借记卡路由至 STAR/NYCE/Pulse (0.05%+$0.21) (安全)</option>
+              <option value="block_451">欧洲/英国卡走美国 MID 多交 1.5% 跨境罚金，或美国借记卡按 2.9% 打包费率交智商税 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>中立 Network Token 金库 + 独立 3DS2 CAVV 跨轨复用 + Durbin PINless 最小成本路由
+            <select id="multipsp-opt-select" onchange="recalcMultiPspOrchestrationSandbox()">
+              <option value="enabled" selected>启用 8 位 BIN 本土收单 + Durbin 免密借记 + 0420 安全容灾 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">绑定单一 PSP Blended 打包费率且无跨网关自动容灾 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度通道溢价与误拒损耗池</div>
+            <div class="finops-kpi-val" id="multipsp-gross-kpi">$340,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">多网关智能路由后净成本</div>
+            <div class="finops-kpi-val" id="multipsp-net-kpi" style="color:#6ee7b7;">$207,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省MDR与挽回误拒GMV</div>
+            <div class="finops-kpi-val" id="multipsp-savings-kpi" style="color:#38bdf8;">$132,600</div>
+          </div>
+        </div>
+        <div id="multipsp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 LOCAL_8DIGIT_BIN_DURBIN_PINLESS_AND_SAFE_FAILOVER_CONFIRM · Mandate: multi_psp_orchestration_optim_409
         </div>
       </div>
 
@@ -101310,6 +101470,79 @@ function recalcConversationalWhatsappDmSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CONVERSATIONAL_FLOW_AND_WALLET_CHECKOUT_AUTHORIZED · Mandate: conversational_whatsapp_dm_200';
+}}
+
+function recalcMultiPspOrchestrationSandbox() {{
+  const grossInput = document.getElementById('multipsp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '340000'));
+  const timeoutGate = document.getElementById('multipsp-timeout-select').value;
+  const retryGate = document.getElementById('multipsp-retry-select').value;
+  const routeGate = document.getElementById('multipsp-route-select').value;
+  const optMode = document.getElementById('multipsp-opt-select').value;
+
+  const grossKpi = document.getElementById('multipsp-gross-kpi');
+  const netKpi = document.getElementById('multipsp-net-kpi');
+  const savingsKpi = document.getElementById('multipsp-savings-kpi');
+  const statusKpi = document.getElementById('multipsp-status-kpi');
+  const banner = document.getElementById('multipsp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (routeGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CROSS_BORDER_ACQUIRING_LEAKAGE_OR_UNROUTED_DURBIN_DEBIT_OVERPAY · Mandate: null';
+    return;
+  }}
+  if (timeoutGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNREVERSED_PRIMARY_PSP_TIMEOUT_FAILOVER_DOUBLE_CHARGE_RISK · Mandate: null';
+    return;
+  }}
+  if (retryGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CARD_SCHEME_CAT1_OR_MAC03_HARD_DECLINE_ILLEGAL_CASCADE_RETRY · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 LOCAL_8DIGIT_BIN_DURBIN_PINLESS_AND_SAFE_FAILOVER_CONFIRM · Mandate: multi_psp_orchestration_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_MULTI_PSP_LOCAL_BIN_AND_FAILOVER_AUTHORIZED · Mandate: multi_psp_orchestration_200';
 }}
 
 function updateStage1756Sandbox() {{
