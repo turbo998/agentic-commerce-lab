@@ -37609,6 +37609,82 @@ def evaluate_ecommerce_promo_loyalty_two_phase_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bTradeCreditFactoringPolicyInput:
+    quarterly_b2b_bad_debt_impersonation_and_dso_pool_usd: float = 330000.0
+    lookalike_domain_impersonation_or_unverified_ship_to_dock: bool = False
+    exposure_exceeded_with_unbilled_shipments_or_past_due_ar: bool = False
+    double_pledged_invoice_hash_or_unaccepted_grn_factoring: bool = False
+    non_recourse_net30_and_overflow_ach_split_ready: bool = False
+
+
+def evaluate_b2b_trade_credit_factoring_policy(
+    policy_input: B2bTradeCreditFactoringPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_b2b_bad_debt_impersonation_and_dso_pool_usd
+        ),
+    )
+    if policy_input.double_pledged_invoice_hash_or_unaccepted_grn_factoring:
+        return {
+            "status_code": 451,
+            "decision": "DOUBLE_PLEDGED_INVOICE_HASH_OR_UNACCEPTED_GRN_FACTORING_FRAUD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.lookalike_domain_impersonation_or_unverified_ship_to_dock:
+        return {
+            "status_code": 403,
+            "decision": "B2B_IMPERSONATION_LOOKALIKE_DOMAIN_OR_UNVERIFIED_SHIP_TO_DOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.exposure_exceeded_with_unbilled_shipments_or_past_due_ar:
+        return {
+            "status_code": 422,
+            "decision": "CREDIT_EXPOSURE_EXCEEDED_INCLUDING_UNBILLED_SHIPMENTS_OR_PAST_DUE_AR",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.non_recourse_net30_and_overflow_ach_split_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "NON_RECOURSE_NET30_AND_OVERFLOW_ACH_SPLIT_SETTLEMENT_CONFIRM",
+            "mandate_token": "b2b_trade_credit_factoring_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_KYB_EXPOSURE_AND_NON_RECOURSE_NET30_AUTHORIZED",
+        "mandate_token": "b2b_trade_credit_factoring_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -51224,6 +51300,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_trade_credit_factoring_guard = {
+        "authorized_200": evaluate_b2b_trade_credit_factoring_policy(
+            B2bTradeCreditFactoringPolicyInput()
+        ),
+        "lookalike_domain_or_dock_403": evaluate_b2b_trade_credit_factoring_policy(
+            B2bTradeCreditFactoringPolicyInput(
+                lookalike_domain_impersonation_or_unverified_ship_to_dock=True
+            )
+        ),
+        "unbilled_exposure_exceeded_422": evaluate_b2b_trade_credit_factoring_policy(
+            B2bTradeCreditFactoringPolicyInput(
+                exposure_exceeded_with_unbilled_shipments_or_past_due_ar=True
+            )
+        ),
+        "double_pledge_or_no_grn_451": evaluate_b2b_trade_credit_factoring_policy(
+            B2bTradeCreditFactoringPolicyInput(
+                double_pledged_invoice_hash_or_unaccepted_grn_factoring=True
+            )
+        ),
+        "non_recourse_net30_ach_split_409": evaluate_b2b_trade_credit_factoring_policy(
+            B2bTradeCreditFactoringPolicyInput(
+                non_recourse_net30_and_overflow_ach_split_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -51648,6 +51750,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_punchout_cxml_edi_orchestration_guard": b2b_punchout_cxml_edi_orchestration_guard,
         "ota_hotel_rental_incremental_auth_guard": ota_hotel_rental_incremental_auth_guard,
         "ecommerce_promo_loyalty_2pc_guard": ecommerce_promo_loyalty_2pc_guard,
+        "b2b_trade_credit_factoring_guard": b2b_trade_credit_factoring_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -73719,6 +73822,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="promoloy-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MULTIPLICATIVE_MARGIN_FLOOR_AND_LOYALTY_FIAT_2PC_ESCROW_CONFIRM · Mandate: ecommerce_promo_loyalty_2pc_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 296 (#415) B2B Net-30/60 Trade Credit Underwriting & Non-Recourse Factoring -->
+      <div class="finops-box" id="b2b-trade-credit-factoring-sandbox" style="margin-top:12px;border-color:#0d9488;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏦 企业 B2B 赊销核保 (Net-30/60) 与无追索权保理 (Resolve / Balance / Hokodo vs Allianz Trade) 沙盒</div>
+            <div class="finops-sub">Round 296 (#415 · SVG #739) · 企业官方域名与 DUNS 备案收货仓锁防冒充世界 500 强骗走 $150k 货物 (HTTP 403) + 含已发货未开票 (Unbilled Shipments) 的全口径实时信用敞口门禁 (HTTP 422) + 发票唯一哈希防一票多融双押与买方 GRN 签收核验 (HTTP 451) + 无追索权 T+1 回款与超额 ACH 分拆净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="tradecredit-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 B2B 赊销违约坏账、近似域名冒名骗货及 60 天账期资金占压 (DSO) 损耗池 ($)
+            <input type="number" id="tradecredit-gross-input" value="330000" min="10000" step="5000" oninput="recalcB2bTradeCreditFactoringSandbox()" />
+          </label>
+          <label>企业主域名所有权 (WHOIS/SSO/Plaid) 与 DUNS/LEI 官方备案收货仓 (Ship-To Dock) 门禁
+            <select id="tradecredit-kyb-select" onchange="recalcB2bTradeCreditFactoringSandbox()">
+              <option value="pass">强制核验企业官方域名 + 对公银行账户 + 仅发往 DUNS 官方备案仓库地址 (安全)</option>
+              <option value="block_403">骗子注册 @walmart-procure.com 填公开税号骗取 $150k Net-60 发往私人租仓 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>全口径实时信用敞口公式 (已开票 AR + 已发未开票出库单 + 在途订单 + 本单 <= 授信限额) 门禁
+            <select id="tradecredit-exp-select" onchange="recalcB2bTradeCreditFactoringSandbox()">
+              <option value="pass">实时计入已发货未开票 (Unbilled Shipments) 与在途订单，严防利用开票滞后超提 (合规)</option>
+              <option value="block_422">只查已开票 AR 漏算 7 天内已发货未开票的 $200k 货物导致超限爆雷 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>保理融资发票五元组哈希唯一锁 (UCC-1 / 税务登记) 与买方电子签收单 (GRN / vPOD) 门禁
+            <select id="tradecredit-factor-select" onchange="recalcB2bTradeCreditFactoringSandbox()">
+              <option value="pass">核验发票唯一哈希无重复质押且已取得买方签收单 GRN 后执行 T+1 放款 (安全)</option>
+              <option value="block_451">同一张发票向两家保理商重复质押融资，或货物尚未签收即空票套现 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>100% 无追索权 (Non-Recourse) T+1 保理回款 + 超授信额度部分自动分拆实时 ACH 现结
+            <select id="tradecredit-opt-select" onchange="recalcB2bTradeCreditFactoringSandbox()">
+              <option value="enabled" selected>额度内走无追索权 Net-30 (T+1 回款) + 超额部分自动拆单走 ACH 现结 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">卖家自担 100% 违约坏账并苦等 60 天账期回款 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度赊销坏账与DSO损耗池</div>
+            <div class="finops-kpi-val" id="tradecredit-gross-kpi">$330,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">无追索保理与敞口锁后净成本</div>
+            <div class="finops-kpi-val" id="tradecredit-net-kpi" style="color:#6ee7b7;">$201,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省坏账与资金占压成本</div>
+            <div class="finops-kpi-val" id="tradecredit-savings-kpi" style="color:#38bdf8;">$128,700</div>
+          </div>
+        </div>
+        <div id="tradecredit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 NON_RECOURSE_NET30_AND_OVERFLOW_ACH_SPLIT_SETTLEMENT_CONFIRM · Mandate: b2b_trade_credit_factoring_optim_409
         </div>
       </div>
 
@@ -100844,6 +101004,79 @@ function recalcEcommercePromoLoyalty2pcSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_PROMO_MARGIN_FLOOR_AND_LOYALTY_2PC_AUTHORIZED · Mandate: ecommerce_promo_loyalty_2pc_200';
+}}
+
+function recalcB2bTradeCreditFactoringSandbox() {{
+  const grossInput = document.getElementById('tradecredit-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '330000'));
+  const kybGate = document.getElementById('tradecredit-kyb-select').value;
+  const expGate = document.getElementById('tradecredit-exp-select').value;
+  const factorGate = document.getElementById('tradecredit-factor-select').value;
+  const optMode = document.getElementById('tradecredit-opt-select').value;
+
+  const grossKpi = document.getElementById('tradecredit-gross-kpi');
+  const netKpi = document.getElementById('tradecredit-net-kpi');
+  const savingsKpi = document.getElementById('tradecredit-savings-kpi');
+  const statusKpi = document.getElementById('tradecredit-status-kpi');
+  const banner = document.getElementById('tradecredit-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (factorGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 DOUBLE_PLEDGED_INVOICE_HASH_OR_UNACCEPTED_GRN_FACTORING_FRAUD · Mandate: null';
+    return;
+  }}
+  if (kybGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 B2B_IMPERSONATION_LOOKALIKE_DOMAIN_OR_UNVERIFIED_SHIP_TO_DOCK · Mandate: null';
+    return;
+  }}
+  if (expGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CREDIT_EXPOSURE_EXCEEDED_INCLUDING_UNBILLED_SHIPMENTS_OR_PAST_DUE_AR · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 NON_RECOURSE_NET30_AND_OVERFLOW_ACH_SPLIT_SETTLEMENT_CONFIRM · Mandate: b2b_trade_credit_factoring_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_KYB_EXPOSURE_AND_NON_RECOURSE_NET30_AUTHORIZED · Mandate: b2b_trade_credit_factoring_200';
 }}
 
 function updateStage1756Sandbox() {{

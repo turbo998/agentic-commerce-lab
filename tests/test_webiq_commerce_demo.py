@@ -28890,6 +28890,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-promo-loyalty-2pc-sandbox", html_zh)
 
+    def test_b2b_trade_credit_factoring_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bTradeCreditFactoringPolicyInput,
+            evaluate_b2b_trade_credit_factoring_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_trade_credit_factoring_policy(
+            B2bTradeCreditFactoringPolicyInput(
+                quarterly_b2b_bad_debt_impersonation_and_dso_pool_usd=330000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_KYB_EXPOSURE_AND_NON_RECOURSE_NET30_AUTHORIZED",
+        )
+
+        kyb = evaluate_b2b_trade_credit_factoring_policy(
+            B2bTradeCreditFactoringPolicyInput(
+                lookalike_domain_impersonation_or_unverified_ship_to_dock=True
+            )
+        )
+        self.assertEqual(kyb["status_code"], 403)
+        self.assertEqual(
+            kyb["decision"],
+            "B2B_IMPERSONATION_LOOKALIKE_DOMAIN_OR_UNVERIFIED_SHIP_TO_DOCK",
+        )
+
+        exp = evaluate_b2b_trade_credit_factoring_policy(
+            B2bTradeCreditFactoringPolicyInput(
+                exposure_exceeded_with_unbilled_shipments_or_past_due_ar=True
+            )
+        )
+        self.assertEqual(exp["status_code"], 422)
+        self.assertEqual(
+            exp["decision"],
+            "CREDIT_EXPOSURE_EXCEEDED_INCLUDING_UNBILLED_SHIPMENTS_OR_PAST_DUE_AR",
+        )
+
+        factor = evaluate_b2b_trade_credit_factoring_policy(
+            B2bTradeCreditFactoringPolicyInput(
+                double_pledged_invoice_hash_or_unaccepted_grn_factoring=True
+            )
+        )
+        self.assertEqual(factor["status_code"], 451)
+        self.assertEqual(
+            factor["decision"],
+            "DOUBLE_PLEDGED_INVOICE_HASH_OR_UNACCEPTED_GRN_FACTORING_FRAUD",
+        )
+
+        optim = evaluate_b2b_trade_credit_factoring_policy(
+            B2bTradeCreditFactoringPolicyInput(
+                quarterly_b2b_bad_debt_impersonation_and_dso_pool_usd=330000.0,
+                non_recourse_net30_and_overflow_ach_split_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 128700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 201300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_trade_credit_factoring_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-trade-credit-factoring-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
