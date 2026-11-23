@@ -39959,6 +39959,82 @@ def evaluate_proptech_lease_cam_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class BigBulkyLtlPath3dKeepItPolicyInput:
+    quarterly_doorway_refusal_dry_run_and_minor_nick_return_pool_usd: float = 320000.0
+    unverified_3d_path_of_travel_doorway_elevator_clearance: bool = False
+    unconfirmed_t24h_slot_or_missing_highrise_building_coi: bool = False
+    missing_room_photos_or_full_ltl_return_on_minor_cosmetic_nick: bool = False
+    path_3d_clearance_coi_lock_and_keep_it_medic_escrow_ready: bool = False
+
+
+def evaluate_big_bulky_ltl_path3d_keepit_policy(
+    policy_input: BigBulkyLtlPath3dKeepItPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_doorway_refusal_dry_run_and_minor_nick_return_pool_usd
+        ),
+    )
+    if policy_input.missing_room_photos_or_full_ltl_return_on_minor_cosmetic_nick:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_PRE_POST_ROOM_PHOTOS_OR_UNECONOMICAL_MINOR_BLEMISH_LTL_RETURN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unverified_3d_path_of_travel_doorway_elevator_clearance:
+        return {
+            "status_code": 403,
+            "decision": "PATH_OF_TRAVEL_3D_DOORWAY_ELEVATOR_CLEARANCE_FAILURE_RISK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unconfirmed_t24h_slot_or_missing_highrise_building_coi:
+        return {
+            "status_code": 422,
+            "decision": "UNCONFIRMED_T24H_DELIVERY_SLOT_OR_MISSING_HIGHRISE_BUILDING_COI",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.path_3d_clearance_coi_lock_and_keep_it_medic_escrow_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PATH_3D_CLEARANCE_BUILDING_COI_AND_KEEP_IT_MEDIC_ESCROW_CONFIRM",
+            "mandate_token": "ecommerce_big_bulky_ltl_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_BIG_BULKY_WHITE_GLOVE_LTL_AUTHORIZED",
+        "mandate_token": "ecommerce_big_bulky_ltl_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -54380,6 +54456,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    big_bulky_ltl_path3d_keepit_guard = {
+        "authorized_200": evaluate_big_bulky_ltl_path3d_keepit_policy(
+            BigBulkyLtlPath3dKeepItPolicyInput()
+        ),
+        "doorway_elevator_clearance_403": evaluate_big_bulky_ltl_path3d_keepit_policy(
+            BigBulkyLtlPath3dKeepItPolicyInput(
+                unverified_3d_path_of_travel_doorway_elevator_clearance=True
+            )
+        ),
+        "unconfirmed_slot_or_coi_422": evaluate_big_bulky_ltl_path3d_keepit_policy(
+            BigBulkyLtlPath3dKeepItPolicyInput(
+                unconfirmed_t24h_slot_or_missing_highrise_building_coi=True
+            )
+        ),
+        "missing_photos_or_minor_nick_451": evaluate_big_bulky_ltl_path3d_keepit_policy(
+            BigBulkyLtlPath3dKeepItPolicyInput(
+                missing_room_photos_or_full_ltl_return_on_minor_cosmetic_nick=True
+            )
+        ),
+        "path_3d_coi_keep_it_409": evaluate_big_bulky_ltl_path3d_keepit_policy(
+            BigBulkyLtlPath3dKeepItPolicyInput(
+                path_3d_clearance_coi_lock_and_keep_it_medic_escrow_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -54835,6 +54937,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_healthcare_gpo_340b_guard": b2b_healthcare_gpo_340b_guard,
         "ecommerce_reman_core_deposit_guard": ecommerce_reman_core_deposit_guard,
         "proptech_lease_cam_escrow_guard": proptech_lease_cam_escrow_guard,
+        "big_bulky_ltl_path3d_keepit_guard": big_bulky_ltl_path3d_keepit_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -78673,6 +78776,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="proptch-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FULL_BALANCE_DEFAULT_LOCK_FBO_DEPOSIT_AND_CAM_CAP_AUDIT_CONFIRM · Mandate: proptech_lease_cam_escrow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 327 (#446 · 🏆 SVG #770 & 220th Sandbox) Big & Bulky White-Glove LTL -->
+      <div class="finops-box" id="ecommerce-big-bulky-white-glove-sandbox" style="margin-top:12px;border-color:#2563eb;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛋️ 电商大件家具家电与白手套送装一体 (Wayfair CastleGate / Ryder / JB Hunt · 🏆 第 220 个沙盒)</div>
+            <div class="finops-sub">Round 327 (#446 · 🏆 SVG #770 &amp; 220th Sandbox Milestone) · 结账 3D Path-of-Travel 门宽/电梯对角线预检与模块化替换防进不去门拒收 (HTTP 403) + 高层公寓 ACORD 25 COI 责任险签发与 T-24h 时段确认防空跑 (HTTP 422) + 入户前后地板连拍存证与微瑕 12% 留货补贴 + 本地技师上门修补 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="bulky-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度大件家具家电进不去门拒收返程运费、无 COI 空跑重派费及 1cm 划痕整件退货清仓折旧池 ($)
+            <input type="number" id="bulky-gross-input" value="320000" min="10000" step="5000" oninput="recalcEcommerceBigBulkyWhiteGloveSandbox()" />
+          </label>
+          <label>结账前置 3D Path-of-Travel (入户门宽、走廊拐角、电梯对角线与冰箱开门余量) 预检门禁
+            <select id="bulky-3d-select" onchange="recalcEcommerceBigBulkyWhiteGloveSandbox()">
+              <option value="pass">结账强制验算门宽/电梯三维对角线，一体式沙发不通过时自动切换为 3箱模块化组合款 (安全)</option>
+              <option value="block_403">未校验通道尺寸盲发 94寸一体沙发，送到家卡在 78寸客梯进不去屋倒亏 $280 往返运费 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>装车前 T-24h 预约时段双向确认与高层公寓物业保险单 (ACORD 25 COI) + 货梯预约门禁
+            <select id="bulky-coi-select" onchange="recalcEcommerceBigBulkyWhiteGloveSandbox()">
+              <option value="pass">自动向高层物业签发 $2M 额度 COI 锁定货梯，且未获买家 T-24h 短信确认严禁装车出库 (合规)</option>
+              <option value="block_422">未开大楼 COI 被曼哈顿公寓保安拒之门外，或买家不在家产生 $165 专车空跑二次派送费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>入户前后地板 4 角拍照存证与外观微瑕“12% 留货补贴 + 本地 Furniture Medic 上门修补”门禁
+            <select id="bulky-medic-select" onchange="recalcEcommerceBigBulkyWhiteGloveSandbox()">
+              <option value="pass">进退场拍地板底片防讹诈，桌腿 1cm 划痕优先推送 $216 留货补贴 + 本地美容师修补省 $469 (安全)</option>
+              <option value="block_451">未拍进场地板照遭索赔 $1,500 刮痕费，或因背面 1cm 小划痕直接批准整桌拉回巨亏 $780 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>3D 通道几何预检 + 高层 COI/时段双锁 + 微瑕现场留货修复全链路编排
+            <select id="bulky-opt-select" onchange="recalcEcommerceBigBulkyWhiteGloveSandbox()">
+              <option value="enabled" selected>启用 3D 通道锁 + COI 预约 + 微瑕留货修补 (-39% 大件履约损耗 / HTTP 409)</option>
+              <option value="disabled">按普通快递流程直发大件且微瑕一律整件退回 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度大件拒收与退货折旧池</div>
+            <div class="finops-kpi-val" id="bulky-gross-kpi">$320,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">3D预检与微瑕留货后净成本</div>
+            <div class="finops-kpi-val" id="bulky-net-kpi" style="color:#6ee7b7;">$195,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住大件家居家电毛利</div>
+            <div class="finops-kpi-val" id="bulky-savings-kpi" style="color:#38bdf8;">$124,800</div>
+          </div>
+        </div>
+        <div id="bulky-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PATH_3D_CLEARANCE_BUILDING_COI_AND_KEEP_IT_MEDIC_ESCROW_CONFIRM · Mandate: ecommerce_big_bulky_ltl_optim_409
         </div>
       </div>
 
@@ -108061,6 +108221,79 @@ function recalcProptechLeaseCamEscrowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_PROPTECH_LEASE_FBO_AND_CAM_AUDIT_AUTHORIZED · Mandate: proptech_lease_cam_escrow_200';
+}}
+
+function recalcEcommerceBigBulkyWhiteGloveSandbox() {{
+  const grossInput = document.getElementById('bulky-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '320000'));
+  const fit3dGate = document.getElementById('bulky-3d-select').value;
+  const coiGate = document.getElementById('bulky-coi-select').value;
+  const medicGate = document.getElementById('bulky-medic-select').value;
+  const optMode = document.getElementById('bulky-opt-select').value;
+
+  const grossKpi = document.getElementById('bulky-gross-kpi');
+  const netKpi = document.getElementById('bulky-net-kpi');
+  const savingsKpi = document.getElementById('bulky-savings-kpi');
+  const statusKpi = document.getElementById('bulky-status-kpi');
+  const banner = document.getElementById('bulky-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (medicGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_PRE_POST_ROOM_PHOTOS_OR_UNECONOMICAL_MINOR_BLEMISH_LTL_RETURN · Mandate: null';
+    return;
+  }}
+  if (fit3dGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PATH_OF_TRAVEL_3D_DOORWAY_ELEVATOR_CLEARANCE_FAILURE_RISK · Mandate: null';
+    return;
+  }}
+  if (coiGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCONFIRMED_T24H_DELIVERY_SLOT_OR_MISSING_HIGHRISE_BUILDING_COI · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PATH_3D_CLEARANCE_BUILDING_COI_AND_KEEP_IT_MEDIC_ESCROW_CONFIRM · Mandate: ecommerce_big_bulky_ltl_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_BIG_BULKY_WHITE_GLOVE_LTL_AUTHORIZED · Mandate: ecommerce_big_bulky_ltl_200';
 }}
 
 function updateStage1756Sandbox() {{

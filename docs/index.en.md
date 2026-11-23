@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`445` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`446` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (31 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (57 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (169 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (170 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (98 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (39 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (51 guides)](#tax-fx-privacy-disputes)
@@ -122,7 +122,7 @@
 | 57 | **Commercial Fleet Fuel Cards & EV Charging Roaming (`WEX / Fleetcor / Stripe Issuing Fleet / Hubject ISO 15118 / OCPI 2.2.1`), Telematics `GPS + CAN-Bus` Fuel-Theft Lock, Instant `$175 AFD` `0420` Release & Idle-Fee Cap (`-39%` Fuel Slippage & Roaming Loss) FAQ** | [English](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.en.md) · [中文](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (169 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (170 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -297,6 +297,7 @@
 | 167 | **E-Commerce Build-Your-Own Bundle (`BYOB`) & Curated Subscription Boxes (`Shopify Cart Transform / Recharge Bundles / Skio / SAP BOM`), Slot `COGS` Margin Floor, Component `ATP` Explosion & Partial-Return Unbundling Clawback (`-38%` Bundle Margin & Return Abuse Loss) FAQ** | [English](ecommerce-byob-bundle-cogs-floor-atp-explosion-prorata-return-clawback-selection-faq.en.md) · [中文](ecommerce-byob-bundle-cogs-floor-atp-explosion-prorata-return-clawback-selection-faq.md) |
 | 168 | **🏆 Cruise Line & All-Inclusive Resort Closed-Loop Folio (`Oracle Hospitality Cruise SPMS / OceanMedallion / Royal Caribbean / Viator ShoreEx` · 🏆 1,320th Unit Test Milestone), Nightly Satellite Incremental Auth, `All-Aboard - 90m` Shore-Excursion Bond & `OBC` Waterfall (`-38%` Walk-Off & ShoreEx Loss) FAQ** | [English](ota-cruise-resort-closed-loop-folio-satellite-auth-shore-excursion-obc-selection-faq.en.md) · [中文](ota-cruise-resort-closed-loop-folio-satellite-auth-shore-excursion-obc-selection-faq.md) |
 | 169 | **Automotive & Electronics Remanufactured Core-Charge Deposit Escrow, Advanced Replacement `RMA` & `ACES / PIES` `VIN` Fitment (`RockAuto / AutoZone / Apple Express RMA / SAP Reman`), 30-Day `CIT->MIT` Deferred Core Hold & `OEM Casting ID` Grading (`-38%` Freight, MDR & Swap Loss) FAQ** | [English](ecommerce-reman-core-charge-deposit-aces-pies-fitment-deferred-capture-selection-faq.en.md) · [中文](ecommerce-reman-core-charge-deposit-aces-pies-fitment-deferred-capture-selection-faq.md) |
+| 170 | **🏆 E-Commerce Big & Bulky White-Glove `LTL` Delivery, `3D Path-of-Travel` Clearance, Building `COI` Lock & On-Site `Keep-It + Medic` Escrow (`Wayfair CastleGate / Ryder Last Mile / JB Hunt Final Mile` · 🏆 770th SVG & 220th Sandbox Milestone) (`-39%` Refusal, Dry-Run & Damage Loss) FAQ** | [English](ecommerce-big-bulky-white-glove-ltl-clearance-appointment-haulaway-selection-faq.en.md) · [中文](ecommerce-big-bulky-white-glove-ltl-clearance-appointment-haulaway-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (98 Guides)

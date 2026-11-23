@@ -30967,6 +30967,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("proptech-lease-cam-escrow-sandbox", html_zh)
 
+    def test_ecommerce_big_bulky_white_glove_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            BigBulkyLtlPath3dKeepItPolicyInput,
+            evaluate_big_bulky_ltl_path3d_keepit_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_big_bulky_ltl_path3d_keepit_policy(
+            BigBulkyLtlPath3dKeepItPolicyInput(
+                quarterly_doorway_refusal_dry_run_and_minor_nick_return_pool_usd=320000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_BIG_BULKY_WHITE_GLOVE_LTL_AUTHORIZED",
+        )
+
+        fit3d = evaluate_big_bulky_ltl_path3d_keepit_policy(
+            BigBulkyLtlPath3dKeepItPolicyInput(
+                unverified_3d_path_of_travel_doorway_elevator_clearance=True
+            )
+        )
+        self.assertEqual(fit3d["status_code"], 403)
+        self.assertEqual(
+            fit3d["decision"],
+            "PATH_OF_TRAVEL_3D_DOORWAY_ELEVATOR_CLEARANCE_FAILURE_RISK",
+        )
+
+        coi = evaluate_big_bulky_ltl_path3d_keepit_policy(
+            BigBulkyLtlPath3dKeepItPolicyInput(
+                unconfirmed_t24h_slot_or_missing_highrise_building_coi=True
+            )
+        )
+        self.assertEqual(coi["status_code"], 422)
+        self.assertEqual(
+            coi["decision"],
+            "UNCONFIRMED_T24H_DELIVERY_SLOT_OR_MISSING_HIGHRISE_BUILDING_COI",
+        )
+
+        medic = evaluate_big_bulky_ltl_path3d_keepit_policy(
+            BigBulkyLtlPath3dKeepItPolicyInput(
+                missing_room_photos_or_full_ltl_return_on_minor_cosmetic_nick=True
+            )
+        )
+        self.assertEqual(medic["status_code"], 451)
+        self.assertEqual(
+            medic["decision"],
+            "MISSING_PRE_POST_ROOM_PHOTOS_OR_UNECONOMICAL_MINOR_BLEMISH_LTL_RETURN",
+        )
+
+        optim = evaluate_big_bulky_ltl_path3d_keepit_policy(
+            BigBulkyLtlPath3dKeepItPolicyInput(
+                quarterly_doorway_refusal_dry_run_and_minor_nick_return_pool_usd=320000.0,
+                path_3d_clearance_coi_lock_and_keep_it_medic_escrow_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 124800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 195200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("big_bulky_ltl_path3d_keepit_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-big-bulky-white-glove-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
