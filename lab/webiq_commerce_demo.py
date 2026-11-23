@@ -36013,6 +36013,82 @@ def evaluate_b2b_tail_spend_spot_buy_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class OTAAirlineHotelRebookingEscrowPolicyInput:
+    quarterly_rebooking_penalty_no_show_and_expired_ecredit_pool_usd: float = 300000.0
+    involuntary_irop_or_dot24h_void_misclassified_as_voluntary: bool = False
+    out_of_sequence_coupon_no_show_or_unsynced_hotel_checkin: bool = False
+    expiring_unused_ticket_credit_ignored_on_new_card_charge: bool = False
+    post_ticketing_fare_drop_reissue_and_ecredit_fefo_ready: bool = False
+
+
+def evaluate_ota_airline_hotel_rebooking_escrow_policy(
+    policy_input: OTAAirlineHotelRebookingEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_rebooking_penalty_no_show_and_expired_ecredit_pool_usd
+        ),
+    )
+    if policy_input.expiring_unused_ticket_credit_ignored_on_new_card_charge:
+        return {
+            "status_code": 451,
+            "decision": "EXPIRING_UNUSED_TICKET_CREDIT_IGNORED_ON_NEW_CARD_CHARGE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.involuntary_irop_or_dot24h_void_misclassified_as_voluntary:
+        return {
+            "status_code": 403,
+            "decision": "INVOLUNTARY_IROP_OR_DOT24H_VOID_MISCLASSIFIED_AS_PENALTY_CANCEL",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.out_of_sequence_coupon_no_show_or_unsynced_hotel_checkin:
+        return {
+            "status_code": 422,
+            "decision": "OUT_OF_SEQUENCE_COUPON_NO_SHOW_RISK_OR_UNSYNCED_HOTEL_CHECKIN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.post_ticketing_fare_drop_reissue_and_ecredit_fefo_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "POST_TICKETING_FARE_DROP_REISSUE_AND_ECREDIT_FEFO_CONFIRM",
+            "mandate_token": "ota_rebooking_irrops_ecredit_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_NDC_COUPON_SEQUENCE_AND_WAIVER_REBOOK_AUTHORIZED",
+        "mandate_token": "ota_rebooking_irrops_ecredit_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -49082,6 +49158,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_airline_hotel_rebooking_escrow_guard = {
+        "authorized_200": evaluate_ota_airline_hotel_rebooking_escrow_policy(
+            OTAAirlineHotelRebookingEscrowPolicyInput()
+        ),
+        "involuntary_irop_or_void_misclassified_403": evaluate_ota_airline_hotel_rebooking_escrow_policy(
+            OTAAirlineHotelRebookingEscrowPolicyInput(
+                involuntary_irop_or_dot24h_void_misclassified_as_voluntary=True
+            )
+        ),
+        "out_of_sequence_coupon_or_hotel_422": evaluate_ota_airline_hotel_rebooking_escrow_policy(
+            OTAAirlineHotelRebookingEscrowPolicyInput(
+                out_of_sequence_coupon_no_show_or_unsynced_hotel_checkin=True
+            )
+        ),
+        "expiring_ecredit_ignored_451": evaluate_ota_airline_hotel_rebooking_escrow_policy(
+            OTAAirlineHotelRebookingEscrowPolicyInput(
+                expiring_unused_ticket_credit_ignored_on_new_card_charge=True
+            )
+        ),
+        "fare_drop_reissue_ecredit_fefo_409": evaluate_ota_airline_hotel_rebooking_escrow_policy(
+            OTAAirlineHotelRebookingEscrowPolicyInput(
+                post_ticketing_fare_drop_reissue_and_ecredit_fefo_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -49485,6 +49587,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agent_payment_protocol_drift_guard": agent_payment_protocol_drift_guard,
         "ecommerce_flash_sale_drop_escrow_guard": ecommerce_flash_sale_drop_escrow_guard,
         "b2b_tail_spend_spot_buy_escrow_guard": b2b_tail_spend_spot_buy_escrow_guard,
+        "ota_airline_hotel_rebooking_escrow_guard": ota_airline_hotel_rebooking_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -70359,6 +70462,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="tailspend-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MASTER_VENDOR_MOR_AND_AUTONOMOUS_THREE_BID_RFQ_CONFIRM · Mandate: b2b_tail_spend_spot_buy_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 275 (#394) OTA Airline & Hotel Rebooking, DOT 24h Void & eCredit Escrow -->
+      <div class="finops-box" id="ota-airline-hotel-rebooking-escrow-sandbox" style="margin-top:12px;border-color:#0d9488;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">✈️ 航司与 OTA 机酒差旅改签 (Amadeus / Sabre NDC / Duffel / Navan / Spotnana) 航变豁免与代金券复用沙盒</div>
+            <div class="finops-sub">Round 275 (#394 · SVG #718) · 出票 24h ARC 免损作废与非自愿航变 (Cat-33 &gt;=3h延误) 防误扣 $200 自愿退改罚金 (HTTP 403) + 往返联程票联顺序保护防弃首段致返程 No-Show 作废与酒店晚点保房联动 (HTTP 422) + 临期退票代金券 (UTC/eCredit) 强制 FEFO 优先核销 (HTTP 451) + 购后降价 &gt;=$35 自动换票退差净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="otarebook-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度航变被误扣自愿退改费、联程跳段触发返程机票作废重买及历史退票代金券 (UTC) 12 个月过期作废损失池 ($)
+            <input type="number" id="otarebook-gross-input" value="300000" min="10000" step="5000" oninput="recalcOTAAirlineHotelRebookingSandbox()" />
+          </label>
+          <label>出票 24 小时免费作废窗 (DOT 24h / ARC Void) 与航司非自愿航变 (ATPCO Cat-33 IROP) 豁免核验门禁
+            <select id="otarebook-irop-select" onchange="recalcOTAAirlineHotelRebookingSandbox()">
+              <option value="pass">自动识别 24h 作废窗或航司延误 &gt;=3h 航变并注入 Cat-33 豁免码实现 $0 免罚金退改 (安全)</option>
+              <option value="block_403">航班延误 4 小时或出票仅 6 小时却误调 VoluntaryCancel 被白扣 $200 罚金 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>往返/多航段电子客票票联顺序锁 (Coupon Sequence Guard) 与隔夜航班延误目的地酒店同步保房
+            <select id="otarebook-seq-select" onchange="recalcOTAAirlineHotelRebookingSandbox()">
+              <option value="pass">严格按序重出/拆分 PNR 保住返程航段，并自动向酒店 PMS 发送晚到保房指令 (合规)</option>
+              <option value="block_422">未改原票直接另买外航去程单程票导致返程机票被航司按 No-Show 自动作废清零 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>企业与个人未使用退票代金券池 (Unused Ticket Credit / eCredit) 先到期先核销 (FEFO) 门禁
+            <select id="otarebook-utc-select" onchange="recalcOTAAirlineHotelRebookingSandbox()">
+              <option value="pass">新订同航司客票时强制按 FEFO 优先抵扣距到期 &lt;180 天的 eCredit/UTC 余额 (安全)</option>
+              <option value="block_451">放着账上即将过期的 $420 退票代金券不用，直接刷公司信用卡全额付新钱 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>已出票未起飞订单每日 NDC 降价巡检 (&gt;=$35) 两阶段“先锁新座再换票”自动沉淀差额代金券
+            <select id="otarebook-opt-select" onchange="recalcOTAAirlineHotelRebookingSandbox()">
+              <option value="enabled" selected>开启购后降价 &gt;=$35 自动无损换票沉淀差额 eCredit + 跨部门 UTC 共享池核销 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">出票后从不监控同航班降价退差机会且允许代金券静默过期 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度退改罚金与代金券过期池</div>
+            <div class="finops-kpi-val" id="otarebook-gross-kpi">$300,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">航变豁免与代金券FEFO后净成本</div>
+            <div class="finops-kpi-val" id="otarebook-net-kpi" style="color:#6ee7b7;">$186,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省退改费与降价退差</div>
+            <div class="finops-kpi-val" id="otarebook-savings-kpi" style="color:#38bdf8;">$114,000</div>
+          </div>
+        </div>
+        <div id="otarebook-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 POST_TICKETING_FARE_DROP_REISSUE_AND_ECREDIT_FEFO_CONFIRM · Mandate: ota_rebooking_irrops_ecredit_optim_409
         </div>
       </div>
 
@@ -95951,6 +96111,79 @@ function recalcB2BTailSpendSpotBuySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 GUIDED_CATALOG_AND_THREE_BID_SPOT_BUY_AUTHORIZED · Mandate: b2b_tail_spend_spot_buy_200';
+}}
+
+function recalcOTAAirlineHotelRebookingSandbox() {{
+  const grossInput = document.getElementById('otarebook-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '300000'));
+  const iropGate = document.getElementById('otarebook-irop-select').value;
+  const seqGate = document.getElementById('otarebook-seq-select').value;
+  const utcGate = document.getElementById('otarebook-utc-select').value;
+  const optMode = document.getElementById('otarebook-opt-select').value;
+
+  const grossKpi = document.getElementById('otarebook-gross-kpi');
+  const netKpi = document.getElementById('otarebook-net-kpi');
+  const savingsKpi = document.getElementById('otarebook-savings-kpi');
+  const statusKpi = document.getElementById('otarebook-status-kpi');
+  const banner = document.getElementById('otarebook-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (utcGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EXPIRING_UNUSED_TICKET_CREDIT_IGNORED_ON_NEW_CARD_CHARGE · Mandate: null';
+    return;
+  }}
+  if (iropGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INVOLUNTARY_IROP_OR_DOT24H_VOID_MISCLASSIFIED_AS_PENALTY_CANCEL · Mandate: null';
+    return;
+  }}
+  if (seqGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 OUT_OF_SEQUENCE_COUPON_NO_SHOW_RISK_OR_UNSYNCED_HOTEL_CHECKIN · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 POST_TICKETING_FARE_DROP_REISSUE_AND_ECREDIT_FEFO_CONFIRM · Mandate: ota_rebooking_irrops_ecredit_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_NDC_COUPON_SEQUENCE_AND_WAIVER_REBOOK_AUTHORIZED · Mandate: ota_rebooking_irrops_ecredit_200';
 }}
 
 function updateStage1756Sandbox() {{

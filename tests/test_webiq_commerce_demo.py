@@ -27483,6 +27483,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-tail-spend-spot-buy-escrow-sandbox", html_zh)
 
+    def test_ota_airline_hotel_rebooking_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OTAAirlineHotelRebookingEscrowPolicyInput,
+            evaluate_ota_airline_hotel_rebooking_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_airline_hotel_rebooking_escrow_policy(
+            OTAAirlineHotelRebookingEscrowPolicyInput(
+                quarterly_rebooking_penalty_no_show_and_expired_ecredit_pool_usd=300000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_NDC_COUPON_SEQUENCE_AND_WAIVER_REBOOK_AUTHORIZED",
+        )
+
+        irop = evaluate_ota_airline_hotel_rebooking_escrow_policy(
+            OTAAirlineHotelRebookingEscrowPolicyInput(
+                involuntary_irop_or_dot24h_void_misclassified_as_voluntary=True
+            )
+        )
+        self.assertEqual(irop["status_code"], 403)
+        self.assertEqual(
+            irop["decision"],
+            "INVOLUNTARY_IROP_OR_DOT24H_VOID_MISCLASSIFIED_AS_PENALTY_CANCEL",
+        )
+
+        seq = evaluate_ota_airline_hotel_rebooking_escrow_policy(
+            OTAAirlineHotelRebookingEscrowPolicyInput(
+                out_of_sequence_coupon_no_show_or_unsynced_hotel_checkin=True
+            )
+        )
+        self.assertEqual(seq["status_code"], 422)
+        self.assertEqual(
+            seq["decision"],
+            "OUT_OF_SEQUENCE_COUPON_NO_SHOW_RISK_OR_UNSYNCED_HOTEL_CHECKIN",
+        )
+
+        utc = evaluate_ota_airline_hotel_rebooking_escrow_policy(
+            OTAAirlineHotelRebookingEscrowPolicyInput(
+                expiring_unused_ticket_credit_ignored_on_new_card_charge=True
+            )
+        )
+        self.assertEqual(utc["status_code"], 451)
+        self.assertEqual(
+            utc["decision"],
+            "EXPIRING_UNUSED_TICKET_CREDIT_IGNORED_ON_NEW_CARD_CHARGE",
+        )
+
+        optim = evaluate_ota_airline_hotel_rebooking_escrow_policy(
+            OTAAirlineHotelRebookingEscrowPolicyInput(
+                quarterly_rebooking_penalty_no_show_and_expired_ecredit_pool_usd=300000.0,
+                post_ticketing_fare_drop_reissue_and_ecredit_fefo_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 114000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 186000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_airline_hotel_rebooking_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-airline-hotel-rebooking-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
