@@ -37305,6 +37305,82 @@ def evaluate_cross_border_ddp_mor_sor_customs_policy(
     }
 
 
+@dataclass(frozen=True)
+class TrustedAgentIdentityTapWafPolicyInput:
+    quarterly_waf_false_positive_and_scraper_origin_pool_usd: float = 290000.0
+    spoofed_user_agent_without_rfc9421_signature: bool = False
+    missing_rfc9530_content_digest_or_replayed_nonce: bool = False
+    visual_captcha_on_tap_agent_or_scraper_cart_lock: bool = False
+    dual_lane_edge_ucp_cache_and_visa_tap_vip_ready: bool = False
+
+
+def evaluate_trusted_agent_identity_tap_waf_policy(
+    policy_input: TrustedAgentIdentityTapWafPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_waf_false_positive_and_scraper_origin_pool_usd
+        ),
+    )
+    if policy_input.visual_captcha_on_tap_agent_or_scraper_cart_lock:
+        return {
+            "status_code": 451,
+            "decision": "CAPTCHA_DEADLOCK_ON_ATTESTED_BUYER_AGENT_OR_UNBACKED_SCRAPER_CART_LOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.spoofed_user_agent_without_rfc9421_signature:
+        return {
+            "status_code": 403,
+            "decision": "SPOOFED_AGENT_USER_AGENT_OR_UNREGISTERED_RFC9421_KEY",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missing_rfc9530_content_digest_or_replayed_nonce:
+        return {
+            "status_code": 422,
+            "decision": "MISSING_RFC9530_CONTENT_DIGEST_OR_REPLAYED_SIGNATURE_NONCE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dual_lane_edge_ucp_cache_and_visa_tap_vip_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DUAL_LANE_EDGE_UCP_CACHE_AND_VISA_TAP_VIP_CHECKOUT_CONFIRM",
+            "mandate_token": "trusted_agent_identity_tap_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_RFC9421_SIGNATURE_AND_VISA_TAP_AGENT_AUTHORIZED",
+        "mandate_token": "trusted_agent_identity_tap_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -50816,6 +50892,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    trusted_agent_identity_tap_waf_guard = {
+        "authorized_200": evaluate_trusted_agent_identity_tap_waf_policy(
+            TrustedAgentIdentityTapWafPolicyInput()
+        ),
+        "spoofed_ua_or_unregistered_key_403": evaluate_trusted_agent_identity_tap_waf_policy(
+            TrustedAgentIdentityTapWafPolicyInput(
+                spoofed_user_agent_without_rfc9421_signature=True
+            )
+        ),
+        "missing_digest_or_replayed_nonce_422": evaluate_trusted_agent_identity_tap_waf_policy(
+            TrustedAgentIdentityTapWafPolicyInput(
+                missing_rfc9530_content_digest_or_replayed_nonce=True
+            )
+        ),
+        "captcha_deadlock_or_scraper_lock_451": evaluate_trusted_agent_identity_tap_waf_policy(
+            TrustedAgentIdentityTapWafPolicyInput(
+                visual_captcha_on_tap_agent_or_scraper_cart_lock=True
+            )
+        ),
+        "dual_lane_ucp_cache_tap_vip_409": evaluate_trusted_agent_identity_tap_waf_policy(
+            TrustedAgentIdentityTapWafPolicyInput(
+                dual_lane_edge_ucp_cache_and_visa_tap_vip_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -51236,6 +51338,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "marketplace_split_settlement_reserve_guard": marketplace_split_settlement_reserve_guard,
         "saas_usage_metering_x402_mpp_guard": saas_usage_metering_x402_mpp_guard,
         "cross_border_ddp_mor_sor_customs_guard": cross_border_ddp_mor_sor_customs_guard,
+        "trusted_agent_identity_tap_waf_guard": trusted_agent_identity_tap_waf_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -73079,6 +73182,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ddpmor-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 HYBRID_MOR_SOR_ROUTING_AND_NET_PAID_IOSS_DDP_CONFIRM · Mandate: crossborder_ddp_mor_sor_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 292 (#411) Trusted Agent Identity, RFC 9421 & Visa TAP vs WAF -->
+      <div class="finops-box" id="trusted-agent-identity-tap-waf-sandbox" style="margin-top:12px;border-color:#0284c7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔐 电商可信智能体边缘身份鉴权 (Cloudflare Web Bot Auth / RFC 9421 / Visa TAP vs 传统 WAF) 沙盒</div>
+            <div class="finops-sub">Round 292 (#411 · SVG #735) · RFC 9421 Ed25519 公钥目录验签防黄牛伪造 User-Agent 绕过防爬 (HTTP 403) + RFC 9530 Content-Digest 与 300s Nonce 防中间人篡改与重放 (HTTP 422) + 免除持 Visa TAP 买家 Agent 视觉验证码死锁并拦截纯爬虫锁库 (HTTP 451) + 边缘 UCP 缓存双车道分流净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="tapwaf-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度传统 WAF 弹图形验证码误杀持卡人代购 Agent 订单流失、黄牛伪造 UA 抢空库存及源站爬虫算力损耗池 ($)
+            <input type="number" id="tapwaf-gross-input" value="290000" min="10000" step="5000" oninput="recalcTrustedAgentIdentityTapWafSandbox()" />
+          </label>
+          <label>边缘 RFC 9421 HTTP 消息签名 (Ed25519 .well-known JWK 目录) 与反明文 User-Agent 伪造门禁
+            <select id="tapwaf-sig-select" onchange="recalcTrustedAgentIdentityTapWafSandbox()">
+              <option value="pass">CDN 边缘 1.4ms 验证 RFC 9421 Ed25519 签名与官方 .well-known 公钥目录 (安全)</option>
+              <option value="block_403">仅凭明文 User-Agent: ChatGPT-User 放行被黄牛脚本 1 秒伪造请求头绕过 WAF (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>RFC 9530 Content-Digest 请求体 SHA-256 哈希绑定与 300 秒滑动窗口 Nonce 防重放门禁
+            <select id="tapwaf-digest-select" onchange="recalcTrustedAgentIdentityTapWafSandbox()">
+              <option value="pass">签名强制覆盖 @authority + @path + content-digest + created + 唯一 nonce (合规)</option>
+              <option value="block_422">仅签域名未签请求体被篡改购买数量，或截获 10 分钟前的合法签名重放刷单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>持卡人付款意图证明 (Visa TAP / Stripe SPT) 免图形验证码绿通与只读爬虫禁入锁库接口门禁
+            <select id="tapwaf-tap-select" onchange="recalcTrustedAgentIdentityTapWafSandbox()">
+              <option value="pass">持 Visa TAP 付款证明的买家 Agent 自动豁免视觉 CAPTCHA；无支付凭证爬虫禁止锁库 (安全)</option>
+              <option value="block_451">对已验签买家 Agent 弹出九宫格红绿灯拼图导致结账死锁，或放任训练爬虫锁空库存 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>边缘双车道分流：Class 2 只读检索命中边缘 UCP JSON-LD 缓存 + Class 3 持证买家直通 VIP 结账
+            <select id="tapwaf-opt-select" onchange="recalcTrustedAgentIdentityTapWafSandbox()">
+              <option value="enabled" selected>只读比价爬虫由边缘 UCP 缓存 100% 卸载 + Visa TAP 买家 VIP 绿通 (-40% 损耗 / HTTP 409)</option>
+              <option value="disabled">所有自动化流量不分青红皂白全部打入源站数据库或全量封禁云机房 IP (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度WAF误杀代购与源站损耗池</div>
+            <div class="finops-kpi-val" id="tapwaf-gross-kpi">$290,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">RFC9421与双车道分流后净损耗</div>
+            <div class="finops-kpi-val" id="tapwaf-net-kpi" style="color:#6ee7b7;">$174,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回代购GMV与源站算力</div>
+            <div class="finops-kpi-val" id="tapwaf-savings-kpi" style="color:#38bdf8;">$116,000</div>
+          </div>
+        </div>
+        <div id="tapwaf-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DUAL_LANE_EDGE_UCP_CACHE_AND_VISA_TAP_VIP_CHECKOUT_CONFIRM · Mandate: trusted_agent_identity_tap_optim_409
         </div>
       </div>
 
@@ -99912,6 +100072,79 @@ function recalcCrossBorderDdpMorSorCustomsSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_10DIGIT_HTS_NET_PAID_DDP_CUSTOMS_AUTHORIZED · Mandate: crossborder_ddp_mor_sor_200';
+}}
+
+function recalcTrustedAgentIdentityTapWafSandbox() {{
+  const grossInput = document.getElementById('tapwaf-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '290000'));
+  const sigGate = document.getElementById('tapwaf-sig-select').value;
+  const digestGate = document.getElementById('tapwaf-digest-select').value;
+  const tapGate = document.getElementById('tapwaf-tap-select').value;
+  const optMode = document.getElementById('tapwaf-opt-select').value;
+
+  const grossKpi = document.getElementById('tapwaf-gross-kpi');
+  const netKpi = document.getElementById('tapwaf-net-kpi');
+  const savingsKpi = document.getElementById('tapwaf-savings-kpi');
+  const statusKpi = document.getElementById('tapwaf-status-kpi');
+  const banner = document.getElementById('tapwaf-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (tapGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CAPTCHA_DEADLOCK_ON_ATTESTED_BUYER_AGENT_OR_UNBACKED_SCRAPER_CART_LOCK · Mandate: null';
+    return;
+  }}
+  if (sigGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SPOOFED_AGENT_USER_AGENT_OR_UNREGISTERED_RFC9421_KEY · Mandate: null';
+    return;
+  }}
+  if (digestGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MISSING_RFC9530_CONTENT_DIGEST_OR_REPLAYED_SIGNATURE_NONCE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DUAL_LANE_EDGE_UCP_CACHE_AND_VISA_TAP_VIP_CHECKOUT_CONFIRM · Mandate: trusted_agent_identity_tap_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_RFC9421_SIGNATURE_AND_VISA_TAP_AGENT_AUTHORIZED · Mandate: trusted_agent_identity_tap_200';
 }}
 
 function updateStage1756Sandbox() {{

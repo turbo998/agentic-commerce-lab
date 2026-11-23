@@ -2,11 +2,11 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`410` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`411` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
-- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（29 篇）](#platform-grounding)
+- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（30 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（55 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（152 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（90 篇）](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（29 篇）
+## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（30 篇）
 
 > 面向企业架构师的平台底座选型（Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify）、搜索接地（Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl）、目录同步屏障、A2UI 渲染隔离与可信 Bot 鉴权。
 
@@ -53,6 +53,7 @@
 | 27 | **🏆 端到端交易型商业智能体参考架构总览（`End-to-End Transactional Agentic Commerce`：意图混合检索 `Web IQ + Hybrid Search` → 实时锁价与购物车状态机 `Cart FSM` → 分级人工确认与 `AP2 / SPT / VIC` 支付授权 → 对接 `Shopify / Dynamics 365 / SAP / Salesforce` 幂等下单与异常补偿 `Saga` · 🏆 第 400 篇双语里程碑）、防“Visa 基准测试中 54% 找错规格/缺货仍强行下单扣款”、防“ERP 5 秒超时盲目重试导致双倍扣款或扣了钱没建单”与四阶段受托控制面净省 41% 选型 FAQ** | [中文](end-to-end-transactional-agentic-commerce-hybrid-search-cart-fsm-hitl-erp-saga-selection-faq.md) · [English](end-to-end-transactional-agentic-commerce-hybrid-search-cart-fsm-hitl-erp-saga-selection-faq.en.md) |
 | 28 | **实时商业搜索与网页接地六大引擎深度选型（`Microsoft Web IQ / Bing Grounding vs. Perplexity Sonar Pro vs. Tavily vs. Exa vs. Firecrawl vs. Browser-Use`）：在商品比价、供应商舆情洞察与研报结构化采集中的时延、Token 成本、版权合规（`W3C TDMRep`）与受托控制面“防拿问答摘要里的 $129 配件/翻新价当 $899 全新整机下单、防评论区隐藏 DOM 注入与 `85/10/4/1` 四级漏斗削减 7.1x Token 净省 41%”FAQ** | [中文](commercial-search-grounding-six-engine-webiq-sonar-tavily-exa-firecrawl-browseruse-selection-faq.md) · [English](commercial-search-grounding-six-engine-webiq-sonar-tavily-exa-firecrawl-browseruse-selection-faq.en.md) |
 | 29 | **商业 Agent 构建路径与平台深度选型（`Microsoft Copilot Studio + Dynamics 365 vs. Azure AI Foundry + Semantic Kernel / LangGraph vs. Salesforce Agentforce vs. Shopify Sidekick`）：防共享账号越权泄密（`Entra OBO`）、防公网闲聊烧穿按次消息包与“前店后厂（`Front-Store / Back-Factory`）”混合架构净省 39% FAQ** | [中文](commercial-agent-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-sidekick-hybrid-selection-faq.md) · [English](commercial-agent-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-sidekick-hybrid-selection-faq.en.md) |
+| 30 | **电商防爬反欺诈与可信智能体边缘身份认证（`Trusted Agent Identity`: `Cloudflare Web Bot Auth / RFC 9421 vs. Visa Trusted Agent Protocol (TAP) vs. Akamai / DataDome vs. 传统 WAF 验证码`）、防黄牛伪造 `User-Agent` 绕过防爬、防误弹图形验证码封杀真买家代购 Agent 与双车道边缘分流净省 40% 架构选型 FAQ** | [中文](trusted-agent-identity-rfc9421-visa-tap-cloudflare-web-bot-auth-vs-waf-captcha-selection-faq.md) · [English](trusted-agent-identity-rfc9421-visa-tap-cloudflare-web-bot-auth-vs-waf-captcha-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
 ## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（55 篇）

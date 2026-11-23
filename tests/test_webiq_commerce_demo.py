@@ -28622,6 +28622,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-ddp-mor-sor-customs-sandbox", html_zh)
 
+    def test_trusted_agent_identity_tap_waf_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            TrustedAgentIdentityTapWafPolicyInput,
+            evaluate_trusted_agent_identity_tap_waf_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_trusted_agent_identity_tap_waf_policy(
+            TrustedAgentIdentityTapWafPolicyInput(
+                quarterly_waf_false_positive_and_scraper_origin_pool_usd=290000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_RFC9421_SIGNATURE_AND_VISA_TAP_AGENT_AUTHORIZED",
+        )
+
+        spoof = evaluate_trusted_agent_identity_tap_waf_policy(
+            TrustedAgentIdentityTapWafPolicyInput(
+                spoofed_user_agent_without_rfc9421_signature=True
+            )
+        )
+        self.assertEqual(spoof["status_code"], 403)
+        self.assertEqual(
+            spoof["decision"],
+            "SPOOFED_AGENT_USER_AGENT_OR_UNREGISTERED_RFC9421_KEY",
+        )
+
+        digest = evaluate_trusted_agent_identity_tap_waf_policy(
+            TrustedAgentIdentityTapWafPolicyInput(
+                missing_rfc9530_content_digest_or_replayed_nonce=True
+            )
+        )
+        self.assertEqual(digest["status_code"], 422)
+        self.assertEqual(
+            digest["decision"],
+            "MISSING_RFC9530_CONTENT_DIGEST_OR_REPLAYED_SIGNATURE_NONCE",
+        )
+
+        captcha = evaluate_trusted_agent_identity_tap_waf_policy(
+            TrustedAgentIdentityTapWafPolicyInput(
+                visual_captcha_on_tap_agent_or_scraper_cart_lock=True
+            )
+        )
+        self.assertEqual(captcha["status_code"], 451)
+        self.assertEqual(
+            captcha["decision"],
+            "CAPTCHA_DEADLOCK_ON_ATTESTED_BUYER_AGENT_OR_UNBACKED_SCRAPER_CART_LOCK",
+        )
+
+        optim = evaluate_trusted_agent_identity_tap_waf_policy(
+            TrustedAgentIdentityTapWafPolicyInput(
+                quarterly_waf_false_positive_and_scraper_origin_pool_usd=290000.0,
+                dual_lane_edge_ucp_cache_and_visa_tap_vip_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 116000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 174000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("trusted_agent_identity_tap_waf_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("trusted-agent-identity-tap-waf-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
