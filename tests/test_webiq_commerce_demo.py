@@ -27885,6 +27885,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-rma-bonus-exchange-sandbox", html_zh)
 
+    def test_end_to_end_transactional_commerce_saga_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EndToEndTransactionalCommerceSagaPolicyInput,
+            evaluate_end_to_end_transactional_commerce_saga_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_end_to_end_transactional_commerce_saga_policy(
+            EndToEndTransactionalCommerceSagaPolicyInput(
+                quarterly_wrong_buy_duplicate_charge_and_saga_loss_pool_usd=350000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_FOUR_STAGE_CART_FSM_AND_ERP_SAGA_AUTHORIZED",
+        )
+
+        drift = evaluate_end_to_end_transactional_commerce_saga_policy(
+            EndToEndTransactionalCommerceSagaPolicyInput(
+                stale_grounding_or_checkout_hash_spec_drift_detected=True
+            )
+        )
+        self.assertEqual(drift["status_code"], 403)
+        self.assertEqual(
+            drift["decision"],
+            "STALE_GROUNDING_QUOTE_OR_CHECKOUT_HASH_SPEC_DRIFT",
+        )
+
+        hitl = evaluate_end_to_end_transactional_commerce_saga_policy(
+            EndToEndTransactionalCommerceSagaPolicyInput(
+                tiered_hitl_bypass_or_missing_ap2_fido2_signature=True
+            )
+        )
+        self.assertEqual(hitl["status_code"], 422)
+        self.assertEqual(
+            hitl["decision"],
+            "TIERED_HITL_APPROVAL_BYPASS_OR_MISSING_AP2_MANDATE_SIGNATURE",
+        )
+
+        erp = evaluate_end_to_end_transactional_commerce_saga_policy(
+            EndToEndTransactionalCommerceSagaPolicyInput(
+                erp_timeout_blind_retry_or_unreversed_orphan_auth_hold=True
+            )
+        )
+        self.assertEqual(erp["status_code"], 451)
+        self.assertEqual(
+            erp["decision"],
+            "ERP_TIMEOUT_BLIND_RETRY_DOUBLE_CHARGE_OR_ORPHAN_PAYMENT_HOLD",
+        )
+
+        optim = evaluate_end_to_end_transactional_commerce_saga_policy(
+            EndToEndTransactionalCommerceSagaPolicyInput(
+                quarterly_wrong_buy_duplicate_charge_and_saga_loss_pool_usd=350000.0,
+                four_stage_fiduciary_pipeline_and_outbox_saga_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 143500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 206500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("end_to_end_transactional_commerce_saga_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("end-to-end-transactional-commerce-saga-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

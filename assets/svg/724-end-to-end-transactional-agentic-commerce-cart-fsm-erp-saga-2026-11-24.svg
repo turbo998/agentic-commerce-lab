@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg724" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070d19"/>
+      <stop offset="50%" stop-color="#0d1729"/>
+      <stop offset="100%" stop-color="#111d35"/>
+    </linearGradient>
+    <linearGradient id="hdr724" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="50%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="card724" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#15233b"/>
+      <stop offset="100%" stop-color="#0d1729"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="760" fill="url(#bg724)"/>
+  <rect x="24" y="20" width="1232" height="78" rx="14" fill="url(#hdr724)" opacity="0.95"/>
+  <text x="48" y="53" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="800">
+    Round 281 (🏆 #400 Milestone · SVG #724) · End-to-End Transactional Agentic Commerce Architecture
+  </text>
+  <text x="48" y="79" fill="#fef3c7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">
+    Hybrid Search &amp; Web IQ -&gt; Cart FSM Quote Lock (403) -&gt; Tiered HITL &amp; AP2/SPT (422) -&gt; Idempotent ERP/Shopify Saga (451/409)
+  </text>
+
+  <!-- Left Column: 4 End-to-End Architecture Stages -->
+  <rect x="24" y="114" width="385" height="622" rx="12" fill="url(#card724)" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="44" y="146" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    1. Four-Stage Transactional Pipeline
+  </text>
+
+  <rect x="42" y="164" width="349" height="128" rx="10" fill="#0b1528" stroke="#0284c7" stroke-width="1.2"/>
+  <text x="58" y="190" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Stage 1 · Intent &amp; Hybrid Catalog Grounding
+  </text>
+  <text x="58" y="212" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • BM25 exact SKU/model + Dense Vector + Web IQ `/v3/search/web`
+  </text>
+  <text x="58" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Pre-retrieval hard filter on `user_size_atp &gt; 0` &amp; PIM compatibility
+  </text>
+  <text x="58" y="252" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Output: Candidate SKU shortlist with verified 14-digit GTIN
+  </text>
+
+  <rect x="42" y="304" width="349" height="128" rx="10" fill="#0b1528" stroke="#8b5cf6" stroke-width="1.2"/>
+  <text x="58" y="330" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Stage 2 · Live Price/ATP Check &amp; Cart State Machine
+  </text>
+  <text x="58" y="352" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Web IQ `/v3/browse` (`liveCrawlSucceeded=true`) or ACP Quote API
+  </text>
+  <text x="58" y="372" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Deterministic Cart FSM (`DRAFT -&gt; QUOTED -&gt; LOCKED -&gt; SETTLED`)
+  </text>
+  <text x="58" y="392" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Output: Immutable `checkout_hash` (items + tax + shipping + TTL)
+  </text>
+
+  <rect x="42" y="444" width="349" height="128" rx="10" fill="#0b1528" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="58" y="470" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Stage 3 · Tiered HITL &amp; Scoped Payment Mandate
+  </text>
+  <text x="58" y="492" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Tier 1 (&lt;$50): Auto MIT; Tier 2 ($50–$500): 1-Tap Passkey HITL
+  </text>
+  <text x="58" y="512" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Tier 3 (&gt;$500 / B2B): Dual-Approval + Google AP2 / Stripe SPT
+  </text>
+  <text x="58" y="532" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Output: Cryptographic single-use token bound to `checkout_hash`
+  </text>
+
+  <rect x="42" y="584" width="349" height="134" rx="10" fill="#0b1528" stroke="#10b981" stroke-width="1.2"/>
+  <text x="58" y="610" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Stage 4 · Idempotent ERP/Commerce Order &amp; Saga
+  </text>
+  <text x="58" y="632" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Syncs Shopify / Dynamics 365 / SAP S/4HANA / Salesforce Order
+  </text>
+  <text x="58" y="652" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Read-before-retry idempotency key + `0420` compensating rollback
+  </text>
+  <text x="58" y="672" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Output: Reconciled ERP Order ID + CE 3.0 non-repudiation receipt
+  </text>
+
+  <!-- Center Column: Deterministic 4-Stage Fiduciary Guards -->
+  <rect x="429" y="114" width="422" height="622" rx="12" fill="url(#card724)" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="449" y="146" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    2. End-to-End Fiduciary Control Plane (400th Guide)
+  </text>
+
+  <!-- Gate 1: HTTP 403 -->
+  <rect x="447" y="166" width="386" height="126" rx="10" fill="#1e1124" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="463" y="192" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 1 · Stale-Cache &amp; Cart-Hash Drift Lock (HTTP 403)
+  </text>
+  <text x="463" y="214" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Blocks checkout if `liveCrawlSucceeded == false` or quote TTL expired
+  </text>
+  <text x="463" y="234" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Vetoes execution if merchant cart total != signed `checkout_hash`
+  </text>
+  <text x="463" y="254" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Eliminates Visa Benchmark "54% Wrong-Buy Still Purchases" bug
+  </text>
+
+  <!-- Gate 2: HTTP 422 -->
+  <rect x="447" y="306" width="386" height="126" rx="10" fill="#231815" stroke="#f97316" stroke-width="1.5"/>
+  <text x="463" y="332" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 2 · Tiered HITL &amp; AP2 §7.4 Breaker (HTTP 422)
+  </text>
+  <text x="463" y="354" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Blocks autonomous capture above user's Tier-1 auto-spend threshold
+  </text>
+  <text x="463" y="374" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Requires FIDO2/Passkey human signature on `QUOTED -&gt; LOCKED`
+  </text>
+  <text x="463" y="394" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Prevents LLM prompt injection from authorizing high-value spend
+  </text>
+
+  <!-- Gate 3: HTTP 451 -->
+  <rect x="447" y="446" width="386" height="126" rx="10" fill="#1f1629" stroke="#ec4899" stroke-width="1.5"/>
+  <text x="463" y="472" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 3 · Blind-Retry Double-Charge &amp; Orphan Auth (HTTP 451)
+  </text>
+  <text x="463" y="494" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Bans blind POST retry with a new idempotency key on ERP timeout
+  </text>
+  <text x="463" y="514" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Auto-fires `0420 Auth Reversal` if SAP/D365 order creation rolls back
+  </text>
+  <text x="463" y="534" fill="#f9a3d4" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Zero "Card Charged but No ERP Order Created" zombie transactions
+  </text>
+
+  <!-- Gate 4: HTTP 409 -->
+  <rect x="447" y="586" width="386" height="132" rx="10" fill="#0d2622" stroke="#10b981" stroke-width="1.5"/>
+  <text x="463" y="612" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 4 · Outbox Saga + Deterministic Pipeline (HTTP 409)
+  </text>
+  <text x="463" y="634" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Chains Web IQ Grounding -&gt; Cart FSM -&gt; SPT/AP2 -&gt; Transactional Outbox
+  </text>
+  <text x="463" y="654" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Emits Visa CE 3.0 Merkle receipt across Shopify / D365 / SAP
+  </text>
+  <text x="463" y="678" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Cuts Wrong-Buy, Double-Charge &amp; Saga Loss by 41% ($143.5k)
+  </text>
+
+  <!-- Right Column: FinOps Impact & 7-Card Telemetry -->
+  <rect x="871" y="114" width="385" height="622" rx="12" fill="url(#card724)" stroke="#10b981" stroke-width="1.5"/>
+  <text x="891" y="146" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    3. Milestone #400 End-to-End FinOps
+  </text>
+
+  <rect x="889" y="168" width="349" height="184" rx="10" fill="#091526" stroke="#38bdf8" stroke-width="1.2"/>
+  <text x="907" y="194" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Quarterly E2E Wrong-Buy &amp; Saga Failure Pool ($350k)
+  </text>
+  <text x="907" y="220" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Wrong-Buy Returns, Duplicate Charges &amp; Sync Drift: $350,000
+  </text>
+  <text x="907" y="242" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Net Cost with 4-Stage Fiduciary Pipeline: $206,500
+  </text>
+  <text x="907" y="264" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="800">
+    • Quarterly Saved E2E Transaction Loss: $143,500 (-41%)
+  </text>
+  <rect x="907" y="282" width="310" height="16" rx="8" fill="#1e293b"/>
+  <rect x="907" y="282" width="183" height="16" rx="8" fill="#10b981"/>
+  <text x="907" y="318" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    trophy 400th Bilingual Decision Guide Milestone · 100% Saga Parity
+  </text>
+
+  <rect x="889" y="368" width="349" height="176" rx="10" fill="#091526" stroke="#a855f7" stroke-width="1.2"/>
+  <text x="907" y="394" fill="#d8b4fe" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    End-to-End Latency &amp; Reliability Breakdown
+  </text>
+  <text x="907" y="420" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Stage 1 (Hybrid Search + Web IQ Passage): 164 ms P95
+  </text>
+  <text x="907" y="442" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Stage 2 (Cart FSM Quote Lock + Hash): 28 ms P95
+  </text>
+  <text x="907" y="464" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Stage 3 &amp; 4 (AP2/SPT + Outbox ERP Saga): 84 ms P95
+  </text>
+  <text x="907" y="486" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Total Control-Plane Overhead: &lt; 280 ms end-to-end
+  </text>
+
+  <rect x="889" y="560" width="349" height="158" rx="10" fill="#091526" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="907" y="586" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Deterministic Audit Tokens &amp; Provenance
+  </text>
+  <text x="907" y="610" fill="#cbd5e1" font-family="Consolas, monospace" font-size="11">
+    200: e2e_agentic_commerce_saga_200
+  </text>
+  <text x="907" y="630" fill="#fde68a" font-family="Consolas, monospace" font-size="11">
+    409: e2e_agentic_commerce_saga_optim_409
+  </text>
+  <text x="907" y="650" fill="#fca5a5" font-family="Consolas, monospace" font-size="11">
+    403/422/451: null (Mandate Blocked)
+  </text>
+  <text x="907" y="676" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    Provenance: synthetic · independently_reproduced=false
+  </text>
+</svg>

@@ -1,6 +1,6 @@
 # Enterprise Agentic Commerce Lab — 企业智能体商业参考架构与 AI 解决方案架构师决策库
 
-🌐 **语言切换 / Language**: **中文主页 (当前)** | **[English (`README.en.md`)](README.en.md)** | **[📚 SA 决策指南总目录（399 篇双语 FAQ）](docs/index.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](benchmark-cards.html)**
+🌐 **语言切换 / Language**: **中文主页 (当前)** | **[English (`README.en.md`)](README.en.md)** | **[📚 SA 决策指南总目录（400 篇双语 FAQ）](docs/index.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](benchmark-cards.html)**
 
 > **面向 AI Solution Architect（AI 解决方案架构师）的企业级智能体商业工程参考库**
 > 聚焦**零售电商与多商户编排、智能体支付与加密授权协议（AP2 / Stripe SPT / Visa VIC & TAP / Mastercard / x402）、B2B 采购与 ERP 三单匹配、酒旅航司（OTA / IATA NDC）动态预订、SaaS 用量计费与 FinOps、跨境税务（MoR）/ 外汇清结算与 Visa CE 3.0 拒付抗辩**六大核心领域，提供**可复用的六平面参考架构、平台与协议选型对比矩阵、确定性受托控制面（Fiduciary Control Plane）Python 护栏模块及自包含交互式演示台**。
@@ -23,7 +23,7 @@
 
 | 资产类型 | 中文版入口 | English Entry | 面向架构师的核心演示与评测内容 |
 |---|---|---|---|
-| **旗舰交互式架构工作台** | [`live-demo.html`](live-demo.html) | [`live-demo.en.html`](live-demo.en.html) | Microsoft Web IQ 实时网页接地 + Google AP2 熔断器 + Stripe SPT / x402 双轨结算 + **173 个企业业务场景策略沙盒（含实时搜索筛选）** |
+| **旗舰交互式架构工作台** | [`live-demo.html`](live-demo.html) | [`live-demo.en.html`](live-demo.en.html) | Microsoft Web IQ 实时网页接地 + Google AP2 熔断器 + Stripe SPT / x402 双轨结算 + **174 个企业业务场景策略沙盒（含实时搜索筛选）** |
 | **Web IQ 接地与结算 7-Card 报告** | [`benchmark-cards.html`](benchmark-cards.html) | [`benchmark-cards.en.html`](benchmark-cards.en.html) | 覆盖并行 `passage` 接地（`2.75x` 加速、`7.1x` Token 削减）、DOM 提示词注入 `100%` 拦截与报价逆序一致性（`0.0 pt` 漂移） |
 | **六平面 AI-Native 工作负载评测** | [`reports/agentic-commerce-6plane-bench/index.html`](reports/agentic-commerce-6plane-bench/index.html) | [`report.json`](reports/agentic-commerce-6plane-bench/report.json) | 6 平面确定性控制架构 vs 传统三层 Web 架构在授权越权、重放与目录篡改场景下的对比 |
 | **B2B 企业采购与三单匹配评测** | [`reports/agentic-commerce-enterprise-procurement-bench/index.html`](reports/agentic-commerce-enterprise-procurement-bench/index.html) | [`report.json`](reports/agentic-commerce-enterprise-procurement-bench/report.json) | `PO == GRN == Invoice` 三单匹配、Vickrey 密封竞价 RFQ、BEC 篡改拦截与 `2/10 Net 30` 动态贴现 |
@@ -104,9 +104,9 @@ flowchart TB
 
 ---
 
-## 5. 六大企业业务域与精选 SA 决策指南（全库共 399 篇双语 FAQ）
+## 5. 六大企业业务域与精选 SA 决策指南（全库共 400 篇双语 FAQ）
 
-> 📚 **完整索引入口**：[**中文总目录（399 篇双语 FAQ + 21 份架构蓝图）**](docs/index.md) ｜ [**English Full Catalog (`docs/index.en.md`)**](docs/index.en.md)
+> 📚 **完整索引入口**：[**中文总目录（400 篇双语 FAQ + 21 份架构蓝图）**](docs/index.md) ｜ [**English Full Catalog (`docs/index.en.md`)**](docs/index.en.md)
 
 1. **平台选型、实时网页接地（Web IQ）与入口治理**
    - [Copilot Studio vs Azure AI Foundry + LangGraph vs Agentforce/Shopify 平台选型](docs/agentic-commerce-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-shopify-selection-faq.md) · [EN](docs/agentic-commerce-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-shopify-selection-faq.en.md)
@@ -147,7 +147,7 @@ agentic-commerce-lab/
 ├── live-demo.html / live-demo.en.html # 自包含 H5 交互式智能体商业工作台（双语）
 ├── benchmark-cards.html / .en.html   # 7-Card 4:5 视觉基准评测卡片流（双语）
 ├── docs/
-│   ├── index.md / index.en.md        # 399 篇双语 SA 决策指南（FAQ）分类总目录
+│   ├── index.md / index.en.md        # 400 篇双语 SA 决策指南（FAQ）分类总目录
 │   ├── *-faq.md / *-faq.en.md        # 六大企业商业域架构选型、Mermaid 图与核查清单
 │   ├── architecture/                 # 21 份确定性领域状态机与美分守恒规格说明
 │   └── research/                     # 全栈六平面蓝图、Web IQ 竞品矩阵与行业趋势深度报告
@@ -155,7 +155,7 @@ agentic-commerce-lab/
 ├── lab/                              # 零第三方依赖的确定性受托控制面 Python 实现与基准生成器
 ├── src/agentic_commerce/             # Microsoft Web IQ × Agentic Commerce 核心评估引擎
 ├── reports/                          # 密封的基准评测报告包（JSON 数据源 + HTML 视觉卡片）
-└── tests/                            # 覆盖全部协议门禁、美分守恒与幂等恢复的 1277 项单元测试
+└── tests/                            # 覆盖全部协议门禁、美分守恒与幂等恢复的 1278 项单元测试
 ```
 
 ### 快速运行与验证（仅依赖 Python 3.11+ 标准库）

@@ -36469,6 +36469,82 @@ def evaluate_ecommerce_rma_bonus_exchange_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EndToEndTransactionalCommerceSagaPolicyInput:
+    quarterly_wrong_buy_duplicate_charge_and_saga_loss_pool_usd: float = 350000.0
+    stale_grounding_or_checkout_hash_spec_drift_detected: bool = False
+    tiered_hitl_bypass_or_missing_ap2_fido2_signature: bool = False
+    erp_timeout_blind_retry_or_unreversed_orphan_auth_hold: bool = False
+    four_stage_fiduciary_pipeline_and_outbox_saga_ready: bool = False
+
+
+def evaluate_end_to_end_transactional_commerce_saga_policy(
+    policy_input: EndToEndTransactionalCommerceSagaPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_wrong_buy_duplicate_charge_and_saga_loss_pool_usd
+        ),
+    )
+    if policy_input.erp_timeout_blind_retry_or_unreversed_orphan_auth_hold:
+        return {
+            "status_code": 451,
+            "decision": "ERP_TIMEOUT_BLIND_RETRY_DOUBLE_CHARGE_OR_ORPHAN_PAYMENT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stale_grounding_or_checkout_hash_spec_drift_detected:
+        return {
+            "status_code": 403,
+            "decision": "STALE_GROUNDING_QUOTE_OR_CHECKOUT_HASH_SPEC_DRIFT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tiered_hitl_bypass_or_missing_ap2_fido2_signature:
+        return {
+            "status_code": 422,
+            "decision": "TIERED_HITL_APPROVAL_BYPASS_OR_MISSING_AP2_MANDATE_SIGNATURE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.four_stage_fiduciary_pipeline_and_outbox_saga_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "END_TO_END_FOUR_STAGE_FIDUCIARY_PIPELINE_AND_ERP_SAGA_CONFIRM",
+            "mandate_token": "e2e_agentic_commerce_saga_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_FOUR_STAGE_CART_FSM_AND_ERP_SAGA_AUTHORIZED",
+        "mandate_token": "e2e_agentic_commerce_saga_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -49694,6 +49770,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    end_to_end_transactional_commerce_saga_guard = {
+        "authorized_200": evaluate_end_to_end_transactional_commerce_saga_policy(
+            EndToEndTransactionalCommerceSagaPolicyInput()
+        ),
+        "stale_grounding_or_hash_drift_403": evaluate_end_to_end_transactional_commerce_saga_policy(
+            EndToEndTransactionalCommerceSagaPolicyInput(
+                stale_grounding_or_checkout_hash_spec_drift_detected=True
+            )
+        ),
+        "tiered_hitl_bypass_422": evaluate_end_to_end_transactional_commerce_saga_policy(
+            EndToEndTransactionalCommerceSagaPolicyInput(
+                tiered_hitl_bypass_or_missing_ap2_fido2_signature=True
+            )
+        ),
+        "erp_timeout_blind_retry_or_orphan_451": evaluate_end_to_end_transactional_commerce_saga_policy(
+            EndToEndTransactionalCommerceSagaPolicyInput(
+                erp_timeout_blind_retry_or_unreversed_orphan_auth_hold=True
+            )
+        ),
+        "four_stage_fiduciary_saga_409": evaluate_end_to_end_transactional_commerce_saga_policy(
+            EndToEndTransactionalCommerceSagaPolicyInput(
+                four_stage_fiduciary_pipeline_and_outbox_saga_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -50103,6 +50205,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_saas_renewal_churn_save_guard": b2b_saas_renewal_churn_save_guard,
         "omnichannel_bopis_curbside_escrow_guard": omnichannel_bopis_curbside_escrow_guard,
         "ecommerce_rma_bonus_exchange_guard": ecommerce_rma_bonus_exchange_guard,
+        "end_to_end_transactional_commerce_saga_guard": end_to_end_transactional_commerce_saga_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -71319,6 +71422,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="rmabonus-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 INSTANT_SIZE_RESERVATION_AND_BONUS_EXCHANGE_RETENTION_CONFIRM · Mandate: ecommerce_rma_bonus_exchange_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 281 (🏆 #400 Milestone) End-to-End Transactional Agentic Commerce Saga -->
+      <div class="finops-box" id="end-to-end-transactional-commerce-saga-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 端到端交易型商业智能体四阶段参考架构 (Web IQ -&gt; Cart FSM -&gt; Tiered HITL -&gt; Shopify/D365/SAP Saga · 第400篇里程碑) 沙盒</div>
+            <div class="finops-sub">Round 281 (🏆 #400 · SVG #724) · 实时 /v3/browse 与购物车 checkout_hash 摘要锁根治“54%找错规格仍下单”漏洞 (HTTP 403) + 三级人工确认边界 (Tiered HITL + FIDO2 Passkey/AP2) 防提示词注入越权扣款 (HTTP 422) + 先回读后重试防双扣与 ERP 失败 5s 内自动 0420 解冻 (HTTP 451) + 四阶段全闭环净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="e2esaga-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度因陈旧索引找错规格/缺货仍误下单退货、ERP 超时盲目重试双倍扣款及扣款后建单失败孤儿账损失池 ($)
+            <input type="number" id="e2esaga-gross-input" value="350000" min="10000" step="5000" oninput="recalcEndToEndTransactionalCommerceSagaSandbox()" />
+          </label>
+          <label>阶段1&amp;2：实时落地页核验 (Web IQ /v3/browse liveCrawlSucceeded) 与购物车状态机摘要锁 (Cart FSM checkout_hash)
+            <select id="e2esaga-hash-select" onchange="recalcEndToEndTransactionalCommerceSagaSandbox()">
+              <option value="pass">强制核验 14 位 GTIN、尺码 ATP&gt;=1 与含税总价生成不可篡改 checkout_hash 后方进结算 (安全)</option>
+              <option value="block_403">拿 7 天前缓存旧价或尺码已断货商品直接跳收银台触发“54%找错货仍强行扣款” (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>阶段3：模型外部三级人工确认边界 (Tiered HITL: &lt;$50 MIT / $50~$500 Passkey / &gt;$500 双签) 与 AP2 授权令
+            <select id="e2esaga-hitl-select" onchange="recalcEndToEndTransactionalCommerceSagaSandbox()">
+              <option value="pass">按金额风险分级触发独立 A2UI 原生卡片并验证 FIDO2 硬件签名绑定 checkout_hash (合规)</option>
+              <option value="block_422">大额订单仅凭对话文本或被网页隐藏提示词注入越权调用扣款接口 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>阶段4：跨 Shopify / Dynamics 365 / SAP 幂等回读锁 (Read-Before-Retry) 与建单失败 5 秒自动 0420 冲正
+            <select id="e2esaga-erp-select" onchange="recalcEndToEndTransactionalCommerceSagaSandbox()">
+              <option value="pass">先冻结预授权再按 UUIDv5(checkout_hash) 幂等建单；若 ERP 失败 5s 内自动 0420 解冻资金 (安全)</option>
+              <option value="block_451">ERP 5 秒超时未回读直接换 Key 重发导致双倍扣款，或建单回滚后遗留孤儿扣款 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>端到端四阶段确定性受托流水线 + Transactional Outbox 跨系统对账 + Visa CE 3.0 抗辩证据包自动生成
+            <select id="e2esaga-opt-select" onchange="recalcEndToEndTransactionalCommerceSagaSandbox()">
+              <option value="enabled" selected>启用四阶段受托流水线 (Web IQ -&gt; Cart FSM -&gt; SPT/AP2 -&gt; Outbox Saga) (-41% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统三层 Web + 大模型 Function Calling 直调支付与 ERP 接口无状态机隔离 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度端到端买错与掉单损失池</div>
+            <div class="finops-kpi-val" id="e2esaga-gross-kpi">$350,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">四阶段受托流水线后净成本</div>
+            <div class="finops-kpi-val" id="e2esaga-net-kpi" style="color:#6ee7b7;">$206,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省买错退货与双扣损失</div>
+            <div class="finops-kpi-val" id="e2esaga-savings-kpi" style="color:#38bdf8;">$143,500</div>
+          </div>
+        </div>
+        <div id="e2esaga-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 END_TO_END_FOUR_STAGE_FIDUCIARY_PIPELINE_AND_ERP_SAGA_CONFIRM · Mandate: e2e_agentic_commerce_saga_optim_409
         </div>
       </div>
 
@@ -97349,6 +97509,79 @@ function recalcEcommerceRmaBonusExchangeSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_FIRST_SCAN_AND_DUAL_LEDGER_RMA_AUTHORIZED · Mandate: ecommerce_rma_bonus_exchange_200';
+}}
+
+function recalcEndToEndTransactionalCommerceSagaSandbox() {{
+  const grossInput = document.getElementById('e2esaga-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '350000'));
+  const hashGate = document.getElementById('e2esaga-hash-select').value;
+  const hitlGate = document.getElementById('e2esaga-hitl-select').value;
+  const erpGate = document.getElementById('e2esaga-erp-select').value;
+  const optMode = document.getElementById('e2esaga-opt-select').value;
+
+  const grossKpi = document.getElementById('e2esaga-gross-kpi');
+  const netKpi = document.getElementById('e2esaga-net-kpi');
+  const savingsKpi = document.getElementById('e2esaga-savings-kpi');
+  const statusKpi = document.getElementById('e2esaga-status-kpi');
+  const banner = document.getElementById('e2esaga-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (erpGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 ERP_TIMEOUT_BLIND_RETRY_DOUBLE_CHARGE_OR_ORPHAN_PAYMENT_HOLD · Mandate: null';
+    return;
+  }}
+  if (hashGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 STALE_GROUNDING_QUOTE_OR_CHECKOUT_HASH_SPEC_DRIFT · Mandate: null';
+    return;
+  }}
+  if (hitlGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 TIERED_HITL_APPROVAL_BYPASS_OR_MISSING_AP2_MANDATE_SIGNATURE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 END_TO_END_FOUR_STAGE_FIDUCIARY_PIPELINE_AND_ERP_SAGA_CONFIRM · Mandate: e2e_agentic_commerce_saga_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_FOUR_STAGE_CART_FSM_AND_ERP_SAGA_AUTHORIZED · Mandate: e2e_agentic_commerce_saga_200';
 }}
 
 function updateStage1756Sandbox() {{
