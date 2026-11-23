@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg771" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070d19"/>
+      <stop offset="50%" stop-color="#0d1729"/>
+      <stop offset="100%" stop-color="#111d35"/>
+    </linearGradient>
+    <linearGradient id="hdr771" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="50%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="card771" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#15233b"/>
+      <stop offset="100%" stop-color="#0d1729"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="760" fill="url(#bg771)"/>
+  <rect x="24" y="20" width="1232" height="78" rx="14" fill="url(#hdr771)" opacity="0.94"/>
+  <text x="48" y="53" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="800">
+    Round 328 (#447 · SVG #771 · 🏆 1,325th Test) · Franchise Royalty Sweep, Ad-Fund Escrow &amp; 3PD Base
+  </text>
+  <text x="48" y="79" fill="#fef3c7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">
+    FranConnect / Oracle Simphony / Toast Enterprise / Adyen for Platforms · Shadow POS Skimming Veto (403) · 3PD Delivery Base Guard (422) · FDD Ad-Fund Trust (451/409)
+  </text>
+
+  <!-- Left Column: 4 Franchise Commerce & Royalty Systems -->
+  <rect x="24" y="114" width="385" height="622" rx="12" fill="url(#card771)" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="44" y="146" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    1. Franchise POS &amp; Royalty Stack
+  </text>
+
+  <rect x="42" y="164" width="349" height="128" rx="10" fill="#0b1528" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="58" y="190" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    A. Inline PSP Split vs. Post-Hoc ACH Pull
+  </text>
+  <text x="58" y="212" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • `Adyen for Platforms / Stripe Connect`: Splits `6% Royalty`
+  </text>
+  <text x="58" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • + `2% Ad-Fund` BEFORE funds hit franchisee bank (`0% NSF`)!
+  </text>
+  <text x="58" y="252" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Eliminates monthly franchisee self-reporting &amp; bounced ACH pulls
+  </text>
+
+  <rect x="42" y="304" width="349" height="128" rx="10" fill="#0b1528" stroke="#8b5cf6" stroke-width="1.2"/>
+  <text x="58" y="330" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    B. `FranConnect` + `Oracle Simphony / Toast`
+  </text>
+  <text x="58" y="352" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Polls kitchen display (`KDS`) + smart cup/packaging inventory
+  </text>
+  <text x="58" y="372" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Detects un-rung cash sales or rogue 2nd POS terminal (`Skimming`)!
+  </text>
+  <text x="58" y="392" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Multi-thousand-unit QSR, coffee, hotel &amp; fitness chains
+  </text>
+
+  <rect x="42" y="444" width="349" height="128" rx="10" fill="#0b1528" stroke="#0284c7" stroke-width="1.2"/>
+  <text x="58" y="470" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    C. 3rd-Party Delivery (`UberEats / DoorDash`) Base
+  </text>
+  <text x="58" y="492" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Strips `22%` 3PD delivery menu markup, driver tips &amp; sales tax
+  </text>
+  <text x="58" y="512" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Calculates `6% Royalty` on true `In-Store Equivalent Net Sales`!
+  </text>
+  <text x="58" y="532" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Prevents charging franchisees royalty on DoorDash's commission cut
+  </text>
+
+  <rect x="42" y="584" width="349" height="134" rx="10" fill="#0b1528" stroke="#10b981" stroke-width="1.2"/>
+  <text x="58" y="610" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    D. `FTC Franchise Rule (FDD Item 11)` Ad-Fund Trust
+  </text>
+  <text x="58" y="632" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Ringfences `2% Brand Marketing Fund` into audited trust ledger
+  </text>
+  <text x="58" y="652" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Hard-blocks spending Ad-Fund on franchisor executive salaries!
+  </text>
+  <text x="58" y="672" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Automates local DMA co-op ad matching &amp; commissary rebate pass-back
+  </text>
+
+  <!-- Center Column: Deterministic Fiduciary Franchise Guards -->
+  <rect x="429" y="114" width="422" height="622" rx="12" fill="url(#card771)" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="449" y="146" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    2. Fiduciary Franchise Control Plane
+  </text>
+
+  <!-- Gate 1: HTTP 403 -->
+  <rect x="447" y="166" width="386" height="126" rx="10" fill="#1e1124" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="463" y="192" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 1 · Shadow POS &amp; Packaging-Yield Veto (HTTP 403)
+  </text>
+  <text x="463" y="214" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Flags franchisee buying `50,000` branded cups but reporting `32,000`!
+  </text>
+  <text x="463" y="234" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Blocks routing store terminal to an unauthorized external merchant MID
+  </text>
+  <text x="463" y="254" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Stops "two-POS-terminal" cash/QR skimming to evade 6% brand royalty
+  </text>
+
+  <!-- Gate 2: HTTP 422 -->
+  <rect x="447" y="306" width="386" height="126" rx="10" fill="#231815" stroke="#f97316" stroke-width="1.5"/>
+  <text x="463" y="332" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 2 · Gross-Tax / 3PD-Fee Royalty Base Veto (HTTP 422)
+  </text>
+  <text x="463" y="354" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Blocks levying `6% Royalty` on Sales Tax, Tips, Gift Card Loads
+  </text>
+  <text x="463" y="374" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Or unadjusted `UberEats/DoorDash` delivery pass-through fees!
+  </text>
+  <text x="463" y="394" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Prevents franchisee profitability collapse on 3rd-party delivery orders
+  </text>
+
+  <!-- Gate 3: HTTP 451 -->
+  <rect x="447" y="446" width="386" height="126" rx="10" fill="#1f1629" stroke="#ec4899" stroke-width="1.5"/>
+  <text x="463" y="472" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 3 · `FDD Item 11` Ad-Fund Diversion Veto (HTTP 451)
+  </text>
+  <text x="463" y="494" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Blocks using `2% National Ad-Fund` for franchise recruitment ads!
+  </text>
+  <text x="463" y="514" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Or undisclosed vendor kickbacks violating `FDD Item 8` disclosure
+  </text>
+  <text x="463" y="534" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Prevents FTC Franchise Rule enforcement &amp; franchisee association lawsuits
+  </text>
+
+  <!-- Gate 4: HTTP 409 -->
+  <rect x="447" y="586" width="386" height="132" rx="10" fill="#0d2622" stroke="#10b981" stroke-width="1.5"/>
+  <text x="463" y="612" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 4 · Inline `T+0` Split + `FDD` Ad-Fund Trust (HTTP 409)
+  </text>
+  <text x="463" y="634" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Splits net-adjusted `6% Royalty + 2% Ad-Fund` at transaction capture
+  </text>
+  <text x="463" y="654" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Reconciles commissary BOM yield &amp; ringfences Item-11 Ad-Fund
+  </text>
+  <text x="463" y="678" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Cuts Royalty Skimming &amp; ACH Defaults by 39% ($144.3k/qtr)
+  </text>
+
+  <!-- Right Column: FinOps Impact & 7-Card Telemetry -->
+  <rect x="871" y="114" width="385" height="622" rx="12" fill="url(#card771)" stroke="#10b981" stroke-width="1.5"/>
+  <text x="891" y="146" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    3. Franchise Commerce FinOps
+  </text>
+
+  <rect x="889" y="168" width="349" height="184" rx="10" fill="#091526" stroke="#38bdf8" stroke-width="1.2"/>
+  <text x="907" y="194" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Quarterly Royalty Skimming &amp; Dispute Pool ($370k)
+  </text>
+  <text x="907" y="220" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Shadow POS Skimming, Bounced ACH &amp; FDD Disputes: $370,000
+  </text>
+  <text x="907" y="242" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Net Cost with Inline Split &amp; Yield Audit: $225,700
+  </text>
+  <text x="907" y="264" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="800">
+    • Quarterly Preserved Franchise Royalty &amp; Trust: $144,300 (-39%)
+  </text>
+  <rect x="907" y="282" width="310" height="16" rx="8" fill="#1e293b"/>
+  <rect x="907" y="282" width="189" height="16" rx="8" fill="#10b981"/>
+  <text x="907" y="318" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    🏆 1,325th Deterministic Unit Test Milestone · 100% FDD Item 8/11 Compliance
+  </text>
+
+  <rect x="889" y="368" width="349" height="176" rx="10" fill="#091526" stroke="#a855f7" stroke-width="1.2"/>
+  <text x="907" y="394" fill="#d8b4fe" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Commissary Packaging-to-POS Yield Audit
+  </text>
+  <text x="907" y="420" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Store #108 buys `50,000` proprietary boba/coffee cups from HQ
+  </text>
+  <text x="907" y="442" fill="#fca5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Allowing `3%` cup waste -&gt; Expected POS sales = `48,500` drinks
+  </text>
+  <text x="907" y="464" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Store POS reports only `32,000` drinks (`34%` shadow skimming)!
+  </text>
+  <text x="907" y="486" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • BOM Yield Guard immediately flags store for field audit (HTTP 403)
+  </text>
+
+  <rect x="889" y="560" width="349" height="158" rx="10" fill="#091526" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="907" y="586" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Deterministic Audit Tokens &amp; Provenance
+  </text>
+  <text x="907" y="610" fill="#cbd5e1" font-family="Consolas, monospace" font-size="11">
+    200: franchise_royalty_adfund_200
+  </text>
+  <text x="907" y="630" fill="#fde68a" font-family="Consolas, monospace" font-size="11">
+    409: franchise_royalty_adfund_optim_409
+  </text>
+  <text x="907" y="650" fill="#fca5a5" font-family="Consolas, monospace" font-size="11">
+    403/422/451: null (Mandate Blocked)
+  </text>
+  <text x="907" y="676" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    Provenance: synthetic · independently_reproduced=false
+  </text>
+</svg>

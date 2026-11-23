@@ -31034,6 +31034,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-big-bulky-white-glove-sandbox", html_zh)
 
+    def test_franchise_royalty_ad_fund_sweep_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            FranchiseRoyaltyAdFundSweepPolicyInput,
+            evaluate_franchise_royalty_ad_fund_sweep_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_franchise_royalty_ad_fund_sweep_policy(
+            FranchiseRoyaltyAdFundSweepPolicyInput(
+                quarterly_royalty_skimming_bounced_ach_and_fdd_dispute_pool_usd=370000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_FRANCHISE_ROYALTY_AND_AD_FUND_TRUST_AUTHORIZED",
+        )
+
+        skim = evaluate_franchise_royalty_ad_fund_sweep_policy(
+            FranchiseRoyaltyAdFundSweepPolicyInput(
+                shadow_pos_skimming_or_commissary_bom_yield_divergence=True
+            )
+        )
+        self.assertEqual(skim["status_code"], 403)
+        self.assertEqual(
+            skim["decision"],
+            "SHADOW_POS_REVENUE_SKIMMING_OR_UNAUTHORIZED_COMMISSARY_INGREDIENT_DIVERGENCE",
+        )
+
+        base = evaluate_franchise_royalty_ad_fund_sweep_policy(
+            FranchiseRoyaltyAdFundSweepPolicyInput(
+                royalty_levied_on_tax_tips_gift_load_or_unadjusted_3pd_markup=True
+            )
+        )
+        self.assertEqual(base["status_code"], 422)
+        self.assertEqual(
+            base["decision"],
+            "ROYALTY_LEVIED_ON_SALES_TAX_TIPS_GIFT_LOAD_OR_UNADJUSTED_3PD_MARKUP",
+        )
+
+        fdd = evaluate_franchise_royalty_ad_fund_sweep_policy(
+            FranchiseRoyaltyAdFundSweepPolicyInput(
+                fdd_item11_ad_fund_diversion_or_undisclosed_vendor_kickback=True
+            )
+        )
+        self.assertEqual(fdd["status_code"], 451)
+        self.assertEqual(
+            fdd["decision"],
+            "FDD_ITEM_11_AD_FUND_DIVERSION_OR_UNDISCLOSED_ITEM_8_VENDOR_KICKBACK",
+        )
+
+        optim = evaluate_franchise_royalty_ad_fund_sweep_policy(
+            FranchiseRoyaltyAdFundSweepPolicyInput(
+                quarterly_royalty_skimming_bounced_ach_and_fdd_dispute_pool_usd=370000.0,
+                inline_t0_royalty_split_bom_yield_and_fdd_trust_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 144300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 225700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("franchise_royalty_ad_fund_sweep_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("franchise-royalty-ad-fund-sweep-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

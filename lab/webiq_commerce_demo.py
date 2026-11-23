@@ -40035,6 +40035,82 @@ def evaluate_big_bulky_ltl_path3d_keepit_policy(
     }
 
 
+@dataclass(frozen=True)
+class FranchiseRoyaltyAdFundSweepPolicyInput:
+    quarterly_royalty_skimming_bounced_ach_and_fdd_dispute_pool_usd: float = 370000.0
+    shadow_pos_skimming_or_commissary_bom_yield_divergence: bool = False
+    royalty_levied_on_tax_tips_gift_load_or_unadjusted_3pd_markup: bool = False
+    fdd_item11_ad_fund_diversion_or_undisclosed_vendor_kickback: bool = False
+    inline_t0_royalty_split_bom_yield_and_fdd_trust_ready: bool = False
+
+
+def evaluate_franchise_royalty_ad_fund_sweep_policy(
+    policy_input: FranchiseRoyaltyAdFundSweepPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_royalty_skimming_bounced_ach_and_fdd_dispute_pool_usd
+        ),
+    )
+    if policy_input.fdd_item11_ad_fund_diversion_or_undisclosed_vendor_kickback:
+        return {
+            "status_code": 451,
+            "decision": "FDD_ITEM_11_AD_FUND_DIVERSION_OR_UNDISCLOSED_ITEM_8_VENDOR_KICKBACK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.shadow_pos_skimming_or_commissary_bom_yield_divergence:
+        return {
+            "status_code": 403,
+            "decision": "SHADOW_POS_REVENUE_SKIMMING_OR_UNAUTHORIZED_COMMISSARY_INGREDIENT_DIVERGENCE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.royalty_levied_on_tax_tips_gift_load_or_unadjusted_3pd_markup:
+        return {
+            "status_code": 422,
+            "decision": "ROYALTY_LEVIED_ON_SALES_TAX_TIPS_GIFT_LOAD_OR_UNADJUSTED_3PD_MARKUP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.inline_t0_royalty_split_bom_yield_and_fdd_trust_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "INLINE_T0_ROYALTY_SPLIT_BOM_YIELD_AND_FDD_AD_FUND_ESCROW_CONFIRM",
+            "mandate_token": "franchise_royalty_adfund_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_FRANCHISE_ROYALTY_AND_AD_FUND_TRUST_AUTHORIZED",
+        "mandate_token": "franchise_royalty_adfund_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -54482,6 +54558,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    franchise_royalty_ad_fund_sweep_guard = {
+        "authorized_200": evaluate_franchise_royalty_ad_fund_sweep_policy(
+            FranchiseRoyaltyAdFundSweepPolicyInput()
+        ),
+        "shadow_pos_or_yield_403": evaluate_franchise_royalty_ad_fund_sweep_policy(
+            FranchiseRoyaltyAdFundSweepPolicyInput(
+                shadow_pos_skimming_or_commissary_bom_yield_divergence=True
+            )
+        ),
+        "tax_tip_3pd_royalty_base_422": evaluate_franchise_royalty_ad_fund_sweep_policy(
+            FranchiseRoyaltyAdFundSweepPolicyInput(
+                royalty_levied_on_tax_tips_gift_load_or_unadjusted_3pd_markup=True
+            )
+        ),
+        "fdd_ad_fund_diversion_451": evaluate_franchise_royalty_ad_fund_sweep_policy(
+            FranchiseRoyaltyAdFundSweepPolicyInput(
+                fdd_item11_ad_fund_diversion_or_undisclosed_vendor_kickback=True
+            )
+        ),
+        "inline_t0_yield_fdd_409": evaluate_franchise_royalty_ad_fund_sweep_policy(
+            FranchiseRoyaltyAdFundSweepPolicyInput(
+                inline_t0_royalty_split_bom_yield_and_fdd_trust_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -54938,6 +55040,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_reman_core_deposit_guard": ecommerce_reman_core_deposit_guard,
         "proptech_lease_cam_escrow_guard": proptech_lease_cam_escrow_guard,
         "big_bulky_ltl_path3d_keepit_guard": big_bulky_ltl_path3d_keepit_guard,
+        "franchise_royalty_ad_fund_sweep_guard": franchise_royalty_ad_fund_sweep_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -78833,6 +78936,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="bulky-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PATH_3D_CLEARANCE_BUILDING_COI_AND_KEEP_IT_MEDIC_ESCROW_CONFIRM · Mandate: ecommerce_big_bulky_ltl_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 328 (#447 · SVG #771 · 🏆 1,325th Test) Franchise Royalty Sweep & Ad-Fund -->
+      <div class="finops-box" id="franchise-royalty-ad-fund-sweep-sandbox" style="margin-top:12px;border-color:#d97706;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🍔 连锁特许经营万店清分 (FranConnect / Oracle Simphony / Adyen for Platforms) 提成与广告基金沙盒</div>
+            <div class="finops-sub">Round 328 (#447 · SVG #771 · 🏆 1,325th Test Milestone) · 收单层 T+0 实时分账与中央厨房包材物料守恒 ([92%, 103%]) 防私设收款码飞单或掺假原料 (HTTP 403) + 剔除消费税/小费/未核销充值与外卖加价的净计提基数 (HTTP 422) + FDD Item 11 品牌广告基金独立信托户隔离防挪投招商广告 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="frnroy-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度加盟店私设收款码逃缴特许权抽成、月底 ACH 扣款余额不足退票及 FDD 广告基金合规诉讼池 ($)
+            <input type="number" id="frnroy-gross-input" value="370000" min="10000" step="5000" oninput="recalcFranchiseRoyaltyAdFundSandbox()" />
+          </label>
+          <label>收单层 T+0 源头分账与中央厨房核心包材/原料消耗守恒走廊 ([92%, 103%] BOM Yield) 门禁
+            <select id="frnroy-yield-select" onchange="recalcFranchiseRoyaltyAdFundSandbox()">
+              <option value="pass">Adyen/Stripe 收单层 T+0 自动划转 6% 提成，且每日校验 POS 出杯数与总部纸杯进货量吻合 (安全)</option>
+              <option value="block_403">加盟店进货 50,000 个杯子却只报 32,000 杯私码飞单逃费，或 &gt;103% 私买黑作坊假原料 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>特许权使用费 (6% Royalty) 净有效营业额基数清洗 (剔除税金、小费、储值发卡与 3PD 外卖加价) 门禁
+            <select id="frnroy-base-select" onchange="recalcFranchiseRoyaltyAdFundSandbox()">
+              <option value="pass">严格按 FDD Item 6 剥离消费税、员工小费、未核销充值款，并将外卖订单还原为堂食等价净额 (合规)</option>
+              <option value="block_422">对代收消费税、骑手小费及 DoorDash 25% 外卖平台加价部分粗暴计提 6% 管理费致门店亏损 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>FTC Franchise Rule (FDD Item 8 / Item 11) 2% 品牌广告基金独立信托隔离与集采返利门禁
+            <select id="frnroy-fdd-select" onchange="recalcFranchiseRoyaltyAdFundSandbox()">
+              <option value="pass">2% 广告费物理隔离于消费者营销信托户，0% 用于招商广告，且集采返利透明注入专户 (合规)</option>
+              <option value="block_451">挪用消费者广告基金去发高管奖金或投放加盟招商广告，引发加盟商委员会集体诉讼 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>T+0 源头实时分账 + 中央厨房包材守恒审计 + FDD 广告信托全链路编排
+            <select id="frnroy-opt-select" onchange="recalcFranchiseRoyaltyAdFundSandbox()">
+              <option value="enabled" selected>启用 T+0 源头分账 + 包材物料审计 + FDD 广告专户 (-39% 加盟损耗 / HTTP 409)</option>
+              <option value="disabled">加盟商月底手工填报营业额 + 普通 ACH 代扣 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度飞单漏缴与代扣违约池</div>
+            <div class="finops-kpi-val" id="frnroy-gross-kpi">$370,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">T+0分账与物料审计后净损耗</div>
+            <div class="finops-kpi-val" id="frnroy-net-kpi" style="color:#6ee7b7;">$225,700</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住总部提成与专户</div>
+            <div class="finops-kpi-val" id="frnroy-savings-kpi" style="color:#38bdf8;">$144,300</div>
+          </div>
+        </div>
+        <div id="frnroy-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 INLINE_T0_ROYALTY_SPLIT_BOM_YIELD_AND_FDD_AD_FUND_ESCROW_CONFIRM · Mandate: franchise_royalty_adfund_optim_409
         </div>
       </div>
 
@@ -108294,6 +108454,79 @@ function recalcEcommerceBigBulkyWhiteGloveSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_BIG_BULKY_WHITE_GLOVE_LTL_AUTHORIZED · Mandate: ecommerce_big_bulky_ltl_200';
+}}
+
+function recalcFranchiseRoyaltyAdFundSandbox() {{
+  const grossInput = document.getElementById('frnroy-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '370000'));
+  const yieldGate = document.getElementById('frnroy-yield-select').value;
+  const baseGate = document.getElementById('frnroy-base-select').value;
+  const fddGate = document.getElementById('frnroy-fdd-select').value;
+  const optMode = document.getElementById('frnroy-opt-select').value;
+
+  const grossKpi = document.getElementById('frnroy-gross-kpi');
+  const netKpi = document.getElementById('frnroy-net-kpi');
+  const savingsKpi = document.getElementById('frnroy-savings-kpi');
+  const statusKpi = document.getElementById('frnroy-status-kpi');
+  const banner = document.getElementById('frnroy-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fddGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FDD_ITEM_11_AD_FUND_DIVERSION_OR_UNDISCLOSED_ITEM_8_VENDOR_KICKBACK · Mandate: null';
+    return;
+  }}
+  if (yieldGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SHADOW_POS_REVENUE_SKIMMING_OR_UNAUTHORIZED_COMMISSARY_INGREDIENT_DIVERGENCE · Mandate: null';
+    return;
+  }}
+  if (baseGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 ROYALTY_LEVIED_ON_SALES_TAX_TIPS_GIFT_LOAD_OR_UNADJUSTED_3PD_MARKUP · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 INLINE_T0_ROYALTY_SPLIT_BOM_YIELD_AND_FDD_AD_FUND_ESCROW_CONFIRM · Mandate: franchise_royalty_adfund_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_FRANCHISE_ROYALTY_AND_AD_FUND_TRUST_AUTHORIZED · Mandate: franchise_royalty_adfund_200';
 }}
 
 function updateStage1756Sandbox() {{
