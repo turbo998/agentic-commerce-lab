@@ -39579,6 +39579,82 @@ def evaluate_agentic_six_protocol_interop_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceByobBundlePolicyInput:
+    quarterly_bundle_gaming_oversell_and_partial_return_pool_usd: float = 260000.0
+    hero_sku_slot_stuffing_or_bundle_cogs_floor_breach: bool = False
+    unexploded_virtual_parent_sku_or_mixed_tax_hts_drift: bool = False
+    partial_bundle_return_without_unbundling_discount_clawback: bool = False
+    slot_cogs_floor_wasm_explosion_and_unbundling_escrow_ready: bool = False
+
+
+def evaluate_ecommerce_byob_bundle_policy(
+    policy_input: EcommerceByobBundlePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_bundle_gaming_oversell_and_partial_return_pool_usd
+        ),
+    )
+    if policy_input.partial_bundle_return_without_unbundling_discount_clawback:
+        return {
+            "status_code": 451,
+            "decision": "PARTIAL_BUNDLE_RETURN_WITHOUT_UNBUNDLING_DISCOUNT_CLAWBACK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hero_sku_slot_stuffing_or_bundle_cogs_floor_breach:
+        return {
+            "status_code": 403,
+            "decision": "BYOB_HERO_SKU_SLOT_STUFFING_OR_BUNDLE_COGS_MARGIN_FLOOR_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unexploded_virtual_parent_sku_or_mixed_tax_hts_drift:
+        return {
+            "status_code": 422,
+            "decision": "UNEXPLODED_VIRTUAL_PARENT_SKU_OR_MIXED_TAX_HTS_ALLOCATION_DRIFT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.slot_cogs_floor_wasm_explosion_and_unbundling_escrow_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SLOT_COGS_FLOOR_WASM_ATP_EXPLOSION_AND_UNBUNDLING_ESCROW_CONFIRM",
+            "mandate_token": "ecommerce_byob_bundle_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_BYOB_BUNDLE_EXPLOSION_AND_UNBUNDLING_AUTHORIZED",
+        "mandate_token": "ecommerce_byob_bundle_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -53870,6 +53946,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_byob_bundle_guard = {
+        "authorized_200": evaluate_ecommerce_byob_bundle_policy(
+            EcommerceByobBundlePolicyInput()
+        ),
+        "hero_stuffing_or_cogs_403": evaluate_ecommerce_byob_bundle_policy(
+            EcommerceByobBundlePolicyInput(
+                hero_sku_slot_stuffing_or_bundle_cogs_floor_breach=True
+            )
+        ),
+        "unexploded_parent_sku_422": evaluate_ecommerce_byob_bundle_policy(
+            EcommerceByobBundlePolicyInput(
+                unexploded_virtual_parent_sku_or_mixed_tax_hts_drift=True
+            )
+        ),
+        "partial_return_gaming_451": evaluate_ecommerce_byob_bundle_policy(
+            EcommerceByobBundlePolicyInput(
+                partial_bundle_return_without_unbundling_discount_clawback=True
+            )
+        ),
+        "slot_cogs_wasm_unbundling_409": evaluate_ecommerce_byob_bundle_policy(
+            EcommerceByobBundlePolicyInput(
+                slot_cogs_floor_wasm_explosion_and_unbundling_escrow_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -54320,6 +54422,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "fleet_fuel_ev_roaming_guard": fleet_fuel_ev_roaming_guard,
         "b2b_vms_contingent_sow_guard": b2b_vms_contingent_sow_guard,
         "agentic_six_protocol_interop_guard": agentic_six_protocol_interop_guard,
+        "ecommerce_byob_bundle_guard": ecommerce_byob_bundle_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -77873,6 +77976,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="sixproto-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SIX_PROTOCOL_CANONICAL_BRIDGE_AND_DUAL_RAIL_SETTLEMENT_CONFIRM · Mandate: agentic_six_protocol_interop_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 322 (#441 · SVG #765) E-Commerce Build-Your-Own Bundle (BYOB) & Return Clawback -->
+      <div class="finops-box" id="ecommerce-byob-bundle-sandbox" style="margin-top:12px;border-color:#a855f7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎁 零售电商自选礼盒与跨品类套装 (Shopify Cart Transform / Recharge / Skio) 毛利锁与解绑退货沙盒</div>
+            <div class="finops-sub">Round 322 (#441 · SVG #765) · 分槽位主品限额 (1主+2常+1配) 与整盒 COGS 净毛利底线 (&gt;=25%) 防负毛利穿仓 (HTTP 403) + Cart Transform Wasm 拆解物理子 GTIN 扣库与独立税码/Hamilton 美分分摊 (HTTP 422) + 部分退货触发保留商品恢复单品原价解绑倒扣 (Unbundling Clawback) 防凑套装拆退套利 (HTTP 451) + 净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="byob-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度自选礼盒高成本单品堆叠负毛利、虚拟父 SKU 子件断货超卖及部分退货拆单套利池 ($)
+            <input type="number" id="byob-gross-input" value="260000" min="10000" step="5000" oninput="recalcEcommerceByobBundleSandbox()" />
+          </label>
+          <label>自选礼盒槽位配额 (Slot-Tier Quota) 与整盒总成本毛利底线 (Net Margin &gt;= 25%) 门禁
+            <select id="byob-slot-select" onchange="recalcEcommerceByobBundleSandbox()">
+              <option value="pass">严格限制主品槽位最多选 1 件，并实时校验整盒售价扣除全部子件 COGS 后毛利 &gt;= 25% (安全)</option>
+              <option value="block_403">$79 任选 4 件礼盒未设槽位限制，被羊毛党塞满 4 瓶 $45 成本鱼子酱精华每盒倒亏 $101 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>Cart Transform Wasm / ERP BOM 物理子 SKU 展开、共享库存锁与混合税率分摊门禁
+            <select id="byob-explode-select" onchange="recalcEcommerceByobBundleSandbox()">
+              <option value="pass">结账瞬间原子展开为物理子 GTIN 行，取 min(Child_ATP) 并按 Hamilton 法分摊各子件独立税率 (合规)</option>
+              <option value="block_422">将未拆解虚拟父 SKU 直接推给 WMS 致子件缺货漏发，或把 0% 食品与 20% 美妆混算高税 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>非全套部分退货“套装解绑重算 (Unbundling Discount Clawback)”防凑单套利门禁
+            <select id="byob-return-select" onchange="recalcEcommerceByobBundleSandbox()">
+              <option value="pass">部分退货时保留单品恢复常规原价，仅退还 (套装实付 $140 - 保留皮带原价 $50 = $90) (安全)</option>
+              <option value="block_451">$140 买西装+皮带套装后单退西装，按原价退 $150 或按比例退 $105 让买家 $35 白嫖皮带 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>槽位 COGS 毛利锁 + Wasm 物理子件拆解 + 解绑退货倒扣全链路编排
+            <select id="byob-opt-select" onchange="recalcEcommerceByobBundleSandbox()">
+              <option value="enabled" selected>启用槽位毛利锁 + Wasm 子件拆解 + 解绑退货倒扣 (-38% 套装损耗 / HTTP 409)</option>
+              <option value="disabled">无槽位限制虚拟父 SKU + 售后按简单比例退款 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度礼盒穿仓与拆退套利池</div>
+            <div class="finops-kpi-val" id="byob-gross-kpi">$260,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">槽位锁与解绑倒扣后净成本</div>
+            <div class="finops-kpi-val" id="byob-net-kpi" style="color:#6ee7b7;">$161,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住套装毛利与库存</div>
+            <div class="finops-kpi-val" id="byob-savings-kpi" style="color:#38bdf8;">$98,800</div>
+          </div>
+        </div>
+        <div id="byob-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SLOT_COGS_FLOOR_WASM_ATP_EXPLOSION_AND_UNBUNDLING_ESCROW_CONFIRM · Mandate: ecommerce_byob_bundle_optim_409
         </div>
       </div>
 
@@ -106896,6 +107056,79 @@ function recalcAgenticSixProtocolInteropSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_SIX_PROTOCOL_AGENTIC_COMMERCE_INTEROP_AUTHORIZED · Mandate: agentic_six_protocol_interop_200';
+}}
+
+function recalcEcommerceByobBundleSandbox() {{
+  const grossInput = document.getElementById('byob-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '260000'));
+  const slotGate = document.getElementById('byob-slot-select').value;
+  const explodeGate = document.getElementById('byob-explode-select').value;
+  const returnGate = document.getElementById('byob-return-select').value;
+  const optMode = document.getElementById('byob-opt-select').value;
+
+  const grossKpi = document.getElementById('byob-gross-kpi');
+  const netKpi = document.getElementById('byob-net-kpi');
+  const savingsKpi = document.getElementById('byob-savings-kpi');
+  const statusKpi = document.getElementById('byob-status-kpi');
+  const banner = document.getElementById('byob-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (returnGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PARTIAL_BUNDLE_RETURN_WITHOUT_UNBUNDLING_DISCOUNT_CLAWBACK · Mandate: null';
+    return;
+  }}
+  if (slotGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BYOB_HERO_SKU_SLOT_STUFFING_OR_BUNDLE_COGS_MARGIN_FLOOR_BREACH · Mandate: null';
+    return;
+  }}
+  if (explodeGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNEXPLODED_VIRTUAL_PARENT_SKU_OR_MIXED_TAX_HTS_ALLOCATION_DRIFT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SLOT_COGS_FLOOR_WASM_ATP_EXPLOSION_AND_UNBUNDLING_ESCROW_CONFIRM · Mandate: ecommerce_byob_bundle_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_BYOB_BUNDLE_EXPLOSION_AND_UNBUNDLING_AUTHORIZED · Mandate: ecommerce_byob_bundle_200';
 }}
 
 function updateStage1756Sandbox() {{

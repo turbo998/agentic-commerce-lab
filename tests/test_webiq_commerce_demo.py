@@ -30632,6 +30632,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-six-protocol-interop-sandbox", html_zh)
 
+    def test_ecommerce_byob_bundle_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceByobBundlePolicyInput,
+            evaluate_ecommerce_byob_bundle_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_byob_bundle_policy(
+            EcommerceByobBundlePolicyInput(
+                quarterly_bundle_gaming_oversell_and_partial_return_pool_usd=260000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_BYOB_BUNDLE_EXPLOSION_AND_UNBUNDLING_AUTHORIZED",
+        )
+
+        slot = evaluate_ecommerce_byob_bundle_policy(
+            EcommerceByobBundlePolicyInput(
+                hero_sku_slot_stuffing_or_bundle_cogs_floor_breach=True
+            )
+        )
+        self.assertEqual(slot["status_code"], 403)
+        self.assertEqual(
+            slot["decision"],
+            "BYOB_HERO_SKU_SLOT_STUFFING_OR_BUNDLE_COGS_MARGIN_FLOOR_BREACH",
+        )
+
+        explode = evaluate_ecommerce_byob_bundle_policy(
+            EcommerceByobBundlePolicyInput(
+                unexploded_virtual_parent_sku_or_mixed_tax_hts_drift=True
+            )
+        )
+        self.assertEqual(explode["status_code"], 422)
+        self.assertEqual(
+            explode["decision"],
+            "UNEXPLODED_VIRTUAL_PARENT_SKU_OR_MIXED_TAX_HTS_ALLOCATION_DRIFT",
+        )
+
+        unbundle = evaluate_ecommerce_byob_bundle_policy(
+            EcommerceByobBundlePolicyInput(
+                partial_bundle_return_without_unbundling_discount_clawback=True
+            )
+        )
+        self.assertEqual(unbundle["status_code"], 451)
+        self.assertEqual(
+            unbundle["decision"],
+            "PARTIAL_BUNDLE_RETURN_WITHOUT_UNBUNDLING_DISCOUNT_CLAWBACK",
+        )
+
+        optim = evaluate_ecommerce_byob_bundle_policy(
+            EcommerceByobBundlePolicyInput(
+                quarterly_bundle_gaming_oversell_and_partial_return_pool_usd=260000.0,
+                slot_cogs_floor_wasm_explosion_and_unbundling_escrow_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 98800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 161200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_byob_bundle_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-byob-bundle-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
