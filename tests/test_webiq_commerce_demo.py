@@ -27818,6 +27818,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("omnichannel-bopis-curbside-escrow-sandbox", html_zh)
 
+    def test_ecommerce_rma_bonus_exchange_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceRmaBonusExchangeEscrowPolicyInput,
+            evaluate_ecommerce_rma_bonus_exchange_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_rma_bonus_exchange_escrow_policy(
+            EcommerceRmaBonusExchangeEscrowPolicyInput(
+                quarterly_refund_gmv_drain_keep_item_fraud_and_oos_pool_usd=295000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_FIRST_SCAN_AND_DUAL_LEDGER_RMA_AUTHORIZED",
+        )
+
+        keep = evaluate_ecommerce_rma_bonus_exchange_escrow_policy(
+            EcommerceRmaBonusExchangeEscrowPolicyInput(
+                returnless_keep_item_abuse_or_annual_household_cap_breach=True
+            )
+        )
+        self.assertEqual(keep["status_code"], 403)
+        self.assertEqual(
+            keep["decision"],
+            "RETURNLESS_KEEP_ITEM_ABUSE_OR_HOUSEHOLD_ANNUAL_CAP_EXCEEDED",
+        )
+
+        bonus = evaluate_ecommerce_rma_bonus_exchange_escrow_policy(
+            EcommerceRmaBonusExchangeEscrowPolicyInput(
+                bonus_exchange_credit_secondary_return_cashout_exploit=True
+            )
+        )
+        self.assertEqual(bonus["status_code"], 422)
+        self.assertEqual(
+            bonus["decision"],
+            "BONUS_EXCHANGE_CREDIT_SECONDARY_RETURN_CASHOUT_EXPLOIT",
+        )
+
+        scan = evaluate_ecommerce_rma_bonus_exchange_escrow_policy(
+            EcommerceRmaBonusExchangeEscrowPolicyInput(
+                uncollateralized_label_only_exchange_or_weight_mismatch=True
+            )
+        )
+        self.assertEqual(scan["status_code"], 451)
+        self.assertEqual(
+            scan["decision"],
+            "UNCOLLATERALIZED_LABEL_ONLY_EXCHANGE_OR_FIRST_SCAN_WEIGHT_MISMATCH",
+        )
+
+        optim = evaluate_ecommerce_rma_bonus_exchange_escrow_policy(
+            EcommerceRmaBonusExchangeEscrowPolicyInput(
+                quarterly_refund_gmv_drain_keep_item_fraud_and_oos_pool_usd=295000.0,
+                instant_size_reservation_and_bonus_exchange_retention_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 115050.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 179950.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_rma_bonus_exchange_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-rma-bonus-exchange-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

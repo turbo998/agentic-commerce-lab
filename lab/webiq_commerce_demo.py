@@ -36393,6 +36393,82 @@ def evaluate_omnichannel_bopis_curbside_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceRmaBonusExchangeEscrowPolicyInput:
+    quarterly_refund_gmv_drain_keep_item_fraud_and_oos_pool_usd: float = 295000.0
+    returnless_keep_item_abuse_or_annual_household_cap_breach: bool = False
+    bonus_exchange_credit_secondary_return_cashout_exploit: bool = False
+    uncollateralized_label_only_exchange_or_weight_mismatch: bool = False
+    instant_size_reservation_and_bonus_exchange_retention_ready: bool = False
+
+
+def evaluate_ecommerce_rma_bonus_exchange_escrow_policy(
+    policy_input: EcommerceRmaBonusExchangeEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_refund_gmv_drain_keep_item_fraud_and_oos_pool_usd
+        ),
+    )
+    if policy_input.uncollateralized_label_only_exchange_or_weight_mismatch:
+        return {
+            "status_code": 451,
+            "decision": "UNCOLLATERALIZED_LABEL_ONLY_EXCHANGE_OR_FIRST_SCAN_WEIGHT_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.returnless_keep_item_abuse_or_annual_household_cap_breach:
+        return {
+            "status_code": 403,
+            "decision": "RETURNLESS_KEEP_ITEM_ABUSE_OR_HOUSEHOLD_ANNUAL_CAP_EXCEEDED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bonus_exchange_credit_secondary_return_cashout_exploit:
+        return {
+            "status_code": 422,
+            "decision": "BONUS_EXCHANGE_CREDIT_SECONDARY_RETURN_CASHOUT_EXPLOIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.instant_size_reservation_and_bonus_exchange_retention_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "INSTANT_SIZE_RESERVATION_AND_BONUS_EXCHANGE_RETENTION_CONFIRM",
+            "mandate_token": "ecommerce_rma_bonus_exchange_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_FIRST_SCAN_AND_DUAL_LEDGER_RMA_AUTHORIZED",
+        "mandate_token": "ecommerce_rma_bonus_exchange_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -49592,6 +49668,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_rma_bonus_exchange_guard = {
+        "authorized_200": evaluate_ecommerce_rma_bonus_exchange_escrow_policy(
+            EcommerceRmaBonusExchangeEscrowPolicyInput()
+        ),
+        "returnless_keep_item_abuse_403": evaluate_ecommerce_rma_bonus_exchange_escrow_policy(
+            EcommerceRmaBonusExchangeEscrowPolicyInput(
+                returnless_keep_item_abuse_or_annual_household_cap_breach=True
+            )
+        ),
+        "bonus_credit_secondary_cashout_422": evaluate_ecommerce_rma_bonus_exchange_escrow_policy(
+            EcommerceRmaBonusExchangeEscrowPolicyInput(
+                bonus_exchange_credit_secondary_return_cashout_exploit=True
+            )
+        ),
+        "label_only_or_weight_mismatch_451": evaluate_ecommerce_rma_bonus_exchange_escrow_policy(
+            EcommerceRmaBonusExchangeEscrowPolicyInput(
+                uncollateralized_label_only_exchange_or_weight_mismatch=True
+            )
+        ),
+        "instant_size_lock_bonus_exchange_409": evaluate_ecommerce_rma_bonus_exchange_escrow_policy(
+            EcommerceRmaBonusExchangeEscrowPolicyInput(
+                instant_size_reservation_and_bonus_exchange_retention_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -50000,6 +50102,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_localized_pricing_fx_guard": cross_border_localized_pricing_fx_guard,
         "b2b_saas_renewal_churn_save_guard": b2b_saas_renewal_churn_save_guard,
         "omnichannel_bopis_curbside_escrow_guard": omnichannel_bopis_curbside_escrow_guard,
+        "ecommerce_rma_bonus_exchange_guard": ecommerce_rma_bonus_exchange_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -71159,6 +71262,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="bopis-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SHORT_PICK_FREE_EXPRESS_FALLBACK_AND_IN_STORE_PICKUP_UPSELL_CONFIRM · Mandate: omnichannel_bopis_curbside_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 280 (#399) Post-Purchase RMA, Returnless Refund & Bonus Exchange Escrow -->
+      <div class="finops-box" id="ecommerce-rma-bonus-exchange-sandbox" style="margin-top:12px;border-color:#0d9488;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔁 电商售后退换货与逆向留存 (Loop Returns / Narvar / ReturnGO / AfterShip) 防仅退款白嫖与奖励金换货沙盒</div>
+            <div class="finops-sub">Round 280 (#399 · SVG #723) · 家庭 EMVCo PAR/CASS 年度 1 次封顶防“免退回仅退款”被黑产刷爆 (HTTP 403) + 本金与 $15 换货奖励金双账本隔离防二次退货套现 (HTTP 422) + 快递首扫称重 (±15%) 或 14d SPT 担保防空包骗换货 (HTTP 451) + 申请瞬间 7 天锁住新尺码并把 46% 退款转换货净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="rmabonus-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度退货原路退现 GMV 流失、低货值“免退回仅退款”黑产白嫖、奖励金套现及换货在途断码损失池 ($)
+            <input type="number" id="rmabonus-gross-input" value="295000" min="10000" step="5000" oninput="recalcEcommerceRmaBonusExchangeSandbox()" />
+          </label>
+          <label>免退回仅退款 (Returnless / Keep-the-Item) 逆向净回收精算 (&lt;$0) 与家庭 EMVCo PAR 年度 1 次封顶门禁
+            <select id="rmabonus-keep-select" onchange="recalcEcommerceRmaBonusExchangeSandbox()">
+              <option value="pass">仅当逆向净回收 &lt;$0、历史退货率 &lt;12% 且该家庭 PAR 近 365 天首次触发时豁免寄回 (安全)</option>
+              <option value="block_403">仅按订单 &lt;$25 静态阈值放行被羊毛党群换小号高频白嫖免费商品 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>实付本金与换货奖励金 (Shop Now Bonus Exchange Credit) 双账本隔离与防二次退货套现门禁
+            <select id="rmabonus-bonus-select" onchange="recalcEcommerceRmaBonusExchangeSandbox()">
+              <option value="pass">二次退货自动剥离作废 $15 换货补贴，向银行卡退现金额严格封顶于初始实付本金 $100 (合规)</option>
+              <option value="block_422">买家拿 $100+$15 补贴换购 $115 商品后次日立刻退货套现 $115 银行卡现金 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>极速换货出库担保 (14d Stripe SPT Hold) 与快递网点揽收首扫称重 (Carrier First-Scan ±15% Weight) 门禁
+            <select id="rmabonus-scan-select" onchange="recalcEcommerceRmaBonusExchangeSandbox()">
+              <option value="pass">绑定 14 天 SPT 差额担保或快递网点首扫称重误差在 ±15% 内方可放行换货新包裹 (安全)</option>
+              <option value="block_451">刚生成 RMA 面单未投递或寄 15g 空信封即发出新商品导致钱货两空 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>提交 RMA 瞬间 WMS 锁定换货新尺码库存 7 天 + 赠送 $10~$15 跨品类换购补贴留存引擎
+            <select id="rmabonus-opt-select" onchange="recalcEcommerceRmaBonusExchangeSandbox()">
+              <option value="enabled" selected>申请瞬间 7 天软锁新尺码防在途断码 + 赠送换购奖励金将 46% 退款转化为换货 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">等退货走 6 天到仓再查库存导致新码售罄被迫退款且无换购补贴引导 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度退货流失与仅退款白嫖池</div>
+            <div class="finops-kpi-val" id="rmabonus-gross-kpi">$295,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">换货补贴与首扫锁库后净损耗</div>
+            <div class="finops-kpi-val" id="rmabonus-net-kpi" style="color:#6ee7b7;">$179,950</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住换货GMV与防欺诈</div>
+            <div class="finops-kpi-val" id="rmabonus-savings-kpi" style="color:#38bdf8;">$115,050</div>
+          </div>
+        </div>
+        <div id="rmabonus-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 INSTANT_SIZE_RESERVATION_AND_BONUS_EXCHANGE_RETENTION_CONFIRM · Mandate: ecommerce_rma_bonus_exchange_optim_409
         </div>
       </div>
 
@@ -97116,6 +97276,79 @@ function recalcOmnichannelBopisCurbsideSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_STORE_SAFETY_BUFFER_AND_BIN_STAGED_BOPIS_AUTHORIZED · Mandate: omnichannel_bopis_curbside_200';
+}}
+
+function recalcEcommerceRmaBonusExchangeSandbox() {{
+  const grossInput = document.getElementById('rmabonus-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '295000'));
+  const keepGate = document.getElementById('rmabonus-keep-select').value;
+  const bonusGate = document.getElementById('rmabonus-bonus-select').value;
+  const scanGate = document.getElementById('rmabonus-scan-select').value;
+  const optMode = document.getElementById('rmabonus-opt-select').value;
+
+  const grossKpi = document.getElementById('rmabonus-gross-kpi');
+  const netKpi = document.getElementById('rmabonus-net-kpi');
+  const savingsKpi = document.getElementById('rmabonus-savings-kpi');
+  const statusKpi = document.getElementById('rmabonus-status-kpi');
+  const banner = document.getElementById('rmabonus-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (scanGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCOLLATERALIZED_LABEL_ONLY_EXCHANGE_OR_FIRST_SCAN_WEIGHT_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (keepGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 RETURNLESS_KEEP_ITEM_ABUSE_OR_HOUSEHOLD_ANNUAL_CAP_EXCEEDED · Mandate: null';
+    return;
+  }}
+  if (bonusGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BONUS_EXCHANGE_CREDIT_SECONDARY_RETURN_CASHOUT_EXPLOIT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 INSTANT_SIZE_RESERVATION_AND_BONUS_EXCHANGE_RETENTION_CONFIRM · Mandate: ecommerce_rma_bonus_exchange_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_FIRST_SCAN_AND_DUAL_LEDGER_RMA_AUTHORIZED · Mandate: ecommerce_rma_bonus_exchange_200';
 }}
 
 function updateStage1756Sandbox() {{
