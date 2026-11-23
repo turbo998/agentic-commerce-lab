@@ -37685,6 +37685,82 @@ def evaluate_b2b_trade_credit_factoring_policy(
     }
 
 
+@dataclass(frozen=True)
+class ConversationalWhatsappDmCommercePolicyInput:
+    quarterly_template_waste_burst_race_and_redirect_dropoff_pool_usd: float = 280000.0
+    expired_24h_csw_freeform_or_tcpa_quiet_hours_violation: bool = False
+    undebounced_message_burst_concurrent_cart_mutation: bool = False
+    plaintext_pan_in_chat_or_unauthenticated_web_redirect: bool = False
+    debounced_turn_24h_window_and_native_in_chat_wallet_ready: bool = False
+
+
+def evaluate_conversational_whatsapp_dm_commerce_policy(
+    policy_input: ConversationalWhatsappDmCommercePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_template_waste_burst_race_and_redirect_dropoff_pool_usd
+        ),
+    )
+    if policy_input.plaintext_pan_in_chat_or_unauthenticated_web_redirect:
+        return {
+            "status_code": 451,
+            "decision": "PLAINTEXT_PAN_IN_CHAT_OR_UNAUTHENTICATED_WEB_REDIRECT_BOUNCE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.expired_24h_csw_freeform_or_tcpa_quiet_hours_violation:
+        return {
+            "status_code": 403,
+            "decision": "EXPIRED_24H_CSW_FREEFORM_OR_TCPA_QUIET_HOURS_VIOLATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.undebounced_message_burst_concurrent_cart_mutation:
+        return {
+            "status_code": 422,
+            "decision": "UNDEBOUNCED_MESSAGE_BURST_CONCURRENT_CART_MUTATION_RACE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.debounced_turn_24h_window_and_native_in_chat_wallet_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DEBOUNCED_TURN_24H_WINDOW_AND_NATIVE_IN_CHAT_WALLET_CHECKOUT_CONFIRM",
+            "mandate_token": "conversational_whatsapp_dm_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CONVERSATIONAL_FLOW_AND_WALLET_CHECKOUT_AUTHORIZED",
+        "mandate_token": "conversational_whatsapp_dm_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -51326,6 +51402,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    conversational_whatsapp_dm_commerce_guard = {
+        "authorized_200": evaluate_conversational_whatsapp_dm_commerce_policy(
+            ConversationalWhatsappDmCommercePolicyInput()
+        ),
+        "expired_24h_or_tcpa_403": evaluate_conversational_whatsapp_dm_commerce_policy(
+            ConversationalWhatsappDmCommercePolicyInput(
+                expired_24h_csw_freeform_or_tcpa_quiet_hours_violation=True
+            )
+        ),
+        "undebounced_burst_race_422": evaluate_conversational_whatsapp_dm_commerce_policy(
+            ConversationalWhatsappDmCommercePolicyInput(
+                undebounced_message_burst_concurrent_cart_mutation=True
+            )
+        ),
+        "plaintext_pan_or_cold_redirect_451": evaluate_conversational_whatsapp_dm_commerce_policy(
+            ConversationalWhatsappDmCommercePolicyInput(
+                plaintext_pan_in_chat_or_unauthenticated_web_redirect=True
+            )
+        ),
+        "debounced_native_flows_wallet_409": evaluate_conversational_whatsapp_dm_commerce_policy(
+            ConversationalWhatsappDmCommercePolicyInput(
+                debounced_turn_24h_window_and_native_in_chat_wallet_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -51751,6 +51853,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_hotel_rental_incremental_auth_guard": ota_hotel_rental_incremental_auth_guard,
         "ecommerce_promo_loyalty_2pc_guard": ecommerce_promo_loyalty_2pc_guard,
         "b2b_trade_credit_factoring_guard": b2b_trade_credit_factoring_guard,
+        "conversational_whatsapp_dm_commerce_guard": conversational_whatsapp_dm_commerce_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -73879,6 +73982,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="tradecredit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 NON_RECOURSE_NET30_AND_OVERFLOW_ACH_SPLIT_SETTLEMENT_CONFIRM · Mandate: b2b_trade_credit_factoring_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 297 (#416) Conversational Commerce WhatsApp Flows, 24h Window & In-Chat Checkout -->
+      <div class="finops-box" id="conversational-whatsapp-dm-commerce-sandbox" style="margin-top:12px;border-color:#059669;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💬 社交与私域对话式电商 (WhatsApp Flows / IG DM / Apple Messages / 企微小程序) 沙盒</div>
+            <div class="finops-sub">Round 297 (#416 · SVG #740) · Meta 24h 免费客服窗 (CSW) 与收件人时区 TCPA 夜间静默门禁 (HTTP 403) + 1,800ms 滑动窗口连发消息防抖合并与旧轮次中断防重复加购 (HTTP 422) + 严禁聊天框收明文卡号与冷网页跳转掉单 (HTTP 451) + 原生 Flows + Apple Pay/Shop Pay 一键结账净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="convchat-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度超 24h 营销模板溢价浪费、连发消息并发重复推理及跳出网页登录掉单损耗池 ($)
+            <input type="number" id="convchat-gross-input" value="280000" min="10000" step="5000" oninput="recalcConversationalWhatsappDmSandbox()" />
+          </label>
+          <label>Meta 24h 免费客服窗口 (CSW) 路由、Utility 物流模板纯净度与美国 TCPA (08:00-21:00) 时区锁
+            <select id="convchat-window-select" onchange="recalcConversationalWhatsappDmSandbox()">
+              <option value="pass">24h 窗口内 $0 自由回复；超 24h 严格使用纯净 Utility 模板且遵守收件人时区 (安全)</option>
+              <option value="block_403">在 Utility 发货模板夹带促销词被罚 10 倍费率，或在收件人深夜 23:30 推营销违反 TCPA (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>人类连发多条短气泡 (Message Burst) 1,800ms 滑动窗口防抖聚合与在途推理中断门禁
+            <select id="convchat-debounce-select" onchange="recalcConversationalWhatsappDmSandbox()">
+              <option value="pass">1.8s 滑动防抖合并连发短句并感知 typing 状态，新消息到达自动 Cancel 旧推理 (合规)</option>
+              <option value="block_422">用户 3 秒连发 4 句短话触发 4 个并发 Agent 协程同时写购物车导致竞态错单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>聊天框 PCI-DSS 明文卡号拦截与聊天内原生钱包弹层 (WhatsApp Flows + Apple Pay / Shop Pay) 门禁
+            <select id="convchat-pay-select" onchange="recalcConversationalWhatsappDmSandbox()">
+              <option value="pass">唤起聊天内原生 WhatsApp Flows / 小程序 + Apple Pay / 预填 Shop Pay 一键支付 (安全)</option>
+              <option value="block_451">引导用户在聊天框输入 16 位信用卡号污染日志，或扔出冷网页链接致 64% 用户跳出流失 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>1.8s 连发防抖 + 24h 免费窗智能路由 + 聊天内原生一键支付全链路编排
+            <select id="convchat-opt-select" onchange="recalcConversationalWhatsappDmSandbox()">
+              <option value="enabled" selected>启用 1.8s 防抖聚合 + 24h 免费窗路由 + 聊天内原生钱包一键结账 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">每条气泡单独调大模型并发送外部 H5 网页链接结账 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度模板费与跳转流失损耗池</div>
+            <div class="finops-kpi-val" id="convchat-gross-kpi">$280,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防抖与原生内嵌结账后净成本</div>
+            <div class="finops-kpi-val" id="convchat-net-kpi" style="color:#6ee7b7;">$173,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省模板费与挽回GMV</div>
+            <div class="finops-kpi-val" id="convchat-savings-kpi" style="color:#38bdf8;">$106,400</div>
+          </div>
+        </div>
+        <div id="convchat-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DEBOUNCED_TURN_24H_WINDOW_AND_NATIVE_IN_CHAT_WALLET_CHECKOUT_CONFIRM · Mandate: conversational_whatsapp_dm_optim_409
         </div>
       </div>
 
@@ -101077,6 +101237,79 @@ function recalcB2bTradeCreditFactoringSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_KYB_EXPOSURE_AND_NON_RECOURSE_NET30_AUTHORIZED · Mandate: b2b_trade_credit_factoring_200';
+}}
+
+function recalcConversationalWhatsappDmSandbox() {{
+  const grossInput = document.getElementById('convchat-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '280000'));
+  const windowGate = document.getElementById('convchat-window-select').value;
+  const debounceGate = document.getElementById('convchat-debounce-select').value;
+  const payGate = document.getElementById('convchat-pay-select').value;
+  const optMode = document.getElementById('convchat-opt-select').value;
+
+  const grossKpi = document.getElementById('convchat-gross-kpi');
+  const netKpi = document.getElementById('convchat-net-kpi');
+  const savingsKpi = document.getElementById('convchat-savings-kpi');
+  const statusKpi = document.getElementById('convchat-status-kpi');
+  const banner = document.getElementById('convchat-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (payGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PLAINTEXT_PAN_IN_CHAT_OR_UNAUTHENTICATED_WEB_REDIRECT_BOUNCE · Mandate: null';
+    return;
+  }}
+  if (windowGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 EXPIRED_24H_CSW_FREEFORM_OR_TCPA_QUIET_HOURS_VIOLATION · Mandate: null';
+    return;
+  }}
+  if (debounceGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNDEBOUNCED_MESSAGE_BURST_CONCURRENT_CART_MUTATION_RACE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DEBOUNCED_TURN_24H_WINDOW_AND_NATIVE_IN_CHAT_WALLET_CHECKOUT_CONFIRM · Mandate: conversational_whatsapp_dm_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CONVERSATIONAL_FLOW_AND_WALLET_CHECKOUT_AUTHORIZED · Mandate: conversational_whatsapp_dm_200';
 }}
 
 function updateStage1756Sandbox() {{

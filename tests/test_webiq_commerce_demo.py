@@ -28957,6 +28957,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-trade-credit-factoring-sandbox", html_zh)
 
+    def test_conversational_whatsapp_dm_commerce_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            ConversationalWhatsappDmCommercePolicyInput,
+            evaluate_conversational_whatsapp_dm_commerce_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_conversational_whatsapp_dm_commerce_policy(
+            ConversationalWhatsappDmCommercePolicyInput(
+                quarterly_template_waste_burst_race_and_redirect_dropoff_pool_usd=280000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CONVERSATIONAL_FLOW_AND_WALLET_CHECKOUT_AUTHORIZED",
+        )
+
+        window = evaluate_conversational_whatsapp_dm_commerce_policy(
+            ConversationalWhatsappDmCommercePolicyInput(
+                expired_24h_csw_freeform_or_tcpa_quiet_hours_violation=True
+            )
+        )
+        self.assertEqual(window["status_code"], 403)
+        self.assertEqual(
+            window["decision"],
+            "EXPIRED_24H_CSW_FREEFORM_OR_TCPA_QUIET_HOURS_VIOLATION",
+        )
+
+        burst = evaluate_conversational_whatsapp_dm_commerce_policy(
+            ConversationalWhatsappDmCommercePolicyInput(
+                undebounced_message_burst_concurrent_cart_mutation=True
+            )
+        )
+        self.assertEqual(burst["status_code"], 422)
+        self.assertEqual(
+            burst["decision"],
+            "UNDEBOUNCED_MESSAGE_BURST_CONCURRENT_CART_MUTATION_RACE",
+        )
+
+        pay = evaluate_conversational_whatsapp_dm_commerce_policy(
+            ConversationalWhatsappDmCommercePolicyInput(
+                plaintext_pan_in_chat_or_unauthenticated_web_redirect=True
+            )
+        )
+        self.assertEqual(pay["status_code"], 451)
+        self.assertEqual(
+            pay["decision"],
+            "PLAINTEXT_PAN_IN_CHAT_OR_UNAUTHENTICATED_WEB_REDIRECT_BOUNCE",
+        )
+
+        optim = evaluate_conversational_whatsapp_dm_commerce_policy(
+            ConversationalWhatsappDmCommercePolicyInput(
+                quarterly_template_waste_burst_race_and_redirect_dropoff_pool_usd=280000.0,
+                debounced_turn_24h_window_and_native_in_chat_wallet_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 106400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 173600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("conversational_whatsapp_dm_commerce_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("conversational-whatsapp-dm-commerce-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
