@@ -37533,6 +37533,82 @@ def evaluate_ota_hotel_rental_incremental_auth_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommercePromoLoyaltyTwoPhasePolicyInput:
+    quarterly_coupon_leakage_glitch_and_loyalty_abuse_pool_usd: float = 310000.0
+    promo_stacking_below_sku_cogs_floor_or_leaked_code: bool = False
+    uncoordinated_loyalty_burn_before_fiat_authorization: bool = False
+    premature_loyalty_points_vesting_before_return_window: bool = False
+    multiplicative_margin_floor_and_loyalty_fiat_2pc_ready: bool = False
+
+
+def evaluate_ecommerce_promo_loyalty_two_phase_policy(
+    policy_input: EcommercePromoLoyaltyTwoPhasePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_coupon_leakage_glitch_and_loyalty_abuse_pool_usd
+        ),
+    )
+    if policy_input.premature_loyalty_points_vesting_before_return_window:
+        return {
+            "status_code": 451,
+            "decision": "PREMATURE_LOYALTY_VESTING_BEFORE_RMA_WINDOW_EXPIRY_ARBITRAGE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.promo_stacking_below_sku_cogs_floor_or_leaked_code:
+        return {
+            "status_code": 403,
+            "decision": "PROMO_STACKING_BELOW_SKU_COGS_FLOOR_OR_LEAKED_STATIC_CODE_BRUTEFORCE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncoordinated_loyalty_burn_before_fiat_authorization:
+        return {
+            "status_code": 422,
+            "decision": "UNCOORDINATED_LOYALTY_BURN_BEFORE_FIAT_AUTH_ORPHAN_POINTS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.multiplicative_margin_floor_and_loyalty_fiat_2pc_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MULTIPLICATIVE_MARGIN_FLOOR_AND_LOYALTY_FIAT_2PC_ESCROW_CONFIRM",
+            "mandate_token": "ecommerce_promo_loyalty_2pc_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_PROMO_MARGIN_FLOOR_AND_LOYALTY_2PC_AUTHORIZED",
+        "mandate_token": "ecommerce_promo_loyalty_2pc_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -51122,6 +51198,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_promo_loyalty_2pc_guard = {
+        "authorized_200": evaluate_ecommerce_promo_loyalty_two_phase_policy(
+            EcommercePromoLoyaltyTwoPhasePolicyInput()
+        ),
+        "below_cogs_or_leaked_code_403": evaluate_ecommerce_promo_loyalty_two_phase_policy(
+            EcommercePromoLoyaltyTwoPhasePolicyInput(
+                promo_stacking_below_sku_cogs_floor_or_leaked_code=True
+            )
+        ),
+        "uncoordinated_loyalty_burn_422": evaluate_ecommerce_promo_loyalty_two_phase_policy(
+            EcommercePromoLoyaltyTwoPhasePolicyInput(
+                uncoordinated_loyalty_burn_before_fiat_authorization=True
+            )
+        ),
+        "premature_points_vesting_451": evaluate_ecommerce_promo_loyalty_two_phase_policy(
+            EcommercePromoLoyaltyTwoPhasePolicyInput(
+                premature_loyalty_points_vesting_before_return_window=True
+            )
+        ),
+        "multiplicative_floor_loyalty_2pc_409": evaluate_ecommerce_promo_loyalty_two_phase_policy(
+            EcommercePromoLoyaltyTwoPhasePolicyInput(
+                multiplicative_margin_floor_and_loyalty_fiat_2pc_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -51545,6 +51647,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "trusted_agent_identity_tap_waf_guard": trusted_agent_identity_tap_waf_guard,
         "b2b_punchout_cxml_edi_orchestration_guard": b2b_punchout_cxml_edi_orchestration_guard,
         "ota_hotel_rental_incremental_auth_guard": ota_hotel_rental_incremental_auth_guard,
+        "ecommerce_promo_loyalty_2pc_guard": ecommerce_promo_loyalty_2pc_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -73559,6 +73662,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="incauth-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DUAL_FOLIO_VCN_SPLIT_INCREMENTAL_AUTH_AND_INSTANT_0420_RELEASE_CONFIRM · Mandate: ota_hotel_rental_inc_auth_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 295 (#414) E-Commerce Promo Stacking Floor & Loyalty-Fiat 2PC Escrow -->
+      <div class="finops-box" id="ecommerce-promo-loyalty-2pc-sandbox" style="margin-top:12px;border-color:#db2777;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎟️ 电商促销叠加毛利底线与“积分+法币”两阶段事务 (Talon.One / Shopify Functions / Antavo) 沙盒</div>
+            <div class="finops-sub">Round 295 (#414 · SVG #738) · SKU COGS 毛利底线与防找券插件爆破内部静态码零元购 (HTTP 403) + ReservePoints -> AuthFiat -> Commit/Release 两阶段预留防银行卡拒付吞积分 (HTTP 422) + 退货窗口期 Pending Points 冻结防买退套现 (HTTP 451) + 连乘折上折净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="promoloy-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度优惠券越权叠加穿仓、泄露网红码盗刷及会员积分孤儿扣减/买退套利损耗池 ($)
+            <input type="number" id="promoloy-gross-input" value="310000" min="10000" step="5000" oninput="recalcEcommercePromoLoyalty2pcSandbox()" />
+          </label>
+          <label>SKU 进货成本毛利底线 (Net_Price >= COGS * (1 + Floor)) 与反插件爆破静态码门禁
+            <select id="promoloy-floor-select" onchange="recalcEcommercePromoLoyalty2pcSandbox()">
+              <option value="pass">强制连乘折上折 + 单次签名券 + 结算单价严禁低于 SKU COGS 毛利底线 (安全)</option>
+              <option value="block_403">找券插件爆破出 VIP40 静态码与全场大促算术相加导致 $0.01 零元购穿仓 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>会员积分 + 信用卡混合支付 (Split-Tender) 两阶段预留事务 (HoldPoints -> AuthFiat -> Commit) 门禁
+            <select id="promoloy-2pc-select" onchange="recalcEcommercePromoLoyalty2pcSandbox()">
+              <option value="pass">先冻结积分 900s，待法币预授权成功再实扣；若卡拒付 500ms 自动解冻积分 (合规)</option>
+              <option value="block_422">点击支付直接实扣清零 50,000 积分，随后信用卡 3DS2 失败导致积分凭空消失 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>消费返积分退货期冻结账本 (Pending Points Escrow Until RMA Window Expiry) 门禁
+            <select id="promoloy-vest-select" onchange="recalcEcommercePromoLoyalty2pcSandbox()">
+              <option value="pass">新赚积分锁入 Pending 账本，待签收满 30 天无退货后自动转入可用余额 (安全)</option>
+              <option value="block_451">下单秒发可用积分被羊毛党立即兑换礼品卡，随后将原订单全额退货白嫖 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>连乘折上折预算熔断器 + 积分法币 2PC 自动回滚 + Pending 积分账本全链路编排
+            <select id="promoloy-opt-select" onchange="recalcEcommercePromoLoyalty2pcSandbox()">
+              <option value="enabled" selected>启用 SKU 毛利锁 + 活动预算熔断 + 积分法币 2PC 托管 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">手工配置通用静态优惠码与客服人工补偿丢失积分 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度穿仓与积分欺诈损耗池</div>
+            <div class="finops-kpi-val" id="promoloy-gross-kpi">$310,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">毛利锁与2PC托管后净成本</div>
+            <div class="finops-kpi-val" id="promoloy-net-kpi" style="color:#6ee7b7;">$189,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住促销毛利与积分池</div>
+            <div class="finops-kpi-val" id="promoloy-savings-kpi" style="color:#38bdf8;">$120,900</div>
+          </div>
+        </div>
+        <div id="promoloy-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MULTIPLICATIVE_MARGIN_FLOOR_AND_LOYALTY_FIAT_2PC_ESCROW_CONFIRM · Mandate: ecommerce_promo_loyalty_2pc_optim_409
         </div>
       </div>
 
@@ -100611,6 +100771,79 @@ function recalcOtaHotelRentalIncrementalAuthSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_INCREMENTAL_AUTH_AND_DEPOSIT_RELEASE_AUTHORIZED · Mandate: ota_hotel_rental_inc_auth_200';
+}}
+
+function recalcEcommercePromoLoyalty2pcSandbox() {{
+  const grossInput = document.getElementById('promoloy-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '310000'));
+  const floorGate = document.getElementById('promoloy-floor-select').value;
+  const twoPcGate = document.getElementById('promoloy-2pc-select').value;
+  const vestGate = document.getElementById('promoloy-vest-select').value;
+  const optMode = document.getElementById('promoloy-opt-select').value;
+
+  const grossKpi = document.getElementById('promoloy-gross-kpi');
+  const netKpi = document.getElementById('promoloy-net-kpi');
+  const savingsKpi = document.getElementById('promoloy-savings-kpi');
+  const statusKpi = document.getElementById('promoloy-status-kpi');
+  const banner = document.getElementById('promoloy-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vestGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PREMATURE_LOYALTY_VESTING_BEFORE_RMA_WINDOW_EXPIRY_ARBITRAGE · Mandate: null';
+    return;
+  }}
+  if (floorGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PROMO_STACKING_BELOW_SKU_COGS_FLOOR_OR_LEAKED_STATIC_CODE_BRUTEFORCE · Mandate: null';
+    return;
+  }}
+  if (twoPcGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCOORDINATED_LOYALTY_BURN_BEFORE_FIAT_AUTH_ORPHAN_POINTS · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MULTIPLICATIVE_MARGIN_FLOOR_AND_LOYALTY_FIAT_2PC_ESCROW_CONFIRM · Mandate: ecommerce_promo_loyalty_2pc_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_PROMO_MARGIN_FLOOR_AND_LOYALTY_2PC_AUTHORIZED · Mandate: ecommerce_promo_loyalty_2pc_200';
 }}
 
 function updateStage1756Sandbox() {{

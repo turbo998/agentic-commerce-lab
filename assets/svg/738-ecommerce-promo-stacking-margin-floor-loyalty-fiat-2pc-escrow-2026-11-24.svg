@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg738" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070d19"/>
+      <stop offset="50%" stop-color="#0d1729"/>
+      <stop offset="100%" stop-color="#111d35"/>
+    </linearGradient>
+    <linearGradient id="hdr738" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#db2777"/>
+      <stop offset="50%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="card738" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#15233b"/>
+      <stop offset="100%" stop-color="#0d1729"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="760" fill="url(#bg738)"/>
+  <rect x="24" y="20" width="1232" height="78" rx="14" fill="url(#hdr738)" opacity="0.94"/>
+  <text x="48" y="53" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="20.5" font-weight="800">
+    Round 295 (#414 · SVG #738) · E-Commerce Promo Stacking Floor, Leaked Coupon &amp; Loyalty-Fiat 2PC Escrow
+  </text>
+  <text x="48" y="79" fill="#fce7f3" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">
+    Talon.One / Voucherify vs Shopify Functions vs Antavo · Zero-Dollar Exploit Block (403) · Points-Fiat 2PC (422) · Pending Points Lock (451/409)
+  </text>
+
+  <!-- Left Column: 4 Promo & Loyalty Platforms -->
+  <rect x="24" y="114" width="385" height="622" rx="12" fill="url(#card738)" stroke="#f472b6" stroke-width="1.5"/>
+  <text x="44" y="146" fill="#f472b6" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    1. Promotion &amp; Loyalty Engine Stack
+  </text>
+
+  <rect x="42" y="164" width="349" height="128" rx="10" fill="#0b1528" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="58" y="190" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    A. Talon.One / Voucherify Enterprise Promo Engine
+  </text>
+  <text x="58" y="212" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Mutual-exclusion campaign groups &amp; campaign budget circuit breakers
+  </text>
+  <text x="58" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Single-use cryptographically signed coupon codes (`HMAC-SHA256`)
+  </text>
+  <text x="58" y="252" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Complex omnichannel promo rules &amp; margin protection
+  </text>
+
+  <rect x="42" y="304" width="349" height="128" rx="10" fill="#0b1528" stroke="#0284c7" stroke-width="1.2"/>
+  <text x="58" y="330" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    B. Shopify Functions (Discount Allocator Wasm API)
+  </text>
+  <text x="58" y="352" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Sub-5ms WebAssembly discount logic inside Shopify checkout
+  </text>
+  <text x="58" y="372" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Explicit `combinesWith` (`orderDiscounts / productDiscounts`)
+  </text>
+  <text x="58" y="392" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: High-throughput flash checkout without external API lag
+  </text>
+
+  <rect x="42" y="444" width="349" height="128" rx="10" fill="#0b1528" stroke="#8b5cf6" stroke-width="1.2"/>
+  <text x="58" y="470" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    C. Antavo / Yotpo / Smile.io Loyalty Ledger
+  </text>
+  <text x="58" y="492" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Two-stage `Pending -&gt; Active` points vesting after return window
+  </text>
+  <text x="58" y="512" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Supports `ReservePoints -&gt; CommitPoints / ReleasePoints` Saga
+  </text>
+  <text x="58" y="532" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Preventing buy-earn-spend-return loyalty cashout loops
+  </text>
+
+  <rect x="42" y="584" width="349" height="134" rx="10" fill="#0b1528" stroke="#10b981" stroke-width="1.2"/>
+  <text x="58" y="610" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    D. Anti-Extension Brute-Force Shield (Honey / Capital One)
+  </text>
+  <text x="58" y="632" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Rate-limits automated browser extension coupon-testing bursts
+  </text>
+  <text x="58" y="652" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Binds influencer/employee codes to channel attribution or identity
+  </text>
+  <text x="58" y="672" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Stopping `VIP50` static code leaks across coupon sites
+  </text>
+
+  <!-- Center Column: Deterministic Fiduciary Promo & Loyalty Guards -->
+  <rect x="429" y="114" width="422" height="622" rx="12" fill="url(#card738)" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="449" y="146" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    2. Fiduciary Promo &amp; Loyalty Control Plane
+  </text>
+
+  <!-- Gate 1: HTTP 403 -->
+  <rect x="447" y="166" width="386" height="126" rx="10" fill="#1e1124" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="463" y="192" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 1 · SKU COGS Floor &amp; Leaked Static Code Veto (HTTP 403)
+  </text>
+  <text x="463" y="214" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Enforces `Final_Unit_Price &gt;= COGS * (1 + Min_Margin_Floor)`
+  </text>
+  <text x="463" y="234" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Blocks stacking `40% Employee Code + $30 Off` into `$0.01` Glitch!
+  </text>
+  <text x="463" y="254" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Prevents viral social-media zero-dollar checkout margin wipeouts
+  </text>
+
+  <!-- Gate 2: HTTP 422 -->
+  <rect x="447" y="306" width="386" height="126" rx="10" fill="#231815" stroke="#f97316" stroke-width="1.5"/>
+  <text x="463" y="332" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 2 · Loyalty Points + Fiat Split-Tender 2PC (HTTP 422)
+  </text>
+  <text x="463" y="354" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Bans burning points before card `PaymentIntent` auth succeeds!
+  </text>
+  <text x="463" y="374" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Enforces `ReservePoints -&gt; AuthFiat -&gt; CommitBoth (or Rollback)`
+  </text>
+  <text x="463" y="394" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Eliminates orphaned point deductions when credit card 3DS2 fails
+  </text>
+
+  <!-- Gate 3: HTTP 451 -->
+  <rect x="447" y="446" width="386" height="126" rx="10" fill="#1f1629" stroke="#ec4899" stroke-width="1.5"/>
+  <text x="463" y="472" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 3 · Instant Points Vesting &amp; Return Arbitrage (HTTP 451)
+  </text>
+  <text x="463" y="494" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Bans immediate spendable points before `RMA` return window closes
+  </text>
+  <text x="463" y="514" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Stops "Buy $1,000 -&gt; Spend $100 Points -&gt; Refund $1,000" loop
+  </text>
+  <text x="463" y="534" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Holds earned points in `Pending Escrow` until return window expires
+  </text>
+
+  <!-- Gate 4: HTTP 409 -->
+  <rect x="447" y="586" width="386" height="132" rx="10" fill="#0d2622" stroke="#10b981" stroke-width="1.5"/>
+  <text x="463" y="612" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 4 · Compounding vs Additive Cap + 2PC Escrow (HTTP 409)
+  </text>
+  <text x="463" y="634" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Applies Multiplicative (`1 - d1`) * (`1 - d2`) + Campaign Budget Cap
+  </text>
+  <text x="463" y="654" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Auto-reverses reserved points in &lt;500ms on card decline
+  </text>
+  <text x="463" y="678" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Cuts Coupon Leakage, Glitch Losses &amp; Point Fraud by 39% ($120.9k)
+  </text>
+
+  <!-- Right Column: FinOps Impact & 7-Card Telemetry -->
+  <rect x="871" y="114" width="385" height="622" rx="12" fill="url(#card738)" stroke="#10b981" stroke-width="1.5"/>
+  <text x="891" y="146" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    3. Promo &amp; Loyalty FinOps Impact
+  </text>
+
+  <rect x="889" y="168" width="349" height="184" rx="10" fill="#091526" stroke="#38bdf8" stroke-width="1.2"/>
+  <text x="907" y="194" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Quarterly Coupon Leakage &amp; Loyalty Arbitrage Pool ($310k)
+  </text>
+  <text x="907" y="220" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Unmanaged Promo Stacking, Leaked Codes &amp; Point Abuse: $310,000
+  </text>
+  <text x="907" y="242" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Net Cost with Margin Floor &amp; 2PC Points Escrow: $189,100
+  </text>
+  <text x="907" y="264" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="800">
+    • Quarterly Preserved Gross Margin: $120,900 (-39%)
+  </text>
+  <rect x="907" y="282" width="310" height="16" rx="8" fill="#1e293b"/>
+  <rect x="907" y="282" width="189" height="16" rx="8" fill="#10b981"/>
+  <text x="907" y="318" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    Zero Below-COGS Glitch Orders · 100% Points-Fiat 2PC Atomicity
+  </text>
+
+  <rect x="889" y="368" width="349" height="176" rx="10" fill="#091526" stroke="#a855f7" stroke-width="1.2"/>
+  <text x="907" y="394" fill="#d8b4fe" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Additive vs. Multiplicative Stacking Guard
+  </text>
+  <text x="907" y="420" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Item Retail: `$100` (`COGS = $48`, Min Floor = `$55`)
+  </text>
+  <text x="907" y="442" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Naive Additive `30% Sale + 30% VIP`: `$40` (-$8 below COGS)!
+  </text>
+  <text x="907" y="464" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Guarded Multiplicative (`0.7 * 0.85`): Clamped to `$59.50`!
+  </text>
+  <text x="907" y="486" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Campaign Hard Budget Breaker: Auto-pauses code at `$25,000` cap
+  </text>
+
+  <rect x="889" y="560" width="349" height="158" rx="10" fill="#091526" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="907" y="586" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Deterministic Audit Tokens &amp; Provenance
+  </text>
+  <text x="907" y="610" fill="#cbd5e1" font-family="Consolas, monospace" font-size="11">
+    200: ecommerce_promo_loyalty_2pc_200
+  </text>
+  <text x="907" y="630" fill="#fde68a" font-family="Consolas, monospace" font-size="11">
+    409: ecommerce_promo_loyalty_2pc_optim_409
+  </text>
+  <text x="907" y="650" fill="#fca5a5" font-family="Consolas, monospace" font-size="11">
+    403/422/451: null (Mandate Blocked)
+  </text>
+  <text x="907" y="676" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    Provenance: synthetic · independently_reproduced=false
+  </text>
+</svg>

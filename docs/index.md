@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`413` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`414` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（30 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（55 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（153 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（154 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（91 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（36 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（48 篇）](#tax-fx-privacy-disputes)
@@ -119,7 +119,7 @@
 | 55 | **电商嵌入式先买后付（`Embedded BNPL`：`Affirm / Klarna / Afterpay / PayPal Pay in 4`）、商家贴息费率（`MDR 4.5%–6.5%`）毛利门禁、受控 `A2UI WebView` 信贷核身交接与部分退货尾期优先冲抵重算（`Tail-First Re-Amortization`）托管“防 6.5% 商家贴息吞穿 8% 微利 3C 利润、防大模型在聊天窗违规收集 SSN/生日、防退货寄出后次日仍被自动扣第 2 期款与先冲销第 4/3 期未付本金净省 37%”Agent 架构选型 FAQ** | [中文](ecommerce-bnpl-klarna-affirm-afterpay-mdr-margin-floor-partial-return-reamortization-selection-faq.md) · [English](ecommerce-bnpl-klarna-affirm-afterpay-mdr-margin-floor-partial-return-reamortization-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（153 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（154 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -278,6 +278,7 @@
 | 151 | **电商个性化 AI 导购与跨品类成套搭配转化助手（`AI Shopping Stylist & Cross-Category Bundle`：`Shopify Storefront MCP / Constructor.io / Salesforce Agentforce / Amazon Rufus`）、防物理接口与护肤成分冲突（`PIM Compatibility Graph`）、齐码同仓锁库与拆套退货按比例扣减（`Pro-Rata Bundle Return`）托管“防给索尼相机推荐佳能卡口镜头或酸醇护肤冲突、防推荐穿搭点进去发现用户尺码断货、防买3件8折退2件高价主品白拿配件与一键齐码加购净省 38%”Agent 架构选型 FAQ** | [中文](ecommerce-ai-shopping-stylist-cross-category-bundle-compatibility-pro-rata-return-escrow-selection-faq.md) · [English](ecommerce-ai-shopping-stylist-cross-category-bundle-compatibility-pro-rata-return-escrow-selection-faq.en.md) |
 | 152 | **多商户平台与跨店智能体拆单分账（`Marketplace Split-Settlement & Reserve Escrow`：`Stripe Connect / Adyen for Platforms / Mirakl Payout / Hyperwallet`）、防“养号填假单号爆仓跑路（`Bust-Out Seller Fraud`）”、最大余数美分守恒（`Largest-Remainder Penny Conservation`）与跨店退款负余额追偿托管“防卖家买 $0.50 同城假快递单号骗取 T+1 放款卷走 $300k、防浮点数均摊导致 $100/3 丢失 1 美分无法平账、防卖家提空余额后买家退货由平台垫付及三级追偿瀑布净省 39%”Agent 架构选型 FAQ** | [中文](marketplace-split-settlement-stripe-connect-adyen-mirakl-bustout-reserve-penny-conservation-faq.md) · [English](marketplace-split-settlement-stripe-connect-adyen-mirakl-bustout-reserve-penny-conservation-faq.en.md) |
 | 153 | **OTA 酒旅住宿与租车出行“增量预授权（`Incremental Authorization`）、单次虚拟卡（`VCN`）押金防拒付分流与退房秒级解冻（`ISO 8583 0420 Reversal`）”托管（`Oracle Opera Cloud / Mews / Stripe Terminal vs. Adyen Hospitality vs. Sabre / Navan VCN`）：防前台将 `$300` 押金刷在定额房费公司虚拟卡上致半夜被拒住、防退房后押金僵死 30 天及离店无证强扣战损费净省 38% Agent 架构选型 FAQ** | [中文](ota-hospitality-car-rental-incremental-auth-deposit-0420-release-folio-escrow-selection-faq.md) · [English](ota-hospitality-car-rental-incremental-auth-deposit-0420-release-folio-escrow-selection-faq.en.md) |
+| 154 | **电商促销引擎、防优惠券越权叠加“零元购穿仓”与会员积分+法币混合支付两阶段事务（`Talon.One / Voucherify vs. Shopify Functions Discount API vs. Antavo / Yotpo Loyalty`）托管：防找券插件爆破内部静态码叠加满减击穿 `SKU COGS` 成本底线、防银行卡拒付却吞掉用户积分（`Reserve -> Auth -> Commit 2PC`）与退货期 `Pending Points` 冻结净省 39% Agent 架构选型 FAQ** | [中文](ecommerce-promo-stacking-floor-leaked-coupon-loyalty-points-2pc-escrow-selection-faq.md) · [English](ecommerce-promo-stacking-floor-leaked-coupon-loyalty-points-2pc-escrow-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（91 篇）

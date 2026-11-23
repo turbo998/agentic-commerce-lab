@@ -28823,6 +28823,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-hotel-rental-incremental-auth-sandbox", html_zh)
 
+    def test_ecommerce_promo_loyalty_two_phase_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommercePromoLoyaltyTwoPhasePolicyInput,
+            evaluate_ecommerce_promo_loyalty_two_phase_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_promo_loyalty_two_phase_policy(
+            EcommercePromoLoyaltyTwoPhasePolicyInput(
+                quarterly_coupon_leakage_glitch_and_loyalty_abuse_pool_usd=310000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_PROMO_MARGIN_FLOOR_AND_LOYALTY_2PC_AUTHORIZED",
+        )
+
+        floor = evaluate_ecommerce_promo_loyalty_two_phase_policy(
+            EcommercePromoLoyaltyTwoPhasePolicyInput(
+                promo_stacking_below_sku_cogs_floor_or_leaked_code=True
+            )
+        )
+        self.assertEqual(floor["status_code"], 403)
+        self.assertEqual(
+            floor["decision"],
+            "PROMO_STACKING_BELOW_SKU_COGS_FLOOR_OR_LEAKED_STATIC_CODE_BRUTEFORCE",
+        )
+
+        burn = evaluate_ecommerce_promo_loyalty_two_phase_policy(
+            EcommercePromoLoyaltyTwoPhasePolicyInput(
+                uncoordinated_loyalty_burn_before_fiat_authorization=True
+            )
+        )
+        self.assertEqual(burn["status_code"], 422)
+        self.assertEqual(
+            burn["decision"],
+            "UNCOORDINATED_LOYALTY_BURN_BEFORE_FIAT_AUTH_ORPHAN_POINTS",
+        )
+
+        vest = evaluate_ecommerce_promo_loyalty_two_phase_policy(
+            EcommercePromoLoyaltyTwoPhasePolicyInput(
+                premature_loyalty_points_vesting_before_return_window=True
+            )
+        )
+        self.assertEqual(vest["status_code"], 451)
+        self.assertEqual(
+            vest["decision"],
+            "PREMATURE_LOYALTY_VESTING_BEFORE_RMA_WINDOW_EXPIRY_ARBITRAGE",
+        )
+
+        optim = evaluate_ecommerce_promo_loyalty_two_phase_policy(
+            EcommercePromoLoyaltyTwoPhasePolicyInput(
+                quarterly_coupon_leakage_glitch_and_loyalty_abuse_pool_usd=310000.0,
+                multiplicative_margin_floor_and_loyalty_fiat_2pc_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 120900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 189100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_promo_loyalty_2pc_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-promo-loyalty-2pc-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
