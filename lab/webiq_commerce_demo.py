@@ -36089,6 +36089,82 @@ def evaluate_ota_airline_hotel_rebooking_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceSubscribeSaveReplenishEscrowPolicyInput:
+    quarterly_sub_churn_stockout_charge_and_box1_abuse_pool_usd: float = 270000.0
+    pre_billing_wms_stockout_charge_or_tier_discount_penalty: bool = False
+    first_box_intro_discount_abuse_or_household_reclaim: bool = False
+    missing_t3d_precharge_notice_or_silent_price_creep: bool = False
+    overstock_skip_cadence_shift_and_flavor_swap_ready: bool = False
+
+
+def evaluate_ecommerce_subscribe_save_replenish_escrow_policy(
+    policy_input: EcommerceSubscribeSaveReplenishEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_sub_churn_stockout_charge_and_box1_abuse_pool_usd
+        ),
+    )
+    if policy_input.missing_t3d_precharge_notice_or_silent_price_creep:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_T3D_PRECHARGE_NOTICE_OR_SILENT_PRICE_CREEP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pre_billing_wms_stockout_charge_or_tier_discount_penalty:
+        return {
+            "status_code": 403,
+            "decision": "PRE_BILLING_WMS_STOCKOUT_PHANTOM_CHARGE_OR_TIER_PENALTY",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.first_box_intro_discount_abuse_or_household_reclaim:
+        return {
+            "status_code": 422,
+            "decision": "FIRST_BOX_INTRO_DISCOUNT_ABUSE_OR_HOUSEHOLD_RECLAIM",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.overstock_skip_cadence_shift_and_flavor_swap_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "OVERSTOCK_SKIP_CADENCE_SHIFT_AND_FLAVOR_SWAP_RETENTION_CONFIRM",
+            "mandate_token": "subscribe_save_replenish_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "IN_STOCK_PRENOTIFIED_REPLENISHMENT_BILLING_AUTHORIZED",
+        "mandate_token": "subscribe_save_replenish_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -49184,6 +49260,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_subscribe_save_replenish_guard = {
+        "authorized_200": evaluate_ecommerce_subscribe_save_replenish_escrow_policy(
+            EcommerceSubscribeSaveReplenishEscrowPolicyInput()
+        ),
+        "pre_billing_stockout_or_tier_penalty_403": evaluate_ecommerce_subscribe_save_replenish_escrow_policy(
+            EcommerceSubscribeSaveReplenishEscrowPolicyInput(
+                pre_billing_wms_stockout_charge_or_tier_discount_penalty=True
+            )
+        ),
+        "first_box_promo_abuse_422": evaluate_ecommerce_subscribe_save_replenish_escrow_policy(
+            EcommerceSubscribeSaveReplenishEscrowPolicyInput(
+                first_box_intro_discount_abuse_or_household_reclaim=True
+            )
+        ),
+        "missing_t3d_notice_or_price_creep_451": evaluate_ecommerce_subscribe_save_replenish_escrow_policy(
+            EcommerceSubscribeSaveReplenishEscrowPolicyInput(
+                missing_t3d_precharge_notice_or_silent_price_creep=True
+            )
+        ),
+        "overstock_skip_cadence_swap_409": evaluate_ecommerce_subscribe_save_replenish_escrow_policy(
+            EcommerceSubscribeSaveReplenishEscrowPolicyInput(
+                overstock_skip_cadence_shift_and_flavor_swap_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -49588,6 +49690,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_flash_sale_drop_escrow_guard": ecommerce_flash_sale_drop_escrow_guard,
         "b2b_tail_spend_spot_buy_escrow_guard": b2b_tail_spend_spot_buy_escrow_guard,
         "ota_airline_hotel_rebooking_escrow_guard": ota_airline_hotel_rebooking_escrow_guard,
+        "ecommerce_subscribe_save_replenish_guard": ecommerce_subscribe_save_replenish_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -70519,6 +70622,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="otarebook-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 POST_TICKETING_FARE_DROP_REISSUE_AND_ECREDIT_FEFO_CONFIRM · Mandate: ota_rebooking_irrops_ecredit_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 276 (#395) Subscribe & Save Replenishment Stockout & Skip/Swap Escrow -->
+      <div class="finops-box" id="ecommerce-subscribe-save-replenish-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📦 电商周期购与自动补货订阅 (Recharge / Skio / Ordergroove / Bold / Stripe) 缺货免扣与防流失沙盒</div>
+            <div class="finops-sub">Round 276 (#395 · SVG #719) · 扣款前 24h WMS 库存核验与缺货保级免扣锁 (HTTP 403) + 前 3 期阶梯返利与 EMVCo PAR 家庭去重防领完首盒半价秒退订 (HTTP 422) + T-3d 免密短信提醒与防静默涨价暗扣 (HTTP 451) + 家里没吃完一键顺延改 45 天周期与换口味挽回 42% 流失净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="subsave-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度周期购因家里囤货过多被迫退订、仓库断货仍照扣月费引发拒付及首单 5 折被羊毛党领完秒退损失池 ($)
+            <input type="number" id="subsave-gross-input" value="270000" min="10000" step="5000" oninput="recalcEcommerceSubscribeSaveReplenishSandbox()" />
+          </label>
+          <label>扣款前 24 小时 (T-24h) 3PL 仓储可售库存核验与多件组合包商家缺货保级 (Tier-Discount Honor) 门禁
+            <select id="subsave-atp-select" onchange="recalcEcommerceSubscribeSaveReplenishSandbox()">
+              <option value="pass">T-24h 确认 ATP&gt;=1 方可扣款；组合包单品缺货免扣该品且其余商品照享原 85 折优惠 (安全)</option>
+              <option value="block_403">仓库已断货仍照扣全月费，或因缺 1 件货把客户剩余 4 件从 85 折强降为 95 折 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>首单大额折扣前 3 期阶梯解锁 (3-Box Milestone Vesting) 与底层卡/地址 (EMVCo PAR + CASS) 去重门禁
+            <select id="subsave-abuse-select" onchange="recalcEcommerceSubscribeSaveReplenishSandbox()">
+              <option value="pass">首盒合理让利 + 第 2/3 盒返现解锁，且拦截 180 天内同家庭换邮箱重拍新客首单 (合规)</option>
+              <option value="block_422">羊毛党领完 5 折首盒签收 10 分钟即退订，次月换邮箱同一地址再薅首单折扣 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>FTC / 加州 ARL 自动续费扣款前 3 天 (T-3d) 免登录短信提醒与禁止未经同意静默涨价门禁
+            <select id="subsave-arl-select" onchange="recalcEcommerceSubscribeSaveReplenishSandbox()">
+              <option value="pass">T-3d 下发含免登录 1-Tap Skip/Cancel 链接提醒，商品涨价须获订户二次明示确认 (安全)</option>
+              <option value="block_451">未发扣款前提醒直接暗扣，或次月将首单 6 折静默恢复高价引发拒付投诉 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>免密短信一键顺延 (1-Tap Snooze) + 配送周期自适应拉宽 (30d-&gt;45d) + 零差价一键换口味挽留流
+            <select id="subsave-opt-select" onchange="recalcEcommerceSubscribeSaveReplenishSandbox()">
+              <option value="enabled" selected>针对没吃完一键顺延并改 45 天周期 + 针对吃腻了一键换口味挽回 42% 退订 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">退订页仅提供“继续扣款”或“永久取消”二元选项且改周期需重置密码登录 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度周期购流失与首盒被薅池</div>
+            <div class="finops-kpi-val" id="subsave-gross-kpi">$270,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">缺货保级与一键顺延后净损耗</div>
+            <div class="finops-kpi-val" id="subsave-net-kpi" style="color:#6ee7b7;">$167,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住订阅LTV与毛利</div>
+            <div class="finops-kpi-val" id="subsave-savings-kpi" style="color:#38bdf8;">$102,600</div>
+          </div>
+        </div>
+        <div id="subsave-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 OVERSTOCK_SKIP_CADENCE_SHIFT_AND_FLAVOR_SWAP_RETENTION_CONFIRM · Mandate: subscribe_save_replenish_optim_409
         </div>
       </div>
 
@@ -96184,6 +96344,79 @@ function recalcOTAAirlineHotelRebookingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_NDC_COUPON_SEQUENCE_AND_WAIVER_REBOOK_AUTHORIZED · Mandate: ota_rebooking_irrops_ecredit_200';
+}}
+
+function recalcEcommerceSubscribeSaveReplenishSandbox() {{
+  const grossInput = document.getElementById('subsave-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '270000'));
+  const atpGate = document.getElementById('subsave-atp-select').value;
+  const abuseGate = document.getElementById('subsave-abuse-select').value;
+  const arlGate = document.getElementById('subsave-arl-select').value;
+  const optMode = document.getElementById('subsave-opt-select').value;
+
+  const grossKpi = document.getElementById('subsave-gross-kpi');
+  const netKpi = document.getElementById('subsave-net-kpi');
+  const savingsKpi = document.getElementById('subsave-savings-kpi');
+  const statusKpi = document.getElementById('subsave-status-kpi');
+  const banner = document.getElementById('subsave-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (arlGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_T3D_PRECHARGE_NOTICE_OR_SILENT_PRICE_CREEP · Mandate: null';
+    return;
+  }}
+  if (atpGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PRE_BILLING_WMS_STOCKOUT_PHANTOM_CHARGE_OR_TIER_PENALTY · Mandate: null';
+    return;
+  }}
+  if (abuseGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FIRST_BOX_INTRO_DISCOUNT_ABUSE_OR_HOUSEHOLD_RECLAIM · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 OVERSTOCK_SKIP_CADENCE_SHIFT_AND_FLAVOR_SWAP_RETENTION_CONFIRM · Mandate: subscribe_save_replenish_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 IN_STOCK_PRENOTIFIED_REPLENISHMENT_BILLING_AUTHORIZED · Mandate: subscribe_save_replenish_200';
 }}
 
 function updateStage1756Sandbox() {{

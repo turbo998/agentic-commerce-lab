@@ -27550,6 +27550,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-airline-hotel-rebooking-escrow-sandbox", html_zh)
 
+    def test_ecommerce_subscribe_save_replenish_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceSubscribeSaveReplenishEscrowPolicyInput,
+            evaluate_ecommerce_subscribe_save_replenish_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_subscribe_save_replenish_escrow_policy(
+            EcommerceSubscribeSaveReplenishEscrowPolicyInput(
+                quarterly_sub_churn_stockout_charge_and_box1_abuse_pool_usd=270000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "IN_STOCK_PRENOTIFIED_REPLENISHMENT_BILLING_AUTHORIZED",
+        )
+
+        atp = evaluate_ecommerce_subscribe_save_replenish_escrow_policy(
+            EcommerceSubscribeSaveReplenishEscrowPolicyInput(
+                pre_billing_wms_stockout_charge_or_tier_discount_penalty=True
+            )
+        )
+        self.assertEqual(atp["status_code"], 403)
+        self.assertEqual(
+            atp["decision"],
+            "PRE_BILLING_WMS_STOCKOUT_PHANTOM_CHARGE_OR_TIER_PENALTY",
+        )
+
+        abuse = evaluate_ecommerce_subscribe_save_replenish_escrow_policy(
+            EcommerceSubscribeSaveReplenishEscrowPolicyInput(
+                first_box_intro_discount_abuse_or_household_reclaim=True
+            )
+        )
+        self.assertEqual(abuse["status_code"], 422)
+        self.assertEqual(
+            abuse["decision"],
+            "FIRST_BOX_INTRO_DISCOUNT_ABUSE_OR_HOUSEHOLD_RECLAIM",
+        )
+
+        arl = evaluate_ecommerce_subscribe_save_replenish_escrow_policy(
+            EcommerceSubscribeSaveReplenishEscrowPolicyInput(
+                missing_t3d_precharge_notice_or_silent_price_creep=True
+            )
+        )
+        self.assertEqual(arl["status_code"], 451)
+        self.assertEqual(
+            arl["decision"],
+            "MISSING_T3D_PRECHARGE_NOTICE_OR_SILENT_PRICE_CREEP",
+        )
+
+        optim = evaluate_ecommerce_subscribe_save_replenish_escrow_policy(
+            EcommerceSubscribeSaveReplenishEscrowPolicyInput(
+                quarterly_sub_churn_stockout_charge_and_box1_abuse_pool_usd=270000.0,
+                overstock_skip_cadence_shift_and_flavor_swap_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 102600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 167400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_subscribe_save_replenish_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-subscribe-save-replenish-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
