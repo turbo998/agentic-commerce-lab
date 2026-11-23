@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`436` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`437` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (30 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (56 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (165 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (166 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (95 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (39 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (51 guides)](#tax-fx-privacy-disputes)
@@ -120,7 +120,7 @@
 | 56 | **Multi-PSP Payment Orchestration (`Primer / Spreedly / Gr4vy vs. Adyen + Stripe + Checkout.com`), `8-Digit BIN` Local Acquiring, US `Durbin Reg II` PINless Debit Routing (`STAR / NYCE / Pulse`), `Cat-1 / MAC-03` Zero-Retry Breaker & `ISO 8583 0420` Timeout Failover Mutex (`-39%` Acquiring MDR & Decline Loss) FAQ** | [English](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.en.md) · [中文](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (165 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (166 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -291,6 +291,7 @@
 | 163 | **Retail Media Network (`RMN`) & Data Clean-Room Bidding (`Amazon Ads + AMC vs. Walmart Connect / Luminate vs. Target Roundel vs. Pacvue / Skai`), Real-Time `Buy-Box` & Core-Size `OOS` Auto-Pause, Anti-Brand-Cannibalization (`NTB%`) & Net `POAS` Dayparting (`-39%` Wasted Ad Spend) FAQ** | [English](retail-media-network-rmn-amc-cleanroom-buybox-oos-poas-bidding-selection-faq.en.md) · [中文](retail-media-network-rmn-amc-cleanroom-buybox-oos-poas-bidding-selection-faq.md) |
 | 164 | **Livestream Shopping & Live Auction Commerce (`TikTok Shop Live / Whatnot / Bambuser / Taobao Live`), `90-Second` Pay-to-Lock Auto-Recycle, `30-Minute` Pre-WMS Consolidation Buffer & `14d Net Kept GMV` MCN Pit-Fee Escrow (`-39%` Squatting, Split-Freight & Brushing Loss) FAQ** | [English](livestream-shopping-flash-drop-90s-lease-impulse-cancel-host-escrow-selection-faq.en.md) · [中文](livestream-shopping-flash-drop-90s-lease-impulse-cancel-host-escrow-selection-faq.md) |
 | 165 | **OTA Rail & Multimodal Interline Ticketing (`UIC OSDM / IATA Air-Rail Intermodal`: `Trainline / Rail Europe / Lufthansa Express Rail / Amtrak`), `CIV / HOTNAT` Connection Protection, `NRCoT 14.2` Split-Ticketing & Automated `Delay Repay` Escrow (`-38%` Multimodal Travel Loss) FAQ** | [English](ota-rail-multimodal-interline-osdm-civ-protection-split-ticket-delay-repay-selection-faq.en.md) · [中文](ota-rail-multimodal-interline-osdm-civ-protection-split-ticket-delay-repay-selection-faq.md) |
+| 166 | **Hospitality & Restaurant Pay-at-Table POS (`Toast / Square for Restaurants / Adyen Hospitality / Sunday / 7shifts`), Split-Check Concurrency Mutex, Pre-Tax Tip Base & `FLSA § 203(m)` Tip-Pooling Escrow (`-38%` Walkout, Tip Dispute & DOL Penalty Loss) FAQ** | [English](hospitality-pos-pay-at-table-split-check-mutex-flsa-tip-pool-escrow-selection-faq.en.md) · [中文](hospitality-pos-pay-at-table-split-check-mutex-flsa-tip-pool-escrow-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (95 Guides)

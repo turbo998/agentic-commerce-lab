@@ -39279,6 +39279,80 @@ def evaluate_cross_border_ftz_duty_drawback_policy(
     }
 
 
+@dataclass(frozen=True)
+class HospitalityPosSplitTipPolicyInput:
+    quarterly_walkout_tip_chargeback_and_dol_penalty_pool_usd: float = 190000.0
+    unclaimed_split_check_orphan_items_or_penny_remainder_leak: bool = False
+    post_tax_tip_base_or_unverified_over_25pct_tip_adjust: bool = False
+    flsa_203m_manager_tip_skimming_or_illegal_boh_tip_credit_pool: bool = False
+    atomic_split_check_pretax_tip_and_flsa_tip_pool_ready: bool = False
+
+
+def evaluate_hospitality_pos_split_tip_policy(
+    policy_input: HospitalityPosSplitTipPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(policy_input.quarterly_walkout_tip_chargeback_and_dol_penalty_pool_usd),
+    )
+    if policy_input.flsa_203m_manager_tip_skimming_or_illegal_boh_tip_credit_pool:
+        return {
+            "status_code": 451,
+            "decision": "FLSA_203M_MANAGER_TIP_SKIMMING_OR_ILLEGAL_BOH_TIP_CREDIT_POOL",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unclaimed_split_check_orphan_items_or_penny_remainder_leak:
+        return {
+            "status_code": 403,
+            "decision": "UNCLAIMED_SPLIT_CHECK_ORPHAN_ITEMS_OR_PENNY_REMAINDER_LEAK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.post_tax_tip_base_or_unverified_over_25pct_tip_adjust:
+        return {
+            "status_code": 422,
+            "decision": "POST_TAX_TIP_BASE_INFLATION_OR_FAT_FINGER_OVER_25PCT_TIP_ADJUSTMENT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.atomic_split_check_pretax_tip_and_flsa_tip_pool_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ATOMIC_SPLIT_CHECK_PRETAX_TIP_AND_FLSA_COMPLIANT_TIP_POOL_CONFIRM",
+            "mandate_token": "hospitality_pos_split_tip_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_HOSPITALITY_POS_SPLIT_AND_FLSA_TIP_POOL_AUTHORIZED",
+        "mandate_token": "hospitality_pos_split_tip_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -53466,6 +53540,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    hospitality_pos_split_tip_guard = {
+        "authorized_200": evaluate_hospitality_pos_split_tip_policy(
+            HospitalityPosSplitTipPolicyInput()
+        ),
+        "unclaimed_orphan_or_remainder_403": evaluate_hospitality_pos_split_tip_policy(
+            HospitalityPosSplitTipPolicyInput(
+                unclaimed_split_check_orphan_items_or_penny_remainder_leak=True
+            )
+        ),
+        "post_tax_or_fat_finger_tip_422": evaluate_hospitality_pos_split_tip_policy(
+            HospitalityPosSplitTipPolicyInput(
+                post_tax_tip_base_or_unverified_over_25pct_tip_adjust=True
+            )
+        ),
+        "flsa_manager_tip_skim_451": evaluate_hospitality_pos_split_tip_policy(
+            HospitalityPosSplitTipPolicyInput(
+                flsa_203m_manager_tip_skimming_or_illegal_boh_tip_credit_pool=True
+            )
+        ),
+        "atomic_split_flsa_tip_409": evaluate_hospitality_pos_split_tip_policy(
+            HospitalityPosSplitTipPolicyInput(
+                atomic_split_check_pretax_tip_and_flsa_tip_pool_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -53912,6 +54012,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "livestream_shopping_flash_escrow_guard": livestream_shopping_flash_escrow_guard,
         "ota_rail_multimodal_interline_guard": ota_rail_multimodal_interline_guard,
         "cross_border_ftz_duty_drawback_guard": cross_border_ftz_duty_drawback_guard,
+        "hospitality_pos_split_tip_guard": hospitality_pos_split_tip_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -77237,6 +77338,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ftzdrw-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 AUTOMATED_1313_DRAWBACK_FTZ_WEEKLY_MPF_CAP_AND_FIRST_SALE_CONFIRM · Mandate: cross_border_ftz_drawback_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 318 (#437 · SVG #761) Hospitality Pay-at-Table Split-Check & FLSA § 203(m) Tip Pool -->
+      <div class="finops-box" id="hospitality-pos-split-tip-sandbox" style="margin-top:12px;border-color:#d97706;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🍽️ 餐饮 POS 桌边扫码分单 (Toast / Square / Adyen Sunday) 并发锁、税前小费与 FLSA § 203(m) 小费池沙盒</div>
+            <div class="finops-sub">Round 318 (#437 · SVG #761) · WebSocket 菜品行 CAS 认领互斥锁与 Hamilton 1¢ 余数守恒防共享菜无人认领跑单 (HTTP 403) + 税前净额小费计算与纸质签单 &gt;25% 小费主管复核锁 (HTTP 422) + FLSA § 203(m)(2)(B) 严禁管理层参与小费池及 Tip Credit 前后厨隔离 (HTTP 451) + 净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="hosppos-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度多人拼桌漏付共享菜跑单坏账、手滑高额小费拒付及 FLSA 小费池违规赔偿池 ($)
+            <input type="number" id="hosppos-gross-input" value="190000" min="10000" step="5000" oninput="recalcHospitalityPosSplitTipSandbox()" />
+          </label>
+          <label>桌边扫码多人拆单 (Split by Item / 1/N) 并发认领锁与未认领共享菜关单门禁
+            <select id="hosppos-split-select" onchange="recalcHospitalityPosSplitTipSandbox()">
+              <option value="pass">启用行级 CAS 认领锁 + Hamilton 1¢ 余数守恒，未认领共享菜强制全桌平摊或由开台担保卡兜底 (安全)</option>
+              <option value="block_403">6 人扫码只付各自牛排留 $38 海鲜拼盘无人认领即关单离店，或均分余数丢失致无法清台 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>小费百分比计算基数 (Pre-Tax vs Post-Tax) 与纸质签购单手工补录 &gt;25% 小费复核门禁
+            <select id="hosppos-tipbase-select" onchange="recalcHospitalityPosSplitTipSandbox()">
+              <option value="pass">严格按税前净菜品小计计算 18%/20%/22% 小费，且手输 &gt;25% 小费强制店长 PIN 核验签单照片 (合规)</option>
+              <option value="block_422">把消费税与外送费算进小费基数，或服务员手滑把 $5.00 小费输成 $500.00 引发欺诈拒付 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>FLSA 29 U.S.C. § 203(m)(2)(B) 管理层禁入小费池与 $2.13 Tip Credit 前后厨隔离门禁
+            <select id="hosppos-flsa-select" onchange="recalcHospitalityPosSplitTipSandbox()">
+              <option value="pass">100% 剔除店长/主管工时，并在启用 $2.13 Tip Credit 门店严格隔离前厅与后厨小费池 (合规)</option>
+              <option value="block_451">让值班经理分走 10% 小费池或拿 $2.13 底薪却把服务员小费分给后厨引发劳工部集体诉讼 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>WebSocket 原子分单 + 税前小费守恒 + FLSA 合规小费池下班秒发卡编排
+            <select id="hosppos-opt-select" onchange="recalcHospitalityPosSplitTipSandbox()">
+              <option value="enabled" selected>启用原子菜品分单 + 税前小费护栏 + FLSA 合规小费池 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">人工计算分单与 Excel 手工统计班次小费池 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度拼桌跑单与小费合规损耗</div>
+            <div class="finops-kpi-val" id="hosppos-gross-kpi">$190,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原子分单与FLSA隔离后净成本</div>
+            <div class="finops-kpi-val" id="hosppos-net-kpi" style="color:#6ee7b7;">$117,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住门店营业额与利润</div>
+            <div class="finops-kpi-val" id="hosppos-savings-kpi" style="color:#38bdf8;">$72,200</div>
+          </div>
+        </div>
+        <div id="hosppos-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ATOMIC_SPLIT_CHECK_PRETAX_TIP_AND_FLSA_COMPLIANT_TIP_POOL_CONFIRM · Mandate: hospitality_pos_split_tip_optim_409
         </div>
       </div>
 
@@ -105968,6 +106126,79 @@ function recalcCrossBorderFtzDrawbackSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_FTZ_DRAWBACK_AND_FIRST_SALE_CUSTOMS_AUTHORIZED · Mandate: cross_border_ftz_drawback_200';
+}}
+
+function recalcHospitalityPosSplitTipSandbox() {{
+  const grossInput = document.getElementById('hosppos-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '190000'));
+  const splitGate = document.getElementById('hosppos-split-select').value;
+  const tipBaseGate = document.getElementById('hosppos-tipbase-select').value;
+  const flsaGate = document.getElementById('hosppos-flsa-select').value;
+  const optMode = document.getElementById('hosppos-opt-select').value;
+
+  const grossKpi = document.getElementById('hosppos-gross-kpi');
+  const netKpi = document.getElementById('hosppos-net-kpi');
+  const savingsKpi = document.getElementById('hosppos-savings-kpi');
+  const statusKpi = document.getElementById('hosppos-status-kpi');
+  const banner = document.getElementById('hosppos-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (flsaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FLSA_203M_MANAGER_TIP_SKIMMING_OR_ILLEGAL_BOH_TIP_CREDIT_POOL · Mandate: null';
+    return;
+  }}
+  if (splitGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNCLAIMED_SPLIT_CHECK_ORPHAN_ITEMS_OR_PENNY_REMAINDER_LEAK · Mandate: null';
+    return;
+  }}
+  if (tipBaseGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 POST_TAX_TIP_BASE_INFLATION_OR_FAT_FINGER_OVER_25PCT_TIP_ADJUSTMENT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ATOMIC_SPLIT_CHECK_PRETAX_TIP_AND_FLSA_COMPLIANT_TIP_POOL_CONFIRM · Mandate: hospitality_pos_split_tip_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_HOSPITALITY_POS_SPLIT_AND_FLSA_TIP_POOL_AUTHORIZED · Mandate: hospitality_pos_split_tip_200';
 }}
 
 function updateStage1756Sandbox() {{

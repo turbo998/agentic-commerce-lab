@@ -30364,6 +30364,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-ftz-duty-drawback-sandbox", html_zh)
 
+    def test_hospitality_pos_split_tip_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            HospitalityPosSplitTipPolicyInput,
+            evaluate_hospitality_pos_split_tip_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_hospitality_pos_split_tip_policy(
+            HospitalityPosSplitTipPolicyInput(
+                quarterly_walkout_tip_chargeback_and_dol_penalty_pool_usd=190000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_HOSPITALITY_POS_SPLIT_AND_FLSA_TIP_POOL_AUTHORIZED",
+        )
+
+        orphan = evaluate_hospitality_pos_split_tip_policy(
+            HospitalityPosSplitTipPolicyInput(
+                unclaimed_split_check_orphan_items_or_penny_remainder_leak=True
+            )
+        )
+        self.assertEqual(orphan["status_code"], 403)
+        self.assertEqual(
+            orphan["decision"],
+            "UNCLAIMED_SPLIT_CHECK_ORPHAN_ITEMS_OR_PENNY_REMAINDER_LEAK",
+        )
+
+        tip_base = evaluate_hospitality_pos_split_tip_policy(
+            HospitalityPosSplitTipPolicyInput(
+                post_tax_tip_base_or_unverified_over_25pct_tip_adjust=True
+            )
+        )
+        self.assertEqual(tip_base["status_code"], 422)
+        self.assertEqual(
+            tip_base["decision"],
+            "POST_TAX_TIP_BASE_INFLATION_OR_FAT_FINGER_OVER_25PCT_TIP_ADJUSTMENT",
+        )
+
+        flsa = evaluate_hospitality_pos_split_tip_policy(
+            HospitalityPosSplitTipPolicyInput(
+                flsa_203m_manager_tip_skimming_or_illegal_boh_tip_credit_pool=True
+            )
+        )
+        self.assertEqual(flsa["status_code"], 451)
+        self.assertEqual(
+            flsa["decision"],
+            "FLSA_203M_MANAGER_TIP_SKIMMING_OR_ILLEGAL_BOH_TIP_CREDIT_POOL",
+        )
+
+        optim = evaluate_hospitality_pos_split_tip_policy(
+            HospitalityPosSplitTipPolicyInput(
+                quarterly_walkout_tip_chargeback_and_dol_penalty_pool_usd=190000.0,
+                atomic_split_check_pretax_tip_and_flsa_tip_pool_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 72200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 117800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("hospitality_pos_split_tip_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("hospitality-pos-split-tip-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
