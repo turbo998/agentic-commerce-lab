@@ -30096,6 +30096,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("retail-media-rmn-poas-bidding-sandbox", html_zh)
 
+    def test_b2b_scf_reverse_factoring_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bScfReverseFactoringPolicyInput,
+            evaluate_b2b_scf_reverse_factoring_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_scf_reverse_factoring_policy(
+            B2bScfReverseFactoringPolicyInput(
+                quarterly_ipu_dilution_and_yield_mismatch_pool_usd=360000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ASC405_IPU_BUFFER_AND_HYBRID_SCF_AUTHORIZED",
+        )
+
+        asc = evaluate_b2b_scf_reverse_factoring_policy(
+            B2bScfReverseFactoringPolicyInput(
+                asc405_50_term_extension_or_bank_fee_kickback=True
+            )
+        )
+        self.assertEqual(asc["status_code"], 403)
+        self.assertEqual(
+            asc["decision"],
+            "ASC405_50_DEBT_RECLASSIFICATION_TERM_EXTENSION_OR_BANK_KICKBACK",
+        )
+
+        ipu = evaluate_b2b_scf_reverse_factoring_policy(
+            B2bScfReverseFactoringPolicyInput(
+                pre_qa_ipu_issuance_or_unbuffered_100pct_invoice=True
+            )
+        )
+        self.assertEqual(ipu["status_code"], 422)
+        self.assertEqual(
+            ipu["decision"],
+            "PRE_QA_IPU_ISSUANCE_OR_UNBUFFERD_100PCT_INVOICE_DILUTION_RISK",
+        )
+
+        hurdle = evaluate_b2b_scf_reverse_factoring_policy(
+            B2bScfReverseFactoringPolicyInput(
+                sub_hurdle_buyer_cash_deployment_below_wacc=True
+            )
+        )
+        self.assertEqual(hurdle["status_code"], 451)
+        self.assertEqual(
+            hurdle["decision"],
+            "SUB_HURDLE_BUYER_CASH_DEPLOYMENT_BELOW_TREASURY_WACC",
+        )
+
+        optim = evaluate_b2b_scf_reverse_factoring_policy(
+            B2bScfReverseFactoringPolicyInput(
+                quarterly_ipu_dilution_and_yield_mismatch_pool_usd=360000.0,
+                hybrid_dynamic_discount_bank_scf_and_ipu_buffer_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 140400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 219600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_scf_reverse_factoring_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-scf-reverse-factoring-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

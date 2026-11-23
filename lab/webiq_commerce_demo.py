@@ -38975,6 +38975,82 @@ def evaluate_retail_media_rmn_poas_bidding_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bScfReverseFactoringPolicyInput:
+    quarterly_ipu_dilution_and_yield_mismatch_pool_usd: float = 360000.0
+    asc405_50_term_extension_or_bank_fee_kickback: bool = False
+    pre_qa_ipu_issuance_or_unbuffered_100pct_invoice: bool = False
+    sub_hurdle_buyer_cash_deployment_below_wacc: bool = False
+    hybrid_dynamic_discount_bank_scf_and_ipu_buffer_ready: bool = False
+
+
+def evaluate_b2b_scf_reverse_factoring_policy(
+    policy_input: B2bScfReverseFactoringPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_ipu_dilution_and_yield_mismatch_pool_usd
+        ),
+    )
+    if policy_input.sub_hurdle_buyer_cash_deployment_below_wacc:
+        return {
+            "status_code": 451,
+            "decision": "SUB_HURDLE_BUYER_CASH_DEPLOYMENT_BELOW_TREASURY_WACC",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.asc405_50_term_extension_or_bank_fee_kickback:
+        return {
+            "status_code": 403,
+            "decision": "ASC405_50_DEBT_RECLASSIFICATION_TERM_EXTENSION_OR_BANK_KICKBACK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pre_qa_ipu_issuance_or_unbuffered_100pct_invoice:
+        return {
+            "status_code": 422,
+            "decision": "PRE_QA_IPU_ISSUANCE_OR_UNBUFFERD_100PCT_INVOICE_DILUTION_RISK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hybrid_dynamic_discount_bank_scf_and_ipu_buffer_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "HYBRID_DYNAMIC_DISCOUNT_BANK_SCF_AND_IPU_BUFFER_CONFIRM",
+            "mandate_token": "b2b_scf_reverse_factoring_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ASC405_IPU_BUFFER_AND_HYBRID_SCF_AUTHORIZED",
+        "mandate_token": "b2b_scf_reverse_factoring_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -53058,6 +53134,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_scf_reverse_factoring_guard = {
+        "authorized_200": evaluate_b2b_scf_reverse_factoring_policy(
+            B2bScfReverseFactoringPolicyInput()
+        ),
+        "asc405_debt_reclass_403": evaluate_b2b_scf_reverse_factoring_policy(
+            B2bScfReverseFactoringPolicyInput(
+                asc405_50_term_extension_or_bank_fee_kickback=True
+            )
+        ),
+        "pre_qa_or_100pct_ipu_422": evaluate_b2b_scf_reverse_factoring_policy(
+            B2bScfReverseFactoringPolicyInput(
+                pre_qa_ipu_issuance_or_unbuffered_100pct_invoice=True
+            )
+        ),
+        "sub_hurdle_cash_deploy_451": evaluate_b2b_scf_reverse_factoring_policy(
+            B2bScfReverseFactoringPolicyInput(
+                sub_hurdle_buyer_cash_deployment_below_wacc=True
+            )
+        ),
+        "hybrid_scf_ipu_buffer_409": evaluate_b2b_scf_reverse_factoring_policy(
+            B2bScfReverseFactoringPolicyInput(
+                hybrid_dynamic_discount_bank_scf_and_ipu_buffer_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -53500,6 +53602,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "omnichannel_luxury_clienteling_guard": omnichannel_luxury_clienteling_guard,
         "saas_involuntary_churn_vau_payday_guard": saas_involuntary_churn_vau_payday_guard,
         "retail_media_rmn_poas_bidding_guard": retail_media_rmn_poas_bidding_guard,
+        "b2b_scf_reverse_factoring_guard": b2b_scf_reverse_factoring_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -76597,6 +76700,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="rmnpoas-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 BUYBOX_GATED_AMC_INCREMENTAL_AND_NET_POAS_BIDDING_CONFIRM · Mandate: retail_media_rmn_poas_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 314 (#433) B2B Supply Chain Finance (SCF), Reverse Factoring & ASC 405-50 -->
+      <div class="finops-box" id="b2b-scf-reverse-factoring-sandbox" style="margin-top:12px;border-color:#0369a1;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏦 企业 B2B 供应链金融、反向保理与动态贴现双轨路由 (SAP Taulia / PrimeRevenue / C2FO / Kyriba) 沙盒</div>
+            <div class="finops-sub">Round 314 (#433 · SVG #757) · FASB ASC 405-50 / IAS 7 合规锁防应付账款被重分类为有息银行短期借款 (HTTP 403) + QA 质检放行后仅签发 90% IPU 并留存 10% 退货稀释缓冲垫 (HTTP 422) + 基于司库 WACC 门槛率的自有现金 vs 银行保理池双轨切换 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="scfrev-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 100% IPU 无法冲抵退货坏账、自有现金低息错配损耗及 ASC 405-50 审计重分类合规成本池 ($)
+            <input type="number" id="scfrev-gross-input" value="360000" min="10000" step="5000" oninput="recalcB2bScfReverseFactoringSandbox()" />
+          </label>
+          <label>FASB ASC 405-50 / IAS 7 会计准则护栏 (禁超长账期 >120d & 禁银行贴现息回扣分成) 门禁
+            <select id="scfrev-asc-select" onchange="recalcB2bScfReverseFactoringSandbox()">
+              <option value="pass">账期保持行业常规 <=90/120d 且买方零银行返佣，自动生成季度滚存披露表 (安全)</option>
+              <option value="block_403">强拉账期至 180 天并收受银行 1% 贴现回扣导致百亿应付账款被重分类为银行贷款 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>不可撤销付款承诺 (IPU) 签发前置 QA 质检锁与 10% 退货扣款稀释缓冲垫 (Dilution Buffer) 门禁
+            <select id="scfrev-ipu-select" onchange="recalcB2bScfReverseFactoringSandbox()">
+              <option value="pass">QA 质检合格后仅对发票 90% 签发 IPU，保留 10% 尾款用于到期日前冲抵质量退货 (合规)</option>
+              <option value="block_422">卸货未质检即签发 100% 全额 IPU，事后发现次品退货却仍被迫向银行刚兑全款 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>买方自有闲置现金动态贴现 vs 外部银行反向保理池 (WACC Hurdle Rate) 路由门禁
+            <select id="scfrev-route-select" onchange="recalcB2bScfReverseFactoringSandbox()">
+              <option value="pass">报价 >=10% Hurdle Rate 用自有现金赚高息；<10% 自动路由至外部银行反向保理池 (安全)</option>
+              <option value="block_451">将买方 WACC=9.5% 的宝贵自有现金投向仅 5.5% APR 的低息早付单造成资本毁灭 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>动态贴现与多银行反向保理双轨切换 + 90% IPU 缓冲 + ASC 405-50 自动报表全链路编排
+            <select id="scfrev-opt-select" onchange="recalcB2bScfReverseFactoringSandbox()">
+              <option value="enabled" selected>启用双轨智能资金路由 + 90% IPU 质量缓冲垫 + ASC 405-50 自动化 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">单一固定费率早付且 100% 面额盲签 IPU (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度IPU退货坏账与利差错配池</div>
+            <div class="finops-kpi-val" id="scfrev-gross-kpi">$360,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">双轨路由与90%缓冲后净成本</div>
+            <div class="finops-kpi-val" id="scfrev-net-kpi" style="color:#6ee7b7;">$219,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净创收与规避坏账收益</div>
+            <div class="finops-kpi-val" id="scfrev-savings-kpi" style="color:#38bdf8;">$140,400</div>
+          </div>
+        </div>
+        <div id="scfrev-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 HYBRID_DYNAMIC_DISCOUNT_BANK_SCF_AND_IPU_BUFFER_CONFIRM · Mandate: b2b_scf_reverse_factoring_optim_409
         </div>
       </div>
 
@@ -105036,6 +105196,79 @@ function recalcRetailMediaRmnPoasSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_BUYBOX_AMC_NTB_AND_NET_POAS_AUTHORIZED · Mandate: retail_media_rmn_poas_200';
+}}
+
+function recalcB2bScfReverseFactoringSandbox() {{
+  const grossInput = document.getElementById('scfrev-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '360000'));
+  const ascGate = document.getElementById('scfrev-asc-select').value;
+  const ipuGate = document.getElementById('scfrev-ipu-select').value;
+  const routeGate = document.getElementById('scfrev-route-select').value;
+  const optMode = document.getElementById('scfrev-opt-select').value;
+
+  const grossKpi = document.getElementById('scfrev-gross-kpi');
+  const netKpi = document.getElementById('scfrev-net-kpi');
+  const savingsKpi = document.getElementById('scfrev-savings-kpi');
+  const statusKpi = document.getElementById('scfrev-status-kpi');
+  const banner = document.getElementById('scfrev-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (routeGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 SUB_HURDLE_BUYER_CASH_DEPLOYMENT_BELOW_TREASURY_WACC · Mandate: null';
+    return;
+  }}
+  if (ascGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ASC405_50_DEBT_RECLASSIFICATION_TERM_EXTENSION_OR_BANK_KICKBACK · Mandate: null';
+    return;
+  }}
+  if (ipuGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PRE_QA_IPU_ISSUANCE_OR_UNBUFFERD_100PCT_INVOICE_DILUTION_RISK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 HYBRID_DYNAMIC_DISCOUNT_BANK_SCF_AND_IPU_BUFFER_CONFIRM · Mandate: b2b_scf_reverse_factoring_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_ASC405_IPU_BUFFER_AND_HYBRID_SCF_AUTHORIZED · Mandate: b2b_scf_reverse_factoring_200';
 }}
 
 function updateStage1756Sandbox() {{
