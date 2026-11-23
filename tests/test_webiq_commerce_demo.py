@@ -27349,6 +27349,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agent-payment-protocol-drift-sandbox", html_zh)
 
+    def test_ecommerce_flash_sale_drop_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceFlashSaleDropEscrowPolicyInput,
+            evaluate_ecommerce_flash_sale_drop_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_flash_sale_drop_escrow_policy(
+            EcommerceFlashSaleDropEscrowPolicyInput(
+                quarterly_oversell_penalty_refund_mdr_and_hoarding_pool_usd=310000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "ATOMIC_LUA_RESERVATION_AND_PREAUTH_DROP_AUTHORIZED",
+        )
+
+        race = evaluate_ecommerce_flash_sale_drop_escrow_policy(
+            EcommerceFlashSaleDropEscrowPolicyInput(
+                check_then_act_oversell_race_or_jigged_address_bot_sweep=True
+            )
+        )
+        self.assertEqual(race["status_code"], 403)
+        self.assertEqual(
+            race["decision"],
+            "CHECK_THEN_ACT_OVERSELL_RACE_OR_JIGGED_ADDRESS_BOT_SWEEP",
+        )
+
+        hoard = evaluate_ecommerce_flash_sale_drop_escrow_policy(
+            EcommerceFlashSaleDropEscrowPolicyInput(
+                unpaid_cart_inventory_hoarding_or_expired_180s_lease=True
+            )
+        )
+        self.assertEqual(hoard["status_code"], 422)
+        self.assertEqual(
+            hoard["decision"],
+            "UNPAID_CART_INVENTORY_HOARDING_OR_EXPIRED_180S_LEASE",
+        )
+
+        void = evaluate_ecommerce_flash_sale_drop_escrow_policy(
+            EcommerceFlashSaleDropEscrowPolicyInput(
+                upfront_capture_refund_mdr_wipeout_or_unreversed_loser_hold=True
+            )
+        )
+        self.assertEqual(void["status_code"], 451)
+        self.assertEqual(
+            void["decision"],
+            "UPFRONT_CAPTURE_REFUND_MDR_WIPEOUT_OR_UNREVERSED_LOSER_HOLD",
+        )
+
+        optim = evaluate_ecommerce_flash_sale_drop_escrow_policy(
+            EcommerceFlashSaleDropEscrowPolicyInput(
+                quarterly_oversell_penalty_refund_mdr_and_hoarding_pool_usd=310000.0,
+                atomic_lua_lease_and_60s_auth_reversal_waitlist_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 120900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 189100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_flash_sale_drop_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-flash-sale-drop-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

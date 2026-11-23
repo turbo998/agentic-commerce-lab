@@ -35861,6 +35861,82 @@ def evaluate_agent_payment_protocol_drift_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceFlashSaleDropEscrowPolicyInput:
+    quarterly_oversell_penalty_refund_mdr_and_hoarding_pool_usd: float = 310000.0
+    check_then_act_oversell_race_or_jigged_address_bot_sweep: bool = False
+    unpaid_cart_inventory_hoarding_or_expired_180s_lease: bool = False
+    upfront_capture_refund_mdr_wipeout_or_unreversed_loser_hold: bool = False
+    atomic_lua_lease_and_60s_auth_reversal_waitlist_ready: bool = False
+
+
+def evaluate_ecommerce_flash_sale_drop_escrow_policy(
+    policy_input: EcommerceFlashSaleDropEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_oversell_penalty_refund_mdr_and_hoarding_pool_usd
+        ),
+    )
+    if policy_input.upfront_capture_refund_mdr_wipeout_or_unreversed_loser_hold:
+        return {
+            "status_code": 451,
+            "decision": "UPFRONT_CAPTURE_REFUND_MDR_WIPEOUT_OR_UNREVERSED_LOSER_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.check_then_act_oversell_race_or_jigged_address_bot_sweep:
+        return {
+            "status_code": 403,
+            "decision": "CHECK_THEN_ACT_OVERSELL_RACE_OR_JIGGED_ADDRESS_BOT_SWEEP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unpaid_cart_inventory_hoarding_or_expired_180s_lease:
+        return {
+            "status_code": 422,
+            "decision": "UNPAID_CART_INVENTORY_HOARDING_OR_EXPIRED_180S_LEASE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.atomic_lua_lease_and_60s_auth_reversal_waitlist_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ATOMIC_LUA_LEASE_AND_60S_AUTH_REVERSAL_WAITLIST_CONFIRM",
+            "mandate_token": "flash_sale_drop_escrow_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "ATOMIC_LUA_RESERVATION_AND_PREAUTH_DROP_AUTHORIZED",
+        "mandate_token": "flash_sale_drop_escrow_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -48878,6 +48954,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_flash_sale_drop_escrow_guard = {
+        "authorized_200": evaluate_ecommerce_flash_sale_drop_escrow_policy(
+            EcommerceFlashSaleDropEscrowPolicyInput()
+        ),
+        "oversell_race_or_jigged_bot_403": evaluate_ecommerce_flash_sale_drop_escrow_policy(
+            EcommerceFlashSaleDropEscrowPolicyInput(
+                check_then_act_oversell_race_or_jigged_address_bot_sweep=True
+            )
+        ),
+        "unpaid_cart_hoarding_180s_422": evaluate_ecommerce_flash_sale_drop_escrow_policy(
+            EcommerceFlashSaleDropEscrowPolicyInput(
+                unpaid_cart_inventory_hoarding_or_expired_180s_lease=True
+            )
+        ),
+        "upfront_capture_or_unreversed_hold_451": evaluate_ecommerce_flash_sale_drop_escrow_policy(
+            EcommerceFlashSaleDropEscrowPolicyInput(
+                upfront_capture_refund_mdr_wipeout_or_unreversed_loser_hold=True
+            )
+        ),
+        "atomic_lua_lease_60s_reversal_409": evaluate_ecommerce_flash_sale_drop_escrow_policy(
+            EcommerceFlashSaleDropEscrowPolicyInput(
+                atomic_lua_lease_and_60s_auth_reversal_waitlist_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -49279,6 +49381,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_hotel_rate_parity_resort_fee_walk_guard": ota_hotel_rate_parity_resort_fee_walk_guard,
         "retail_media_network_bidding_poas_guard": retail_media_network_bidding_poas_guard,
         "agent_payment_protocol_drift_guard": agent_payment_protocol_drift_guard,
+        "ecommerce_flash_sale_drop_escrow_guard": ecommerce_flash_sale_drop_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -70039,6 +70142,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="payrail-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FIVE_RAIL_SMART_ROUTING_AND_MCC_DRIFT_CORRIDOR_CONFIRM · Mandate: agent_payment_rail_drift_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 273 (#392) Flash Sale & Limited Drop Anti-Oversell & 60s Auth Reversal -->
+      <div class="finops-box" id="ecommerce-flash-sale-drop-escrow-sandbox" style="margin-top:12px;border-color:#f43f5e;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">⚡ 电商大促秒杀与限量联名发售 (Shopify Plus / Redis Lua / EQL / Cloudflare) 防超卖与 60s 解冻沙盒</div>
+            <div class="finops-sub">Round 273 (#392 · SVG #716) · Redis 单线程 Lua 原子扣减 + EMVCo PAR/CASS 地址去重防超卖与改地址扫货 (HTTP 403) + 绑预授权令牌 180 秒短租约防黄牛空手套白狼占库 (HTTP 422) + 抽签未中签 60 秒内 0420 Auth Reversal 防亏 2.9% 手续费 (HTTP 451) + 弃单毫秒级顺延第 2 波候补真粉净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="flashdrop-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度秒杀并发超卖赔付券、抽签落选退款不退 2.9% MDR 手续费亏损与黄牛恶意锁库流拍损失池 ($)
+            <input type="number" id="flashdrop-gross-input" value="310000" min="10000" step="5000" oninput="recalcEcommerceFlashSaleDropSandbox()" />
+          </label>
+          <label>Redis 单线程 Lua 原子库存扣减与底层卡账户 (EMVCo PAR + USPS CASS 标准地址) 一户一签门禁
+            <select id="flashdrop-atomic-select" onchange="recalcEcommerceFlashSaleDropSandbox()">
+              <option value="pass">Redis Lua 原子 DECRBY 绝对零负库存 + 剥离乱码公寓号并按底层银行卡 PAR 去重 (安全)</option>
+              <option value="block_403">用 SQL 先 SELECT 后 UPDATE 并发超卖 300%，或黄牛衍生 50 张虚拟子卡改地址扫货 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>先验预授权令牌方可锁库 (Pre-Auth-Bound 180s Lease) 与防黄牛空手套白狼占库 (Cart Hoarding) 门禁
+            <select id="flashdrop-lease-select" onchange="recalcEcommerceFlashSaleDropSandbox()">
+              <option value="pass">必须持有效 SPT/Apple Pay 预授权令牌方可获取 180 秒短租约，超时立即自动回滚库存 (合规)</option>
+              <option value="block_422">允许无支付凭证加购锁库 30 分钟被黄牛锁空全场去场外高价找买家接盘 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>抽签发售预授权捕获模式与未中签订单 60 秒内自动撤销预授权 (ISO 8583 0420 Auth Reversal) 门禁
+            <select id="flashdrop-void-select" onchange="recalcEcommerceFlashSaleDropSandbox()">
+              <option value="pass">仅对中签者执行 Capture，落选者 60 秒内下发 0420 Auth Reversal 零手续费秒级恢复额度 (安全)</option>
+              <option value="block_451">参抽即直接 Capture 扣款再给 95% 落选者退款白亏 $110k 手续费，或冻住额度 7 天不放 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>超时/拒付租约毫秒级顺延第 2 波实名候补真粉 (Wave-2 Waitlist Recycle) + 连续陪跑权重加成
+            <select id="flashdrop-opt-select" onchange="recalcEcommerceFlashSaleDropSandbox()">
+              <option value="enabled" selected>180 秒未付库存毫秒级顺延第 2 波已验资候补真粉实现 100% 零超卖售罄 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">超时取消订单沉底锁死不自动顺延候补且不启用陪跑真粉加成 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度秒杀超卖与退单MDR损耗池</div>
+            <div class="finops-kpi-val" id="flashdrop-gross-kpi">$310,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">原子租约与60s解冻后净成本</div>
+            <div class="finops-kpi-val" id="flashdrop-net-kpi" style="color:#6ee7b7;">$189,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省超卖赔付与手续费亏损</div>
+            <div class="finops-kpi-val" id="flashdrop-savings-kpi" style="color:#38bdf8;">$120,900</div>
+          </div>
+        </div>
+        <div id="flashdrop-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ATOMIC_LUA_LEASE_AND_60S_AUTH_REVERSAL_WAITLIST_CONFIRM · Mandate: flash_sale_drop_escrow_optim_409
         </div>
       </div>
 
@@ -95485,6 +95645,79 @@ function recalcAgentPaymentProtocolDriftSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 SCOPED_AGENT_PAYMENT_TOKEN_AND_DRIFT_GUARD_AUTHORIZED · Mandate: agent_payment_rail_drift_200';
+}}
+
+function recalcEcommerceFlashSaleDropSandbox() {{
+  const grossInput = document.getElementById('flashdrop-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '310000'));
+  const atomicGate = document.getElementById('flashdrop-atomic-select').value;
+  const leaseGate = document.getElementById('flashdrop-lease-select').value;
+  const voidGate = document.getElementById('flashdrop-void-select').value;
+  const optMode = document.getElementById('flashdrop-opt-select').value;
+
+  const grossKpi = document.getElementById('flashdrop-gross-kpi');
+  const netKpi = document.getElementById('flashdrop-net-kpi');
+  const savingsKpi = document.getElementById('flashdrop-savings-kpi');
+  const statusKpi = document.getElementById('flashdrop-status-kpi');
+  const banner = document.getElementById('flashdrop-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (voidGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UPFRONT_CAPTURE_REFUND_MDR_WIPEOUT_OR_UNREVERSED_LOSER_HOLD · Mandate: null';
+    return;
+  }}
+  if (atomicGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CHECK_THEN_ACT_OVERSELL_RACE_OR_JIGGED_ADDRESS_BOT_SWEEP · Mandate: null';
+    return;
+  }}
+  if (leaseGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNPAID_CART_INVENTORY_HOARDING_OR_EXPIRED_180S_LEASE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ATOMIC_LUA_LEASE_AND_60S_AUTH_REVERSAL_WAITLIST_CONFIRM · Mandate: flash_sale_drop_escrow_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 ATOMIC_LUA_RESERVATION_AND_PREAUTH_DROP_AUTHORIZED · Mandate: flash_sale_drop_escrow_200';
 }}
 
 function updateStage1756Sandbox() {{
