@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`427` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`428` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -11,7 +11,7 @@
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (160 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (94 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (38 guides)](#saas-finops-micropayments)
-- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (49 guides)](#tax-fx-privacy-disputes)
+- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (50 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
 
@@ -436,7 +436,7 @@
 | 38 | **Digital Goods, Mobile Apps & Gaming `D2C Web Shop vs. App Store / Google Play IAP` (`Xsolla / Stash / Aghanim / FastSpring`), Geo-Fenced Anti-Steering Gate, Apple `12-Hour Consumption API` Refund Defense & Negative-Balance Gem Clawback (`-40%` Platform Tax & Refund Abuse Loss) FAQ** | [English](digital-goods-gaming-d2c-webshop-vs-appstore-iap-consumption-api-clawback-selection-faq.en.md) · [中文](digital-goods-gaming-d2c-webshop-vs-appstore-iap-consumption-api-clawback-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (49 Guides)
+## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (50 Guides)
 
 > Covers Merchant of Record (MoR) vs DIY PSP, HS-code DDP landed cost & VAT/Sales Tax nexus, FX quote collars & ISO 20022 netting, ZK eligibility / PCI redaction / GDPR crypto-shredding, and Visa CE 3.0 / VAMP dispute defense.
 
@@ -491,6 +491,7 @@
 | 47 | **E-Commerce Friendly-Fraud Chargeback Defense (`Visa CE 3.0 & VAMP`), Pre-Dispute Deflection (`Verifi RDR & Mastercard Ethoca`) & Anti-Double-Refund Mutex Escrow (`Chargeflow vs. Justt vs. Riskified / Forter vs. Stripe Radar`), `RDR ↔ OMS` Refund Mutex, `120–365d` `2-of-4` + `AP2` Proof Compiler & `EV` VAMP Router (`-39%` Dispute & Double-Refund Loss) Agent Architecture Selection FAQ** | [English](ecommerce-chargeback-ce30-vamp-rdr-ethoca-double-refund-mutex-escrow-agent-selection-faq.en.md) · [中文](ecommerce-chargeback-ce30-vamp-rdr-ethoca-double-refund-mutex-escrow-agent-selection-faq.md) |
 | 48 | **🏆 Cross-Border `DDP` Landed Cost & Global `MoR vs. SoR` Tax Selection (`Global-e / Paddle` vs. `Zonos / Avalara + Stripe Tax` · 🏆 410th Bilingual Guide Milestone), Anti-`DDU` Doorstep Refusal Gate, `10-Digit HTSUS / TARIC` + `CoO` Lock, Net-Paid `EU IOSS` Invoice Parity & Hybrid Country Router (`-38%` Refusal, Duty & Take-Rate Loss) Agent Architecture Selection FAQ** | [English](cross-border-ddp-landed-cost-mor-vs-sor-ioss-type86-customs-escrow-selection-faq.en.md) · [中文](cross-border-ddp-landed-cost-mor-vs-sor-ioss-type86-customs-escrow-selection-faq.md) |
 | 49 | **🏆 Agentic Commerce Observability, Immutable Audit Ledgers & Privacy Governance (`OpenTelemetry GenAI + Azure AI Foundry Tracing / LangSmith / Arize Phoenix + Microsoft Purview / Presidio` · 🏆 420th Bilingual Guide Milestone), Edge `PCI-DSS v4.0` Span Redaction, `Per-Subject KEK` `GDPR Art. 17` Crypto-Shredding & `Merkle WORM` Audit Chain (`-40%` PCI Scope & Compliance Cost) FAQ** | [English](agentic-commerce-otel-observability-pci-redaction-gdpr-cryptoshredding-audit-selection-faq.en.md) · [中文](agentic-commerce-otel-observability-pci-redaction-gdpr-cryptoshredding-audit-selection-faq.md) |
+| 50 | **Multi-Currency Treasury, `Like-for-Like` Natural FX Netting, Weekend Spread Shield & `ISO 20022 pacs.008` Principal-Intact Clearing (`Airwallex / Adyen Multi-Currency / Wise Platform / Kyriba`), Anti-Double-Conversion Lock, `13:00–16:00 UTC` London-NY Sweep & `ChrgBr=DEBT` (`-40%` FX & Wire Loss) FAQ** | [English](multi-currency-treasury-natural-fx-netting-weekend-spread-iso20022-escrow-selection-faq.en.md) · [中文](multi-currency-treasury-natural-fx-netting-weekend-spread-iso20022-escrow-selection-faq.md) |
 
 <a id="architecture-blueprints"></a>
 ## 7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 Specs)

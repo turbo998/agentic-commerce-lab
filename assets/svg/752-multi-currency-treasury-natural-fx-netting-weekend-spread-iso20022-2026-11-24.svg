@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg752" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070d19"/>
+      <stop offset="50%" stop-color="#0d1729"/>
+      <stop offset="100%" stop-color="#111d35"/>
+    </linearGradient>
+    <linearGradient id="hdr752" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0369a1"/>
+      <stop offset="50%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#4f46e5"/>
+    </linearGradient>
+    <linearGradient id="card752" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#15233b"/>
+      <stop offset="100%" stop-color="#0d1729"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="760" fill="url(#bg752)"/>
+  <rect x="24" y="20" width="1232" height="78" rx="14" fill="url(#hdr752)" opacity="0.94"/>
+  <text x="48" y="53" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="20.5" font-weight="800">
+    Round 309 (#428 · SVG #752) · Multi-Currency Treasury: Natural FX Netting, Weekend Shield &amp; ISO 20022
+  </text>
+  <text x="48" y="79" fill="#d1fae5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">
+    Airwallex / Adyen Multi-Currency / Wise Platform / Kyriba · Double-FX Veto (403) · Weekend Spread Shield (422) · pacs.008 OUR Lock (451/409)
+  </text>
+
+  <!-- Left Column: 4 Multi-Currency Treasury & FX Platforms -->
+  <rect x="24" y="114" width="385" height="622" rx="12" fill="url(#card752)" stroke="#10b981" stroke-width="1.5"/>
+  <text x="44" y="146" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    1. Global Treasury &amp; FX Netting Stack
+  </text>
+
+  <rect x="42" y="164" width="349" height="128" rx="10" fill="#0b1528" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="58" y="190" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    A. Adyen / Stripe Like-for-Like Settlement (`vIBAN`)
+  </text>
+  <text x="58" y="212" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Collects `EUR / GBP / AUD / CAD / JPY` into local currency buckets
+  </text>
+  <text x="58" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Zero automatic forced conversion into home USD account!
+  </text>
+  <text x="58" y="252" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Eliminates `2 x 2.0% = 4.0%` round-trip FX conversion tax
+  </text>
+
+  <rect x="42" y="304" width="349" height="128" rx="10" fill="#0b1528" stroke="#0284c7" stroke-width="1.2"/>
+  <text x="58" y="330" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    B. Airwallex / Wise Platform Programmatic FX API
+  </text>
+  <text x="58" y="352" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Interbank mid-market FX rate (`15–35 bps` spread vs `250 bps` bank)
+  </text>
+  <text x="58" y="372" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Local clearing rails (`SEPA / Faster Payments / PIX / FedNow`)
+  </text>
+  <text x="58" y="392" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Paying global suppliers in local currency at `$0` wire fee
+  </text>
+
+  <rect x="42" y="444" width="349" height="128" rx="10" fill="#0b1528" stroke="#8b5cf6" stroke-width="1.2"/>
+  <text x="58" y="470" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    C. Enterprise TMS (`Kyriba / GTreasury / SAP TRM`)
+  </text>
+  <text x="58" y="492" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Matches 30-day `EUR` AP payables against `EUR` AR receivables
+  </text>
+  <text x="58" y="512" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Executes `Window Forward` hedges only on net residual exposure
+  </text>
+  <text x="58" y="532" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Multinational multi-entity natural FX netting
+  </text>
+
+  <rect x="42" y="584" width="349" height="134" rx="10" fill="#0b1528" stroke="#10b981" stroke-width="1.2"/>
+  <text x="58" y="610" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    D. SWIFT `ISO 20022 pacs.008` + `GPI UETR` Tracking
+  </text>
+  <text x="58" y="632" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Enforces `ChrgBr = DEBT (OUR)` or local rail so supplier gets `100%`
+  </text>
+  <text x="58" y="652" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Prevents intermediary bank `$25` lifting fee short-paying invoice!
+  </text>
+  <text x="58" y="672" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Zero short-pay holdups on cross-border B2B settlements
+  </text>
+
+  <!-- Center Column: Deterministic Fiduciary Treasury & FX Guards -->
+  <rect x="429" y="114" width="422" height="622" rx="12" fill="url(#card752)" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="449" y="146" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    2. Fiduciary Treasury &amp; FX Control Plane
+  </text>
+
+  <!-- Gate 1: HTTP 403 -->
+  <rect x="447" y="166" width="386" height="126" rx="10" fill="#1e1124" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="463" y="192" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 1 · Forced Double-Conversion FX Veto (HTTP 403)
+  </text>
+  <text x="463" y="214" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Bans converting `EUR` sales -&gt; `USD` home bank -&gt; `EUR` 3PL bill!
+  </text>
+  <text x="463" y="234" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Routes `EUR` inflows directly to `EUR` payables (`Natural Netting`)
+  </text>
+  <text x="463" y="254" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Eliminates 350–450 bps round-trip FX spread destruction
+  </text>
+
+  <!-- Gate 2: HTTP 422 -->
+  <rect x="447" y="306" width="386" height="126" rx="10" fill="#231815" stroke="#f97316" stroke-width="1.5"/>
+  <text x="463" y="332" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 2 · Weekend FX Market-Close Spread Shield (HTTP 422)
+  </text>
+  <text x="463" y="354" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Blocks non-urgent spot FX sweeps between `Fri 17:00 NY – Sun 17:00`
+  </text>
+  <text x="463" y="374" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Avoids `+100 to +150 bps` weekend liquidity markup surcharges!
+  </text>
+  <text x="463" y="394" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Queues treasury sweeps for Tuesday–Thursday London/NY overlap
+  </text>
+
+  <!-- Gate 3: HTTP 451 -->
+  <rect x="447" y="446" width="386" height="126" rx="10" fill="#1f1629" stroke="#ec4899" stroke-width="1.5"/>
+  <text x="463" y="472" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 3 · `SWIFT SHA` Intermediary Lifting-Fee Shortfall (HTTP 451)
+  </text>
+  <text x="463" y="494" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Blocks sending exact-invoice wire with `ChrgBr = SHAR (SHA)`
+  </text>
+  <text x="463" y="514" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • where intermediary bank deducts `$25` and blocks ERP auto-match!
+  </text>
+  <text x="463" y="534" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Enforces Local Clearing Rail or `pacs.008 ChrgBr=DEBT (OUR)`
+  </text>
+
+  <!-- Gate 4: HTTP 409 -->
+  <rect x="447" y="586" width="386" height="132" rx="10" fill="#0d2622" stroke="#10b981" stroke-width="1.5"/>
+  <text x="463" y="612" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 4 · Like-for-Like Netting + Mid-Market FX (HTTP 409)
+  </text>
+  <text x="463" y="634" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Nets `80%` of foreign cashflows in-currency (`0 bps` FX cost!)
+  </text>
+  <text x="463" y="654" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Sweeps net surplus during London-NY liquidity window (`15 bps`)
+  </text>
+  <text x="463" y="678" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Cuts Cross-Border FX Spread &amp; Wire Fees by 40% ($136k)
+  </text>
+
+  <!-- Right Column: FinOps Impact & 7-Card Telemetry -->
+  <rect x="871" y="114" width="385" height="622" rx="12" fill="url(#card752)" stroke="#10b981" stroke-width="1.5"/>
+  <text x="891" y="146" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    3. Multi-Currency Treasury FinOps
+  </text>
+
+  <rect x="889" y="168" width="349" height="184" rx="10" fill="#091526" stroke="#38bdf8" stroke-width="1.2"/>
+  <text x="907" y="194" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Quarterly Double-FX, Weekend Spread &amp; SWIFT Pool ($340k)
+  </text>
+  <text x="907" y="220" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Forced Round-Trip FX &amp; Correspondent Wire Fees: $340,000
+  </text>
+  <text x="907" y="242" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Net Cost with Natural Netting &amp; Local Rails: $204,000
+  </text>
+  <text x="907" y="264" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="800">
+    • Quarterly Treasury FX &amp; Wire Savings: $136,000 (-40%)
+  </text>
+  <rect x="907" y="282" width="310" height="16" rx="8" fill="#1e293b"/>
+  <rect x="907" y="282" width="186" height="16" rx="8" fill="#10b981"/>
+  <text x="907" y="318" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    Zero Round-Trip FX Conversion · 100% Principal-Intact Payouts
+  </text>
+
+  <rect x="889" y="368" width="349" height="176" rx="10" fill="#091526" stroke="#a855f7" stroke-width="1.2"/>
+  <text x="907" y="394" fill="#d8b4fe" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Natural FX Netting vs. Naive Home-Currency Sweep
+  </text>
+  <text x="907" y="420" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • EU Sales: `€1,000,000` · EU Supplier/VAT Bills: `€750,000`
+  </text>
+  <text x="907" y="442" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Naive `€1M -&gt; USD` (`-2%`) + `USD -&gt; €750k` (`-2%`): `-$35,000`!
+  </text>
+  <text x="907" y="464" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Natural Netting: Pay `€750k` in `EUR` (`$0` FX) + Convert `€250k`!
+  </text>
+  <text x="907" y="486" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Eliminates 87.5% of FX volume and spread cost immediately
+  </text>
+
+  <rect x="889" y="560" width="349" height="158" rx="10" fill="#091526" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="907" y="586" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Deterministic Audit Tokens &amp; Provenance
+  </text>
+  <text x="907" y="610" fill="#cbd5e1" font-family="Consolas, monospace" font-size="11">
+    200: multi_currency_fx_treasury_200
+  </text>
+  <text x="907" y="630" fill="#fde68a" font-family="Consolas, monospace" font-size="11">
+    409: multi_currency_fx_treasury_optim_409
+  </text>
+  <text x="907" y="650" fill="#fca5a5" font-family="Consolas, monospace" font-size="11">
+    403/422/451: null (Mandate Blocked)
+  </text>
+  <text x="907" y="676" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    Provenance: synthetic · independently_reproduced=false
+  </text>
+</svg>

@@ -29761,6 +29761,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("embedded-shipping-parametric-insurance-sandbox", html_zh)
 
+    def test_multi_currency_fx_treasury_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            MultiCurrencyFxTreasuryPolicyInput,
+            evaluate_multi_currency_fx_treasury_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_multi_currency_fx_treasury_policy(
+            MultiCurrencyFxTreasuryPolicyInput(
+                quarterly_double_fx_weekend_spread_and_swift_fee_pool_usd=340000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_NATURAL_FX_NETTING_AND_PACS008_AUTHORIZED",
+        )
+
+        double_fx = evaluate_multi_currency_fx_treasury_policy(
+            MultiCurrencyFxTreasuryPolicyInput(
+                forced_round_trip_double_fx_conversion_on_matched_ap=True
+            )
+        )
+        self.assertEqual(double_fx["status_code"], 403)
+        self.assertEqual(
+            double_fx["decision"],
+            "FORCED_ROUND_TRIP_DOUBLE_FX_CONVERSION_LEAKAGE",
+        )
+
+        weekend = evaluate_multi_currency_fx_treasury_policy(
+            MultiCurrencyFxTreasuryPolicyInput(
+                weekend_illiquid_market_spot_fx_sweep_execution=True
+            )
+        )
+        self.assertEqual(weekend["status_code"], 422)
+        self.assertEqual(
+            weekend["decision"],
+            "WEEKEND_ILLIQUID_FX_MARKET_MARKUP_SPREAD_VIOLATION",
+        )
+
+        swift = evaluate_multi_currency_fx_treasury_policy(
+            MultiCurrencyFxTreasuryPolicyInput(
+                swift_sha_intermediary_lifting_fee_invoice_short_pay=True
+            )
+        )
+        self.assertEqual(swift["status_code"], 451)
+        self.assertEqual(
+            swift["decision"],
+            "SWIFT_SHA_INTERMEDIARY_LIFTING_FEE_INVOICE_SHORT_PAY",
+        )
+
+        optim = evaluate_multi_currency_fx_treasury_policy(
+            MultiCurrencyFxTreasuryPolicyInput(
+                quarterly_double_fx_weekend_spread_and_swift_fee_pool_usd=340000.0,
+                natural_fx_netting_london_ny_window_and_pacs008_our_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 136000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 204000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("multi_currency_fx_treasury_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("multi-currency-fx-treasury-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -38597,6 +38597,82 @@ def evaluate_embedded_shipping_parametric_insurance_policy(
     }
 
 
+@dataclass(frozen=True)
+class MultiCurrencyFxTreasuryPolicyInput:
+    quarterly_double_fx_weekend_spread_and_swift_fee_pool_usd: float = 340000.0
+    forced_round_trip_double_fx_conversion_on_matched_ap: bool = False
+    weekend_illiquid_market_spot_fx_sweep_execution: bool = False
+    swift_sha_intermediary_lifting_fee_invoice_short_pay: bool = False
+    natural_fx_netting_london_ny_window_and_pacs008_our_ready: bool = False
+
+
+def evaluate_multi_currency_fx_treasury_policy(
+    policy_input: MultiCurrencyFxTreasuryPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_double_fx_weekend_spread_and_swift_fee_pool_usd
+        ),
+    )
+    if policy_input.swift_sha_intermediary_lifting_fee_invoice_short_pay:
+        return {
+            "status_code": 451,
+            "decision": "SWIFT_SHA_INTERMEDIARY_LIFTING_FEE_INVOICE_SHORT_PAY",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.forced_round_trip_double_fx_conversion_on_matched_ap:
+        return {
+            "status_code": 403,
+            "decision": "FORCED_ROUND_TRIP_DOUBLE_FX_CONVERSION_LEAKAGE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.weekend_illiquid_market_spot_fx_sweep_execution:
+        return {
+            "status_code": 422,
+            "decision": "WEEKEND_ILLIQUID_FX_MARKET_MARKUP_SPREAD_VIOLATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.natural_fx_netting_london_ny_window_and_pacs008_our_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "NATURAL_FX_NETTING_LONDON_NY_WINDOW_AND_PACS008_OUR_CONFIRM",
+            "mandate_token": "multi_currency_fx_treasury_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_NATURAL_FX_NETTING_AND_PACS008_AUTHORIZED",
+        "mandate_token": "multi_currency_fx_treasury_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -52550,6 +52626,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    multi_currency_fx_treasury_guard = {
+        "authorized_200": evaluate_multi_currency_fx_treasury_policy(
+            MultiCurrencyFxTreasuryPolicyInput()
+        ),
+        "forced_double_fx_403": evaluate_multi_currency_fx_treasury_policy(
+            MultiCurrencyFxTreasuryPolicyInput(
+                forced_round_trip_double_fx_conversion_on_matched_ap=True
+            )
+        ),
+        "weekend_spread_markup_422": evaluate_multi_currency_fx_treasury_policy(
+            MultiCurrencyFxTreasuryPolicyInput(
+                weekend_illiquid_market_spot_fx_sweep_execution=True
+            )
+        ),
+        "swift_sha_short_pay_451": evaluate_multi_currency_fx_treasury_policy(
+            MultiCurrencyFxTreasuryPolicyInput(
+                swift_sha_intermediary_lifting_fee_invoice_short_pay=True
+            )
+        ),
+        "natural_netting_pacs008_our_409": evaluate_multi_currency_fx_treasury_policy(
+            MultiCurrencyFxTreasuryPolicyInput(
+                natural_fx_netting_london_ny_window_and_pacs008_our_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -52987,6 +53089,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "digital_gaming_iap_webshop_guard": digital_gaming_iap_webshop_guard,
         "b2b_vmi_consignment_sbt_guard": b2b_vmi_consignment_sbt_guard,
         "embedded_shipping_parametric_insurance_guard": embedded_shipping_parametric_insurance_guard,
+        "multi_currency_fx_treasury_guard": multi_currency_fx_treasury_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -75799,6 +75902,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="embins-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 EXPLICIT_OPTIN_SUBROGATION_MUTEX_AND_REORDER_FLYWHEEL_CONFIRM · Mandate: embedded_shipping_parametric_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 309 (#428) Multi-Currency Treasury, Natural FX Netting & ISO 20022 -->
+      <div class="finops-box" id="multi-currency-fx-treasury-sandbox" style="margin-top:12px;border-color:#059669;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💱 跨国多币种司库、自然外汇轧差与 ISO 20022 全额清算 (Airwallex / Adyen / Wise / Kyriba) 沙盒</div>
+            <div class="finops-sub">Round 309 (#428 · SVG #752) · Like-for-Like vIBAN 原币留存与 30 天同币种 AP 自然对冲防双重换汇剥皮 (HTTP 403) + 周末外汇休市静默锁防 +120bps 惩罚点差 (HTTP 422) + 本地清算网与 SWIFT pacs.008 ChrgBr=DEBT (OUR) 防中间行扣费短付 (HTTP 451) + 伦敦纽约窗口择时净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="fxtreas-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度外币收入强转本币再购汇双重汇损 (4%)、周末休市高点差溢价及 SWIFT 中间行扣费短付池 ($)
+            <input type="number" id="fxtreas-gross-input" value="340000" min="10000" step="5000" oninput="recalcMultiCurrencyFxTreasurySandbox()" />
+          </label>
+          <label>Like-for-Like vIBAN 原币留存与 30 天同币种应付账款 (AP/VAT/3PL) 自然对冲门禁
+            <select id="fxtreas-net-select" onchange="recalcMultiCurrencyFxTreasurySandbox()">
+              <option value="pass">欧元/英镑收入留存同名原币 vIBAN 直接支付 30 天内欧洲供应商与 VAT (0 bps 汇损)</option>
+              <option value="block_403">欧洲站 €1M 收入强转美元被扣 2% 汇损，两周后付欧洲工厂又购汇再扣 2% (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>全球外汇休市窗口守卫 (Fri 17:00 NY - Sun 17:00 NY) 与伦敦-纽约重叠高流动性窗口门禁
+            <select id="fxtreas-weekend-select" onchange="recalcMultiCurrencyFxTreasurySandbox()">
+              <option value="pass">周末休市期冻结非紧急换汇，统一调度至周二-周四 13:00-16:00 UTC 高流动性窗 (合规)</option>
+              <option value="block_422">定时脚本在周六凌晨自动触发大额司库换汇撞上 +120 bps 周末点差刺客 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>海外供应商付款轨道：本地清算网 (SEPA/FPS) 与 ISO 20022 pacs.008 ChrgBr=DEBT (OUR) 门禁
+            <select id="fxtreas-swift-select" onchange="recalcMultiCurrencyFxTreasurySandbox()">
+              <option value="pass">优先走本地清算网免电汇费；走 SWIFT 强制 ChrgBr=DEBT 确保发票本金 100% 到账 (安全)</option>
+              <option value="block_451">按 SHA 裸发跨境电汇被中间代理行从本金扣走 $28 导致供应商 ERP 核销失败拒发货 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>原币自然对冲轧差 + 银行间中价 API 择时结汇 + 全额清算自动化编排
+            <select id="fxtreas-opt-select" onchange="recalcMultiCurrencyFxTreasurySandbox()">
+              <option value="enabled" selected>启用原币自然轧差 + 伦敦纽约窗口锁汇 + 本地/OUR 全额清算 (-40% 损耗 / HTTP 409)</option>
+              <option value="disabled">默认单币种本币卡收单强制换汇与传统柜台电汇 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度双重汇损与电汇短付池</div>
+            <div class="finops-kpi-val" id="fxtreas-gross-kpi">$340,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">自然轧差与本地清算后净成本</div>
+            <div class="finops-kpi-val" id="fxtreas-net-kpi" style="color:#6ee7b7;">$204,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省外汇点差与电汇费</div>
+            <div class="finops-kpi-val" id="fxtreas-savings-kpi" style="color:#38bdf8;">$136,000</div>
+          </div>
+        </div>
+        <div id="fxtreas-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 NATURAL_FX_NETTING_LONDON_NY_WINDOW_AND_PACS008_OUR_CONFIRM · Mandate: multi_currency_fx_treasury_optim_409
         </div>
       </div>
 
@@ -103873,6 +104033,79 @@ function recalcEmbeddedShippingParametricSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_EXPLICIT_OPTIN_AND_PARAMETRIC_ORACLE_AUTHORIZED · Mandate: embedded_shipping_parametric_200';
+}}
+
+function recalcMultiCurrencyFxTreasurySandbox() {{
+  const grossInput = document.getElementById('fxtreas-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '340000'));
+  const netGate = document.getElementById('fxtreas-net-select').value;
+  const weekendGate = document.getElementById('fxtreas-weekend-select').value;
+  const swiftGate = document.getElementById('fxtreas-swift-select').value;
+  const optMode = document.getElementById('fxtreas-opt-select').value;
+
+  const grossKpi = document.getElementById('fxtreas-gross-kpi');
+  const netKpi = document.getElementById('fxtreas-net-kpi');
+  const savingsKpi = document.getElementById('fxtreas-savings-kpi');
+  const statusKpi = document.getElementById('fxtreas-status-kpi');
+  const banner = document.getElementById('fxtreas-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (swiftGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 SWIFT_SHA_INTERMEDIARY_LIFTING_FEE_INVOICE_SHORT_PAY · Mandate: null';
+    return;
+  }}
+  if (netGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 FORCED_ROUND_TRIP_DOUBLE_FX_CONVERSION_LEAKAGE · Mandate: null';
+    return;
+  }}
+  if (weekendGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 WEEKEND_ILLIQUID_FX_MARKET_MARKUP_SPREAD_VIOLATION · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 NATURAL_FX_NETTING_LONDON_NY_WINDOW_AND_PACS008_OUR_CONFIRM · Mandate: multi_currency_fx_treasury_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_NATURAL_FX_NETTING_AND_PACS008_AUTHORIZED · Mandate: multi_currency_fx_treasury_200';
 }}
 
 function updateStage1756Sandbox() {{
