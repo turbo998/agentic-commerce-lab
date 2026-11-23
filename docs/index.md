@@ -2,11 +2,11 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`400` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`401` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
-- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（27 篇）](#platform-grounding)
+- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（28 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（54 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（150 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（88 篇）](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（27 篇）
+## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（28 篇）
 
 > 面向企业架构师的平台底座选型（Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify）、搜索接地（Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl）、目录同步屏障、A2UI 渲染隔离与可信 Bot 鉴权。
 
@@ -51,6 +51,7 @@
 | 25 | **电商多模态视觉搜索、拍照找同款与跨品类整套穿搭加购（`Shop-the-Look`：`Syte.ai vs. ViSenze vs. Google Vertex AI Vision vs. SigLIP + Qdrant`）Agent 架构选型 FAQ：防“未裁剪 70% 街拍咖啡馆背景直接算整图向量搜出杂物”、防“视觉最相似款点进去发现用户尺码已断货导致 78% 跳出”、防图片隐藏指令注入与边缘人脸打码（`BIPA`）及一键齐码 3 件套加购净省 38% 实战指南** | [中文](ecommerce-multimodal-visual-search-shop-the-look-in-size-twin-grounding-agent-selection-faq.md) · [English](ecommerce-multimodal-visual-search-shop-the-look-in-size-twin-grounding-agent-selection-faq.en.md) |
 | 26 | **🏆 零售媒体网络（`RMN`：`Amazon Ads / Walmart Connect / Criteo / Koddi`）智能竞价、增量归因（`iROAS`）与防丢黄金购物车/断码缺货烧钱及税后净毛利（`POAS`）熔断托管（🏆 第 390 篇双语里程碑）、防“丢 `Buy Box` 或黄金码断码仍以 $3.80 CPC 全速烧钱替跟卖引流”、防“把 70% 预算砸向自然排第 1 的品牌词刷出虚假 `12x ROAS`”与扣退货后净毛利 `POAS >= 1.35x` 分时竞价净省 39% Agent 架构选型 FAQ** | [中文](retail-media-network-rmn-sponsored-bidding-iroas-stockout-margin-escrow-agent-selection-faq.md) · [English](retail-media-network-rmn-sponsored-bidding-iroas-stockout-margin-escrow-agent-selection-faq.en.md) |
 | 27 | **🏆 端到端交易型商业智能体参考架构总览（`End-to-End Transactional Agentic Commerce`：意图混合检索 `Web IQ + Hybrid Search` → 实时锁价与购物车状态机 `Cart FSM` → 分级人工确认与 `AP2 / SPT / VIC` 支付授权 → 对接 `Shopify / Dynamics 365 / SAP / Salesforce` 幂等下单与异常补偿 `Saga` · 🏆 第 400 篇双语里程碑）、防“Visa 基准测试中 54% 找错规格/缺货仍强行下单扣款”、防“ERP 5 秒超时盲目重试导致双倍扣款或扣了钱没建单”与四阶段受托控制面净省 41% 选型 FAQ** | [中文](end-to-end-transactional-agentic-commerce-hybrid-search-cart-fsm-hitl-erp-saga-selection-faq.md) · [English](end-to-end-transactional-agentic-commerce-hybrid-search-cart-fsm-hitl-erp-saga-selection-faq.en.md) |
+| 28 | **实时商业搜索与网页接地六大引擎深度选型（`Microsoft Web IQ / Bing Grounding vs. Perplexity Sonar Pro vs. Tavily vs. Exa vs. Firecrawl vs. Browser-Use`）：在商品比价、供应商舆情洞察与研报结构化采集中的时延、Token 成本、版权合规（`W3C TDMRep`）与受托控制面“防拿问答摘要里的 $129 配件/翻新价当 $899 全新整机下单、防评论区隐藏 DOM 注入与 `85/10/4/1` 四级漏斗削减 7.1x Token 净省 41%”FAQ** | [中文](commercial-search-grounding-six-engine-webiq-sonar-tavily-exa-firecrawl-browseruse-selection-faq.md) · [English](commercial-search-grounding-six-engine-webiq-sonar-tavily-exa-firecrawl-browseruse-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
 ## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（54 篇）

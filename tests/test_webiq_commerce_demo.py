@@ -27952,6 +27952,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("end-to-end-transactional-commerce-saga-sandbox", html_zh)
 
+    def test_commercial_search_grounding_six_engine_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CommercialSearchGroundingSixEnginePolicyInput,
+            evaluate_commercial_search_grounding_six_engine_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_commercial_search_grounding_six_engine_policy(
+            CommercialSearchGroundingSixEnginePolicyInput(
+                quarterly_grounding_token_burn_stale_price_and_copyright_pool_usd=290000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_LIVE_BROWSE_AND_SANITIZED_GROUNDING_AUTHORIZED",
+        )
+
+        dom = evaluate_commercial_search_grounding_six_engine_policy(
+            CommercialSearchGroundingSixEnginePolicyInput(
+                hidden_dom_prompt_injection_or_unapproved_browser_click=True
+            )
+        )
+        self.assertEqual(dom["status_code"], 403)
+        self.assertEqual(
+            dom["decision"],
+            "HIDDEN_DOM_PROMPT_INJECTION_OR_UNAPPROVED_BROWSER_ACTION",
+        )
+
+        quote = evaluate_commercial_search_grounding_six_engine_policy(
+            CommercialSearchGroundingSixEnginePolicyInput(
+                synthesized_summary_quote_without_live_browse_gtin_parity=True
+            )
+        )
+        self.assertEqual(quote["status_code"], 422)
+        self.assertEqual(
+            quote["decision"],
+            "SYNTHESIZED_SUMMARY_QUOTE_WITHOUT_LIVE_BROWSE_GTIN_PARITY",
+        )
+
+        tdm = evaluate_commercial_search_grounding_six_engine_policy(
+            CommercialSearchGroundingSixEnginePolicyInput(
+                tdmrep_copyright_breach_or_unbounded_full_page_scrape_burn=True
+            )
+        )
+        self.assertEqual(tdm["status_code"], 451)
+        self.assertEqual(
+            tdm["decision"],
+            "TDMREP_COPYRIGHT_RESERVATION_BREACH_OR_UNBOUNDED_FULL_PAGE_TOKEN_BURN",
+        )
+
+        optim = evaluate_commercial_search_grounding_six_engine_policy(
+            CommercialSearchGroundingSixEnginePolicyInput(
+                quarterly_grounding_token_burn_stale_price_and_copyright_pool_usd=290000.0,
+                four_tier_grounding_funnel_and_live_browse_verify_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 118900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 171100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("commercial_search_grounding_six_engine_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("commercial-search-grounding-six-engine-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

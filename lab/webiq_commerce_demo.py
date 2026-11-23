@@ -36545,6 +36545,82 @@ def evaluate_end_to_end_transactional_commerce_saga_policy(
     }
 
 
+@dataclass(frozen=True)
+class CommercialSearchGroundingSixEnginePolicyInput:
+    quarterly_grounding_token_burn_stale_price_and_copyright_pool_usd: float = 290000.0
+    hidden_dom_prompt_injection_or_unapproved_browser_click: bool = False
+    synthesized_summary_quote_without_live_browse_gtin_parity: bool = False
+    tdmrep_copyright_breach_or_unbounded_full_page_scrape_burn: bool = False
+    four_tier_grounding_funnel_and_live_browse_verify_ready: bool = False
+
+
+def evaluate_commercial_search_grounding_six_engine_policy(
+    policy_input: CommercialSearchGroundingSixEnginePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_grounding_token_burn_stale_price_and_copyright_pool_usd
+        ),
+    )
+    if policy_input.tdmrep_copyright_breach_or_unbounded_full_page_scrape_burn:
+        return {
+            "status_code": 451,
+            "decision": "TDMREP_COPYRIGHT_RESERVATION_BREACH_OR_UNBOUNDED_FULL_PAGE_TOKEN_BURN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hidden_dom_prompt_injection_or_unapproved_browser_click:
+        return {
+            "status_code": 403,
+            "decision": "HIDDEN_DOM_PROMPT_INJECTION_OR_UNAPPROVED_BROWSER_ACTION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.synthesized_summary_quote_without_live_browse_gtin_parity:
+        return {
+            "status_code": 422,
+            "decision": "SYNTHESIZED_SUMMARY_QUOTE_WITHOUT_LIVE_BROWSE_GTIN_PARITY",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.four_tier_grounding_funnel_and_live_browse_verify_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FOUR_TIER_GROUNDING_FUNNEL_AND_LIVE_BROWSE_VERIFICATION_CONFIRM",
+            "mandate_token": "commercial_grounding_six_engine_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_LIVE_BROWSE_AND_SANITIZED_GROUNDING_AUTHORIZED",
+        "mandate_token": "commercial_grounding_six_engine_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -49796,6 +49872,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    commercial_search_grounding_six_engine_guard = {
+        "authorized_200": evaluate_commercial_search_grounding_six_engine_policy(
+            CommercialSearchGroundingSixEnginePolicyInput()
+        ),
+        "dom_injection_or_browser_click_403": evaluate_commercial_search_grounding_six_engine_policy(
+            CommercialSearchGroundingSixEnginePolicyInput(
+                hidden_dom_prompt_injection_or_unapproved_browser_click=True
+            )
+        ),
+        "summary_quote_without_live_browse_422": evaluate_commercial_search_grounding_six_engine_policy(
+            CommercialSearchGroundingSixEnginePolicyInput(
+                synthesized_summary_quote_without_live_browse_gtin_parity=True
+            )
+        ),
+        "tdmrep_or_full_page_burn_451": evaluate_commercial_search_grounding_six_engine_policy(
+            CommercialSearchGroundingSixEnginePolicyInput(
+                tdmrep_copyright_breach_or_unbounded_full_page_scrape_burn=True
+            )
+        ),
+        "four_tier_grounding_funnel_409": evaluate_commercial_search_grounding_six_engine_policy(
+            CommercialSearchGroundingSixEnginePolicyInput(
+                four_tier_grounding_funnel_and_live_browse_verify_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -50206,6 +50308,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "omnichannel_bopis_curbside_escrow_guard": omnichannel_bopis_curbside_escrow_guard,
         "ecommerce_rma_bonus_exchange_guard": ecommerce_rma_bonus_exchange_guard,
         "end_to_end_transactional_commerce_saga_guard": end_to_end_transactional_commerce_saga_guard,
+        "commercial_search_grounding_six_engine_guard": commercial_search_grounding_six_engine_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -71479,6 +71582,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="e2esaga-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 END_TO_END_FOUR_STAGE_FIDUCIARY_PIPELINE_AND_ERP_SAGA_CONFIRM · Mandate: e2e_agentic_commerce_saga_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 282 (#401) Commercial Search Grounding 6-Engine Selection -->
+      <div class="finops-box" id="commercial-search-grounding-six-engine-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔍 实时商业搜索与网页接地六引擎选型 (Web IQ vs Perplexity Sonar vs Tavily vs Exa vs Firecrawl vs Browser-Use) 沙盒</div>
+            <div class="finops-sub">Round 282 (#401 · SVG #725) · 隐藏 CSS/DOM 提示词注入清洗与无头浏览器危险动作隔离 (HTTP 403) + 禁凭 Sonar/Tavily 二道浓缩摘要直接锁单防误把 $129 配件当 $899 整机 (HTTP 422) + W3C TDMRep 版权保留与全量抓取 Token 熔断 (HTTP 451) + 85/10/4/1 四级漏斗削减 7.1x Token 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="gnd6-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度全量整页抓取 (4,800 tok/页) 大模型上下文燃烧、拿问答摘要旧价/配件价误下单及版权违规风险池 ($)
+            <input type="number" id="gnd6-gross-input" value="290000" min="10000" step="5000" oninput="recalcCommercialSearchGroundingSixEngineSandbox()" />
+          </label>
+          <label>外部网页隐藏 DOM 提示词注入清洗 (Strip opacity:0 / font-size:0) 与 Browser-Use 点击隔离门禁
+            <select id="gnd6-dom-select" onchange="recalcCommercialSearchGroundingSixEngineSandbox()">
+              <option value="pass">剥离隐藏 CSS 节点与评论区越权指令，Browser-Use 严格限制在只读变体库存提取 (安全)</option>
+              <option value="block_403">评论区隐藏提示词注入篡改收款 DID，或 Browser-Use 越权点击一键购买按钮 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>结账前实时落地页核验 (Web IQ /v3/browse liveCrawlSucceeded=true + 14 位 GTIN 全新现货对齐) 门禁
+            <select id="gnd6-quote-select" onchange="recalcCommercialSearchGroundingSixEngineSandbox()">
+              <option value="pass">进入支付前强制调用实时 /v3/browse 核验 14 位 GTIN、全新未拆封状态与实时运费 (合规)</option>
+              <option value="block_422">仅凭 Perplexity Sonar 或 Tavily 合成摘要把 $129 翻新/配件价当 $899 主机锁单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>W3C TDMRep 版权保留标头 (tdm-reservation: 1) 核验与防 Top-20 结果并发全页 Markdown 抓取熔断
+            <select id="gnd6-tdm-select" onchange="recalcCommercialSearchGroundingSixEngineSandbox()">
+              <option value="pass">严格遵守 TDMRep 版权保留并限制整页 Firecrawl 仅用于 Top-2 候选规格表提取 (安全)</option>
+              <option value="block_451">强爬声明 tdm-reservation:1 的付费研报，或每次搜索抓 20 篇全文烧掉 48k Tokens (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>85% Web IQ Passage 初筛 -&gt; 10% Exa/Sonar 扩展 -&gt; 4% Browse/Firecrawl 核价 -&gt; 1% Browser-Use 漏斗路由
+            <select id="gnd6-opt-select" onchange="recalcCommercialSearchGroundingSixEngineSandbox()">
+              <option value="enabled" selected>启用 85/10/4/1 四级商业接地漏斗削减 7.1x Prompt Token 并保障实时锁价 (-41% 损耗 / HTTP 409)</option>
+              <option value="disabled">全流量单一重型抓取引擎一刀切且不区分初筛切片与终审落地核验 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度全页Token燃烧与错价损失池</div>
+            <div class="finops-kpi-val" id="gnd6-gross-kpi">$290,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">四级接地漏斗路由后净成本</div>
+            <div class="finops-kpi-val" id="gnd6-net-kpi" style="color:#6ee7b7;">$171,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省API账单与错买赔付</div>
+            <div class="finops-kpi-val" id="gnd6-savings-kpi" style="color:#38bdf8;">$118,900</div>
+          </div>
+        </div>
+        <div id="gnd6-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FOUR_TIER_GROUNDING_FUNNEL_AND_LIVE_BROWSE_VERIFICATION_CONFIRM · Mandate: commercial_grounding_six_engine_optim_409
         </div>
       </div>
 
@@ -97582,6 +97742,79 @@ function recalcEndToEndTransactionalCommerceSagaSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_FOUR_STAGE_CART_FSM_AND_ERP_SAGA_AUTHORIZED · Mandate: e2e_agentic_commerce_saga_200';
+}}
+
+function recalcCommercialSearchGroundingSixEngineSandbox() {{
+  const grossInput = document.getElementById('gnd6-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '290000'));
+  const domGate = document.getElementById('gnd6-dom-select').value;
+  const quoteGate = document.getElementById('gnd6-quote-select').value;
+  const tdmGate = document.getElementById('gnd6-tdm-select').value;
+  const optMode = document.getElementById('gnd6-opt-select').value;
+
+  const grossKpi = document.getElementById('gnd6-gross-kpi');
+  const netKpi = document.getElementById('gnd6-net-kpi');
+  const savingsKpi = document.getElementById('gnd6-savings-kpi');
+  const statusKpi = document.getElementById('gnd6-status-kpi');
+  const banner = document.getElementById('gnd6-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (tdmGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 TDMREP_COPYRIGHT_RESERVATION_BREACH_OR_UNBOUNDED_FULL_PAGE_TOKEN_BURN · Mandate: null';
+    return;
+  }}
+  if (domGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 HIDDEN_DOM_PROMPT_INJECTION_OR_UNAPPROVED_BROWSER_ACTION · Mandate: null';
+    return;
+  }}
+  if (quoteGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SYNTHESIZED_SUMMARY_QUOTE_WITHOUT_LIVE_BROWSE_GTIN_PARITY · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FOUR_TIER_GROUNDING_FUNNEL_AND_LIVE_BROWSE_VERIFICATION_CONFIRM · Mandate: commercial_grounding_six_engine_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_LIVE_BROWSE_AND_SANITIZED_GROUNDING_AUTHORIZED · Mandate: commercial_grounding_six_engine_200';
 }}
 
 function updateStage1756Sandbox() {{
