@@ -38217,6 +38217,82 @@ def evaluate_circular_recommerce_dpp_vat_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bDistributorRebateSpaPolicyInput:
+    quarterly_spa_overclaim_cliff_and_channel_stuffing_pool_usd: float = 330000.0
+    edi844_serial_double_dip_or_inflated_fifo_basis_cost: bool = False
+    retroactive_dollar_one_cliff_negative_marginal_revenue: bool = False
+    q4_channel_stuffing_return_arbitrage_or_unaccrued_asc606: bool = False
+    stepped_marginal_rebate_fifo_spa_and_credit_memo_ready: bool = False
+
+
+def evaluate_b2b_distributor_rebate_spa_policy(
+    policy_input: B2bDistributorRebateSpaPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_spa_overclaim_cliff_and_channel_stuffing_pool_usd
+        ),
+    )
+    if policy_input.q4_channel_stuffing_return_arbitrage_or_unaccrued_asc606:
+        return {
+            "status_code": 451,
+            "decision": "Q4_CHANNEL_STUFFING_RETURN_ARBITRAGE_OR_UNACCRUED_ASC606_LIABILITY",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.edi844_serial_double_dip_or_inflated_fifo_basis_cost:
+        return {
+            "status_code": 403,
+            "decision": "EDI844_SPA_SERIAL_DOUBLE_DIP_OR_INFLATED_BASIS_COST_CLAIM",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.retroactive_dollar_one_cliff_negative_marginal_revenue:
+        return {
+            "status_code": 422,
+            "decision": "RETROACTIVE_DOLLAR_ONE_REBATE_CLIFF_NEGATIVE_MARGIN_INVERSION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stepped_marginal_rebate_fifo_spa_and_credit_memo_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "STEPPED_MARGINAL_REBATE_FIFO_SPA_AND_CREDIT_MEMO_CONFIRM",
+            "mandate_token": "b2b_distributor_rebate_spa_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_DISTRIBUTOR_SPA_AND_STEPPED_REBATE_AUTHORIZED",
+        "mandate_token": "b2b_distributor_rebate_spa_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -52040,6 +52116,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_distributor_rebate_spa_guard = {
+        "authorized_200": evaluate_b2b_distributor_rebate_spa_policy(
+            B2bDistributorRebateSpaPolicyInput()
+        ),
+        "edi844_serial_or_fifo_inflation_403": evaluate_b2b_distributor_rebate_spa_policy(
+            B2bDistributorRebateSpaPolicyInput(
+                edi844_serial_double_dip_or_inflated_fifo_basis_cost=True
+            )
+        ),
+        "retroactive_cliff_inversion_422": evaluate_b2b_distributor_rebate_spa_policy(
+            B2bDistributorRebateSpaPolicyInput(
+                retroactive_dollar_one_cliff_negative_marginal_revenue=True
+            )
+        ),
+        "channel_stuffing_or_unaccrued_451": evaluate_b2b_distributor_rebate_spa_policy(
+            B2bDistributorRebateSpaPolicyInput(
+                q4_channel_stuffing_return_arbitrage_or_unaccrued_asc606=True
+            )
+        ),
+        "stepped_rebate_fifo_memo_409": evaluate_b2b_distributor_rebate_spa_policy(
+            B2bDistributorRebateSpaPolicyInput(
+                stepped_marginal_rebate_fifo_spa_and_credit_memo_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -52472,6 +52574,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_otel_pci_gdpr_audit_guard": agentic_otel_pci_gdpr_audit_guard,
         "affiliate_creator_attribution_guard": affiliate_creator_attribution_guard,
         "circular_recommerce_dpp_vat_guard": circular_recommerce_dpp_vat_guard,
+        "b2b_distributor_rebate_spa_guard": b2b_distributor_rebate_spa_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -74999,6 +75102,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="recommdpp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 VERIFIED_DPP_OWNERSHIP_TRANSFER_MARGIN_VAT_AND_120X_CREDIT_CONFIRM · Mandate: circular_recommerce_dpp_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 304 (#423) B2B Distributor Rebates, Ship-and-Debit (EDI 844) & Retroactive Cliff -->
+      <div class="finops-box" id="b2b-distributor-rebate-spa-sandbox" style="margin-top:12px;border-color:#0369a1;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📊 企业 B2B 渠道分销返利、出货返扣 (EDI 844/849) 与防追溯悬崖 (Enable / Vistex / Model N) 沙盒</div>
+            <div class="finops-sub">Round 304 (#423 · SVG #747) · EDI 844 <-> EDI 867 序列号唯一核销与 FIFO 真实入库批次成本匹配防虚报进货价骗补 (HTTP 403) + 超额累进分段返利 (Stepped Marginal Brackets) 防全额追溯 Dollar-One 跨档倒亏 (HTTP 422) + T+45d 跨期退货冲销与 ASC 606 计提 (HTTP 451) + Credit Memo 抵扣净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="distrebate-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 B2B 分销商 EDI 844 高报进货价/重复索赔、全额追溯阶梯悬崖穿仓及年末压货退货损耗池 ($)
+            <input type="number" id="distrebate-gross-input" value="330000" min="10000" step="5000" oninput="recalcB2bDistributorRebateSpaSandbox()" />
+          </label>
+          <label>EDI 844 (Ship-and-Debit) 索赔单与 EDI 867 终端序列号及 FIFO 真实入库批次价匹配门禁
+            <select id="distrebate-spa-select" onchange="recalcB2bDistributorRebateSpaSandbox()">
+              <option value="pass">逐颗核验 EDI 867 终端出货序列号唯一性，并严格按 FIFO 历史入库发票批次成本核算差价 (安全)</option>
+              <option value="block_403">按 $80 促销批进货却按 $100 标准目录价虚报 EDI 844 骗补，或同一序列号重复索赔 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>年度销量阶梯返利结构：超额累进分段 (Stepped Brackets) vs 全额追溯悬崖 (Retroactive Cliff) 门禁
+            <select id="distrebate-cliff-select" onchange="recalcB2bDistributorRebateSpaSandbox()">
+              <option value="pass">采用超额累进分段计算，确保跨过 $1M 门槛时每一笔增量订单边际收益恒为正数 (合规)</option>
+              <option value="block_422">采用 Dollar-One 全额追溯条款，导致客户多买 $5,000 跨线却触发 $30,000 回溯返点倒亏 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>T+45d 跨期退货净销量锁定 (Anti-Channel-Stuffing) 与 ASC 606 可变对价月度自动计提门禁
+            <select id="distrebate-stuff-select" onchange="recalcB2bDistributorRebateSpaSandbox()">
+              <option value="pass">每月自动计提 ASC 606 返利负债，且须待货款结清并扣除跨期退货后签发下期抵扣券 (安全)</option>
+              <option value="block_451">12 月底突击压货套取最高档现金返利后次年 1 月大额退货，或漏计提返利致财报暴雷 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>EDI 844/867/849 自动对账 + 超额累进分段阶梯 + 下期订单抵扣贷项凭单 (Credit Memo) 编排
+            <select id="distrebate-opt-select" onchange="recalcB2bDistributorRebateSpaSandbox()">
+              <option value="enabled" selected>启用 FIFO 序列号核销 + 超额累进阶梯 + Credit Memo 自动抵扣 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">Excel 手工审批分销商索赔单并按全额追溯条款电汇打款 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度SPA骗补与悬崖穿仓池</div>
+            <div class="finops-kpi-val" id="distrebate-gross-kpi">$330,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">FIFO核销与分段阶梯后净成本</div>
+            <div class="finops-kpi-val" id="distrebate-net-kpi" style="color:#6ee7b7;">$201,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住B2B渠道口袋毛利</div>
+            <div class="finops-kpi-val" id="distrebate-savings-kpi" style="color:#38bdf8;">$128,700</div>
+          </div>
+        </div>
+        <div id="distrebate-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 STEPPED_MARGINAL_REBATE_FIFO_SPA_AND_CREDIT_MEMO_CONFIRM · Mandate: b2b_distributor_rebate_spa_optim_409
         </div>
       </div>
 
@@ -102708,6 +102868,79 @@ function recalcCircularRecommerceDppVatSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_DPP_AUTHENTICITY_AND_MARGIN_VAT_AUTHORIZED · Mandate: circular_recommerce_dpp_200';
+}}
+
+function recalcB2bDistributorRebateSpaSandbox() {{
+  const grossInput = document.getElementById('distrebate-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '330000'));
+  const spaGate = document.getElementById('distrebate-spa-select').value;
+  const cliffGate = document.getElementById('distrebate-cliff-select').value;
+  const stuffGate = document.getElementById('distrebate-stuff-select').value;
+  const optMode = document.getElementById('distrebate-opt-select').value;
+
+  const grossKpi = document.getElementById('distrebate-gross-kpi');
+  const netKpi = document.getElementById('distrebate-net-kpi');
+  const savingsKpi = document.getElementById('distrebate-savings-kpi');
+  const statusKpi = document.getElementById('distrebate-status-kpi');
+  const banner = document.getElementById('distrebate-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (stuffGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 Q4_CHANNEL_STUFFING_RETURN_ARBITRAGE_OR_UNACCRUED_ASC606_LIABILITY · Mandate: null';
+    return;
+  }}
+  if (spaGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 EDI844_SPA_SERIAL_DOUBLE_DIP_OR_INFLATED_BASIS_COST_CLAIM · Mandate: null';
+    return;
+  }}
+  if (cliffGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 RETROACTIVE_DOLLAR_ONE_REBATE_CLIFF_NEGATIVE_MARGIN_INVERSION · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 STEPPED_MARGINAL_REBATE_FIFO_SPA_AND_CREDIT_MEMO_CONFIRM · Mandate: b2b_distributor_rebate_spa_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_DISTRIBUTOR_SPA_AND_STEPPED_REBATE_AUTHORIZED · Mandate: b2b_distributor_rebate_spa_200';
 }}
 
 function updateStage1756Sandbox() {{

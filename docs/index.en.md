@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`422` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`423` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (30 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (56 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (158 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (92 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (93 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (37 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (49 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -286,7 +286,7 @@
 | 158 | **Circular Recommerce, EU `ESPR` Digital Product Passport (`DPP` + `NTAG 424 NFC`) & EU `VAT Margin Scheme (Art. 313)` Escrow (`Trove / Archive / Aura Blockchain vs. Vestiaire / StockX`), Rolling `SUN CMAC` Provenance, Serialized Margin-Only VAT & `1.20x` Store-Credit Flywheel (`-38%` Double-VAT & Fraud Loss) FAQ** | [English](circular-recommerce-eu-espr-digital-product-passport-dpp-vat-margin-scheme-selection-faq.en.md) · [中文](circular-recommerce-eu-espr-digital-product-passport-dpp-vat-margin-scheme-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (92 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (93 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -384,6 +384,7 @@
 | 90 | **Enterprise B2B Accounts Payable (`AP`) 3-Way Match (`PO == GRN == Invoice`: `SAP S/4HANA MIRO vs. Coupa Pay vs. Tipalti vs. Stampli`), Read-Only `VMF` Anti-`BEC` Bank Lock (`Nacha / SEPA CoP`), Line-Level Partial-`GRN` Balance Check, 5-Tuple Fuzzy Deduplication & `2/10 Net 30` (`37.2% APR`) Dynamic Discounting (`-39%` AP & Treasury Loss) Agent Architecture Selection FAQ** | [English](b2b-ap-three-way-match-po-grn-invoice-bec-iban-dynamic-discounting-selection-faq.en.md) · [中文](b2b-ap-three-way-match-po-grn-invoice-bec-iban-dynamic-discounting-selection-faq.md) |
 | 91 | **Enterprise B2B Catalog & Supply Chain Order Orchestration (`SAP Ariba / Coupa cXML PunchOut & SAP OCI 5.0 vs. ANSI X12 EDI 850/855/856/810 vs. Peppol BIS 3.0`), Pre-PO `Quote-ID` Re-Validation, `UN/CEFACT UoM` (`EA vs. CS`) Pack-Size Guard & `EDI 855/856` Closed-Loop Sync (`-39%` PO Fallout & UoM Error Loss) FAQ** | [English](b2b-punchout-cxml-oci-edi-850-855-856-uom-guard-quote-lock-escrow-selection-faq.en.md) · [中文](b2b-punchout-cxml-oci-edi-850-855-856-uom-guard-quote-lock-escrow-selection-faq.md) |
 | 92 | **Enterprise B2B `Net-30 / Net-60` Trade Credit Underwriting & Non-Recourse Factoring (`Resolve / Balance / Hokodo / Mondu vs. Allianz Trade / Coface`), Anti-Impersonation `KYB` Dock Lock, Unbilled-Shipment Exposure Guard & Anti-Double-Pledge `T+1` Payout (`-39%` Bad Debt & `DSO` Loss) FAQ** | [English](b2b-trade-credit-net30-underwriting-kyb-domain-lock-non-recourse-factoring-selection-faq.en.md) · [中文](b2b-trade-credit-net30-underwriting-kyb-domain-lock-non-recourse-factoring-selection-faq.md) |
+| 93 | **Enterprise B2B Distributor Rebates, `Ship-and-Debit / SPA` (`EDI 844 / 849`) & Anti-Retroactive Tier-Cliff Escrow (`Enable.com vs. Vistex / SAP S/4HANA vs. Model N vs. Zilliant`), `EDI 867` Serial + `FIFO` Lot-Cost Lock, Stepped Marginal Brackets & `T+45d` Net-Volume `Credit Memo` (`-39%` SPA & Cliff Loss) FAQ** | [English](b2b-distributor-rebate-ship-and-debit-edi844-retroactive-tier-cliff-escrow-selection-faq.en.md) · [中文](b2b-distributor-rebate-ship-and-debit-edi844-retroactive-tier-cliff-escrow-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (37 Guides)

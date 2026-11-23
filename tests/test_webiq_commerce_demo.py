@@ -29426,6 +29426,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("circular-recommerce-dpp-vat-sandbox", html_zh)
 
+    def test_b2b_distributor_rebate_spa_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bDistributorRebateSpaPolicyInput,
+            evaluate_b2b_distributor_rebate_spa_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_distributor_rebate_spa_policy(
+            B2bDistributorRebateSpaPolicyInput(
+                quarterly_spa_overclaim_cliff_and_channel_stuffing_pool_usd=330000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_DISTRIBUTOR_SPA_AND_STEPPED_REBATE_AUTHORIZED",
+        )
+
+        spa = evaluate_b2b_distributor_rebate_spa_policy(
+            B2bDistributorRebateSpaPolicyInput(
+                edi844_serial_double_dip_or_inflated_fifo_basis_cost=True
+            )
+        )
+        self.assertEqual(spa["status_code"], 403)
+        self.assertEqual(
+            spa["decision"],
+            "EDI844_SPA_SERIAL_DOUBLE_DIP_OR_INFLATED_BASIS_COST_CLAIM",
+        )
+
+        cliff = evaluate_b2b_distributor_rebate_spa_policy(
+            B2bDistributorRebateSpaPolicyInput(
+                retroactive_dollar_one_cliff_negative_marginal_revenue=True
+            )
+        )
+        self.assertEqual(cliff["status_code"], 422)
+        self.assertEqual(
+            cliff["decision"],
+            "RETROACTIVE_DOLLAR_ONE_REBATE_CLIFF_NEGATIVE_MARGIN_INVERSION",
+        )
+
+        stuff = evaluate_b2b_distributor_rebate_spa_policy(
+            B2bDistributorRebateSpaPolicyInput(
+                q4_channel_stuffing_return_arbitrage_or_unaccrued_asc606=True
+            )
+        )
+        self.assertEqual(stuff["status_code"], 451)
+        self.assertEqual(
+            stuff["decision"],
+            "Q4_CHANNEL_STUFFING_RETURN_ARBITRAGE_OR_UNACCRUED_ASC606_LIABILITY",
+        )
+
+        optim = evaluate_b2b_distributor_rebate_spa_policy(
+            B2bDistributorRebateSpaPolicyInput(
+                quarterly_spa_overclaim_cliff_and_channel_stuffing_pool_usd=330000.0,
+                stepped_marginal_rebate_fifo_spa_and_credit_memo_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 128700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 201300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_distributor_rebate_spa_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-distributor-rebate-spa-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
