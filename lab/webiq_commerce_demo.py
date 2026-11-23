@@ -36697,6 +36697,82 @@ def evaluate_commercial_agent_platform_hybrid_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BRfqTcoContractRedlinePolicyInput:
+    quarterly_unnormalized_tco_bid_rigging_and_clause_pool_usd: float = 340000.0
+    unnormalized_incoterms_exw_vs_ddp_or_wacc_illusion: bool = False
+    uom_pack_size_mismatch_or_shared_ubo_bid_rigging: bool = False
+    msa_poison_pill_liability_cap_stripped_or_silent_edit: bool = False
+    normalized_landed_tco_bafo_and_playbook_erp_sync_ready: bool = False
+
+
+def evaluate_b2b_rfq_tco_contract_redline_policy(
+    policy_input: B2BRfqTcoContractRedlinePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_unnormalized_tco_bid_rigging_and_clause_pool_usd
+        ),
+    )
+    if policy_input.msa_poison_pill_liability_cap_stripped_or_silent_edit:
+        return {
+            "status_code": 451,
+            "decision": "MSA_POISON_PILL_LIABILITY_CAP_STRIPPED_OR_SILENT_DOCX_EDIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unnormalized_incoterms_exw_vs_ddp_or_wacc_illusion:
+        return {
+            "status_code": 403,
+            "decision": "UNNORMALIZED_INCOTERMS_EXW_VS_DDP_OR_WACC_ILLUSION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uom_pack_size_mismatch_or_shared_ubo_bid_rigging:
+        return {
+            "status_code": 422,
+            "decision": "UOM_PACK_SIZE_MISMATCH_OR_SHARED_UBO_BID_RIGGING_DETECTED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.normalized_landed_tco_bafo_and_playbook_erp_sync_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "NORMALIZED_LANDED_TCO_BAFO_AND_PLAYBOOK_REDLINE_ERP_SYNC_CONFIRM",
+            "mandate_token": "b2b_rfq_tco_clm_copilot_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_LANDED_TCO_AND_PLAYBOOK_MSA_AUTHORIZED",
+        "mandate_token": "b2b_rfq_tco_clm_copilot_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -50000,6 +50076,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_rfq_tco_contract_redline_guard = {
+        "authorized_200": evaluate_b2b_rfq_tco_contract_redline_policy(
+            B2BRfqTcoContractRedlinePolicyInput()
+        ),
+        "unnormalized_incoterms_or_wacc_403": evaluate_b2b_rfq_tco_contract_redline_policy(
+            B2BRfqTcoContractRedlinePolicyInput(
+                unnormalized_incoterms_exw_vs_ddp_or_wacc_illusion=True
+            )
+        ),
+        "uom_mismatch_or_ubo_rigging_422": evaluate_b2b_rfq_tco_contract_redline_policy(
+            B2BRfqTcoContractRedlinePolicyInput(
+                uom_pack_size_mismatch_or_shared_ubo_bid_rigging=True
+            )
+        ),
+        "msa_poison_pill_or_silent_edit_451": evaluate_b2b_rfq_tco_contract_redline_policy(
+            B2BRfqTcoContractRedlinePolicyInput(
+                msa_poison_pill_liability_cap_stripped_or_silent_edit=True
+            )
+        ),
+        "landed_tco_bafo_and_erp_sync_409": evaluate_b2b_rfq_tco_contract_redline_policy(
+            B2BRfqTcoContractRedlinePolicyInput(
+                normalized_landed_tco_bafo_and_playbook_erp_sync_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -50412,6 +50514,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "end_to_end_transactional_commerce_saga_guard": end_to_end_transactional_commerce_saga_guard,
         "commercial_search_grounding_six_engine_guard": commercial_search_grounding_six_engine_guard,
         "commercial_agent_platform_hybrid_guard": commercial_agent_platform_hybrid_guard,
+        "b2b_rfq_tco_contract_redline_guard": b2b_rfq_tco_contract_redline_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -71799,6 +71902,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="plat4-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FRONT_STORE_LOW_CODE_AND_BACK_FACTORY_FOUNDRY_SAGA_HYBRID_CONFIRM · Mandate: commercial_agent_platform_hybrid_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 284 (#403) B2B RFQ Landed-TCO Normalization & Contract Redline Copilot -->
+      <div class="finops-box" id="b2b-rfq-tco-contract-redline-sandbox" style="margin-top:12px;border-color:#0284c7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📑 企业 B2B 采购寻源询价 (RFQ)、到岸 TCO 归一与合同初审 Copilot (Zip / SAP Ariba / Coupa / Ironclad) 沙盒</div>
+            <div class="finops-sub">Round 284 (#403 · SVG #727) · Incoterms 海运关税与账期 WACC 全口径到岸 TCO 归一防被 $10 EXW 假低价误导 (HTTP 403) + 基础计量单位 (Base UOM) 与 UBO 股权穿透防关联陪标 (HTTP 422) + 服务端 AST Diff 防关闭修订模式暗删责任上限 (HTTP 451) + 自动二轮 BAFO 压价并直写 ERP PIR 净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="rfqclm-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 B2B 寻源被 EXW 裸价误导多交关税运费、关联空壳商围标水分及合同毒丸条款漏洞损失池 ($)
+            <input type="number" id="rfqclm-gross-input" value="340000" min="10000" step="5000" oninput="recalcB2BRfqTcoContractRedlineSandbox()" />
+          </label>
+          <label>国际贸易术语 (Incoterms EXW/FOB vs DDP)、HS 原产地关税与账期资金成本 (WACC) 全口径 TCO 归一门禁
+            <select id="rfqclm-tco-select" onchange="recalcB2BRfqTcoContractRedlineSandbox()">
+              <option value="pass">统一折算为目标仓完税净现值单价 (含海运保费 + 25% 关税 - Net-60 账期贴现) 后授标 (安全)</option>
+              <option value="block_403">直接按 $10.00 EXW 表面裸价击败 $11.80 DDP 报价，加完税费运费后每件实亏 $2.69 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>基础计量单位 (Base UOM: 箱/打 vs 个) 自动换算与竞标供应商实控人 (DUNS / UBO / PDF 元数据) 防围标门禁
+            <select id="rfqclm-ubo-select" onchange="recalcB2BRfqTcoContractRedlineSandbox()">
+              <option value="pass">全部折算为 ERP 基础单位 EA，且 3 家竞标商股权/地址/文档指纹完全独立 (合规)</option>
+              <option value="block_422">把“每箱价”与“单个价”混比，或 3 家竞标商实为同一 UBO 实控人关联陪标 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>MSA / SOW 合同服务端无痕篡改检测 (Clean-Baseline AST Diff) 与法务 Playbook 毒丸一票否决门禁
+            <select id="rfqclm-msa-select" onchange="recalcB2BRfqTcoContractRedlineSandbox()">
+              <option value="pass">服务端逐段比对干净底稿，锁死 2 倍合同额赔偿上限、买方 IP 归属与 DPA 隐私附件 (安全)</option>
+              <option value="block_451">供应商关闭 Word 修订模式暗删责任上限或植入每年自动涨价 12% 霸王续约条款 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>基于分项底价合成目标价自动发起二轮终极议价 (Should-Cost BAFO) + 签约单价直写 SAP PIR / Coupa
+            <select id="rfqclm-opt-select" onchange="recalcB2BRfqTcoContractRedlineSandbox()">
+              <option value="enabled" selected>自动合成 Should-Cost 发起二轮 BAFO 压价 + 签约后单价直写 ERP 采购信息记录 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">首轮报价不议价直接签字且需人工手动将合同价格抄录进 ERP (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度TCO错判与围标漏洞损失池</div>
+            <div class="finops-kpi-val" id="rfqclm-gross-kpi">$340,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">全口径TCO与BAFO议价后净支出</div>
+            <div class="finops-kpi-val" id="rfqclm-net-kpi" style="color:#6ee7b7;">$210,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省到岸成本与法务风险</div>
+            <div class="finops-kpi-val" id="rfqclm-savings-kpi" style="color:#38bdf8;">$129,200</div>
+          </div>
+        </div>
+        <div id="rfqclm-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 NORMALIZED_LANDED_TCO_BAFO_AND_PLAYBOOK_REDLINE_ERP_SYNC_CONFIRM · Mandate: b2b_rfq_tco_clm_copilot_optim_409
         </div>
       </div>
 
@@ -98048,6 +98208,79 @@ function recalcCommercialAgentPlatformHybridSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 DELEGATED_OBO_IDENTITY_AND_SAGA_PLATFORM_AUTHORIZED · Mandate: commercial_agent_platform_hybrid_200';
+}}
+
+function recalcB2BRfqTcoContractRedlineSandbox() {{
+  const grossInput = document.getElementById('rfqclm-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '340000'));
+  const tcoGate = document.getElementById('rfqclm-tco-select').value;
+  const uboGate = document.getElementById('rfqclm-ubo-select').value;
+  const msaGate = document.getElementById('rfqclm-msa-select').value;
+  const optMode = document.getElementById('rfqclm-opt-select').value;
+
+  const grossKpi = document.getElementById('rfqclm-gross-kpi');
+  const netKpi = document.getElementById('rfqclm-net-kpi');
+  const savingsKpi = document.getElementById('rfqclm-savings-kpi');
+  const statusKpi = document.getElementById('rfqclm-status-kpi');
+  const banner = document.getElementById('rfqclm-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (msaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MSA_POISON_PILL_LIABILITY_CAP_STRIPPED_OR_SILENT_DOCX_EDIT · Mandate: null';
+    return;
+  }}
+  if (tcoGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNNORMALIZED_INCOTERMS_EXW_VS_DDP_OR_WACC_ILLUSION · Mandate: null';
+    return;
+  }}
+  if (uboGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UOM_PACK_SIZE_MISMATCH_OR_SHARED_UBO_BID_RIGGING_DETECTED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 NORMALIZED_LANDED_TCO_BAFO_AND_PLAYBOOK_REDLINE_ERP_SYNC_CONFIRM · Mandate: b2b_rfq_tco_clm_copilot_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_LANDED_TCO_AND_PLAYBOOK_MSA_AUTHORIZED · Mandate: b2b_rfq_tco_clm_copilot_200';
 }}
 
 function updateStage1756Sandbox() {{

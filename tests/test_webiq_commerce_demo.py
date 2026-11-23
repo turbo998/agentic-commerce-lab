@@ -28086,6 +28086,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("commercial-agent-platform-hybrid-sandbox", html_zh)
 
+    def test_b2b_rfq_tco_contract_redline_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BRfqTcoContractRedlinePolicyInput,
+            evaluate_b2b_rfq_tco_contract_redline_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_rfq_tco_contract_redline_policy(
+            B2BRfqTcoContractRedlinePolicyInput(
+                quarterly_unnormalized_tco_bid_rigging_and_clause_pool_usd=340000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_LANDED_TCO_AND_PLAYBOOK_MSA_AUTHORIZED",
+        )
+
+        tco = evaluate_b2b_rfq_tco_contract_redline_policy(
+            B2BRfqTcoContractRedlinePolicyInput(
+                unnormalized_incoterms_exw_vs_ddp_or_wacc_illusion=True
+            )
+        )
+        self.assertEqual(tco["status_code"], 403)
+        self.assertEqual(
+            tco["decision"],
+            "UNNORMALIZED_INCOTERMS_EXW_VS_DDP_OR_WACC_ILLUSION",
+        )
+
+        ubo = evaluate_b2b_rfq_tco_contract_redline_policy(
+            B2BRfqTcoContractRedlinePolicyInput(
+                uom_pack_size_mismatch_or_shared_ubo_bid_rigging=True
+            )
+        )
+        self.assertEqual(ubo["status_code"], 422)
+        self.assertEqual(
+            ubo["decision"],
+            "UOM_PACK_SIZE_MISMATCH_OR_SHARED_UBO_BID_RIGGING_DETECTED",
+        )
+
+        msa = evaluate_b2b_rfq_tco_contract_redline_policy(
+            B2BRfqTcoContractRedlinePolicyInput(
+                msa_poison_pill_liability_cap_stripped_or_silent_edit=True
+            )
+        )
+        self.assertEqual(msa["status_code"], 451)
+        self.assertEqual(
+            msa["decision"],
+            "MSA_POISON_PILL_LIABILITY_CAP_STRIPPED_OR_SILENT_DOCX_EDIT",
+        )
+
+        optim = evaluate_b2b_rfq_tco_contract_redline_policy(
+            B2BRfqTcoContractRedlinePolicyInput(
+                quarterly_unnormalized_tco_bid_rigging_and_clause_pool_usd=340000.0,
+                normalized_landed_tco_bafo_and_playbook_erp_sync_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 129200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 210800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_rfq_tco_contract_redline_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-rfq-tco-contract-redline-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

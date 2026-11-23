@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`402` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`403` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (29 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (54 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (150 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (88 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (89 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (35 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (46 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -275,7 +275,7 @@
 | 150 | **E-Commerce Post-Purchase `RMA`, Anti-`Returnless Refund` Abuse, `Bonus Exchange Credit` Non-Cashout Lock & Carrier `First-Scan` Escrow (`Loop Returns vs. Narvar vs. ReturnGO vs. AfterShip Returns`), `1-per-365d EMVCo PAR` Keep-Item Cap, Principal-vs-Bonus Dual Ledger & 7-Day WMS Size Hold (`-39%` Refund Drain & RMA Fraud) Agent Architecture Selection FAQ** | [English](ecommerce-rma-returnless-refund-abuse-bonus-exchange-credit-first-scan-escrow-agent-selection-faq.en.md) · [中文](ecommerce-rma-returnless-refund-abuse-bonus-exchange-credit-first-scan-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (88 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (89 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -369,6 +369,7 @@
 | 86 | **Enterprise B2B `CPFR` Rolling Forecast (`EDI 830`), Anti-Bullwhip Damping & `NCNR` Capacity Escrow (`SAP IBP vs. Kinaxis RapidResponse vs. o9 Solutions vs. Blue Yonder`), `W1–W4 Frozen / W5–W8 Slushy` Time-Fence Lock, De-Promotionalized `POS` Damper (`BWR <= 1.25`), `15% NCNR` Surge Deposit & Shared-BOM Family Mix Swap (`-37%` `E&O` & Overstock Loss) Agent Architecture Selection FAQ** | [English](b2b-cpfr-rolling-forecast-horizon-bullwhip-damping-ncnr-capacity-escrow-agent-selection-faq.en.md) · [中文](b2b-cpfr-rolling-forecast-horizon-bullwhip-damping-ncnr-capacity-escrow-agent-selection-faq.md) |
 | 87 | **Enterprise B2B Contract Lifecycle Management (`CLM`) Redline Negotiation (`Icertis vs. Ironclad AI vs. DocuSign IAM vs. Agiloft`), Pre-Approved `Tier-1/Tier-2 Fallback Clause` Library, Server-Side Silent-Edit Diff, Mandatory `GDPR/CCPA DPA` Gate & `T-120d` Auto-Renewal / `<=3%` CPI Cap Escrow (`-38%` Legal & Renewal Hike Loss) Agent Architecture Selection FAQ** | [English](b2b-clm-contract-redline-fallback-clause-liability-cap-autorenewal-escrow-agent-selection-faq.en.md) · [中文](b2b-clm-contract-redline-fallback-clause-liability-cap-autorenewal-escrow-agent-selection-faq.md) |
 | 88 | **Enterprise B2B Tail-Spend & Spot-Buy RFQ Automation (`Fairmarkit vs. SAP Ariba Spot Buy vs. Coupa Advantage vs. Amazon Business PunchOut`), Rolling 14-Day Anti-Split-PO Structuring Lock, Contracted Catalog Redirect, `HR-to-Vendor COI` Ghost-Vendor Shield & Master Vendor `MoR` Consolidation (`-37%` Tail-Spend & VMF Loss) Agent Architecture Selection FAQ** | [English](b2b-tail-spend-spot-buy-rfq-split-po-evasion-ghost-vendor-escrow-agent-selection-faq.en.md) · [中文](b2b-tail-spend-spot-buy-rfq-split-po-evasion-ghost-vendor-escrow-agent-selection-faq.md) |
+| 89 | **Enterprise B2B `RFQ` Sourcing, Multi-Supplier `Landed-TCO` Normalization & `MSA / SOW` Contract Redline Copilot (`Zip Intake-to-Procure vs. SAP Ariba Guided Sourcing vs. Coupa Sourcing vs. Ironclad AI`), `EXW-vs-DDP` + `WACC` Normalization, `UBO` Anti-Bid-Rigging Graph, Server-Side `AST Diff` Playbook Gate & `ERP PIR` Price Sync (`-38%` Sourcing & Legal Loss) Agent Architecture Selection FAQ** | [English](b2b-rfq-supplier-quote-tco-normalization-contract-redline-copilot-escrow-agent-selection-faq.en.md) · [中文](b2b-rfq-supplier-quote-tco-normalization-contract-redline-copilot-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (35 Guides)

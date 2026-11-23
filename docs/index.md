@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`402` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`403` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（29 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（54 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（150 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（88 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（89 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（35 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（46 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -275,7 +275,7 @@
 | 150 | **电商智能售后退换货与逆向留存（`Post-Purchase RMA & Bonus Exchange`：`Loop Returns / Narvar / ReturnGO / AfterShip Returns`）、防“免退回仅退款（`Returnless Refund`）”黑产白嫖、防换货奖励金二次退货套现与快递首扫锁库极速换货托管“防 `<$25` 免寄回仅退款规则被羊毛党换号刷空、防领 $15 换货补贴换货后再退货套现、防退货在途 5 天内换货新尺码卖断货与把 46% 退款转换货净省 39%”Agent 架构选型 FAQ** | [中文](ecommerce-rma-returnless-refund-abuse-bonus-exchange-credit-first-scan-escrow-agent-selection-faq.md) · [English](ecommerce-rma-returnless-refund-abuse-bonus-exchange-credit-first-scan-escrow-agent-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（88 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（89 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -369,6 +369,7 @@
 | 86 | **企业 B2B 供应链协同预测补货（`CPFR`）、`EDI 830` 三区滚动时间围栏（`Frozen / Slushy / Liquid`）与防牛鞭效应（`Bullwhip Damping`）履约托管（`SAP IBP vs. Kinaxis RapidResponse vs. o9 Solutions vs. Blue Yonder`）、防“在 W1–W4 刚性冻结期单方面砍单赔付代工厂 $85k 呆滞料（`E&O`）”、防“把 1 天直播闪促脉冲放大 3.5 倍下 12 周长单致爆仓”与共享通用 BOM 同产线跨型号无损置换净省 37% Agent 架构选型 FAQ** | [中文](b2b-cpfr-rolling-forecast-horizon-bullwhip-damping-ncnr-capacity-escrow-agent-selection-faq.md) · [English](b2b-cpfr-rolling-forecast-horizon-bullwhip-damping-ncnr-capacity-escrow-agent-selection-faq.en.md) |
 | 87 | **企业 B2B 采购与合同生命周期管理（`CLM`：“`Icertis Contract Intelligence vs. Ironclad AI vs. DocuSign IAM vs. Agiloft`”）条款初审修订（Redline）、预设退让条款库（`Tier-1 / Tier-2 Fallback Clause`）与防自动续约/责任上限失守托管、防“供应商关闭 Word 修订模式暗删 12 个月费用赔偿上限且 AI 自由造句放弃免责权”、防“隐藏提前 90 天通知自动续约（`Evergreen`）且每年暴涨 9%”与 `T-120d` ERP 续约提醒协同净省 38% Agent 架构选型 FAQ** | [中文](b2b-clm-contract-redline-fallback-clause-liability-cap-autorenewal-escrow-agent-selection-faq.md) · [English](b2b-clm-contract-redline-fallback-clause-liability-cap-autorenewal-escrow-agent-selection-faq.en.md) |
 | 88 | **企业 B2B 尾料与非目录零星采购（`Tail Spend & Spot Buy Automation`：`Fairmarkit / SAP Ariba Spot Buy / Coupa Advantage / Amazon Business PunchOut`）、自动三家询比价（`Autonomous 3-Bid RFQ`）、防拆单逃避审批（`Split-PO Evasion`）与防幽灵供应商洗钱托管“防把 $28,500 采购拆成 3 笔 $9,500 绕过总监审批、防放着 65 折年框目录不买手写高价野采、防内鬼注册关联空壳商洗钱与单一主记录代采商 `Master MoR` 免建档净省 37%”Agent 架构选型 FAQ** | [中文](b2b-tail-spend-spot-buy-rfq-split-po-evasion-ghost-vendor-escrow-agent-selection-faq.md) · [English](b2b-tail-spend-spot-buy-rfq-split-po-evasion-ghost-vendor-escrow-agent-selection-faq.en.md) |
+| 89 | **企业 B2B 采购寻源询价（`RFQ`）、供应商多维比价归一（`Landed TCO Normalization`）与合同毒丸条款初审（`MSA / SOW Redline Copilot`：`Zip Intake-to-Procure / SAP Ariba Guided Sourcing / Coupa Sourcing / Ironclad AI`）、防“拿 $10 EXW 出厂价误判打败 $11.80 DDP Net-60 到仓价导致加完关税海运每件倒亏 $2.69”、防关联股东围标与服务端全文 Diff 拦截暗删责任上限净省 38% Agent 架构选型 FAQ** | [中文](b2b-rfq-supplier-quote-tco-normalization-contract-redline-copilot-escrow-agent-selection-faq.md) · [English](b2b-rfq-supplier-quote-tco-normalization-contract-redline-copilot-escrow-agent-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（35 篇）

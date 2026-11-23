@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg727" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070d19"/>
+      <stop offset="50%" stop-color="#0d1729"/>
+      <stop offset="100%" stop-color="#111d35"/>
+    </linearGradient>
+    <linearGradient id="hdr727" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="50%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="card727" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#15233b"/>
+      <stop offset="100%" stop-color="#0d1729"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="760" fill="url(#bg727)"/>
+  <rect x="24" y="20" width="1232" height="78" rx="14" fill="url(#hdr727)" opacity="0.94"/>
+  <text x="48" y="53" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="20.5" font-weight="800">
+    Round 284 (#403 · SVG #727) · B2B RFQ Sourcing, Landed-TCO Normalization &amp; Contract Redline Copilot
+  </text>
+  <text x="48" y="79" fill="#e0f2fe" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">
+    SAP Ariba / Coupa / Zip Intake / Ironclad · Incoterms TCO Gate (403) · UOM &amp; Bid-Rigging Lock (422) · MSA Poison-Pill Veto (451/409)
+  </text>
+
+  <!-- Left Column: 4 B2B Intake-to-Procure & RFQ Platforms -->
+  <rect x="24" y="114" width="385" height="622" rx="12" fill="url(#card727)" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="44" y="146" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    1. B2B RFQ &amp; Contract Copilot Stack
+  </text>
+
+  <rect x="42" y="164" width="349" height="128" rx="10" fill="#0b1528" stroke="#0284c7" stroke-width="1.2"/>
+  <text x="58" y="190" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    A. Zip Intake-to-Procure + AI Quote &amp; Contract Parser
+  </text>
+  <text x="58" y="212" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Parallel routing across Legal, Infosec, Finance &amp; IT review
+  </text>
+  <text x="58" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Extracts line items from messy PDF/Excel vendor quotes into ERP
+  </text>
+  <text x="58" y="252" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Unified intake orchestration &amp; cross-functional approvals
+  </text>
+
+  <rect x="42" y="304" width="349" height="128" rx="10" fill="#0b1528" stroke="#6366f1" stroke-width="1.2"/>
+  <text x="58" y="330" fill="#a5b4fc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    B. SAP Ariba Guided Sourcing + Icertis CLM
+  </text>
+  <text x="58" y="352" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Multi-round sealed-bid RFQs &amp; BOM cost-breakdown templates
+  </text>
+  <text x="58" y="372" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Direct Award-to-Contract &amp; SAP S/4HANA outline agreement sync
+  </text>
+  <text x="58" y="392" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Global manufacturing &amp; strategic direct/indirect RFQs
+  </text>
+
+  <rect x="42" y="444" width="349" height="128" rx="10" fill="#0b1528" stroke="#8b5cf6" stroke-width="1.2"/>
+  <text x="58" y="470" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    C. Coupa Sourcing + Contract Intelligence
+  </text>
+  <text x="58" y="492" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Community benchmark pricing &amp; automated supplier risk scoring
+  </text>
+  <text x="58" y="512" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Automatically links negotiated MSA price tables to PO validation
+  </text>
+  <text x="58" y="532" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Spend-under-management compliance &amp; PO price locks
+  </text>
+
+  <rect x="42" y="584" width="349" height="134" rx="10" fill="#0b1528" stroke="#10b981" stroke-width="1.2"/>
+  <text x="58" y="610" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    D. Ironclad AI / DocuSign IAM + Custom Foundry Copilot
+  </text>
+  <text x="58" y="632" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Clause-level DOCX redlining against Playbook fallback positions
+  </text>
+  <text x="58" y="652" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Flags uncapped indemnity, IP assignment leaks &amp; evergreen traps
+  </text>
+  <text x="58" y="672" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Automated legal triage &amp; third-party paper redlining
+  </text>
+
+  <!-- Center Column: Deterministic Fiduciary RFQ & Redline Guards -->
+  <rect x="429" y="114" width="422" height="622" rx="12" fill="url(#card727)" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="449" y="146" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    2. Fiduciary RFQ Normalization &amp; CLM Control Plane
+  </text>
+
+  <!-- Gate 1: HTTP 403 -->
+  <rect x="447" y="166" width="386" height="126" rx="10" fill="#1e1124" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="463" y="192" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 1 · Apple-to-Apples Landed TCO Normalization (HTTP 403)
+  </text>
+  <text x="463" y="214" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Bans comparing raw unit price of `EXW Factory` vs. `DDP Warehouse`
+  </text>
+  <text x="463" y="234" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Normalizes freight, Section 301 tariffs &amp; Net-60 WACC cost of capital
+  </text>
+  <text x="463" y="254" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Stops awarding to "cheap" EXW quotes that cost 28% more after duty/freight
+  </text>
+
+  <!-- Gate 2: HTTP 422 -->
+  <rect x="447" y="306" width="386" height="126" rx="10" fill="#231815" stroke="#f97316" stroke-width="1.5"/>
+  <text x="463" y="332" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 2 · UOM Pack-Size &amp; UBO Anti-Collusion Lock (HTTP 422)
+  </text>
+  <text x="463" y="354" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Converts `Box of 12 (CS)` vs. `Each (EA)` to canonical base unit
+  </text>
+  <text x="463" y="374" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Screens 3 bidding vendors for shared `UBO / DUNS / IP` bid-rigging
+  </text>
+  <text x="463" y="394" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Prevents 12x UOM unit-price illusions &amp; sham 3-quote puppet rings
+  </text>
+
+  <!-- Gate 3: HTTP 451 -->
+  <rect x="447" y="446" width="386" height="126" rx="10" fill="#1f1629" stroke="#ec4899" stroke-width="1.5"/>
+  <text x="463" y="472" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 3 · MSA Poison-Pill &amp; Liability-Cap Veto (HTTP 451)
+  </text>
+  <text x="463" y="494" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Blocks PO release if supplier paper deletes `2x Fees Liability Cap`
+  </text>
+  <text x="463" y="514" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Flags silent IP ownership grab, uncapped price hikes &amp; missing DPA
+  </text>
+  <text x="463" y="534" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Zero unapproved legal poison pills slipping into signed vendor contracts
+  </text>
+
+  <!-- Gate 4: HTTP 409 -->
+  <rect x="447" y="586" width="386" height="132" rx="10" fill="#0d2622" stroke="#10b981" stroke-width="1.5"/>
+  <text x="463" y="612" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 4 · Automated Best-and-Final (BAFO) + ERP Sync (HTTP 409)
+  </text>
+  <text x="463" y="634" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Generates target-price counter-offers from component Should-Cost
+  </text>
+  <text x="463" y="654" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Syncs signed contract unit prices &amp; SLA credits directly to ERP PO
+  </text>
+  <text x="463" y="678" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Cuts Landed Procurement Cost &amp; Legal Cycle by 38% ($129.2k)
+  </text>
+
+  <!-- Right Column: FinOps Impact & 7-Card Telemetry -->
+  <rect x="871" y="114" width="385" height="622" rx="12" fill="url(#card727)" stroke="#10b981" stroke-width="1.5"/>
+  <text x="891" y="146" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    3. B2B RFQ &amp; CLM Redline FinOps
+  </text>
+
+  <rect x="889" y="168" width="349" height="184" rx="10" fill="#091526" stroke="#38bdf8" stroke-width="1.2"/>
+  <text x="907" y="194" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Quarterly EXW/DDP Illusion &amp; Contract Leakage Pool ($340k)
+  </text>
+  <text x="907" y="220" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Unnormalized Freight/Duty &amp; Legal Risk Pool: $340,000
+  </text>
+  <text x="907" y="242" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Net Spend with Landed-TCO &amp; BAFO Copilot: $210,800
+  </text>
+  <text x="907" y="264" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="800">
+    • Quarterly Saved Sourcing &amp; Contract Spend: $129,200 (-38%)
+  </text>
+  <rect x="907" y="282" width="310" height="16" rx="8" fill="#1e293b"/>
+  <rect x="907" y="282" width="192" height="16" rx="8" fill="#10b981"/>
+  <text x="907" y="318" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    68% Faster PR-to-Signed-Contract Cycle (14 days -&gt; 4.5 days)
+  </text>
+
+  <rect x="889" y="368" width="349" height="176" rx="10" fill="#091526" stroke="#a855f7" stroke-width="1.2"/>
+  <text x="907" y="394" fill="#d8b4fe" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Why Raw Unit-Price Comparison Fails in B2B RFQs
+  </text>
+  <text x="907" y="420" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Vendor A: $10.00 EXW (Prepay) + $1.80 Freight + $2.50 Duty = $14.30!
+  </text>
+  <text x="907" y="442" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Vendor B: $11.80 DDP (Net-60, -$0.19 WACC) = $11.61 True Landed TCO!
+  </text>
+  <text x="907" y="464" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Naive Agent picks Vendor A ($10 &lt; $11.80) and loses $2.69/unit
+  </text>
+  <text x="907" y="486" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Landed-TCO + Clause Playbook Diff Latency: 62 ms P50
+  </text>
+
+  <rect x="889" y="560" width="349" height="158" rx="10" fill="#091526" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="907" y="586" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Deterministic Audit Tokens &amp; Provenance
+  </text>
+  <text x="907" y="610" fill="#cbd5e1" font-family="Consolas, monospace" font-size="11">
+    200: b2b_rfq_tco_clm_copilot_200
+  </text>
+  <text x="907" y="630" fill="#fde68a" font-family="Consolas, monospace" font-size="11">
+    409: b2b_rfq_tco_clm_copilot_optim_409
+  </text>
+  <text x="907" y="650" fill="#fca5a5" font-family="Consolas, monospace" font-size="11">
+    403/422/451: null (Mandate Blocked)
+  </text>
+  <text x="907" y="676" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    Provenance: synthetic · independently_reproduced=false
+  </text>
+</svg>
