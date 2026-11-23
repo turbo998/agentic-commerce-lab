@@ -28354,6 +28354,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-chargeback-ce30-rdr-mutex-sandbox", html_zh)
 
+    def test_b2b_ap_three_way_match_scf_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BApThreeWayMatchDynamicDiscountPolicyInput,
+            evaluate_b2b_ap_three_way_match_dynamic_discount_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_ap_three_way_match_dynamic_discount_policy(
+            B2BApThreeWayMatchDynamicDiscountPolicyInput(
+                quarterly_missed_discount_overbilling_and_bec_pool_usd=350000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_LINE_LEVEL_THREE_WAY_MATCH_AND_VMF_IBAN_AUTHORIZED",
+        )
+
+        bec = evaluate_b2b_ap_three_way_match_dynamic_discount_policy(
+            B2BApThreeWayMatchDynamicDiscountPolicyInput(
+                bec_invoice_pdf_iban_override_or_unverified_bank_swap=True
+            )
+        )
+        self.assertEqual(bec["status_code"], 403)
+        self.assertEqual(
+            bec["decision"],
+            "BEC_INVOICE_PDF_IBAN_OVERRIDE_OR_UNVERIFIED_PAYEE_BANK_CHANGE",
+        )
+
+        grn = evaluate_b2b_ap_three_way_match_dynamic_discount_policy(
+            B2BApThreeWayMatchDynamicDiscountPolicyInput(
+                partial_grn_quantity_deficit_or_unit_price_variance=True
+            )
+        )
+        self.assertEqual(grn["status_code"], 422)
+        self.assertEqual(
+            grn["decision"],
+            "THREE_WAY_MATCH_PARTIAL_GRN_QTY_DEFICIT_OR_UNIT_PRICE_VARIANCE",
+        )
+
+        dup = evaluate_b2b_ap_three_way_match_dynamic_discount_policy(
+            B2BApThreeWayMatchDynamicDiscountPolicyInput(
+                duplicate_invoice_fuzzy_hash_across_edi_and_pdf=True
+            )
+        )
+        self.assertEqual(dup["status_code"], 451)
+        self.assertEqual(
+            dup["decision"],
+            "DUPLICATE_INVOICE_FUZZY_HASH_COLLISION_ACROSS_EDI_AND_PDF",
+        )
+
+        optim = evaluate_b2b_ap_three_way_match_dynamic_discount_policy(
+            B2BApThreeWayMatchDynamicDiscountPolicyInput(
+                quarterly_missed_discount_overbilling_and_bec_pool_usd=350000.0,
+                fast_track_three_way_match_and_2_10_net_30_yield_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 136500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 213500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_ap_three_way_match_scf_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-ap-three-way-match-scf-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
