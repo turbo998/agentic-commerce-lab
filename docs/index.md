@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`395` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`396` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -11,7 +11,7 @@
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（148 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（88 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（34 篇）](#saas-finops-micropayments)
-- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（45 篇）](#tax-fx-privacy-disputes)
+- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（46 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
 
@@ -408,7 +408,7 @@
 | 34 | **电商周期购与自动补货订阅（`Subscribe & Save / Replenishment Boxes`：`Recharge / Skio / Ordergroove / Bold Subscriptions / Stripe Billing`）、防断货空扣月费（`Stockout Billing Lock`）、防首单半价薅毛秒退与一键“顺延/改周期/换口味（`Skip / Cadence Shift / Flavor Swap`）”反流失托管“防仓库已断货仍照扣月费或因缺 1 件货把整单 85 折降为 95 折、防羊毛党领完首盒 5 折秒退订换号重拍与免密短信一键顺延改 45 天周期挽回 42% 流失净省 38%”Agent 架构选型 FAQ** | [中文](ecommerce-subscribe-and-save-replenishment-skip-pause-stockout-billing-escrow-agent-selection-faq.md) · [English](ecommerce-subscribe-and-save-replenishment-skip-pause-stockout-billing-escrow-agent-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（45 篇）
+## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（46 篇）
 
 > 聚焦 Merchant of Record（MoR）选型、跨境 HS 编码完税价（DDP）与 VAT/Sales Tax 合规、实时锁汇与 ISO 20022 多币种净额轧差、PCI-DSS v4.0.1 / GDPR 加密粉碎，以及 Visa CE 3.0 / VAMP 友好欺诈抗辩证据链。
 
@@ -459,6 +459,7 @@
 | 43 | **跨境进口电商与保税仓（`1210 保税备货 / 9610 直邮`）、海关总署 `179号公告` 三单对碰（订单/支付单/运单）与个人年度 `¥26,000` 额度清关税务托管（`天猫国际 / 京东国际 / 菜鸟保税 / 中国电子口岸单一窗口 / 微信支付·支付宝海关推单`）、防“老婆填身份证下单老公刷微信付款触发三单对碰失败包裹死锁保税区”、防“代购盗用 40 个老人身份证同址拆单走私”与 30 天保税退货中心仓（`CEB621`）复入区全额退还 9.1% 综合税并秒级恢复年度免税额度净省 37% Agent 架构选型 FAQ** | [中文](cross-border-import-bonded-1210-customs-179-three-way-match-quota-escrow-agent-selection-faq.md) · [English](cross-border-import-bonded-1210-customs-179-three-way-match-quota-escrow-agent-selection-faq.en.md) |
 | 44 | **🏆 跨境电商出口海外仓（`9810 / 9710 / 9610`）、`13%` 增值税“离境即退税（Pre-Rebate）”与报关单-进项专票“换汇成本（`FX Cost Ratio`）”稽核托管（`中国电子口岸单一窗口 / 金税四期 / 领星 ERP / 易仓 / 阿里一达通` · 🏆 第 380 篇里程碑）、防“工厂专票开‘个’而报关单第一法定单位报‘千克’致百万退税被锁死”、防“为省目的港关税低报 FOB 美元价致换汇成本突破 ¥7.80/$1 触发骗税立案”与有票 `9810` 离境 3 天预退税 + 无票 `9610` 免征不退双轨分流净省 39% Agent 架构选型 FAQ** | [中文](cross-border-export-9810-overseas-warehouse-vat-rebate-fx-cost-reconciliation-escrow-agent-selection-faq.md) · [English](cross-border-export-9810-overseas-warehouse-vat-rebate-fx-cost-reconciliation-escrow-agent-selection-faq.en.md) |
 | 45 | **跨境电商多语种智能客服（`Zendesk AI / Intercom Fin`）、海外本地集货退货与退运免税退税（`Duty Drawback`：`19 USC 1313(c) / 欧盟 RGR / 海关 4561`）及多币种原汇率锁汇退款托管（`ZigZag Global / Rebound / Loop Returns + Adyen / Stripe`）、防“为 €30 卫衣开 €27 跨国空运退货单倒贴运费与仅退款被羊毛党刷爆”、防“退货回国未关联原出口报关单号被二次征收进口关税”与目的国本地仓分级质检重售（`74%`）净省 38% Agent 架构选型 FAQ** | [中文](cross-border-multilingual-support-return-consolidation-duty-drawback-fx-escrow-agent-selection-faq.md) · [English](cross-border-multilingual-support-return-consolidation-duty-drawback-fx-escrow-agent-selection-faq.en.md) |
+| 46 | **跨境电商多市场本地化心理定价（`Localized Charm Pricing`）、结账防动态货币转换暗扣（`Anti-DCC vs. Multi-Currency Presentment MCP`）与 24 小时锁汇走廊及退货原汇率保值托管（`Global-e / Shopify Markets Pro / Adyen MCP / Airwallex / Stripe Adaptive Pricing`）、防“前台标欧元后台刷美元害买家被收 3% FTF 跨境费或遭遇 6.5% DCC 汇率刺客”、防“机械乘汇率产生 `€43.87` 怪异尾数或日元 `JPY` 传两位小数触发 HTTP 400 崩溃”与同币种 `Like-for-Like vIBAN` 原币收退零汇损净省 38% Agent 架构选型 FAQ** | [中文](cross-border-localized-charm-pricing-fx-corridor-dcc-shield-refund-parity-escrow-agent-selection-faq.md) · [English](cross-border-localized-charm-pricing-fx-corridor-dcc-shield-refund-parity-escrow-agent-selection-faq.en.md) |
 
 <a id="architecture-blueprints"></a>
 ## 七、确定性领域架构蓝图（`docs/architecture/` · 21 份）

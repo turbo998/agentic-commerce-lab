@@ -27617,6 +27617,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-subscribe-save-replenish-sandbox", html_zh)
 
+    def test_cross_border_localized_pricing_fx_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderLocalizedPricingFXEscrowPolicyInput,
+            evaluate_cross_border_localized_pricing_fx_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_localized_pricing_fx_escrow_policy(
+            CrossBorderLocalizedPricingFXEscrowPolicyInput(
+                quarterly_fx_spread_dcc_dropoff_and_return_bleed_pool_usd=285000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_LOCAL_MCP_CHARM_PRICE_AND_FX_LOCK_AUTHORIZED",
+        )
+
+        dcc = evaluate_cross_border_localized_pricing_fx_escrow_policy(
+            CrossBorderLocalizedPricingFXEscrowPolicyInput(
+                predatory_dcc_markup_or_currency_mismatch_ftf_shock=True
+            )
+        )
+        self.assertEqual(dcc["status_code"], 403)
+        self.assertEqual(
+            dcc["decision"],
+            "PREDATORY_DCC_MARKUP_OR_PRESENTMENT_SETTLEMENT_CURRENCY_MISMATCH",
+        )
+
+        charm = evaluate_cross_border_localized_pricing_fx_escrow_policy(
+            CrossBorderLocalizedPricingFXEscrowPolicyInput(
+                ugly_floating_fx_price_or_iso4217_zero_decimal_crash=True
+            )
+        )
+        self.assertEqual(charm["status_code"], 422)
+        self.assertEqual(
+            charm["decision"],
+            "UGLY_FLOATING_FX_PRICE_OR_ISO4217_ZERO_DECIMAL_CRASH",
+        )
+
+        bleed = evaluate_cross_border_localized_pricing_fx_escrow_policy(
+            CrossBorderLocalizedPricingFXEscrowPolicyInput(
+                double_fx_conversion_return_bleed_or_expired_quote=True
+            )
+        )
+        self.assertEqual(bleed["status_code"], 451)
+        self.assertEqual(
+            bleed["decision"],
+            "DOUBLE_FX_CONVERSION_RETURN_BLEED_OR_EXPIRED_QUOTE_ARBITRAGE",
+        )
+
+        optim = evaluate_cross_border_localized_pricing_fx_escrow_policy(
+            CrossBorderLocalizedPricingFXEscrowPolicyInput(
+                quarterly_fx_spread_dcc_dropoff_and_return_bleed_pool_usd=285000.0,
+                like_for_like_viban_and_local_apm_charm_pricing_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 108300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 176700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_localized_pricing_fx_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-localized-pricing-fx-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

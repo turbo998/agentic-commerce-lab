@@ -36165,6 +36165,82 @@ def evaluate_ecommerce_subscribe_save_replenish_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderLocalizedPricingFXEscrowPolicyInput:
+    quarterly_fx_spread_dcc_dropoff_and_return_bleed_pool_usd: float = 285000.0
+    predatory_dcc_markup_or_currency_mismatch_ftf_shock: bool = False
+    ugly_floating_fx_price_or_iso4217_zero_decimal_crash: bool = False
+    double_fx_conversion_return_bleed_or_expired_quote: bool = False
+    like_for_like_viban_and_local_apm_charm_pricing_ready: bool = False
+
+
+def evaluate_cross_border_localized_pricing_fx_escrow_policy(
+    policy_input: CrossBorderLocalizedPricingFXEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_fx_spread_dcc_dropoff_and_return_bleed_pool_usd
+        ),
+    )
+    if policy_input.double_fx_conversion_return_bleed_or_expired_quote:
+        return {
+            "status_code": 451,
+            "decision": "DOUBLE_FX_CONVERSION_RETURN_BLEED_OR_EXPIRED_QUOTE_ARBITRAGE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.predatory_dcc_markup_or_currency_mismatch_ftf_shock:
+        return {
+            "status_code": 403,
+            "decision": "PREDATORY_DCC_MARKUP_OR_PRESENTMENT_SETTLEMENT_CURRENCY_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ugly_floating_fx_price_or_iso4217_zero_decimal_crash:
+        return {
+            "status_code": 422,
+            "decision": "UGLY_FLOATING_FX_PRICE_OR_ISO4217_ZERO_DECIMAL_CRASH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.like_for_like_viban_and_local_apm_charm_pricing_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "LIKE_FOR_LIKE_VIBAN_SETTLEMENT_AND_LOCAL_APM_CHARM_PRICE_CONFIRM",
+            "mandate_token": "crossborder_charm_fx_dcc_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_LOCAL_MCP_CHARM_PRICE_AND_FX_LOCK_AUTHORIZED",
+        "mandate_token": "crossborder_charm_fx_dcc_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -49286,6 +49362,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_localized_pricing_fx_guard = {
+        "authorized_200": evaluate_cross_border_localized_pricing_fx_escrow_policy(
+            CrossBorderLocalizedPricingFXEscrowPolicyInput()
+        ),
+        "predatory_dcc_or_currency_mismatch_403": evaluate_cross_border_localized_pricing_fx_escrow_policy(
+            CrossBorderLocalizedPricingFXEscrowPolicyInput(
+                predatory_dcc_markup_or_currency_mismatch_ftf_shock=True
+            )
+        ),
+        "ugly_floating_price_or_zero_decimal_422": evaluate_cross_border_localized_pricing_fx_escrow_policy(
+            CrossBorderLocalizedPricingFXEscrowPolicyInput(
+                ugly_floating_fx_price_or_iso4217_zero_decimal_crash=True
+            )
+        ),
+        "double_fx_return_bleed_451": evaluate_cross_border_localized_pricing_fx_escrow_policy(
+            CrossBorderLocalizedPricingFXEscrowPolicyInput(
+                double_fx_conversion_return_bleed_or_expired_quote=True
+            )
+        ),
+        "like_for_like_viban_charm_409": evaluate_cross_border_localized_pricing_fx_escrow_policy(
+            CrossBorderLocalizedPricingFXEscrowPolicyInput(
+                like_for_like_viban_and_local_apm_charm_pricing_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -49691,6 +49793,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_tail_spend_spot_buy_escrow_guard": b2b_tail_spend_spot_buy_escrow_guard,
         "ota_airline_hotel_rebooking_escrow_guard": ota_airline_hotel_rebooking_escrow_guard,
         "ecommerce_subscribe_save_replenish_guard": ecommerce_subscribe_save_replenish_guard,
+        "cross_border_localized_pricing_fx_guard": cross_border_localized_pricing_fx_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -70679,6 +70782,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="subsave-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 OVERSTOCK_SKIP_CADENCE_SHIFT_AND_FLAVOR_SWAP_RETENTION_CONFIRM · Mandate: subscribe_save_replenish_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 277 (#396) Cross-Border Localized Pricing, FX Corridor & Anti-DCC Escrow -->
+      <div class="finops-box" id="cross-border-localized-pricing-fx-sandbox" style="margin-top:12px;border-color:#6366f1;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🌍 跨境多市场本地化定价 (Global-e / Shopify Markets Pro / Adyen MCP / Airwallex) 反 DCC 与同币种锁汇沙盒</div>
+            <div class="finops-sub">Round 277 (#396 · SVG #720) · 卡 8 位 BIN 本币匹配防 6.5% DCC 汇率刺客与 3% FTF 跨境费 (HTTP 403) + 国别心理尾数取整 (.95/整百) 与 ISO 4217 零小数货币 (JPY/KRW) 防崩溃锁 (HTTP 422) + 同币种 Like-for-Like vIBAN 原币退货防 5% 双重汇损 (HTTP 451) + 本地钱包置顶净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="cbfxdcc-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度跨境结账因奇异尾数与 3% FTF 弃单流失、退货双向换汇被剥 5% 汇损皮及高点差 DCC 拒付损失池 ($)
+            <input type="number" id="cbfxdcc-gross-input" value="285000" min="10000" step="5000" oninput="recalcCrossBorderLocalizedPricingFXSandbox()" />
+          </label>
+          <label>银行卡 8 位 BIN 发卡国本币对齐 (Native MCP + Local Acquiring) 与反动态货币转换 (Anti-DCC) 门禁
+            <select id="cbfxdcc-dcc-select" onchange="recalcCrossBorderLocalizedPricingFXSandbox()">
+              <option value="pass">展示币种与本地收单清算币种 100% 一致，免除持卡人 3% FTF 与高溢价 DCC (安全)</option>
+              <option value="block_403">诱导 6.5% 加点 DCC 或前端标欧元后端偷刷美元害买家被收 3% 跨境手续费 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>国别心理尾数取整 (Charm Pricing: EUR .95 / CHF .05 / JPY 整百) 与 ISO 4217 零小数货币指数门禁
+            <select id="cbfxdcc-charm-select" onchange="recalcCrossBorderLocalizedPricingFXSandbox()">
+              <option value="pass">自动按目标国习惯取整心理尾数，且对 JPY/KRW 严格按 exponent=0 整数传参 (合规)</option>
+              <option value="block_422">直接展示 €43.87 机械换算怪异尾数，或对日元传两位小数引发网关 HTTP 400 崩溃 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>同币种结算池 (Like-for-Like vIBAN) 原币收退与防 30 天退货双重换汇磨损 (Double-FX Bleed) 门禁
+            <select id="cbfxdcc-refund-select" onchange="recalcCrossBorderLocalizedPricingFXSandbox()">
+              <option value="pass">欧元/英镑货款原币沉淀至同名 vIBAN，退货时原币原额退还实现 0% 双向换汇费 (安全)</option>
+              <option value="block_451">收款强行结汇成美元、退货又从美元换回欧元被收单行双向扒皮 5% 汇损 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>24h LockFX 锁汇走廊屏蔽周末休市高点差 + 按买家国家自动置顶本地主流支付 (iDEAL / BLIK / Pix)
+            <select id="cbfxdcc-opt-select" onchange="recalcCrossBorderLocalizedPricingFXSandbox()">
+              <option value="enabled" selected>启用同币种 vIBAN 原币收退付海外仓 + 24h 锁汇走廊 + 本地钱包置顶 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">全站仅支持国际信用卡美元单币种结算且不开启心理尾数取整与本地钱包 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度跨境汇损与弃单损失池</div>
+            <div class="finops-kpi-val" id="cbfxdcc-gross-kpi">$285,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">同币种vIBAN与心理取整后净成本</div>
+            <div class="finops-kpi-val" id="cbfxdcc-net-kpi" style="color:#6ee7b7;">$176,700</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省双重汇损与转化增量</div>
+            <div class="finops-kpi-val" id="cbfxdcc-savings-kpi" style="color:#38bdf8;">$108,300</div>
+          </div>
+        </div>
+        <div id="cbfxdcc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 LIKE_FOR_LIKE_VIBAN_SETTLEMENT_AND_LOCAL_APM_CHARM_PRICE_CONFIRM · Mandate: crossborder_charm_fx_dcc_optim_409
         </div>
       </div>
 
@@ -96417,6 +96577,79 @@ function recalcEcommerceSubscribeSaveReplenishSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 IN_STOCK_PRENOTIFIED_REPLENISHMENT_BILLING_AUTHORIZED · Mandate: subscribe_save_replenish_200';
+}}
+
+function recalcCrossBorderLocalizedPricingFXSandbox() {{
+  const grossInput = document.getElementById('cbfxdcc-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '285000'));
+  const dccGate = document.getElementById('cbfxdcc-dcc-select').value;
+  const charmGate = document.getElementById('cbfxdcc-charm-select').value;
+  const refundGate = document.getElementById('cbfxdcc-refund-select').value;
+  const optMode = document.getElementById('cbfxdcc-opt-select').value;
+
+  const grossKpi = document.getElementById('cbfxdcc-gross-kpi');
+  const netKpi = document.getElementById('cbfxdcc-net-kpi');
+  const savingsKpi = document.getElementById('cbfxdcc-savings-kpi');
+  const statusKpi = document.getElementById('cbfxdcc-status-kpi');
+  const banner = document.getElementById('cbfxdcc-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (refundGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 DOUBLE_FX_CONVERSION_RETURN_BLEED_OR_EXPIRED_QUOTE_ARBITRAGE · Mandate: null';
+    return;
+  }}
+  if (dccGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PREDATORY_DCC_MARKUP_OR_PRESENTMENT_SETTLEMENT_CURRENCY_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (charmGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UGLY_FLOATING_FX_PRICE_OR_ISO4217_ZERO_DECIMAL_CRASH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 LIKE_FOR_LIKE_VIBAN_SETTLEMENT_AND_LOCAL_APM_CHARM_PRICE_CONFIRM · Mandate: crossborder_charm_fx_dcc_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_LOCAL_MCP_CHARM_PRICE_AND_FX_LOCK_AUTHORIZED · Mandate: crossborder_charm_fx_dcc_200';
 }}
 
 function updateStage1756Sandbox() {{
