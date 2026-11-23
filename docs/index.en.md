@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`390` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`391` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (26 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (53 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (54 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (146 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (87 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (33 guides)](#saas-finops-micropayments)
@@ -52,7 +52,7 @@
 | 26 | **🏆 E-Commerce & Marketplace Retail Media Network (`RMN`: `Amazon Ads / Walmart Connect / Criteo / Koddi`) Sponsored Bidding, Causal `iROAS` Attribution & Buy-Box / Stockout / Post-Return `POAS` Escrow (🏆 390th Bilingual Guide Milestone), Sub-60s `Buy-Box` & Size-Curve Pause, Branded Cannibalization Cap & Net `POAS >= 1.35x` Dayparting (`-39%` Ad Waste & Margin Bleed) Agent Architecture Selection FAQ** | [English](retail-media-network-rmn-sponsored-bidding-iroas-stockout-margin-escrow-agent-selection-faq.en.md) · [中文](retail-media-network-rmn-sponsored-bidding-iroas-stockout-margin-escrow-agent-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (53 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (54 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -111,6 +111,7 @@
 | 51 | **Enterprise B2B Accounts Payable (`AP`) Virtual Card Straight-Through Processing (`STP`: `Boost Payment / Visa Commercial Pay / Mastercard Track / Coupa Pay / BILL`), Anti-Surcharge Gate & `Large-Ticket Level-3` Rebate Escrow (`-38%` AP Cost) Agent Architecture Selection FAQ** | [English](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.en.md) · [中文](b2b-ap-virtual-card-stp-supplier-surcharge-interchange-rebate-escrow-agent-selection-faq.md) |
 | 52 | **Agent Payment Protocols (`Stripe SPT vs. Visa VIC vs. Mastercard Agent Pay vs. PayPal Agentic vs. B2B VCN`), Split-Shipment Multi-Capture & Tiered `HITL` Authorization Escrow, `final_capture=false` Partial-Ship Lock, 7-Day Auth-Expiry `0420` Shield & Pack-Time `JIT MIT` Auth (`-38%` Split-Order Payment Loss) Selection FAQ** | [English](agent-payment-split-shipment-multi-capture-auth-expiry-hitl-tier-escrow-selection-faq.en.md) · [中文](agent-payment-split-shipment-multi-capture-auth-expiry-hitl-tier-escrow-selection-faq.md) |
 | 53 | **E-Commerce & B2B Instant Bank-to-Bank (`Pay-by-Bank / Open Banking`: `FedNow & RTP vs. SEPA Instant vs. UK Faster Payments`), `ACH R01` Insufficient-Funds Bounce Shield (`Plaid Signal / Stripe Financial Connections / Tink`), Unsettled Pull Shipment Hold, Closed-Loop Source-IBAN Refund Lock & `1.0%` Buyer `MDR` Split Incentive (`-40%` Card MDR & Bounce Loss) Agent Architecture Selection FAQ** | [English](pay-by-bank-open-banking-fednow-sepa-instant-nsf-bounce-escrow-agent-selection-faq.en.md) · [中文](pay-by-bank-open-banking-fednow-sepa-instant-nsf-bounce-escrow-agent-selection-faq.md) |
+| 54 | **Agent Payment & Checkout Protocol Deep-Dive Selection (`Stripe SPT vs. Visa Intelligent Commerce VIC vs. Mastercard Agent Pay vs. PayPal Agentic Toolkit vs. Corporate Virtual Cards VCN`), `MCC`-Tiered Over-Capture Drift Corridor, `FIDO2 CIT-to-MIT` Delegated `3DS2` & 5-Rail Smart Router (`-38%` Decline & MDR Loss) Agent Architecture Selection FAQ** | [English](agent-payment-checkout-protocol-spt-vic-mastercard-paypal-vcn-authorization-drift-escrow-selection-faq.en.md) · [中文](agent-payment-checkout-protocol-spt-vic-mastercard-paypal-vcn-authorization-drift-escrow-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (146 Guides)

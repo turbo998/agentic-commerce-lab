@@ -27282,6 +27282,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("retail-media-network-bidding-poas-sandbox", html_zh)
 
+    def test_agent_payment_protocol_drift_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            AgentPaymentProtocolDriftEscrowPolicyInput,
+            evaluate_agent_payment_protocol_drift_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_agent_payment_protocol_drift_escrow_policy(
+            AgentPaymentProtocolDriftEscrowPolicyInput(
+                quarterly_payment_decline_drift_and_mdr_waste_pool_usd=290000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "SCOPED_AGENT_PAYMENT_TOKEN_AND_DRIFT_GUARD_AUTHORIZED",
+        )
+
+        replay = evaluate_agent_payment_protocol_drift_escrow_policy(
+            AgentPaymentProtocolDriftEscrowPolicyInput(
+                unscoped_pan_or_cross_merchant_token_replay_risk=True
+            )
+        )
+        self.assertEqual(replay["status_code"], 403)
+        self.assertEqual(
+            replay["decision"],
+            "CROSS_MERCHANT_TOKEN_REPLAY_OR_UNSCOPED_PAN_EXPOSURE",
+        )
+
+        drift = evaluate_agent_payment_protocol_drift_escrow_policy(
+            AgentPaymentProtocolDriftEscrowPolicyInput(
+                over_capture_price_drift_or_zero_buffer_tax_decline=True
+            )
+        )
+        self.assertEqual(drift["status_code"], 422)
+        self.assertEqual(
+            drift["decision"],
+            "OVER_CAPTURE_PRICE_DRIFT_BREACH_OR_ZERO_BUFFER_TAX_DECLINE",
+        )
+
+        mit = evaluate_agent_payment_protocol_drift_escrow_policy(
+            AgentPaymentProtocolDriftEscrowPolicyInput(
+                async_mit_3ds2_otp_deadlock_or_missing_fido2_trace=True
+            )
+        )
+        self.assertEqual(mit["status_code"], 451)
+        self.assertEqual(
+            mit["decision"],
+            "ASYNC_MIT_3DS2_OTP_DEADLOCK_OR_MISSING_FIDO2_CIT_TRACE",
+        )
+
+        optim = evaluate_agent_payment_protocol_drift_escrow_policy(
+            AgentPaymentProtocolDriftEscrowPolicyInput(
+                quarterly_payment_decline_drift_and_mdr_waste_pool_usd=290000.0,
+                five_rail_smart_routing_and_drift_corridor_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 110200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 179800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("agent_payment_protocol_drift_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agent-payment-protocol-drift-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

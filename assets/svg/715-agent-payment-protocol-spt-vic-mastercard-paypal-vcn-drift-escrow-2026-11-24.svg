@@ -1,0 +1,222 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg715" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070d19"/>
+      <stop offset="50%" stop-color="#0d1729"/>
+      <stop offset="100%" stop-color="#111d35"/>
+    </linearGradient>
+    <linearGradient id="hdr715" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="50%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="card715" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#15233b"/>
+      <stop offset="100%" stop-color="#0d1729"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="760" fill="url(#bg715)"/>
+  <rect x="24" y="20" width="1232" height="78" rx="14" fill="url(#hdr715)" opacity="0.94"/>
+  <text x="48" y="53" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="21" font-weight="800">
+    Round 272 (#391 · SVG #715) · Agent Payment Protocols: Stripe SPT vs Visa VIC vs Mastercard vs PayPal vs VCN
+  </text>
+  <text x="48" y="79" fill="#e0f2fe" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">
+    Cross-Merchant Token Lock (403) · Over-Capture Drift Corridor (422) · FIDO2 Delegated 3DS2 (451) · 5-Rail Smart Routing (409)
+  </text>
+
+  <!-- Left Column: 5 Payment Protocols & Toolkits -->
+  <rect x="24" y="114" width="385" height="622" rx="12" fill="url(#card715)" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="44" y="146" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    1. Five Agent Payment Rails Compared
+  </text>
+
+  <rect x="42" y="162" width="349" height="106" rx="10" fill="#0b1528" stroke="#6366f1" stroke-width="1.2"/>
+  <text x="58" y="186" fill="#a5b4fc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    A. Stripe Agent Toolkit (Shared Payment Tokens · SPT)
+  </text>
+  <text x="58" y="207" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Seller-scoped (`network_business_profile`) + `max_amount` + TTL
+  </text>
+  <text x="58" y="226" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Single-use `SPT Resolve` API for external PSP interoperability
+  </text>
+  <text x="58" y="246" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: D2C retail, marketplaces &amp; up to 180d travel holds
+  </text>
+
+  <rect x="42" y="278" width="349" height="106" rx="10" fill="#0b1528" stroke="#0284c7" stroke-width="1.2"/>
+  <text x="58" y="302" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    B. Visa Intelligent Commerce (VIC) + Trusted Agent (TAP)
+  </text>
+  <text x="58" y="323" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Issuer-enforced AI-Ready Card credentials + Passkey mandate
+  </text>
+  <text x="58" y="342" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • RFC 9421 signed HTTP headers bypass WAF CAPTCHA blocks
+  </text>
+  <text x="58" y="362" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Cross-merchant consumer shopping &amp; high-AOV luxury
+  </text>
+
+  <rect x="42" y="394" width="349" height="106" rx="10" fill="#0b1528" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="58" y="418" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    C. Mastercard Agent Pay (Agentic Tokens + Biometrics)
+  </text>
+  <text x="58" y="439" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Cryptographic DTVC + FIDO2 SPC step-up without SMS OTP
+  </text>
+  <text x="58" y="458" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Native B2B Commercial Virtual Card &amp; T&amp;E policy controls
+  </text>
+  <text x="58" y="478" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: EU/UK PSD2 SCA markets &amp; corporate T&amp;E travel
+  </text>
+
+  <rect x="42" y="510" width="349" height="100" rx="10" fill="#0b1528" stroke="#3b82f6" stroke-width="1.2"/>
+  <text x="58" y="534" fill="#93c5fd" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    D. PayPal Agentic Toolkit (MCP Server + Fastlane + Buyer Prot.)
+  </text>
+  <text x="58" y="555" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Invoice/order creation MCP + Pay-in-4 BNPL + Buyer Protection
+  </text>
+  <text x="58" y="574" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Cross-border indie merchants &amp; dispute-sensitive buyers
+  </text>
+
+  <rect x="42" y="620" width="349" height="100" rx="10" fill="#0b1528" stroke="#10b981" stroke-width="1.2"/>
+  <text x="58" y="644" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="13.5" font-weight="700">
+    E. Corporate Budget Virtual Cards (Ramp / Brex / Stripe Issuing)
+  </text>
+  <text x="58" y="665" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="11.5">
+    • Per-PO 16-digit VCN locked to exact MCC, vendor &amp; dollar cap
+  </text>
+  <text x="58" y="684" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Legacy web/phone B2B vendors without modern APIs
+  </text>
+
+  <!-- Center Column: Deterministic Fiduciary Payment Guards -->
+  <rect x="429" y="114" width="422" height="622" rx="12" fill="url(#card715)" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="449" y="146" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    2. Payment Protocol &amp; Auth-Drift Control Plane
+  </text>
+
+  <!-- Gate 1: HTTP 403 -->
+  <rect x="447" y="166" width="386" height="126" rx="10" fill="#1e1124" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="463" y="192" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 1 · Merchant-DID &amp; MCC Scope Lock (HTTP 403)
+  </text>
+  <text x="463" y="214" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Blocks multi-use static VCN or raw PAN leakage into LLM context
+  </text>
+  <text x="463" y="234" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Rejects token redemption if Acquirer MID != signed Merchant DID
+  </text>
+  <text x="463" y="254" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Zero cross-merchant replay even if compromised merchant leaks token
+  </text>
+
+  <!-- Gate 2: HTTP 422 -->
+  <rect x="447" y="306" width="386" height="126" rx="10" fill="#231815" stroke="#f97316" stroke-width="1.5"/>
+  <text x="463" y="332" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 2 · Auth-to-Capture Drift Corridor (HTTP 422)
+  </text>
+  <text x="463" y="354" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Prevents rigid $0-buffer VCN declines on tax/shipping/weight drift
+  </text>
+  <text x="463" y="374" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Enforces MCC-tiered Incremental Auth cap (&lt;=5% retail / &lt;=15% grocery)
+  </text>
+  <text x="463" y="394" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Blocks unapproved &gt;5% price hikes while eliminating $0.40 tax declines
+  </text>
+
+  <!-- Gate 3: HTTP 451 -->
+  <rect x="447" y="446" width="386" height="126" rx="10" fill="#1f1629" stroke="#ec4899" stroke-width="1.5"/>
+  <text x="463" y="472" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 3 · Async 3DS2 &amp; FIDO2 Delegated Auth (HTTP 451)
+  </text>
+  <text x="463" y="494" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Vetoes headless browser SMS OTP scraping &amp; 3am 3DS1 popups
+  </text>
+  <text x="463" y="514" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Binds FIDO2 WebAuthn SPC cryptogram + initial CIT Trace ID
+  </text>
+  <text x="463" y="534" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Shifts fraud liability to issuer under PSD2 SCA / Visa CE 3.0
+  </text>
+
+  <!-- Gate 4: HTTP 409 -->
+  <rect x="447" y="586" width="386" height="132" rx="10" fill="#0d2622" stroke="#10b981" stroke-width="1.5"/>
+  <text x="463" y="612" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 4 · 5-Rail Smart Router + L3 Rebate (HTTP 409)
+  </text>
+  <text x="463" y="634" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Routes API merchants -&gt; SPT/VIC; Legacy B2B -&gt; L3 Single-Use VCN
+  </text>
+  <text x="463" y="654" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Auto-releases unused pre-auth buffer immediately upon capture
+  </text>
+  <text x="463" y="678" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Cuts False Declines, MDR &amp; Token Fraud Loss by 38% ($110.2k)
+  </text>
+
+  <!-- Right Column: FinOps Impact & 7-Card Telemetry -->
+  <rect x="871" y="114" width="385" height="622" rx="12" fill="url(#card715)" stroke="#10b981" stroke-width="1.5"/>
+  <text x="891" y="146" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    3. Payment Rail FinOps &amp; Approval Uplift
+  </text>
+
+  <rect x="889" y="168" width="349" height="184" rx="10" fill="#091526" stroke="#38bdf8" stroke-width="1.2"/>
+  <text x="907" y="194" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Quarterly Payment Decline &amp; MDR Waste Pool ($290k)
+  </text>
+  <text x="907" y="220" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • False Declines, 3DS Drop-off &amp; Surcharge Pool: $290,000
+  </text>
+  <text x="907" y="242" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Net Cost with 5-Rail Smart Routing: $179,800
+  </text>
+  <text x="907" y="264" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="800">
+    • Quarterly Saved Revenue &amp; Interchange: $110,200 (-38%)
+  </text>
+  <rect x="907" y="282" width="310" height="16" rx="8" fill="#1e293b"/>
+  <rect x="907" y="282" width="192" height="16" rx="8" fill="#10b981"/>
+  <text x="907" y="318" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    +6.4% Issuer Auth Approval Rate via Network Token Cryptograms
+  </text>
+
+  <rect x="889" y="368" width="349" height="176" rx="10" fill="#091526" stroke="#a855f7" stroke-width="1.2"/>
+  <text x="907" y="394" fill="#d8b4fe" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Protocol Selection Decision Rules
+  </text>
+  <text x="907" y="420" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Stripe / ACP / UCP Native Merchants -&gt; Stripe SPT
+  </text>
+  <text x="907" y="442" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Open-Web Multi-PSP Consumer Retail -&gt; Visa VIC / MC Agent Pay
+  </text>
+  <text x="907" y="464" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • High-Risk Cross-Border Indie Stores -&gt; PayPal Agentic Toolkit
+  </text>
+  <text x="907" y="486" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="700">
+    • Legacy B2B Tail-Spend Web Portals -&gt; Per-PO L3 Virtual Card
+  </text>
+
+  <rect x="889" y="560" width="349" height="158" rx="10" fill="#091526" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="907" y="586" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Deterministic Audit Tokens &amp; Provenance
+  </text>
+  <text x="907" y="610" fill="#cbd5e1" font-family="Consolas, monospace" font-size="11">
+    200: agent_payment_rail_drift_200
+  </text>
+  <text x="907" y="630" fill="#fde68a" font-family="Consolas, monospace" font-size="11">
+    409: agent_payment_rail_drift_optim_409
+  </text>
+  <text x="907" y="650" fill="#fca5a5" font-family="Consolas, monospace" font-size="11">
+    403/422/451: null (Mandate Blocked)
+  </text>
+  <text x="907" y="676" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    Provenance: synthetic · independently_reproduced=false
+  </text>
+</svg>

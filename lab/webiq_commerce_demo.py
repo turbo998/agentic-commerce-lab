@@ -35785,6 +35785,82 @@ def evaluate_retail_media_network_bidding_poas_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class AgentPaymentProtocolDriftEscrowPolicyInput:
+    quarterly_payment_decline_drift_and_mdr_waste_pool_usd: float = 290000.0
+    unscoped_pan_or_cross_merchant_token_replay_risk: bool = False
+    over_capture_price_drift_or_zero_buffer_tax_decline: bool = False
+    async_mit_3ds2_otp_deadlock_or_missing_fido2_trace: bool = False
+    five_rail_smart_routing_and_drift_corridor_ready: bool = False
+
+
+def evaluate_agent_payment_protocol_drift_escrow_policy(
+    policy_input: AgentPaymentProtocolDriftEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_payment_decline_drift_and_mdr_waste_pool_usd
+        ),
+    )
+    if policy_input.async_mit_3ds2_otp_deadlock_or_missing_fido2_trace:
+        return {
+            "status_code": 451,
+            "decision": "ASYNC_MIT_3DS2_OTP_DEADLOCK_OR_MISSING_FIDO2_CIT_TRACE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unscoped_pan_or_cross_merchant_token_replay_risk:
+        return {
+            "status_code": 403,
+            "decision": "CROSS_MERCHANT_TOKEN_REPLAY_OR_UNSCOPED_PAN_EXPOSURE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.over_capture_price_drift_or_zero_buffer_tax_decline:
+        return {
+            "status_code": 422,
+            "decision": "OVER_CAPTURE_PRICE_DRIFT_BREACH_OR_ZERO_BUFFER_TAX_DECLINE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.five_rail_smart_routing_and_drift_corridor_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FIVE_RAIL_SMART_ROUTING_AND_MCC_DRIFT_CORRIDOR_CONFIRM",
+            "mandate_token": "agent_payment_rail_drift_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "SCOPED_AGENT_PAYMENT_TOKEN_AND_DRIFT_GUARD_AUTHORIZED",
+        "mandate_token": "agent_payment_rail_drift_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -48776,6 +48852,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    agent_payment_protocol_drift_guard = {
+        "authorized_200": evaluate_agent_payment_protocol_drift_escrow_policy(
+            AgentPaymentProtocolDriftEscrowPolicyInput()
+        ),
+        "cross_merchant_token_replay_403": evaluate_agent_payment_protocol_drift_escrow_policy(
+            AgentPaymentProtocolDriftEscrowPolicyInput(
+                unscoped_pan_or_cross_merchant_token_replay_risk=True
+            )
+        ),
+        "over_capture_drift_or_zero_buffer_422": evaluate_agent_payment_protocol_drift_escrow_policy(
+            AgentPaymentProtocolDriftEscrowPolicyInput(
+                over_capture_price_drift_or_zero_buffer_tax_decline=True
+            )
+        ),
+        "async_mit_3ds2_deadlock_451": evaluate_agent_payment_protocol_drift_escrow_policy(
+            AgentPaymentProtocolDriftEscrowPolicyInput(
+                async_mit_3ds2_otp_deadlock_or_missing_fido2_trace=True
+            )
+        ),
+        "five_rail_smart_routing_409": evaluate_agent_payment_protocol_drift_escrow_policy(
+            AgentPaymentProtocolDriftEscrowPolicyInput(
+                five_rail_smart_routing_and_drift_corridor_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -49176,6 +49278,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "pay_by_bank_open_banking_nsf_guard": pay_by_bank_open_banking_nsf_guard,
         "ota_hotel_rate_parity_resort_fee_walk_guard": ota_hotel_rate_parity_resort_fee_walk_guard,
         "retail_media_network_bidding_poas_guard": retail_media_network_bidding_poas_guard,
+        "agent_payment_protocol_drift_guard": agent_payment_protocol_drift_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -69879,6 +69982,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="rmnpoas-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 BUY_BOX_INVENTORY_GUARD_AND_INCREMENTAL_POAS_BIDDING_CONFIRM · Mandate: rmn_sponsored_poas_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 272 (#391) Agent Payment Protocols & Over-Capture Drift Escrow -->
+      <div class="finops-box" id="agent-payment-protocol-drift-sandbox" style="margin-top:12px;border-color:#6366f1;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💳 Agent 支付协议选型 (Stripe SPT vs Visa VIC vs Mastercard vs PayPal vs 企业 VCN) 与预授权微漂移走廊沙盒</div>
+            <div class="finops-sub">Round 272 (#391 · SVG #715) · 商户 DID/MID 强绑定防静态卡跨店盗刷重放 (HTTP 403) + 按 MCC 分级的双水位预授权微漂移走廊防 $0.45 税差误拒或暗涨运费 (HTTP 422) + FIDO2 CIT-to-MIT 链式绑定免凌晨 3DS2 短信死锁 (HTTP 451) + 五轨智能路由与余量秒释净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="payrail-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度定额死卡税费尾差误拒流失、凌晨 3DS2 短信超时弃单、跨店令牌盗刷与高费率损耗池 ($)
+            <input type="number" id="payrail-gross-input" value="290000" min="10000" step="5000" oninput="recalcAgentPaymentProtocolDriftSandbox()" />
+          </label>
+          <label>单次令牌商户 DID / 收单 MID 强绑定与零明文 PAN 上下文隔离门禁
+            <select id="payrail-scope-select" onchange="recalcAgentPaymentProtocolDriftSandbox()">
+              <option value="pass">令牌严格锁死单一卖家 Profile / 首个收单 MID，LLM 上下文零明文卡号 (安全)</option>
+              <option value="block_403">将可跨店复用的静态虚拟卡或 16 位明文 PAN 传入模型被黑店截留重放 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>预授权与发货清算双水位微漂移走廊 (Quoted Amount + MCC-Tiered Tax/Weight Buffer) 门禁
+            <select id="payrail-drift-select" onchange="recalcAgentPaymentProtocolDriftSandbox()">
+              <option value="pass">标准零售预留 &lt;=3% 州税重算缓冲、生鲜预留 &lt;=12% 称重缓冲并在清算瞬间释放余量 (合规)</option>
+              <option value="block_422">零缓冲死卡因 +$0.45 税差遭银行整单拒付，或商户超走廊恶意加收 $35 运费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>后台异步自动锁单/补货 (MIT) 的 FIDO2 WebAuthn SPC 硬件委托与初始 CIT Trace ID 链式绑定
+            <select id="payrail-mit-select" onchange="recalcAgentPaymentProtocolDriftSandbox()">
+              <option value="pass">携带用户 Passkey 预签名生成的 15 位初始 CIT Trace ID 与 EMVCo TAVV 免挑战放行 (安全)</option>
+              <option value="block_451">凌晨 3 点异步下单缺失 CIT Trace ID 触发 3DS2 短信 OTP 死锁或尝试代抓验证码 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>五轨智能支付路由 (API商户-&gt;SPT / 跨店零售-&gt;VIC &amp; MC / 跨境独立站-&gt;PayPal / 传统B2B-&gt;Level-3 VCN)
+            <select id="payrail-opt-select" onchange="recalcAgentPaymentProtocolDriftSandbox()">
+              <option value="enabled" selected>启用五轨智能支付路由 + 双水位缓冲秒级释放 + B2B Level-3 返佣 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">全场景单一支付方式盲刷且不配置双水位微漂移走廊与 L3 行项增强 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度支付误拒与手续费损耗池</div>
+            <div class="finops-kpi-val" id="payrail-gross-kpi">$290,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">五轨智能路由与微漂移锁后净成本</div>
+            <div class="finops-kpi-val" id="payrail-net-kpi" style="color:#6ee7b7;">$179,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省误拒挽回与交换费返利</div>
+            <div class="finops-kpi-val" id="payrail-savings-kpi" style="color:#38bdf8;">$110,200</div>
+          </div>
+        </div>
+        <div id="payrail-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FIVE_RAIL_SMART_ROUTING_AND_MCC_DRIFT_CORRIDOR_CONFIRM · Mandate: agent_payment_rail_drift_optim_409
         </div>
       </div>
 
@@ -95252,6 +95412,79 @@ function recalcRetailMediaNetworkBiddingPOASSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_INCREMENTAL_POAS_AND_IN_STOCK_RMN_BID_AUTHORIZED · Mandate: rmn_sponsored_poas_200';
+}}
+
+function recalcAgentPaymentProtocolDriftSandbox() {{
+  const grossInput = document.getElementById('payrail-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '290000'));
+  const scopeGate = document.getElementById('payrail-scope-select').value;
+  const driftGate = document.getElementById('payrail-drift-select').value;
+  const mitGate = document.getElementById('payrail-mit-select').value;
+  const optMode = document.getElementById('payrail-opt-select').value;
+
+  const grossKpi = document.getElementById('payrail-gross-kpi');
+  const netKpi = document.getElementById('payrail-net-kpi');
+  const savingsKpi = document.getElementById('payrail-savings-kpi');
+  const statusKpi = document.getElementById('payrail-status-kpi');
+  const banner = document.getElementById('payrail-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (mitGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 ASYNC_MIT_3DS2_OTP_DEADLOCK_OR_MISSING_FIDO2_CIT_TRACE · Mandate: null';
+    return;
+  }}
+  if (scopeGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CROSS_MERCHANT_TOKEN_REPLAY_OR_UNSCOPED_PAN_EXPOSURE · Mandate: null';
+    return;
+  }}
+  if (driftGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 OVER_CAPTURE_PRICE_DRIFT_BREACH_OR_ZERO_BUFFER_TAX_DECLINE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FIVE_RAIL_SMART_ROUTING_AND_MCC_DRIFT_CORRIDOR_CONFIRM · Mandate: agent_payment_rail_drift_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 SCOPED_AGENT_PAYMENT_TOKEN_AND_DRIFT_GUARD_AUTHORIZED · Mandate: agent_payment_rail_drift_200';
 }}
 
 function updateStage1756Sandbox() {{
