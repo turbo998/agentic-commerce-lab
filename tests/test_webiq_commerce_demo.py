@@ -27684,6 +27684,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-localized-pricing-fx-sandbox", html_zh)
 
+    def test_b2b_saas_renewal_churn_save_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BSaaSRenewalChurnSaveEscrowPolicyInput,
+            evaluate_b2b_saas_renewal_churn_save_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_saas_renewal_churn_save_escrow_policy(
+            B2BSaaSRenewalChurnSaveEscrowPolicyInput(
+                quarterly_arr_contraction_bluff_discount_and_churn_pool_usd=310000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CHAMPION_AND_TELEMETRY_SAAS_RENEWAL_AUTHORIZED",
+        )
+
+        bluff = evaluate_b2b_saas_renewal_churn_save_escrow_policy(
+            B2BSaaSRenewalChurnSaveEscrowPolicyInput(
+                procurement_bluff_excessive_discount_on_sticky_account=True
+            )
+        )
+        self.assertEqual(bluff["status_code"], 403)
+        self.assertEqual(
+            bluff["decision"],
+            "PROCUREMENT_BLUFF_HIGH_STICKINESS_EXCESSIVE_DISCOUNT_BREACH",
+        )
+
+        champ = evaluate_b2b_saas_renewal_churn_save_escrow_policy(
+            B2BSaaSRenewalChurnSaveEscrowPolicyInput(
+                champion_departed_unmapped_sponsor_or_missed_notice=True
+            )
+        )
+        self.assertEqual(champ["status_code"], 422)
+        self.assertEqual(
+            champ["decision"],
+            "CHAMPION_DEPARTED_UNMAPPED_SPONSOR_OR_MISSED_NOTICE_WINDOW",
+        )
+
+        give = evaluate_b2b_saas_renewal_churn_save_escrow_policy(
+            B2BSaaSRenewalChurnSaveEscrowPolicyInput(
+                unilateral_price_cut_without_multiyear_give_get=True
+            )
+        )
+        self.assertEqual(give["status_code"], 451)
+        self.assertEqual(
+            give["decision"],
+            "UNILATERAL_PRICE_CONCESSION_WITHOUT_MULTIYEAR_GIVE_GET",
+        )
+
+        optim = evaluate_b2b_saas_renewal_churn_save_escrow_policy(
+            B2BSaaSRenewalChurnSaveEscrowPolicyInput(
+                quarterly_arr_contraction_bluff_discount_and_churn_pool_usd=310000.0,
+                acv_neutral_idle_seat_to_ai_credit_swap_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 117800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 192200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_saas_renewal_churn_save_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-saas-renewal-churn-save-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

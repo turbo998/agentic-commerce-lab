@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`396` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`397` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -10,7 +10,7 @@
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (54 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (148 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (88 guides)](#b2b-procurement-erp)
-- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (34 guides)](#saas-finops-micropayments)
+- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (35 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (46 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
@@ -366,7 +366,7 @@
 | 88 | **Enterprise B2B Tail-Spend & Spot-Buy RFQ Automation (`Fairmarkit vs. SAP Ariba Spot Buy vs. Coupa Advantage vs. Amazon Business PunchOut`), Rolling 14-Day Anti-Split-PO Structuring Lock, Contracted Catalog Redirect, `HR-to-Vendor COI` Ghost-Vendor Shield & Master Vendor `MoR` Consolidation (`-37%` Tail-Spend & VMF Loss) Agent Architecture Selection FAQ** | [English](b2b-tail-spend-spot-buy-rfq-split-po-evasion-ghost-vendor-escrow-agent-selection-faq.en.md) · [中文](b2b-tail-spend-spot-buy-rfq-split-po-evasion-ghost-vendor-escrow-agent-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (34 Guides)
+## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (35 Guides)
 
 > Covers enterprise SaaS seat governance, UUIDv7 usage metering watermarks, FTC Click-to-Cancel & retention guardrails, HTTP 402 (x402 / Stripe MPP Tempo) micropayments, and LLM token FinOps routing.
 
@@ -406,6 +406,7 @@
 | 32 | **SaaS `PLG` Seat Expansion, Slack-Style `Fair Billing` Active Credit & Co-Term Proration Escrow (`Stripe Billing vs. Zuora vs. Chargebee vs. Paddle`), Period-End Downgrade Arbitrage Lock, External-Domain Free Guest Gate, Exact UTC Second `Co-Terming` & 100-Seat Tier Step-Down (`-37%` Proration & Churn Loss) Agent Architecture Selection FAQ** | [English](saas-plg-seat-expansion-fair-billing-coterm-proration-anti-arbitrage-escrow-agent-selection-faq.en.md) · [中文](saas-plg-seat-expansion-fair-billing-coterm-proration-anti-arbitrage-escrow-agent-selection-faq.md) |
 | 33 | **SaaS & Omnichannel Retail Lifecycle Marketing Orchestration (`Braze vs. Klaviyo vs. Salesforce Marketing Cloud vs. D365 Customer Insights`), Causal `Uplift` 4-Quadrant Gate (`Persuadables` Only), Global Frequency Cap, Dual-Timezone `TCPA` Lock & `H+1 Push -> H+18 SMS` Waterfall (`-39%` Promo & SMS Waste) Agent Architecture Selection FAQ** | [English](saas-ecommerce-lifecycle-marketing-causal-uplift-frequency-cap-tcpa-escrow-agent-selection-faq.en.md) · [中文](saas-ecommerce-lifecycle-marketing-causal-uplift-frequency-cap-tcpa-escrow-agent-selection-faq.md) |
 | 34 | **E-Commerce `Subscribe & Save` Replenishment (`Recharge vs. Skio vs. Ordergroove vs. Bold Subscriptions vs. Stripe Billing`), `T-24h` Pre-Billing `WMS Stockout` Lock, 3-Box Milestone Promo Vesting (`EMVCo PAR` Dedup) & Passwordless 1-Tap `Skip / 45d Cadence Shift / Flavor Swap` Retention (`-38%` Replenishment Churn & Abuse Loss) Agent Architecture Selection FAQ** | [English](ecommerce-subscribe-and-save-replenishment-skip-pause-stockout-billing-escrow-agent-selection-faq.en.md) · [中文](ecommerce-subscribe-and-save-replenishment-skip-pause-stockout-billing-escrow-agent-selection-faq.md) |
+| 35 | **Enterprise B2B SaaS Renewal & Churn Save (`Gainsight CS vs. ChurnZero vs. Chargebee Retention vs. Salesforce Agentforce`), Telemetry Switching-Cost Anti-Bluff Discount Lock, `T-120d` Champion-Departure Shield, Mandatory `Give-Get` Gate & `ACV-Neutral` Idle-Seat-to-AI-Credit Swap (`-38%` ARR Contraction & Margin Loss) Agent Architecture Selection FAQ** | [English](b2b-saas-renewal-churn-save-notice-window-discount-floor-credit-swap-escrow-agent-selection-faq.en.md) · [中文](b2b-saas-renewal-churn-save-notice-window-discount-floor-credit-swap-escrow-agent-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (46 Guides)

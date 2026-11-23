@@ -36241,6 +36241,82 @@ def evaluate_cross_border_localized_pricing_fx_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2BSaaSRenewalChurnSaveEscrowPolicyInput:
+    quarterly_arr_contraction_bluff_discount_and_churn_pool_usd: float = 310000.0
+    procurement_bluff_excessive_discount_on_sticky_account: bool = False
+    champion_departed_unmapped_sponsor_or_missed_notice: bool = False
+    unilateral_price_cut_without_multiyear_give_get: bool = False
+    acv_neutral_idle_seat_to_ai_credit_swap_ready: bool = False
+
+
+def evaluate_b2b_saas_renewal_churn_save_escrow_policy(
+    policy_input: B2BSaaSRenewalChurnSaveEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_arr_contraction_bluff_discount_and_churn_pool_usd
+        ),
+    )
+    if policy_input.unilateral_price_cut_without_multiyear_give_get:
+        return {
+            "status_code": 451,
+            "decision": "UNILATERAL_PRICE_CONCESSION_WITHOUT_MULTIYEAR_GIVE_GET",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.procurement_bluff_excessive_discount_on_sticky_account:
+        return {
+            "status_code": 403,
+            "decision": "PROCUREMENT_BLUFF_HIGH_STICKINESS_EXCESSIVE_DISCOUNT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.champion_departed_unmapped_sponsor_or_missed_notice:
+        return {
+            "status_code": 422,
+            "decision": "CHAMPION_DEPARTED_UNMAPPED_SPONSOR_OR_MISSED_NOTICE_WINDOW",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.acv_neutral_idle_seat_to_ai_credit_swap_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ACV_NEUTRAL_IDLE_SEAT_TO_AI_PLATFORM_CREDIT_SWAP_CONFIRM",
+            "mandate_token": "b2b_saas_renewal_save_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CHAMPION_AND_TELEMETRY_SAAS_RENEWAL_AUTHORIZED",
+        "mandate_token": "b2b_saas_renewal_save_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -49388,6 +49464,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_saas_renewal_churn_save_guard = {
+        "authorized_200": evaluate_b2b_saas_renewal_churn_save_escrow_policy(
+            B2BSaaSRenewalChurnSaveEscrowPolicyInput()
+        ),
+        "procurement_bluff_discount_403": evaluate_b2b_saas_renewal_churn_save_escrow_policy(
+            B2BSaaSRenewalChurnSaveEscrowPolicyInput(
+                procurement_bluff_excessive_discount_on_sticky_account=True
+            )
+        ),
+        "champion_departed_or_missed_notice_422": evaluate_b2b_saas_renewal_churn_save_escrow_policy(
+            B2BSaaSRenewalChurnSaveEscrowPolicyInput(
+                champion_departed_unmapped_sponsor_or_missed_notice=True
+            )
+        ),
+        "unilateral_price_cut_no_give_get_451": evaluate_b2b_saas_renewal_churn_save_escrow_policy(
+            B2BSaaSRenewalChurnSaveEscrowPolicyInput(
+                unilateral_price_cut_without_multiyear_give_get=True
+            )
+        ),
+        "acv_neutral_seat_to_credit_swap_409": evaluate_b2b_saas_renewal_churn_save_escrow_policy(
+            B2BSaaSRenewalChurnSaveEscrowPolicyInput(
+                acv_neutral_idle_seat_to_ai_credit_swap_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -49794,6 +49896,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_airline_hotel_rebooking_escrow_guard": ota_airline_hotel_rebooking_escrow_guard,
         "ecommerce_subscribe_save_replenish_guard": ecommerce_subscribe_save_replenish_guard,
         "cross_border_localized_pricing_fx_guard": cross_border_localized_pricing_fx_guard,
+        "b2b_saas_renewal_churn_save_guard": b2b_saas_renewal_churn_save_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -70839,6 +70942,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="cbfxdcc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 LIKE_FOR_LIKE_VIBAN_SETTLEMENT_AND_LOCAL_APM_CHARM_PRICE_CONFIRM · Mandate: crossborder_charm_fx_dcc_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 278 (#397) B2B SaaS Renewal & Churn Save Credit Swap Escrow -->
+      <div class="finops-box" id="b2b-saas-renewal-churn-save-sandbox" style="margin-top:12px;border-color:#8b5cf6;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔄 企业 B2B SaaS 续费挽留 (Gainsight / ChurnZero / Chargebee / Agentforce) 防压价讹诈与保 ARR 席位置换沙盒</div>
+            <div class="finops-sub">Round 278 (#397 · SVG #721) · 生产遥测粘性锁防被采购口头威胁吓出 40% 无谓折扣 (HTTP 403) + T-120d 签约高管离职探测防盲发自动续约单触发拒付 (HTTP 422) + Give-Get 多年锁期/年付对价交换门禁 (HTTP 451) + 闲置席位 1:1 等额置换 AI 算力积分包保住 100% ARR 净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="saasren-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 B2B SaaS 续约被采购话术讹诈让利、原决策人离职断约及客户裁员砍席位导致 ARR 缩水损失池 ($)
+            <input type="number" id="saasren-gross-input" value="310000" min="10000" step="5000" oninput="recalcB2BSaaSRenewalChurnSaveSandbox()" />
+          </label>
+          <label>产品遥测迁移成本指数 (DAU/MAU &gt;= 80% + Webhook 深度集成 + 零全量导出) 防采购压价讹诈门禁
+            <select id="saasren-bluff-select" onchange="recalcB2BSaaSRenewalChurnSaveSandbox()">
+              <option value="pass">高粘性健康账户续约让利封顶 &lt;=10%，拒绝被采购模板化退订威胁吓破胆 (安全)</option>
+              <option value="block_403">客户 DAU/MAU 达 88% 且无迁出迹象，Agent 却因采购一句退订威胁批出 40% 骨折价 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>T-120d 关键签约人 (Champion / Executive Sponsor) SSO 与邮件存活探针及自动续约通知期对齐门禁
+            <select id="saasren-champ-select" onchange="recalcB2BSaaSRenewalChurnSaveSandbox()">
+              <option value="pass">T-120d 确认主签约人在线或已完成新任 VP 价值对账单对齐后再发续约通知 (合规)</option>
+              <option value="block_422">原签字 VP 已离职退信 4 个月却毫无察觉，到期盲目甩出自动续约发票引爆拒付解约 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>严禁无对价单边降价 (Mandatory Give-Get: 24/36 个月多年锁期、预付年款或联合公关案例) 门禁
+            <select id="saasren-give-select" onchange="recalcB2BSaaSRenewalChurnSaveSandbox()">
+              <option value="pass">任何单价折扣必须绑定改签 2 年以上多年约或季付改全额预付年款对价 (安全)</option>
+              <option value="block_451">在不延长合同期、不改年付的情况下单方面把单价砍半破坏 ASC 606 SSP 走廊 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>闲置席位等额置换企业 AI Agent / API 算力积分包 (ACV-Neutral Seat-to-Platform-Credit Swap)
+            <select id="saasren-opt-select" onchange="recalcB2BSaaSRenewalChurnSaveSandbox()">
+              <option value="enabled" selected>将 30% 裁员闲置席位 1:1 等额置换为 AI 算力积分包，保住 100% 合同总额 ARR (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">直接顺从客户砍掉 30% 闲置席位导致账面 ARR 与净留存率 NRR 大幅萎缩 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度ARR缩水与无谓让利损失池</div>
+            <div class="finops-kpi-val" id="saasren-gross-kpi">$310,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">防讹诈锁与席位置换后净缩水</div>
+            <div class="finops-kpi-val" id="saasren-net-kpi" style="color:#6ee7b7;">$192,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住ARR与估值毛利</div>
+            <div class="finops-kpi-val" id="saasren-savings-kpi" style="color:#38bdf8;">$117,800</div>
+          </div>
+        </div>
+        <div id="saasren-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ACV_NEUTRAL_IDLE_SEAT_TO_AI_PLATFORM_CREDIT_SWAP_CONFIRM · Mandate: b2b_saas_renewal_save_optim_409
         </div>
       </div>
 
@@ -96650,6 +96810,79 @@ function recalcCrossBorderLocalizedPricingFXSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_LOCAL_MCP_CHARM_PRICE_AND_FX_LOCK_AUTHORIZED · Mandate: crossborder_charm_fx_dcc_200';
+}}
+
+function recalcB2BSaaSRenewalChurnSaveSandbox() {{
+  const grossInput = document.getElementById('saasren-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '310000'));
+  const bluffGate = document.getElementById('saasren-bluff-select').value;
+  const champGate = document.getElementById('saasren-champ-select').value;
+  const giveGate = document.getElementById('saasren-give-select').value;
+  const optMode = document.getElementById('saasren-opt-select').value;
+
+  const grossKpi = document.getElementById('saasren-gross-kpi');
+  const netKpi = document.getElementById('saasren-net-kpi');
+  const savingsKpi = document.getElementById('saasren-savings-kpi');
+  const statusKpi = document.getElementById('saasren-status-kpi');
+  const banner = document.getElementById('saasren-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (giveGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNILATERAL_PRICE_CONCESSION_WITHOUT_MULTIYEAR_GIVE_GET · Mandate: null';
+    return;
+  }}
+  if (bluffGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PROCUREMENT_BLUFF_HIGH_STICKINESS_EXCESSIVE_DISCOUNT_BREACH · Mandate: null';
+    return;
+  }}
+  if (champGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CHAMPION_DEPARTED_UNMAPPED_SPONSOR_OR_MISSED_NOTICE_WINDOW · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ACV_NEUTRAL_IDLE_SEAT_TO_AI_PLATFORM_CREDIT_SWAP_CONFIRM · Mandate: b2b_saas_renewal_save_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CHAMPION_AND_TELEMETRY_SAAS_RENEWAL_AUTHORIZED · Mandate: b2b_saas_renewal_save_200';
 }}
 
 function updateStage1756Sandbox() {{
