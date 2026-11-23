@@ -37457,6 +37457,82 @@ def evaluate_b2b_punchout_cxml_edi_orchestration_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaHotelRentalIncrementalAuthPolicyInput:
+    quarterly_vcn_decline_interchange_downgrade_and_dispute_pool_usd: float = 290000.0
+    incidental_deposit_swiped_on_exact_limit_corporate_vcn: bool = False
+    partial_capture_without_0420_reversal_or_disconnected_new_auth: bool = False
+    unsubstantiated_post_checkout_delayed_damage_charge: bool = False
+    dual_folio_vcn_split_incremental_auth_and_instant_0420_ready: bool = False
+
+
+def evaluate_ota_hotel_rental_incremental_auth_policy(
+    policy_input: OtaHotelRentalIncrementalAuthPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_vcn_decline_interchange_downgrade_and_dispute_pool_usd
+        ),
+    )
+    if policy_input.unsubstantiated_post_checkout_delayed_damage_charge:
+        return {
+            "status_code": 451,
+            "decision": "UNSUBSTANTIATED_POST_CHECKOUT_DELAYED_DAMAGE_OR_MINIBAR_CHARGE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.incidental_deposit_swiped_on_exact_limit_corporate_vcn:
+        return {
+            "status_code": 403,
+            "decision": "INCIDENTAL_DEPOSIT_COLLISION_ON_EXACT_LIMIT_CORPORATE_VCN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.partial_capture_without_0420_reversal_or_disconnected_new_auth:
+        return {
+            "status_code": 422,
+            "decision": "UNRELEASED_PARTIAL_CAPTURE_DEPOSIT_OR_DISCONNECTED_NEW_AUTH_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dual_folio_vcn_split_incremental_auth_and_instant_0420_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DUAL_FOLIO_VCN_SPLIT_INCREMENTAL_AUTH_AND_INSTANT_0420_RELEASE_CONFIRM",
+            "mandate_token": "ota_hotel_rental_inc_auth_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_INCREMENTAL_AUTH_AND_DEPOSIT_RELEASE_AUTHORIZED",
+        "mandate_token": "ota_hotel_rental_inc_auth_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -51020,6 +51096,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_hotel_rental_incremental_auth_guard = {
+        "authorized_200": evaluate_ota_hotel_rental_incremental_auth_policy(
+            OtaHotelRentalIncrementalAuthPolicyInput()
+        ),
+        "vcn_incidental_collision_403": evaluate_ota_hotel_rental_incremental_auth_policy(
+            OtaHotelRentalIncrementalAuthPolicyInput(
+                incidental_deposit_swiped_on_exact_limit_corporate_vcn=True
+            )
+        ),
+        "unreleased_deposit_or_new_auth_422": evaluate_ota_hotel_rental_incremental_auth_policy(
+            OtaHotelRentalIncrementalAuthPolicyInput(
+                partial_capture_without_0420_reversal_or_disconnected_new_auth=True
+            )
+        ),
+        "unsubstantiated_delayed_charge_451": evaluate_ota_hotel_rental_incremental_auth_policy(
+            OtaHotelRentalIncrementalAuthPolicyInput(
+                unsubstantiated_post_checkout_delayed_damage_charge=True
+            )
+        ),
+        "dual_folio_incremental_0420_409": evaluate_ota_hotel_rental_incremental_auth_policy(
+            OtaHotelRentalIncrementalAuthPolicyInput(
+                dual_folio_vcn_split_incremental_auth_and_instant_0420_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -51442,6 +51544,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_ddp_mor_sor_customs_guard": cross_border_ddp_mor_sor_customs_guard,
         "trusted_agent_identity_tap_waf_guard": trusted_agent_identity_tap_waf_guard,
         "b2b_punchout_cxml_edi_orchestration_guard": b2b_punchout_cxml_edi_orchestration_guard,
+        "ota_hotel_rental_incremental_auth_guard": ota_hotel_rental_incremental_auth_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -73399,6 +73502,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="punchoutedi-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CLOSED_LOOP_CXML_PUNCHOUT_AND_EDI_855_856_SYNC_CONFIRM · Mandate: b2b_punchout_cxml_edi_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 294 (#413) OTA Hospitality & Car Rental Incremental Auth & 0420 Deposit Release -->
+      <div class="finops-box" id="ota-hotel-rental-incremental-auth-sandbox" style="margin-top:12px;border-color:#6366f1;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏨 OTA 酒旅住宿与租车增量预授权 (Oracle Opera / Adyen / Stripe vs Sabre VCN) 沙盒</div>
+            <div class="finops-sub">Round 294 (#413 · SVG #737) · 入住前 PMS Window 1/2 公私双窗分流防定额公司 VCN 被误刷杂费押金拒付 (HTTP 403) + 原 TraceID 增量预授权与退房 ISO 8583 0420 秒级解冻差额防 30 天僵尸冻卡 (HTTP 422) + 离店后无证据强扣战损/吸烟费拦截 (HTTP 451) + 60s 退押金净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="incauth-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度前台 VCN 刷卡被拒、非增量预授权交换费降级 (+95 bps) 与押金/离店补扣拒付损耗池 ($)
+            <input type="number" id="incauth-gross-input" value="290000" min="10000" step="5000" oninput="recalcOtaHotelRentalIncrementalAuthSandbox()" />
+          </label>
+          <label>入住前 PMS 双账单窗口 (Window 1 公司 VCN 付房税 vs Window 2 个人卡锁押金) 自动分流门禁
+            <select id="incauth-vcn-select" onchange="recalcOtaHotelRentalIncrementalAuthSandbox()">
+              <option value="pass">入住前自动注入 Opera OHIP 双窗指令：房税走公司 VCN，杂费押金走个人 Apple Pay (安全)</option>
+              <option value="block_403">前台把 $300 杂费押金合刷在精确房税限额的公司 VCN 上导致半夜入住拒付 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>在住/在租增量预授权 (Incremental Auth) 与退房部分扣款同步发送 ISO 8583 0420 差额冲正门禁
+            <select id="incauth-0420-select" onchange="recalcOtaHotelRentalIncrementalAuthSandbox()">
+              <option value="pass">续住/加购沿用原 TraceID 追加授权；退房 Partial Capture 同步发送 0420 秒级解冻余款 (合规)</option>
+              <option value="block_422">续住另开新预授权双倍冻卡，或退房扣 $600 后漏发 0420 致 $400 押金僵死 30 天 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>离店/还车后延迟补扣款 (Delayed / Amended Charge：吸烟清洁费 / 划痕费 / 迷你吧) 证据链门禁
+            <select id="incauth-delayed-select" onchange="recalcOtaHotelRentalIncrementalAuthSandbox()">
+              <option value="pass">离店后补扣强制附带细项水单、带时间戳传感器/360°视觉存证哈希与电子通知 (安全)</option>
+              <option value="block_451">退房 3 天后无任何凭证直接对存档卡静默强扣 $450 吸烟/轮毂划痕费引发必败拒付 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>PMS 双窗口公私分流 + 原单 Incremental Auth + 退房 60 秒自动解冻押金全链路编排
+            <select id="incauth-opt-select" onchange="recalcOtaHotelRentalIncrementalAuthSandbox()">
+              <option value="enabled" selected>全自动双窗分账 + 保级增量预授权 + 60 秒极速退押金 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">传统前台人工刷卡与发卡行 14-30 天自然到期解冻押金 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度VCN拒付与降级争议损耗池</div>
+            <div class="finops-kpi-val" id="incauth-gross-kpi">$290,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">双窗与0420秒级解冻后净成本</div>
+            <div class="finops-kpi-val" id="incauth-net-kpi" style="color:#6ee7b7;">$179,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省降级费与拒付损失</div>
+            <div class="finops-kpi-val" id="incauth-savings-kpi" style="color:#38bdf8;">$110,200</div>
+          </div>
+        </div>
+        <div id="incauth-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DUAL_FOLIO_VCN_SPLIT_INCREMENTAL_AUTH_AND_INSTANT_0420_RELEASE_CONFIRM · Mandate: ota_hotel_rental_inc_auth_optim_409
         </div>
       </div>
 
@@ -100378,6 +100538,79 @@ function recalcB2bPunchoutCxmlEdiSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_PUNCHOUT_QUOTE_UOM_AND_EDI_850_AUTHORIZED · Mandate: b2b_punchout_cxml_edi_200';
+}}
+
+function recalcOtaHotelRentalIncrementalAuthSandbox() {{
+  const grossInput = document.getElementById('incauth-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '290000'));
+  const vcnGate = document.getElementById('incauth-vcn-select').value;
+  const revGate = document.getElementById('incauth-0420-select').value;
+  const delayedGate = document.getElementById('incauth-delayed-select').value;
+  const optMode = document.getElementById('incauth-opt-select').value;
+
+  const grossKpi = document.getElementById('incauth-gross-kpi');
+  const netKpi = document.getElementById('incauth-net-kpi');
+  const savingsKpi = document.getElementById('incauth-savings-kpi');
+  const statusKpi = document.getElementById('incauth-status-kpi');
+  const banner = document.getElementById('incauth-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (delayedGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNSUBSTANTIATED_POST_CHECKOUT_DELAYED_DAMAGE_OR_MINIBAR_CHARGE · Mandate: null';
+    return;
+  }}
+  if (vcnGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INCIDENTAL_DEPOSIT_COLLISION_ON_EXACT_LIMIT_CORPORATE_VCN · Mandate: null';
+    return;
+  }}
+  if (revGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNRELEASED_PARTIAL_CAPTURE_DEPOSIT_OR_DISCONNECTED_NEW_AUTH_HOLD · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DUAL_FOLIO_VCN_SPLIT_INCREMENTAL_AUTH_AND_INSTANT_0420_RELEASE_CONFIRM · Mandate: ota_hotel_rental_inc_auth_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_INCREMENTAL_AUTH_AND_DEPOSIT_RELEASE_AUTHORIZED · Mandate: ota_hotel_rental_inc_auth_200';
 }}
 
 function updateStage1756Sandbox() {{

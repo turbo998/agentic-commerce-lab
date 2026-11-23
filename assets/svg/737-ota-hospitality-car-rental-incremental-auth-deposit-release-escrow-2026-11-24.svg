@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760">
+  <defs>
+    <linearGradient id="bg737" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#070d19"/>
+      <stop offset="50%" stop-color="#0d1729"/>
+      <stop offset="100%" stop-color="#111d35"/>
+    </linearGradient>
+    <linearGradient id="hdr737" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="card737" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#15233b"/>
+      <stop offset="100%" stop-color="#0d1729"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="760" fill="url(#bg737)"/>
+  <rect x="24" y="20" width="1232" height="78" rx="14" fill="url(#hdr737)" opacity="0.94"/>
+  <text x="48" y="53" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="20.5" font-weight="800">
+    Round 294 (#413 · SVG #737) · OTA Hospitality &amp; Car Rental Incremental Auth &amp; 0420 Deposit Release
+  </text>
+  <text x="48" y="79" fill="#e0f2fe" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="600">
+    Oracle Opera Cloud / Mews / Stripe Terminal vs Adyen / Sabre VCN · Deposit Decline Guard (403) · 0420 Partial Reversal (422) · Post-Checkout Dispute (451/409)
+  </text>
+
+  <!-- Left Column: 4 Hospitality & Mobility Payment Platforms -->
+  <rect x="24" y="114" width="385" height="622" rx="12" fill="url(#card737)" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="44" y="146" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    1. Hospitality &amp; Mobility Payment Stack
+  </text>
+
+  <rect x="42" y="164" width="349" height="128" rx="10" fill="#0b1528" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="58" y="190" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    A. Sabre / Conferma / Navan Single-Use Virtual Cards
+  </text>
+  <text x="58" y="212" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Issues strict room+tax VCN for corporate hotel bookings
+  </text>
+  <text x="58" y="232" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Risk: Front desk swipes `$100/night` incidentals on same VCN -&gt; Decline!
+  </text>
+  <text x="58" y="252" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Corporate T&amp;E policy control with dual-folio routing
+  </text>
+
+  <rect x="42" y="304" width="349" height="128" rx="10" fill="#0b1528" stroke="#0284c7" stroke-width="1.2"/>
+  <text x="58" y="330" fill="#7dd3fc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    B. Adyen Hospitality &amp; Stripe Incremental Auth
+  </text>
+  <text x="58" y="352" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Native `ISO 8583` incremental authorization (`capture_method=manual`)
+  </text>
+  <text x="58" y="372" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Preserves original `Trace ID` &amp; lower card-present interchange
+  </text>
+  <text x="58" y="392" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Stay extensions, dining charges &amp; rental extensions
+  </text>
+
+  <rect x="42" y="444" width="349" height="128" rx="10" fill="#0b1528" stroke="#8b5cf6" stroke-width="1.2"/>
+  <text x="58" y="470" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    C. Oracle Opera Cloud PMS / Mews / Canary Digital
+  </text>
+  <text x="58" y="492" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Splits `Folio Window 1` (Room &amp; Tax) vs `Window 2` (Incidentals)
+  </text>
+  <text x="58" y="512" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Triggers automatic `0420 Partial Reversal` on checkout folio close
+  </text>
+  <text x="58" y="532" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Zero front-desk friction &amp; instant deposit unfreezing
+  </text>
+
+  <rect x="42" y="584" width="349" height="134" rx="10" fill="#0b1528" stroke="#10b981" stroke-width="1.2"/>
+  <text x="58" y="610" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    D. Visa / Mastercard Delayed &amp; Amended Charge Rules
+  </text>
+  <text x="58" y="632" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Strict network rules on post-checkout minibar, smoking &amp; damage
+  </text>
+  <text x="58" y="652" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Requires itemized receipt + timestamped photo / signed agreement
+  </text>
+  <text x="58" y="672" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Best for: Preventing `Reason Code 13.1 / 4853` chargeback losses
+  </text>
+
+  <!-- Center Column: Deterministic Fiduciary Hospitality & Rental Guards -->
+  <rect x="429" y="114" width="422" height="622" rx="12" fill="url(#card737)" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="449" y="146" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    2. Fiduciary Pre-Auth &amp; Deposit Control Plane
+  </text>
+
+  <!-- Gate 1: HTTP 403 -->
+  <rect x="447" y="166" width="386" height="126" rx="10" fill="#1e1124" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="463" y="192" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 1 · Corporate VCN Incidental Hold Collision Veto (HTTP 403)
+  </text>
+  <text x="463" y="214" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Bans swiping `$250` incidental hold onto exact-amount Room VCN
+  </text>
+  <text x="463" y="234" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Auto-routes Window 1 -&gt; Corporate VCN &amp; Window 2 -&gt; Traveler Card
+  </text>
+  <text x="463" y="254" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Eliminates 11pm hotel check-in declines for corporate travelers
+  </text>
+
+  <!-- Gate 2: HTTP 422 -->
+  <rect x="447" y="306" width="386" height="126" rx="10" fill="#231815" stroke="#f97316" stroke-width="1.5"/>
+  <text x="463" y="332" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 2 · `ISO 8583 0420` Partial Reversal vs Zombie Hold (HTTP 422)
+  </text>
+  <text x="463" y="354" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Bans capturing `$600` from a `$1,000` hold without `0420` release
+  </text>
+  <text x="463" y="374" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Bans creating disconnected new auth instead of `Incremental Auth`
+  </text>
+  <text x="463" y="394" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Unfreezes `$400` deposit in &lt;60s instead of 14–30 day bank hold
+  </text>
+
+  <!-- Gate 3: HTTP 451 -->
+  <rect x="447" y="446" width="386" height="126" rx="10" fill="#1f1629" stroke="#ec4899" stroke-width="1.5"/>
+  <text x="463" y="472" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 3 · Unsubstantiated Post-Checkout Delayed Charge (HTTP 451)
+  </text>
+  <text x="463" y="494" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Blocks post-checkout `$450` smoking/scratch charge without evidence
+  </text>
+  <text x="463" y="514" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Requires itemized folio + timestamped CV/sensor proof before MIT
+  </text>
+  <text x="463" y="534" fill="#f9a8d4" font-family="Segoe UI, Arial, sans-serif" font-size="11" font-weight="600">
+    Stops 92% lose-rate delayed-charge chargebacks &amp; VAMP penalties
+  </text>
+
+  <!-- Gate 4: HTTP 409 -->
+  <rect x="447" y="586" width="386" height="132" rx="10" fill="#0d2622" stroke="#10b981" stroke-width="1.5"/>
+  <text x="463" y="612" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Gate 4 · Dual-Folio Split + Instant `0420` Release (HTTP 409)
+  </text>
+  <text x="463" y="634" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Pre-links `PMS Window 1 (VCN)` + `Window 2 (Apple Pay Deposit)`
+  </text>
+  <text x="463" y="654" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Fires atomic `Final Capture + 0420 Unused Hold Reversal` at checkout
+  </text>
+  <text x="463" y="678" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Cuts Check-In Declines, Downgrade Fees &amp; Disputes by 38% ($110.2k)
+  </text>
+
+  <!-- Right Column: FinOps Impact & 7-Card Telemetry -->
+  <rect x="871" y="114" width="385" height="622" rx="12" fill="url(#card737)" stroke="#10b981" stroke-width="1.5"/>
+  <text x="891" y="146" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700">
+    3. Hospitality &amp; Rental FinOps Impact
+  </text>
+
+  <rect x="889" y="168" width="349" height="184" rx="10" fill="#091526" stroke="#38bdf8" stroke-width="1.2"/>
+  <text x="907" y="194" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Quarterly VCN Decline, Downgrade &amp; Dispute Pool ($290k)
+  </text>
+  <text x="907" y="220" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Unmanaged Deposit Collisions &amp; Downgrade Fees: $290,000
+  </text>
+  <text x="907" y="242" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Net Cost with Dual-Folio &amp; 0420 Instant Release: $179,800
+  </text>
+  <text x="907" y="264" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="800">
+    • Quarterly Travel &amp; Hospitality Savings: $110,200 (-38%)
+  </text>
+  <rect x="907" y="282" width="310" height="16" rx="8" fill="#1e293b"/>
+  <rect x="907" y="282" width="192" height="16" rx="8" fill="#10b981"/>
+  <text x="907" y="318" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    Zero Check-In VCN Declines · &lt;60s Deposit Unfreezing
+  </text>
+
+  <rect x="889" y="368" width="349" height="176" rx="10" fill="#091526" stroke="#a855f7" stroke-width="1.2"/>
+  <text x="907" y="394" fill="#d8b4fe" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Incremental Auth vs. Disconnected New Auth
+  </text>
+  <text x="907" y="420" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Initial Check-In Hold: `$800` (`TraceID=T-901`)
+  </text>
+  <text x="907" y="442" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Bad PMS: Fires second `$300` auth -&gt; Locks `$1,100` + `+95 bps` fee!
+  </text>
+  <text x="907" y="464" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">
+    • Incremental Auth: Updates `T-901` `$800 -&gt; $950` seamlessly!
+  </text>
+  <text x="907" y="486" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    • Checkout `$840` Spend: Captures `$840` + `0420` releases `$110`
+  </text>
+
+  <rect x="889" y="560" width="349" height="158" rx="10" fill="#091526" stroke="#f59e0b" stroke-width="1.2"/>
+  <text x="907" y="586" fill="#fcd34d" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Deterministic Audit Tokens &amp; Provenance
+  </text>
+  <text x="907" y="610" fill="#cbd5e1" font-family="Consolas, monospace" font-size="11">
+    200: ota_hotel_rental_inc_auth_200
+  </text>
+  <text x="907" y="630" fill="#fde68a" font-family="Consolas, monospace" font-size="11">
+    409: ota_hotel_rental_inc_auth_optim_409
+  </text>
+  <text x="907" y="650" fill="#fca5a5" font-family="Consolas, monospace" font-size="11">
+    403/422/451: null (Mandate Blocked)
+  </text>
+  <text x="907" y="676" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="11">
+    Provenance: synthetic · independently_reproduced=false
+  </text>
+</svg>

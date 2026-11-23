@@ -28756,6 +28756,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-punchout-cxml-edi-orchestration-sandbox", html_zh)
 
+    def test_ota_hotel_rental_incremental_auth_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaHotelRentalIncrementalAuthPolicyInput,
+            evaluate_ota_hotel_rental_incremental_auth_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_hotel_rental_incremental_auth_policy(
+            OtaHotelRentalIncrementalAuthPolicyInput(
+                quarterly_vcn_decline_interchange_downgrade_and_dispute_pool_usd=290000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_INCREMENTAL_AUTH_AND_DEPOSIT_RELEASE_AUTHORIZED",
+        )
+
+        vcn = evaluate_ota_hotel_rental_incremental_auth_policy(
+            OtaHotelRentalIncrementalAuthPolicyInput(
+                incidental_deposit_swiped_on_exact_limit_corporate_vcn=True
+            )
+        )
+        self.assertEqual(vcn["status_code"], 403)
+        self.assertEqual(
+            vcn["decision"],
+            "INCIDENTAL_DEPOSIT_COLLISION_ON_EXACT_LIMIT_CORPORATE_VCN",
+        )
+
+        rev = evaluate_ota_hotel_rental_incremental_auth_policy(
+            OtaHotelRentalIncrementalAuthPolicyInput(
+                partial_capture_without_0420_reversal_or_disconnected_new_auth=True
+            )
+        )
+        self.assertEqual(rev["status_code"], 422)
+        self.assertEqual(
+            rev["decision"],
+            "UNRELEASED_PARTIAL_CAPTURE_DEPOSIT_OR_DISCONNECTED_NEW_AUTH_HOLD",
+        )
+
+        delayed = evaluate_ota_hotel_rental_incremental_auth_policy(
+            OtaHotelRentalIncrementalAuthPolicyInput(
+                unsubstantiated_post_checkout_delayed_damage_charge=True
+            )
+        )
+        self.assertEqual(delayed["status_code"], 451)
+        self.assertEqual(
+            delayed["decision"],
+            "UNSUBSTANTIATED_POST_CHECKOUT_DELAYED_DAMAGE_OR_MINIBAR_CHARGE",
+        )
+
+        optim = evaluate_ota_hotel_rental_incremental_auth_policy(
+            OtaHotelRentalIncrementalAuthPolicyInput(
+                quarterly_vcn_decline_interchange_downgrade_and_dispute_pool_usd=290000.0,
+                dual_folio_vcn_split_incremental_auth_and_instant_0420_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 110200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 179800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_hotel_rental_incremental_auth_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-hotel-rental-incremental-auth-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
