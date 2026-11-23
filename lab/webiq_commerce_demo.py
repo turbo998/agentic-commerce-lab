@@ -39051,6 +39051,82 @@ def evaluate_b2b_scf_reverse_factoring_policy(
     }
 
 
+@dataclass(frozen=True)
+class LivestreamShoppingFlashEscrowPolicyInput:
+    quarterly_unpaid_lockout_split_freight_and_mcn_fraud_pool_usd: float = 310000.0
+    unpaid_cart_squatting_long_ttl_inventory_lockout: bool = False
+    immediate_wms_push_without_30m_cancel_and_parcel_merge: bool = False
+    upfront_unescrowed_mcn_pit_fee_or_brushing_return_fraud: bool = False
+    flash_90s_lease_recycle_parcel_merge_and_mcn_escrow_ready: bool = False
+
+
+def evaluate_livestream_shopping_flash_escrow_policy(
+    policy_input: LivestreamShoppingFlashEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_unpaid_lockout_split_freight_and_mcn_fraud_pool_usd
+        ),
+    )
+    if policy_input.upfront_unescrowed_mcn_pit_fee_or_brushing_return_fraud:
+        return {
+            "status_code": 451,
+            "decision": "UPFRONT_UNESCROWED_MCN_PIT_FEE_OR_BRUSHING_RETURN_SPIKE_FRAUD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unpaid_cart_squatting_long_ttl_inventory_lockout:
+        return {
+            "status_code": 403,
+            "decision": "UNPAID_LIVESTREAM_CART_SQUATTING_LONG_TTL_INVENTORY_LOCKOUT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.immediate_wms_push_without_30m_cancel_and_parcel_merge:
+        return {
+            "status_code": 422,
+            "decision": "IMMEDIATE_WMS_PUSH_IMPULSE_CANCEL_OR_UNMERGED_SAME_STREAM_PARCELS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.flash_90s_lease_recycle_parcel_merge_and_mcn_escrow_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FLASH_90S_LEASE_RECYCLE_STREAM_PARCEL_MERGE_AND_MCN_ESCROW_CONFIRM",
+            "mandate_token": "livestream_shopping_flash_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_LIVESTREAM_90S_LEASE_AND_MCN_ESCROW_AUTHORIZED",
+        "mandate_token": "livestream_shopping_flash_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -53160,6 +53236,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    livestream_shopping_flash_escrow_guard = {
+        "authorized_200": evaluate_livestream_shopping_flash_escrow_policy(
+            LivestreamShoppingFlashEscrowPolicyInput()
+        ),
+        "unpaid_cart_squatting_403": evaluate_livestream_shopping_flash_escrow_policy(
+            LivestreamShoppingFlashEscrowPolicyInput(
+                unpaid_cart_squatting_long_ttl_inventory_lockout=True
+            )
+        ),
+        "immediate_wms_or_split_box_422": evaluate_livestream_shopping_flash_escrow_policy(
+            LivestreamShoppingFlashEscrowPolicyInput(
+                immediate_wms_push_without_30m_cancel_and_parcel_merge=True
+            )
+        ),
+        "unescrowed_mcn_or_brushing_451": evaluate_livestream_shopping_flash_escrow_policy(
+            LivestreamShoppingFlashEscrowPolicyInput(
+                upfront_unescrowed_mcn_pit_fee_or_brushing_return_fraud=True
+            )
+        ),
+        "flash_90s_merge_mcn_escrow_409": evaluate_livestream_shopping_flash_escrow_policy(
+            LivestreamShoppingFlashEscrowPolicyInput(
+                flash_90s_lease_recycle_parcel_merge_and_mcn_escrow_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -53603,6 +53705,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_involuntary_churn_vau_payday_guard": saas_involuntary_churn_vau_payday_guard,
         "retail_media_rmn_poas_bidding_guard": retail_media_rmn_poas_bidding_guard,
         "b2b_scf_reverse_factoring_guard": b2b_scf_reverse_factoring_guard,
+        "livestream_shopping_flash_escrow_guard": livestream_shopping_flash_escrow_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -76757,6 +76860,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="scfrev-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 HYBRID_DYNAMIC_DISCOUNT_BANK_SCF_AND_IPU_BUFFER_CONFIRM · Mandate: b2b_scf_reverse_factoring_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 315 (#434) Livestream Shopping Flash Lease, Parcel Merge & MCN Escrow -->
+      <div class="finops-box" id="livestream-shopping-flash-escrow-sandbox" style="margin-top:12px;border-color:#e11d48;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎥 直播电商与实时竞拍闪购锁库、合箱缓冲与坑位费托管 (TikTok Shop / Whatnot / Bambuser) 沙盒</div>
+            <div class="finops-sub">Round 315 (#434 · SVG #758) · 付款减库存与 90s 超时自动回流公屏播报防未付款占死直播库存 (HTTP 403) + 下播 30m 冲动退单缓冲与同观众多单自动合箱省 63% 运费 (HTTP 422) + MCN 主播坑位费绑定签收满 14 天净留存 GMV 对赌防机房刷单骗费 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="livestrm-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度直播间未付款跑单流拍损耗、同观众多单拆发快递费及 MCN 刷单退货骗取坑位费池 ($)
+            <input type="number" id="livestrm-gross-input" value="310000" min="10000" step="5000" oninput="recalcLivestreamShoppingFlashSandbox()" />
+          </label>
+          <label>直播闪购链接库存锁定策略：付款减库存 / 90s 极速租约回流 vs 30m 未付款占库门禁
+            <select id="livestrm-lease-select" onchange="recalcLivestreamShoppingFlashSandbox()">
+              <option value="pass">采用 90s 极速付款租约，超时未付自动回流库存并在直播间公屏播报返场 (安全)</option>
+              <option value="block_403">沿用传统 30m 未付款锁库被比价党/竞对脚本 1 秒拍空，主播下播后才释放全流拍 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>下播 30 分钟冲动退单静默缓冲池 (Pre-WMS Cool-Off) 与同观众同场次多单合并装箱门禁
+            <select id="livestrm-merge-select" onchange="recalcLivestreamShoppingFlashSandbox()">
+              <option value="pass">挂起 30m 支持 $0 秒退改码，并将同一观众本场购买的 4 件商品合为 1 箱发出 (合规)</option>
+              <option value="block_422">每付一单秒推仓库打单导致同一观众收到 4 个独立包裹且 25% 冲动退单产生拦截费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>外部达人 / MCN 固定坑位费 (Flat Pit Fee) 与 14 天净留存 GMV (Net Kept GMV) 对赌托管门禁
+            <select id="livestrm-mcn-select" onchange="recalcLivestreamShoppingFlashSandbox()">
+              <option value="pass">80% 坑位费与佣金锁入托管池，待签收满 14 天扣除退货后按真实净 GMV 达标率放款 (安全)</option>
+              <option value="block_451">开播前全额打款 $50k 坑位费，MCN 雇机房刷出 $200k 假单后 7 天内退掉 85% (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>90s 跑单秒级返场 + 同观众包裹合并 + MCN 净留存对赌托管全链路编排
+            <select id="livestrm-opt-select" onchange="recalcLivestreamShoppingFlashSandbox()">
+              <option value="enabled" selected>启用 90s 极速回流 + 30m 同场合箱 + 14d 净留存坑位费托管 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">普通网页购物车规则直连直播间且开播前付清全额坑位费 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度跑单流拍与刷单损耗池</div>
+            <div class="finops-kpi-val" id="livestrm-gross-kpi">$310,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">90s回流与合箱托管后净成本</div>
+            <div class="finops-kpi-val" id="livestrm-net-kpi" style="color:#6ee7b7;">$189,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住直播毛利与运费</div>
+            <div class="finops-kpi-val" id="livestrm-savings-kpi" style="color:#38bdf8;">$120,900</div>
+          </div>
+        </div>
+        <div id="livestrm-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FLASH_90S_LEASE_RECYCLE_STREAM_PARCEL_MERGE_AND_MCN_ESCROW_CONFIRM · Mandate: livestream_shopping_flash_optim_409
         </div>
       </div>
 
@@ -105269,6 +105429,79 @@ function recalcB2bScfReverseFactoringSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_ASC405_IPU_BUFFER_AND_HYBRID_SCF_AUTHORIZED · Mandate: b2b_scf_reverse_factoring_200';
+}}
+
+function recalcLivestreamShoppingFlashSandbox() {{
+  const grossInput = document.getElementById('livestrm-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '310000'));
+  const leaseGate = document.getElementById('livestrm-lease-select').value;
+  const mergeGate = document.getElementById('livestrm-merge-select').value;
+  const mcnGate = document.getElementById('livestrm-mcn-select').value;
+  const optMode = document.getElementById('livestrm-opt-select').value;
+
+  const grossKpi = document.getElementById('livestrm-gross-kpi');
+  const netKpi = document.getElementById('livestrm-net-kpi');
+  const savingsKpi = document.getElementById('livestrm-savings-kpi');
+  const statusKpi = document.getElementById('livestrm-status-kpi');
+  const banner = document.getElementById('livestrm-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (mcnGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UPFRONT_UNESCROWED_MCN_PIT_FEE_OR_BRUSHING_RETURN_SPIKE_FRAUD · Mandate: null';
+    return;
+  }}
+  if (leaseGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNPAID_LIVESTREAM_CART_SQUATTING_LONG_TTL_INVENTORY_LOCKOUT · Mandate: null';
+    return;
+  }}
+  if (mergeGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 IMMEDIATE_WMS_PUSH_IMPULSE_CANCEL_OR_UNMERGED_SAME_STREAM_PARCELS · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FLASH_90S_LEASE_RECYCLE_STREAM_PARCEL_MERGE_AND_MCN_ESCROW_CONFIRM · Mandate: livestream_shopping_flash_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_LIVESTREAM_90S_LEASE_AND_MCN_ESCROW_AUTHORIZED · Mandate: livestream_shopping_flash_200';
 }}
 
 function updateStage1756Sandbox() {{

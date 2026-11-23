@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`433` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`434` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (30 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (56 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (163 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (164 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (95 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (39 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (50 guides)](#tax-fx-privacy-disputes)
@@ -120,7 +120,7 @@
 | 56 | **Multi-PSP Payment Orchestration (`Primer / Spreedly / Gr4vy vs. Adyen + Stripe + Checkout.com`), `8-Digit BIN` Local Acquiring, US `Durbin Reg II` PINless Debit Routing (`STAR / NYCE / Pulse`), `Cat-1 / MAC-03` Zero-Retry Breaker & `ISO 8583 0420` Timeout Failover Mutex (`-39%` Acquiring MDR & Decline Loss) FAQ** | [English](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.en.md) · [中文](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (163 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (164 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -289,6 +289,7 @@
 | 161 | **Digital Pharmacy & Telehealth Commerce (`Amazon Pharmacy / Truepill / Ro / Hims & Hers + Surescripts NCPDP / CoverMyMeds`), Signed `NCPDP eRx` & `AKS` Medicare Shield, `PBM + Copay Card COB` Split-Billing & `Mon–Wed` `GLP-1` Cold-Chain Dispatch Gate (`-39%` Spoilage & Rx Abandonment Loss) FAQ** | [English](digital-pharmacy-telehealth-ncpdp-erx-prior-auth-glp1-coldchain-copay-selection-faq.en.md) · [中文](digital-pharmacy-telehealth-ncpdp-erx-prior-auth-glp1-coldchain-copay-selection-faq.md) |
 | 162 | **🏆 Omnichannel Luxury Clienteling, Endless-Aisle Ship-from-Store & `3DS2 Pay-by-Link` Split-Commission Escrow (`Tulip / NewStore / Salesforce POS + Adyen Pay-by-Link` · 🏆 430th Bilingual Guide Milestone), Anti-`MOTO` Fraud Gate, `75/25` Dual-Store Commission Split & Global `EMVCo PAR` Quota Lock (`-39%` Chargeback & Walk-Out Loss) FAQ** | [English](omnichannel-luxury-clienteling-endless-aisle-pay-by-link-split-commission-selection-faq.en.md) · [中文](omnichannel-luxury-clienteling-endless-aisle-pay-by-link-split-commission-selection-faq.md) |
 | 163 | **Retail Media Network (`RMN`) & Data Clean-Room Bidding (`Amazon Ads + AMC vs. Walmart Connect / Luminate vs. Target Roundel vs. Pacvue / Skai`), Real-Time `Buy-Box` & Core-Size `OOS` Auto-Pause, Anti-Brand-Cannibalization (`NTB%`) & Net `POAS` Dayparting (`-39%` Wasted Ad Spend) FAQ** | [English](retail-media-network-rmn-amc-cleanroom-buybox-oos-poas-bidding-selection-faq.en.md) · [中文](retail-media-network-rmn-amc-cleanroom-buybox-oos-poas-bidding-selection-faq.md) |
+| 164 | **Livestream Shopping & Live Auction Commerce (`TikTok Shop Live / Whatnot / Bambuser / Taobao Live`), `90-Second` Pay-to-Lock Auto-Recycle, `30-Minute` Pre-WMS Consolidation Buffer & `14d Net Kept GMV` MCN Pit-Fee Escrow (`-39%` Squatting, Split-Freight & Brushing Loss) FAQ** | [English](livestream-shopping-flash-drop-90s-lease-impulse-cancel-host-escrow-selection-faq.en.md) · [中文](livestream-shopping-flash-drop-90s-lease-impulse-cancel-host-escrow-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (95 Guides)

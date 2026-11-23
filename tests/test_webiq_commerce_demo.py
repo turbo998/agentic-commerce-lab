@@ -30163,6 +30163,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-scf-reverse-factoring-sandbox", html_zh)
 
+    def test_livestream_shopping_flash_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            LivestreamShoppingFlashEscrowPolicyInput,
+            evaluate_livestream_shopping_flash_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_livestream_shopping_flash_escrow_policy(
+            LivestreamShoppingFlashEscrowPolicyInput(
+                quarterly_unpaid_lockout_split_freight_and_mcn_fraud_pool_usd=310000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_LIVESTREAM_90S_LEASE_AND_MCN_ESCROW_AUTHORIZED",
+        )
+
+        squat = evaluate_livestream_shopping_flash_escrow_policy(
+            LivestreamShoppingFlashEscrowPolicyInput(
+                unpaid_cart_squatting_long_ttl_inventory_lockout=True
+            )
+        )
+        self.assertEqual(squat["status_code"], 403)
+        self.assertEqual(
+            squat["decision"],
+            "UNPAID_LIVESTREAM_CART_SQUATTING_LONG_TTL_INVENTORY_LOCKOUT",
+        )
+
+        merge = evaluate_livestream_shopping_flash_escrow_policy(
+            LivestreamShoppingFlashEscrowPolicyInput(
+                immediate_wms_push_without_30m_cancel_and_parcel_merge=True
+            )
+        )
+        self.assertEqual(merge["status_code"], 422)
+        self.assertEqual(
+            merge["decision"],
+            "IMMEDIATE_WMS_PUSH_IMPULSE_CANCEL_OR_UNMERGED_SAME_STREAM_PARCELS",
+        )
+
+        mcn = evaluate_livestream_shopping_flash_escrow_policy(
+            LivestreamShoppingFlashEscrowPolicyInput(
+                upfront_unescrowed_mcn_pit_fee_or_brushing_return_fraud=True
+            )
+        )
+        self.assertEqual(mcn["status_code"], 451)
+        self.assertEqual(
+            mcn["decision"],
+            "UPFRONT_UNESCROWED_MCN_PIT_FEE_OR_BRUSHING_RETURN_SPIKE_FRAUD",
+        )
+
+        optim = evaluate_livestream_shopping_flash_escrow_policy(
+            LivestreamShoppingFlashEscrowPolicyInput(
+                quarterly_unpaid_lockout_split_freight_and_mcn_fraud_pool_usd=310000.0,
+                flash_90s_lease_recycle_parcel_merge_and_mcn_escrow_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 120900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 189100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("livestream_shopping_flash_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("livestream-shopping-flash-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
