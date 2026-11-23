@@ -36849,6 +36849,82 @@ def evaluate_ecommerce_ai_shopping_stylist_bundle_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceBnplMdrReamortizePolicyInput:
+    quarterly_bnpl_mdr_bleed_and_return_autopay_dispute_pool_usd: float = 270000.0
+    bnpl_zero_apr_mdr_wiping_out_thin_sku_margin: bool = False
+    llm_scraping_pii_or_bypassing_isolated_a2ui_tila_webview: bool = False
+    unpaused_rma_autopay_or_head_first_cash_over_refund: bool = False
+    dynamic_bnpl_margin_routing_and_tail_first_refund_ready: bool = False
+
+
+def evaluate_ecommerce_bnpl_mdr_reamortize_policy(
+    policy_input: EcommerceBnplMdrReamortizePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_bnpl_mdr_bleed_and_return_autopay_dispute_pool_usd
+        ),
+    )
+    if policy_input.unpaused_rma_autopay_or_head_first_cash_over_refund:
+        return {
+            "status_code": 451,
+            "decision": "UNPAUSED_RMA_AUTOPAY_OR_HEAD_FIRST_CASH_OVER_REFUND",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bnpl_zero_apr_mdr_wiping_out_thin_sku_margin:
+        return {
+            "status_code": 403,
+            "decision": "BNPL_MERCHANT_MDR_SUBSIDY_WIPING_OUT_THIN_SKU_MARGIN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.llm_scraping_pii_or_bypassing_isolated_a2ui_tila_webview:
+        return {
+            "status_code": 422,
+            "decision": "LLM_SCRAPING_PII_OR_BYPASSING_ISOLATED_A2UI_TILA_WEBVIEW",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dynamic_bnpl_margin_routing_and_tail_first_refund_ready:
+        savings = round(gross_pool * 0.37, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DYNAMIC_BNPL_MARGIN_ROUTING_AND_TAIL_FIRST_REAMORTIZATION_CONFIRM",
+            "mandate_token": "embedded_bnpl_reamortize_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "MARGIN_SAFE_A2UI_BNPL_AND_TAIL_FIRST_SCHEDULE_AUTHORIZED",
+        "mandate_token": "embedded_bnpl_reamortize_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -50204,6 +50280,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_bnpl_mdr_reamortize_guard = {
+        "authorized_200": evaluate_ecommerce_bnpl_mdr_reamortize_policy(
+            EcommerceBnplMdrReamortizePolicyInput()
+        ),
+        "bnpl_mdr_thin_margin_wipeout_403": evaluate_ecommerce_bnpl_mdr_reamortize_policy(
+            EcommerceBnplMdrReamortizePolicyInput(
+                bnpl_zero_apr_mdr_wiping_out_thin_sku_margin=True
+            )
+        ),
+        "llm_pii_or_a2ui_bypass_422": evaluate_ecommerce_bnpl_mdr_reamortize_policy(
+            EcommerceBnplMdrReamortizePolicyInput(
+                llm_scraping_pii_or_bypassing_isolated_a2ui_tila_webview=True
+            )
+        ),
+        "unpaused_autopay_or_over_refund_451": evaluate_ecommerce_bnpl_mdr_reamortize_policy(
+            EcommerceBnplMdrReamortizePolicyInput(
+                unpaused_rma_autopay_or_head_first_cash_over_refund=True
+            )
+        ),
+        "dynamic_bnpl_tail_first_409": evaluate_ecommerce_bnpl_mdr_reamortize_policy(
+            EcommerceBnplMdrReamortizePolicyInput(
+                dynamic_bnpl_margin_routing_and_tail_first_refund_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -50618,6 +50720,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "commercial_agent_platform_hybrid_guard": commercial_agent_platform_hybrid_guard,
         "b2b_rfq_tco_contract_redline_guard": b2b_rfq_tco_contract_redline_guard,
         "ecommerce_ai_shopping_stylist_bundle_guard": ecommerce_ai_shopping_stylist_bundle_guard,
+        "ecommerce_bnpl_mdr_reamortize_guard": ecommerce_bnpl_mdr_reamortize_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -72119,6 +72222,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="stylist-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ONE_TAP_IN_SIZE_BUNDLE_HYDRATION_AND_PRO_RATA_LEDGER_CONFIRM · Mandate: ai_shopping_stylist_bundle_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 286 (#405) Embedded BNPL MDR Margin Floor & Tail-First Re-Amortization -->
+      <div class="finops-box" id="ecommerce-bnpl-mdr-reamortize-sandbox" style="margin-top:12px;border-color:#8b5cf6;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💳 电商嵌入式先买后付 BNPL (Affirm / Klarna / Afterpay / PayPal Pay-in-4) 毛利门禁与退货尾期冲销沙盒</div>
+            <div class="finops-sub">Round 286 (#405 · SVG #729) · SKU 净毛利底线 (&gt;=18%) 防 6.5% 商家贴息吞穿 3C 微利 (HTTP 403) + 隔离式 A2UI WebView 信贷核身防大模型违规收集 SSN/生日 (HTTP 422) + 快递首扫暂停自动代扣与尾期优先冲抵 (#4-&gt;#3-&gt;#2) (HTTP 451) + 动态轨道与品牌联合贴息净省 37% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="bnpl-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度低毛利商品盲开 6.5% 商家贴息分期亏损、退货在途继续自动扣月供引发拒付及错退未付本金损失池 ($)
+            <input type="number" id="bnpl-gross-input" value="270000" min="10000" step="5000" oninput="recalcEcommerceBnplMdrReamortizeSandbox()" />
+          </label>
+          <label>购物车加权净贡献毛利率 (&gt;=18%) 与高费率商家贴息免息分期 (6.5% MDR 0% APR) 匹配门禁
+            <select id="bnpl-mdr-select" onchange="recalcEcommerceBnplMdrReamortizeSandbox()">
+              <option value="pass">净毛利 &gt;=18% 方开放商家贴息 0% APR；薄利 3C 自动路由至零溢价 PayPal Pay-in-4 (安全)</option>
+              <option value="block_403">对净毛利仅 8% 的微利手机盲目开放 6.5% MDR 商家全额贴息分期导致卖一单亏一单 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>隔离式 A2UI 安全 WebView 信贷核身交接与 CFPB Reg Z / TILA 借贷协议本人确认门禁
+            <select id="bnpl-a2ui-select" onchange="recalcEcommerceBnplMdrReamortizeSandbox()">
+              <option value="pass">拉起隔离式 A2UI WebView 由买家本人完成征信核身，仅向 Agent 回传单次 SPT 令牌 (合规)</option>
+              <option value="block_422">大模型在聊天框索要买家 SSN/生日或用无头浏览器代点 TILA 贷款协议 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>退货快递首扫暂停代扣 (First-Scan Snooze) 与部分退货尾期优先冲销 (#4-&gt;#3-&gt;#2 Tail-First) 门禁
+            <select id="bnpl-tail-select" onchange="recalcEcommerceBnplMdrReamortizeSandbox()">
+              <option value="pass">快递首扫立即挂起 14 天代扣，退款优先取消未付的第 4/3 期分期而非盲退现金 (安全)</option>
+              <option value="block_451">退货在途未暂停次日自动扣款引发拒付，或只付了 $100 首期却退给买家 $250 现金 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>高低毛利双轨智能 BNPL 路由 + 品牌厂商联合贴息 (OEM Co-Op Subsidy) 分担 50% MDR
+            <select id="bnpl-opt-select" onchange="recalcEcommerceBnplMdrReamortizeSandbox()">
+              <option value="enabled" selected>按毛利动态路由 PayPal/Affirm/Klarna + 接入品牌联合贴息池 + 尾期重算 (-37% 损耗 / HTTP 409)</option>
+              <option value="disabled">全站无差别开放单一高费率 BNPL 且退货不联动暂停代扣计划 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度BNPL贴息侵蚀与退货拒付池</div>
+            <div class="finops-kpi-val" id="bnpl-gross-kpi">$270,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">毛利门禁与尾期重算后净成本</div>
+            <div class="finops-kpi-val" id="bnpl-net-kpi" style="color:#6ee7b7;">$170,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省贴息MDR与客诉罚金</div>
+            <div class="finops-kpi-val" id="bnpl-savings-kpi" style="color:#38bdf8;">$99,900</div>
+          </div>
+        </div>
+        <div id="bnpl-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DYNAMIC_BNPL_MARGIN_ROUTING_AND_TAIL_FIRST_REAMORTIZATION_CONFIRM · Mandate: embedded_bnpl_reamortize_optim_409
         </div>
       </div>
 
@@ -98514,6 +98674,79 @@ function recalcEcommerceAIShoppingStylistBundleSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_PIM_COMPATIBLE_AND_IN_SIZE_BUNDLE_AUTHORIZED · Mandate: ai_shopping_stylist_bundle_200';
+}}
+
+function recalcEcommerceBnplMdrReamortizeSandbox() {{
+  const grossInput = document.getElementById('bnpl-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '270000'));
+  const mdrGate = document.getElementById('bnpl-mdr-select').value;
+  const a2uiGate = document.getElementById('bnpl-a2ui-select').value;
+  const tailGate = document.getElementById('bnpl-tail-select').value;
+  const optMode = document.getElementById('bnpl-opt-select').value;
+
+  const grossKpi = document.getElementById('bnpl-gross-kpi');
+  const netKpi = document.getElementById('bnpl-net-kpi');
+  const savingsKpi = document.getElementById('bnpl-savings-kpi');
+  const statusKpi = document.getElementById('bnpl-status-kpi');
+  const banner = document.getElementById('bnpl-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (tailGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNPAUSED_RMA_AUTOPAY_OR_HEAD_FIRST_CASH_OVER_REFUND · Mandate: null';
+    return;
+  }}
+  if (mdrGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BNPL_MERCHANT_MDR_SUBSIDY_WIPING_OUT_THIN_SKU_MARGIN · Mandate: null';
+    return;
+  }}
+  if (a2uiGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 LLM_SCRAPING_PII_OR_BYPASSING_ISOLATED_A2UI_TILA_WEBVIEW · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.37);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DYNAMIC_BNPL_MARGIN_ROUTING_AND_TAIL_FIRST_REAMORTIZATION_CONFIRM · Mandate: embedded_bnpl_reamortize_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 MARGIN_SAFE_A2UI_BNPL_AND_TAIL_FIRST_SCHEDULE_AUTHORIZED · Mandate: embedded_bnpl_reamortize_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -28220,6 +28220,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-ai-shopping-stylist-bundle-sandbox", html_zh)
 
+    def test_ecommerce_bnpl_mdr_reamortize_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceBnplMdrReamortizePolicyInput,
+            evaluate_ecommerce_bnpl_mdr_reamortize_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_bnpl_mdr_reamortize_policy(
+            EcommerceBnplMdrReamortizePolicyInput(
+                quarterly_bnpl_mdr_bleed_and_return_autopay_dispute_pool_usd=270000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "MARGIN_SAFE_A2UI_BNPL_AND_TAIL_FIRST_SCHEDULE_AUTHORIZED",
+        )
+
+        mdr = evaluate_ecommerce_bnpl_mdr_reamortize_policy(
+            EcommerceBnplMdrReamortizePolicyInput(
+                bnpl_zero_apr_mdr_wiping_out_thin_sku_margin=True
+            )
+        )
+        self.assertEqual(mdr["status_code"], 403)
+        self.assertEqual(
+            mdr["decision"],
+            "BNPL_MERCHANT_MDR_SUBSIDY_WIPING_OUT_THIN_SKU_MARGIN",
+        )
+
+        a2ui = evaluate_ecommerce_bnpl_mdr_reamortize_policy(
+            EcommerceBnplMdrReamortizePolicyInput(
+                llm_scraping_pii_or_bypassing_isolated_a2ui_tila_webview=True
+            )
+        )
+        self.assertEqual(a2ui["status_code"], 422)
+        self.assertEqual(
+            a2ui["decision"],
+            "LLM_SCRAPING_PII_OR_BYPASSING_ISOLATED_A2UI_TILA_WEBVIEW",
+        )
+
+        tail = evaluate_ecommerce_bnpl_mdr_reamortize_policy(
+            EcommerceBnplMdrReamortizePolicyInput(
+                unpaused_rma_autopay_or_head_first_cash_over_refund=True
+            )
+        )
+        self.assertEqual(tail["status_code"], 451)
+        self.assertEqual(
+            tail["decision"],
+            "UNPAUSED_RMA_AUTOPAY_OR_HEAD_FIRST_CASH_OVER_REFUND",
+        )
+
+        optim = evaluate_ecommerce_bnpl_mdr_reamortize_policy(
+            EcommerceBnplMdrReamortizePolicyInput(
+                quarterly_bnpl_mdr_bleed_and_return_autopay_dispute_pool_usd=270000.0,
+                dynamic_bnpl_margin_routing_and_tail_first_refund_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 99900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 170100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_bnpl_mdr_reamortize_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-bnpl-mdr-reamortize-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
