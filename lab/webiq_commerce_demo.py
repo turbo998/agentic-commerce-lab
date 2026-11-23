@@ -39503,6 +39503,82 @@ def evaluate_b2b_vms_contingent_sow_policy(
     }
 
 
+@dataclass(frozen=True)
+class AgenticSixProtocolInteropPolicyInput:
+    quarterly_protocol_drift_micro_fee_and_cutover_break_pool_usd: float = 450000.0
+    cross_protocol_checkout_hash_drift_ucp_ap2_acp: bool = False
+    sub_2usd_micropayment_on_card_rail_or_deprecated_mcp: bool = False
+    unsigned_a2a_agent_card_or_raw_pan_in_mcp_context: bool = False
+    canonical_six_protocol_bridge_and_dual_rail_ready: bool = False
+
+
+def evaluate_agentic_six_protocol_interop_policy(
+    policy_input: AgenticSixProtocolInteropPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_protocol_drift_micro_fee_and_cutover_break_pool_usd
+        ),
+    )
+    if policy_input.unsigned_a2a_agent_card_or_raw_pan_in_mcp_context:
+        return {
+            "status_code": 451,
+            "decision": "UNSIGNED_A2A_AGENT_CARD_DELEGATION_OR_RAW_PAN_IN_MCP_CONTEXT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cross_protocol_checkout_hash_drift_ucp_ap2_acp:
+        return {
+            "status_code": 403,
+            "decision": "CROSS_PROTOCOL_CHECKOUT_HASH_CONTINUITY_DRIFT_BETWEEN_UCP_AP2_ACP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sub_2usd_micropayment_on_card_rail_or_deprecated_mcp:
+        return {
+            "status_code": 422,
+            "decision": "SUB_2USD_MICROPAYMENT_ON_FIXED_FEE_CARD_RAIL_OR_DEPRECATED_MCP_CALL",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.canonical_six_protocol_bridge_and_dual_rail_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SIX_PROTOCOL_CANONICAL_BRIDGE_AND_DUAL_RAIL_SETTLEMENT_CONFIRM",
+            "mandate_token": "agentic_six_protocol_interop_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_SIX_PROTOCOL_AGENTIC_COMMERCE_INTEROP_AUTHORIZED",
+        "mandate_token": "agentic_six_protocol_interop_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -53768,6 +53844,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    agentic_six_protocol_interop_guard = {
+        "authorized_200": evaluate_agentic_six_protocol_interop_policy(
+            AgenticSixProtocolInteropPolicyInput()
+        ),
+        "checkout_hash_drift_403": evaluate_agentic_six_protocol_interop_policy(
+            AgenticSixProtocolInteropPolicyInput(
+                cross_protocol_checkout_hash_drift_ucp_ap2_acp=True
+            )
+        ),
+        "card_microfee_or_deprecated_mcp_422": evaluate_agentic_six_protocol_interop_policy(
+            AgenticSixProtocolInteropPolicyInput(
+                sub_2usd_micropayment_on_card_rail_or_deprecated_mcp=True
+            )
+        ),
+        "unsigned_a2a_or_raw_pan_451": evaluate_agentic_six_protocol_interop_policy(
+            AgenticSixProtocolInteropPolicyInput(
+                unsigned_a2a_agent_card_or_raw_pan_in_mcp_context=True
+            )
+        ),
+        "canonical_six_protocol_409": evaluate_agentic_six_protocol_interop_policy(
+            AgenticSixProtocolInteropPolicyInput(
+                canonical_six_protocol_bridge_and_dual_rail_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -54217,6 +54319,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hospitality_pos_split_tip_guard": hospitality_pos_split_tip_guard,
         "fleet_fuel_ev_roaming_guard": fleet_fuel_ev_roaming_guard,
         "b2b_vms_contingent_sow_guard": b2b_vms_contingent_sow_guard,
+        "agentic_six_protocol_interop_guard": agentic_six_protocol_interop_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -77713,6 +77816,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="vmssow-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 VMS_RATE_CARD_DELIVERABLE_SES_AND_TENURE_IAM_ESCROW_CONFIRM · Mandate: b2b_vms_contingent_sow_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 321 (#440 🏆 440th Guide Milestone · SVG #764) 6-Protocol Agentic Commerce Interop -->
+      <div class="finops-box" id="agentic-six-protocol-interop-sandbox" style="margin-top:12px;border-color:#2563eb;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 智能体商业六大开放协议全栈互操作 (MCP × A2A × UCP × ACP × AP2 × x402 · 第 440 篇里程碑) 沙盒</div>
+            <div class="finops-sub">Round 321 (#440 🏆 440th Guide Milestone · SVG #764) · 跨协议 UCP 报价 == AP2 硬件签章 == ACP 结账会话 checkout_hash 连续性锁 (HTTP 403) + &lt;$2.00 API 微支付自动切流 x402/MPP 防 $0.30 卡固定费倒挂及 2026-11-30 旧版 MCP 下线门禁 (HTTP 422) + A2A AgentCard RFC 9421 验签与 MCP 零明文 PAN 隔离 (HTTP 451) + 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="sixproto-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度跨协议交接篡改错买损失、微支付刷卡固定费磨损及旧版协议停服断流池 ($)
+            <input type="number" id="sixproto-gross-input" value="450000" min="10000" step="5000" oninput="recalcAgenticSixProtocolInteropSandbox()" />
+          </label>
+          <label>跨协议购物车摘要哈希连续性门禁 (UCP Quote_Hash == AP2 Mandate_Hash == ACP Session_Hash)
+            <select id="sixproto-hash-select" onchange="recalcAgenticSixProtocolInteropSandbox()">
+              <option value="pass">强制全链路传递并校验 SHA-256(Canonical_Cart)，任何 1¢ 或 SKU 漂移立即熔断重签 (安全)</option>
+              <option value="block_403">A2A 卖方 Agent 在 UCP 报价后暗改规格或加收 $45 运费，仍直接拿旧 AP2 凭证调 ACP 扣款 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>&lt;$2.00 机器微支付 (x402 / MPP Tempo) vs &gt;=$2.00 商业结账 (ACP SPT) 分流与 2026-11-30 切流门禁
+            <select id="sixproto-rail-select" onchange="recalcAgenticSixProtocolInteropSandbox()">
+              <option value="pass">&lt;$2.00 高频 API 走 x402/MPP 状态通道，&gt;=$2.00 实物订单走 ACP SPT v2 双栈适配器 (合规)</option>
+              <option value="block_422">拿 $0.30 固定费信用卡轨道结算 $0.02 API 调用亏 1500%，或仍调用已废弃旧版 Stripe MCP (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>A2A .well-known/agent.json (AgentCard) RFC 9421 验签与 MCP 工具参数零明文 PAN 门禁
+            <select id="sixproto-sec-select" onchange="recalcAgenticSixProtocolInteropSandbox()">
+              <option value="pass">强制验证远端 AgentCard 签名与目录 seller_id，且仅注入 15m 单商户限额 SPT/x402 令牌 (合规)</option>
+              <option value="block_451">向未签名钓鱼 AgentCard 委派采购任务，或在 MCP JSON 参数中直接传输 16 位明文卡号 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>六层开放协议正交编排 + 跨协议哈希接力棒 + ACP/x402 双轨智能清算
+            <select id="sixproto-opt-select" onchange="recalcAgenticSixProtocolInteropSandbox()">
+              <option value="enabled" selected>启用六大协议规范化桥接 + 哈希连续性锁 + 双轨分流 (-41% 全栈损耗 / HTTP 409)</option>
+              <option value="disabled">单层脚本硬编码对接且全量交易混走单一卡轨 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度协议掉单与手续费磨损池</div>
+            <div class="finops-kpi-val" id="sixproto-gross-kpi">$450,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">六协议桥接与双轨分流净成本</div>
+            <div class="finops-kpi-val" id="sixproto-net-kpi" style="color:#6ee7b7;">$265,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省跨协议与微支付资金</div>
+            <div class="finops-kpi-val" id="sixproto-savings-kpi" style="color:#38bdf8;">$184,500</div>
+          </div>
+        </div>
+        <div id="sixproto-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SIX_PROTOCOL_CANONICAL_BRIDGE_AND_DUAL_RAIL_SETTLEMENT_CONFIRM · Mandate: agentic_six_protocol_interop_optim_409
         </div>
       </div>
 
@@ -106663,6 +106823,79 @@ function recalcB2bVmsContingentSowSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_VMS_CONTINGENT_LABOR_AND_SOW_SES_AUTHORIZED · Mandate: b2b_vms_contingent_sow_200';
+}}
+
+function recalcAgenticSixProtocolInteropSandbox() {{
+  const grossInput = document.getElementById('sixproto-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '450000'));
+  const hashGate = document.getElementById('sixproto-hash-select').value;
+  const railGate = document.getElementById('sixproto-rail-select').value;
+  const secGate = document.getElementById('sixproto-sec-select').value;
+  const optMode = document.getElementById('sixproto-opt-select').value;
+
+  const grossKpi = document.getElementById('sixproto-gross-kpi');
+  const netKpi = document.getElementById('sixproto-net-kpi');
+  const savingsKpi = document.getElementById('sixproto-savings-kpi');
+  const statusKpi = document.getElementById('sixproto-status-kpi');
+  const banner = document.getElementById('sixproto-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (secGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNSIGNED_A2A_AGENT_CARD_DELEGATION_OR_RAW_PAN_IN_MCP_CONTEXT · Mandate: null';
+    return;
+  }}
+  if (hashGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CROSS_PROTOCOL_CHECKOUT_HASH_CONTINUITY_DRIFT_BETWEEN_UCP_AP2_ACP · Mandate: null';
+    return;
+  }}
+  if (railGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SUB_2USD_MICROPAYMENT_ON_FIXED_FEE_CARD_RAIL_OR_DEPRECATED_MCP_CALL · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SIX_PROTOCOL_CANONICAL_BRIDGE_AND_DUAL_RAIL_SETTLEMENT_CONFIRM · Mandate: agentic_six_protocol_interop_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_SIX_PROTOCOL_AGENTIC_COMMERCE_INTEROP_AUTHORIZED · Mandate: agentic_six_protocol_interop_200';
 }}
 
 function updateStage1756Sandbox() {{

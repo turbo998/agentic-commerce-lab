@@ -30565,6 +30565,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-vms-contingent-sow-sandbox", html_zh)
 
+    def test_agentic_six_protocol_interop_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            AgenticSixProtocolInteropPolicyInput,
+            evaluate_agentic_six_protocol_interop_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_agentic_six_protocol_interop_policy(
+            AgenticSixProtocolInteropPolicyInput(
+                quarterly_protocol_drift_micro_fee_and_cutover_break_pool_usd=450000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_SIX_PROTOCOL_AGENTIC_COMMERCE_INTEROP_AUTHORIZED",
+        )
+
+        drift = evaluate_agentic_six_protocol_interop_policy(
+            AgenticSixProtocolInteropPolicyInput(
+                cross_protocol_checkout_hash_drift_ucp_ap2_acp=True
+            )
+        )
+        self.assertEqual(drift["status_code"], 403)
+        self.assertEqual(
+            drift["decision"],
+            "CROSS_PROTOCOL_CHECKOUT_HASH_CONTINUITY_DRIFT_BETWEEN_UCP_AP2_ACP",
+        )
+
+        rail = evaluate_agentic_six_protocol_interop_policy(
+            AgenticSixProtocolInteropPolicyInput(
+                sub_2usd_micropayment_on_card_rail_or_deprecated_mcp=True
+            )
+        )
+        self.assertEqual(rail["status_code"], 422)
+        self.assertEqual(
+            rail["decision"],
+            "SUB_2USD_MICROPAYMENT_ON_FIXED_FEE_CARD_RAIL_OR_DEPRECATED_MCP_CALL",
+        )
+
+        sec = evaluate_agentic_six_protocol_interop_policy(
+            AgenticSixProtocolInteropPolicyInput(
+                unsigned_a2a_agent_card_or_raw_pan_in_mcp_context=True
+            )
+        )
+        self.assertEqual(sec["status_code"], 451)
+        self.assertEqual(
+            sec["decision"],
+            "UNSIGNED_A2A_AGENT_CARD_DELEGATION_OR_RAW_PAN_IN_MCP_CONTEXT",
+        )
+
+        optim = evaluate_agentic_six_protocol_interop_policy(
+            AgenticSixProtocolInteropPolicyInput(
+                quarterly_protocol_drift_micro_fee_and_cutover_break_pool_usd=450000.0,
+                canonical_six_protocol_bridge_and_dual_rail_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 184500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 265500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("agentic_six_protocol_interop_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-six-protocol-interop-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
