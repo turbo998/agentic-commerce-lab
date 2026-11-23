@@ -29158,6 +29158,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-cloud-marketplace-edp-sandbox", html_zh)
 
+    def test_instant_grocery_qsr_catchweight_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            InstantGroceryQsrCatchweightPolicyInput,
+            evaluate_instant_grocery_qsr_catchweight_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_instant_grocery_qsr_catchweight_policy(
+            InstantGroceryQsrCatchweightPolicyInput(
+                quarterly_catchweight_leak_allergen_swap_and_kds_waste_pool_usd=300000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_GROCERY_CATCHWEIGHT_AND_KDS_PREP_AUTHORIZED",
+        )
+
+        allergen = evaluate_instant_grocery_qsr_catchweight_policy(
+            InstantGroceryQsrCatchweightPolicyInput(
+                allergen_or_dietary_violation_in_oos_substitution=True
+            )
+        )
+        self.assertEqual(allergen["status_code"], 403)
+        self.assertEqual(
+            allergen["decision"],
+            "ALLERGEN_OR_DIETARY_RESTRICTION_VIOLATION_IN_OOS_SUBSTITUTION",
+        )
+
+        weight = evaluate_instant_grocery_qsr_catchweight_policy(
+            InstantGroceryQsrCatchweightPolicyInput(
+                catchweight_overage_outside_corridor_or_unscanned_tare=True
+            )
+        )
+        self.assertEqual(weight["status_code"], 422)
+        self.assertEqual(
+            weight["decision"],
+            "CATCH_WEIGHT_OVERAGE_OUTSIDE_PREAUTH_CORRIDOR_OR_UNSCANNED_TARE",
+        )
+
+        kds = evaluate_instant_grocery_qsr_catchweight_policy(
+            InstantGroceryQsrCatchweightPolicyInput(
+                post_kds_fired_free_cancel_or_premature_cold_food_fire=True
+            )
+        )
+        self.assertEqual(kds["status_code"], 451)
+        self.assertEqual(
+            kds["decision"],
+            "POST_KDS_FIRED_FREE_CANCEL_ABUSE_OR_PREMATURE_COLD_FOOD_FIRE",
+        )
+
+        optim = evaluate_instant_grocery_qsr_catchweight_policy(
+            InstantGroceryQsrCatchweightPolicyInput(
+                quarterly_catchweight_leak_allergen_swap_and_kds_waste_pool_usd=300000.0,
+                allergen_safe_price_match_catchweight_and_jit_kds_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 114000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 186000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("instant_grocery_qsr_catchweight_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("instant-grocery-qsr-catchweight-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

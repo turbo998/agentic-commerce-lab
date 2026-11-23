@@ -37913,6 +37913,82 @@ def evaluate_saas_cloud_marketplace_edp_policy(
     }
 
 
+@dataclass(frozen=True)
+class InstantGroceryQsrCatchweightPolicyInput:
+    quarterly_catchweight_leak_allergen_swap_and_kds_waste_pool_usd: float = 300000.0
+    allergen_or_dietary_violation_in_oos_substitution: bool = False
+    catchweight_overage_outside_corridor_or_unscanned_tare: bool = False
+    post_kds_fired_free_cancel_or_premature_cold_food_fire: bool = False
+    allergen_safe_price_match_catchweight_and_jit_kds_ready: bool = False
+
+
+def evaluate_instant_grocery_qsr_catchweight_policy(
+    policy_input: InstantGroceryQsrCatchweightPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_catchweight_leak_allergen_swap_and_kds_waste_pool_usd
+        ),
+    )
+    if policy_input.post_kds_fired_free_cancel_or_premature_cold_food_fire:
+        return {
+            "status_code": 451,
+            "decision": "POST_KDS_FIRED_FREE_CANCEL_ABUSE_OR_PREMATURE_COLD_FOOD_FIRE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.allergen_or_dietary_violation_in_oos_substitution:
+        return {
+            "status_code": 403,
+            "decision": "ALLERGEN_OR_DIETARY_RESTRICTION_VIOLATION_IN_OOS_SUBSTITUTION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.catchweight_overage_outside_corridor_or_unscanned_tare:
+        return {
+            "status_code": 422,
+            "decision": "CATCH_WEIGHT_OVERAGE_OUTSIDE_PREAUTH_CORRIDOR_OR_UNSCANNED_TARE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.allergen_safe_price_match_catchweight_and_jit_kds_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ALLERGEN_SAFE_PRICE_MATCH_CATCHWEIGHT_AND_JIT_KDS_CONFIRM",
+            "mandate_token": "grocery_qsr_catchweight_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_GROCERY_CATCHWEIGHT_AND_KDS_PREP_AUTHORIZED",
+        "mandate_token": "grocery_qsr_catchweight_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -51632,6 +51708,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    instant_grocery_qsr_catchweight_guard = {
+        "authorized_200": evaluate_instant_grocery_qsr_catchweight_policy(
+            InstantGroceryQsrCatchweightPolicyInput()
+        ),
+        "allergen_or_dietary_swap_403": evaluate_instant_grocery_qsr_catchweight_policy(
+            InstantGroceryQsrCatchweightPolicyInput(
+                allergen_or_dietary_violation_in_oos_substitution=True
+            )
+        ),
+        "catchweight_outside_corridor_422": evaluate_instant_grocery_qsr_catchweight_policy(
+            InstantGroceryQsrCatchweightPolicyInput(
+                catchweight_overage_outside_corridor_or_unscanned_tare=True
+            )
+        ),
+        "post_kds_fired_cancel_451": evaluate_instant_grocery_qsr_catchweight_policy(
+            InstantGroceryQsrCatchweightPolicyInput(
+                post_kds_fired_free_cancel_or_premature_cold_food_fire=True
+            )
+        ),
+        "allergen_safe_catchweight_kds_409": evaluate_instant_grocery_qsr_catchweight_policy(
+            InstantGroceryQsrCatchweightPolicyInput(
+                allergen_safe_price_match_catchweight_and_jit_kds_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -52060,6 +52162,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "conversational_whatsapp_dm_commerce_guard": conversational_whatsapp_dm_commerce_guard,
         "multi_psp_orchestration_routing_guard": multi_psp_orchestration_routing_guard,
         "saas_cloud_marketplace_edp_guard": saas_cloud_marketplace_edp_guard,
+        "instant_grocery_qsr_catchweight_guard": instant_grocery_qsr_catchweight_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -74359,6 +74462,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="cloudmkt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 VERIFIED_MACC_EDP_DRAWDOWN_CPPO_FLOOR_AND_COSell_SYNC_CONFIRM · Mandate: saas_cloud_marketplace_edp_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 300 (#419) Instant Grocery & QSR Catch-Weight, Allergen Swap & KDS Lock -->
+      <div class="finops-box" id="instant-grocery-qsr-catchweight-sandbox" style="margin-top:12px;border-color:#ea580c;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🥑 即时生鲜商超与餐饮外卖称重走廊、过敏原平替与 KDS 点火锁 (Instacart / DoorDash / Toast) 沙盒</div>
+            <div class="finops-sub">Round 300 (#419 · SVG #743) · FDA/EU 9 大过敏原与清真/纯素位图锁防缺货平替引发医疗事故 (HTTP 403) + 生鲜非标品 +15% 预授权走廊与 GS1 DataBar 电子秤实重实扣 (HTTP 422) + 后厨 KDS 点火制作后禁 $0 无责撤单与骑手 ETA 准时点火 (HTTP 451) + 高配免补差平替净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="grocqsr-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度生鲜非标品称重超额漏收、错误平替整单退款及餐饮后厨下锅后恶意撤单报废池 ($)
+            <input type="number" id="grocqsr-gross-input" value="300000" min="10000" step="5000" oninput="recalcInstantGroceryQsrCatchweightSandbox()" />
+          </label>
+          <label>生鲜缺货智能平替 (OOS Substitution) FDA/EU 过敏原位图与清真/纯素/无糖硬约束门禁
+            <select id="grocqsr-allergen-select" onchange="recalcInstantGroceryQsrCatchweightSandbox()">
+              <option value="pass">严格核验零新增过敏原且 100% 保留 Vegan/Halal/Gluten-Free 标签，有机升级免补差 (安全)</option>
+              <option value="block_403">向量相似度盲目把无乳糖燕麦奶平替为全脂牛奶或把杏仁酱平替为花生酱 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>MCC 5411 非标称重商品 (Catch-Weight) +15% 预授权走廊与 GS1 DataBar 电子秤扫码门禁
+            <select id="grocqsr-weight-select" onchange="recalcInstantGroceryQsrCatchweightSandbox()">
+              <option value="pass">下单预留 +15% 称重走廊，扫描 GS1 DataBar 实重扣款 (买方封顶 +10%) 并秒退余款 (合规)</option>
+              <option value="block_422">死锁原价预授权导致 1.08lb 牛排超额部分无法扣款白送，或强扣 +40% 超大件引发拒付 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>餐饮后厨屏幕 (KDS_FIRED) 点火不可无责撤单锁与骑手 GPS ETA 准时下锅门禁
+            <select id="grocqsr-kds-select" onchange="recalcInstantGroceryQsrCatchweightSandbox()">
+              <option value="pass">骑手距店 ETA <= 备餐时长+2min 准时点火，且进入 KDS_FIRED 后锁死 $0 免费取消 (安全)</option>
+              <option value="block_451">厨师已下锅做好后仍允许顾客 $0 免费撤单报废，或骑手未接单提前半小时炒菜变凉 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>过敏原安全免补差升级 + GS1 电子秤实重清算 + 骑手 ETA 联动 JIT KDS 全链路编排
+            <select id="grocqsr-opt-select" onchange="recalcInstantGroceryQsrCatchweightSandbox()">
+              <option value="enabled" selected>启用安全免补差平替 + 称重走廊实扣 + JIT KDS 点火互锁 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">固定金额预授权 + 拣货员凭经验随便拿替品 + 下单立即盲推后厨 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度称重漏收与餐损损耗池</div>
+            <div class="finops-kpi-val" id="grocqsr-gross-kpi">$300,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">称重走廊与JIT点火后净成本</div>
+            <div class="finops-kpi-val" id="grocqsr-net-kpi" style="color:#6ee7b7;">$186,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省生鲜毛利与熟食报废</div>
+            <div class="finops-kpi-val" id="grocqsr-savings-kpi" style="color:#38bdf8;">$114,000</div>
+          </div>
+        </div>
+        <div id="grocqsr-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ALLERGEN_SAFE_PRICE_MATCH_CATCHWEIGHT_AND_JIT_KDS_CONFIRM · Mandate: grocery_qsr_catchweight_optim_409
         </div>
       </div>
 
@@ -101776,6 +101936,79 @@ function recalcSaasCloudMarketplaceEdpSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CLOUD_MARKETPLACE_PRIVATE_OFFER_AUTHORIZED · Mandate: saas_cloud_marketplace_edp_200';
+}}
+
+function recalcInstantGroceryQsrCatchweightSandbox() {{
+  const grossInput = document.getElementById('grocqsr-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '300000'));
+  const allergenGate = document.getElementById('grocqsr-allergen-select').value;
+  const weightGate = document.getElementById('grocqsr-weight-select').value;
+  const kdsGate = document.getElementById('grocqsr-kds-select').value;
+  const optMode = document.getElementById('grocqsr-opt-select').value;
+
+  const grossKpi = document.getElementById('grocqsr-gross-kpi');
+  const netKpi = document.getElementById('grocqsr-net-kpi');
+  const savingsKpi = document.getElementById('grocqsr-savings-kpi');
+  const statusKpi = document.getElementById('grocqsr-status-kpi');
+  const banner = document.getElementById('grocqsr-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (kdsGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 POST_KDS_FIRED_FREE_CANCEL_ABUSE_OR_PREMATURE_COLD_FOOD_FIRE · Mandate: null';
+    return;
+  }}
+  if (allergenGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ALLERGEN_OR_DIETARY_RESTRICTION_VIOLATION_IN_OOS_SUBSTITUTION · Mandate: null';
+    return;
+  }}
+  if (weightGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CATCH_WEIGHT_OVERAGE_OUTSIDE_PREAUTH_CORRIDOR_OR_UNSCANNED_TARE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ALLERGEN_SAFE_PRICE_MATCH_CATCHWEIGHT_AND_JIT_KDS_CONFIRM · Mandate: grocery_qsr_catchweight_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_GROCERY_CATCHWEIGHT_AND_KDS_PREP_AUTHORIZED · Mandate: grocery_qsr_catchweight_200';
 }}
 
 function updateStage1756Sandbox() {{
