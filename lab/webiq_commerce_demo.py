@@ -38065,6 +38065,82 @@ def evaluate_agentic_otel_pci_gdpr_audit_policy(
     }
 
 
+@dataclass(frozen=True)
+class AffiliateCreatorAttributionPolicyInput:
+    quarterly_poached_commission_and_rma_clawback_leak_pool_usd: float = 290000.0
+    last_second_coupon_toolbar_overwriting_creator_touch: bool = False
+    self_referral_buyer_match_or_trademark_brand_bidding: bool = False
+    pre_rma_window_commission_payout_or_unclawed_return: bool = False
+    content_priority_attribution_and_post_rma_vesting_ready: bool = False
+
+
+def evaluate_affiliate_creator_attribution_policy(
+    policy_input: AffiliateCreatorAttributionPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_poached_commission_and_rma_clawback_leak_pool_usd
+        ),
+    )
+    if policy_input.pre_rma_window_commission_payout_or_unclawed_return:
+        return {
+            "status_code": 451,
+            "decision": "PRE_RMA_WINDOW_COMMISSION_PAYOUT_OR_UNCLAWED_RETURN_LEAKAGE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.last_second_coupon_toolbar_overwriting_creator_touch:
+        return {
+            "status_code": 403,
+            "decision": "LAST_SECOND_COUPON_TOOLBAR_ATTRIBUTION_HIJACK_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.self_referral_buyer_match_or_trademark_brand_bidding:
+        return {
+            "status_code": 422,
+            "decision": "SELF_REFERRAL_BUYER_MATCH_OR_TRADEMARK_BRAND_BIDDING_VIOLATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.content_priority_attribution_and_post_rma_vesting_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CONTENT_PRIORITY_ATTRIBUTION_AND_POST_RMA_NET_COMMISSION_CONFIRM",
+            "mandate_token": "affiliate_creator_attr_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CREATOR_ATTRIBUTION_AND_RMA_VESTING_AUTHORIZED",
+        "mandate_token": "affiliate_creator_attr_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -51836,6 +51912,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    affiliate_creator_attribution_guard = {
+        "authorized_200": evaluate_affiliate_creator_attribution_policy(
+            AffiliateCreatorAttributionPolicyInput()
+        ),
+        "toolbar_hijack_blocked_403": evaluate_affiliate_creator_attribution_policy(
+            AffiliateCreatorAttributionPolicyInput(
+                last_second_coupon_toolbar_overwriting_creator_touch=True
+            )
+        ),
+        "self_referral_or_brand_bid_422": evaluate_affiliate_creator_attribution_policy(
+            AffiliateCreatorAttributionPolicyInput(
+                self_referral_buyer_match_or_trademark_brand_bidding=True
+            )
+        ),
+        "pre_rma_payout_leak_451": evaluate_affiliate_creator_attribution_policy(
+            AffiliateCreatorAttributionPolicyInput(
+                pre_rma_window_commission_payout_or_unclawed_return=True
+            )
+        ),
+        "content_priority_rma_vesting_409": evaluate_affiliate_creator_attribution_policy(
+            AffiliateCreatorAttributionPolicyInput(
+                content_priority_attribution_and_post_rma_vesting_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -52266,6 +52368,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_cloud_marketplace_edp_guard": saas_cloud_marketplace_edp_guard,
         "instant_grocery_qsr_catchweight_guard": instant_grocery_qsr_catchweight_guard,
         "agentic_otel_pci_gdpr_audit_guard": agentic_otel_pci_gdpr_audit_guard,
+        "affiliate_creator_attribution_guard": affiliate_creator_attribution_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -74679,6 +74782,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="otelgdpr-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 REDACTED_OTEL_TRACE_CRYPTO_SHREDDING_AND_MERKLE_LEDGER_CONFIRM · Mandate: otel_pci_gdpr_audit_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 302 (#421) Affiliate & Creator Attribution, Stand-Down & RMA Vesting -->
+      <div class="finops-box" id="affiliate-creator-attribution-sandbox" style="margin-top:12px;border-color:#db2777;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🤝 电商联盟营销与达人带货归因 (impact.com / Partnerize / TikTok Shop / Shopify Collabs) 沙盒</div>
+            <div class="finops-sub">Round 302 (#421 · SVG #745) · 服务端内容优先锁与插件 Stand-Down 规则防找券插件结账最后一秒劫持达人佣金 (HTTP 403) + EMVCo PAR 反自买套利与反品牌词竞价拦截 (HTTP 422) + 妥投满 30 天退货窗解冻与 S2S 部分退货自动冲销佣金 (HTTP 451) + 净保留货值分润净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="affattr-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度找券插件末次点击劫持假佣金、代购自买套利及退货未追回达人佣金损耗池 ($)
+            <input type="number" id="affattr-gross-input" value="290000" min="10000" step="5000" oninput="recalcAffiliateCreatorAttributionSandbox()" />
+          </label>
+          <label>服务端购物车触点链与浏览器找券插件避让规则 (IAB/CBA Toolbar Stand-Down) 门禁
+            <select id="affattr-standdown-select" onchange="recalcAffiliateCreatorAttributionSandbox()">
+              <option value="pass">购物车已有 CONTENT_CREATOR 种草触点时，严禁结账页找券插件弹窗覆盖主归因 (安全)</option>
+              <option value="block_403">找券插件在 /checkout 页最后一秒注入 Cookie 抢走测评博主 100% 佣金 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>买方与推手身份隔离 (Buyer_PAR != Affiliate_PAR 反自买) 与反抢注品牌商标词竞价门禁
+            <select id="affattr-self-select" onchange="recalcAffiliateCreatorAttributionSandbox()">
+              <option value="pass">校验买方支付卡 PAR/收货地址与推手零重合，且无违规购买品牌词搜索广告 (合规)</option>
+              <option value="block_422">代购自己挂推广链接叠加优惠码自买骗取 15% 佣金，或竞价截流品牌词官网流量 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>妥投 + 30 天无理由退货期佣金托管 (Post-RMA Vesting) 与 S2S 部分退货净值冲销门禁
+            <select id="affattr-rma-select" onchange="recalcAffiliateCreatorAttributionSandbox()">
+              <option value="pass">佣金锁入 Pending 池至退货期满，并通过 S2S API 实时扣除部分退货金额后放款 (安全)</option>
+              <option value="block_451">下单 7 天即允许提现佣金，随后买家在第 14 天全额退货导致佣金血本无归 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>服务端多触点内容保护 + S2S 退货实时冲减 + 专属码原主绑定全链路编排
+            <select id="affattr-opt-select" onchange="recalcAffiliateCreatorAttributionSandbox()">
+              <option value="enabled" selected>启用服务端 Stand-Down 锁 + 反自买 + 退货期满净值分润 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">客户端浏览器 Last-Click Cookie 赢家通吃与按毛成交额发佣 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度劫持与退货漏扣佣金池</div>
+            <div class="finops-kpi-val" id="affattr-gross-kpi">$290,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">Stand-Down与RMA托管后净成本</div>
+            <div class="finops-kpi-val" id="affattr-net-kpi" style="color:#6ee7b7;">$176,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省假佣金与退货漏损</div>
+            <div class="finops-kpi-val" id="affattr-savings-kpi" style="color:#38bdf8;">$113,100</div>
+          </div>
+        </div>
+        <div id="affattr-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CONTENT_PRIORITY_ATTRIBUTION_AND_POST_RMA_NET_COMMISSION_CONFIRM · Mandate: affiliate_creator_attr_optim_409
         </div>
       </div>
 
@@ -102242,6 +102402,79 @@ function recalcAgenticOtelPciGdprAuditSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_REDACTED_OTEL_AND_CRYPTO_SHREDDED_AUDIT_AUTHORIZED · Mandate: otel_pci_gdpr_audit_200';
+}}
+
+function recalcAffiliateCreatorAttributionSandbox() {{
+  const grossInput = document.getElementById('affattr-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '290000'));
+  const standdownGate = document.getElementById('affattr-standdown-select').value;
+  const selfGate = document.getElementById('affattr-self-select').value;
+  const rmaGate = document.getElementById('affattr-rma-select').value;
+  const optMode = document.getElementById('affattr-opt-select').value;
+
+  const grossKpi = document.getElementById('affattr-gross-kpi');
+  const netKpi = document.getElementById('affattr-net-kpi');
+  const savingsKpi = document.getElementById('affattr-savings-kpi');
+  const statusKpi = document.getElementById('affattr-status-kpi');
+  const banner = document.getElementById('affattr-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (rmaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PRE_RMA_WINDOW_COMMISSION_PAYOUT_OR_UNCLAWED_RETURN_LEAKAGE · Mandate: null';
+    return;
+  }}
+  if (standdownGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 LAST_SECOND_COUPON_TOOLBAR_ATTRIBUTION_HIJACK_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (selfGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SELF_REFERRAL_BUYER_MATCH_OR_TRADEMARK_BRAND_BIDDING_VIOLATION · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CONTENT_PRIORITY_ATTRIBUTION_AND_POST_RMA_NET_COMMISSION_CONFIRM · Mandate: affiliate_creator_attr_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CREATOR_ATTRIBUTION_AND_RMA_VESTING_AUTHORIZED · Mandate: affiliate_creator_attr_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -29292,6 +29292,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-otel-pci-gdpr-audit-sandbox", html_zh)
 
+    def test_affiliate_creator_attribution_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            AffiliateCreatorAttributionPolicyInput,
+            evaluate_affiliate_creator_attribution_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_affiliate_creator_attribution_policy(
+            AffiliateCreatorAttributionPolicyInput(
+                quarterly_poached_commission_and_rma_clawback_leak_pool_usd=290000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CREATOR_ATTRIBUTION_AND_RMA_VESTING_AUTHORIZED",
+        )
+
+        hijack = evaluate_affiliate_creator_attribution_policy(
+            AffiliateCreatorAttributionPolicyInput(
+                last_second_coupon_toolbar_overwriting_creator_touch=True
+            )
+        )
+        self.assertEqual(hijack["status_code"], 403)
+        self.assertEqual(
+            hijack["decision"],
+            "LAST_SECOND_COUPON_TOOLBAR_ATTRIBUTION_HIJACK_BLOCKED",
+        )
+
+        self_ref = evaluate_affiliate_creator_attribution_policy(
+            AffiliateCreatorAttributionPolicyInput(
+                self_referral_buyer_match_or_trademark_brand_bidding=True
+            )
+        )
+        self.assertEqual(self_ref["status_code"], 422)
+        self.assertEqual(
+            self_ref["decision"],
+            "SELF_REFERRAL_BUYER_MATCH_OR_TRADEMARK_BRAND_BIDDING_VIOLATION",
+        )
+
+        rma = evaluate_affiliate_creator_attribution_policy(
+            AffiliateCreatorAttributionPolicyInput(
+                pre_rma_window_commission_payout_or_unclawed_return=True
+            )
+        )
+        self.assertEqual(rma["status_code"], 451)
+        self.assertEqual(
+            rma["decision"],
+            "PRE_RMA_WINDOW_COMMISSION_PAYOUT_OR_UNCLAWED_RETURN_LEAKAGE",
+        )
+
+        optim = evaluate_affiliate_creator_attribution_policy(
+            AffiliateCreatorAttributionPolicyInput(
+                quarterly_poached_commission_and_rma_clawback_leak_pool_usd=290000.0,
+                content_priority_attribution_and_post_rma_vesting_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 113100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 176900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("affiliate_creator_attribution_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("affiliate-creator-attribution-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
