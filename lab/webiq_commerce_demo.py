@@ -37989,6 +37989,82 @@ def evaluate_instant_grocery_qsr_catchweight_policy(
     }
 
 
+@dataclass(frozen=True)
+class AgenticOtelPciGdprAuditPolicyInput:
+    quarterly_pci_scope_spillover_gdpr_and_trace_storage_pool_usd: float = 360000.0
+    unredacted_pci_pan_or_secret_in_otel_trace_span: bool = False
+    gdpr_erasure_vs_tax_ledger_plaintext_pii_collision: bool = False
+    unlinked_mandate_trace_context_or_mutable_sql_audit_log: bool = False
+    redacted_otel_crypto_shredding_and_merkle_ledger_ready: bool = False
+
+
+def evaluate_agentic_otel_pci_gdpr_audit_policy(
+    policy_input: AgenticOtelPciGdprAuditPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_pci_scope_spillover_gdpr_and_trace_storage_pool_usd
+        ),
+    )
+    if policy_input.unlinked_mandate_trace_context_or_mutable_sql_audit_log:
+        return {
+            "status_code": 451,
+            "decision": "UNLINKED_MANDATE_TRACE_CONTEXT_OR_MUTABLE_SQL_AUDIT_LOG",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unredacted_pci_pan_or_secret_in_otel_trace_span:
+        return {
+            "status_code": 403,
+            "decision": "UNREDACTED_PCI_PAN_OR_SECRET_IN_OTEL_GENAI_TRACE_SPAN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.gdpr_erasure_vs_tax_ledger_plaintext_pii_collision:
+        return {
+            "status_code": 422,
+            "decision": "GDPR_ERASURE_VS_STATUTORY_TAX_LEDGER_PLAINTEXT_PII_COLLISION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.redacted_otel_crypto_shredding_and_merkle_ledger_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "REDACTED_OTEL_TRACE_CRYPTO_SHREDDING_AND_MERKLE_LEDGER_CONFIRM",
+            "mandate_token": "otel_pci_gdpr_audit_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_REDACTED_OTEL_AND_CRYPTO_SHREDDED_AUDIT_AUTHORIZED",
+        "mandate_token": "otel_pci_gdpr_audit_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -51734,6 +51810,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    agentic_otel_pci_gdpr_audit_guard = {
+        "authorized_200": evaluate_agentic_otel_pci_gdpr_audit_policy(
+            AgenticOtelPciGdprAuditPolicyInput()
+        ),
+        "unredacted_pci_otel_span_403": evaluate_agentic_otel_pci_gdpr_audit_policy(
+            AgenticOtelPciGdprAuditPolicyInput(
+                unredacted_pci_pan_or_secret_in_otel_trace_span=True
+            )
+        ),
+        "gdpr_vs_tax_ledger_collision_422": evaluate_agentic_otel_pci_gdpr_audit_policy(
+            AgenticOtelPciGdprAuditPolicyInput(
+                gdpr_erasure_vs_tax_ledger_plaintext_pii_collision=True
+            )
+        ),
+        "unlinked_trace_or_mutable_log_451": evaluate_agentic_otel_pci_gdpr_audit_policy(
+            AgenticOtelPciGdprAuditPolicyInput(
+                unlinked_mandate_trace_context_or_mutable_sql_audit_log=True
+            )
+        ),
+        "redacted_otel_cryptoshred_merkle_409": evaluate_agentic_otel_pci_gdpr_audit_policy(
+            AgenticOtelPciGdprAuditPolicyInput(
+                redacted_otel_crypto_shredding_and_merkle_ledger_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -52163,6 +52265,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "multi_psp_orchestration_routing_guard": multi_psp_orchestration_routing_guard,
         "saas_cloud_marketplace_edp_guard": saas_cloud_marketplace_edp_guard,
         "instant_grocery_qsr_catchweight_guard": instant_grocery_qsr_catchweight_guard,
+        "agentic_otel_pci_gdpr_audit_guard": agentic_otel_pci_gdpr_audit_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -74519,6 +74622,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="grocqsr-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ALLERGEN_SAFE_PRICE_MATCH_CATCHWEIGHT_AND_JIT_KDS_CONFIRM · Mandate: grocery_qsr_catchweight_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 301 (#420 Milestone) Agentic Observability (OTel), PCI v4.0 & GDPR Crypto-Shredding -->
+      <div class="finops-box" id="agentic-otel-pci-gdpr-audit-sandbox" style="margin-top:12px;border-color:#d97706;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 商业智能体可观测性、PCI-DSS v4.0 脱敏与 GDPR 加密粉碎 (OTel GenAI / Foundry / Purview · 第 420 篇里程碑) 沙盒</div>
+            <div class="finops-sub">Round 301 (#420 Milestone · SVG #744) · OTel Collector 边缘 Presidio/Luhn 脱敏防外部日志平台滑入 PCI CDE (HTTP 403) + 假名化 7 年财务总账与 Per-Subject KEK 信封加密分离实现毁钥即忘 (HTTP 422) + W3C traceparent 授权令绑定与 Merkle WORM 不可篡改审计链 (HTTP 451) + 净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="otelgdpr-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度可观测平台 PCI 扩围审计整改、GDPR 擦除违规风险及全量冗余日志存储池 ($)
+            <input type="number" id="otelgdpr-gross-input" value="360000" min="10000" step="5000" oninput="recalcAgenticOtelPciGdprAuditSandbox()" />
+          </label>
+          <label>OpenTelemetry GenAI Span 边缘内联脱敏 (Presidio + Luhn PAN/CVV/Bearer 掩码) 门禁
+            <select id="otelgdpr-pci-select" onchange="recalcAgenticOtelPciGdprAuditSandbox()">
+              <option value="pass">OTel Collector 边缘同步将卡号/密钥替换为带盐 HMAC 假名，零敏感明文出境 (安全)</option>
+              <option value="block_403">将含明文 16 位信用卡号与 OAuth Token 的 gen_ai.prompt 直接发往外部 SaaS 日志库 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>欧盟 GDPR Art. 17 被遗忘权与 7 年法定税务总账双轨解耦 (Per-Subject KEK Crypto-Shredding) 门禁
+            <select id="otelgdpr-gdpr-select" onchange="recalcAgenticOtelPciGdprAuditSandbox()">
+              <option value="pass">7 年财务账本仅存 usr_id 假名；姓名地址由每用户独立 KMS KEK 加密，毁钥即擦除 (合规)</option>
+              <option value="block_422">把明文姓名地址直接写死在不可变财务流水或删订单行违反 SOX/税法 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>端到端 W3C traceparent 授权令关联与 Merkle Hash-Chained WORM 不可抵赖账本门禁
+            <select id="otelgdpr-merkle-select" onchange="recalcAgenticOtelPciGdprAuditSandbox()">
+              <option value="pass">全链路透传 traceparent + MandateVC 签名，并追加写入只读 Merkle WORM 账本 (安全)</option>
+              <option value="block_451">扣款工具调用缺失上游授权 Trace 绑定，或审计日志存在可随意 UPDATE 的普通表 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>OTel 边缘脱敏 + KMS 单用户密钥加密粉碎 + Merkle WORM 拒付抗辩证据链编排
+            <select id="otelgdpr-opt-select" onchange="recalcAgenticOtelPciGdprAuditSandbox()">
+              <option value="enabled" selected>启用边缘零明文脱敏 + Per-User KEK 加密粉碎 + Merkle WORM 审计 (-40% 损耗 / HTTP 409)</option>
+              <option value="disabled">人工定期跑脚本清理数据库日志与扩大 PCI QSA 审计范围 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度PCI扩围与合规日志池</div>
+            <div class="finops-kpi-val" id="otelgdpr-gross-kpi">$360,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">边缘脱敏与加密粉碎后净成本</div>
+            <div class="finops-kpi-val" id="otelgdpr-net-kpi" style="color:#6ee7b7;">$216,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省审计与存储合规费</div>
+            <div class="finops-kpi-val" id="otelgdpr-savings-kpi" style="color:#38bdf8;">$144,000</div>
+          </div>
+        </div>
+        <div id="otelgdpr-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 REDACTED_OTEL_TRACE_CRYPTO_SHREDDING_AND_MERKLE_LEDGER_CONFIRM · Mandate: otel_pci_gdpr_audit_optim_409
         </div>
       </div>
 
@@ -102009,6 +102169,79 @@ function recalcInstantGroceryQsrCatchweightSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_GROCERY_CATCHWEIGHT_AND_KDS_PREP_AUTHORIZED · Mandate: grocery_qsr_catchweight_200';
+}}
+
+function recalcAgenticOtelPciGdprAuditSandbox() {{
+  const grossInput = document.getElementById('otelgdpr-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '360000'));
+  const pciGate = document.getElementById('otelgdpr-pci-select').value;
+  const gdprGate = document.getElementById('otelgdpr-gdpr-select').value;
+  const merkleGate = document.getElementById('otelgdpr-merkle-select').value;
+  const optMode = document.getElementById('otelgdpr-opt-select').value;
+
+  const grossKpi = document.getElementById('otelgdpr-gross-kpi');
+  const netKpi = document.getElementById('otelgdpr-net-kpi');
+  const savingsKpi = document.getElementById('otelgdpr-savings-kpi');
+  const statusKpi = document.getElementById('otelgdpr-status-kpi');
+  const banner = document.getElementById('otelgdpr-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (merkleGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNLINKED_MANDATE_TRACE_CONTEXT_OR_MUTABLE_SQL_AUDIT_LOG · Mandate: null';
+    return;
+  }}
+  if (pciGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNREDACTED_PCI_PAN_OR_SECRET_IN_OTEL_GENAI_TRACE_SPAN · Mandate: null';
+    return;
+  }}
+  if (gdprGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 GDPR_ERASURE_VS_STATUTORY_TAX_LEDGER_PLAINTEXT_PII_COLLISION · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 REDACTED_OTEL_TRACE_CRYPTO_SHREDDING_AND_MERKLE_LEDGER_CONFIRM · Mandate: otel_pci_gdpr_audit_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_REDACTED_OTEL_AND_CRYPTO_SHREDDED_AUDIT_AUTHORIZED · Mandate: otel_pci_gdpr_audit_200';
 }}
 
 function updateStage1756Sandbox() {{

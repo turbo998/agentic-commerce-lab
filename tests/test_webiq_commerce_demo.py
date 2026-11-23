@@ -29225,6 +29225,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("instant-grocery-qsr-catchweight-sandbox", html_zh)
 
+    def test_agentic_otel_pci_gdpr_audit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            AgenticOtelPciGdprAuditPolicyInput,
+            evaluate_agentic_otel_pci_gdpr_audit_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_agentic_otel_pci_gdpr_audit_policy(
+            AgenticOtelPciGdprAuditPolicyInput(
+                quarterly_pci_scope_spillover_gdpr_and_trace_storage_pool_usd=360000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_REDACTED_OTEL_AND_CRYPTO_SHREDDED_AUDIT_AUTHORIZED",
+        )
+
+        pci = evaluate_agentic_otel_pci_gdpr_audit_policy(
+            AgenticOtelPciGdprAuditPolicyInput(
+                unredacted_pci_pan_or_secret_in_otel_trace_span=True
+            )
+        )
+        self.assertEqual(pci["status_code"], 403)
+        self.assertEqual(
+            pci["decision"],
+            "UNREDACTED_PCI_PAN_OR_SECRET_IN_OTEL_GENAI_TRACE_SPAN",
+        )
+
+        gdpr = evaluate_agentic_otel_pci_gdpr_audit_policy(
+            AgenticOtelPciGdprAuditPolicyInput(
+                gdpr_erasure_vs_tax_ledger_plaintext_pii_collision=True
+            )
+        )
+        self.assertEqual(gdpr["status_code"], 422)
+        self.assertEqual(
+            gdpr["decision"],
+            "GDPR_ERASURE_VS_STATUTORY_TAX_LEDGER_PLAINTEXT_PII_COLLISION",
+        )
+
+        merkle = evaluate_agentic_otel_pci_gdpr_audit_policy(
+            AgenticOtelPciGdprAuditPolicyInput(
+                unlinked_mandate_trace_context_or_mutable_sql_audit_log=True
+            )
+        )
+        self.assertEqual(merkle["status_code"], 451)
+        self.assertEqual(
+            merkle["decision"],
+            "UNLINKED_MANDATE_TRACE_CONTEXT_OR_MUTABLE_SQL_AUDIT_LOG",
+        )
+
+        optim = evaluate_agentic_otel_pci_gdpr_audit_policy(
+            AgenticOtelPciGdprAuditPolicyInput(
+                quarterly_pci_scope_spillover_gdpr_and_trace_storage_pool_usd=360000.0,
+                redacted_otel_crypto_shredding_and_merkle_ledger_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 144000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 216000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("agentic_otel_pci_gdpr_audit_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-otel-pci-gdpr-audit-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
