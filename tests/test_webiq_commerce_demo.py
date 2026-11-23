@@ -29828,6 +29828,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("multi-currency-fx-treasury-sandbox", html_zh)
 
+    def test_digital_pharmacy_telehealth_erx_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            DigitalPharmacyTelehealthErxPolicyInput,
+            evaluate_digital_pharmacy_telehealth_erx_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_digital_pharmacy_telehealth_erx_policy(
+            DigitalPharmacyTelehealthErxPolicyInput(
+                quarterly_coldchain_spoilage_and_rx_abandonment_pool_usd=320000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_NCPDP_ERX_COB_AND_COLD_CHAIN_AUTHORIZED",
+        )
+
+        erx = evaluate_digital_pharmacy_telehealth_erx_policy(
+            DigitalPharmacyTelehealthErxPolicyInput(
+                unsigned_ncpdp_erx_or_medicare_aks_copay_coupon=True
+            )
+        )
+        self.assertEqual(erx["status_code"], 403)
+        self.assertEqual(
+            erx["decision"],
+            "UNSIGNED_NCPDP_ERX_DISPENSE_OR_MEDICARE_AKS_COPAY_COUPON_VIOLATION",
+        )
+
+        cob = evaluate_digital_pharmacy_telehealth_erx_policy(
+            DigitalPharmacyTelehealthErxPolicyInput(
+                unapproved_cash_capture_during_epa_or_broken_cob_split=True
+            )
+        )
+        self.assertEqual(cob["status_code"], 422)
+        self.assertEqual(
+            cob["decision"],
+            "UNAPPROVED_CASH_CAPTURE_DURING_PENDING_EPA_OR_BROKEN_COB_SPLIT",
+        )
+
+        cold = evaluate_digital_pharmacy_telehealth_erx_policy(
+            DigitalPharmacyTelehealthErxPolicyInput(
+                weekend_cold_chain_dispatch_or_unconfirmed_titration_refill=True
+            )
+        )
+        self.assertEqual(cold["status_code"], 451)
+        self.assertEqual(
+            cold["decision"],
+            "WEEKEND_COLD_CHAIN_THERMAL_EXCURSION_OR_UNCONFIRMED_TITRATION_REFILL",
+        )
+
+        optim = evaluate_digital_pharmacy_telehealth_erx_policy(
+            DigitalPharmacyTelehealthErxPolicyInput(
+                quarterly_coldchain_spoilage_and_rx_abandonment_pool_usd=320000.0,
+                automated_pbm_copay_cob_and_mon_wed_cold_chain_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 124800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 195200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("digital_pharmacy_telehealth_erx_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("digital-pharmacy-telehealth-erx-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`428` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`429` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (30 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (56 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (160 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (161 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (94 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (38 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (50 guides)](#tax-fx-privacy-disputes)
@@ -120,7 +120,7 @@
 | 56 | **Multi-PSP Payment Orchestration (`Primer / Spreedly / Gr4vy vs. Adyen + Stripe + Checkout.com`), `8-Digit BIN` Local Acquiring, US `Durbin Reg II` PINless Debit Routing (`STAR / NYCE / Pulse`), `Cat-1 / MAC-03` Zero-Retry Breaker & `ISO 8583 0420` Timeout Failover Mutex (`-39%` Acquiring MDR & Decline Loss) FAQ** | [English](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.en.md) · [中文](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (160 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (161 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -286,6 +286,7 @@
 | 158 | **Circular Recommerce, EU `ESPR` Digital Product Passport (`DPP` + `NTAG 424 NFC`) & EU `VAT Margin Scheme (Art. 313)` Escrow (`Trove / Archive / Aura Blockchain vs. Vestiaire / StockX`), Rolling `SUN CMAC` Provenance, Serialized Margin-Only VAT & `1.20x` Store-Credit Flywheel (`-38%` Double-VAT & Fraud Loss) FAQ** | [English](circular-recommerce-eu-espr-digital-product-passport-dpp-vat-margin-scheme-selection-faq.en.md) · [中文](circular-recommerce-eu-espr-digital-product-passport-dpp-vat-margin-scheme-selection-faq.md) |
 | 159 | **Corporate `MICE` & Group Travel Room-Block Attrition Cutoff, Out-of-Block Cross-Matching & `IATA NDC` Group Name-Change Escrow (`Cvent Passkey / Groupize / Amadeus Delphi / Navan Events`), `T-90d/60d/30d` Auto-Trim, `Cumulative 75%` Profit Cap & `T-72h` `$0` Name Swap (`-38%` Attrition & Air Waste) FAQ** | [English](ota-corporate-mice-group-hotel-block-attrition-cutoff-ndc-name-change-selection-faq.en.md) · [中文](ota-corporate-mice-group-hotel-block-attrition-cutoff-ndc-name-change-selection-faq.md) |
 | 160 | **Embedded Checkout Shipping Protection & Parametric Travel/Weather Micro-Insurance (`Route / Corso vs. Cover Genius XCover / Sensible Weather`), Anti-Pre-Checked Dark-Pattern Gate (`EU CRD Art. 22 / CA SB-478`), `OMS` Subrogation Mutex & 1-Click Reorder Flywheel (`-38%` Porch-Piracy & Double-Claim Loss) FAQ** | [English](embedded-shipping-protection-parametric-insurance-optin-subrogation-escrow-selection-faq.en.md) · [中文](embedded-shipping-protection-parametric-insurance-optin-subrogation-escrow-selection-faq.md) |
+| 161 | **Digital Pharmacy & Telehealth Commerce (`Amazon Pharmacy / Truepill / Ro / Hims & Hers + Surescripts NCPDP / CoverMyMeds`), Signed `NCPDP eRx` & `AKS` Medicare Shield, `PBM + Copay Card COB` Split-Billing & `Mon–Wed` `GLP-1` Cold-Chain Dispatch Gate (`-39%` Spoilage & Rx Abandonment Loss) FAQ** | [English](digital-pharmacy-telehealth-ncpdp-erx-prior-auth-glp1-coldchain-copay-selection-faq.en.md) · [中文](digital-pharmacy-telehealth-ncpdp-erx-prior-auth-glp1-coldchain-copay-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (94 Guides)

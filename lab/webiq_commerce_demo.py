@@ -38673,6 +38673,82 @@ def evaluate_multi_currency_fx_treasury_policy(
     }
 
 
+@dataclass(frozen=True)
+class DigitalPharmacyTelehealthErxPolicyInput:
+    quarterly_coldchain_spoilage_and_rx_abandonment_pool_usd: float = 320000.0
+    unsigned_ncpdp_erx_or_medicare_aks_copay_coupon: bool = False
+    unapproved_cash_capture_during_epa_or_broken_cob_split: bool = False
+    weekend_cold_chain_dispatch_or_unconfirmed_titration_refill: bool = False
+    automated_pbm_copay_cob_and_mon_wed_cold_chain_ready: bool = False
+
+
+def evaluate_digital_pharmacy_telehealth_erx_policy(
+    policy_input: DigitalPharmacyTelehealthErxPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_coldchain_spoilage_and_rx_abandonment_pool_usd
+        ),
+    )
+    if policy_input.weekend_cold_chain_dispatch_or_unconfirmed_titration_refill:
+        return {
+            "status_code": 451,
+            "decision": "WEEKEND_COLD_CHAIN_THERMAL_EXCURSION_OR_UNCONFIRMED_TITRATION_REFILL",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unsigned_ncpdp_erx_or_medicare_aks_copay_coupon:
+        return {
+            "status_code": 403,
+            "decision": "UNSIGNED_NCPDP_ERX_DISPENSE_OR_MEDICARE_AKS_COPAY_COUPON_VIOLATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unapproved_cash_capture_during_epa_or_broken_cob_split:
+        return {
+            "status_code": 422,
+            "decision": "UNAPPROVED_CASH_CAPTURE_DURING_PENDING_EPA_OR_BROKEN_COB_SPLIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.automated_pbm_copay_cob_and_mon_wed_cold_chain_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "AUTOMATED_PBM_COPAY_COB_AND_MON_WED_COLD_CHAIN_DISPATCH_CONFIRM",
+            "mandate_token": "telehealth_pharmacy_erx_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_NCPDP_ERX_COB_AND_COLD_CHAIN_AUTHORIZED",
+        "mandate_token": "telehealth_pharmacy_erx_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -52652,6 +52728,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    digital_pharmacy_telehealth_erx_guard = {
+        "authorized_200": evaluate_digital_pharmacy_telehealth_erx_policy(
+            DigitalPharmacyTelehealthErxPolicyInput()
+        ),
+        "unsigned_erx_or_aks_copay_403": evaluate_digital_pharmacy_telehealth_erx_policy(
+            DigitalPharmacyTelehealthErxPolicyInput(
+                unsigned_ncpdp_erx_or_medicare_aks_copay_coupon=True
+            )
+        ),
+        "unapproved_cash_or_broken_cob_422": evaluate_digital_pharmacy_telehealth_erx_policy(
+            DigitalPharmacyTelehealthErxPolicyInput(
+                unapproved_cash_capture_during_epa_or_broken_cob_split=True
+            )
+        ),
+        "weekend_coldchain_or_titration_451": evaluate_digital_pharmacy_telehealth_erx_policy(
+            DigitalPharmacyTelehealthErxPolicyInput(
+                weekend_cold_chain_dispatch_or_unconfirmed_titration_refill=True
+            )
+        ),
+        "automated_cob_mon_wed_cold_409": evaluate_digital_pharmacy_telehealth_erx_policy(
+            DigitalPharmacyTelehealthErxPolicyInput(
+                automated_pbm_copay_cob_and_mon_wed_cold_chain_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -53090,6 +53192,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_vmi_consignment_sbt_guard": b2b_vmi_consignment_sbt_guard,
         "embedded_shipping_parametric_insurance_guard": embedded_shipping_parametric_insurance_guard,
         "multi_currency_fx_treasury_guard": multi_currency_fx_treasury_guard,
+        "digital_pharmacy_telehealth_erx_guard": digital_pharmacy_telehealth_erx_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -75959,6 +76062,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="fxtreas-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 NATURAL_FX_NETTING_LONDON_NY_WINDOW_AND_PACS008_OUR_CONFIRM · Mandate: multi_currency_fx_treasury_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 310 (#429) Digital Pharmacy & Telehealth NCPDP eRx, Prior Auth & GLP-1 Cold-Chain -->
+      <div class="finops-box" id="digital-pharmacy-telehealth-erx-sandbox" style="margin-top:12px;border-color:#0d9488;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💊 数字医疗、处方药周期购与在线药房清算 (Amazon Pharmacy / Truepill / Surescripts NCPDP / CoverMyMeds) 沙盒</div>
+            <div class="finops-sub">Round 310 (#429 · SVG #753) · 州执业医师签名 NCPDP eRx 锁与联邦医保 AKS 反回扣防火墙 (HTTP 403) + 事先授权 ePA 挂起防强刷 $1,050 现金价及 PBM+药企共付卡 COB 自动拆分 (HTTP 422) + GLP-1 生物药 2°C-8°C 周一至周三发货窗防跨周末化冻报废 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="phmerx-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 GLP-1/生物药跨周末快递化冻报废、未自动抵扣共付卡高自付弃单及未批先扣拒付池 ($)
+            <input type="number" id="phmerx-gross-input" value="320000" min="10000" step="5000" oninput="recalcDigitalPharmacyTelehealthErxSandbox()" />
+          </label>
+          <label>收货州执业医师电子处方 (Surescripts NCPDP SCRIPT eRx) 与联邦医保 AKS 共付卡防火墙门禁
+            <select id="phmerx-erx-select" onchange="recalcDigitalPharmacyTelehealthErxSandbox()">
+              <option value="pass">收到签名 eRx 后才实扣药费，且对 Medicare/Medicaid 患者严格屏蔽商业 Copay 券 (安全)</option>
+              <option value="block_403">医师未签发 eRx 即实扣 $900 药费，或对联邦医保老人违规套用药企商业补贴券触犯 AKS (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>NCPDP Telecom D.0 事先授权 (Reject 75 ePA) 挂起锁与主险 PBM + 次级药企共付卡 COB 拆分门禁
+            <select id="phmerx-cob-select" onchange="recalcDigitalPharmacyTelehealthErxSandbox()">
+              <option value="pass">ePA 审批期间挂起扣款，批复后自动执行 PBM($850) + Copay卡($175) 拆分，患者仅付 $25 (合规)</option>
+              <option value="block_422">主险提示需事先授权时未经同意直接按 $1,050 全额现金价刷爆患者信用卡 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>2°C-8°C 冷链药品周一至周三发货日历锁 (Mon-Wed Dispatch Gate) 与阶梯剂量随访确认门禁
+            <select id="phmerx-cold-select" onchange="recalcDigitalPharmacyTelehealthErxSandbox()">
+              <option value="pass">周五审方通过的冷链药暂存药房 4°C 冷库至周一早航空发出，且续订前确认阶梯剂量 (安全)</option>
+              <option value="block_451">周五下午发两日达快递致 $1,000 注射笔在周日分拣仓化冻报废，或未随访盲发旧剂量 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>自动 CoverMyMeds ePA + PBM/Copay Card/HSA 三层瀑布结算 + 气象动态冰排冷链编排
+            <select id="phmerx-opt-select" onchange="recalcDigitalPharmacyTelehealthErxSandbox()">
+              <option value="enabled" selected>启用自动 COB 共付抵扣 + ePA 联动 + 周一至周三冷链发货锁 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">患者手动输入优惠卡号报销与全周无差别普通快递发货 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度冷链报废与高自付弃单池</div>
+            <div class="finops-kpi-val" id="phmerx-gross-kpi">$320,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">自动COB与冷链锁后净成本</div>
+            <div class="finops-kpi-val" id="phmerx-net-kpi" style="color:#6ee7b7;">$195,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省药损与挽回订阅GMV</div>
+            <div class="finops-kpi-val" id="phmerx-savings-kpi" style="color:#38bdf8;">$124,800</div>
+          </div>
+        </div>
+        <div id="phmerx-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 AUTOMATED_PBM_COPAY_COB_AND_MON_WED_COLD_CHAIN_DISPATCH_CONFIRM · Mandate: telehealth_pharmacy_erx_optim_409
         </div>
       </div>
 
@@ -104106,6 +104266,79 @@ function recalcMultiCurrencyFxTreasurySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_NATURAL_FX_NETTING_AND_PACS008_AUTHORIZED · Mandate: multi_currency_fx_treasury_200';
+}}
+
+function recalcDigitalPharmacyTelehealthErxSandbox() {{
+  const grossInput = document.getElementById('phmerx-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '320000'));
+  const erxGate = document.getElementById('phmerx-erx-select').value;
+  const cobGate = document.getElementById('phmerx-cob-select').value;
+  const coldGate = document.getElementById('phmerx-cold-select').value;
+  const optMode = document.getElementById('phmerx-opt-select').value;
+
+  const grossKpi = document.getElementById('phmerx-gross-kpi');
+  const netKpi = document.getElementById('phmerx-net-kpi');
+  const savingsKpi = document.getElementById('phmerx-savings-kpi');
+  const statusKpi = document.getElementById('phmerx-status-kpi');
+  const banner = document.getElementById('phmerx-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (coldGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 WEEKEND_COLD_CHAIN_THERMAL_EXCURSION_OR_UNCONFIRMED_TITRATION_REFILL · Mandate: null';
+    return;
+  }}
+  if (erxGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNSIGNED_NCPDP_ERX_DISPENSE_OR_MEDICARE_AKS_COPAY_COUPON_VIOLATION · Mandate: null';
+    return;
+  }}
+  if (cobGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNAPPROVED_CASH_CAPTURE_DURING_PENDING_EPA_OR_BROKEN_COB_SPLIT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 AUTOMATED_PBM_COPAY_COB_AND_MON_WED_COLD_CHAIN_DISPATCH_CONFIRM · Mandate: telehealth_pharmacy_erx_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_NCPDP_ERX_COB_AND_COLD_CHAIN_AUTHORIZED · Mandate: telehealth_pharmacy_erx_200';
 }}
 
 function updateStage1756Sandbox() {{
