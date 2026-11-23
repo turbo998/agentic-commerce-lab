@@ -29962,6 +29962,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("omnichannel-luxury-clienteling-sandbox", html_zh)
 
+    def test_saas_involuntary_churn_vau_payday_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaasInvoluntaryChurnVauPaydayPolicyInput,
+            evaluate_saas_involuntary_churn_vau_payday_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_involuntary_churn_vau_payday_policy(
+            SaasInvoluntaryChurnVauPaydayPolicyInput(
+                quarterly_failed_renewal_arr_leakage_pool_usd=330000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_VAU_PAYDAY_RETRY_AND_GRACE_PERIOD_AUTHORIZED",
+        )
+
+        lockout = evaluate_saas_involuntary_churn_vau_payday_policy(
+            SaasInvoluntaryChurnVauPaydayPolicyInput(
+                day_zero_hard_tenant_lockout_or_non_admin_banner=True
+            )
+        )
+        self.assertEqual(lockout["status_code"], 403)
+        self.assertEqual(
+            lockout["decision"],
+            "DAY_ZERO_HARD_TENANT_LOCKOUT_OR_NON_ADMIN_BILLING_SHAME_BANNER",
+        )
+
+        vau = evaluate_saas_involuntary_churn_vau_payday_policy(
+            SaasInvoluntaryChurnVauPaydayPolicyInput(
+                unsynced_vau_abu_or_dumb_cron_retry_cap_breach=True
+            )
+        )
+        self.assertEqual(vau["status_code"], 422)
+        self.assertEqual(
+            vau["decision"],
+            "UNSYNCED_VAU_ABU_EXPIRED_CARD_OR_DUMB_CRON_RETRY_CAP_BREACH",
+        )
+
+        email = evaluate_saas_involuntary_churn_vau_payday_policy(
+            SaasInvoluntaryChurnVauPaydayPolicyInput(
+                day_one_dunning_email_sleeping_dog_wakeup_or_login_wall=True
+            )
+        )
+        self.assertEqual(email["status_code"], 451)
+        self.assertEqual(
+            email["decision"],
+            "DAY_ONE_DUNNING_EMAIL_SLEEPING_DOG_WAKEUP_OR_LOGIN_WALL_FRICTION",
+        )
+
+        optim = evaluate_saas_involuntary_churn_vau_payday_policy(
+            SaasInvoluntaryChurnVauPaydayPolicyInput(
+                quarterly_failed_renewal_arr_leakage_pool_usd=330000.0,
+                vau_pre_sync_silent_payday_rescue_and_1tap_wallet_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 132000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 198000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_involuntary_churn_vau_payday_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-involuntary-churn-dunning-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
