@@ -39731,6 +39731,82 @@ def evaluate_ota_cruise_resort_folio_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bHealthcareGpo340bPolicyInput:
+    quarterly_wac_overpay_gpo_tier_drop_and_or_trunk_stock_pool_usd: float = 490000.0
+    hrsa_340b_inpatient_diversion_or_medicaid_duplicate_discount: bool = False
+    gpo_loc_market_share_erosion_causing_tier_downgrade: bool = False
+    unscanned_or_trunk_stock_bill_only_or_fda_udi_recall_breach: bool = False
+    three_bucket_340b_gpo_tier_lock_and_or_udi_po_ready: bool = False
+
+
+def evaluate_b2b_healthcare_gpo_340b_policy(
+    policy_input: B2bHealthcareGpo340bPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_wac_overpay_gpo_tier_drop_and_or_trunk_stock_pool_usd
+        ),
+    )
+    if policy_input.unscanned_or_trunk_stock_bill_only_or_fda_udi_recall_breach:
+        return {
+            "status_code": 451,
+            "decision": "UNSCANNED_OR_TRUNK_STOCK_IMPLANT_BILLING_OR_FDA_UDI_RECALL_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hrsa_340b_inpatient_diversion_or_medicaid_duplicate_discount:
+        return {
+            "status_code": 403,
+            "decision": "HRSA_340B_INPATIENT_DIVERSION_OR_MEDICAID_DUPLICATE_DISCOUNT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.gpo_loc_market_share_erosion_causing_tier_downgrade:
+        return {
+            "status_code": 422,
+            "decision": "GPO_LOC_COMMITMENT_SHARE_EROSION_CAUSING_SYSTEM_WIDE_TIER_DROP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.three_bucket_340b_gpo_tier_lock_and_or_udi_po_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "THREE_BUCKET_340B_SPLIT_GPO_TIER_LOCK_AND_OR_UDI_PO_CONFIRM",
+            "mandate_token": "b2b_healthcare_gpo_340b_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_HEALTHCARE_GPO_340B_AND_OR_UDI_AUTHORIZED",
+        "mandate_token": "b2b_healthcare_gpo_340b_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -54074,6 +54150,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_healthcare_gpo_340b_guard = {
+        "authorized_200": evaluate_b2b_healthcare_gpo_340b_policy(
+            B2bHealthcareGpo340bPolicyInput()
+        ),
+        "diversion_or_duplicate_340b_403": evaluate_b2b_healthcare_gpo_340b_policy(
+            B2bHealthcareGpo340bPolicyInput(
+                hrsa_340b_inpatient_diversion_or_medicaid_duplicate_discount=True
+            )
+        ),
+        "gpo_tier_erosion_422": evaluate_b2b_healthcare_gpo_340b_policy(
+            B2bHealthcareGpo340bPolicyInput(
+                gpo_loc_market_share_erosion_causing_tier_downgrade=True
+            )
+        ),
+        "unscanned_or_trunk_stock_451": evaluate_b2b_healthcare_gpo_340b_policy(
+            B2bHealthcareGpo340bPolicyInput(
+                unscanned_or_trunk_stock_bill_only_or_fda_udi_recall_breach=True
+            )
+        ),
+        "three_bucket_gpo_udi_409": evaluate_b2b_healthcare_gpo_340b_policy(
+            B2bHealthcareGpo340bPolicyInput(
+                three_bucket_340b_gpo_tier_lock_and_or_udi_po_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -54526,6 +54628,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_six_protocol_interop_guard": agentic_six_protocol_interop_guard,
         "ecommerce_byob_bundle_guard": ecommerce_byob_bundle_guard,
         "ota_cruise_resort_folio_guard": ota_cruise_resort_folio_guard,
+        "b2b_healthcare_gpo_340b_guard": b2b_healthcare_gpo_340b_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -78193,6 +78296,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="cruise-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ROLLING_SATELLITE_AUTH_90M_SHOREEX_BOND_AND_OBC_FIFO_CONFIRM · Mandate: ota_cruise_resort_folio_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 324 (#443 · SVG #767) Healthcare GPO, HRSA 340B & OR UDI Implant Consignment -->
+      <div class="finops-box" id="b2b-healthcare-gpo-340b-sandbox" style="margin-top:12px;border-color:#0284c7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏥 医疗医药集采 (GHX / Vizient GPO)、HRSA 340B 三桶拆单与手术室高值植体 UDI 即用即结沙盒</div>
+            <div class="finops-sub">Round 324 (#443 · SVG #767) · 绑定 Epic eMAR 按 11位 NDC 严格隔离 340B/GPO/WAC 三桶并注入 JG/TB 修饰符防 Medicaid 双重返利 (HTTP 403) + 守护全院 GPO LOC (&gt;=80%) 阶梯份额防小额野采引发全院降档 (HTTP 422) + 手术室寄售植体强制扫描 FDA UDI 核验召回/效期后自动生成 Bill-Only PO (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="hcgpo-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度医院错用 WAC 全价补货、GPO 阶梯掉档损失及手术室手写跟台单虚报溢价池 ($)
+            <input type="number" id="hcgpo-gross-input" value="490000" min="10000" step="5000" oninput="recalcB2bHealthcareGpo340bSandbox()" />
+          </label>
+          <label>HRSA 340B 虚拟库存分桶 (门诊 340B / GPO / 住院 WAC) 与 Medicaid 防双重返利门禁
+            <select id="hcgpo-340b-select" onchange="recalcB2bHealthcareGpo340bSandbox()">
+              <option value="pass">严格按 Epic 就诊身份分桶累加满整盒 11位 NDC 补货，并对 Medicaid 处方打 JG/TB 排除码 (合规)</option>
+              <option value="block_403">拿 340B 优惠账户补货住院药品触发挪用罪，或漏标 Medicaid 排除码引发双重返利重罚 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>医疗集团采购组织 (Vizient / Premier GPO LOC &gt;= 80%) 承诺市场份额保级门禁
+            <select id="hcgpo-tier-select" onchange="recalcB2bHealthcareGpo340bSandbox()">
+              <option value="pass">全局监控品类合规率 &gt;= 83%，并通过 GHX EDI 845 实时同步 Tier-4 (-22%) 阶梯合同价 (安全)</option>
+              <option value="block_422">分院为省 $1,200 私自野采致全集团 GPO 份额跌破 80%，痛失全年 $450,000 阶梯折扣 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>手术室高值寄售耗材 (Bill-Only OR Implant) FDA UDI 扫码入病历与召回/效期门禁
+            <select id="hcgpo-udi-select" onchange="recalcB2bHealthcareGpo340bSandbox()">
+              <option value="pass">100% 由护士扫描植体 FDA UDI 录入 Epic 手术记录，核验无召回后按合同价自动生成 PO (安全)</option>
+              <option value="block_451">仅凭器械代表手写跟台单即签字付 $18,000，或混入未扫码/FDA 一级召回批次植体 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>340B 三桶精准补货 + GPO 全局份额保级 + 手术室 UDI 扫码即结全链路编排
+            <select id="hcgpo-opt-select" onchange="recalcB2bHealthcareGpo340bSandbox()">
+              <option value="enabled" selected>启用 340B 三桶拆单 + GPO 保级锁 + 手术室 UDI 即结 (-39% 药耗损耗 / HTTP 409)</option>
+              <option value="disabled">手工区分药房账号且手术室使用纸质跟台消耗单对账 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度药耗多付及手术室漏损池</div>
+            <div class="finops-kpi-val" id="hcgpo-gross-kpi">$490,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">340B拆单与UDI即结后净支出</div>
+            <div class="finops-kpi-val" id="hcgpo-net-kpi" style="color:#6ee7b7;">$298,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省医院药耗采购预算</div>
+            <div class="finops-kpi-val" id="hcgpo-savings-kpi" style="color:#38bdf8;">$191,100</div>
+          </div>
+        </div>
+        <div id="hcgpo-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 THREE_BUCKET_340B_SPLIT_GPO_TIER_LOCK_AND_OR_UDI_PO_CONFIRM · Mandate: b2b_healthcare_gpo_340b_optim_409
         </div>
       </div>
 
@@ -107362,6 +107522,79 @@ function recalcOtaCruiseResortFolioSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CRUISE_RESORT_FOLIO_AND_SHOREEX_AUTHORIZED · Mandate: ota_cruise_resort_folio_200';
+}}
+
+function recalcB2bHealthcareGpo340bSandbox() {{
+  const grossInput = document.getElementById('hcgpo-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '490000'));
+  const g340bGate = document.getElementById('hcgpo-340b-select').value;
+  const tierGate = document.getElementById('hcgpo-tier-select').value;
+  const udiGate = document.getElementById('hcgpo-udi-select').value;
+  const optMode = document.getElementById('hcgpo-opt-select').value;
+
+  const grossKpi = document.getElementById('hcgpo-gross-kpi');
+  const netKpi = document.getElementById('hcgpo-net-kpi');
+  const savingsKpi = document.getElementById('hcgpo-savings-kpi');
+  const statusKpi = document.getElementById('hcgpo-status-kpi');
+  const banner = document.getElementById('hcgpo-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (udiGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNSCANNED_OR_TRUNK_STOCK_IMPLANT_BILLING_OR_FDA_UDI_RECALL_BREACH · Mandate: null';
+    return;
+  }}
+  if (g340bGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 HRSA_340B_INPATIENT_DIVERSION_OR_MEDICAID_DUPLICATE_DISCOUNT_BREACH · Mandate: null';
+    return;
+  }}
+  if (tierGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 GPO_LOC_COMMITMENT_SHARE_EROSION_CAUSING_SYSTEM_WIDE_TIER_DROP · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 THREE_BUCKET_340B_SPLIT_GPO_TIER_LOCK_AND_OR_UDI_PO_CONFIRM · Mandate: b2b_healthcare_gpo_340b_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_HEALTHCARE_GPO_340B_AND_OR_UDI_AUTHORIZED · Mandate: b2b_healthcare_gpo_340b_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -30766,6 +30766,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-cruise-resort-folio-sandbox", html_zh)
 
+    def test_b2b_healthcare_gpo_340b_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bHealthcareGpo340bPolicyInput,
+            evaluate_b2b_healthcare_gpo_340b_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_healthcare_gpo_340b_policy(
+            B2bHealthcareGpo340bPolicyInput(
+                quarterly_wac_overpay_gpo_tier_drop_and_or_trunk_stock_pool_usd=490000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_HEALTHCARE_GPO_340B_AND_OR_UDI_AUTHORIZED",
+        )
+
+        diversion = evaluate_b2b_healthcare_gpo_340b_policy(
+            B2bHealthcareGpo340bPolicyInput(
+                hrsa_340b_inpatient_diversion_or_medicaid_duplicate_discount=True
+            )
+        )
+        self.assertEqual(diversion["status_code"], 403)
+        self.assertEqual(
+            diversion["decision"],
+            "HRSA_340B_INPATIENT_DIVERSION_OR_MEDICAID_DUPLICATE_DISCOUNT_BREACH",
+        )
+
+        tier = evaluate_b2b_healthcare_gpo_340b_policy(
+            B2bHealthcareGpo340bPolicyInput(
+                gpo_loc_market_share_erosion_causing_tier_downgrade=True
+            )
+        )
+        self.assertEqual(tier["status_code"], 422)
+        self.assertEqual(
+            tier["decision"],
+            "GPO_LOC_COMMITMENT_SHARE_EROSION_CAUSING_SYSTEM_WIDE_TIER_DROP",
+        )
+
+        udi = evaluate_b2b_healthcare_gpo_340b_policy(
+            B2bHealthcareGpo340bPolicyInput(
+                unscanned_or_trunk_stock_bill_only_or_fda_udi_recall_breach=True
+            )
+        )
+        self.assertEqual(udi["status_code"], 451)
+        self.assertEqual(
+            udi["decision"],
+            "UNSCANNED_OR_TRUNK_STOCK_IMPLANT_BILLING_OR_FDA_UDI_RECALL_BREACH",
+        )
+
+        optim = evaluate_b2b_healthcare_gpo_340b_policy(
+            B2bHealthcareGpo340bPolicyInput(
+                quarterly_wac_overpay_gpo_tier_drop_and_or_trunk_stock_pool_usd=490000.0,
+                three_bucket_340b_gpo_tier_lock_and_or_udi_po_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 191100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 298900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_healthcare_gpo_340b_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-healthcare-gpo-340b-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
