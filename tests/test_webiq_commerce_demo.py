@@ -29493,6 +29493,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-distributor-rebate-spa-sandbox", html_zh)
 
+    def test_ota_corporate_mice_group_block_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaCorporateMiceGroupBlockPolicyInput,
+            evaluate_ota_corporate_mice_group_block_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_corporate_mice_group_block_policy(
+            OtaCorporateMiceGroupBlockPolicyInput(
+                quarterly_room_attrition_penalty_and_group_air_waste_pool_usd=300000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_MICE_ROOM_BLOCK_AND_GROUP_PNR_AUTHORIZED",
+        )
+
+        cutoff = evaluate_ota_corporate_mice_group_block_policy(
+            OtaCorporateMiceGroupBlockPolicyInput(
+                missed_room_block_attrition_release_cutoff_window=True
+            )
+        )
+        self.assertEqual(cutoff["status_code"], 403)
+        self.assertEqual(
+            cutoff["decision"],
+            "MISSED_ROOM_BLOCK_ATTRITION_RELEASE_CUTOFF_WINDOW",
+        )
+
+        audit = evaluate_ota_corporate_mice_group_block_policy(
+            OtaCorporateMiceGroupBlockPolicyInput(
+                uncredited_out_of_block_pickup_or_per_night_full_rate_penalty=True
+            )
+        )
+        self.assertEqual(audit["status_code"], 422)
+        self.assertEqual(
+            audit["decision"],
+            "UNCREDITED_OUT_OF_BLOCK_PICKUP_OR_FULL_RATE_PER_NIGHT_ATTRITION_OVERCHARGE",
+        )
+
+        swap = evaluate_ota_corporate_mice_group_block_policy(
+            OtaCorporateMiceGroupBlockPolicyInput(
+                premature_group_air_ticketing_or_cancel_rebook_room_loss=True
+            )
+        )
+        self.assertEqual(swap["status_code"], 451)
+        self.assertEqual(
+            swap["decision"],
+            "PREMATURE_GROUP_AIR_TICKETING_OR_CANCEL_REBOOK_ROOM_BLOCK_LOSS",
+        )
+
+        optim = evaluate_ota_corporate_mice_group_block_policy(
+            OtaCorporateMiceGroupBlockPolicyInput(
+                quarterly_room_attrition_penalty_and_group_air_waste_pool_usd=300000.0,
+                automated_attrition_trim_out_of_block_credit_and_name_swap_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 114000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 186000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_corporate_mice_group_block_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-corporate-mice-group-block-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

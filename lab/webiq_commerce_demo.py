@@ -38293,6 +38293,82 @@ def evaluate_b2b_distributor_rebate_spa_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaCorporateMiceGroupBlockPolicyInput:
+    quarterly_room_attrition_penalty_and_group_air_waste_pool_usd: float = 300000.0
+    missed_room_block_attrition_release_cutoff_window: bool = False
+    uncredited_out_of_block_pickup_or_per_night_full_rate_penalty: bool = False
+    premature_group_air_ticketing_or_cancel_rebook_room_loss: bool = False
+    automated_attrition_trim_out_of_block_credit_and_name_swap_ready: bool = False
+
+
+def evaluate_ota_corporate_mice_group_block_policy(
+    policy_input: OtaCorporateMiceGroupBlockPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_room_attrition_penalty_and_group_air_waste_pool_usd
+        ),
+    )
+    if policy_input.premature_group_air_ticketing_or_cancel_rebook_room_loss:
+        return {
+            "status_code": 451,
+            "decision": "PREMATURE_GROUP_AIR_TICKETING_OR_CANCEL_REBOOK_ROOM_BLOCK_LOSS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missed_room_block_attrition_release_cutoff_window:
+        return {
+            "status_code": 403,
+            "decision": "MISSED_ROOM_BLOCK_ATTRITION_RELEASE_CUTOFF_WINDOW",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncredited_out_of_block_pickup_or_per_night_full_rate_penalty:
+        return {
+            "status_code": 422,
+            "decision": "UNCREDITED_OUT_OF_BLOCK_PICKUP_OR_FULL_RATE_PER_NIGHT_ATTRITION_OVERCHARGE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.automated_attrition_trim_out_of_block_credit_and_name_swap_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "AUTOMATED_ATTRITION_TRIM_OUT_OF_BLOCK_CREDIT_AND_NAME_SWAP_CONFIRM",
+            "mandate_token": "ota_corporate_mice_group_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_MICE_ROOM_BLOCK_AND_GROUP_PNR_AUTHORIZED",
+        "mandate_token": "ota_corporate_mice_group_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -52142,6 +52218,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_corporate_mice_group_block_guard = {
+        "authorized_200": evaluate_ota_corporate_mice_group_block_policy(
+            OtaCorporateMiceGroupBlockPolicyInput()
+        ),
+        "missed_attrition_cutoff_403": evaluate_ota_corporate_mice_group_block_policy(
+            OtaCorporateMiceGroupBlockPolicyInput(
+                missed_room_block_attrition_release_cutoff_window=True
+            )
+        ),
+        "uncredited_out_of_block_422": evaluate_ota_corporate_mice_group_block_policy(
+            OtaCorporateMiceGroupBlockPolicyInput(
+                uncredited_out_of_block_pickup_or_per_night_full_rate_penalty=True
+            )
+        ),
+        "premature_group_ticketing_451": evaluate_ota_corporate_mice_group_block_policy(
+            OtaCorporateMiceGroupBlockPolicyInput(
+                premature_group_air_ticketing_or_cancel_rebook_room_loss=True
+            )
+        ),
+        "automated_trim_credit_swap_409": evaluate_ota_corporate_mice_group_block_policy(
+            OtaCorporateMiceGroupBlockPolicyInput(
+                automated_attrition_trim_out_of_block_credit_and_name_swap_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -52575,6 +52677,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "affiliate_creator_attribution_guard": affiliate_creator_attribution_guard,
         "circular_recommerce_dpp_vat_guard": circular_recommerce_dpp_vat_guard,
         "b2b_distributor_rebate_spa_guard": b2b_distributor_rebate_spa_guard,
+        "ota_corporate_mice_group_block_guard": ota_corporate_mice_group_block_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -75159,6 +75262,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="distrebate-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 STEPPED_MARGINAL_REBATE_FIFO_SPA_AND_CREDIT_MEMO_CONFIRM · Mandate: b2b_distributor_rebate_spa_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 305 (#424) Corporate MICE & Group Travel Room-Block Attrition & NDC Swap -->
+      <div class="finops-box" id="ota-corporate-mice-group-block-sandbox" style="margin-top:12px;border-color:#4f46e5;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎪 企业会展商旅 (MICE) 酒店切房防违约金与团体票免费换名 (Cvent Passkey / Amadeus Delphi / Navan) 沙盒</div>
+            <div class="finops-sub">Round 305 (#424 · SVG #748) · T-90d/60d/30d 截止日前 48h 自动释放冗余切房防空房违约金 (HTTP 403) + 参会名单交叉认领私订房晚 (Audit Around the Block) 与累计 75% 净利赔偿上限 (HTTP 422) + IATA NDC 团体票延至 T-72h 出票与 Passkey 原地 $0 换名 (HTTP 451) + 净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="micegrp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度企业会展酒店空房消化率违约金 (Attrition Penalty)、OTA 私订房晚漏计及参会人变更废票池 ($)
+            <input type="number" id="micegrp-gross-input" value="300000" min="10000" step="5000" oninput="recalcOtaCorporateMiceGroupBlockSandbox()" />
+          </label>
+          <label>酒店合同阶梯免费减房窗口 (T-90d / T-60d / T-30d Attrition Release Cutoff) 监控门禁
+            <select id="micegrp-cutoff-select" onchange="recalcOtaCorporateMiceGroupBlockSandbox()">
+              <option value="pass">根据报名转化水位线在 T-90d/60d/30d 截止日前 48 小时自动下发减房指令 (安全)</option>
+              <option value="block_403">人工忙于会议物料错过 T-60d 减房截止日导致 150 间空房锁死被罚 $60,000 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>私订房晚交叉认领 (Out-of-Block Cross-Match) 与整会累计消化率 + 75% 净利扣减转售门禁
+            <select id="micegrp-audit-select" onchange="recalcOtaCorporateMiceGroupBlockSandbox()">
+              <option value="pass">交叉比对追认员工 OTA 私订同酒店房晚，按整会累计 (Cumulative) 及扣除转售后 75% 净利结算 (合规)</option>
+              <option value="block_422">漏算 25% 私订参会者房晚，且酒店按单晚独立考核并对已转卖房间照收 100% 含税罚金 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>IATA NDC 团体机票延后出票 (T-72h Ticketing) 与 Passkey 酒店房单原地换名 (In-Place Swap) 门禁
+            <select id="micegrp-swap-select" onchange="recalcOtaCorporateMiceGroupBlockSandbox()">
+              <option value="pass">团体 PNR 押金占座延至 T-72h 出票，参会人变更时机酒同步原地 $0 免费换名 (安全)</option>
+              <option value="block_451">提前 45 天把散客机票全部出死致换人作废，或先退协议房再按门市高价重订 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>自动阶梯减房 + Out-of-Block 私订认领 + 团体机酒原地零罚金换名全链路编排
+            <select id="micegrp-opt-select" onchange="recalcOtaCorporateMiceGroupBlockSandbox()">
+              <option value="enabled" selected>启用 T-90/60/30d 自动减房 + 私订追认 + 原地 $0 换名 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">人工 Excel 统计参会住宿并按普通散客即时出票 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度会展切房违约与废票池</div>
+            <div class="finops-kpi-val" id="micegrp-gross-kpi">$300,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">自动减房与私订追认后净成本</div>
+            <div class="finops-kpi-val" id="micegrp-net-kpi" style="color:#6ee7b7;">$186,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省空房罚金与改签费</div>
+            <div class="finops-kpi-val" id="micegrp-savings-kpi" style="color:#38bdf8;">$114,000</div>
+          </div>
+        </div>
+        <div id="micegrp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 AUTOMATED_ATTRITION_TRIM_OUT_OF_BLOCK_CREDIT_AND_NAME_SWAP_CONFIRM · Mandate: ota_corporate_mice_group_optim_409
         </div>
       </div>
 
@@ -102941,6 +103101,79 @@ function recalcB2bDistributorRebateSpaSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_DISTRIBUTOR_SPA_AND_STEPPED_REBATE_AUTHORIZED · Mandate: b2b_distributor_rebate_spa_200';
+}}
+
+function recalcOtaCorporateMiceGroupBlockSandbox() {{
+  const grossInput = document.getElementById('micegrp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '300000'));
+  const cutoffGate = document.getElementById('micegrp-cutoff-select').value;
+  const auditGate = document.getElementById('micegrp-audit-select').value;
+  const swapGate = document.getElementById('micegrp-swap-select').value;
+  const optMode = document.getElementById('micegrp-opt-select').value;
+
+  const grossKpi = document.getElementById('micegrp-gross-kpi');
+  const netKpi = document.getElementById('micegrp-net-kpi');
+  const savingsKpi = document.getElementById('micegrp-savings-kpi');
+  const statusKpi = document.getElementById('micegrp-status-kpi');
+  const banner = document.getElementById('micegrp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (swapGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PREMATURE_GROUP_AIR_TICKETING_OR_CANCEL_REBOOK_ROOM_BLOCK_LOSS · Mandate: null';
+    return;
+  }}
+  if (cutoffGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MISSED_ROOM_BLOCK_ATTRITION_RELEASE_CUTOFF_WINDOW · Mandate: null';
+    return;
+  }}
+  if (auditGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCREDITED_OUT_OF_BLOCK_PICKUP_OR_FULL_RATE_PER_NIGHT_ATTRITION_OVERCHARGE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 AUTOMATED_ATTRITION_TRIM_OUT_OF_BLOCK_CREDIT_AND_NAME_SWAP_CONFIRM · Mandate: ota_corporate_mice_group_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_MICE_ROOM_BLOCK_AND_GROUP_PNR_AUTHORIZED · Mandate: ota_corporate_mice_group_200';
 }}
 
 function updateStage1756Sandbox() {{
