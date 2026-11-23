@@ -38369,6 +38369,82 @@ def evaluate_ota_corporate_mice_group_block_policy(
     }
 
 
+@dataclass(frozen=True)
+class DigitalGamingIapWebshopPolicyInput:
+    quarterly_iap_30pct_tax_and_refund_abuse_pool_usd: float = 350000.0
+    unauthorized_geo_steering_or_unverified_player_uid: bool = False
+    missed_12h_apple_consumption_api_telemetry_response: bool = False
+    unclawed_refunded_gems_or_instant_p2p_auction_laundering: bool = False
+    d2c_webshop_steering_consumption_api_and_clawback_ready: bool = False
+
+
+def evaluate_digital_gaming_iap_webshop_policy(
+    policy_input: DigitalGamingIapWebshopPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_iap_30pct_tax_and_refund_abuse_pool_usd
+        ),
+    )
+    if policy_input.unclawed_refunded_gems_or_instant_p2p_auction_laundering:
+        return {
+            "status_code": 451,
+            "decision": "UNCLAWED_REFUNDED_GEMS_OR_INSTANT_P2P_AUCTION_LAUNDERING",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unauthorized_geo_steering_or_unverified_player_uid:
+        return {
+            "status_code": 403,
+            "decision": "UNAUTHORIZED_GEO_STEERING_OR_UNVERIFIED_PLAYER_UID_TOPUP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.missed_12h_apple_consumption_api_telemetry_response:
+        return {
+            "status_code": 422,
+            "decision": "MISSED_12H_APPLE_CONSUMPTION_API_TELEMETRY_RESPONSE_WINDOW",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.d2c_webshop_steering_consumption_api_and_clawback_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "D2C_WEBSHOP_STEERING_CONSUMPTION_API_AND_GEM_CLAWBACK_CONFIRM",
+            "mandate_token": "digital_gaming_iap_webshop_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_D2C_WEBSHOP_AND_CONSUMPTION_DEFENSE_AUTHORIZED",
+        "mandate_token": "digital_gaming_iap_webshop_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -52244,6 +52320,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    digital_gaming_iap_webshop_guard = {
+        "authorized_200": evaluate_digital_gaming_iap_webshop_policy(
+            DigitalGamingIapWebshopPolicyInput()
+        ),
+        "unauthorized_geo_or_uid_403": evaluate_digital_gaming_iap_webshop_policy(
+            DigitalGamingIapWebshopPolicyInput(
+                unauthorized_geo_steering_or_unverified_player_uid=True
+            )
+        ),
+        "missed_12h_consumption_api_422": evaluate_digital_gaming_iap_webshop_policy(
+            DigitalGamingIapWebshopPolicyInput(
+                missed_12h_apple_consumption_api_telemetry_response=True
+            )
+        ),
+        "unclawed_gems_or_p2p_launder_451": evaluate_digital_gaming_iap_webshop_policy(
+            DigitalGamingIapWebshopPolicyInput(
+                unclawed_refunded_gems_or_instant_p2p_auction_laundering=True
+            )
+        ),
+        "d2c_webshop_consumption_clawback_409": evaluate_digital_gaming_iap_webshop_policy(
+            DigitalGamingIapWebshopPolicyInput(
+                d2c_webshop_steering_consumption_api_and_clawback_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -52678,6 +52780,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "circular_recommerce_dpp_vat_guard": circular_recommerce_dpp_vat_guard,
         "b2b_distributor_rebate_spa_guard": b2b_distributor_rebate_spa_guard,
         "ota_corporate_mice_group_block_guard": ota_corporate_mice_group_block_guard,
+        "digital_gaming_iap_webshop_guard": digital_gaming_iap_webshop_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -75319,6 +75422,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="micegrp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 AUTOMATED_ATTRITION_TRIM_OUT_OF_BLOCK_CREDIT_AND_NAME_SWAP_CONFIRM · Mandate: ota_corporate_mice_group_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 306 (#425) Digital Goods & Gaming D2C Web Shop vs IAP & Apple Consumption API -->
+      <div class="finops-box" id="digital-gaming-iap-webshop-sandbox" style="margin-top:12px;border-color:#7c3aed;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎮 数字商品与游戏官方直充商城 (D2C Web Shop vs 30% IAP · Xsolla / Stash / Apple Consumption API) 沙盒</div>
+            <div class="finops-sub">Round 306 (#425 · SVG #749) · StoreKit 2 Storefront 地区外跳围栏与 Player UID 角色存在性预检 (HTTP 403) + 苹果 V2 CONSUMPTION_REQUEST 12 小时内自动回传已消耗遥测防白嫖退费 (HTTP 422) + REFUND 秒级负余额宝石扣回与 72h P2P 拍卖行冻结锁 (HTTP 451) + 5% MoR 直充净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="gameiap-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 30% 应用商店内购抽成溢价 (IAP Tax)、抽完卡恶意申请苹果退款及黑卡代充洗钱损耗池 ($)
+            <input type="number" id="gameiap-gross-input" value="350000" min="10000" step="5000" oninput="recalcDigitalGamingIapWebshopSandbox()" />
+          </label>
+          <label>StoreKit 2 Storefront 司法管辖区外跳围栏 (EU DMA / US / JP) 与 Player UID 预检门禁
+            <select id="gameiap-geo-select" onchange="recalcDigitalGamingIapWebshopSandbox()">
+              <option value="pass">严格按 Storefront 豁免区展示合规外链，且扣款前实时校验 Player UID 与限购库存 (安全)</option>
+              <option value="block_403">在非豁免区客户端违规强弹外链触发 Guideline 3.1.1 下架，或充错不存在的 UID (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>Apple App Store Server API (CONSUMPTION_REQUEST) 12 小时自动举证回传门禁
+            <select id="gameiap-cons-select" onchange="recalcDigitalGamingIapWebshopSandbox()">
+              <option value="pass">收到退费核查 200ms 内自动回传 consumptionStatus=3 (已花光) 与在线时长等 12 字段 (合规)</option>
+              <option value="block_422">未在 12 小时窗口内响应 CONSUMPTION_REQUEST 导致苹果默认判退玩家白嫖 $99 礼包 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>REFUND / Voided Purchase 秒级虚拟货币负余额扣回 (Clawback) 与 72h 拍卖行冻结门禁
+            <select id="gameiap-claw-select" onchange="recalcDigitalGamingIapWebshopSandbox()">
+              <option value="pass">新充宝石锁死 72h 禁入 P2P 拍卖行；一旦退费立即扣减宝石至负数并冻结排位 (安全)</option>
+              <option value="block_451">退款成功后未扣回已发钻石，或放任黑卡代充秒进拍卖行高价倒卖装备洗钱 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>5% 费率官方 D2C Web Shop (+10% 赠钻激励) + 12h 自动消费抗辩 + 负余额扣回编排
+            <select id="gameiap-opt-select" onchange="recalcDigitalGamingIapWebshopSandbox()">
+              <option value="enabled" selected>启用 5% D2C 网页直充商城 + 200ms Consumption API 抗退费 + 秒级扣回 (-40% 损耗 / HTTP 409)</option>
+              <option value="disabled">100% 依赖 30% 费率 App 内购且无自动 Consumption 举证与负值扣回 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度30%渠道税与恶意退费池</div>
+            <div class="finops-kpi-val" id="gameiap-gross-kpi">$350,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">D2C直充与抗退费后净损耗</div>
+            <div class="finops-kpi-val" id="gameiap-net-kpi" style="color:#6ee7b7;">$210,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净增发行商到手利润</div>
+            <div class="finops-kpi-val" id="gameiap-savings-kpi" style="color:#38bdf8;">$140,000</div>
+          </div>
+        </div>
+        <div id="gameiap-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 D2C_WEBSHOP_STEERING_CONSUMPTION_API_AND_GEM_CLAWBACK_CONFIRM · Mandate: digital_gaming_iap_webshop_optim_409
         </div>
       </div>
 
@@ -103174,6 +103334,79 @@ function recalcOtaCorporateMiceGroupBlockSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_MICE_ROOM_BLOCK_AND_GROUP_PNR_AUTHORIZED · Mandate: ota_corporate_mice_group_200';
+}}
+
+function recalcDigitalGamingIapWebshopSandbox() {{
+  const grossInput = document.getElementById('gameiap-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '350000'));
+  const geoGate = document.getElementById('gameiap-geo-select').value;
+  const consGate = document.getElementById('gameiap-cons-select').value;
+  const clawGate = document.getElementById('gameiap-claw-select').value;
+  const optMode = document.getElementById('gameiap-opt-select').value;
+
+  const grossKpi = document.getElementById('gameiap-gross-kpi');
+  const netKpi = document.getElementById('gameiap-net-kpi');
+  const savingsKpi = document.getElementById('gameiap-savings-kpi');
+  const statusKpi = document.getElementById('gameiap-status-kpi');
+  const banner = document.getElementById('gameiap-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (clawGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCLAWED_REFUNDED_GEMS_OR_INSTANT_P2P_AUCTION_LAUNDERING · Mandate: null';
+    return;
+  }}
+  if (geoGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNAUTHORIZED_GEO_STEERING_OR_UNVERIFIED_PLAYER_UID_TOPUP · Mandate: null';
+    return;
+  }}
+  if (consGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MISSED_12H_APPLE_CONSUMPTION_API_TELEMETRY_RESPONSE_WINDOW · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 D2C_WEBSHOP_STEERING_CONSUMPTION_API_AND_GEM_CLAWBACK_CONFIRM · Mandate: digital_gaming_iap_webshop_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_D2C_WEBSHOP_AND_CONSUMPTION_DEFENSE_AUTHORIZED · Mandate: digital_gaming_iap_webshop_200';
 }}
 
 function updateStage1756Sandbox() {{

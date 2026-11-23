@@ -29560,6 +29560,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-corporate-mice-group-block-sandbox", html_zh)
 
+    def test_digital_gaming_iap_webshop_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            DigitalGamingIapWebshopPolicyInput,
+            evaluate_digital_gaming_iap_webshop_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_digital_gaming_iap_webshop_policy(
+            DigitalGamingIapWebshopPolicyInput(
+                quarterly_iap_30pct_tax_and_refund_abuse_pool_usd=350000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_D2C_WEBSHOP_AND_CONSUMPTION_DEFENSE_AUTHORIZED",
+        )
+
+        geo = evaluate_digital_gaming_iap_webshop_policy(
+            DigitalGamingIapWebshopPolicyInput(
+                unauthorized_geo_steering_or_unverified_player_uid=True
+            )
+        )
+        self.assertEqual(geo["status_code"], 403)
+        self.assertEqual(
+            geo["decision"],
+            "UNAUTHORIZED_GEO_STEERING_OR_UNVERIFIED_PLAYER_UID_TOPUP",
+        )
+
+        cons = evaluate_digital_gaming_iap_webshop_policy(
+            DigitalGamingIapWebshopPolicyInput(
+                missed_12h_apple_consumption_api_telemetry_response=True
+            )
+        )
+        self.assertEqual(cons["status_code"], 422)
+        self.assertEqual(
+            cons["decision"],
+            "MISSED_12H_APPLE_CONSUMPTION_API_TELEMETRY_RESPONSE_WINDOW",
+        )
+
+        claw = evaluate_digital_gaming_iap_webshop_policy(
+            DigitalGamingIapWebshopPolicyInput(
+                unclawed_refunded_gems_or_instant_p2p_auction_laundering=True
+            )
+        )
+        self.assertEqual(claw["status_code"], 451)
+        self.assertEqual(
+            claw["decision"],
+            "UNCLAWED_REFUNDED_GEMS_OR_INSTANT_P2P_AUCTION_LAUNDERING",
+        )
+
+        optim = evaluate_digital_gaming_iap_webshop_policy(
+            DigitalGamingIapWebshopPolicyInput(
+                quarterly_iap_30pct_tax_and_refund_abuse_pool_usd=350000.0,
+                d2c_webshop_steering_consumption_api_and_clawback_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 140000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 210000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("digital_gaming_iap_webshop_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("digital-gaming-iap-webshop-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`424` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`425` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -10,7 +10,7 @@
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (56 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (159 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (93 guides)](#b2b-procurement-erp)
-- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (37 guides)](#saas-finops-micropayments)
+- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (38 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (49 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
@@ -388,7 +388,7 @@
 | 93 | **Enterprise B2B Distributor Rebates, `Ship-and-Debit / SPA` (`EDI 844 / 849`) & Anti-Retroactive Tier-Cliff Escrow (`Enable.com vs. Vistex / SAP S/4HANA vs. Model N vs. Zilliant`), `EDI 867` Serial + `FIFO` Lot-Cost Lock, Stepped Marginal Brackets & `T+45d` Net-Volume `Credit Memo` (`-39%` SPA & Cliff Loss) FAQ** | [English](b2b-distributor-rebate-ship-and-debit-edi844-retroactive-tier-cliff-escrow-selection-faq.en.md) · [中文](b2b-distributor-rebate-ship-and-debit-edi844-retroactive-tier-cliff-escrow-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (37 Guides)
+## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (38 Guides)
 
 > Covers enterprise SaaS seat governance, UUIDv7 usage metering watermarks, FTC Click-to-Cancel & retention guardrails, HTTP 402 (x402 / Stripe MPP Tempo) micropayments, and LLM token FinOps routing.
 
@@ -431,6 +431,7 @@
 | 35 | **Enterprise B2B SaaS Renewal & Churn Save (`Gainsight CS vs. ChurnZero vs. Chargebee Retention vs. Salesforce Agentforce`), Telemetry Switching-Cost Anti-Bluff Discount Lock, `T-120d` Champion-Departure Shield, Mandatory `Give-Get` Gate & `ACV-Neutral` Idle-Seat-to-AI-Credit Swap (`-38%` ARR Contraction & Margin Loss) Agent Architecture Selection FAQ** | [English](b2b-saas-renewal-churn-save-notice-window-discount-floor-credit-swap-escrow-agent-selection-faq.en.md) · [中文](b2b-saas-renewal-churn-save-notice-window-discount-floor-credit-swap-escrow-agent-selection-faq.md) |
 | 36 | **AI-Native SaaS Usage Metering (`Orb vs. Metronome vs. Stripe Billing Meters vs. Lago`) & `HTTP 402` Machine Micropayments (`x402 EIP-3009 vs. Stripe MPP Tempo`), `UUIDv7` Exactly-Once Watermark Dedup, 200-Call Whole-Cent `LCM` Step Alignment & `5x` Runaway-Loop Breaker (`-40%` Sub-Cent & Fee Loss) Agent Architecture Selection FAQ** | [English](saas-usage-metering-uuidv7-watermark-x402-mpp-tempo-micropayment-selection-faq.en.md) · [中文](saas-usage-metering-uuidv7-watermark-x402-mpp-tempo-micropayment-selection-faq.md) |
 | 37 | **Enterprise B2B SaaS Cloud Marketplace Private Offers (`AWS EDP vs. Microsoft Azure MACC vs. GCP CUD`) & Co-Sell Automation (`Tackle.io vs. Clazar vs. Suger vs. WorkSpan`), `100% Commit Drawdown` Eligibility Lock, `CPPO / MPO` Net-Proceeds Floor & Hourly Metering Outbox (`-39%` Commit Waste & Margin Loss) FAQ** | [English](saas-cloud-marketplace-private-offer-macc-edp-cppo-margin-metering-escrow-selection-faq.en.md) · [中文](saas-cloud-marketplace-private-offer-macc-edp-cppo-margin-metering-escrow-selection-faq.md) |
+| 38 | **Digital Goods, Mobile Apps & Gaming `D2C Web Shop vs. App Store / Google Play IAP` (`Xsolla / Stash / Aghanim / FastSpring`), Geo-Fenced Anti-Steering Gate, Apple `12-Hour Consumption API` Refund Defense & Negative-Balance Gem Clawback (`-40%` Platform Tax & Refund Abuse Loss) FAQ** | [English](digital-goods-gaming-d2c-webshop-vs-appstore-iap-consumption-api-clawback-selection-faq.en.md) · [中文](digital-goods-gaming-d2c-webshop-vs-appstore-iap-consumption-api-clawback-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (49 Guides)

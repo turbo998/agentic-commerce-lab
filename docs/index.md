@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`424` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`425` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -10,7 +10,7 @@
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（56 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（159 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（93 篇）](#b2b-procurement-erp)
-- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（37 篇）](#saas-finops-micropayments)
+- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（38 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（49 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
@@ -388,7 +388,7 @@
 | 93 | **企业 B2B 渠道分销返利管理、出货返扣（`Ship-and-Debit / SPA`: `EDI 844 / 849`）与防全额追溯返利悬崖穿仓（`Enable.com vs. Vistex / SAP S/4HANA vs. Model N vs. Zilliant`）：防 `EDI 844` 虚报高进货价与序列号重复索赔、防 `Retroactive Dollar-One Cliff` 跨档倒亏与 `Credit Memo` 净值结算净省 39% 架构选型 FAQ** | [中文](b2b-distributor-rebate-ship-and-debit-edi844-retroactive-tier-cliff-escrow-selection-faq.md) · [English](b2b-distributor-rebate-ship-and-debit-edi844-retroactive-tier-cliff-escrow-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（37 篇）
+## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（38 篇）
 
 > 涵盖企业 SaaS 席位与影子 IT 治理、高频 Token/API 用量水位线幂等计费、FTC 一键退订（Click-to-Cancel）与挽留护栏、HTTP 402（x402 / Stripe MPP Tempo）亚美分流式微支付及推理 FinOps 成本路由。
 
@@ -431,6 +431,7 @@
 | 35 | **企业 B2B SaaS 续费挽留与智能合同编排（`Enterprise SaaS Renewal & Churn Save`：`Gainsight CS / ChurnZero / Chargebee Retention / Salesforce Agentforce`）、防采购虚张声势骗取半价折扣（`Anti-Bluff Telemetry Gate`）、关键决策人离职预警（`Champion Departure Shield`）与闲置席位等额置换 AI 算力积分（`ACV-Neutral Seat-to-Credit Swap`）托管“防被高粘性客户采购口头威胁吓出 40% 无谓降价、防原签字 VP 离职后盲发自动续费单引发拒付及将 30% 裁员闲置席位 1:1 转为 AI 用量包保住 100% ARR 净省 38%”Agent 架构选型 FAQ** | [中文](b2b-saas-renewal-churn-save-notice-window-discount-floor-credit-swap-escrow-agent-selection-faq.md) · [English](b2b-saas-renewal-churn-save-notice-window-discount-floor-credit-swap-escrow-agent-selection-faq.en.md) |
 | 36 | **AI 原生 SaaS 用量计费（`Usage Metering`：`Orb / Metronome / Stripe Billing Meters / Lago`）与 HTTP `402` 机器微支付（`x402 EIP-3009 vs. Stripe MPP Tempo`）、`UUIDv7` 幂等水位线去重与亚美分整美分步长对齐托管“防 $0.02 微支付走信用卡被扣 $0.30 固定手续费倒挂、防 Kafka 重放双扣或对 503 报错计费、防 50 次未对齐周期抹零丢掉 42.8% 营收与 200 次整美分步长对齐净省 40%”Agent 架构选型 FAQ** | [中文](saas-usage-metering-uuidv7-watermark-x402-mpp-tempo-micropayment-selection-faq.md) · [English](saas-usage-metering-uuidv7-watermark-x402-mpp-tempo-micropayment-selection-faq.en.md) |
 | 37 | **企业 B2B SaaS 云市场私有报价（`Cloud Marketplace Private Offers`: `AWS EDP vs. Microsoft Azure MACC vs. GCP CUD`）与联合销售平台选型（`Tackle.io vs. Clazar vs. Suger vs. WorkSpan`）：防买错非抵扣 SKU 致百万云承诺池作废、防 `CPPO / MPO` 渠道双重折上折击穿 ISV 净毛利底线与每小时幂等计量净省 39% 架构选型 FAQ** | [中文](saas-cloud-marketplace-private-offer-macc-edp-cppo-margin-metering-escrow-selection-faq.md) · [English](saas-cloud-marketplace-private-offer-macc-edp-cppo-margin-metering-escrow-selection-faq.en.md) |
+| 38 | **数字商品、移动应用与游戏官方直充商城（`D2C Web Shop vs. App Store / Google Play IAP`: `Xsolla / Stash / Aghanim / FastSpring`）、苹果 `Consumption API` 12 小时抗恶意退费、新充代币 `72h` 拍卖行冷却锁与负余额道具扣回（`Clawback`）净省 40% Agent 架构选型 FAQ** | [中文](digital-goods-gaming-d2c-webshop-vs-appstore-iap-consumption-api-clawback-selection-faq.md) · [English](digital-goods-gaming-d2c-webshop-vs-appstore-iap-consumption-api-clawback-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（49 篇）
