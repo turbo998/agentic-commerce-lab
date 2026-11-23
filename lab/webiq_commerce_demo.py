@@ -39203,6 +39203,82 @@ def evaluate_ota_rail_multimodal_interline_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderFtzDutyDrawbackPolicyInput:
+    quarterly_forfeited_drawback_excess_mpf_and_middleman_duty_pool_usd: float = 420000.0
+    unlinked_7501_to_aes_export_forfeiting_99pct_drawback: bool = False
+    ftz_per_shipment_mpf_bleed_without_weekly_entry_cap: bool = False
+    unsubstantiated_first_sale_or_illegal_transshipment_evasion: bool = False
+    automated_1313_drawback_ftz_weekly_cap_and_first_sale_ready: bool = False
+
+
+def evaluate_cross_border_ftz_duty_drawback_policy(
+    policy_input: CrossBorderFtzDutyDrawbackPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_forfeited_drawback_excess_mpf_and_middleman_duty_pool_usd
+        ),
+    )
+    if policy_input.unsubstantiated_first_sale_or_illegal_transshipment_evasion:
+        return {
+            "status_code": 451,
+            "decision": "UNSUBSTANTIATED_FIRST_SALE_VALUATION_OR_ILLEGAL_TRANSSHIPMENT_EVASION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unlinked_7501_to_aes_export_forfeiting_99pct_drawback:
+        return {
+            "status_code": 403,
+            "decision": "UNLINKED_7501_TO_AES_EXPORT_TRACE_FORFEITING_99PCT_DUTY_DRAWBACK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ftz_per_shipment_mpf_bleed_without_weekly_entry_cap:
+        return {
+            "status_code": 422,
+            "decision": "FTZ_PER_SHIPMENT_MPF_FEE_BLEED_OR_SUBOPTIMAL_INVERTED_TARIFF_STATUS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.automated_1313_drawback_ftz_weekly_cap_and_first_sale_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "AUTOMATED_1313_DRAWBACK_FTZ_WEEKLY_MPF_CAP_AND_FIRST_SALE_CONFIRM",
+            "mandate_token": "cross_border_ftz_drawback_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_FTZ_DRAWBACK_AND_FIRST_SALE_CUSTOMS_AUTHORIZED",
+        "mandate_token": "cross_border_ftz_drawback_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -53364,6 +53440,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_ftz_duty_drawback_guard = {
+        "authorized_200": evaluate_cross_border_ftz_duty_drawback_policy(
+            CrossBorderFtzDutyDrawbackPolicyInput()
+        ),
+        "unlinked_drawback_403": evaluate_cross_border_ftz_duty_drawback_policy(
+            CrossBorderFtzDutyDrawbackPolicyInput(
+                unlinked_7501_to_aes_export_forfeiting_99pct_drawback=True
+            )
+        ),
+        "ftz_mpf_bleed_422": evaluate_cross_border_ftz_duty_drawback_policy(
+            CrossBorderFtzDutyDrawbackPolicyInput(
+                ftz_per_shipment_mpf_bleed_without_weekly_entry_cap=True
+            )
+        ),
+        "unsubstantiated_first_sale_451": evaluate_cross_border_ftz_duty_drawback_policy(
+            CrossBorderFtzDutyDrawbackPolicyInput(
+                unsubstantiated_first_sale_or_illegal_transshipment_evasion=True
+            )
+        ),
+        "automated_drawback_ftz_409": evaluate_cross_border_ftz_duty_drawback_policy(
+            CrossBorderFtzDutyDrawbackPolicyInput(
+                automated_1313_drawback_ftz_weekly_cap_and_first_sale_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -53809,6 +53911,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_scf_reverse_factoring_guard": b2b_scf_reverse_factoring_guard,
         "livestream_shopping_flash_escrow_guard": livestream_shopping_flash_escrow_guard,
         "ota_rail_multimodal_interline_guard": ota_rail_multimodal_interline_guard,
+        "cross_border_ftz_duty_drawback_guard": cross_border_ftz_duty_drawback_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -77077,6 +77180,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="otarail-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PROTECTED_INTERMODAL_PNR_VALID_SPLIT_SAVE_AND_AUTO_DELAY_REPAY_CONFIRM · Mandate: ota_rail_multimodal_interline_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 317 (#436 · SVG #760) Cross-Border FTZ, 19 U.S.C. § 1313 Drawback & First-Sale -->
+      <div class="finops-box" id="cross-border-ftz-duty-drawback-sandbox" style="margin-top:12px;border-color:#14b8a6;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🚢 跨境保税区 (FTZ)、再出口 99% 关税退税 (19 U.S.C. § 1313) 与首次销售估价 (SAP GTS / Charter) 沙盒</div>
+            <div class="finops-sub">Round 317 (#436 · 🏆 SVG #760) · CBP Form 7501 进口报关行与出口 AES 批次匹配自动追回 99% 再出口/退货关税 (HTTP 403) + FTZ 保税仓 Weekly Entry 每周汇总报关将 MPF 严格封顶在 $634.62 (HTTP 422) + First-Sale (Nissho Iwai) 三方独立交易凭证审计与 RVC 原产地实质改变防重罚 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="ftzdrw-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度未追回再出口/跨国退货 99% 关税退税、逐票重复缴纳 MPF 规费及中间商加价关税池 ($)
+            <input type="number" id="ftzdrw-gross-input" value="420000" min="10000" step="5000" oninput="recalcCrossBorderFtzDrawbackSandbox()" />
+          </label>
+          <label>19 U.S.C. § 1313(j)/(c) 再出口与退运 99% 关税退税追溯账本门禁 (CBP 7501 &lt;-&gt; Outbound AES ITN)
+            <select id="ftzdrw-drawback-select" onchange="recalcCrossBorderFtzDrawbackSandbox()">
+              <option value="pass">在 WMS 中按批次/8位 HTS 绑定原始 7501 报关行与出口 AES，自动申报 Form 7551 追回 99% 关税 (安全)</option>
+              <option value="block_403">完税库存转售加/墨/欧或退回海外工厂时未关联原始 7501 报关单，白白放弃 99% 关税退税 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>对外贸易区 (FTZ) 每周汇总报关 (Weekly Entry $634.62 MPF Cap) 与倒挂税率 (PF/NPF) 门禁
+            <select id="ftzdrw-weekly-select" onchange="recalcCrossBorderFtzDrawbackSandbox()">
+              <option value="pass">合并全周出区包裹为单张 Weekly Entry，将整周 MPF 规费封顶在 $634.62 并优选 NPF 低税率 (合规)</option>
+              <option value="block_422">逐柜/逐票单独申报缴纳 0.3464% MPF 导致每周白交 $2.5 万规费或选错倒挂税率状态 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>首次销售估价法 (First Sale Valuation) 三方独立交易凭证与原产地实质性改变 (RVC) 门禁
+            <select id="ftzdrw-firstsale-select" onchange="recalcCrossBorderFtzDrawbackSandbox()">
+              <option value="pass">完整数字封印工厂原始发票、独立交易定价证明与专供美国唛头，合法按出厂价申报省 27% 关税 (合规)</option>
+              <option value="block_451">缺少工厂发票水单却强报 First-Sale 低价或简单换包装伪造 FTA 原产地触发 19 USC 1592 重罚 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>CBP ACE 99% 自动退税 + FTZ 周汇总封顶 + First-Sale 三方凭证协同编排
+            <select id="ftzdrw-opt-select" onchange="recalcCrossBorderFtzDrawbackSandbox()">
+              <option value="enabled" selected>启用 99% 自动退税 + FTZ 周报关封顶 + 合规首次销售估价 (-39% 关税损耗 / HTTP 409)</option>
+              <option value="disabled">普通完税仓逐票清关且按中间商加价全额完税 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度流失退税与多缴关税池</div>
+            <div class="finops-kpi-val" id="ftzdrw-gross-kpi">$420,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">FTZ与99%退税后净关税支出</div>
+            <div class="finops-kpi-val" id="ftzdrw-net-kpi" style="color:#6ee7b7;">$256,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省关税与海关规费</div>
+            <div class="finops-kpi-val" id="ftzdrw-savings-kpi" style="color:#38bdf8;">$163,800</div>
+          </div>
+        </div>
+        <div id="ftzdrw-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 AUTOMATED_1313_DRAWBACK_FTZ_WEEKLY_MPF_CAP_AND_FIRST_SALE_CONFIRM · Mandate: cross_border_ftz_drawback_optim_409
         </div>
       </div>
 
@@ -105735,6 +105895,79 @@ function recalcOtaRailMultimodalSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_OTA_RAIL_INTERMODAL_AND_SPLITSAVE_AUTHORIZED · Mandate: ota_rail_multimodal_interline_200';
+}}
+
+function recalcCrossBorderFtzDrawbackSandbox() {{
+  const grossInput = document.getElementById('ftzdrw-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '420000'));
+  const drawbackGate = document.getElementById('ftzdrw-drawback-select').value;
+  const weeklyGate = document.getElementById('ftzdrw-weekly-select').value;
+  const firstSaleGate = document.getElementById('ftzdrw-firstsale-select').value;
+  const optMode = document.getElementById('ftzdrw-opt-select').value;
+
+  const grossKpi = document.getElementById('ftzdrw-gross-kpi');
+  const netKpi = document.getElementById('ftzdrw-net-kpi');
+  const savingsKpi = document.getElementById('ftzdrw-savings-kpi');
+  const statusKpi = document.getElementById('ftzdrw-status-kpi');
+  const banner = document.getElementById('ftzdrw-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (firstSaleGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNSUBSTANTIATED_FIRST_SALE_VALUATION_OR_ILLEGAL_TRANSSHIPMENT_EVASION · Mandate: null';
+    return;
+  }}
+  if (drawbackGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNLINKED_7501_TO_AES_EXPORT_TRACE_FORFEITING_99PCT_DUTY_DRAWBACK · Mandate: null';
+    return;
+  }}
+  if (weeklyGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FTZ_PER_SHIPMENT_MPF_FEE_BLEED_OR_SUBOPTIMAL_INVERTED_TARIFF_STATUS · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 AUTOMATED_1313_DRAWBACK_FTZ_WEEKLY_MPF_CAP_AND_FIRST_SALE_CONFIRM · Mandate: cross_border_ftz_drawback_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_FTZ_DRAWBACK_AND_FIRST_SALE_CUSTOMS_AUTHORIZED · Mandate: cross_border_ftz_drawback_200';
 }}
 
 function updateStage1756Sandbox() {{

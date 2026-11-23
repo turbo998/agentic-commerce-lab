@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`435` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`436` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -11,7 +11,7 @@
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（165 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（95 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（39 篇）](#saas-finops-micropayments)
-- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（50 篇）](#tax-fx-privacy-disputes)
+- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（51 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
 
@@ -443,7 +443,7 @@
 | 39 | **订阅制 SaaS 与流媒体“被动流失智能催收与扣款恢复（`Involuntary Churn & Dunning`: `Butter Payments / Recurly / Churnkey vs. Stripe Smart Retries / Adyen Auto-Rescue`）”、`T-5d Visa VAU / Mastercard ABU` 自动换卡、72h 静默发薪日择时重试与 14 天优雅宽限期净挽回 40% ARR 架构选型 FAQ** | [中文](saas-involuntary-churn-dunning-vau-abu-payday-smart-retry-grace-selection-faq.md) · [English](saas-involuntary-churn-dunning-vau-abu-payday-smart-retry-grace-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（50 篇）
+## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（51 篇）
 
 > 聚焦 Merchant of Record（MoR）选型、跨境 HS 编码完税价（DDP）与 VAT/Sales Tax 合规、实时锁汇与 ISO 20022 多币种净额轧差、PCI-DSS v4.0.1 / GDPR 加密粉碎，以及 Visa CE 3.0 / VAMP 友好欺诈抗辩证据链。
 
@@ -499,6 +499,7 @@
 | 48 | **🏆 跨境电商完税交货（`DDP Landed Cost`）与全球名义商户选型（`MoR`: `Global-e / Paddle` vs. `SoR`: `Zonos / Avalara + Stripe Tax` · 🏆 第 410 篇双语里程碑）、10 位海关编码（`HTSUS / TARIC`）与欧盟 `IOSS` 实付净额报关托管“防发未完税 DDU 害买家被快递加收 $18 代垫费触发 34% 门口拒收、防按优惠前吊牌原价报关冲破 €150 IOSS 免税线与核心国切 SoR 立省 3% 费率净省 38%”Agent 架构选型 FAQ** | [中文](cross-border-ddp-landed-cost-mor-vs-sor-ioss-type86-customs-escrow-selection-faq.md) · [English](cross-border-ddp-landed-cost-mor-vs-sor-ioss-type86-customs-escrow-selection-faq.en.md) |
 | 49 | **🏆 商业智能体全链路可观测性、不可篡改审计账本与隐私合规选型（`OpenTelemetry GenAI + Azure AI Foundry Tracing / LangSmith / Arize Phoenix + Microsoft Purview / Presidio` · 🏆 第 420 篇双语里程碑）：防 `PCI-DSS v4.0` 明文卡号污染追踪日志、防 `GDPR Art. 17` 擦除破坏 7 年税务账本（`Per-Subject KEK Crypto-Shredding` 毁钥即忘）与 `Merkle WORM` 不可抵赖证据链净省 40% 架构选型 FAQ** | [中文](agentic-commerce-otel-observability-pci-redaction-gdpr-cryptoshredding-audit-selection-faq.md) · [English](agentic-commerce-otel-observability-pci-redaction-gdpr-cryptoshredding-audit-selection-faq.en.md) |
 | 50 | **跨国企业与跨境电商多币种司库管理、自然外汇轧差（`Natural FX Netting`: `Airwallex / Adyen Multi-Currency / Wise Platform / Kyriba`）、防欧元收款转美元再购汇双重剥皮、防周末外汇休市点差刺客与 `ISO 20022 pacs.008 OUR` 本金全额到账净省 40% 架构选型 FAQ** | [中文](multi-currency-treasury-natural-fx-netting-weekend-spread-iso20022-escrow-selection-faq.md) · [English](multi-currency-treasury-natural-fx-netting-weekend-spread-iso20022-escrow-selection-faq.en.md) |
+| 51 | **🏆 跨境商业保税区/对外贸易区（`Foreign-Trade Zone FTZ / Bonded Warehouse`: `SAP GTS / Flexport / Charter Brokerage / Descartes` · 🏆 第 760 张 SVG 架构图里程碑）、再出口 `99%` 关税退税（`19 U.S.C. § 1313 Duty Drawback`）、`FTZ Weekly Entry` 海关处理费（`MPF $634.62`）周封顶与首次销售估价法（`First Sale Valuation`）净省 39% Agent 架构选型 FAQ** | [中文](cross-border-ftz-duty-drawback-19usc1313-first-sale-valuation-escrow-selection-faq.md) · [English](cross-border-ftz-duty-drawback-19usc1313-first-sale-valuation-escrow-selection-faq.en.md) |
 
 <a id="architecture-blueprints"></a>
 ## 七、确定性领域架构蓝图（`docs/architecture/` · 21 份）

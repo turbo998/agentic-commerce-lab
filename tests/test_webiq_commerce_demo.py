@@ -30297,6 +30297,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-rail-multimodal-interline-sandbox", html_zh)
 
+    def test_cross_border_ftz_duty_drawback_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderFtzDutyDrawbackPolicyInput,
+            evaluate_cross_border_ftz_duty_drawback_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_ftz_duty_drawback_policy(
+            CrossBorderFtzDutyDrawbackPolicyInput(
+                quarterly_forfeited_drawback_excess_mpf_and_middleman_duty_pool_usd=420000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_FTZ_DRAWBACK_AND_FIRST_SALE_CUSTOMS_AUTHORIZED",
+        )
+
+        unlinked = evaluate_cross_border_ftz_duty_drawback_policy(
+            CrossBorderFtzDutyDrawbackPolicyInput(
+                unlinked_7501_to_aes_export_forfeiting_99pct_drawback=True
+            )
+        )
+        self.assertEqual(unlinked["status_code"], 403)
+        self.assertEqual(
+            unlinked["decision"],
+            "UNLINKED_7501_TO_AES_EXPORT_TRACE_FORFEITING_99PCT_DUTY_DRAWBACK",
+        )
+
+        mpf = evaluate_cross_border_ftz_duty_drawback_policy(
+            CrossBorderFtzDutyDrawbackPolicyInput(
+                ftz_per_shipment_mpf_bleed_without_weekly_entry_cap=True
+            )
+        )
+        self.assertEqual(mpf["status_code"], 422)
+        self.assertEqual(
+            mpf["decision"],
+            "FTZ_PER_SHIPMENT_MPF_FEE_BLEED_OR_SUBOPTIMAL_INVERTED_TARIFF_STATUS",
+        )
+
+        first_sale = evaluate_cross_border_ftz_duty_drawback_policy(
+            CrossBorderFtzDutyDrawbackPolicyInput(
+                unsubstantiated_first_sale_or_illegal_transshipment_evasion=True
+            )
+        )
+        self.assertEqual(first_sale["status_code"], 451)
+        self.assertEqual(
+            first_sale["decision"],
+            "UNSUBSTANTIATED_FIRST_SALE_VALUATION_OR_ILLEGAL_TRANSSHIPMENT_EVASION",
+        )
+
+        optim = evaluate_cross_border_ftz_duty_drawback_policy(
+            CrossBorderFtzDutyDrawbackPolicyInput(
+                quarterly_forfeited_drawback_excess_mpf_and_middleman_duty_pool_usd=420000.0,
+                automated_1313_drawback_ftz_weekly_cap_and_first_sale_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 163800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 256200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_ftz_duty_drawback_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-ftz-duty-drawback-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
