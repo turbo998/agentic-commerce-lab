@@ -39127,6 +39127,82 @@ def evaluate_livestream_shopping_flash_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaRailMultimodalInterlinePolicyInput:
+    quarterly_missed_connection_through_fare_and_unclaimed_repay_pool_usd: float = 240000.0
+    unprotected_separate_pnr_air_rail_or_tight_self_transfer: bool = False
+    split_ticket_non_stopping_station_or_mid_journey_seat_hop: bool = False
+    unclaimed_statutory_delay_repay_or_employee_double_dip: bool = False
+    protected_intermodal_pnr_valid_splitsave_and_auto_repay_ready: bool = False
+
+
+def evaluate_ota_rail_multimodal_interline_policy(
+    policy_input: OtaRailMultimodalInterlinePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_missed_connection_through_fare_and_unclaimed_repay_pool_usd
+        ),
+    )
+    if policy_input.unclaimed_statutory_delay_repay_or_employee_double_dip:
+        return {
+            "status_code": 451,
+            "decision": "UNCLAIMED_STATUTORY_DELAY_REPAY_OR_EMPLOYEE_EXPENSE_DOUBLE_DIP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unprotected_separate_pnr_air_rail_or_tight_self_transfer:
+        return {
+            "status_code": 403,
+            "decision": "UNPROTECTED_SEPARATE_PNR_AIR_RAIL_OR_CROSS_BORDER_SELF_TRANSFER_RISK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.split_ticket_non_stopping_station_or_mid_journey_seat_hop:
+        return {
+            "status_code": 422,
+            "decision": "SPLIT_TICKET_NON_STOPPING_STATION_VIOLATION_OR_MID_JOURNEY_SEAT_HOP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.protected_intermodal_pnr_valid_splitsave_and_auto_repay_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PROTECTED_INTERMODAL_PNR_VALID_SPLIT_SAVE_AND_AUTO_DELAY_REPAY_CONFIRM",
+            "mandate_token": "ota_rail_multimodal_interline_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_OTA_RAIL_INTERMODAL_AND_SPLITSAVE_AUTHORIZED",
+        "mandate_token": "ota_rail_multimodal_interline_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -53262,6 +53338,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_rail_multimodal_interline_guard = {
+        "authorized_200": evaluate_ota_rail_multimodal_interline_policy(
+            OtaRailMultimodalInterlinePolicyInput()
+        ),
+        "unprotected_self_transfer_403": evaluate_ota_rail_multimodal_interline_policy(
+            OtaRailMultimodalInterlinePolicyInput(
+                unprotected_separate_pnr_air_rail_or_tight_self_transfer=True
+            )
+        ),
+        "illegal_split_or_seat_hop_422": evaluate_ota_rail_multimodal_interline_policy(
+            OtaRailMultimodalInterlinePolicyInput(
+                split_ticket_non_stopping_station_or_mid_journey_seat_hop=True
+            )
+        ),
+        "unclaimed_delay_repay_451": evaluate_ota_rail_multimodal_interline_policy(
+            OtaRailMultimodalInterlinePolicyInput(
+                unclaimed_statutory_delay_repay_or_employee_double_dip=True
+            )
+        ),
+        "protected_intermodal_splitsave_409": evaluate_ota_rail_multimodal_interline_policy(
+            OtaRailMultimodalInterlinePolicyInput(
+                protected_intermodal_pnr_valid_splitsave_and_auto_repay_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -53706,6 +53808,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "retail_media_rmn_poas_bidding_guard": retail_media_rmn_poas_bidding_guard,
         "b2b_scf_reverse_factoring_guard": b2b_scf_reverse_factoring_guard,
         "livestream_shopping_flash_escrow_guard": livestream_shopping_flash_escrow_guard,
+        "ota_rail_multimodal_interline_guard": ota_rail_multimodal_interline_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -76917,6 +77020,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="livestrm-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FLASH_90S_LEASE_RECYCLE_STREAM_PARCEL_MERGE_AND_MCN_ESCROW_CONFIRM · Mandate: livestream_shopping_flash_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 316 (#435) OTA Rail & Air-Rail Intermodal OSDM, CIV Protection & Split-Ticketing -->
+      <div class="finops-box" id="ota-rail-multimodal-interline-sandbox" style="margin-top:12px;border-color:#0284c7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🚄 OTA 高铁与空铁联运 (UIC OSDM / Trainline / Lufthansa Express Rail) 漏乘保护、分段拆票与晚点追偿沙盒</div>
+            <div class="finops-sub">Round 316 (#435 · SVG #759) · IATA 单一 PNR 空铁联运与 UIC CIV / HOTNAT 跨铁漏乘免费改签门禁 (HTTP 403) + 分段拆票 (SplitSave) 真实停靠站 (NRCoT 14.2) 与同车厢同座连续性校验 (HTTP 422) + Darwin/SIRI 实时晚点自动向企业卡追偿 Delay Repay 防双重报销 (HTTP 451) + 净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="otarail-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度空铁联运漏乘废票损失、跨城直通票价溢价及未申领法定晚点赔款池 ($)
+            <input type="number" id="otarail-gross-input" value="240000" min="10000" step="5000" oninput="recalcOtaRailMultimodalSandbox()" />
+          </label>
+          <label>高铁接驳国际航班 / 跨国高铁换乘联运保护门禁 (IATA Air-Rail 单一 PNR / UIC CIV & HOTNAT)
+            <select id="otarail-interline-select" onchange="recalcOtaRailMultimodalSandbox()">
+              <option value="pass">签发 Lufthansa Express Rail / TGVAir 单一 PNR 或含 CIV/HOTNAT 改签保护的联程票 (安全)</option>
+              <option value="block_403">裸拼两张独立高铁+机票订单且仅留 65m 换乘，高铁晚点 35m 致 $4,500 洲际机票作废 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>分段拆票 (Split-Ticketing / SplitSave) 列车实际经停站 (UK NRCoT 14.2) 与同座位锁定校验
+            <select id="otarail-split-select" onchange="recalcOtaRailMultimodalSandbox()">
+              <option value="pass">100% 确认列车在拆分站实际停靠上下客且全程锁定同一车厢同一座位号 (合规)</option>
+              <option value="block_422">将拆分站设在特快列车越行不停靠站点违背 NRCoT 14.2 遭列车长罚款或中途换 3 次座 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>法定晚点赔付 (EU PRR 2021/782 & UK Delay Repay) 自动追偿回企业虚拟卡与防双重报销门禁
+            <select id="otarail-repay-select" onchange="recalcOtaRailMultimodalSandbox()">
+              <option value="pass">订阅 Darwin/SIRI 实时到站延误流，自动申领 25%-100% 晚点赔款退回公司差旅卡 (合规)</option>
+              <option value="block_451">未自动追偿法定晚点赔款或员工私领全额现金赔偿后又拿原价车票找公司全额报销 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>空铁单一 PNR 保护 + 合规经停同座 SplitSave + 自动 Delay Repay 追偿编排
+            <select id="otarail-opt-select" onchange="recalcOtaRailMultimodalSandbox()">
+              <option value="enabled" selected>启用空铁联运保护 + 合规经停拆票 + 自动晚点索赔 (-38% 差旅损耗 / HTTP 409)</option>
+              <option value="disabled">仅购买全价直通票且人工手动处理晚点申诉 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度联运漏乘与溢价损耗池</div>
+            <div class="finops-kpi-val" id="otarail-gross-kpi">$240,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">合规拆票与晚点追偿后净支出</div>
+            <div class="finops-kpi-val" id="otarail-net-kpi" style="color:#6ee7b7;">$148,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省多式联运差旅资金</div>
+            <div class="finops-kpi-val" id="otarail-savings-kpi" style="color:#38bdf8;">$91,200</div>
+          </div>
+        </div>
+        <div id="otarail-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PROTECTED_INTERMODAL_PNR_VALID_SPLIT_SAVE_AND_AUTO_DELAY_REPAY_CONFIRM · Mandate: ota_rail_multimodal_interline_optim_409
         </div>
       </div>
 
@@ -105502,6 +105662,79 @@ function recalcLivestreamShoppingFlashSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_LIVESTREAM_90S_LEASE_AND_MCN_ESCROW_AUTHORIZED · Mandate: livestream_shopping_flash_200';
+}}
+
+function recalcOtaRailMultimodalSandbox() {{
+  const grossInput = document.getElementById('otarail-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '240000'));
+  const interlineGate = document.getElementById('otarail-interline-select').value;
+  const splitGate = document.getElementById('otarail-split-select').value;
+  const repayGate = document.getElementById('otarail-repay-select').value;
+  const optMode = document.getElementById('otarail-opt-select').value;
+
+  const grossKpi = document.getElementById('otarail-gross-kpi');
+  const netKpi = document.getElementById('otarail-net-kpi');
+  const savingsKpi = document.getElementById('otarail-savings-kpi');
+  const statusKpi = document.getElementById('otarail-status-kpi');
+  const banner = document.getElementById('otarail-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (repayGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCLAIMED_STATUTORY_DELAY_REPAY_OR_EMPLOYEE_EXPENSE_DOUBLE_DIP · Mandate: null';
+    return;
+  }}
+  if (interlineGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNPROTECTED_SEPARATE_PNR_AIR_RAIL_OR_CROSS_BORDER_SELF_TRANSFER_RISK · Mandate: null';
+    return;
+  }}
+  if (splitGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SPLIT_TICKET_NON_STOPPING_STATION_VIOLATION_OR_MID_JOURNEY_SEAT_HOP · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PROTECTED_INTERMODAL_PNR_VALID_SPLIT_SAVE_AND_AUTO_DELAY_REPAY_CONFIRM · Mandate: ota_rail_multimodal_interline_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_OTA_RAIL_INTERMODAL_AND_SPLITSAVE_AUTHORIZED · Mandate: ota_rail_multimodal_interline_200';
 }}
 
 function updateStage1756Sandbox() {{

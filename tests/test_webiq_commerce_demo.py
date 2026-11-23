@@ -30230,6 +30230,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("livestream-shopping-flash-escrow-sandbox", html_zh)
 
+    def test_ota_rail_multimodal_interline_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaRailMultimodalInterlinePolicyInput,
+            evaluate_ota_rail_multimodal_interline_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_rail_multimodal_interline_policy(
+            OtaRailMultimodalInterlinePolicyInput(
+                quarterly_missed_connection_through_fare_and_unclaimed_repay_pool_usd=240000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_OTA_RAIL_INTERMODAL_AND_SPLITSAVE_AUTHORIZED",
+        )
+
+        unprot = evaluate_ota_rail_multimodal_interline_policy(
+            OtaRailMultimodalInterlinePolicyInput(
+                unprotected_separate_pnr_air_rail_or_tight_self_transfer=True
+            )
+        )
+        self.assertEqual(unprot["status_code"], 403)
+        self.assertEqual(
+            unprot["decision"],
+            "UNPROTECTED_SEPARATE_PNR_AIR_RAIL_OR_CROSS_BORDER_SELF_TRANSFER_RISK",
+        )
+
+        split = evaluate_ota_rail_multimodal_interline_policy(
+            OtaRailMultimodalInterlinePolicyInput(
+                split_ticket_non_stopping_station_or_mid_journey_seat_hop=True
+            )
+        )
+        self.assertEqual(split["status_code"], 422)
+        self.assertEqual(
+            split["decision"],
+            "SPLIT_TICKET_NON_STOPPING_STATION_VIOLATION_OR_MID_JOURNEY_SEAT_HOP",
+        )
+
+        repay = evaluate_ota_rail_multimodal_interline_policy(
+            OtaRailMultimodalInterlinePolicyInput(
+                unclaimed_statutory_delay_repay_or_employee_double_dip=True
+            )
+        )
+        self.assertEqual(repay["status_code"], 451)
+        self.assertEqual(
+            repay["decision"],
+            "UNCLAIMED_STATUTORY_DELAY_REPAY_OR_EMPLOYEE_EXPENSE_DOUBLE_DIP",
+        )
+
+        optim = evaluate_ota_rail_multimodal_interline_policy(
+            OtaRailMultimodalInterlinePolicyInput(
+                quarterly_missed_connection_through_fare_and_unclaimed_repay_pool_usd=240000.0,
+                protected_intermodal_pnr_valid_splitsave_and_auto_repay_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 91200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 148800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_rail_multimodal_interline_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-rail-multimodal-interline-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
