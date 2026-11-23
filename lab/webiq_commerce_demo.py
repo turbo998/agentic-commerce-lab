@@ -38141,6 +38141,82 @@ def evaluate_affiliate_creator_attribution_policy(
     }
 
 
+@dataclass(frozen=True)
+class CircularRecommerceDppVatPolicyInput:
+    quarterly_counterfeit_double_vat_and_cash_drain_pool_usd: float = 290000.0
+    counterfeit_static_qr_or_stolen_dpp_serial: bool = False
+    full_price_double_vat_instead_of_art313_margin_scheme: bool = False
+    uninspected_buyback_cashout_or_unapproved_grade_markdown: bool = False
+    verified_dpp_transfer_margin_vat_and_120x_credit_ready: bool = False
+
+
+def evaluate_circular_recommerce_dpp_vat_policy(
+    policy_input: CircularRecommerceDppVatPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_counterfeit_double_vat_and_cash_drain_pool_usd
+        ),
+    )
+    if policy_input.uninspected_buyback_cashout_or_unapproved_grade_markdown:
+        return {
+            "status_code": 451,
+            "decision": "UNINSPECTED_BUYBACK_CASHOUT_OR_UNAPPROVED_GRADING_MARKDOWN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.counterfeit_static_qr_or_stolen_dpp_serial:
+        return {
+            "status_code": 403,
+            "decision": "COUNTERFEIT_STATIC_QR_CLONE_OR_STOLEN_DPP_SERIAL_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.full_price_double_vat_instead_of_art313_margin_scheme:
+        return {
+            "status_code": 422,
+            "decision": "FULL_PRICE_DOUBLE_VAT_ERROR_OR_INVALID_ART313_MARGIN_INVOICE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.verified_dpp_transfer_margin_vat_and_120x_credit_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "VERIFIED_DPP_OWNERSHIP_TRANSFER_MARGIN_VAT_AND_120X_CREDIT_CONFIRM",
+            "mandate_token": "circular_recommerce_dpp_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_DPP_AUTHENTICITY_AND_MARGIN_VAT_AUTHORIZED",
+        "mandate_token": "circular_recommerce_dpp_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -51938,6 +52014,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    circular_recommerce_dpp_vat_guard = {
+        "authorized_200": evaluate_circular_recommerce_dpp_vat_policy(
+            CircularRecommerceDppVatPolicyInput()
+        ),
+        "counterfeit_or_stolen_dpp_403": evaluate_circular_recommerce_dpp_vat_policy(
+            CircularRecommerceDppVatPolicyInput(
+                counterfeit_static_qr_or_stolen_dpp_serial=True
+            )
+        ),
+        "full_price_double_vat_422": evaluate_circular_recommerce_dpp_vat_policy(
+            CircularRecommerceDppVatPolicyInput(
+                full_price_double_vat_instead_of_art313_margin_scheme=True
+            )
+        ),
+        "uninspected_cashout_or_markdown_451": evaluate_circular_recommerce_dpp_vat_policy(
+            CircularRecommerceDppVatPolicyInput(
+                uninspected_buyback_cashout_or_unapproved_grade_markdown=True
+            )
+        ),
+        "verified_dpp_margin_vat_120x_409": evaluate_circular_recommerce_dpp_vat_policy(
+            CircularRecommerceDppVatPolicyInput(
+                verified_dpp_transfer_margin_vat_and_120x_credit_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -52369,6 +52471,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "instant_grocery_qsr_catchweight_guard": instant_grocery_qsr_catchweight_guard,
         "agentic_otel_pci_gdpr_audit_guard": agentic_otel_pci_gdpr_audit_guard,
         "affiliate_creator_attribution_guard": affiliate_creator_attribution_guard,
+        "circular_recommerce_dpp_vat_guard": circular_recommerce_dpp_vat_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -74839,6 +74942,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="affattr-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CONTENT_PRIORITY_ATTRIBUTION_AND_POST_RMA_NET_COMMISSION_CONFIRM · Mandate: affiliate_creator_attr_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 303 (#422) Circular Recommerce, EU ESPR DPP & VAT Margin Scheme -->
+      <div class="finops-box" id="circular-recommerce-dpp-vat-sandbox" style="margin-top:12px;border-color:#059669;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">♻️ 品牌官方二手循环电商与欧盟 ESPR 数字产品护照 (Trove / Archive / Aura DPP / VAT Art. 313) 沙盒</div>
+            <div class="finops-sub">Round 303 (#422 · SVG #746) · GS1 Digital Link + NTAG 424 NFC 动态签名验真防克隆静态码假货与门店被盗赃物 (HTTP 403) + 欧盟 VAT Art. 313 二手差额计税锁防按全额售价重复交 20% 增值税 (HTTP 422) + 仓库开箱定级托管与降级双向确认锁 (HTTP 451) + 1.20x 主站新品储值券飞轮净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="recommdpp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度高仿假货骗取回收款、欧洲二手品误按全额售价重复交 VAT 及寄空包/压价客诉损耗池 ($)
+            <input type="number" id="recommdpp-gross-input" value="290000" min="10000" step="5000" oninput="recalcCircularRecommerceDppVatSandbox()" />
+          </label>
+          <label>欧盟 ESPR 数字产品护照 (GS1 Digital Link + NTAG 424 DNA NFC 动态挑战) 与防盗黑名单门禁
+            <select id="recommdpp-dpp-select" onchange="recalcCircularRecommerceDppVatSandbox()">
+              <option value="pass">验证 NTAG 424 芯片 SUN AES-CMAC 动态密文且序列号未命中被盗/在途锁 (安全)</option>
+              <option value="block_403">仅扫水洗标静态二维码被高仿假衣批量复印骗取官方回收补贴 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>欧盟/英国二手商品差额增值税制 (EU VAT Directive Art. 313 Margin Scheme) 门禁
+            <select id="recommdpp-vat-select" onchange="recalcCircularRecommerceDppVatSandbox()">
+              <option value="pass">绑定单品回收成本，仅对毛利差额 (Resale €420 - Buyback €300 = €120) 计提 €20 VAT (合规)</option>
+              <option value="block_422">对个人回收二手品误按全额售价 €420 征收 €70 VAT 导致每件多交 €50 冤枉税 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>仓库开箱成色定级 (Grading A/B/C) 放款互锁与降级卖家双向确认权门禁
+            <select id="recommdpp-grade-select" onchange="recalcCircularRecommerceDppVatSandbox()">
+              <option value="pass">仓库扫码验真定级后放款；若成色降级则推送实拍图由卖家选择接受或免费退回 (安全)</option>
+              <option value="block_451">快递刚揽收未开箱即秒付现金被寄旧抹布骗款，或到仓后未经同意强砍 60% 回收价 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>DPP 物权原子过户 + Art. 313 差额计税 + 1.20x 品牌正价店储值卡激励全链路编排
+            <select id="recommdpp-opt-select" onchange="recalcCircularRecommerceDppVatSandbox()">
+              <option value="enabled" selected>启用 NFC DPP 鉴真 + Art. 313 差额计税 + 1.20x 新品储值卡转化 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">人工肉眼看图估价、按新品全额交税且 100% 发放现金流出品牌生态 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度假货与重复交税损耗池</div>
+            <div class="finops-kpi-val" id="recommdpp-gross-kpi">$290,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">DPP鉴真与差额税制后净成本</div>
+            <div class="finops-kpi-val" id="recommdpp-net-kpi" style="color:#6ee7b7;">$179,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省VAT与新品复购收益</div>
+            <div class="finops-kpi-val" id="recommdpp-savings-kpi" style="color:#38bdf8;">$110,200</div>
+          </div>
+        </div>
+        <div id="recommdpp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 VERIFIED_DPP_OWNERSHIP_TRANSFER_MARGIN_VAT_AND_120X_CREDIT_CONFIRM · Mandate: circular_recommerce_dpp_optim_409
         </div>
       </div>
 
@@ -102475,6 +102635,79 @@ function recalcAffiliateCreatorAttributionSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CREATOR_ATTRIBUTION_AND_RMA_VESTING_AUTHORIZED · Mandate: affiliate_creator_attr_200';
+}}
+
+function recalcCircularRecommerceDppVatSandbox() {{
+  const grossInput = document.getElementById('recommdpp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '290000'));
+  const dppGate = document.getElementById('recommdpp-dpp-select').value;
+  const vatGate = document.getElementById('recommdpp-vat-select').value;
+  const gradeGate = document.getElementById('recommdpp-grade-select').value;
+  const optMode = document.getElementById('recommdpp-opt-select').value;
+
+  const grossKpi = document.getElementById('recommdpp-gross-kpi');
+  const netKpi = document.getElementById('recommdpp-net-kpi');
+  const savingsKpi = document.getElementById('recommdpp-savings-kpi');
+  const statusKpi = document.getElementById('recommdpp-status-kpi');
+  const banner = document.getElementById('recommdpp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (gradeGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNINSPECTED_BUYBACK_CASHOUT_OR_UNAPPROVED_GRADING_MARKDOWN · Mandate: null';
+    return;
+  }}
+  if (dppGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 COUNTERFEIT_STATIC_QR_CLONE_OR_STOLEN_DPP_SERIAL_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (vatGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FULL_PRICE_DOUBLE_VAT_ERROR_OR_INVALID_ART313_MARGIN_INVOICE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 VERIFIED_DPP_OWNERSHIP_TRANSFER_MARGIN_VAT_AND_120X_CREDIT_CONFIRM · Mandate: circular_recommerce_dpp_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_DPP_AUTHENTICITY_AND_MARGIN_VAT_AUTHORIZED · Mandate: circular_recommerce_dpp_200';
 }}
 
 function updateStage1756Sandbox() {{

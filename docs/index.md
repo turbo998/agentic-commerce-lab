@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`421` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`422` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（30 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（56 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（157 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（158 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（92 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（37 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（49 篇）](#tax-fx-privacy-disputes)
@@ -120,7 +120,7 @@
 | 56 | **多支付网关智能编排（`Multi-PSP Orchestration`: `Primer / Spreedly / Gr4vy vs. Adyen + Stripe + Checkout.com 双活收单`）、`8 位 BIN` 本土收单路由、美国 `Durbin Reg II` 免密借记网（`STAR / NYCE / Pulse`）降费与防主备超时切换双倍扣款（`0420 Failover Mutex`）净省 39% 架构选型 FAQ** | [中文](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.md) · [English](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（157 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（158 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -283,6 +283,7 @@
 | 155 | **社交与私域对话式电商智能体（`Conversational Commerce`: `WhatsApp Business Flows / Instagram DM / Apple Messages vs. 企微小程序 / Klaviyo SMS`）、`24h` 免费客服计费窗治理、连发消息 `1,800ms` 防抖合并（`Burst Debouncing`）与聊天内 `Apple Pay / Shop Pay` 一键支付净省 38% 架构选型 FAQ** | [中文](conversational-commerce-whatsapp-flows-instagram-dm-24h-window-debounce-checkout-selection-faq.md) · [English](conversational-commerce-whatsapp-flows-instagram-dm-24h-window-debounce-checkout-selection-faq.en.md) |
 | 156 | **即时生鲜商超与连锁餐饮外卖“非标品称重预授权走廊（`Catch-Weight +15% Corridor`）、缺货平替过敏原门禁（`FDA/EU Allergen Bitmask`）与后厨开机制作不可撤单锁（`KDS Fired Cutoff`）”（`Instacart / DoorDash Drive / Uber Direct / 美团闪购 vs. Toast / Olo`）净省 38% Agent 架构选型 FAQ** | [中文](instant-grocery-qsr-catchweight-preauth-allergen-substitution-kds-cutoff-selection-faq.md) · [English](instant-grocery-qsr-catchweight-preauth-allergen-substitution-kds-cutoff-selection-faq.en.md) |
 | 157 | **电商联盟营销与达人带货归因（`Affiliate & Creator Attribution`: `impact.com / Partnerize / Rakuten vs. TikTok Shop Affiliate / Shopify Collabs`）、防找券插件结账劫持佣金（`Stand-Down Rule`）、防自买套利与退货窗口期满佣金解冻（`Post-RMA Vesting`）净省 39% Agent 架构选型 FAQ** | [中文](affiliate-creator-commerce-attribution-coupon-hijacking-standdown-rma-clawback-selection-faq.md) · [English](affiliate-creator-commerce-attribution-coupon-hijacking-standdown-rma-clawback-selection-faq.en.md) |
+| 158 | **品牌官方二手循环电商（`Circular Recommerce`: `Trove / Archive / Reflaunt vs. Vestiaire / StockX`）、欧盟 `ESPR` 数字产品护照（`DPP + NTAG 424 NFC`）防伪鉴真、欧盟二手差额增值税（`VAT Margin Scheme Art. 313`）与 `1.20x` 主站储值券复购飞轮净省 38% Agent 架构选型 FAQ** | [中文](circular-recommerce-eu-espr-digital-product-passport-dpp-vat-margin-scheme-selection-faq.md) · [English](circular-recommerce-eu-espr-digital-product-passport-dpp-vat-margin-scheme-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（92 篇）

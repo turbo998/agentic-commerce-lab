@@ -29359,6 +29359,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("affiliate-creator-attribution-sandbox", html_zh)
 
+    def test_circular_recommerce_dpp_vat_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CircularRecommerceDppVatPolicyInput,
+            evaluate_circular_recommerce_dpp_vat_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_circular_recommerce_dpp_vat_policy(
+            CircularRecommerceDppVatPolicyInput(
+                quarterly_counterfeit_double_vat_and_cash_drain_pool_usd=290000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_DPP_AUTHENTICITY_AND_MARGIN_VAT_AUTHORIZED",
+        )
+
+        dpp = evaluate_circular_recommerce_dpp_vat_policy(
+            CircularRecommerceDppVatPolicyInput(
+                counterfeit_static_qr_or_stolen_dpp_serial=True
+            )
+        )
+        self.assertEqual(dpp["status_code"], 403)
+        self.assertEqual(
+            dpp["decision"],
+            "COUNTERFEIT_STATIC_QR_CLONE_OR_STOLEN_DPP_SERIAL_BLOCKED",
+        )
+
+        vat = evaluate_circular_recommerce_dpp_vat_policy(
+            CircularRecommerceDppVatPolicyInput(
+                full_price_double_vat_instead_of_art313_margin_scheme=True
+            )
+        )
+        self.assertEqual(vat["status_code"], 422)
+        self.assertEqual(
+            vat["decision"],
+            "FULL_PRICE_DOUBLE_VAT_ERROR_OR_INVALID_ART313_MARGIN_INVOICE",
+        )
+
+        grade = evaluate_circular_recommerce_dpp_vat_policy(
+            CircularRecommerceDppVatPolicyInput(
+                uninspected_buyback_cashout_or_unapproved_grade_markdown=True
+            )
+        )
+        self.assertEqual(grade["status_code"], 451)
+        self.assertEqual(
+            grade["decision"],
+            "UNINSPECTED_BUYBACK_CASHOUT_OR_UNAPPROVED_GRADING_MARKDOWN",
+        )
+
+        optim = evaluate_circular_recommerce_dpp_vat_policy(
+            CircularRecommerceDppVatPolicyInput(
+                quarterly_counterfeit_double_vat_and_cash_drain_pool_usd=290000.0,
+                verified_dpp_transfer_margin_vat_and_120x_credit_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 110200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 179800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("circular_recommerce_dpp_vat_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("circular-recommerce-dpp-vat-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
