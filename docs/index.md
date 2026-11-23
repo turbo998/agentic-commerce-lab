@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`411` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`412` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（30 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（55 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（152 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（90 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（91 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（36 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（48 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -279,7 +279,7 @@
 | 152 | **多商户平台与跨店智能体拆单分账（`Marketplace Split-Settlement & Reserve Escrow`：`Stripe Connect / Adyen for Platforms / Mirakl Payout / Hyperwallet`）、防“养号填假单号爆仓跑路（`Bust-Out Seller Fraud`）”、最大余数美分守恒（`Largest-Remainder Penny Conservation`）与跨店退款负余额追偿托管“防卖家买 $0.50 同城假快递单号骗取 T+1 放款卷走 $300k、防浮点数均摊导致 $100/3 丢失 1 美分无法平账、防卖家提空余额后买家退货由平台垫付及三级追偿瀑布净省 39%”Agent 架构选型 FAQ** | [中文](marketplace-split-settlement-stripe-connect-adyen-mirakl-bustout-reserve-penny-conservation-faq.md) · [English](marketplace-split-settlement-stripe-connect-adyen-mirakl-bustout-reserve-penny-conservation-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（90 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（91 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -375,6 +375,7 @@
 | 88 | **企业 B2B 尾料与非目录零星采购（`Tail Spend & Spot Buy Automation`：`Fairmarkit / SAP Ariba Spot Buy / Coupa Advantage / Amazon Business PunchOut`）、自动三家询比价（`Autonomous 3-Bid RFQ`）、防拆单逃避审批（`Split-PO Evasion`）与防幽灵供应商洗钱托管“防把 $28,500 采购拆成 3 笔 $9,500 绕过总监审批、防放着 65 折年框目录不买手写高价野采、防内鬼注册关联空壳商洗钱与单一主记录代采商 `Master MoR` 免建档净省 37%”Agent 架构选型 FAQ** | [中文](b2b-tail-spend-spot-buy-rfq-split-po-evasion-ghost-vendor-escrow-agent-selection-faq.md) · [English](b2b-tail-spend-spot-buy-rfq-split-po-evasion-ghost-vendor-escrow-agent-selection-faq.en.md) |
 | 89 | **企业 B2B 采购寻源询价（`RFQ`）、供应商多维比价归一（`Landed TCO Normalization`）与合同毒丸条款初审（`MSA / SOW Redline Copilot`：`Zip Intake-to-Procure / SAP Ariba Guided Sourcing / Coupa Sourcing / Ironclad AI`）、防“拿 $10 EXW 出厂价误判打败 $11.80 DDP Net-60 到仓价导致加完关税海运每件倒亏 $2.69”、防关联股东围标与服务端全文 Diff 拦截暗删责任上限净省 38% Agent 架构选型 FAQ** | [中文](b2b-rfq-supplier-quote-tco-normalization-contract-redline-copilot-escrow-agent-selection-faq.md) · [English](b2b-rfq-supplier-quote-tco-normalization-contract-redline-copilot-escrow-agent-selection-faq.en.md) |
 | 90 | **企业 B2B 应付账款（`AP`）三单匹配（`PO == GRN == Invoice`：`SAP S/4HANA MIRO / Coupa Pay / Tipalti / Stampli`）、防商业邮件诈骗改收款账号（`BEC IBAN Swap`）、分批收货行项余额核销与早付现金折扣（`2/10 Net 30 Dynamic Discounting`）托管“防黑客在真发票 PDF 底部改收款 IBAN 骗走 $450k、防仓库只到货 60% 却按整单总额付 100% 货款、防 EDI+PDF 双通道重付及 24h 极速过审稳拿 37% 年化早付收益净省 39%”Agent 架构选型 FAQ** | [中文](b2b-ap-three-way-match-po-grn-invoice-bec-iban-dynamic-discounting-selection-faq.md) · [English](b2b-ap-three-way-match-po-grn-invoice-bec-iban-dynamic-discounting-selection-faq.en.md) |
+| 91 | **企业 B2B 采购目录与供应链订单协同（`SAP Ariba / Coupa cXML PunchOut & SAP OCI 5.0 vs. ANSI X12 EDI 850/855/856/810 vs. Peppol BIS 3.0`）、防审批延时导致阶梯价失效、防计量单位（`EA vs. CS`）错配买成 12 倍数量与 `EDI 855` 拆单对账净省 39% 架构选型 FAQ** | [中文](b2b-punchout-cxml-oci-edi-850-855-856-uom-guard-quote-lock-escrow-selection-faq.md) · [English](b2b-punchout-cxml-oci-edi-850-855-856-uom-guard-quote-lock-escrow-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（36 篇）

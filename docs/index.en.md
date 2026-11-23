@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`411` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`412` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (30 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (55 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (152 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (90 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (91 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (36 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (48 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -279,7 +279,7 @@
 | 152 | **Multi-Vendor Marketplace Split-Settlement (`Stripe Connect vs. Adyen for Platforms vs. Mirakl Payout vs. Hyperwallet`), Destination-`ZIP+4 vPOD` Anti-Bust-Out Escrow, Hamilton Largest-Remainder Penny Conservation & 30-Day Rolling Reserve Clawback Waterfall (`-39%` Seller Fraud & Bad-Debt Loss) Agent Architecture Selection FAQ** | [English](marketplace-split-settlement-stripe-connect-adyen-mirakl-bustout-reserve-penny-conservation-faq.en.md) · [中文](marketplace-split-settlement-stripe-connect-adyen-mirakl-bustout-reserve-penny-conservation-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (90 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (91 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -375,6 +375,7 @@
 | 88 | **Enterprise B2B Tail-Spend & Spot-Buy RFQ Automation (`Fairmarkit vs. SAP Ariba Spot Buy vs. Coupa Advantage vs. Amazon Business PunchOut`), Rolling 14-Day Anti-Split-PO Structuring Lock, Contracted Catalog Redirect, `HR-to-Vendor COI` Ghost-Vendor Shield & Master Vendor `MoR` Consolidation (`-37%` Tail-Spend & VMF Loss) Agent Architecture Selection FAQ** | [English](b2b-tail-spend-spot-buy-rfq-split-po-evasion-ghost-vendor-escrow-agent-selection-faq.en.md) · [中文](b2b-tail-spend-spot-buy-rfq-split-po-evasion-ghost-vendor-escrow-agent-selection-faq.md) |
 | 89 | **Enterprise B2B `RFQ` Sourcing, Multi-Supplier `Landed-TCO` Normalization & `MSA / SOW` Contract Redline Copilot (`Zip Intake-to-Procure vs. SAP Ariba Guided Sourcing vs. Coupa Sourcing vs. Ironclad AI`), `EXW-vs-DDP` + `WACC` Normalization, `UBO` Anti-Bid-Rigging Graph, Server-Side `AST Diff` Playbook Gate & `ERP PIR` Price Sync (`-38%` Sourcing & Legal Loss) Agent Architecture Selection FAQ** | [English](b2b-rfq-supplier-quote-tco-normalization-contract-redline-copilot-escrow-agent-selection-faq.en.md) · [中文](b2b-rfq-supplier-quote-tco-normalization-contract-redline-copilot-escrow-agent-selection-faq.md) |
 | 90 | **Enterprise B2B Accounts Payable (`AP`) 3-Way Match (`PO == GRN == Invoice`: `SAP S/4HANA MIRO vs. Coupa Pay vs. Tipalti vs. Stampli`), Read-Only `VMF` Anti-`BEC` Bank Lock (`Nacha / SEPA CoP`), Line-Level Partial-`GRN` Balance Check, 5-Tuple Fuzzy Deduplication & `2/10 Net 30` (`37.2% APR`) Dynamic Discounting (`-39%` AP & Treasury Loss) Agent Architecture Selection FAQ** | [English](b2b-ap-three-way-match-po-grn-invoice-bec-iban-dynamic-discounting-selection-faq.en.md) · [中文](b2b-ap-three-way-match-po-grn-invoice-bec-iban-dynamic-discounting-selection-faq.md) |
+| 91 | **Enterprise B2B Catalog & Supply Chain Order Orchestration (`SAP Ariba / Coupa cXML PunchOut & SAP OCI 5.0 vs. ANSI X12 EDI 850/855/856/810 vs. Peppol BIS 3.0`), Pre-PO `Quote-ID` Re-Validation, `UN/CEFACT UoM` (`EA vs. CS`) Pack-Size Guard & `EDI 855/856` Closed-Loop Sync (`-39%` PO Fallout & UoM Error Loss) FAQ** | [English](b2b-punchout-cxml-oci-edi-850-855-856-uom-guard-quote-lock-escrow-selection-faq.en.md) · [中文](b2b-punchout-cxml-oci-edi-850-855-856-uom-guard-quote-lock-escrow-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (36 Guides)

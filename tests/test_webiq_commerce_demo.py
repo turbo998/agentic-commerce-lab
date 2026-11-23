@@ -28689,6 +28689,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("trusted-agent-identity-tap-waf-sandbox", html_zh)
 
+    def test_b2b_punchout_cxml_edi_orchestration_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bPunchoutCxmlEdiOrchestrationPolicyInput,
+            evaluate_b2b_punchout_cxml_edi_orchestration_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_punchout_cxml_edi_orchestration_policy(
+            B2bPunchoutCxmlEdiOrchestrationPolicyInput(
+                quarterly_po_fallout_uom_error_and_edi_rework_pool_usd=320000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_PUNCHOUT_QUOTE_UOM_AND_EDI_850_AUTHORIZED",
+        )
+
+        stale = evaluate_b2b_punchout_cxml_edi_orchestration_policy(
+            B2bPunchoutCxmlEdiOrchestrationPolicyInput(
+                stale_punchout_quote_id_or_expired_atp_at_po_dispatch=True
+            )
+        )
+        self.assertEqual(stale["status_code"], 403)
+        self.assertEqual(
+            stale["decision"],
+            "STALE_PUNCHOUT_QUOTE_ID_OR_EXPIRED_ATP_BEFORE_PO_DISPATCH",
+        )
+
+        uom = evaluate_b2b_punchout_cxml_edi_orchestration_policy(
+            B2bPunchoutCxmlEdiOrchestrationPolicyInput(
+                uom_pack_size_conversion_mismatch_ea_vs_case=True
+            )
+        )
+        self.assertEqual(uom["status_code"], 422)
+        self.assertEqual(
+            uom["decision"],
+            "UOM_PACK_SIZE_CONVERSION_MISMATCH_EA_VS_CASE_OVERORDER_RISK",
+        )
+
+        ack = evaluate_b2b_punchout_cxml_edi_orchestration_policy(
+            B2bPunchoutCxmlEdiOrchestrationPolicyInput(
+                unapproved_edi855_price_hike_or_sku_substitution=True
+            )
+        )
+        self.assertEqual(ack["status_code"], 451)
+        self.assertEqual(
+            ack["decision"],
+            "UNAPPROVED_EDI855_PRICE_HIKE_OR_SUBSTITUTE_SKU_DRIFT",
+        )
+
+        optim = evaluate_b2b_punchout_cxml_edi_orchestration_policy(
+            B2bPunchoutCxmlEdiOrchestrationPolicyInput(
+                quarterly_po_fallout_uom_error_and_edi_rework_pool_usd=320000.0,
+                closed_loop_cxml_quote_lock_and_edi_855_856_sync_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 124800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 195200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_punchout_cxml_edi_orchestration_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-punchout-cxml-edi-orchestration-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

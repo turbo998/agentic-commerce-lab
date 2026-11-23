@@ -37381,6 +37381,82 @@ def evaluate_trusted_agent_identity_tap_waf_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bPunchoutCxmlEdiOrchestrationPolicyInput:
+    quarterly_po_fallout_uom_error_and_edi_rework_pool_usd: float = 320000.0
+    stale_punchout_quote_id_or_expired_atp_at_po_dispatch: bool = False
+    uom_pack_size_conversion_mismatch_ea_vs_case: bool = False
+    unapproved_edi855_price_hike_or_sku_substitution: bool = False
+    closed_loop_cxml_quote_lock_and_edi_855_856_sync_ready: bool = False
+
+
+def evaluate_b2b_punchout_cxml_edi_orchestration_policy(
+    policy_input: B2bPunchoutCxmlEdiOrchestrationPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_po_fallout_uom_error_and_edi_rework_pool_usd
+        ),
+    )
+    if policy_input.unapproved_edi855_price_hike_or_sku_substitution:
+        return {
+            "status_code": 451,
+            "decision": "UNAPPROVED_EDI855_PRICE_HIKE_OR_SUBSTITUTE_SKU_DRIFT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stale_punchout_quote_id_or_expired_atp_at_po_dispatch:
+        return {
+            "status_code": 403,
+            "decision": "STALE_PUNCHOUT_QUOTE_ID_OR_EXPIRED_ATP_BEFORE_PO_DISPATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uom_pack_size_conversion_mismatch_ea_vs_case:
+        return {
+            "status_code": 422,
+            "decision": "UOM_PACK_SIZE_CONVERSION_MISMATCH_EA_VS_CASE_OVERORDER_RISK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.closed_loop_cxml_quote_lock_and_edi_855_856_sync_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CLOSED_LOOP_CXML_PUNCHOUT_AND_EDI_855_856_SYNC_CONFIRM",
+            "mandate_token": "b2b_punchout_cxml_edi_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_PUNCHOUT_QUOTE_UOM_AND_EDI_850_AUTHORIZED",
+        "mandate_token": "b2b_punchout_cxml_edi_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -50918,6 +50994,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_punchout_cxml_edi_orchestration_guard = {
+        "authorized_200": evaluate_b2b_punchout_cxml_edi_orchestration_policy(
+            B2bPunchoutCxmlEdiOrchestrationPolicyInput()
+        ),
+        "stale_quote_or_expired_atp_403": evaluate_b2b_punchout_cxml_edi_orchestration_policy(
+            B2bPunchoutCxmlEdiOrchestrationPolicyInput(
+                stale_punchout_quote_id_or_expired_atp_at_po_dispatch=True
+            )
+        ),
+        "uom_pack_size_mismatch_422": evaluate_b2b_punchout_cxml_edi_orchestration_policy(
+            B2bPunchoutCxmlEdiOrchestrationPolicyInput(
+                uom_pack_size_conversion_mismatch_ea_vs_case=True
+            )
+        ),
+        "unapproved_edi855_price_hike_451": evaluate_b2b_punchout_cxml_edi_orchestration_policy(
+            B2bPunchoutCxmlEdiOrchestrationPolicyInput(
+                unapproved_edi855_price_hike_or_sku_substitution=True
+            )
+        ),
+        "closed_loop_cxml_edi_sync_409": evaluate_b2b_punchout_cxml_edi_orchestration_policy(
+            B2bPunchoutCxmlEdiOrchestrationPolicyInput(
+                closed_loop_cxml_quote_lock_and_edi_855_856_sync_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -51339,6 +51441,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_usage_metering_x402_mpp_guard": saas_usage_metering_x402_mpp_guard,
         "cross_border_ddp_mor_sor_customs_guard": cross_border_ddp_mor_sor_customs_guard,
         "trusted_agent_identity_tap_waf_guard": trusted_agent_identity_tap_waf_guard,
+        "b2b_punchout_cxml_edi_orchestration_guard": b2b_punchout_cxml_edi_orchestration_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -73239,6 +73342,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="tapwaf-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DUAL_LANE_EDGE_UCP_CACHE_AND_VISA_TAP_VIP_CHECKOUT_CONFIRM · Mandate: trusted_agent_identity_tap_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 293 (#412) Enterprise B2B cXML/OCI PunchOut & EDI 850/855/856 Orchestration -->
+      <div class="finops-box" id="b2b-punchout-cxml-edi-orchestration-sandbox" style="margin-top:12px;border-color:#0369a1;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏭 企业 B2B 采购目录与供应链订单协同 (cXML PunchOut / SAP OCI vs EDI 850/855/856 / Peppol) 沙盒</div>
+            <div class="finops-sub">Round 293 (#412 · SVG #736) · 发单前 Quote-ID 与实时 ATP 库存重检防审批延时拒单 (HTTP 403) + UN/CEFACT Rec 20 计量单位 (EA vs CS/BX) 箱规换算锁防 12 倍数量误买 (HTTP 422) + EDI 855 (IA/IC/IR) 擅自涨价与换料号拦截 (HTTP 451) + cXML 与 EDI 855/856 闭环对账净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="punchoutedi-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 B2B 审批延时 PO 拒单、EA/CS 单位错配超买退运及 EDI 855/810 收货对账异常损耗池 ($)
+            <input type="number" id="punchoutedi-gross-input" value="320000" min="10000" step="5000" oninput="recalcB2bPunchoutCxmlEdiSandbox()" />
+          </label>
+          <label>发单前 PunchOut Quote-ID / SupplierPartAuxiliaryID 有效期与实时 ATP 库存重检门禁
+            <select id="punchoutedi-quote-select" onchange="recalcB2bPunchoutCxmlEdiSandbox()">
+              <option value="pass">ERP 审批通过发 PO 前自动重检并续期 Quote-ID 阶梯价与批次库存 (安全)</option>
+              <option value="block_403">PunchOut 购物车在 ERP 审批流停留 5 天后报价与库存已过期仍盲目发送 EDI 850 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>UN/CEFACT Rec 20 计量单位 (EA 单件 vs CS 整箱 / BX 中盒) 与 PackSize 箱规换算门禁
+            <select id="punchoutedi-uom-select" onchange="recalcB2bPunchoutCxmlEdiSandbox()">
+              <option value="pass">严格核验 Ordered_CS_Qty × PackSize(12) == Requested_EA_Qty(240) 且行总价守恒 (合规)</option>
+              <option value="block_422">未除箱规直接把请购单 240 EA 映射为供应商 240 CS 整箱导致 12 倍超买灾难 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>供应商返回 EDI 855 (订单确认书) 行级状态码 (IA/IC/IB/IR) 单价与料号变更稽核门禁
+            <select id="punchoutedi-ack-select" onchange="recalcB2bPunchoutCxmlEdiSandbox()">
+              <option value="pass">逐行稽核 EDI 855 ACK 段，仅放行合同容差内交期微调并阻断未授权涨价 (安全)</option>
+              <option value="block_451">供应商在 EDI 855 中静默上调单价 12% 或擅自替换非标料号 (ACK01=IC) (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>cXML / OCI 目录锁价 + EDI 855 自动更新 ERP 订单行 + EDI 856 ASN 托盘条码 (SSCC-18) 闭环同步
+            <select id="punchoutedi-opt-select" onchange="recalcB2bPunchoutCxmlEdiSandbox()">
+              <option value="enabled" selected>全自动 Pre-PO 锁价续期 + UoM 换算校验 + EDI 855/856 闭环对账 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">人工邮件催单核对 EDI 异常与仓库手动清点拆单收货 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度PO拒单与单位错买损耗池</div>
+            <div class="finops-kpi-val" id="punchoutedi-gross-kpi">$320,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">cXML与EDI闭环协同后净成本</div>
+            <div class="finops-kpi-val" id="punchoutedi-net-kpi" style="color:#6ee7b7;">$195,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省错买与供应链对账费</div>
+            <div class="finops-kpi-val" id="punchoutedi-savings-kpi" style="color:#38bdf8;">$124,800</div>
+          </div>
+        </div>
+        <div id="punchoutedi-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CLOSED_LOOP_CXML_PUNCHOUT_AND_EDI_855_856_SYNC_CONFIRM · Mandate: b2b_punchout_cxml_edi_optim_409
         </div>
       </div>
 
@@ -100145,6 +100305,79 @@ function recalcTrustedAgentIdentityTapWafSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_RFC9421_SIGNATURE_AND_VISA_TAP_AGENT_AUTHORIZED · Mandate: trusted_agent_identity_tap_200';
+}}
+
+function recalcB2bPunchoutCxmlEdiSandbox() {{
+  const grossInput = document.getElementById('punchoutedi-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '320000'));
+  const quoteGate = document.getElementById('punchoutedi-quote-select').value;
+  const uomGate = document.getElementById('punchoutedi-uom-select').value;
+  const ackGate = document.getElementById('punchoutedi-ack-select').value;
+  const optMode = document.getElementById('punchoutedi-opt-select').value;
+
+  const grossKpi = document.getElementById('punchoutedi-gross-kpi');
+  const netKpi = document.getElementById('punchoutedi-net-kpi');
+  const savingsKpi = document.getElementById('punchoutedi-savings-kpi');
+  const statusKpi = document.getElementById('punchoutedi-status-kpi');
+  const banner = document.getElementById('punchoutedi-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ackGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNAPPROVED_EDI855_PRICE_HIKE_OR_SUBSTITUTE_SKU_DRIFT · Mandate: null';
+    return;
+  }}
+  if (quoteGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 STALE_PUNCHOUT_QUOTE_ID_OR_EXPIRED_ATP_BEFORE_PO_DISPATCH · Mandate: null';
+    return;
+  }}
+  if (uomGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UOM_PACK_SIZE_CONVERSION_MISMATCH_EA_VS_CASE_OVERORDER_RISK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CLOSED_LOOP_CXML_PUNCHOUT_AND_EDI_855_856_SYNC_CONFIRM · Mandate: b2b_punchout_cxml_edi_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_PUNCHOUT_QUOTE_UOM_AND_EDI_850_AUTHORIZED · Mandate: b2b_punchout_cxml_edi_200';
 }}
 
 function updateStage1756Sandbox() {{
