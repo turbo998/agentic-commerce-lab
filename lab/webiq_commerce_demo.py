@@ -36925,6 +36925,82 @@ def evaluate_ecommerce_bnpl_mdr_reamortize_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceChargebackCe30RdrMutexPolicyInput:
+    quarterly_friendly_fraud_double_refund_and_vamp_pool_usd: float = 300000.0
+    rdr_ethoca_and_support_agent_double_refund_collision: bool = False
+    incomplete_visa_ce30_two_of_four_historical_match: bool = False
+    negative_ev_small_ticket_fight_or_vamp_threshold_breach: bool = False
+    automated_ce30_ap2_representment_and_rdr_mutex_ready: bool = False
+
+
+def evaluate_ecommerce_chargeback_ce30_rdr_mutex_policy(
+    policy_input: EcommerceChargebackCe30RdrMutexPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_friendly_fraud_double_refund_and_vamp_pool_usd
+        ),
+    )
+    if policy_input.negative_ev_small_ticket_fight_or_vamp_threshold_breach:
+        return {
+            "status_code": 451,
+            "decision": "NEGATIVE_EV_SMALL_TICKET_DISPUTE_FIGHT_OR_VAMP_RATIO_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.rdr_ethoca_and_support_agent_double_refund_collision:
+        return {
+            "status_code": 403,
+            "decision": "RDR_ETHOCA_PRE_DISPUTE_AND_SUPPORT_AGENT_DOUBLE_REFUND_COLLISION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.incomplete_visa_ce30_two_of_four_historical_match:
+        return {
+            "status_code": 422,
+            "decision": "INCOMPLETE_VISA_CE30_TWO_OF_FOUR_HISTORICAL_FOOTPRINT_MATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.automated_ce30_ap2_representment_and_rdr_mutex_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "AUTOMATED_CE30_CRYPTO_REPRESENTMENT_AND_RDR_MUTEX_CONFIRM",
+            "mandate_token": "chargeback_ce30_rdr_mutex_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CE30_FOOTPRINT_AND_RDR_MUTEX_AUTHORIZED",
+        "mandate_token": "chargeback_ce30_rdr_mutex_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -50306,6 +50382,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_chargeback_ce30_rdr_mutex_guard = {
+        "authorized_200": evaluate_ecommerce_chargeback_ce30_rdr_mutex_policy(
+            EcommerceChargebackCe30RdrMutexPolicyInput()
+        ),
+        "rdr_support_double_refund_403": evaluate_ecommerce_chargeback_ce30_rdr_mutex_policy(
+            EcommerceChargebackCe30RdrMutexPolicyInput(
+                rdr_ethoca_and_support_agent_double_refund_collision=True
+            )
+        ),
+        "incomplete_ce30_two_of_four_422": evaluate_ecommerce_chargeback_ce30_rdr_mutex_policy(
+            EcommerceChargebackCe30RdrMutexPolicyInput(
+                incomplete_visa_ce30_two_of_four_historical_match=True
+            )
+        ),
+        "negative_ev_or_vamp_breach_451": evaluate_ecommerce_chargeback_ce30_rdr_mutex_policy(
+            EcommerceChargebackCe30RdrMutexPolicyInput(
+                negative_ev_small_ticket_fight_or_vamp_threshold_breach=True
+            )
+        ),
+        "automated_ce30_rdr_mutex_409": evaluate_ecommerce_chargeback_ce30_rdr_mutex_policy(
+            EcommerceChargebackCe30RdrMutexPolicyInput(
+                automated_ce30_ap2_representment_and_rdr_mutex_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -50721,6 +50823,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_rfq_tco_contract_redline_guard": b2b_rfq_tco_contract_redline_guard,
         "ecommerce_ai_shopping_stylist_bundle_guard": ecommerce_ai_shopping_stylist_bundle_guard,
         "ecommerce_bnpl_mdr_reamortize_guard": ecommerce_bnpl_mdr_reamortize_guard,
+        "ecommerce_chargeback_ce30_rdr_mutex_guard": ecommerce_chargeback_ce30_rdr_mutex_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -72279,6 +72382,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="bnpl-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DYNAMIC_BNPL_MARGIN_ROUTING_AND_TAIL_FIRST_REAMORTIZATION_CONFIRM · Mandate: embedded_bnpl_reamortize_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 287 (#406) Chargeback Defense, Visa CE 3.0 & RDR Mutex Escrow -->
+      <div class="finops-box" id="ecommerce-chargeback-ce30-rdr-mutex-sandbox" style="margin-top:12px;border-color:#ef4444;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛡️ 智能体拒付抗辩与预拒付拦截 (Visa CE 3.0 / VAMP / Verifi RDR / Ethoca / Chargeflow) 防双退沙盒</div>
+            <div class="finops-sub">Round 287 (#406 · SVG #730) · RDR-to-OMS 分布式互斥锁防“上午银行秒退、下午找AI客服再退一遍”倒赔 200% (HTTP 403) + Visa CE 3.0 历史双订单 2-of-4 要素与 AP2 签名校验 (HTTP 422) + 期望净值 EV 与 VAMP 水位分流防 $28 小单倒贴 $25 罚金 (HTTP 451) + 10.4 申诉 84% 胜率净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="cbce30-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度第一方友好欺诈 (“不是我让AI买的”)、银行 RDR+客服双倍退款漏洞及盲目应诉罚金损失池 ($)
+            <input type="number" id="cbce30-gross-input" value="300000" min="10000" step="5000" oninput="recalcEcommerceChargebackCe30RdrMutexSandbox()" />
+          </label>
+          <label>预拒付实时拦截 (Verifi RDR / Mastercard Ethoca) 与站内客服 OMS 全局退款互斥锁 (Double-Refund Mutex)
+            <select id="cbce30-mutex-select" onchange="recalcEcommerceChargebackCe30RdrMutexSandbox()">
+              <option value="pass">收到 RDR/Ethoca 预警毫秒级锁定 OMS 退款权限并秒停未发货包裹 (安全)</option>
+              <option value="block_403">买家上午向银行报争议触发 RDR 秒退、下午找 AI 客服再骗第二次常规退款 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>Visa Compelling Evidence 3.0 (CE 3.0: 120~365天前 &gt;=2 笔无争议历史单 2-of-4 要素匹配) 铁证门禁
+            <select id="cbce30-ce30-select" onchange="recalcEcommerceChargebackCe30RdrMutexSandbox()">
+              <option value="pass">自动提取 120~365 天前 2 笔历史单匹配 IP/设备指纹/地址 + 本单 FIDO2 AP2 签名 (合规)</option>
+              <option value="block_422">仅上传普通聊天截图缺失 CE 3.0 历史双订单 2-of-4 结构化字段导致申诉秒败 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>抗辩期望净收益 (Expected Value EV) 精算与 Visa VAMP (0.9% 红线) 小额单前置止损门禁
+            <select id="cbce30-ev-select" onchange="recalcEcommerceChargebackCe30RdrMutexSandbox()">
+              <option value="pass">&lt;$40 小单或 VAMP 逼近警戒线时自动走前置 RDR 化解，免交 $25 正式争议罚金 (安全)</option>
+              <option value="block_451">为 $28 无铁证小单硬刚正式拒付，败诉倒贴 $25 罚金且推爆店铺 VAMP 拒付率 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>全自动 CE 3.0 + AP2 MandateVC + 物流 GPS 妥投照片 (vPOD) 证据包合成与一键提交仲裁
+            <select id="cbce30-opt-select" onchange="recalcEcommerceChargebackCe30RdrMutexSandbox()">
+              <option value="enabled" selected>高值单自动合成 CE 3.0 + AP2 铁证赢回 84% 资金 + 小单 RDR 前置止损 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">人工手动截图写申诉信且 RDR 与客服工单系统异步割裂运行 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度友好欺诈与双倍退款损失池</div>
+            <div class="finops-kpi-val" id="cbce30-gross-kpi">$300,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">CE3.0铁证与RDR互斥后净损耗</div>
+            <div class="finops-kpi-val" id="cbce30-net-kpi" style="color:#6ee7b7;">$183,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净赢回拒付资金与罚金</div>
+            <div class="finops-kpi-val" id="cbce30-savings-kpi" style="color:#38bdf8;">$117,000</div>
+          </div>
+        </div>
+        <div id="cbce30-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 AUTOMATED_CE30_CRYPTO_REPRESENTMENT_AND_RDR_MUTEX_CONFIRM · Mandate: chargeback_ce30_rdr_mutex_optim_409
         </div>
       </div>
 
@@ -98747,6 +98907,79 @@ function recalcEcommerceBnplMdrReamortizeSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 MARGIN_SAFE_A2UI_BNPL_AND_TAIL_FIRST_SCHEDULE_AUTHORIZED · Mandate: embedded_bnpl_reamortize_200';
+}}
+
+function recalcEcommerceChargebackCe30RdrMutexSandbox() {{
+  const grossInput = document.getElementById('cbce30-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '300000'));
+  const mutexGate = document.getElementById('cbce30-mutex-select').value;
+  const ce30Gate = document.getElementById('cbce30-ce30-select').value;
+  const evGate = document.getElementById('cbce30-ev-select').value;
+  const optMode = document.getElementById('cbce30-opt-select').value;
+
+  const grossKpi = document.getElementById('cbce30-gross-kpi');
+  const netKpi = document.getElementById('cbce30-net-kpi');
+  const savingsKpi = document.getElementById('cbce30-savings-kpi');
+  const statusKpi = document.getElementById('cbce30-status-kpi');
+  const banner = document.getElementById('cbce30-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (evGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 NEGATIVE_EV_SMALL_TICKET_DISPUTE_FIGHT_OR_VAMP_RATIO_BREACH · Mandate: null';
+    return;
+  }}
+  if (mutexGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 RDR_ETHOCA_PRE_DISPUTE_AND_SUPPORT_AGENT_DOUBLE_REFUND_COLLISION · Mandate: null';
+    return;
+  }}
+  if (ce30Gate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 INCOMPLETE_VISA_CE30_TWO_OF_FOUR_HISTORICAL_FOOTPRINT_MATCH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 AUTOMATED_CE30_CRYPTO_REPRESENTMENT_AND_RDR_MUTEX_CONFIRM · Mandate: chargeback_ce30_rdr_mutex_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CE30_FOOTPRINT_AND_RDR_MUTEX_AUTHORIZED · Mandate: chargeback_ce30_rdr_mutex_200';
 }}
 
 function updateStage1756Sandbox() {{

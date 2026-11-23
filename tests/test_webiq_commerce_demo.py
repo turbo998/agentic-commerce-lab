@@ -28287,6 +28287,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-bnpl-mdr-reamortize-sandbox", html_zh)
 
+    def test_ecommerce_chargeback_ce30_rdr_mutex_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceChargebackCe30RdrMutexPolicyInput,
+            evaluate_ecommerce_chargeback_ce30_rdr_mutex_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_chargeback_ce30_rdr_mutex_policy(
+            EcommerceChargebackCe30RdrMutexPolicyInput(
+                quarterly_friendly_fraud_double_refund_and_vamp_pool_usd=300000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CE30_FOOTPRINT_AND_RDR_MUTEX_AUTHORIZED",
+        )
+
+        mutex = evaluate_ecommerce_chargeback_ce30_rdr_mutex_policy(
+            EcommerceChargebackCe30RdrMutexPolicyInput(
+                rdr_ethoca_and_support_agent_double_refund_collision=True
+            )
+        )
+        self.assertEqual(mutex["status_code"], 403)
+        self.assertEqual(
+            mutex["decision"],
+            "RDR_ETHOCA_PRE_DISPUTE_AND_SUPPORT_AGENT_DOUBLE_REFUND_COLLISION",
+        )
+
+        ce30 = evaluate_ecommerce_chargeback_ce30_rdr_mutex_policy(
+            EcommerceChargebackCe30RdrMutexPolicyInput(
+                incomplete_visa_ce30_two_of_four_historical_match=True
+            )
+        )
+        self.assertEqual(ce30["status_code"], 422)
+        self.assertEqual(
+            ce30["decision"],
+            "INCOMPLETE_VISA_CE30_TWO_OF_FOUR_HISTORICAL_FOOTPRINT_MATCH",
+        )
+
+        ev = evaluate_ecommerce_chargeback_ce30_rdr_mutex_policy(
+            EcommerceChargebackCe30RdrMutexPolicyInput(
+                negative_ev_small_ticket_fight_or_vamp_threshold_breach=True
+            )
+        )
+        self.assertEqual(ev["status_code"], 451)
+        self.assertEqual(
+            ev["decision"],
+            "NEGATIVE_EV_SMALL_TICKET_DISPUTE_FIGHT_OR_VAMP_RATIO_BREACH",
+        )
+
+        optim = evaluate_ecommerce_chargeback_ce30_rdr_mutex_policy(
+            EcommerceChargebackCe30RdrMutexPolicyInput(
+                quarterly_friendly_fraud_double_refund_and_vamp_pool_usd=300000.0,
+                automated_ce30_ap2_representment_and_rdr_mutex_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 117000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 183000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_chargeback_ce30_rdr_mutex_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-chargeback-ce30-rdr-mutex-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
