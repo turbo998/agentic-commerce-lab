@@ -29694,6 +29694,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-vmi-consignment-sbt-sandbox", html_zh)
 
+    def test_embedded_shipping_parametric_insurance_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EmbeddedShippingParametricInsurancePolicyInput,
+            evaluate_embedded_shipping_parametric_insurance_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_embedded_shipping_parametric_insurance_policy(
+            EmbeddedShippingParametricInsurancePolicyInput(
+                quarterly_porch_piracy_double_claim_and_fine_pool_usd=280000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_EXPLICIT_OPTIN_AND_PARAMETRIC_ORACLE_AUTHORIZED",
+        )
+
+        dark = evaluate_embedded_shipping_parametric_insurance_policy(
+            EmbeddedShippingParametricInsurancePolicyInput(
+                pre_checked_opt_out_dark_pattern_or_unlicensed_term=True
+            )
+        )
+        self.assertEqual(dark["status_code"], 403)
+        self.assertEqual(
+            dark["decision"],
+            "PRE_CHECKED_DARK_PATTERN_OPT_OUT_OR_UNLICENSED_INSURANCE_TERM",
+        )
+
+        double_dip = evaluate_embedded_shipping_parametric_insurance_policy(
+            EmbeddedShippingParametricInsurancePolicyInput(
+                double_dip_insurance_and_merchant_refund_or_no_subrogation=True
+            )
+        )
+        self.assertEqual(double_dip["status_code"], 422)
+        self.assertEqual(
+            double_dip["decision"],
+            "DOUBLE_DIP_INSURANCE_AND_MERCHANT_REFUND_OR_UNFILED_SUBROGATION",
+        )
+
+        oracle = evaluate_embedded_shipping_parametric_insurance_policy(
+            EmbeddedShippingParametricInsurancePolicyInput(
+                retroactive_post_incident_bind_or_unverified_oracle_feed=True
+            )
+        )
+        self.assertEqual(oracle["status_code"], 451)
+        self.assertEqual(
+            oracle["decision"],
+            "RETROACTIVE_POST_INCIDENT_POLICY_BIND_OR_UNVERIFIED_ORACLE_FEED",
+        )
+
+        optim = evaluate_embedded_shipping_parametric_insurance_policy(
+            EmbeddedShippingParametricInsurancePolicyInput(
+                quarterly_porch_piracy_double_claim_and_fine_pool_usd=280000.0,
+                explicit_optin_subrogation_mutex_and_reorder_flywheel_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 106400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 173600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("embedded_shipping_parametric_insurance_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("embedded-shipping-parametric-insurance-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

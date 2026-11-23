@@ -38521,6 +38521,82 @@ def evaluate_b2b_vmi_consignment_sbt_policy(
     }
 
 
+@dataclass(frozen=True)
+class EmbeddedShippingParametricInsurancePolicyInput:
+    quarterly_porch_piracy_double_claim_and_fine_pool_usd: float = 280000.0
+    pre_checked_opt_out_dark_pattern_or_unlicensed_term: bool = False
+    double_dip_insurance_and_merchant_refund_or_no_subrogation: bool = False
+    retroactive_post_incident_bind_or_unverified_oracle_feed: bool = False
+    explicit_optin_subrogation_mutex_and_reorder_flywheel_ready: bool = False
+
+
+def evaluate_embedded_shipping_parametric_insurance_policy(
+    policy_input: EmbeddedShippingParametricInsurancePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_porch_piracy_double_claim_and_fine_pool_usd
+        ),
+    )
+    if policy_input.retroactive_post_incident_bind_or_unverified_oracle_feed:
+        return {
+            "status_code": 451,
+            "decision": "RETROACTIVE_POST_INCIDENT_POLICY_BIND_OR_UNVERIFIED_ORACLE_FEED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pre_checked_opt_out_dark_pattern_or_unlicensed_term:
+        return {
+            "status_code": 403,
+            "decision": "PRE_CHECKED_DARK_PATTERN_OPT_OUT_OR_UNLICENSED_INSURANCE_TERM",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.double_dip_insurance_and_merchant_refund_or_no_subrogation:
+        return {
+            "status_code": 422,
+            "decision": "DOUBLE_DIP_INSURANCE_AND_MERCHANT_REFUND_OR_UNFILED_SUBROGATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.explicit_optin_subrogation_mutex_and_reorder_flywheel_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "EXPLICIT_OPTIN_SUBROGATION_MUTEX_AND_REORDER_FLYWHEEL_CONFIRM",
+            "mandate_token": "embedded_shipping_parametric_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_EXPLICIT_OPTIN_AND_PARAMETRIC_ORACLE_AUTHORIZED",
+        "mandate_token": "embedded_shipping_parametric_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -52448,6 +52524,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    embedded_shipping_parametric_insurance_guard = {
+        "authorized_200": evaluate_embedded_shipping_parametric_insurance_policy(
+            EmbeddedShippingParametricInsurancePolicyInput()
+        ),
+        "pre_checked_dark_pattern_403": evaluate_embedded_shipping_parametric_insurance_policy(
+            EmbeddedShippingParametricInsurancePolicyInput(
+                pre_checked_opt_out_dark_pattern_or_unlicensed_term=True
+            )
+        ),
+        "double_dip_or_no_subrogation_422": evaluate_embedded_shipping_parametric_insurance_policy(
+            EmbeddedShippingParametricInsurancePolicyInput(
+                double_dip_insurance_and_merchant_refund_or_no_subrogation=True
+            )
+        ),
+        "retroactive_bind_or_oracle_451": evaluate_embedded_shipping_parametric_insurance_policy(
+            EmbeddedShippingParametricInsurancePolicyInput(
+                retroactive_post_incident_bind_or_unverified_oracle_feed=True
+            )
+        ),
+        "explicit_optin_subrogation_reorder_409": evaluate_embedded_shipping_parametric_insurance_policy(
+            EmbeddedShippingParametricInsurancePolicyInput(
+                explicit_optin_subrogation_mutex_and_reorder_flywheel_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -52884,6 +52986,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_corporate_mice_group_block_guard": ota_corporate_mice_group_block_guard,
         "digital_gaming_iap_webshop_guard": digital_gaming_iap_webshop_guard,
         "b2b_vmi_consignment_sbt_guard": b2b_vmi_consignment_sbt_guard,
+        "embedded_shipping_parametric_insurance_guard": embedded_shipping_parametric_insurance_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -75639,6 +75742,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="vmisbt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SBT_SHRINK_CAP_PHANTOM_STOCK_HEAL_AND_ERS_SETTLEMENT_CONFIRM · Mandate: b2b_vmi_consignment_sbt_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 308 (#427) Embedded Shipping Protection & Parametric Micro-Insurance -->
+      <div class="finops-box" id="embedded-shipping-parametric-insurance-sandbox" style="margin-top:12px;border-color:#0284c7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛡️ 电商嵌入式包裹保价与酒旅参数化微保险 (Route / Corso / Cover Genius XCover / Sensible Weather) 沙盒</div>
+            <div class="finops-sub">Round 308 (#427 · SVG #751) · 显式主动勾选 (Explicit Opt-In) 与持牌披露防默认暗扣违反 EU CRD Art. 22 / CA SB-478 (HTTP 403) + 理赔与商城 OMS 退款互锁及快递代位求偿权 (Subrogation) 自动移交防双吃 (HTTP 422) + 投保截止窗与 NOAA/OAG 预言机签名锁 (HTTP 451) + 保险出资一键重下替换新单净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="embins-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度门口包裹被盗 (Porch Piracy) 免费重发损耗、保险+客服双头重复赔付及暗黑模式合规罚金池 ($)
+            <input type="number" id="embins-gross-input" value="280000" min="10000" step="5000" oninput="recalcEmbeddedShippingParametricSandbox()" />
+          </label>
+          <label>结账页显式主动勾选 (Explicit Affirmative Opt-In) 与持牌保险/服务合同合规披露门禁
+            <select id="embins-optin-select" onchange="recalcEmbeddedShippingParametricSandbox()">
+              <option value="pass">默认不勾选，由买家主动点击 Opt-In 添加保障，并按美/欧法规披露持牌承保主体 (安全)</option>
+              <option value="block_403">购物车默认暗勾 $3.99 保价费违反 EU CRD Art. 22 / 加州 SB-478 招致集体诉讼 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>理赔与商城 OMS 退款互锁 (Anti-Double-Dip Mutex) 及承运商 $100 代位求偿 (Subrogation) 门禁
+            <select id="embins-mutex-select" onchange="recalcEmbeddedShippingParametricSandbox()">
+              <option value="pass">理赔受理即锁定 OMS 客服退款按钮，且赔付后自动向 UPS/FedEx 发起代位索赔 (合规)</option>
+              <option value="block_422">买家在 Route 领走 $180 赔款后又找商家 AI 客服再退一次钱，且放弃快递代位追偿 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>发货/气象窗口期前投保锁与参数化权威预言机 (NOAA 降雨 / OAG 航延) 密码学签名门禁
+            <select id="embins-oracle-select" onchange="recalcEmbeddedShippingParametricSandbox()">
+              <option value="pass">仅限下单时点投保，且参数化自动赔付强制核验 NOAA/OAG 权威预言机加密签名 (安全)</option>
+              <option value="block_451">看到快递扫描丢失或暴雨预警后才回头补买保险逆选择骗保 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>保险出资一键生成商城替换新单 (1-Click Replacement Order) + 承运商自动代位追偿编排
+            <select id="embins-opt-select" onchange="recalcEmbeddedShippingParametricSandbox()">
+              <option value="enabled" selected>启用显式 Opt-In + 保险资金自动重下替换新单 + 承运商代位追偿 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">商家自掏腰包免费补发所有被盗包裹且无快递索赔自动化 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度丢件重发与双赔损耗池</div>
+            <div class="finops-kpi-val" id="embins-gross-kpi">$280,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">合规保价与代位追偿后净成本</div>
+            <div class="finops-kpi-val" id="embins-net-kpi" style="color:#6ee7b7;">$173,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省重发成本与再造GMV</div>
+            <div class="finops-kpi-val" id="embins-savings-kpi" style="color:#38bdf8;">$106,400</div>
+          </div>
+        </div>
+        <div id="embins-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 EXPLICIT_OPTIN_SUBROGATION_MUTEX_AND_REORDER_FLYWHEEL_CONFIRM · Mandate: embedded_shipping_parametric_optim_409
         </div>
       </div>
 
@@ -103640,6 +103800,79 @@ function recalcB2bVmiConsignmentSbtSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_VMI_CONSIGNMENT_SBT_AND_SHRINK_CAP_AUTHORIZED · Mandate: b2b_vmi_consignment_sbt_200';
+}}
+
+function recalcEmbeddedShippingParametricSandbox() {{
+  const grossInput = document.getElementById('embins-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '280000'));
+  const optinGate = document.getElementById('embins-optin-select').value;
+  const mutexGate = document.getElementById('embins-mutex-select').value;
+  const oracleGate = document.getElementById('embins-oracle-select').value;
+  const optMode = document.getElementById('embins-opt-select').value;
+
+  const grossKpi = document.getElementById('embins-gross-kpi');
+  const netKpi = document.getElementById('embins-net-kpi');
+  const savingsKpi = document.getElementById('embins-savings-kpi');
+  const statusKpi = document.getElementById('embins-status-kpi');
+  const banner = document.getElementById('embins-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (oracleGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 RETROACTIVE_POST_INCIDENT_POLICY_BIND_OR_UNVERIFIED_ORACLE_FEED · Mandate: null';
+    return;
+  }}
+  if (optinGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PRE_CHECKED_DARK_PATTERN_OPT_OUT_OR_UNLICENSED_INSURANCE_TERM · Mandate: null';
+    return;
+  }}
+  if (mutexGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DOUBLE_DIP_INSURANCE_AND_MERCHANT_REFUND_OR_UNFILED_SUBROGATION · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 EXPLICIT_OPTIN_SUBROGATION_MUTEX_AND_REORDER_FLYWHEEL_CONFIRM · Mandate: embedded_shipping_parametric_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_EXPLICIT_OPTIN_AND_PARAMETRIC_ORACLE_AUTHORIZED · Mandate: embedded_shipping_parametric_200';
 }}
 
 function updateStage1756Sandbox() {{
