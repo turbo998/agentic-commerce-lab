@@ -27416,6 +27416,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-flash-sale-drop-escrow-sandbox", html_zh)
 
+    def test_b2b_tail_spend_spot_buy_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2BTailSpendSpotBuyEscrowPolicyInput,
+            evaluate_b2b_tail_spend_spot_buy_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_tail_spend_spot_buy_escrow_policy(
+            B2BTailSpendSpotBuyEscrowPolicyInput(
+                quarterly_tail_spend_overpay_split_po_and_vmf_bloat_pool_usd=280000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "GUIDED_CATALOG_AND_THREE_BID_SPOT_BUY_AUTHORIZED",
+        )
+
+        split = evaluate_b2b_tail_spend_spot_buy_escrow_policy(
+            B2BTailSpendSpotBuyEscrowPolicyInput(
+                split_po_threshold_structuring_evasion_detected=True
+            )
+        )
+        self.assertEqual(split["status_code"], 403)
+        self.assertEqual(
+            split["decision"],
+            "SPLIT_PO_APPROVAL_THRESHOLD_STRUCTURING_EVASION",
+        )
+
+        maverick = evaluate_b2b_tail_spend_spot_buy_escrow_policy(
+            B2BTailSpendSpotBuyEscrowPolicyInput(
+                maverick_free_text_bypass_or_missing_three_bid_rfq=True
+            )
+        )
+        self.assertEqual(maverick["status_code"], 422)
+        self.assertEqual(
+            maverick["decision"],
+            "MAVERICK_FREE_TEXT_BYPASS_OR_MISSING_THREE_BID_RFQ",
+        )
+
+        ghost = evaluate_b2b_tail_spend_spot_buy_escrow_policy(
+            B2BTailSpendSpotBuyEscrowPolicyInput(
+                ghost_shell_vendor_or_employee_coi_self_dealing=True
+            )
+        )
+        self.assertEqual(ghost["status_code"], 451)
+        self.assertEqual(
+            ghost["decision"],
+            "GHOST_SHELL_VENDOR_OR_EMPLOYEE_COI_SELF_DEALING",
+        )
+
+        optim = evaluate_b2b_tail_spend_spot_buy_escrow_policy(
+            B2BTailSpendSpotBuyEscrowPolicyInput(
+                quarterly_tail_spend_overpay_split_po_and_vmf_bloat_pool_usd=280000.0,
+                master_vendor_mor_and_autonomous_three_bid_rfq_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 103600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 176400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_tail_spend_spot_buy_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-tail-spend-spot-buy-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
