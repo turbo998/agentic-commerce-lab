@@ -28019,6 +28019,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("commercial-search-grounding-six-engine-sandbox", html_zh)
 
+    def test_commercial_agent_platform_hybrid_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CommercialAgentPlatformHybridPolicyInput,
+            evaluate_commercial_agent_platform_hybrid_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_commercial_agent_platform_hybrid_policy(
+            CommercialAgentPlatformHybridPolicyInput(
+                quarterly_platform_credit_burn_and_dirty_write_pool_usd=320000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "DELEGATED_OBO_IDENTITY_AND_SAGA_PLATFORM_AUTHORIZED",
+        )
+
+        obo = evaluate_commercial_agent_platform_hybrid_policy(
+            CommercialAgentPlatformHybridPolicyInput(
+                shared_admin_service_principal_rls_bypass_risk=True
+            )
+        )
+        self.assertEqual(obo["status_code"], 403)
+        self.assertEqual(
+            obo["decision"],
+            "SHARED_ADMIN_SERVICE_PRINCIPAL_RLS_BYPASS_OR_DATA_LEAK",
+        )
+
+        burn = evaluate_commercial_agent_platform_hybrid_policy(
+            CommercialAgentPlatformHybridPolicyInput(
+                public_anonymous_traffic_burning_per_conversation_credits=True
+            )
+        )
+        self.assertEqual(burn["status_code"], 422)
+        self.assertEqual(
+            burn["decision"],
+            "PUBLIC_ANONYMOUS_TRAFFIC_BURNING_HIGH_COST_CONVERSATION_CREDITS",
+        )
+
+        saga = evaluate_commercial_agent_platform_hybrid_policy(
+            CommercialAgentPlatformHybridPolicyInput(
+                low_code_uncompensated_multi_erp_mutation_without_saga=True
+            )
+        )
+        self.assertEqual(saga["status_code"], 451)
+        self.assertEqual(
+            saga["decision"],
+            "LOW_CODE_UNCOMPENSATED_MULTI_ERP_MUTATION_WITHOUT_SAGA_OUTBOX",
+        )
+
+        optim = evaluate_commercial_agent_platform_hybrid_policy(
+            CommercialAgentPlatformHybridPolicyInput(
+                quarterly_platform_credit_burn_and_dirty_write_pool_usd=320000.0,
+                front_store_low_code_back_factory_foundry_hybrid_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 124800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 195200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("commercial_agent_platform_hybrid_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("commercial-agent-platform-hybrid-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

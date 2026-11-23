@@ -2,11 +2,11 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`401` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`402` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
-- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (28 guides)](#platform-grounding)
+- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (29 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (54 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (150 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (88 guides)](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (28 Guides)
+## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (29 Guides)
 
 > Platform selection (Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify), real-time search grounding (Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl), catalog feed barriers, A2UI isolation, and Web Bot Auth vs WAF governance.
 
@@ -52,6 +52,7 @@
 | 26 | **🏆 E-Commerce & Marketplace Retail Media Network (`RMN`: `Amazon Ads / Walmart Connect / Criteo / Koddi`) Sponsored Bidding, Causal `iROAS` Attribution & Buy-Box / Stockout / Post-Return `POAS` Escrow (🏆 390th Bilingual Guide Milestone), Sub-60s `Buy-Box` & Size-Curve Pause, Branded Cannibalization Cap & Net `POAS >= 1.35x` Dayparting (`-39%` Ad Waste & Margin Bleed) Agent Architecture Selection FAQ** | [English](retail-media-network-rmn-sponsored-bidding-iroas-stockout-margin-escrow-agent-selection-faq.en.md) · [中文](retail-media-network-rmn-sponsored-bidding-iroas-stockout-margin-escrow-agent-selection-faq.md) |
 | 27 | **🏆 End-to-End Transactional Agentic Commerce Reference Architecture (`Hybrid Search & Web IQ` → `Cart FSM & Quote Lock` → `Tiered HITL & AP2 / SPT / VIC` → `Idempotent Shopify / Dynamics 365 / SAP / Salesforce Saga` · 🏆 400th Bilingual Guide Milestone), Anti-`54%-Wrong-Buy` `checkout_hash` Lock, Out-of-Band `FIDO2` Tiered HITL & `Read-Before-Retry` + `<5s 0420` Compensating Saga (`-41%` E2E Transaction Loss) Selection FAQ** | [English](end-to-end-transactional-agentic-commerce-hybrid-search-cart-fsm-hitl-erp-saga-selection-faq.en.md) · [中文](end-to-end-transactional-agentic-commerce-hybrid-search-cart-fsm-hitl-erp-saga-selection-faq.md) |
 | 28 | **Real-Time Commercial Search & Web Grounding 6-Engine Selection (`Microsoft Web IQ / Bing Grounding vs. Perplexity Sonar Pro vs. Tavily vs. Exa vs. Firecrawl vs. Browser-Use`), `85/10/4/1` 4-Tier Funnel (`7.1x` Token Cut), `liveCrawlSucceeded` + `14-Digit GTIN` Parity, `W3C TDMRep` Compliance & DOM Injection Quarantine (`-41%` Grounding & Price-Drift Loss) FAQ** | [English](commercial-search-grounding-six-engine-webiq-sonar-tavily-exa-firecrawl-browseruse-selection-faq.en.md) · [中文](commercial-search-grounding-six-engine-webiq-sonar-tavily-exa-firecrawl-browseruse-selection-faq.md) |
+| 29 | **Commercial Agent Build Path & Platform Selection (`Microsoft Copilot Studio + Dynamics 365 vs. Azure AI Foundry + Semantic Kernel / LangGraph vs. Salesforce Agentforce vs. Shopify Sidekick`), `Entra OBO` RLS Isolation, `Foundry SLM` Public Traffic Front-Filter & "Front-Store / Back-Factory" Hybrid Saga (`-39%` Platform & Integration TCO) FAQ** | [English](commercial-agent-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-sidekick-hybrid-selection-faq.en.md) · [中文](commercial-agent-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-sidekick-hybrid-selection-faq.md) |
 
 <a id="payments-mandates"></a>
 ## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (54 Guides)

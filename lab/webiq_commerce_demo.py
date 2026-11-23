@@ -36621,6 +36621,82 @@ def evaluate_commercial_search_grounding_six_engine_policy(
     }
 
 
+@dataclass(frozen=True)
+class CommercialAgentPlatformHybridPolicyInput:
+    quarterly_platform_credit_burn_and_dirty_write_pool_usd: float = 320000.0
+    shared_admin_service_principal_rls_bypass_risk: bool = False
+    public_anonymous_traffic_burning_per_conversation_credits: bool = False
+    low_code_uncompensated_multi_erp_mutation_without_saga: bool = False
+    front_store_low_code_back_factory_foundry_hybrid_ready: bool = False
+
+
+def evaluate_commercial_agent_platform_hybrid_policy(
+    policy_input: CommercialAgentPlatformHybridPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_platform_credit_burn_and_dirty_write_pool_usd
+        ),
+    )
+    if policy_input.low_code_uncompensated_multi_erp_mutation_without_saga:
+        return {
+            "status_code": 451,
+            "decision": "LOW_CODE_UNCOMPENSATED_MULTI_ERP_MUTATION_WITHOUT_SAGA_OUTBOX",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.shared_admin_service_principal_rls_bypass_risk:
+        return {
+            "status_code": 403,
+            "decision": "SHARED_ADMIN_SERVICE_PRINCIPAL_RLS_BYPASS_OR_DATA_LEAK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.public_anonymous_traffic_burning_per_conversation_credits:
+        return {
+            "status_code": 422,
+            "decision": "PUBLIC_ANONYMOUS_TRAFFIC_BURNING_HIGH_COST_CONVERSATION_CREDITS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.front_store_low_code_back_factory_foundry_hybrid_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FRONT_STORE_LOW_CODE_AND_BACK_FACTORY_FOUNDRY_SAGA_HYBRID_CONFIRM",
+            "mandate_token": "commercial_agent_platform_hybrid_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "DELEGATED_OBO_IDENTITY_AND_SAGA_PLATFORM_AUTHORIZED",
+        "mandate_token": "commercial_agent_platform_hybrid_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -49898,6 +49974,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    commercial_agent_platform_hybrid_guard = {
+        "authorized_200": evaluate_commercial_agent_platform_hybrid_policy(
+            CommercialAgentPlatformHybridPolicyInput()
+        ),
+        "shared_admin_rls_bypass_403": evaluate_commercial_agent_platform_hybrid_policy(
+            CommercialAgentPlatformHybridPolicyInput(
+                shared_admin_service_principal_rls_bypass_risk=True
+            )
+        ),
+        "public_traffic_credit_burn_422": evaluate_commercial_agent_platform_hybrid_policy(
+            CommercialAgentPlatformHybridPolicyInput(
+                public_anonymous_traffic_burning_per_conversation_credits=True
+            )
+        ),
+        "low_code_uncompensated_saga_451": evaluate_commercial_agent_platform_hybrid_policy(
+            CommercialAgentPlatformHybridPolicyInput(
+                low_code_uncompensated_multi_erp_mutation_without_saga=True
+            )
+        ),
+        "front_store_back_factory_hybrid_409": evaluate_commercial_agent_platform_hybrid_policy(
+            CommercialAgentPlatformHybridPolicyInput(
+                front_store_low_code_back_factory_foundry_hybrid_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -50309,6 +50411,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_rma_bonus_exchange_guard": ecommerce_rma_bonus_exchange_guard,
         "end_to_end_transactional_commerce_saga_guard": end_to_end_transactional_commerce_saga_guard,
         "commercial_search_grounding_six_engine_guard": commercial_search_grounding_six_engine_guard,
+        "commercial_agent_platform_hybrid_guard": commercial_agent_platform_hybrid_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -71639,6 +71742,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="gnd6-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FOUR_TIER_GROUNDING_FUNNEL_AND_LIVE_BROWSE_VERIFICATION_CONFIRM · Mandate: commercial_grounding_six_engine_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 283 (#402) Commercial Agent Build Path & Platform Hybrid Selection -->
+      <div class="finops-box" id="commercial-agent-platform-hybrid-sandbox" style="margin-top:12px;border-color:#6366f1;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏗️ 商业 Agent 构建平台选型 (Copilot Studio vs Azure AI Foundry/LangGraph vs Agentforce vs Shopify) 混合架构沙盒</div>
+            <div class="finops-sub">Round 283 (#402 · SVG #726) · Entra OBO 用户身份穿透防共享管理员账号越权泄露全司底价 (HTTP 403) + Foundry SLM 前哨分流防公网匿名访客烧穿 $2/会话消息包 (HTTP 422) + 跨 ERP 写操作下沉至专业代码 Outbox Saga 防脏写 (HTTP 451) + 前店低代码 UI + 后厂 Foundry 状态机净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="plat4-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度公网匿名导购烧穿按次会话消息包、跨异构 ERP 无补偿脏写返工及全自研重复造 UI 轮子损耗池 ($)
+            <input type="number" id="plat4-gross-input" value="320000" min="10000" step="5000" oninput="recalcCommercialAgentPlatformHybridSandbox()" />
+          </label>
+          <label>连接器身份鉴权穿透 (OAuth 2.0 On-Behalf-Of / Entra OBO) 与底层 ERP/CRM 行级安全 (RLS) 门禁
+            <select id="plat4-obo-select" onchange="recalcCommercialAgentPlatformHybridSandbox()">
+              <option value="pass">全程透传当前登录员工 OBO 令牌，严格遵循 D365/SAP/Salesforce 行级与字段级权限 (安全)</option>
+              <option value="block_403">在连接器中硬编码全局共享 Admin Key 导致普通员工问出全司供应商返点底价 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>公网高并发匿名访客流量分层 (Foundry SLM Token 前哨过滤 vs. $2/次按会话消息包直连) 门禁
+            <select id="plat4-burn-select" onchange="recalcCommercialAgentPlatformHybridSandbox()">
+              <option value="pass">95% 公网匿名问答由 Foundry SLM ($0.0015/会话) 承接，仅 5% 交易意向转入后台 (合规)</option>
+              <option value="block_422">将 $2/会话的商业 SaaS Agent 裸露在公网首页被 50 万只逛不买访客烧爆账单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>跨支付网关 (Stripe) + 核心 ERP (SAP/D365) + 仓储 (WMS) 分布式写操作的 Saga 补偿门禁
+            <select id="plat4-saga-select" onchange="recalcCommercialAgentPlatformHybridSandbox()">
+              <option value="pass">多系统写操作通过 MCP 委托给 Foundry + LangGraph 确定性 Outbox Saga 引擎执行 (安全)</option>
+              <option value="block_451">用无事务回滚能力的低代码胶水流裸写三套系统导致扣款成功却漏建 ERP 订单 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>“前店后厂 (Front-Store / Back-Factory)”组合架构：前店复用 Copilot Studio/Agentforce UI + 后厂 Foundry 受托控制面
+            <select id="plat4-opt-select" onchange="recalcCommercialAgentPlatformHybridSandbox()">
+              <option value="enabled" selected>前店低代码 2 周极速交付交互与审批卡 + 后厂 Foundry 掌控比价与资金 Saga (-39% TCO / HTTP 409)</option>
+              <option value="disabled">全栈纯手写前端审批卡片或全栈纯低代码硬撑复杂分布式交易 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度消息包超支与返工损失池</div>
+            <div class="finops-kpi-val" id="plat4-gross-kpi">$320,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">前店后厂混合架构后净TCO</div>
+            <div class="finops-kpi-val" id="plat4-net-kpi" style="color:#6ee7b7;">$195,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省许可证与研发成本</div>
+            <div class="finops-kpi-val" id="plat4-savings-kpi" style="color:#38bdf8;">$124,800</div>
+          </div>
+        </div>
+        <div id="plat4-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FRONT_STORE_LOW_CODE_AND_BACK_FACTORY_FOUNDRY_SAGA_HYBRID_CONFIRM · Mandate: commercial_agent_platform_hybrid_optim_409
         </div>
       </div>
 
@@ -97815,6 +97975,79 @@ function recalcCommercialSearchGroundingSixEngineSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_LIVE_BROWSE_AND_SANITIZED_GROUNDING_AUTHORIZED · Mandate: commercial_grounding_six_engine_200';
+}}
+
+function recalcCommercialAgentPlatformHybridSandbox() {{
+  const grossInput = document.getElementById('plat4-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '320000'));
+  const oboGate = document.getElementById('plat4-obo-select').value;
+  const burnGate = document.getElementById('plat4-burn-select').value;
+  const sagaGate = document.getElementById('plat4-saga-select').value;
+  const optMode = document.getElementById('plat4-opt-select').value;
+
+  const grossKpi = document.getElementById('plat4-gross-kpi');
+  const netKpi = document.getElementById('plat4-net-kpi');
+  const savingsKpi = document.getElementById('plat4-savings-kpi');
+  const statusKpi = document.getElementById('plat4-status-kpi');
+  const banner = document.getElementById('plat4-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (sagaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 LOW_CODE_UNCOMPENSATED_MULTI_ERP_MUTATION_WITHOUT_SAGA_OUTBOX · Mandate: null';
+    return;
+  }}
+  if (oboGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SHARED_ADMIN_SERVICE_PRINCIPAL_RLS_BYPASS_OR_DATA_LEAK · Mandate: null';
+    return;
+  }}
+  if (burnGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PUBLIC_ANONYMOUS_TRAFFIC_BURNING_HIGH_COST_CONVERSATION_CREDITS · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FRONT_STORE_LOW_CODE_AND_BACK_FACTORY_FOUNDRY_SAGA_HYBRID_CONFIRM · Mandate: commercial_agent_platform_hybrid_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 DELEGATED_OBO_IDENTITY_AND_SAGA_PLATFORM_AUTHORIZED · Mandate: commercial_agent_platform_hybrid_200';
 }}
 
 function updateStage1756Sandbox() {{
