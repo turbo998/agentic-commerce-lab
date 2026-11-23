@@ -36773,6 +36773,82 @@ def evaluate_b2b_rfq_tco_contract_redline_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceAIShoppingStylistBundlePolicyInput:
+    quarterly_incompatible_return_oos_bounce_and_bundle_gaming_pool_usd: float = 295000.0
+    pim_spec_incompatibility_or_skincare_ingredient_conflict: bool = False
+    broken_user_size_atp_in_bundle_or_split_freight_deficit: bool = False
+    unallocated_bundle_discount_partial_return_arbitrage: bool = False
+    one_tap_in_size_bundle_hydration_and_pro_rata_ledger_ready: bool = False
+
+
+def evaluate_ecommerce_ai_shopping_stylist_bundle_policy(
+    policy_input: EcommerceAIShoppingStylistBundlePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_incompatible_return_oos_bounce_and_bundle_gaming_pool_usd
+        ),
+    )
+    if policy_input.unallocated_bundle_discount_partial_return_arbitrage:
+        return {
+            "status_code": 451,
+            "decision": "UNALLOCATED_BUNDLE_DISCOUNT_PARTIAL_RETURN_ARBITRAGE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pim_spec_incompatibility_or_skincare_ingredient_conflict:
+        return {
+            "status_code": 403,
+            "decision": "PIM_SPEC_INCOMPATIBILITY_OR_INGREDIENT_CONFLICT_BUNDLE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.broken_user_size_atp_in_bundle_or_split_freight_deficit:
+        return {
+            "status_code": 422,
+            "decision": "BROKEN_USER_SIZE_ATP_IN_BUNDLE_OR_MULTI_WAREHOUSE_FREIGHT_DEFICIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.one_tap_in_size_bundle_hydration_and_pro_rata_ledger_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ONE_TAP_IN_SIZE_BUNDLE_HYDRATION_AND_PRO_RATA_LEDGER_CONFIRM",
+            "mandate_token": "ai_shopping_stylist_bundle_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_PIM_COMPATIBLE_AND_IN_SIZE_BUNDLE_AUTHORIZED",
+        "mandate_token": "ai_shopping_stylist_bundle_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -50102,6 +50178,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_ai_shopping_stylist_bundle_guard = {
+        "authorized_200": evaluate_ecommerce_ai_shopping_stylist_bundle_policy(
+            EcommerceAIShoppingStylistBundlePolicyInput()
+        ),
+        "pim_incompatibility_or_conflict_403": evaluate_ecommerce_ai_shopping_stylist_bundle_policy(
+            EcommerceAIShoppingStylistBundlePolicyInput(
+                pim_spec_incompatibility_or_skincare_ingredient_conflict=True
+            )
+        ),
+        "broken_user_size_or_split_freight_422": evaluate_ecommerce_ai_shopping_stylist_bundle_policy(
+            EcommerceAIShoppingStylistBundlePolicyInput(
+                broken_user_size_atp_in_bundle_or_split_freight_deficit=True
+            )
+        ),
+        "unallocated_bundle_return_arbitrage_451": evaluate_ecommerce_ai_shopping_stylist_bundle_policy(
+            EcommerceAIShoppingStylistBundlePolicyInput(
+                unallocated_bundle_discount_partial_return_arbitrage=True
+            )
+        ),
+        "one_tap_in_size_bundle_pro_rata_409": evaluate_ecommerce_ai_shopping_stylist_bundle_policy(
+            EcommerceAIShoppingStylistBundlePolicyInput(
+                one_tap_in_size_bundle_hydration_and_pro_rata_ledger_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -50515,6 +50617,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "commercial_search_grounding_six_engine_guard": commercial_search_grounding_six_engine_guard,
         "commercial_agent_platform_hybrid_guard": commercial_agent_platform_hybrid_guard,
         "b2b_rfq_tco_contract_redline_guard": b2b_rfq_tco_contract_redline_guard,
+        "ecommerce_ai_shopping_stylist_bundle_guard": ecommerce_ai_shopping_stylist_bundle_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -71959,6 +72062,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="rfqclm-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 NORMALIZED_LANDED_TCO_BAFO_AND_PLAYBOOK_REDLINE_ERP_SYNC_CONFIRM · Mandate: b2b_rfq_tco_clm_copilot_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 285 (#404) AI Shopping Stylist & Cross-Category Bundle Escrow -->
+      <div class="finops-box" id="ecommerce-ai-shopping-stylist-bundle-sandbox" style="margin-top:12px;border-color:#ec4899;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">👗 电商个性化 AI 导购与跨品类成套搭配 (Shopify MCP / Constructor.io / Agentforce / Rufus) 防错搭与拆退沙盒</div>
+            <div class="finops-sub">Round 285 (#404 · SVG #728) · PIM 硬兼容性图谱防乱搭不兼容镜头卡口与酸醇护肤冲突 (HTTP 403) + 全子件用户尺码 ATP&gt;=2 与同仓运费守恒预过滤 (HTTP 422) + 套装折扣行项 Pro-Rata 分摊与拆套退货差额追回 (HTTP 451) + 一键齐码原子加购提升 31% 连带率净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="stylist-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度大模型幻觉乱搭不兼容配件退货、推荐穿搭点进去用户尺码断货跳失及凑单退主品白拿折扣损失池 ($)
+            <input type="number" id="stylist-gross-input" value="295000" min="10000" step="5000" oninput="recalcEcommerceAIShoppingStylistBundleSandbox()" />
+          </label>
+          <label>商品主数据 (PIM) 物理接口/插槽/电压硬兼容边与美妆活性成分禁忌冲突图谱门禁
+            <select id="stylist-pim-select" onchange="recalcEcommerceAIShoppingStylistBundleSandbox()">
+              <option value="pass">全部搭配组合通过 PIM 硬兼容图谱校验 (卡口/插槽 100% 匹配且无护肤酸醇冲突) (安全)</option>
+              <option value="block_403">大模型凭向量相似给索尼 E 卡口相机配佳能 RF 镜头或把刷酸与猛药 A 醇混搭 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>套装全部子商品在当前用户尺码下可售库存 (User-Size ATP &gt;= 2) 与同仓拆单运费守恒门禁
+            <select id="stylist-atp-select" onchange="recalcEcommerceAIShoppingStylistBundleSandbox()">
+              <option value="pass">推荐前预锁用户专属尺码 (如上衣 L + 裤 32 + 鞋 42) 全部 ATP&gt;=2 且同仓可发 (合规)</option>
+              <option value="block_422">推荐穿搭点进去发现裤子 32 码已售罄，或 3 件特价品分处 3 仓拆单运费吞穿毛利 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>套装行项按比例分摊账本 (Pro-Rata Line Allocation) 与拆套部分退货未达标优惠追回门禁
+            <select id="stylist-prorata-select" onchange="recalcEcommerceAIShoppingStylistBundleSandbox()">
+              <option value="pass">按行分摊套装优惠；若退回主品导致破套，自动按保留品原价重算扣回优惠差额 (安全)</option>
+              <option value="block_451">买 $150+$50 享 $160 套装价后单独退掉 $150 主品获全额退现，仅花 $10 白拿配件 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>一键多 SKU 已选尺码原子注入购物车 (1-Tap cartLinesAdd) + 距离包邮线智能推荐同仓高毛利凑单品
+            <select id="stylist-opt-select" onchange="recalcEcommerceAIShoppingStylistBundleSandbox()">
+              <option value="enabled" selected>一键原子加购整套已选码商品 + 同仓高毛利凑免邮引导提升 28% AOV (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">需买家逐个点开 3 个详情页手选尺码加购且无同仓凑单与破套重算保护 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度错搭退货与拆套套利损失池</div>
+            <div class="finops-kpi-val" id="stylist-gross-kpi">$295,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">PIM图谱与行项分摊后净损耗</div>
+            <div class="finops-kpi-val" id="stylist-net-kpi" style="color:#6ee7b7;">$182,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省错配退货与套装毛利</div>
+            <div class="finops-kpi-val" id="stylist-savings-kpi" style="color:#38bdf8;">$112,100</div>
+          </div>
+        </div>
+        <div id="stylist-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ONE_TAP_IN_SIZE_BUNDLE_HYDRATION_AND_PRO_RATA_LEDGER_CONFIRM · Mandate: ai_shopping_stylist_bundle_optim_409
         </div>
       </div>
 
@@ -98281,6 +98441,79 @@ function recalcB2BRfqTcoContractRedlineSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_LANDED_TCO_AND_PLAYBOOK_MSA_AUTHORIZED · Mandate: b2b_rfq_tco_clm_copilot_200';
+}}
+
+function recalcEcommerceAIShoppingStylistBundleSandbox() {{
+  const grossInput = document.getElementById('stylist-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '295000'));
+  const pimGate = document.getElementById('stylist-pim-select').value;
+  const atpGate = document.getElementById('stylist-atp-select').value;
+  const prorataGate = document.getElementById('stylist-prorata-select').value;
+  const optMode = document.getElementById('stylist-opt-select').value;
+
+  const grossKpi = document.getElementById('stylist-gross-kpi');
+  const netKpi = document.getElementById('stylist-net-kpi');
+  const savingsKpi = document.getElementById('stylist-savings-kpi');
+  const statusKpi = document.getElementById('stylist-status-kpi');
+  const banner = document.getElementById('stylist-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (prorataGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNALLOCATED_BUNDLE_DISCOUNT_PARTIAL_RETURN_ARBITRAGE · Mandate: null';
+    return;
+  }}
+  if (pimGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PIM_SPEC_INCOMPATIBILITY_OR_INGREDIENT_CONFLICT_BUNDLE · Mandate: null';
+    return;
+  }}
+  if (atpGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BROKEN_USER_SIZE_ATP_IN_BUNDLE_OR_MULTI_WAREHOUSE_FREIGHT_DEFICIT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ONE_TAP_IN_SIZE_BUNDLE_HYDRATION_AND_PRO_RATA_LEDGER_CONFIRM · Mandate: ai_shopping_stylist_bundle_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_PIM_COMPATIBLE_AND_IN_SIZE_BUNDLE_AUTHORIZED · Mandate: ai_shopping_stylist_bundle_200';
 }}
 
 function updateStage1756Sandbox() {{

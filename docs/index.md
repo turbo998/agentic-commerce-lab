@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`403` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`404` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（29 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（54 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（150 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（151 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（89 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（35 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（46 篇）](#tax-fx-privacy-disputes)
@@ -117,7 +117,7 @@
 | 54 | **Agent 支付与结账协议深度选型（`Stripe SPT vs. Visa Intelligent Commerce (VIC) vs. Mastercard Agent Pay vs. PayPal Agentic Toolkit vs. 企业预算虚拟卡 VCN`）、预授权金额微漂移走廊（`Over-Capture Drift Corridor`）与无感 `FIDO2` 强核身托管“防跨店重放静态卡号、防 `+$0.45` 州税或称重尾差触发整单拒付、防凌晨自动下单撞上 3DS2 短信死锁与五轨智能路由净省 38%”Agent 架构选型 FAQ** | [中文](agent-payment-checkout-protocol-spt-vic-mastercard-paypal-vcn-authorization-drift-escrow-selection-faq.md) · [English](agent-payment-checkout-protocol-spt-vic-mastercard-paypal-vcn-authorization-drift-escrow-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（150 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（151 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -273,6 +273,7 @@
 | 148 | **航司与 OTA 机酒差旅智能规划与自动比价改签（`Amadeus / Sabre NDC / Duffel / Navan / Spotnana`）、美国 `DOT 24 小时免费退改`与非自愿航变（`Involuntary IROP`）免罚金锁、防多航段顺序作废（`Out-of-Sequence No-Show`）及退票代金券（`eCredit / UTC`）优先抵扣托管“防把航司延误 3.5 小时当自愿退票误扣 $200 罚金、防弃去程另买单程致返程机票被自动作废、防账上躺着 $180k 临期代金券不用却刷信用卡付新钱与购后降价自动换票净省 38%”Agent 架构选型 FAQ** | [中文](ota-airline-hotel-rebooking-dot24h-involuntary-irrops-ecredit-reuse-escrow-agent-selection-faq.md) · [English](ota-airline-hotel-rebooking-dot24h-involuntary-irrops-ecredit-reuse-escrow-agent-selection-faq.en.md) |
 | 149 | **全渠道零售“线上下单门店自提 / 路边闪取（`BOPIS & Curbside Pickup`：`Manhattan Active Omni / Fluent Commerce / NewStore / Shopify POS`）”、门店幽灵库存安全缓冲（`Phantom Stock Buffer`）、拣货入柜核销锁与超期未取自动释库及到店顺手加购托管“防门店最后 1 件衣服在试衣间导致买家白跑一趟（42% 缺货率）、防未入自提柜先发通知或静态截图被冒领、防未取货先扣实款引发拒付与到店扫码弹 $5 顺手加购券净省 38%”Agent 架构选型 FAQ** | [中文](omnichannel-bopis-curbside-pickup-phantom-stock-buffer-unclaimed-release-escrow-agent-selection-faq.md) · [English](omnichannel-bopis-curbside-pickup-phantom-stock-buffer-unclaimed-release-escrow-agent-selection-faq.en.md) |
 | 150 | **电商智能售后退换货与逆向留存（`Post-Purchase RMA & Bonus Exchange`：`Loop Returns / Narvar / ReturnGO / AfterShip Returns`）、防“免退回仅退款（`Returnless Refund`）”黑产白嫖、防换货奖励金二次退货套现与快递首扫锁库极速换货托管“防 `<$25` 免寄回仅退款规则被羊毛党换号刷空、防领 $15 换货补贴换货后再退货套现、防退货在途 5 天内换货新尺码卖断货与把 46% 退款转换货净省 39%”Agent 架构选型 FAQ** | [中文](ecommerce-rma-returnless-refund-abuse-bonus-exchange-credit-first-scan-escrow-agent-selection-faq.md) · [English](ecommerce-rma-returnless-refund-abuse-bonus-exchange-credit-first-scan-escrow-agent-selection-faq.en.md) |
+| 151 | **电商个性化 AI 导购与跨品类成套搭配转化助手（`AI Shopping Stylist & Cross-Category Bundle`：`Shopify Storefront MCP / Constructor.io / Salesforce Agentforce / Amazon Rufus`）、防物理接口与护肤成分冲突（`PIM Compatibility Graph`）、齐码同仓锁库与拆套退货按比例扣减（`Pro-Rata Bundle Return`）托管“防给索尼相机推荐佳能卡口镜头或酸醇护肤冲突、防推荐穿搭点进去发现用户尺码断货、防买3件8折退2件高价主品白拿配件与一键齐码加购净省 38%”Agent 架构选型 FAQ** | [中文](ecommerce-ai-shopping-stylist-cross-category-bundle-compatibility-pro-rata-return-escrow-selection-faq.md) · [English](ecommerce-ai-shopping-stylist-cross-category-bundle-compatibility-pro-rata-return-escrow-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（89 篇）

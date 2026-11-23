@@ -28153,6 +28153,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-rfq-tco-contract-redline-sandbox", html_zh)
 
+    def test_ecommerce_ai_shopping_stylist_bundle_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceAIShoppingStylistBundlePolicyInput,
+            evaluate_ecommerce_ai_shopping_stylist_bundle_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_ai_shopping_stylist_bundle_policy(
+            EcommerceAIShoppingStylistBundlePolicyInput(
+                quarterly_incompatible_return_oos_bounce_and_bundle_gaming_pool_usd=295000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_PIM_COMPATIBLE_AND_IN_SIZE_BUNDLE_AUTHORIZED",
+        )
+
+        pim = evaluate_ecommerce_ai_shopping_stylist_bundle_policy(
+            EcommerceAIShoppingStylistBundlePolicyInput(
+                pim_spec_incompatibility_or_skincare_ingredient_conflict=True
+            )
+        )
+        self.assertEqual(pim["status_code"], 403)
+        self.assertEqual(
+            pim["decision"],
+            "PIM_SPEC_INCOMPATIBILITY_OR_INGREDIENT_CONFLICT_BUNDLE",
+        )
+
+        atp = evaluate_ecommerce_ai_shopping_stylist_bundle_policy(
+            EcommerceAIShoppingStylistBundlePolicyInput(
+                broken_user_size_atp_in_bundle_or_split_freight_deficit=True
+            )
+        )
+        self.assertEqual(atp["status_code"], 422)
+        self.assertEqual(
+            atp["decision"],
+            "BROKEN_USER_SIZE_ATP_IN_BUNDLE_OR_MULTI_WAREHOUSE_FREIGHT_DEFICIT",
+        )
+
+        prorata = evaluate_ecommerce_ai_shopping_stylist_bundle_policy(
+            EcommerceAIShoppingStylistBundlePolicyInput(
+                unallocated_bundle_discount_partial_return_arbitrage=True
+            )
+        )
+        self.assertEqual(prorata["status_code"], 451)
+        self.assertEqual(
+            prorata["decision"],
+            "UNALLOCATED_BUNDLE_DISCOUNT_PARTIAL_RETURN_ARBITRAGE",
+        )
+
+        optim = evaluate_ecommerce_ai_shopping_stylist_bundle_policy(
+            EcommerceAIShoppingStylistBundlePolicyInput(
+                quarterly_incompatible_return_oos_bounce_and_bundle_gaming_pool_usd=295000.0,
+                one_tap_in_size_bundle_hydration_and_pro_rata_ledger_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 112100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 182900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_ai_shopping_stylist_bundle_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-ai-shopping-stylist-bundle-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
