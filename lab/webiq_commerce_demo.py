@@ -39353,6 +39353,80 @@ def evaluate_hospitality_pos_split_tip_policy(
     }
 
 
+@dataclass(frozen=True)
+class FleetFuelEvRoamingPolicyInput:
+    quarterly_fuel_theft_roaming_markup_and_idle_fee_pool_usd: float = 270000.0
+    telematics_gps_mismatch_or_tank_capacity_exceeded_theft: bool = False
+    stranded_afd_175_preauth_hold_without_instant_0420_release: bool = False
+    uncapped_ev_idle_fee_or_ocpi_roaming_tariff_drift: bool = False
+    telematics_pinned_iso15118_and_instant_0420_release_ready: bool = False
+
+
+def evaluate_fleet_fuel_ev_roaming_policy(
+    policy_input: FleetFuelEvRoamingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(policy_input.quarterly_fuel_theft_roaming_markup_and_idle_fee_pool_usd),
+    )
+    if policy_input.uncapped_ev_idle_fee_or_ocpi_roaming_tariff_drift:
+        return {
+            "status_code": 451,
+            "decision": "UNCAPPED_EV_IDLE_FEE_SHOCK_OR_OCPI_ROAMING_TARIFF_DRIFT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.telematics_gps_mismatch_or_tank_capacity_exceeded_theft:
+        return {
+            "status_code": 403,
+            "decision": "TELEMATICS_GPS_MISMATCH_OR_TANK_VOID_EXCEEDED_FUEL_THEFT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stranded_afd_175_preauth_hold_without_instant_0420_release:
+        return {
+            "status_code": 422,
+            "decision": "STRANDED_AFD_175_PREAUTH_HOLD_WITHOUT_INSTANT_0420_REVERSAL",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.telematics_pinned_iso15118_and_instant_0420_release_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TELEMATICS_PINNED_FLEET_FUEL_EV_PLUG_AND_CHARGE_0420_CONFIRM",
+            "mandate_token": "fleet_fuel_ev_roaming_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_FLEET_FUEL_AND_EV_ROAMING_AUTHORIZED",
+        "mandate_token": "fleet_fuel_ev_roaming_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -53566,6 +53640,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    fleet_fuel_ev_roaming_guard = {
+        "authorized_200": evaluate_fleet_fuel_ev_roaming_policy(
+            FleetFuelEvRoamingPolicyInput()
+        ),
+        "telematics_fuel_theft_403": evaluate_fleet_fuel_ev_roaming_policy(
+            FleetFuelEvRoamingPolicyInput(
+                telematics_gps_mismatch_or_tank_capacity_exceeded_theft=True
+            )
+        ),
+        "stranded_afd_preauth_422": evaluate_fleet_fuel_ev_roaming_policy(
+            FleetFuelEvRoamingPolicyInput(
+                stranded_afd_175_preauth_hold_without_instant_0420_release=True
+            )
+        ),
+        "uncapped_idle_or_roaming_451": evaluate_fleet_fuel_ev_roaming_policy(
+            FleetFuelEvRoamingPolicyInput(
+                uncapped_ev_idle_fee_or_ocpi_roaming_tariff_drift=True
+            )
+        ),
+        "telematics_iso15118_0420_409": evaluate_fleet_fuel_ev_roaming_policy(
+            FleetFuelEvRoamingPolicyInput(
+                telematics_pinned_iso15118_and_instant_0420_release_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -54013,6 +54113,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_rail_multimodal_interline_guard": ota_rail_multimodal_interline_guard,
         "cross_border_ftz_duty_drawback_guard": cross_border_ftz_duty_drawback_guard,
         "hospitality_pos_split_tip_guard": hospitality_pos_split_tip_guard,
+        "fleet_fuel_ev_roaming_guard": fleet_fuel_ev_roaming_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -77395,6 +77496,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="hosppos-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ATOMIC_SPLIT_CHECK_PRETAX_TIP_AND_FLSA_COMPLIANT_TIP_POOL_CONFIRM · Mandate: hospitality_pos_split_tip_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 319 (#438 · SVG #762) Commercial Fleet Fuel Cards & EV Roaming -->
+      <div class="finops-box" id="fleet-fuel-ev-roaming-sandbox" style="margin-top:12px;border-color:#059669;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">⚡ 商业车队加油卡与新能源充电漫游 (WEX / Stripe Issuing Fleet / ISO 15118 / OCPI) 防盗刷与预授权沙盒</div>
+            <div class="finops-sub">Round 319 (#438 · SVG #762) · 车载 Telematics GPS (&lt;=500m) + CAN-Bus 油箱空余容积动态封顶与 ISO 15118 车机硬件证书防偷加私家车 (HTTP 403) + 自助加油/超充桩 $175 预授权挂枪 3 秒内 0420 差额冲正释放 (HTTP 422) + OCPI 2.2.1 漫游锁价与超时占位费 15m 宽限/空场豁免 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="fltev-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度商业车队偷加私车油耗、OCPI 跨网充电漫游加点及夜间超时占桩罚款池 ($)
+            <input type="number" id="fltev-gross-input" value="270000" min="10000" step="5000" oninput="recalcFleetFuelEvRoamingSandbox()" />
+          </label>
+          <label>车载 Telematics GPS 距离围栏 (&lt;=500m)、油箱空余升数 Partial Approval 与 ISO 15118 硬件鉴权门禁
+            <select id="fltev-theft-select" onchange="recalcFleetFuelEvRoamingSandbox()">
+              <option value="pass">&lt;100ms 核验货车 GPS 距油站 &lt;=500m 并按油箱空余升数封顶批准金额，电车启用 ISO 15118 硬件证书 (安全)</option>
+              <option value="block_403">货车停在 8 公里外被盗刷，或 60L 油箱剩半箱油却刷出 95L 顺手加满旁边私家车 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>加油机 / 超充桩 (MCC 5542 / 5552) $175 预授权挂枪即时 ISO 8583 0420 余额释放门禁
+            <select id="fltev-preauth-select" onchange="recalcFleetFuelEvRoamingSandbox()">
+              <option value="pass">按电池目标 SoC 精准申请预授权，并在挂枪 3 秒内原子发送 0420 冲正释放 100% 未用额度 (合规)</option>
+              <option value="block_422">充 $38 电却将剩余 $137 预授权额度死冻 7 个工作日导致车队卡下午即被刷爆 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>OCPI 2.2.1 跨网漫游电价哈希锁与超时占桩费 (Idle Fee) 15m 宽限 / 空场豁免门禁
+            <select id="fltev-idle-select" onchange="recalcFleetFuelEvRoamingSandbox()">
+              <option value="pass">锁定 OCPI 分时电价哈希，强制 15m 挪车宽限、场站占用 &lt;50% 免收占桩费并设单次上限 (合规)</option>
+              <option value="block_451">半夜空旷场站无宽限期强收 $180 超时占桩费，或 OCPI 结算 CDR 电价暗涨 30% (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>车载 CAN-Bus 动态封顶 + ISO 15118 即插即充 + 秒级 0420 释放全链路编排
+            <select id="fltev-opt-select" onchange="recalcFleetFuelEvRoamingSandbox()">
+              <option value="enabled" selected>启用 GPS/油位动态封顶 + ISO 15118 锁车 + 秒级解冻 (-39% 能源损耗 / HTTP 409)</option>
+              <option value="disabled">传统磁条加油卡 + 普通 RFID 充电卡事后对账 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度偷油蹭电与占桩罚款池</div>
+            <div class="finops-kpi-val" id="fltev-gross-kpi">$270,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">GPS围栏与ISO15118后净支出</div>
+            <div class="finops-kpi-val" id="fltev-net-kpi" style="color:#6ee7b7;">$164,700</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省车队油电能源资金</div>
+            <div class="finops-kpi-val" id="fltev-savings-kpi" style="color:#38bdf8;">$105,300</div>
+          </div>
+        </div>
+        <div id="fltev-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TELEMATICS_PINNED_FLEET_FUEL_EV_PLUG_AND_CHARGE_0420_CONFIRM · Mandate: fleet_fuel_ev_roaming_optim_409
         </div>
       </div>
 
@@ -106199,6 +106357,79 @@ function recalcHospitalityPosSplitTipSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_HOSPITALITY_POS_SPLIT_AND_FLSA_TIP_POOL_AUTHORIZED · Mandate: hospitality_pos_split_tip_200';
+}}
+
+function recalcFleetFuelEvRoamingSandbox() {{
+  const grossInput = document.getElementById('fltev-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '270000'));
+  const theftGate = document.getElementById('fltev-theft-select').value;
+  const preauthGate = document.getElementById('fltev-preauth-select').value;
+  const idleGate = document.getElementById('fltev-idle-select').value;
+  const optMode = document.getElementById('fltev-opt-select').value;
+
+  const grossKpi = document.getElementById('fltev-gross-kpi');
+  const netKpi = document.getElementById('fltev-net-kpi');
+  const savingsKpi = document.getElementById('fltev-savings-kpi');
+  const statusKpi = document.getElementById('fltev-status-kpi');
+  const banner = document.getElementById('fltev-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (idleGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCAPPED_EV_IDLE_FEE_SHOCK_OR_OCPI_ROAMING_TARIFF_DRIFT · Mandate: null';
+    return;
+  }}
+  if (theftGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 TELEMATICS_GPS_MISMATCH_OR_TANK_VOID_EXCEEDED_FUEL_THEFT · Mandate: null';
+    return;
+  }}
+  if (preauthGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 STRANDED_AFD_175_PREAUTH_HOLD_WITHOUT_INSTANT_0420_REVERSAL · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TELEMATICS_PINNED_FLEET_FUEL_EV_PLUG_AND_CHARGE_0420_CONFIRM · Mandate: fleet_fuel_ev_roaming_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_FLEET_FUEL_AND_EV_ROAMING_AUTHORIZED · Mandate: fleet_fuel_ev_roaming_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`437` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`438` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (30 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (56 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (57 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (166 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (95 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (39 guides)](#saas-finops-micropayments)
@@ -56,7 +56,7 @@
 | 30 | **E-Commerce Trusted Agent Identity & Edge Bot Governance (`Cloudflare Web Bot Auth / RFC 9421 vs. Visa Trusted Agent Protocol TAP vs. Akamai / DataDome vs. Legacy WAF CAPTCHA`), `Ed25519` `.well-known` Directory Lock, `RFC 9530 Content-Digest` + `300s Nonce` Guard & Dual-Lane `UCP` Cache / VIP Checkout Split (`-40%` False-Positive & Bot Load Loss) FAQ** | [English](trusted-agent-identity-rfc9421-visa-tap-cloudflare-web-bot-auth-vs-waf-captcha-selection-faq.en.md) · [中文](trusted-agent-identity-rfc9421-visa-tap-cloudflare-web-bot-auth-vs-waf-captcha-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (56 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (57 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -118,6 +118,7 @@
 | 54 | **Agent Payment & Checkout Protocol Deep-Dive Selection (`Stripe SPT vs. Visa Intelligent Commerce VIC vs. Mastercard Agent Pay vs. PayPal Agentic Toolkit vs. Corporate Virtual Cards VCN`), `MCC`-Tiered Over-Capture Drift Corridor, `FIDO2 CIT-to-MIT` Delegated `3DS2` & 5-Rail Smart Router (`-38%` Decline & MDR Loss) Agent Architecture Selection FAQ** | [English](agent-payment-checkout-protocol-spt-vic-mastercard-paypal-vcn-authorization-drift-escrow-selection-faq.en.md) · [中文](agent-payment-checkout-protocol-spt-vic-mastercard-paypal-vcn-authorization-drift-escrow-selection-faq.md) |
 | 55 | **E-Commerce Embedded `BNPL` (`Affirm vs. Klarna vs. Afterpay vs. PayPal Pay in 4`), `MDR` Margin-Floor Gate (`>=18%`), Isolated `A2UI WebView` `TILA` Handover, Carrier `First-Scan` Autopay Snooze & `Tail-First` Partial-Return Re-Amortization (`-37%` BNPL MDR & Dispute Loss) Agent Architecture Selection FAQ** | [English](ecommerce-bnpl-klarna-affirm-afterpay-mdr-margin-floor-partial-return-reamortization-selection-faq.en.md) · [中文](ecommerce-bnpl-klarna-affirm-afterpay-mdr-margin-floor-partial-return-reamortization-selection-faq.md) |
 | 56 | **Multi-PSP Payment Orchestration (`Primer / Spreedly / Gr4vy vs. Adyen + Stripe + Checkout.com`), `8-Digit BIN` Local Acquiring, US `Durbin Reg II` PINless Debit Routing (`STAR / NYCE / Pulse`), `Cat-1 / MAC-03` Zero-Retry Breaker & `ISO 8583 0420` Timeout Failover Mutex (`-39%` Acquiring MDR & Decline Loss) FAQ** | [English](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.en.md) · [中文](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.md) |
+| 57 | **Commercial Fleet Fuel Cards & EV Charging Roaming (`WEX / Fleetcor / Stripe Issuing Fleet / Hubject ISO 15118 / OCPI 2.2.1`), Telematics `GPS + CAN-Bus` Fuel-Theft Lock, Instant `$175 AFD` `0420` Release & Idle-Fee Cap (`-39%` Fuel Slippage & Roaming Loss) FAQ** | [English](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.en.md) · [中文](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (166 Guides)

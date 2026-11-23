@@ -30431,6 +30431,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("hospitality-pos-split-tip-sandbox", html_zh)
 
+    def test_fleet_fuel_ev_roaming_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            FleetFuelEvRoamingPolicyInput,
+            evaluate_fleet_fuel_ev_roaming_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_fleet_fuel_ev_roaming_policy(
+            FleetFuelEvRoamingPolicyInput(
+                quarterly_fuel_theft_roaming_markup_and_idle_fee_pool_usd=270000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_FLEET_FUEL_AND_EV_ROAMING_AUTHORIZED",
+        )
+
+        theft = evaluate_fleet_fuel_ev_roaming_policy(
+            FleetFuelEvRoamingPolicyInput(
+                telematics_gps_mismatch_or_tank_capacity_exceeded_theft=True
+            )
+        )
+        self.assertEqual(theft["status_code"], 403)
+        self.assertEqual(
+            theft["decision"],
+            "TELEMATICS_GPS_MISMATCH_OR_TANK_VOID_EXCEEDED_FUEL_THEFT",
+        )
+
+        preauth = evaluate_fleet_fuel_ev_roaming_policy(
+            FleetFuelEvRoamingPolicyInput(
+                stranded_afd_175_preauth_hold_without_instant_0420_release=True
+            )
+        )
+        self.assertEqual(preauth["status_code"], 422)
+        self.assertEqual(
+            preauth["decision"],
+            "STRANDED_AFD_175_PREAUTH_HOLD_WITHOUT_INSTANT_0420_REVERSAL",
+        )
+
+        idle = evaluate_fleet_fuel_ev_roaming_policy(
+            FleetFuelEvRoamingPolicyInput(
+                uncapped_ev_idle_fee_or_ocpi_roaming_tariff_drift=True
+            )
+        )
+        self.assertEqual(idle["status_code"], 451)
+        self.assertEqual(
+            idle["decision"],
+            "UNCAPPED_EV_IDLE_FEE_SHOCK_OR_OCPI_ROAMING_TARIFF_DRIFT",
+        )
+
+        optim = evaluate_fleet_fuel_ev_roaming_policy(
+            FleetFuelEvRoamingPolicyInput(
+                quarterly_fuel_theft_roaming_markup_and_idle_fee_pool_usd=270000.0,
+                telematics_pinned_iso15118_and_instant_0420_release_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 105300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 164700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("fleet_fuel_ev_roaming_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("fleet-fuel-ev-roaming-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
