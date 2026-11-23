@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`397` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`398` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (26 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (54 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (148 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (149 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (88 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (35 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (46 guides)](#tax-fx-privacy-disputes)
@@ -114,7 +114,7 @@
 | 54 | **Agent Payment & Checkout Protocol Deep-Dive Selection (`Stripe SPT vs. Visa Intelligent Commerce VIC vs. Mastercard Agent Pay vs. PayPal Agentic Toolkit vs. Corporate Virtual Cards VCN`), `MCC`-Tiered Over-Capture Drift Corridor, `FIDO2 CIT-to-MIT` Delegated `3DS2` & 5-Rail Smart Router (`-38%` Decline & MDR Loss) Agent Architecture Selection FAQ** | [English](agent-payment-checkout-protocol-spt-vic-mastercard-paypal-vcn-authorization-drift-escrow-selection-faq.en.md) · [中文](agent-payment-checkout-protocol-spt-vic-mastercard-paypal-vcn-authorization-drift-escrow-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (148 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (149 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -268,6 +268,7 @@
 | 146 | **OTA & Corporate Travel Hotel Rate-Parity, `US FTC Part 464` Resort-Fee All-In Pricing, `PMS HCN` Verification & Overbooked `Walk Clause` Escrow (`Expedia Rapid / Booking.com / DerbySoft / Sabre`), Mandatory `T-48h Opera PMS HCN` Gate, Flight-Linked Late-Arrival Hold & Atomic `New-HCN-First` Price-Drop Rebook (`-38%` Resort-Fee & Hotel Loss) Agent Architecture Selection FAQ** | [English](ota-hotel-rate-parity-resort-fee-ftc-junk-fees-walk-relocation-escrow-agent-selection-faq.en.md) · [中文](ota-hotel-rate-parity-resort-fee-ftc-junk-fees-walk-relocation-escrow-agent-selection-faq.md) |
 | 147 | **E-Commerce Flash Sale & Limited-Edition Drop (`Shopify Plus Flash Checkout / Redis Lua + Kafka / EQL Run Fair / Cloudflare Waiting Room`), Anti-Oversell Guard, `EMVCo PAR + CASS` Household Cap, Pre-Auth-Bound `180s` Cart Lease & `<60s` `0420` Loser Auth Reversal (`-39%` Oversell, Refund MDR & Hoarding Loss) Agent Architecture Selection FAQ** | [English](ecommerce-flash-sale-limited-drop-oversell-guard-inventory-hoarding-auth-reversal-escrow-agent-selection-faq.en.md) · [中文](ecommerce-flash-sale-limited-drop-oversell-guard-inventory-hoarding-auth-reversal-escrow-agent-selection-faq.md) |
 | 148 | **OTA & Corporate Travel Flight/Hotel Rebooking (`Amadeus / Sabre NDC / Duffel / Navan / Spotnana`), `US DOT 24-Hour Void` & Involuntary `IROP (Cat 33)` Waiver Lock, Multi-Leg Coupon-Sequence Protection, Expiring `eCredit / UTC` `FEFO` Redemption & Post-Ticketing Fare-Drop Reissue (`-38%` Rebooking & Expired UTC Loss) Agent Architecture Selection FAQ** | [English](ota-airline-hotel-rebooking-dot24h-involuntary-irrops-ecredit-reuse-escrow-agent-selection-faq.en.md) · [中文](ota-airline-hotel-rebooking-dot24h-involuntary-irrops-ecredit-reuse-escrow-agent-selection-faq.md) |
+| 149 | **Omnichannel Retail `BOPIS` & Curbside Pickup (`Manhattan Active Omni vs. Fluent Commerce vs. NewStore vs. Shopify POS`), `On-Hand >= 2 / RFID` Phantom-Stock Safety Buffer, Staged-Bin Scan Gate, Handover-Time Capture with 7-Day Auto-Release & `$5` In-Store Pickup Upsell (`-38%` Short-Pick & Freight Loss) Agent Architecture Selection FAQ** | [English](omnichannel-bopis-curbside-pickup-phantom-stock-buffer-unclaimed-release-escrow-agent-selection-faq.en.md) · [中文](omnichannel-bopis-curbside-pickup-phantom-stock-buffer-unclaimed-release-escrow-agent-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (88 Guides)

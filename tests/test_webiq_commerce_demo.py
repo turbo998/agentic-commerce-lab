@@ -27751,6 +27751,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-saas-renewal-churn-save-sandbox", html_zh)
 
+    def test_omnichannel_bopis_curbside_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OmnichannelBopisCurbsideEscrowPolicyInput,
+            evaluate_omnichannel_bopis_curbside_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_omnichannel_bopis_curbside_escrow_policy(
+            OmnichannelBopisCurbsideEscrowPolicyInput(
+                quarterly_short_pick_freight_and_unclaimed_stock_pool_usd=265000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_STORE_SAFETY_BUFFER_AND_BIN_STAGED_BOPIS_AUTHORIZED",
+        )
+
+        phantom = evaluate_omnichannel_bopis_curbside_escrow_policy(
+            OmnichannelBopisCurbsideEscrowPolicyInput(
+                single_unit_phantom_stock_bopis_promise_without_rfid=True
+            )
+        )
+        self.assertEqual(phantom["status_code"], 403)
+        self.assertEqual(
+            phantom["decision"],
+            "STORE_SINGLE_UNIT_PHANTOM_INVENTORY_SHORT_PICK_RISK",
+        )
+
+        stage = evaluate_omnichannel_bopis_curbside_escrow_policy(
+            OmnichannelBopisCurbsideEscrowPolicyInput(
+                premature_pickup_notice_before_bin_stage_or_static_qr=True
+            )
+        )
+        self.assertEqual(stage["status_code"], 422)
+        self.assertEqual(
+            stage["decision"],
+            "PREMATURE_PICKUP_NOTICE_BEFORE_BIN_STAGE_OR_STATIC_QR_FRAUD",
+        )
+
+        cap = evaluate_omnichannel_bopis_curbside_escrow_policy(
+            OmnichannelBopisCurbsideEscrowPolicyInput(
+                capture_before_pickup_handover_or_unreleased_7d_hold=True
+            )
+        )
+        self.assertEqual(cap["status_code"], 451)
+        self.assertEqual(
+            cap["decision"],
+            "CAPTURE_BEFORE_PICKUP_HANDOVER_OR_UNRELEASED_7D_STALE_HOLD",
+        )
+
+        optim = evaluate_omnichannel_bopis_curbside_escrow_policy(
+            OmnichannelBopisCurbsideEscrowPolicyInput(
+                quarterly_short_pick_freight_and_unclaimed_stock_pool_usd=265000.0,
+                short_pick_free_express_and_in_store_pickup_upsell_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 100700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 164300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("omnichannel_bopis_curbside_escrow_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("omnichannel-bopis-curbside-escrow-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
