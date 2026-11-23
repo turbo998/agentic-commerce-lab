@@ -29627,6 +29627,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("digital-gaming-iap-webshop-sandbox", html_zh)
 
+    def test_b2b_vmi_consignment_sbt_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bVmiConsignmentSbtPolicyInput,
+            evaluate_b2b_vmi_consignment_sbt_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_vmi_consignment_sbt_policy(
+            B2bVmiConsignmentSbtPolicyInput(
+                quarterly_unbilled_shrink_phantom_oos_and_markdown_pool_usd=320000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_VMI_CONSIGNMENT_SBT_AND_SHRINK_CAP_AUTHORIZED",
+        )
+
+        shrink = evaluate_b2b_vmi_consignment_sbt_policy(
+            B2bVmiConsignmentSbtPolicyInput(
+                uncompensated_store_shrinkage_above_contractual_cap=True
+            )
+        )
+        self.assertEqual(shrink["status_code"], 403)
+        self.assertEqual(
+            shrink["decision"],
+            "UNCOMPENSATED_STORE_SHRINKAGE_ABOVE_CONTRACTUAL_SBT_CAP",
+        )
+
+        phantom = evaluate_b2b_vmi_consignment_sbt_policy(
+            B2bVmiConsignmentSbtPolicyInput(
+                phantom_inventory_zero_scan_deadlock_or_duplicate_edi852=True
+            )
+        )
+        self.assertEqual(phantom["status_code"], 422)
+        self.assertEqual(
+            phantom["decision"],
+            "PHANTOM_INVENTORY_ZERO_SCAN_DEADLOCK_OR_DUPLICATE_EDI852_DISPATCH",
+        )
+
+        markdown = evaluate_b2b_vmi_consignment_sbt_policy(
+            B2bVmiConsignmentSbtPolicyInput(
+                unapproved_retail_markdown_deducted_from_wholesale_cost=True
+            )
+        )
+        self.assertEqual(markdown["status_code"], 451)
+        self.assertEqual(
+            markdown["decision"],
+            "UNAPPROVED_RETAIL_MARKDOWN_DEDUCTION_FROM_CONSIGNMENT_WHOLESALE_COST",
+        )
+
+        optim = evaluate_b2b_vmi_consignment_sbt_policy(
+            B2bVmiConsignmentSbtPolicyInput(
+                quarterly_unbilled_shrink_phantom_oos_and_markdown_pool_usd=320000.0,
+                sbt_shrink_cap_phantom_stock_heal_and_ers_settlement_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 121600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 198400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_vmi_consignment_sbt_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-vmi-consignment-sbt-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

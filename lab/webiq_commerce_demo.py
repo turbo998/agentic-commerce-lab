@@ -38445,6 +38445,82 @@ def evaluate_digital_gaming_iap_webshop_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bVmiConsignmentSbtPolicyInput:
+    quarterly_unbilled_shrink_phantom_oos_and_markdown_pool_usd: float = 320000.0
+    uncompensated_store_shrinkage_above_contractual_cap: bool = False
+    phantom_inventory_zero_scan_deadlock_or_duplicate_edi852: bool = False
+    unapproved_retail_markdown_deducted_from_wholesale_cost: bool = False
+    sbt_shrink_cap_phantom_stock_heal_and_ers_settlement_ready: bool = False
+
+
+def evaluate_b2b_vmi_consignment_sbt_policy(
+    policy_input: B2bVmiConsignmentSbtPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_unbilled_shrink_phantom_oos_and_markdown_pool_usd
+        ),
+    )
+    if policy_input.unapproved_retail_markdown_deducted_from_wholesale_cost:
+        return {
+            "status_code": 451,
+            "decision": "UNAPPROVED_RETAIL_MARKDOWN_DEDUCTION_FROM_CONSIGNMENT_WHOLESALE_COST",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncompensated_store_shrinkage_above_contractual_cap:
+        return {
+            "status_code": 403,
+            "decision": "UNCOMPENSATED_STORE_SHRINKAGE_ABOVE_CONTRACTUAL_SBT_CAP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.phantom_inventory_zero_scan_deadlock_or_duplicate_edi852:
+        return {
+            "status_code": 422,
+            "decision": "PHANTOM_INVENTORY_ZERO_SCAN_DEADLOCK_OR_DUPLICATE_EDI852_DISPATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sbt_shrink_cap_phantom_stock_heal_and_ers_settlement_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SBT_SHRINK_CAP_PHANTOM_STOCK_HEAL_AND_ERS_SETTLEMENT_CONFIRM",
+            "mandate_token": "b2b_vmi_consignment_sbt_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_VMI_CONSIGNMENT_SBT_AND_SHRINK_CAP_AUTHORIZED",
+        "mandate_token": "b2b_vmi_consignment_sbt_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -52346,6 +52422,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_vmi_consignment_sbt_guard = {
+        "authorized_200": evaluate_b2b_vmi_consignment_sbt_policy(
+            B2bVmiConsignmentSbtPolicyInput()
+        ),
+        "uncompensated_store_shrink_403": evaluate_b2b_vmi_consignment_sbt_policy(
+            B2bVmiConsignmentSbtPolicyInput(
+                uncompensated_store_shrinkage_above_contractual_cap=True
+            )
+        ),
+        "phantom_oos_or_dup_852_422": evaluate_b2b_vmi_consignment_sbt_policy(
+            B2bVmiConsignmentSbtPolicyInput(
+                phantom_inventory_zero_scan_deadlock_or_duplicate_edi852=True
+            )
+        ),
+        "unapproved_markdown_deduction_451": evaluate_b2b_vmi_consignment_sbt_policy(
+            B2bVmiConsignmentSbtPolicyInput(
+                unapproved_retail_markdown_deducted_from_wholesale_cost=True
+            )
+        ),
+        "sbt_shrink_cap_phantom_ers_409": evaluate_b2b_vmi_consignment_sbt_policy(
+            B2bVmiConsignmentSbtPolicyInput(
+                sbt_shrink_cap_phantom_stock_heal_and_ers_settlement_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -52781,6 +52883,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_distributor_rebate_spa_guard": b2b_distributor_rebate_spa_guard,
         "ota_corporate_mice_group_block_guard": ota_corporate_mice_group_block_guard,
         "digital_gaming_iap_webshop_guard": digital_gaming_iap_webshop_guard,
+        "b2b_vmi_consignment_sbt_guard": b2b_vmi_consignment_sbt_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -75479,6 +75582,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="gameiap-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 D2C_WEBSHOP_STEERING_CONSUMPTION_API_AND_GEM_CLAWBACK_CONFIRM · Mandate: digital_gaming_iap_webshop_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 307 (#426 · SVG #750 & 200th Sandbox Milestone) B2B VMI & Scan-Based Trading -->
+      <div class="finops-box" id="b2b-vmi-consignment-sbt-sandbox" style="margin-top:12px;border-color:#d97706;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 商超与 B2B 寄售扫码结算及 VMI 补货 (SPS Commerce / SAP Consignment / EDI 852 · 第 750 图 & 第 200 沙盒里程碑)</div>
+            <div class="finops-sub">Round 307 (#426 · SVG #750) · 门店寄售盘点 1.5% 失窃损耗封顶 (Shrinkage Cap) 防超额被盗转嫁给供应商 (HTTP 403) + 泊松零扫码突变检测自愈幽灵库存死锁与 EDI 852 幂等去重 (HTTP 422) + 协议批发结算价与门店临时促销脱钩锁 (HTTP 451) + ERS 自动周结净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="vmisbt-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度寄售门店超额失窃损耗转嫁、幽灵库存空架断货及未授权门店打折倒扣批发价损耗池 ($)
+            <input type="number" id="vmisbt-gross-input" value="320000" min="10000" step="5000" oninput="recalcB2bVmiConsignmentSbtSandbox()" />
+          </label>
+          <label>寄售门店周期盘点失窃损耗分担上限 (Contractual Shrinkage Allowance Cap <= 1.5%) 门禁
+            <select id="vmisbt-shrink-select" onchange="recalcB2bVmiConsignmentSbtSandbox()">
+              <option value="pass">核验盘亏量，对超出 1.5% 免赔上限的门店被盗商品自动生成 SAP 411 K 向零售商收款 (安全)</option>
+              <option value="block_403">门店被偷走 7% 寄售商品因未过 POS 扫码被零售商 100% 甩锅给供应商白吞 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>高账面库存连续零扫码幽灵死锁自愈 (Phantom Inventory Heal) 与 EDI 852 幂等去重门禁
+            <select id="vmisbt-phantom-select" onchange="recalcB2bVmiConsignmentSbtSandbox()">
+              <option value="pass">检测账面 >20 件但连续 48h 零扫码异常自动重置库存发补货，并过滤重复 EDI 852 (合规)</option>
+              <option value="block_422">账面虚高 24 件实际货架已空导致 VMI 停发补货整月断供，或重复报文发两车货 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>寄售周结 (ERS / SAP MRKO) 协议批发单价主数据锁与门店单方打折隔离门禁
+            <select id="vmisbt-price-select" onchange="recalcB2bVmiConsignmentSbtSandbox()">
+              <option value="pass">严格按合同协议批发单价表结算 POS 扫码量，不受门店临时促销打折影响 (安全)</option>
+              <option value="block_451">零售商周末自行搞 5 折清仓，结账时擅自把给供应商的寄售批发价也砍半 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>EDI 852 实时 VMI 凑整托补货 + 1.5% 损耗封顶追偿 + ERS 自动周结全链路编排
+            <select id="vmisbt-opt-select" onchange="recalcB2bVmiConsignmentSbtSandbox()">
+              <option value="enabled" selected>启用 1.5% 盗损封顶 + 零扫码幽灵库存自愈 + ERS 自动清算 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">纯靠人工巡店盘点与月底手工对账寄售差异表 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度寄售盗损与断货损耗池</div>
+            <div class="finops-kpi-val" id="vmisbt-gross-kpi">$320,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">盗损封顶与幽灵自愈后净成本</div>
+            <div class="finops-kpi-val" id="vmisbt-net-kpi" style="color:#6ee7b7;">$198,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回货损与补货GMV</div>
+            <div class="finops-kpi-val" id="vmisbt-savings-kpi" style="color:#38bdf8;">$121,600</div>
+          </div>
+        </div>
+        <div id="vmisbt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SBT_SHRINK_CAP_PHANTOM_STOCK_HEAL_AND_ERS_SETTLEMENT_CONFIRM · Mandate: b2b_vmi_consignment_sbt_optim_409
         </div>
       </div>
 
@@ -103407,6 +103567,79 @@ function recalcDigitalGamingIapWebshopSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_D2C_WEBSHOP_AND_CONSUMPTION_DEFENSE_AUTHORIZED · Mandate: digital_gaming_iap_webshop_200';
+}}
+
+function recalcB2bVmiConsignmentSbtSandbox() {{
+  const grossInput = document.getElementById('vmisbt-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '320000'));
+  const shrinkGate = document.getElementById('vmisbt-shrink-select').value;
+  const phantomGate = document.getElementById('vmisbt-phantom-select').value;
+  const priceGate = document.getElementById('vmisbt-price-select').value;
+  const optMode = document.getElementById('vmisbt-opt-select').value;
+
+  const grossKpi = document.getElementById('vmisbt-gross-kpi');
+  const netKpi = document.getElementById('vmisbt-net-kpi');
+  const savingsKpi = document.getElementById('vmisbt-savings-kpi');
+  const statusKpi = document.getElementById('vmisbt-status-kpi');
+  const banner = document.getElementById('vmisbt-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (priceGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNAPPROVED_RETAIL_MARKDOWN_DEDUCTION_FROM_CONSIGNMENT_WHOLESALE_COST · Mandate: null';
+    return;
+  }}
+  if (shrinkGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNCOMPENSATED_STORE_SHRINKAGE_ABOVE_CONTRACTUAL_SBT_CAP · Mandate: null';
+    return;
+  }}
+  if (phantomGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PHANTOM_INVENTORY_ZERO_SCAN_DEADLOCK_OR_DUPLICATE_EDI852_DISPATCH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SBT_SHRINK_CAP_PHANTOM_STOCK_HEAL_AND_ERS_SETTLEMENT_CONFIRM · Mandate: b2b_vmi_consignment_sbt_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_VMI_CONSIGNMENT_SBT_AND_SHRINK_CAP_AUTHORIZED · Mandate: b2b_vmi_consignment_sbt_200';
 }}
 
 function updateStage1756Sandbox() {{
