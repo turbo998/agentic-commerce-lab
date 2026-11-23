@@ -30967,7 +30967,7 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("proptech-lease-cam-escrow-sandbox", html_zh)
 
-    def test_ecommerce_big_bulky_white_glove_selection(self) -> None:
+    def test_big_bulky_ltl_path3d_keepit_selection(self) -> None:
         from lab.webiq_commerce_demo import (
             BigBulkyLtlPath3dKeepItPolicyInput,
             evaluate_big_bulky_ltl_path3d_keepit_policy,
