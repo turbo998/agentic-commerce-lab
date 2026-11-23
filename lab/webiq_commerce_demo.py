@@ -39807,6 +39807,82 @@ def evaluate_b2b_healthcare_gpo_340b_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceRemanCoreDepositPolicyInput:
+    quarterly_wrong_fitment_wasted_mdr_and_scrap_swap_pool_usd: float = 250000.0
+    unverified_aces_pies_vin_fitment_heavy_part_mismatch: bool = False
+    upfront_core_deposit_mdr_burn_or_unrefunded_core_sales_tax: bool = False
+    junkyard_scrap_core_swap_or_cracked_housing_full_refund: bool = False
+    aces_fitment_deferred_core_mit_and_casting_grade_ready: bool = False
+
+
+def evaluate_ecommerce_reman_core_deposit_policy(
+    policy_input: EcommerceRemanCoreDepositPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_wrong_fitment_wasted_mdr_and_scrap_swap_pool_usd
+        ),
+    )
+    if policy_input.junkyard_scrap_core_swap_or_cracked_housing_full_refund:
+        return {
+            "status_code": 451,
+            "decision": "JUNKYARD_SCRAP_CORE_SWAP_OR_CRACKED_HOUSING_FULL_REFUND_FRAUD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unverified_aces_pies_vin_fitment_heavy_part_mismatch:
+        return {
+            "status_code": 403,
+            "decision": "UNVERIFIED_ACES_PIES_VIN_FITMENT_QUALIFIER_HEAVY_PART_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.upfront_core_deposit_mdr_burn_or_unrefunded_core_sales_tax:
+        return {
+            "status_code": 422,
+            "decision": "UPFRONT_CORE_DEPOSIT_MDR_BURN_OR_UNREFUNDED_CORE_SALES_TAX",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.aces_fitment_deferred_core_mit_and_casting_grade_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ACES_VIN_FITMENT_DEFERRED_CORE_MIT_AND_CASTING_GRADE_CONFIRM",
+            "mandate_token": "ecommerce_reman_core_deposit_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ACES_FITMENT_AND_CORE_DEPOSIT_ESCROW_AUTHORIZED",
+        "mandate_token": "ecommerce_reman_core_deposit_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -54176,6 +54252,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_reman_core_deposit_guard = {
+        "authorized_200": evaluate_ecommerce_reman_core_deposit_policy(
+            EcommerceRemanCoreDepositPolicyInput()
+        ),
+        "unverified_aces_fitment_403": evaluate_ecommerce_reman_core_deposit_policy(
+            EcommerceRemanCoreDepositPolicyInput(
+                unverified_aces_pies_vin_fitment_heavy_part_mismatch=True
+            )
+        ),
+        "upfront_core_mdr_or_tax_422": evaluate_ecommerce_reman_core_deposit_policy(
+            EcommerceRemanCoreDepositPolicyInput(
+                upfront_core_deposit_mdr_burn_or_unrefunded_core_sales_tax=True
+            )
+        ),
+        "junkyard_scrap_swap_451": evaluate_ecommerce_reman_core_deposit_policy(
+            EcommerceRemanCoreDepositPolicyInput(
+                junkyard_scrap_core_swap_or_cracked_housing_full_refund=True
+            )
+        ),
+        "aces_deferred_core_grade_409": evaluate_ecommerce_reman_core_deposit_policy(
+            EcommerceRemanCoreDepositPolicyInput(
+                aces_fitment_deferred_core_mit_and_casting_grade_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -54629,6 +54731,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_byob_bundle_guard": ecommerce_byob_bundle_guard,
         "ota_cruise_resort_folio_guard": ota_cruise_resort_folio_guard,
         "b2b_healthcare_gpo_340b_guard": b2b_healthcare_gpo_340b_guard,
+        "ecommerce_reman_core_deposit_guard": ecommerce_reman_core_deposit_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -78353,6 +78456,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="hcgpo-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 THREE_BUCKET_340B_SPLIT_GPO_TIER_LOCK_AND_OR_UDI_PO_CONFIRM · Mandate: b2b_healthcare_gpo_340b_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 325 (#444 · SVG #768) Remanufactured Core-Charge Escrow & ACES/PIES VIN Fitment -->
+      <div class="finops-box" id="ecommerce-reman-core-deposit-sandbox" style="margin-top:12px;border-color:#ea580c;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔧 汽配与硬件旧件回收押金 (Core Charge)、先行换新与 ACES/PIES 车型 VIN 精准适配沙盒</div>
+            <div class="finops-sub">Round 325 (#444 · SVG #768) · 17位 VIN 穿透 Auto Care ACES 4.2 + PIES 7.2 限定符防错发 45 磅重件 (HTTP 403) + 30天 CIT-to-MIT 延期押金担保免交 2.9% 刷卡费并同步退还押金销售税 (HTTP 422) + 入库核验原厂铸造号 (OEM Casting ID) 与壳体裂纹分级防废品站破铁掉包 (HTTP 451) + 净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="remancore-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度重型配件错发往返运费、前置实扣旧件押金 2.9% MDR 手续费磨损及废铁掉包骗押金池 ($)
+            <input type="number" id="remancore-gross-input" value="250000" min="10000" step="5000" oninput="recalcEcommerceRemanCoreDepositSandbox()" />
+          </label>
+          <label>17位车架号 (VIN) 穿透 Auto Care ACES 4.2 / PIES 7.2 盘径与接口限定符门禁
+            <select id="remancore-aces-select" onchange="recalcEcommerceRemanCoreDepositSandbox()">
+              <option value="pass">强制解析 17位 VIN 并确认全部 ACES 限定符 (如 340mm M-Sport 卡钳) 后方才发运 (安全)</option>
+              <option value="block_403">仅凭模糊车型文本盲发 45 磅重件，修车厂拆箱发现装不上倒亏 $85 往返重货运费 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>旧件回收押金 ($150 Core Charge) 30天 CIT-to-MIT 延期担保与押金销售税同步退还门禁
+            <select id="remancore-mdr-select" onchange="recalcEcommerceRemanCoreDepositSandbox()">
+              <option value="pass">货款即时实扣，押金走 30天 CIT-to-MIT 延期担保 (按期退回则 $0 实扣免 MDR)，含税押金本税同退 (合规)</option>
+              <option value="block_422">前置实扣 $150 押金再退款白白损失 2.9% ($4.35/单) 刷卡手续费，或退押金时扣留州销售税 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>逆向仓 PIES 毛重、原厂铸造钢印号 (OEM Casting ID) 与壳体裂纹成色分级 (Grade A/B/F) 门禁
+            <select id="remancore-cast-select" onchange="recalcEcommerceRemanCoreDepositSandbox()">
+              <option value="pass">待翻新仓核对 OEM 铸造钢印无误且壳体完好 (Grade-A) 后释放 100% 押金，裂纹折半 (安全)</option>
+              <option value="block_451">快递刚揽收即秒退 $150 押金，被欺诈者塞入 $10 废品站生锈副厂破铁掉包套现 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>ACES/PIES 精准适配 + 30天免 MDR 延期押金担保 + 原厂铸造号分级全链路编排
+            <select id="remancore-opt-select" onchange="recalcEcommerceRemanCoreDepositSandbox()">
+              <option value="enabled" selected>启用 ACES 精准适配 + 免 MDR 延期押金 + 铸造号分级 (-38% 损耗 / HTTP 409)</option>
+              <option value="disabled">车型下拉手工勾选 + 前置全额实扣押金原路退款 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度错发运费与押金损耗池</div>
+            <div class="finops-kpi-val" id="remancore-gross-kpi">$250,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">ACES适配与延期押金后净成本</div>
+            <div class="finops-kpi-val" id="remancore-net-kpi" style="color:#6ee7b7;">$155,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住后市场毛利与押金</div>
+            <div class="finops-kpi-val" id="remancore-savings-kpi" style="color:#38bdf8;">$95,000</div>
+          </div>
+        </div>
+        <div id="remancore-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ACES_VIN_FITMENT_DEFERRED_CORE_MIT_AND_CASTING_GRADE_CONFIRM · Mandate: ecommerce_reman_core_deposit_optim_409
         </div>
       </div>
 
@@ -107595,6 +107755,79 @@ function recalcB2bHealthcareGpo340bSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_HEALTHCARE_GPO_340B_AND_OR_UDI_AUTHORIZED · Mandate: b2b_healthcare_gpo_340b_200';
+}}
+
+function recalcEcommerceRemanCoreDepositSandbox() {{
+  const grossInput = document.getElementById('remancore-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '250000'));
+  const acesGate = document.getElementById('remancore-aces-select').value;
+  const mdrGate = document.getElementById('remancore-mdr-select').value;
+  const castGate = document.getElementById('remancore-cast-select').value;
+  const optMode = document.getElementById('remancore-opt-select').value;
+
+  const grossKpi = document.getElementById('remancore-gross-kpi');
+  const netKpi = document.getElementById('remancore-net-kpi');
+  const savingsKpi = document.getElementById('remancore-savings-kpi');
+  const statusKpi = document.getElementById('remancore-status-kpi');
+  const banner = document.getElementById('remancore-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (castGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 JUNKYARD_SCRAP_CORE_SWAP_OR_CRACKED_HOUSING_FULL_REFUND_FRAUD · Mandate: null';
+    return;
+  }}
+  if (acesGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNVERIFIED_ACES_PIES_VIN_FITMENT_QUALIFIER_HEAVY_PART_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (mdrGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UPFRONT_CORE_DEPOSIT_MDR_BURN_OR_UNREFUNDED_CORE_SALES_TAX · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ACES_VIN_FITMENT_DEFERRED_CORE_MIT_AND_CASTING_GRADE_CONFIRM · Mandate: ecommerce_reman_core_deposit_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_ACES_FITMENT_AND_CORE_DEPOSIT_ESCROW_AUTHORIZED · Mandate: ecommerce_reman_core_deposit_200';
 }}
 
 function updateStage1756Sandbox() {{

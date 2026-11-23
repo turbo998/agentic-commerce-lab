@@ -30833,6 +30833,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-healthcare-gpo-340b-sandbox", html_zh)
 
+    def test_ecommerce_reman_core_deposit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceRemanCoreDepositPolicyInput,
+            evaluate_ecommerce_reman_core_deposit_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_reman_core_deposit_policy(
+            EcommerceRemanCoreDepositPolicyInput(
+                quarterly_wrong_fitment_wasted_mdr_and_scrap_swap_pool_usd=250000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ACES_FITMENT_AND_CORE_DEPOSIT_ESCROW_AUTHORIZED",
+        )
+
+        aces = evaluate_ecommerce_reman_core_deposit_policy(
+            EcommerceRemanCoreDepositPolicyInput(
+                unverified_aces_pies_vin_fitment_heavy_part_mismatch=True
+            )
+        )
+        self.assertEqual(aces["status_code"], 403)
+        self.assertEqual(
+            aces["decision"],
+            "UNVERIFIED_ACES_PIES_VIN_FITMENT_QUALIFIER_HEAVY_PART_MISMATCH",
+        )
+
+        mdr = evaluate_ecommerce_reman_core_deposit_policy(
+            EcommerceRemanCoreDepositPolicyInput(
+                upfront_core_deposit_mdr_burn_or_unrefunded_core_sales_tax=True
+            )
+        )
+        self.assertEqual(mdr["status_code"], 422)
+        self.assertEqual(
+            mdr["decision"],
+            "UPFRONT_CORE_DEPOSIT_MDR_BURN_OR_UNREFUNDED_CORE_SALES_TAX",
+        )
+
+        swap = evaluate_ecommerce_reman_core_deposit_policy(
+            EcommerceRemanCoreDepositPolicyInput(
+                junkyard_scrap_core_swap_or_cracked_housing_full_refund=True
+            )
+        )
+        self.assertEqual(swap["status_code"], 451)
+        self.assertEqual(
+            swap["decision"],
+            "JUNKYARD_SCRAP_CORE_SWAP_OR_CRACKED_HOUSING_FULL_REFUND_FRAUD",
+        )
+
+        optim = evaluate_ecommerce_reman_core_deposit_policy(
+            EcommerceRemanCoreDepositPolicyInput(
+                quarterly_wrong_fitment_wasted_mdr_and_scrap_swap_pool_usd=250000.0,
+                aces_fitment_deferred_core_mit_and_casting_grade_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 95000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 155000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_reman_core_deposit_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-reman-core-deposit-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
