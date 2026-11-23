@@ -37153,6 +37153,82 @@ def evaluate_marketplace_split_settlement_reserve_policy(
     }
 
 
+@dataclass(frozen=True)
+class SaaSUsageMeteringX402MppPolicyInput:
+    quarterly_subcent_forfeiture_card_fee_and_loop_pool_usd: float = 280000.0
+    sub_fifty_cent_charge_on_fixed_fee_card_rail: bool = False
+    duplicate_kafka_replay_without_uuidv7_or_5xx_billed: bool = False
+    unaligned_subcent_truncation_or_runaway_agent_loop: bool = False
+    whole_cent_aligned_mpp_rollup_and_uuidv7_fefo_ready: bool = False
+
+
+def evaluate_saas_usage_metering_x402_mpp_policy(
+    policy_input: SaaSUsageMeteringX402MppPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_subcent_forfeiture_card_fee_and_loop_pool_usd
+        ),
+    )
+    if policy_input.unaligned_subcent_truncation_or_runaway_agent_loop:
+        return {
+            "status_code": 451,
+            "decision": "UNALIGNED_SUB_CENT_TRUNCATION_FORFEITURE_OR_RUNAWAY_AGENT_LOOP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sub_fifty_cent_charge_on_fixed_fee_card_rail:
+        return {
+            "status_code": 403,
+            "decision": "SUB_FIFTY_CENT_MICROPAYMENT_ON_FIXED_FEE_CARD_RAIL_INVERSION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.duplicate_kafka_replay_without_uuidv7_or_5xx_billed:
+        return {
+            "status_code": 422,
+            "decision": "DUPLICATE_KAFKA_REPLAY_WITHOUT_UUIDV7_OR_BILLING_ON_5XX_ERROR",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.whole_cent_aligned_mpp_rollup_and_uuidv7_fefo_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "WHOLE_CENT_ALIGNED_MPP_ROLLUP_AND_UUIDV7_EXACTLY_ONCE_CONFIRM",
+            "mandate_token": "usage_metering_x402_mpp_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_UUIDV7_METERING_AND_MICROPAYMENT_RAIL_AUTHORIZED",
+        "mandate_token": "usage_metering_x402_mpp_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -50612,6 +50688,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    saas_usage_metering_x402_mpp_guard = {
+        "authorized_200": evaluate_saas_usage_metering_x402_mpp_policy(
+            SaaSUsageMeteringX402MppPolicyInput()
+        ),
+        "sub_fifty_cent_card_inversion_403": evaluate_saas_usage_metering_x402_mpp_policy(
+            SaaSUsageMeteringX402MppPolicyInput(
+                sub_fifty_cent_charge_on_fixed_fee_card_rail=True
+            )
+        ),
+        "duplicate_replay_or_5xx_billed_422": evaluate_saas_usage_metering_x402_mpp_policy(
+            SaaSUsageMeteringX402MppPolicyInput(
+                duplicate_kafka_replay_without_uuidv7_or_5xx_billed=True
+            )
+        ),
+        "unaligned_subcent_or_loop_451": evaluate_saas_usage_metering_x402_mpp_policy(
+            SaaSUsageMeteringX402MppPolicyInput(
+                unaligned_subcent_truncation_or_runaway_agent_loop=True
+            )
+        ),
+        "whole_cent_mpp_uuidv7_409": evaluate_saas_usage_metering_x402_mpp_policy(
+            SaaSUsageMeteringX402MppPolicyInput(
+                whole_cent_aligned_mpp_rollup_and_uuidv7_fefo_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -51030,6 +51132,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_chargeback_ce30_rdr_mutex_guard": ecommerce_chargeback_ce30_rdr_mutex_guard,
         "b2b_ap_three_way_match_scf_guard": b2b_ap_three_way_match_scf_guard,
         "marketplace_split_settlement_reserve_guard": marketplace_split_settlement_reserve_guard,
+        "saas_usage_metering_x402_mpp_guard": saas_usage_metering_x402_mpp_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -72759,6 +72862,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="mktsplit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 LARGEST_REMAINDER_PENNY_CONSERVATION_AND_VPOD_RESERVE_CONFIRM · Mandate: marketplace_split_reserve_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 290 (#409) SaaS Usage Metering, UUIDv7 & HTTP 402 Micropayments -->
+      <div class="finops-box" id="saas-usage-metering-x402-mpp-sandbox" style="margin-top:12px;border-color:#8b5cf6;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">⚡ AI 原生 SaaS 用量计费与 HTTP 402 微支付 (Orb / Metronome / Stripe MPP Tempo / x402) 步长对齐沙盒</div>
+            <div class="finops-sub">Round 290 (#409 · SVG #733) · 禁将 &lt;$0.50 微交易送入含 $0.30 固定费信用卡轨防 1500% 倒挂 (HTTP 403) + UUIDv7 幂等水位线防 Kafka 重放双扣与豁免 5xx 报错 (HTTP 422) + 200 次整美分步长对齐防 42.8% 亚美分抹零与死循环 5x 熔断 (HTTP 451) + 零尾差汇总净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="mtr402-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度亚美分未对齐抹零流失、微交易走信用卡固定手续费倒挂、Kafka 重放双扣及死循环坏账豁免池 ($)
+            <input type="number" id="mtr402-gross-input" value="280000" min="10000" step="5000" oninput="recalcSaaSUsageMeteringX402MppSandbox()" />
+          </label>
+          <label>小额微交易 (&lt;$0.50) 支付轨道选择 (MPP Tempo 流式汇总 / x402 USDC vs. $0.30 固定费信用卡直连)
+            <select id="mtr402-rail-select" onchange="recalcSaaSUsageMeteringX402MppSandbox()">
+              <option value="pass">&lt;$0.50 微调用强制走预付积分池、Stripe MPP Tempo 批次汇总或 x402 免 Gas 支票 (安全)</option>
+              <option value="block_403">将单笔 $0.02 的 API 调用直接走信用卡收单被扣 $0.30 固定手续费严重倒挂 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>计量事件 UUIDv7 时间序幂等水位线去重与上游 HTTP 429 / 5xx 失败调用计费豁免门禁
+            <select id="mtr402-dedup-select" onchange="recalcSaaSUsageMeteringX402MppSandbox()">
+              <option value="pass">网关生成唯一 UUIDv7 精确一次去重，且自动将 429/5xx 报错标记为 billable=false (合规)</option>
+              <option value="block_422">Kafka 消费者重启重放导致同一调用被双倍扣费，或为服务端 503 报错收钱 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>亚美分单价 ($0.000350/call) 整美分最小公倍数步长对齐 (200次=$0.0700) 与 10min 5x 死循环熔断
+            <select id="mtr402-align-select" onchange="recalcSaaSUsageMeteringX402MppSandbox()">
+              <option value="pass">强制按 200 次整美分步长 ($0.0700) 结算实现零抹零，且 5x 異常暴刷 150ms 熔断 (安全)</option>
+              <option value="block_451">每 50 次 ($0.0175) 结算被法币网关抹零成 $0.01 白丢 42.8% 收入，或死循环刷爆账单 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>200 步长 MPP Tempo 零尾差汇总结算 + 预付钱包临期赠金优先扣减 (FEFO Waterfall) + x402 跨组织直付
+            <select id="mtr402-opt-select" onchange="recalcSaaSUsageMeteringX402MppSandbox()">
+              <option value="enabled" selected>启用 200 步长整美分零损耗清算 + UUIDv7 精确去重 + 预付池 FEFO 消耗 (-40% 损耗 / HTTP 409)</option>
+              <option value="disabled">不启用整美分步长对齐与临期赠金 FEFO 优先抵扣 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度亚美分抹零与手续费倒挂池</div>
+            <div class="finops-kpi-val" id="mtr402-gross-kpi">$280,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">整美分对齐与UUIDv7去重后净成本</div>
+            <div class="finops-kpi-val" id="mtr402-net-kpi" style="color:#6ee7b7;">$168,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回微支付营收与坏账</div>
+            <div class="finops-kpi-val" id="mtr402-savings-kpi" style="color:#38bdf8;">$112,000</div>
+          </div>
+        </div>
+        <div id="mtr402-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 WHOLE_CENT_ALIGNED_MPP_ROLLUP_AND_UUIDV7_EXACTLY_ONCE_CONFIRM · Mandate: usage_metering_x402_mpp_optim_409
         </div>
       </div>
 
@@ -99446,6 +99606,79 @@ function recalcMarketplaceSplitSettlementReserveSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_HAMILTON_SPLIT_AND_DELIVERY_RESERVE_AUTHORIZED · Mandate: marketplace_split_reserve_200';
+}}
+
+function recalcSaaSUsageMeteringX402MppSandbox() {{
+  const grossInput = document.getElementById('mtr402-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '280000'));
+  const railGate = document.getElementById('mtr402-rail-select').value;
+  const dedupGate = document.getElementById('mtr402-dedup-select').value;
+  const alignGate = document.getElementById('mtr402-align-select').value;
+  const optMode = document.getElementById('mtr402-opt-select').value;
+
+  const grossKpi = document.getElementById('mtr402-gross-kpi');
+  const netKpi = document.getElementById('mtr402-net-kpi');
+  const savingsKpi = document.getElementById('mtr402-savings-kpi');
+  const statusKpi = document.getElementById('mtr402-status-kpi');
+  const banner = document.getElementById('mtr402-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (alignGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNALIGNED_SUB_CENT_TRUNCATION_FORFEITURE_OR_RUNAWAY_AGENT_LOOP · Mandate: null';
+    return;
+  }}
+  if (railGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SUB_FIFTY_CENT_MICROPAYMENT_ON_FIXED_FEE_CARD_RAIL_INVERSION · Mandate: null';
+    return;
+  }}
+  if (dedupGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DUPLICATE_KAFKA_REPLAY_WITHOUT_UUIDV7_OR_BILLING_ON_5XX_ERROR · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 WHOLE_CENT_ALIGNED_MPP_ROLLUP_AND_UUIDV7_EXACTLY_ONCE_CONFIRM · Mandate: usage_metering_x402_mpp_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_UUIDV7_METERING_AND_MICROPAYMENT_RAIL_AUTHORIZED · Mandate: usage_metering_x402_mpp_200';
 }}
 
 function updateStage1756Sandbox() {{

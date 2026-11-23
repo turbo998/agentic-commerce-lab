@@ -28488,6 +28488,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("marketplace-split-settlement-reserve-sandbox", html_zh)
 
+    def test_saas_usage_metering_x402_mpp_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaaSUsageMeteringX402MppPolicyInput,
+            evaluate_saas_usage_metering_x402_mpp_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_usage_metering_x402_mpp_policy(
+            SaaSUsageMeteringX402MppPolicyInput(
+                quarterly_subcent_forfeiture_card_fee_and_loop_pool_usd=280000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_UUIDV7_METERING_AND_MICROPAYMENT_RAIL_AUTHORIZED",
+        )
+
+        rail = evaluate_saas_usage_metering_x402_mpp_policy(
+            SaaSUsageMeteringX402MppPolicyInput(
+                sub_fifty_cent_charge_on_fixed_fee_card_rail=True
+            )
+        )
+        self.assertEqual(rail["status_code"], 403)
+        self.assertEqual(
+            rail["decision"],
+            "SUB_FIFTY_CENT_MICROPAYMENT_ON_FIXED_FEE_CARD_RAIL_INVERSION",
+        )
+
+        dedup = evaluate_saas_usage_metering_x402_mpp_policy(
+            SaaSUsageMeteringX402MppPolicyInput(
+                duplicate_kafka_replay_without_uuidv7_or_5xx_billed=True
+            )
+        )
+        self.assertEqual(dedup["status_code"], 422)
+        self.assertEqual(
+            dedup["decision"],
+            "DUPLICATE_KAFKA_REPLAY_WITHOUT_UUIDV7_OR_BILLING_ON_5XX_ERROR",
+        )
+
+        align = evaluate_saas_usage_metering_x402_mpp_policy(
+            SaaSUsageMeteringX402MppPolicyInput(
+                unaligned_subcent_truncation_or_runaway_agent_loop=True
+            )
+        )
+        self.assertEqual(align["status_code"], 451)
+        self.assertEqual(
+            align["decision"],
+            "UNALIGNED_SUB_CENT_TRUNCATION_FORFEITURE_OR_RUNAWAY_AGENT_LOOP",
+        )
+
+        optim = evaluate_saas_usage_metering_x402_mpp_policy(
+            SaaSUsageMeteringX402MppPolicyInput(
+                quarterly_subcent_forfeiture_card_fee_and_loop_pool_usd=280000.0,
+                whole_cent_aligned_mpp_rollup_and_uuidv7_fefo_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 112000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 168000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_usage_metering_x402_mpp_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-usage-metering-x402-mpp-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
