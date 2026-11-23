@@ -38899,6 +38899,82 @@ def evaluate_saas_involuntary_churn_vau_payday_policy(
     }
 
 
+@dataclass(frozen=True)
+class RetailMediaRmnPoasBiddingPolicyInput:
+    quarterly_wasted_rmn_ad_spend_and_cannibalization_pool_usd: float = 350000.0
+    lost_buy_box_or_regional_store_oos_unpaused_ad_burn: bool = False
+    brand_keyword_organic_cannibalization_low_ntb_inflation: bool = False
+    negative_net_poas_high_return_or_broken_core_size_ad: bool = False
+    buybox_gated_amc_incremental_and_net_poas_bidding_ready: bool = False
+
+
+def evaluate_retail_media_rmn_poas_bidding_policy(
+    policy_input: RetailMediaRmnPoasBiddingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_wasted_rmn_ad_spend_and_cannibalization_pool_usd
+        ),
+    )
+    if policy_input.negative_net_poas_high_return_or_broken_core_size_ad:
+        return {
+            "status_code": 451,
+            "decision": "NEGATIVE_NET_POAS_HIGH_RETURN_OR_BROKEN_CORE_SIZE_AD_SPEND",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.lost_buy_box_or_regional_store_oos_unpaused_ad_burn:
+        return {
+            "status_code": 403,
+            "decision": "LOST_BUY_BOX_OR_REGIONAL_STORE_OOS_UNPAUSED_AD_BURN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.brand_keyword_organic_cannibalization_low_ntb_inflation:
+        return {
+            "status_code": 422,
+            "decision": "BRAND_KEYWORD_ORGANIC_CANNIBALIZATION_LOW_NTB_INFLATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.buybox_gated_amc_incremental_and_net_poas_bidding_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "BUYBOX_GATED_AMC_INCREMENTAL_AND_NET_POAS_BIDDING_CONFIRM",
+            "mandate_token": "retail_media_rmn_poas_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_BUYBOX_AMC_NTB_AND_NET_POAS_AUTHORIZED",
+        "mandate_token": "retail_media_rmn_poas_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -52956,6 +53032,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    retail_media_rmn_poas_bidding_guard = {
+        "authorized_200": evaluate_retail_media_rmn_poas_bidding_policy(
+            RetailMediaRmnPoasBiddingPolicyInput()
+        ),
+        "lost_buybox_or_oos_burn_403": evaluate_retail_media_rmn_poas_bidding_policy(
+            RetailMediaRmnPoasBiddingPolicyInput(
+                lost_buy_box_or_regional_store_oos_unpaused_ad_burn=True
+            )
+        ),
+        "brand_keyword_cannibalization_422": evaluate_retail_media_rmn_poas_bidding_policy(
+            RetailMediaRmnPoasBiddingPolicyInput(
+                brand_keyword_organic_cannibalization_low_ntb_inflation=True
+            )
+        ),
+        "negative_poas_or_broken_size_451": evaluate_retail_media_rmn_poas_bidding_policy(
+            RetailMediaRmnPoasBiddingPolicyInput(
+                negative_net_poas_high_return_or_broken_core_size_ad=True
+            )
+        ),
+        "buybox_amc_net_poas_409": evaluate_retail_media_rmn_poas_bidding_policy(
+            RetailMediaRmnPoasBiddingPolicyInput(
+                buybox_gated_amc_incremental_and_net_poas_bidding_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -53397,6 +53499,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "digital_pharmacy_telehealth_erx_guard": digital_pharmacy_telehealth_erx_guard,
         "omnichannel_luxury_clienteling_guard": omnichannel_luxury_clienteling_guard,
         "saas_involuntary_churn_vau_payday_guard": saas_involuntary_churn_vau_payday_guard,
+        "retail_media_rmn_poas_bidding_guard": retail_media_rmn_poas_bidding_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -76437,6 +76540,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="dunning-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 VAU_PRE_SYNC_SILENT_PAYDAY_RESCUE_AND_1TAP_WALLET_UPDATE_CONFIRM · Mandate: saas_dunning_churn_recovery_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 313 (#432) Retail Media Network (RMN), AMC Clean-Room & POAS Bidding -->
+      <div class="finops-box" id="retail-media-rmn-poas-bidding-sandbox" style="margin-top:12px;border-color:#ea580c;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📣 零售媒体广告网络与数据净室智能竞价 (Amazon Ads AMC / Walmart Connect / Target Roundel / Pacvue) 沙盒</div>
+            <div class="finops-sub">Round 313 (#432 · SVG #756) · 丢失黄金购物车 (Buy Box) 或区域门店缺货 60 秒自动停投防替窜货商引流 (HTTP 403) + AMC 数据净室新客率 (NTB%) 审计防代运营刷自家品牌词自蚕食自然流量 (HTTP 422) + 扣除 COGS/FBA/退货率后的净毛利 POAS 与核心尺码断码停投 (HTTP 451) + 分时竞价净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="rmnpoas-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度丢 Buy Box 替跟卖引流、品牌词自然流量自蚕食及高退货断码品盲投损耗池 ($)
+            <input type="number" id="rmnpoas-gross-input" value="350000" min="10000" step="5000" oninput="recalcRetailMediaRmnPoasSandbox()" />
+          </label>
+          <label>黄金购物车占有权 (Buy-Box Ownership) 与区域门店实时库存 (ATP >= 3) 联动停投门禁
+            <select id="rmnpoas-buybox-select" onchange="recalcRetailMediaRmnPoasSandbox()">
+              <option value="pass">SP-API 实时监听，一旦丢 Buy Box 或门店 ATP<3 在 60 秒内自动暂停广告组 (安全)</option>
+              <option value="block_403">被低价窜货商抢走 Buy Box 或当地门店已售罄仍全速烧广告费替别人引流 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>AMC / Luminate 数据净室新客率 (NTB%) 与品牌词自然流量防自蚕食 (Anti-Cannibalization) 门禁
+            <select id="rmnpoas-ntb-select" onchange="recalcRetailMediaRmnPoasSandbox()">
+              <option value="pass">自然排名第 1 且无竞品截流时限制品牌词预算 <=15%，主投高 NTB% 品类公域词 (合规)</option>
+              <option value="block_422">代运营把 65% 预算砸在自家品牌词刷出 12x 假 ROAS (实则 NTB<10% 纯税忠实老客) (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>扣除 COGS/FBA/退货率的真实净贡献毛利 (Net POAS) 与服装黄金尺码 (M/L) 齐码门禁
+            <select id="rmnpoas-poas-select" onchange="recalcRetailMediaRmnPoasSandbox()">
+              <option value="pass">按净贡献毛利 POAS >= 1.30x 出价，且核心尺码 (M/L) 断货时立即停投孤品 (安全)</option>
+              <option value="block_451">按表面毛 ROAS 狂投高退货负毛利清仓品，或只剩 XXS/3XL 断码孤品仍高价买流 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Amazon Marketing Stream 小时级分时调价 (Dayparting) + AMC iROAS + POAS 竞价编排
+            <select id="rmnpoas-opt-select" onchange="recalcRetailMediaRmnPoasSandbox()">
+              <option value="enabled" selected>启用 Buy-Box 秒级停投 + AMC 新客增量 + 净毛利 POAS 分时竞价 (-39% 浪费 / HTTP 409)</option>
+              <option value="disabled">按全天固定出价与粗放毛销售额 ROAS 混合投放 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度无效点击与自蚕食池</div>
+            <div class="finops-kpi-val" id="rmnpoas-gross-kpi">$350,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">POAS与BuyBox互锁后净支出</div>
+            <div class="finops-kpi-val" id="rmnpoas-net-kpi" style="color:#6ee7b7;">$213,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省无效RMN广告费</div>
+            <div class="finops-kpi-val" id="rmnpoas-savings-kpi" style="color:#38bdf8;">$136,500</div>
+          </div>
+        </div>
+        <div id="rmnpoas-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 BUYBOX_GATED_AMC_INCREMENTAL_AND_NET_POAS_BIDDING_CONFIRM · Mandate: retail_media_rmn_poas_optim_409
         </div>
       </div>
 
@@ -104803,6 +104963,79 @@ function recalcSaasInvoluntaryChurnDunningSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_VAU_PAYDAY_RETRY_AND_GRACE_PERIOD_AUTHORIZED · Mandate: saas_dunning_churn_recovery_200';
+}}
+
+function recalcRetailMediaRmnPoasSandbox() {{
+  const grossInput = document.getElementById('rmnpoas-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '350000'));
+  const buyboxGate = document.getElementById('rmnpoas-buybox-select').value;
+  const ntbGate = document.getElementById('rmnpoas-ntb-select').value;
+  const poasGate = document.getElementById('rmnpoas-poas-select').value;
+  const optMode = document.getElementById('rmnpoas-opt-select').value;
+
+  const grossKpi = document.getElementById('rmnpoas-gross-kpi');
+  const netKpi = document.getElementById('rmnpoas-net-kpi');
+  const savingsKpi = document.getElementById('rmnpoas-savings-kpi');
+  const statusKpi = document.getElementById('rmnpoas-status-kpi');
+  const banner = document.getElementById('rmnpoas-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (poasGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 NEGATIVE_NET_POAS_HIGH_RETURN_OR_BROKEN_CORE_SIZE_AD_SPEND · Mandate: null';
+    return;
+  }}
+  if (buyboxGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 LOST_BUY_BOX_OR_REGIONAL_STORE_OOS_UNPAUSED_AD_BURN · Mandate: null';
+    return;
+  }}
+  if (ntbGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BRAND_KEYWORD_ORGANIC_CANNIBALIZATION_LOW_NTB_INFLATION · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 BUYBOX_GATED_AMC_INCREMENTAL_AND_NET_POAS_BIDDING_CONFIRM · Mandate: retail_media_rmn_poas_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_BUYBOX_AMC_NTB_AND_NET_POAS_AUTHORIZED · Mandate: retail_media_rmn_poas_200';
 }}
 
 function updateStage1756Sandbox() {{

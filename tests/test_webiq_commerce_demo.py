@@ -30029,6 +30029,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-involuntary-churn-dunning-sandbox", html_zh)
 
+    def test_retail_media_rmn_poas_bidding_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            RetailMediaRmnPoasBiddingPolicyInput,
+            evaluate_retail_media_rmn_poas_bidding_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_retail_media_rmn_poas_bidding_policy(
+            RetailMediaRmnPoasBiddingPolicyInput(
+                quarterly_wasted_rmn_ad_spend_and_cannibalization_pool_usd=350000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_BUYBOX_AMC_NTB_AND_NET_POAS_AUTHORIZED",
+        )
+
+        buybox = evaluate_retail_media_rmn_poas_bidding_policy(
+            RetailMediaRmnPoasBiddingPolicyInput(
+                lost_buy_box_or_regional_store_oos_unpaused_ad_burn=True
+            )
+        )
+        self.assertEqual(buybox["status_code"], 403)
+        self.assertEqual(
+            buybox["decision"],
+            "LOST_BUY_BOX_OR_REGIONAL_STORE_OOS_UNPAUSED_AD_BURN",
+        )
+
+        ntb = evaluate_retail_media_rmn_poas_bidding_policy(
+            RetailMediaRmnPoasBiddingPolicyInput(
+                brand_keyword_organic_cannibalization_low_ntb_inflation=True
+            )
+        )
+        self.assertEqual(ntb["status_code"], 422)
+        self.assertEqual(
+            ntb["decision"],
+            "BRAND_KEYWORD_ORGANIC_CANNIBALIZATION_LOW_NTB_INFLATION",
+        )
+
+        poas = evaluate_retail_media_rmn_poas_bidding_policy(
+            RetailMediaRmnPoasBiddingPolicyInput(
+                negative_net_poas_high_return_or_broken_core_size_ad=True
+            )
+        )
+        self.assertEqual(poas["status_code"], 451)
+        self.assertEqual(
+            poas["decision"],
+            "NEGATIVE_NET_POAS_HIGH_RETURN_OR_BROKEN_CORE_SIZE_AD_SPEND",
+        )
+
+        optim = evaluate_retail_media_rmn_poas_bidding_policy(
+            RetailMediaRmnPoasBiddingPolicyInput(
+                quarterly_wasted_rmn_ad_spend_and_cannibalization_pool_usd=350000.0,
+                buybox_gated_amc_incremental_and_net_poas_bidding_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 136500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 213500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("retail_media_rmn_poas_bidding_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("retail-media-rmn-poas-bidding-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
