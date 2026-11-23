@@ -37837,6 +37837,82 @@ def evaluate_multi_psp_orchestration_routing_policy(
     }
 
 
+@dataclass(frozen=True)
+class SaasCloudMarketplaceEdpPolicyInput:
+    quarterly_commit_waste_cppo_margin_and_metering_pool_usd: float = 350000.0
+    non_eligible_sku_for_macc_edp_commit_drawdown: bool = False
+    cppo_mpo_double_discount_below_isv_net_proceeds_floor: bool = False
+    stale_metering_batch_or_public_list_price_expiry_cliff: bool = False
+    verified_macc_edp_drawdown_cppo_floor_and_cosell_ready: bool = False
+
+
+def evaluate_saas_cloud_marketplace_edp_policy(
+    policy_input: SaasCloudMarketplaceEdpPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_commit_waste_cppo_margin_and_metering_pool_usd
+        ),
+    )
+    if policy_input.stale_metering_batch_or_public_list_price_expiry_cliff:
+        return {
+            "status_code": 451,
+            "decision": "STALE_MARKETPLACE_METERING_BATCH_OR_PUBLIC_LIST_PRICE_EXPIRY_CLIFF",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.non_eligible_sku_for_macc_edp_commit_drawdown:
+        return {
+            "status_code": 403,
+            "decision": "NON_ELIGIBLE_MARKETPLACE_SKU_FOR_MACC_EDP_COMMIT_DRAWDOWN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cppo_mpo_double_discount_below_isv_net_proceeds_floor:
+        return {
+            "status_code": 422,
+            "decision": "CPPO_MPO_DOUBLE_DISCOUNT_BELOW_ISV_NET_PROCEEDS_FLOOR",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.verified_macc_edp_drawdown_cppo_floor_and_cosell_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "VERIFIED_MACC_EDP_DRAWDOWN_CPPO_FLOOR_AND_COSell_SYNC_CONFIRM",
+            "mandate_token": "saas_cloud_marketplace_edp_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CLOUD_MARKETPLACE_PRIVATE_OFFER_AUTHORIZED",
+        "mandate_token": "saas_cloud_marketplace_edp_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -51530,6 +51606,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    saas_cloud_marketplace_edp_guard = {
+        "authorized_200": evaluate_saas_cloud_marketplace_edp_policy(
+            SaasCloudMarketplaceEdpPolicyInput()
+        ),
+        "non_eligible_macc_edp_sku_403": evaluate_saas_cloud_marketplace_edp_policy(
+            SaasCloudMarketplaceEdpPolicyInput(
+                non_eligible_sku_for_macc_edp_commit_drawdown=True
+            )
+        ),
+        "cppo_double_discount_floor_422": evaluate_saas_cloud_marketplace_edp_policy(
+            SaasCloudMarketplaceEdpPolicyInput(
+                cppo_mpo_double_discount_below_isv_net_proceeds_floor=True
+            )
+        ),
+        "stale_metering_or_expiry_cliff_451": evaluate_saas_cloud_marketplace_edp_policy(
+            SaasCloudMarketplaceEdpPolicyInput(
+                stale_metering_batch_or_public_list_price_expiry_cliff=True
+            )
+        ),
+        "verified_macc_cppo_cosell_409": evaluate_saas_cloud_marketplace_edp_policy(
+            SaasCloudMarketplaceEdpPolicyInput(
+                verified_macc_edp_drawdown_cppo_floor_and_cosell_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -51957,6 +52059,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_trade_credit_factoring_guard": b2b_trade_credit_factoring_guard,
         "conversational_whatsapp_dm_commerce_guard": conversational_whatsapp_dm_commerce_guard,
         "multi_psp_orchestration_routing_guard": multi_psp_orchestration_routing_guard,
+        "saas_cloud_marketplace_edp_guard": saas_cloud_marketplace_edp_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -74199,6 +74302,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="multipsp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 LOCAL_8DIGIT_BIN_DURBIN_PINLESS_AND_SAFE_FAILOVER_CONFIRM · Mandate: multi_psp_orchestration_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 299 (#418) B2B SaaS Cloud Marketplace Private Offers & MACC/EDP Drawdown -->
+      <div class="finops-box" id="saas-cloud-marketplace-edp-sandbox" style="margin-top:12px;border-color:#3b82f6;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">☁️ 企业 SaaS 云市场私有报价与承诺消纳 (AWS EDP / Azure MACC / GCP CUD · Tackle / Clazar / Suger) 沙盒</div>
+            <div class="finops-sub">Round 299 (#418 · SVG #742) · 下单前 100% MACC/EDP Benefit Eligible 资格与主账单账号锁防百万云承诺作废 (HTTP 403) + CPPO/MPO 渠道批发价扣除云抽成后 ISV 净到手底线锁防双重打折 (HTTP 422) + 每小时 BatchMeterUsage 死信重放与 T-60d 到期续签防跳回公有原价 (HTTP 451) + 自动化协同净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="cloudmkt-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度云市场买错非抵扣 SKU 承诺作废罚金、CPPO 渠道双折毛利侵蚀及超窗漏报用量损耗池 ($)
+            <input type="number" id="cloudmkt-gross-input" value="350000" min="10000" step="5000" oninput="recalcSaasCloudMarketplaceEdpSandbox()" />
+          </label>
+          <label>100% Azure MACC / AWS EDP / GCP CUD 承诺池抵扣资格 (Benefit Eligible) 与主账单绑定门禁
+            <select id="cloudmkt-elig-select" onchange="recalcSaasCloudMarketplaceEdpSandbox()">
+              <option value="pass">强制核验 SKU 具备 100% Benefit Eligible 徽章且绑定集团 Master Payer 账单账号 (安全)</option>
+              <option value="block_403">买错无抵扣资质普通 Listing 或错绑子订阅导致 $250k 采购款未冲抵年底云承诺池 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>渠道伙伴私有报价 (AWS CPPO / Azure MPO) 批发底价与 ISV 净到手毛利底线门禁
+            <select id="cloudmkt-cppo-select" onchange="recalcSaasCloudMarketplaceEdpSandbox()">
+              <option value="pass">严格核验 Wholesale_Price - Cloud_Fee >= ISV_Net_Floor (72%)，协调直客与渠道折让 (合规)</option>
+              <option value="block_422">销售特批 25% 折扣后代理商 CPPO 又叠扣 20% 批发折 + 3% 平台费击穿 ISV 底线 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>每小时用量计量回传 (BatchMeterUsage <1h Window) 与私有报价到期公有标价悬崖 (List-Price Cliff) 门禁
+            <select id="cloudmkt-meter-select" onchange="recalcSaasCloudMarketplaceEdpSandbox()">
+              <option value="pass">Outbox 死信队列保障每小时准点幂等回传用量，并在到期前 60 天自动克隆续签 Offer (安全)</option>
+              <option value="block_451">计量延迟超窗口被云市场拒收丢单，或 Private Offer 到期自动跳回 100% 公有天价 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>CRM <-> AWS ACE / Microsoft Partner Center 双向 Co-Sell 同步与自动化 Private Offer 编排
+            <select id="cloudmkt-opt-select" onchange="recalcSaasCloudMarketplaceEdpSandbox()">
+              <option value="enabled" selected>启用 100% 承诺抵扣锁 + CPPO 净毛利锁 + 每小时幂等计量 (-39% 损耗 / HTTP 409)</option>
+              <option value="disabled">手工在多云控制台拼装报价单并人工用表格核对渠道返点 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度承诺作废与双折损耗池</div>
+            <div class="finops-kpi-val" id="cloudmkt-gross-kpi">$350,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">云市场自动化治理后净成本</div>
+            <div class="finops-kpi-val" id="cloudmkt-net-kpi" style="color:#6ee7b7;">$213,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省云承诺与保住ISV毛利</div>
+            <div class="finops-kpi-val" id="cloudmkt-savings-kpi" style="color:#38bdf8;">$136,500</div>
+          </div>
+        </div>
+        <div id="cloudmkt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 VERIFIED_MACC_EDP_DRAWDOWN_CPPO_FLOOR_AND_COSell_SYNC_CONFIRM · Mandate: saas_cloud_marketplace_edp_optim_409
         </div>
       </div>
 
@@ -101543,6 +101703,79 @@ function recalcMultiPspOrchestrationSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_MULTI_PSP_LOCAL_BIN_AND_FAILOVER_AUTHORIZED · Mandate: multi_psp_orchestration_200';
+}}
+
+function recalcSaasCloudMarketplaceEdpSandbox() {{
+  const grossInput = document.getElementById('cloudmkt-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '350000'));
+  const eligGate = document.getElementById('cloudmkt-elig-select').value;
+  const cppoGate = document.getElementById('cloudmkt-cppo-select').value;
+  const meterGate = document.getElementById('cloudmkt-meter-select').value;
+  const optMode = document.getElementById('cloudmkt-opt-select').value;
+
+  const grossKpi = document.getElementById('cloudmkt-gross-kpi');
+  const netKpi = document.getElementById('cloudmkt-net-kpi');
+  const savingsKpi = document.getElementById('cloudmkt-savings-kpi');
+  const statusKpi = document.getElementById('cloudmkt-status-kpi');
+  const banner = document.getElementById('cloudmkt-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (meterGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 STALE_MARKETPLACE_METERING_BATCH_OR_PUBLIC_LIST_PRICE_EXPIRY_CLIFF · Mandate: null';
+    return;
+  }}
+  if (eligGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 NON_ELIGIBLE_MARKETPLACE_SKU_FOR_MACC_EDP_COMMIT_DRAWDOWN · Mandate: null';
+    return;
+  }}
+  if (cppoGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CPPO_MPO_DOUBLE_DISCOUNT_BELOW_ISV_NET_PROCEEDS_FLOOR · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 VERIFIED_MACC_EDP_DRAWDOWN_CPPO_FLOOR_AND_COSell_SYNC_CONFIRM · Mandate: saas_cloud_marketplace_edp_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CLOUD_MARKETPLACE_PRIVATE_OFFER_AUTHORIZED · Mandate: saas_cloud_marketplace_edp_200';
 }}
 
 function updateStage1756Sandbox() {{

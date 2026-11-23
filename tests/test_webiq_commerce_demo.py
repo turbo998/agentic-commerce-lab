@@ -29091,6 +29091,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("multi-psp-orchestration-routing-sandbox", html_zh)
 
+    def test_saas_cloud_marketplace_edp_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaasCloudMarketplaceEdpPolicyInput,
+            evaluate_saas_cloud_marketplace_edp_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_cloud_marketplace_edp_policy(
+            SaasCloudMarketplaceEdpPolicyInput(
+                quarterly_commit_waste_cppo_margin_and_metering_pool_usd=350000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CLOUD_MARKETPLACE_PRIVATE_OFFER_AUTHORIZED",
+        )
+
+        elig = evaluate_saas_cloud_marketplace_edp_policy(
+            SaasCloudMarketplaceEdpPolicyInput(
+                non_eligible_sku_for_macc_edp_commit_drawdown=True
+            )
+        )
+        self.assertEqual(elig["status_code"], 403)
+        self.assertEqual(
+            elig["decision"],
+            "NON_ELIGIBLE_MARKETPLACE_SKU_FOR_MACC_EDP_COMMIT_DRAWDOWN",
+        )
+
+        cppo = evaluate_saas_cloud_marketplace_edp_policy(
+            SaasCloudMarketplaceEdpPolicyInput(
+                cppo_mpo_double_discount_below_isv_net_proceeds_floor=True
+            )
+        )
+        self.assertEqual(cppo["status_code"], 422)
+        self.assertEqual(
+            cppo["decision"],
+            "CPPO_MPO_DOUBLE_DISCOUNT_BELOW_ISV_NET_PROCEEDS_FLOOR",
+        )
+
+        meter = evaluate_saas_cloud_marketplace_edp_policy(
+            SaasCloudMarketplaceEdpPolicyInput(
+                stale_metering_batch_or_public_list_price_expiry_cliff=True
+            )
+        )
+        self.assertEqual(meter["status_code"], 451)
+        self.assertEqual(
+            meter["decision"],
+            "STALE_MARKETPLACE_METERING_BATCH_OR_PUBLIC_LIST_PRICE_EXPIRY_CLIFF",
+        )
+
+        optim = evaluate_saas_cloud_marketplace_edp_policy(
+            SaasCloudMarketplaceEdpPolicyInput(
+                quarterly_commit_waste_cppo_margin_and_metering_pool_usd=350000.0,
+                verified_macc_edp_drawdown_cppo_floor_and_cosell_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 136500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 213500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_cloud_marketplace_edp_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-cloud-marketplace-edp-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
