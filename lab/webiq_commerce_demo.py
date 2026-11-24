@@ -40643,6 +40643,82 @@ def evaluate_corporate_spend_virtual_card_encumbrance_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceSplitTender2pcWaterfallPolicyInput:
+    quarterly_stranded_points_giftcard_cashout_and_bonus_abuse_pool_usd: float = 360000.0
+    unrolled_back_stranded_points_or_giftcard_debit_before_card_auth: bool = False
+    split_tender_partial_return_cash_out_laundering_or_over_card_cap: bool = False
+    unvested_promo_points_redemption_or_unclawed_negative_points_refund: bool = False
+    two_phase_soft_hold_noncash_first_waterfall_and_vesting_ready: bool = False
+
+
+def evaluate_ecommerce_split_tender_2pc_waterfall_policy(
+    policy_input: EcommerceSplitTender2pcWaterfallPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_stranded_points_giftcard_cashout_and_bonus_abuse_pool_usd
+        ),
+    )
+    if policy_input.unvested_promo_points_redemption_or_unclawed_negative_points_refund:
+        return {
+            "status_code": 451,
+            "decision": "UNVESTED_PROMO_POINTS_REDEMPTION_OR_UNCLAWED_NEGATIVE_POINTS_REFUND",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unrolled_back_stranded_points_or_giftcard_debit_before_card_auth:
+        return {
+            "status_code": 403,
+            "decision": "UNROLLED_BACK_STRANDED_POINTS_OR_GIFTCARD_HARD_DEBIT_BEFORE_CARD_AUTH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.split_tender_partial_return_cash_out_laundering_or_over_card_cap:
+        return {
+            "status_code": 422,
+            "decision": "SPLIT_TENDER_PARTIAL_RETURN_CASH_OUT_LAUNDERING_OR_OVER_CARD_CAP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.two_phase_soft_hold_noncash_first_waterfall_and_vesting_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SPLIT_TENDER_2PC_HOLD_NONCASH_FIRST_WATERFALL_AND_POINTS_VESTING_CONFIRM",
+            "mandate_token": "split_tender_2pc_waterfall_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_SPLIT_TENDER_2PC_AND_REFUND_WATERFALL_AUTHORIZED",
+        "mandate_token": "split_tender_2pc_waterfall_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -55298,6 +55374,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_split_tender_2pc_waterfall_guard = {
+        "authorized_200": evaluate_ecommerce_split_tender_2pc_waterfall_policy(
+            EcommerceSplitTender2pcWaterfallPolicyInput()
+        ),
+        "stranded_points_or_giftcard_403": evaluate_ecommerce_split_tender_2pc_waterfall_policy(
+            EcommerceSplitTender2pcWaterfallPolicyInput(
+                unrolled_back_stranded_points_or_giftcard_debit_before_card_auth=True
+            )
+        ),
+        "giftcard_cashout_laundering_422": evaluate_ecommerce_split_tender_2pc_waterfall_policy(
+            EcommerceSplitTender2pcWaterfallPolicyInput(
+                split_tender_partial_return_cash_out_laundering_or_over_card_cap=True
+            )
+        ),
+        "unvested_points_hit_and_run_451": evaluate_ecommerce_split_tender_2pc_waterfall_policy(
+            EcommerceSplitTender2pcWaterfallPolicyInput(
+                unvested_promo_points_redemption_or_unclawed_negative_points_refund=True
+            )
+        ),
+        "two_phase_waterfall_vesting_409": evaluate_ecommerce_split_tender_2pc_waterfall_policy(
+            EcommerceSplitTender2pcWaterfallPolicyInput(
+                two_phase_soft_hold_noncash_first_waterfall_and_vesting_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -55762,6 +55864,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "global_digital_wallet_local_apm_spc_guard": global_digital_wallet_local_apm_spc_guard,
         "hybrid_catalog_rag_rrf_stock_guard": hybrid_catalog_rag_rrf_stock_guard,
         "corporate_spend_vcn_encumbrance_guard": corporate_spend_vcn_encumbrance_guard,
+        "ecommerce_split_tender_2pc_waterfall_guard": ecommerce_split_tender_2pc_waterfall_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -80113,6 +80216,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="crpvcn-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 JIT_MID_LOCK_ERP_BUDGET_ENCUMBRANCE_AND_ITEMIZED_RECEIPT_CONFIRM · Mandate: corp_spend_vcn_encumbrance_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 336 (#455 · SVG #779) Split-Tender Checkout (Gift Card + Loyalty Points + Card) 2PC & Refund Waterfall -->
+      <div class="finops-box" id="ecommerce-split-tender-2pc-waterfall-sandbox" style="margin-top:12px;border-color:#db2777;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎁 零售电商组合支付 (Talon.One / Yotpo + Gift Card + Stripe/Adyen) 两阶段预冻结与防洗钱退货瀑布沙盒</div>
+            <div class="finops-sub">Round 336 (#455 · SVG #779) · 积分与礼品卡两阶段软预占 (15m Soft-Hold) 待信用卡 Auth 成功再 Commit，拒付 &lt;200ms 秒级回滚防吞分 (HTTP 403) + 部分退货“先退积分-&gt;再退礼品卡-&gt;超额才退银行卡现金”防暗网礼品卡洗钱套现 (HTTP 422) + 买赠积分 14 天待解冻锁与已花赠分本金倒扣 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="spltnd-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度组合支付刷卡失败吞没积分/礼品卡流失、部分退货礼品卡套现洗钱及买赠积分白嫖池 ($)
+            <input type="number" id="spltnd-gross-input" value="360000" min="10000" step="5000" oninput="recalcEcommerceSplitTender2pcWaterfallSandbox()" />
+          </label>
+          <label>跨账本两阶段软预占 (Phase 1 Soft-Hold Points/GiftCard -&gt; Phase 2 Card Auth -&gt; Commit/Release) 门禁
+            <select id="spltnd-2pc-select" onchange="recalcEcommerceSplitTender2pcWaterfallSandbox()">
+              <option value="pass">先对 $20 积分与 $40 礼品卡设 15m Soft-Hold，待 $90 信用卡授权成功再核销，拒付秒级解冻 (安全)</option>
+              <option value="block_403">信用卡扣款前直接硬扣光买家积分与礼品卡，刷卡失败导致买家积分和储值清零锁死 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>组合支付部分退货 (Partial RMA) 非现金优先退回瀑布 (Points -&gt; Gift Card -&gt; Card Cash Last) 门禁
+            <select id="spltnd-waterfall-select" onchange="recalcEcommerceSplitTender2pcWaterfallSandbox()">
+              <option value="pass">退 $60 子商品时 100% 优先原路退回 $20 积分 + $40 礼品卡，阻断虚拟资产套现回信用卡 (合规)</option>
+              <option value="block_422">黑产用 7 折暗网礼品卡拼单后部分退货，客服直接退 $60 现金回 Visa 卡完成洗钱套现 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>大促买赠奖励积分 14 天待生效解冻池 (Pending Points Vesting) 与已消费负积分本金倒扣门禁
+            <select id="spltnd-vesting-select" onchange="recalcEcommerceSplitTender2pcWaterfallSandbox()">
+              <option value="pass">买 $1,000 所赠 10,000 积分锁在 Pending 池至签收满 14 天，若已提前花光则从退货本金倒扣 $100 (合规)</option>
+              <option value="block_451">下单秒发可用积分，羊毛党立刻用 $100 赠分买走第 2 单再将 $1,000 主单全额退现金 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>2PC 软预占防吞分 + 反套现退款瀑布 + 14 天积分解冻锁全链路编排
+            <select id="spltnd-opt-select" onchange="recalcEcommerceSplitTender2pcWaterfallSandbox()">
+              <option value="enabled" selected>启用 2PC 软预占 + 非现金优先退货瀑布 + 14天积分解冻 (-39% 组合支付损耗 / HTTP 409)</option>
+              <option value="disabled">顺序硬扣积分/礼品卡 + 退货优先退银行卡现金 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度吞分掉单与礼品卡套现池</div>
+            <div class="finops-kpi-val" id="spltnd-gross-kpi">$360,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">2PC与反套现瀑布后净损耗</div>
+            <div class="finops-kpi-val" id="spltnd-net-kpi" style="color:#6ee7b7;">$219,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保护积分与储值池</div>
+            <div class="finops-kpi-val" id="spltnd-savings-kpi" style="color:#38bdf8;">$140,400</div>
+          </div>
+        </div>
+        <div id="spltnd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SPLIT_TENDER_2PC_HOLD_NONCASH_FIRST_WATERFALL_AND_POINTS_VESTING_CONFIRM · Mandate: split_tender_2pc_waterfall_optim_409
         </div>
       </div>
 
@@ -110158,6 +110318,79 @@ function recalcCorporateSpendVcnEncumbranceSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CORPORATE_SPEND_VCN_AND_ERP_ENCUMBRANCE_AUTHORIZED · Mandate: corp_spend_vcn_encumbrance_200';
+}}
+
+function recalcEcommerceSplitTender2pcWaterfallSandbox() {{
+  const grossInput = document.getElementById('spltnd-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '360000'));
+  const twoPcGate = document.getElementById('spltnd-2pc-select').value;
+  const waterfallGate = document.getElementById('spltnd-waterfall-select').value;
+  const vestingGate = document.getElementById('spltnd-vesting-select').value;
+  const optMode = document.getElementById('spltnd-opt-select').value;
+
+  const grossKpi = document.getElementById('spltnd-gross-kpi');
+  const netKpi = document.getElementById('spltnd-net-kpi');
+  const savingsKpi = document.getElementById('spltnd-savings-kpi');
+  const statusKpi = document.getElementById('spltnd-status-kpi');
+  const banner = document.getElementById('spltnd-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vestingGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNVESTED_PROMO_POINTS_REDEMPTION_OR_UNCLAWED_NEGATIVE_POINTS_REFUND · Mandate: null';
+    return;
+  }}
+  if (twoPcGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNROLLED_BACK_STRANDED_POINTS_OR_GIFTCARD_HARD_DEBIT_BEFORE_CARD_AUTH · Mandate: null';
+    return;
+  }}
+  if (waterfallGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SPLIT_TENDER_PARTIAL_RETURN_CASH_OUT_LAUNDERING_OR_OVER_CARD_CAP · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SPLIT_TENDER_2PC_HOLD_NONCASH_FIRST_WATERFALL_AND_POINTS_VESTING_CONFIRM · Mandate: split_tender_2pc_waterfall_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_SPLIT_TENDER_2PC_AND_REFUND_WATERFALL_AUTHORIZED · Mandate: split_tender_2pc_waterfall_200';
 }}
 
 function updateStage1756Sandbox() {{

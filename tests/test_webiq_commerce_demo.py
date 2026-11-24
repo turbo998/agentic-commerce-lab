@@ -31570,6 +31570,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("corporate-spend-vcn-encumbrance-sandbox", html_zh)
 
+    def test_ecommerce_split_tender_2pc_waterfall_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceSplitTender2pcWaterfallPolicyInput,
+            evaluate_ecommerce_split_tender_2pc_waterfall_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_split_tender_2pc_waterfall_policy(
+            EcommerceSplitTender2pcWaterfallPolicyInput(
+                quarterly_stranded_points_giftcard_cashout_and_bonus_abuse_pool_usd=360000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_SPLIT_TENDER_2PC_AND_REFUND_WATERFALL_AUTHORIZED",
+        )
+
+        stranded = evaluate_ecommerce_split_tender_2pc_waterfall_policy(
+            EcommerceSplitTender2pcWaterfallPolicyInput(
+                unrolled_back_stranded_points_or_giftcard_debit_before_card_auth=True
+            )
+        )
+        self.assertEqual(stranded["status_code"], 403)
+        self.assertEqual(
+            stranded["decision"],
+            "UNROLLED_BACK_STRANDED_POINTS_OR_GIFTCARD_HARD_DEBIT_BEFORE_CARD_AUTH",
+        )
+
+        cashout = evaluate_ecommerce_split_tender_2pc_waterfall_policy(
+            EcommerceSplitTender2pcWaterfallPolicyInput(
+                split_tender_partial_return_cash_out_laundering_or_over_card_cap=True
+            )
+        )
+        self.assertEqual(cashout["status_code"], 422)
+        self.assertEqual(
+            cashout["decision"],
+            "SPLIT_TENDER_PARTIAL_RETURN_CASH_OUT_LAUNDERING_OR_OVER_CARD_CAP",
+        )
+
+        unvested = evaluate_ecommerce_split_tender_2pc_waterfall_policy(
+            EcommerceSplitTender2pcWaterfallPolicyInput(
+                unvested_promo_points_redemption_or_unclawed_negative_points_refund=True
+            )
+        )
+        self.assertEqual(unvested["status_code"], 451)
+        self.assertEqual(
+            unvested["decision"],
+            "UNVESTED_PROMO_POINTS_REDEMPTION_OR_UNCLAWED_NEGATIVE_POINTS_REFUND",
+        )
+
+        optim = evaluate_ecommerce_split_tender_2pc_waterfall_policy(
+            EcommerceSplitTender2pcWaterfallPolicyInput(
+                quarterly_stranded_points_giftcard_cashout_and_bonus_abuse_pool_usd=360000.0,
+                two_phase_soft_hold_noncash_first_waterfall_and_vesting_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 140400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 219600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_split_tender_2pc_waterfall_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-split-tender-2pc-waterfall-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

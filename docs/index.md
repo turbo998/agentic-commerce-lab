@@ -2,12 +2,12 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`454` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`455` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（32 篇）](#platform-grounding)
-- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（58 篇）](#payments-mandates)
+- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（59 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（173 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（100 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（40 篇）](#saas-finops-micropayments)
@@ -58,7 +58,7 @@
 | 32 | **商业智能体商品目录混合检索（`Hybrid Catalog RAG`）与实时库存/比价双通道接地选型（`Azure AI Search + Microsoft Web IQ vs. Algolia NeuralSearch vs. Google Vertex AI Search for Commerce vs. Constructor.io`）：`BM25 + 向量 RRF (k=60)` 精确型号锁、召回前子 SKU 尺码现货位图过滤（`Pre-Ranking ATP Bitmask`）与防配件伪低价折让净省 40% Agent 架构选型 FAQ** | [中文](hybrid-catalog-rag-azure-ai-search-webiq-algolia-vertex-rrf-stock-filter-selection-faq.md) · [English](hybrid-catalog-rag-azure-ai-search-webiq-algolia-vertex-rrf-stock-filter-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
-## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（58 篇）
+## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（59 篇）
 
 > 涵盖 Google AP2、Stripe SPT、Visa VIC / TAP、Mastercard Agent Pay、PayPal、UCP/ACP 协议互操作、3DS2 无浏览器挑战、FIDO2/Passkey 硬件签名及幂等防重扣架构。
 
@@ -122,6 +122,7 @@
 | 56 | **多支付网关智能编排（`Multi-PSP Orchestration`: `Primer / Spreedly / Gr4vy vs. Adyen + Stripe + Checkout.com 双活收单`）、`8 位 BIN` 本土收单路由、美国 `Durbin Reg II` 免密借记网（`STAR / NYCE / Pulse`）降费与防主备超时切换双倍扣款（`0420 Failover Mutex`）净省 39% 架构选型 FAQ** | [中文](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.md) · [English](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.en.md) |
 | 57 | **商业车队加油卡与新能源充电漫游支付（`Fleet Fuel Card & EV Charging Roaming`: `WEX / Fleetcor / Stripe Issuing Fleet / Hubject ISO 15118 / OCPI 2.2.1`）、车载 `GPS/CAN-Bus` 油箱空余容量动态封顶防偷油、`$175` 预授权挂枪 3 秒 `0420` 释放与超时占位费（`Idle Fee`）封顶净省 39% Agent 架构选型 FAQ** | [中文](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.md) · [English](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.en.md) |
 | 58 | **🏆 全球数字钱包、本地替代支付方式（`Local APMs`）与生物识别快速结账（`Apple Pay / Google Pay / Alipay+ / PIX / UPI / iDEAL + W3C SPC` · 🏆 第 1,330 项单元测试里程碑）、异步二维码 `TTL <= 库存锁定期 - 120s` 防孤儿已付单、防快速钱包静默覆盖购物车收货地址与 `1.4s W3C SPC` 免跳转生物核身净省 39% Agent 架构选型 FAQ** | [中文](global-digital-wallet-local-apm-apple-pay-alipay-pix-upi-late-webhook-spc-selection-faq.md) · [English](global-digital-wallet-local-apm-apple-pay-alipay-pix-upi-late-webhook-spc-selection-faq.en.md) |
+| 59 | **零售电商组合支付（`Split-Tender Checkout`: `礼品卡 Gift Card + 会员积分 Loyalty Points + 信用卡`：`Talon.One / Yotpo / Shopify Plus GiftCard / Adyen + Stripe`）、两阶段软预占（`2PC Soft-Hold`）防刷卡失败吞积分、部分退货“先退积分/礼品卡、后退银行卡现金”反套现瀑布与买赠积分 `14 天` 待过退货期解冻净省 39% Agent 架构选型 FAQ** | [中文](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.md) · [English](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（173 篇）

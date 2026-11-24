@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`454` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`455` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (32 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (58 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (59 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (173 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (100 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (40 guides)](#saas-finops-micropayments)
@@ -58,7 +58,7 @@
 | 32 | **Commercial Agent Hybrid Catalog `RAG` & Live Inventory/Price Grounding (`Azure AI Search + Microsoft Web IQ vs. Algolia NeuralSearch vs. Google Vertex AI Search for Commerce vs. Constructor.io`), `BM25 + Vector RRF (k=60)` Spec Lock, Pre-Ranking Variant `ATP` Bitmask Filter & Anti-Accessory Price-Match Guard (`-40%` Wrong-Spec & OOS Bounce Loss) FAQ** | [English](hybrid-catalog-rag-azure-ai-search-webiq-algolia-vertex-rrf-stock-filter-selection-faq.en.md) · [中文](hybrid-catalog-rag-azure-ai-search-webiq-algolia-vertex-rrf-stock-filter-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (58 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (59 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -122,6 +122,7 @@
 | 56 | **Multi-PSP Payment Orchestration (`Primer / Spreedly / Gr4vy vs. Adyen + Stripe + Checkout.com`), `8-Digit BIN` Local Acquiring, US `Durbin Reg II` PINless Debit Routing (`STAR / NYCE / Pulse`), `Cat-1 / MAC-03` Zero-Retry Breaker & `ISO 8583 0420` Timeout Failover Mutex (`-39%` Acquiring MDR & Decline Loss) FAQ** | [English](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.en.md) · [中文](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.md) |
 | 57 | **Commercial Fleet Fuel Cards & EV Charging Roaming (`WEX / Fleetcor / Stripe Issuing Fleet / Hubject ISO 15118 / OCPI 2.2.1`), Telematics `GPS + CAN-Bus` Fuel-Theft Lock, Instant `$175 AFD` `0420` Release & Idle-Fee Cap (`-39%` Fuel Slippage & Roaming Loss) FAQ** | [English](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.en.md) · [中文](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.md) |
 | 58 | **🏆 Global Digital Wallets, Local Alternative Payment Methods (`APMs`) & Biometric Checkout (`Apple Pay / Google Pay / Alipay+ / PIX / UPI / iDEAL + W3C SPC` · 🏆 1,330th Unit Test Milestone), Synced QR `TTL <= Stock_Lease - 120s` Orphan Shield, Wallet Address Override Lock & `1.4s W3C SPC` Passkey (`-39%` Orphan & Abandonment Loss) FAQ** | [English](global-digital-wallet-local-apm-apple-pay-alipay-pix-upi-late-webhook-spc-selection-faq.en.md) · [中文](global-digital-wallet-local-apm-apple-pay-alipay-pix-upi-late-webhook-spc-selection-faq.md) |
+| 59 | **E-Commerce Split-Tender Checkout (`Gift Card + Loyalty Points + Credit Card`: `Talon.One / Yotpo / Shopify Plus GiftCard / Adyen + Stripe`), Two-Phase `Soft-Reserve` Saga (`2PC`), Anti-Laundering Partial-Refund Waterfall & `14d Pending Points` Vesting (`-39%` Stranded Balance & Cashout Loss) FAQ** | [English](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.en.md) · [中文](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (173 Guides)
