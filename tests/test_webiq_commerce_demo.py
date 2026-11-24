@@ -33781,6 +33781,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agent-m2m-micropayments-x402-sandbox", html_zh)
 
+    def test_ecommerce_promo_coupon_affiliate_shield_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommercePromoCouponAffiliateShieldPolicyInput,
+            evaluate_ecommerce_promo_coupon_affiliate_shield_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_promo_coupon_affiliate_shield_policy(
+            EcommercePromoCouponAffiliateShieldPolicyInput(
+                quarterly_coupon_stacking_bleed_extension_poaching_and_referral_fraud_pool_usd=370000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_PROMO_AND_AFFILIATE_ATTRIBUTION_AUTHORIZED",
+        )
+
+        stack = evaluate_ecommerce_promo_coupon_affiliate_shield_policy(
+            EcommercePromoCouponAffiliateShieldPolicyInput(
+                static_high_discount_code_stacked_with_sitewide_sale_breaching_margin=True
+            )
+        )
+        self.assertEqual(stack["status_code"], 403)
+        self.assertEqual(
+            stack["decision"],
+            "UNBOUNDED_COUPON_STACKING_OR_LEAKED_STATIC_CODE_ABUSE",
+        )
+
+        poach = evaluate_ecommerce_promo_coupon_affiliate_shield_policy(
+            EcommercePromoCouponAffiliateShieldPolicyInput(
+                coupon_browser_extension_injected_cookie_after_checkout_started=True
+            )
+        )
+        self.assertEqual(poach["status_code"], 422)
+        self.assertEqual(
+            poach["decision"],
+            "CHECKOUT_COUPON_EXTENSION_LAST_SECOND_ATTRIBUTION_POACHING",
+        )
+
+        ref = evaluate_ecommerce_promo_coupon_affiliate_shield_policy(
+            EcommercePromoCouponAffiliateShieldPolicyInput(
+                referral_reward_vested_before_30d_return_window_or_same_household_card=True
+            )
+        )
+        self.assertEqual(ref["status_code"], 451)
+        self.assertEqual(
+            ref["decision"],
+            "SELF_REFERRAL_HOUSEHOLD_MATCH_OR_PRE_RETURN_REWARD_VESTING",
+        )
+
+        optim = evaluate_ecommerce_promo_coupon_affiliate_shield_policy(
+            EcommercePromoCouponAffiliateShieldPolicyInput(
+                quarterly_coupon_stacking_bleed_extension_poaching_and_referral_fraud_pool_usd=370000.0,
+                identity_bound_mutex_anti_poaching_and_30d_referral_vesting_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 151700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 218300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_promo_coupon_affiliate_shield_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-promo-coupon-affiliate-shield-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -43151,6 +43151,82 @@ def evaluate_agent_m2m_micropayments_x402_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommercePromoCouponAffiliateShieldPolicyInput:
+    quarterly_coupon_stacking_bleed_extension_poaching_and_referral_fraud_pool_usd: float = 370000.0
+    static_high_discount_code_stacked_with_sitewide_sale_breaching_margin: bool = False
+    coupon_browser_extension_injected_cookie_after_checkout_started: bool = False
+    referral_reward_vested_before_30d_return_window_or_same_household_card: bool = False
+    identity_bound_mutex_anti_poaching_and_30d_referral_vesting_ready: bool = False
+
+
+def evaluate_ecommerce_promo_coupon_affiliate_shield_policy(
+    policy_input: EcommercePromoCouponAffiliateShieldPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_coupon_stacking_bleed_extension_poaching_and_referral_fraud_pool_usd
+        ),
+    )
+    if policy_input.referral_reward_vested_before_30d_return_window_or_same_household_card:
+        return {
+            "status_code": 451,
+            "decision": "SELF_REFERRAL_HOUSEHOLD_MATCH_OR_PRE_RETURN_REWARD_VESTING",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.static_high_discount_code_stacked_with_sitewide_sale_breaching_margin:
+        return {
+            "status_code": 403,
+            "decision": "UNBOUNDED_COUPON_STACKING_OR_LEAKED_STATIC_CODE_ABUSE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.coupon_browser_extension_injected_cookie_after_checkout_started:
+        return {
+            "status_code": 422,
+            "decision": "CHECKOUT_COUPON_EXTENSION_LAST_SECOND_ATTRIBUTION_POACHING",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.identity_bound_mutex_anti_poaching_and_30d_referral_vesting_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PROMO_EXCLUSIVITY_AND_AFFILIATE_INCREMENTALITY_CONFIRM",
+            "mandate_token": "ecommerce_promo_affiliate_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_PROMO_AND_AFFILIATE_ATTRIBUTION_AUTHORIZED",
+        "mandate_token": "ecommerce_promo_affiliate_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -58664,6 +58740,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_promo_coupon_affiliate_shield_guard = {
+        "authorized_200": evaluate_ecommerce_promo_coupon_affiliate_shield_policy(
+            EcommercePromoCouponAffiliateShieldPolicyInput()
+        ),
+        "coupon_stacking_leak_403": evaluate_ecommerce_promo_coupon_affiliate_shield_policy(
+            EcommercePromoCouponAffiliateShieldPolicyInput(
+                static_high_discount_code_stacked_with_sitewide_sale_breaching_margin=True
+            )
+        ),
+        "extension_cookie_poach_422": evaluate_ecommerce_promo_coupon_affiliate_shield_policy(
+            EcommercePromoCouponAffiliateShieldPolicyInput(
+                coupon_browser_extension_injected_cookie_after_checkout_started=True
+            )
+        ),
+        "self_referral_cashout_451": evaluate_ecommerce_promo_coupon_affiliate_shield_policy(
+            EcommercePromoCouponAffiliateShieldPolicyInput(
+                referral_reward_vested_before_30d_return_window_or_same_household_card=True
+            )
+        ),
+        "promo_mutex_incrementality_409": evaluate_ecommerce_promo_coupon_affiliate_shield_policy(
+            EcommercePromoCouponAffiliateShieldPolicyInput(
+                identity_bound_mutex_anti_poaching_and_30d_referral_vesting_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -59161,6 +59263,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_multi_currency_fx_lock_guard": cross_border_multi_currency_fx_lock_guard,
         "b2b_supplier_onboarding_kyb_ofac_guard": b2b_supplier_onboarding_kyb_ofac_guard,
         "agent_m2m_micropayments_x402_guard": agent_m2m_micropayments_x402_guard,
+        "ecommerce_promo_coupon_affiliate_shield_guard": ecommerce_promo_coupon_affiliate_shield_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -85393,6 +85496,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="m2mx402-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 X402_SUBCENT_RAIL_AND_PREPAID_LEDGER_ROUTING_CONFIRM · Mandate: agent_m2m_x402_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 369 (#488 · SVG #812 · Sandbox #262) E-Commerce Promo Engine & Affiliate Attribution Shield -->
+      <div class="finops-box" id="ecommerce-promo-coupon-affiliate-shield-sandbox" style="margin-top:12px;border-color:#f43f5e;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎟️ 零售电商促销引擎、防叠券穿仓与联盟归因防劫持 (Talon.One / Voucherify / Impact.com) 沙盒</div>
+            <div class="finops-sub">Round 369 (#488 · SVG #812 · Sandbox #262) · 强制单客身份绑定单次加密码与排他互斥组防静态大额码被插件爬走叠加黑五穿仓 (HTTP 403) + 拦截浏览器找券插件在购物车创建后 (&lt;120s 结账前夕) 注入 Cookie 窃取自然流量 10% 佣金 (HTTP 422) + 老带新家庭图谱反自推与妥投 +30d 过退货期解冻奖励 (HTTP 451) + 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="prmaff-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度静态优惠码外泄折上折负毛利穿仓、浏览器找券插件结账劫持佣金及小号自推套现风险池 ($)
+            <input type="number" id="prmaff-gross-input" value="370000" min="10000" step="5000" oninput="recalcEcommercePromoCouponAffiliateSandbox()" />
+          </label>
+          <label>单客身份绑定单次加密码 (Identity-Bound Single-Use) 与促销排他互斥组 (Exclusivity Mutex) 门禁
+            <select id="prmaff-stack-select" onchange="recalcEcommercePromoCouponAffiliateSandbox()">
+              <option value="pass">废除 &gt;10% 静态通用码，强制绑定 customer_id 且与全站大促互斥，保住 &gt;=20% 折后净毛利 (安全)</option>
+              <option value="block_403">静态补偿码 VIP30 被找券插件爬走全网疯传，并叠加黑五 6 折活动变成 4.2 折负毛利爆仓 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>结账页浏览器优惠券插件最后点击劫持 (Last-Second Extension Cookie Poaching) 佣金拒付门禁
+            <select id="prmaff-poach-select" onchange="recalcEcommercePromoCouponAffiliateSandbox()">
+              <option value="pass">锁定购物车创建前的首发种草博主/自然归因，结账页 &lt;120s 插件弹窗注入点击分佣置为 $0 (合规)</option>
+              <option value="block_422">自然流量买家在结账最后 3 秒被找券插件弹窗刷入 Affiliate Cookie，白白被劫走 10% 推广佣金 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>老带新裂变家庭图谱去重 (同地址/同卡/同IP) 与受邀单妥投 + 30天过退货期奖励解冻门禁
+            <select id="prmaff-ref-select" onchange="recalcEcommercePromoCouponAffiliateSandbox()">
+              <option value="pass">核验推荐人与新客无共享地址/卡指纹，且 $30 推荐奖励锁在托管户待新客签收满 30d 无退货解冻 (合规)</option>
+              <option value="block_451">主号邀请同收货地址小号下单秒拿 $30 奖励并花光，随后小号立刻退货退款无限套现 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Talon.One 排他互斥算价 + Impact.com 反插件劫持归因 + 30d 裂变托管全链路编排
+            <select id="prmaff-opt-select" onchange="recalcEcommercePromoCouponAffiliateSandbox()">
+              <option value="enabled" selected>启用单客动态码互斥锁 + 反插件劫持归因 + 30d 裂变解冻 (-41% 叠券穿仓与假佣金损耗 / HTTP 409)</option>
+              <option value="disabled">传统通用静态优惠码与无条件末次点击分佣基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度叠券穿仓与插件劫持池</div>
+            <div class="finops-kpi-val" id="prmaff-gross-kpi">$370,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">互斥锁与反劫持后净成本</div>
+            <div class="finops-kpi-val" id="prmaff-net-kpi" style="color:#6ee7b7;">$218,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回毛利与推广佣金</div>
+            <div class="finops-kpi-val" id="prmaff-savings-kpi" style="color:#38bdf8;">$151,700</div>
+          </div>
+        </div>
+        <div id="prmaff-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PROMO_EXCLUSIVITY_AND_AFFILIATE_INCREMENTALITY_CONFIRM · Mandate: ecommerce_promo_affiliate_optim_409
         </div>
       </div>
 
@@ -117847,6 +118007,79 @@ function recalcAgentM2mMicropaymentsX402Sandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_AGENT_M2M_MICROPAYMENT_AUTHORIZED · Mandate: agent_m2m_x402_200';
+}}
+
+function recalcEcommercePromoCouponAffiliateSandbox() {{
+  const grossInput = document.getElementById('prmaff-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '370000'));
+  const stackGate = document.getElementById('prmaff-stack-select').value;
+  const poachGate = document.getElementById('prmaff-poach-select').value;
+  const refGate = document.getElementById('prmaff-ref-select').value;
+  const optMode = document.getElementById('prmaff-opt-select').value;
+
+  const grossKpi = document.getElementById('prmaff-gross-kpi');
+  const netKpi = document.getElementById('prmaff-net-kpi');
+  const savingsKpi = document.getElementById('prmaff-savings-kpi');
+  const statusKpi = document.getElementById('prmaff-status-kpi');
+  const banner = document.getElementById('prmaff-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (refGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 SELF_REFERRAL_HOUSEHOLD_MATCH_OR_PRE_RETURN_REWARD_VESTING · Mandate: null';
+    return;
+  }}
+  if (stackGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNBOUNDED_COUPON_STACKING_OR_LEAKED_STATIC_CODE_ABUSE · Mandate: null';
+    return;
+  }}
+  if (poachGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CHECKOUT_COUPON_EXTENSION_LAST_SECOND_ATTRIBUTION_POACHING · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PROMO_EXCLUSIVITY_AND_AFFILIATE_INCREMENTALITY_CONFIRM · Mandate: ecommerce_promo_affiliate_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_PROMO_AND_AFFILIATE_ATTRIBUTION_AUTHORIZED · Mandate: ecommerce_promo_affiliate_200';
 }}
 
 function updateStage1756Sandbox() {{

@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`487` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`488` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (37 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (61 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (180 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (181 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (108 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (45 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (56 guides)](#tax-fx-privacy-disputes)
@@ -132,7 +132,7 @@
 | 61 | **💳 E-Commerce Buy Now, Pay Later (`BNPL`: `Klarna / Affirm / Afterpay / PayPal Pay in 4`) & Installment Underwriting Agent Selection FAQ: `0% APR` Subsidy Margin Floors (`>=$250 AOV`), Anti-Bracketing `Pay-in-30` Veto & Split-Shipment Loan Auth Extension (`-39%` MDR & Return Loss) FAQ** | [English](ecommerce-bnpl-klarna-affirm-afterpay-paypal-pay-in-4-mdr-floor-return-fee-selection-faq.en.md) · [中文](ecommerce-bnpl-klarna-affirm-afterpay-paypal-pay-in-4-mdr-floor-return-fee-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (180 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (181 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -318,6 +318,7 @@
 | 178 | **📣 Retail & SaaS Lifecycle Marketing, Replenishment & Causal Uplift Orchestration (`Klaviyo / Braze / Salesforce Marketing Cloud / D365 Customer Insights Journeys`), Open-Ticket & 14-Day Price-Protection Suppression, Anti-Cannibalization Uplift Gating & `TCPA` Quiet-Hours Mutex (`-39%` Margin & SMS Loss) FAQ** | [English](lifecycle-marketing-replenishment-klaviyo-braze-sfmc-d365-frequency-cap-uplift-selection-faq.en.md) · [中文](lifecycle-marketing-replenishment-klaviyo-braze-sfmc-d365-frequency-cap-uplift-selection-faq.md) |
 | 179 | **🏆 Multi-Merchant Marketplace Split Settlement, Seller Escrow & Negative-Balance Clawback (`Stripe Connect / Adyen for Platforms / Mirakl Payout / Hyperwallet` · 🏆 480th Bilingual Guide Major Milestone), `POD + 7d` Rolling Reserves, Atomic `reverse_transfer` Refunds & `1-to-N` `FBO` Penny Conservation (`-40%` Bad-Debt Loss) FAQ** | [English](marketplace-split-settlement-stripe-connect-adyen-platforms-mirakl-seller-reserve-clawback-selection-faq.en.md) · [中文](marketplace-split-settlement-stripe-connect-adyen-platforms-mirakl-seller-reserve-clawback-selection-faq.md) |
 | 180 | **🏆 Cross-Border Multilingual Customer Support & Autonomous Order Resolution (`Gorgias AI / Zendesk AI / Intercom Fin / Salesforce Service Cloud / D365` · 🏆 Round 365 Milestone), In-Transit Carrier-Intercept Refund Locks, `DNA` `36h` GPS/Photo Verification & Statutory `EU/UK 14-Day` Return Parity (`-41%` Cost) FAQ** | [English](cross-border-multilingual-cs-gorgias-zendesk-intercom-fin-dna-gps-in-transit-refund-lock-selection-faq.en.md) · [中文](cross-border-multilingual-cs-gorgias-zendesk-intercom-fin-dna-gps-in-transit-refund-lock-selection-faq.md) |
+| 181 | **🎟️ E-Commerce Promotion Engine, Coupon-Stacking Guard & Affiliate Attribution Shield (`Talon.One / Voucherify / Impact.com / Partnerize / Shopify Functions`), Identity-Bound Single-Use Codes, Anti-Extension Checkout Poaching & `POD + 30d` Referral Vesting (`-41%` Margin & Commission Loss) FAQ** | [English](ecommerce-promo-coupon-stacking-talon-one-voucherify-impact-affiliate-attribution-hijack-selection-faq.en.md) · [中文](ecommerce-promo-coupon-stacking-talon-one-voucherify-impact-affiliate-attribution-hijack-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (108 Guides)
