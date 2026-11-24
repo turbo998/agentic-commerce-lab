@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`475` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`476` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (37 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (60 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (177 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (103 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (104 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (43 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (55 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -316,7 +316,7 @@
 | 177 | **🏆 E-Commerce AI Shopping Stylist, Cross-Category Outfit Bundling & Size/Compatibility Engine (`Shopify Storefront MCP / Constructor.io / True Fit / Bold Metrics + Azure AI Search` · 🏆 1,350th Unit Test Major Milestone), Variant-Size `ATP` Parity, Prorated Bundle Clawback & Anti-Bracketing Size Prediction (`-39%` Return & Margin Loss) FAQ** | [English](ecommerce-ai-shopping-assistant-cross-category-outfit-bundle-size-fit-margin-floor-selection-faq.en.md) · [中文](ecommerce-ai-shopping-assistant-cross-category-outfit-bundle-size-fit-margin-floor-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (103 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (104 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -425,6 +425,7 @@
 | 101 | **🏆 Cross-Border B2B Trade Assurance Milestone Escrow (`30/50/20`), `ISO 2859-1 AQL 2.5` Pre-Shipment Inspection (`PSI`) & `DCSA` On-Board `B/L` Verification (`Alibaba Trade Assurance / Global Sources / SGS·QIMA / Citi Escrow` · 🏆 Round 340 Milestone) (`-39%` Defective Container & B/L Fraud Loss) FAQ** | [English](b2b-cross-border-trade-assurance-milestone-escrow-aql-inspection-bol-release-selection-faq.en.md) · [中文](b2b-cross-border-trade-assurance-milestone-escrow-aql-inspection-bol-release-selection-faq.md) |
 | 102 | **🛡️ Enterprise B2B RFP & Security Questionnaire Copilot (`Responsive / Loopio / Conveyor / Vanta + Azure AI Search`), `SOC 2 / FedRAMP` Evidence Freshness Lock, Anti-Uncapped-Liability Legal Gate & Cross-Prospect NDA Redaction (`-39%` Presales & Legal Review Cost) FAQ** | [English](b2b-rfp-security-questionnaire-copilot-responsive-loopio-conveyor-hallucination-guard-selection-faq.en.md) · [中文](b2b-rfp-security-questionnaire-copilot-responsive-loopio-conveyor-hallucination-guard-selection-faq.md) |
 | 103 | **📜 Enterprise B2B Contract CLM & Legal Redlining Copilot (`Icertis / Ironclad / Agiloft / DocuSign IAM + Word MCP`), Order-of-Precedence & Mutable URL Shield, Evergreen Renewal Uplift Cap (`<=3%`) & Zero Vendor AI-Training Lock (`-41%` Legal & Renewal Loss) FAQ** | [English](b2b-contract-clm-redlining-icertis-ironclad-agiloft-liability-cap-auto-renew-selection-faq.en.md) · [中文](b2b-contract-clm-redlining-icertis-ironclad-agiloft-liability-cap-auto-renew-selection-faq.md) |
+| 104 | **🏆 Enterprise ERP Order Execution, Transactional Outbox & Compensating `Saga` Selection (`Microsoft Dynamics 365` vs. `SAP S/4HANA` vs. `Oracle NetSuite` vs. `Salesforce SOM` · 🏆 800th SVG & 250th Sandbox Dual Major Milestone), `BSTKD / externalId` Idempotency, 4-Step `Pre-Auth` Ordering & Closed Fiscal Period Roll-Forward (`-42%` Cost) FAQ** | [English](enterprise-erp-order-execution-saga-outbox-dynamics-365-sap-s4hana-netsuite-idempotency-selection-faq.en.md) · [中文](enterprise-erp-order-execution-saga-outbox-dynamics-365-sap-s4hana-netsuite-idempotency-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (43 Guides)

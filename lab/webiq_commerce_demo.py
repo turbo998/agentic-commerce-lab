@@ -42239,6 +42239,82 @@ def evaluate_cross_border_mor_vs_direct_acquiring_policy(
     }
 
 
+@dataclass(frozen=True)
+class EnterpriseErpOrderSagaOutboxPolicyInput:
+    quarterly_duplicate_erp_shipment_orphaned_capture_and_dlq_pool_usd: float = 430000.0
+    erp_order_retried_without_unique_external_doc_no_or_read_before_retry: bool = False
+    payment_captured_before_erp_order_simulation_and_commit_verified: bool = False
+    posting_attempted_into_closed_erp_fiscal_period_without_roll_forward: bool = False
+    transactional_outbox_four_step_saga_and_period_roll_ready: bool = False
+
+
+def evaluate_enterprise_erp_order_saga_outbox_policy(
+    policy_input: EnterpriseErpOrderSagaOutboxPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_duplicate_erp_shipment_orphaned_capture_and_dlq_pool_usd
+        ),
+    )
+    if policy_input.posting_attempted_into_closed_erp_fiscal_period_without_roll_forward:
+        return {
+            "status_code": 451,
+            "decision": "CLOSED_ERP_FISCAL_PERIOD_OR_MASTER_DATA_LOCK_REJECT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.erp_order_retried_without_unique_external_doc_no_or_read_before_retry:
+        return {
+            "status_code": 403,
+            "decision": "DUPLICATE_ERP_ORDER_CREATION_WITHOUT_EXTERNAL_ID_LOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.payment_captured_before_erp_order_simulation_and_commit_verified:
+        return {
+            "status_code": 422,
+            "decision": "PAYMENT_CAPTURED_WITHOUT_VERIFIED_ERP_ORDER_SAGA",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.transactional_outbox_four_step_saga_and_period_roll_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ERP_TRANSACTIONAL_OUTBOX_SAGA_AND_IDEMPOTENCY_CONFIRM",
+            "mandate_token": "enterprise_erp_outbox_saga_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ENTERPRISE_ERP_OUTBOX_SAGA_AUTHORIZED",
+        "mandate_token": "enterprise_erp_outbox_saga_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -57440,6 +57516,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    enterprise_erp_order_saga_outbox_guard = {
+        "authorized_200": evaluate_enterprise_erp_order_saga_outbox_policy(
+            EnterpriseErpOrderSagaOutboxPolicyInput()
+        ),
+        "duplicate_erp_order_403": evaluate_enterprise_erp_order_saga_outbox_policy(
+            EnterpriseErpOrderSagaOutboxPolicyInput(
+                erp_order_retried_without_unique_external_doc_no_or_read_before_retry=True
+            )
+        ),
+        "captured_before_erp_422": evaluate_enterprise_erp_order_saga_outbox_policy(
+            EnterpriseErpOrderSagaOutboxPolicyInput(
+                payment_captured_before_erp_order_simulation_and_commit_verified=True
+            )
+        ),
+        "closed_fiscal_period_451": evaluate_enterprise_erp_order_saga_outbox_policy(
+            EnterpriseErpOrderSagaOutboxPolicyInput(
+                posting_attempted_into_closed_erp_fiscal_period_without_roll_forward=True
+            )
+        ),
+        "outbox_four_step_saga_409": evaluate_enterprise_erp_order_saga_outbox_policy(
+            EnterpriseErpOrderSagaOutboxPolicyInput(
+                transactional_outbox_four_step_saga_and_period_roll_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -57925,6 +58027,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_contract_clm_redlining_guard": b2b_contract_clm_redlining_guard,
         "ecommerce_chargeback_ce3_ethoca_guard": ecommerce_chargeback_ce3_ethoca_guard,
         "cross_border_mor_vs_direct_acquiring_guard": cross_border_mor_vs_direct_acquiring_guard,
+        "enterprise_erp_order_saga_outbox_guard": enterprise_erp_order_saga_outbox_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -83473,6 +83576,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="mordir-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 HYBRID_CORE_DIRECT_AND_LONGTAIL_MOR_DDP_CONFIRM · Mandate: cross_border_mor_direct_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 357 (#476 · 🏆 SVG #800 & 250th Sandbox Dual Major Milestone!) Enterprise ERP Order Execution, Outbox & Saga -->
+      <div class="finops-box" id="enterprise-erp-order-saga-outbox-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业级 ERP 订单确定性写入、事务外发箱与逆向补偿 Saga (Dynamics 365 vs. SAP S/4HANA vs. NetSuite) 沙盒（🏆 第 800 张 SVG 与第 250 个沙盒双里程碑）</div>
+            <div class="finops-sub">Round 357 (#476 · 🏆 SVG #800 &amp; 250th Sandbox Milestone) · 强制绑定外部单号唯一索引 (SAP BSTKD / D365 CustomerRequisitionNumber / NetSuite externalId) 与先查后试防超时重试双倍发货 (HTTP 403) + “预模拟 -&gt; 预授权冻结 -&gt; ERP 落库 -&gt; 实扣/Void”四步铁律防扣了钱没生成订单 (HTTP 422) + 月末关账期自动顺延 PostingDate (HTTP 451) + 净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="erpsaga-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度网关超时重试双倍错发召回费、先扣款后 ERP 报错吞钱客诉及月末关账死信人工修复池 ($)
+            <input type="number" id="erpsaga-gross-input" value="430000" min="10000" step="5000" oninput="recalcEnterpriseErpOrderSagaOutboxSandbox()" />
+          </label>
+          <label>ERP 外部客户单号唯一约束 (BSTKD / CustomerRequisitionNumber / externalId) 与先查后试门禁
+            <select id="erpsaga-idemp-select" onchange="recalcEnterpriseErpOrderSagaOutboxSandbox()">
+              <option value="pass">派生确定性哈希写入外部单号唯一索引，遭遇 HTTP 504 超时后先 GET 反查确认未落库才重发 (安全)</option>
+              <option value="block_403">未设外部单号唯一约束且超时后盲目重发 POST，导致 SAP/D365 连续分配两个内部单号双倍发货 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>四步受托时序 (Step 1 ERP 预模拟 -&gt; Step 2 支付预授权 -&gt; Step 3 ERP 落库 -&gt; Step 4 实扣) 门禁
+            <select id="erpsaga-saga-select" onchange="recalcEnterpriseErpOrderSagaOutboxSandbox()">
+              <option value="pass">先跑 TESTRUN 模拟与手动捕获预授权，拿到 ERP 正式单号才 Capture；若建单失败秒级 Void 释放额度 (合规)</option>
+              <option value="block_422">先直接 Capture 实扣客户 $5,000 现金，随后调 ERP 建单因信用冻结或税码报错失败导致吞钱无单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>月末/季末 ERP 会计关账期 (Closed Fiscal Period: SAP OB52 / NetSuite) 过账日自动顺延门禁
+            <select id="erpsaga-period-select" onchange="recalcEnterpriseErpOrderSagaOutboxSandbox()">
+              <option value="pass">保持业务原始 DocumentDate 不变，检测到当月总账已关账时自动将 PostingDate 顺延至新开放期首日 (合规)</option>
+              <option value="block_451">月底 23:59 下单因异步延迟在次日 00:03 硬写已关闭的上月会计期，遭 ERP 拒收卡死在死信队列 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Transactional Outbox + 外部唯一键幂等 + 预授权四步 Saga + 关账期顺延全链路编排
+            <select id="erpsaga-opt-select" onchange="recalcEnterpriseErpOrderSagaOutboxSandbox()">
+              <option value="enabled" selected>启用 Outbox 幂等锁 + 预授权四步 Saga + 关账期自动顺延 (-42% 错发与吞钱卡单损耗 / HTTP 409)</option>
+              <option value="disabled">无外发箱同步裸调 ERP 建单与人工死信对账基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度ERP重单与吞钱卡单池</div>
+            <div class="finops-kpi-val" id="erpsaga-gross-kpi">$430,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">Outbox与四步Saga后净成本</div>
+            <div class="finops-kpi-val" id="erpsaga-net-kpi" style="color:#6ee7b7;">$249,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省重发召回与对账费</div>
+            <div class="finops-kpi-val" id="erpsaga-savings-kpi" style="color:#38bdf8;">$180,600</div>
+          </div>
+        </div>
+        <div id="erpsaga-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ERP_TRANSACTIONAL_OUTBOX_SAGA_AND_IDEMPOTENCY_CONFIRM · Mandate: enterprise_erp_outbox_saga_optim_409
         </div>
       </div>
 
@@ -115051,6 +115211,79 @@ function recalcCrossBorderMorVsDirectSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CROSS_BORDER_MOR_AND_DIRECT_ROUTING_AUTHORIZED · Mandate: cross_border_mor_direct_200';
+}}
+
+function recalcEnterpriseErpOrderSagaOutboxSandbox() {{
+  const grossInput = document.getElementById('erpsaga-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '430000'));
+  const idempGate = document.getElementById('erpsaga-idemp-select').value;
+  const sagaGate = document.getElementById('erpsaga-saga-select').value;
+  const periodGate = document.getElementById('erpsaga-period-select').value;
+  const optMode = document.getElementById('erpsaga-opt-select').value;
+
+  const grossKpi = document.getElementById('erpsaga-gross-kpi');
+  const netKpi = document.getElementById('erpsaga-net-kpi');
+  const savingsKpi = document.getElementById('erpsaga-savings-kpi');
+  const statusKpi = document.getElementById('erpsaga-status-kpi');
+  const banner = document.getElementById('erpsaga-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (periodGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CLOSED_ERP_FISCAL_PERIOD_OR_MASTER_DATA_LOCK_REJECT · Mandate: null';
+    return;
+  }}
+  if (idempGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DUPLICATE_ERP_ORDER_CREATION_WITHOUT_EXTERNAL_ID_LOCK · Mandate: null';
+    return;
+  }}
+  if (sagaGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PAYMENT_CAPTURED_WITHOUT_VERIFIED_ERP_ORDER_SAGA · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ERP_TRANSACTIONAL_OUTBOX_SAGA_AND_IDEMPOTENCY_CONFIRM · Mandate: enterprise_erp_outbox_saga_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_ENTERPRISE_ERP_OUTBOX_SAGA_AUTHORIZED · Mandate: enterprise_erp_outbox_saga_200';
 }}
 
 function updateStage1756Sandbox() {{

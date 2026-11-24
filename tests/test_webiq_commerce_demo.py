@@ -32977,6 +32977,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-mor-vs-direct-acquiring-sandbox", html_zh)
 
+    def test_enterprise_erp_order_saga_outbox_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EnterpriseErpOrderSagaOutboxPolicyInput,
+            evaluate_enterprise_erp_order_saga_outbox_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_enterprise_erp_order_saga_outbox_policy(
+            EnterpriseErpOrderSagaOutboxPolicyInput(
+                quarterly_duplicate_erp_shipment_orphaned_capture_and_dlq_pool_usd=430000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ENTERPRISE_ERP_OUTBOX_SAGA_AUTHORIZED",
+        )
+
+        dup = evaluate_enterprise_erp_order_saga_outbox_policy(
+            EnterpriseErpOrderSagaOutboxPolicyInput(
+                erp_order_retried_without_unique_external_doc_no_or_read_before_retry=True
+            )
+        )
+        self.assertEqual(dup["status_code"], 403)
+        self.assertEqual(
+            dup["decision"],
+            "DUPLICATE_ERP_ORDER_CREATION_WITHOUT_EXTERNAL_ID_LOCK",
+        )
+
+        cap = evaluate_enterprise_erp_order_saga_outbox_policy(
+            EnterpriseErpOrderSagaOutboxPolicyInput(
+                payment_captured_before_erp_order_simulation_and_commit_verified=True
+            )
+        )
+        self.assertEqual(cap["status_code"], 422)
+        self.assertEqual(
+            cap["decision"],
+            "PAYMENT_CAPTURED_WITHOUT_VERIFIED_ERP_ORDER_SAGA",
+        )
+
+        period = evaluate_enterprise_erp_order_saga_outbox_policy(
+            EnterpriseErpOrderSagaOutboxPolicyInput(
+                posting_attempted_into_closed_erp_fiscal_period_without_roll_forward=True
+            )
+        )
+        self.assertEqual(period["status_code"], 451)
+        self.assertEqual(
+            period["decision"],
+            "CLOSED_ERP_FISCAL_PERIOD_OR_MASTER_DATA_LOCK_REJECT",
+        )
+
+        optim = evaluate_enterprise_erp_order_saga_outbox_policy(
+            EnterpriseErpOrderSagaOutboxPolicyInput(
+                quarterly_duplicate_erp_shipment_orphaned_capture_and_dlq_pool_usd=430000.0,
+                transactional_outbox_four_step_saga_and_period_roll_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 180600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 249400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("enterprise_erp_order_saga_outbox_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("enterprise-erp-order-saga-outbox-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
