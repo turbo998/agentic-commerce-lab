@@ -41175,6 +41175,82 @@ def evaluate_voice_commerce_ccaas_pci_dtmf_policy(
     }
 
 
+@dataclass(frozen=True)
+class BrowserUseHeadlessCheckoutGuardPolicyInput:
+    quarterly_dark_pattern_upsell_double_click_and_gui_token_pool_usd: float = 390000.0
+    dark_pattern_upsell_checkbox_or_dom_total_exceeds_mandate: bool = False
+    duplicate_submit_button_click_on_slow_page_without_oob_check: bool = False
+    plaintext_password_or_raw_pan_in_browser_prompt_or_screenshot: bool = False
+    api_first_axtree_total_lock_single_click_and_vault_vcn_ready: bool = False
+
+
+def evaluate_browser_use_headless_checkout_guard_policy(
+    policy_input: BrowserUseHeadlessCheckoutGuardPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_dark_pattern_upsell_double_click_and_gui_token_pool_usd
+        ),
+    )
+    if policy_input.plaintext_password_or_raw_pan_in_browser_prompt_or_screenshot:
+        return {
+            "status_code": 451,
+            "decision": "PLAINTEXT_PASSWORD_OR_RAW_PAN_EXPOSED_IN_BROWSER_AGENT_PROMPT_OR_SCREENSHOT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dark_pattern_upsell_checkbox_or_dom_total_exceeds_mandate:
+        return {
+            "status_code": 403,
+            "decision": "DARK_PATTERN_UPSELL_CHECKBOX_TRAP_OR_DOM_TOTAL_EXCEEDS_MANDATE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.duplicate_submit_button_click_on_slow_page_without_oob_check:
+        return {
+            "status_code": 422,
+            "decision": "DUPLICATE_SUBMIT_BUTTON_CLICK_ON_SLOW_CHECKOUT_PAGE_WITHOUT_OOB_CHECK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.api_first_axtree_total_lock_single_click_and_vault_vcn_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "API_FIRST_BROWSER_FALLBACK_AXTREE_PARITY_AND_VAULT_VCN_INJECT_CONFIRM",
+            "mandate_token": "browser_use_checkout_guard_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_BROWSER_USE_HEADLESS_CHECKOUT_AUTHORIZED",
+        "mandate_token": "browser_use_checkout_guard_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -56012,6 +56088,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    browser_use_headless_checkout_guard = {
+        "authorized_200": evaluate_browser_use_headless_checkout_guard_policy(
+            BrowserUseHeadlessCheckoutGuardPolicyInput()
+        ),
+        "dark_pattern_upsell_trap_403": evaluate_browser_use_headless_checkout_guard_policy(
+            BrowserUseHeadlessCheckoutGuardPolicyInput(
+                dark_pattern_upsell_checkbox_or_dom_total_exceeds_mandate=True
+            )
+        ),
+        "duplicate_submit_click_422": evaluate_browser_use_headless_checkout_guard_policy(
+            BrowserUseHeadlessCheckoutGuardPolicyInput(
+                duplicate_submit_button_click_on_slow_page_without_oob_check=True
+            )
+        ),
+        "raw_password_or_pan_leak_451": evaluate_browser_use_headless_checkout_guard_policy(
+            BrowserUseHeadlessCheckoutGuardPolicyInput(
+                plaintext_password_or_raw_pan_in_browser_prompt_or_screenshot=True
+            )
+        ),
+        "api_first_axtree_vault_409": evaluate_browser_use_headless_checkout_guard_policy(
+            BrowserUseHeadlessCheckoutGuardPolicyInput(
+                api_first_axtree_total_lock_single_click_and_vault_vcn_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -56483,6 +56585,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_cross_border_trade_assurance_guard": b2b_cross_border_trade_assurance_guard,
         "ecommerce_dynamic_pricing_map_guard": ecommerce_dynamic_pricing_map_guard,
         "voice_commerce_ccaas_pci_dtmf_guard": voice_commerce_ccaas_pci_dtmf_guard,
+        "browser_use_headless_checkout_guard": browser_use_headless_checkout_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -81233,6 +81336,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="vcccaas-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 VOICE_CCAAS_SIP_DTMF_VAULT_BARGEIN_GUARD_AND_OOB_STEPUP_CONFIRM · Mandate: voice_commerce_ccaas_pci_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 343 (#462 · SVG #786 · 🏆 1,340th Test Milestone) Browser-Use / Headless GUI Checkout Guard -->
+      <div class="finops-box" id="browser-use-headless-checkout-sandbox" style="margin-top:12px;border-color:#2563eb;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🌐 无 API 长尾站点自动化结账 (Browser-Use / Playwright vs. UCP/ACP API) 防暗黑模式沙盒（🏆 第 1,340 项测试里程碑）</div>
+            <div class="finops-sub">Round 343 (#462 · SVG #786 · 🏆 1,340th Test Milestone) · 提交前解析无障碍树 (AXTree) 清洗默认勾选的 $19.99/月 VIP 会员与延保暗黑陷阱并核对总价相等 (HTTP 403) + 最终付款按钮单次点击硬互斥锁 (Max_Click=1) 防慢页面连点双扣 (HTTP 422) + 登录步 Live Tab 人类交接与安全飞地盲填单次虚拟卡防密码/卡号进截图 (HTTP 451) + 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="brwchk-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 Browser-Use 误点暗黑捆绑会员、慢网页连点两下双倍扣款及全量跑视觉模型 Token 损耗池 ($)
+            <input type="number" id="brwchk-gross-input" value="390000" min="10000" step="5000" oninput="recalcBrowserUseHeadlessCheckoutSandbox()" />
+          </label>
+          <label>提交前无障碍树 (AXTree) 订单总价对账与暗黑模式勾选框 (VIP Club / 延保) 清零门禁
+            <select id="brwchk-axtree-select" onchange="recalcBrowserUseHeadlessCheckoutSandbox()">
+              <option value="pass">点击提交前强制校验 DOM_Grand_Total == 授权令金额，自动取消勾选所有非授权 VIP/延保附加项 (安全)</option>
+              <option value="block_403">视觉模型无脑点击绿色大按钮，掉入网页预勾选的 $19.99/月自动续费 VIP 会员陷阱 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>最终支付按钮单次点击硬互斥锁 (Max_Submit_Clicks = 1) 与发卡行带外观察门禁
+            <select id="brwchk-click-select" onchange="recalcBrowserUseHeadlessCheckoutSandbox()">
+              <option value="pass">派发第 1 次点击后物理锁死提交按钮，若页面转圈则轮询 VCN ISO 8583 授权流与确认邮件 (合规)</option>
+              <option value="block_422">老网页点完 [立即支付] 卡顿 6 秒没跳转，Browser Agent 补点第 2 下触发双倍扣款 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>登录 2FA 实时页面交接 (Live Tab Handover) 与安全飞地 (Vault Enclave) 盲填单次虚拟卡门禁
+            <select id="brwchk-vault-select" onchange="recalcBrowserUseHeadlessCheckoutSandbox()">
+              <option value="pass">登录步交接人类输入，填卡步由安全飞地直填单次限额 VCN 并对输入框截图高斯打码 (合规)</option>
+              <option value="block_451">将用户明文主密码与 16 位实体信用卡号直接写进 Prompt 并保存在全屏截图日志中 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>API-First 分流 + AXTree 防暗黑验价 + 单次点击互斥与飞地盲填全链路编排
+            <select id="brwchk-opt-select" onchange="recalcBrowserUseHeadlessCheckoutSandbox()">
+              <option value="enabled" selected>启用 85% API 优先 + AXTree 净额锁 + 飞地盲填 VCN (-41% 网页结账损耗 / HTTP 409)</option>
+              <option value="disabled">全流量裸跑视觉截图 Agent + 明文填卡无防重锁 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度暗黑误购与双扣损耗池</div>
+            <div class="finops-kpi-val" id="brwchk-gross-kpi">$390,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">AXTree锁与盲填VCN后净成本</div>
+            <div class="finops-kpi-val" id="brwchk-net-kpi" style="color:#6ee7b7;">$230,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省误购赔付与算力费</div>
+            <div class="finops-kpi-val" id="brwchk-savings-kpi" style="color:#38bdf8;">$159,900</div>
+          </div>
+        </div>
+        <div id="brwchk-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 API_FIRST_BROWSER_FALLBACK_AXTREE_PARITY_AND_VAULT_VCN_INJECT_CONFIRM · Mandate: browser_use_checkout_guard_optim_409
         </div>
       </div>
 
@@ -111789,6 +111949,79 @@ function recalcVoiceCommerceCcaasPciDtmfSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_VOICE_COMMERCE_CCAAS_AND_PCI_DTMF_AUTHORIZED · Mandate: voice_commerce_ccaas_pci_200';
+}}
+
+function recalcBrowserUseHeadlessCheckoutSandbox() {{
+  const grossInput = document.getElementById('brwchk-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '390000'));
+  const axtreeGate = document.getElementById('brwchk-axtree-select').value;
+  const clickGate = document.getElementById('brwchk-click-select').value;
+  const vaultGate = document.getElementById('brwchk-vault-select').value;
+  const optMode = document.getElementById('brwchk-opt-select').value;
+
+  const grossKpi = document.getElementById('brwchk-gross-kpi');
+  const netKpi = document.getElementById('brwchk-net-kpi');
+  const savingsKpi = document.getElementById('brwchk-savings-kpi');
+  const statusKpi = document.getElementById('brwchk-status-kpi');
+  const banner = document.getElementById('brwchk-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vaultGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PLAINTEXT_PASSWORD_OR_RAW_PAN_EXPOSED_IN_BROWSER_AGENT_PROMPT_OR_SCREENSHOT · Mandate: null';
+    return;
+  }}
+  if (axtreeGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DARK_PATTERN_UPSELL_CHECKBOX_TRAP_OR_DOM_TOTAL_EXCEEDS_MANDATE · Mandate: null';
+    return;
+  }}
+  if (clickGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DUPLICATE_SUBMIT_BUTTON_CLICK_ON_SLOW_CHECKOUT_PAGE_WITHOUT_OOB_CHECK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 API_FIRST_BROWSER_FALLBACK_AXTREE_PARITY_AND_VAULT_VCN_INJECT_CONFIRM · Mandate: browser_use_checkout_guard_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_BROWSER_USE_HEADLESS_CHECKOUT_AUTHORIZED · Mandate: browser_use_checkout_guard_200';
 }}
 
 function updateStage1756Sandbox() {{

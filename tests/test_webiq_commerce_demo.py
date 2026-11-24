@@ -32039,6 +32039,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("voice-commerce-ccaas-pci-dtmf-sandbox", html_zh)
 
+    def test_browser_use_headless_checkout_guard_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            BrowserUseHeadlessCheckoutGuardPolicyInput,
+            evaluate_browser_use_headless_checkout_guard_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_browser_use_headless_checkout_guard_policy(
+            BrowserUseHeadlessCheckoutGuardPolicyInput(
+                quarterly_dark_pattern_upsell_double_click_and_gui_token_pool_usd=390000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_BROWSER_USE_HEADLESS_CHECKOUT_AUTHORIZED",
+        )
+
+        trap = evaluate_browser_use_headless_checkout_guard_policy(
+            BrowserUseHeadlessCheckoutGuardPolicyInput(
+                dark_pattern_upsell_checkbox_or_dom_total_exceeds_mandate=True
+            )
+        )
+        self.assertEqual(trap["status_code"], 403)
+        self.assertEqual(
+            trap["decision"],
+            "DARK_PATTERN_UPSELL_CHECKBOX_TRAP_OR_DOM_TOTAL_EXCEEDS_MANDATE",
+        )
+
+        dbl = evaluate_browser_use_headless_checkout_guard_policy(
+            BrowserUseHeadlessCheckoutGuardPolicyInput(
+                duplicate_submit_button_click_on_slow_page_without_oob_check=True
+            )
+        )
+        self.assertEqual(dbl["status_code"], 422)
+        self.assertEqual(
+            dbl["decision"],
+            "DUPLICATE_SUBMIT_BUTTON_CLICK_ON_SLOW_CHECKOUT_PAGE_WITHOUT_OOB_CHECK",
+        )
+
+        leak = evaluate_browser_use_headless_checkout_guard_policy(
+            BrowserUseHeadlessCheckoutGuardPolicyInput(
+                plaintext_password_or_raw_pan_in_browser_prompt_or_screenshot=True
+            )
+        )
+        self.assertEqual(leak["status_code"], 451)
+        self.assertEqual(
+            leak["decision"],
+            "PLAINTEXT_PASSWORD_OR_RAW_PAN_EXPOSED_IN_BROWSER_AGENT_PROMPT_OR_SCREENSHOT",
+        )
+
+        optim = evaluate_browser_use_headless_checkout_guard_policy(
+            BrowserUseHeadlessCheckoutGuardPolicyInput(
+                quarterly_dark_pattern_upsell_double_click_and_gui_token_pool_usd=390000.0,
+                api_first_axtree_total_lock_single_click_and_vault_vcn_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 159900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 230100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("browser_use_headless_checkout_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("browser-use-headless-checkout-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
