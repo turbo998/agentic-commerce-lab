@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`459` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`460` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（33 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（59 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（174 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（175 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（101 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（41 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（51 篇）](#tax-fx-privacy-disputes)
@@ -126,7 +126,7 @@
 | 59 | **零售电商组合支付（`Split-Tender Checkout`: `礼品卡 Gift Card + 会员积分 Loyalty Points + 信用卡`：`Talon.One / Yotpo / Shopify Plus GiftCard / Adyen + Stripe`）、两阶段软预占（`2PC Soft-Hold`）防刷卡失败吞积分、部分退货“先退积分/礼品卡、后退银行卡现金”反套现瀑布与买赠积分 `14 天` 待过退货期解冻净省 39% Agent 架构选型 FAQ** | [中文](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.md) · [English](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（174 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（175 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -306,6 +306,7 @@
 | 172 | **跨境电商多语种智能客服与退换货（`RMA`）售后自动化（`Loop Returns / Narvar / ReturnGO / Zendesk AI`）、动态保本“仅退款免寄回（`Keep-It Economics`）”净值公式、`115%` 换货礼金防二次退现套利闭环与承运商揽收克重防 `FTID` 空信封骗退净省 39% Agent 架构选型 FAQ** | [中文](cross-border-rma-returns-keep-it-economics-bonus-exchange-credit-ftid-wardrobing-selection-faq.md) · [English](cross-border-rma-returns-keep-it-economics-bonus-exchange-credit-ftid-wardrobing-selection-faq.en.md) |
 | 173 | **🏆 OTA 机酒差旅智能规划、自动比价改签与企业未用客票资产池回收（`Corporate Travel TMC`: `Navan / TravelPerk / SAP Concur / Amadeus NDC` · 🏆 第 330 轮里程碑）、`IATA NDC 21.3` 连续定价防 GDS 附加费、`Hold-Before-Cancel` 降价重订与离职员工未用客票（`UET Credit Bank`）自动改名抵扣净省 38% Agent 架构选型 FAQ** | [中文](ota-corporate-travel-tmc-ndc-continuous-pricing-unused-eticket-irrops-rebooking-selection-faq.md) · [English](ota-corporate-travel-tmc-ndc-continuous-pricing-unused-eticket-irrops-rebooking-selection-faq.en.md) |
 | 174 | **🏆 零售电商分布式订单寻源（`DOM`）、购物车锁库状态机与防拆单运费穿仓（`Manhattan Active Omni / Fluent Commerce / Blue Yonder / Shopify Plus` · 🏆 第 780 张架构图与第 230 个沙盒里程碑）、收银台 `6 分钟` 单账户唯一硬租约防加购恶意占库、毛利感知拆单封顶（`Max_Splits <= 2`）与门店拣货缺货拒单（`Short-Pick`）72h 隔离净省 39% Agent 架构选型 FAQ** | [中文](ecommerce-dom-order-routing-manhattan-fluent-blueyonder-split-shipment-cap-cart-lease-selection-faq.md) · [English](ecommerce-dom-order-routing-manhattan-fluent-blueyonder-split-shipment-cap-cart-lease-selection-faq.en.md) |
+| 175 | **🏆 零售电商实时动态调价、品牌最低广告标价保护（`MAP Policy`）与防算法价格歧视（`Competera / PROS / Feedvisor / Prisync + Microsoft Web IQ` · 🏆 第 460 篇双语指南里程碑）、全加载成本底线与 `Web IQ` 竞对真实有货（`In-Stock`）核验防双机器人踩踏闪崩、低于 `MAP` 自动转“加购可见价（`See Price in Cart`）”与反大数据杀熟净省 40% Agent 架构选型 FAQ** | [中文](ecommerce-dynamic-pricing-map-minimum-advertised-price-anti-discrimination-price-match-selection-faq.md) · [English](ecommerce-dynamic-pricing-map-minimum-advertised-price-anti-discrimination-price-match-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（101 篇）

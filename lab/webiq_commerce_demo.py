@@ -41023,6 +41023,82 @@ def evaluate_b2b_cross_border_trade_assurance_escrow_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceDynamicPricingMapGuardPolicyInput:
+    quarterly_bot_crash_oos_bait_and_map_violation_pool_usd: float = 400000.0
+    sub_cogs_bot_death_spiral_or_out_of_stock_competitor_bait: bool = False
+    public_display_price_below_brand_map_without_incart_cloak: bool = False
+    surveillance_pricing_by_device_zip_or_battery_level: bool = False
+    fully_loaded_cogs_floor_map_incart_and_uniform_list_ready: bool = False
+
+
+def evaluate_ecommerce_dynamic_pricing_map_guard_policy(
+    policy_input: EcommerceDynamicPricingMapGuardPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_bot_crash_oos_bait_and_map_violation_pool_usd
+        ),
+    )
+    if policy_input.surveillance_pricing_by_device_zip_or_battery_level:
+        return {
+            "status_code": 451,
+            "decision": "SURVEILLANCE_PRICING_DISCRIMINATION_BY_DEVICE_ZIP_OR_WILLINGNESS_TO_PAY",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sub_cogs_bot_death_spiral_or_out_of_stock_competitor_bait:
+        return {
+            "status_code": 403,
+            "decision": "SUB_COGS_REPRICING_DEATH_SPIRAL_OR_OUT_OF_STOCK_COMPETITOR_BAIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.public_display_price_below_brand_map_without_incart_cloak:
+        return {
+            "status_code": 422,
+            "decision": "PUBLIC_DISPLAY_PRICE_BREACHES_BRAND_MAP_FLOOR_WITHOUT_INCART_CLOAK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.fully_loaded_cogs_floor_map_incart_and_uniform_list_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DYNAMIC_REPRICING_COGS_FLOOR_MAP_INCART_SHIELD_AND_PARITY_CONFIRM",
+            "mandate_token": "dynamic_pricing_map_guard_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_DYNAMIC_REPRICING_AND_MAP_COMPLIANCE_AUTHORIZED",
+        "mandate_token": "dynamic_pricing_map_guard_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -55808,6 +55884,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_dynamic_pricing_map_guard = {
+        "authorized_200": evaluate_ecommerce_dynamic_pricing_map_guard_policy(
+            EcommerceDynamicPricingMapGuardPolicyInput()
+        ),
+        "sub_cogs_or_oos_bait_403": evaluate_ecommerce_dynamic_pricing_map_guard_policy(
+            EcommerceDynamicPricingMapGuardPolicyInput(
+                sub_cogs_bot_death_spiral_or_out_of_stock_competitor_bait=True
+            )
+        ),
+        "public_map_breach_422": evaluate_ecommerce_dynamic_pricing_map_guard_policy(
+            EcommerceDynamicPricingMapGuardPolicyInput(
+                public_display_price_below_brand_map_without_incart_cloak=True
+            )
+        ),
+        "surveillance_pricing_451": evaluate_ecommerce_dynamic_pricing_map_guard_policy(
+            EcommerceDynamicPricingMapGuardPolicyInput(
+                surveillance_pricing_by_device_zip_or_battery_level=True
+            )
+        ),
+        "cogs_floor_map_parity_409": evaluate_ecommerce_dynamic_pricing_map_guard_policy(
+            EcommerceDynamicPricingMapGuardPolicyInput(
+                fully_loaded_cogs_floor_map_incart_and_uniform_list_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -56277,6 +56379,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_hybrid_seat_usage_credit_guard": saas_hybrid_seat_usage_credit_guard,
         "agentic_hitl_durable_checkpoint_guard": agentic_hitl_durable_checkpoint_guard,
         "b2b_cross_border_trade_assurance_guard": b2b_cross_border_trade_assurance_guard,
+        "ecommerce_dynamic_pricing_map_guard": ecommerce_dynamic_pricing_map_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -80913,6 +81016,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="b2btrd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TRADE_ASSURANCE_30_50_20_ESCROW_AQL25_PSI_AND_ONBOARD_BL_CONFIRM · Mandate: b2b_trade_assurance_aql_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 341 (#460 Milestone · SVG #784) E-Commerce Dynamic Repricing, Brand MAP Guard & Anti-Surveillance Pricing -->
+      <div class="finops-box" id="ecommerce-dynamic-pricing-map-guard-sandbox" style="margin-top:12px;border-color:#7c3aed;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📈 电商实时动态调价与品牌 MAP 保护 (Competera / PROS / Feedvisor + Web IQ) 沙盒（🏆 第 460 篇双语里程碑）</div>
+            <div class="finops-sub">Round 341 (#460 Milestone · SVG #784) · 全加载成本底线 (Fully-Loaded COGS Floor) 与 Web IQ 竞对真实有货 (In-Stock) 核验防双机器人踩踏闪崩或 0 库存诱饵洗仓 (HTTP 403) + 公开页面死守品牌 MAP 底线、低于 MAP 自动转“加购后可见 (See Price in Cart)”防断供 (HTTP 422) + 严禁按手机型号/邮编暗抬标价防大数据杀熟 (HTTP 451) + 净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="dynmap-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度自动调价机器人踩踏闪崩亏损、中竞对 0 库存假低价诱饵被搬空及违反品牌 MAP 断供池 ($)
+            <input type="number" id="dynmap-gross-input" value="400000" min="10000" step="5000" oninput="recalcEcommerceDynamicPricingMapGuardSandbox()" />
+          </label>
+          <label>全加载保本底价 (Fully-Loaded COGS Floor) 与 Web IQ 竞对真实在售 (In-Stock) 门禁
+            <select id="dynmap-floor-select" onchange="recalcEcommerceDynamicPricingMapGuardSandbox()">
+              <option value="pass">硬锁 (COGS + 15%佣金 + 运费 + 8%毛利) 底线，且通过 Web IQ /v3/browse 确认竞对 InStock==True 才跟价 (安全)</option>
+              <option value="block_403">凌晨双跟价机器人互相砍价把 $650 相机降到 $1，或误跟竞对 0 库存 $499 诱饵价被同行秒买光 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>品牌商最低广告宣传价 (Brand MAP Floor) 公开挂牌锁与“加购可见价 (See Price in Cart)”转换门禁
+            <select id="dynmap-map-select" onchange="recalcEcommerceDynamicPricingMapGuardSandbox()">
+              <option value="pass">低于 $399 品牌 MAP 的 $349 清仓价自动隐藏公开标价，仅在私密购物车会话内展示 (合规)</option>
+              <option value="block_422">在公开商品详情页与 Google Shopping Feed 直接挂出低于 $399 MAP 的 $349 标价遭品牌方断货 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>反大数据杀熟 (Anti-Surveillance Pricing: 跨设备/电量/邮编统一公开基准标价) 门禁
+            <select id="dynmap-parity-select" onchange="recalcEcommerceDynamicPricingMapGuardSandbox()">
+              <option value="pass">全网所有设备与邮编共享 100% 相同的公开基准标价，个性化促转化仅通过向下发放透明优惠券实现 (合规)</option>
+              <option value="block_451">检测到用户使用 iPhone 16 Pro Max、低电量或富人区邮编，暗中将商品基准标价上调 15% (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>全加载成本底线 + Web IQ 现货核验 + MAP 购物车私密折让全链路编排
+            <select id="dynmap-opt-select" onchange="recalcEcommerceDynamicPricingMapGuardSandbox()">
+              <option value="enabled" selected>启用全加载成本锁 + 竞对 In-Stock 核验 + MAP 购物车保护 (-40% 调价损耗 / HTTP 409)</option>
+              <option value="disabled">无底线简单规则“比最低价低 $0.05”裸改公开价 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度调价闪崩与MAP断供池</div>
+            <div class="finops-kpi-val" id="dynmap-gross-kpi">$400,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">成本底线与MAP锁后净成本</div>
+            <div class="finops-kpi-val" id="dynmap-net-kpi" style="color:#6ee7b7;">$240,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住毛利与黄金购物车</div>
+            <div class="finops-kpi-val" id="dynmap-savings-kpi" style="color:#38bdf8;">$160,000</div>
+          </div>
+        </div>
+        <div id="dynmap-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DYNAMIC_REPRICING_COGS_FLOOR_MAP_INCART_SHIELD_AND_PARITY_CONFIRM · Mandate: dynamic_pricing_map_guard_optim_409
         </div>
       </div>
 
@@ -111323,6 +111483,79 @@ function recalcB2bCrossBorderTradeAssuranceSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_TRADE_ASSURANCE_ESCROW_AUTHORIZED · Mandate: b2b_trade_assurance_aql_200';
+}}
+
+function recalcEcommerceDynamicPricingMapGuardSandbox() {{
+  const grossInput = document.getElementById('dynmap-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '400000'));
+  const floorGate = document.getElementById('dynmap-floor-select').value;
+  const mapGate = document.getElementById('dynmap-map-select').value;
+  const parityGate = document.getElementById('dynmap-parity-select').value;
+  const optMode = document.getElementById('dynmap-opt-select').value;
+
+  const grossKpi = document.getElementById('dynmap-gross-kpi');
+  const netKpi = document.getElementById('dynmap-net-kpi');
+  const savingsKpi = document.getElementById('dynmap-savings-kpi');
+  const statusKpi = document.getElementById('dynmap-status-kpi');
+  const banner = document.getElementById('dynmap-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (parityGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 SURVEILLANCE_PRICING_DISCRIMINATION_BY_DEVICE_ZIP_OR_WILLINGNESS_TO_PAY · Mandate: null';
+    return;
+  }}
+  if (floorGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SUB_COGS_REPRICING_DEATH_SPIRAL_OR_OUT_OF_STOCK_COMPETITOR_BAIT · Mandate: null';
+    return;
+  }}
+  if (mapGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PUBLIC_DISPLAY_PRICE_BREACHES_BRAND_MAP_FLOOR_WITHOUT_INCART_CLOAK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DYNAMIC_REPRICING_COGS_FLOOR_MAP_INCART_SHIELD_AND_PARITY_CONFIRM · Mandate: dynamic_pricing_map_guard_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_DYNAMIC_REPRICING_AND_MAP_COMPLIANCE_AUTHORIZED · Mandate: dynamic_pricing_map_guard_200';
 }}
 
 function updateStage1756Sandbox() {{

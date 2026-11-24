@@ -31905,6 +31905,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-cross-border-trade-assurance-sandbox", html_zh)
 
+    def test_ecommerce_dynamic_pricing_map_guard_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceDynamicPricingMapGuardPolicyInput,
+            evaluate_ecommerce_dynamic_pricing_map_guard_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_dynamic_pricing_map_guard_policy(
+            EcommerceDynamicPricingMapGuardPolicyInput(
+                quarterly_bot_crash_oos_bait_and_map_violation_pool_usd=400000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_DYNAMIC_REPRICING_AND_MAP_COMPLIANCE_AUTHORIZED",
+        )
+
+        spiral = evaluate_ecommerce_dynamic_pricing_map_guard_policy(
+            EcommerceDynamicPricingMapGuardPolicyInput(
+                sub_cogs_bot_death_spiral_or_out_of_stock_competitor_bait=True
+            )
+        )
+        self.assertEqual(spiral["status_code"], 403)
+        self.assertEqual(
+            spiral["decision"],
+            "SUB_COGS_REPRICING_DEATH_SPIRAL_OR_OUT_OF_STOCK_COMPETITOR_BAIT",
+        )
+
+        map_breach = evaluate_ecommerce_dynamic_pricing_map_guard_policy(
+            EcommerceDynamicPricingMapGuardPolicyInput(
+                public_display_price_below_brand_map_without_incart_cloak=True
+            )
+        )
+        self.assertEqual(map_breach["status_code"], 422)
+        self.assertEqual(
+            map_breach["decision"],
+            "PUBLIC_DISPLAY_PRICE_BREACHES_BRAND_MAP_FLOOR_WITHOUT_INCART_CLOAK",
+        )
+
+        surv = evaluate_ecommerce_dynamic_pricing_map_guard_policy(
+            EcommerceDynamicPricingMapGuardPolicyInput(
+                surveillance_pricing_by_device_zip_or_battery_level=True
+            )
+        )
+        self.assertEqual(surv["status_code"], 451)
+        self.assertEqual(
+            surv["decision"],
+            "SURVEILLANCE_PRICING_DISCRIMINATION_BY_DEVICE_ZIP_OR_WILLINGNESS_TO_PAY",
+        )
+
+        optim = evaluate_ecommerce_dynamic_pricing_map_guard_policy(
+            EcommerceDynamicPricingMapGuardPolicyInput(
+                quarterly_bot_crash_oos_bait_and_map_violation_pool_usd=400000.0,
+                fully_loaded_cogs_floor_map_incart_and_uniform_list_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 160000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 240000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_dynamic_pricing_map_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-dynamic-pricing-map-guard-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
