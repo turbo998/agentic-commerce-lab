@@ -41631,6 +41631,82 @@ def evaluate_enterprise_revrec_asc606_ssp_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bRfpSecurityQuestionnaireCopilotPolicyInput:
+    quarterly_presales_se_burn_legal_exposure_and_deal_delay_pool_usd: float = 340000.0
+    unverified_security_cert_or_unshipped_roadmap_claimed_as_yes: bool = False
+    uncapped_liability_or_nonstandard_sla_accepted_without_legal_exception: bool = False
+    cross_prospect_nda_client_name_leak_or_stale_kb_over_180d: bool = False
+    grc_evidence_lock_legal_exception_and_ner_redaction_ready: bool = False
+
+
+def evaluate_b2b_rfp_security_questionnaire_copilot_policy(
+    policy_input: B2bRfpSecurityQuestionnaireCopilotPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_presales_se_burn_legal_exposure_and_deal_delay_pool_usd
+        ),
+    )
+    if policy_input.cross_prospect_nda_client_name_leak_or_stale_kb_over_180d:
+        return {
+            "status_code": 451,
+            "decision": "CROSS_PROSPECT_NDA_LEAKAGE_OR_STALE_KB_CITATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unverified_security_cert_or_unshipped_roadmap_claimed_as_yes:
+        return {
+            "status_code": 403,
+            "decision": "UNVERIFIED_SECURITY_CERT_OR_UNSHIPPED_ROADMAP_CLAIM",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncapped_liability_or_nonstandard_sla_accepted_without_legal_exception:
+        return {
+            "status_code": 422,
+            "decision": "UNCAPPED_LIABILITY_OR_NONSTANDARD_SLA_RFP_ACCEPTANCE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.grc_evidence_lock_legal_exception_and_ner_redaction_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "RFP_SECURITY_QUESTIONNAIRE_EVIDENCE_AND_LEGAL_GUARD_CONFIRM",
+            "mandate_token": "b2b_rfp_security_copilot_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_RFP_SECURITY_QUESTIONNAIRE_AUTHORIZED",
+        "mandate_token": "b2b_rfp_security_copilot_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -56624,6 +56700,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_rfp_security_questionnaire_copilot_guard = {
+        "authorized_200": evaluate_b2b_rfp_security_questionnaire_copilot_policy(
+            B2bRfpSecurityQuestionnaireCopilotPolicyInput()
+        ),
+        "unverified_cert_or_roadmap_403": evaluate_b2b_rfp_security_questionnaire_copilot_policy(
+            B2bRfpSecurityQuestionnaireCopilotPolicyInput(
+                unverified_security_cert_or_unshipped_roadmap_claimed_as_yes=True
+            )
+        ),
+        "uncapped_liability_accept_422": evaluate_b2b_rfp_security_questionnaire_copilot_policy(
+            B2bRfpSecurityQuestionnaireCopilotPolicyInput(
+                uncapped_liability_or_nonstandard_sla_accepted_without_legal_exception=True
+            )
+        ),
+        "cross_prospect_nda_leak_451": evaluate_b2b_rfp_security_questionnaire_copilot_policy(
+            B2bRfpSecurityQuestionnaireCopilotPolicyInput(
+                cross_prospect_nda_client_name_leak_or_stale_kb_over_180d=True
+            )
+        ),
+        "grc_evidence_legal_guard_409": evaluate_b2b_rfp_security_questionnaire_copilot_policy(
+            B2bRfpSecurityQuestionnaireCopilotPolicyInput(
+                grc_evidence_lock_legal_exception_and_ner_redaction_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -57101,6 +57203,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "retail_cdp_identity_consent_guard": retail_cdp_identity_consent_guard,
         "ota_hotel_pms_vcc_folio_walk_guard": ota_hotel_pms_vcc_folio_walk_guard,
         "enterprise_revrec_asc606_ssp_guard": enterprise_revrec_asc606_ssp_guard,
+        "b2b_rfp_security_questionnaire_copilot_guard": b2b_rfp_security_questionnaire_copilot_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -82193,6 +82296,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="revrec-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ASC606_RELATIVE_SSP_ALLOCATION_POB_TRIGGER_AND_EXACT_DAILY_CONFIRM · Mandate: enterprise_revrec_asc606_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 349 (#468 · SVG #792 · Sandbox #242) Enterprise B2B RFP & Security Questionnaire Copilot -->
+      <div class="finops-box" id="b2b-rfp-security-questionnaire-copilot-sandbox" style="margin-top:12px;border-color:#6366f1;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛡️ 企业 B2B 招投标应答与安全合规问卷智能体 (Responsive / Loopio / Conveyor / Vanta) 沙盒</div>
+            <div class="finops-sub">Round 349 (#468 · SVG #792 · Sandbox #242) · 实时 GRC 认证证据链与已发布 GA 版本核验防幻觉承诺 (HTTP 403) + 法务无限赔偿/惩罚性 SLA 霸王条款自动替换标准 MSA 例外 (HTTP 422) + 跨客户 NDA 专有名词脱敏与 180 天词条保鲜锁 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="rfpsec-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度售前 SE 人工填标耗时、法务/安全返工审单及标书虚假承诺违约赔偿风险池 ($)
+            <input type="number" id="rfpsec-gross-input" value="340000" min="10000" step="5000" oninput="recalcB2bRfpSecurityQuestionnaireSandbox()" />
+          </label>
+          <label>实时 GRC 合规证据链 (SOC 2 / FedRAMP) 与已上线 GA 功能版本核验门禁
+            <select id="rfpsec-cert-select" onchange="recalcB2bRfpSecurityQuestionnaireSandbox()">
+              <option value="pass">强制要求每个 Yes 绑定 <=365d 有效 GRC 证据 Hash 或 GA 版本号，Roadmap 规划严禁填 Yes (安全)</option>
+              <option value="block_403">对尚未取得的 FedRAMP High 认证或 2027 路线图功能直接自动填 Yes / Supported (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>采购标书隐藏法务红线 (无限连带赔偿 / 源代码托管 / 严苛违约金) 拦截门禁
+            <select id="rfpsec-legal-select" onchange="recalcB2bRfpSecurityQuestionnaireSandbox()">
+              <option value="pass">识别无限赔偿与非标 SLA 条款，自动注入法务部预审的“按标准 MSA 12个月费用上限”例外口径 (合规)</option>
+              <option value="block_422">售前一键 Auto-Fill 对买方“无限数据赔偿责任与无偿源码托管”直接勾选 Comply / Agree (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>跨客户 NDA 机密名称擦除 (NER Redaction) 与标准词条 180 天保鲜期门禁
+            <select id="rfpsec-nda-select" onchange="recalcB2bRfpSecurityQuestionnaireSandbox()">
+              <option value="pass">原始标书禁止直接入库，导出前扫描擦除他客名称并拦截 >180d 未经 SME 复核的过期词条 (合规)</option>
+              <option value="block_451">照抄历史定制标书导致草稿残留友商/他客名字，或引用已过期 2 年的旧加密参数 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Trust Center NDA 自助拦截 + GRC 证据链锚定 + 法务例外模板全链路编排
+            <select id="rfpsec-opt-select" onchange="recalcB2bRfpSecurityQuestionnaireSandbox()">
+              <option value="enabled" selected>启用 Trust Center 前置分流 + GRC 证据锁 + 法务标准例外 (-39% 售前与法务审标损耗 / HTTP 409)</option>
+              <option value="disabled">传统人工逐行查表回填 Excel 标书 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度售前与法务审标风险池</div>
+            <div class="finops-kpi-val" id="rfpsec-gross-kpi">$340,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">证据锚定与法务门禁后净成本</div>
+            <div class="finops-kpi-val" id="rfpsec-net-kpi" style="color:#6ee7b7;">$207,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省售前与法务复核费</div>
+            <div class="finops-kpi-val" id="rfpsec-savings-kpi" style="color:#38bdf8;">$132,600</div>
+          </div>
+        </div>
+        <div id="rfpsec-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 RFP_SECURITY_QUESTIONNAIRE_EVIDENCE_AND_LEGAL_GUARD_CONFIRM · Mandate: b2b_rfp_security_copilot_optim_409
         </div>
       </div>
 
@@ -113187,6 +113347,79 @@ function recalcEnterpriseRevrecAsc606SspSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_ENTERPRISE_ASC606_REVREC_AND_SSP_AUTHORIZED · Mandate: enterprise_revrec_asc606_200';
+}}
+
+function recalcB2bRfpSecurityQuestionnaireSandbox() {{
+  const grossInput = document.getElementById('rfpsec-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '340000'));
+  const certGate = document.getElementById('rfpsec-cert-select').value;
+  const legalGate = document.getElementById('rfpsec-legal-select').value;
+  const ndaGate = document.getElementById('rfpsec-nda-select').value;
+  const optMode = document.getElementById('rfpsec-opt-select').value;
+
+  const grossKpi = document.getElementById('rfpsec-gross-kpi');
+  const netKpi = document.getElementById('rfpsec-net-kpi');
+  const savingsKpi = document.getElementById('rfpsec-savings-kpi');
+  const statusKpi = document.getElementById('rfpsec-status-kpi');
+  const banner = document.getElementById('rfpsec-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ndaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CROSS_PROSPECT_NDA_LEAKAGE_OR_STALE_KB_CITATION · Mandate: null';
+    return;
+  }}
+  if (certGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNVERIFIED_SECURITY_CERT_OR_UNSHIPPED_ROADMAP_CLAIM · Mandate: null';
+    return;
+  }}
+  if (legalGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCAPPED_LIABILITY_OR_NONSTANDARD_SLA_RFP_ACCEPTANCE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 RFP_SECURITY_QUESTIONNAIRE_EVIDENCE_AND_LEGAL_GUARD_CONFIRM · Mandate: b2b_rfp_security_copilot_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_RFP_SECURITY_QUESTIONNAIRE_AUTHORIZED · Mandate: b2b_rfp_security_copilot_200';
 }}
 
 function updateStage1756Sandbox() {{

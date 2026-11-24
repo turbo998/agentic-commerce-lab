@@ -32441,6 +32441,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("enterprise-revrec-asc606-ssp-sandbox", html_zh)
 
+    def test_b2b_rfp_security_questionnaire_copilot_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bRfpSecurityQuestionnaireCopilotPolicyInput,
+            evaluate_b2b_rfp_security_questionnaire_copilot_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_rfp_security_questionnaire_copilot_policy(
+            B2bRfpSecurityQuestionnaireCopilotPolicyInput(
+                quarterly_presales_se_burn_legal_exposure_and_deal_delay_pool_usd=340000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_RFP_SECURITY_QUESTIONNAIRE_AUTHORIZED",
+        )
+
+        cert = evaluate_b2b_rfp_security_questionnaire_copilot_policy(
+            B2bRfpSecurityQuestionnaireCopilotPolicyInput(
+                unverified_security_cert_or_unshipped_roadmap_claimed_as_yes=True
+            )
+        )
+        self.assertEqual(cert["status_code"], 403)
+        self.assertEqual(
+            cert["decision"],
+            "UNVERIFIED_SECURITY_CERT_OR_UNSHIPPED_ROADMAP_CLAIM",
+        )
+
+        legal = evaluate_b2b_rfp_security_questionnaire_copilot_policy(
+            B2bRfpSecurityQuestionnaireCopilotPolicyInput(
+                uncapped_liability_or_nonstandard_sla_accepted_without_legal_exception=True
+            )
+        )
+        self.assertEqual(legal["status_code"], 422)
+        self.assertEqual(
+            legal["decision"],
+            "UNCAPPED_LIABILITY_OR_NONSTANDARD_SLA_RFP_ACCEPTANCE",
+        )
+
+        nda = evaluate_b2b_rfp_security_questionnaire_copilot_policy(
+            B2bRfpSecurityQuestionnaireCopilotPolicyInput(
+                cross_prospect_nda_client_name_leak_or_stale_kb_over_180d=True
+            )
+        )
+        self.assertEqual(nda["status_code"], 451)
+        self.assertEqual(
+            nda["decision"],
+            "CROSS_PROSPECT_NDA_LEAKAGE_OR_STALE_KB_CITATION",
+        )
+
+        optim = evaluate_b2b_rfp_security_questionnaire_copilot_policy(
+            B2bRfpSecurityQuestionnaireCopilotPolicyInput(
+                quarterly_presales_se_burn_legal_exposure_and_deal_delay_pool_usd=340000.0,
+                grc_evidence_lock_legal_exception_and_ner_redaction_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 132600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 207400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_rfp_security_questionnaire_copilot_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-rfp-security-questionnaire-copilot-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

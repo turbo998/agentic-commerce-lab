@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`467` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`468` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（35 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（59 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（176 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（101 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（102 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（43 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（53 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -312,7 +312,7 @@
 | 176 | **🏆 酒店集团中央预订（`CRS`）、物业管理（`PMS`）与 OTA 虚拟卡双账单清算选型（`Oracle OPERA Cloud / Mews / Cloudbeds / Amadeus ACRS` · 🏆 第 790 张架构图与第 240 个沙盒里程碑）、`Folio A (OTA VCC)` 与 `Folio B (住客卡)` 交易码分流防超额拒付、最后 `3 间房` 渠道节流防超售外迁赔付及延迟退房保洁 `90m` 互斥锁净省 39% Agent 架构选型 FAQ** | [中文](ota-hotel-pms-opera-mews-ota-vcc-folio-split-walk-protection-late-checkout-selection-faq.md) · [English](ota-hotel-pms-opera-mews-ota-vcc-folio-split-walk-protection-late-checkout-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（101 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（102 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -419,6 +419,7 @@
 | 99 | **🏆 企业 B2B 自助批发电商、大客户专属协议价目表与在线询价转购物车（`B2B Wholesale & Quote-to-Cart`: `Shopify Plus B2B / Salesforce B2B / OroCommerce / SAP Commerce` · 🏆 第 775 张架构图与第 225 个沙盒里程碑）、B2B/B2C 优惠码硬互斥锁、部分退货跌破起订量阶梯重算倒扣与州转售免税证（`SST`）/ 禁发 Amazon FBA 串货围栏净省 39% Agent 架构选型 FAQ** | [中文](b2b-ecommerce-wholesale-quote-to-cart-contract-price-list-moq-clawback-selection-faq.md) · [English](b2b-ecommerce-wholesale-quote-to-cart-contract-price-list-moq-clawback-selection-faq.en.md) |
 | 100 | **🏆 企业采购费控、可编程预算虚拟卡与 ERP 实时预占入账（`Corporate Spend Management & Virtual Cards`: `Ramp / Brex / Airbase / Navan Expense / Stripe Issuing` · 🏆 第 335 轮与第 100 篇 B2B 采购指南里程碑）、发卡侧 `ISO 8583` `<100ms` 首刷锁死商户 `MID`、制卡瞬间冻结 ERP 成本中心预算（`Pre-Issuance Encumbrance`）与 `IRS $75+` 缺明细水单 48h 自动停卡净省 39% Agent 架构选型 FAQ** | [中文](corporate-spend-management-virtual-card-ramp-brex-airbase-coupa-po-encumbrance-receipt-ocr-selection-faq.md) · [English](corporate-spend-management-virtual-card-ramp-brex-airbase-coupa-po-encumbrance-receipt-ocr-selection-faq.en.md) |
 | 101 | **🏆 跨境 B2B 大宗采购信保托管、装船前第三方抽样验货（`ISO 2859-1 AQL 2.5 PSI`）与里程碑分期放款（`Alibaba Trade Assurance / Global Sources / SGS·QIMA / DCSA eBL` · 🏆 第 340 轮里程碑）、`30 / 50 / 20` 三阶资金托管、船东 `LOADED_ON_BOARD` 实船核验防草本提单骗汇与到港尾款交期延误抵扣净省 39% Agent 架构选型 FAQ** | [中文](b2b-cross-border-trade-assurance-milestone-escrow-aql-inspection-bol-release-selection-faq.md) · [English](b2b-cross-border-trade-assurance-milestone-escrow-aql-inspection-bol-release-selection-faq.en.md) |
+| 102 | **🛡️ 企业 B2B 招投标应答与安全合规问卷智能体（`Enterprise RFP & Security Questionnaire Copilot`: `Responsive / Loopio / Conveyor / Vanta + Azure AI Search`）、实时 `SOC 2 / FedRAMP` 证据链与 `GA` 版本防幻觉锁、法务无限赔偿条款标准 `MSA` 例外替换及跨客户 `NDA` 专有名词脱敏净省 39% Agent 架构选型 FAQ** | [中文](b2b-rfp-security-questionnaire-copilot-responsive-loopio-conveyor-hallucination-guard-selection-faq.md) · [English](b2b-rfp-security-questionnaire-copilot-responsive-loopio-conveyor-hallucination-guard-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（43 篇）
