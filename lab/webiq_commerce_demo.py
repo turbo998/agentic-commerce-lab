@@ -40795,6 +40795,82 @@ def evaluate_ecommerce_dom_split_cap_cart_lease_policy(
     }
 
 
+@dataclass(frozen=True)
+class SaasHybridSeatUsageCreditPolicyInput:
+    quarterly_bill_shock_churn_pool_starvation_and_5xx_dispute_pool_usd: float = 380000.0
+    rogue_user_or_agent_loop_draining_shared_org_credit_pool: bool = False
+    uncapped_punitive_overage_bill_shock_without_cap_or_trueup: bool = False
+    billing_customer_credits_on_5xx_timeout_or_truncated_run: bool = False
+    pooled_seat_credits_20pct_burst_cap_trueup_and_2xx_only_ready: bool = False
+
+
+def evaluate_saas_hybrid_seat_usage_credit_policy(
+    policy_input: SaasHybridSeatUsageCreditPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_bill_shock_churn_pool_starvation_and_5xx_dispute_pool_usd
+        ),
+    )
+    if policy_input.billing_customer_credits_on_5xx_timeout_or_truncated_run:
+        return {
+            "status_code": 451,
+            "decision": "BILLING_CUSTOMER_CREDITS_ON_5XX_TIMEOUT_OR_TRUNCATED_AGENT_RUN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.rogue_user_or_agent_loop_draining_shared_org_credit_pool:
+        return {
+            "status_code": 403,
+            "decision": "ROGUE_USER_OR_AGENT_LOOP_DRAINING_SHARED_ORG_CREDIT_POOL",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.uncapped_punitive_overage_bill_shock_without_cap_or_trueup:
+        return {
+            "status_code": 422,
+            "decision": "UNCAPPED_PUNITIVE_OVERAGE_BILL_SHOCK_WITHOUT_THRESHOLD_LOCK_OR_TRUEUP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pooled_seat_credits_20pct_burst_cap_trueup_and_2xx_only_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "HYBRID_SEAT_POOLED_CREDITS_BURST_CAP_TRUEUP_AND_ZERO_FAULT_CONFIRM",
+            "mandate_token": "saas_hybrid_seat_usage_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_SAAS_HYBRID_SEAT_AND_USAGE_CREDITS_AUTHORIZED",
+        "mandate_token": "saas_hybrid_seat_usage_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -55502,6 +55578,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    saas_hybrid_seat_usage_credit_guard = {
+        "authorized_200": evaluate_saas_hybrid_seat_usage_credit_policy(
+            SaasHybridSeatUsageCreditPolicyInput()
+        ),
+        "rogue_user_pool_drain_403": evaluate_saas_hybrid_seat_usage_credit_policy(
+            SaasHybridSeatUsageCreditPolicyInput(
+                rogue_user_or_agent_loop_draining_shared_org_credit_pool=True
+            )
+        ),
+        "uncapped_overage_bill_shock_422": evaluate_saas_hybrid_seat_usage_credit_policy(
+            SaasHybridSeatUsageCreditPolicyInput(
+                uncapped_punitive_overage_bill_shock_without_cap_or_trueup=True
+            )
+        ),
+        "billing_on_5xx_timeout_451": evaluate_saas_hybrid_seat_usage_credit_policy(
+            SaasHybridSeatUsageCreditPolicyInput(
+                billing_customer_credits_on_5xx_timeout_or_truncated_run=True
+            )
+        ),
+        "pooled_burst_trueup_2xx_409": evaluate_saas_hybrid_seat_usage_credit_policy(
+            SaasHybridSeatUsageCreditPolicyInput(
+                pooled_seat_credits_20pct_burst_cap_trueup_and_2xx_only_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -55968,6 +56070,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "corporate_spend_vcn_encumbrance_guard": corporate_spend_vcn_encumbrance_guard,
         "ecommerce_split_tender_2pc_waterfall_guard": ecommerce_split_tender_2pc_waterfall_guard,
         "ecommerce_dom_split_cap_cart_lease_guard": ecommerce_dom_split_cap_cart_lease_guard,
+        "saas_hybrid_seat_usage_credit_guard": saas_hybrid_seat_usage_credit_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -80433,6 +80536,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="domspl-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CHECKOUT_LEASE_MARGIN_AWARE_DOM_SPLIT_CAP_AND_SHORT_PICK_QUARANTINE_CONFIRM · Mandate: dom_split_cap_cart_lease_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 338 (#457 · SVG #781 · 🏆 1,335th Test Milestone) SaaS Hybrid Seat + Usage Credits & Bill-Shock Cap -->
+      <div class="finops-box" id="saas-hybrid-seat-usage-credit-sandbox" style="margin-top:12px;border-color:#4f46e5;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">⚡ AI SaaS 混合席位+积分池计费 (Orb / Metronome / Stripe Billing / Zuora) 防天价账单沙盒（🏆 第 1,335 项测试里程碑）</div>
+            <div class="finops-sub">Round 338 (#457 · SVG #781 · 🏆 1,335th Test Milestone) · 组织共享席位积分池 + 单用户/单 Key 24h &lt;=20% 突发限流阀防 1 个死循环脚本烧光全公司配额 (HTTP 403) + 50/80/100% 硬封顶与 14 天免罚金追认升档 (Retroactive True-Up) 防 $48k 月末惊吓账单 (HTTP 422) + 仅对 HTTP 200 成功交付计费防 5xx 故障扣分 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="hybsaas-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 SaaS 天价超额账单坏账拒付、单点脚本刷空公司积分池及 5xx 故障扣费争议池 ($)
+            <input type="number" id="hybsaas-gross-input" value="380000" min="10000" step="5000" oninput="recalcSaasHybridSeatUsageCreditSandbox()" />
+          </label>
+          <label>组织共享席位积分池 (Org-Pooled Seat Credits) 与单用户 24h &lt;=20% 突发限流门禁
+            <select id="hybsaas-pool-select" onchange="recalcSaasHybridSeatUsageCreditSandbox()">
+              <option value="pass">100 席位附赠积分汇入共享池提高利用率，且单人/单 Key 24h 消耗封顶总池 20% (安全)</option>
+              <option value="block_403">无单用户限流锁，1 个实习生死循环 Agent 脚本 3 小时烧干全公司 500 人月度积分池 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>50/80/100% 实时水位线硬封顶 (Hard Spend Cap) 与 14 天免罚金追认升档 (Retroactive True-Up) 门禁
+            <select id="hybsaas-trueup-select" onchange="recalcSaasHybridSeatUsageCreditSandbox()">
+              <option value="pass">默认 $0 未授权超额硬封顶，且允许出账 14 天内追认升级年框套餐豁免 3x 惩罚性超额费 (合规)</option>
+              <option value="block_422">静默按 3 倍单价开启无上限后付费，在 $2,000/月合同上开出 $48,000 惊吓账单致客户退订 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>结果导向零故障计量 (Outcome-Verified Zero-Fault Metering: HTTP 200 Only) 门禁
+            <select id="hybsaas-fault-select" onchange="recalcSaasHybridSeatUsageCreditSandbox()">
+              <option value="pass">仅当工作流返回 HTTP 200 且输出完整时扣减积分，503 超时或截断流自动冲正豁免 (合规)</option>
+              <option value="block_451">上游模型 503 崩溃自动重试了 4 次，计费探针将 4 次失败消耗的积分全扣在客户头上 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>共享积分池 20% 限流 + 硬封顶 14 天追认升档 + 零故障计费全链路编排
+            <select id="hybsaas-opt-select" onchange="recalcSaasHybridSeatUsageCreditSandbox()">
+              <option value="enabled" selected>启用共享池 20% 限流 + 14d 追认升档 + 2xx 零故障计费 (-39% 计费损耗 / HTTP 409)</option>
+              <option value="disabled">裸共享池 + 无上限 3x 超额后付费 + 按请求粗暴扣分 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度天价账单坏账与流失池</div>
+            <div class="finops-kpi-val" id="hybsaas-gross-kpi">$380,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">共享限流与追认升档后净损耗</div>
+            <div class="finops-kpi-val" id="hybsaas-net-kpi" style="color:#6ee7b7;">$231,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住ARR与扩容转化</div>
+            <div class="finops-kpi-val" id="hybsaas-savings-kpi" style="color:#38bdf8;">$148,200</div>
+          </div>
+        </div>
+        <div id="hybsaas-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 HYBRID_SEAT_POOLED_CREDITS_BURST_CAP_TRUEUP_AND_ZERO_FAULT_CONFIRM · Mandate: saas_hybrid_seat_usage_optim_409
         </div>
       </div>
 
@@ -110624,6 +110784,79 @@ function recalcEcommerceDomSplitCapCartLeaseSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_DOM_ORDER_ROUTING_AND_CART_LEASE_AUTHORIZED · Mandate: dom_split_cap_cart_lease_200';
+}}
+
+function recalcSaasHybridSeatUsageCreditSandbox() {{
+  const grossInput = document.getElementById('hybsaas-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '380000'));
+  const poolGate = document.getElementById('hybsaas-pool-select').value;
+  const trueupGate = document.getElementById('hybsaas-trueup-select').value;
+  const faultGate = document.getElementById('hybsaas-fault-select').value;
+  const optMode = document.getElementById('hybsaas-opt-select').value;
+
+  const grossKpi = document.getElementById('hybsaas-gross-kpi');
+  const netKpi = document.getElementById('hybsaas-net-kpi');
+  const savingsKpi = document.getElementById('hybsaas-savings-kpi');
+  const statusKpi = document.getElementById('hybsaas-status-kpi');
+  const banner = document.getElementById('hybsaas-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (faultGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 BILLING_CUSTOMER_CREDITS_ON_5XX_TIMEOUT_OR_TRUNCATED_AGENT_RUN · Mandate: null';
+    return;
+  }}
+  if (poolGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ROGUE_USER_OR_AGENT_LOOP_DRAINING_SHARED_ORG_CREDIT_POOL · Mandate: null';
+    return;
+  }}
+  if (trueupGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCAPPED_PUNITIVE_OVERAGE_BILL_SHOCK_WITHOUT_THRESHOLD_LOCK_OR_TRUEUP · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 HYBRID_SEAT_POOLED_CREDITS_BURST_CAP_TRUEUP_AND_ZERO_FAULT_CONFIRM · Mandate: saas_hybrid_seat_usage_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_SAAS_HYBRID_SEAT_AND_USAGE_CREDITS_AUTHORIZED · Mandate: saas_hybrid_seat_usage_200';
 }}
 
 function updateStage1756Sandbox() {{

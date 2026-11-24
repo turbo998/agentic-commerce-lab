@@ -31704,6 +31704,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-dom-split-cap-cart-lease-sandbox", html_zh)
 
+    def test_saas_hybrid_seat_usage_credit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaasHybridSeatUsageCreditPolicyInput,
+            evaluate_saas_hybrid_seat_usage_credit_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_hybrid_seat_usage_credit_policy(
+            SaasHybridSeatUsageCreditPolicyInput(
+                quarterly_bill_shock_churn_pool_starvation_and_5xx_dispute_pool_usd=380000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_SAAS_HYBRID_SEAT_AND_USAGE_CREDITS_AUTHORIZED",
+        )
+
+        drain = evaluate_saas_hybrid_seat_usage_credit_policy(
+            SaasHybridSeatUsageCreditPolicyInput(
+                rogue_user_or_agent_loop_draining_shared_org_credit_pool=True
+            )
+        )
+        self.assertEqual(drain["status_code"], 403)
+        self.assertEqual(
+            drain["decision"],
+            "ROGUE_USER_OR_AGENT_LOOP_DRAINING_SHARED_ORG_CREDIT_POOL",
+        )
+
+        shock = evaluate_saas_hybrid_seat_usage_credit_policy(
+            SaasHybridSeatUsageCreditPolicyInput(
+                uncapped_punitive_overage_bill_shock_without_cap_or_trueup=True
+            )
+        )
+        self.assertEqual(shock["status_code"], 422)
+        self.assertEqual(
+            shock["decision"],
+            "UNCAPPED_PUNITIVE_OVERAGE_BILL_SHOCK_WITHOUT_THRESHOLD_LOCK_OR_TRUEUP",
+        )
+
+        fault = evaluate_saas_hybrid_seat_usage_credit_policy(
+            SaasHybridSeatUsageCreditPolicyInput(
+                billing_customer_credits_on_5xx_timeout_or_truncated_run=True
+            )
+        )
+        self.assertEqual(fault["status_code"], 451)
+        self.assertEqual(
+            fault["decision"],
+            "BILLING_CUSTOMER_CREDITS_ON_5XX_TIMEOUT_OR_TRUNCATED_AGENT_RUN",
+        )
+
+        optim = evaluate_saas_hybrid_seat_usage_credit_policy(
+            SaasHybridSeatUsageCreditPolicyInput(
+                quarterly_bill_shock_churn_pool_starvation_and_5xx_dispute_pool_usd=380000.0,
+                pooled_seat_credits_20pct_burst_cap_trueup_and_2xx_only_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 148200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 231800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_hybrid_seat_usage_credit_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-hybrid-seat-usage-credit-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

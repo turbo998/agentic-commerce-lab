@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`456` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`457` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -10,7 +10,7 @@
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（59 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（174 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（100 篇）](#b2b-procurement-erp)
-- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（40 篇）](#saas-finops-micropayments)
+- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（41 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（51 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
@@ -415,7 +415,7 @@
 | 100 | **🏆 企业采购费控、可编程预算虚拟卡与 ERP 实时预占入账（`Corporate Spend Management & Virtual Cards`: `Ramp / Brex / Airbase / Navan Expense / Stripe Issuing` · 🏆 第 335 轮与第 100 篇 B2B 采购指南里程碑）、发卡侧 `ISO 8583` `<100ms` 首刷锁死商户 `MID`、制卡瞬间冻结 ERP 成本中心预算（`Pre-Issuance Encumbrance`）与 `IRS $75+` 缺明细水单 48h 自动停卡净省 39% Agent 架构选型 FAQ** | [中文](corporate-spend-management-virtual-card-ramp-brex-airbase-coupa-po-encumbrance-receipt-ocr-selection-faq.md) · [English](corporate-spend-management-virtual-card-ramp-brex-airbase-coupa-po-encumbrance-receipt-ocr-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（40 篇）
+## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（41 篇）
 
 > 涵盖企业 SaaS 席位与影子 IT 治理、高频 Token/API 用量水位线幂等计费、FTC 一键退订（Click-to-Cancel）与挽留护栏、HTTP 402（x402 / Stripe MPP Tempo）亚美分流式微支付及推理 FinOps 成本路由。
 
@@ -461,6 +461,7 @@
 | 38 | **数字商品、移动应用与游戏官方直充商城（`D2C Web Shop vs. App Store / Google Play IAP`: `Xsolla / Stash / Aghanim / FastSpring`）、苹果 `Consumption API` 12 小时抗恶意退费、新充代币 `72h` 拍卖行冷却锁与负余额道具扣回（`Clawback`）净省 40% Agent 架构选型 FAQ** | [中文](digital-goods-gaming-d2c-webshop-vs-appstore-iap-consumption-api-clawback-selection-faq.md) · [English](digital-goods-gaming-d2c-webshop-vs-appstore-iap-consumption-api-clawback-selection-faq.en.md) |
 | 39 | **订阅制 SaaS 与流媒体“被动流失智能催收与扣款恢复（`Involuntary Churn & Dunning`: `Butter Payments / Recurly / Churnkey vs. Stripe Smart Retries / Adyen Auto-Rescue`）”、`T-5d Visa VAU / Mastercard ABU` 自动换卡、72h 静默发薪日择时重试与 14 天优雅宽限期净挽回 40% ARR 架构选型 FAQ** | [中文](saas-involuntary-churn-dunning-vau-abu-payday-smart-retry-grace-selection-faq.md) · [English](saas-involuntary-churn-dunning-vau-abu-payday-smart-retry-grace-selection-faq.en.md) |
 | 40 | **🏆 订阅制 SaaS 与会员电商客户续费挽留、退订拦截与智能营销编排（`Cancel-Flow Deflection & Churn Save`: `Chargebee Retention / Churnkey / Recurly / Stripe Billing` · 🏆 第 450 篇双语指南里程碑）、`FTC Click-to-Cancel (16 CFR 464)` 两步对等合规、`365 天` 防薅券冷却锁与暂停/降级超额数据只读金库净省 39% Agent 架构选型 FAQ** | [中文](saas-subscription-renewal-churn-save-pause-deflection-downgrade-entitlement-selection-faq.md) · [English](saas-subscription-renewal-churn-save-pause-deflection-downgrade-entitlement-selection-faq.en.md) |
+| 41 | **🏆 AI 与企业 SaaS 混合计费（`Hybrid Seat + Usage Credits`: `Orb / Metronome / Stripe Billing / Zuora` · 🏆 第 1,335 项单元测试里程碑）、组织共享席位积分池与单用户 `20%` 日限流阀、`50/80/100%` 硬封顶与 `14 天` 免罚金追认升档（`Retroactive True-Up`）及 `HTTP 2xx` 零故障计费净省 39% Agent 架构选型 FAQ** | [中文](saas-hybrid-seat-plus-usage-credit-burndown-midcycle-alert-overage-cap-selection-faq.md) · [English](saas-hybrid-seat-plus-usage-credit-burndown-midcycle-alert-overage-cap-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（51 篇）

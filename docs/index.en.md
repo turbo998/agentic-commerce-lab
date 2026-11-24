@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`456` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`457` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -10,7 +10,7 @@
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (59 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (174 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (100 guides)](#b2b-procurement-erp)
-- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (40 guides)](#saas-finops-micropayments)
+- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (41 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (51 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
@@ -415,7 +415,7 @@
 | 100 | **🏆 Corporate Spend Management, Programmable `JIT` Virtual Cards & Real-Time `ERP` Budget Encumbrance (`Ramp / Brex / Airbase / Navan Expense / Stripe Issuing` · 🏆 Round 335 & 100th B2B Procurement Guide Milestone), `<100ms` `ISO 8583` `MID` Lock, Pre-Issuance Budget Encumbrance & `IRS $75+` Receipt Auto-Pause (`-39%` Maverick Spend & Overrun Loss) FAQ** | [English](corporate-spend-management-virtual-card-ramp-brex-airbase-coupa-po-encumbrance-receipt-ocr-selection-faq.en.md) · [中文](corporate-spend-management-virtual-card-ramp-brex-airbase-coupa-po-encumbrance-receipt-ocr-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (40 Guides)
+## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (41 Guides)
 
 > Covers enterprise SaaS seat governance, UUIDv7 usage metering watermarks, FTC Click-to-Cancel & retention guardrails, HTTP 402 (x402 / Stripe MPP Tempo) micropayments, and LLM token FinOps routing.
 
@@ -461,6 +461,7 @@
 | 38 | **Digital Goods, Mobile Apps & Gaming `D2C Web Shop vs. App Store / Google Play IAP` (`Xsolla / Stash / Aghanim / FastSpring`), Geo-Fenced Anti-Steering Gate, Apple `12-Hour Consumption API` Refund Defense & Negative-Balance Gem Clawback (`-40%` Platform Tax & Refund Abuse Loss) FAQ** | [English](digital-goods-gaming-d2c-webshop-vs-appstore-iap-consumption-api-clawback-selection-faq.en.md) · [中文](digital-goods-gaming-d2c-webshop-vs-appstore-iap-consumption-api-clawback-selection-faq.md) |
 | 39 | **SaaS Involuntary Churn & Payment Recovery (`Butter Payments / Recurly / Churnkey vs. Stripe Smart Retries / Adyen Auto-Rescue`), `T-5d Visa VAU / Mastercard ABU` Pre-Sync, 72h Silent Payday Retries & 14-Day Read-Only Grace Period (`-40%` Failed-Renewal ARR Leakage) FAQ** | [English](saas-involuntary-churn-dunning-vau-abu-payday-smart-retry-grace-selection-faq.en.md) · [中文](saas-involuntary-churn-dunning-vau-abu-payday-smart-retry-grace-selection-faq.md) |
 | 40 | **🏆 SaaS & Subscription Cancel-Flow Deflection, `FTC Click-to-Cancel (16 CFR Part 464)` Symmetry, `365-Day` Save-Coupon Cooldown & Read-Only Downgrade Vault (`Chargebee Retention / Churnkey / Recurly / Stripe Billing` · 🏆 450th Bilingual Guide Milestone) (`-39%` Voluntary Churn & Margin Bleed) FAQ** | [English](saas-subscription-renewal-churn-save-pause-deflection-downgrade-entitlement-selection-faq.en.md) · [中文](saas-subscription-renewal-churn-save-pause-deflection-downgrade-entitlement-selection-faq.md) |
+| 41 | **🏆 SaaS Hybrid `Seat + Pooled Usage Credits` Billing, `20%` Per-User Burst Cap, `50/80/100%` Bill-Shock Shield & `14-Day` Retroactive Tier True-Up (`Orb / Metronome / Stripe Billing / Zuora` · 🏆 1,335th Unit Test Milestone) (`-39%` Bill-Shock Churn & Overage Dispute Loss) FAQ** | [English](saas-hybrid-seat-plus-usage-credit-burndown-midcycle-alert-overage-cap-selection-faq.en.md) · [中文](saas-hybrid-seat-plus-usage-credit-burndown-midcycle-alert-overage-cap-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (51 Guides)
