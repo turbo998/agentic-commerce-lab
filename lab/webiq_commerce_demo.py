@@ -40111,6 +40111,82 @@ def evaluate_franchise_royalty_ad_fund_sweep_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderRmaReturnsKeepItPolicyInput:
+    quarterly_reverse_freight_cash_churn_and_ftid_fraud_pool_usd: float = 380000.0
+    negative_recovery_air_return_or_unrestricted_keep_it_abuse: bool = False
+    bonus_exchange_credit_cash_out_or_uncollateralized_instant_exchange: bool = False
+    ftid_carrier_weight_geofence_mismatch_or_wardrobing_tag_tamper: bool = False
+    keep_it_net_recovery_bonus_exchange_and_ftid_weight_lock_ready: bool = False
+
+
+def evaluate_cross_border_rma_returns_keep_it_policy(
+    policy_input: CrossBorderRmaReturnsKeepItPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_reverse_freight_cash_churn_and_ftid_fraud_pool_usd
+        ),
+    )
+    if policy_input.ftid_carrier_weight_geofence_mismatch_or_wardrobing_tag_tamper:
+        return {
+            "status_code": 451,
+            "decision": "FTID_CARRIER_WEIGHT_GEOFENCE_MISMATCH_OR_WARDROBING_TAG_TAMPER",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.negative_recovery_air_return_or_unrestricted_keep_it_abuse:
+        return {
+            "status_code": 403,
+            "decision": "NEGATIVE_RECOVERY_AIR_RETURN_OR_UNRESTRICTED_KEEP_IT_ABUSE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bonus_exchange_credit_cash_out_or_uncollateralized_instant_exchange:
+        return {
+            "status_code": 422,
+            "decision": "BONUS_EXCHANGE_CREDIT_CASH_OUT_ARBITRAGE_OR_UNCOLLATERALIZED_INSTANT_EXCHANGE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.keep_it_net_recovery_bonus_exchange_and_ftid_weight_lock_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "KEEP_IT_NET_RECOVERY_BONUS_EXCHANGE_AND_FTID_WEIGHT_LOCK_CONFIRM",
+            "mandate_token": "cross_border_rma_keepit_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CROSS_BORDER_RMA_AND_EXCHANGE_LEDGER_AUTHORIZED",
+        "mandate_token": "cross_border_rma_keepit_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -54584,6 +54660,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_rma_returns_keep_it_guard = {
+        "authorized_200": evaluate_cross_border_rma_returns_keep_it_policy(
+            CrossBorderRmaReturnsKeepItPolicyInput()
+        ),
+        "negative_recovery_or_keepit_abuse_403": evaluate_cross_border_rma_returns_keep_it_policy(
+            CrossBorderRmaReturnsKeepItPolicyInput(
+                negative_recovery_air_return_or_unrestricted_keep_it_abuse=True
+            )
+        ),
+        "bonus_credit_cashout_422": evaluate_cross_border_rma_returns_keep_it_policy(
+            CrossBorderRmaReturnsKeepItPolicyInput(
+                bonus_exchange_credit_cash_out_or_uncollateralized_instant_exchange=True
+            )
+        ),
+        "ftid_weight_or_wardrobing_451": evaluate_cross_border_rma_returns_keep_it_policy(
+            CrossBorderRmaReturnsKeepItPolicyInput(
+                ftid_carrier_weight_geofence_mismatch_or_wardrobing_tag_tamper=True
+            )
+        ),
+        "keep_it_bonus_ftid_409": evaluate_cross_border_rma_returns_keep_it_policy(
+            CrossBorderRmaReturnsKeepItPolicyInput(
+                keep_it_net_recovery_bonus_exchange_and_ftid_weight_lock_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -55041,6 +55143,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "proptech_lease_cam_escrow_guard": proptech_lease_cam_escrow_guard,
         "big_bulky_ltl_path3d_keepit_guard": big_bulky_ltl_path3d_keepit_guard,
         "franchise_royalty_ad_fund_sweep_guard": franchise_royalty_ad_fund_sweep_guard,
+        "cross_border_rma_returns_keep_it_guard": cross_border_rma_returns_keep_it_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -78993,6 +79096,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="frnroy-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 INLINE_T0_ROYALTY_SPLIT_BOM_YIELD_AND_FDD_AD_FUND_ESCROW_CONFIRM · Mandate: franchise_royalty_adfund_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 329 (#448 · SVG #772) Cross-Border E-Commerce RMA, Keep-It & Anti-FTID -->
+      <div class="finops-box" id="cross-border-rma-returns-keep-it-sandbox" style="margin-top:12px;border-color:#0284c7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📦 跨境电商多语种智能退换货 (Loop Returns / ReturnGO / Narvar) Keep-It 止损与防 FTID 骗退沙盒</div>
+            <div class="finops-sub">Round 329 (#448 · SVG #772) · 单品逆向净回收值求解器 (&lt;$35 Keep-It vs 跨国空运退货倒贴) 与 180 天家庭频次锁 (HTTP 403) + 115% 换货礼金本金/赠金双桶隔离防二次退现套利 (HTTP 422) + 快递首扫电子秤克重 (±8%) 与 3PL 码头围栏防 FTID 空信封骗退 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="xbrma-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度跨境退件逆向运费倒贴、直接退现 GMV 流失及 FTID 空包/穿戴白嫖骗退池 ($)
+            <input type="number" id="xbrma-gross-input" value="380000" min="10000" step="5000" oninput="recalcCrossBorderRmaReturnsKeepItSandbox()" />
+          </label>
+          <label>单品逆向净回收值求解器 (Resale - Reverse_Freight - Restock) 与 Keep-It 防白嫖阈值门禁
+            <select id="xbrma-keepit-select" onchange="recalcCrossBorderRmaReturnsKeepItSandbox()">
+              <option value="pass">对净回收 &lt;$0 且 &lt;=$35 商品转本地免寄回/捐赠，且锁定每家庭 180 天最多 1 次 (安全)</option>
+              <option value="block_403">对 $28 T恤开 $24 跨国空运退货单净亏 $16，或对 $180 外套无脑批 Keep-It 遭全村白嫖 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>115% 即时换货礼金 (Bonus Store Credit) 本金与赠金双桶隔离防套现门禁
+            <select id="xbrma-bonus-select" onchange="recalcCrossBorderRmaReturnsKeepItSandbox()">
+              <option value="pass">$100 实付本金与 $15 换货赠金分桶记账，二次退货时 $15 赠金自动作废且退卡封顶 $100 (合规)</option>
+              <option value="block_422">黑产用 $115 换货礼金买新货后次日退现金，将白送的 $15 赠金洗回信用卡套利 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>快递首扫电子秤克重 (±8% BOM Weight) 与 3PL 仓库码头地址防 FTID 篡改门禁
+            <select id="xbrma-ftid-select" onchange="recalcCrossBorderRmaReturnsKeepItSandbox()">
+              <option value="pass">校验 UPS/FedEx 揽收实测克重与出库 BOM 偏差 &lt;=8% 且投递条码指向官方海外仓码头 (合规)</option>
+              <option value="block_451">篡改退货面单地址寄 18g 空传单给同邮编加油站 (FTID) 或剪毁防拆吊牌骗秒退款 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>动态 Keep-It 净值止损 + 115% 换货留存飞轮 + 快递称重防 FTID 全链路编排
+            <select id="xbrma-opt-select" onchange="recalcCrossBorderRmaReturnsKeepItSandbox()">
+              <option value="enabled" selected>启用 Keep-It 求解 + 115% 换货赠金锁 + 揽收克重核验 (-39% 售后损耗 / HTTP 409)</option>
+              <option value="disabled">传统机械开预付费退货面单 + 原路退现金 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度逆向运费与骗退损耗池</div>
+            <div class="finops-kpi-val" id="xbrma-gross-kpi">$380,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">换货留存与防FTID后净成本</div>
+            <div class="finops-kpi-val" id="xbrma-net-kpi" style="color:#6ee7b7;">$231,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住跨境GMV与运费</div>
+            <div class="finops-kpi-val" id="xbrma-savings-kpi" style="color:#38bdf8;">$148,200</div>
+          </div>
+        </div>
+        <div id="xbrma-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 KEEP_IT_NET_RECOVERY_BONUS_EXCHANGE_AND_FTID_WEIGHT_LOCK_CONFIRM · Mandate: cross_border_rma_keepit_optim_409
         </div>
       </div>
 
@@ -108527,6 +108687,79 @@ function recalcFranchiseRoyaltyAdFundSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_FRANCHISE_ROYALTY_AND_AD_FUND_TRUST_AUTHORIZED · Mandate: franchise_royalty_adfund_200';
+}}
+
+function recalcCrossBorderRmaReturnsKeepItSandbox() {{
+  const grossInput = document.getElementById('xbrma-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '380000'));
+  const keepItGate = document.getElementById('xbrma-keepit-select').value;
+  const bonusGate = document.getElementById('xbrma-bonus-select').value;
+  const ftidGate = document.getElementById('xbrma-ftid-select').value;
+  const optMode = document.getElementById('xbrma-opt-select').value;
+
+  const grossKpi = document.getElementById('xbrma-gross-kpi');
+  const netKpi = document.getElementById('xbrma-net-kpi');
+  const savingsKpi = document.getElementById('xbrma-savings-kpi');
+  const statusKpi = document.getElementById('xbrma-status-kpi');
+  const banner = document.getElementById('xbrma-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ftidGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FTID_CARRIER_WEIGHT_GEOFENCE_MISMATCH_OR_WARDROBING_TAG_TAMPER · Mandate: null';
+    return;
+  }}
+  if (keepItGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 NEGATIVE_RECOVERY_AIR_RETURN_OR_UNRESTRICTED_KEEP_IT_ABUSE · Mandate: null';
+    return;
+  }}
+  if (bonusGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BONUS_EXCHANGE_CREDIT_CASH_OUT_ARBITRAGE_OR_UNCOLLATERALIZED_INSTANT_EXCHANGE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 KEEP_IT_NET_RECOVERY_BONUS_EXCHANGE_AND_FTID_WEIGHT_LOCK_CONFIRM · Mandate: cross_border_rma_keepit_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CROSS_BORDER_RMA_AND_EXCHANGE_LEDGER_AUTHORIZED · Mandate: cross_border_rma_keepit_200';
 }}
 
 function updateStage1756Sandbox() {{
