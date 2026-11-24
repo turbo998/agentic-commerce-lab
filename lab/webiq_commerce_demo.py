@@ -41251,6 +41251,82 @@ def evaluate_browser_use_headless_checkout_guard_policy(
     }
 
 
+@dataclass(frozen=True)
+class SalesTaxEngineSelectionFallbackPolicyInput:
+    quarterly_nexus_backtax_timeout_drop_and_zip_drift_pool_usd: float = 380000.0
+    wrong_saas_tax_code_or_unregistered_wayfair_economic_nexus: bool = False
+    tax_api_timeout_checkout_crash_or_zero_tax_fallback_leak: bool = False
+    coarse_5digit_zip_drift_or_unlinked_return_tax_date_mismatch: bool = False
+    saas_tax_code_nexus_radar_800ms_edge_fallback_and_rooftop_ready: bool = False
+
+
+def evaluate_sales_tax_engine_selection_fallback_policy(
+    policy_input: SalesTaxEngineSelectionFallbackPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_nexus_backtax_timeout_drop_and_zip_drift_pool_usd
+        ),
+    )
+    if policy_input.coarse_5digit_zip_drift_or_unlinked_return_tax_date_mismatch:
+        return {
+            "status_code": 451,
+            "decision": "COARSE_5DIGIT_ZIP_TAX_DRIFT_OR_UNLINKED_RETURN_TAX_DATE_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.wrong_saas_tax_code_or_unregistered_wayfair_economic_nexus:
+        return {
+            "status_code": 403,
+            "decision": "WRONG_SAAS_PRODUCT_TAX_CODE_OR_UNREGISTERED_WAYFAIR_ECONOMIC_NEXUS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tax_api_timeout_checkout_crash_or_zero_tax_fallback_leak:
+        return {
+            "status_code": 422,
+            "decision": "TAX_ENGINE_TIMEOUT_CHECKOUT_CRASH_OR_UNFALLBACKED_ZERO_TAX_LEAK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.saas_tax_code_nexus_radar_800ms_edge_fallback_and_rooftop_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TAX_CODE_NEXUS_RADAR_800MS_EDGE_FALLBACK_AND_ROOFTOP_PARITY_CONFIRM",
+            "mandate_token": "sales_tax_engine_fallback_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_COMMERCIAL_TAX_ENGINE_AND_NEXUS_AUTHORIZED",
+        "mandate_token": "sales_tax_engine_fallback_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -56114,6 +56190,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    sales_tax_engine_selection_fallback_guard = {
+        "authorized_200": evaluate_sales_tax_engine_selection_fallback_policy(
+            SalesTaxEngineSelectionFallbackPolicyInput()
+        ),
+        "wrong_saas_code_or_nexus_403": evaluate_sales_tax_engine_selection_fallback_policy(
+            SalesTaxEngineSelectionFallbackPolicyInput(
+                wrong_saas_tax_code_or_unregistered_wayfair_economic_nexus=True
+            )
+        ),
+        "timeout_crash_or_zero_tax_422": evaluate_sales_tax_engine_selection_fallback_policy(
+            SalesTaxEngineSelectionFallbackPolicyInput(
+                tax_api_timeout_checkout_crash_or_zero_tax_fallback_leak=True
+            )
+        ),
+        "coarse_zip_or_return_date_451": evaluate_sales_tax_engine_selection_fallback_policy(
+            SalesTaxEngineSelectionFallbackPolicyInput(
+                coarse_5digit_zip_drift_or_unlinked_return_tax_date_mismatch=True
+            )
+        ),
+        "tax_code_fallback_rooftop_409": evaluate_sales_tax_engine_selection_fallback_policy(
+            SalesTaxEngineSelectionFallbackPolicyInput(
+                saas_tax_code_nexus_radar_800ms_edge_fallback_and_rooftop_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -56586,6 +56688,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_dynamic_pricing_map_guard": ecommerce_dynamic_pricing_map_guard,
         "voice_commerce_ccaas_pci_dtmf_guard": voice_commerce_ccaas_pci_dtmf_guard,
         "browser_use_headless_checkout_guard": browser_use_headless_checkout_guard,
+        "sales_tax_engine_selection_fallback_guard": sales_tax_engine_selection_fallback_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -81393,6 +81496,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="brwchk-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 API_FIRST_BROWSER_FALLBACK_AXTREE_PARITY_AND_VAULT_VCN_INJECT_CONFIRM · Mandate: browser_use_checkout_guard_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 344 (#463 · SVG #787) Commercial Sales Tax & VAT Engine Selection (Stripe Tax vs. Avalara vs. Vertex vs. Anrok) -->
+      <div class="finops-box" id="sales-tax-engine-selection-fallback-sandbox" style="margin-top:12px;border-color:#059669;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🧾 实时商业计税引擎选型与容灾 (Stripe Tax / Anrok / Avalara / Vertex) 经济联结与 800ms 降级沙盒</div>
+            <div class="finops-sub">Round 344 (#463 · SVG #787) · SaaS 专属税目码 (SW052000) 与滚动 12m Wayfair 经济联结 ($100k/200单) 雷达防免税州乱收税或漏报欠税 (HTTP 403) + 外部计税 API 超时 &gt;800ms 自动切换本地签名 ZIP+4 兜底表防收银台崩溃或 $0 漏税 (HTTP 422) + 屋顶经纬度 (Rooftop Geo) 与退货原发票计税日期锁 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="taxeng-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度跨州经济联结 (Wayfair Nexus) 漏报历史欠税罚息、大促计税 API 超时掉单及税码错配池 ($)
+            <input type="number" id="taxeng-gross-input" value="380000" min="10000" step="5000" oninput="recalcSalesTaxEngineSelectionFallbackSandbox()" />
+          </label>
+          <label>SaaS / AI 专属税目代码 (SW052000) 与滚动 12 个月 Wayfair 经济联结雷达门禁
+            <select id="taxeng-nexus-select" onchange="recalcSalesTaxEngineSelectionFallbackSandbox()">
+              <option value="pass">精准映射 SW052000 (CA/FL 0%免税、TX 80%税基)，且突破州 $100k 联结红线自动激活代扣 (安全)</option>
+              <option value="block_403">将云端 SaaS 错挂实物税码在加州乱收 8.5% 税，或突破纽约/得州 $100k 联结未注册欠税 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>大促外部计税 API 超时 (&gt;800ms / 503) 本地签名 ZIP+4 边缘缓存容灾降级门禁
+            <select id="taxeng-fallback-select" onchange="recalcSalesTaxEngineSelectionFallbackSandbox()">
+              <option value="pass">超过 800ms 立即切换本地签名 ZIP+4 兜底税率表保住 100% 结账转化，事后异步队列补录 Commit (合规)</option>
+              <option value="block_422">计税 API 超时直接抛 HTTP 500 阻断全站付款，或按 $0.00 免税放行害商家倒贴 9% 税款 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>屋顶经纬度 (Rooftop Lat/Long / ZIP+4) 市政税区定界与售后退货原发票日期锁门禁
+            <select id="taxeng-rooftop-select" onchange="recalcSalesTaxEngineSelectionFallbackSandbox()">
+              <option value="pass">通过 CASS 解析 9 位 ZIP+4 经纬度，且跨期退货强制传入 Original_Invoice_Tax_Date (合规)</option>
+              <option value="block_451">在科罗拉多/华盛顿仅用 5 位粗邮编算错市政税，或跨年退货按新年度税率退税致账本失衡 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>精准 SaaS 税码与联结雷达 + 800ms 边缘容灾降级 + 屋顶精度退税锁全链路编排
+            <select id="taxeng-opt-select" onchange="recalcSalesTaxEngineSelectionFallbackSandbox()">
+              <option value="enabled" selected>启用 SW052000 联结雷达 + 800ms 边缘降级 + 屋顶定界 (-39% 税务与掉单损耗 / HTTP 409)</option>
+              <option value="disabled">固定 5 位邮编税表或同步裸调外部计税 API 无兜底 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度欠税罚金与超时掉单池</div>
+            <div class="finops-kpi-val" id="taxeng-gross-kpi">$380,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">联结雷达与边缘降级后净损耗</div>
+            <div class="finops-kpi-val" id="taxeng-net-kpi" style="color:#6ee7b7;">$231,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省税务罚息与保住GMV</div>
+            <div class="finops-kpi-val" id="taxeng-savings-kpi" style="color:#38bdf8;">$148,200</div>
+          </div>
+        </div>
+        <div id="taxeng-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TAX_CODE_NEXUS_RADAR_800MS_EDGE_FALLBACK_AND_ROOFTOP_PARITY_CONFIRM · Mandate: sales_tax_engine_fallback_optim_409
         </div>
       </div>
 
@@ -112022,6 +112182,79 @@ function recalcBrowserUseHeadlessCheckoutSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_BROWSER_USE_HEADLESS_CHECKOUT_AUTHORIZED · Mandate: browser_use_checkout_guard_200';
+}}
+
+function recalcSalesTaxEngineSelectionFallbackSandbox() {{
+  const grossInput = document.getElementById('taxeng-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '380000'));
+  const nexusGate = document.getElementById('taxeng-nexus-select').value;
+  const fallbackGate = document.getElementById('taxeng-fallback-select').value;
+  const rooftopGate = document.getElementById('taxeng-rooftop-select').value;
+  const optMode = document.getElementById('taxeng-opt-select').value;
+
+  const grossKpi = document.getElementById('taxeng-gross-kpi');
+  const netKpi = document.getElementById('taxeng-net-kpi');
+  const savingsKpi = document.getElementById('taxeng-savings-kpi');
+  const statusKpi = document.getElementById('taxeng-status-kpi');
+  const banner = document.getElementById('taxeng-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (rooftopGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 COARSE_5DIGIT_ZIP_TAX_DRIFT_OR_UNLINKED_RETURN_TAX_DATE_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (nexusGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 WRONG_SAAS_PRODUCT_TAX_CODE_OR_UNREGISTERED_WAYFAIR_ECONOMIC_NEXUS · Mandate: null';
+    return;
+  }}
+  if (fallbackGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 TAX_ENGINE_TIMEOUT_CHECKOUT_CRASH_OR_UNFALLBACKED_ZERO_TAX_LEAK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TAX_CODE_NEXUS_RADAR_800MS_EDGE_FALLBACK_AND_ROOFTOP_PARITY_CONFIRM · Mandate: sales_tax_engine_fallback_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_COMMERCIAL_TAX_ENGINE_AND_NEXUS_AUTHORIZED · Mandate: sales_tax_engine_fallback_200';
 }}
 
 function updateStage1756Sandbox() {{

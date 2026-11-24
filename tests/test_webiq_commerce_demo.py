@@ -32106,6 +32106,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("browser-use-headless-checkout-sandbox", html_zh)
 
+    def test_sales_tax_engine_selection_fallback_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SalesTaxEngineSelectionFallbackPolicyInput,
+            evaluate_sales_tax_engine_selection_fallback_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_sales_tax_engine_selection_fallback_policy(
+            SalesTaxEngineSelectionFallbackPolicyInput(
+                quarterly_nexus_backtax_timeout_drop_and_zip_drift_pool_usd=380000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_COMMERCIAL_TAX_ENGINE_AND_NEXUS_AUTHORIZED",
+        )
+
+        nexus = evaluate_sales_tax_engine_selection_fallback_policy(
+            SalesTaxEngineSelectionFallbackPolicyInput(
+                wrong_saas_tax_code_or_unregistered_wayfair_economic_nexus=True
+            )
+        )
+        self.assertEqual(nexus["status_code"], 403)
+        self.assertEqual(
+            nexus["decision"],
+            "WRONG_SAAS_PRODUCT_TAX_CODE_OR_UNREGISTERED_WAYFAIR_ECONOMIC_NEXUS",
+        )
+
+        timeout = evaluate_sales_tax_engine_selection_fallback_policy(
+            SalesTaxEngineSelectionFallbackPolicyInput(
+                tax_api_timeout_checkout_crash_or_zero_tax_fallback_leak=True
+            )
+        )
+        self.assertEqual(timeout["status_code"], 422)
+        self.assertEqual(
+            timeout["decision"],
+            "TAX_ENGINE_TIMEOUT_CHECKOUT_CRASH_OR_UNFALLBACKED_ZERO_TAX_LEAK",
+        )
+
+        rooftop = evaluate_sales_tax_engine_selection_fallback_policy(
+            SalesTaxEngineSelectionFallbackPolicyInput(
+                coarse_5digit_zip_drift_or_unlinked_return_tax_date_mismatch=True
+            )
+        )
+        self.assertEqual(rooftop["status_code"], 451)
+        self.assertEqual(
+            rooftop["decision"],
+            "COARSE_5DIGIT_ZIP_TAX_DRIFT_OR_UNLINKED_RETURN_TAX_DATE_MISMATCH",
+        )
+
+        optim = evaluate_sales_tax_engine_selection_fallback_policy(
+            SalesTaxEngineSelectionFallbackPolicyInput(
+                quarterly_nexus_backtax_timeout_drop_and_zip_drift_pool_usd=380000.0,
+                saas_tax_code_nexus_radar_800ms_edge_fallback_and_rooftop_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 148200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 231800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("sales_tax_engine_selection_fallback_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("sales-tax-engine-selection-fallback-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
