@@ -32307,6 +32307,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("retail-cdp-identity-consent-sandbox", html_zh)
 
+    def test_ota_hotel_pms_vcc_folio_walk_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaHotelPmsVccFolioWalkPolicyInput,
+            evaluate_ota_hotel_pms_vcc_folio_walk_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_hotel_pms_vcc_folio_walk_policy(
+            OtaHotelPmsVccFolioWalkPolicyInput(
+                quarterly_walk_relocation_uncaptured_vcc_and_double_charge_pool_usd=390000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_HOTEL_PMS_DUAL_FOLIO_AND_ARI_AUTHORIZED",
+        )
+
+        folio = evaluate_ota_hotel_pms_vcc_folio_walk_policy(
+            OtaHotelPmsVccFolioWalkPolicyInput(
+                ota_vcc_and_guest_personal_card_folio_routing_collision=True
+            )
+        )
+        self.assertEqual(folio["status_code"], 403)
+        self.assertEqual(
+            folio["decision"],
+            "OTA_VCC_AND_GUEST_PERSONAL_CARD_FOLIO_ROUTING_COLLISION",
+        )
+
+        walk = evaluate_ota_hotel_pms_vcc_folio_walk_policy(
+            OtaHotelPmsVccFolioWalkPolicyInput(
+                last_room_multi_ota_concurrent_overbooking_without_throttle=True
+            )
+        )
+        self.assertEqual(walk["status_code"], 422)
+        self.assertEqual(
+            walk["decision"],
+            "LAST_ROOM_MULTI_OTA_CONCURRENT_OVERBOOKING_WITHOUT_ARI_THROTTLE",
+        )
+
+        turn = evaluate_ota_hotel_pms_vcc_folio_walk_policy(
+            OtaHotelPmsVccFolioWalkPolicyInput(
+                late_checkout_early_checkin_housekeeping_turnaround_collision=True
+            )
+        )
+        self.assertEqual(turn["status_code"], 451)
+        self.assertEqual(
+            turn["decision"],
+            "LATE_CHECKOUT_EARLY_CHECKIN_HOUSEKEEPING_TURNAROUND_COLLISION",
+        )
+
+        optim = evaluate_ota_hotel_pms_vcc_folio_walk_policy(
+            OtaHotelPmsVccFolioWalkPolicyInput(
+                quarterly_walk_relocation_uncaptured_vcc_and_double_charge_pool_usd=390000.0,
+                dual_folio_vcc_routing_last_room_throttle_and_90m_turnaround_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 152100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 237900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_hotel_pms_vcc_folio_walk_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-hotel-pms-vcc-folio-walk-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

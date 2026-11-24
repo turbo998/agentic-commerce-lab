@@ -41479,6 +41479,82 @@ def evaluate_retail_cdp_identity_consent_suppression_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaHotelPmsVccFolioWalkPolicyInput:
+    quarterly_walk_relocation_uncaptured_vcc_and_double_charge_pool_usd: float = 390000.0
+    ota_vcc_and_guest_personal_card_folio_routing_collision: bool = False
+    last_room_multi_ota_concurrent_overbooking_without_throttle: bool = False
+    late_checkout_early_checkin_housekeeping_turnaround_collision: bool = False
+    dual_folio_vcc_routing_last_room_throttle_and_90m_turnaround_ready: bool = False
+
+
+def evaluate_ota_hotel_pms_vcc_folio_walk_policy(
+    policy_input: OtaHotelPmsVccFolioWalkPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_walk_relocation_uncaptured_vcc_and_double_charge_pool_usd
+        ),
+    )
+    if policy_input.late_checkout_early_checkin_housekeeping_turnaround_collision:
+        return {
+            "status_code": 451,
+            "decision": "LATE_CHECKOUT_EARLY_CHECKIN_HOUSEKEEPING_TURNAROUND_COLLISION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ota_vcc_and_guest_personal_card_folio_routing_collision:
+        return {
+            "status_code": 403,
+            "decision": "OTA_VCC_AND_GUEST_PERSONAL_CARD_FOLIO_ROUTING_COLLISION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.last_room_multi_ota_concurrent_overbooking_without_throttle:
+        return {
+            "status_code": 422,
+            "decision": "LAST_ROOM_MULTI_OTA_CONCURRENT_OVERBOOKING_WITHOUT_ARI_THROTTLE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dual_folio_vcc_routing_last_room_throttle_and_90m_turnaround_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "HOTEL_PMS_DUAL_FOLIO_VCC_ARI_THROTTLE_AND_HOUSEKEEPING_MUTEX_CONFIRM",
+            "mandate_token": "ota_hotel_pms_vcc_folio_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_HOTEL_PMS_DUAL_FOLIO_AND_ARI_AUTHORIZED",
+        "mandate_token": "ota_hotel_pms_vcc_folio_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -56420,6 +56496,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_hotel_pms_vcc_folio_walk_guard = {
+        "authorized_200": evaluate_ota_hotel_pms_vcc_folio_walk_policy(
+            OtaHotelPmsVccFolioWalkPolicyInput()
+        ),
+        "vcc_folio_collision_403": evaluate_ota_hotel_pms_vcc_folio_walk_policy(
+            OtaHotelPmsVccFolioWalkPolicyInput(
+                ota_vcc_and_guest_personal_card_folio_routing_collision=True
+            )
+        ),
+        "last_room_overbooking_422": evaluate_ota_hotel_pms_vcc_folio_walk_policy(
+            OtaHotelPmsVccFolioWalkPolicyInput(
+                last_room_multi_ota_concurrent_overbooking_without_throttle=True
+            )
+        ),
+        "late_checkout_turnaround_451": evaluate_ota_hotel_pms_vcc_folio_walk_policy(
+            OtaHotelPmsVccFolioWalkPolicyInput(
+                late_checkout_early_checkin_housekeeping_turnaround_collision=True
+            )
+        ),
+        "dual_folio_ari_turnaround_409": evaluate_ota_hotel_pms_vcc_folio_walk_policy(
+            OtaHotelPmsVccFolioWalkPolicyInput(
+                dual_folio_vcc_routing_last_room_throttle_and_90m_turnaround_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -56895,6 +56997,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "sales_tax_engine_selection_fallback_guard": sales_tax_engine_selection_fallback_guard,
         "b2b_sales_commission_icm_guard": b2b_sales_commission_icm_guard,
         "retail_cdp_identity_consent_guard": retail_cdp_identity_consent_guard,
+        "ota_hotel_pms_vcc_folio_walk_guard": ota_hotel_pms_vcc_folio_walk_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -81873,6 +81976,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="retcdp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 STRICT_IDENTITY_GRAPH_SUB60S_AD_SUPPRESSION_AND_GPC_CAPI_LOCK_CONFIRM · Mandate: retail_cdp_identity_consent_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 347 (#466 · 🏆 SVG #790 & 240th Sandbox Milestone) Hotel PMS/CRS, OTA VCC Dual-Folio & Walk Shield -->
+      <div class="finops-box" id="ota-hotel-pms-vcc-folio-walk-sandbox" style="margin-top:12px;border-color:#0d9488;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏨 酒店集团 PMS/CRS 与 OTA 虚拟卡双账单清算 (Oracle OPERA Cloud / Mews / ACRS) 沙盒（🏆 第 240 个沙盒里程碑）</div>
+            <div class="finops-sub">Round 347 (#466 · 🏆 SVG #790 &amp; 240th Sandbox Milestone) · 交易码双窗口自动分流 (Window 1 房费-&gt;OTA VCC vs Window 2 迷你吧-&gt;住客卡) 防超额拒付或重收房费 (HTTP 403) + 最后 3 间房渠道配额节流 (Last-Room ARI Throttle) 防并发超售到店无房赔付 $350 (HTTP 422) + 付费延迟退房与保洁 90m 周转互斥锁 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="htlpms-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 OTA 虚拟卡过期/超额漏扣坏账、满房之夜并发超售外迁赔付 (Walked Guests) 及重收房费拒付池 ($)
+            <input type="number" id="htlpms-gross-input" value="390000" min="10000" step="5000" oninput="recalcOtaHotelPmsVccFolioWalkSandbox()" />
+          </label>
+          <label>OTA 预付虚拟卡 (Window 1: Room+Tax) 与住客个人信用卡 (Window 2: Incidentals) 双账单隔离门禁
+            <select id="htlpms-folio-select" onchange="recalcOtaHotelPmsVccFolioWalkSandbox()">
+              <option value="pass">房费自动路由至 Window 1 在入住日精确扣取 OTA VCC，迷你吧餐饮路由至 Window 2 扣住客个人卡 (安全)</option>
+              <option value="block_403">将 $35 迷你吧混入定额 $450 OTA 虚拟卡致整单超限拒付，或把已付房费重刷在住客卡上 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>全馆最后 3 间房多 OTA 渠道配额节流 (Last-Room ARI Channel Throttle) 防超售门禁
+            <select id="htlpms-ari-select" onchange="recalcOtaHotelPmsVccFolioWalkSandbox()">
+              <option value="pass">余房 &lt;=3 间时自动撤回慢速渠道配额，仅留直销与单主通道逐间原子锁房 (合规)</option>
+              <option value="block_422">向 5 家 OTA 同时广播余房 3 间，30 秒内涌入 6 单致 3 位客人半夜到店无房赔付 $350/间 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>付费延迟退房 (Late Check-Out) 与下任住客提前入住 &gt;=90 分钟保洁周转互斥门禁
+            <select id="htlpms-turn-select" onchange="recalcOtaHotelPmsVccFolioWalkSandbox()">
+              <option value="pass">售出 16:00 延迟退房前确认与下任入住留足 &gt;=90m 打扫间隔或已自动调换至其他净房 (合规)</option>
+              <option value="block_451">向 804 房现住客卖出 16:00 延迟退房，又向下任 VIP 卖出 13:00 提前入住致门口撞车 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>OTA VCC 双窗口分账 + 最后 3 间 ARI 防超售 + 保洁周转互斥全链路编排
+            <select id="htlpms-opt-select" onchange="recalcOtaHotelPmsVccFolioWalkSandbox()">
+              <option value="enabled" selected>启用双窗口 VCC 路由 + 余房 ARI 节流 + 90m 保洁锁 (-39% 酒店运营损耗 / HTTP 409)</option>
+              <option value="disabled">单账单混刷 + 全渠道无缓冲广播余房 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度超售外迁与漏扣损耗池</div>
+            <div class="finops-kpi-val" id="htlpms-gross-kpi">$390,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">双账单与防超售后净成本</div>
+            <div class="finops-kpi-val" id="htlpms-net-kpi" style="color:#6ee7b7;">$237,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住酒店营收与口碑</div>
+            <div class="finops-kpi-val" id="htlpms-savings-kpi" style="color:#38bdf8;">$152,100</div>
+          </div>
+        </div>
+        <div id="htlpms-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 HOTEL_PMS_DUAL_FOLIO_VCC_ARI_THROTTLE_AND_HOUSEKEEPING_MUTEX_CONFIRM · Mandate: ota_hotel_pms_vcc_folio_optim_409
         </div>
       </div>
 
@@ -112721,6 +112881,79 @@ function recalcRetailCdpIdentityConsentSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_RETAIL_CDP_IDENTITY_AND_CONSENT_AUTHORIZED · Mandate: retail_cdp_identity_consent_200';
+}}
+
+function recalcOtaHotelPmsVccFolioWalkSandbox() {{
+  const grossInput = document.getElementById('htlpms-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '390000'));
+  const folioGate = document.getElementById('htlpms-folio-select').value;
+  const ariGate = document.getElementById('htlpms-ari-select').value;
+  const turnGate = document.getElementById('htlpms-turn-select').value;
+  const optMode = document.getElementById('htlpms-opt-select').value;
+
+  const grossKpi = document.getElementById('htlpms-gross-kpi');
+  const netKpi = document.getElementById('htlpms-net-kpi');
+  const savingsKpi = document.getElementById('htlpms-savings-kpi');
+  const statusKpi = document.getElementById('htlpms-status-kpi');
+  const banner = document.getElementById('htlpms-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (turnGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 LATE_CHECKOUT_EARLY_CHECKIN_HOUSEKEEPING_TURNAROUND_COLLISION · Mandate: null';
+    return;
+  }}
+  if (folioGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 OTA_VCC_AND_GUEST_PERSONAL_CARD_FOLIO_ROUTING_COLLISION · Mandate: null';
+    return;
+  }}
+  if (ariGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 LAST_ROOM_MULTI_OTA_CONCURRENT_OVERBOOKING_WITHOUT_ARI_THROTTLE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 HOTEL_PMS_DUAL_FOLIO_VCC_ARI_THROTTLE_AND_HOUSEKEEPING_MUTEX_CONFIRM · Mandate: ota_hotel_pms_vcc_folio_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_HOTEL_PMS_DUAL_FOLIO_AND_ARI_AUTHORIZED · Mandate: ota_hotel_pms_vcc_folio_200';
 }}
 
 function updateStage1756Sandbox() {{
