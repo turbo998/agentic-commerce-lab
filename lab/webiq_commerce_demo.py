@@ -42391,6 +42391,82 @@ def evaluate_b2b_rfq_sourcing_landed_cost_award_policy(
     }
 
 
+@dataclass(frozen=True)
+class LifecycleMarketingReplenishmentUpliftPolicyInput:
+    quarterly_coupon_cannibalization_sms_waste_and_churn_pool_usd: float = 345000.0
+    promo_sent_during_open_cs_ticket_or_within_14d_full_price_purchase: bool = False
+    discount_coupon_issued_to_high_organic_propensity_sure_thing_buyer: bool = False
+    multi_journey_24h_sms_spam_or_tcpa_local_quiet_hours_violation: bool = False
+    causal_uplift_gating_ticket_suppression_and_tcpa_mutex_ready: bool = False
+
+
+def evaluate_lifecycle_marketing_replenishment_uplift_policy(
+    policy_input: LifecycleMarketingReplenishmentUpliftPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_coupon_cannibalization_sms_waste_and_churn_pool_usd
+        ),
+    )
+    if policy_input.multi_journey_24h_sms_spam_or_tcpa_local_quiet_hours_violation:
+        return {
+            "status_code": 451,
+            "decision": "CROSS_JOURNEY_FREQUENCY_OVERFLOW_OR_TCPA_QUIET_HOURS_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.promo_sent_during_open_cs_ticket_or_within_14d_full_price_purchase:
+        return {
+            "status_code": 403,
+            "decision": "ACTIVE_CS_TICKET_OR_RECENT_FULL_PRICE_BUYER_PROMO_COLLISION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.discount_coupon_issued_to_high_organic_propensity_sure_thing_buyer:
+        return {
+            "status_code": 422,
+            "decision": "SURE_THING_ORGANIC_BUYER_COUPON_MARGIN_CANNIBALIZATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.causal_uplift_gating_ticket_suppression_and_tcpa_mutex_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CAUSAL_UPLIFT_COUPON_AND_GLOBAL_FREQUENCY_CAP_CONFIRM",
+            "mandate_token": "lifecycle_marketing_uplift_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_LIFECYCLE_MARKETING_UPLIFT_AUTHORIZED",
+        "mandate_token": "lifecycle_marketing_uplift_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -57644,6 +57720,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    lifecycle_marketing_replenishment_uplift_guard = {
+        "authorized_200": evaluate_lifecycle_marketing_replenishment_uplift_policy(
+            LifecycleMarketingReplenishmentUpliftPolicyInput()
+        ),
+        "active_ticket_or_14d_promo_403": evaluate_lifecycle_marketing_replenishment_uplift_policy(
+            LifecycleMarketingReplenishmentUpliftPolicyInput(
+                promo_sent_during_open_cs_ticket_or_within_14d_full_price_purchase=True
+            )
+        ),
+        "sure_thing_cannibalization_422": evaluate_lifecycle_marketing_replenishment_uplift_policy(
+            LifecycleMarketingReplenishmentUpliftPolicyInput(
+                discount_coupon_issued_to_high_organic_propensity_sure_thing_buyer=True
+            )
+        ),
+        "cross_journey_tcpa_spam_451": evaluate_lifecycle_marketing_replenishment_uplift_policy(
+            LifecycleMarketingReplenishmentUpliftPolicyInput(
+                multi_journey_24h_sms_spam_or_tcpa_local_quiet_hours_violation=True
+            )
+        ),
+        "causal_uplift_freq_cap_409": evaluate_lifecycle_marketing_replenishment_uplift_policy(
+            LifecycleMarketingReplenishmentUpliftPolicyInput(
+                causal_uplift_gating_ticket_suppression_and_tcpa_mutex_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -58131,6 +58233,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_mor_vs_direct_acquiring_guard": cross_border_mor_vs_direct_acquiring_guard,
         "enterprise_erp_order_saga_outbox_guard": enterprise_erp_order_saga_outbox_guard,
         "b2b_rfq_sourcing_landed_cost_award_guard": b2b_rfq_sourcing_landed_cost_award_guard,
+        "lifecycle_marketing_replenishment_uplift_guard": lifecycle_marketing_replenishment_uplift_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -83793,6 +83896,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="rfqsrc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 LANDED_COST_NORMALIZED_AND_DUAL_SOURCE_AWARD_CONFIRM · Mandate: b2b_rfq_sourcing_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 359 (#478 · SVG #802 · Sandbox #252) Lifecycle Marketing & Replenishment Uplift Orchestration -->
+      <div class="finops-box" id="lifecycle-marketing-replenishment-uplift-sandbox" style="margin-top:12px;border-color:#a855f7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📣 零售与 SaaS 生命周期营销、智能补货与因果增益发券 (Klaviyo / Braze / SFMC / D365 Journeys) 沙盒</div>
+            <div class="finops-sub">Round 359 (#478 · SVG #802 · Sandbox #252) · 实时抑制向在途 P1 客诉工单或 14 天内刚正价购买同款客户发送打折促销防退差价 (HTTP 403) + 因果增益 (Causal Uplift &gt;= +12%) 拦截向必买铁粉 (Sure Things) 滥发 8 折券蚕食毛利 (HTTP 422) + 全局 24h 频控与收件人时区 TCPA 宵禁锁 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="ltvmkt-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度向必买老客滥发折扣券毛利蚕食、正价购后/客诉期错发降价引发退差价及 SMS 轰炸赔偿池 ($)
+            <input type="number" id="ltvmkt-gross-input" value="345000" min="10000" step="5000" oninput="recalcLifecycleMarketingUpliftSandbox()" />
+          </label>
+          <label>未结售后客诉工单 (Open P1/P2 Ticket) 与 14 天正价保护期实时营销抑制门禁
+            <select id="ltvmkt-ticket-select" onchange="recalcLifecycleMarketingUpliftSandbox()">
+              <option value="pass">实时联动客服工单与 OMS，对未结投诉客户或 14 天内正价购买过同 SKU 的客户屏蔽降价促销 (安全)</option>
+              <option value="block_403">客户刚花 $200 原价买完 3 小时或正在投诉包裹破损，立刻收到“同款限时 75 折”短信引发退差价 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>因果增益模型 (Causal Uplift vs. Propensity) 防铁杆必买客 (Sure Things) 毛利蚕食门禁
+            <select id="ltvmkt-uplift-select" onchange="recalcLifecycleMarketingUpliftSandbox()">
+              <option value="pass">对自然原价复购率 &gt;70% 的铁粉推免券一键补货卡片，折扣券仅发给 Uplift &gt;=+12% 的摇摆客 (合规)</option>
+              <option value="block_422">按购买倾向高分直接给本来就会 100% 原价复购的 VIP 老客塞 8 折券，白送 20% 净毛利 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>跨旅程全局频次上限 (24h &lt;= 1 次触达) 与收件人本地时区 TCPA 宵禁 (20:00–08:00) 门禁
+            <select id="ltvmkt-tcpa-select" onchange="recalcLifecycleMarketingUpliftSandbox()">
+              <option value="pass">Redis 全局频控锁死 24h 最多 1 次触达，并按收件人邮编/区号本地时区严格屏蔽晚 8 点至早 8 点短信 (合规)</option>
+              <option value="block_451">多条自动化画布同日连发 5 条营销短信，或在收件人当地时间凌晨 1 点发促销短信违反 TCPA (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>客诉/购后实时抑制 + Causal Uplift 精准发券 + 全局频控宵禁全链路编排
+            <select id="ltvmkt-opt-select" onchange="recalcLifecycleMarketingUpliftSandbox()">
+              <option value="enabled" selected>启用客诉/14d 抑制 + 因果增益发券锁 + 全局 TCPA 频控 (-39% 毛利蚕食与短信损耗 / HTTP 409)</option>
+              <option value="disabled">传统无差别群发优惠券与多旅程独立触发基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度发券蚕食与短信损耗池</div>
+            <div class="finops-kpi-val" id="ltvmkt-gross-kpi">$345,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">因果增益与频控锁后净成本</div>
+            <div class="finops-kpi-val" id="ltvmkt-net-kpi" style="color:#6ee7b7;">$210,450</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住毛利与短信合规费</div>
+            <div class="finops-kpi-val" id="ltvmkt-savings-kpi" style="color:#38bdf8;">$134,550</div>
+          </div>
+        </div>
+        <div id="ltvmkt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CAUSAL_UPLIFT_COUPON_AND_GLOBAL_FREQUENCY_CAP_CONFIRM · Mandate: lifecycle_marketing_uplift_optim_409
         </div>
       </div>
 
@@ -115517,6 +115677,79 @@ function recalcB2bRfqSourcingLandedCostSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_RFQ_SOURCING_AND_AWARD_AUTHORIZED · Mandate: b2b_rfq_sourcing_200';
+}}
+
+function recalcLifecycleMarketingUpliftSandbox() {{
+  const grossInput = document.getElementById('ltvmkt-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '345000'));
+  const ticketGate = document.getElementById('ltvmkt-ticket-select').value;
+  const upliftGate = document.getElementById('ltvmkt-uplift-select').value;
+  const tcpaGate = document.getElementById('ltvmkt-tcpa-select').value;
+  const optMode = document.getElementById('ltvmkt-opt-select').value;
+
+  const grossKpi = document.getElementById('ltvmkt-gross-kpi');
+  const netKpi = document.getElementById('ltvmkt-net-kpi');
+  const savingsKpi = document.getElementById('ltvmkt-savings-kpi');
+  const statusKpi = document.getElementById('ltvmkt-status-kpi');
+  const banner = document.getElementById('ltvmkt-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (tcpaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CROSS_JOURNEY_FREQUENCY_OVERFLOW_OR_TCPA_QUIET_HOURS_BREACH · Mandate: null';
+    return;
+  }}
+  if (ticketGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ACTIVE_CS_TICKET_OR_RECENT_FULL_PRICE_BUYER_PROMO_COLLISION · Mandate: null';
+    return;
+  }}
+  if (upliftGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SURE_THING_ORGANIC_BUYER_COUPON_MARGIN_CANNIBALIZATION · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CAUSAL_UPLIFT_COUPON_AND_GLOBAL_FREQUENCY_CAP_CONFIRM · Mandate: lifecycle_marketing_uplift_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_LIFECYCLE_MARKETING_UPLIFT_AUTHORIZED · Mandate: lifecycle_marketing_uplift_200';
 }}
 
 function updateStage1756Sandbox() {{

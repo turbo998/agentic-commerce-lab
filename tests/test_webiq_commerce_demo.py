@@ -33111,6 +33111,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-rfq-sourcing-landed-cost-award-sandbox", html_zh)
 
+    def test_lifecycle_marketing_replenishment_uplift_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            LifecycleMarketingReplenishmentUpliftPolicyInput,
+            evaluate_lifecycle_marketing_replenishment_uplift_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_lifecycle_marketing_replenishment_uplift_policy(
+            LifecycleMarketingReplenishmentUpliftPolicyInput(
+                quarterly_coupon_cannibalization_sms_waste_and_churn_pool_usd=345000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_LIFECYCLE_MARKETING_UPLIFT_AUTHORIZED",
+        )
+
+        ticket = evaluate_lifecycle_marketing_replenishment_uplift_policy(
+            LifecycleMarketingReplenishmentUpliftPolicyInput(
+                promo_sent_during_open_cs_ticket_or_within_14d_full_price_purchase=True
+            )
+        )
+        self.assertEqual(ticket["status_code"], 403)
+        self.assertEqual(
+            ticket["decision"],
+            "ACTIVE_CS_TICKET_OR_RECENT_FULL_PRICE_BUYER_PROMO_COLLISION",
+        )
+
+        uplift = evaluate_lifecycle_marketing_replenishment_uplift_policy(
+            LifecycleMarketingReplenishmentUpliftPolicyInput(
+                discount_coupon_issued_to_high_organic_propensity_sure_thing_buyer=True
+            )
+        )
+        self.assertEqual(uplift["status_code"], 422)
+        self.assertEqual(
+            uplift["decision"],
+            "SURE_THING_ORGANIC_BUYER_COUPON_MARGIN_CANNIBALIZATION",
+        )
+
+        tcpa = evaluate_lifecycle_marketing_replenishment_uplift_policy(
+            LifecycleMarketingReplenishmentUpliftPolicyInput(
+                multi_journey_24h_sms_spam_or_tcpa_local_quiet_hours_violation=True
+            )
+        )
+        self.assertEqual(tcpa["status_code"], 451)
+        self.assertEqual(
+            tcpa["decision"],
+            "CROSS_JOURNEY_FREQUENCY_OVERFLOW_OR_TCPA_QUIET_HOURS_BREACH",
+        )
+
+        optim = evaluate_lifecycle_marketing_replenishment_uplift_policy(
+            LifecycleMarketingReplenishmentUpliftPolicyInput(
+                quarterly_coupon_cannibalization_sms_waste_and_churn_pool_usd=345000.0,
+                causal_uplift_gating_ticket_suppression_and_tcpa_mutex_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 134550.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 210450.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("lifecycle_marketing_replenishment_uplift_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("lifecycle-marketing-replenishment-uplift-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
