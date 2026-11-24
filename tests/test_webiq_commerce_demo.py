@@ -34250,6 +34250,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-trade-credit-insurance-factoring-sandbox", html_zh)
 
+    def test_retail_media_network_iroas_bidding_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            RetailMediaNetworkIroasBiddingPolicyInput,
+            evaluate_retail_media_network_iroas_bidding_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_retail_media_network_iroas_bidding_policy(
+            RetailMediaNetworkIroasBiddingPolicyInput(
+                quarterly_wasted_ad_spend_cannibalization_and_negative_poas_pool_usd=390000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_RMN_SPONSORED_BIDDING_AUTHORIZED",
+        )
+
+        buybox = evaluate_retail_media_network_iroas_bidding_policy(
+            RetailMediaNetworkIroasBiddingPolicyInput(
+                ad_serving_active_while_buybox_lost_or_core_size_atp_below_80pct=True
+            )
+        )
+        self.assertEqual(buybox["status_code"], 403)
+        self.assertEqual(
+            buybox["decision"],
+            "BUYBOX_LOST_OR_CORE_VARIANT_OOS_AD_VETO",
+        )
+
+        poas = evaluate_retail_media_network_iroas_bidding_policy(
+            RetailMediaNetworkIroasBiddingPolicyInput(
+                bid_cpc_exceeds_return_adjusted_net_contribution_margin_poas_floor=True
+            )
+        )
+        self.assertEqual(poas["status_code"], 422)
+        self.assertEqual(
+            poas["decision"],
+            "NEGATIVE_POAS_CONTRIBUTION_MARGIN_BID",
+        )
+
+        cannib = evaluate_retail_media_network_iroas_bidding_policy(
+            RetailMediaNetworkIroasBiddingPolicyInput(
+                bidding_top_slot_on_uncontested_organic_rank1_or_cleanroom_k_below_50=True
+            )
+        )
+        self.assertEqual(cannib["status_code"], 451)
+        self.assertEqual(
+            cannib["decision"],
+            "ORGANIC_RANK1_CANNIBALIZATION_OR_CLEANROOM_PRIVACY_BREACH",
+        )
+
+        optim = evaluate_retail_media_network_iroas_bidding_policy(
+            RetailMediaNetworkIroasBiddingPolicyInput(
+                quarterly_wasted_ad_spend_cannibalization_and_negative_poas_pool_usd=390000.0,
+                iroas_incrementality_and_inventory_velocity_bid_pacing_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 156000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 234000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("retail_media_network_iroas_bidding_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("retail-media-network-iroas-bidding-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
