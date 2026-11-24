@@ -33647,6 +33647,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-multi-currency-fx-lock-sandbox", html_zh)
 
+    def test_b2b_supplier_onboarding_kyb_ofac_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bSupplierOnboardingKybOfacPolicyInput,
+            evaluate_b2b_supplier_onboarding_kyb_ofac_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_supplier_onboarding_kyb_ofac_policy(
+            B2bSupplierOnboardingKybOfacPolicyInput(
+                quarterly_sanctions_fine_ghost_vendor_fraud_and_kyb_labor_pool_usd=410000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_SUPPLIER_KYB_ONBOARDING_AUTHORIZED",
+        )
+
+        ofac = evaluate_b2b_supplier_onboarding_kyb_ofac_policy(
+            B2bSupplierOnboardingKybOfacPolicyInput(
+                ofac_sanctioned_ubo_aggregate_ownership_over_50pct_or_stale_prepay_screen=True
+            )
+        )
+        self.assertEqual(ofac["status_code"], 403)
+        self.assertEqual(
+            ofac["decision"],
+            "OFAC_50PCT_UBO_SANCTIONS_HIT_OR_STALE_PREPAY_SCREEN",
+        )
+
+        bank = evaluate_b2b_supplier_onboarding_kyb_ofac_policy(
+            B2bSupplierOnboardingKybOfacPolicyInput(
+                tax_tin_legal_entity_name_mismatches_bank_account_holder_name=True
+            )
+        )
+        self.assertEqual(bank["status_code"], 422)
+        self.assertEqual(
+            bank["decision"],
+            "TAX_TIN_LEGAL_NAME_TO_BANK_ACCOUNT_OWNER_MISMATCH",
+        )
+
+        dorm = evaluate_b2b_supplier_onboarding_kyb_ofac_policy(
+            B2bSupplierOnboardingKybOfacPolicyInput(
+                vendor_inactive_over_365d_reactivated_without_kyb_or_coi_expired=True
+            )
+        )
+        self.assertEqual(dorm["status_code"], 451)
+        self.assertEqual(
+            dorm["decision"],
+            "DORMANT_VENDOR_REACTIVATION_OR_EXPIRED_INSURANCE_COI",
+        )
+
+        optim = evaluate_b2b_supplier_onboarding_kyb_ofac_policy(
+            B2bSupplierOnboardingKybOfacPolicyInput(
+                quarterly_sanctions_fine_ghost_vendor_fraud_and_kyb_labor_pool_usd=410000.0,
+                ofac_50pct_ubo_screen_tin_bank_match_and_dormant_lock_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 168100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 241900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_supplier_onboarding_kyb_ofac_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-supplier-onboarding-kyb-ofac-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

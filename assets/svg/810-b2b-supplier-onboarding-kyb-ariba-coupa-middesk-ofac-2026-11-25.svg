@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg810" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="50%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent810" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg810)"/>
+  <rect x="30" y="24" width="1140" height="582" rx="16" fill="#0f172a" fill-opacity="0.82" stroke="#334155" stroke-width="1.5"/>
+  <rect x="30" y="24" width="1140" height="6" rx="3" fill="url(#accent810)"/>
+
+  <text x="60" y="68" fill="#fbbf24" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.2">🏆 SVG #810 &amp; 260TH SANDBOX MILESTONE · ROUND 367 · FAQ #486 · TEST #1364 · B2B SUPPLIER KYB &amp; OFAC</text>
+  <text x="60" y="102" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="800">Enterprise B2B Supplier Onboarding, KYB &amp; Risk Copilot (SAP Ariba SLP / Coupa / Middesk)</text>
+  <text x="60" y="128" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">OFAC 50%-Rule UBO &amp; Pre-Payout Screening · TIN/EIN-to-Bank-Owner Match · 12-Month Dormant Vendor Lock (-41% Cost)</text>
+
+  <!-- Gate 1 -->
+  <rect x="60" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="80" y="182" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">1. OFAC 50%-Rule &amp; Pre-Payout Screen</text>
+  <text x="80" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Screening a vendor only at onboarding misses</text>
+  <text x="80" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  mid-year OFAC SDN / EU / UK sanctions</text>
+  <text x="80" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  additions or 50%+ aggregate ownership by</text>
+  <text x="80" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  sanctioned oligarchs/entities (OFAC 50% Rule)</text>
+  <text x="80" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Enforces continuous UBO sanctions graph</text>
+  <text x="80" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  check before every PO &amp; payment run</text>
+  <rect x="80" y="370" width="305" height="34" rx="6" fill="#450a0a" stroke="#ef4444"/>
+  <text x="92" y="392" fill="#fecaca" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 403 OFAC_50PCT_UBO_SANCTIONS_HIT</text>
+
+  <!-- Gate 2 -->
+  <rect x="427" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#f97316" stroke-width="1.5"/>
+  <text x="447" y="182" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">2. IRS TIN / VAT to Bank-Owner Match</text>
+  <text x="447" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Rogue employees onboard fake shell vendors</text>
+  <text x="447" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  or attach a personal bank account to a</text>
+  <text x="447" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  legitimate supplier's W-9 / VAT tax ID</text>
+  <text x="447" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Verifies IRS TIN Matching / EU VIES VAT +</text>
+  <text x="447" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  Plaid / GIACT / SWIFT Pre-Validation exact</text>
+  <text x="447" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  legal-name parity with Bank Account Holder</text>
+  <rect x="447" y="370" width="305" height="34" rx="6" fill="#431407" stroke="#f97316"/>
+  <text x="459" y="392" fill="#fed7aa" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 422 TIN_TO_BANK_OWNER_NAME_MISMATCH</text>
+
+  <!-- Gate 3 -->
+  <rect x="795" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#eab308" stroke-width="1.5"/>
+  <text x="815" y="182" fill="#fde047" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">3. 12m Dormant Vendor &amp; COI Expiry Lock</text>
+  <text x="815" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Internal fraudsters hijack dormant ERP vendor</text>
+  <text x="815" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  records inactive &gt;12 months (or vendors with</text>
+  <text x="815" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  expired Certificate of Insurance COI) to</text>
+  <text x="815" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  push through unauthorized ghost invoices</text>
+  <text x="815" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Auto-quarantines vendors inactive &gt;=365d</text>
+  <text x="815" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  until fresh KYB + Insurance COI re-attestation</text>
+  <rect x="815" y="370" width="305" height="34" rx="6" fill="#422006" stroke="#eab308"/>
+  <text x="827" y="392" fill="#fef08a" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 451 DORMANT_VENDOR_OR_EXPIRED_COI</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="444" width="1080" height="138" rx="12" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="84" y="476" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🏆 SVG #810 &amp; 260th Sandbox Milestone Matrix (Quarterly Sanctions Fines, Ghost-Vendor Fraud &amp; KYB Pool: $410,000)</text>
+  <text x="84" y="504" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Enterprise ERP Master-Data Governance: SAP Ariba SLP / Coupa Supplier Portal | US/Global Business KYB: Middesk / Tealbook</text>
+  <text x="84" y="528" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Sanctions &amp; 50%-Rule UBO Screening: LexisNexis Bridger / Moody's Orbis + IRS TIN / Plaid Bank Match</text>
+  <text x="84" y="556" fill="#38bdf8" font-family="Consolas, monospace" font-size="14" font-weight="700">HTTP 409 SUPPLIER_KYB_OFAC_AND_BANK_OWNERSHIP_MATCH_CONFIRM · Savings: $168,100/qtr (-41.0%) · Net: $241,900</text>
+</svg>

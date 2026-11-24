@@ -42999,6 +42999,82 @@ def evaluate_cross_border_multi_currency_fx_lock_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bSupplierOnboardingKybOfacPolicyInput:
+    quarterly_sanctions_fine_ghost_vendor_fraud_and_kyb_labor_pool_usd: float = 410000.0
+    ofac_sanctioned_ubo_aggregate_ownership_over_50pct_or_stale_prepay_screen: bool = False
+    tax_tin_legal_entity_name_mismatches_bank_account_holder_name: bool = False
+    vendor_inactive_over_365d_reactivated_without_kyb_or_coi_expired: bool = False
+    ofac_50pct_ubo_screen_tin_bank_match_and_dormant_lock_ready: bool = False
+
+
+def evaluate_b2b_supplier_onboarding_kyb_ofac_policy(
+    policy_input: B2bSupplierOnboardingKybOfacPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_sanctions_fine_ghost_vendor_fraud_and_kyb_labor_pool_usd
+        ),
+    )
+    if policy_input.vendor_inactive_over_365d_reactivated_without_kyb_or_coi_expired:
+        return {
+            "status_code": 451,
+            "decision": "DORMANT_VENDOR_REACTIVATION_OR_EXPIRED_INSURANCE_COI",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ofac_sanctioned_ubo_aggregate_ownership_over_50pct_or_stale_prepay_screen:
+        return {
+            "status_code": 403,
+            "decision": "OFAC_50PCT_UBO_SANCTIONS_HIT_OR_STALE_PREPAY_SCREEN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tax_tin_legal_entity_name_mismatches_bank_account_holder_name:
+        return {
+            "status_code": 422,
+            "decision": "TAX_TIN_LEGAL_NAME_TO_BANK_ACCOUNT_OWNER_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ofac_50pct_ubo_screen_tin_bank_match_and_dormant_lock_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SUPPLIER_KYB_OFAC_AND_BANK_OWNERSHIP_MATCH_CONFIRM",
+            "mandate_token": "b2b_supplier_kyb_ofac_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_SUPPLIER_KYB_ONBOARDING_AUTHORIZED",
+        "mandate_token": "b2b_supplier_kyb_ofac_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -58460,6 +58536,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_supplier_onboarding_kyb_ofac_guard = {
+        "authorized_200": evaluate_b2b_supplier_onboarding_kyb_ofac_policy(
+            B2bSupplierOnboardingKybOfacPolicyInput()
+        ),
+        "ofac_50pct_ubo_hit_403": evaluate_b2b_supplier_onboarding_kyb_ofac_policy(
+            B2bSupplierOnboardingKybOfacPolicyInput(
+                ofac_sanctioned_ubo_aggregate_ownership_over_50pct_or_stale_prepay_screen=True
+            )
+        ),
+        "tin_bank_name_mismatch_422": evaluate_b2b_supplier_onboarding_kyb_ofac_policy(
+            B2bSupplierOnboardingKybOfacPolicyInput(
+                tax_tin_legal_entity_name_mismatches_bank_account_holder_name=True
+            )
+        ),
+        "dormant_or_coi_expired_451": evaluate_b2b_supplier_onboarding_kyb_ofac_policy(
+            B2bSupplierOnboardingKybOfacPolicyInput(
+                vendor_inactive_over_365d_reactivated_without_kyb_or_coi_expired=True
+            )
+        ),
+        "kyb_ofac_bank_match_409": evaluate_b2b_supplier_onboarding_kyb_ofac_policy(
+            B2bSupplierOnboardingKybOfacPolicyInput(
+                ofac_50pct_ubo_screen_tin_bank_match_and_dormant_lock_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -58955,6 +59057,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_bnpl_klarna_affirm_mdr_guard": ecommerce_bnpl_klarna_affirm_mdr_guard,
         "cross_border_multilingual_cs_dna_refund_guard": cross_border_multilingual_cs_dna_refund_guard,
         "cross_border_multi_currency_fx_lock_guard": cross_border_multi_currency_fx_lock_guard,
+        "b2b_supplier_onboarding_kyb_ofac_guard": b2b_supplier_onboarding_kyb_ofac_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -85073,6 +85176,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="fxlock-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 LIKE_FOR_LIKE_FX_SETTLEMENT_AND_REFUND_RATE_LOCK_CONFIRM · Mandate: cross_border_fx_lock_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 367 (#486 · 🏆 SVG #810 & 260th Sandbox Dual Major Milestone!) Enterprise B2B Supplier Onboarding, KYB & OFAC -->
+      <div class="finops-box" id="b2b-supplier-onboarding-kyb-ofac-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业 B2B 供应商准入、主数据 KYB 与 OFAC 制裁筛查 (SAP Ariba SLP / Coupa / Middesk) 沙盒（🏆 第 810 张 SVG 与第 260 个沙盒双里程碑）</div>
+            <div class="finops-sub">Round 367 (#486 · 🏆 SVG #810 &amp; 260th Sandbox Milestone) · 穿透 5 层股权树拦截 OFAC 50% 合计受制裁持股并强制付款前 &lt;24h 实时复筛 (HTTP 403) + 强制核验 IRS TIN/VAT 法定公司名 === 银行账户真实开户名防盗用税号绑私人洗钱卡 (HTTP 422) + 连续 365 天无交易休眠供应商自动冻结与保险单 COI 到期锁 (HTTP 451) + 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="supkyb-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 OFAC 50% 穿透漏检制裁重罚、内鬼盗用税号绑私人卡贪腐及僵尸供应商走账风险池 ($)
+            <input type="number" id="supkyb-gross-input" value="410000" min="10000" step="5000" oninput="recalcB2bSupplierOnboardingKybOfacSandbox()" />
+          </label>
+          <label>OFAC 50% 累计股权穿透 (Moody's Orbis UBO Graph) 与付款前 &lt;24h 实时复筛门禁
+            <select id="supkyb-ofac-select" onchange="recalcB2bSupplierOnboardingKybOfacSandbox()">
+              <option value="pass">递归穿透 5 层母公司计算受制裁主体合计持股 &lt;50%，且每次 F110 付款批次前 24h 内实时复筛 (安全)</option>
+              <option value="block_403">只查表面公司名漏掉背后 2 名 SDN 股东合计持股 55%，或仅在 2 年前入驻时筛查一次 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>税局法定名称 (IRS TIN / EU VIES) ⇔ ERP 抬头 ⇔ 银行开户人名称 (Plaid/GIACT) 三方实名锁
+            <select id="supkyb-bank-select" onchange="recalcB2bSupplierOnboardingKybOfacSandbox()">
+              <option value="pass">强制核验税表注册法人名称与银行真实开户人名称 100% 一致，严禁绑定个人或无备案第三方账户 (合规)</option>
+              <option value="block_422">内鬼员工提交真实大厂 W-9 税号通过税务校验，却在收款银行栏绑定自己亲戚的空壳账户 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>满 365 天无交易僵尸供应商 (Dormant Vendor) 自动冻结与商业责任险保单 (COI) 到期门禁
+            <select id="supkyb-dorm-select" onchange="recalcB2bSupplierOnboardingKybOfacSandbox()">
+              <option value="pass">满 12 个月无交易自动置为 DORMANT_BLOCKED 需重走 KYB，且保险单 COI 过期立即锁死派单 (合规)</option>
+              <option value="block_451">盗用沉睡 3 年未关停的历史僵尸供应商编码突击挂入 $80k 虚假咨询发票，或向脱保施工队派单 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>OFAC 50% 股权穿透复筛 + 税号/银行实名闭环 + 365d 僵尸户自动隔离全链路编排
+            <select id="supkyb-opt-select" onchange="recalcB2bSupplierOnboardingKybOfacSandbox()">
+              <option value="enabled" selected>启用 OFAC 50% 穿透 + 税银实名闭环 + 365d 休眠隔离 (-41% 制裁罚金与内控舞弊损耗 / HTTP 409)</option>
+              <option value="disabled">传统人工审阅营业执照 PDF 与一次性静态建档基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度制裁罚金与虚假供应商池</div>
+            <div class="finops-kpi-val" id="supkyb-gross-kpi">$410,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">股权穿透与税银闭环后净成本</div>
+            <div class="finops-kpi-val" id="supkyb-net-kpi" style="color:#6ee7b7;">$241,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省合规审计与反舞弊费</div>
+            <div class="finops-kpi-val" id="supkyb-savings-kpi" style="color:#38bdf8;">$168,100</div>
+          </div>
+        </div>
+        <div id="supkyb-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SUPPLIER_KYB_OFAC_AND_BANK_OWNERSHIP_MATCH_CONFIRM · Mandate: b2b_supplier_kyb_ofac_optim_409
         </div>
       </div>
 
@@ -117381,6 +117541,79 @@ function recalcCrossBorderMultiCurrencyFxLockSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_MULTI_CURRENCY_FX_TREASURY_AUTHORIZED · Mandate: cross_border_fx_lock_200';
+}}
+
+function recalcB2bSupplierOnboardingKybOfacSandbox() {{
+  const grossInput = document.getElementById('supkyb-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '410000'));
+  const ofacGate = document.getElementById('supkyb-ofac-select').value;
+  const bankGate = document.getElementById('supkyb-bank-select').value;
+  const dormGate = document.getElementById('supkyb-dorm-select').value;
+  const optMode = document.getElementById('supkyb-opt-select').value;
+
+  const grossKpi = document.getElementById('supkyb-gross-kpi');
+  const netKpi = document.getElementById('supkyb-net-kpi');
+  const savingsKpi = document.getElementById('supkyb-savings-kpi');
+  const statusKpi = document.getElementById('supkyb-status-kpi');
+  const banner = document.getElementById('supkyb-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dormGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 DORMANT_VENDOR_REACTIVATION_OR_EXPIRED_INSURANCE_COI · Mandate: null';
+    return;
+  }}
+  if (ofacGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 OFAC_50PCT_UBO_SANCTIONS_HIT_OR_STALE_PREPAY_SCREEN · Mandate: null';
+    return;
+  }}
+  if (bankGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 TAX_TIN_LEGAL_NAME_TO_BANK_ACCOUNT_OWNER_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SUPPLIER_KYB_OFAC_AND_BANK_OWNERSHIP_MATCH_CONFIRM · Mandate: b2b_supplier_kyb_ofac_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_SUPPLIER_KYB_ONBOARDING_AUTHORIZED · Mandate: b2b_supplier_kyb_ofac_200';
 }}
 
 function updateStage1756Sandbox() {{
