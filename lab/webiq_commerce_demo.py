@@ -40567,6 +40567,82 @@ def evaluate_hybrid_catalog_rag_rrf_stock_filter_policy(
     }
 
 
+@dataclass(frozen=True)
+class CorporateSpendVirtualCardEncumbrancePolicyInput:
+    quarterly_maverick_spend_budget_overrun_and_double_dip_pool_usd: float = 370000.0
+    cross_merchant_vcn_mid_mismatch_or_departed_owner_zombie_card: bool = False
+    unencumbered_vcn_issuance_exceeding_available_erp_budget: bool = False
+    missing_irs_75usd_itemized_receipt_or_vcn_reimbursement_double_dip: bool = False
+    jit_mid_lock_erp_budget_encumbrance_and_itemized_ocr_ready: bool = False
+
+
+def evaluate_corporate_spend_virtual_card_encumbrance_policy(
+    policy_input: CorporateSpendVirtualCardEncumbrancePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_maverick_spend_budget_overrun_and_double_dip_pool_usd
+        ),
+    )
+    if policy_input.missing_irs_75usd_itemized_receipt_or_vcn_reimbursement_double_dip:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_IRS_75USD_ITEMIZED_RECEIPT_OR_VCN_TO_REIMBURSEMENT_DOUBLE_DIP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cross_merchant_vcn_mid_mismatch_or_departed_owner_zombie_card:
+        return {
+            "status_code": 403,
+            "decision": "CROSS_MERCHANT_VCN_MID_MISMATCH_OR_UNREASSIGNED_DEPARTED_OWNER_CARD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unencumbered_vcn_issuance_exceeding_available_erp_budget:
+        return {
+            "status_code": 422,
+            "decision": "UNENCUMBERED_VCN_ISSUANCE_EXCEEDING_NET_AVAILABLE_ERP_COST_CENTER_BUDGET",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.jit_mid_lock_erp_budget_encumbrance_and_itemized_ocr_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "JIT_MID_LOCK_ERP_BUDGET_ENCUMBRANCE_AND_ITEMIZED_RECEIPT_CONFIRM",
+            "mandate_token": "corp_spend_vcn_encumbrance_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CORPORATE_SPEND_VCN_AND_ERP_ENCUMBRANCE_AUTHORIZED",
+        "mandate_token": "corp_spend_vcn_encumbrance_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -55196,6 +55272,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    corporate_spend_vcn_encumbrance_guard = {
+        "authorized_200": evaluate_corporate_spend_virtual_card_encumbrance_policy(
+            CorporateSpendVirtualCardEncumbrancePolicyInput()
+        ),
+        "cross_merchant_or_zombie_403": evaluate_corporate_spend_virtual_card_encumbrance_policy(
+            CorporateSpendVirtualCardEncumbrancePolicyInput(
+                cross_merchant_vcn_mid_mismatch_or_departed_owner_zombie_card=True
+            )
+        ),
+        "unencumbered_budget_overrun_422": evaluate_corporate_spend_virtual_card_encumbrance_policy(
+            CorporateSpendVirtualCardEncumbrancePolicyInput(
+                unencumbered_vcn_issuance_exceeding_available_erp_budget=True
+            )
+        ),
+        "missing_75usd_receipt_or_doubledip_451": evaluate_corporate_spend_virtual_card_encumbrance_policy(
+            CorporateSpendVirtualCardEncumbrancePolicyInput(
+                missing_irs_75usd_itemized_receipt_or_vcn_reimbursement_double_dip=True
+            )
+        ),
+        "jit_mid_encumbrance_ocr_409": evaluate_corporate_spend_virtual_card_encumbrance_policy(
+            CorporateSpendVirtualCardEncumbrancePolicyInput(
+                jit_mid_lock_erp_budget_encumbrance_and_itemized_ocr_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -55659,6 +55761,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_wholesale_quote_to_cart_guard": b2b_wholesale_quote_to_cart_guard,
         "global_digital_wallet_local_apm_spc_guard": global_digital_wallet_local_apm_spc_guard,
         "hybrid_catalog_rag_rrf_stock_guard": hybrid_catalog_rag_rrf_stock_guard,
+        "corporate_spend_vcn_encumbrance_guard": corporate_spend_vcn_encumbrance_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -79953,6 +80056,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="hybrag-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 HYBRID_RRF_CATALOG_RAG_PRERANK_ATP_AND_WEBIQ_GTIN_GROUNDING_CONFIRM · Mandate: hybrid_catalog_rag_rrf_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 335 (#454 · SVG #778 · 🏆 100th B2B Guide Milestone) Corporate Spend VCN & ERP Encumbrance -->
+      <div class="finops-box" id="corporate-spend-vcn-encumbrance-sandbox" style="margin-top:12px;border-color:#059669;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💼 企业采购费控与可编程预算虚拟卡 (Ramp / Brex / Airbase / Stripe Issuing) 实时预占沙盒（🏆 第 100 篇 B2B 里程碑）</div>
+            <div class="finops-sub">Round 335 (#454 · SVG #778 · 🏆 Round 335 &amp; 100th B2B Guide Milestone) · 发卡侧 ISO 8583 (&lt;100ms) 首刷自动锁死单一商户 MID 与 SCIM 离职停卡 (HTTP 403) + 制卡瞬间原子扣减 ERP 成本中心可用预算 (Budget Encumbrance) 防 T+2 清算滞后超支 (HTTP 422) + IRS $75+ 明细发票 48h 缺票停卡与防公卡/个人报销双吃 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="crpvcn-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度企业虚拟卡跨商户越权消费、离职僵尸 SaaS 扣费、部门预算刷爆超支及一票两报池 ($)
+            <input type="number" id="crpvcn-gross-input" value="370000" min="10000" step="5000" oninput="recalcCorporateSpendVcnEncumbranceSandbox()" />
+          </label>
+          <label>发卡侧 ISO 8583 0100 (&lt;100ms) 首刷锁死商户 (Merchant-Lock-on-First-Use) 与 SCIM 离职联动门禁
+            <select id="crpvcn-mid-select" onchange="recalcCorporateSpendVcnEncumbranceSandbox()">
+              <option value="pass">首次在指定供应商刷卡后自动焊死 Acceptor_MID，且员工离职当天秒停个人卡/移交 SaaS 卡 (安全)</option>
+              <option value="block_403">拿申购 Figma 软件的 $3,500 虚拟卡去 Best Buy 刷游戏本，或离职员工名下挂着 12 个僵尸 SaaS (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>制卡瞬间 ERP 成本中心预算实时预占 (Pre-Issuance Budget Encumbrance) 门禁
+            <select id="crpvcn-budget-select" onchange="recalcCorporateSpendVcnEncumbranceSandbox()">
+              <option value="pass">签发虚拟卡瞬间原子扣减 (总预算 - 已入账 - 在途PO - 存量未刷虚拟卡限额)，过期自动释放 (合规)</option>
+              <option value="block_422">仅在 T+2 银行清算时扣预算，导致多人在空窗期超发虚拟卡将 $50k 部门预算刷爆至 $95k (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>IRS Pub 463 (&gt;=$75) 行项明细水单 48h 缺票停卡与“公卡消费 ↔ 个人报销”防双吃门禁
+            <select id="crpvcn-receipt-select" onchange="recalcCorporateSpendVcnEncumbranceSandbox()">
+              <option value="pass">提取 Level-3 或邮箱 OCR 明细水单，且全局五元组哈希阻断公卡发票走个人现金二次报销 (合规)</option>
+              <option value="block_451">$420 晚宴逾 48h 只交无明细 POS 总金额小票，或把虚拟卡付过的发票拿去报销个人现金双吃 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>ISO 8583 JIT 商户锁 + 制卡 ERP 预算预占 + 自动抓票防双报全链路编排
+            <select id="crpvcn-opt-select" onchange="recalcCorporateSpendVcnEncumbranceSandbox()">
+              <option value="enabled" selected>启用 JIT 首刷锁商户 + 制卡预算预占 + 自动抓票查重 (-39% 费控损耗 / HTTP 409)</option>
+              <option value="disabled">传统共享实体公司卡 + 月底手工贴票报销 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度越权野采与超支损耗池</div>
+            <div class="finops-kpi-val" id="crpvcn-gross-kpi">$370,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">JIT锁卡与预算预占后净成本</div>
+            <div class="finops-kpi-val" id="crpvcn-net-kpi" style="color:#6ee7b7;">$225,700</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净压降企业非合规支出</div>
+            <div class="finops-kpi-val" id="crpvcn-savings-kpi" style="color:#38bdf8;">$144,300</div>
+          </div>
+        </div>
+        <div id="crpvcn-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 JIT_MID_LOCK_ERP_BUDGET_ENCUMBRANCE_AND_ITEMIZED_RECEIPT_CONFIRM · Mandate: corp_spend_vcn_encumbrance_optim_409
         </div>
       </div>
 
@@ -109925,6 +110085,79 @@ function recalcHybridCatalogRagRrfStockSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_HYBRID_CATALOG_RAG_AND_ATP_GROUNDING_AUTHORIZED · Mandate: hybrid_catalog_rag_rrf_200';
+}}
+
+function recalcCorporateSpendVcnEncumbranceSandbox() {{
+  const grossInput = document.getElementById('crpvcn-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '370000'));
+  const midGate = document.getElementById('crpvcn-mid-select').value;
+  const budgetGate = document.getElementById('crpvcn-budget-select').value;
+  const receiptGate = document.getElementById('crpvcn-receipt-select').value;
+  const optMode = document.getElementById('crpvcn-opt-select').value;
+
+  const grossKpi = document.getElementById('crpvcn-gross-kpi');
+  const netKpi = document.getElementById('crpvcn-net-kpi');
+  const savingsKpi = document.getElementById('crpvcn-savings-kpi');
+  const statusKpi = document.getElementById('crpvcn-status-kpi');
+  const banner = document.getElementById('crpvcn-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (receiptGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_IRS_75USD_ITEMIZED_RECEIPT_OR_VCN_TO_REIMBURSEMENT_DOUBLE_DIP · Mandate: null';
+    return;
+  }}
+  if (midGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CROSS_MERCHANT_VCN_MID_MISMATCH_OR_UNREASSIGNED_DEPARTED_OWNER_CARD · Mandate: null';
+    return;
+  }}
+  if (budgetGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNENCUMBERED_VCN_ISSUANCE_EXCEEDING_NET_AVAILABLE_ERP_COST_CENTER_BUDGET · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 JIT_MID_LOCK_ERP_BUDGET_ENCUMBRANCE_AND_ITEMIZED_RECEIPT_CONFIRM · Mandate: corp_spend_vcn_encumbrance_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CORPORATE_SPEND_VCN_AND_ERP_ENCUMBRANCE_AUTHORIZED · Mandate: corp_spend_vcn_encumbrance_200';
 }}
 
 function updateStage1756Sandbox() {{

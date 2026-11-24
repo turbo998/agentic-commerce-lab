@@ -31503,6 +31503,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("hybrid-catalog-rag-rrf-stock-sandbox", html_zh)
 
+    def test_corporate_spend_virtual_card_encumbrance_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CorporateSpendVirtualCardEncumbrancePolicyInput,
+            evaluate_corporate_spend_virtual_card_encumbrance_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_corporate_spend_virtual_card_encumbrance_policy(
+            CorporateSpendVirtualCardEncumbrancePolicyInput(
+                quarterly_maverick_spend_budget_overrun_and_double_dip_pool_usd=370000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CORPORATE_SPEND_VCN_AND_ERP_ENCUMBRANCE_AUTHORIZED",
+        )
+
+        mid = evaluate_corporate_spend_virtual_card_encumbrance_policy(
+            CorporateSpendVirtualCardEncumbrancePolicyInput(
+                cross_merchant_vcn_mid_mismatch_or_departed_owner_zombie_card=True
+            )
+        )
+        self.assertEqual(mid["status_code"], 403)
+        self.assertEqual(
+            mid["decision"],
+            "CROSS_MERCHANT_VCN_MID_MISMATCH_OR_UNREASSIGNED_DEPARTED_OWNER_CARD",
+        )
+
+        budget = evaluate_corporate_spend_virtual_card_encumbrance_policy(
+            CorporateSpendVirtualCardEncumbrancePolicyInput(
+                unencumbered_vcn_issuance_exceeding_available_erp_budget=True
+            )
+        )
+        self.assertEqual(budget["status_code"], 422)
+        self.assertEqual(
+            budget["decision"],
+            "UNENCUMBERED_VCN_ISSUANCE_EXCEEDING_NET_AVAILABLE_ERP_COST_CENTER_BUDGET",
+        )
+
+        receipt = evaluate_corporate_spend_virtual_card_encumbrance_policy(
+            CorporateSpendVirtualCardEncumbrancePolicyInput(
+                missing_irs_75usd_itemized_receipt_or_vcn_reimbursement_double_dip=True
+            )
+        )
+        self.assertEqual(receipt["status_code"], 451)
+        self.assertEqual(
+            receipt["decision"],
+            "MISSING_IRS_75USD_ITEMIZED_RECEIPT_OR_VCN_TO_REIMBURSEMENT_DOUBLE_DIP",
+        )
+
+        optim = evaluate_corporate_spend_virtual_card_encumbrance_policy(
+            CorporateSpendVirtualCardEncumbrancePolicyInput(
+                quarterly_maverick_spend_budget_overrun_and_double_dip_pool_usd=370000.0,
+                jit_mid_lock_erp_budget_encumbrance_and_itemized_ocr_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 144300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 225700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("corporate_spend_vcn_encumbrance_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("corporate-spend-vcn-encumbrance-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

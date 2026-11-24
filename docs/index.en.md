@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`453` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`454` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (32 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (58 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (173 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (99 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (100 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (40 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (51 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -305,7 +305,7 @@
 | 173 | **🏆 OTA Corporate Travel Management (`TMC`: `Navan / TravelPerk / SAP Concur / Amadeus NDC` · 🏆 Round 330 Milestone), `IATA NDC 21.3` Continuous Pricing, `Hold-Before-Cancel` Price-Drop Re-Shopping & Corporate `Unused e-Ticket (UET)` Credit Bank (`-38%` Travel Overpay & Credit Expiry Loss) FAQ** | [English](ota-corporate-travel-tmc-ndc-continuous-pricing-unused-eticket-irrops-rebooking-selection-faq.en.md) · [中文](ota-corporate-travel-tmc-ndc-continuous-pricing-unused-eticket-irrops-rebooking-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (99 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (100 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -410,6 +410,7 @@
 | 97 | **Healthcare B2B Supply Chain (`GPO Tiering`, `HRSA 340B` Split-Billing & Surgical Implant `FDA UDI` Consignment: `GHX / Vizient / Premier / MacroHelix / Workday Healthcare`), Anti-`Medicaid` Duplicate-Discount Shield & `Bill-Only` Scan-to-PO (`-39%` WAC & OR Leakage) FAQ** | [English](b2b-healthcare-gpo-340b-split-billing-medicaid-shield-udi-consignment-selection-faq.en.md) · [中文](b2b-healthcare-gpo-340b-split-billing-medicaid-shield-udi-consignment-selection-faq.md) |
 | 98 | **Commercial & Multifamily PropTech Lease Administration, Retail `CAM` Reconciliation & Security Deposit Escrow (`Yardi Voyager / MRI Software / AppFolio / RealPage / Bilt`), Anti-Eviction-Waiver Partial-Rent Lock & `FBO` Trust (`-39%` CAM & Deposit Penalty Loss) FAQ** | [English](proptech-commercial-lease-cam-reconciliation-security-deposit-escrow-selection-faq.en.md) · [中文](proptech-commercial-lease-cam-reconciliation-security-deposit-escrow-selection-faq.md) |
 | 99 | **🏆 B2B Self-Service Wholesale E-Commerce, Contract Price-List Isolation, `Quote-to-Cart` `14d TTL` & Volume-Tier Partial-Return Clawback (`Shopify Plus B2B / Salesforce B2B / OroCommerce / SAP Commerce` · 🏆 775th SVG & 225th Sandbox Milestone) (`-39%` Wholesale Margin & Tax Leakage) FAQ** | [English](b2b-ecommerce-wholesale-quote-to-cart-contract-price-list-moq-clawback-selection-faq.en.md) · [中文](b2b-ecommerce-wholesale-quote-to-cart-contract-price-list-moq-clawback-selection-faq.md) |
+| 100 | **🏆 Corporate Spend Management, Programmable `JIT` Virtual Cards & Real-Time `ERP` Budget Encumbrance (`Ramp / Brex / Airbase / Navan Expense / Stripe Issuing` · 🏆 Round 335 & 100th B2B Procurement Guide Milestone), `<100ms` `ISO 8583` `MID` Lock, Pre-Issuance Budget Encumbrance & `IRS $75+` Receipt Auto-Pause (`-39%` Maverick Spend & Overrun Loss) FAQ** | [English](corporate-spend-management-virtual-card-ramp-brex-airbase-coupa-po-encumbrance-receipt-ocr-selection-faq.en.md) · [中文](corporate-spend-management-virtual-card-ramp-brex-airbase-coupa-po-encumbrance-receipt-ocr-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (40 Guides)
