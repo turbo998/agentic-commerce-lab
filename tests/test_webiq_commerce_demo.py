@@ -32709,6 +32709,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("commercial-web-grounding-search-matrix-sandbox", html_zh)
 
+    def test_ecommerce_ai_shopping_bundle_fit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceAiShoppingBundleFitPolicyInput,
+            evaluate_ecommerce_ai_shopping_bundle_fit_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_ai_shopping_bundle_fit_policy(
+            EcommerceAiShoppingBundleFitPolicyInput(
+                quarterly_size_return_logistics_bundle_margin_bleed_and_abandon_pool_usd=350000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_AI_SHOPPING_STYLIST_AND_BUNDLE_AUTHORIZED",
+        )
+
+        compat = evaluate_ecommerce_ai_shopping_bundle_fit_policy(
+            EcommerceAiShoppingBundleFitPolicyInput(
+                bundle_contains_out_of_stock_user_size_or_incompatible_hardware_spec=True
+            )
+        )
+        self.assertEqual(compat["status_code"], 403)
+        self.assertEqual(
+            compat["decision"],
+            "INCOMPATIBLE_SPEC_OR_VARIANT_SIZE_OUT_OF_STOCK_IN_BUNDLE",
+        )
+
+        margin = evaluate_ecommerce_ai_shopping_bundle_fit_policy(
+            EcommerceAiShoppingBundleFitPolicyInput(
+                bundle_net_margin_below_22pct_or_unprorated_partial_return_discount=True
+            )
+        )
+        self.assertEqual(margin["status_code"], 422)
+        self.assertEqual(
+            margin["decision"],
+            "BUNDLE_NET_MARGIN_FLOOR_BREACH_OR_UNPRORATED_RETURN_GAMING",
+        )
+
+        bracket = evaluate_ecommerce_ai_shopping_bundle_fit_policy(
+            EcommerceAiShoppingBundleFitPolicyInput(
+                multi_size_bracketing_duplicate_sku_in_cart_without_fit_prediction=True
+            )
+        )
+        self.assertEqual(bracket["status_code"], 451)
+        self.assertEqual(
+            bracket["decision"],
+            "MULTI_SIZE_BRACKETING_CART_RETURN_BOMB_DETECTED",
+        )
+
+        optim = evaluate_ecommerce_ai_shopping_bundle_fit_policy(
+            EcommerceAiShoppingBundleFitPolicyInput(
+                quarterly_size_return_logistics_bundle_margin_bleed_and_abandon_pool_usd=350000.0,
+                complete_look_atp_lock_prorated_bundle_and_fit_solver_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 136500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 213500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_ai_shopping_bundle_fit_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-ai-shopping-bundle-fit-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

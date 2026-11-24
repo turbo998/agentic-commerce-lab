@@ -41935,6 +41935,82 @@ def evaluate_commercial_web_grounding_search_matrix_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceAiShoppingBundleFitPolicyInput:
+    quarterly_size_return_logistics_bundle_margin_bleed_and_abandon_pool_usd: float = 350000.0
+    bundle_contains_out_of_stock_user_size_or_incompatible_hardware_spec: bool = False
+    bundle_net_margin_below_22pct_or_unprorated_partial_return_discount: bool = False
+    multi_size_bracketing_duplicate_sku_in_cart_without_fit_prediction: bool = False
+    complete_look_atp_lock_prorated_bundle_and_fit_solver_ready: bool = False
+
+
+def evaluate_ecommerce_ai_shopping_bundle_fit_policy(
+    policy_input: EcommerceAiShoppingBundleFitPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_size_return_logistics_bundle_margin_bleed_and_abandon_pool_usd
+        ),
+    )
+    if policy_input.multi_size_bracketing_duplicate_sku_in_cart_without_fit_prediction:
+        return {
+            "status_code": 451,
+            "decision": "MULTI_SIZE_BRACKETING_CART_RETURN_BOMB_DETECTED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bundle_contains_out_of_stock_user_size_or_incompatible_hardware_spec:
+        return {
+            "status_code": 403,
+            "decision": "INCOMPATIBLE_SPEC_OR_VARIANT_SIZE_OUT_OF_STOCK_IN_BUNDLE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bundle_net_margin_below_22pct_or_unprorated_partial_return_discount:
+        return {
+            "status_code": 422,
+            "decision": "BUNDLE_NET_MARGIN_FLOOR_BREACH_OR_UNPRORATED_RETURN_GAMING",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.complete_look_atp_lock_prorated_bundle_and_fit_solver_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CROSS_CATEGORY_OUTFIT_COMPATIBILITY_AND_FIT_LOCK_CONFIRM",
+            "mandate_token": "ecommerce_ai_stylist_bundle_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_AI_SHOPPING_STYLIST_AND_BUNDLE_AUTHORIZED",
+        "mandate_token": "ecommerce_ai_stylist_bundle_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -57032,6 +57108,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_ai_shopping_bundle_fit_guard = {
+        "authorized_200": evaluate_ecommerce_ai_shopping_bundle_fit_policy(
+            EcommerceAiShoppingBundleFitPolicyInput()
+        ),
+        "incompatible_or_oos_size_403": evaluate_ecommerce_ai_shopping_bundle_fit_policy(
+            EcommerceAiShoppingBundleFitPolicyInput(
+                bundle_contains_out_of_stock_user_size_or_incompatible_hardware_spec=True
+            )
+        ),
+        "bundle_margin_or_unbundle_422": evaluate_ecommerce_ai_shopping_bundle_fit_policy(
+            EcommerceAiShoppingBundleFitPolicyInput(
+                bundle_net_margin_below_22pct_or_unprorated_partial_return_discount=True
+            )
+        ),
+        "multi_size_bracketing_451": evaluate_ecommerce_ai_shopping_bundle_fit_policy(
+            EcommerceAiShoppingBundleFitPolicyInput(
+                multi_size_bracketing_duplicate_sku_in_cart_without_fit_prediction=True
+            )
+        ),
+        "complete_look_fit_lock_409": evaluate_ecommerce_ai_shopping_bundle_fit_policy(
+            EcommerceAiShoppingBundleFitPolicyInput(
+                complete_look_atp_lock_prorated_bundle_and_fit_solver_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -57513,6 +57615,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agent_platform_build_path_selection_guard": agent_platform_build_path_selection_guard,
         "agent_payment_protocol_matrix_guard": agent_payment_protocol_matrix_guard,
         "commercial_web_grounding_search_matrix_guard": commercial_web_grounding_search_matrix_guard,
+        "ecommerce_ai_shopping_bundle_fit_guard": ecommerce_ai_shopping_bundle_fit_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -82833,6 +82936,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="webgnd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TIERED_WEB_GROUNDING_FRESHNESS_AND_PROMPT_SHIELD_CONFIRM · Mandate: commercial_web_grounding_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 353 (#472 · SVG #796 · Sandbox #246 · 🏆 1,350th Unit Test Milestone) E-Commerce AI Shopping Stylist & Bundle Engine -->
+      <div class="finops-box" id="ecommerce-ai-shopping-bundle-fit-sandbox" style="margin-top:12px;border-color:#ec4899;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 电商个性化 AI 导购、跨品类搭配转化助手与尺码/兼容引擎 (Shopify MCP / Constructor.io / True Fit) 沙盒（🏆 第 1,350 项单元测试里程碑）</div>
+            <div class="finops-sub">Round 353 (#472 · SVG #796 · Sandbox #246 · 🏆 1,350th Test Milestone) · 全套单品用户目标尺码现货 ATP &gt;= 2 与 3C 硬件接口兼容硬校验 (HTTP 403) + 套装综合净毛利 &gt;= 22% 底线与按行分摊防退配件留主机套利 (HTTP 422) + 拦截同款同时加购 S/M/L 多码盲买 (Bracketing) 并联动成衣工单合身度匹配 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="stylist-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度同款多尺码盲买试穿退货逆向运费、套装拆单套利毛利流失及断码搭配弃单风险池 ($)
+            <input type="number" id="stylist-gross-input" value="350000" min="10000" step="5000" oninput="recalcEcommerceAiShoppingBundleFitSandbox()" />
+          </label>
+          <label>全套穿搭单品目标尺码现货 (User-Size ATP &gt;= 2) 与 3C 物理规格兼容图谱门禁
+            <select id="stylist-compat-select" onchange="recalcEcommerceAiShoppingBundleFitSandbox()">
+              <option value="pass">强制校验整套单品在用户目标尺码下均有现货，且通过确定性卡口/插槽兼容图谱核验 (安全)</option>
+              <option value="block_403">推荐的上衣有 M 码但配的西裤只剩 XXS 码，或将索尼微单机身与佳能 RF 镜头配成套装 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>跨品类套装综合净毛利底线 (&gt;= 22%) 与部分退货按行分摊重算 (Prorated Clawback) 门禁
+            <select id="stylist-margin-select" onchange="recalcEcommerceAiShoppingBundleFitSandbox()">
+              <option value="pass">折后综合净毛利 &gt;= 22%，且折扣按行分摊绑定 bundle_group_id，单退配件时重算保留主品原价 (合规)</option>
+              <option value="block_422">将 $150 套装立减全扣在低毛利主机上，买家收货后单退 $200 高毛利配件全额拿回退款白嫖主机折扣 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>同款多尺码盲买试穿 (Multi-Size Bracketing: S+M+L) 实时拦截与成衣尺寸匹配门禁
+            <select id="stylist-fit-select" onchange="recalcEcommerceAiShoppingBundleFitSandbox()">
+              <option value="pass">检测到同款加购 &gt;=2 个尺码时自动触发 True Fit / Bold Metrics 成衣工单尺寸比对，精准锁定唯一尺码 (合规)</option>
+              <option value="block_451">放任用户同款连衣裙一次拍下 S/M/L 三件回去试穿，产生 66.7% 必退逆向物流与折旧炸弹 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Constructor.io 跨品类搭配 + True Fit 毫米级尺码匹配 + 套装行分摊守恒全链路编排
+            <select id="stylist-opt-select" onchange="recalcEcommerceAiShoppingBundleFitSandbox()">
+              <option value="enabled" selected>启用全套尺码现货锁 + 套装分摊防拆单 + 防多码盲买引擎 (-39% 试穿退货与毛利流失 / HTTP 409)</option>
+              <option value="disabled">传统静态关联推荐无尺码与套装毛利保护 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度试穿退货与拆单套利池</div>
+            <div class="finops-kpi-val" id="stylist-gross-kpi">$350,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">合身预测与套装分摊后净成本</div>
+            <div class="finops-kpi-val" id="stylist-net-kpi" style="color:#6ee7b7;">$213,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省退货运费与毛利保护</div>
+            <div class="finops-kpi-val" id="stylist-savings-kpi" style="color:#38bdf8;">$136,500</div>
+          </div>
+        </div>
+        <div id="stylist-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CROSS_CATEGORY_OUTFIT_COMPATIBILITY_AND_FIT_LOCK_CONFIRM · Mandate: ecommerce_ai_stylist_bundle_optim_409
         </div>
       </div>
 
@@ -114119,6 +114279,79 @@ function recalcCommercialWebGroundingMatrixSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_COMMERCIAL_WEB_GROUNDING_AUTHORIZED · Mandate: commercial_web_grounding_200';
+}}
+
+function recalcEcommerceAiShoppingBundleFitSandbox() {{
+  const grossInput = document.getElementById('stylist-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '350000'));
+  const compatGate = document.getElementById('stylist-compat-select').value;
+  const marginGate = document.getElementById('stylist-margin-select').value;
+  const fitGate = document.getElementById('stylist-fit-select').value;
+  const optMode = document.getElementById('stylist-opt-select').value;
+
+  const grossKpi = document.getElementById('stylist-gross-kpi');
+  const netKpi = document.getElementById('stylist-net-kpi');
+  const savingsKpi = document.getElementById('stylist-savings-kpi');
+  const statusKpi = document.getElementById('stylist-status-kpi');
+  const banner = document.getElementById('stylist-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fitGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MULTI_SIZE_BRACKETING_CART_RETURN_BOMB_DETECTED · Mandate: null';
+    return;
+  }}
+  if (compatGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INCOMPATIBLE_SPEC_OR_VARIANT_SIZE_OUT_OF_STOCK_IN_BUNDLE · Mandate: null';
+    return;
+  }}
+  if (marginGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BUNDLE_NET_MARGIN_FLOOR_BREACH_OR_UNPRORATED_RETURN_GAMING · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CROSS_CATEGORY_OUTFIT_COMPATIBILITY_AND_FIT_LOCK_CONFIRM · Mandate: ecommerce_ai_stylist_bundle_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_AI_SHOPPING_STYLIST_AND_BUNDLE_AUTHORIZED · Mandate: ecommerce_ai_stylist_bundle_200';
 }}
 
 function updateStage1756Sandbox() {{

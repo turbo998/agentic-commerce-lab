@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`471` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`472` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (37 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (60 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (176 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (177 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (102 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (43 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (53 guides)](#tax-fx-privacy-disputes)
@@ -131,7 +131,7 @@
 | 60 | **🏆 Agent Payment & Checkout Protocol Selection Matrix (`Stripe Agent Toolkit SPT` vs. `Visa Intelligent Commerce` vs. `Mastercard Agent Pay` vs. `PayPal Agentic Toolkit` vs. `Single-Use JIT VCN` · 🏆 470th Bilingual Guide Milestone), Zero Raw `PAN` Scope Locks, `EMVCo` Cryptogram Liability Shift & Exact-Penny VCN Fallback (`-42%` Fraud & Decline Loss) FAQ** | [English](agent-payment-protocol-matrix-stripe-spt-visa-intelligent-commerce-mastercard-agent-pay-paypal-vcn-selection-faq.en.md) · [中文](agent-payment-protocol-matrix-stripe-spt-visa-intelligent-commerce-mastercard-agent-pay-paypal-vcn-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (176 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (177 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -313,6 +313,7 @@
 | 174 | **🏆 E-Commerce Distributed Order Management (`DOM`), Two-Tier Cart-to-Checkout Inventory Lease FSM & Profit-Aware Split-Shipment Cap (`Manhattan Active Omni / Fluent Commerce / Blue Yonder / Shopify Plus` · 🏆 780th SVG & 230th Sandbox Milestone), 6m Checkout-Init Lease, `Max_Splits <= 2` Margin Floor & `72h` `Short-Pick` Quarantine (`-39%` Split-Freight & Hoarding Loss) FAQ** | [English](ecommerce-dom-order-routing-manhattan-fluent-blueyonder-split-shipment-cap-cart-lease-selection-faq.en.md) · [中文](ecommerce-dom-order-routing-manhattan-fluent-blueyonder-split-shipment-cap-cart-lease-selection-faq.md) |
 | 175 | **🏆 E-Commerce Algorithmic Dynamic Repricing, Brand `MAP (Minimum Advertised Price)` Shield, Anti-`OOS` Bait Guard & Anti-Surveillance Pricing (`Competera / PROS / Feedvisor / Prisync + Microsoft Web IQ` · 🏆 460th Bilingual Guide Milestone) (`-40%` Repricing Crash & MAP Penalty Loss) FAQ** | [English](ecommerce-dynamic-pricing-map-minimum-advertised-price-anti-discrimination-price-match-selection-faq.en.md) · [中文](ecommerce-dynamic-pricing-map-minimum-advertised-price-anti-discrimination-price-match-selection-faq.md) |
 | 176 | **🏆 Hotel Central Reservation (`CRS`), Property Management (`PMS`), `OTA Virtual Card (VCC)` Dual-Folio Split & Anti-Overbooking Walk Shield (`Oracle OPERA Cloud / Mews / Cloudbeds / Amadeus ACRS` · 🏆 790th SVG & 240th Sandbox Milestone) (`-39%` Walk Relocation & VCC Decline Loss) FAQ** | [English](ota-hotel-pms-opera-mews-ota-vcc-folio-split-walk-protection-late-checkout-selection-faq.en.md) · [中文](ota-hotel-pms-opera-mews-ota-vcc-folio-split-walk-protection-late-checkout-selection-faq.md) |
+| 177 | **🏆 E-Commerce AI Shopping Stylist, Cross-Category Outfit Bundling & Size/Compatibility Engine (`Shopify Storefront MCP / Constructor.io / True Fit / Bold Metrics + Azure AI Search` · 🏆 1,350th Unit Test Major Milestone), Variant-Size `ATP` Parity, Prorated Bundle Clawback & Anti-Bracketing Size Prediction (`-39%` Return & Margin Loss) FAQ** | [English](ecommerce-ai-shopping-assistant-cross-category-outfit-bundle-size-fit-margin-floor-selection-faq.en.md) · [中文](ecommerce-ai-shopping-assistant-cross-category-outfit-bundle-size-fit-margin-floor-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (102 Guides)
