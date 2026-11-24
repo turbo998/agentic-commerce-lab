@@ -40491,6 +40491,82 @@ def evaluate_global_digital_wallet_local_apm_spc_policy(
     }
 
 
+@dataclass(frozen=True)
+class HybridCatalogRagRrfStockFilterPolicyInput:
+    quarterly_wrong_spec_rma_oos_bounce_and_price_spoof_pool_usd: float = 390000.0
+    pure_vector_retrieval_spec_drift_without_bm25_rrf_exact_match: bool = False
+    out_of_stock_variant_size_recommended_or_undeclared_backorder: bool = False
+    accessory_or_refurb_sku_mismatch_in_external_price_grounding: bool = False
+    hybrid_rrf_catalog_rag_prerank_atp_and_webiq_gtin_ready: bool = False
+
+
+def evaluate_hybrid_catalog_rag_rrf_stock_filter_policy(
+    policy_input: HybridCatalogRagRrfStockFilterPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_wrong_spec_rma_oos_bounce_and_price_spoof_pool_usd
+        ),
+    )
+    if policy_input.accessory_or_refurb_sku_mismatch_in_external_price_grounding:
+        return {
+            "status_code": 451,
+            "decision": "ACCESSORY_OR_REFURBISHED_SKU_MISMATCH_IN_EXTERNAL_COMPETITOR_GROUNDING",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pure_vector_retrieval_spec_drift_without_bm25_rrf_exact_match:
+        return {
+            "status_code": 403,
+            "decision": "PURE_VECTOR_RETRIEVAL_SPEC_DRIFT_WITHOUT_BM25_RRF_EXACT_MATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.out_of_stock_variant_size_recommended_or_undeclared_backorder:
+        return {
+            "status_code": 422,
+            "decision": "OUT_OF_STOCK_VARIANT_SIZE_RECOMMENDED_OR_UNDECLARED_BACKORDER_LEADTIME",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hybrid_rrf_catalog_rag_prerank_atp_and_webiq_gtin_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "HYBRID_RRF_CATALOG_RAG_PRERANK_ATP_AND_WEBIQ_GTIN_GROUNDING_CONFIRM",
+            "mandate_token": "hybrid_catalog_rag_rrf_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_HYBRID_CATALOG_RAG_AND_ATP_GROUNDING_AUTHORIZED",
+        "mandate_token": "hybrid_catalog_rag_rrf_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -55094,6 +55170,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    hybrid_catalog_rag_rrf_stock_guard = {
+        "authorized_200": evaluate_hybrid_catalog_rag_rrf_stock_filter_policy(
+            HybridCatalogRagRrfStockFilterPolicyInput()
+        ),
+        "pure_vector_spec_drift_403": evaluate_hybrid_catalog_rag_rrf_stock_filter_policy(
+            HybridCatalogRagRrfStockFilterPolicyInput(
+                pure_vector_retrieval_spec_drift_without_bm25_rrf_exact_match=True
+            )
+        ),
+        "oos_variant_or_backorder_422": evaluate_hybrid_catalog_rag_rrf_stock_filter_policy(
+            HybridCatalogRagRrfStockFilterPolicyInput(
+                out_of_stock_variant_size_recommended_or_undeclared_backorder=True
+            )
+        ),
+        "accessory_or_refurb_spoof_451": evaluate_hybrid_catalog_rag_rrf_stock_filter_policy(
+            HybridCatalogRagRrfStockFilterPolicyInput(
+                accessory_or_refurb_sku_mismatch_in_external_price_grounding=True
+            )
+        ),
+        "hybrid_rrf_atp_webiq_409": evaluate_hybrid_catalog_rag_rrf_stock_filter_policy(
+            HybridCatalogRagRrfStockFilterPolicyInput(
+                hybrid_rrf_catalog_rag_prerank_atp_and_webiq_gtin_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -55556,6 +55658,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_cancel_deflection_churn_save_guard": saas_cancel_deflection_churn_save_guard,
         "b2b_wholesale_quote_to_cart_guard": b2b_wholesale_quote_to_cart_guard,
         "global_digital_wallet_local_apm_spc_guard": global_digital_wallet_local_apm_spc_guard,
+        "hybrid_catalog_rag_rrf_stock_guard": hybrid_catalog_rag_rrf_stock_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -79793,6 +79896,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="gblapm-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SYNCED_APM_TTL_WALLET_ADDRESS_LOCK_AND_W3C_SPC_BIOMETRIC_CONFIRM · Mandate: global_wallet_apm_spc_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 334 (#453 · SVG #777) Hybrid Catalog RAG, BM25+Vector RRF & Pre-Ranking ATP Stock Filter -->
+      <div class="finops-box" id="hybrid-catalog-rag-rrf-stock-sandbox" style="margin-top:12px;border-color:#4f46e5;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔎 商业目录混合检索与库存接地 (Azure AI Search + Web IQ / Algolia / Vertex AI) RRF 与尺码预过滤沙盒</div>
+            <div class="finops-sub">Round 334 (#453 · SVG #777) · BM25 词法倒排 + 向量双路 RRF (k=60) 防纯向量检索搞混数字型号/零件号 (HTTP 403) + 召回前子 SKU 尺码现货位图过滤 (Pre-Ranking ATP Bitmask) 防推已断码款或隐瞒 45 天预售 (HTTP 422) + Web IQ /v3/browse 14 位 GTIN 与 0.55x MSRP 走廊防把配件当整机比价折让 (HTTP 451) + 净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="hybrag-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度纯向量检索买错型号退货、推荐断码尺码跳出流失及外部配件伪低价误判折让池 ($)
+            <input type="number" id="hybrag-gross-input" value="390000" min="10000" step="5000" oninput="recalcHybridCatalogRagRrfStockSandbox()" />
+          </label>
+          <label>BM25 精确词法倒排 + 稠密向量倒数排序融合 (RRF k=60) 与硬规格槽位门禁
+            <select id="hybrag-rrf-select" onchange="recalcHybridCatalogRagRrfStockSandbox()">
+              <option value="pass">采用 BM25 + Vector RRF (k=60) 与 L2 Cross-Encoder 精排，100% 锁死 MPN/型号/容量槽位 (安全)</option>
+              <option value="block_403">仅用纯向量余弦相似度检索，将 iPhone 15 128GB 或 $29 手机壳当成 iPhone 16 Pro 256GB 推荐 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>向量打分前子变体尺码级现货位图预过滤 (Pre-Ranking Variant ATP Bitmask) 与交期门禁
+            <select id="hybrag-atp-select" onchange="recalcHybridCatalogRagRrfStockSandbox()">
+              <option value="pass">在 HNSW 向量遍历前硬过滤 in_stock_sizes 包含买家尺码且发货时效 &lt;=3 天 (合规)</option>
+              <option value="block_422">先召回 Top 20 再查库存，推荐的爆款卫衣买家 M 码已断货仅剩 XXXL 或属 45 天海外预售 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>外部竞品实时比价接地 (Microsoft Web IQ /v3/browse) 14 位 GTIN 与整机价格走廊门禁
+            <select id="hybrag-gtin-select" onchange="recalcHybridCatalogRagRrfStockSandbox()">
+              <option value="pass">通过 Web IQ /v3/browse 核验 Schema.org GTIN-14 一致、NewCondition 且价格 &gt;=0.55x MSRP (合规)</option>
+              <option value="block_451">将竞品页面上 $39 的替换滤芯配件或二手翻新价误判为 $499 全新整机降价并自动 1 折跟价 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>BM25+Vector RRF 混合检索 + 召回前尺码现货锁 + Web IQ GTIN 比价全链路编排
+            <select id="hybrag-opt-select" onchange="recalcHybridCatalogRagRrfStockSandbox()">
+              <option value="enabled" selected>启用 RRF 混合检索 + 尺码 Pre-Filter + Web IQ GTIN 核验 (-40% 导购损耗 / HTTP 409)</option>
+              <option value="disabled">传统纯向量 RAG + 后置查库存 + 摘要文本裸比价 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度错买退货与断码流失池</div>
+            <div class="finops-kpi-val" id="hybrag-gross-kpi">$390,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">RRF与尺码预过滤后净损耗</div>
+            <div class="finops-kpi-val" id="hybrag-net-kpi" style="color:#6ee7b7;">$234,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净提升转化与保住毛利</div>
+            <div class="finops-kpi-val" id="hybrag-savings-kpi" style="color:#38bdf8;">$156,000</div>
+          </div>
+        </div>
+        <div id="hybrag-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 HYBRID_RRF_CATALOG_RAG_PRERANK_ATP_AND_WEBIQ_GTIN_GROUNDING_CONFIRM · Mandate: hybrid_catalog_rag_rrf_optim_409
         </div>
       </div>
 
@@ -109692,6 +109852,79 @@ function recalcGlobalDigitalWalletLocalApmSpcSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_GLOBAL_DIGITAL_WALLET_AND_LOCAL_APM_AUTHORIZED · Mandate: global_wallet_apm_spc_200';
+}}
+
+function recalcHybridCatalogRagRrfStockSandbox() {{
+  const grossInput = document.getElementById('hybrag-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '390000'));
+  const rrfGate = document.getElementById('hybrag-rrf-select').value;
+  const atpGate = document.getElementById('hybrag-atp-select').value;
+  const gtinGate = document.getElementById('hybrag-gtin-select').value;
+  const optMode = document.getElementById('hybrag-opt-select').value;
+
+  const grossKpi = document.getElementById('hybrag-gross-kpi');
+  const netKpi = document.getElementById('hybrag-net-kpi');
+  const savingsKpi = document.getElementById('hybrag-savings-kpi');
+  const statusKpi = document.getElementById('hybrag-status-kpi');
+  const banner = document.getElementById('hybrag-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (gtinGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 ACCESSORY_OR_REFURBISHED_SKU_MISMATCH_IN_EXTERNAL_COMPETITOR_GROUNDING · Mandate: null';
+    return;
+  }}
+  if (rrfGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PURE_VECTOR_RETRIEVAL_SPEC_DRIFT_WITHOUT_BM25_RRF_EXACT_MATCH · Mandate: null';
+    return;
+  }}
+  if (atpGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 OUT_OF_STOCK_VARIANT_SIZE_RECOMMENDED_OR_UNDECLARED_BACKORDER_LEADTIME · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 HYBRID_RRF_CATALOG_RAG_PRERANK_ATP_AND_WEBIQ_GTIN_GROUNDING_CONFIRM · Mandate: hybrid_catalog_rag_rrf_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_HYBRID_CATALOG_RAG_AND_ATP_GROUNDING_AUTHORIZED · Mandate: hybrid_catalog_rag_rrf_200';
 }}
 
 function updateStage1756Sandbox() {{

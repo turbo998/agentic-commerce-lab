@@ -2,11 +2,11 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`452` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`453` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
-- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (31 guides)](#platform-grounding)
+- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (32 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (58 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (173 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (99 guides)](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (31 Guides)
+## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (32 Guides)
 
 > Platform selection (Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify), real-time search grounding (Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl), catalog feed barriers, A2UI isolation, and Web Bot Auth vs WAF governance.
 
@@ -55,6 +55,7 @@
 | 29 | **Commercial Agent Build Path & Platform Selection (`Microsoft Copilot Studio + Dynamics 365 vs. Azure AI Foundry + Semantic Kernel / LangGraph vs. Salesforce Agentforce vs. Shopify Sidekick`), `Entra OBO` RLS Isolation, `Foundry SLM` Public Traffic Front-Filter & "Front-Store / Back-Factory" Hybrid Saga (`-39%` Platform & Integration TCO) FAQ** | [English](commercial-agent-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-sidekick-hybrid-selection-faq.en.md) · [中文](commercial-agent-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-sidekick-hybrid-selection-faq.md) |
 | 30 | **E-Commerce Trusted Agent Identity & Edge Bot Governance (`Cloudflare Web Bot Auth / RFC 9421 vs. Visa Trusted Agent Protocol TAP vs. Akamai / DataDome vs. Legacy WAF CAPTCHA`), `Ed25519` `.well-known` Directory Lock, `RFC 9530 Content-Digest` + `300s Nonce` Guard & Dual-Lane `UCP` Cache / VIP Checkout Split (`-40%` False-Positive & Bot Load Loss) FAQ** | [English](trusted-agent-identity-rfc9421-visa-tap-cloudflare-web-bot-auth-vs-waf-captcha-selection-faq.en.md) · [中文](trusted-agent-identity-rfc9421-visa-tap-cloudflare-web-bot-auth-vs-waf-captcha-selection-faq.md) |
 | 31 | **🏆 Full-Stack Agentic Commerce 6-Protocol Interoperability & Selection Guide (`MCP × A2A × UCP × ACP × AP2 × x402/MPP` · 🏆 440th Bilingual Guide Milestone), Cross-Protocol `checkout_hash` Continuity (`UCP == AP2 == ACP`), Sub-`$2.00` `x402/MPP` Dual-Rail Router & `2026-11-30` Cutover Adapter (`-41%` Protocol Fallout & Fee Loss) FAQ** | [English](agentic-commerce-six-protocol-interop-mcp-a2a-ucp-acp-ap2-x402-selection-faq.en.md) · [中文](agentic-commerce-six-protocol-interop-mcp-a2a-ucp-acp-ap2-x402-selection-faq.md) |
+| 32 | **Commercial Agent Hybrid Catalog `RAG` & Live Inventory/Price Grounding (`Azure AI Search + Microsoft Web IQ vs. Algolia NeuralSearch vs. Google Vertex AI Search for Commerce vs. Constructor.io`), `BM25 + Vector RRF (k=60)` Spec Lock, Pre-Ranking Variant `ATP` Bitmask Filter & Anti-Accessory Price-Match Guard (`-40%` Wrong-Spec & OOS Bounce Loss) FAQ** | [English](hybrid-catalog-rag-azure-ai-search-webiq-algolia-vertex-rrf-stock-filter-selection-faq.en.md) · [中文](hybrid-catalog-rag-azure-ai-search-webiq-algolia-vertex-rrf-stock-filter-selection-faq.md) |
 
 <a id="payments-mandates"></a>
 ## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (58 Guides)

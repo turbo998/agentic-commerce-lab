@@ -31436,6 +31436,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("global-digital-wallet-local-apm-spc-sandbox", html_zh)
 
+    def test_hybrid_catalog_rag_rrf_stock_filter_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            HybridCatalogRagRrfStockFilterPolicyInput,
+            evaluate_hybrid_catalog_rag_rrf_stock_filter_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_hybrid_catalog_rag_rrf_stock_filter_policy(
+            HybridCatalogRagRrfStockFilterPolicyInput(
+                quarterly_wrong_spec_rma_oos_bounce_and_price_spoof_pool_usd=390000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_HYBRID_CATALOG_RAG_AND_ATP_GROUNDING_AUTHORIZED",
+        )
+
+        drift = evaluate_hybrid_catalog_rag_rrf_stock_filter_policy(
+            HybridCatalogRagRrfStockFilterPolicyInput(
+                pure_vector_retrieval_spec_drift_without_bm25_rrf_exact_match=True
+            )
+        )
+        self.assertEqual(drift["status_code"], 403)
+        self.assertEqual(
+            drift["decision"],
+            "PURE_VECTOR_RETRIEVAL_SPEC_DRIFT_WITHOUT_BM25_RRF_EXACT_MATCH",
+        )
+
+        oos = evaluate_hybrid_catalog_rag_rrf_stock_filter_policy(
+            HybridCatalogRagRrfStockFilterPolicyInput(
+                out_of_stock_variant_size_recommended_or_undeclared_backorder=True
+            )
+        )
+        self.assertEqual(oos["status_code"], 422)
+        self.assertEqual(
+            oos["decision"],
+            "OUT_OF_STOCK_VARIANT_SIZE_RECOMMENDED_OR_UNDECLARED_BACKORDER_LEADTIME",
+        )
+
+        spoof = evaluate_hybrid_catalog_rag_rrf_stock_filter_policy(
+            HybridCatalogRagRrfStockFilterPolicyInput(
+                accessory_or_refurb_sku_mismatch_in_external_price_grounding=True
+            )
+        )
+        self.assertEqual(spoof["status_code"], 451)
+        self.assertEqual(
+            spoof["decision"],
+            "ACCESSORY_OR_REFURBISHED_SKU_MISMATCH_IN_EXTERNAL_COMPETITOR_GROUNDING",
+        )
+
+        optim = evaluate_hybrid_catalog_rag_rrf_stock_filter_policy(
+            HybridCatalogRagRrfStockFilterPolicyInput(
+                quarterly_wrong_spec_rma_oos_bounce_and_price_spoof_pool_usd=390000.0,
+                hybrid_rrf_catalog_rag_prerank_atp_and_webiq_gtin_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 156000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 234000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("hybrid_catalog_rag_rrf_stock_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("hybrid-catalog-rag-rrf-stock-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
