@@ -42087,6 +42087,82 @@ def evaluate_b2b_contract_clm_redlining_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceChargebackCe3EthocaPolicyInput:
+    quarterly_friendly_fraud_chargeback_double_refund_and_fee_pool_usd: float = 375000.0
+    visa_ce3_submitted_without_2_prior_120_365d_fingerprint_matches: bool = False
+    store_cs_refund_issued_while_ethoca_rdr_or_chargeback_active: bool = False
+    negative_ev_low_value_representment_or_vamp_ratio_breach: bool = False
+    visa_ce3_structured_evidence_cdrn_mutex_and_ev_router_ready: bool = False
+
+
+def evaluate_ecommerce_chargeback_ce3_ethoca_policy(
+    policy_input: EcommerceChargebackCe3EthocaPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_friendly_fraud_chargeback_double_refund_and_fee_pool_usd
+        ),
+    )
+    if policy_input.negative_ev_low_value_representment_or_vamp_ratio_breach:
+        return {
+            "status_code": 451,
+            "decision": "NEGATIVE_EV_REPRESENTMENT_OR_VAMP_RATIO_THRESHOLD_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.visa_ce3_submitted_without_2_prior_120_365d_fingerprint_matches:
+        return {
+            "status_code": 403,
+            "decision": "INVALID_VISA_CE3_HISTORICAL_TX_FINGERPRINT_MATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.store_cs_refund_issued_while_ethoca_rdr_or_chargeback_active:
+        return {
+            "status_code": 422,
+            "decision": "CDRN_ETHOCA_ALERT_AND_CS_AGENT_DOUBLE_REFUND_COLLISION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.visa_ce3_structured_evidence_cdrn_mutex_and_ev_router_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "VISA_CE3_AUTO_EVIDENCE_AND_CDRN_MUTEX_CONFIRM",
+            "mandate_token": "ecommerce_chargeback_ce3_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CHARGEBACK_REPRESENTMENT_AND_CE3_AUTHORIZED",
+        "mandate_token": "ecommerce_chargeback_ce3_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -57236,6 +57312,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_chargeback_ce3_ethoca_guard = {
+        "authorized_200": evaluate_ecommerce_chargeback_ce3_ethoca_policy(
+            EcommerceChargebackCe3EthocaPolicyInput()
+        ),
+        "invalid_visa_ce3_pair_403": evaluate_ecommerce_chargeback_ce3_ethoca_policy(
+            EcommerceChargebackCe3EthocaPolicyInput(
+                visa_ce3_submitted_without_2_prior_120_365d_fingerprint_matches=True
+            )
+        ),
+        "cdrn_cs_double_refund_422": evaluate_ecommerce_chargeback_ce3_ethoca_policy(
+            EcommerceChargebackCe3EthocaPolicyInput(
+                store_cs_refund_issued_while_ethoca_rdr_or_chargeback_active=True
+            )
+        ),
+        "negative_ev_or_vamp_451": evaluate_ecommerce_chargeback_ce3_ethoca_policy(
+            EcommerceChargebackCe3EthocaPolicyInput(
+                negative_ev_low_value_representment_or_vamp_ratio_breach=True
+            )
+        ),
+        "visa_ce3_cdrn_mutex_409": evaluate_ecommerce_chargeback_ce3_ethoca_policy(
+            EcommerceChargebackCe3EthocaPolicyInput(
+                visa_ce3_structured_evidence_cdrn_mutex_and_ev_router_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -57719,6 +57821,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "commercial_web_grounding_search_matrix_guard": commercial_web_grounding_search_matrix_guard,
         "ecommerce_ai_shopping_bundle_fit_guard": ecommerce_ai_shopping_bundle_fit_guard,
         "b2b_contract_clm_redlining_guard": b2b_contract_clm_redlining_guard,
+        "ecommerce_chargeback_ce3_ethoca_guard": ecommerce_chargeback_ce3_ethoca_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -83153,6 +83256,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="clmred-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CLM_PLAYBOOK_REDLINE_AND_RENEWAL_CAP_CONFIRM · Mandate: b2b_contract_clm_redline_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 355 (#474 · SVG #798 · Sandbox #248 · 🏆 Round 355 Milestone) Chargeback Representment & Visa CE 3.0 -->
+      <div class="finops-box" id="ecommerce-chargeback-ce3-ethoca-sandbox" style="margin-top:12px;border-color:#f43f5e;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 电商争议拒付防卫与反欺诈智能体 (Chargeflow / Justt / Signifyd / Visa CE 3.0) 沙盒（🏆 第 355 轮里程碑）</div>
+            <div class="finops-sub">Round 355 (#474 · SVG #798 · Sandbox #248 · 🏆 Round 355 Milestone) · Visa CE 3.0 强制核验 120d-365d 内 &gt;=2 笔历史无争议单匹配 &gt;=2 项核心指纹 (HTTP 403) + 收到 Verifi RDR / Ethoca 预警毫秒级冻结商城 AI 客服退款防 200% 双倍退钱 (HTTP 422) + 净期望值 Net-EV &gt; $10 与 VAMP 比率自动分流 (HTTP 451) + 净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="cbkce3-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 10.4/13.1 友好欺诈拒付划扣、银行争议与店内客服双倍退款及无效抗辩手续费损耗池 ($)
+            <input type="number" id="cbkce3-gross-input" value="375000" min="10000" step="5000" oninput="recalcEcommerceChargebackCe3EthocaSandbox()" />
+          </label>
+          <label>Visa Compelling Evidence 3.0 (CE 3.0) 历史双交易窗口 (120d–365d) 与双指纹匹配门禁
+            <select id="cbkce3-ce3-select" onchange="recalcEcommerceChargebackCe3EthocaSandbox()">
+              <option value="pass">严格核验同卡号 120d–365d 内 &gt;=2 笔无争议历史单且同时匹配 IP/设备指纹与收货地址/账号 (安全)</option>
+              <option value="block_403">历史单不足 2 笔或不满 120 天就盲目提交非结构化 PDF 申诉信，遭发卡行直接驳回败诉 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>卡组织预争议 (Verifi RDR / Ethoca) 与商城 AI 客服双倍退款硬互斥锁 (DISPUTE_HOLD Mutex)
+            <select id="cbkce3-mutex-select" onchange="recalcEcommerceChargebackCe3EthocaSandbox()">
+              <option value="pass">收到 RDR / Ethoca 或拒付 Webhook 毫秒级锁定订单为 DISPUTE_FROZEN，禁止客服再发店内退款 (合规)</option>
+              <option value="block_422">买家同时找银行发起争议退款又找商城 AI 客服退货退款，未加互斥锁导致退双倍全款 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>抗辩净期望值 (Net-EV &gt; $10) 与 Visa VAMP 拒付率 (&lt; 0.65%) 自动 RDR 消单门禁
+            <select id="cbkce3-ev-select" onchange="recalcEcommerceChargebackCe3EthocaSandbox()">
+              <option value="pass">低客单价 (&lt;$25) 自动走 RDR 预争议退款消单保住 VAMP 比率，仅对正期望值大单发起抗辩 (合规)</option>
+              <option value="block_451">对 $12 小单花 $15 不可退手续费强行抗辩，或 VAMP 超标仍升级无胜算 $500 预仲裁 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Visa CE 3.0 结构化指纹自动举证 + CDRN 防双退锁 + RDR/Net-EV 分流全链路编排
+            <select id="cbkce3-opt-select" onchange="recalcEcommerceChargebackCe3EthocaSandbox()">
+              <option value="enabled" selected>启用 Visa CE 3.0 自动举证 + 防双退互斥锁 + Net-EV 分流 (-40% 拒付损失与手续费 / HTTP 409)</option>
+              <option value="disabled">传统人工拼凑截图申诉与无联动退款基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度友好欺诈与双退损耗池</div>
+            <div class="finops-kpi-val" id="cbkce3-gross-kpi">$375,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">CE 3.0举证与防双退后净成本</div>
+            <div class="finops-kpi-val" id="cbkce3-net-kpi" style="color:#6ee7b7;">$225,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回拒付资金与规避费</div>
+            <div class="finops-kpi-val" id="cbkce3-savings-kpi" style="color:#38bdf8;">$150,000</div>
+          </div>
+        </div>
+        <div id="cbkce3-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 VISA_CE3_AUTO_EVIDENCE_AND_CDRN_MUTEX_CONFIRM · Mandate: ecommerce_chargeback_ce3_optim_409
         </div>
       </div>
 
@@ -114585,6 +114745,79 @@ function recalcB2bContractClmRedliningSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_CONTRACT_CLM_REDLINING_AUTHORIZED · Mandate: b2b_contract_clm_redline_200';
+}}
+
+function recalcEcommerceChargebackCe3EthocaSandbox() {{
+  const grossInput = document.getElementById('cbkce3-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '375000'));
+  const ce3Gate = document.getElementById('cbkce3-ce3-select').value;
+  const mutexGate = document.getElementById('cbkce3-mutex-select').value;
+  const evGate = document.getElementById('cbkce3-ev-select').value;
+  const optMode = document.getElementById('cbkce3-opt-select').value;
+
+  const grossKpi = document.getElementById('cbkce3-gross-kpi');
+  const netKpi = document.getElementById('cbkce3-net-kpi');
+  const savingsKpi = document.getElementById('cbkce3-savings-kpi');
+  const statusKpi = document.getElementById('cbkce3-status-kpi');
+  const banner = document.getElementById('cbkce3-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (evGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 NEGATIVE_EV_REPRESENTMENT_OR_VAMP_RATIO_THRESHOLD_BREACH · Mandate: null';
+    return;
+  }}
+  if (ce3Gate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INVALID_VISA_CE3_HISTORICAL_TX_FINGERPRINT_MATCH · Mandate: null';
+    return;
+  }}
+  if (mutexGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CDRN_ETHOCA_ALERT_AND_CS_AGENT_DOUBLE_REFUND_COLLISION · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 VISA_CE3_AUTO_EVIDENCE_AND_CDRN_MUTEX_CONFIRM · Mandate: ecommerce_chargeback_ce3_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CHARGEBACK_REPRESENTMENT_AND_CE3_AUTHORIZED · Mandate: ecommerce_chargeback_ce3_200';
 }}
 
 function updateStage1756Sandbox() {{

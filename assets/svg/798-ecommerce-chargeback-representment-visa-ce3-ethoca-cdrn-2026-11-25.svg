@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg798" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="50%" stop-color="#3f1d2e"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent798" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f43f5e"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg798)"/>
+  <rect x="30" y="24" width="1140" height="582" rx="16" fill="#0f172a" fill-opacity="0.82" stroke="#334155" stroke-width="1.5"/>
+  <rect x="30" y="24" width="1140" height="6" rx="3" fill="url(#accent798)"/>
+
+  <text x="60" y="68" fill="#fb7185" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.2">🏆 ROUND 355 MILESTONE · FAQ #474 · SVG #798 · SANDBOX #248 · TEST #1352 · CHARGEBACK &amp; CE 3.0 DEFENSE</text>
+  <text x="60" y="102" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="800">E-Commerce Chargeback Representment &amp; Fraud Shield (Chargeflow / Justt / Signifyd / Visa CE 3.0)</text>
+  <text x="60" y="128" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Visa CE 3.0 2-Prior-Tx Fingerprint Match · Ethoca/Verifi CDRN Double-Refund Mutex · Net-EV Representment Floor (-40% Loss)</text>
+
+  <!-- Gate 1 -->
+  <rect x="60" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="80" y="182" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">1. Visa CE 3.0 Strict Evidence Validator</text>
+  <text x="80" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Generic AI PDF dispute letters lose 78% of</text>
+  <text x="80" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  10.4 Friendly-Fraud claims unless Visa CE 3.0</text>
+  <text x="80" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  rules are strictly met: &gt;= 2 undisputed prior</text>
+  <text x="80" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  txs aged 120d–365d sharing &gt;= 2 of (IP,</text>
+  <text x="80" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  Device_ID, Shipping_Address, Account_ID)</text>
+  <text x="80" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Blocks unverified CE 3.0 submissions</text>
+  <rect x="80" y="370" width="305" height="34" rx="6" fill="#450a0a" stroke="#ef4444"/>
+  <text x="92" y="392" fill="#fecaca" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 403 INVALID_VISA_CE3_EVIDENCE_PAIR</text>
+
+  <!-- Gate 2 -->
+  <rect x="427" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#f97316" stroke-width="1.5"/>
+  <text x="447" y="182" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">2. CDRN / RDR Double-Refund Mutex</text>
+  <text x="447" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Buyer files bank dispute (triggering Verifi</text>
+  <text x="447" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  RDR / Ethoca auto-refund) AND simultaneously</text>
+  <text x="447" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  messages CS AI Agent asking for a store refund</text>
+  <text x="447" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Locks Order_State = DISPUTE_HOLD on first</text>
+  <text x="447" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  Ethoca/RDR/Webhook event, blocking CS Agent</text>
+  <text x="447" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  from issuing a 2nd 100% duplicate refund</text>
+  <rect x="447" y="370" width="305" height="34" rx="6" fill="#431407" stroke="#f97316"/>
+  <text x="459" y="392" fill="#fed7aa" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 422 CDRN_CS_DOUBLE_REFUND_COLLISION</text>
+
+  <!-- Gate 3 -->
+  <rect x="795" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#eab308" stroke-width="1.5"/>
+  <text x="815" y="182" fill="#fde047" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">3. Net-EV Representment &amp; VAMP Ratio Gate</text>
+  <text x="815" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Auto-fighting a $12 order where PSP charges</text>
+  <text x="815" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  a non-refundable $15 representment fee or</text>
+  <text x="815" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  escalating weak claims to Visa $500 Pre-Arb</text>
+  <text x="815" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  guarantees negative expected value (Net EV &lt; 0)</text>
+  <text x="815" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Auto-accepts/RDRs low-value disputes to keep</text>
+  <text x="815" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  Visa VAMP ratio safely below 0.90% ceiling</text>
+  <rect x="815" y="370" width="305" height="34" rx="6" fill="#422006" stroke="#eab308"/>
+  <text x="827" y="392" fill="#fef08a" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 451 NEGATIVE_EV_REPRESENTMENT_OR_VAMP</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="444" width="1080" height="138" rx="12" fill="#0f172a" stroke="#f43f5e" stroke-width="1.5"/>
+  <text x="84" y="476" fill="#fda4af" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🏆 Round 355 Milestone Matrix (Quarterly Friendly-Fraud Chargebacks, Double Refunds &amp; Dispute Fee Pool: $375,000)</text>
+  <text x="84" y="504" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Success-Fee Automated Representment: Chargeflow / Justt | Pre-Checkout Guaranteed Fraud Liability Shift: Signifyd / Riskified</text>
+  <text x="84" y="528" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Pre-Dispute Deflection &amp; VAMP Ratio Protection: Verifi RDR + Ethoca Alerts | Native PSP Rules: Stripe Radar + CE 3.0 API</text>
+  <text x="84" y="556" fill="#38bdf8" font-family="Consolas, monospace" font-size="14" font-weight="700">HTTP 409 VISA_CE3_AUTO_EVIDENCE_AND_CDRN_MUTEX_CONFIRM · Savings: $150,000/qtr (-40.0%) · Net: $225,000</text>
+</svg>

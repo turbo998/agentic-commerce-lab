@@ -32843,6 +32843,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-contract-clm-redlining-sandbox", html_zh)
 
+    def test_ecommerce_chargeback_ce3_ethoca_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceChargebackCe3EthocaPolicyInput,
+            evaluate_ecommerce_chargeback_ce3_ethoca_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_chargeback_ce3_ethoca_policy(
+            EcommerceChargebackCe3EthocaPolicyInput(
+                quarterly_friendly_fraud_chargeback_double_refund_and_fee_pool_usd=375000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CHARGEBACK_REPRESENTMENT_AND_CE3_AUTHORIZED",
+        )
+
+        ce3 = evaluate_ecommerce_chargeback_ce3_ethoca_policy(
+            EcommerceChargebackCe3EthocaPolicyInput(
+                visa_ce3_submitted_without_2_prior_120_365d_fingerprint_matches=True
+            )
+        )
+        self.assertEqual(ce3["status_code"], 403)
+        self.assertEqual(
+            ce3["decision"],
+            "INVALID_VISA_CE3_HISTORICAL_TX_FINGERPRINT_MATCH",
+        )
+
+        mutex = evaluate_ecommerce_chargeback_ce3_ethoca_policy(
+            EcommerceChargebackCe3EthocaPolicyInput(
+                store_cs_refund_issued_while_ethoca_rdr_or_chargeback_active=True
+            )
+        )
+        self.assertEqual(mutex["status_code"], 422)
+        self.assertEqual(
+            mutex["decision"],
+            "CDRN_ETHOCA_ALERT_AND_CS_AGENT_DOUBLE_REFUND_COLLISION",
+        )
+
+        ev = evaluate_ecommerce_chargeback_ce3_ethoca_policy(
+            EcommerceChargebackCe3EthocaPolicyInput(
+                negative_ev_low_value_representment_or_vamp_ratio_breach=True
+            )
+        )
+        self.assertEqual(ev["status_code"], 451)
+        self.assertEqual(
+            ev["decision"],
+            "NEGATIVE_EV_REPRESENTMENT_OR_VAMP_RATIO_THRESHOLD_BREACH",
+        )
+
+        optim = evaluate_ecommerce_chargeback_ce3_ethoca_policy(
+            EcommerceChargebackCe3EthocaPolicyInput(
+                quarterly_friendly_fraud_chargeback_double_refund_and_fee_pool_usd=375000.0,
+                visa_ce3_structured_evidence_cdrn_mutex_and_ev_router_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 150000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 225000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_chargeback_ce3_ethoca_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-chargeback-ce3-ethoca-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
