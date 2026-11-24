@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`474` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`475` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -11,7 +11,7 @@
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (177 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (103 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (43 guides)](#saas-finops-micropayments)
-- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (54 guides)](#tax-fx-privacy-disputes)
+- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (55 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
 
@@ -478,7 +478,7 @@
 | 43 | **🏆 Enterprise `ASC 606 / IFRS 15` Revenue Recognition, Relative `SSP` Bundle Allocation, `POB` Satisfaction Triggers & Exact-Daily Proration (`Zuora RevPro / NetSuite ARM / Stripe RevRec / RightRev` · 🏆 1,345th Unit Test Milestone) (`-40%` Audit Restatement & Close Cost) FAQ** | [English](enterprise-revrec-asc606-ifrs15-ssp-bundle-allocation-zuora-revpro-netsuite-arm-selection-faq.en.md) · [中文](enterprise-revrec-asc606-ifrs15-ssp-bundle-allocation-zuora-revpro-netsuite-arm-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (54 Guides)
+## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (55 Guides)
 
 > Covers Merchant of Record (MoR) vs DIY PSP, HS-code DDP landed cost & VAT/Sales Tax nexus, FX quote collars & ISO 20022 netting, ZK eligibility / PCI redaction / GDPR crypto-shredding, and Visa CE 3.0 / VAMP dispute defense.
 
@@ -538,6 +538,7 @@
 | 52 | **Commercial Sales Tax & `VAT` Engine Selection (`Stripe Tax vs. Avalara AvaTax vs. Vertex O Series vs. Anrok`), `SaaS` Taxability Codes (`SW052000`), `Wayfair` Economic Nexus Radar, `800ms` Edge `ZIP+4` Timeout Fallback & Original-Date Return Lock (`-39%` Back-Tax & Timeout Drop Loss) FAQ** | [English](sales-tax-vat-engine-stripe-tax-vs-avalara-avatax-vertex-anrok-nexus-fallback-selection-faq.en.md) · [中文](sales-tax-vat-engine-stripe-tax-vs-avalara-avatax-vertex-anrok-nexus-fallback-selection-faq.md) |
 | 53 | **🏆 Retail & SaaS Customer Data Platform (`CDP`), Anti-Poisoning Identity Resolution, Sub-60s Paid-Ad Suppression & Server-Side `Sec-GPC / TCF v2.2` Consent Gate (`Twilio Segment / mParticle / Tealium / D365 CI + Hightouch` · 🏆 465th Bilingual Guide Milestone) (`-39%` Ad Waste & Privacy Penalty Loss) FAQ** | [English](retail-cdp-identity-resolution-segment-mparticle-tealium-consent-tcf-suppression-selection-faq.en.md) · [中文](retail-cdp-identity-resolution-segment-mparticle-tealium-consent-tcf-suppression-selection-faq.md) |
 | 54 | **🏆 E-Commerce Chargeback Representment & Fraud Shield (`Chargeflow / Justt / Signifyd / Riskified / Stripe Radar + Visa CE 3.0` · 🏆 Round 355 Milestone), `Visa CE 3.0` `120–365d` Dual-Tx Fingerprint Matching, `Ethoca / Verifi RDR` Double-Refund Mutex & `Net-EV` Representment Gating (`-40%` Dispute Loss) FAQ** | [English](ecommerce-chargeback-representment-visa-ce3-ethoca-cdrn-signifyd-chargeflow-selection-faq.en.md) · [中文](ecommerce-chargeback-representment-visa-ce3-ethoca-cdrn-signifyd-chargeflow-selection-faq.md) |
+| 55 | **🏆 Cross-Border Merchant of Record (`MoR`: `Paddle / FastSpring / Global-e`) vs. Direct Local Acquiring (`Stripe / Adyen + Avalara` · 🏆 475th Bilingual Guide Milestone), Zero-Threshold Global `VAT / GST` Shield, Guaranteed `DDP` Landed-Cost Lock & `$3.5M GMV` Hybrid Routing (`-41%` Tax & MDR Loss) FAQ** | [English](cross-border-merchant-of-record-mor-paddle-global-e-vs-stripe-direct-tax-acquiring-selection-faq.en.md) · [中文](cross-border-merchant-of-record-mor-paddle-global-e-vs-stripe-direct-tax-acquiring-selection-faq.md) |
 
 <a id="architecture-blueprints"></a>
 ## 7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 Specs)

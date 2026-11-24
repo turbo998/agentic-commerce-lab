@@ -42163,6 +42163,82 @@ def evaluate_ecommerce_chargeback_ce3_ethoca_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderMorVsDirectAcquiringPolicyInput:
+    quarterly_foreign_vat_penalty_ddu_refusal_and_mor_overpay_pool_usd: float = 395000.0
+    direct_sale_in_unregistered_foreign_vat_gst_jurisdiction: bool = False
+    cross_border_physical_parcel_above_deminimis_shipped_ddu: bool = False
+    registered_core_market_over_3_5m_gmv_routed_through_5pct_mor: bool = False
+    hybrid_core_direct_and_longtail_mor_ddp_router_ready: bool = False
+
+
+def evaluate_cross_border_mor_vs_direct_acquiring_policy(
+    policy_input: CrossBorderMorVsDirectAcquiringPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_foreign_vat_penalty_ddu_refusal_and_mor_overpay_pool_usd
+        ),
+    )
+    if policy_input.registered_core_market_over_3_5m_gmv_routed_through_5pct_mor:
+        return {
+            "status_code": 451,
+            "decision": "DOMESTIC_REGISTERED_MARKET_MOR_FEE_OVERPAY",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.direct_sale_in_unregistered_foreign_vat_gst_jurisdiction:
+        return {
+            "status_code": 403,
+            "decision": "UNREGISTERED_FOREIGN_VAT_JURISDICTION_DIRECT_SALE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cross_border_physical_parcel_above_deminimis_shipped_ddu:
+        return {
+            "status_code": 422,
+            "decision": "UNGUARANTEED_DDU_SHIPMENT_DOORSTEP_DUTY_REFUSAL_RISK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hybrid_core_direct_and_longtail_mor_ddp_router_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "HYBRID_CORE_DIRECT_AND_LONGTAIL_MOR_DDP_CONFIRM",
+            "mandate_token": "cross_border_mor_direct_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CROSS_BORDER_MOR_AND_DIRECT_ROUTING_AUTHORIZED",
+        "mandate_token": "cross_border_mor_direct_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -57338,6 +57414,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_mor_vs_direct_acquiring_guard = {
+        "authorized_200": evaluate_cross_border_mor_vs_direct_acquiring_policy(
+            CrossBorderMorVsDirectAcquiringPolicyInput()
+        ),
+        "unregistered_foreign_vat_403": evaluate_cross_border_mor_vs_direct_acquiring_policy(
+            CrossBorderMorVsDirectAcquiringPolicyInput(
+                direct_sale_in_unregistered_foreign_vat_gst_jurisdiction=True
+            )
+        ),
+        "ddu_doorstep_refusal_422": evaluate_cross_border_mor_vs_direct_acquiring_policy(
+            CrossBorderMorVsDirectAcquiringPolicyInput(
+                cross_border_physical_parcel_above_deminimis_shipped_ddu=True
+            )
+        ),
+        "domestic_mor_overpay_451": evaluate_cross_border_mor_vs_direct_acquiring_policy(
+            CrossBorderMorVsDirectAcquiringPolicyInput(
+                registered_core_market_over_3_5m_gmv_routed_through_5pct_mor=True
+            )
+        ),
+        "hybrid_direct_mor_ddp_409": evaluate_cross_border_mor_vs_direct_acquiring_policy(
+            CrossBorderMorVsDirectAcquiringPolicyInput(
+                hybrid_core_direct_and_longtail_mor_ddp_router_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -57822,6 +57924,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_ai_shopping_bundle_fit_guard": ecommerce_ai_shopping_bundle_fit_guard,
         "b2b_contract_clm_redlining_guard": b2b_contract_clm_redlining_guard,
         "ecommerce_chargeback_ce3_ethoca_guard": ecommerce_chargeback_ce3_ethoca_guard,
+        "cross_border_mor_vs_direct_acquiring_guard": cross_border_mor_vs_direct_acquiring_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -83313,6 +83416,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="cbkce3-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 VISA_CE3_AUTO_EVIDENCE_AND_CDRN_MUTEX_CONFIRM · Mandate: ecommerce_chargeback_ce3_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 356 (#475 🏆 475th Guide Milestone · SVG #799 · Sandbox #249) Cross-Border MoR vs. Direct Acquiring -->
+      <div class="finops-box" id="cross-border-mor-vs-direct-acquiring-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 跨境名义商户 MoR (Paddle / FastSpring / Global-e) vs. 本地直连收单 (Stripe / Adyen) 沙盒（🏆 第 475 篇指南里程碑）</div>
+            <div class="finops-sub">Round 356 (#475 🏆 475th Guide Milestone · SVG #799 · Sandbox #249) · 拦截无当地税号国家裸走直连收单引发零阈值 VAT/GST 违法与跨境卡低过卡率 (HTTP 403) + 跨境实物超免税额包裹强制 Global-e/Zonos Guaranteed DDP 完税防 32% 上门收税拒收 (HTTP 422) + 已注册核心市场 (&gt;$3.5M GMV) 切回直连省 220bps 费率 (HTTP 451) + 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="mordir-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度海外未注册 VAT/GST 补税罚金与跨境拒付、实物 DDU 到门拒收退运费及核心国 MoR 溢价池 ($)
+            <input type="number" id="mordir-gross-input" value="395000" min="10000" step="5000" oninput="recalcCrossBorderMorVsDirectSandbox()" />
+          </label>
+          <label>海外零阈值数字服务税 (EU/UK VAT, India GST) 法域税号白名单与 MoR 分流门禁
+            <select id="mordir-vat-select" onchange="recalcCrossBorderMorVsDirectSandbox()">
+              <option value="pass">未持有当地税号的 140+ 海外法域自动切流至 Paddle / FastSpring MoR，由 MoR 承担 100% 纳税责任 (安全)</option>
+              <option value="block_403">用单一美国/香港直连 Stripe 账户向欧盟/英国消费者裸卖订阅，触发零阈值 VAT 违法与跨境拒付 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>跨境实物包裹 10 位 HS Code 关税预缴与 Guaranteed DDP 完税交付门禁
+            <select id="mordir-ddp-select" onchange="recalcCrossBorderMorVsDirectSandbox()">
+              <option value="pass">超免税额跨境包裹强制通过 Global-e / Zonos 结账一口价预收关税与进口 VAT，门口零补费 (合规)</option>
+              <option value="block_422">按 DDU 未完税发货导致快递员上门向买家索要 €42 关税 + €15 代垫费，引发 32% 拒收退运 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>核心已注册市场 (&gt; $3.5M/yr GMV) 本地直连收单 vs. 5% MoR 费率拐点门禁
+            <select id="mordir-core-select" onchange="recalcCrossBorderMorVsDirectSandbox()">
+              <option value="pass">已持有本地实体与税号且 GMV &gt;$3.5M 的核心国走 Stripe/Adyen 直连 (~2.6%)，长尾国走 MoR (合规)</option>
+              <option value="block_451">在已拥有美国/英国本地实体与税号的 $15M 核心市场仍全量走 5% MoR，白交 220bps 费率溢价 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>核心大区直连 (Stripe/Adyen + Avalara) + 海外长尾国 MoR (Paddle / Global-e DDP) 双轨编排
+            <select id="mordir-opt-select" onchange="recalcCrossBorderMorVsDirectSandbox()">
+              <option value="enabled" selected>启用核心国直连 + 长尾国 MoR + Guaranteed DDP 双轨路由 (-41% 税务罚金与费率损耗 / HTTP 409)</option>
+              <option value="disabled">全量单一收单模式无国家税号与 DDP 分流基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度跨境税务与拒收损耗池</div>
+            <div class="finops-kpi-val" id="mordir-gross-kpi">$395,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">双轨MoR/直连路由后净成本</div>
+            <div class="finops-kpi-val" id="mordir-net-kpi" style="color:#6ee7b7;">$233,050</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省通道费与退运税罚</div>
+            <div class="finops-kpi-val" id="mordir-savings-kpi" style="color:#38bdf8;">$161,950</div>
+          </div>
+        </div>
+        <div id="mordir-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 HYBRID_CORE_DIRECT_AND_LONGTAIL_MOR_DDP_CONFIRM · Mandate: cross_border_mor_direct_optim_409
         </div>
       </div>
 
@@ -114818,6 +114978,79 @@ function recalcEcommerceChargebackCe3EthocaSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CHARGEBACK_REPRESENTMENT_AND_CE3_AUTHORIZED · Mandate: ecommerce_chargeback_ce3_200';
+}}
+
+function recalcCrossBorderMorVsDirectSandbox() {{
+  const grossInput = document.getElementById('mordir-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '395000'));
+  const vatGate = document.getElementById('mordir-vat-select').value;
+  const ddpGate = document.getElementById('mordir-ddp-select').value;
+  const coreGate = document.getElementById('mordir-core-select').value;
+  const optMode = document.getElementById('mordir-opt-select').value;
+
+  const grossKpi = document.getElementById('mordir-gross-kpi');
+  const netKpi = document.getElementById('mordir-net-kpi');
+  const savingsKpi = document.getElementById('mordir-savings-kpi');
+  const statusKpi = document.getElementById('mordir-status-kpi');
+  const banner = document.getElementById('mordir-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (coreGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 DOMESTIC_REGISTERED_MARKET_MOR_FEE_OVERPAY · Mandate: null';
+    return;
+  }}
+  if (vatGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNREGISTERED_FOREIGN_VAT_JURISDICTION_DIRECT_SALE · Mandate: null';
+    return;
+  }}
+  if (ddpGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNGUARANTEED_DDU_SHIPMENT_DOORSTEP_DUTY_REFUSAL_RISK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 HYBRID_CORE_DIRECT_AND_LONGTAIL_MOR_DDP_CONFIRM · Mandate: cross_border_mor_direct_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CROSS_BORDER_MOR_AND_DIRECT_ROUTING_AUTHORIZED · Mandate: cross_border_mor_direct_200';
 }}
 
 function updateStage1756Sandbox() {{

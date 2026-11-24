@@ -32910,6 +32910,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-chargeback-ce3-ethoca-sandbox", html_zh)
 
+    def test_cross_border_mor_vs_direct_acquiring_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderMorVsDirectAcquiringPolicyInput,
+            evaluate_cross_border_mor_vs_direct_acquiring_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_mor_vs_direct_acquiring_policy(
+            CrossBorderMorVsDirectAcquiringPolicyInput(
+                quarterly_foreign_vat_penalty_ddu_refusal_and_mor_overpay_pool_usd=395000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CROSS_BORDER_MOR_AND_DIRECT_ROUTING_AUTHORIZED",
+        )
+
+        vat = evaluate_cross_border_mor_vs_direct_acquiring_policy(
+            CrossBorderMorVsDirectAcquiringPolicyInput(
+                direct_sale_in_unregistered_foreign_vat_gst_jurisdiction=True
+            )
+        )
+        self.assertEqual(vat["status_code"], 403)
+        self.assertEqual(
+            vat["decision"],
+            "UNREGISTERED_FOREIGN_VAT_JURISDICTION_DIRECT_SALE",
+        )
+
+        ddp = evaluate_cross_border_mor_vs_direct_acquiring_policy(
+            CrossBorderMorVsDirectAcquiringPolicyInput(
+                cross_border_physical_parcel_above_deminimis_shipped_ddu=True
+            )
+        )
+        self.assertEqual(ddp["status_code"], 422)
+        self.assertEqual(
+            ddp["decision"],
+            "UNGUARANTEED_DDU_SHIPMENT_DOORSTEP_DUTY_REFUSAL_RISK",
+        )
+
+        core = evaluate_cross_border_mor_vs_direct_acquiring_policy(
+            CrossBorderMorVsDirectAcquiringPolicyInput(
+                registered_core_market_over_3_5m_gmv_routed_through_5pct_mor=True
+            )
+        )
+        self.assertEqual(core["status_code"], 451)
+        self.assertEqual(
+            core["decision"],
+            "DOMESTIC_REGISTERED_MARKET_MOR_FEE_OVERPAY",
+        )
+
+        optim = evaluate_cross_border_mor_vs_direct_acquiring_policy(
+            CrossBorderMorVsDirectAcquiringPolicyInput(
+                quarterly_foreign_vat_penalty_ddu_refusal_and_mor_overpay_pool_usd=395000.0,
+                hybrid_core_direct_and_longtail_mor_ddp_router_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 161950.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 233050.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_mor_vs_direct_acquiring_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-mor-vs-direct-acquiring-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
