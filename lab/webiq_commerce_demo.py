@@ -43303,6 +43303,82 @@ def evaluate_corporate_travel_expense_audit_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bRebateMdfCoopManagementPolicyInput:
+    quarterly_missed_cliff_rebate_channel_stuffing_and_mdf_fraud_pool_usd: float = 390000.0
+    po_routed_away_when_within_5pct_of_retroactive_rebate_cliff_tier: bool = False
+    sales_rebate_paid_on_gross_invoice_without_rma_tax_or_sell_through_deduction: bool = False
+    mdf_claim_paid_without_prior_auth_id_50pct_coop_cap_or_verified_pop: bool = False
+    cliff_tier_po_steerer_net_rma_basis_and_mdf_pop_lock_ready: bool = False
+
+
+def evaluate_b2b_rebate_mdf_coop_management_policy(
+    policy_input: B2bRebateMdfCoopManagementPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_missed_cliff_rebate_channel_stuffing_and_mdf_fraud_pool_usd
+        ),
+    )
+    if policy_input.mdf_claim_paid_without_prior_auth_id_50pct_coop_cap_or_verified_pop:
+        return {
+            "status_code": 451,
+            "decision": "UNAPPROVED_MDF_CLAIM_OR_INVALID_POP_COOP_RATIO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.po_routed_away_when_within_5pct_of_retroactive_rebate_cliff_tier:
+        return {
+            "status_code": 403,
+            "decision": "MISSED_RETROACTIVE_REBATE_CLIFF_TIER_OPPORTUNITY",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sales_rebate_paid_on_gross_invoice_without_rma_tax_or_sell_through_deduction:
+        return {
+            "status_code": 422,
+            "decision": "GROSS_INVOICE_OR_UNVERIFIED_SELL_THROUGH_REBATE_OVERPAY",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cliff_tier_po_steerer_net_rma_basis_and_mdf_pop_lock_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "REBATE_CLIFF_PACING_AND_NET_RMA_MDF_AUDIT_CONFIRM",
+            "mandate_token": "b2b_rebate_mdf_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_REBATE_AND_MDF_GOVERNANCE_AUTHORIZED",
+        "mandate_token": "b2b_rebate_mdf_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -58868,6 +58944,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_rebate_mdf_coop_management_guard = {
+        "authorized_200": evaluate_b2b_rebate_mdf_coop_management_policy(
+            B2bRebateMdfCoopManagementPolicyInput()
+        ),
+        "missed_retro_cliff_403": evaluate_b2b_rebate_mdf_coop_management_policy(
+            B2bRebateMdfCoopManagementPolicyInput(
+                po_routed_away_when_within_5pct_of_retroactive_rebate_cliff_tier=True
+            )
+        ),
+        "gross_channel_stuff_422": evaluate_b2b_rebate_mdf_coop_management_policy(
+            B2bRebateMdfCoopManagementPolicyInput(
+                sales_rebate_paid_on_gross_invoice_without_rma_tax_or_sell_through_deduction=True
+            )
+        ),
+        "unapproved_mdf_pop_451": evaluate_b2b_rebate_mdf_coop_management_policy(
+            B2bRebateMdfCoopManagementPolicyInput(
+                mdf_claim_paid_without_prior_auth_id_50pct_coop_cap_or_verified_pop=True
+            )
+        ),
+        "cliff_net_rma_mdf_409": evaluate_b2b_rebate_mdf_coop_management_policy(
+            B2bRebateMdfCoopManagementPolicyInput(
+                cliff_tier_po_steerer_net_rma_basis_and_mdf_pop_lock_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -59367,6 +59469,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agent_m2m_micropayments_x402_guard": agent_m2m_micropayments_x402_guard,
         "ecommerce_promo_coupon_affiliate_shield_guard": ecommerce_promo_coupon_affiliate_shield_guard,
         "corporate_travel_expense_audit_guard": corporate_travel_expense_audit_guard,
+        "b2b_rebate_mdf_coop_management_guard": b2b_rebate_mdf_coop_management_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -85713,6 +85816,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="teaud-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 EXPENSE_CROSS_RAIL_DEDUP_AND_FOLIO_FCPA_AUDIT_CONFIRM · Mandate: corporate_expense_audit_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 371 (#490 🏆 490th Guide Milestone · SVG #814 · Sandbox #264) Enterprise B2B Rebate & MDF Copilot -->
+      <div class="finops-box" id="b2b-rebate-mdf-coop-management-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业 B2B 采购返利、价保补差与渠道基金 MDF (Enable / SAP Vistex / Flintfox / Channelscaler) 沙盒（🏆 第 490 篇指南里程碑）</div>
+            <div class="finops-sub">Round 371 (#490 🏆 490th Guide Milestone · SVG #814 · Sandbox #264) · 全溯阶梯临界点 (Retroactive Cliff Tier) 边际成本自动凑单防“省 $300 小钱丢 $30,000 大返利” (HTTP 403) + 强制剥离增值税/运费/RMA 退货与核验 POS 实销防经销商年末压货骗返利 (HTTP 422) + MDF 事前立项码 + 50% 共担上限 + 视觉 POP 品牌核验 (HTTP 451) + 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="rebmfd-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度痛失全溯阶梯采购返利、经销商年底压货退货骗取高档返利及渠道 MDF 虚假核销池 ($)
+            <input type="number" id="rebmfd-gross-input" value="390000" min="10000" step="5000" oninput="recalcB2bRebateMdfCoopSandbox()" />
+          </label>
+          <label>全溯型阶梯返利临界点 (Retroactive Dollar-1 Cliff Tier) 边际净成本凑单路由门禁
+            <select id="rebmfd-cliff-select" onchange="recalcB2bRebateMdfCoopSandbox()">
+              <option value="pass">当累计采购达阶梯门槛 90%+ 时将解锁的全年追溯返利折入边际单价，优先凑满阶梯 (安全)</option>
+              <option value="block_403">距 $1M 全溯阶梯仅差 $12k，因别家便宜 $300 将 $15k 订单分流，痛失 +$30,000 阶梯返利 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>销售返利净合格基数 (扣税/运费/特价单/60d RMA) 与终端实销 (POS Sell-Through) 门禁
+            <select id="rebmfd-basis-select" onchange="recalcB2bRebateMdfCoopSandbox()">
+              <option value="pass">严格扣除税费、运费与 60 天内 RMA 退货并核验 EDI 867 终端实销，以 Credit Memo 结算 (合规)</option>
+              <option value="block_422">经销商 12 月 30 日突击压货按含税毛额领走 8% 现金返利，次年 2 月将 25% 货物退回 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>渠道市场发展基金 (MDF / Co-Op) 事前立项审批号、50% 共担比例上限与 POP 视觉验真门禁
+            <select id="rebmfd-mdf-select" onchange="recalcB2bRebateMdfCoopSandbox()">
+              <option value="pass">强制要求事前 Pre-Auth ID、<=50% 费用共担及现场照片/账单 CV 品牌 Logo 与发票查重 (合规)</option>
+              <option value="block_451">代理商无事前立项，拿同一场 $40k 展会发票向 3 家厂商各报销 100% 全额补贴 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Enable/Vistex 阶梯凑单寻优 + 净合格基数防压货 + MDF 50% 共担 POP 审计全链路编排
+            <select id="rebmfd-opt-select" onchange="recalcB2bRebateMdfCoopSandbox()">
+              <option value="enabled" selected>启用全溯阶梯凑单 + 净基数防压货锁 + MDF POP 视觉审计 (-41% 返利漏领与多发损耗 / HTTP 409)</option>
+              <option value="disabled">传统季度末 Excel 手工统计与毛额返利发放基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度返利漏领与压货骗补池</div>
+            <div class="finops-kpi-val" id="rebmfd-gross-kpi">$390,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">阶梯凑单与净基数锁后净成本</div>
+            <div class="finops-kpi-val" id="rebmfd-net-kpi" style="color:#6ee7b7;">$230,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净增采购返利与防骗补</div>
+            <div class="finops-kpi-val" id="rebmfd-savings-kpi" style="color:#38bdf8;">$159,900</div>
+          </div>
+        </div>
+        <div id="rebmfd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 REBATE_CLIFF_PACING_AND_NET_RMA_MDF_AUDIT_CONFIRM · Mandate: b2b_rebate_mdf_optim_409
         </div>
       </div>
 
@@ -118313,6 +118473,79 @@ function recalcCorporateTravelExpenseAuditSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CORPORATE_EXPENSE_AUDIT_AUTHORIZED · Mandate: corporate_expense_audit_200';
+}}
+
+function recalcB2bRebateMdfCoopSandbox() {{
+  const grossInput = document.getElementById('rebmfd-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '390000'));
+  const cliffGate = document.getElementById('rebmfd-cliff-select').value;
+  const basisGate = document.getElementById('rebmfd-basis-select').value;
+  const mdfGate = document.getElementById('rebmfd-mdf-select').value;
+  const optMode = document.getElementById('rebmfd-opt-select').value;
+
+  const grossKpi = document.getElementById('rebmfd-gross-kpi');
+  const netKpi = document.getElementById('rebmfd-net-kpi');
+  const savingsKpi = document.getElementById('rebmfd-savings-kpi');
+  const statusKpi = document.getElementById('rebmfd-status-kpi');
+  const banner = document.getElementById('rebmfd-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (mdfGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNAPPROVED_MDF_CLAIM_OR_INVALID_POP_COOP_RATIO · Mandate: null';
+    return;
+  }}
+  if (cliffGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MISSED_RETROACTIVE_REBATE_CLIFF_TIER_OPPORTUNITY · Mandate: null';
+    return;
+  }}
+  if (basisGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 GROSS_INVOICE_OR_UNVERIFIED_SELL_THROUGH_REBATE_OVERPAY · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 REBATE_CLIFF_PACING_AND_NET_RMA_MDF_AUDIT_CONFIRM · Mandate: b2b_rebate_mdf_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_REBATE_AND_MDF_GOVERNANCE_AUTHORIZED · Mandate: b2b_rebate_mdf_200';
 }}
 
 function updateStage1756Sandbox() {{

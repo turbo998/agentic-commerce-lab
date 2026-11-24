@@ -33915,6 +33915,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("corporate-travel-expense-audit-sandbox", html_zh)
 
+    def test_b2b_rebate_mdf_coop_management_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bRebateMdfCoopManagementPolicyInput,
+            evaluate_b2b_rebate_mdf_coop_management_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_rebate_mdf_coop_management_policy(
+            B2bRebateMdfCoopManagementPolicyInput(
+                quarterly_missed_cliff_rebate_channel_stuffing_and_mdf_fraud_pool_usd=390000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_REBATE_AND_MDF_GOVERNANCE_AUTHORIZED",
+        )
+
+        cliff = evaluate_b2b_rebate_mdf_coop_management_policy(
+            B2bRebateMdfCoopManagementPolicyInput(
+                po_routed_away_when_within_5pct_of_retroactive_rebate_cliff_tier=True
+            )
+        )
+        self.assertEqual(cliff["status_code"], 403)
+        self.assertEqual(
+            cliff["decision"],
+            "MISSED_RETROACTIVE_REBATE_CLIFF_TIER_OPPORTUNITY",
+        )
+
+        basis = evaluate_b2b_rebate_mdf_coop_management_policy(
+            B2bRebateMdfCoopManagementPolicyInput(
+                sales_rebate_paid_on_gross_invoice_without_rma_tax_or_sell_through_deduction=True
+            )
+        )
+        self.assertEqual(basis["status_code"], 422)
+        self.assertEqual(
+            basis["decision"],
+            "GROSS_INVOICE_OR_UNVERIFIED_SELL_THROUGH_REBATE_OVERPAY",
+        )
+
+        mdf = evaluate_b2b_rebate_mdf_coop_management_policy(
+            B2bRebateMdfCoopManagementPolicyInput(
+                mdf_claim_paid_without_prior_auth_id_50pct_coop_cap_or_verified_pop=True
+            )
+        )
+        self.assertEqual(mdf["status_code"], 451)
+        self.assertEqual(
+            mdf["decision"],
+            "UNAPPROVED_MDF_CLAIM_OR_INVALID_POP_COOP_RATIO",
+        )
+
+        optim = evaluate_b2b_rebate_mdf_coop_management_policy(
+            B2bRebateMdfCoopManagementPolicyInput(
+                quarterly_missed_cliff_rebate_channel_stuffing_and_mdf_fraud_pool_usd=390000.0,
+                cliff_tier_po_steerer_net_rma_basis_and_mdf_pop_lock_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 159900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 230100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_rebate_mdf_coop_management_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-rebate-mdf-coop-management-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

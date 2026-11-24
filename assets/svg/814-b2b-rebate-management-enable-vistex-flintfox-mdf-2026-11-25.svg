@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg814" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="50%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="accent814" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg814)"/>
+  <rect x="30" y="24" width="1140" height="582" rx="16" fill="#0f172a" fill-opacity="0.82" stroke="#334155" stroke-width="1.5"/>
+  <rect x="30" y="24" width="1140" height="6" rx="3" fill="url(#accent814)"/>
+
+  <text x="60" y="68" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.2">🏆 490TH GUIDE MILESTONE · ROUND 371 · FAQ #490 · SVG #814 · SANDBOX #264 · TEST #1368 · B2B REBATES &amp; MDF</text>
+  <text x="60" y="102" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="800">Enterprise B2B Rebate, Ship-and-Debit &amp; MDF Copilot (Enable / SAP Vistex / Flintfox)</text>
+  <text x="60" y="128" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Retroactive Cliff-Tier PO Pacing · Net-of-RMA Rebate Basis Lock · MDF Proof-of-Performance (POP) Deduplication (-41% Cost)</text>
+
+  <!-- Gate 1 -->
+  <rect x="60" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="80" y="182" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">1. Retroactive Cliff-Tier Pacing Alert</text>
+  <text x="80" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Buyer reaches $988k of a $1.0M Retroactive</text>
+  <text x="80" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  Cliff Rebate Tier (where hitting $1M unlocks</text>
+  <text x="80" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  6% back on Dollar-1 = +$30,000 jump),</text>
+  <text x="80" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  but routes a $15k Dec 28 PO to another vendor</text>
+  <text x="80" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Calculates Marginal Effective Price (negative</text>
+  <text x="80" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  net cost!) &amp; steers PO to unlock cliff tier</text>
+  <rect x="80" y="370" width="305" height="34" rx="6" fill="#450a0a" stroke="#ef4444"/>
+  <text x="92" y="392" fill="#fecaca" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 403 MISSED_RETROACTIVE_REBATE_CLIFF</text>
+
+  <!-- Gate 2 -->
+  <rect x="427" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#f97316" stroke-width="1.5"/>
+  <text x="447" y="182" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">2. Net-of-RMA &amp; Channel-Stuffing Clawback</text>
+  <text x="447" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Distributors stuff Q4 orders on Dec 30 to</text>
+  <text x="447" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  hit the 8% Platinum Rebate Tier, collect the</text>
+  <text x="447" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  cash rebate in Jan, and return 25% of the</text>
+  <text x="447" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  inventory via RMA in Feb</text>
+  <text x="447" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Computes rebates strictly on Net Settled</text>
+  <text x="447" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  POS Sell-Through minus RMAs &amp; Freight/Tax</text>
+  <rect x="447" y="370" width="305" height="34" rx="6" fill="#431407" stroke="#f97316"/>
+  <text x="459" y="392" fill="#fed7aa" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 422 GROSS_INVOICE_CHANNEL_STUFF_REBATE</text>
+
+  <!-- Gate 3 -->
+  <rect x="795" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#eab308" stroke-width="1.5"/>
+  <text x="815" y="182" fill="#fde047" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">3. MDF / Co-Op Proof-of-Performance Lock</text>
+  <text x="815" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Channel partners submit the same $40,000</text>
+  <text x="815" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  trade-show booth invoice for 100% MDF</text>
+  <text x="815" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  reimbursement or submit photoshopped ad</text>
+  <text x="815" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  screenshots without prior MDF Pre-Approval</text>
+  <text x="815" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Enforces Prior_MDF_Auth_ID + 50% Co-Op</text>
+  <text x="815" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  Cost-Share Cap + Brand Logo CV Verification</text>
+  <rect x="815" y="370" width="305" height="34" rx="6" fill="#422006" stroke="#eab308"/>
+  <text x="827" y="392" fill="#fef08a" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 451 UNAPPROVED_OR_OVERCLAIMED_MDF_POP</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="444" width="1080" height="138" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <text x="84" y="476" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🏆 490th Bilingual Guide Matrix (Quarterly Missed Supplier Rebates, Overpaid Channel Stuffing &amp; MDF Fraud Pool: $390,000)</text>
+  <text x="84" y="504" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Collaborative B2B Rebate &amp; Trading Programs: Enable | SAP S/4HANA Native Chargebacks, Ship-and-Debit &amp; Rebates: SAP Vistex</text>
+  <text x="84" y="528" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Real-Time D365 / ERP Trade Pricing &amp; Accruals: Flintfox | Partner MDF &amp; Co-Op Funds: Channelscaler / Zift</text>
+  <text x="84" y="556" fill="#38bdf8" font-family="Consolas, monospace" font-size="14" font-weight="700">HTTP 409 REBATE_CLIFF_PACING_AND_NET_RMA_MDF_AUDIT_CONFIRM · Savings: $159,900/qtr (-41.0%) · Net: $230,100</text>
+</svg>
