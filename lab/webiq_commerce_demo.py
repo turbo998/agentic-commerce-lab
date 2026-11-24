@@ -40719,6 +40719,82 @@ def evaluate_ecommerce_split_tender_2pc_waterfall_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceDomSplitCapCartLeasePolicyInput:
+    quarterly_split_freight_cart_hoarding_and_short_pick_pool_usd: float = 420000.0
+    anonymous_cart_add_hard_stock_lock_or_multi_lease_hoarding: bool = False
+    split_shipment_freight_erodes_margin_floor_or_excessive_parcels: bool = False
+    unquarantined_store_short_pick_loop_or_duplicate_reauth: bool = False
+    checkout_init_lease_margin_dom_solver_and_short_pick_lock_ready: bool = False
+
+
+def evaluate_ecommerce_dom_split_cap_cart_lease_policy(
+    policy_input: EcommerceDomSplitCapCartLeasePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_split_freight_cart_hoarding_and_short_pick_pool_usd
+        ),
+    )
+    if policy_input.unquarantined_store_short_pick_loop_or_duplicate_reauth:
+        return {
+            "status_code": 451,
+            "decision": "UNQUARANTINED_STORE_SHORT_PICK_REASSIGNMENT_LOOP_OR_DUPLICATE_REAUTH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.anonymous_cart_add_hard_stock_lock_or_multi_lease_hoarding:
+        return {
+            "status_code": 403,
+            "decision": "ANONYMOUS_CART_ADD_HARD_STOCK_LOCK_OR_MULTI_LEASE_HOARDING",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.split_shipment_freight_erodes_margin_floor_or_excessive_parcels:
+        return {
+            "status_code": 422,
+            "decision": "SPLIT_SHIPMENT_FREIGHT_ERODES_ORDER_MARGIN_FLOOR_OR_EXCESSIVE_PARCEL_COUNT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.checkout_init_lease_margin_dom_solver_and_short_pick_lock_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CHECKOUT_LEASE_MARGIN_AWARE_DOM_SPLIT_CAP_AND_SHORT_PICK_QUARANTINE_CONFIRM",
+            "mandate_token": "dom_split_cap_cart_lease_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_DOM_ORDER_ROUTING_AND_CART_LEASE_AUTHORIZED",
+        "mandate_token": "dom_split_cap_cart_lease_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -55400,6 +55476,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_dom_split_cap_cart_lease_guard = {
+        "authorized_200": evaluate_ecommerce_dom_split_cap_cart_lease_policy(
+            EcommerceDomSplitCapCartLeasePolicyInput()
+        ),
+        "anonymous_cart_hoarding_403": evaluate_ecommerce_dom_split_cap_cart_lease_policy(
+            EcommerceDomSplitCapCartLeasePolicyInput(
+                anonymous_cart_add_hard_stock_lock_or_multi_lease_hoarding=True
+            )
+        ),
+        "split_freight_margin_erosion_422": evaluate_ecommerce_dom_split_cap_cart_lease_policy(
+            EcommerceDomSplitCapCartLeasePolicyInput(
+                split_shipment_freight_erodes_margin_floor_or_excessive_parcels=True
+            )
+        ),
+        "unquarantined_short_pick_451": evaluate_ecommerce_dom_split_cap_cart_lease_policy(
+            EcommerceDomSplitCapCartLeasePolicyInput(
+                unquarantined_store_short_pick_loop_or_duplicate_reauth=True
+            )
+        ),
+        "checkout_lease_dom_quarantine_409": evaluate_ecommerce_dom_split_cap_cart_lease_policy(
+            EcommerceDomSplitCapCartLeasePolicyInput(
+                checkout_init_lease_margin_dom_solver_and_short_pick_lock_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -55865,6 +55967,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "hybrid_catalog_rag_rrf_stock_guard": hybrid_catalog_rag_rrf_stock_guard,
         "corporate_spend_vcn_encumbrance_guard": corporate_spend_vcn_encumbrance_guard,
         "ecommerce_split_tender_2pc_waterfall_guard": ecommerce_split_tender_2pc_waterfall_guard,
+        "ecommerce_dom_split_cap_cart_lease_guard": ecommerce_dom_split_cap_cart_lease_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -80273,6 +80376,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="spltnd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SPLIT_TENDER_2PC_HOLD_NONCASH_FIRST_WATERFALL_AND_POINTS_VESTING_CONFIRM · Mandate: split_tender_2pc_waterfall_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 337 (#456 · 🏆 SVG #780 & 230th Sandbox Milestone) E-Commerce DOM Order Routing & Cart Lease FSM -->
+      <div class="finops-box" id="ecommerce-dom-split-cap-cart-lease-sandbox" style="margin-top:12px;border-color:#2563eb;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🚚 全渠道分布式订单寻源 DOM 与购物车锁库状态机 (Manhattan / Fluent Commerce / Shopify) 沙盒（🏆 第 230 个沙盒里程碑）</div>
+            <div class="finops-sub">Round 337 (#456 · 🏆 SVG #780 &amp; 230th Sandbox Milestone) · 加购阶段零硬锁库、仅在实名进入收银台时签发 6m 单账户租约防黄牛锁空全站 (HTTP 403) + 毛利感知拆单规划器防“$65 包邮单拆 4 个包裹花 $30 快递费倒亏 $8” (HTTP 422) + 门店拣货拒单 (Short-Pick) 秒级清零线上库存隔离 72h 防连环拒单 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="domspl-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度全渠道拆单超额快递费穿仓、未登录购物车恶意占库流失及门店连环拒单退单池 ($)
+            <input type="number" id="domspl-gross-input" value="420000" min="10000" step="5000" oninput="recalcEcommerceDomSplitCapCartLeaseSandbox()" />
+          </label>
+          <label>两阶段购物车库存状态机 (Add-to-Cart 无锁校验 vs Checkout-Init 6 分钟唯一硬租约) 门禁
+            <select id="domspl-lease-select" onchange="recalcEcommerceDomSplitCapCartLeaseSandbox()">
+              <option value="pass">加购阶段不锁物理库存，仅在实名拉起收银台时签发 6 分钟租约且每用户限 1 个活跃租约 (安全)</option>
+              <option value="block_403">在匿名 POST /cart/add 阶段直接硬扣可用库存，遭爬虫脚本 0 成本把 5,000 件新品锁空 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>毛利感知 DOM 拆单规划器 (Gross_Margin - Parcel_Freight &gt;= 8% &amp; Max_Splits &lt;= 2) 门禁
+            <select id="domspl-split-select" onchange="recalcEcommerceDomSplitCapCartLeaseSandbox()">
+              <option value="pass">自动选择单仓齐码中心仓 1 个包裹整单发出 ($8.20 运费)，守住 +$13.80 订单净利 (合规)</option>
+              <option value="block_422">按距离最近把 $65 免邮单 ($22 毛利) 拆给 4 家门店发 4 个包裹，花 $30 运费净亏 -$8 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>线下门店拣货缺货拒单 (Short-Pick) 秒级清零线上 ATP 隔离 72 小时门禁
+            <select id="domspl-short-select" onchange="recalcEcommerceDomSplitCapCartLeaseSandbox()">
+              <option value="pass">门店上报 Short-Pick 瞬间将该店该 SKU 线上 ATP 清零隔离 72h，并静默改派备选仓免重扣 (合规)</option>
+              <option value="block_451">门店缺货拒单后未清零幽灵库存，导致后续 20 单继续派往同一空货架门店死循环延迟 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>收银台短租约防占库 + 毛利感知控拆单 + 拒单门店秒级隔离全链路编排
+            <select id="domspl-opt-select" onchange="recalcEcommerceDomSplitCapCartLeaseSandbox()">
+              <option value="enabled" selected>启用 Checkout 唯一租约 + 单仓合单寻优 + 拒单 72h 隔离 (-39% 履约损耗 / HTTP 409)</option>
+              <option value="disabled">加购即硬锁库存 + 贪心就近碎单拆分 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度碎单运费与占库损耗池</div>
+            <div class="finops-kpi-val" id="domspl-gross-kpi">$420,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">毛利合单与短租约后净成本</div>
+            <div class="finops-kpi-val" id="domspl-net-kpi" style="color:#6ee7b7;">$256,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净节省快递费与保住GMV</div>
+            <div class="finops-kpi-val" id="domspl-savings-kpi" style="color:#38bdf8;">$163,800</div>
+          </div>
+        </div>
+        <div id="domspl-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CHECKOUT_LEASE_MARGIN_AWARE_DOM_SPLIT_CAP_AND_SHORT_PICK_QUARANTINE_CONFIRM · Mandate: dom_split_cap_cart_lease_optim_409
         </div>
       </div>
 
@@ -110391,6 +110551,79 @@ function recalcEcommerceSplitTender2pcWaterfallSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_SPLIT_TENDER_2PC_AND_REFUND_WATERFALL_AUTHORIZED · Mandate: split_tender_2pc_waterfall_200';
+}}
+
+function recalcEcommerceDomSplitCapCartLeaseSandbox() {{
+  const grossInput = document.getElementById('domspl-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '420000'));
+  const leaseGate = document.getElementById('domspl-lease-select').value;
+  const splitGate = document.getElementById('domspl-split-select').value;
+  const shortGate = document.getElementById('domspl-short-select').value;
+  const optMode = document.getElementById('domspl-opt-select').value;
+
+  const grossKpi = document.getElementById('domspl-gross-kpi');
+  const netKpi = document.getElementById('domspl-net-kpi');
+  const savingsKpi = document.getElementById('domspl-savings-kpi');
+  const statusKpi = document.getElementById('domspl-status-kpi');
+  const banner = document.getElementById('domspl-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (shortGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNQUARANTINED_STORE_SHORT_PICK_REASSIGNMENT_LOOP_OR_DUPLICATE_REAUTH · Mandate: null';
+    return;
+  }}
+  if (leaseGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ANONYMOUS_CART_ADD_HARD_STOCK_LOCK_OR_MULTI_LEASE_HOARDING · Mandate: null';
+    return;
+  }}
+  if (splitGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SPLIT_SHIPMENT_FREIGHT_ERODES_ORDER_MARGIN_FLOOR_OR_EXCESSIVE_PARCEL_COUNT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CHECKOUT_LEASE_MARGIN_AWARE_DOM_SPLIT_CAP_AND_SHORT_PICK_QUARANTINE_CONFIRM · Mandate: dom_split_cap_cart_lease_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_DOM_ORDER_ROUTING_AND_CART_LEASE_AUTHORIZED · Mandate: dom_split_cap_cart_lease_200';
 }}
 
 function updateStage1756Sandbox() {{

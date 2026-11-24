@@ -31637,6 +31637,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-split-tender-2pc-waterfall-sandbox", html_zh)
 
+    def test_ecommerce_dom_split_cap_cart_lease_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceDomSplitCapCartLeasePolicyInput,
+            evaluate_ecommerce_dom_split_cap_cart_lease_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_dom_split_cap_cart_lease_policy(
+            EcommerceDomSplitCapCartLeasePolicyInput(
+                quarterly_split_freight_cart_hoarding_and_short_pick_pool_usd=420000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_DOM_ORDER_ROUTING_AND_CART_LEASE_AUTHORIZED",
+        )
+
+        hoard = evaluate_ecommerce_dom_split_cap_cart_lease_policy(
+            EcommerceDomSplitCapCartLeasePolicyInput(
+                anonymous_cart_add_hard_stock_lock_or_multi_lease_hoarding=True
+            )
+        )
+        self.assertEqual(hoard["status_code"], 403)
+        self.assertEqual(
+            hoard["decision"],
+            "ANONYMOUS_CART_ADD_HARD_STOCK_LOCK_OR_MULTI_LEASE_HOARDING",
+        )
+
+        split = evaluate_ecommerce_dom_split_cap_cart_lease_policy(
+            EcommerceDomSplitCapCartLeasePolicyInput(
+                split_shipment_freight_erodes_margin_floor_or_excessive_parcels=True
+            )
+        )
+        self.assertEqual(split["status_code"], 422)
+        self.assertEqual(
+            split["decision"],
+            "SPLIT_SHIPMENT_FREIGHT_ERODES_ORDER_MARGIN_FLOOR_OR_EXCESSIVE_PARCEL_COUNT",
+        )
+
+        short = evaluate_ecommerce_dom_split_cap_cart_lease_policy(
+            EcommerceDomSplitCapCartLeasePolicyInput(
+                unquarantined_store_short_pick_loop_or_duplicate_reauth=True
+            )
+        )
+        self.assertEqual(short["status_code"], 451)
+        self.assertEqual(
+            short["decision"],
+            "UNQUARANTINED_STORE_SHORT_PICK_REASSIGNMENT_LOOP_OR_DUPLICATE_REAUTH",
+        )
+
+        optim = evaluate_ecommerce_dom_split_cap_cart_lease_policy(
+            EcommerceDomSplitCapCartLeasePolicyInput(
+                quarterly_split_freight_cart_hoarding_and_short_pick_pool_usd=420000.0,
+                checkout_init_lease_margin_dom_solver_and_short_pick_lock_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 163800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 256200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_dom_split_cap_cart_lease_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-dom-split-cap-cart-lease-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

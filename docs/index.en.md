@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`455` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`456` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (32 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (59 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (173 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (174 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (100 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (40 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (51 guides)](#tax-fx-privacy-disputes)
@@ -125,7 +125,7 @@
 | 59 | **E-Commerce Split-Tender Checkout (`Gift Card + Loyalty Points + Credit Card`: `Talon.One / Yotpo / Shopify Plus GiftCard / Adyen + Stripe`), Two-Phase `Soft-Reserve` Saga (`2PC`), Anti-Laundering Partial-Refund Waterfall & `14d Pending Points` Vesting (`-39%` Stranded Balance & Cashout Loss) FAQ** | [English](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.en.md) · [中文](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (173 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (174 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -304,6 +304,7 @@
 | 171 | **🏆 Franchise Commerce POS Royalty Sweep, `FTC FDD Item 11` Ad-Fund Escrow, `3PD` Net-Sales Base & Commissary `BOM` Yield Audit (`FranConnect / Oracle Simphony / Toast Enterprise / Adyen for Platforms` · 🏆 1,325th Test Milestone) (`-39%` Skimming & ACH Default Loss) FAQ** | [English](franchise-royalty-sweep-ad-fund-escrow-3pd-net-base-commissary-selection-faq.en.md) · [中文](franchise-royalty-sweep-ad-fund-escrow-3pd-net-base-commissary-selection-faq.md) |
 | 172 | **Cross-Border E-Commerce Multilingual Customer Service & `RMA` Returns Automation (`Loop Returns / Narvar / ReturnGO / Zendesk AI`), Dynamic `Keep-It` Net-Recovery Economics, `115% Bonus Store Credit` Anti-Cashout Ledger & Carrier Weight `FTID` Guard (`-39%` Reverse Freight & RMA Fraud Loss) FAQ** | [English](cross-border-rma-returns-keep-it-economics-bonus-exchange-credit-ftid-wardrobing-selection-faq.en.md) · [中文](cross-border-rma-returns-keep-it-economics-bonus-exchange-credit-ftid-wardrobing-selection-faq.md) |
 | 173 | **🏆 OTA Corporate Travel Management (`TMC`: `Navan / TravelPerk / SAP Concur / Amadeus NDC` · 🏆 Round 330 Milestone), `IATA NDC 21.3` Continuous Pricing, `Hold-Before-Cancel` Price-Drop Re-Shopping & Corporate `Unused e-Ticket (UET)` Credit Bank (`-38%` Travel Overpay & Credit Expiry Loss) FAQ** | [English](ota-corporate-travel-tmc-ndc-continuous-pricing-unused-eticket-irrops-rebooking-selection-faq.en.md) · [中文](ota-corporate-travel-tmc-ndc-continuous-pricing-unused-eticket-irrops-rebooking-selection-faq.md) |
+| 174 | **🏆 E-Commerce Distributed Order Management (`DOM`), Two-Tier Cart-to-Checkout Inventory Lease FSM & Profit-Aware Split-Shipment Cap (`Manhattan Active Omni / Fluent Commerce / Blue Yonder / Shopify Plus` · 🏆 780th SVG & 230th Sandbox Milestone), 6m Checkout-Init Lease, `Max_Splits <= 2` Margin Floor & `72h` `Short-Pick` Quarantine (`-39%` Split-Freight & Hoarding Loss) FAQ** | [English](ecommerce-dom-order-routing-manhattan-fluent-blueyonder-split-shipment-cap-cart-lease-selection-faq.en.md) · [中文](ecommerce-dom-order-routing-manhattan-fluent-blueyonder-split-shipment-cap-cart-lease-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (100 Guides)
