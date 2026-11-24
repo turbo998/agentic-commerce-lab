@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`495` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`496` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -11,7 +11,7 @@
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（184 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（112 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（45 篇）](#saas-finops-micropayments)
-- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（56 篇）](#tax-fx-privacy-disputes)
+- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（57 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
 
@@ -497,7 +497,7 @@
 | 45 | **🏆 商业智能体机器微支付（`M2M / Agent-to-Agent Micropayments`）、`HTTP 402 (x402 / L402)` 与预充值积分账本选型对比（`Coinbase x402 / Stripe Metered & Credits / Lightning L402 / Skyfire` · 🏆 第 1,365 项确定性单元测试里程碑）、拦截 `<$5.00` 小额请求走 `$0.30` 固定手续费信用卡通道、单次 `HTTP 402` 出价上限锁（`<=$0.05/call`）及上游 `200 OK` 验真后原子交割净省 43% Agent 架构选型 FAQ** | [中文](agent-to-agent-m2m-micropayments-x402-l402-stripe-metered-skyfire-subcent-budget-selection-faq.md) · [English](agent-to-agent-m2m-micropayments-x402-l402-stripe-metered-skyfire-subcent-budget-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（56 篇）
+## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（57 篇）
 
 > 聚焦 Merchant of Record（MoR）选型、跨境 HS 编码完税价（DDP）与 VAT/Sales Tax 合规、实时锁汇与 ISO 20022 多币种净额轧差、PCI-DSS v4.0.1 / GDPR 加密粉碎，以及 Visa CE 3.0 / VAMP 友好欺诈抗辩证据链。
 
@@ -559,6 +559,7 @@
 | 54 | **🏆 跨境电商与多商户平台争议拒付防卫与反欺诈智能体（`Chargeflow / Justt / Signifyd / Riskified / Stripe Radar + Visa CE 3.0` · 🏆 第 355 轮里程碑）、`Visa CE 3.0` 历史 `120d–365d` 双交易指纹自动举证、预争议（`Verifi RDR / Ethoca`）与商城客服双倍退款硬互斥锁及净期望值（`Net-EV > $10`）申诉分流净省 40% Agent 架构选型 FAQ** | [中文](ecommerce-chargeback-representment-visa-ce3-ethoca-cdrn-signifyd-chargeflow-selection-faq.md) · [English](ecommerce-chargeback-representment-visa-ce3-ethoca-cdrn-signifyd-chargeflow-selection-faq.en.md) |
 | 55 | **🏆 跨境商业名义商户（`Merchant of Record - MoR`: `Paddle / FastSpring / Global-e`）vs. 自建本地直连收单（`Direct Acquiring`: `Stripe / Adyen + Avalara` · 🏆 第 475 篇双语决策指南里程碑）、海外零阈值数字税（`VAT / GST`）代征免责、实物包裹 10 位 `HS Code` 完税交付（`Guaranteed DDP`）防上门收税拒收及 `$3.5M GMV` 核心国/长尾国双轨分流净省 41% Agent 架构选型 FAQ** | [中文](cross-border-merchant-of-record-mor-paddle-global-e-vs-stripe-direct-tax-acquiring-selection-faq.md) · [English](cross-border-merchant-of-record-mor-paddle-global-e-vs-stripe-direct-tax-acquiring-selection-faq.en.md) |
 | 56 | **🏆 跨境多币种定价、本币原路归集（`Like-for-Like Settlement`）与锁汇退款智能体（`Airwallex / Adyen / Stripe Adaptive Pricing / Kantox / Wise` · 🏆 第 485 篇双语决策指南里程碑）、消灭收外币强转 `USD` 再买回外币的 `400 bps` 双重换汇、退货强制锚定原单展示币种从本币池直退及 `Lock-FX TTL / ±1.5%` 汇率走廊净省 42% Agent 架构选型 FAQ** | [中文](cross-border-multi-currency-fx-hedging-airwallex-adyen-stripe-like-for-like-refund-rate-lock-selection-faq.md) · [English](cross-border-multi-currency-fx-hedging-airwallex-adyen-stripe-like-for-like-refund-rate-lock-selection-faq.en.md) |
+| 57 | **🏆 跨境电商海关商品编码归类（`10-Digit HTS`）、小额免税（`Section 321 / EU IOSS`）与退货 `99%` 退税选型对比（`Zonos / Avalara Cross-Border / Global-e / Flexport` · 🏆 第 820 张架构图与第 270 个策略沙盒双里程碑）、10 位税号材质与真实原产地（`CoO`）强校验锁、同收货人 24h 免税额聚合防违规拆包及 `CBP Form 7551` 退税闭环净省 41% Agent 架构选型 FAQ** | [中文](cross-border-customs-hts-tariff-zonos-avalara-flexport-de-minimis-duty-drawback-selection-faq.md) · [English](cross-border-customs-hts-tariff-zonos-avalara-flexport-de-minimis-duty-drawback-selection-faq.en.md) |
 
 <a id="architecture-blueprints"></a>
 ## 七、确定性领域架构蓝图（`docs/architecture/` · 21 份）

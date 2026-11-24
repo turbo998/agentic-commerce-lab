@@ -43753,6 +43753,82 @@ def evaluate_retail_media_network_iroas_bidding_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderCustomsHtsDutyDrawbackPolicyInput:
+    quarterly_tariff_penalty_seizure_and_stranded_return_duty_pool_usd: float = 400000.0
+    hts_code_below_10_digits_or_ship_from_substituted_for_country_of_origin: bool = False
+    same_consignee_24h_orders_artificially_split_to_evade_de_minimis_cap: bool = False
+    cross_border_return_missing_entry_7501_drawback_or_chapter98_relief: bool = False
+    fta_preferential_origin_and_automated_99pct_duty_drawback_ready: bool = False
+
+
+def evaluate_cross_border_customs_hts_duty_drawback_policy(
+    policy_input: CrossBorderCustomsHtsDutyDrawbackPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_tariff_penalty_seizure_and_stranded_return_duty_pool_usd
+        ),
+    )
+    if policy_input.cross_border_return_missing_entry_7501_drawback_or_chapter98_relief:
+        return {
+            "status_code": 451,
+            "decision": "UNLINKED_CROSS_BORDER_RETURN_DUTY_DRAWBACK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hts_code_below_10_digits_or_ship_from_substituted_for_country_of_origin:
+        return {
+            "status_code": 403,
+            "decision": "UNVERIFIED_10DIGIT_HTS_OR_ORIGIN_EVASION_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.same_consignee_24h_orders_artificially_split_to_evade_de_minimis_cap:
+        return {
+            "status_code": 422,
+            "decision": "DE_MINIMIS_ARTIFICIAL_SPLIT_STRUCTURING_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.fta_preferential_origin_and_automated_99pct_duty_drawback_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FTA_PREFERENTIAL_HTS_AND_99PCT_DUTY_DRAWBACK_CONFIRM",
+            "mandate_token": "customs_hts_drawback_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CROSS_BORDER_CUSTOMS_HTS_AUTHORIZED",
+        "mandate_token": "customs_hts_drawback_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -59474,6 +59550,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_customs_hts_duty_drawback_guard = {
+        "authorized_200": evaluate_cross_border_customs_hts_duty_drawback_policy(
+            CrossBorderCustomsHtsDutyDrawbackPolicyInput()
+        ),
+        "unverified_hts_or_origin_403": evaluate_cross_border_customs_hts_duty_drawback_policy(
+            CrossBorderCustomsHtsDutyDrawbackPolicyInput(
+                hts_code_below_10_digits_or_ship_from_substituted_for_country_of_origin=True
+            )
+        ),
+        "de_minimis_split_422": evaluate_cross_border_customs_hts_duty_drawback_policy(
+            CrossBorderCustomsHtsDutyDrawbackPolicyInput(
+                same_consignee_24h_orders_artificially_split_to_evade_de_minimis_cap=True
+            )
+        ),
+        "unlinked_return_drawback_451": evaluate_cross_border_customs_hts_duty_drawback_policy(
+            CrossBorderCustomsHtsDutyDrawbackPolicyInput(
+                cross_border_return_missing_entry_7501_drawback_or_chapter98_relief=True
+            )
+        ),
+        "fta_and_drawback_409": evaluate_cross_border_customs_hts_duty_drawback_policy(
+            CrossBorderCustomsHtsDutyDrawbackPolicyInput(
+                fta_preferential_origin_and_automated_99pct_duty_drawback_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -59979,6 +60081,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_flight_irrops_rebooking_guard": ota_flight_irrops_rebooking_guard,
         "b2b_trade_credit_insurance_factoring_guard": b2b_trade_credit_insurance_factoring_guard,
         "retail_media_network_iroas_bidding_guard": retail_media_network_iroas_bidding_guard,
+        "cross_border_customs_hts_duty_drawback_guard": cross_border_customs_hts_duty_drawback_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -86667,6 +86770,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="rmniro-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 IROAS_INCREMENTALITY_AND_NET_POAS_BID_OPTIMIZATION_CONFIRM · Mandate: rmn_iroas_poas_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 377 (#496 · 🏆 SVG #820 & 270th Sandbox Dual Milestone! · Test #1374) Cross-Border Customs HTS & Duty Drawback -->
+      <div class="finops-box" id="cross-border-customs-hts-duty-drawback-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 跨境电商海关 10位 HTS 编码归类、小额免税 (Section 321 / IOSS) 与退货 99% 退税 (Zonos / Avalara / Global-e / Flexport) 沙盒（🏆 第 820 张架构图与第 270 个沙盒双里程碑）</div>
+            <div class="finops-sub">Round 377 (#496 · 🏆 SVG #820 &amp; 270th Sandbox Milestone · Test #1374) · 强制目的国 10 位 HTS 材质属性与真实制造原产地 (CoO) 校验防 6 位码错报与 301 附加税漏缴罚款 (HTTP 403) + 同一收货人 24h 累计货值聚合拦截恶意拆包逃避 $800/€150 免税线 (HTTP 422) + 跨境退货绑定原报关单 Entry 7501 追回 99% 关税并挂接 HTS 9801 免二次征税 (HTTP 451) + 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="csthts-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 6位通用码错报补税罚款、违规拆包被 CBP 扣货及跨境退货未办 99% Duty Drawback 沉淀关税池 ($)
+            <input type="number" id="csthts-gross-input" value="400000" min="10000" step="5000" oninput="recalcCrossBorderCustomsHtsDutyDrawbackSandbox()" />
+          </label>
+          <label>目的国 10 位税号 (HTSUS / TARIC) 材质成分与真实制造原产地 (Country of Origin != Ship-From) 门禁
+            <select id="csthts-hts-select" onchange="recalcCrossBorderCustomsHtsDutyDrawbackSandbox()">
+              <option value="pass">严格校验针梭织/纤维成分解析 10 位 HTS 并锚定真实制造国 CoO 核算 Section 301/反倾销税 (安全)</option>
+              <option value="block_403">仅凭标题猜 6 位通用码漏算 27.7% 梭织税率，或把加拿大中转仓当成原产国触发 CBP 虚假申报罚款 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>同一收货人 24 小时滚动累计进口额 (Section 321 $800 / EU IOSS €150) 防违规拆包门禁
+            <select id="csthts-split-select" onchange="recalcCrossBorderCustomsHtsDutyDrawbackSandbox()">
+              <option value="pass">按收货人姓名+地址哈希聚合 24h 累计货值，超 $800/€150 自动升级为 Informal/Formal 阳光付税报关 (合规)</option>
+              <option value="block_422">将 $1,400 订单恶意拆成两个 $700 包裹同日发给同一买家走 Type 86 免税通道，遭海关扣货 21 天 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>跨境退货 (RMA) 绑定原进口报关单 (Entry 7501) 申请 99% 退税与 HTS 9801.00.10 复进口免税门禁
+            <select id="csthts-drawback-select" onchange="recalcCrossBorderCustomsHtsDutyDrawbackSandbox()">
+              <option value="pass">退货面单注入 HTS 9801 免除回程二次征税，并关联原 Entry 7501 批量申报 Form 7551 追回 99% 关税 (合规)</option>
+              <option value="block_451">退货未关联原报关单导致已缴 22% 进口关税 100% 打水漂，且退回本国仓时被当成一般贸易二次征税 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>USMCA/EUR.1 自贸协定零关税寻优 + 10位 HTS 担保锁价 + 逆向 99% 自动退税全链路编排
+            <select id="csthts-opt-select" onchange="recalcCrossBorderCustomsHtsDutyDrawbackSandbox()">
+              <option value="enabled" selected>启用自贸协定原产地免税 + 10位 HTS 精确锁价 + 退货 99% 自动退税 (-41% 关税与罚金损耗 / HTTP 409)</option>
+              <option value="disabled">传统 6位码粗算与逆向退货放弃退税基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度关税罚款与退货弃税池</div>
+            <div class="finops-kpi-val" id="csthts-gross-kpi">$400,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">10位HTS与99%退税后净损耗</div>
+            <div class="finops-kpi-val" id="csthts-net-kpi" style="color:#6ee7b7;">$236,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省海关罚金与追回退税</div>
+            <div class="finops-kpi-val" id="csthts-savings-kpi" style="color:#38bdf8;">$164,000</div>
+          </div>
+        </div>
+        <div id="csthts-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FTA_PREFERENTIAL_HTS_AND_99PCT_DUTY_DRAWBACK_CONFIRM · Mandate: customs_hts_drawback_optim_409
         </div>
       </div>
 
@@ -119705,6 +119865,79 @@ function recalcRetailMediaNetworkIroasBiddingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_RMN_SPONSORED_BIDDING_AUTHORIZED · Mandate: rmn_iroas_poas_200';
+}}
+
+function recalcCrossBorderCustomsHtsDutyDrawbackSandbox() {{
+  const grossInput = document.getElementById('csthts-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '400000'));
+  const htsGate = document.getElementById('csthts-hts-select').value;
+  const splitGate = document.getElementById('csthts-split-select').value;
+  const drawbackGate = document.getElementById('csthts-drawback-select').value;
+  const optMode = document.getElementById('csthts-opt-select').value;
+
+  const grossKpi = document.getElementById('csthts-gross-kpi');
+  const netKpi = document.getElementById('csthts-net-kpi');
+  const savingsKpi = document.getElementById('csthts-savings-kpi');
+  const statusKpi = document.getElementById('csthts-status-kpi');
+  const banner = document.getElementById('csthts-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (drawbackGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNLINKED_CROSS_BORDER_RETURN_DUTY_DRAWBACK · Mandate: null';
+    return;
+  }}
+  if (htsGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNVERIFIED_10DIGIT_HTS_OR_ORIGIN_EVASION_VETO · Mandate: null';
+    return;
+  }}
+  if (splitGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 DE_MINIMIS_ARTIFICIAL_SPLIT_STRUCTURING_VETO · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FTA_PREFERENTIAL_HTS_AND_99PCT_DUTY_DRAWBACK_CONFIRM · Mandate: customs_hts_drawback_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CROSS_BORDER_CUSTOMS_HTS_AUTHORIZED · Mandate: customs_hts_drawback_200';
 }}
 
 function updateStage1756Sandbox() {{

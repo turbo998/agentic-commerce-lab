@@ -34317,6 +34317,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("retail-media-network-iroas-bidding-sandbox", html_zh)
 
+    def test_cross_border_customs_hts_duty_drawback_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderCustomsHtsDutyDrawbackPolicyInput,
+            evaluate_cross_border_customs_hts_duty_drawback_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_customs_hts_duty_drawback_policy(
+            CrossBorderCustomsHtsDutyDrawbackPolicyInput(
+                quarterly_tariff_penalty_seizure_and_stranded_return_duty_pool_usd=400000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CROSS_BORDER_CUSTOMS_HTS_AUTHORIZED",
+        )
+
+        hts = evaluate_cross_border_customs_hts_duty_drawback_policy(
+            CrossBorderCustomsHtsDutyDrawbackPolicyInput(
+                hts_code_below_10_digits_or_ship_from_substituted_for_country_of_origin=True
+            )
+        )
+        self.assertEqual(hts["status_code"], 403)
+        self.assertEqual(
+            hts["decision"],
+            "UNVERIFIED_10DIGIT_HTS_OR_ORIGIN_EVASION_VETO",
+        )
+
+        split = evaluate_cross_border_customs_hts_duty_drawback_policy(
+            CrossBorderCustomsHtsDutyDrawbackPolicyInput(
+                same_consignee_24h_orders_artificially_split_to_evade_de_minimis_cap=True
+            )
+        )
+        self.assertEqual(split["status_code"], 422)
+        self.assertEqual(
+            split["decision"],
+            "DE_MINIMIS_ARTIFICIAL_SPLIT_STRUCTURING_VETO",
+        )
+
+        drawback = evaluate_cross_border_customs_hts_duty_drawback_policy(
+            CrossBorderCustomsHtsDutyDrawbackPolicyInput(
+                cross_border_return_missing_entry_7501_drawback_or_chapter98_relief=True
+            )
+        )
+        self.assertEqual(drawback["status_code"], 451)
+        self.assertEqual(
+            drawback["decision"],
+            "UNLINKED_CROSS_BORDER_RETURN_DUTY_DRAWBACK",
+        )
+
+        optim = evaluate_cross_border_customs_hts_duty_drawback_policy(
+            CrossBorderCustomsHtsDutyDrawbackPolicyInput(
+                quarterly_tariff_penalty_seizure_and_stranded_return_duty_pool_usd=400000.0,
+                fta_preferential_origin_and_automated_99pct_duty_drawback_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 164000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 236000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_customs_hts_duty_drawback_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-customs-hts-duty-drawback-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

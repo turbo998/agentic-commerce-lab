@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`495` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`496` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -11,7 +11,7 @@
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (184 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (112 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (45 guides)](#saas-finops-micropayments)
-- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (56 guides)](#tax-fx-privacy-disputes)
+- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (57 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
 
@@ -497,7 +497,7 @@
 | 45 | **🏆 Agent-to-Agent (`M2M`) Micropayments, `HTTP 402 (x402 / L402)` & Prepaid Credit Ledger Selection (`Coinbase x402 / Stripe Metered & Credits / Lightning L402 / Skyfire` · 🏆 1,365th Unit Test Milestone), Sub-`$5` Card Fixed-Fee Veto, Per-Call `x402` Bid Caps (`<=$0.05`) & `200 OK` Atomic Settlement (`-43%` Cost) FAQ** | [English](agent-to-agent-m2m-micropayments-x402-l402-stripe-metered-skyfire-subcent-budget-selection-faq.en.md) · [中文](agent-to-agent-m2m-micropayments-x402-l402-stripe-metered-skyfire-subcent-budget-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (56 Guides)
+## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (57 Guides)
 
 > Covers Merchant of Record (MoR) vs DIY PSP, HS-code DDP landed cost & VAT/Sales Tax nexus, FX quote collars & ISO 20022 netting, ZK eligibility / PCI redaction / GDPR crypto-shredding, and Visa CE 3.0 / VAMP dispute defense.
 
@@ -559,6 +559,7 @@
 | 54 | **🏆 E-Commerce Chargeback Representment & Fraud Shield (`Chargeflow / Justt / Signifyd / Riskified / Stripe Radar + Visa CE 3.0` · 🏆 Round 355 Milestone), `Visa CE 3.0` `120–365d` Dual-Tx Fingerprint Matching, `Ethoca / Verifi RDR` Double-Refund Mutex & `Net-EV` Representment Gating (`-40%` Dispute Loss) FAQ** | [English](ecommerce-chargeback-representment-visa-ce3-ethoca-cdrn-signifyd-chargeflow-selection-faq.en.md) · [中文](ecommerce-chargeback-representment-visa-ce3-ethoca-cdrn-signifyd-chargeflow-selection-faq.md) |
 | 55 | **🏆 Cross-Border Merchant of Record (`MoR`: `Paddle / FastSpring / Global-e`) vs. Direct Local Acquiring (`Stripe / Adyen + Avalara` · 🏆 475th Bilingual Guide Milestone), Zero-Threshold Global `VAT / GST` Shield, Guaranteed `DDP` Landed-Cost Lock & `$3.5M GMV` Hybrid Routing (`-41%` Tax & MDR Loss) FAQ** | [English](cross-border-merchant-of-record-mor-paddle-global-e-vs-stripe-direct-tax-acquiring-selection-faq.en.md) · [中文](cross-border-merchant-of-record-mor-paddle-global-e-vs-stripe-direct-tax-acquiring-selection-faq.md) |
 | 56 | **🏆 Cross-Border Multi-Currency Pricing, `Like-for-Like` Settlement & `Lock-FX` Treasury (`Airwallex / Adyen / Stripe Adaptive Pricing / Kantox / Wise` · 🏆 485th Bilingual Guide Milestone), Eliminating `400 bps` Double-FX Round-Trips, Original-Capture Refund Locks & Bounded `FX Quote TTL` (`-42%` FX Loss) FAQ** | [English](cross-border-multi-currency-fx-hedging-airwallex-adyen-stripe-like-for-like-refund-rate-lock-selection-faq.en.md) · [中文](cross-border-multi-currency-fx-hedging-airwallex-adyen-stripe-like-for-like-refund-rate-lock-selection-faq.md) |
+| 57 | **🏆 Cross-Border Customs Tariff Classification (`10-Digit HTS`), De Minimis (`Section 321 / EU IOSS`) & `99%` Duty-Drawback Agent (`Zonos / Avalara Cross-Border / Global-e / Flexport` · 🏆 820th SVG & 270th Sandbox Dual Milestone), Material/Origin `GRI` Locks, Anti-Structuring Split-Parcel Guards & Return Duty Recovery (`-41%` Cost) FAQ** | [English](cross-border-customs-hts-tariff-zonos-avalara-flexport-de-minimis-duty-drawback-selection-faq.en.md) · [中文](cross-border-customs-hts-tariff-zonos-avalara-flexport-de-minimis-duty-drawback-selection-faq.md) |
 
 <a id="architecture-blueprints"></a>
 ## 7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 Specs)
