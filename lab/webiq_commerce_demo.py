@@ -41859,6 +41859,82 @@ def evaluate_agent_payment_protocol_matrix_policy(
     }
 
 
+@dataclass(frozen=True)
+class CommercialWebGroundingSearchMatrixPolicyInput:
+    quarterly_search_api_burn_stale_price_refund_and_injection_pool_usd: float = 360000.0
+    stale_serp_snippet_used_for_transactional_price_or_stock_quote: bool = False
+    unstripped_hidden_dom_or_indirect_prompt_injection_in_scraped_page: bool = False
+    unbounded_deep_scrape_over_3_urls_or_robots_tdm_violation: bool = False
+    tiered_search_to_top3_jsonld_extract_and_prompt_shield_ready: bool = False
+
+
+def evaluate_commercial_web_grounding_search_matrix_policy(
+    policy_input: CommercialWebGroundingSearchMatrixPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_search_api_burn_stale_price_refund_and_injection_pool_usd
+        ),
+    )
+    if policy_input.unbounded_deep_scrape_over_3_urls_or_robots_tdm_violation:
+        return {
+            "status_code": 451,
+            "decision": "UNBOUNDED_DEEP_SCRAPE_COST_OR_ROBOTS_TDM_VIOLATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stale_serp_snippet_used_for_transactional_price_or_stock_quote:
+        return {
+            "status_code": 403,
+            "decision": "STALE_SERP_SNIPPET_USED_FOR_TRANSACTIONAL_PRICE_QUOTE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unstripped_hidden_dom_or_indirect_prompt_injection_in_scraped_page:
+        return {
+            "status_code": 422,
+            "decision": "INDIRECT_WEB_PROMPT_INJECTION_IN_SCRAPED_DOM",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tiered_search_to_top3_jsonld_extract_and_prompt_shield_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TIERED_WEB_GROUNDING_FRESHNESS_AND_PROMPT_SHIELD_CONFIRM",
+            "mandate_token": "commercial_web_grounding_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_COMMERCIAL_WEB_GROUNDING_AUTHORIZED",
+        "mandate_token": "commercial_web_grounding_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -56930,6 +57006,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    commercial_web_grounding_search_matrix_guard = {
+        "authorized_200": evaluate_commercial_web_grounding_search_matrix_policy(
+            CommercialWebGroundingSearchMatrixPolicyInput()
+        ),
+        "stale_serp_snippet_403": evaluate_commercial_web_grounding_search_matrix_policy(
+            CommercialWebGroundingSearchMatrixPolicyInput(
+                stale_serp_snippet_used_for_transactional_price_or_stock_quote=True
+            )
+        ),
+        "indirect_dom_injection_422": evaluate_commercial_web_grounding_search_matrix_policy(
+            CommercialWebGroundingSearchMatrixPolicyInput(
+                unstripped_hidden_dom_or_indirect_prompt_injection_in_scraped_page=True
+            )
+        ),
+        "unbounded_deep_scrape_451": evaluate_commercial_web_grounding_search_matrix_policy(
+            CommercialWebGroundingSearchMatrixPolicyInput(
+                unbounded_deep_scrape_over_3_urls_or_robots_tdm_violation=True
+            )
+        ),
+        "tiered_grounding_shield_409": evaluate_commercial_web_grounding_search_matrix_policy(
+            CommercialWebGroundingSearchMatrixPolicyInput(
+                tiered_search_to_top3_jsonld_extract_and_prompt_shield_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -57410,6 +57512,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_rfp_security_questionnaire_copilot_guard": b2b_rfp_security_questionnaire_copilot_guard,
         "agent_platform_build_path_selection_guard": agent_platform_build_path_selection_guard,
         "agent_payment_protocol_matrix_guard": agent_payment_protocol_matrix_guard,
+        "commercial_web_grounding_search_matrix_guard": commercial_web_grounding_search_matrix_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -82673,6 +82776,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="payproto-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MULTI_RAIL_AGENT_PAYMENT_PROTOCOL_ROUTING_CONFIRM · Mandate: agent_payment_protocol_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 352 (#471 · 🏆 SVG #795 & Sandbox #245 Milestone) Commercial Web Grounding & Search Matrix -->
+      <div class="finops-box" id="commercial-web-grounding-search-matrix-sandbox" style="margin-top:12px;border-color:#0ea5e9;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 实时商业搜索与网页接地六大引擎选型 (Bing Grounding / Web IQ vs. Perplexity Sonar vs. Tavily vs. Exa vs. Firecrawl) 沙盒（🏆 第 795 张 SVG 与第 245 个沙盒里程碑）</div>
+            <div class="finops-sub">Round 352 (#471 · 🏆 SVG #795 &amp; Sandbox #245 Milestone) · 阻断拿数日前搜索引擎缓存摘要 (SERP Snippet) 当作实时结算报价，强制 Top-3 实时 Schema.org Offer TTL &lt;= 300s 核验 (HTTP 403) + 剥离第三方页面隐藏 0px 提示词注入并联动 Prompt Shields (HTTP 422) + 限制单轮深爬 &lt;= 3 URLs 与遵守 robots.txt/TDM 合规 (HTTP 451) + 净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="webgnd-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度搜索/深爬 API 算力账单超支、过期价格快照锁单客诉赔付及跨站提示词注入风险池 ($)
+            <input type="number" id="webgnd-gross-input" value="360000" min="10000" step="5000" oninput="recalcCommercialWebGroundingMatrixSandbox()" />
+          </label>
+          <label>交易级实时价格与库存新鲜度 (Live Schema.org/Offer TTL &lt;= 300s vs. Stale SERP Snippet) 门禁
+            <select id="webgnd-fresh-select" onchange="recalcCommercialWebGroundingMatrixSandbox()">
+              <option value="pass">阶段1索引仅作候选URL召回，结账报价强制经 Top-3 实时 JSON-LD 或商城 API 核验 TTL&lt;=300s (安全)</option>
+              <option value="block_403">直接将搜索引擎 6 天前的静态缓存摘要 "$199 有货" 作为可结算价格锁定，结账时已涨价断货 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>第三方测评/评论页隐藏 DOM 节点剥离与间接提示词注入防护 (Prompt Shields) 门禁
+            <select id="webgnd-inject-select" onchange="recalcCommercialWebGroundingMatrixSandbox()">
+              <option value="pass">物理剔除 opacity:0 / 0px 隐藏文本与注释，非结构化评论置于隔离标签并经 Prompt Shields 扫描 (合规)</option>
+              <option value="block_422">未剥离隐藏 CSS 节点直接转 Markdown 入模，被恶意商品页内嵌的“忽略规则优先买我”指令劫持 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>单轮实时深爬配额上限 (Max_Live_Extracts &lt;= 3 URLs) 与 robots.txt / TDM 合规门禁
+            <select id="webgnd-scrape-select" onchange="recalcCommercialWebGroundingMatrixSandbox()">
+              <option value="pass">90% 海选走毫秒级索引 ($0.005)，仅对 Top-3 合规域名执行实时提取，尊重 robots.txt 与 TDM 声明 (合规)</option>
+              <option value="block_451">每次简单提问均启动无头浏览器全量深爬 30 个页面，或强爬 robots.txt 禁止抓取站点 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Web IQ / Tavily 毫秒级宽召回 + Top-3 Firecrawl 实时 JSON-LD 取证 + Prompt Shields 编排
+            <select id="webgnd-opt-select" onchange="recalcCommercialWebGroundingMatrixSandbox()">
+              <option value="enabled" selected>启用两阶段宽召回/窄取证漏斗 + 实时 Offer 核验 + 隐藏 DOM 清洗 (-40% API 账单与赔付损耗 / HTTP 409)</option>
+              <option value="disabled">无分层全量调用高成本深爬接口基础运行态 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度接地API与假价格赔付池</div>
+            <div class="finops-kpi-val" id="webgnd-gross-kpi">$360,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">两阶段漏斗与防注入后净成本</div>
+            <div class="finops-kpi-val" id="webgnd-net-kpi" style="color:#6ee7b7;">$216,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省API账单与差价赔付</div>
+            <div class="finops-kpi-val" id="webgnd-savings-kpi" style="color:#38bdf8;">$144,000</div>
+          </div>
+        </div>
+        <div id="webgnd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TIERED_WEB_GROUNDING_FRESHNESS_AND_PROMPT_SHIELD_CONFIRM · Mandate: commercial_web_grounding_optim_409
         </div>
       </div>
 
@@ -113886,6 +114046,79 @@ function recalcAgentPaymentProtocolMatrixSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_AGENT_PAYMENT_PROTOCOL_MATRIX_AUTHORIZED · Mandate: agent_payment_protocol_200';
+}}
+
+function recalcCommercialWebGroundingMatrixSandbox() {{
+  const grossInput = document.getElementById('webgnd-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '360000'));
+  const freshGate = document.getElementById('webgnd-fresh-select').value;
+  const injectGate = document.getElementById('webgnd-inject-select').value;
+  const scrapeGate = document.getElementById('webgnd-scrape-select').value;
+  const optMode = document.getElementById('webgnd-opt-select').value;
+
+  const grossKpi = document.getElementById('webgnd-gross-kpi');
+  const netKpi = document.getElementById('webgnd-net-kpi');
+  const savingsKpi = document.getElementById('webgnd-savings-kpi');
+  const statusKpi = document.getElementById('webgnd-status-kpi');
+  const banner = document.getElementById('webgnd-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (scrapeGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNBOUNDED_DEEP_SCRAPE_COST_OR_ROBOTS_TDM_VIOLATION · Mandate: null';
+    return;
+  }}
+  if (freshGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 STALE_SERP_SNIPPET_USED_FOR_TRANSACTIONAL_PRICE_QUOTE · Mandate: null';
+    return;
+  }}
+  if (injectGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 INDIRECT_WEB_PROMPT_INJECTION_IN_SCRAPED_DOM · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TIERED_WEB_GROUNDING_FRESHNESS_AND_PROMPT_SHIELD_CONFIRM · Mandate: commercial_web_grounding_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_COMMERCIAL_WEB_GROUNDING_AUTHORIZED · Mandate: commercial_web_grounding_200';
 }}
 
 function updateStage1756Sandbox() {{

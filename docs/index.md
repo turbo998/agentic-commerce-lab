@@ -2,11 +2,11 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`470` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`471` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
-- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（36 篇）](#platform-grounding)
+- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（37 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（60 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（176 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（102 篇）](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（36 篇）
+## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（37 篇）
 
 > 面向企业架构师的平台底座选型（Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify）、搜索接地（Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl）、目录同步屏障、A2UI 渲染隔离与可信 Bot 鉴权。
 
@@ -60,6 +60,7 @@
 | 34 | **🏆 电话语音商业智能体与智能呼叫中心收单（`Voice Commerce & AI Contact Center CCaaS`: `D365 Contact Center / Genesys Cloud / Amazon Connect / Twilio + Sycurio PCI-DSS v4.0` · 🏆 第 785 张架构图与第 235 个沙盒里程碑）、边缘 `SIP RFC 4733 DTMF` 按键音剥离防口播卡号污染录音与 `STT`、`VAD Barge-In` 打断回滚防双扣与带外手机核身防 AI 克隆声纹净省 40% Agent 架构选型 FAQ** | [中文](voice-commerce-ccaas-pci-dtmf-masking-pay-by-link-deepfake-bargein-selection-faq.md) · [English](voice-commerce-ccaas-pci-dtmf-masking-pay-by-link-deepfake-bargein-selection-faq.en.md) |
 | 35 | **🏆 无 API 长尾站点浏览器自动化结账智能体（`Browser-Use / Playwright / Computer-Use vs. WebMCP / UCP API` · 🏆 第 1,340 项单元测试里程碑）、提交前 `AXTree` 清洗暗黑模式预勾选 VIP 会员/延保、最终付款按钮单次点击硬互斥锁（`Max_Click=1`）与安全飞地盲填单次虚拟卡净省 41% Agent 架构选型 FAQ** | [中文](browser-use-computer-use-headless-checkout-agent-dom-drift-payment-handover-selection-faq.md) · [English](browser-use-computer-use-headless-checkout-agent-dom-drift-payment-handover-selection-faq.en.md) |
 | 36 | **🏆 商业智能体三大构建路径选型对比（`Microsoft Copilot Studio + D365` vs. `Azure AI Foundry + Semantic Kernel / LangGraph` vs. `Salesforce Agentforce / Shopify Sidekick` · 🏆 第 350 轮重大里程碑）、前店后厂跨系统长事务（`Saga`）卸载、连接器 `504` 自动重试幂等外发箱（`Transactional Outbox`）与按对话/按 Token 成本拐点路由净省 41% Agent 架构选型 FAQ** | [中文](agent-platform-build-path-copilot-studio-vs-azure-ai-foundry-langgraph-vs-agentforce-sidekick-selection-faq.md) · [English](agent-platform-build-path-copilot-studio-vs-azure-ai-foundry-langgraph-vs-agentforce-sidekick-selection-faq.en.md) |
+| 37 | **🏆 实时商业搜索与网页接地六大引擎选型对比（`Microsoft Bing Grounding / Web IQ` vs. `Perplexity Sonar API` vs. `Tavily` vs. `Exa` vs. `Firecrawl / Browser-Use` · 🏆 第 795 张 SVG 与第 245 个交互式沙盒双里程碑）、两阶段宽召回/窄取证（`Top-3 Schema.org Offer TTL <= 300s`）、隐藏 `0px DOM` 提示词注入剥离与 `robots.txt / TDM` 合规配额净省 40% Agent 架构选型 FAQ** | [中文](commercial-web-grounding-search-webiq-perplexity-sonar-tavily-exa-firecrawl-selection-faq.md) · [English](commercial-web-grounding-search-webiq-perplexity-sonar-tavily-exa-firecrawl-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
 ## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（60 篇）

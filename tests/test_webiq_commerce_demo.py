@@ -32642,6 +32642,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agent-payment-protocol-matrix-sandbox", html_zh)
 
+    def test_commercial_web_grounding_search_matrix_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CommercialWebGroundingSearchMatrixPolicyInput,
+            evaluate_commercial_web_grounding_search_matrix_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_commercial_web_grounding_search_matrix_policy(
+            CommercialWebGroundingSearchMatrixPolicyInput(
+                quarterly_search_api_burn_stale_price_refund_and_injection_pool_usd=360000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_COMMERCIAL_WEB_GROUNDING_AUTHORIZED",
+        )
+
+        stale = evaluate_commercial_web_grounding_search_matrix_policy(
+            CommercialWebGroundingSearchMatrixPolicyInput(
+                stale_serp_snippet_used_for_transactional_price_or_stock_quote=True
+            )
+        )
+        self.assertEqual(stale["status_code"], 403)
+        self.assertEqual(
+            stale["decision"],
+            "STALE_SERP_SNIPPET_USED_FOR_TRANSACTIONAL_PRICE_QUOTE",
+        )
+
+        inject = evaluate_commercial_web_grounding_search_matrix_policy(
+            CommercialWebGroundingSearchMatrixPolicyInput(
+                unstripped_hidden_dom_or_indirect_prompt_injection_in_scraped_page=True
+            )
+        )
+        self.assertEqual(inject["status_code"], 422)
+        self.assertEqual(
+            inject["decision"],
+            "INDIRECT_WEB_PROMPT_INJECTION_IN_SCRAPED_DOM",
+        )
+
+        scrape = evaluate_commercial_web_grounding_search_matrix_policy(
+            CommercialWebGroundingSearchMatrixPolicyInput(
+                unbounded_deep_scrape_over_3_urls_or_robots_tdm_violation=True
+            )
+        )
+        self.assertEqual(scrape["status_code"], 451)
+        self.assertEqual(
+            scrape["decision"],
+            "UNBOUNDED_DEEP_SCRAPE_COST_OR_ROBOTS_TDM_VIOLATION",
+        )
+
+        optim = evaluate_commercial_web_grounding_search_matrix_policy(
+            CommercialWebGroundingSearchMatrixPolicyInput(
+                quarterly_search_api_burn_stale_price_refund_and_injection_pool_usd=360000.0,
+                tiered_search_to_top3_jsonld_extract_and_prompt_shield_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 144000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 216000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("commercial_web_grounding_search_matrix_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("commercial-web-grounding-search-matrix-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
