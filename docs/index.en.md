@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`482` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`483` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (37 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (60 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (61 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (179 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (107 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (44 guides)](#saas-finops-micropayments)
@@ -63,7 +63,7 @@
 | 37 | **🏆 Real-Time Commercial Web Grounding & Search Selection Matrix (`Microsoft Bing Grounding / Web IQ` vs. `Perplexity Sonar API` vs. `Tavily` vs. `Exa` vs. `Firecrawl / Browser-Use` · 🏆 SVG `#795` & 245th Sandbox Milestone), Live `Schema.org Offer` Freshness Locks, Indirect Prompt-Injection DOM Sanitization & Tiered Scrape FinOps (`-40%` Cost) FAQ** | [English](commercial-web-grounding-search-webiq-perplexity-sonar-tavily-exa-firecrawl-selection-faq.en.md) · [中文](commercial-web-grounding-search-webiq-perplexity-sonar-tavily-exa-firecrawl-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (60 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (61 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -129,6 +129,7 @@
 | 58 | **🏆 Global Digital Wallets, Local Alternative Payment Methods (`APMs`) & Biometric Checkout (`Apple Pay / Google Pay / Alipay+ / PIX / UPI / iDEAL + W3C SPC` · 🏆 1,330th Unit Test Milestone), Synced QR `TTL <= Stock_Lease - 120s` Orphan Shield, Wallet Address Override Lock & `1.4s W3C SPC` Passkey (`-39%` Orphan & Abandonment Loss) FAQ** | [English](global-digital-wallet-local-apm-apple-pay-alipay-pix-upi-late-webhook-spc-selection-faq.en.md) · [中文](global-digital-wallet-local-apm-apple-pay-alipay-pix-upi-late-webhook-spc-selection-faq.md) |
 | 59 | **E-Commerce Split-Tender Checkout (`Gift Card + Loyalty Points + Credit Card`: `Talon.One / Yotpo / Shopify Plus GiftCard / Adyen + Stripe`), Two-Phase `Soft-Reserve` Saga (`2PC`), Anti-Laundering Partial-Refund Waterfall & `14d Pending Points` Vesting (`-39%` Stranded Balance & Cashout Loss) FAQ** | [English](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.en.md) · [中文](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.md) |
 | 60 | **🏆 Agent Payment & Checkout Protocol Selection Matrix (`Stripe Agent Toolkit SPT` vs. `Visa Intelligent Commerce` vs. `Mastercard Agent Pay` vs. `PayPal Agentic Toolkit` vs. `Single-Use JIT VCN` · 🏆 470th Bilingual Guide Milestone), Zero Raw `PAN` Scope Locks, `EMVCo` Cryptogram Liability Shift & Exact-Penny VCN Fallback (`-42%` Fraud & Decline Loss) FAQ** | [English](agent-payment-protocol-matrix-stripe-spt-visa-intelligent-commerce-mastercard-agent-pay-paypal-vcn-selection-faq.en.md) · [中文](agent-payment-protocol-matrix-stripe-spt-visa-intelligent-commerce-mastercard-agent-pay-paypal-vcn-selection-faq.md) |
+| 61 | **💳 E-Commerce Buy Now, Pay Later (`BNPL`: `Klarna / Affirm / Afterpay / PayPal Pay in 4`) & Installment Underwriting Agent Selection FAQ: `0% APR` Subsidy Margin Floors (`>=$250 AOV`), Anti-Bracketing `Pay-in-30` Veto & Split-Shipment Loan Auth Extension (`-39%` MDR & Return Loss) FAQ** | [English](ecommerce-bnpl-klarna-affirm-afterpay-paypal-pay-in-4-mdr-floor-return-fee-selection-faq.en.md) · [中文](ecommerce-bnpl-klarna-affirm-afterpay-paypal-pay-in-4-mdr-floor-return-fee-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (179 Guides)

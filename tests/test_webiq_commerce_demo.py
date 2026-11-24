@@ -33446,6 +33446,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-dunning-involuntary-churn-sandbox", html_zh)
 
+    def test_ecommerce_bnpl_klarna_affirm_mdr_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceBnplKlarnaAffirmMdrPolicyInput,
+            evaluate_ecommerce_bnpl_klarna_affirm_mdr_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_bnpl_klarna_affirm_mdr_policy(
+            EcommerceBnplKlarnaAffirmMdrPolicyInput(
+                quarterly_bnpl_mdr_subsidy_bleed_return_fee_and_expired_auth_pool_usd=355000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ECOMMERCE_BNPL_ORCHESTRATION_AUTHORIZED",
+        )
+
+        floor = evaluate_ecommerce_bnpl_klarna_affirm_mdr_policy(
+            EcommerceBnplKlarnaAffirmMdrPolicyInput(
+                zero_apr_merchant_subsidy_offered_below_250_aov_or_20pct_net_margin=True
+            )
+        )
+        self.assertEqual(floor["status_code"], 403)
+        self.assertEqual(
+            floor["decision"],
+            "SUB_FLOOR_BNPL_SUBSIDY_MDR_MARGIN_BLEED",
+        )
+
+        bracket = evaluate_ecommerce_bnpl_klarna_affirm_mdr_policy(
+            EcommerceBnplKlarnaAffirmMdrPolicyInput(
+                zero_down_pay_in_30_enabled_on_multi_size_bracketing_high_return_cart=True
+            )
+        )
+        self.assertEqual(bracket["status_code"], 422)
+        self.assertEqual(
+            bracket["decision"],
+            "HIGH_RETURN_BRACKETING_CART_UNREFUNDED_BNPL_MDR_LOSS",
+        )
+
+        auth = evaluate_ecommerce_bnpl_klarna_affirm_mdr_policy(
+            EcommerceBnplKlarnaAffirmMdrPolicyInput(
+                backorder_or_split_shipment_released_with_expired_bnpl_loan_auth=True
+            )
+        )
+        self.assertEqual(auth["status_code"], 451)
+        self.assertEqual(
+            auth["decision"],
+            "EXPIRED_BNPL_LOAN_AUTH_ON_BACKORDER_OR_SPLIT_SHIPMENT",
+        )
+
+        optim = evaluate_ecommerce_bnpl_klarna_affirm_mdr_policy(
+            EcommerceBnplKlarnaAffirmMdrPolicyInput(
+                quarterly_bnpl_mdr_subsidy_bleed_return_fee_and_expired_auth_pool_usd=355000.0,
+                margin_aware_paypal_affirm_router_and_auth_extender_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 138450.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 216550.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_bnpl_klarna_affirm_mdr_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-bnpl-klarna-affirm-mdr-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

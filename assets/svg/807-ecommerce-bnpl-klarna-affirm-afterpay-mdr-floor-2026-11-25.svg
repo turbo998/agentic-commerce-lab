@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg807" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="50%" stop-color="#2e1065"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent807" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f472b6"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg807)"/>
+  <rect x="30" y="24" width="1140" height="582" rx="16" fill="#0f172a" fill-opacity="0.82" stroke="#334155" stroke-width="1.5"/>
+  <rect x="30" y="24" width="1140" height="6" rx="3" fill="url(#accent807)"/>
+
+  <text x="60" y="68" fill="#f472b6" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.2">ROUND 364 · FAQ #483 · SVG #807 · SANDBOX #257 · TEST #1361 · E-COMMERCE BNPL ORCHESTRATION</text>
+  <text x="60" y="102" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="800">E-Commerce Buy Now, Pay Later (BNPL: Klarna / Affirm / Afterpay / PayPal Pay in 4)</text>
+  <text x="60" y="128" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">0% APR Merchant Subsidy AOV Floor (&gt;=$250) · High-Return Category MDR Veto · Split-Shipment Loan Auth Extension (-39% Cost)</text>
+
+  <!-- Gate 1 -->
+  <rect x="60" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="80" y="182" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">1. 0% APR Subsidy &amp; Low-Margin Veto</text>
+  <text x="80" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• 12-to-24 month 0% APR financing charges</text>
+  <text x="80" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  the merchant a 6%–12% upfront MDR subsidy</text>
+  <text x="80" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Offering 0% APR on $45 carts or low-margin</text>
+  <text x="80" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  electronics (&lt;18% gross margin) turns every</text>
+  <text x="80" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  checkout into a net loss; enforces Cart_AOV</text>
+  <text x="80" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  &gt;= $250 &amp; Post_BNPL_Margin &gt;= 20% floor</text>
+  <rect x="80" y="370" width="305" height="34" rx="6" fill="#450a0a" stroke="#ef4444"/>
+  <text x="92" y="392" fill="#fecaca" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 403 SUB_FLOOR_BNPL_MDR_MARGIN_BLEED</text>
+
+  <!-- Gate 2 -->
+  <rect x="427" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#f97316" stroke-width="1.5"/>
+  <text x="447" y="182" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">2. High-Return Non-Refundable MDR Shield</text>
+  <text x="447" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• BNPL providers keep the 4.5%–5.99% merchant</text>
+  <text x="447" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  fee (or $0.30 fixed fee) even when the</text>
+  <text x="447" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  shopper returns 100% of the order</text>
+  <text x="447" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Blocks BNPL on multi-size bracketing carts</text>
+  <text x="447" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  &amp; routes BNPL returns to Instant Store</text>
+  <text x="447" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  Exchange to preserve already-paid MDR</text>
+  <rect x="447" y="370" width="305" height="34" rx="6" fill="#431407" stroke="#f97316"/>
+  <text x="459" y="392" fill="#fed7aa" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 422 HIGH_RETURN_BNPL_UNREFUNDED_MDR</text>
+
+  <!-- Gate 3 -->
+  <rect x="795" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#eab308" stroke-width="1.5"/>
+  <text x="815" y="182" fill="#fde047" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">3. Backorder &amp; Split-Shipment Loan Lock</text>
+  <text x="815" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• BNPL loan authorizations expire in 13–28</text>
+  <text x="815" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  days and many Pay-in-4 rails disallow</text>
+  <text x="815" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  multiple partial captures across split shipments</text>
+  <text x="815" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Blocks single-capture BNPL on &gt;21d preorder</text>
+  <text x="815" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  items or auto-calls Klarna Extend_Auth_Time</text>
+  <text x="815" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  before warehouse wave release</text>
+  <rect x="815" y="370" width="305" height="34" rx="6" fill="#422006" stroke="#eab308"/>
+  <text x="827" y="392" fill="#fef08a" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 451 EXPIRED_BNPL_LOAN_ON_BACKORDER</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="444" width="1080" height="138" rx="12" fill="#0f172a" stroke="#f472b6" stroke-width="1.5"/>
+  <text x="84" y="476" fill="#fbcfe8" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">Platform Selection Matrix &amp; Fiduciary Impact (Quarterly BNPL MDR Subsidy Bleed, Return Fee Loss &amp; Expired Auth Pool: $355,000)</text>
+  <text x="84" y="504" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">• High-AOV $300–$15,000 Adaptive 0%/APR Underwriting: Affirm | Global EU/US Fashion &amp; Pay-in-30/Pay-in-4: Klarna</text>
+  <text x="84" y="528" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Gen-Z Apparel &amp; Beauty Pay-in-4: Afterpay (Block) | Lowest-MDR Existing Wallet Base (2.99%+$0.49): PayPal Pay in 4</text>
+  <text x="84" y="556" fill="#38bdf8" font-family="Consolas, monospace" font-size="14" font-weight="700">HTTP 409 BNPL_DYNAMIC_AOV_TIER_AND_PAYPAL_ROUTING_CONFIRM · Savings: $138,450/qtr (-39.0%) · Net: $216,550</text>
+</svg>
