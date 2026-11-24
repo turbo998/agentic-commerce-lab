@@ -41555,6 +41555,82 @@ def evaluate_ota_hotel_pms_vcc_folio_walk_policy(
     }
 
 
+@dataclass(frozen=True)
+class EnterpriseRevrecAsc606SspPolicyInput:
+    quarterly_audit_restatement_premature_rev_and_close_pool_usd: float = 390000.0
+    invoice_price_used_instead_of_relative_ssp_bundle_allocation: bool = False
+    premature_revrec_before_pob_provisioning_or_pod_satisfaction: bool = False
+    coarse_30_360_amortization_or_closed_period_modification_breach: bool = False
+    relative_ssp_allocation_pob_trigger_and_exact_daily_ready: bool = False
+
+
+def evaluate_enterprise_revrec_asc606_ssp_policy(
+    policy_input: EnterpriseRevrecAsc606SspPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_audit_restatement_premature_rev_and_close_pool_usd
+        ),
+    )
+    if policy_input.coarse_30_360_amortization_or_closed_period_modification_breach:
+        return {
+            "status_code": 451,
+            "decision": "COARSE_30_360_AMORTIZATION_DRIFT_OR_CLOSED_PERIOD_MODIFICATION_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.invoice_price_used_instead_of_relative_ssp_bundle_allocation:
+        return {
+            "status_code": 403,
+            "decision": "INVOICE_LINE_PRICE_USED_INSTEAD_OF_ASC606_RELATIVE_SSP_ALLOCATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.premature_revrec_before_pob_provisioning_or_pod_satisfaction:
+        return {
+            "status_code": 422,
+            "decision": "PREMATURE_REVENUE_RECOGNITION_BEFORE_POB_PROVISIONING_OR_POD_EVENT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.relative_ssp_allocation_pob_trigger_and_exact_daily_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ASC606_RELATIVE_SSP_ALLOCATION_POB_TRIGGER_AND_EXACT_DAILY_CONFIRM",
+            "mandate_token": "enterprise_revrec_asc606_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ENTERPRISE_ASC606_REVREC_AND_SSP_AUTHORIZED",
+        "mandate_token": "enterprise_revrec_asc606_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -56522,6 +56598,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    enterprise_revrec_asc606_ssp_guard = {
+        "authorized_200": evaluate_enterprise_revrec_asc606_ssp_policy(
+            EnterpriseRevrecAsc606SspPolicyInput()
+        ),
+        "invoice_price_ssp_skew_403": evaluate_enterprise_revrec_asc606_ssp_policy(
+            EnterpriseRevrecAsc606SspPolicyInput(
+                invoice_price_used_instead_of_relative_ssp_bundle_allocation=True
+            )
+        ),
+        "premature_unprovisioned_revrec_422": evaluate_enterprise_revrec_asc606_ssp_policy(
+            EnterpriseRevrecAsc606SspPolicyInput(
+                premature_revrec_before_pob_provisioning_or_pod_satisfaction=True
+            )
+        ),
+        "coarse_30_360_or_closed_mod_451": evaluate_enterprise_revrec_asc606_ssp_policy(
+            EnterpriseRevrecAsc606SspPolicyInput(
+                coarse_30_360_amortization_or_closed_period_modification_breach=True
+            )
+        ),
+        "relative_ssp_pob_daily_409": evaluate_enterprise_revrec_asc606_ssp_policy(
+            EnterpriseRevrecAsc606SspPolicyInput(
+                relative_ssp_allocation_pob_trigger_and_exact_daily_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -56998,6 +57100,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_sales_commission_icm_guard": b2b_sales_commission_icm_guard,
         "retail_cdp_identity_consent_guard": retail_cdp_identity_consent_guard,
         "ota_hotel_pms_vcc_folio_walk_guard": ota_hotel_pms_vcc_folio_walk_guard,
+        "enterprise_revrec_asc606_ssp_guard": enterprise_revrec_asc606_ssp_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -82033,6 +82136,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="htlpms-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 HOTEL_PMS_DUAL_FOLIO_VCC_ARI_THROTTLE_AND_HOUSEKEEPING_MUTEX_CONFIRM · Mandate: ota_hotel_pms_vcc_folio_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 348 (#467 · SVG #791 · 🏆 1,345th Test Milestone) Enterprise ASC 606 Revenue Recognition & SSP -->
+      <div class="finops-box" id="enterprise-revrec-asc606-ssp-sandbox" style="margin-top:12px;border-color:#4f46e5;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📊 企业多元素合同收入确认 ASC 606 / IFRS 15 (Zuora RevPro / NetSuite ARM / Stripe RevRec) 沙盒（🏆 第 1,345 项测试里程碑）</div>
+            <div class="finops-sub">Round 348 (#467 · SVG #791 · 🏆 1,345th Test Milestone) · ASC 606 Step 4 独立售价比例重分摊 (Relative SSP) 防销售把 $10k 硬件写 $0 免费白送以虚增 SaaS ARR (HTTP 403) + 履约义务交付遥测门禁 (Tenant_Provisioned / POD) 防未开通先确收 (HTTP 422) + 精确日历天 (365/366) 最大余数法摊销与前瞻法合同变更 (HTTP 451) + 净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="revrec-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 IPO/年审 ASC 606 财报重述审计调整费、提前确收违规风险及月末手工对账人力池 ($)
+            <input type="number" id="revrec-gross-input" value="390000" min="10000" step="5000" oninput="recalcEnterpriseRevrecAsc606SspSandbox()" />
+          </label>
+          <label>ASC 606 Step 4 多元素打包合同独立售价比例重分摊 (Relative SSP Allocation) 门禁
+            <select id="revrec-ssp-select" onchange="recalcEnterpriseRevrecAsc606SspSandbox()">
+              <option value="pass">强制按硬件 ($10k SSP) 与 3 年 SaaS ($30k SSP) 25%/75% 比例将 $30k 合同拆分为 $7.5k 硬件 + $22.5k 软件 (安全)</option>
+              <option value="block_403">发票写“POS 硬件 $0 免费送 + SaaS $30,000”，财务直接将 100% 金额全计入高估值 SaaS ARR (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>履约义务交付完成遥测触发器 (POB Satisfaction: Tenant_Provisioned / Carrier_POD) 门禁
+            <select id="revrec-pob-select" onchange="recalcEnterpriseRevrecAsc606SspSandbox()">
+              <option value="pass">收到电汇后 100% 锁在递延收入负债科目，待收到物流 POD 签收或云租户激活事件才开始转收入 (合规)</option>
+              <option value="block_422">12 月 28 日收到 $120k 首年款但客户租户次年 1 月 15 日才开通，直接在 12 月提前确认收入 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>精确日历天 (Exact Calendar Days 365/366) 最大余数法摊销与前瞻法合同变更门禁
+            <select id="revrec-daily-select" onchange="recalcEnterpriseRevrecAsc606SspSandbox()">
+              <option value="pass">按实际日历天数计算每日分摊额并补齐余数美分，年中改单按 Prospective 前瞻重排未来开放期 (合规)</option>
+              <option value="block_451">采用粗略 1/12 (30/360) 均摊致 2 月失真，或年中改单直接倒改上季度已关账历史财报 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Relative SSP 自动重分摊 + POB 交付触发 + 精确按日美分守恒全链路编排
+            <select id="revrec-opt-select" onchange="recalcEnterpriseRevrecAsc606SspSandbox()">
+              <option value="enabled" selected>启用 Relative SSP 重分摊 + POB 遥测门禁 + 精确日摊销 (-40% 审计与月结损耗 / HTTP 409)</option>
+              <option value="disabled">按发票表面金额直接入账 + 手工 Excel 1/12 摊销 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度审计重算与月结损耗池</div>
+            <div class="finops-kpi-val" id="revrec-gross-kpi">$390,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">SSP分摊与POB门禁后净成本</div>
+            <div class="finops-kpi-val" id="revrec-net-kpi" style="color:#6ee7b7;">$234,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省审计与财务关账费</div>
+            <div class="finops-kpi-val" id="revrec-savings-kpi" style="color:#38bdf8;">$156,000</div>
+          </div>
+        </div>
+        <div id="revrec-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ASC606_RELATIVE_SSP_ALLOCATION_POB_TRIGGER_AND_EXACT_DAILY_CONFIRM · Mandate: enterprise_revrec_asc606_optim_409
         </div>
       </div>
 
@@ -112954,6 +113114,79 @@ function recalcOtaHotelPmsVccFolioWalkSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_HOTEL_PMS_DUAL_FOLIO_AND_ARI_AUTHORIZED · Mandate: ota_hotel_pms_vcc_folio_200';
+}}
+
+function recalcEnterpriseRevrecAsc606SspSandbox() {{
+  const grossInput = document.getElementById('revrec-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '390000'));
+  const sspGate = document.getElementById('revrec-ssp-select').value;
+  const pobGate = document.getElementById('revrec-pob-select').value;
+  const dailyGate = document.getElementById('revrec-daily-select').value;
+  const optMode = document.getElementById('revrec-opt-select').value;
+
+  const grossKpi = document.getElementById('revrec-gross-kpi');
+  const netKpi = document.getElementById('revrec-net-kpi');
+  const savingsKpi = document.getElementById('revrec-savings-kpi');
+  const statusKpi = document.getElementById('revrec-status-kpi');
+  const banner = document.getElementById('revrec-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dailyGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 COARSE_30_360_AMORTIZATION_DRIFT_OR_CLOSED_PERIOD_MODIFICATION_BREACH · Mandate: null';
+    return;
+  }}
+  if (sspGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INVOICE_LINE_PRICE_USED_INSTEAD_OF_ASC606_RELATIVE_SSP_ALLOCATION · Mandate: null';
+    return;
+  }}
+  if (pobGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PREMATURE_REVENUE_RECOGNITION_BEFORE_POB_PROVISIONING_OR_POD_EVENT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ASC606_RELATIVE_SSP_ALLOCATION_POB_TRIGGER_AND_EXACT_DAILY_CONFIRM · Mandate: enterprise_revrec_asc606_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_ENTERPRISE_ASC606_REVREC_AND_SSP_AUTHORIZED · Mandate: enterprise_revrec_asc606_200';
 }}
 
 function updateStage1756Sandbox() {{

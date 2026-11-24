@@ -32374,6 +32374,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-hotel-pms-vcc-folio-walk-sandbox", html_zh)
 
+    def test_enterprise_revrec_asc606_ssp_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EnterpriseRevrecAsc606SspPolicyInput,
+            evaluate_enterprise_revrec_asc606_ssp_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_enterprise_revrec_asc606_ssp_policy(
+            EnterpriseRevrecAsc606SspPolicyInput(
+                quarterly_audit_restatement_premature_rev_and_close_pool_usd=390000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ENTERPRISE_ASC606_REVREC_AND_SSP_AUTHORIZED",
+        )
+
+        ssp = evaluate_enterprise_revrec_asc606_ssp_policy(
+            EnterpriseRevrecAsc606SspPolicyInput(
+                invoice_price_used_instead_of_relative_ssp_bundle_allocation=True
+            )
+        )
+        self.assertEqual(ssp["status_code"], 403)
+        self.assertEqual(
+            ssp["decision"],
+            "INVOICE_LINE_PRICE_USED_INSTEAD_OF_ASC606_RELATIVE_SSP_ALLOCATION",
+        )
+
+        pob = evaluate_enterprise_revrec_asc606_ssp_policy(
+            EnterpriseRevrecAsc606SspPolicyInput(
+                premature_revrec_before_pob_provisioning_or_pod_satisfaction=True
+            )
+        )
+        self.assertEqual(pob["status_code"], 422)
+        self.assertEqual(
+            pob["decision"],
+            "PREMATURE_REVENUE_RECOGNITION_BEFORE_POB_PROVISIONING_OR_POD_EVENT",
+        )
+
+        daily = evaluate_enterprise_revrec_asc606_ssp_policy(
+            EnterpriseRevrecAsc606SspPolicyInput(
+                coarse_30_360_amortization_or_closed_period_modification_breach=True
+            )
+        )
+        self.assertEqual(daily["status_code"], 451)
+        self.assertEqual(
+            daily["decision"],
+            "COARSE_30_360_AMORTIZATION_DRIFT_OR_CLOSED_PERIOD_MODIFICATION_BREACH",
+        )
+
+        optim = evaluate_enterprise_revrec_asc606_ssp_policy(
+            EnterpriseRevrecAsc606SspPolicyInput(
+                quarterly_audit_restatement_premature_rev_and_close_pool_usd=390000.0,
+                relative_ssp_allocation_pob_trigger_and_exact_daily_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 156000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 234000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("enterprise_revrec_asc606_ssp_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("enterprise-revrec-asc606-ssp-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
