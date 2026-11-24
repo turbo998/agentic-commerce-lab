@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`448` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`449` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (31 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (57 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (172 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (173 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (98 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (39 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (51 guides)](#tax-fx-privacy-disputes)
@@ -122,7 +122,7 @@
 | 57 | **Commercial Fleet Fuel Cards & EV Charging Roaming (`WEX / Fleetcor / Stripe Issuing Fleet / Hubject ISO 15118 / OCPI 2.2.1`), Telematics `GPS + CAN-Bus` Fuel-Theft Lock, Instant `$175 AFD` `0420` Release & Idle-Fee Cap (`-39%` Fuel Slippage & Roaming Loss) FAQ** | [English](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.en.md) · [中文](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (172 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (173 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -300,6 +300,7 @@
 | 170 | **🏆 E-Commerce Big & Bulky White-Glove `LTL` Delivery, `3D Path-of-Travel` Clearance, Building `COI` Lock & On-Site `Keep-It + Medic` Escrow (`Wayfair CastleGate / Ryder Last Mile / JB Hunt Final Mile` · 🏆 770th SVG & 220th Sandbox Milestone) (`-39%` Refusal, Dry-Run & Damage Loss) FAQ** | [English](ecommerce-big-bulky-white-glove-ltl-clearance-appointment-haulaway-selection-faq.en.md) · [中文](ecommerce-big-bulky-white-glove-ltl-clearance-appointment-haulaway-selection-faq.md) |
 | 171 | **🏆 Franchise Commerce POS Royalty Sweep, `FTC FDD Item 11` Ad-Fund Escrow, `3PD` Net-Sales Base & Commissary `BOM` Yield Audit (`FranConnect / Oracle Simphony / Toast Enterprise / Adyen for Platforms` · 🏆 1,325th Test Milestone) (`-39%` Skimming & ACH Default Loss) FAQ** | [English](franchise-royalty-sweep-ad-fund-escrow-3pd-net-base-commissary-selection-faq.en.md) · [中文](franchise-royalty-sweep-ad-fund-escrow-3pd-net-base-commissary-selection-faq.md) |
 | 172 | **Cross-Border E-Commerce Multilingual Customer Service & `RMA` Returns Automation (`Loop Returns / Narvar / ReturnGO / Zendesk AI`), Dynamic `Keep-It` Net-Recovery Economics, `115% Bonus Store Credit` Anti-Cashout Ledger & Carrier Weight `FTID` Guard (`-39%` Reverse Freight & RMA Fraud Loss) FAQ** | [English](cross-border-rma-returns-keep-it-economics-bonus-exchange-credit-ftid-wardrobing-selection-faq.en.md) · [中文](cross-border-rma-returns-keep-it-economics-bonus-exchange-credit-ftid-wardrobing-selection-faq.md) |
+| 173 | **🏆 OTA Corporate Travel Management (`TMC`: `Navan / TravelPerk / SAP Concur / Amadeus NDC` · 🏆 Round 330 Milestone), `IATA NDC 21.3` Continuous Pricing, `Hold-Before-Cancel` Price-Drop Re-Shopping & Corporate `Unused e-Ticket (UET)` Credit Bank (`-38%` Travel Overpay & Credit Expiry Loss) FAQ** | [English](ota-corporate-travel-tmc-ndc-continuous-pricing-unused-eticket-irrops-rebooking-selection-faq.en.md) · [中文](ota-corporate-travel-tmc-ndc-continuous-pricing-unused-eticket-irrops-rebooking-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (98 Guides)

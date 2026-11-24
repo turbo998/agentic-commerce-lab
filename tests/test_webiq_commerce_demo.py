@@ -31168,6 +31168,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-rma-returns-keep-it-sandbox", html_zh)
 
+    def test_ota_corporate_travel_tmc_ndc_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaCorporateTravelTmcNdcPolicyInput,
+            evaluate_ota_corporate_travel_tmc_ndc_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_corporate_travel_tmc_ndc_policy(
+            OtaCorporateTravelTmcNdcPolicyInput(
+                quarterly_gds_surcharge_missed_reshop_and_expired_uet_pool_usd=390000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_OTA_CORPORATE_TMC_AND_NDC_BOOKING_AUTHORIZED",
+        )
+
+        gds = evaluate_ota_corporate_travel_tmc_ndc_policy(
+            OtaCorporateTravelTmcNdcPolicyInput(
+                legacy_gds_surcharge_overpay_or_missing_ndc_corporate_fare=True
+            )
+        )
+        self.assertEqual(gds["status_code"], 403)
+        self.assertEqual(
+            gds["decision"],
+            "LEGACY_GDS_SURCHARGE_OVERPAY_OR_MISSING_NDC_CORPORATE_CONTINUOUS_FARE",
+        )
+
+        race = evaluate_ota_corporate_travel_tmc_ndc_policy(
+            OtaCorporateTravelTmcNdcPolicyInput(
+                cancel_before_hold_reshop_race_or_negative_net_rebooking_savings=True
+            )
+        )
+        self.assertEqual(race["status_code"], 422)
+        self.assertEqual(
+            race["decision"],
+            "CANCEL_BEFORE_HOLD_RESHOP_RACE_OR_NEGATIVE_NET_REBOOKING_SAVINGS",
+        )
+
+        uet = evaluate_ota_corporate_travel_tmc_ndc_policy(
+            OtaCorporateTravelTmcNdcPolicyInput(
+                orphaned_unused_eticket_credit_bypass_on_eligible_airline=True
+            )
+        )
+        self.assertEqual(uet["status_code"], 451)
+        self.assertEqual(
+            uet["decision"],
+            "ORPHANED_UNUSED_ETICKET_CREDIT_BYPASS_ON_ELIGIBLE_AIRLINE_BOOKING",
+        )
+
+        optim = evaluate_ota_corporate_travel_tmc_ndc_policy(
+            OtaCorporateTravelTmcNdcPolicyInput(
+                quarterly_gds_surcharge_missed_reshop_and_expired_uet_pool_usd=390000.0,
+                ndc_continuous_fare_hold_before_cancel_and_uet_bank_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 148200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 241800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_corporate_travel_tmc_ndc_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-corporate-travel-tmc-ndc-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

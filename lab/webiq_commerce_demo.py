@@ -40187,6 +40187,82 @@ def evaluate_cross_border_rma_returns_keep_it_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaCorporateTravelTmcNdcPolicyInput:
+    quarterly_gds_surcharge_missed_reshop_and_expired_uet_pool_usd: float = 390000.0
+    legacy_gds_surcharge_overpay_or_missing_ndc_corporate_fare: bool = False
+    cancel_before_hold_reshop_race_or_negative_net_rebooking_savings: bool = False
+    orphaned_unused_eticket_credit_bypass_on_eligible_airline: bool = False
+    ndc_continuous_fare_hold_before_cancel_and_uet_bank_ready: bool = False
+
+
+def evaluate_ota_corporate_travel_tmc_ndc_policy(
+    policy_input: OtaCorporateTravelTmcNdcPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_gds_surcharge_missed_reshop_and_expired_uet_pool_usd
+        ),
+    )
+    if policy_input.orphaned_unused_eticket_credit_bypass_on_eligible_airline:
+        return {
+            "status_code": 451,
+            "decision": "ORPHANED_UNUSED_ETICKET_CREDIT_BYPASS_ON_ELIGIBLE_AIRLINE_BOOKING",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.legacy_gds_surcharge_overpay_or_missing_ndc_corporate_fare:
+        return {
+            "status_code": 403,
+            "decision": "LEGACY_GDS_SURCHARGE_OVERPAY_OR_MISSING_NDC_CORPORATE_CONTINUOUS_FARE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cancel_before_hold_reshop_race_or_negative_net_rebooking_savings:
+        return {
+            "status_code": 422,
+            "decision": "CANCEL_BEFORE_HOLD_RESHOP_RACE_OR_NEGATIVE_NET_REBOOKING_SAVINGS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ndc_continuous_fare_hold_before_cancel_and_uet_bank_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "NDC_CONTINUOUS_FARE_HOLD_BEFORE_CANCEL_RESHOP_AND_UET_BANK_CONFIRM",
+            "mandate_token": "ota_corporate_tmc_ndc_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_OTA_CORPORATE_TMC_AND_NDC_BOOKING_AUTHORIZED",
+        "mandate_token": "ota_corporate_tmc_ndc_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -54686,6 +54762,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_corporate_travel_tmc_ndc_guard = {
+        "authorized_200": evaluate_ota_corporate_travel_tmc_ndc_policy(
+            OtaCorporateTravelTmcNdcPolicyInput()
+        ),
+        "gds_surcharge_overpay_403": evaluate_ota_corporate_travel_tmc_ndc_policy(
+            OtaCorporateTravelTmcNdcPolicyInput(
+                legacy_gds_surcharge_overpay_or_missing_ndc_corporate_fare=True
+            )
+        ),
+        "cancel_before_hold_race_422": evaluate_ota_corporate_travel_tmc_ndc_policy(
+            OtaCorporateTravelTmcNdcPolicyInput(
+                cancel_before_hold_reshop_race_or_negative_net_rebooking_savings=True
+            )
+        ),
+        "orphaned_uet_bypass_451": evaluate_ota_corporate_travel_tmc_ndc_policy(
+            OtaCorporateTravelTmcNdcPolicyInput(
+                orphaned_unused_eticket_credit_bypass_on_eligible_airline=True
+            )
+        ),
+        "ndc_reshop_uet_bank_409": evaluate_ota_corporate_travel_tmc_ndc_policy(
+            OtaCorporateTravelTmcNdcPolicyInput(
+                ndc_continuous_fare_hold_before_cancel_and_uet_bank_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -55144,6 +55246,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "big_bulky_ltl_path3d_keepit_guard": big_bulky_ltl_path3d_keepit_guard,
         "franchise_royalty_ad_fund_sweep_guard": franchise_royalty_ad_fund_sweep_guard,
         "cross_border_rma_returns_keep_it_guard": cross_border_rma_returns_keep_it_guard,
+        "ota_corporate_travel_tmc_ndc_guard": ota_corporate_travel_tmc_ndc_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -79153,6 +79256,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="xbrma-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 KEEP_IT_NET_RECOVERY_BONUS_EXCHANGE_AND_FTID_WEIGHT_LOCK_CONFIRM · Mandate: cross_border_rma_keepit_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 330 (#449 · SVG #773 · 🏆 Round 330 Milestone) OTA Corporate Travel TMC, NDC & UET Bank -->
+      <div class="finops-box" id="ota-corporate-travel-tmc-ndc-sandbox" style="margin-top:12px;border-color:#2563eb;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">✈️ 企业差旅管理 TMC 与自动改签 (Navan / TravelPerk / Concur / IATA NDC 21.3) 连续比价与客票池沙盒</div>
+            <div class="finops-sub">Round 330 (#449 · SVG #773 · 🏆 Round 330 Milestone) · IATA NDC 21.3 连续定价与企业协议码防 $24/段 GDS 附加费溢价 (HTTP 403) + 降价自动重订“先锁新单再退旧单 (Hold-Before-Cancel)”与净省 &gt;=$25 门槛防高管踏空无票 (HTTP 422) + 企业未用电子客票银行 (UET Credit Bank) 离职员工客票自动改名核销 (HTTP 451) + 净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="otatmc-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度企业差旅传统 GDS 附加费溢价、错失起飞/入住前降价重订及离职员工未用客票 (UET) 过期作废池 ($)
+            <input type="number" id="otatmc-gross-input" value="390000" min="10000" step="5000" oninput="recalcOtaCorporateTravelTmcNdcSandbox()" />
+          </label>
+          <label>IATA NDC 21.3 连续定价直连与企业协议码 (Corporate TourCode) 防 GDS 附加费门禁
+            <select id="otatmc-ndc-select" onchange="recalcOtaCorporateTravelTmcNdcSandbox()">
+              <option value="pass">并发比价 IATA NDC 21.3 连续价格点与企业协议折扣，自动豁免 $18-$28/段传统 GDS 附加费 (安全)</option>
+              <option value="block_403">漏查 NDC $545 连续企业价，误订带 $48 分销附加费的 $640 传统 EDIFACT GDS 舱位 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>起飞/入住前降价自动重订 (Price-Drop Re-Shopping) Hold-Before-Cancel 两阶段锁位门禁
+            <select id="otatmc-reshop-select" onchange="recalcOtaCorporateTravelTmcNdcSandbox()">
+              <option value="pass">先拿到新低价订单 PNR/房号确认且扣除手续费净省 &gt;=$25 后，再原子取消原高价订单 (合规)</option>
+              <option value="block_422">先退掉旧机票/酒店再去抢新低价单导致并发踏空无房住，或净省不足抵扣退改费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>企业级 13 位未用电子客票中央银行 (Corporate UET Credit Bank) 离职员工客票过户核销门禁
+            <select id="otatmc-uet-select" onchange="recalcOtaCorporateTravelTmcNdcSandbox()">
+              <option value="pass">出票前按 FIFO 扫描公司 UET 客票池，自动调用航司企业协议 Name-Waiver 改名抵扣临期余额 (合规)</option>
+              <option value="block_451">池内有离职员工 $820 临期美联航未用客票却全额刷虚拟卡买新票，任由旧票过期作废 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>NDC 连续定价 + Hold-Before-Cancel 盯盘重订 + UET 客票银行全链路编排
+            <select id="otatmc-opt-select" onchange="recalcOtaCorporateTravelTmcNdcSandbox()">
+              <option value="enabled" selected>启用 NDC 直连 + 先锁后退自动重订 + UET 客票银行 (-38% 差旅损耗 / HTTP 409)</option>
+              <option value="disabled">传统单轨 EDIFACT GDS 预订 + 人工改签 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度差旅溢价与废票损耗池</div>
+            <div class="finops-kpi-val" id="otatmc-gross-kpi">$390,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">NDC重订与客票回收后净成本</div>
+            <div class="finops-kpi-val" id="otatmc-net-kpi" style="color:#6ee7b7;">$241,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净节省企业差旅总预算</div>
+            <div class="finops-kpi-val" id="otatmc-savings-kpi" style="color:#38bdf8;">$148,200</div>
+          </div>
+        </div>
+        <div id="otatmc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 NDC_CONTINUOUS_FARE_HOLD_BEFORE_CANCEL_RESHOP_AND_UET_BANK_CONFIRM · Mandate: ota_corporate_tmc_ndc_optim_409
         </div>
       </div>
 
@@ -108760,6 +108920,79 @@ function recalcCrossBorderRmaReturnsKeepItSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CROSS_BORDER_RMA_AND_EXCHANGE_LEDGER_AUTHORIZED · Mandate: cross_border_rma_keepit_200';
+}}
+
+function recalcOtaCorporateTravelTmcNdcSandbox() {{
+  const grossInput = document.getElementById('otatmc-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '390000'));
+  const ndcGate = document.getElementById('otatmc-ndc-select').value;
+  const reshopGate = document.getElementById('otatmc-reshop-select').value;
+  const uetGate = document.getElementById('otatmc-uet-select').value;
+  const optMode = document.getElementById('otatmc-opt-select').value;
+
+  const grossKpi = document.getElementById('otatmc-gross-kpi');
+  const netKpi = document.getElementById('otatmc-net-kpi');
+  const savingsKpi = document.getElementById('otatmc-savings-kpi');
+  const statusKpi = document.getElementById('otatmc-status-kpi');
+  const banner = document.getElementById('otatmc-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (uetGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 ORPHANED_UNUSED_ETICKET_CREDIT_BYPASS_ON_ELIGIBLE_AIRLINE_BOOKING · Mandate: null';
+    return;
+  }}
+  if (ndcGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 LEGACY_GDS_SURCHARGE_OVERPAY_OR_MISSING_NDC_CORPORATE_CONTINUOUS_FARE · Mandate: null';
+    return;
+  }}
+  if (reshopGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CANCEL_BEFORE_HOLD_RESHOP_RACE_OR_NEGATIVE_NET_REBOOKING_SAVINGS · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 NDC_CONTINUOUS_FARE_HOLD_BEFORE_CANCEL_RESHOP_AND_UET_BANK_CONFIRM · Mandate: ota_corporate_tmc_ndc_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_OTA_CORPORATE_TMC_AND_NDC_BOOKING_AUTHORIZED · Mandate: ota_corporate_tmc_ndc_200';
 }}
 
 function updateStage1756Sandbox() {{
