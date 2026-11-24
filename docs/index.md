@@ -2,11 +2,11 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`460` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`461` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
-- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（33 篇）](#platform-grounding)
+- [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（34 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（59 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（175 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（101 篇）](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（33 篇）
+## 一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（34 篇）
 
 > 面向企业架构师的平台底座选型（Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify）、搜索接地（Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl）、目录同步屏障、A2UI 渲染隔离与可信 Bot 鉴权。
 
@@ -57,6 +57,7 @@
 | 31 | **🏆 智能体商业六大开放协议全栈互操作与选型总纲（`MCP × A2A × UCP × ACP × AP2 × x402/MPP` · 🏆 第 440 篇双语指南里程碑）：跨协议 `checkout_hash` 连续性锁（`UCP == AP2 == ACP`）、`<$2.00` 微支付与卡轨智能分流、`A2A AgentCard` 验签及 `2026-11-30` 零停机切流净省 41% 架构选型 FAQ** | [中文](agentic-commerce-six-protocol-interop-mcp-a2a-ucp-acp-ap2-x402-selection-faq.md) · [English](agentic-commerce-six-protocol-interop-mcp-a2a-ucp-acp-ap2-x402-selection-faq.en.md) |
 | 32 | **商业智能体商品目录混合检索（`Hybrid Catalog RAG`）与实时库存/比价双通道接地选型（`Azure AI Search + Microsoft Web IQ vs. Algolia NeuralSearch vs. Google Vertex AI Search for Commerce vs. Constructor.io`）：`BM25 + 向量 RRF (k=60)` 精确型号锁、召回前子 SKU 尺码现货位图过滤（`Pre-Ranking ATP Bitmask`）与防配件伪低价折让净省 40% Agent 架构选型 FAQ** | [中文](hybrid-catalog-rag-azure-ai-search-webiq-algolia-vertex-rrf-stock-filter-selection-faq.md) · [English](hybrid-catalog-rag-azure-ai-search-webiq-algolia-vertex-rrf-stock-filter-selection-faq.en.md) |
 | 33 | **商业智能体分级人工确认（`Tiered Human-in-the-Loop HITL`）、持久化检查点挂起恢复（`Durable Checkpoint Interrupt`）与分级支付授权边界选型（`Azure AI Foundry + LangGraph Interrupts vs. Microsoft Copilot Studio Approvals vs. Salesforce Agentforce`）：三档风险门禁、严禁聊天框纯文本 `"YES"` 伪确认与异步审批唤醒后报价哈希重验净省 40% Agent 架构选型 FAQ** | [中文](agentic-commerce-hitl-approval-langgraph-interrupt-copilot-studio-fido2-quote-ttl-selection-faq.md) · [English](agentic-commerce-hitl-approval-langgraph-interrupt-copilot-studio-fido2-quote-ttl-selection-faq.en.md) |
+| 34 | **🏆 电话语音商业智能体与智能呼叫中心收单（`Voice Commerce & AI Contact Center CCaaS`: `D365 Contact Center / Genesys Cloud / Amazon Connect / Twilio + Sycurio PCI-DSS v4.0` · 🏆 第 785 张架构图与第 235 个沙盒里程碑）、边缘 `SIP RFC 4733 DTMF` 按键音剥离防口播卡号污染录音与 `STT`、`VAD Barge-In` 打断回滚防双扣与带外手机核身防 AI 克隆声纹净省 40% Agent 架构选型 FAQ** | [中文](voice-commerce-ccaas-pci-dtmf-masking-pay-by-link-deepfake-bargein-selection-faq.md) · [English](voice-commerce-ccaas-pci-dtmf-masking-pay-by-link-deepfake-bargein-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
 ## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（59 篇）

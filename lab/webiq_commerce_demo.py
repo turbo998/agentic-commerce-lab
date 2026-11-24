@@ -41099,6 +41099,82 @@ def evaluate_ecommerce_dynamic_pricing_map_guard_policy(
     }
 
 
+@dataclass(frozen=True)
+class VoiceCommerceCcaasPciDtmfPolicyInput:
+    quarterly_pci_scope_bargein_double_buy_and_voice_ato_pool_usd: float = 370000.0
+    spoken_pan_cvv_in_voice_stt_or_unmasked_dtmf_recording: bool = False
+    barge_in_interrupted_turn_premature_mutating_tool_commit: bool = False
+    deepfake_voice_or_spoofed_ani_mutation_without_oob_stepup: bool = False
+    sip_dtmf_vault_paybylink_bargein_cancel_and_oob_ready: bool = False
+
+
+def evaluate_voice_commerce_ccaas_pci_dtmf_policy(
+    policy_input: VoiceCommerceCcaasPciDtmfPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_pci_scope_bargein_double_buy_and_voice_ato_pool_usd
+        ),
+    )
+    if policy_input.deepfake_voice_or_spoofed_ani_mutation_without_oob_stepup:
+        return {
+            "status_code": 451,
+            "decision": "DEEPFAKE_VOICE_OR_SPOOFED_ANI_HIGH_RISK_MUTATION_WITHOUT_OOB_AUTH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.spoken_pan_cvv_in_voice_stt_or_unmasked_dtmf_recording:
+        return {
+            "status_code": 403,
+            "decision": "SPOKEN_PAN_CVV_IN_VOICE_STT_OR_UNMASKED_DTMF_RECORDING_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.barge_in_interrupted_turn_premature_mutating_tool_commit:
+        return {
+            "status_code": 422,
+            "decision": "BARGE_IN_INTERRUPTED_VOICE_TURN_PREMATURE_MUTATING_TOOL_COMMIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sip_dtmf_vault_paybylink_bargein_cancel_and_oob_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "VOICE_CCAAS_SIP_DTMF_VAULT_BARGEIN_GUARD_AND_OOB_STEPUP_CONFIRM",
+            "mandate_token": "voice_commerce_ccaas_pci_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_VOICE_COMMERCE_CCAAS_AND_PCI_DTMF_AUTHORIZED",
+        "mandate_token": "voice_commerce_ccaas_pci_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -55910,6 +55986,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    voice_commerce_ccaas_pci_dtmf_guard = {
+        "authorized_200": evaluate_voice_commerce_ccaas_pci_dtmf_policy(
+            VoiceCommerceCcaasPciDtmfPolicyInput()
+        ),
+        "spoken_pan_in_stt_403": evaluate_voice_commerce_ccaas_pci_dtmf_policy(
+            VoiceCommerceCcaasPciDtmfPolicyInput(
+                spoken_pan_cvv_in_voice_stt_or_unmasked_dtmf_recording=True
+            )
+        ),
+        "barge_in_premature_commit_422": evaluate_voice_commerce_ccaas_pci_dtmf_policy(
+            VoiceCommerceCcaasPciDtmfPolicyInput(
+                barge_in_interrupted_turn_premature_mutating_tool_commit=True
+            )
+        ),
+        "deepfake_or_spoofed_ani_451": evaluate_voice_commerce_ccaas_pci_dtmf_policy(
+            VoiceCommerceCcaasPciDtmfPolicyInput(
+                deepfake_voice_or_spoofed_ani_mutation_without_oob_stepup=True
+            )
+        ),
+        "sip_dtmf_bargein_oob_409": evaluate_voice_commerce_ccaas_pci_dtmf_policy(
+            VoiceCommerceCcaasPciDtmfPolicyInput(
+                sip_dtmf_vault_paybylink_bargein_cancel_and_oob_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -56380,6 +56482,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agentic_hitl_durable_checkpoint_guard": agentic_hitl_durable_checkpoint_guard,
         "b2b_cross_border_trade_assurance_guard": b2b_cross_border_trade_assurance_guard,
         "ecommerce_dynamic_pricing_map_guard": ecommerce_dynamic_pricing_map_guard,
+        "voice_commerce_ccaas_pci_dtmf_guard": voice_commerce_ccaas_pci_dtmf_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -81073,6 +81176,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="dynmap-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 DYNAMIC_REPRICING_COGS_FLOOR_MAP_INCART_SHIELD_AND_PARITY_CONFIRM · Mandate: dynamic_pricing_map_guard_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 342 (#461 · 🏆 SVG #785 & 235th Sandbox Milestone) Voice Commerce, CCaaS & PCI DTMF Isolation -->
+      <div class="finops-box" id="voice-commerce-ccaas-pci-dtmf-sandbox" style="margin-top:12px;border-color:#0284c7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🎙️ 电话语音商业与智能呼叫中心收单 (D365 Contact Center / Genesys / Connect + Sycurio PCI) 沙盒（🏆 第 235 个沙盒里程碑）</div>
+            <div class="finops-sub">Round 342 (#461 · 🏆 SVG #785 &amp; 235th Sandbox Milestone) · 运营商 SBC 边缘 RFC 4733 DTMF 按键消音剥离或通话中推送 Pay-by-Link 防口播卡号/CVV 污染通话录音与 STT (HTTP 403) + 完整播报后确认屏障与 VAD Barge-In 打断秒级取消投机调用防双扣 (HTTP 422) + STIR/SHAKEN A 级验真结合带外手机 Passkey 防 AI 克隆声纹改址盗刷 (HTTP 451) + 净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="vcccaas-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度语音呼叫中心录音污染 PCI-DSS 审计整改费、用户插话打断重复扣款及 AI 声纹克隆改址盗刷池 ($)
+            <input type="number" id="vcccaas-gross-input" value="370000" min="10000" step="5000" oninput="recalcVoiceCommerceCcaasPciDtmfSandbox()" />
+          </label>
+          <label>通话中 SMS Pay-by-Link 与 SBC 边缘 RFC 4733 DTMF 按键消音剥离 (100% SAQ-A) 门禁
+            <select id="vcccaas-pci-select" onchange="recalcVoiceCommerceCcaasPciDtmfSandbox()">
+              <option value="pass">手机来电推送 Apple/Google Pay 链接，座机由边缘 SBC 消音剥离 DTMF 换 SPT，录音与 LLM 零卡号 (安全)</option>
+              <option value="block_403">让客户在电话里口播 16 位卡号和 CVV，明文写入通话录音 MP3 与大模型 STT 日志违反 PCI Req 3.3 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>全双工语音打断 (VAD Barge-In) 投机工具调用回滚与播报后确认屏障门禁
+            <select id="vcccaas-barge-select" onchange="recalcVoiceCommerceCcaasPciDtmfSandbox()">
+              <option value="pass">扣款与改签工具严格等待 TTS 摘要完整播报并获确认，中途打断 0ms 撤销在途预占 (合规)</option>
+              <option value="block_422">用户中途插话喊“等等改成下午 3 点”，但之前异步触发的上午 9 点航班扣款工具未取消致双扣 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>电信级 STIR/SHAKEN A 级主叫验签与防 AI 克隆声纹 (Deepfake Voice) 带外手机强核身门禁
+            <select id="vcccaas-oob-select" onchange="recalcVoiceCommerceCcaasPciDtmfSandbox()">
+              <option value="pass">校验 STIR/SHAKEN == A，且改收货地址或 &gt;$100 交易强制下发手机 App/SMS Passkey 确认 (合规)</option>
+              <option value="block_451">黑客用 3 秒克隆语音配合伪造来电显示 (ANI) 打电话，仅凭声纹就把 $2,400 订单改寄转运仓 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>边缘 SIP DTMF 隔离 + Barge-In 防双扣 + 带外防深伪核身全链路编排
+            <select id="vcccaas-opt-select" onchange="recalcVoiceCommerceCcaasPciDtmfSandbox()">
+              <option value="enabled" selected>启用边缘 DTMF/Pay-by-Link + Barge-In 屏障 + 带外核身 (-40% 语音商业损耗 / HTTP 409)</option>
+              <option value="disabled">口播卡号进 STT + 投机工具裸提交 + 纯声纹/来电号校验 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度语音PCI与打断误扣池</div>
+            <div class="finops-kpi-val" id="vcccaas-gross-kpi">$370,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">边缘脱敏与防打断后净成本</div>
+            <div class="finops-kpi-val" id="vcccaas-net-kpi" style="color:#6ee7b7;">$222,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省PCI审计与防盗刷</div>
+            <div class="finops-kpi-val" id="vcccaas-savings-kpi" style="color:#38bdf8;">$148,000</div>
+          </div>
+        </div>
+        <div id="vcccaas-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 VOICE_CCAAS_SIP_DTMF_VAULT_BARGEIN_GUARD_AND_OOB_STEPUP_CONFIRM · Mandate: voice_commerce_ccaas_pci_optim_409
         </div>
       </div>
 
@@ -111556,6 +111716,79 @@ function recalcEcommerceDynamicPricingMapGuardSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_DYNAMIC_REPRICING_AND_MAP_COMPLIANCE_AUTHORIZED · Mandate: dynamic_pricing_map_guard_200';
+}}
+
+function recalcVoiceCommerceCcaasPciDtmfSandbox() {{
+  const grossInput = document.getElementById('vcccaas-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '370000'));
+  const pciGate = document.getElementById('vcccaas-pci-select').value;
+  const bargeGate = document.getElementById('vcccaas-barge-select').value;
+  const oobGate = document.getElementById('vcccaas-oob-select').value;
+  const optMode = document.getElementById('vcccaas-opt-select').value;
+
+  const grossKpi = document.getElementById('vcccaas-gross-kpi');
+  const netKpi = document.getElementById('vcccaas-net-kpi');
+  const savingsKpi = document.getElementById('vcccaas-savings-kpi');
+  const statusKpi = document.getElementById('vcccaas-status-kpi');
+  const banner = document.getElementById('vcccaas-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (oobGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 DEEPFAKE_VOICE_OR_SPOOFED_ANI_HIGH_RISK_MUTATION_WITHOUT_OOB_AUTH · Mandate: null';
+    return;
+  }}
+  if (pciGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SPOKEN_PAN_CVV_IN_VOICE_STT_OR_UNMASKED_DTMF_RECORDING_BREACH · Mandate: null';
+    return;
+  }}
+  if (bargeGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BARGE_IN_INTERRUPTED_VOICE_TURN_PREMATURE_MUTATING_TOOL_COMMIT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 VOICE_CCAAS_SIP_DTMF_VAULT_BARGEIN_GUARD_AND_OOB_STEPUP_CONFIRM · Mandate: voice_commerce_ccaas_pci_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_VOICE_COMMERCE_CCAAS_AND_PCI_DTMF_AUTHORIZED · Mandate: voice_commerce_ccaas_pci_200';
 }}
 
 function updateStage1756Sandbox() {{

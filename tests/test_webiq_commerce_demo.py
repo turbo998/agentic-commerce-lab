@@ -31972,6 +31972,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-dynamic-pricing-map-guard-sandbox", html_zh)
 
+    def test_voice_commerce_ccaas_pci_dtmf_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            VoiceCommerceCcaasPciDtmfPolicyInput,
+            evaluate_voice_commerce_ccaas_pci_dtmf_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_voice_commerce_ccaas_pci_dtmf_policy(
+            VoiceCommerceCcaasPciDtmfPolicyInput(
+                quarterly_pci_scope_bargein_double_buy_and_voice_ato_pool_usd=370000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_VOICE_COMMERCE_CCAAS_AND_PCI_DTMF_AUTHORIZED",
+        )
+
+        pci = evaluate_voice_commerce_ccaas_pci_dtmf_policy(
+            VoiceCommerceCcaasPciDtmfPolicyInput(
+                spoken_pan_cvv_in_voice_stt_or_unmasked_dtmf_recording=True
+            )
+        )
+        self.assertEqual(pci["status_code"], 403)
+        self.assertEqual(
+            pci["decision"],
+            "SPOKEN_PAN_CVV_IN_VOICE_STT_OR_UNMASKED_DTMF_RECORDING_BREACH",
+        )
+
+        barge = evaluate_voice_commerce_ccaas_pci_dtmf_policy(
+            VoiceCommerceCcaasPciDtmfPolicyInput(
+                barge_in_interrupted_turn_premature_mutating_tool_commit=True
+            )
+        )
+        self.assertEqual(barge["status_code"], 422)
+        self.assertEqual(
+            barge["decision"],
+            "BARGE_IN_INTERRUPTED_VOICE_TURN_PREMATURE_MUTATING_TOOL_COMMIT",
+        )
+
+        deepfake = evaluate_voice_commerce_ccaas_pci_dtmf_policy(
+            VoiceCommerceCcaasPciDtmfPolicyInput(
+                deepfake_voice_or_spoofed_ani_mutation_without_oob_stepup=True
+            )
+        )
+        self.assertEqual(deepfake["status_code"], 451)
+        self.assertEqual(
+            deepfake["decision"],
+            "DEEPFAKE_VOICE_OR_SPOOFED_ANI_HIGH_RISK_MUTATION_WITHOUT_OOB_AUTH",
+        )
+
+        optim = evaluate_voice_commerce_ccaas_pci_dtmf_policy(
+            VoiceCommerceCcaasPciDtmfPolicyInput(
+                quarterly_pci_scope_bargein_double_buy_and_voice_ato_pool_usd=370000.0,
+                sip_dtmf_vault_paybylink_bargein_cancel_and_oob_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 148000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 222000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("voice_commerce_ccaas_pci_dtmf_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("voice-commerce-ccaas-pci-dtmf-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
