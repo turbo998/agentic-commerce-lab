@@ -32776,6 +32776,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-ai-shopping-bundle-fit-sandbox", html_zh)
 
+    def test_b2b_contract_clm_redlining_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bContractClmRedliningPolicyInput,
+            evaluate_b2b_contract_clm_redlining_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_contract_clm_redlining_policy(
+            B2bContractClmRedliningPolicyInput(
+                quarterly_outside_counsel_silent_renewal_uplift_and_ip_risk_pool_usd=380000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_CONTRACT_CLM_REDLINING_AUTHORIZED",
+        )
+
+        msa = evaluate_b2b_contract_clm_redlining_policy(
+            B2bContractClmRedliningPolicyInput(
+                order_form_supersedes_msa_or_incorporates_mutable_external_url_terms=True
+            )
+        )
+        self.assertEqual(msa["status_code"], 403)
+        self.assertEqual(
+            msa["decision"],
+            "MSA_ORDER_OF_PRECEDENCE_INVERSION_OR_MUTABLE_URL_TRAP",
+        )
+
+        renew = evaluate_b2b_contract_clm_redlining_policy(
+            B2bContractClmRedliningPolicyInput(
+                silent_evergreen_auto_renewal_without_cpi_3pct_uplift_cap=True
+            )
+        )
+        self.assertEqual(renew["status_code"], 422)
+        self.assertEqual(
+            renew["decision"],
+            "UNCAPPED_RENEWAL_PRICE_UPLIFT_OR_UNTRACKED_EVERGREEN_CLAUSE",
+        )
+
+        aiip = evaluate_b2b_contract_clm_redlining_policy(
+            B2bContractClmRedliningPolicyInput(
+                vendor_retains_ai_model_training_rights_on_customer_data_or_ip=True
+            )
+        )
+        self.assertEqual(aiip["status_code"], 451)
+        self.assertEqual(
+            aiip["decision"],
+            "VENDOR_AI_MODEL_TRAINING_RIGHT_OR_IP_OWNERSHIP_BREACH",
+        )
+
+        optim = evaluate_b2b_contract_clm_redlining_policy(
+            B2bContractClmRedliningPolicyInput(
+                quarterly_outside_counsel_silent_renewal_uplift_and_ip_risk_pool_usd=380000.0,
+                playbook_ooxml_redline_msa_hierarchy_and_renewal_cap_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 155800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 224200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_contract_clm_redlining_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-contract-clm-redlining-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

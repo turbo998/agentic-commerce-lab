@@ -42011,6 +42011,82 @@ def evaluate_ecommerce_ai_shopping_bundle_fit_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bContractClmRedliningPolicyInput:
+    quarterly_outside_counsel_silent_renewal_uplift_and_ip_risk_pool_usd: float = 380000.0
+    order_form_supersedes_msa_or_incorporates_mutable_external_url_terms: bool = False
+    silent_evergreen_auto_renewal_without_cpi_3pct_uplift_cap: bool = False
+    vendor_retains_ai_model_training_rights_on_customer_data_or_ip: bool = False
+    playbook_ooxml_redline_msa_hierarchy_and_renewal_cap_ready: bool = False
+
+
+def evaluate_b2b_contract_clm_redlining_policy(
+    policy_input: B2bContractClmRedliningPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_outside_counsel_silent_renewal_uplift_and_ip_risk_pool_usd
+        ),
+    )
+    if policy_input.vendor_retains_ai_model_training_rights_on_customer_data_or_ip:
+        return {
+            "status_code": 451,
+            "decision": "VENDOR_AI_MODEL_TRAINING_RIGHT_OR_IP_OWNERSHIP_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.order_form_supersedes_msa_or_incorporates_mutable_external_url_terms:
+        return {
+            "status_code": 403,
+            "decision": "MSA_ORDER_OF_PRECEDENCE_INVERSION_OR_MUTABLE_URL_TRAP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.silent_evergreen_auto_renewal_without_cpi_3pct_uplift_cap:
+        return {
+            "status_code": 422,
+            "decision": "UNCAPPED_RENEWAL_PRICE_UPLIFT_OR_UNTRACKED_EVERGREEN_CLAUSE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.playbook_ooxml_redline_msa_hierarchy_and_renewal_cap_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CLM_PLAYBOOK_REDLINE_AND_RENEWAL_CAP_CONFIRM",
+            "mandate_token": "b2b_contract_clm_redline_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_CONTRACT_CLM_REDLINING_AUTHORIZED",
+        "mandate_token": "b2b_contract_clm_redline_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -57134,6 +57210,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_contract_clm_redlining_guard = {
+        "authorized_200": evaluate_b2b_contract_clm_redlining_policy(
+            B2bContractClmRedliningPolicyInput()
+        ),
+        "msa_hierarchy_inversion_403": evaluate_b2b_contract_clm_redlining_policy(
+            B2bContractClmRedliningPolicyInput(
+                order_form_supersedes_msa_or_incorporates_mutable_external_url_terms=True
+            )
+        ),
+        "uncapped_renewal_uplift_422": evaluate_b2b_contract_clm_redlining_policy(
+            B2bContractClmRedliningPolicyInput(
+                silent_evergreen_auto_renewal_without_cpi_3pct_uplift_cap=True
+            )
+        ),
+        "vendor_ai_training_grab_451": evaluate_b2b_contract_clm_redlining_policy(
+            B2bContractClmRedliningPolicyInput(
+                vendor_retains_ai_model_training_rights_on_customer_data_or_ip=True
+            )
+        ),
+        "playbook_redline_cap_409": evaluate_b2b_contract_clm_redlining_policy(
+            B2bContractClmRedliningPolicyInput(
+                playbook_ooxml_redline_msa_hierarchy_and_renewal_cap_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -57616,6 +57718,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "agent_payment_protocol_matrix_guard": agent_payment_protocol_matrix_guard,
         "commercial_web_grounding_search_matrix_guard": commercial_web_grounding_search_matrix_guard,
         "ecommerce_ai_shopping_bundle_fit_guard": ecommerce_ai_shopping_bundle_fit_guard,
+        "b2b_contract_clm_redlining_guard": b2b_contract_clm_redlining_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -82993,6 +83096,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="stylist-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CROSS_CATEGORY_OUTFIT_COMPATIBILITY_AND_FIT_LOCK_CONFIRM · Mandate: ecommerce_ai_stylist_bundle_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 354 (#473 · SVG #797 · Sandbox #247) Enterprise B2B Contract CLM & Redlining Copilot -->
+      <div class="finops-box" id="b2b-contract-clm-redlining-sandbox" style="margin-top:12px;border-color:#818cf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📜 企业 B2B 采购合同智能初审与法务红线修订 (Icertis / Ironclad / Agiloft / DocuSign IAM) 沙盒</div>
+            <div class="finops-sub">Round 354 (#473 · SVG #797 · Sandbox #247) · 阻断 Order Form 颠覆已签 MSA 效力优先级及外部可变网页 URL 条款陷阱 (HTTP 403) + 拦截无上限静默自动续约并强制 &lt;= min(CPI, 3%) 涨幅封顶与 T-120d 预警 (HTTP 422) + 拦截供应商拿买方数据训练公共 AI 大模型条款 (HTTP 451) + 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="clmred-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度外部律所审单费、错失自动续约解约窗口被动涨价及 MSA 赔偿上限被架空违约风险池 ($)
+            <input type="number" id="clmred-gross-input" value="380000" min="10000" step="5000" oninput="recalcB2bContractClmRedliningSandbox()" />
+          </label>
+          <label>合同效力优先级守恒 (MSA &gt; DPA &gt; Order Form) 与外部可变网页条款冻结门禁
+            <select id="clmred-msa-select" onchange="recalcB2bContractClmRedliningSandbox()">
+              <option value="pass">强制锁定已签 MSA 最高法律效力，外部网页条款自动冻结为签约日静态 PDF 附件 (安全)</option>
+              <option value="block_403">采购订单小字写明“本 Order Form 及 vendor.com/terms 优先于 MSA”，架空赔偿上限 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>静默自动续约 (Evergreen) 涨幅上限 (&lt;= min(CPI, 3%)) 与 ERP T-120d 提前预警门禁
+            <select id="clmred-renew-select" onchange="recalcB2bContractClmRedliningSandbox()">
+              <option value="pass">自动修订续约涨幅上限 &lt;=3%（基于折后实付价），并将 T-120d 解约通知截止日写入 ERP (合规)</option>
+              <option value="block_422">接受“提前 90 天未通知自动续约 3 年且恢复标准目录价上浮 12%”霸王条款且无日历跟踪 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>禁止供应商使用买方业务数据训练 AI 模型与衍生知识产权归属门禁
+            <select id="clmred-aiip-select" onchange="recalcB2bContractClmRedliningSandbox()">
+              <option value="pass">通过 Word OOXML Track Changes 自动插入零模型训练、零留存与买方独占定制 IP 附加条款 (合规)</option>
+              <option value="block_451">供应商 DPA 保留使用买方输入数据、日志训练改进公共基础大模型及占有微调权重权利 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Legal Playbook 自动 OOXML 修订 + MSA 效力锁 + 续约涨幅封顶全链路编排
+            <select id="clmred-opt-select" onchange="recalcB2bContractClmRedliningSandbox()">
+              <option value="enabled" selected>启用 Playbook 自动修订 + MSA 层级锁 + 3% 续约封顶 (-41% 外部律所与续约涨价损耗 / HTTP 409)</option>
+              <option value="disabled">传统纯人工逐行审阅 Word 合同与手工台账基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度律所审单与续约涨价池</div>
+            <div class="finops-kpi-val" id="clmred-gross-kpi">$380,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">自动红线与续约锁后净成本</div>
+            <div class="finops-kpi-val" id="clmred-net-kpi" style="color:#6ee7b7;">$224,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省法务费与防涨价损益</div>
+            <div class="finops-kpi-val" id="clmred-savings-kpi" style="color:#38bdf8;">$155,800</div>
+          </div>
+        </div>
+        <div id="clmred-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CLM_PLAYBOOK_REDLINE_AND_RENEWAL_CAP_CONFIRM · Mandate: b2b_contract_clm_redline_optim_409
         </div>
       </div>
 
@@ -114352,6 +114512,79 @@ function recalcEcommerceAiShoppingBundleFitSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_AI_SHOPPING_STYLIST_AND_BUNDLE_AUTHORIZED · Mandate: ecommerce_ai_stylist_bundle_200';
+}}
+
+function recalcB2bContractClmRedliningSandbox() {{
+  const grossInput = document.getElementById('clmred-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '380000'));
+  const msaGate = document.getElementById('clmred-msa-select').value;
+  const renewGate = document.getElementById('clmred-renew-select').value;
+  const aiipGate = document.getElementById('clmred-aiip-select').value;
+  const optMode = document.getElementById('clmred-opt-select').value;
+
+  const grossKpi = document.getElementById('clmred-gross-kpi');
+  const netKpi = document.getElementById('clmred-net-kpi');
+  const savingsKpi = document.getElementById('clmred-savings-kpi');
+  const statusKpi = document.getElementById('clmred-status-kpi');
+  const banner = document.getElementById('clmred-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (aiipGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 VENDOR_AI_MODEL_TRAINING_RIGHT_OR_IP_OWNERSHIP_BREACH · Mandate: null';
+    return;
+  }}
+  if (msaGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MSA_ORDER_OF_PRECEDENCE_INVERSION_OR_MUTABLE_URL_TRAP · Mandate: null';
+    return;
+  }}
+  if (renewGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCAPPED_RENEWAL_PRICE_UPLIFT_OR_UNTRACKED_EVERGREEN_CLAUSE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CLM_PLAYBOOK_REDLINE_AND_RENEWAL_CAP_CONFIRM · Mandate: b2b_contract_clm_redline_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_CONTRACT_CLM_REDLINING_AUTHORIZED · Mandate: b2b_contract_clm_redline_200';
 }}
 
 function updateStage1756Sandbox() {{
