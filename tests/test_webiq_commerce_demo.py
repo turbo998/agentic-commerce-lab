@@ -34384,6 +34384,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-customs-hts-duty-drawback-sandbox", html_zh)
 
+    def test_ecommerce_loyalty_points_liability_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceLoyaltyPointsLiabilityPolicyInput,
+            evaluate_ecommerce_loyalty_points_liability_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_loyalty_points_liability_policy(
+            EcommerceLoyaltyPointsLiabilityPolicyInput(
+                quarterly_points_fraud_cogs_burn_and_asc606_liability_pool_usd=380000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_LOYALTY_POINTS_AND_ASC606_AUTHORIZED",
+        )
+
+        vest = evaluate_ecommerce_loyalty_points_liability_policy(
+            EcommerceLoyaltyPointsLiabilityPolicyInput(
+                points_activated_before_return_window_or_spent_points_unclawed_on_rma=True
+            )
+        )
+        self.assertEqual(vest["status_code"], 403)
+        self.assertEqual(
+            vest["decision"],
+            "UNVESTED_POINTS_SPENT_OR_DOUBLE_EARN_VETO",
+        )
+
+        margin = evaluate_ecommerce_loyalty_points_liability_policy(
+            EcommerceLoyaltyPointsLiabilityPolicyInput(
+                points_redeemed_on_giftcards_or_exceeding_30pct_low_margin_basket_cap=True
+            )
+        )
+        self.assertEqual(margin["status_code"], 422)
+        self.assertEqual(
+            margin["decision"],
+            "LOYALTY_REDEMPTION_MARGIN_OR_GIFTCARD_BREACH",
+        )
+
+        asc = evaluate_ecommerce_loyalty_points_liability_policy(
+            EcommerceLoyaltyPointsLiabilityPolicyInput(
+                asc606_ssp_deferred_revenue_unbooked_or_points_expired_without_30d_notice=True
+            )
+        )
+        self.assertEqual(asc["status_code"], 451)
+        self.assertEqual(
+            asc["decision"],
+            "ASC606_DEFERRED_LIABILITY_OR_EXPIRY_NOTICE_BREACH",
+        )
+
+        optim = evaluate_ecommerce_loyalty_points_liability_policy(
+            EcommerceLoyaltyPointsLiabilityPolicyInput(
+                quarterly_points_fraud_cogs_burn_and_asc606_liability_pool_usd=380000.0,
+                high_margin_experiential_burn_and_pending_escrow_ledger_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 155800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 224200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_loyalty_points_liability_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-loyalty-points-liability-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

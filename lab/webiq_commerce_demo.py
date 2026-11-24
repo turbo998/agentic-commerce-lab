@@ -43829,6 +43829,82 @@ def evaluate_cross_border_customs_hts_duty_drawback_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceLoyaltyPointsLiabilityPolicyInput:
+    quarterly_points_fraud_cogs_burn_and_asc606_liability_pool_usd: float = 380000.0
+    points_activated_before_return_window_or_spent_points_unclawed_on_rma: bool = False
+    points_redeemed_on_giftcards_or_exceeding_30pct_low_margin_basket_cap: bool = False
+    asc606_ssp_deferred_revenue_unbooked_or_points_expired_without_30d_notice: bool = False
+    high_margin_experiential_burn_and_pending_escrow_ledger_ready: bool = False
+
+
+def evaluate_ecommerce_loyalty_points_liability_policy(
+    policy_input: EcommerceLoyaltyPointsLiabilityPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_points_fraud_cogs_burn_and_asc606_liability_pool_usd
+        ),
+    )
+    if policy_input.asc606_ssp_deferred_revenue_unbooked_or_points_expired_without_30d_notice:
+        return {
+            "status_code": 451,
+            "decision": "ASC606_DEFERRED_LIABILITY_OR_EXPIRY_NOTICE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.points_activated_before_return_window_or_spent_points_unclawed_on_rma:
+        return {
+            "status_code": 403,
+            "decision": "UNVESTED_POINTS_SPENT_OR_DOUBLE_EARN_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.points_redeemed_on_giftcards_or_exceeding_30pct_low_margin_basket_cap:
+        return {
+            "status_code": 422,
+            "decision": "LOYALTY_REDEMPTION_MARGIN_OR_GIFTCARD_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.high_margin_experiential_burn_and_pending_escrow_ledger_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PENDING_ESCROW_AND_HIGH_MARGIN_EXPERIENTIAL_BURN_CONFIRM",
+            "mandate_token": "loyalty_points_asc606_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_LOYALTY_POINTS_AND_ASC606_AUTHORIZED",
+        "mandate_token": "loyalty_points_asc606_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -59576,6 +59652,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_loyalty_points_liability_guard = {
+        "authorized_200": evaluate_ecommerce_loyalty_points_liability_policy(
+            EcommerceLoyaltyPointsLiabilityPolicyInput()
+        ),
+        "unvested_points_or_double_earn_403": evaluate_ecommerce_loyalty_points_liability_policy(
+            EcommerceLoyaltyPointsLiabilityPolicyInput(
+                points_activated_before_return_window_or_spent_points_unclawed_on_rma=True
+            )
+        ),
+        "redemption_margin_or_giftcard_422": evaluate_ecommerce_loyalty_points_liability_policy(
+            EcommerceLoyaltyPointsLiabilityPolicyInput(
+                points_redeemed_on_giftcards_or_exceeding_30pct_low_margin_basket_cap=True
+            )
+        ),
+        "asc606_liability_or_expiry_451": evaluate_ecommerce_loyalty_points_liability_policy(
+            EcommerceLoyaltyPointsLiabilityPolicyInput(
+                asc606_ssp_deferred_revenue_unbooked_or_points_expired_without_30d_notice=True
+            )
+        ),
+        "experiential_burn_escrow_409": evaluate_ecommerce_loyalty_points_liability_policy(
+            EcommerceLoyaltyPointsLiabilityPolicyInput(
+                high_margin_experiential_burn_and_pending_escrow_ledger_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -60082,6 +60184,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_trade_credit_insurance_factoring_guard": b2b_trade_credit_insurance_factoring_guard,
         "retail_media_network_iroas_bidding_guard": retail_media_network_iroas_bidding_guard,
         "cross_border_customs_hts_duty_drawback_guard": cross_border_customs_hts_duty_drawback_guard,
+        "ecommerce_loyalty_points_liability_guard": ecommerce_loyalty_points_liability_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -86827,6 +86930,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="csthts-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FTA_PREFERENTIAL_HTS_AND_99PCT_DUTY_DRAWBACK_CONFIRM · Mandate: customs_hts_drawback_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 378 (#497 · SVG #821 · Sandbox #271 · 🏆 1,375th Unit Test Major Milestone!) E-Commerce Loyalty Points & ASC 606 Liability -->
+      <div class="finops-box" id="ecommerce-loyalty-points-liability-sandbox" style="margin-top:12px;border-color:#ec4899;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 零售电商与酒旅会员积分体系、退货积分倒扣 (Clawback) 与 ASC 606 递延负债 (Antavo / Talon.One / Salesforce / Yotpo) 沙盒（🏆 第 1,375 项单测里程碑）</div>
+            <div class="finops-sub">Round 378 (#497 · SVG #821 · Sandbox #271 · 🏆 1,375th Test Milestone) · 待生效积分冻结期 (Pending-&gt;Active) 与退货从退款现金中自动扣回已花积分防套现 (HTTP 403) + 禁兑礼品卡且单笔抵现 &lt;=30% 防击穿低毛利商品成本 (HTTP 422) + ASC 606 SSP 递延收入计提与提前 30 天到期通知锁 (HTTP 451) + 1.4x 高毛利自有品升值兑换净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="loypts-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度买大单秒花积分后原单退货白嫖、积分 100% 抵扣低毛利品 COGS 穿仓及 ASC 606 错报损耗池 ($)
+            <input type="number" id="loypts-gross-input" value="380000" min="10000" step="5000" oninput="recalcEcommerceLoyaltyPointsLiabilitySandbox()" />
+          </label>
+          <label>三态积分账本 (Pending-&gt;Active) 退货冷静期托管与退货现金净额倒扣 (RMA Refund Netting) 门禁
+            <select id="loypts-vest-select" onchange="recalcEcommerceLoyaltyPointsLiabilitySandbox()">
+              <option value="pass">签收满 14 天退货期才激活积分；若 VIP 提前花掉积分后退货，自动从退货现金中扣除积分价值 (安全)</option>
+              <option value="block_403">买 $2,000 秒得 $200 可用分并立刻兑换商品寄走，随后将原单全额退货退款白嫖 $200 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>储值礼品卡禁兑锁与结账页积分抵现比例上限 (&lt;= 30% 且保住 COGS 底线) 门禁
+            <select id="loypts-margin-select" onchange="recalcEcommerceLoyaltyPointsLiabilitySandbox()">
+              <option value="pass">拉黑储值礼品卡与 &lt;20% 低毛利硬通货，限制结账直接抵现 &lt;= 30% 订单额 (合规)</option>
+              <option value="block_422">允许用促销赠送积分 100% 全额兑换储值礼品卡洗钱或抵扣 6% 毛利电子品倒贴高额成本 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>ASC 606 / IFRS 15 独立售价 (SSP) 递延收入计提与积分过期提前 30 天法定通知门禁
+            <select id="loypts-asc-select" onchange="recalcEcommerceLoyaltyPointsLiabilitySandbox()">
+              <option value="pass">入账时按 Breakage 调整后 SSP 自动拆分递延负债，并在过期前 60/30/7 天推送保级提醒 (合规)</option>
+              <option value="block_451">大促狂发 5 倍积分却未计提 ASC 606 递延负债，或未提前 30 天通知直接清零积分触发集体诉讼 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>1.4x 高毛利自有礼盒/升房权益升值引导 + Pending 托管账本 + 差额保级挑战全链路编排
+            <select id="loypts-opt-select" onchange="recalcEcommerceLoyaltyPointsLiabilitySandbox()">
+              <option value="enabled" selected>启用 80% 高毛利自有礼盒 1.4x 升值兑换 + 退货净额倒扣锁 (-41% 积分套现与核销成本 / HTTP 409)</option>
+              <option value="disabled">传统下单即发可用分与全店无门槛 1:1 现金抵扣基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度积分套现与核销穿仓池</div>
+            <div class="finops-kpi-val" id="loypts-gross-kpi">$380,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">三态托管与高毛利核销净成本</div>
+            <div class="finops-kpi-val" id="loypts-net-kpi" style="color:#6ee7b7;">$224,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省套现坏账与COGS成本</div>
+            <div class="finops-kpi-val" id="loypts-savings-kpi" style="color:#38bdf8;">$155,800</div>
+          </div>
+        </div>
+        <div id="loypts-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PENDING_ESCROW_AND_HIGH_MARGIN_EXPERIENTIAL_BURN_CONFIRM · Mandate: loyalty_points_asc606_optim_409
         </div>
       </div>
 
@@ -119938,6 +120098,79 @@ function recalcCrossBorderCustomsHtsDutyDrawbackSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CROSS_BORDER_CUSTOMS_HTS_AUTHORIZED · Mandate: customs_hts_drawback_200';
+}}
+
+function recalcEcommerceLoyaltyPointsLiabilitySandbox() {{
+  const grossInput = document.getElementById('loypts-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '380000'));
+  const vestGate = document.getElementById('loypts-vest-select').value;
+  const marginGate = document.getElementById('loypts-margin-select').value;
+  const ascGate = document.getElementById('loypts-asc-select').value;
+  const optMode = document.getElementById('loypts-opt-select').value;
+
+  const grossKpi = document.getElementById('loypts-gross-kpi');
+  const netKpi = document.getElementById('loypts-net-kpi');
+  const savingsKpi = document.getElementById('loypts-savings-kpi');
+  const statusKpi = document.getElementById('loypts-status-kpi');
+  const banner = document.getElementById('loypts-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ascGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 ASC606_DEFERRED_LIABILITY_OR_EXPIRY_NOTICE_BREACH · Mandate: null';
+    return;
+  }}
+  if (vestGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNVESTED_POINTS_SPENT_OR_DOUBLE_EARN_VETO · Mandate: null';
+    return;
+  }}
+  if (marginGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 LOYALTY_REDEMPTION_MARGIN_OR_GIFTCARD_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PENDING_ESCROW_AND_HIGH_MARGIN_EXPERIENTIAL_BURN_CONFIRM · Mandate: loyalty_points_asc606_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_LOYALTY_POINTS_AND_ASC606_AUTHORIZED · Mandate: loyalty_points_asc606_200';
 }}
 
 function updateStage1756Sandbox() {{
