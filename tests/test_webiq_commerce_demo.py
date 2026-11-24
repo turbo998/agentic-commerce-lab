@@ -31302,6 +31302,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-cancel-deflection-churn-save-sandbox", html_zh)
 
+    def test_b2b_wholesale_quote_to_cart_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bWholesaleQuoteToCartPolicyInput,
+            evaluate_b2b_wholesale_quote_to_cart_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_wholesale_quote_to_cart_policy(
+            B2bWholesaleQuoteToCartPolicyInput(
+                quarterly_promo_stack_tier_gaming_and_resale_tax_pool_usd=410000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_WHOLESALE_QUOTE_TO_CART_AUTHORIZED",
+        )
+
+        promo = evaluate_b2b_wholesale_quote_to_cart_policy(
+            B2bWholesaleQuoteToCartPolicyInput(
+                b2c_promo_stacked_on_b2b_contract_or_unauth_catalog_leak=True
+            )
+        )
+        self.assertEqual(promo["status_code"], 403)
+        self.assertEqual(
+            promo["decision"],
+            "B2C_PROMO_STACKED_ON_B2B_CONTRACT_PRICE_OR_UNAUTHENTICATED_CATALOG_LEAK",
+        )
+
+        tier = evaluate_b2b_wholesale_quote_to_cart_policy(
+            B2bWholesaleQuoteToCartPolicyInput(
+                expired_b2b_quote_or_unclawed_volume_tier_partial_return=True
+            )
+        )
+        self.assertEqual(tier["status_code"], 422)
+        self.assertEqual(
+            tier["decision"],
+            "EXPIRED_B2B_QUOTE_CHECKOUT_OR_UNCLAWED_VOLUME_TIER_PARTIAL_RETURN",
+        )
+
+        cert = evaluate_b2b_wholesale_quote_to_cart_policy(
+            B2bWholesaleQuoteToCartPolicyInput(
+                expired_resale_tax_cert_or_unauthorized_fba_territory_dropship=True
+            )
+        )
+        self.assertEqual(cert["status_code"], 451)
+        self.assertEqual(
+            cert["decision"],
+            "EXPIRED_RESALE_TAX_CERTIFICATE_OR_UNAUTHORIZED_FBA_TERRITORY_DROPSHIP",
+        )
+
+        optim = evaluate_b2b_wholesale_quote_to_cart_policy(
+            B2bWholesaleQuoteToCartPolicyInput(
+                quarterly_promo_stack_tier_gaming_and_resale_tax_pool_usd=410000.0,
+                contract_isolation_quote_ttl_tier_clawback_and_cert_fence_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 159900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 250100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_wholesale_quote_to_cart_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-wholesale-quote-to-cart-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -40339,6 +40339,82 @@ def evaluate_saas_cancel_deflection_churn_save_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bWholesaleQuoteToCartPolicyInput:
+    quarterly_promo_stack_tier_gaming_and_resale_tax_pool_usd: float = 410000.0
+    b2c_promo_stacked_on_b2b_contract_or_unauth_catalog_leak: bool = False
+    expired_b2b_quote_or_unclawed_volume_tier_partial_return: bool = False
+    expired_resale_tax_cert_or_unauthorized_fba_territory_dropship: bool = False
+    contract_isolation_quote_ttl_tier_clawback_and_cert_fence_ready: bool = False
+
+
+def evaluate_b2b_wholesale_quote_to_cart_policy(
+    policy_input: B2bWholesaleQuoteToCartPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_promo_stack_tier_gaming_and_resale_tax_pool_usd
+        ),
+    )
+    if policy_input.expired_resale_tax_cert_or_unauthorized_fba_territory_dropship:
+        return {
+            "status_code": 451,
+            "decision": "EXPIRED_RESALE_TAX_CERTIFICATE_OR_UNAUTHORIZED_FBA_TERRITORY_DROPSHIP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.b2c_promo_stacked_on_b2b_contract_or_unauth_catalog_leak:
+        return {
+            "status_code": 403,
+            "decision": "B2C_PROMO_STACKED_ON_B2B_CONTRACT_PRICE_OR_UNAUTHENTICATED_CATALOG_LEAK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.expired_b2b_quote_or_unclawed_volume_tier_partial_return:
+        return {
+            "status_code": 422,
+            "decision": "EXPIRED_B2B_QUOTE_CHECKOUT_OR_UNCLAWED_VOLUME_TIER_PARTIAL_RETURN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.contract_isolation_quote_ttl_tier_clawback_and_cert_fence_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "B2B_CONTRACT_ISOLATION_TIER_CLAWBACK_AND_RESALE_CERT_TERRITORY_CONFIRM",
+            "mandate_token": "b2b_wholesale_quote_cart_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_WHOLESALE_QUOTE_TO_CART_AUTHORIZED",
+        "mandate_token": "b2b_wholesale_quote_cart_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -54890,6 +54966,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_wholesale_quote_to_cart_guard = {
+        "authorized_200": evaluate_b2b_wholesale_quote_to_cart_policy(
+            B2bWholesaleQuoteToCartPolicyInput()
+        ),
+        "b2c_promo_stack_on_b2b_403": evaluate_b2b_wholesale_quote_to_cart_policy(
+            B2bWholesaleQuoteToCartPolicyInput(
+                b2c_promo_stacked_on_b2b_contract_or_unauth_catalog_leak=True
+            )
+        ),
+        "expired_quote_or_tier_return_422": evaluate_b2b_wholesale_quote_to_cart_policy(
+            B2bWholesaleQuoteToCartPolicyInput(
+                expired_b2b_quote_or_unclawed_volume_tier_partial_return=True
+            )
+        ),
+        "expired_resale_or_fba_dump_451": evaluate_b2b_wholesale_quote_to_cart_policy(
+            B2bWholesaleQuoteToCartPolicyInput(
+                expired_resale_tax_cert_or_unauthorized_fba_territory_dropship=True
+            )
+        ),
+        "contract_tier_resale_fence_409": evaluate_b2b_wholesale_quote_to_cart_policy(
+            B2bWholesaleQuoteToCartPolicyInput(
+                contract_isolation_quote_ttl_tier_clawback_and_cert_fence_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -55350,6 +55452,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_rma_returns_keep_it_guard": cross_border_rma_returns_keep_it_guard,
         "ota_corporate_travel_tmc_ndc_guard": ota_corporate_travel_tmc_ndc_guard,
         "saas_cancel_deflection_churn_save_guard": saas_cancel_deflection_churn_save_guard,
+        "b2b_wholesale_quote_to_cart_guard": b2b_wholesale_quote_to_cart_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -79473,6 +79576,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="saascn-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FTC_COMPLIANT_CANCEL_DEFLECTION_COOLDOWN_AND_READONLY_VAULT_CONFIRM · Mandate: saas_cancel_deflection_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 332 (#451 · 🏆 SVG #775 & 225th Sandbox Milestone) B2B Wholesale Quote-to-Cart & Tier Clawback -->
+      <div class="finops-box" id="b2b-wholesale-quote-to-cart-sandbox" style="margin-top:12px;border-color:#0d9488;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏭 企业 B2B 自助批发与询价转单 (Shopify Plus B2B / OroCommerce / Salesforce B2B) 阶梯锁沙盒（🏆 第 225 个沙盒里程碑）</div>
+            <div class="finops-sub">Round 332 (#451 · 🏆 SVG #775 &amp; 225th Sandbox Milestone) · B2B 专属协议价与 C 端零售优惠码硬互斥防折上折穿仓 (HTTP 403) + 14 天询价 TTL 与“买 1,000 件退 950 件”阶梯重算倒扣 (HTTP 422) + Avalara 州转售免税证 (SST) 实时核验与禁发 Amazon FBA 串货围栏 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="b2bqtc-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 B2B 批发误叠 C 端优惠码穿仓、买大退小骗取千件阶梯价及免税证失效/跨区串货池 ($)
+            <input type="number" id="b2bqtc-gross-input" value="410000" min="10000" step="5000" oninput="recalcB2bWholesaleQuoteToCartSandbox()" />
+          </label>
+          <label>B2B 企业专属协议价目表 (Company Price List) 与 C 端营销优惠码互斥门禁
+            <select id="b2bqtc-promo-select" onchange="recalcB2bWholesaleQuoteToCartSandbox()">
+              <option value="pass">验证企业 Location 登录态水合批发价，且结账函数 100% 屏蔽所有 B2C 优惠码与返利 (安全)</option>
+              <option value="block_403">在 55 折大客户协议批发价上叠加黑五 75 折零售券击穿工厂成本，或匿名泄露批发价 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>在线询价转单 (Draft Quote-to-Cart) 14 天硬 TTL 与部分退货阶梯重算倒扣 (Tier Clawback) 门禁
+            <select id="b2bqtc-tier-select" onchange="recalcB2bWholesaleQuoteToCartSandbox()">
+              <option value="pass">锁死 14 天报价有效期，且买 1,000 件退 950 件时按留存 50 件所属 $20 阶梯倒扣 $400 差价 (合规)</option>
+              <option value="block_422">拿着 60 天前过期低价报价单在铜价暴涨后付款，或退掉 950 件仍按 $12 千件底价留货 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>州转售免税证 (Avalara Resale Certificate) 实时核验与禁发 Amazon FBA 授权区域围栏门禁
+            <select id="b2bqtc-cert-select" onchange="recalcB2bWholesaleQuoteToCartSandbox()">
+              <option value="pass">实时校验收货州 SST 转售免税证 ACTIVE 状态，且收货地址属于经销商授权线下大区 (合规)</option>
+              <option value="block_451">用过期免税证免税提货致品牌方补税受罚，或将拉美专供 5 折货直发美国 Amazon FBA 仓 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>B2B 协议价互斥 + 阶梯退货重算倒扣 + 免税证与防串货围栏全链路编排
+            <select id="b2bqtc-opt-select" onchange="recalcB2bWholesaleQuoteToCartSandbox()">
+              <option value="enabled" selected>启用 B2B 折扣互斥 + 阶梯退货倒扣 + 免税/防 FBA 围栏 (-39% 批发损耗 / HTTP 409)</option>
+              <option value="disabled">直接复用 C 端购物车逻辑与静态 PDF 免税证 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度批发穿仓与串货损耗池</div>
+            <div class="finops-kpi-val" id="b2bqtc-gross-kpi">$410,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">阶梯锁与免税核验后净成本</div>
+            <div class="finops-kpi-val" id="b2bqtc-net-kpi" style="color:#6ee7b7;">$250,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住B2B批发毛利</div>
+            <div class="finops-kpi-val" id="b2bqtc-savings-kpi" style="color:#38bdf8;">$159,900</div>
+          </div>
+        </div>
+        <div id="b2bqtc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 B2B_CONTRACT_ISOLATION_TIER_CLAWBACK_AND_RESALE_CERT_TERRITORY_CONFIRM · Mandate: b2b_wholesale_quote_cart_optim_409
         </div>
       </div>
 
@@ -109226,6 +109386,79 @@ function recalcSaasCancelDeflectionChurnSaveSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_SAAS_CANCEL_FLOW_AND_RETENTION_AUTHORIZED · Mandate: saas_cancel_deflection_200';
+}}
+
+function recalcB2bWholesaleQuoteToCartSandbox() {{
+  const grossInput = document.getElementById('b2bqtc-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '410000'));
+  const promoGate = document.getElementById('b2bqtc-promo-select').value;
+  const tierGate = document.getElementById('b2bqtc-tier-select').value;
+  const certGate = document.getElementById('b2bqtc-cert-select').value;
+  const optMode = document.getElementById('b2bqtc-opt-select').value;
+
+  const grossKpi = document.getElementById('b2bqtc-gross-kpi');
+  const netKpi = document.getElementById('b2bqtc-net-kpi');
+  const savingsKpi = document.getElementById('b2bqtc-savings-kpi');
+  const statusKpi = document.getElementById('b2bqtc-status-kpi');
+  const banner = document.getElementById('b2bqtc-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (certGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EXPIRED_RESALE_TAX_CERTIFICATE_OR_UNAUTHORIZED_FBA_TERRITORY_DROPSHIP · Mandate: null';
+    return;
+  }}
+  if (promoGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 B2C_PROMO_STACKED_ON_B2B_CONTRACT_PRICE_OR_UNAUTHENTICATED_CATALOG_LEAK · Mandate: null';
+    return;
+  }}
+  if (tierGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 EXPIRED_B2B_QUOTE_CHECKOUT_OR_UNCLAWED_VOLUME_TIER_PARTIAL_RETURN · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 B2B_CONTRACT_ISOLATION_TIER_CLAWBACK_AND_RESALE_CERT_TERRITORY_CONFIRM · Mandate: b2b_wholesale_quote_cart_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_WHOLESALE_QUOTE_TO_CART_AUTHORIZED · Mandate: b2b_wholesale_quote_cart_200';
 }}
 
 function updateStage1756Sandbox() {{

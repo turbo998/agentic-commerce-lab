@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`450` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`451` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（31 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（57 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（173 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（98 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（99 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（40 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（51 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -303,7 +303,7 @@
 | 173 | **🏆 OTA 机酒差旅智能规划、自动比价改签与企业未用客票资产池回收（`Corporate Travel TMC`: `Navan / TravelPerk / SAP Concur / Amadeus NDC` · 🏆 第 330 轮里程碑）、`IATA NDC 21.3` 连续定价防 GDS 附加费、`Hold-Before-Cancel` 降价重订与离职员工未用客票（`UET Credit Bank`）自动改名抵扣净省 38% Agent 架构选型 FAQ** | [中文](ota-corporate-travel-tmc-ndc-continuous-pricing-unused-eticket-irrops-rebooking-selection-faq.md) · [English](ota-corporate-travel-tmc-ndc-continuous-pricing-unused-eticket-irrops-rebooking-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（98 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（99 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -407,6 +407,7 @@
 | 96 | **企业外部用工与专业服务采购管理系统（`Enterprise VMS & Services Procurement SOW`: `SAP Fieldglass vs. Beeline vs. Workday VNDLY vs. Coupa CWM`）、防把驻场工时外包伪装成假咨询 `SOW` 逃避编制与费率卡、绑定 `UAT/Git/VDI` 遥测的服务录入单（`ERP SES`）与 `18/24m` 联合雇佣（`Co-Employment`）工期断崖及 `SCIM` 秒级撤权净省 39% Agent 架构选型 FAQ** | [中文](b2b-vms-contingent-labor-sow-milestone-ses-coemployment-escrow-selection-faq.md) · [English](b2b-vms-contingent-labor-sow-milestone-ses-coemployment-escrow-selection-faq.en.md) |
 | 97 | **医疗健康集团采购组织（`Healthcare GPO`: `Vizient / Premier / GHX`）、`HRSA 340B` 虚拟库存三桶拆单（`340B / GPO / WAC`）与防 `Medicaid` 双重返利及手术室高值植体 `FDA UDI` 寄售扫码即结（`Bill-Only Scan-to-PO`）净省 39% Agent 架构选型 FAQ** | [中文](b2b-healthcare-gpo-340b-split-billing-medicaid-shield-udi-consignment-selection-faq.md) · [English](b2b-healthcare-gpo-340b-split-billing-medicaid-shield-udi-consignment-selection-faq.en.md) |
 | 98 | **商业地产、购物中心门店租约与长租公寓管理（`PropTech Lease, Retail CAM Reconciliation & Security Deposit Escrow`: `Yardi Voyager / MRI Software / AppFolio / RealPage / Bilt`）、逾期禁收部分房租防丧失效力锁、租房押金 `FBO` 独立计息专户与商场物业费（`5% CAM Cap`）及提成租金净额审计净省 39% Agent 架构选型 FAQ** | [中文](proptech-commercial-lease-cam-reconciliation-security-deposit-escrow-selection-faq.md) · [English](proptech-commercial-lease-cam-reconciliation-security-deposit-escrow-selection-faq.en.md) |
+| 99 | **🏆 企业 B2B 自助批发电商、大客户专属协议价目表与在线询价转购物车（`B2B Wholesale & Quote-to-Cart`: `Shopify Plus B2B / Salesforce B2B / OroCommerce / SAP Commerce` · 🏆 第 775 张架构图与第 225 个沙盒里程碑）、B2B/B2C 优惠码硬互斥锁、部分退货跌破起订量阶梯重算倒扣与州转售免税证（`SST`）/ 禁发 Amazon FBA 串货围栏净省 39% Agent 架构选型 FAQ** | [中文](b2b-ecommerce-wholesale-quote-to-cart-contract-price-list-moq-clawback-selection-faq.md) · [English](b2b-ecommerce-wholesale-quote-to-cart-contract-price-list-moq-clawback-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（40 篇）
