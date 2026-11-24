@@ -42619,6 +42619,82 @@ def evaluate_multi_merchant_connect_split_fbo_reserve_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bCpqPocketMarginApprovalPolicyInput:
+    quarterly_pocket_margin_leakage_unfunded_ps_and_tier_exploit_pool_usd: float = 385000.0
+    mandatory_bom_dependency_stripped_or_ps_attach_below_15pct_acv: bool = False
+    order_quantity_or_term_reduced_while_keeping_higher_volume_tier_price: bool = False
+    stacked_ramp_rebate_and_wacc_drives_pocket_margin_below_28pct: bool = False
+    bom_ps_ratio_lock_tier_repricing_and_pocket_waterfall_ready: bool = False
+
+
+def evaluate_b2b_cpq_pocket_margin_approval_policy(
+    policy_input: B2bCpqPocketMarginApprovalPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_pocket_margin_leakage_unfunded_ps_and_tier_exploit_pool_usd
+        ),
+    )
+    if policy_input.stacked_ramp_rebate_and_wacc_drives_pocket_margin_below_28pct:
+        return {
+            "status_code": 451,
+            "decision": "POCKET_MARGIN_WATERFALL_BELOW_FLOOR_FROM_STACKED_CONCESSIONS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.mandatory_bom_dependency_stripped_or_ps_attach_below_15pct_acv:
+        return {
+            "status_code": 403,
+            "decision": "INVALID_CPQ_BOM_DEPENDENCY_OR_MISSING_MANDATORY_PS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.order_quantity_or_term_reduced_while_keeping_higher_volume_tier_price:
+        return {
+            "status_code": 422,
+            "decision": "VOLUME_TIER_QUANTITY_OR_TERM_DROP_WITHOUT_REPRICING",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bom_ps_ratio_lock_tier_repricing_and_pocket_waterfall_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CPQ_BOM_CONSTRAINT_AND_POCKET_MARGIN_WATERFALL_CONFIRM",
+            "mandate_token": "b2b_cpq_pocket_margin_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_CPQ_QUOTE_AND_MARGIN_AUTHORIZED",
+        "mandate_token": "b2b_cpq_pocket_margin_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -57950,6 +58026,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_cpq_pocket_margin_approval_guard = {
+        "authorized_200": evaluate_b2b_cpq_pocket_margin_approval_policy(
+            B2bCpqPocketMarginApprovalPolicyInput()
+        ),
+        "invalid_bom_or_ps_403": evaluate_b2b_cpq_pocket_margin_approval_policy(
+            B2bCpqPocketMarginApprovalPolicyInput(
+                mandatory_bom_dependency_stripped_or_ps_attach_below_15pct_acv=True
+            )
+        ),
+        "tier_qty_drop_exploit_422": evaluate_b2b_cpq_pocket_margin_approval_policy(
+            B2bCpqPocketMarginApprovalPolicyInput(
+                order_quantity_or_term_reduced_while_keeping_higher_volume_tier_price=True
+            )
+        ),
+        "pocket_margin_breach_451": evaluate_b2b_cpq_pocket_margin_approval_policy(
+            B2bCpqPocketMarginApprovalPolicyInput(
+                stacked_ramp_rebate_and_wacc_drives_pocket_margin_below_28pct=True
+            )
+        ),
+        "cpq_bom_pocket_waterfall_409": evaluate_b2b_cpq_pocket_margin_approval_policy(
+            B2bCpqPocketMarginApprovalPolicyInput(
+                bom_ps_ratio_lock_tier_repricing_and_pocket_waterfall_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -58440,6 +58542,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "lifecycle_marketing_replenishment_uplift_guard": lifecycle_marketing_replenishment_uplift_guard,
         "b2b_ap_invoice_three_way_match_guard": b2b_ap_invoice_three_way_match_guard,
         "multi_merchant_connect_split_fbo_reserve_guard": multi_merchant_connect_split_fbo_reserve_guard,
+        "b2b_cpq_pocket_margin_approval_guard": b2b_cpq_pocket_margin_approval_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -84273,6 +84376,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="mktsplit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MARKETPLACE_POD_RESERVE_AND_ATOMIC_CLAWBACK_CONFIRM · Mandate: marketplace_split_settlement_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 362 (#481 · 🏆 SVG #805 & Sandbox #255 Dual Milestone) Enterprise B2B CPQ & Deal Desk Copilot -->
+      <div class="finops-box" id="b2b-cpq-pocket-margin-approval-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业级 B2B 配置定价报价 CPQ 与商务审单 (Salesforce CPQ / Conga / PROS / DealHub) 沙盒（🏆 第 805 张 SVG 与第 255 个沙盒双里程碑）</div>
+            <div class="finops-sub">Round 362 (#481 · 🏆 SVG #805 &amp; Sandbox #255 Milestone) · 强制校验 BOM 前置模块依赖与企业版实施服务配比 PS &gt;= 15% ACV 防删减必配项烂尾 (HTTP 403) + 阶梯砍量/缩期自动作废原特批低单价并回退价格表 (HTTP 422) + 全要素口袋毛利瀑布 Pocket Margin &gt;= 28% 门禁防免租期+返点叠加穿仓 (HTTP 451) + 净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="cpqmrg-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度豁免必配实施服务无预算交付亏损、阶梯砍量套取底价及叠加隐性让利穿仓风险池 ($)
+            <input type="number" id="cpqmrg-gross-input" value="385000" min="10000" step="5000" oninput="recalcB2bCpqPocketMarginSandbox()" />
+          </label>
+          <label>BOM 硬依赖完整性与企业版最低实施服务配比 (PS_Net_Fee &gt;= 15% Software ACV) 门禁
+            <select id="cpqmrg-bom-select" onchange="recalcB2bCpqPocketMarginSandbox()">
+              <option value="pass">强制绑定必配安全网关与 &gt;=15% ACV 实施交付人天包，禁止销售私自删行凑预算 (安全)</option>
+              <option value="block_403">销售为凑客户预算上限私自删掉必配网关模块并将 $40,000 上线实施包改为 $0 白送 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>阶梯价格矩阵数量/年限缩水 (Volume-Tier Quantity/Term Drop) 自动退阶重算门禁
+            <select id="cpqmrg-tier-select" onchange="recalcB2bCpqPocketMarginSandbox()">
+              <option value="pass">审批签名绑定最低数量与年限，一旦客户将 1,000 席砍为 50 席自动回退至 Tier-1 标准单价 (合规)</option>
+              <option value="block_422">先按 1,000 席骗取 $40/席特批底价，签字前把数量改成 50 席却保留 $40 单价未退阶重算 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>全要素口袋净毛利瀑布 (Pocket Margin Waterfall &gt;= 28%: 扣免租期+渠道返点+WACC) 门禁
+            <select id="cpqmrg-pocket-select" onchange="recalcB2bCpqPocketMarginSandbox()">
+              <option value="pass">综合扣除票面折扣、免租爬坡月、渠道返点与 Net-90 资金成本后 Pocket Margin &gt;= 28% (合规)</option>
+              <option value="block_451">表面只打 82 折，但叠加 4 个月免租期 + 18% 渠道返点 + 长账期后真实口袋毛利跌至 11% (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>BOM/PS 15% 硬约束 + 阶梯降量自动重算 + Pocket Margin &gt;= 28% 瀑布全链路编排
+            <select id="cpqmrg-opt-select" onchange="recalcB2bCpqPocketMarginSandbox()">
+              <option value="enabled" selected>启用 BOM/PS 配比锁 + 降量退阶重算 + 口袋毛利瀑布门禁 (-40% 报价利润漏损 / HTTP 409)</option>
+              <option value="disabled">传统仅看表面折扣率审批与手工 Excel 改单基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度报价毛利漏损与烂尾池</div>
+            <div class="finops-kpi-val" id="cpqmrg-gross-kpi">$385,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">价格瀑布与阶梯锁后净成本</div>
+            <div class="finops-kpi-val" id="cpqmrg-net-kpi" style="color:#6ee7b7;">$231,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回口袋毛利与实施费</div>
+            <div class="finops-kpi-val" id="cpqmrg-savings-kpi" style="color:#38bdf8;">$154,000</div>
+          </div>
+        </div>
+        <div id="cpqmrg-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CPQ_BOM_CONSTRAINT_AND_POCKET_MARGIN_WATERFALL_CONFIRM · Mandate: b2b_cpq_pocket_margin_optim_409
         </div>
       </div>
 
@@ -116216,6 +116376,79 @@ function recalcMarketplaceSplitSettlementSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_MARKETPLACE_SPLIT_SETTLEMENT_AUTHORIZED · Mandate: marketplace_split_settlement_200';
+}}
+
+function recalcB2bCpqPocketMarginSandbox() {{
+  const grossInput = document.getElementById('cpqmrg-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '385000'));
+  const bomGate = document.getElementById('cpqmrg-bom-select').value;
+  const tierGate = document.getElementById('cpqmrg-tier-select').value;
+  const pocketGate = document.getElementById('cpqmrg-pocket-select').value;
+  const optMode = document.getElementById('cpqmrg-opt-select').value;
+
+  const grossKpi = document.getElementById('cpqmrg-gross-kpi');
+  const netKpi = document.getElementById('cpqmrg-net-kpi');
+  const savingsKpi = document.getElementById('cpqmrg-savings-kpi');
+  const statusKpi = document.getElementById('cpqmrg-status-kpi');
+  const banner = document.getElementById('cpqmrg-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (pocketGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 POCKET_MARGIN_WATERFALL_BELOW_FLOOR_FROM_STACKED_CONCESSIONS · Mandate: null';
+    return;
+  }}
+  if (bomGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INVALID_CPQ_BOM_DEPENDENCY_OR_MISSING_MANDATORY_PS · Mandate: null';
+    return;
+  }}
+  if (tierGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 VOLUME_TIER_QUANTITY_OR_TERM_DROP_WITHOUT_REPRICING · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CPQ_BOM_CONSTRAINT_AND_POCKET_MARGIN_WATERFALL_CONFIRM · Mandate: b2b_cpq_pocket_margin_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_CPQ_QUOTE_AND_MARGIN_AUTHORIZED · Mandate: b2b_cpq_pocket_margin_200';
 }}
 
 function updateStage1756Sandbox() {{

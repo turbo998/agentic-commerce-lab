@@ -33312,6 +33312,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("multi-merchant-connect-split-fbo-reserve-sandbox", html_zh)
 
+    def test_b2b_cpq_pocket_margin_approval_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bCpqPocketMarginApprovalPolicyInput,
+            evaluate_b2b_cpq_pocket_margin_approval_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_cpq_pocket_margin_approval_policy(
+            B2bCpqPocketMarginApprovalPolicyInput(
+                quarterly_pocket_margin_leakage_unfunded_ps_and_tier_exploit_pool_usd=385000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_CPQ_QUOTE_AND_MARGIN_AUTHORIZED",
+        )
+
+        bom = evaluate_b2b_cpq_pocket_margin_approval_policy(
+            B2bCpqPocketMarginApprovalPolicyInput(
+                mandatory_bom_dependency_stripped_or_ps_attach_below_15pct_acv=True
+            )
+        )
+        self.assertEqual(bom["status_code"], 403)
+        self.assertEqual(
+            bom["decision"],
+            "INVALID_CPQ_BOM_DEPENDENCY_OR_MISSING_MANDATORY_PS",
+        )
+
+        tier = evaluate_b2b_cpq_pocket_margin_approval_policy(
+            B2bCpqPocketMarginApprovalPolicyInput(
+                order_quantity_or_term_reduced_while_keeping_higher_volume_tier_price=True
+            )
+        )
+        self.assertEqual(tier["status_code"], 422)
+        self.assertEqual(
+            tier["decision"],
+            "VOLUME_TIER_QUANTITY_OR_TERM_DROP_WITHOUT_REPRICING",
+        )
+
+        pocket = evaluate_b2b_cpq_pocket_margin_approval_policy(
+            B2bCpqPocketMarginApprovalPolicyInput(
+                stacked_ramp_rebate_and_wacc_drives_pocket_margin_below_28pct=True
+            )
+        )
+        self.assertEqual(pocket["status_code"], 451)
+        self.assertEqual(
+            pocket["decision"],
+            "POCKET_MARGIN_WATERFALL_BELOW_FLOOR_FROM_STACKED_CONCESSIONS",
+        )
+
+        optim = evaluate_b2b_cpq_pocket_margin_approval_policy(
+            B2bCpqPocketMarginApprovalPolicyInput(
+                quarterly_pocket_margin_leakage_unfunded_ps_and_tier_exploit_pool_usd=385000.0,
+                bom_ps_ratio_lock_tier_repricing_and_pocket_waterfall_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 154000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 231000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_cpq_pocket_margin_approval_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-cpq-pocket-margin-approval-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
