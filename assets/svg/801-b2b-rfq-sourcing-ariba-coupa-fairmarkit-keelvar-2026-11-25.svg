@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg801" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="accent801" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg801)"/>
+  <rect x="30" y="24" width="1140" height="582" rx="16" fill="#0f172a" fill-opacity="0.82" stroke="#334155" stroke-width="1.5"/>
+  <rect x="30" y="24" width="1140" height="6" rx="3" fill="url(#accent801)"/>
+
+  <text x="60" y="68" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.2">🏆 1,355TH UNIT TEST MILESTONE · ROUND 358 · FAQ #477 · SVG #801 · SANDBOX #251 · B2B RFQ &amp; AUTONOMOUS SOURCING</text>
+  <text x="60" y="102" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="800">Enterprise B2B RFQ Sourcing &amp; Bid Optimization (SAP Ariba / Coupa CSO / Fairmarkit / Keelvar)</text>
+  <text x="60" y="128" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Incoterms Total Landed Cost Normalization · Anti-Collusion Cover-Bid Detector · 70/30 Dual-Source Resilience Split (-41% Cost)</text>
+
+  <!-- Gate 1 -->
+  <rect x="60" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="80" y="182" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">1. Total Landed Cost (TLC) Normalization</text>
+  <text x="80" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Naive RFQ agents pick Vendor A ($10.00 EXW</text>
+  <text x="80" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  Net-0) over Vendor B ($11.20 DDP Net-60),</text>
+  <text x="80" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  ignoring $2.10 ocean freight + 15% Section</text>
+  <text x="80" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  301 tariff + WACC working-capital cost</text>
+  <text x="80" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Enforces Incoterms 2020 + Tariff + WACC</text>
+  <text x="80" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  normalization before ranking supplier bids</text>
+  <rect x="80" y="370" width="305" height="34" rx="6" fill="#450a0a" stroke="#ef4444"/>
+  <text x="92" y="392" fill="#fecaca" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 403 UNNORMALIZED_EXW_VS_DDP_BID_AWARD</text>
+
+  <!-- Gate 2 -->
+  <rect x="427" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#f97316" stroke-width="1.5"/>
+  <text x="447" y="182" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">2. Anti-Collusion &amp; Cover-Bid Shield</text>
+  <text x="447" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Rogue buyers or colluding vendors satisfy</text>
+  <text x="447" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  "3-Bid Rule" by submitting 2 fake high cover</text>
+  <text x="447" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  quotes sharing Ultimate Beneficial Owner</text>
+  <text x="447" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  (UBO), PDF author metadata, or IP subnet</text>
+  <text x="447" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Verifies D&amp;B / Moody's UBO independence</text>
+  <text x="447" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  across all 3 competitive RFQ bidders</text>
+  <rect x="447" y="370" width="305" height="34" rx="6" fill="#431407" stroke="#f97316"/>
+  <text x="459" y="392" fill="#fed7aa" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 422 SHAM_3BID_UBO_OR_METADATA_COLLUSION</text>
+
+  <!-- Gate 3 -->
+  <rect x="795" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#eab308" stroke-width="1.5"/>
+  <text x="815" y="182" fill="#fde047" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">3. 70/30 Dual-Source &amp; Predatory Bid Gate</text>
+  <text x="815" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Awarding 100% of a critical category to a</text>
+  <text x="815" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  single unproven bidder quoting &gt;25% below</text>
+  <text x="815" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  should-cost model leads to mid-contract</text>
+  <text x="815" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  insolvency or hostage price hikes</text>
+  <text x="815" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Enforces MIP 70%/30% Dual-Source Award</text>
+  <text x="815" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  Split on spend &gt; $250k + Should-Cost Floor</text>
+  <rect x="815" y="370" width="305" height="34" rx="6" fill="#422006" stroke="#eab308"/>
+  <text x="827" y="392" fill="#fef08a" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 451 SINGLE_SOURCE_OR_BELOW_COST_TRAP</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="444" width="1080" height="138" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <text x="84" y="476" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🏆 1,355th Unit Test Milestone Matrix (Quarterly Tail-Spend Maverick Overpay, Collusion &amp; Stockout Pool: $405,000)</text>
+  <text x="84" y="504" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Autonomous Tail-Spend RFQ ($5k–$100k): Fairmarkit | Complex Combinatorial Logistics/BOM Optimization: Keelvar / Coupa CSO</text>
+  <text x="84" y="528" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Direct ERP-Integrated Supplier Network &amp; E-Auction: SAP Ariba Sourcing / Jaggaer + D&amp;B UBO Graph</text>
+  <text x="84" y="556" fill="#38bdf8" font-family="Consolas, monospace" font-size="14" font-weight="700">HTTP 409 LANDED_COST_NORMALIZED_AND_DUAL_SOURCE_AWARD_CONFIRM · Savings: $166,050/qtr (-41.0%) · Net: $238,950</text>
+</svg>

@@ -33044,6 +33044,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("enterprise-erp-order-saga-outbox-sandbox", html_zh)
 
+    def test_b2b_rfq_sourcing_landed_cost_award_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bRfqSourcingLandedCostAwardPolicyInput,
+            evaluate_b2b_rfq_sourcing_landed_cost_award_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_rfq_sourcing_landed_cost_award_policy(
+            B2bRfqSourcingLandedCostAwardPolicyInput(
+                quarterly_maverick_tail_spend_collusion_and_single_source_stockout_pool_usd=405000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_RFQ_SOURCING_AND_AWARD_AUTHORIZED",
+        )
+
+        tlc = evaluate_b2b_rfq_sourcing_landed_cost_award_policy(
+            B2bRfqSourcingLandedCostAwardPolicyInput(
+                exw_vs_ddp_bids_compared_on_raw_unit_price_without_landed_cost_wacc=True
+            )
+        )
+        self.assertEqual(tlc["status_code"], 403)
+        self.assertEqual(
+            tlc["decision"],
+            "UNNORMALIZED_INCOTERMS_OR_PAYMENT_TERMS_RFQ_COMPARISON",
+        )
+
+        ubo = evaluate_b2b_rfq_sourcing_landed_cost_award_policy(
+            B2bRfqSourcingLandedCostAwardPolicyInput(
+                three_bid_candidates_share_ubo_ip_subnet_or_pdf_author_metadata=True
+            )
+        )
+        self.assertEqual(ubo["status_code"], 422)
+        self.assertEqual(
+            ubo["decision"],
+            "SHAM_THREE_BID_UBO_COLLUSION_OR_METADATA_MATCH",
+        )
+
+        mip = evaluate_b2b_rfq_sourcing_landed_cost_award_policy(
+            B2bRfqSourcingLandedCostAwardPolicyInput(
+                critical_award_100pct_single_sourced_or_below_should_cost_floor=True
+            )
+        )
+        self.assertEqual(mip["status_code"], 451)
+        self.assertEqual(
+            mip["decision"],
+            "SINGLE_SOURCE_CONCENTRATION_OR_PREDATORY_LOWBALL_TRAP",
+        )
+
+        optim = evaluate_b2b_rfq_sourcing_landed_cost_award_policy(
+            B2bRfqSourcingLandedCostAwardPolicyInput(
+                quarterly_maverick_tail_spend_collusion_and_single_source_stockout_pool_usd=405000.0,
+                landed_cost_wacc_normalizer_ubo_shield_and_70_30_mip_split_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 166050.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 238950.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_rfq_sourcing_landed_cost_award_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-rfq-sourcing-landed-cost-award-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

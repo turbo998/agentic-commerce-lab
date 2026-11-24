@@ -42315,6 +42315,82 @@ def evaluate_enterprise_erp_order_saga_outbox_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bRfqSourcingLandedCostAwardPolicyInput:
+    quarterly_maverick_tail_spend_collusion_and_single_source_stockout_pool_usd: float = 405000.0
+    exw_vs_ddp_bids_compared_on_raw_unit_price_without_landed_cost_wacc: bool = False
+    three_bid_candidates_share_ubo_ip_subnet_or_pdf_author_metadata: bool = False
+    critical_award_100pct_single_sourced_or_below_should_cost_floor: bool = False
+    landed_cost_wacc_normalizer_ubo_shield_and_70_30_mip_split_ready: bool = False
+
+
+def evaluate_b2b_rfq_sourcing_landed_cost_award_policy(
+    policy_input: B2bRfqSourcingLandedCostAwardPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_maverick_tail_spend_collusion_and_single_source_stockout_pool_usd
+        ),
+    )
+    if policy_input.critical_award_100pct_single_sourced_or_below_should_cost_floor:
+        return {
+            "status_code": 451,
+            "decision": "SINGLE_SOURCE_CONCENTRATION_OR_PREDATORY_LOWBALL_TRAP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.exw_vs_ddp_bids_compared_on_raw_unit_price_without_landed_cost_wacc:
+        return {
+            "status_code": 403,
+            "decision": "UNNORMALIZED_INCOTERMS_OR_PAYMENT_TERMS_RFQ_COMPARISON",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.three_bid_candidates_share_ubo_ip_subnet_or_pdf_author_metadata:
+        return {
+            "status_code": 422,
+            "decision": "SHAM_THREE_BID_UBO_COLLUSION_OR_METADATA_MATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.landed_cost_wacc_normalizer_ubo_shield_and_70_30_mip_split_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "LANDED_COST_NORMALIZED_AND_DUAL_SOURCE_AWARD_CONFIRM",
+            "mandate_token": "b2b_rfq_sourcing_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_RFQ_SOURCING_AND_AWARD_AUTHORIZED",
+        "mandate_token": "b2b_rfq_sourcing_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -57542,6 +57618,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_rfq_sourcing_landed_cost_award_guard = {
+        "authorized_200": evaluate_b2b_rfq_sourcing_landed_cost_award_policy(
+            B2bRfqSourcingLandedCostAwardPolicyInput()
+        ),
+        "unnormalized_exw_ddp_403": evaluate_b2b_rfq_sourcing_landed_cost_award_policy(
+            B2bRfqSourcingLandedCostAwardPolicyInput(
+                exw_vs_ddp_bids_compared_on_raw_unit_price_without_landed_cost_wacc=True
+            )
+        ),
+        "sham_3bid_ubo_collusion_422": evaluate_b2b_rfq_sourcing_landed_cost_award_policy(
+            B2bRfqSourcingLandedCostAwardPolicyInput(
+                three_bid_candidates_share_ubo_ip_subnet_or_pdf_author_metadata=True
+            )
+        ),
+        "single_source_or_lowball_451": evaluate_b2b_rfq_sourcing_landed_cost_award_policy(
+            B2bRfqSourcingLandedCostAwardPolicyInput(
+                critical_award_100pct_single_sourced_or_below_should_cost_floor=True
+            )
+        ),
+        "landed_cost_dual_award_409": evaluate_b2b_rfq_sourcing_landed_cost_award_policy(
+            B2bRfqSourcingLandedCostAwardPolicyInput(
+                landed_cost_wacc_normalizer_ubo_shield_and_70_30_mip_split_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -58028,6 +58130,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_chargeback_ce3_ethoca_guard": ecommerce_chargeback_ce3_ethoca_guard,
         "cross_border_mor_vs_direct_acquiring_guard": cross_border_mor_vs_direct_acquiring_guard,
         "enterprise_erp_order_saga_outbox_guard": enterprise_erp_order_saga_outbox_guard,
+        "b2b_rfq_sourcing_landed_cost_award_guard": b2b_rfq_sourcing_landed_cost_award_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -83633,6 +83736,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="erpsaga-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ERP_TRANSACTIONAL_OUTBOX_SAGA_AND_IDEMPOTENCY_CONFIRM · Mandate: enterprise_erp_outbox_saga_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 358 (#477 · SVG #801 · Sandbox #251 · 🏆 1,355th Unit Test Milestone) B2B RFQ Sourcing & Bid Optimization -->
+      <div class="finops-box" id="b2b-rfq-sourcing-landed-cost-award-sandbox" style="margin-top:12px;border-color:#0ea5e9;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业 B2B 采购寻源询价 (RFQ) 与组合比价授标 (SAP Ariba / Coupa CSO / Fairmarkit / Keelvar) 沙盒（🏆 第 1,355 项单元测试里程碑）</div>
+            <div class="finops-sub">Round 358 (#477 · SVG #801 · Sandbox #251 · 🏆 1,355th Test Milestone) · 强制将 EXW/FOB/DDP 运费、HS 关税及账期 WACC 折算为统一 NPV 全落地单价防按裸价错选 (HTTP 403) + D&amp;B UBO 股权穿透与 PDF/IP 元数据取证拦截三家虚假陪标围标 (HTTP 422) + MIP 70/30 双源配额拆单防独家中标断供勒索 (HTTP 451) + 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="rfqsrc-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度长尾零星采购未询价溢价、EXW/DDP 未归一化运费关税亏损、围标串通及独家中标断供风险池 ($)
+            <input type="number" id="rfqsrc-gross-input" value="405000" min="10000" step="5000" oninput="recalcB2bRfqSourcingLandedCostSandbox()" />
+          </label>
+          <label>Incoterms 2020 (EXW / FOB / DDP) 运保费、HS 关税与账期资金成本 (WACC) 全落地归一化门禁
+            <select id="rfqsrc-tlc-select" onchange="recalcB2bRfqSourcingLandedCostSandbox()">
+              <option value="pass">统一折算运费、Section 301 关税与 Net 60 账期折现，按真实到厂 NPV 全落地单价排序 (安全)</option>
+              <option value="block_403">直接按票面裸价选 $10.00 (EXW 现结) 淘汰 $11.20 (DDP Net 60)，加上海运费与关税后实亏 $2.25/件 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>三家比价合规 (3-Bid Rule) 邓白氏 UBO 最终受益人股权穿透与 PDF/IP 反围标门禁
+            <select id="rfqsrc-ubo-select" onchange="recalcB2bRfqSourcingLandedCostSandbox()">
+              <option value="pass">核验全部投标商 DUNS 股权无交叉、上传 IP 不同子网且 PDF 元数据独立，确保真实竞争 (合规)</option>
+              <option value="block_422">3 家投标公司中 2 家陪标商共享同一实控人 UBO 或由同一台电脑导出 PDF 凑数围标 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>大额品类 (&gt; $250k) 混合整数规划 (MIP) 70/30 双源配额拆单与 Should-Cost 成本底线门禁
+            <select id="rfqsrc-mip-select" onchange="recalcB2bRfqSourcingLandedCostSandbox()">
+              <option value="pass">主供应商授标 70% + 备选供应商授标 30% 保供热备，并拦截低于成本模型 80% 的自杀式钓鱼标 (合规)</option>
+              <option value="block_451">将 100% 独家份额授标给低于原材料成本 28% 的单一未验证新商，引发中途断供坐地起价 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Fairmarkit 自动尾单寻源 + Keelvar/Coupa 全落地成本 MIP 70/30 双源授标全链路编排
+            <select id="rfqsrc-opt-select" onchange="recalcB2bRfqSourcingLandedCostSandbox()">
+              <option value="enabled" selected>启用全落地成本归一化 + UBO 反围标 + MIP 70/30 双源拆单 (-41% 寻源溢价与断供损耗 / HTTP 409)</option>
+              <option value="disabled">传统人工邮件询价与票面单价手工比价基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度寻源溢价与围标断供池</div>
+            <div class="finops-kpi-val" id="rfqsrc-gross-kpi">$405,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">全落地归一化与双源后净成本</div>
+            <div class="finops-kpi-val" id="rfqsrc-net-kpi" style="color:#6ee7b7;">$238,950</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省采购成本与保供损益</div>
+            <div class="finops-kpi-val" id="rfqsrc-savings-kpi" style="color:#38bdf8;">$166,050</div>
+          </div>
+        </div>
+        <div id="rfqsrc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 LANDED_COST_NORMALIZED_AND_DUAL_SOURCE_AWARD_CONFIRM · Mandate: b2b_rfq_sourcing_optim_409
         </div>
       </div>
 
@@ -115284,6 +115444,79 @@ function recalcEnterpriseErpOrderSagaOutboxSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_ENTERPRISE_ERP_OUTBOX_SAGA_AUTHORIZED · Mandate: enterprise_erp_outbox_saga_200';
+}}
+
+function recalcB2bRfqSourcingLandedCostSandbox() {{
+  const grossInput = document.getElementById('rfqsrc-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '405000'));
+  const tlcGate = document.getElementById('rfqsrc-tlc-select').value;
+  const uboGate = document.getElementById('rfqsrc-ubo-select').value;
+  const mipGate = document.getElementById('rfqsrc-mip-select').value;
+  const optMode = document.getElementById('rfqsrc-opt-select').value;
+
+  const grossKpi = document.getElementById('rfqsrc-gross-kpi');
+  const netKpi = document.getElementById('rfqsrc-net-kpi');
+  const savingsKpi = document.getElementById('rfqsrc-savings-kpi');
+  const statusKpi = document.getElementById('rfqsrc-status-kpi');
+  const banner = document.getElementById('rfqsrc-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (mipGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 SINGLE_SOURCE_CONCENTRATION_OR_PREDATORY_LOWBALL_TRAP · Mandate: null';
+    return;
+  }}
+  if (tlcGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNNORMALIZED_INCOTERMS_OR_PAYMENT_TERMS_RFQ_COMPARISON · Mandate: null';
+    return;
+  }}
+  if (uboGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SHAM_THREE_BID_UBO_COLLUSION_OR_METADATA_MATCH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 LANDED_COST_NORMALIZED_AND_DUAL_SOURCE_AWARD_CONFIRM · Mandate: b2b_rfq_sourcing_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_RFQ_SOURCING_AND_AWARD_AUTHORIZED · Mandate: b2b_rfq_sourcing_200';
 }}
 
 function updateStage1756Sandbox() {{
