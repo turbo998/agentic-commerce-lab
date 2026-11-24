@@ -32240,6 +32240,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-sales-commission-icm-sandbox", html_zh)
 
+    def test_retail_cdp_identity_consent_suppression_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            RetailCdpIdentityConsentSuppressionPolicyInput,
+            evaluate_retail_cdp_identity_consent_suppression_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_retail_cdp_identity_consent_suppression_policy(
+            RetailCdpIdentityConsentSuppressionPolicyInput(
+                quarterly_postbuy_ad_burn_cart_coupon_leak_and_gpc_fine_pool_usd=370000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_RETAIL_CDP_IDENTITY_AND_CONSENT_AUTHORIZED",
+        )
+
+        merge = evaluate_retail_cdp_identity_consent_suppression_policy(
+            RetailCdpIdentityConsentSuppressionPolicyInput(
+                shared_device_cookie_collision_merging_distinct_users=True
+            )
+        )
+        self.assertEqual(merge["status_code"], 403)
+        self.assertEqual(
+            merge["decision"],
+            "SHARED_DEVICE_COOKIE_COLLISION_MERGING_DISTINCT_AUTHENTICATED_USERS",
+        )
+
+        suppress = evaluate_retail_cdp_identity_consent_suppression_policy(
+            RetailCdpIdentityConsentSuppressionPolicyInput(
+                stale_24h_post_purchase_retargeting_ad_or_cart_coupon_burn=True
+            )
+        )
+        self.assertEqual(suppress["status_code"], 422)
+        self.assertEqual(
+            suppress["decision"],
+            "POST_PURCHASE_RETARGETING_AD_BURN_OR_STALE_CART_COUPON_CANNIBALIZATION",
+        )
+
+        gpc = evaluate_retail_cdp_identity_consent_suppression_policy(
+            RetailCdpIdentityConsentSuppressionPolicyInput(
+                unconsented_server_side_capi_forwarding_breaching_gpc_or_tcf=True
+            )
+        )
+        self.assertEqual(gpc["status_code"], 451)
+        self.assertEqual(
+            gpc["decision"],
+            "UNCONSENTED_SERVER_SIDE_CAPI_FORWARDING_BREACHING_GPC_OR_TCF_V22",
+        )
+
+        optim = evaluate_retail_cdp_identity_consent_suppression_policy(
+            RetailCdpIdentityConsentSuppressionPolicyInput(
+                quarterly_postbuy_ad_burn_cart_coupon_leak_and_gpc_fine_pool_usd=370000.0,
+                strict_1to1_id_graph_sub60s_suppression_and_gpc_capi_lock_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 144300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 225700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("retail_cdp_identity_consent_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("retail-cdp-identity-consent-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

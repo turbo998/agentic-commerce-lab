@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`464` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`465` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -11,7 +11,7 @@
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（175 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（101 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（42 篇）](#saas-finops-micropayments)
-- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（52 篇）](#tax-fx-privacy-disputes)
+- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（53 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
 
@@ -470,7 +470,7 @@
 | 42 | **🏆 企业销售佣金核算与激励管理（`Sales Commission & ICM`: `Salesforce Spiff / CaptivateIQ / Xactly / Varicent` · 🏆 第 345 轮里程碑）、`50% 签约 / 50% ERP 实收回款` 分期解锁与 `90 天` 退订自动扣回（`Clawback`）、折扣-提成反向减速器（`Discount Decelerator`）及 `FASB ASC 340-40` 获客成本资本化摊销净省 38% Agent 架构选型 FAQ** | [中文](b2b-sales-commission-icm-spiff-captivateiq-xactly-clawback-split-credit-selection-faq.md) · [English](b2b-sales-commission-icm-spiff-captivateiq-xactly-clawback-split-credit-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（52 篇）
+## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（53 篇）
 
 > 聚焦 Merchant of Record（MoR）选型、跨境 HS 编码完税价（DDP）与 VAT/Sales Tax 合规、实时锁汇与 ISO 20022 多币种净额轧差、PCI-DSS v4.0.1 / GDPR 加密粉碎，以及 Visa CE 3.0 / VAMP 友好欺诈抗辩证据链。
 
@@ -528,6 +528,7 @@
 | 50 | **跨国企业与跨境电商多币种司库管理、自然外汇轧差（`Natural FX Netting`: `Airwallex / Adyen Multi-Currency / Wise Platform / Kyriba`）、防欧元收款转美元再购汇双重剥皮、防周末外汇休市点差刺客与 `ISO 20022 pacs.008 OUR` 本金全额到账净省 40% 架构选型 FAQ** | [中文](multi-currency-treasury-natural-fx-netting-weekend-spread-iso20022-escrow-selection-faq.md) · [English](multi-currency-treasury-natural-fx-netting-weekend-spread-iso20022-escrow-selection-faq.en.md) |
 | 51 | **🏆 跨境商业保税区/对外贸易区（`Foreign-Trade Zone FTZ / Bonded Warehouse`: `SAP GTS / Flexport / Charter Brokerage / Descartes` · 🏆 第 760 张 SVG 架构图里程碑）、再出口 `99%` 关税退税（`19 U.S.C. § 1313 Duty Drawback`）、`FTZ Weekly Entry` 海关处理费（`MPF $634.62`）周封顶与首次销售估价法（`First Sale Valuation`）净省 39% Agent 架构选型 FAQ** | [中文](cross-border-ftz-duty-drawback-19usc1313-first-sale-valuation-escrow-selection-faq.md) · [English](cross-border-ftz-duty-drawback-19usc1313-first-sale-valuation-escrow-selection-faq.en.md) |
 | 52 | **实时商业计税引擎横向选型与高可用容灾架构（`Stripe Tax vs. Avalara AvaTax vs. Vertex O Series vs. Anrok`）：`SaaS / AI` 专属税目码（`SW052000`）与 `Wayfair` 经济联结雷达、大促计税 API 超时 `800ms` 切换本地签名 `ZIP+4` 兜底表防收银台崩溃及屋顶经纬度与退货原发票日期锁净省 39% Agent 架构选型 FAQ** | [中文](sales-tax-vat-engine-stripe-tax-vs-avalara-avatax-vertex-anrok-nexus-fallback-selection-faq.md) · [English](sales-tax-vat-engine-stripe-tax-vs-avalara-avatax-vertex-anrok-nexus-fallback-selection-faq.en.md) |
+| 53 | **🏆 零售与 SaaS 客户数据平台（`CDP`）、跨端身份归一与实时营销抑制选型（`Twilio Segment / mParticle / Tealium / Dynamics 365 CI + Hightouch` · 🏆 第 465 篇双语指南里程碑）、防共享设备把两个独立账号合成“缝合怪档案”、付款后 `<60s` 流式剔除重定向广告包及服务端 `CAPI` 强制遵守 `Sec-GPC: 1 / TCF v2.2` 净省 39% Agent 架构选型 FAQ** | [中文](retail-cdp-identity-resolution-segment-mparticle-tealium-consent-tcf-suppression-selection-faq.md) · [English](retail-cdp-identity-resolution-segment-mparticle-tealium-consent-tcf-suppression-selection-faq.en.md) |
 
 <a id="architecture-blueprints"></a>
 ## 七、确定性领域架构蓝图（`docs/architecture/` · 21 份）

@@ -41403,6 +41403,82 @@ def evaluate_b2b_sales_commission_icm_clawback_policy(
     }
 
 
+@dataclass(frozen=True)
+class RetailCdpIdentityConsentSuppressionPolicyInput:
+    quarterly_postbuy_ad_burn_cart_coupon_leak_and_gpc_fine_pool_usd: float = 370000.0
+    shared_device_cookie_collision_merging_distinct_users: bool = False
+    stale_24h_post_purchase_retargeting_ad_or_cart_coupon_burn: bool = False
+    unconsented_server_side_capi_forwarding_breaching_gpc_or_tcf: bool = False
+    strict_1to1_id_graph_sub60s_suppression_and_gpc_capi_lock_ready: bool = False
+
+
+def evaluate_retail_cdp_identity_consent_suppression_policy(
+    policy_input: RetailCdpIdentityConsentSuppressionPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_postbuy_ad_burn_cart_coupon_leak_and_gpc_fine_pool_usd
+        ),
+    )
+    if policy_input.unconsented_server_side_capi_forwarding_breaching_gpc_or_tcf:
+        return {
+            "status_code": 451,
+            "decision": "UNCONSENTED_SERVER_SIDE_CAPI_FORWARDING_BREACHING_GPC_OR_TCF_V22",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.shared_device_cookie_collision_merging_distinct_users:
+        return {
+            "status_code": 403,
+            "decision": "SHARED_DEVICE_COOKIE_COLLISION_MERGING_DISTINCT_AUTHENTICATED_USERS",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stale_24h_post_purchase_retargeting_ad_or_cart_coupon_burn:
+        return {
+            "status_code": 422,
+            "decision": "POST_PURCHASE_RETARGETING_AD_BURN_OR_STALE_CART_COUPON_CANNIBALIZATION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.strict_1to1_id_graph_sub60s_suppression_and_gpc_capi_lock_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "STRICT_IDENTITY_GRAPH_SUB60S_AD_SUPPRESSION_AND_GPC_CAPI_LOCK_CONFIRM",
+            "mandate_token": "retail_cdp_identity_consent_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_RETAIL_CDP_IDENTITY_AND_CONSENT_AUTHORIZED",
+        "mandate_token": "retail_cdp_identity_consent_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -56318,6 +56394,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    retail_cdp_identity_consent_guard = {
+        "authorized_200": evaluate_retail_cdp_identity_consent_suppression_policy(
+            RetailCdpIdentityConsentSuppressionPolicyInput()
+        ),
+        "shared_device_profile_merge_403": evaluate_retail_cdp_identity_consent_suppression_policy(
+            RetailCdpIdentityConsentSuppressionPolicyInput(
+                shared_device_cookie_collision_merging_distinct_users=True
+            )
+        ),
+        "stale_postbuy_ad_burn_422": evaluate_retail_cdp_identity_consent_suppression_policy(
+            RetailCdpIdentityConsentSuppressionPolicyInput(
+                stale_24h_post_purchase_retargeting_ad_or_cart_coupon_burn=True
+            )
+        ),
+        "unconsented_capi_gpc_breach_451": evaluate_retail_cdp_identity_consent_suppression_policy(
+            RetailCdpIdentityConsentSuppressionPolicyInput(
+                unconsented_server_side_capi_forwarding_breaching_gpc_or_tcf=True
+            )
+        ),
+        "strict_id_60s_suppress_gpc_409": evaluate_retail_cdp_identity_consent_suppression_policy(
+            RetailCdpIdentityConsentSuppressionPolicyInput(
+                strict_1to1_id_graph_sub60s_suppression_and_gpc_capi_lock_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -56792,6 +56894,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "browser_use_headless_checkout_guard": browser_use_headless_checkout_guard,
         "sales_tax_engine_selection_fallback_guard": sales_tax_engine_selection_fallback_guard,
         "b2b_sales_commission_icm_guard": b2b_sales_commission_icm_guard,
+        "retail_cdp_identity_consent_guard": retail_cdp_identity_consent_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -81713,6 +81816,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="icmcom-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CASH_COLLECTED_VESTING_DISCOUNT_DECELERATOR_AND_ASC340_AMORTIZATION_CONFIRM · Mandate: b2b_sales_commission_icm_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 346 (#465 Milestone · SVG #789) Retail CDP Identity Resolution, Ad Suppression & GPC/TCF Consent -->
+      <div class="finops-box" id="retail-cdp-identity-consent-sandbox" style="margin-top:12px;border-color:#0284c7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🧬 零售与 SaaS 客户数据平台 CDP (Segment / mParticle / Tealium / Hightouch) 身份与隐私沙盒（🏆 第 465 篇双语里程碑）</div>
+            <div class="finops-sub">Round 346 (#465 Milestone · SVG #789) · 严禁通过共享设备 Cookie (anonymousId) 将两个独立登录账号合并成缝合怪档案 (HTTP 403) + 订单成交 &lt;60 秒流式踢出重定向广告包并注销弃购 85 折券防老客退差价 (HTTP 422) + 服务端 CAPI 强制遵守浏览器 Sec-GPC: 1 与 IAB TCF v2.2 拒绝信号 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="retcdp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度购后 24h 延迟追投无效重定向广告、已买老客收到弃购神券退差价及违反 GPC/GDPR 罚款池 ($)
+            <input type="number" id="retcdp-gross-input" value="370000" min="10000" step="5000" oninput="recalcRetailCdpIdentityConsentSandbox()" />
+          </label>
+          <label>跨端身份图谱解析 (Identity Resolution) 防共享设备 Cookie 跨账号合并门禁
+            <select id="retcdp-id-select" onchange="recalcRetailCdpIdentityConsentSandbox()">
+              <option value="pass">仅凭唯一验证主键合并，检测到共享设备切换账号自动切断旧 anonymousId 派生新会话 (安全)</option>
+              <option value="block_403">家庭 iPad 或门店公用设备未重置 Cookie，将两个独立登录用户永久合并成缝合怪档案泄露地址 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>订单付款完成 (Order_Completed) &lt;60 秒流式重定向广告剔除与弃购优惠券销毁门禁
+            <select id="retcdp-suppress-select" onchange="recalcRetailCdpIdentityConsentSandbox()">
+              <option value="pass">付款成功 60 秒内通过流式 CAPI 将买家加入负向排除包，并立即撤销在途弃购短信定时器 (合规)</option>
+              <option value="block_422">采用 T+1 每日批处理同步，害上午原价买完的老客下午收到 85 折弃购挽回短信要求退差价 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>边缘至服务端 (Server-Side CAPI) Sec-GPC: 1 与 IAB TCF v2.2 隐私拒绝信号穿透门禁
+            <select id="retcdp-gpc-select" onchange="recalcRetailCdpIdentityConsentSandbox()">
+              <option value="pass">提取 Sec-GPC:1 与 TCF 同意向量写入每个事件头，在 CDP 出口网关 100% 阻断未授权广告 CAPI (合规)</option>
+              <option value="block_451">用户点拒绝 Cookie 或发送 Sec-GPC:1，后端服务器却绕过浏览器继续向 Meta/TikTok 发哈希手机号 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>防共享设备串户 + &lt;60s 购后实时广告抑制 + 服务端 GPC/TCF 硬锁全链路编排
+            <select id="retcdp-opt-select" onchange="recalcRetailCdpIdentityConsentSandbox()">
+              <option value="enabled" selected>启用 1:1 强身份隔离 + &lt;60s 流式抑制 + 服务端 GPC 防火墙 (-39% 营销与合规损耗 / HTTP 409)</option>
+              <option value="disabled">无脑合并设备 Cookie + T+1 批处理同步 + 裸发服务端 CAPI (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度无效追投广告与罚款池</div>
+            <div class="finops-kpi-val" id="retcdp-gross-kpi">$370,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">60s实时抑制与GPC锁后净损耗</div>
+            <div class="finops-kpi-val" id="retcdp-net-kpi" style="color:#6ee7b7;">$225,700</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省广告费与合规罚金</div>
+            <div class="finops-kpi-val" id="retcdp-savings-kpi" style="color:#38bdf8;">$144,300</div>
+          </div>
+        </div>
+        <div id="retcdp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 STRICT_IDENTITY_GRAPH_SUB60S_AD_SUPPRESSION_AND_GPC_CAPI_LOCK_CONFIRM · Mandate: retail_cdp_identity_consent_optim_409
         </div>
       </div>
 
@@ -112488,6 +112648,79 @@ function recalcB2bSalesCommissionIcmSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_SALES_COMMISSION_ICM_AND_ASC340_AUTHORIZED · Mandate: b2b_sales_commission_icm_200';
+}}
+
+function recalcRetailCdpIdentityConsentSandbox() {{
+  const grossInput = document.getElementById('retcdp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '370000'));
+  const idGate = document.getElementById('retcdp-id-select').value;
+  const suppressGate = document.getElementById('retcdp-suppress-select').value;
+  const gpcGate = document.getElementById('retcdp-gpc-select').value;
+  const optMode = document.getElementById('retcdp-opt-select').value;
+
+  const grossKpi = document.getElementById('retcdp-gross-kpi');
+  const netKpi = document.getElementById('retcdp-net-kpi');
+  const savingsKpi = document.getElementById('retcdp-savings-kpi');
+  const statusKpi = document.getElementById('retcdp-status-kpi');
+  const banner = document.getElementById('retcdp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (gpcGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNCONSENTED_SERVER_SIDE_CAPI_FORWARDING_BREACHING_GPC_OR_TCF_V22 · Mandate: null';
+    return;
+  }}
+  if (idGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SHARED_DEVICE_COOKIE_COLLISION_MERGING_DISTINCT_AUTHENTICATED_USERS · Mandate: null';
+    return;
+  }}
+  if (suppressGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 POST_PURCHASE_RETARGETING_AD_BURN_OR_STALE_CART_COUPON_CANNIBALIZATION · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 STRICT_IDENTITY_GRAPH_SUB60S_AD_SUPPRESSION_AND_GPC_CAPI_LOCK_CONFIRM · Mandate: retail_cdp_identity_consent_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_RETAIL_CDP_IDENTITY_AND_CONSENT_AUTHORIZED · Mandate: retail_cdp_identity_consent_200';
 }}
 
 function updateStage1756Sandbox() {{

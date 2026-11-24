@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`464` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`465` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -11,7 +11,7 @@
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (175 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (101 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (42 guides)](#saas-finops-micropayments)
-- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (52 guides)](#tax-fx-privacy-disputes)
+- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (53 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
 
@@ -470,7 +470,7 @@
 | 42 | **🏆 Enterprise B2B Sales Commission (`ICM / SPM`), `50/50 Cash-Collected` Vesting, `90-Day` Churn Clawback, Discount Decelerators & `FASB ASC 340-40` Amortization (`Salesforce Spiff / CaptivateIQ / Xactly / Varicent` · 🏆 Round 345 Milestone) (`-38%` Uncollected Deal & Discount Margin Loss) FAQ** | [English](b2b-sales-commission-icm-spiff-captivateiq-xactly-clawback-split-credit-selection-faq.en.md) · [中文](b2b-sales-commission-icm-spiff-captivateiq-xactly-clawback-split-credit-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (52 Guides)
+## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (53 Guides)
 
 > Covers Merchant of Record (MoR) vs DIY PSP, HS-code DDP landed cost & VAT/Sales Tax nexus, FX quote collars & ISO 20022 netting, ZK eligibility / PCI redaction / GDPR crypto-shredding, and Visa CE 3.0 / VAMP dispute defense.
 
@@ -528,6 +528,7 @@
 | 50 | **Multi-Currency Treasury, `Like-for-Like` Natural FX Netting, Weekend Spread Shield & `ISO 20022 pacs.008` Principal-Intact Clearing (`Airwallex / Adyen Multi-Currency / Wise Platform / Kyriba`), Anti-Double-Conversion Lock, `13:00–16:00 UTC` London-NY Sweep & `ChrgBr=DEBT` (`-40%` FX & Wire Loss) FAQ** | [English](multi-currency-treasury-natural-fx-netting-weekend-spread-iso20022-escrow-selection-faq.en.md) · [中文](multi-currency-treasury-natural-fx-netting-weekend-spread-iso20022-escrow-selection-faq.md) |
 | 51 | **🏆 Cross-Border Foreign-Trade Zones (`FTZ / Bonded Warehouse`: `SAP GTS / Flexport / Charter Brokerage / Descartes` · 🏆 760th SVG Diagram Milestone), `19 U.S.C. § 1313` `99%` Duty Drawback, `FTZ Weekly Entry` `MPF` Cap (`$634.62`) & `First Sale for Export` Valuation (`-39%` Tariff & Fee Leakage) FAQ** | [English](cross-border-ftz-duty-drawback-19usc1313-first-sale-valuation-escrow-selection-faq.en.md) · [中文](cross-border-ftz-duty-drawback-19usc1313-first-sale-valuation-escrow-selection-faq.md) |
 | 52 | **Commercial Sales Tax & `VAT` Engine Selection (`Stripe Tax vs. Avalara AvaTax vs. Vertex O Series vs. Anrok`), `SaaS` Taxability Codes (`SW052000`), `Wayfair` Economic Nexus Radar, `800ms` Edge `ZIP+4` Timeout Fallback & Original-Date Return Lock (`-39%` Back-Tax & Timeout Drop Loss) FAQ** | [English](sales-tax-vat-engine-stripe-tax-vs-avalara-avatax-vertex-anrok-nexus-fallback-selection-faq.en.md) · [中文](sales-tax-vat-engine-stripe-tax-vs-avalara-avatax-vertex-anrok-nexus-fallback-selection-faq.md) |
+| 53 | **🏆 Retail & SaaS Customer Data Platform (`CDP`), Anti-Poisoning Identity Resolution, Sub-60s Paid-Ad Suppression & Server-Side `Sec-GPC / TCF v2.2` Consent Gate (`Twilio Segment / mParticle / Tealium / D365 CI + Hightouch` · 🏆 465th Bilingual Guide Milestone) (`-39%` Ad Waste & Privacy Penalty Loss) FAQ** | [English](retail-cdp-identity-resolution-segment-mparticle-tealium-consent-tcf-suppression-selection-faq.en.md) · [中文](retail-cdp-identity-resolution-segment-mparticle-tealium-consent-tcf-suppression-selection-faq.md) |
 
 <a id="architecture-blueprints"></a>
 ## 7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 Specs)
