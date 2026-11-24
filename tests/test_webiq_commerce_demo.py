@@ -33178,6 +33178,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("lifecycle-marketing-replenishment-uplift-sandbox", html_zh)
 
+    def test_b2b_ap_invoice_three_way_match_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bApInvoiceThreeWayMatchPolicyInput,
+            evaluate_b2b_ap_invoice_three_way_match_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_ap_invoice_three_way_match_policy(
+            B2bApInvoiceThreeWayMatchPolicyInput(
+                quarterly_overbilled_grn_bec_fraud_duplicate_and_missed_discount_pool_usd=415000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_AP_THREE_WAY_MATCH_AUTHORIZED",
+        )
+
+        match = evaluate_b2b_ap_invoice_three_way_match_policy(
+            B2bApInvoiceThreeWayMatchPolicyInput(
+                invoiced_qty_exceeds_grn_received_or_unit_price_over_2pct_tolerance=True
+            )
+        )
+        self.assertEqual(match["status_code"], 403)
+        self.assertEqual(
+            match["decision"],
+            "THREE_WAY_MATCH_GRN_SHORTAGE_OR_PRICE_TOLERANCE_BREACH",
+        )
+
+        bec = evaluate_b2b_ap_invoice_three_way_match_policy(
+            B2bApInvoiceThreeWayMatchPolicyInput(
+                invoice_pdf_bank_iban_used_to_override_verified_erp_vendor_master=True
+            )
+        )
+        self.assertEqual(bec["status_code"], 422)
+        self.assertEqual(
+            bec["decision"],
+            "BEC_INVOICE_BANK_ACCOUNT_OVERRIDE_ATTEMPT_BLOCKED",
+        )
+
+        dup = evaluate_b2b_ap_invoice_three_way_match_policy(
+            B2bApInvoiceThreeWayMatchPolicyInput(
+                fuzzy_duplicate_invoice_unblocked_or_2_10_net_30_discount_missed=True
+            )
+        )
+        self.assertEqual(dup["status_code"], 451)
+        self.assertEqual(
+            dup["decision"],
+            "FUZZY_DUPLICATE_INVOICE_OR_MISSED_EARLY_PAY_DISCOUNT",
+        )
+
+        optim = evaluate_b2b_ap_invoice_three_way_match_policy(
+            B2bApInvoiceThreeWayMatchPolicyInput(
+                quarterly_overbilled_grn_bec_fraud_duplicate_and_missed_discount_pool_usd=415000.0,
+                line_level_3way_match_bec_iban_lock_and_early_pay_capture_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 170150.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 244850.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_ap_invoice_three_way_match_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-ap-invoice-three-way-match-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

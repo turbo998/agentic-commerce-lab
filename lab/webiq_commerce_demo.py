@@ -42467,6 +42467,82 @@ def evaluate_lifecycle_marketing_replenishment_uplift_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bApInvoiceThreeWayMatchPolicyInput:
+    quarterly_overbilled_grn_bec_fraud_duplicate_and_missed_discount_pool_usd: float = 415000.0
+    invoiced_qty_exceeds_grn_received_or_unit_price_over_2pct_tolerance: bool = False
+    invoice_pdf_bank_iban_used_to_override_verified_erp_vendor_master: bool = False
+    fuzzy_duplicate_invoice_unblocked_or_2_10_net_30_discount_missed: bool = False
+    line_level_3way_match_bec_iban_lock_and_early_pay_capture_ready: bool = False
+
+
+def evaluate_b2b_ap_invoice_three_way_match_policy(
+    policy_input: B2bApInvoiceThreeWayMatchPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_overbilled_grn_bec_fraud_duplicate_and_missed_discount_pool_usd
+        ),
+    )
+    if policy_input.fuzzy_duplicate_invoice_unblocked_or_2_10_net_30_discount_missed:
+        return {
+            "status_code": 451,
+            "decision": "FUZZY_DUPLICATE_INVOICE_OR_MISSED_EARLY_PAY_DISCOUNT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.invoiced_qty_exceeds_grn_received_or_unit_price_over_2pct_tolerance:
+        return {
+            "status_code": 403,
+            "decision": "THREE_WAY_MATCH_GRN_SHORTAGE_OR_PRICE_TOLERANCE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.invoice_pdf_bank_iban_used_to_override_verified_erp_vendor_master:
+        return {
+            "status_code": 422,
+            "decision": "BEC_INVOICE_BANK_ACCOUNT_OVERRIDE_ATTEMPT_BLOCKED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.line_level_3way_match_bec_iban_lock_and_early_pay_capture_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "THREE_WAY_MATCH_BEC_SHIELD_AND_EARLY_DISCOUNT_CONFIRM",
+            "mandate_token": "b2b_ap_three_way_match_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_AP_THREE_WAY_MATCH_AUTHORIZED",
+        "mandate_token": "b2b_ap_three_way_match_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -57746,6 +57822,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_ap_invoice_three_way_match_guard = {
+        "authorized_200": evaluate_b2b_ap_invoice_three_way_match_policy(
+            B2bApInvoiceThreeWayMatchPolicyInput()
+        ),
+        "grn_or_price_mismatch_403": evaluate_b2b_ap_invoice_three_way_match_policy(
+            B2bApInvoiceThreeWayMatchPolicyInput(
+                invoiced_qty_exceeds_grn_received_or_unit_price_over_2pct_tolerance=True
+            )
+        ),
+        "bec_iban_override_422": evaluate_b2b_ap_invoice_three_way_match_policy(
+            B2bApInvoiceThreeWayMatchPolicyInput(
+                invoice_pdf_bank_iban_used_to_override_verified_erp_vendor_master=True
+            )
+        ),
+        "fuzzy_dup_or_missed_2_10_451": evaluate_b2b_ap_invoice_three_way_match_policy(
+            B2bApInvoiceThreeWayMatchPolicyInput(
+                fuzzy_duplicate_invoice_unblocked_or_2_10_net_30_discount_missed=True
+            )
+        ),
+        "three_way_bec_early_pay_409": evaluate_b2b_ap_invoice_three_way_match_policy(
+            B2bApInvoiceThreeWayMatchPolicyInput(
+                line_level_3way_match_bec_iban_lock_and_early_pay_capture_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -58234,6 +58336,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "enterprise_erp_order_saga_outbox_guard": enterprise_erp_order_saga_outbox_guard,
         "b2b_rfq_sourcing_landed_cost_award_guard": b2b_rfq_sourcing_landed_cost_award_guard,
         "lifecycle_marketing_replenishment_uplift_guard": lifecycle_marketing_replenishment_uplift_guard,
+        "b2b_ap_invoice_three_way_match_guard": b2b_ap_invoice_three_way_match_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -83953,6 +84056,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ltvmkt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 CAUSAL_UPLIFT_COUPON_AND_GLOBAL_FREQUENCY_CAP_CONFIRM · Mandate: lifecycle_marketing_uplift_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 360 (#479 · SVG #803 · Sandbox #253 · 🏆 Round 360 Major Milestone) Enterprise B2B AP & 3-Way Match -->
+      <div class="finops-box" id="b2b-ap-invoice-three-way-match-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业级应付账款 AP、AI 发票解析与三单匹配 (Tipalti / Stampli / Coupa / Medius) 沙盒（🏆 第 360 轮重大里程碑）</div>
+            <div class="finops-sub">Round 360 (#479 · SVG #803 · Sandbox #253 · 🏆 Round 360 Milestone) · 强制行项目级 PO-GRN-Invoice 三单匹配 (Invoiced_Qty &lt;= GRN_Received 且单价偏差 &lt;= 2%) 防短交多付 (HTTP 403) + 发票面银行账号零写权限隔离防 BEC 商业邮件诈骗篡改 IBAN (HTTP 422) + 模糊哈希查重与 2/10 Net 30 (37.2% APR) 早付折扣自动抢捕 (HTTP 451) + 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="ap3way-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度短交多付货款、BEC 邮件篡改发票 IBAN 诈骗敞口、跨渠道重付及错失 2/10 Net 30 折扣池 ($)
+            <input type="number" id="ap3way-gross-input" value="415000" min="10000" step="5000" oninput="recalcB2bApInvoiceThreeWayMatchSandbox()" />
+          </label>
+          <label>行项目级 PO (采购单) - GRN (仓库实收单) - Invoice (发票) 三单容差匹配门禁
+            <select id="ap3way-match-select" onchange="recalcB2bApInvoiceThreeWayMatchSandbox()">
+              <option value="pass">逐行核验开票数量 &lt;= 仓库 GRN 实收合格数（0% 超量容差）且单价偏差 &lt;= min(2%, $250) (安全)</option>
+              <option value="block_403">只看抬头总金额放行付款，漏掉仓库实际只收到 60% 货物或单行单价被暗涨 12% (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>防商业邮件诈骗 (BEC) 发票面收款银行账号 / IBAN 零信任隔离门禁
+            <select id="ap3way-bec-select" onchange="recalcB2bApInvoiceThreeWayMatchSandbox()">
+              <option value="pass">严禁根据发票 PDF 文字修改主数据 IBAN，打款只认经带外 MFA + Plaid 实名 + 72h 冷静期账户 (合规)</option>
+              <option value="block_422">黑客篡改供应商真实发票底部的收款 IBAN，AI OCR 直接按发票新账号更新主数据并汇款 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>跨渠道模糊重复发票查重 (INV-009 vs INV009) 与 2/10 Net 30 (37.2% APR) 早付抢捕门禁
+            <select id="ap3way-disc-select" onchange="recalcB2bApInvoiceInvoiceDiscountSandbox ? recalcB2bApInvoiceThreeWayMatchSandbox() : recalcB2bApInvoiceThreeWayMatchSandbox()">
+              <option value="pass">五元组模糊指纹拦截邮件+EDI 一单两报，并对 APR &gt; WACC 的 2/10 Net 30 发票开启 48h 极速排款 (合规)</option>
+              <option value="block_451">未识别多加横杠的变体重复发票导致双倍打款，或审批拖延 15 天白白错失 2% 早付现金折扣 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>行级三单容差锁 + 防 BEC 银行账户隔离 + 2/10 Net 30 动态早付全链路编排
+            <select id="ap3way-opt-select" onchange="recalcB2bApInvoiceThreeWayMatchSandbox()">
+              <option value="enabled" selected>启用行级三单匹配 + 防 BEC 冻结锁 + 2/10 Net 30 抢捕 (-41% 错付欺诈与折扣流失 / HTTP 409)</option>
+              <option value="disabled">传统人工核对三单与标准 30 天慢审付款基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度AP错付与早付流失池</div>
+            <div class="finops-kpi-val" id="ap3way-gross-kpi">$415,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">三单匹配与防BEC后净成本</div>
+            <div class="finops-kpi-val" id="ap3way-net-kpi" style="color:#6ee7b7;">$244,850</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省防诈与早付收益</div>
+            <div class="finops-kpi-val" id="ap3way-savings-kpi" style="color:#38bdf8;">$170,150</div>
+          </div>
+        </div>
+        <div id="ap3way-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 THREE_WAY_MATCH_BEC_SHIELD_AND_EARLY_DISCOUNT_CONFIRM · Mandate: b2b_ap_three_way_match_optim_409
         </div>
       </div>
 
@@ -115750,6 +115910,79 @@ function recalcLifecycleMarketingUpliftSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_LIFECYCLE_MARKETING_UPLIFT_AUTHORIZED · Mandate: lifecycle_marketing_uplift_200';
+}}
+
+function recalcB2bApInvoiceThreeWayMatchSandbox() {{
+  const grossInput = document.getElementById('ap3way-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '415000'));
+  const matchGate = document.getElementById('ap3way-match-select').value;
+  const becGate = document.getElementById('ap3way-bec-select').value;
+  const discGate = document.getElementById('ap3way-disc-select').value;
+  const optMode = document.getElementById('ap3way-opt-select').value;
+
+  const grossKpi = document.getElementById('ap3way-gross-kpi');
+  const netKpi = document.getElementById('ap3way-net-kpi');
+  const savingsKpi = document.getElementById('ap3way-savings-kpi');
+  const statusKpi = document.getElementById('ap3way-status-kpi');
+  const banner = document.getElementById('ap3way-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (discGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FUZZY_DUPLICATE_INVOICE_OR_MISSED_EARLY_PAY_DISCOUNT · Mandate: null';
+    return;
+  }}
+  if (matchGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 THREE_WAY_MATCH_GRN_SHORTAGE_OR_PRICE_TOLERANCE_BREACH · Mandate: null';
+    return;
+  }}
+  if (becGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BEC_INVOICE_BANK_ACCOUNT_OVERRIDE_ATTEMPT_BLOCKED · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 THREE_WAY_MATCH_BEC_SHIELD_AND_EARLY_DISCOUNT_CONFIRM · Mandate: b2b_ap_three_way_match_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_AP_THREE_WAY_MATCH_AUTHORIZED · Mandate: b2b_ap_three_way_match_200';
 }}
 
 function updateStage1756Sandbox() {{
