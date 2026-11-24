@@ -33245,6 +33245,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-ap-invoice-three-way-match-sandbox", html_zh)
 
+    def test_multi_merchant_connect_split_fbo_reserve_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            MultiMerchantConnectSplitFboReservePolicyInput,
+            evaluate_multi_merchant_connect_split_fbo_reserve_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_multi_merchant_connect_split_fbo_reserve_policy(
+            MultiMerchantConnectSplitFboReservePolicyInput(
+                quarterly_seller_default_unreversed_refund_and_split_drift_pool_usd=400000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_MARKETPLACE_SPLIT_SETTLEMENT_AUTHORIZED",
+        )
+
+        pod = evaluate_multi_merchant_connect_split_fbo_reserve_policy(
+            MultiMerchantConnectSplitFboReservePolicyInput(
+                seller_payout_released_before_carrier_pod_plus_7d_or_rolling_reserve=True
+            )
+        )
+        self.assertEqual(pod["status_code"], 403)
+        self.assertEqual(
+            pod["decision"],
+            "PRE_DELIVERY_POD_SELLER_PAYOUT_OR_MISSING_RESERVE",
+        )
+
+        rev = evaluate_multi_merchant_connect_split_fbo_reserve_policy(
+            MultiMerchantConnectSplitFboReservePolicyInput(
+                buyer_refund_executed_without_atomic_reverse_transfer_or_debit_clawback=True
+            )
+        )
+        self.assertEqual(rev["status_code"], 422)
+        self.assertEqual(
+            rev["decision"],
+            "UNREVERSED_SELLER_TRANSFER_ON_BUYER_REFUND_BAD_DEBT",
+        )
+
+        fbo = evaluate_multi_merchant_connect_split_fbo_reserve_policy(
+            MultiMerchantConnectSplitFboReservePolicyInput(
+                split_transfers_sum_mismatch_or_unlicensed_fbo_funds_commingling=True
+            )
+        )
+        self.assertEqual(fbo["status_code"], 451)
+        self.assertEqual(
+            fbo["decision"],
+            "SPLIT_TRANSFER_PENNY_DRIFT_OR_UNLICENSED_MTL_COMMINGLING",
+        )
+
+        optim = evaluate_multi_merchant_connect_split_fbo_reserve_policy(
+            MultiMerchantConnectSplitFboReservePolicyInput(
+                quarterly_seller_default_unreversed_refund_and_split_drift_pool_usd=400000.0,
+                pod_escrow_reserve_atomic_reversal_and_fbo_penny_lock_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 160000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 240000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("multi_merchant_connect_split_fbo_reserve_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("multi-merchant-connect-split-fbo-reserve-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

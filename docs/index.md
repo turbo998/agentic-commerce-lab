@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`479` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`480` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（37 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（60 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（178 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（179 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（106 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（43 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（55 篇）](#tax-fx-privacy-disputes)
@@ -131,7 +131,7 @@
 | 60 | **🏆 商业智能体支付与结账五大协议横向选型对比（`Stripe Agent Toolkit SPT` vs. `Visa Intelligent Commerce` vs. `Mastercard Agent Pay` vs. `PayPal Agentic Toolkit` vs. `企业单次虚拟卡 JIT VCN` · 🏆 第 470 篇双语决策指南里程碑）、零明文卡号与单商户/限额/15m TTL 范围锁、卡组织 `EMVCo` 动态密文拒付责任转移及长尾单次精确美分虚拟卡降级净省 42% Agent 架构选型 FAQ** | [中文](agent-payment-protocol-matrix-stripe-spt-visa-intelligent-commerce-mastercard-agent-pay-paypal-vcn-selection-faq.md) · [English](agent-payment-protocol-matrix-stripe-spt-visa-intelligent-commerce-mastercard-agent-pay-paypal-vcn-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（178 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（179 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -315,6 +315,7 @@
 | 176 | **🏆 酒店集团中央预订（`CRS`）、物业管理（`PMS`）与 OTA 虚拟卡双账单清算选型（`Oracle OPERA Cloud / Mews / Cloudbeds / Amadeus ACRS` · 🏆 第 790 张架构图与第 240 个沙盒里程碑）、`Folio A (OTA VCC)` 与 `Folio B (住客卡)` 交易码分流防超额拒付、最后 `3 间房` 渠道节流防超售外迁赔付及延迟退房保洁 `90m` 互斥锁净省 39% Agent 架构选型 FAQ** | [中文](ota-hotel-pms-opera-mews-ota-vcc-folio-split-walk-protection-late-checkout-selection-faq.md) · [English](ota-hotel-pms-opera-mews-ota-vcc-folio-split-walk-protection-late-checkout-selection-faq.en.md) |
 | 177 | **🏆 电商个性化 AI 导购、跨品类搭配转化助手与尺码/规格兼容引擎（`Shopify Storefront MCP / Constructor.io / True Fit / Bold Metrics + Azure AI Search` · 🏆 第 1,350 项确定性单元测试重大里程碑）、全套单品目标尺码现货（`ATP >= 2`）与硬件接口兼容锁、套装按行分摊防拆单套利及防同款多尺码盲买（`Bracketing`）净省 39% Agent 架构选型 FAQ** | [中文](ecommerce-ai-shopping-assistant-cross-category-outfit-bundle-size-fit-margin-floor-selection-faq.md) · [English](ecommerce-ai-shopping-assistant-cross-category-outfit-bundle-size-fit-margin-floor-selection-faq.en.md) |
 | 178 | **📣 零售与 SaaS 生命周期营销编排、智能补货提醒与因果增益发券智能体（`Klaviyo / Braze / Salesforce Marketing Cloud / D365 Customer Insights Journeys`）、在途 P1 客诉与 `14 天` 正价保护期降价抑制、因果增益（`Causal Uplift >= +12%`）防向必买铁粉发券蚕食毛利及全局 `24h` 频控与收件人时区 `TCPA` 宵禁锁净省 39% Agent 架构选型 FAQ** | [中文](lifecycle-marketing-replenishment-klaviyo-braze-sfmc-d365-frequency-cap-uplift-selection-faq.md) · [English](lifecycle-marketing-replenishment-klaviyo-braze-sfmc-d365-frequency-cap-uplift-selection-faq.en.md) |
+| 179 | **🏆 多商户平台分账清结算、资金托管与子商户坏账追偿智能体（`Stripe Connect / Adyen for Platforms / Mirakl Payout / Hyperwallet` · 🏆 第 480 篇双语决策指南重大里程碑）、物流妥投 `DELIVERED POD + 7天` 放款与 `10%` 滚动保证金锁、退款原子级 `reverse_transfer` 撤回与负余额银行代扣及持牌 `FBO` 账本 `1对N` 美分守恒净省 40% Agent 架构选型 FAQ** | [中文](marketplace-split-settlement-stripe-connect-adyen-platforms-mirakl-seller-reserve-clawback-selection-faq.md) · [English](marketplace-split-settlement-stripe-connect-adyen-platforms-mirakl-seller-reserve-clawback-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（106 篇）

@@ -42543,6 +42543,82 @@ def evaluate_b2b_ap_invoice_three_way_match_policy(
     }
 
 
+@dataclass(frozen=True)
+class MultiMerchantConnectSplitFboReservePolicyInput:
+    quarterly_seller_default_unreversed_refund_and_split_drift_pool_usd: float = 400000.0
+    seller_payout_released_before_carrier_pod_plus_7d_or_rolling_reserve: bool = False
+    buyer_refund_executed_without_atomic_reverse_transfer_or_debit_clawback: bool = False
+    split_transfers_sum_mismatch_or_unlicensed_fbo_funds_commingling: bool = False
+    pod_escrow_reserve_atomic_reversal_and_fbo_penny_lock_ready: bool = False
+
+
+def evaluate_multi_merchant_connect_split_fbo_reserve_policy(
+    policy_input: MultiMerchantConnectSplitFboReservePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_seller_default_unreversed_refund_and_split_drift_pool_usd
+        ),
+    )
+    if policy_input.split_transfers_sum_mismatch_or_unlicensed_fbo_funds_commingling:
+        return {
+            "status_code": 451,
+            "decision": "SPLIT_TRANSFER_PENNY_DRIFT_OR_UNLICENSED_MTL_COMMINGLING",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.seller_payout_released_before_carrier_pod_plus_7d_or_rolling_reserve:
+        return {
+            "status_code": 403,
+            "decision": "PRE_DELIVERY_POD_SELLER_PAYOUT_OR_MISSING_RESERVE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.buyer_refund_executed_without_atomic_reverse_transfer_or_debit_clawback:
+        return {
+            "status_code": 422,
+            "decision": "UNREVERSED_SELLER_TRANSFER_ON_BUYER_REFUND_BAD_DEBT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pod_escrow_reserve_atomic_reversal_and_fbo_penny_lock_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MARKETPLACE_POD_RESERVE_AND_ATOMIC_CLAWBACK_CONFIRM",
+            "mandate_token": "marketplace_split_settlement_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_MARKETPLACE_SPLIT_SETTLEMENT_AUTHORIZED",
+        "mandate_token": "marketplace_split_settlement_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -57848,6 +57924,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    multi_merchant_connect_split_fbo_reserve_guard = {
+        "authorized_200": evaluate_multi_merchant_connect_split_fbo_reserve_policy(
+            MultiMerchantConnectSplitFboReservePolicyInput()
+        ),
+        "pre_pod_seller_payout_403": evaluate_multi_merchant_connect_split_fbo_reserve_policy(
+            MultiMerchantConnectSplitFboReservePolicyInput(
+                seller_payout_released_before_carrier_pod_plus_7d_or_rolling_reserve=True
+            )
+        ),
+        "unreversed_refund_transfer_422": evaluate_multi_merchant_connect_split_fbo_reserve_policy(
+            MultiMerchantConnectSplitFboReservePolicyInput(
+                buyer_refund_executed_without_atomic_reverse_transfer_or_debit_clawback=True
+            )
+        ),
+        "split_penny_or_mtl_451": evaluate_multi_merchant_connect_split_fbo_reserve_policy(
+            MultiMerchantConnectSplitFboReservePolicyInput(
+                split_transfers_sum_mismatch_or_unlicensed_fbo_funds_commingling=True
+            )
+        ),
+        "pod_reserve_clawback_409": evaluate_multi_merchant_connect_split_fbo_reserve_policy(
+            MultiMerchantConnectSplitFboReservePolicyInput(
+                pod_escrow_reserve_atomic_reversal_and_fbo_penny_lock_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -58337,6 +58439,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_rfq_sourcing_landed_cost_award_guard": b2b_rfq_sourcing_landed_cost_award_guard,
         "lifecycle_marketing_replenishment_uplift_guard": lifecycle_marketing_replenishment_uplift_guard,
         "b2b_ap_invoice_three_way_match_guard": b2b_ap_invoice_three_way_match_guard,
+        "multi_merchant_connect_split_fbo_reserve_guard": multi_merchant_connect_split_fbo_reserve_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -84113,6 +84216,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ap3way-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 THREE_WAY_MATCH_BEC_SHIELD_AND_EARLY_DISCOUNT_CONFIRM · Mandate: b2b_ap_three_way_match_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 361 (#480 🏆 480th Guide Milestone · SVG #804 · Sandbox #254) Multi-Merchant Connect Split & FBO Reserve -->
+      <div class="finops-box" id="multi-merchant-connect-split-fbo-reserve-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 多商户平台分账清结算、资金托管与负余额追偿 (Stripe Connect / Adyen for Platforms / Mirakl) 沙盒（🏆 第 480 篇指南里程碑）</div>
+            <div class="finops-sub">Round 361 (#480 🏆 480th Guide Milestone · SVG #804 · Sandbox #254) · 强制物流妥投 DELIVERED POD + 7天观察期与 10% 滚动保证金锁防卖家填假单号提现跑路 (HTTP 403) + 买家退款强制原子级 reverse_transfer 撤回子商户分账与负余额银行代扣 (HTTP 422) + 持牌 FBO 子账本防二清与 1对N 整数美分守恒 (HTTP 451) + 净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="mktsplit-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度不良卖家提前提现跑路拒付坏账、退款漏撤回子商户分账垫资亏损及 1对N 拆账尾差风险池 ($)
+            <input type="number" id="mktsplit-gross-input" value="400000" min="10000" step="5000" oninput="recalcMarketplaceSplitSettlementSandbox()" />
+          </label>
+          <label>物流妥投签收 (Carrier DELIVERED POD + 7d) 提现解锁与 10% 90天滚动保证金门禁
+            <select id="mktsplit-pod-select" onchange="recalcMarketplaceSplitSettlementSandbox()">
+              <option value="pass">必须待快递官方 Webhook 确认 DELIVERED 满 7 天才释放 90% 货款，10% 锁入 90 天滚动保证金池 (安全)</option>
+              <option value="block_403">卖家刚手填虚假快递单号就允许全额提现到银行卡，7 天后买家集体拒付导致平台全额垫赔 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>买家退货退款原子级子商户分账撤回 (reverse_transfer=true) 与负余额穿仓追偿门禁
+            <select id="mktsplit-rev-select" onchange="recalcMarketplaceSplitSettlementSandbox()">
+              <option value="pass">退款时原子级同步撤回子商户货款并冲销佣金，子账户穿仓时自动抵扣在途款或发起 ACH 银行代扣 (合规)</option>
+              <option value="block_422">只从平台主账户向买家退全款却漏传 reverse_transfer，或卖家提空余额后无反向代扣形成死账 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>持牌 FBO 监管子账本隔离（防无证二清 MTL/PSD2）与 1对N 拆账最大余数美分守恒门禁
+            <select id="mktsplit-fbo-select" onchange="recalcMarketplaceSplitSettlementSandbox()">
+              <option value="pass">资金全流程驻留 Stripe Connect / Adyen 持牌 FBO 子账本，且 1对N 分账总和 100% 等于买家实收美分 (合规)</option>
+              <option value="block_451">将第三方卖家货款收进平台自有公司银行户（二清违规），或跨店满减浮点数舍入导致分账超额报错 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>POD+7d 滚动保证金 + 原子 reverse_transfer 追偿 + FBO 美分守恒全链路编排
+            <select id="mktsplit-opt-select" onchange="recalcMarketplaceSplitSettlementSandbox()">
+              <option value="enabled" selected>启用 POD+7d 保证金锁 + 原子逆向追回 + FBO 美分守恒 (-40% 平台垫资坏账与清分损耗 / HTTP 409)</option>
+              <option value="disabled">传统固定周期人工分账与事后手工追缴退货款基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度平台坏账与清分损耗池</div>
+            <div class="finops-kpi-val" id="mktsplit-gross-kpi">$400,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">妥投托管与原子追偿后净成本</div>
+            <div class="finops-kpi-val" id="mktsplit-net-kpi" style="color:#6ee7b7;">$240,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省垫资坏账与合规费</div>
+            <div class="finops-kpi-val" id="mktsplit-savings-kpi" style="color:#38bdf8;">$160,000</div>
+          </div>
+        </div>
+        <div id="mktsplit-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MARKETPLACE_POD_RESERVE_AND_ATOMIC_CLAWBACK_CONFIRM · Mandate: marketplace_split_settlement_optim_409
         </div>
       </div>
 
@@ -115983,6 +116143,79 @@ function recalcB2bApInvoiceThreeWayMatchSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_AP_THREE_WAY_MATCH_AUTHORIZED · Mandate: b2b_ap_three_way_match_200';
+}}
+
+function recalcMarketplaceSplitSettlementSandbox() {{
+  const grossInput = document.getElementById('mktsplit-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '400000'));
+  const podGate = document.getElementById('mktsplit-pod-select').value;
+  const revGate = document.getElementById('mktsplit-rev-select').value;
+  const fboGate = document.getElementById('mktsplit-fbo-select').value;
+  const optMode = document.getElementById('mktsplit-opt-select').value;
+
+  const grossKpi = document.getElementById('mktsplit-gross-kpi');
+  const netKpi = document.getElementById('mktsplit-net-kpi');
+  const savingsKpi = document.getElementById('mktsplit-savings-kpi');
+  const statusKpi = document.getElementById('mktsplit-status-kpi');
+  const banner = document.getElementById('mktsplit-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fboGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 SPLIT_TRANSFER_PENNY_DRIFT_OR_UNLICENSED_MTL_COMMINGLING · Mandate: null';
+    return;
+  }}
+  if (podGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PRE_DELIVERY_POD_SELLER_PAYOUT_OR_MISSING_RESERVE · Mandate: null';
+    return;
+  }}
+  if (revGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNREVERSED_SELLER_TRANSFER_ON_BUYER_REFUND_BAD_DEBT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MARKETPLACE_POD_RESERVE_AND_ATOMIC_CLAWBACK_CONFIRM · Mandate: marketplace_split_settlement_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_MARKETPLACE_SPLIT_SETTLEMENT_AUTHORIZED · Mandate: marketplace_split_settlement_200';
 }}
 
 function updateStage1756Sandbox() {{
