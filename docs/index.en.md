@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`493` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`494` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (37 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (61 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (183 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (111 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (112 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (45 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (56 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -323,7 +323,7 @@
 | 183 | **✈️ OTA & Corporate Travel Flight Disruption (`IRROPs`), Automated Rebooking & `EU261 / DOT` Compensation Agent (`Amadeus NDC / Sabre / Navan / TravelPerk / AirHelp`), `INVOL` Waiver Anti-`ADM` Locks, Downstream Hotel Late-Arrival Sync & Refund/Rebook Mutex (`-42%` Cost) FAQ** | [English](ota-flight-irrops-disruption-rebooking-amadeus-ndc-sabre-navan-eu261-invol-waiver-selection-faq.en.md) · [中文](ota-flight-irrops-disruption-rebooking-amadeus-ndc-sabre-navan-eu261-invol-waiver-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (111 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (112 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -440,6 +440,7 @@
 | 109 | **🏆 Corporate T&E Expense Audit & Per-Diem Copilot (`SAP Concur / Navan Expense / AppZen / Ramp / Brex` · 🏆 Round 370 Major Milestone), Cross-Rail Card-vs-Cash Receipt Deduplication, Itemized Hotel Folio Personal-Spend Stripping & `FCPA / Sunshine Act` Attendee Gating (`-42%` Cost) FAQ** | [English](corporate-travel-expense-audit-concur-navan-appzen-duplicate-receipt-folio-fcp-selection-faq.en.md) · [中文](corporate-travel-expense-audit-concur-navan-appzen-duplicate-receipt-folio-fcp-selection-faq.md) |
 | 110 | **🏆 Enterprise B2B Rebate Management, `Ship-and-Debit` & Partner `MDF / Co-Op` Copilot (`Enable / SAP Vistex / Flintfox / Channelscaler` · 🏆 490th Bilingual Guide Major Milestone), Retroactive Cliff-Tier PO Pacing, Net-of-`RMA` Rebate Basis Locks & `MDF` Proof-of-Performance (`POP`) Verification (`-41%` Cost) FAQ** | [English](b2b-rebate-management-enable-vistex-flintfox-mdf-coop-retroactive-cliff-tier-selection-faq.en.md) · [中文](b2b-rebate-management-enable-vistex-flintfox-mdf-coop-retroactive-cliff-tier-selection-faq.md) |
 | 111 | **🏆 Enterprise B2B PunchOut Catalog (`cXML / OCI`) & `EDI 850 / 855 / 856` Order Copilot (`Coupa / SAP Ariba / SPS Commerce / Orderful` · 🏆 815th SVG & 265th Sandbox Dual Milestone), Free-Text PR Catalog Deflection, `UOM (EA vs. CS)` 24x Pack-Size Locks & `EDI 856 ASN` Compliance (`-40%` Cost) FAQ** | [English](b2b-punchout-catalog-cxml-oci-edi-850-856-sps-commerce-ariba-coupa-uom-lock-selection-faq.en.md) · [中文](b2b-punchout-catalog-cxml-oci-edi-850-856-sps-commerce-ariba-coupa-uom-lock-selection-faq.md) |
+| 112 | **🏆 Enterprise B2B Trade Credit Insurance, `Net 30/60/90` Checkout & Invoice Factoring Agent (`Allianz Trade / Coface / Atradius` vs. `Hokodo / Balance / Resolve` · 🏆 Round 375 Major Milestone), Insured Exposure & Past-Due `DSO` Locks, Anti-Double-Pledge Factoring Guards & Insolvency Stoppage-in-Transit (`-41%` Cost) FAQ** | [English](b2b-trade-credit-insurance-net-terms-hokodo-balance-allianz-trade-dso-hold-factoring-selection-faq.en.md) · [中文](b2b-trade-credit-insurance-net-terms-hokodo-balance-allianz-trade-dso-hold-factoring-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (45 Guides)

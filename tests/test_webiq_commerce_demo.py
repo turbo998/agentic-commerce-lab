@@ -34183,6 +34183,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-flight-irrops-rebooking-sandbox", html_zh)
 
+    def test_b2b_trade_credit_insurance_factoring_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bTradeCreditInsuranceFactoringPolicyInput,
+            evaluate_b2b_trade_credit_insurance_factoring_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_trade_credit_insurance_factoring_policy(
+            B2bTradeCreditInsuranceFactoringPolicyInput(
+                quarterly_bad_debt_claim_denial_and_factoring_fee_pool_usd=410000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_TRADE_CREDIT_AND_FACTORING_AUTHORIZED",
+        )
+
+        limit = evaluate_b2b_trade_credit_insurance_factoring_policy(
+            B2bTradeCreditInsuranceFactoringPolicyInput(
+                total_ar_plus_unbilled_shipments_exceeds_insured_limit_or_past_due_over_15d=True
+            )
+        )
+        self.assertEqual(limit["status_code"], 403)
+        self.assertEqual(
+            limit["decision"],
+            "CREDIT_LIMIT_EXCEEDED_OR_PAST_DUE_SHIPMENT_HOLD",
+        )
+
+        pod = evaluate_b2b_trade_credit_insurance_factoring_policy(
+            B2bTradeCreditInsuranceFactoringPolicyInput(
+                invoice_factored_without_verified_pod_or_duplicate_lien_hash_detected=True
+            )
+        )
+        self.assertEqual(pod["status_code"], 422)
+        self.assertEqual(
+            pod["decision"],
+            "UNVERIFIED_POD_OR_DUPLICATE_FACTORING_LIEN",
+        )
+
+        insolv = evaluate_b2b_trade_credit_insurance_factoring_policy(
+            B2bTradeCreditInsuranceFactoringPolicyInput(
+                buyer_insolvency_alert_unblocked_or_overdue_unreported_past_45d=True
+            )
+        )
+        self.assertEqual(insolv["status_code"], 451)
+        self.assertEqual(
+            insolv["decision"],
+            "INSOLVENCY_STOP_IN_TRANSIT_OR_INSURER_REPORTING_BREACH",
+        )
+
+        optim = evaluate_b2b_trade_credit_insurance_factoring_policy(
+            B2bTradeCreditInsuranceFactoringPolicyInput(
+                quarterly_bad_debt_claim_denial_and_factoring_fee_pool_usd=410000.0,
+                hybrid_insurer_vs_b2b_bnpl_routing_and_pod_factoring_lock_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 168100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 241900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_trade_credit_insurance_factoring_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-trade-credit-insurance-factoring-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

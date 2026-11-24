@@ -43603,6 +43603,80 @@ def evaluate_ota_flight_irrops_rebooking_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bTradeCreditInsuranceFactoringPolicyInput:
+    quarterly_bad_debt_claim_denial_and_factoring_fee_pool_usd: float = 410000.0
+    total_ar_plus_unbilled_shipments_exceeds_insured_limit_or_past_due_over_15d: bool = False
+    invoice_factored_without_verified_pod_or_duplicate_lien_hash_detected: bool = False
+    buyer_insolvency_alert_unblocked_or_overdue_unreported_past_45d: bool = False
+    hybrid_insurer_vs_b2b_bnpl_routing_and_pod_factoring_lock_ready: bool = False
+
+
+def evaluate_b2b_trade_credit_insurance_factoring_policy(
+    policy_input: B2bTradeCreditInsuranceFactoringPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(policy_input.quarterly_bad_debt_claim_denial_and_factoring_fee_pool_usd),
+    )
+    if policy_input.buyer_insolvency_alert_unblocked_or_overdue_unreported_past_45d:
+        return {
+            "status_code": 451,
+            "decision": "INSOLVENCY_STOP_IN_TRANSIT_OR_INSURER_REPORTING_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.total_ar_plus_unbilled_shipments_exceeds_insured_limit_or_past_due_over_15d:
+        return {
+            "status_code": 403,
+            "decision": "CREDIT_LIMIT_EXCEEDED_OR_PAST_DUE_SHIPMENT_HOLD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.invoice_factored_without_verified_pod_or_duplicate_lien_hash_detected:
+        return {
+            "status_code": 422,
+            "decision": "UNVERIFIED_POD_OR_DUPLICATE_FACTORING_LIEN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hybrid_insurer_vs_b2b_bnpl_routing_and_pod_factoring_lock_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "HYBRID_TRADE_CREDIT_INSURANCE_AND_FACTORING_CONFIRM",
+            "mandate_token": "b2b_credit_factoring_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_TRADE_CREDIT_AND_FACTORING_AUTHORIZED",
+        "mandate_token": "b2b_credit_factoring_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -59272,6 +59346,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_trade_credit_insurance_factoring_guard = {
+        "authorized_200": evaluate_b2b_trade_credit_insurance_factoring_policy(
+            B2bTradeCreditInsuranceFactoringPolicyInput()
+        ),
+        "credit_limit_or_past_due_403": evaluate_b2b_trade_credit_insurance_factoring_policy(
+            B2bTradeCreditInsuranceFactoringPolicyInput(
+                total_ar_plus_unbilled_shipments_exceeds_insured_limit_or_past_due_over_15d=True
+            )
+        ),
+        "unverified_pod_or_lien_422": evaluate_b2b_trade_credit_insurance_factoring_policy(
+            B2bTradeCreditInsuranceFactoringPolicyInput(
+                invoice_factored_without_verified_pod_or_duplicate_lien_hash_detected=True
+            )
+        ),
+        "insolvency_or_late_report_451": evaluate_b2b_trade_credit_insurance_factoring_policy(
+            B2bTradeCreditInsuranceFactoringPolicyInput(
+                buyer_insolvency_alert_unblocked_or_overdue_unreported_past_45d=True
+            )
+        ),
+        "hybrid_credit_factoring_409": evaluate_b2b_trade_credit_insurance_factoring_policy(
+            B2bTradeCreditInsuranceFactoringPolicyInput(
+                hybrid_insurer_vs_b2b_bnpl_routing_and_pod_factoring_lock_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -59775,6 +59875,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_punchout_cxml_edi_uom_guard": b2b_punchout_cxml_edi_uom_guard,
         "retail_omnichannel_bopis_sfs_guard": retail_omnichannel_bopis_sfs_guard,
         "ota_flight_irrops_rebooking_guard": ota_flight_irrops_rebooking_guard,
+        "b2b_trade_credit_insurance_factoring_guard": b2b_trade_credit_insurance_factoring_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -86349,6 +86450,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="irrops-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 INSTANT_NDC_INVOL_REPROTECT_AND_HOTEL_HOLD_CONFIRM · Mandate: ota_irrops_rebook_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 375 (#494 · SVG #818 · Sandbox #268 · Test #1372 · 🏆 Round 375 Major Milestone!) B2B Trade Credit Insurance & Factoring -->
+      <div class="finops-box" id="b2b-trade-credit-insurance-factoring-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业 B2B 贸易信用保险、账期赊销 (Net 30/60/90) 与无追索权保理 (Allianz Trade / Coface / Hokodo / Balance) 沙盒（🏆 第 375 轮重大里程碑）</div>
+            <div class="finops-sub">Round 375 (#494 · SVG #818 · Sandbox #268 · Test #1372 · 🏆 Round 375 Milestone) · 含已发货未开票全口径信用敞口锁与逾期 >15 天自动停供防信保拒赔 (HTTP 403) + 强制数字签名 POD 签收确权与防一票多融保理哈希锁 (HTTP 422) + 买方破产预警在途停运拦截与逾期 45 天自动报案 (HTTP 451) + 双轨信保/B2B-BNPL 路由净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="trdcrd-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 B2B 超信保额度无保发货坏账、逾期未停供/未按期报案拒赔及高息保理手续费错配损耗池 ($)
+            <input type="number" id="trdcrd-gross-input" value="410000" min="10000" step="5000" oninput="recalcB2bTradeCreditInsuranceFactoringSandbox()" />
+          </label>
+          <label>全口径信用敞口 (已开票 AR + 已发货未开票 GRN) 与逾期 >15 天自动停供 (Stop-Supply) 门禁
+            <select id="trdcrd-limit-select" onchange="recalcB2bTradeCreditInsuranceFactoringSandbox()">
+              <option value="pass">双时点 (接单+发车前) 校验全口径敞口 <= 信保批复额且无 >15 天逾期发票 (安全)</option>
+              <option value="block_403">漏算 $150k 已发货未开票金额超额放行，或买方已有旧账逾期 22 天仍继续发货导致信保 0% 拒赔 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>无追索权保理 (Non-Recourse Factoring) 签收凭证 (POD) 确权与防重复质押 (UCC-1) 门禁
+            <select id="trdcrd-pod-select" onchange="recalcB2bTradeCreditInsuranceFactoringSandbox()">
+              <option value="pass">必须凭承运商数字签名 POD 且过 48h 验收无争议后放款，并锁定唯一转让哈希与 FBO 账户 (合规)</option>
+              <option value="block_422">未获 POD 签收或存在 RMA 争议即提现遭保理商全额追索，或同一张发票在两家平台重复质押 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>买方破产清算预警 (Chapter 11) 在途停运拦截与逾期满 45 天信保自动报案门禁
+            <select id="trdcrd-insolv-select" onchange="recalcB2bTradeCreditInsuranceFactoringSandbox()">
+              <option value="pass">命中破产/撤保信号立即触发 UCC §2-705 承运商在途停运，并在逾期第 45 天自动向信保 API 报案 (合规)</option>
+              <option value="block_451">买方已申请破产保护仍照常派送在途货柜，或逾期超 60 天未向信保报案导致保单失效 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>长尾新客嵌入式 B2B BNPL (Hokodo/Balance) vs. 白名单大客传统信保 (Allianz Trade) 双轨路由
+            <select id="trdcrd-opt-select" onchange="recalcB2bTradeCreditInsuranceFactoringSandbox()">
+              <option value="enabled" selected>启用 <$25k 新客秒批 T+1 保理 + >=$25k 老客 0.25% 信保与动态早付折扣 (-41% 坏账与融资成本 / HTTP 409)</option>
+              <option value="disabled">传统 ERP 静态授信与一刀切高息保理基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度坏账拒赔与保理费损耗池</div>
+            <div class="finops-kpi-val" id="trdcrd-gross-kpi">$410,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">双轨信保与敞口锁后净成本</div>
+            <div class="finops-kpi-val" id="trdcrd-net-kpi" style="color:#6ee7b7;">$241,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省坏账穿仓与融资费</div>
+            <div class="finops-kpi-val" id="trdcrd-savings-kpi" style="color:#38bdf8;">$168,100</div>
+          </div>
+        </div>
+        <div id="trdcrd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 HYBRID_TRADE_CREDIT_INSURANCE_AND_FACTORING_CONFIRM · Mandate: b2b_credit_factoring_optim_409
         </div>
       </div>
 
@@ -119241,6 +119399,79 @@ function recalcOtaFlightIrropsRebookingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_OTA_IRROPS_REBOOKING_AUTHORIZED · Mandate: ota_irrops_rebook_200';
+}}
+
+function recalcB2bTradeCreditInsuranceFactoringSandbox() {{
+  const grossInput = document.getElementById('trdcrd-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '410000'));
+  const limitGate = document.getElementById('trdcrd-limit-select').value;
+  const podGate = document.getElementById('trdcrd-pod-select').value;
+  const insolvGate = document.getElementById('trdcrd-insolv-select').value;
+  const optMode = document.getElementById('trdcrd-opt-select').value;
+
+  const grossKpi = document.getElementById('trdcrd-gross-kpi');
+  const netKpi = document.getElementById('trdcrd-net-kpi');
+  const savingsKpi = document.getElementById('trdcrd-savings-kpi');
+  const statusKpi = document.getElementById('trdcrd-status-kpi');
+  const banner = document.getElementById('trdcrd-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (insolvGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 INSOLVENCY_STOP_IN_TRANSIT_OR_INSURER_REPORTING_BREACH · Mandate: null';
+    return;
+  }}
+  if (limitGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 CREDIT_LIMIT_EXCEEDED_OR_PAST_DUE_SHIPMENT_HOLD · Mandate: null';
+    return;
+  }}
+  if (podGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNVERIFIED_POD_OR_DUPLICATE_FACTORING_LIEN · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 HYBRID_TRADE_CREDIT_INSURANCE_AND_FACTORING_CONFIRM · Mandate: b2b_credit_factoring_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_TRADE_CREDIT_AND_FACTORING_AUTHORIZED · Mandate: b2b_credit_factoring_200';
 }}
 
 function updateStage1756Sandbox() {{
