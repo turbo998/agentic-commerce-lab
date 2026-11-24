@@ -33513,6 +33513,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-bnpl-klarna-affirm-mdr-sandbox", html_zh)
 
+    def test_cross_border_multilingual_cs_dna_refund_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderMultilingualCsDnaRefundPolicyInput,
+            evaluate_cross_border_multilingual_cs_dna_refund_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_multilingual_cs_dna_refund_policy(
+            CrossBorderMultilingualCsDnaRefundPolicyInput(
+                quarterly_in_transit_double_loss_dna_abuse_and_cs_labor_pool_usd=390000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_MULTILINGUAL_CS_ORDER_RESOLUTION_AUTHORIZED",
+        )
+
+        transit = evaluate_cross_border_multilingual_cs_dna_refund_policy(
+            CrossBorderMultilingualCsDnaRefundPolicyInput(
+                refund_issued_while_parcel_in_transit_without_confirmed_intercept=True
+            )
+        )
+        self.assertEqual(transit["status_code"], 403)
+        self.assertEqual(
+            transit["decision"],
+            "IN_TRANSIT_PACKAGE_REFUND_WITHOUT_CONFIRMED_CARRIER_INTERCEPT",
+        )
+
+        dna = evaluate_cross_border_multilingual_cs_dna_refund_policy(
+            CrossBorderMultilingualCsDnaRefundPolicyInput(
+                dna_claim_auto_refunded_within_36h_or_over_75_usd_without_gps_check=True
+            )
+        )
+        self.assertEqual(dna["status_code"], 422)
+        self.assertEqual(
+            dna["decision"],
+            "UNVERIFIED_DNA_CLAIM_OR_EXCEEDED_75_AUTO_REFUND_CAP",
+        )
+
+        lang = evaluate_cross_border_multilingual_cs_dna_refund_policy(
+            CrossBorderMultilingualCsDnaRefundPolicyInput(
+                multilingual_prompt_override_or_eu_uk_14d_statutory_return_denied=True
+            )
+        )
+        self.assertEqual(lang["status_code"], 451)
+        self.assertEqual(
+            lang["decision"],
+            "MULTILINGUAL_PROMPT_JAILBREAK_OR_EU_14D_COOLING_OFF_DENIAL",
+        )
+
+        optim = evaluate_cross_border_multilingual_cs_dna_refund_policy(
+            CrossBorderMultilingualCsDnaRefundPolicyInput(
+                quarterly_in_transit_double_loss_dna_abuse_and_cs_labor_pool_usd=390000.0,
+                in_transit_lock_dna_gps_36h_gate_and_statutory_parity_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 159900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 230100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_multilingual_cs_dna_refund_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-multilingual-cs-dna-refund-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

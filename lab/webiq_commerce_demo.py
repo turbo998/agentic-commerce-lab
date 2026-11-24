@@ -42847,6 +42847,82 @@ def evaluate_ecommerce_bnpl_klarna_affirm_mdr_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderMultilingualCsDnaRefundPolicyInput:
+    quarterly_in_transit_double_loss_dna_abuse_and_cs_labor_pool_usd: float = 390000.0
+    refund_issued_while_parcel_in_transit_without_confirmed_intercept: bool = False
+    dna_claim_auto_refunded_within_36h_or_over_75_usd_without_gps_check: bool = False
+    multilingual_prompt_override_or_eu_uk_14d_statutory_return_denied: bool = False
+    in_transit_lock_dna_gps_36h_gate_and_statutory_parity_ready: bool = False
+
+
+def evaluate_cross_border_multilingual_cs_dna_refund_policy(
+    policy_input: CrossBorderMultilingualCsDnaRefundPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_in_transit_double_loss_dna_abuse_and_cs_labor_pool_usd
+        ),
+    )
+    if policy_input.multilingual_prompt_override_or_eu_uk_14d_statutory_return_denied:
+        return {
+            "status_code": 451,
+            "decision": "MULTILINGUAL_PROMPT_JAILBREAK_OR_EU_14D_COOLING_OFF_DENIAL",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.refund_issued_while_parcel_in_transit_without_confirmed_intercept:
+        return {
+            "status_code": 403,
+            "decision": "IN_TRANSIT_PACKAGE_REFUND_WITHOUT_CONFIRMED_CARRIER_INTERCEPT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dna_claim_auto_refunded_within_36h_or_over_75_usd_without_gps_check:
+        return {
+            "status_code": 422,
+            "decision": "UNVERIFIED_DNA_CLAIM_OR_EXCEEDED_75_AUTO_REFUND_CAP",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.in_transit_lock_dna_gps_36h_gate_and_statutory_parity_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MULTILINGUAL_CS_IN_TRANSIT_LOCK_AND_DNA_GPS_CONFIRM",
+            "mandate_token": "cross_border_cs_dna_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_MULTILINGUAL_CS_ORDER_RESOLUTION_AUTHORIZED",
+        "mandate_token": "cross_border_cs_dna_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -58256,6 +58332,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_multilingual_cs_dna_refund_guard = {
+        "authorized_200": evaluate_cross_border_multilingual_cs_dna_refund_policy(
+            CrossBorderMultilingualCsDnaRefundPolicyInput()
+        ),
+        "in_transit_refund_403": evaluate_cross_border_multilingual_cs_dna_refund_policy(
+            CrossBorderMultilingualCsDnaRefundPolicyInput(
+                refund_issued_while_parcel_in_transit_without_confirmed_intercept=True
+            )
+        ),
+        "unverified_dna_over_75_422": evaluate_cross_border_multilingual_cs_dna_refund_policy(
+            CrossBorderMultilingualCsDnaRefundPolicyInput(
+                dna_claim_auto_refunded_within_36h_or_over_75_usd_without_gps_check=True
+            )
+        ),
+        "multilingual_or_eu14d_451": evaluate_cross_border_multilingual_cs_dna_refund_policy(
+            CrossBorderMultilingualCsDnaRefundPolicyInput(
+                multilingual_prompt_override_or_eu_uk_14d_statutory_return_denied=True
+            )
+        ),
+        "in_transit_dna_gps_409": evaluate_cross_border_multilingual_cs_dna_refund_policy(
+            CrossBorderMultilingualCsDnaRefundPolicyInput(
+                in_transit_lock_dna_gps_36h_gate_and_statutory_parity_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -58749,6 +58851,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_cpq_pocket_margin_approval_guard": b2b_cpq_pocket_margin_approval_guard,
         "saas_dunning_involuntary_churn_guard": saas_dunning_involuntary_churn_guard,
         "ecommerce_bnpl_klarna_affirm_mdr_guard": ecommerce_bnpl_klarna_affirm_mdr_guard,
+        "cross_border_multilingual_cs_dna_refund_guard": cross_border_multilingual_cs_dna_refund_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -84753,6 +84856,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="bnplmdr-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 BNPL_DYNAMIC_AOV_TIER_AND_PAYPAL_ROUTING_CONFIRM · Mandate: ecommerce_bnpl_router_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 365 (#484 · SVG #808 · Sandbox #258 · 🏆 Round 365 Milestone) Cross-Border Multilingual CS & DNA Refund Shield -->
+      <div class="finops-box" id="cross-border-multilingual-cs-dna-refund-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 跨境电商多语种智能客服与售后工单处置 (Gorgias / Zendesk / Intercom Fin / D365) 沙盒（🏆 第 365 轮里程碑）</div>
+            <div class="finops-sub">Round 365 (#484 · SVG #808 · Sandbox #258 · 🏆 Round 365 Milestone) · 包裹处于 IN_TRANSIT 在途且未确认承运商成功拦截退回前严禁退全款防“货款两空” (HTTP 403) + 显示妥投未收到 (DNA) 强制 36h 冷却期 + 快递 GPS(&lt;=25m)/门口照片核验 + $75 自动赔付上限 (HTTP 422) + 语种无关策略引擎与欧盟 14天法定退货权保障 (HTTP 451) + 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="csdna-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度包裹在途提前退款“货款两空”损失、虚假 DNA 妥投未收到骗退及多语种坐席合规风险池 ($)
+            <input type="number" id="csdna-gross-input" value="390000" min="10000" step="5000" oninput="recalcCrossBorderMultilingualCsDnaSandbox()" />
+          </label>
+          <label>国际在途包裹 (Carrier_State == IN_TRANSIT) 承运商拦截确认前退款冻结门禁
+            <select id="csdna-transit-select" onchange="recalcCrossBorderMultilingualCsDnaSandbox()">
+              <option value="pass">在途且未满失联阈值时禁用全额退款，发放 $10 延误礼金并引导送达后拒收或退回再退款 (安全)</option>
+              <option value="block_403">包裹在海关清关延迟 2 天，AI 客服听信买家催促直接退全款，48h 后包裹送达致货款两空 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>显示已签收但声称未收到 (DNA / Porch Piracy) 36h 冷却期、GPS(&lt;=25m)/照片核验与 $75 上限门禁
+            <select id="csdna-dna-select" onchange="recalcCrossBorderMultilingualCsDnaSandbox()">
+              <option value="pass">妥投满 36h 后核验快递 GPS 与门口照片，AI 自动善意赔付硬锁 &lt;=$75，大额转保险或宣誓书审理 (合规)</option>
+              <option value="block_422">妥投 2 小时内未核验快递 GPS 落点与门口照片，直接向 $350 订单自动退全款被骗退团伙搬空 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>30+ 语种策略解耦防小语种越狱与欧盟/英国 14 天法定无理由退货期 (EU Directive 2011/83/EU) 门禁
+            <select id="csdna-lang-select" onchange="recalcCrossBorderMultilingualCsDnaSandbox()">
+              <option value="pass">后端确定性代码按收货国家 (Ship_To_Country) 判定资格，自动保障欧盟/英国 14 天法定退货权 (合规)</option>
+              <option value="block_451">被小语种对抗指令绕过退款上限，或拿美国 Final Sale 不退换条款非法拒绝德国买家 14天退货 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>在途包裹禁退锁 + DNA 36h/GPS/$75 封顶 + 多语种法定策略一致性全链路编排
+            <select id="csdna-opt-select" onchange="recalcCrossBorderMultilingualCsDnaSandbox()">
+              <option value="enabled" selected>启用在途禁退锁 + DNA GPS 核验 + 语种无关法定退货引擎 (-41% 骗退损失与客服人力 / HTTP 409)</option>
+              <option value="disabled">传统多语种外包人工客服与无物流联动退款基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度在途双损与DNA骗退池</div>
+            <div class="finops-kpi-val" id="csdna-gross-kpi">$390,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">在途锁与GPS取证后净成本</div>
+            <div class="finops-kpi-val" id="csdna-net-kpi" style="color:#6ee7b7;">$230,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回货款与坐席成本</div>
+            <div class="finops-kpi-val" id="csdna-savings-kpi" style="color:#38bdf8;">$159,900</div>
+          </div>
+        </div>
+        <div id="csdna-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MULTILINGUAL_CS_IN_TRANSIT_LOCK_AND_DNA_GPS_CONFIRM · Mandate: cross_border_cs_dna_optim_409
         </div>
       </div>
 
@@ -116915,6 +117075,79 @@ function recalcEcommerceBnplKlarnaAffirmSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_ECOMMERCE_BNPL_ORCHESTRATION_AUTHORIZED · Mandate: ecommerce_bnpl_router_200';
+}}
+
+function recalcCrossBorderMultilingualCsDnaSandbox() {{
+  const grossInput = document.getElementById('csdna-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '390000'));
+  const transitGate = document.getElementById('csdna-transit-select').value;
+  const dnaGate = document.getElementById('csdna-dna-select').value;
+  const langGate = document.getElementById('csdna-lang-select').value;
+  const optMode = document.getElementById('csdna-opt-select').value;
+
+  const grossKpi = document.getElementById('csdna-gross-kpi');
+  const netKpi = document.getElementById('csdna-net-kpi');
+  const savingsKpi = document.getElementById('csdna-savings-kpi');
+  const statusKpi = document.getElementById('csdna-status-kpi');
+  const banner = document.getElementById('csdna-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (langGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MULTILINGUAL_PROMPT_JAILBREAK_OR_EU_14D_COOLING_OFF_DENIAL · Mandate: null';
+    return;
+  }}
+  if (transitGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 IN_TRANSIT_PACKAGE_REFUND_WITHOUT_CONFIRMED_CARRIER_INTERCEPT · Mandate: null';
+    return;
+  }}
+  if (dnaGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNVERIFIED_DNA_CLAIM_OR_EXCEEDED_75_AUTO_REFUND_CAP · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MULTILINGUAL_CS_IN_TRANSIT_LOCK_AND_DNA_GPS_CONFIRM · Mandate: cross_border_cs_dna_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_MULTILINGUAL_CS_ORDER_RESOLUTION_AUTHORIZED · Mandate: cross_border_cs_dna_200';
 }}
 
 function updateStage1756Sandbox() {{
