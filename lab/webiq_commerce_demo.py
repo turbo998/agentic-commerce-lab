@@ -41707,6 +41707,82 @@ def evaluate_b2b_rfp_security_questionnaire_copilot_policy(
     }
 
 
+@dataclass(frozen=True)
+class AgentPlatformBuildPathSelectionPolicyInput:
+    quarterly_license_overrun_duplicate_connector_write_and_saga_failure_pool_usd: float = 410000.0
+    lowcode_canvas_used_for_multi_system_distributed_saga_without_checkpoint: bool = False
+    connector_auto_retry_enabled_on_financial_write_without_idempotency_key: bool = False
+    high_volume_anonymous_b2c_traffic_routed_to_per_conversation_license: bool = False
+    hybrid_studio_front_foundry_saga_back_and_finops_router_ready: bool = False
+
+
+def evaluate_agent_platform_build_path_selection_policy(
+    policy_input: AgentPlatformBuildPathSelectionPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_license_overrun_duplicate_connector_write_and_saga_failure_pool_usd
+        ),
+    )
+    if policy_input.high_volume_anonymous_b2c_traffic_routed_to_per_conversation_license:
+        return {
+            "status_code": 451,
+            "decision": "PER_CONVERSATION_LICENSE_B2C_TRAFFIC_BILL_SHOCK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.lowcode_canvas_used_for_multi_system_distributed_saga_without_checkpoint:
+        return {
+            "status_code": 403,
+            "decision": "LOWCODE_MULTI_SYSTEM_SAGA_TIMEOUT_OR_STATE_OVERFLOW",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.connector_auto_retry_enabled_on_financial_write_without_idempotency_key:
+        return {
+            "status_code": 422,
+            "decision": "UNKEYED_CONNECTOR_AUTO_RETRY_DUPLICATE_WRITE_RISK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hybrid_studio_front_foundry_saga_back_and_finops_router_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "HYBRID_COPILOT_STUDIO_FOUNDRY_SAGA_AND_FINOPS_ROUTING_CONFIRM",
+            "mandate_token": "agent_build_path_hybrid_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_COMMERCIAL_AGENT_BUILD_PATH_AUTHORIZED",
+        "mandate_token": "agent_build_path_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -56726,6 +56802,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    agent_platform_build_path_selection_guard = {
+        "authorized_200": evaluate_agent_platform_build_path_selection_policy(
+            AgentPlatformBuildPathSelectionPolicyInput()
+        ),
+        "lowcode_saga_timeout_403": evaluate_agent_platform_build_path_selection_policy(
+            AgentPlatformBuildPathSelectionPolicyInput(
+                lowcode_canvas_used_for_multi_system_distributed_saga_without_checkpoint=True
+            )
+        ),
+        "unkeyed_connector_retry_422": evaluate_agent_platform_build_path_selection_policy(
+            AgentPlatformBuildPathSelectionPolicyInput(
+                connector_auto_retry_enabled_on_financial_write_without_idempotency_key=True
+            )
+        ),
+        "per_conversation_b2c_shock_451": evaluate_agent_platform_build_path_selection_policy(
+            AgentPlatformBuildPathSelectionPolicyInput(
+                high_volume_anonymous_b2c_traffic_routed_to_per_conversation_license=True
+            )
+        ),
+        "hybrid_studio_foundry_409": evaluate_agent_platform_build_path_selection_policy(
+            AgentPlatformBuildPathSelectionPolicyInput(
+                hybrid_studio_front_foundry_saga_back_and_finops_router_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -57204,6 +57306,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_hotel_pms_vcc_folio_walk_guard": ota_hotel_pms_vcc_folio_walk_guard,
         "enterprise_revrec_asc606_ssp_guard": enterprise_revrec_asc606_ssp_guard,
         "b2b_rfp_security_questionnaire_copilot_guard": b2b_rfp_security_questionnaire_copilot_guard,
+        "agent_platform_build_path_selection_guard": agent_platform_build_path_selection_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -82353,6 +82456,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="rfpsec-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 RFP_SECURITY_QUESTIONNAIRE_EVIDENCE_AND_LEGAL_GUARD_CONFIRM · Mandate: b2b_rfp_security_copilot_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 350 (#469 · SVG #793 · Sandbox #243 · 🏆 Round 350 Milestone) Commercial Agent Build Path Selection -->
+      <div class="finops-box" id="agent-platform-build-path-selection-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 商业智能体三大构建路径选型 (Copilot Studio + D365 vs. Azure AI Foundry + LangGraph/SK vs. Agentforce / Sidekick) 沙盒（🏆 第 350 轮重大里程碑）</div>
+            <div class="finops-sub">Round 350 (#469 · SVG #793 · Sandbox #243 · 🏆 Round 350 Milestone) · 跨系统分布式 Saga 卸载至专业代码防低代码画布 120s 超时脏写 (HTTP 403) + 金融写接口强制业务 Idempotency-Key 与先查后试防连接器 504 自动重试双倍扣款 (HTTP 422) + 公网高频 B2C 流量分流至 Token 管道防 $2/对话账单爆炸 (HTTP 451) + 净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="bldpath-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度许可证账单超支、连接器自动重试重复扣款/重发单及低代码长事务半途卡单损耗池 ($)
+            <input type="number" id="bldpath-gross-input" value="410000" min="10000" step="5000" oninput="recalcAgentPlatformBuildPathSandbox()" />
+          </label>
+          <label>跨系统多步分布式事务 (Saga: 锁库存 + 扣积分 + 刷卡 + 写 ERP) 执行引擎边界门禁
+            <select id="bldpath-saga-select" onchange="recalcAgentPlatformBuildPathSandbox()">
+              <option value="pass">前店后厂：Copilot Studio 负责卡片与 Entra OBO 鉴权，>=2 系统写事务卸载至 Foundry + LangGraph 持久化状态机 (安全)</option>
+              <option value="block_403">在低代码 Topic 画布内同步串联 6 个外部写连接器，遭遇 120s 超时中断且无法逆序回滚已扣资金 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>SaaS / Power Platform 连接器写操作幂等键 (Idempotency-Key) 与自动重试门禁
+            <select id="bldpath-retry-select" onchange="recalcAgentPlatformBuildPathSandbox()">
+              <option value="pass">关闭连接器对金融写接口的无脑重试，通过 Transactional Outbox 携带 SHA-256 业务幂等键并先查后试 (合规)</option>
+              <option value="block_422">未传业务幂等键且开启连接器默认 HTTP 504 自动重试 4 次，导致网络抖动时连续创建 4 张重复 ERP 订单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>公网高并发 B2C 匿名导购流量 vs. 按每次对话 ($2/Chat) / 消息包许可证 FinOps 路由门禁
+            <select id="bldpath-finops-select" onchange="recalcAgentPlatformBuildPathSandbox()">
+              <option value="pass">日均 30万轮匿名商品问答直连 Foundry 小模型 + 语义缓存 ($0.002/轮)，高价值登录态操作才调连接器席位 (合规)</option>
+              <option value="block_451">将转化率仅 2.5% 的公网高频匿名闲聊导购直接灌入 $2/Conversation 按对话计费许可证引发 10 倍账单爆炸 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Copilot Studio 前店交互 + Azure AI Foundry 后厂 Saga + Token 分级路由全链路编排
+            <select id="bldpath-opt-select" onchange="recalcAgentPlatformBuildPathSandbox()">
+              <option value="enabled" selected>启用前店后厂混合架构 + Outbox 幂等锁 + Token 分级路由 (-41% 平台 TCO 与故障损耗 / HTTP 409)</option>
+              <option value="disabled">单一构建路径无流量与事务分层基础运行态 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度平台许可证与故障损耗池</div>
+            <div class="finops-kpi-val" id="bldpath-gross-kpi">$410,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">前店后厂与FinOps路由后净成本</div>
+            <div class="finops-kpi-val" id="bldpath-net-kpi" style="color:#6ee7b7;">$241,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省许可证与防重赔付</div>
+            <div class="finops-kpi-val" id="bldpath-savings-kpi" style="color:#38bdf8;">$168,100</div>
+          </div>
+        </div>
+        <div id="bldpath-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 HYBRID_COPILOT_STUDIO_FOUNDRY_SAGA_AND_FINOPS_ROUTING_CONFIRM · Mandate: agent_build_path_hybrid_optim_409
         </div>
       </div>
 
@@ -113420,6 +113580,79 @@ function recalcB2bRfpSecurityQuestionnaireSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_RFP_SECURITY_QUESTIONNAIRE_AUTHORIZED · Mandate: b2b_rfp_security_copilot_200';
+}}
+
+function recalcAgentPlatformBuildPathSandbox() {{
+  const grossInput = document.getElementById('bldpath-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '410000'));
+  const sagaGate = document.getElementById('bldpath-saga-select').value;
+  const retryGate = document.getElementById('bldpath-retry-select').value;
+  const finopsGate = document.getElementById('bldpath-finops-select').value;
+  const optMode = document.getElementById('bldpath-opt-select').value;
+
+  const grossKpi = document.getElementById('bldpath-gross-kpi');
+  const netKpi = document.getElementById('bldpath-net-kpi');
+  const savingsKpi = document.getElementById('bldpath-savings-kpi');
+  const statusKpi = document.getElementById('bldpath-status-kpi');
+  const banner = document.getElementById('bldpath-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (finopsGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PER_CONVERSATION_LICENSE_B2C_TRAFFIC_BILL_SHOCK · Mandate: null';
+    return;
+  }}
+  if (sagaGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 LOWCODE_MULTI_SYSTEM_SAGA_TIMEOUT_OR_STATE_OVERFLOW · Mandate: null';
+    return;
+  }}
+  if (retryGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNKEYED_CONNECTOR_AUTO_RETRY_DUPLICATE_WRITE_RISK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 HYBRID_COPILOT_STUDIO_FOUNDRY_SAGA_AND_FINOPS_ROUTING_CONFIRM · Mandate: agent_build_path_hybrid_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_COMMERCIAL_AGENT_BUILD_PATH_AUTHORIZED · Mandate: agent_build_path_200';
 }}
 
 function updateStage1756Sandbox() {{

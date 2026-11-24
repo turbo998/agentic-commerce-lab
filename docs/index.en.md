@@ -2,11 +2,11 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`468` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`469` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
-- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (35 guides)](#platform-grounding)
+- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (36 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (59 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (176 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (102 guides)](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (35 Guides)
+## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (36 Guides)
 
 > Platform selection (Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify), real-time search grounding (Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl), catalog feed barriers, A2UI isolation, and Web Bot Auth vs WAF governance.
 
@@ -59,6 +59,7 @@
 | 33 | **Commercial Agent Tiered `Human-in-the-Loop (HITL)` Approval Boundaries, Durable Checkpoint Interrupts & Resume-Time Quote Re-Validation (`Azure AI Foundry + LangGraph Interrupts vs. Microsoft Copilot Studio Approvals vs. Salesforce Agentforce`), Anti-In-Chat `"YES"` Gate, Wake-Up Quote `TTL` Check & `Entra SOD` Lock (`-40%` Injected Spend & Stale Approval Loss) FAQ** | [English](agentic-commerce-hitl-approval-langgraph-interrupt-copilot-studio-fido2-quote-ttl-selection-faq.en.md) · [中文](agentic-commerce-hitl-approval-langgraph-interrupt-copilot-studio-fido2-quote-ttl-selection-faq.md) |
 | 34 | **🏆 Voice Commerce & AI Contact Center (`CCaaS`) Payment Orchestration (`D365 Contact Center / Genesys Cloud / Amazon Connect / Twilio + Sycurio PCI-DSS v4.0` · 🏆 785th SVG & 235th Sandbox Milestone), SIP-Edge `RFC 4733 DTMF` Masking, `VAD Barge-In` Speculative Cancel & Anti-Deepfake `Pay-by-Link` (`-40%` Voice PCI Scope & Barge-In Loss) FAQ** | [English](voice-commerce-ccaas-pci-dtmf-masking-pay-by-link-deepfake-bargein-selection-faq.en.md) · [中文](voice-commerce-ccaas-pci-dtmf-masking-pay-by-link-deepfake-bargein-selection-faq.md) |
 | 35 | **🏆 Headless Browser & GUI Checkout Agents (`Browser-Use / Playwright / Computer-Use vs. WebMCP / UCP API` · 🏆 1,340th Unit Test Milestone), Pre-Submit `AXTree` Dark-Pattern Upsell Guard, Single-Click Submit Mutex & Enclave `VCN` Auto-Fill (`-41%` GUI Checkout & Compute Loss) FAQ** | [English](browser-use-computer-use-headless-checkout-agent-dom-drift-payment-handover-selection-faq.en.md) · [中文](browser-use-computer-use-headless-checkout-agent-dom-drift-payment-handover-selection-faq.md) |
+| 36 | **🏆 Commercial Agent Build-Path Selection (`Microsoft Copilot Studio + D365` vs. `Azure AI Foundry + Semantic Kernel / LangGraph` vs. `Salesforce Agentforce / Shopify Sidekick` · 🏆 Round 350 Major Milestone), Multi-System `Saga` Offloading, Connector Retry Idempotency & Per-Conversation vs. Token FinOps Break-Even (`-41%` Cost) FAQ** | [English](agent-platform-build-path-copilot-studio-vs-azure-ai-foundry-langgraph-vs-agentforce-sidekick-selection-faq.en.md) · [中文](agent-platform-build-path-copilot-studio-vs-azure-ai-foundry-langgraph-vs-agentforce-sidekick-selection-faq.md) |
 
 <a id="payments-mandates"></a>
 ## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (59 Guides)

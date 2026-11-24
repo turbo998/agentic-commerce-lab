@@ -32508,6 +32508,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-rfp-security-questionnaire-copilot-sandbox", html_zh)
 
+    def test_agent_platform_build_path_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            AgentPlatformBuildPathSelectionPolicyInput,
+            evaluate_agent_platform_build_path_selection_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_agent_platform_build_path_selection_policy(
+            AgentPlatformBuildPathSelectionPolicyInput(
+                quarterly_license_overrun_duplicate_connector_write_and_saga_failure_pool_usd=410000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_COMMERCIAL_AGENT_BUILD_PATH_AUTHORIZED",
+        )
+
+        saga = evaluate_agent_platform_build_path_selection_policy(
+            AgentPlatformBuildPathSelectionPolicyInput(
+                lowcode_canvas_used_for_multi_system_distributed_saga_without_checkpoint=True
+            )
+        )
+        self.assertEqual(saga["status_code"], 403)
+        self.assertEqual(
+            saga["decision"],
+            "LOWCODE_MULTI_SYSTEM_SAGA_TIMEOUT_OR_STATE_OVERFLOW",
+        )
+
+        retry = evaluate_agent_platform_build_path_selection_policy(
+            AgentPlatformBuildPathSelectionPolicyInput(
+                connector_auto_retry_enabled_on_financial_write_without_idempotency_key=True
+            )
+        )
+        self.assertEqual(retry["status_code"], 422)
+        self.assertEqual(
+            retry["decision"],
+            "UNKEYED_CONNECTOR_AUTO_RETRY_DUPLICATE_WRITE_RISK",
+        )
+
+        finops = evaluate_agent_platform_build_path_selection_policy(
+            AgentPlatformBuildPathSelectionPolicyInput(
+                high_volume_anonymous_b2c_traffic_routed_to_per_conversation_license=True
+            )
+        )
+        self.assertEqual(finops["status_code"], 451)
+        self.assertEqual(
+            finops["decision"],
+            "PER_CONVERSATION_LICENSE_B2C_TRAFFIC_BILL_SHOCK",
+        )
+
+        optim = evaluate_agent_platform_build_path_selection_policy(
+            AgentPlatformBuildPathSelectionPolicyInput(
+                quarterly_license_overrun_duplicate_connector_write_and_saga_failure_pool_usd=410000.0,
+                hybrid_studio_front_foundry_saga_back_and_finops_router_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 168100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 241900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("agent_platform_build_path_selection_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agent-platform-build-path-selection-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
