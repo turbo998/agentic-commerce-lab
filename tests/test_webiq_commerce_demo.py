@@ -32173,6 +32173,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("sales-tax-engine-selection-fallback-sandbox", html_zh)
 
+    def test_b2b_sales_commission_icm_clawback_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bSalesCommissionIcmClawbackPolicyInput,
+            evaluate_b2b_sales_commission_icm_clawback_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_sales_commission_icm_clawback_policy(
+            B2bSalesCommissionIcmClawbackPolicyInput(
+                quarterly_uncollected_deal_payout_split_overpay_and_discount_pool_usd=380000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_SALES_COMMISSION_ICM_AND_ASC340_AUTHORIZED",
+        )
+
+        upfront = evaluate_b2b_sales_commission_icm_clawback_policy(
+            B2bSalesCommissionIcmClawbackPolicyInput(
+                upfront_100pct_commission_before_cash_or_waived_90d_clawback=True
+            )
+        )
+        self.assertEqual(upfront["status_code"], 403)
+        self.assertEqual(
+            upfront["decision"],
+            "UPFRONT_100PCT_COMMISSION_BEFORE_CASH_COLLECTION_OR_WAIVED_CHURN_CLAWBACK",
+        )
+
+        split = evaluate_b2b_sales_commission_icm_clawback_policy(
+            B2bSalesCommissionIcmClawbackPolicyInput(
+                undecelerated_deep_discount_bonus_or_over_100pct_ae_split=True
+            )
+        )
+        self.assertEqual(split["status_code"], 422)
+        self.assertEqual(
+            split["decision"],
+            "UNDECELERATED_DEEP_DISCOUNT_COMMISSION_OR_OVER_100PCT_AE_SPLIT_CREDIT",
+        )
+
+        asc = evaluate_b2b_sales_commission_icm_clawback_policy(
+            B2bSalesCommissionIcmClawbackPolicyInput(
+                asc340_40_immediate_expensing_or_unwritten_off_churn_asset=True
+            )
+        )
+        self.assertEqual(asc["status_code"], 451)
+        self.assertEqual(
+            asc["decision"],
+            "ASC340_40_INCREMENTAL_COMMISSION_IMMEDIATE_EXPENSING_OR_UNWRITTEN_OFF_CHURN_ASSET",
+        )
+
+        optim = evaluate_b2b_sales_commission_icm_clawback_policy(
+            B2bSalesCommissionIcmClawbackPolicyInput(
+                quarterly_uncollected_deal_payout_split_overpay_and_discount_pool_usd=380000.0,
+                cash_collected_50_50_vesting_decelerator_and_asc340_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 144400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 235600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_sales_commission_icm_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-sales-commission-icm-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

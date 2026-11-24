@@ -41327,6 +41327,82 @@ def evaluate_sales_tax_engine_selection_fallback_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bSalesCommissionIcmClawbackPolicyInput:
+    quarterly_uncollected_deal_payout_split_overpay_and_discount_pool_usd: float = 380000.0
+    upfront_100pct_commission_before_cash_or_waived_90d_clawback: bool = False
+    undecelerated_deep_discount_bonus_or_over_100pct_ae_split: bool = False
+    asc340_40_immediate_expensing_or_unwritten_off_churn_asset: bool = False
+    cash_collected_50_50_vesting_decelerator_and_asc340_ready: bool = False
+
+
+def evaluate_b2b_sales_commission_icm_clawback_policy(
+    policy_input: B2bSalesCommissionIcmClawbackPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_uncollected_deal_payout_split_overpay_and_discount_pool_usd
+        ),
+    )
+    if policy_input.asc340_40_immediate_expensing_or_unwritten_off_churn_asset:
+        return {
+            "status_code": 451,
+            "decision": "ASC340_40_INCREMENTAL_COMMISSION_IMMEDIATE_EXPENSING_OR_UNWRITTEN_OFF_CHURN_ASSET",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.upfront_100pct_commission_before_cash_or_waived_90d_clawback:
+        return {
+            "status_code": 403,
+            "decision": "UPFRONT_100PCT_COMMISSION_BEFORE_CASH_COLLECTION_OR_WAIVED_CHURN_CLAWBACK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.undecelerated_deep_discount_bonus_or_over_100pct_ae_split:
+        return {
+            "status_code": 422,
+            "decision": "UNDECELERATED_DEEP_DISCOUNT_COMMISSION_OR_OVER_100PCT_AE_SPLIT_CREDIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cash_collected_50_50_vesting_decelerator_and_asc340_ready:
+        savings = round(gross_pool * 0.38, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CASH_COLLECTED_VESTING_DISCOUNT_DECELERATOR_AND_ASC340_AMORTIZATION_CONFIRM",
+            "mandate_token": "b2b_sales_commission_icm_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_SALES_COMMISSION_ICM_AND_ASC340_AUTHORIZED",
+        "mandate_token": "b2b_sales_commission_icm_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -56216,6 +56292,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_sales_commission_icm_guard = {
+        "authorized_200": evaluate_b2b_sales_commission_icm_clawback_policy(
+            B2bSalesCommissionIcmClawbackPolicyInput()
+        ),
+        "upfront_uncollected_payout_403": evaluate_b2b_sales_commission_icm_clawback_policy(
+            B2bSalesCommissionIcmClawbackPolicyInput(
+                upfront_100pct_commission_before_cash_or_waived_90d_clawback=True
+            )
+        ),
+        "deep_discount_or_over_split_422": evaluate_b2b_sales_commission_icm_clawback_policy(
+            B2bSalesCommissionIcmClawbackPolicyInput(
+                undecelerated_deep_discount_bonus_or_over_100pct_ae_split=True
+            )
+        ),
+        "asc340_immediate_expense_451": evaluate_b2b_sales_commission_icm_clawback_policy(
+            B2bSalesCommissionIcmClawbackPolicyInput(
+                asc340_40_immediate_expensing_or_unwritten_off_churn_asset=True
+            )
+        ),
+        "cash_vesting_decelerator_asc340_409": evaluate_b2b_sales_commission_icm_clawback_policy(
+            B2bSalesCommissionIcmClawbackPolicyInput(
+                cash_collected_50_50_vesting_decelerator_and_asc340_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -56689,6 +56791,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "voice_commerce_ccaas_pci_dtmf_guard": voice_commerce_ccaas_pci_dtmf_guard,
         "browser_use_headless_checkout_guard": browser_use_headless_checkout_guard,
         "sales_tax_engine_selection_fallback_guard": sales_tax_engine_selection_fallback_guard,
+        "b2b_sales_commission_icm_guard": b2b_sales_commission_icm_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -81553,6 +81656,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="taxeng-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TAX_CODE_NEXUS_RADAR_800MS_EDGE_FALLBACK_AND_ROOFTOP_PARITY_CONFIRM · Mandate: sales_tax_engine_fallback_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 345 (#464 · SVG #788 · 🏆 Round 345 Milestone) Enterprise Sales Commission ICM, Clawback & ASC 340-40 -->
+      <div class="finops-box" id="b2b-sales-commission-icm-sandbox" style="margin-top:12px;border-color:#4f46e5;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业销售佣金核算与激励管理 ICM (Salesforce Spiff / CaptivateIQ / Xactly) 回款解锁沙盒（🏆 第 345 轮里程碑）</div>
+            <div class="finops-sub">Round 345 (#464 · SVG #788 · 🏆 Round 345 Milestone) · 50% 签约 + 50% ERP 实收回款解锁与 90 天早期退订自动扣回 (Clawback) 防空头合同骗提成 (HTTP 403) + 折扣-提成反向减速器与 AE 拆单总和 100% 守恒锁防打骨折价仍拿高奖金或撞单双发 (HTTP 422) + FASB ASC 340-40 获客成本 36-60m 资本化摊销 (HTTP 451) + 净省 38% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="icmcom-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度客户违约未回款已发提成坏账、跨区撞单双发提成及骨折价订单高额奖金失血池 ($)
+            <input type="number" id="icmcom-gross-input" value="380000" min="10000" step="5000" oninput="recalcB2bSalesCommissionIcmSandbox()" />
+          </label>
+          <label>50% 签约 / 50% ERP 实收回款解锁 (Cash-Collected Vesting) 与 90 天退订扣回 (Clawback) 门禁
+            <select id="icmcom-vest-select" onchange="recalcB2bSalesCommissionIcmSandbox()">
+              <option value="pass">签单先发 50%，待 NetSuite/SAP 确认收到客户首付款再发后 50%，90 天内退订自动从在途奖金扣回 (安全)</option>
+              <option value="block_403">刚点 Closed-Won 未收到客户 1 分钱就全额发走 $18k 提成，次月客户违约且销售已离职 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>折扣-提成反向减速器 (Discount Decelerator) 与直接销售 (AE) 100% 拆单守恒门禁
+            <select id="icmcom-split-select" onchange="recalcB2bSalesCommissionIcmSandbox()">
+              <option value="pass">打 35% 深度折扣时提成率自动由 10% 降至 3%，且同单 AE 业绩分成总和严格 == 100.0% (合规)</option>
+              <option value="block_422">销售打 40% 骨折价砍穿毛利仍拿 10% 全额提成，或两个大区同时申报 100% 领双份奖金 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>FASB ASC 340-40 (IFRS 15) 多年期合同增量获客佣金资本化与 36-60 个月直线摊销门禁
+            <select id="icmcom-asc-select" onchange="recalcB2bSalesCommissionIcmSandbox()">
+              <option value="pass">自动建立合同级递延佣金资产卡片并按 36-60 个月摊销，客户流失当月自动减值核销 (合规)</option>
+              <option value="block_451">将 3 年期合同的增量销售提成在首月 100% 一次性列支当期费用，违反 ASC 340-40 准则 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>50/50 实收回款解锁 + 折扣减速器 + ASC 340-40 自动资本化摊销全链路编排
+            <select id="icmcom-opt-select" onchange="recalcB2bSalesCommissionIcmSandbox()">
+              <option value="enabled" selected>启用 50/50 回款解锁 + 折扣减速器 + ASC 340-40 摊销 (-38% 佣金损耗 / HTTP 409)</option>
+              <option value="disabled">月底手工 Excel 按签约额 100% 全额发提成 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度坏账提成与双发损耗池</div>
+            <div class="finops-kpi-val" id="icmcom-gross-kpi">$380,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">回款解锁与减速器后净成本</div>
+            <div class="finops-kpi-val" id="icmcom-net-kpi" style="color:#6ee7b7;">$235,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净节省佣金与保住毛利</div>
+            <div class="finops-kpi-val" id="icmcom-savings-kpi" style="color:#38bdf8;">$144,400</div>
+          </div>
+        </div>
+        <div id="icmcom-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 CASH_COLLECTED_VESTING_DISCOUNT_DECELERATOR_AND_ASC340_AMORTIZATION_CONFIRM · Mandate: b2b_sales_commission_icm_optim_409
         </div>
       </div>
 
@@ -112255,6 +112415,79 @@ function recalcSalesTaxEngineSelectionFallbackSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_COMMERCIAL_TAX_ENGINE_AND_NEXUS_AUTHORIZED · Mandate: sales_tax_engine_fallback_200';
+}}
+
+function recalcB2bSalesCommissionIcmSandbox() {{
+  const grossInput = document.getElementById('icmcom-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '380000'));
+  const vestGate = document.getElementById('icmcom-vest-select').value;
+  const splitGate = document.getElementById('icmcom-split-select').value;
+  const ascGate = document.getElementById('icmcom-asc-select').value;
+  const optMode = document.getElementById('icmcom-opt-select').value;
+
+  const grossKpi = document.getElementById('icmcom-gross-kpi');
+  const netKpi = document.getElementById('icmcom-net-kpi');
+  const savingsKpi = document.getElementById('icmcom-savings-kpi');
+  const statusKpi = document.getElementById('icmcom-status-kpi');
+  const banner = document.getElementById('icmcom-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ascGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 ASC340_40_INCREMENTAL_COMMISSION_IMMEDIATE_EXPENSING_OR_UNWRITTEN_OFF_CHURN_ASSET · Mandate: null';
+    return;
+  }}
+  if (vestGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UPFRONT_100PCT_COMMISSION_BEFORE_CASH_COLLECTION_OR_WAIVED_CHURN_CLAWBACK · Mandate: null';
+    return;
+  }}
+  if (splitGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNDECELERATED_DEEP_DISCOUNT_COMMISSION_OR_OVER_100PCT_AE_SPLIT_CREDIT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.38);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 CASH_COLLECTED_VESTING_DISCOUNT_DECELERATOR_AND_ASC340_AMORTIZATION_CONFIRM · Mandate: b2b_sales_commission_icm_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_SALES_COMMISSION_ICM_AND_ASC340_AUTHORIZED · Mandate: b2b_sales_commission_icm_200';
 }}
 
 function updateStage1756Sandbox() {{
