@@ -43529,6 +43529,80 @@ def evaluate_retail_omnichannel_bopis_sfs_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaFlightIrropsRebookingPolicyInput:
+    quarterly_walkup_fare_hotel_noshow_and_adm_penalty_pool_usd: float = 360000.0
+    invol_free_reissue_triggered_without_airline_un_tk_or_waiver_code: bool = False
+    overnight_arrival_shift_without_downstream_hotel_late_arrival_sync: bool = False
+    coupon_double_dip_refund_plus_rebook_or_invalid_weather_eu261_claim: bool = False
+    ndc_invol_instant_reprotect_and_trip_cascade_sync_ready: bool = False
+
+
+def evaluate_ota_flight_irrops_rebooking_policy(
+    policy_input: OtaFlightIrropsRebookingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(policy_input.quarterly_walkup_fare_hotel_noshow_and_adm_penalty_pool_usd),
+    )
+    if policy_input.coupon_double_dip_refund_plus_rebook_or_invalid_weather_eu261_claim:
+        return {
+            "status_code": 451,
+            "decision": "COUPON_REFUND_REBOOK_DOUBLE_DIP_OR_EU261_INVALID",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.invol_free_reissue_triggered_without_airline_un_tk_or_waiver_code:
+        return {
+            "status_code": 403,
+            "decision": "UNAUTHORIZED_INVOL_WAIVER_ADM_RISK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.overnight_arrival_shift_without_downstream_hotel_late_arrival_sync:
+        return {
+            "status_code": 422,
+            "decision": "UNSYNCED_DOWNSTREAM_HOTEL_NO_SHOW_RISK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ndc_invol_instant_reprotect_and_trip_cascade_sync_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "INSTANT_NDC_INVOL_REPROTECT_AND_HOTEL_HOLD_CONFIRM",
+            "mandate_token": "ota_irrops_rebook_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_OTA_IRROPS_REBOOKING_AUTHORIZED",
+        "mandate_token": "ota_irrops_rebook_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -59172,6 +59246,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_flight_irrops_rebooking_guard = {
+        "authorized_200": evaluate_ota_flight_irrops_rebooking_policy(
+            OtaFlightIrropsRebookingPolicyInput()
+        ),
+        "unauthorized_invol_adm_403": evaluate_ota_flight_irrops_rebooking_policy(
+            OtaFlightIrropsRebookingPolicyInput(
+                invol_free_reissue_triggered_without_airline_un_tk_or_waiver_code=True
+            )
+        ),
+        "unsynced_hotel_noshow_422": evaluate_ota_flight_irrops_rebooking_policy(
+            OtaFlightIrropsRebookingPolicyInput(
+                overnight_arrival_shift_without_downstream_hotel_late_arrival_sync=True
+            )
+        ),
+        "coupon_double_dip_or_eu261_451": evaluate_ota_flight_irrops_rebooking_policy(
+            OtaFlightIrropsRebookingPolicyInput(
+                coupon_double_dip_refund_plus_rebook_or_invalid_weather_eu261_claim=True
+            )
+        ),
+        "ndc_invol_cascade_409": evaluate_ota_flight_irrops_rebooking_policy(
+            OtaFlightIrropsRebookingPolicyInput(
+                ndc_invol_instant_reprotect_and_trip_cascade_sync_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -59674,6 +59774,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_rebate_mdf_coop_management_guard": b2b_rebate_mdf_coop_management_guard,
         "b2b_punchout_cxml_edi_uom_guard": b2b_punchout_cxml_edi_uom_guard,
         "retail_omnichannel_bopis_sfs_guard": retail_omnichannel_bopis_sfs_guard,
+        "ota_flight_irrops_rebooking_guard": ota_flight_irrops_rebooking_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -86191,6 +86292,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="bopsfs-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MARKDOWN_AWARE_SFS_AND_BOPIS_BUFFER_OPTIMIZATION_CONFIRM · Mandate: retail_bopis_sfs_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 374 (#493 · SVG #817 · Sandbox #267 · Test #1371) OTA Flight IRROPs & EU261 Copilot -->
+      <div class="finops-box" id="ota-flight-irrops-rebooking-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">✈️ OTA 与企业差旅航班延误/取消 (IRROPs) 自动改签、酒店保房联动与 EU261 理赔 (Amadeus NDC / Sabre / Navan / AirHelp) 沙盒</div>
+            <div class="finops-sub">Round 374 (#493 · SVG #817 · Sandbox #267 · Test #1371) · 强校验 PNR UN/TK 状态与航司官方 Waiver Code 拦截违规打 INVOL 免差价换票防 ADM 罚单 (HTTP 403) + 隔夜改签跨度 >=6h 强制同步下游目的地酒店 Late-Arrival 保房防 No-Show 作废 (HTTP 422) + 客票联 Coupon 退票与改签互斥锁与 EU261 天气不可抗力甄别 (HTTP 451) + 秒级 $0 票差重保净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="irrops-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度航变错失免费改签高价重买全价票、违规打 INVOL 遭航司 ADM 罚单及目的地酒店 No-Show 作废损耗池 ($)
+            <input type="number" id="irrops-gross-input" value="360000" min="10000" step="5000" oninput="recalcOtaFlightIrropsRebookingSandbox()" />
+          </label>
+          <label>航司非自愿改签 (INVOL) 官方 UN/TK 状态与 Waiver Code 防 ADM 罚单门禁
+            <select id="irrops-invol-select" onchange="recalcOtaFlightIrropsRebookingSandbox()">
+              <option value="pass">严格校验 PNR 存在航司 UN/TK 航变状态或匹配官方风暴 Waiver Code 后才执行 $0 票差换开 (安全)</option>
+              <option value="block_403">航班仅晚点 35 分钟未达阈值且无 Waiver Code，Agent 擅自免除 $840 差价强换 Y 舱引发航司 ADM 罚单 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>隔夜改签 (到达推迟 >= 6h) 下游目的地不可退酒店保房 (Late-Arrival Hold) 与专车级联同步门禁
+            <select id="irrops-hotel-select" onchange="recalcOtaFlightIrropsRebookingSandbox()">
+              <option value="pass">机票改签至次日早 07:30 时，原子下发 Guaranteed Late Arrival 保房指令保住后续 3 晚酒店 (合规)</option>
+              <option value="block_422">只把取消航班改签到次日却未通知目的地酒店，酒店凌晨 02:00 按 No-Show 作废全部 4 晚不可退预订 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>电子客票联 (e-Ticket Coupon) 退票与改签原子互斥锁及欧盟 EU261 (€600) 气象不可抗力甄别门禁
+            <select id="irrops-coupon-select" onchange="recalcOtaFlightIrropsRebookingSandbox()">
+              <option value="pass">锁定 Coupon OPEN->EXCH 阻断重复退票，并结合 METAR 报文精准区分天气照料权与机械故障现金索赔 (合规)</option>
+              <option value="block_451">同一张客票既触发 DOT 自动全额退票又免费换开新航班，或对台风/空管流控错误垫付 €600 EU261 赔偿 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Amadeus/Sabre NDC 秒级 $0 票差重保 + Trip-Graph 机酒车级联保房 + EU261 企业归集全链路编排
+            <select id="irrops-opt-select" onchange="recalcOtaFlightIrropsRebookingSandbox()">
+              <option value="enabled" selected>启用 18 秒 NDC INVOL 自动抢座 + 目的地酒店自动保房 + 延误赔偿归集 (-42% 航变损耗 / HTTP 409)</option>
+              <option value="disabled">传统人工电话排队 48 分钟改签与机酒割裂处理基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度航变重买与酒店No-Show池</div>
+            <div class="finops-kpi-val" id="irrops-gross-kpi">$360,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">全行程级联重保后净损耗</div>
+            <div class="finops-kpi-val" id="irrops-net-kpi" style="color:#6ee7b7;">$208,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省票差、房费与ADM罚金</div>
+            <div class="finops-kpi-val" id="irrops-savings-kpi" style="color:#38bdf8;">$151,200</div>
+          </div>
+        </div>
+        <div id="irrops-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 INSTANT_NDC_INVOL_REPROTECT_AND_HOTEL_HOLD_CONFIRM · Mandate: ota_irrops_rebook_optim_409
         </div>
       </div>
 
@@ -119010,6 +119168,79 @@ function recalcRetailOmnichannelBopisSfsSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_OMNICHANNEL_BOPIS_AND_SFS_AUTHORIZED · Mandate: retail_bopis_sfs_200';
+}}
+
+function recalcOtaFlightIrropsRebookingSandbox() {{
+  const grossInput = document.getElementById('irrops-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '360000'));
+  const involGate = document.getElementById('irrops-invol-select').value;
+  const hotelGate = document.getElementById('irrops-hotel-select').value;
+  const couponGate = document.getElementById('irrops-coupon-select').value;
+  const optMode = document.getElementById('irrops-opt-select').value;
+
+  const grossKpi = document.getElementById('irrops-gross-kpi');
+  const netKpi = document.getElementById('irrops-net-kpi');
+  const savingsKpi = document.getElementById('irrops-savings-kpi');
+  const statusKpi = document.getElementById('irrops-status-kpi');
+  const banner = document.getElementById('irrops-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (couponGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 COUPON_REFUND_REBOOK_DOUBLE_DIP_OR_EU261_INVALID · Mandate: null';
+    return;
+  }}
+  if (involGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNAUTHORIZED_INVOL_WAIVER_ADM_RISK · Mandate: null';
+    return;
+  }}
+  if (hotelGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNSYNCED_DOWNSTREAM_HOTEL_NO_SHOW_RISK · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 INSTANT_NDC_INVOL_REPROTECT_AND_HOTEL_HOLD_CONFIRM · Mandate: ota_irrops_rebook_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_OTA_IRROPS_REBOOKING_AUTHORIZED · Mandate: ota_irrops_rebook_200';
 }}
 
 function updateStage1756Sandbox() {{

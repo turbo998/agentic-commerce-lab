@@ -34116,6 +34116,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("retail-omnichannel-bopis-sfs-sandbox", html_zh)
 
+    def test_ota_flight_irrops_rebooking_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaFlightIrropsRebookingPolicyInput,
+            evaluate_ota_flight_irrops_rebooking_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_flight_irrops_rebooking_policy(
+            OtaFlightIrropsRebookingPolicyInput(
+                quarterly_walkup_fare_hotel_noshow_and_adm_penalty_pool_usd=360000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_OTA_IRROPS_REBOOKING_AUTHORIZED",
+        )
+
+        invol = evaluate_ota_flight_irrops_rebooking_policy(
+            OtaFlightIrropsRebookingPolicyInput(
+                invol_free_reissue_triggered_without_airline_un_tk_or_waiver_code=True
+            )
+        )
+        self.assertEqual(invol["status_code"], 403)
+        self.assertEqual(
+            invol["decision"],
+            "UNAUTHORIZED_INVOL_WAIVER_ADM_RISK",
+        )
+
+        hotel = evaluate_ota_flight_irrops_rebooking_policy(
+            OtaFlightIrropsRebookingPolicyInput(
+                overnight_arrival_shift_without_downstream_hotel_late_arrival_sync=True
+            )
+        )
+        self.assertEqual(hotel["status_code"], 422)
+        self.assertEqual(
+            hotel["decision"],
+            "UNSYNCED_DOWNSTREAM_HOTEL_NO_SHOW_RISK",
+        )
+
+        coupon = evaluate_ota_flight_irrops_rebooking_policy(
+            OtaFlightIrropsRebookingPolicyInput(
+                coupon_double_dip_refund_plus_rebook_or_invalid_weather_eu261_claim=True
+            )
+        )
+        self.assertEqual(coupon["status_code"], 451)
+        self.assertEqual(
+            coupon["decision"],
+            "COUPON_REFUND_REBOOK_DOUBLE_DIP_OR_EU261_INVALID",
+        )
+
+        optim = evaluate_ota_flight_irrops_rebooking_policy(
+            OtaFlightIrropsRebookingPolicyInput(
+                quarterly_walkup_fare_hotel_noshow_and_adm_penalty_pool_usd=360000.0,
+                ndc_invol_instant_reprotect_and_trip_cascade_sync_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 151200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 208800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_flight_irrops_rebooking_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-flight-irrops-rebooking-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
