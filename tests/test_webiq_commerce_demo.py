@@ -31771,6 +31771,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-hybrid-seat-usage-credit-sandbox", html_zh)
 
+    def test_agentic_hitl_durable_checkpoint_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            AgenticHitlDurableCheckpointPolicyInput,
+            evaluate_agentic_hitl_durable_checkpoint_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_agentic_hitl_durable_checkpoint_policy(
+            AgenticHitlDurableCheckpointPolicyInput(
+                quarterly_injected_buy_stale_quote_and_sod_fraud_pool_usd=380000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_TIERED_HITL_AND_DURABLE_CHECKPOINT_AUTHORIZED",
+        )
+
+        injected = evaluate_agentic_hitl_durable_checkpoint_policy(
+            AgenticHitlDurableCheckpointPolicyInput(
+                in_chat_plain_text_yes_or_unsigned_llm_boolean_confirmation=True
+            )
+        )
+        self.assertEqual(injected["status_code"], 403)
+        self.assertEqual(
+            injected["decision"],
+            "IN_CHAT_PLAIN_TEXT_CONFIRMATION_OR_UNSIGNED_LLM_TOOL_BOOLEAN",
+        )
+
+        stale = evaluate_agentic_hitl_durable_checkpoint_policy(
+            AgenticHitlDurableCheckpointPolicyInput(
+                stale_hitl_approval_resume_after_quote_ttl_or_price_surge=True
+            )
+        )
+        self.assertEqual(stale["status_code"], 422)
+        self.assertEqual(
+            stale["decision"],
+            "STALE_HITL_APPROVAL_RESUME_AFTER_QUOTE_TTL_EXPIRY_OR_PRICE_DRIFT",
+        )
+
+        sod = evaluate_agentic_hitl_durable_checkpoint_policy(
+            AgenticHitlDurableCheckpointPolicyInput(
+                self_approval_sod_breach_or_unauthorized_forwarded_card_signer=True
+            )
+        )
+        self.assertEqual(sod["status_code"], 451)
+        self.assertEqual(
+            sod["decision"],
+            "SELF_APPROVAL_SOD_BREACH_OR_UNAUTHORIZED_FORWARDED_CARD_SIGNER",
+        )
+
+        optim = evaluate_agentic_hitl_durable_checkpoint_policy(
+            AgenticHitlDurableCheckpointPolicyInput(
+                quarterly_injected_buy_stale_quote_and_sod_fraud_pool_usd=380000.0,
+                three_tier_hitl_durable_checkpoint_reverify_and_sod_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 152000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 228000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("agentic_hitl_durable_checkpoint_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agentic-hitl-durable-checkpoint-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

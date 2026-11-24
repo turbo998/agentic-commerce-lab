@@ -40871,6 +40871,82 @@ def evaluate_saas_hybrid_seat_usage_credit_policy(
     }
 
 
+@dataclass(frozen=True)
+class AgenticHitlDurableCheckpointPolicyInput:
+    quarterly_injected_buy_stale_quote_and_sod_fraud_pool_usd: float = 380000.0
+    in_chat_plain_text_yes_or_unsigned_llm_boolean_confirmation: bool = False
+    stale_hitl_approval_resume_after_quote_ttl_or_price_surge: bool = False
+    self_approval_sod_breach_or_unauthorized_forwarded_card_signer: bool = False
+    three_tier_hitl_durable_checkpoint_reverify_and_sod_ready: bool = False
+
+
+def evaluate_agentic_hitl_durable_checkpoint_policy(
+    policy_input: AgenticHitlDurableCheckpointPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_injected_buy_stale_quote_and_sod_fraud_pool_usd
+        ),
+    )
+    if policy_input.self_approval_sod_breach_or_unauthorized_forwarded_card_signer:
+        return {
+            "status_code": 451,
+            "decision": "SELF_APPROVAL_SOD_BREACH_OR_UNAUTHORIZED_FORWARDED_CARD_SIGNER",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.in_chat_plain_text_yes_or_unsigned_llm_boolean_confirmation:
+        return {
+            "status_code": 403,
+            "decision": "IN_CHAT_PLAIN_TEXT_CONFIRMATION_OR_UNSIGNED_LLM_TOOL_BOOLEAN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.stale_hitl_approval_resume_after_quote_ttl_or_price_surge:
+        return {
+            "status_code": 422,
+            "decision": "STALE_HITL_APPROVAL_RESUME_AFTER_QUOTE_TTL_EXPIRY_OR_PRICE_DRIFT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.three_tier_hitl_durable_checkpoint_reverify_and_sod_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TIERED_HITL_DURABLE_CHECKPOINT_QUOTE_REVERIFY_AND_SOD_CONFIRM",
+            "mandate_token": "hitl_durable_checkpoint_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_TIERED_HITL_AND_DURABLE_CHECKPOINT_AUTHORIZED",
+        "mandate_token": "hitl_durable_checkpoint_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -55604,6 +55680,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    agentic_hitl_durable_checkpoint_guard = {
+        "authorized_200": evaluate_agentic_hitl_durable_checkpoint_policy(
+            AgenticHitlDurableCheckpointPolicyInput()
+        ),
+        "in_chat_text_yes_403": evaluate_agentic_hitl_durable_checkpoint_policy(
+            AgenticHitlDurableCheckpointPolicyInput(
+                in_chat_plain_text_yes_or_unsigned_llm_boolean_confirmation=True
+            )
+        ),
+        "stale_approval_resume_422": evaluate_agentic_hitl_durable_checkpoint_policy(
+            AgenticHitlDurableCheckpointPolicyInput(
+                stale_hitl_approval_resume_after_quote_ttl_or_price_surge=True
+            )
+        ),
+        "self_approval_sod_breach_451": evaluate_agentic_hitl_durable_checkpoint_policy(
+            AgenticHitlDurableCheckpointPolicyInput(
+                self_approval_sod_breach_or_unauthorized_forwarded_card_signer=True
+            )
+        ),
+        "three_tier_hitl_checkpoint_409": evaluate_agentic_hitl_durable_checkpoint_policy(
+            AgenticHitlDurableCheckpointPolicyInput(
+                three_tier_hitl_durable_checkpoint_reverify_and_sod_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -56071,6 +56173,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_split_tender_2pc_waterfall_guard": ecommerce_split_tender_2pc_waterfall_guard,
         "ecommerce_dom_split_cap_cart_lease_guard": ecommerce_dom_split_cap_cart_lease_guard,
         "saas_hybrid_seat_usage_credit_guard": saas_hybrid_seat_usage_credit_guard,
+        "agentic_hitl_durable_checkpoint_guard": agentic_hitl_durable_checkpoint_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -80593,6 +80696,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="hybsaas-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 HYBRID_SEAT_POOLED_CREDITS_BURST_CAP_TRUEUP_AND_ZERO_FAULT_CONFIRM · Mandate: saas_hybrid_seat_usage_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 339 (#458 · SVG #782) Tiered HITL Approval Boundaries, Durable Checkpoints & Quote TTL -->
+      <div class="finops-box" id="agentic-hitl-durable-checkpoint-sandbox" style="margin-top:12px;border-color:#0284c7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🔐 商业智能体分级人工确认 HITL 与持久化检查点 (Foundry + LangGraph / Copilot Studio) 沙盒</div>
+            <div class="finops-sub">Round 339 (#458 · SVG #782) · 严禁凭聊天框纯文本“YES”或 LLM 布尔参数扣款，强制带外 FIDO2 / AP2 签名 (HTTP 403) + 异步审批数小时唤醒后重验 Quote_TTL 与实时价格防跳价成交 (HTTP 422) + Entra ID 职责分离 (Requester != Approver SOD) 防自审自批 (HTTP 451) + 三档分级净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="hitlcp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度网页提示词注入伪造确认盗刷、异步审批延迟机票/物料跳价磨损及越权自批池 ($)
+            <input type="number" id="hitlcp-gross-input" value="380000" min="10000" step="5000" oninput="recalcAgenticHitlDurableCheckpointSandbox()" />
+          </label>
+          <label>三档风险边界与带外密码学签名 (Out-of-Band FIDO2 Passkey / AP2 Mandate) 防注入门禁
+            <select id="hitlcp-auth-select" onchange="recalcAgenticHitlDurableCheckpointSandbox()">
+              <option value="pass">&lt;=$50 凭 AP2 预授权直通，$50-$500 强制独立 A2UI FIDO2 签名，100% 拒收 LLM 自填布尔确认 (安全)</option>
+              <option value="block_403">仅凭聊天框打字回复“YES”或网页提示词注入诱导 LLM 传 user_confirmed=True 直接扣款 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>持久化检查点 (LangGraph Postgres Checkpointer) 异步唤醒瞬间报价有效期与价格重验门禁
+            <select id="hitlcp-resume-select" onchange="recalcAgenticHitlDurableCheckpointSandbox()">
+              <option value="pass">挂起期间 0 算力消耗，且经理 4 小时后批准唤醒瞬间自动重刷 UCP 报价确认未超批准上限 (合规)</option>
+              <option value="block_422">经理开会 4 小时后才点批准，机票已过期并暴涨 +$450 却未重校验直接执行扣款 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>企业大额审批 (&gt;$500 Tier 3) Entra ID / Workday 职责分离 (SOD) 与防转发代批门禁
+            <select id="hitlcp-sod-select" onchange="recalcAgenticHitlDurableCheckpointSandbox()">
+              <option value="pass">强制校验 Approver_OID != Requester_OID、DOA 职级额度充足且绑定唯一审批人令牌 (合规)</option>
+              <option value="block_451">采购员把自已填为审批人自审自批，或将 Teams 审批卡片转发给无权限同事代点同意 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>三档分级 HITL 路由 + 持久化零算力休眠重验 + SOD 职责分离全链路编排
+            <select id="hitlcp-opt-select" onchange="recalcAgenticHitlDurableCheckpointSandbox()">
+              <option value="enabled" selected>启用三档分级 Passkey + 唤醒报价重验 + SOD 职责分离 (-40% 授权损耗 / HTTP 409)</option>
+              <option value="disabled">全额无差别弹窗或聊天框纯文本 YES 确认 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度注入误扣与跳价损耗池</div>
+            <div class="finops-kpi-val" id="hitlcp-gross-kpi">$380,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">分级签章与唤醒重验后净成本</div>
+            <div class="finops-kpi-val" id="hitlcp-net-kpi" style="color:#6ee7b7;">$228,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净避免盗刷与跳价损失</div>
+            <div class="finops-kpi-val" id="hitlcp-savings-kpi" style="color:#38bdf8;">$152,000</div>
+          </div>
+        </div>
+        <div id="hitlcp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TIERED_HITL_DURABLE_CHECKPOINT_QUOTE_REVERIFY_AND_SOD_CONFIRM · Mandate: hitl_durable_checkpoint_optim_409
         </div>
       </div>
 
@@ -110857,6 +111017,79 @@ function recalcSaasHybridSeatUsageCreditSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_SAAS_HYBRID_SEAT_AND_USAGE_CREDITS_AUTHORIZED · Mandate: saas_hybrid_seat_usage_200';
+}}
+
+function recalcAgenticHitlDurableCheckpointSandbox() {{
+  const grossInput = document.getElementById('hitlcp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '380000'));
+  const authGate = document.getElementById('hitlcp-auth-select').value;
+  const resumeGate = document.getElementById('hitlcp-resume-select').value;
+  const sodGate = document.getElementById('hitlcp-sod-select').value;
+  const optMode = document.getElementById('hitlcp-opt-select').value;
+
+  const grossKpi = document.getElementById('hitlcp-gross-kpi');
+  const netKpi = document.getElementById('hitlcp-net-kpi');
+  const savingsKpi = document.getElementById('hitlcp-savings-kpi');
+  const statusKpi = document.getElementById('hitlcp-status-kpi');
+  const banner = document.getElementById('hitlcp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (sodGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 SELF_APPROVAL_SOD_BREACH_OR_UNAUTHORIZED_FORWARDED_CARD_SIGNER · Mandate: null';
+    return;
+  }}
+  if (authGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 IN_CHAT_PLAIN_TEXT_CONFIRMATION_OR_UNSIGNED_LLM_TOOL_BOOLEAN · Mandate: null';
+    return;
+  }}
+  if (resumeGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 STALE_HITL_APPROVAL_RESUME_AFTER_QUOTE_TTL_EXPIRY_OR_PRICE_DRIFT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TIERED_HITL_DURABLE_CHECKPOINT_QUOTE_REVERIFY_AND_SOD_CONFIRM · Mandate: hitl_durable_checkpoint_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_TIERED_HITL_AND_DURABLE_CHECKPOINT_AUTHORIZED · Mandate: hitl_durable_checkpoint_200';
 }}
 
 function updateStage1756Sandbox() {{
