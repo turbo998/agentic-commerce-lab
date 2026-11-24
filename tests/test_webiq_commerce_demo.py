@@ -33714,6 +33714,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-supplier-onboarding-kyb-ofac-sandbox", html_zh)
 
+    def test_agent_m2m_micropayments_x402_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            AgentM2mMicropaymentsX402PolicyInput,
+            evaluate_agent_m2m_micropayments_x402_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_agent_m2m_micropayments_x402_policy(
+            AgentM2mMicropaymentsX402PolicyInput(
+                quarterly_micro_tx_card_fee_burn_loop_drain_and_5xx_loss_pool_usd=340000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_AGENT_M2M_MICROPAYMENT_AUTHORIZED",
+        )
+
+        card = evaluate_agent_m2m_micropayments_x402_policy(
+            AgentM2mMicropaymentsX402PolicyInput(
+                sub_5_dollar_micro_tx_settled_on_individual_card_rail_with_30c_fee=True
+            )
+        )
+        self.assertEqual(card["status_code"], 403)
+        self.assertEqual(
+            card["decision"],
+            "SUB_DOLLAR_INDIVIDUAL_CARD_CAPTURE_FIXED_FEE_BLEED",
+        )
+
+        spike = evaluate_agent_m2m_micropayments_x402_policy(
+            AgentM2mMicropaymentsX402PolicyInput(
+                http_402_quote_exceeds_5_cent_per_call_cap_or_session_loop_budget=True
+            )
+        )
+        self.assertEqual(spike["status_code"], 422)
+        self.assertEqual(
+            spike["decision"],
+            "X402_PRICE_SPIKE_OR_RECURSIVE_LOOP_WALLET_DRAIN",
+        )
+
+        fault = evaluate_agent_m2m_micropayments_x402_policy(
+            AgentM2mMicropaymentsX402PolicyInput(
+                micropayment_debited_despite_upstream_5xx_timeout_or_empty_payload=True
+            )
+        )
+        self.assertEqual(fault["status_code"], 451)
+        self.assertEqual(
+            fault["decision"],
+            "UPSTREAM_5XX_FAULT_OR_EMPTY_PAYLOAD_MICROPAY_DEBIT",
+        )
+
+        optim = evaluate_agent_m2m_micropayments_x402_policy(
+            AgentM2mMicropaymentsX402PolicyInput(
+                quarterly_micro_tx_card_fee_burn_loop_drain_and_5xx_loss_pool_usd=340000.0,
+                prepaid_ledger_x402_subcent_router_and_200_ok_escrow_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 146200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 193800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("agent_m2m_micropayments_x402_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("agent-m2m-micropayments-x402-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -43075,6 +43075,82 @@ def evaluate_b2b_supplier_onboarding_kyb_ofac_policy(
     }
 
 
+@dataclass(frozen=True)
+class AgentM2mMicropaymentsX402PolicyInput:
+    quarterly_micro_tx_card_fee_burn_loop_drain_and_5xx_loss_pool_usd: float = 340000.0
+    sub_5_dollar_micro_tx_settled_on_individual_card_rail_with_30c_fee: bool = False
+    http_402_quote_exceeds_5_cent_per_call_cap_or_session_loop_budget: bool = False
+    micropayment_debited_despite_upstream_5xx_timeout_or_empty_payload: bool = False
+    prepaid_ledger_x402_subcent_router_and_200_ok_escrow_ready: bool = False
+
+
+def evaluate_agent_m2m_micropayments_x402_policy(
+    policy_input: AgentM2mMicropaymentsX402PolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_micro_tx_card_fee_burn_loop_drain_and_5xx_loss_pool_usd
+        ),
+    )
+    if policy_input.micropayment_debited_despite_upstream_5xx_timeout_or_empty_payload:
+        return {
+            "status_code": 451,
+            "decision": "UPSTREAM_5XX_FAULT_OR_EMPTY_PAYLOAD_MICROPAY_DEBIT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.sub_5_dollar_micro_tx_settled_on_individual_card_rail_with_30c_fee:
+        return {
+            "status_code": 403,
+            "decision": "SUB_DOLLAR_INDIVIDUAL_CARD_CAPTURE_FIXED_FEE_BLEED",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.http_402_quote_exceeds_5_cent_per_call_cap_or_session_loop_budget:
+        return {
+            "status_code": 422,
+            "decision": "X402_PRICE_SPIKE_OR_RECURSIVE_LOOP_WALLET_DRAIN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.prepaid_ledger_x402_subcent_router_and_200_ok_escrow_ready:
+        savings = round(gross_pool * 0.43, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "X402_SUBCENT_RAIL_AND_PREPAID_LEDGER_ROUTING_CONFIRM",
+            "mandate_token": "agent_m2m_x402_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_AGENT_M2M_MICROPAYMENT_AUTHORIZED",
+        "mandate_token": "agent_m2m_x402_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -58562,6 +58638,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    agent_m2m_micropayments_x402_guard = {
+        "authorized_200": evaluate_agent_m2m_micropayments_x402_policy(
+            AgentM2mMicropaymentsX402PolicyInput()
+        ),
+        "sub_dollar_card_fee_403": evaluate_agent_m2m_micropayments_x402_policy(
+            AgentM2mMicropaymentsX402PolicyInput(
+                sub_5_dollar_micro_tx_settled_on_individual_card_rail_with_30c_fee=True
+            )
+        ),
+        "x402_price_spike_loop_422": evaluate_agent_m2m_micropayments_x402_policy(
+            AgentM2mMicropaymentsX402PolicyInput(
+                http_402_quote_exceeds_5_cent_per_call_cap_or_session_loop_budget=True
+            )
+        ),
+        "upstream_5xx_debit_451": evaluate_agent_m2m_micropayments_x402_policy(
+            AgentM2mMicropaymentsX402PolicyInput(
+                micropayment_debited_despite_upstream_5xx_timeout_or_empty_payload=True
+            )
+        ),
+        "x402_prepaid_router_409": evaluate_agent_m2m_micropayments_x402_policy(
+            AgentM2mMicropaymentsX402PolicyInput(
+                prepaid_ledger_x402_subcent_router_and_200_ok_escrow_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -59058,6 +59160,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_multilingual_cs_dna_refund_guard": cross_border_multilingual_cs_dna_refund_guard,
         "cross_border_multi_currency_fx_lock_guard": cross_border_multi_currency_fx_lock_guard,
         "b2b_supplier_onboarding_kyb_ofac_guard": b2b_supplier_onboarding_kyb_ofac_guard,
+        "agent_m2m_micropayments_x402_guard": agent_m2m_micropayments_x402_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -85233,6 +85336,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="supkyb-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SUPPLIER_KYB_OFAC_AND_BANK_OWNERSHIP_MATCH_CONFIRM · Mandate: b2b_supplier_kyb_ofac_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 368 (#487 · SVG #811 · Sandbox #261 · 🏆 1,365th Unit Test Milestone) Agent-to-Agent M2M Micropayments & x402 -->
+      <div class="finops-box" id="agent-m2m-micropayments-x402-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 商业智能体机器微支付 M2M、HTTP 402 (x402 / L402) 与预充值积分账本 (Coinbase x402 / Stripe / Skyfire) 沙盒（🏆 第 1,365 项单元测试里程碑）</div>
+            <div class="finops-sub">Round 368 (#487 · SVG #811 · Sandbox #261 · 🏆 1,365th Test Milestone) · 物理阻断 &lt;$5.00 小额 API/内容微支付走 $0.30 固定手续费信用卡通道 (HTTP 403) + 客户端安全飞地锁死单次 HTTP 402 出价上限 &lt;=$0.05 与会话预算 &lt;=$2.00 防价格刺客与死循环刷空 (HTTP 422) + 上游 HTTP 200 OK 且非空 Schema 验真后才释放微支付交割 (HTTP 451) + 净省 43% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="m2mx402-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度小额 API 微调用误付 $0.30 信用卡固定费、HTTP 402 恶意高价/死循环刷空及上游 5xx 空响应白扣费池 ($)
+            <input type="number" id="m2mx402-gross-input" value="340000" min="10000" step="5000" oninput="recalcAgentM2mMicropaymentsX402Sandbox()" />
+          </label>
+          <label>小额机器微支付 (&lt; $5.00) 传统信用卡 $0.30 固定手续费熔断与亚美分轨道分流门禁
+            <select id="m2mx402-card-select" onchange="recalcAgentM2mMicropaymentsX402Sandbox()">
+              <option value="pass">禁走单笔银行卡，已知平台走 $50 预充值积分池 ($0/次)，开放端点走 x402 / L402 (&lt;$0.0001/次) (安全)</option>
+              <option value="block_403">对每笔 $0.02 的研报/数据查询直接调信用卡 Capture，每笔倒贴 $0.30 固定费 (1,500% 费率损耗, 触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>开放网络 HTTP 402 单次最高出价锁 (Max_Bid &lt;= $0.05/call) 与单任务总预算 (&lt;= $2.00) 门禁
+            <select id="m2mx402-cap-select" onchange="recalcAgentM2mMicropaymentsX402Sandbox()">
+              <option value="pass">签名飞地校验 402 报价 &lt;=$0.05 且同 URL 禁止死循环重复付费，任务总微支付硬封顶 $2.00 (合规)</option>
+              <option value="block_422">外部恶意 MCP 服务端返回 HTTP 402 索要 $50.00 或 Agent 陷入死循环 1 分钟刷空托管钱包 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>上游 API 响应 HTTP 200 OK 与非空 JSON Schema 验真后原子交割 (Facilitator Escrow) 门禁
+            <select id="m2mx402-escrow-select" onchange="recalcAgentM2mMicropaymentsX402Sandbox()">
+              <option value="pass">协调器先验签并转发请求，仅当上游返回 HTTP 200 OK 且载荷校验通过后才执行链上/账本扣款 (合规)</option>
+              <option value="block_451">先不可逆转走微支付资金，随后上游接口返回 HTTP 503 超时崩溃或空 JSON 导致白白扣钱 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Stripe Prepaid Credits 预充值账本 + Coinbase x402 / L402 亚美分路由 + 200 OK 验真交割编排
+            <select id="m2mx402-opt-select" onchange="recalcAgentM2mMicropaymentsX402Sandbox()">
+              <option value="enabled" selected>启用预充值积分/x402 亚美分路由 + $0.05 出价锁 + 200 OK 验真交割 (-43% 通道费与故障损耗 / HTTP 409)</option>
+              <option value="disabled">传统固定包年死席位或无分流直刷虚拟卡基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度微支付卡费与盗刷池</div>
+            <div class="finops-kpi-val" id="m2mx402-gross-kpi">$340,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">x402与预充值分流后净成本</div>
+            <div class="finops-kpi-val" id="m2mx402-net-kpi" style="color:#6ee7b7;">$193,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省$0.30卡费与防刷损益</div>
+            <div class="finops-kpi-val" id="m2mx402-savings-kpi" style="color:#38bdf8;">$146,200</div>
+          </div>
+        </div>
+        <div id="m2mx402-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 X402_SUBCENT_RAIL_AND_PREPAID_LEDGER_ROUTING_CONFIRM · Mandate: agent_m2m_x402_optim_409
         </div>
       </div>
 
@@ -117614,6 +117774,79 @@ function recalcB2bSupplierOnboardingKybOfacSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_SUPPLIER_KYB_ONBOARDING_AUTHORIZED · Mandate: b2b_supplier_kyb_ofac_200';
+}}
+
+function recalcAgentM2mMicropaymentsX402Sandbox() {{
+  const grossInput = document.getElementById('m2mx402-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '340000'));
+  const cardGate = document.getElementById('m2mx402-card-select').value;
+  const capGate = document.getElementById('m2mx402-cap-select').value;
+  const escrowGate = document.getElementById('m2mx402-escrow-select').value;
+  const optMode = document.getElementById('m2mx402-opt-select').value;
+
+  const grossKpi = document.getElementById('m2mx402-gross-kpi');
+  const netKpi = document.getElementById('m2mx402-net-kpi');
+  const savingsKpi = document.getElementById('m2mx402-savings-kpi');
+  const statusKpi = document.getElementById('m2mx402-status-kpi');
+  const banner = document.getElementById('m2mx402-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (escrowGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UPSTREAM_5XX_FAULT_OR_EMPTY_PAYLOAD_MICROPAY_DEBIT · Mandate: null';
+    return;
+  }}
+  if (cardGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SUB_DOLLAR_INDIVIDUAL_CARD_CAPTURE_FIXED_FEE_BLEED · Mandate: null';
+    return;
+  }}
+  if (capGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 X402_PRICE_SPIKE_OR_RECURSIVE_LOOP_WALLET_DRAIN · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.43);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 X402_SUBCENT_RAIL_AND_PREPAID_LEDGER_ROUTING_CONFIRM · Mandate: agent_m2m_x402_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_AGENT_M2M_MICROPAYMENT_AUTHORIZED · Mandate: agent_m2m_x402_200';
 }}
 
 function updateStage1756Sandbox() {{
