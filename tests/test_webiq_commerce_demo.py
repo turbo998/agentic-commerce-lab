@@ -34049,6 +34049,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-punchout-cxml-edi-uom-sandbox", html_zh)
 
+    def test_retail_omnichannel_bopis_sfs_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            RetailOmnichannelBopisSfsPolicyInput,
+            evaluate_retail_omnichannel_bopis_sfs_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_retail_omnichannel_bopis_sfs_policy(
+            RetailOmnichannelBopisSfsPolicyInput(
+                quarterly_short_pick_split_parcel_and_markdown_loss_pool_usd=370000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_OMNICHANNEL_BOPIS_AND_SFS_AUTHORIZED",
+        )
+
+        floor = evaluate_retail_omnichannel_bopis_sfs_policy(
+            RetailOmnichannelBopisSfsPolicyInput(
+                store_display_floor_stock_below_safety_buffer_without_backroom_rfid=True
+            )
+        )
+        self.assertEqual(floor["status_code"], 403)
+        self.assertEqual(
+            floor["decision"],
+            "STORE_DISPLAY_FLOOR_SAFETY_STOCK_VETO",
+        )
+
+        split = evaluate_retail_omnichannel_bopis_sfs_policy(
+            RetailOmnichannelBopisSfsPolicyInput(
+                sfs_split_parcel_shipping_cost_exceeds_35pct_of_order_gross_margin=True
+            )
+        )
+        self.assertEqual(split["status_code"], 422)
+        self.assertEqual(
+            split["decision"],
+            "UNPROFITABLE_SHIP_FROM_STORE_SPLIT_PARCEL",
+        )
+
+        pickup = evaluate_retail_omnichannel_bopis_sfs_policy(
+            RetailOmnichannelBopisSfsPolicyInput(
+                bopis_handover_missing_dynamic_totp_pin_or_cold_chain_ttl_expired=True
+            )
+        )
+        self.assertEqual(pickup["status_code"], 451)
+        self.assertEqual(
+            pickup["decision"],
+            "BOPIS_HANDOVER_VERIFICATION_OR_HOLD_TTL_BREACH",
+        )
+
+        optim = evaluate_retail_omnichannel_bopis_sfs_policy(
+            RetailOmnichannelBopisSfsPolicyInput(
+                quarterly_short_pick_split_parcel_and_markdown_loss_pool_usd=370000.0,
+                markdown_aware_sfs_routing_and_capture_on_pickup_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 151700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 218300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("retail_omnichannel_bopis_sfs_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("retail-omnichannel-bopis-sfs-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

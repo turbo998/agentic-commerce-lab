@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg816" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#071318" />
+      <stop offset="55%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <linearGradient id="accent816" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg816)" />
+  <rect x="24" y="24" width="1152" height="582" rx="18" fill="none" stroke="url(#accent816)" stroke-width="2" opacity="0.45" />
+
+  <text x="52" y="66" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.2">
+    ROUND 373 · FAQ #492 · SVG #816 · SANDBOX #266 · 🏆 1,370TH UNIT TEST MILESTONE
+  </text>
+  <text x="52" y="102" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="25" font-weight="800">
+    Retail Omnichannel BOPIS, Curbside &amp; Ship-from-Store (SFS) Fulfillment Agent
+  </text>
+  <text x="52" y="130" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="15">
+    Manhattan Active Omni vs. Radial vs. Shopify POS vs. Narvar + Store Safety-Stock Lock, Anti-Split-Parcel Margin Guard &amp; Cryptographic Pickup PIN
+  </text>
+
+  <!-- Panel 1 -->
+  <rect x="52" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#ef4444" stroke-width="1.8" />
+  <rect x="52" y="156" width="350" height="42" rx="14" fill="#7f1d1d" />
+  <text x="72" y="183" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    1. Store Floor ATP &amp; Safety-Stock Lock (403)
+  </text>
+  <text x="72" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: Last-Unit Walk-In Collision
+  </text>
+  <text x="72" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Store has OnHand=1 unit; a walk-in shopper has
+  </text>
+  <text x="72" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    it in a fitting room while Agent sells it via BOPIS
+  </text>
+  <text x="72" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Store associate rejects pick → 28% BOPIS cancel
+  </text>
+  <rect x="72" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#f87171" stroke-width="1" />
+  <text x="86" y="328" fill="#fca5a5" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if Store_OnHand - Safety_Buffer &lt; Req_Qty:
+  </text>
+  <text x="86" y="348" fill="#fecaca" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_403_STORE_FLOOR_ATP_BUFFER_VETO
+  </text>
+  <text x="86" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Enforce >=2 units or RFID backroom bin lock
+  </text>
+  <text x="72" y="404" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    Engine Fit: Manhattan Active / Shopify POS
+  </text>
+  <text x="72" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Separates Backroom RFID vs. Sales-Floor stock
+  </text>
+  <text x="72" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Dynamic category safety buffer during weekends
+  </text>
+  <text x="72" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Auto-cascades rejected pick to nearest store node
+  </text>
+
+  <!-- Panel 2 -->
+  <rect x="425" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#f59e0b" stroke-width="1.8" />
+  <rect x="425" y="156" width="350" height="42" rx="14" fill="#78350f" />
+  <text x="445" y="183" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    2. Anti-Split-Parcel Margin Guard (422)
+  </text>
+  <text x="445" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: 4-Store SFS Split Destroying Margin
+  </text>
+  <text x="445" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • $68 free-shipping order of 4 tees routed across
+  </text>
+  <text x="445" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    4 separate retail stores (4 × $9.20 = $36.80 FedEx)
+  </text>
+  <text x="445" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Shipping cost exceeds the entire $27 gross margin
+  </text>
+  <rect x="445" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="1" />
+  <text x="459" y="328" fill="#fcd34d" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if Split_Nodes &gt; 2 or ShipCost &gt; 0.35*Margin:
+  </text>
+  <text x="459" y="348" fill="#fde68a" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_422_UNPROFITABLE_SFS_SPLIT_PARCEL
+  </text>
+  <text x="459" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Consolidate to DC or markdown-clearing store
+  </text>
+  <text x="445" y="404" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    SFS Routing Optimization (HTTP 409):
+  </text>
+  <text x="445" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Prioritizes stores with high markdown risk to
+  </text>
+  <text x="445" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    clear slow-moving seasonal stock at full price
+  </text>
+  <text x="445" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Saves 41% of split-parcel &amp; markdown losses
+  </text>
+
+  <!-- Panel 3 -->
+  <rect x="798" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#10b981" stroke-width="1.8" />
+  <rect x="798" y="156" width="350" height="42" rx="14" fill="#064e3b" />
+  <text x="818" y="183" fill="#a7f3d0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    3. Pickup QR/PIN &amp; Cold-Chain TTL (451)
+  </text>
+  <text x="818" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: Curbside Fraud &amp; Unclaimed Hold
+  </text>
+  <text x="818" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Fraudster gives buyer name at curbside to steal
+  </text>
+  <text x="818" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    $1,200 electronics or courier takes wrong bag
+  </text>
+  <text x="818" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Cold-chain grocery sits &gt;4h outside chiller locker
+  </text>
+  <rect x="818" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#34d399" stroke-width="1" />
+  <text x="832" y="328" fill="#6ee7b7" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if not Dynamic_Pickup_OTP or ColdChain_TTL &gt; 4h:
+  </text>
+  <text x="832" y="348" fill="#a7f3d0" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_451_PICKUP_HANDOVER_OR_TTL_BREACH
+  </text>
+  <text x="832" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Auto-restock &amp; release auth after 5d hold TTL
+  </text>
+  <text x="818" y="404" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    Curbside &amp; Same-Day Courier Gate:
+  </text>
+  <text x="818" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • TOTP QR + Dual-Barcode scan (Bag + Courier ID)
+  </text>
+  <text x="818" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Captures payment only upon Customer Pickup scan
+  </text>
+  <text x="818" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Automated Restock-to-Shelf after 120h window
+  </text>
+
+  <!-- Footer -->
+  <text x="52" y="582" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    Agentic Commerce Fiduciary Architecture · Pillar 3: Retail Omnichannel BOPIS, Curbside &amp; Ship-from-Store (SFS) · Round 373 (#492)
+  </text>
+</svg>
