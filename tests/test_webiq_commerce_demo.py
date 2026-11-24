@@ -31838,6 +31838,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("agentic-hitl-durable-checkpoint-sandbox", html_zh)
 
+    def test_b2b_cross_border_trade_assurance_escrow_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bCrossBorderTradeAssuranceEscrowPolicyInput,
+            evaluate_b2b_cross_border_trade_assurance_escrow_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_cross_border_trade_assurance_escrow_policy(
+            B2bCrossBorderTradeAssuranceEscrowPolicyInput(
+                quarterly_defective_lot_draft_bl_scam_and_late_ship_pool_usd=440000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_TRADE_ASSURANCE_ESCROW_AUTHORIZED",
+        )
+
+        aql = evaluate_b2b_cross_border_trade_assurance_escrow_policy(
+            B2bCrossBorderTradeAssuranceEscrowPolicyInput(
+                failed_iso2859_aql25_psi_or_unverified_factory_self_photo=True
+            )
+        )
+        self.assertEqual(aql["status_code"], 403)
+        self.assertEqual(
+            aql["decision"],
+            "FAILED_ISO2859_AQL25_PRE_SHIPMENT_INSPECTION_OR_UNVERIFIED_FACTORY_PHOTO",
+        )
+
+        bol = evaluate_b2b_cross_border_trade_assurance_escrow_policy(
+            B2bCrossBorderTradeAssuranceEscrowPolicyInput(
+                unverified_draft_house_bl_or_vessel_not_loaded_on_board=True
+            )
+        )
+        self.assertEqual(bol["status_code"], 422)
+        self.assertEqual(
+            bol["decision"],
+            "UNVERIFIED_DRAFT_HOUSE_BL_OR_VESSEL_NOT_LOADED_ON_BOARD",
+        )
+
+        sla = evaluate_b2b_cross_border_trade_assurance_escrow_policy(
+            B2bCrossBorderTradeAssuranceEscrowPolicyInput(
+                premature_100pct_pre_arrival_payout_or_unapplied_late_sla=True
+            )
+        )
+        self.assertEqual(sla["status_code"], 451)
+        self.assertEqual(
+            sla["decision"],
+            "PREMATURE_100PCT_PRE_ARRIVAL_PAYOUT_OR_UNAPPLIED_LATE_SHIPMENT_SLA_DEDUCTION",
+        )
+
+        optim = evaluate_b2b_cross_border_trade_assurance_escrow_policy(
+            B2bCrossBorderTradeAssuranceEscrowPolicyInput(
+                quarterly_defective_lot_draft_bl_scam_and_late_ship_pool_usd=440000.0,
+                tranche_30_50_20_escrow_aql25_psi_and_onboard_bl_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 171600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 268400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_cross_border_trade_assurance_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-cross-border-trade-assurance-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

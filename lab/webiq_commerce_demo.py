@@ -40947,6 +40947,82 @@ def evaluate_agentic_hitl_durable_checkpoint_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bCrossBorderTradeAssuranceEscrowPolicyInput:
+    quarterly_defective_lot_draft_bl_scam_and_late_ship_pool_usd: float = 440000.0
+    failed_iso2859_aql25_psi_or_unverified_factory_self_photo: bool = False
+    unverified_draft_house_bl_or_vessel_not_loaded_on_board: bool = False
+    premature_100pct_pre_arrival_payout_or_unapplied_late_sla: bool = False
+    tranche_30_50_20_escrow_aql25_psi_and_onboard_bl_ready: bool = False
+
+
+def evaluate_b2b_cross_border_trade_assurance_escrow_policy(
+    policy_input: B2bCrossBorderTradeAssuranceEscrowPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_defective_lot_draft_bl_scam_and_late_ship_pool_usd
+        ),
+    )
+    if policy_input.premature_100pct_pre_arrival_payout_or_unapplied_late_sla:
+        return {
+            "status_code": 451,
+            "decision": "PREMATURE_100PCT_PRE_ARRIVAL_PAYOUT_OR_UNAPPLIED_LATE_SHIPMENT_SLA_DEDUCTION",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.failed_iso2859_aql25_psi_or_unverified_factory_self_photo:
+        return {
+            "status_code": 403,
+            "decision": "FAILED_ISO2859_AQL25_PRE_SHIPMENT_INSPECTION_OR_UNVERIFIED_FACTORY_PHOTO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unverified_draft_house_bl_or_vessel_not_loaded_on_board:
+        return {
+            "status_code": 422,
+            "decision": "UNVERIFIED_DRAFT_HOUSE_BL_OR_VESSEL_NOT_LOADED_ON_BOARD",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.tranche_30_50_20_escrow_aql25_psi_and_onboard_bl_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "TRADE_ASSURANCE_30_50_20_ESCROW_AQL25_PSI_AND_ONBOARD_BL_CONFIRM",
+            "mandate_token": "b2b_trade_assurance_aql_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_TRADE_ASSURANCE_ESCROW_AUTHORIZED",
+        "mandate_token": "b2b_trade_assurance_aql_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -55706,6 +55782,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_cross_border_trade_assurance_guard = {
+        "authorized_200": evaluate_b2b_cross_border_trade_assurance_escrow_policy(
+            B2bCrossBorderTradeAssuranceEscrowPolicyInput()
+        ),
+        "failed_aql25_or_self_photo_403": evaluate_b2b_cross_border_trade_assurance_escrow_policy(
+            B2bCrossBorderTradeAssuranceEscrowPolicyInput(
+                failed_iso2859_aql25_psi_or_unverified_factory_self_photo=True
+            )
+        ),
+        "draft_house_bl_scam_422": evaluate_b2b_cross_border_trade_assurance_escrow_policy(
+            B2bCrossBorderTradeAssuranceEscrowPolicyInput(
+                unverified_draft_house_bl_or_vessel_not_loaded_on_board=True
+            )
+        ),
+        "premature_100pct_or_late_sla_451": evaluate_b2b_cross_border_trade_assurance_escrow_policy(
+            B2bCrossBorderTradeAssuranceEscrowPolicyInput(
+                premature_100pct_pre_arrival_payout_or_unapplied_late_sla=True
+            )
+        ),
+        "tranche_30_50_20_aql_bl_409": evaluate_b2b_cross_border_trade_assurance_escrow_policy(
+            B2bCrossBorderTradeAssuranceEscrowPolicyInput(
+                tranche_30_50_20_escrow_aql25_psi_and_onboard_bl_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -56174,6 +56276,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_dom_split_cap_cart_lease_guard": ecommerce_dom_split_cap_cart_lease_guard,
         "saas_hybrid_seat_usage_credit_guard": saas_hybrid_seat_usage_credit_guard,
         "agentic_hitl_durable_checkpoint_guard": agentic_hitl_durable_checkpoint_guard,
+        "b2b_cross_border_trade_assurance_guard": b2b_cross_border_trade_assurance_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -80753,6 +80856,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="hitlcp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 TIERED_HITL_DURABLE_CHECKPOINT_QUOTE_REVERIFY_AND_SOD_CONFIRM · Mandate: hitl_durable_checkpoint_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 340 (#459 · SVG #783 · 🏆 Round 340 Milestone) Cross-Border B2B Trade Assurance, AQL 2.5 PSI & On-Board B/L -->
+      <div class="finops-box" id="b2b-cross-border-trade-assurance-sandbox" style="margin-top:12px;border-color:#d97706;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🚢 跨境 B2B 信保托管与装船前 AQL 2.5 验货 (Alibaba Trade Assurance / SGS·QIMA / DCSA eBL) 沙盒（🏆 第 340 轮里程碑）</div>
+            <div class="finops-sub">Round 340 (#459 · SVG #783 · 🏆 Round 340 Milestone) · 装船前强制核验 SGS/QIMA 数字验货报告 (Critical==0, Major &lt;= AQL 2.5%) 防工厂拍表层好货照片蒙混次品 (HTTP 403) + 直连船东 DCSA API 校验 LOADED_ON_BOARD 防可撤销草本提单 (Draft B/L) 骗汇撤柜 (HTTP 422) + 保留 20% 到港质保尾款并自动抵扣交期延误 SLA 违约金 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="b2btrd-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度跨境 OEM/ODM 整柜次品报废、草本提单骗走尾款撤柜及交期延误改发空运损失池 ($)
+            <input type="number" id="b2btrd-gross-input" value="440000" min="10000" step="5000" oninput="recalcB2bCrossBorderTradeAssuranceSandbox()" />
+          </label>
+          <label>装船前第三方抽样验货 (SGS / QIMA ISO 2859-1 AQL 2.5 / 4.0) 数字签名报告门禁
+            <select id="b2btrd-aql-select" onchange="recalcB2bCrossBorderTradeAssuranceSandbox()">
+              <option value="pass">强制验签 QIMA/SGS 现场抽检报告确认 Critical==0 且 Major &lt;= AQL 2.5% 并贴防拆封箱胶 (安全)</option>
+              <option value="block_403">仅凭工厂微信发来的 3 张装箱照放款，或抽检 200 件发现 16 件严重开裂超标仍装船 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>船公司官方 DCSA v3.0 实船已装船 (LOADED_ON_BOARD) 与正本电子提单 (eBL) 控货门禁
+            <select id="b2btrd-bol-select" onchange="recalcB2bCrossBorderTradeAssuranceSandbox()">
+              <option value="pass">核验 Maersk/MSC/COSCO 主提单状态为 LOADED_ON_BOARD、已结关且收货人背书至托管户 (合规)</option>
+              <option value="block_422">拿未装船的可撤销草本货代提单 (Draft House B/L) 骗取 50% 出货款后从码头把货柜拉回 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>30 / 50 / 20 三阶资金托管与 20% 到港后 14 天质保尾款及交期延误 (Late LDS) 抵扣门禁
+            <select id="b2btrd-sla-select" onchange="recalcB2bCrossBorderTradeAssuranceSandbox()">
+              <option value="pass">锁留 20% 到港验收尾款满 14 天，且晚于最迟装运期 (LDS) 自动按阶梯扣除延期赔付 (合规)</option>
+              <option value="block_451">货未到港即电汇付清 100% 货款丧失追索权，或工厂延期 21 天害买方倒贴 $18k 空运费 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>30/50/20 三阶托管 + AQL 2.5 验货锁 + DCSA 实船核验全链路编排
+            <select id="b2btrd-opt-select" onchange="recalcB2bCrossBorderTradeAssuranceSandbox()">
+              <option value="enabled" selected>启用 30/50/20 托管 + SGS/QIMA AQL 2.5 + 实船提单核验 (-39% 外贸采购损耗 / HTTP 409)</option>
+              <option value="disabled">传统 30/70 出货前电汇 T/T + 微信看图验货 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度整柜次品与提单骗汇池</div>
+            <div class="finops-kpi-val" id="b2btrd-gross-kpi">$440,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">AQL验货与三阶托管后净损耗</div>
+            <div class="finops-kpi-val" id="b2btrd-net-kpi" style="color:#6ee7b7;">$268,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住跨境采购本金</div>
+            <div class="finops-kpi-val" id="b2btrd-savings-kpi" style="color:#38bdf8;">$171,600</div>
+          </div>
+        </div>
+        <div id="b2btrd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 TRADE_ASSURANCE_30_50_20_ESCROW_AQL25_PSI_AND_ONBOARD_BL_CONFIRM · Mandate: b2b_trade_assurance_aql_optim_409
         </div>
       </div>
 
@@ -111090,6 +111250,79 @@ function recalcAgenticHitlDurableCheckpointSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_TIERED_HITL_AND_DURABLE_CHECKPOINT_AUTHORIZED · Mandate: hitl_durable_checkpoint_200';
+}}
+
+function recalcB2bCrossBorderTradeAssuranceSandbox() {{
+  const grossInput = document.getElementById('b2btrd-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '440000'));
+  const aqlGate = document.getElementById('b2btrd-aql-select').value;
+  const bolGate = document.getElementById('b2btrd-bol-select').value;
+  const slaGate = document.getElementById('b2btrd-sla-select').value;
+  const optMode = document.getElementById('b2btrd-opt-select').value;
+
+  const grossKpi = document.getElementById('b2btrd-gross-kpi');
+  const netKpi = document.getElementById('b2btrd-net-kpi');
+  const savingsKpi = document.getElementById('b2btrd-savings-kpi');
+  const statusKpi = document.getElementById('b2btrd-status-kpi');
+  const banner = document.getElementById('b2btrd-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (slaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 PREMATURE_100PCT_PRE_ARRIVAL_PAYOUT_OR_UNAPPLIED_LATE_SHIPMENT_SLA_DEDUCTION · Mandate: null';
+    return;
+  }}
+  if (aqlGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 FAILED_ISO2859_AQL25_PRE_SHIPMENT_INSPECTION_OR_UNVERIFIED_FACTORY_PHOTO · Mandate: null';
+    return;
+  }}
+  if (bolGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNVERIFIED_DRAFT_HOUSE_BL_OR_VESSEL_NOT_LOADED_ON_BOARD · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 TRADE_ASSURANCE_30_50_20_ESCROW_AQL25_PSI_AND_ONBOARD_BL_CONFIRM · Mandate: b2b_trade_assurance_aql_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_TRADE_ASSURANCE_ESCROW_AUTHORIZED · Mandate: b2b_trade_assurance_aql_200';
 }}
 
 function updateStage1756Sandbox() {{
