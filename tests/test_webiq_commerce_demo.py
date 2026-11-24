@@ -31235,6 +31235,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-corporate-travel-tmc-ndc-sandbox", html_zh)
 
+    def test_saas_cancel_deflection_churn_save_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaasCancelDeflectionChurnSavePolicyInput,
+            evaluate_saas_cancel_deflection_churn_save_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_cancel_deflection_churn_save_policy(
+            SaasCancelDeflectionChurnSavePolicyInput(
+                quarterly_voluntary_churn_coupon_gaming_and_ftc_dispute_pool_usd=360000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_SAAS_CANCEL_FLOW_AND_RETENTION_AUTHORIZED",
+        )
+
+        gaming = evaluate_saas_cancel_deflection_churn_save_policy(
+            SaasCancelDeflectionChurnSavePolicyInput(
+                cancel_button_coupon_gaming_within_365d_cooldown=True
+            )
+        )
+        self.assertEqual(gaming["status_code"], 403)
+        self.assertEqual(
+            gaming["decision"],
+            "CANCEL_BUTTON_COUPON_GAMING_WITHIN_365D_COOLDOWN_OR_HIGH_USAGE_BLUFF",
+        )
+
+        wipe = evaluate_saas_cancel_deflection_churn_save_policy(
+            SaasCancelDeflectionChurnSavePolicyInput(
+                immediate_mid_cycle_cutoff_or_destructive_downgrade_data_wipe=True
+            )
+        )
+        self.assertEqual(wipe["status_code"], 422)
+        self.assertEqual(
+            wipe["decision"],
+            "IMMEDIATE_MID_CYCLE_ENTITLEMENT_CUTOFF_OR_DESTRUCTIVE_DOWNGRADE_DATA_WIPE",
+        )
+
+        ftc = evaluate_saas_cancel_deflection_churn_save_policy(
+            SaasCancelDeflectionChurnSavePolicyInput(
+                ftc_part464_click_to_cancel_dark_pattern_or_forced_phone_call=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 451)
+        self.assertEqual(
+            ftc["decision"],
+            "FTC_CLICK_TO_CANCEL_PART464_DARK_PATTERN_OR_FORCED_PHONE_RETENTION",
+        )
+
+        optim = evaluate_saas_cancel_deflection_churn_save_policy(
+            SaasCancelDeflectionChurnSavePolicyInput(
+                quarterly_voluntary_churn_coupon_gaming_and_ftc_dispute_pool_usd=360000.0,
+                ftc_2click_reason_routing_cooldown_and_readonly_vault_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 140400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 219600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_cancel_deflection_churn_save_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-cancel-deflection-churn-save-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

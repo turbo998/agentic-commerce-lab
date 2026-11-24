@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`449` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`450` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -10,7 +10,7 @@
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (57 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (173 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (98 guides)](#b2b-procurement-erp)
-- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (39 guides)](#saas-finops-micropayments)
+- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (40 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (51 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
@@ -409,7 +409,7 @@
 | 98 | **Commercial & Multifamily PropTech Lease Administration, Retail `CAM` Reconciliation & Security Deposit Escrow (`Yardi Voyager / MRI Software / AppFolio / RealPage / Bilt`), Anti-Eviction-Waiver Partial-Rent Lock & `FBO` Trust (`-39%` CAM & Deposit Penalty Loss) FAQ** | [English](proptech-commercial-lease-cam-reconciliation-security-deposit-escrow-selection-faq.en.md) · [中文](proptech-commercial-lease-cam-reconciliation-security-deposit-escrow-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (39 Guides)
+## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (40 Guides)
 
 > Covers enterprise SaaS seat governance, UUIDv7 usage metering watermarks, FTC Click-to-Cancel & retention guardrails, HTTP 402 (x402 / Stripe MPP Tempo) micropayments, and LLM token FinOps routing.
 
@@ -454,6 +454,7 @@
 | 37 | **Enterprise B2B SaaS Cloud Marketplace Private Offers (`AWS EDP vs. Microsoft Azure MACC vs. GCP CUD`) & Co-Sell Automation (`Tackle.io vs. Clazar vs. Suger vs. WorkSpan`), `100% Commit Drawdown` Eligibility Lock, `CPPO / MPO` Net-Proceeds Floor & Hourly Metering Outbox (`-39%` Commit Waste & Margin Loss) FAQ** | [English](saas-cloud-marketplace-private-offer-macc-edp-cppo-margin-metering-escrow-selection-faq.en.md) · [中文](saas-cloud-marketplace-private-offer-macc-edp-cppo-margin-metering-escrow-selection-faq.md) |
 | 38 | **Digital Goods, Mobile Apps & Gaming `D2C Web Shop vs. App Store / Google Play IAP` (`Xsolla / Stash / Aghanim / FastSpring`), Geo-Fenced Anti-Steering Gate, Apple `12-Hour Consumption API` Refund Defense & Negative-Balance Gem Clawback (`-40%` Platform Tax & Refund Abuse Loss) FAQ** | [English](digital-goods-gaming-d2c-webshop-vs-appstore-iap-consumption-api-clawback-selection-faq.en.md) · [中文](digital-goods-gaming-d2c-webshop-vs-appstore-iap-consumption-api-clawback-selection-faq.md) |
 | 39 | **SaaS Involuntary Churn & Payment Recovery (`Butter Payments / Recurly / Churnkey vs. Stripe Smart Retries / Adyen Auto-Rescue`), `T-5d Visa VAU / Mastercard ABU` Pre-Sync, 72h Silent Payday Retries & 14-Day Read-Only Grace Period (`-40%` Failed-Renewal ARR Leakage) FAQ** | [English](saas-involuntary-churn-dunning-vau-abu-payday-smart-retry-grace-selection-faq.en.md) · [中文](saas-involuntary-churn-dunning-vau-abu-payday-smart-retry-grace-selection-faq.md) |
+| 40 | **🏆 SaaS & Subscription Cancel-Flow Deflection, `FTC Click-to-Cancel (16 CFR Part 464)` Symmetry, `365-Day` Save-Coupon Cooldown & Read-Only Downgrade Vault (`Chargebee Retention / Churnkey / Recurly / Stripe Billing` · 🏆 450th Bilingual Guide Milestone) (`-39%` Voluntary Churn & Margin Bleed) FAQ** | [English](saas-subscription-renewal-churn-save-pause-deflection-downgrade-entitlement-selection-faq.en.md) · [中文](saas-subscription-renewal-churn-save-pause-deflection-downgrade-entitlement-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (51 Guides)
