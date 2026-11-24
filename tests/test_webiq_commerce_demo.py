@@ -33580,6 +33580,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-multilingual-cs-dna-refund-sandbox", html_zh)
 
+    def test_cross_border_multi_currency_fx_lock_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderMultiCurrencyFxLockPolicyInput,
+            evaluate_cross_border_multi_currency_fx_lock_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_cross_border_multi_currency_fx_lock_policy(
+            CrossBorderMultiCurrencyFxLockPolicyInput(
+                quarterly_double_fx_spread_refund_slippage_and_quote_devaluation_pool_usd=380000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_MULTI_CURRENCY_FX_TREASURY_AUTHORIZED",
+        )
+
+        lfl = evaluate_cross_border_multi_currency_fx_lock_policy(
+            CrossBorderMultiCurrencyFxLockPolicyInput(
+                foreign_revenue_auto_converted_to_usd_when_local_currency_payables_exist=True
+            )
+        )
+        self.assertEqual(lfl["status_code"], 403)
+        self.assertEqual(
+            lfl["decision"],
+            "DOUBLE_FX_CONVERSION_ROUNDTRIP_WITHOUT_LIKE_FOR_LIKE",
+        )
+
+        ref = evaluate_cross_border_multi_currency_fx_lock_policy(
+            CrossBorderMultiCurrencyFxLockPolicyInput(
+                cross_border_refund_calculated_at_spot_fx_instead_of_original_capture_lock=True
+            )
+        )
+        self.assertEqual(ref["status_code"], 422)
+        self.assertEqual(
+            ref["decision"],
+            "UNHEDGED_SPOT_FX_REFUND_SLIPPAGE_OR_ARBITRAGE",
+        )
+
+        ttl = evaluate_cross_border_multi_currency_fx_lock_policy(
+            CrossBorderMultiCurrencyFxLockPolicyInput(
+                long_ttl_foreign_currency_quote_issued_without_lock_fx_or_corridor_clause=True
+            )
+        )
+        self.assertEqual(ttl["status_code"], 451)
+        self.assertEqual(
+            ttl["decision"],
+            "UNHEDGED_LONG_TTL_FOREIGN_CURRENCY_QUOTE_EXPOSURE",
+        )
+
+        optim = evaluate_cross_border_multi_currency_fx_lock_policy(
+            CrossBorderMultiCurrencyFxLockPolicyInput(
+                quarterly_double_fx_spread_refund_slippage_and_quote_devaluation_pool_usd=380000.0,
+                like_for_like_settlement_original_fx_refund_and_lock_fx_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 159600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 220400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_multi_currency_fx_lock_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-multi-currency-fx-lock-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

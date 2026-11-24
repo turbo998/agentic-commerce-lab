@@ -42923,6 +42923,82 @@ def evaluate_cross_border_multilingual_cs_dna_refund_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderMultiCurrencyFxLockPolicyInput:
+    quarterly_double_fx_spread_refund_slippage_and_quote_devaluation_pool_usd: float = 380000.0
+    foreign_revenue_auto_converted_to_usd_when_local_currency_payables_exist: bool = False
+    cross_border_refund_calculated_at_spot_fx_instead_of_original_capture_lock: bool = False
+    long_ttl_foreign_currency_quote_issued_without_lock_fx_or_corridor_clause: bool = False
+    like_for_like_settlement_original_fx_refund_and_lock_fx_ready: bool = False
+
+
+def evaluate_cross_border_multi_currency_fx_lock_policy(
+    policy_input: CrossBorderMultiCurrencyFxLockPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_double_fx_spread_refund_slippage_and_quote_devaluation_pool_usd
+        ),
+    )
+    if policy_input.long_ttl_foreign_currency_quote_issued_without_lock_fx_or_corridor_clause:
+        return {
+            "status_code": 451,
+            "decision": "UNHEDGED_LONG_TTL_FOREIGN_CURRENCY_QUOTE_EXPOSURE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.foreign_revenue_auto_converted_to_usd_when_local_currency_payables_exist:
+        return {
+            "status_code": 403,
+            "decision": "DOUBLE_FX_CONVERSION_ROUNDTRIP_WITHOUT_LIKE_FOR_LIKE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cross_border_refund_calculated_at_spot_fx_instead_of_original_capture_lock:
+        return {
+            "status_code": 422,
+            "decision": "UNHEDGED_SPOT_FX_REFUND_SLIPPAGE_OR_ARBITRAGE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.like_for_like_settlement_original_fx_refund_and_lock_fx_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "LIKE_FOR_LIKE_FX_SETTLEMENT_AND_REFUND_RATE_LOCK_CONFIRM",
+            "mandate_token": "cross_border_fx_lock_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_MULTI_CURRENCY_FX_TREASURY_AUTHORIZED",
+        "mandate_token": "cross_border_fx_lock_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -58358,6 +58434,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_multi_currency_fx_lock_guard = {
+        "authorized_200": evaluate_cross_border_multi_currency_fx_lock_policy(
+            CrossBorderMultiCurrencyFxLockPolicyInput()
+        ),
+        "double_fx_roundtrip_403": evaluate_cross_border_multi_currency_fx_lock_policy(
+            CrossBorderMultiCurrencyFxLockPolicyInput(
+                foreign_revenue_auto_converted_to_usd_when_local_currency_payables_exist=True
+            )
+        ),
+        "spot_fx_refund_slippage_422": evaluate_cross_border_multi_currency_fx_lock_policy(
+            CrossBorderMultiCurrencyFxLockPolicyInput(
+                cross_border_refund_calculated_at_spot_fx_instead_of_original_capture_lock=True
+            )
+        ),
+        "unhedged_long_quote_451": evaluate_cross_border_multi_currency_fx_lock_policy(
+            CrossBorderMultiCurrencyFxLockPolicyInput(
+                long_ttl_foreign_currency_quote_issued_without_lock_fx_or_corridor_clause=True
+            )
+        ),
+        "like_for_like_fx_lock_409": evaluate_cross_border_multi_currency_fx_lock_policy(
+            CrossBorderMultiCurrencyFxLockPolicyInput(
+                like_for_like_settlement_original_fx_refund_and_lock_fx_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -58852,6 +58954,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_dunning_involuntary_churn_guard": saas_dunning_involuntary_churn_guard,
         "ecommerce_bnpl_klarna_affirm_mdr_guard": ecommerce_bnpl_klarna_affirm_mdr_guard,
         "cross_border_multilingual_cs_dna_refund_guard": cross_border_multilingual_cs_dna_refund_guard,
+        "cross_border_multi_currency_fx_lock_guard": cross_border_multi_currency_fx_lock_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -84913,6 +85016,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="csdna-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MULTILINGUAL_CS_IN_TRANSIT_LOCK_AND_DNA_GPS_CONFIRM · Mandate: cross_border_cs_dna_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 366 (#485 🏆 485th Guide Milestone · SVG #809 · Sandbox #259) Cross-Border Multi-Currency & FX Treasury -->
+      <div class="finops-box" id="cross-border-multi-currency-fx-lock-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 跨境多币种定价、本币原路归集与锁汇退款 (Airwallex / Adyen / Stripe / Kantox) 沙盒（🏆 第 485 篇指南里程碑）</div>
+            <div class="finops-sub">Round 366 (#485 🏆 485th Guide Milestone · SVG #809 · Sandbox #259) · 主流外币 (EUR/GBP/JPY/AUD) 强制 Like-for-Like 本币账户原路入账并直接付当地物流/广告/VAT，消灭 400bps 双重换汇 (HTTP 403) + 退货退款强制绑定原单展示币种从本币池原额直退防汇率滑点拒付 (HTTP 422) + 远期外币报价强制 Lock-FX TTL 或 ±1.5% 汇率走廊锁 (HTTP 451) + 净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="fxlock-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度收外币强转 USD 再买回外币付供应商 400bps 双重换汇、退货即期汇率滑点及远期报价贬值损失池 ($)
+            <input type="number" id="fxlock-gross-input" value="380000" min="10000" step="5000" oninput="recalcCrossBorderMultiCurrencyFxLockSandbox()" />
+          </label>
+          <label>存在海外应付账款币种 (EUR/GBP/AUD/JPY) 本币原路归集 (Like-for-Like Settlement) 门禁
+            <select id="fxlock-lfl-select" onchange="recalcCrossBorderMultiCurrencyFxLockSandbox()">
+              <option value="pass">欧元/英镑收入 100% 原币入账 Airwallex/Adyen 本币池，直接自然对冲付欧洲运费/VAT/广告 (安全)</option>
+              <option value="block_403">网关收 EUR 自动加点 2% 强转 USD 入账，月底又加点 2% 把 USD 换回 EUR 付欧洲运费，白亏 400bps (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>跨境退货退款锚定原交易展示币种 (Presentment Currency) 与本币余额池直退门禁
+            <select id="fxlock-ref-select" onchange="recalcCrossBorderMultiCurrencyFxLockSandbox()">
+              <option value="pass">绑定原 charge_id 从对应外币余额池原额退回买家卡，买卖双方 0 汇率滑点且免二次换汇费 (合规)</option>
+              <option value="block_422">退货时按当日即期汇率重算退款导致买家少收到原币发起拒付，或被汇率套利党无风险薅差价 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>远期外币报价单 (&gt;24h) 可编程锁汇有效期 (Lock-FX TTL) 与 ±1.5% 汇率保护走廊门禁
+            <select id="fxlock-ttl-select" onchange="recalcCrossBorderMultiCurrencyFxLockSandbox()">
+              <option value="pass">调用 Airwallex Lock-FX API 锁定有效期内批发汇率，长账期自动挂钩 Kantox 微远期或 ±1.5% 走廊 (合规)</option>
+              <option value="block_451">开具 30 天有效期的日元/欧元固定报价单却未做远期锁汇，交割前外币贬值 6% 吞光整单毛利 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Like-for-Like 本币归集自然对冲 + 原单本币池无汇损直退 + Lock-FX API 全链路编排
+            <select id="fxlock-opt-select" onchange="recalcCrossBorderMultiCurrencyFxLockSandbox()">
+              <option value="enabled" selected>启用本币原路归集 + 原币池锁汇退款 + Lock-FX 对冲 (-42% 双重换汇与滑点损耗 / HTTP 409)</option>
+              <option value="disabled">默认单币种账户强制自动结汇与无锁汇报价基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度双重换汇与退货汇损池</div>
+            <div class="finops-kpi-val" id="fxlock-gross-kpi">$380,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">本币归集与锁汇后净成本</div>
+            <div class="finops-kpi-val" id="fxlock-net-kpi" style="color:#6ee7b7;">$220,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省换汇点差与汇损</div>
+            <div class="finops-kpi-val" id="fxlock-savings-kpi" style="color:#38bdf8;">$159,600</div>
+          </div>
+        </div>
+        <div id="fxlock-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 LIKE_FOR_LIKE_FX_SETTLEMENT_AND_REFUND_RATE_LOCK_CONFIRM · Mandate: cross_border_fx_lock_optim_409
         </div>
       </div>
 
@@ -117148,6 +117308,79 @@ function recalcCrossBorderMultilingualCsDnaSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_MULTILINGUAL_CS_ORDER_RESOLUTION_AUTHORIZED · Mandate: cross_border_cs_dna_200';
+}}
+
+function recalcCrossBorderMultiCurrencyFxLockSandbox() {{
+  const grossInput = document.getElementById('fxlock-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '380000'));
+  const lflGate = document.getElementById('fxlock-lfl-select').value;
+  const refGate = document.getElementById('fxlock-ref-select').value;
+  const ttlGate = document.getElementById('fxlock-ttl-select').value;
+  const optMode = document.getElementById('fxlock-opt-select').value;
+
+  const grossKpi = document.getElementById('fxlock-gross-kpi');
+  const netKpi = document.getElementById('fxlock-net-kpi');
+  const savingsKpi = document.getElementById('fxlock-savings-kpi');
+  const statusKpi = document.getElementById('fxlock-status-kpi');
+  const banner = document.getElementById('fxlock-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ttlGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNHEDGED_LONG_TTL_FOREIGN_CURRENCY_QUOTE_EXPOSURE · Mandate: null';
+    return;
+  }}
+  if (lflGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DOUBLE_FX_CONVERSION_ROUNDTRIP_WITHOUT_LIKE_FOR_LIKE · Mandate: null';
+    return;
+  }}
+  if (refGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNHEDGED_SPOT_FX_REFUND_SLIPPAGE_OR_ARBITRAGE · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 LIKE_FOR_LIKE_FX_SETTLEMENT_AND_REFUND_RATE_LOCK_CONFIRM · Mandate: cross_border_fx_lock_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_MULTI_CURRENCY_FX_TREASURY_AUTHORIZED · Mandate: cross_border_fx_lock_200';
 }}
 
 function updateStage1756Sandbox() {{
