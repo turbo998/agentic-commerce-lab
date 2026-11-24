@@ -33379,6 +33379,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-cpq-pocket-margin-approval-sandbox", html_zh)
 
+    def test_saas_dunning_involuntary_churn_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaasDunningInvoluntaryChurnPolicyInput,
+            evaluate_saas_dunning_involuntary_churn_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_dunning_involuntary_churn_policy(
+            SaasDunningInvoluntaryChurnPolicyInput(
+                quarterly_involuntary_churn_arr_loss_retry_fines_and_lockout_pool_usd=365000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_SAAS_SMART_DUNNING_RECOVERY_AUTHORIZED",
+        )
+
+        hard = evaluate_saas_dunning_involuntary_churn_policy(
+            SaasDunningInvoluntaryChurnPolicyInput(
+                hard_decline_code_retried_or_exceeded_15_attempts_in_30d=True
+            )
+        )
+        self.assertEqual(hard["status_code"], 403)
+        self.assertEqual(
+            hard["decision"],
+            "HARD_DECLINE_RETRY_OR_CARD_NETWORK_15_ATTEMPT_CAP_BREACH",
+        )
+
+        vau = evaluate_saas_dunning_involuntary_churn_policy(
+            SaasDunningInvoluntaryChurnPolicyInput(
+                expired_card_code54_retried_without_vau_abu_or_network_token_refresh=True
+            )
+        )
+        self.assertEqual(vau["status_code"], 422)
+        self.assertEqual(
+            vau["decision"],
+            "EXPIRED_CARD_RETRIED_WITHOUT_VAU_ABU_OR_NETWORK_TOKEN_SYNC",
+        )
+
+        silent = evaluate_saas_dunning_involuntary_churn_policy(
+            SaasDunningInvoluntaryChurnPolicyInput(
+                day1_service_lockout_or_dunning_email_sent_before_7d_silent_payday_retry=True
+            )
+        )
+        self.assertEqual(silent["status_code"], 451)
+        self.assertEqual(
+            silent["decision"],
+            "IMMEDIATE_DAY1_SUSPENSION_OR_UNALIGNED_NSF_RETRY_SPAM",
+        )
+
+        optim = evaluate_saas_dunning_involuntary_churn_policy(
+            SaasDunningInvoluntaryChurnPolicyInput(
+                quarterly_involuntary_churn_arr_loss_retry_fines_and_lockout_pool_usd=365000.0,
+                hard_decline_filter_vau_updater_and_silent_payday_dunning_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 149650.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 215350.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_dunning_involuntary_churn_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-dunning-involuntary-churn-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

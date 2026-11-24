@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`481` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`482` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -10,7 +10,7 @@
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (60 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (179 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (107 guides)](#b2b-procurement-erp)
-- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (43 guides)](#saas-finops-micropayments)
+- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (44 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (55 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
@@ -433,7 +433,7 @@
 | 107 | **🏆 Enterprise B2B CPQ (Configure, Price, Quote) & Deal Desk Copilot (`Salesforce Revenue Cloud / Conga CPQ / PROS Smart CPQ / DealHub` · 🏆 805th SVG & 255th Sandbox Dual Milestone), Mandatory `PS-to-License` Attach (`>=15%`), Volume-Tier Quantity-Drop Repricing & Pocket-Margin Waterfall (`>=28%`) Gating (`-40%` Margin Leakage) FAQ** | [English](b2b-cpq-configure-price-quote-salesforce-conga-pros-dealhub-pocket-margin-approval-selection-faq.en.md) · [中文](b2b-cpq-configure-price-quote-salesforce-conga-pros-dealhub-pocket-margin-approval-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (43 Guides)
+## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (44 Guides)
 
 > Covers enterprise SaaS seat governance, UUIDv7 usage metering watermarks, FTC Click-to-Cancel & retention guardrails, HTTP 402 (x402 / Stripe MPP Tempo) micropayments, and LLM token FinOps routing.
 
@@ -482,6 +482,7 @@
 | 41 | **🏆 SaaS Hybrid `Seat + Pooled Usage Credits` Billing, `20%` Per-User Burst Cap, `50/80/100%` Bill-Shock Shield & `14-Day` Retroactive Tier True-Up (`Orb / Metronome / Stripe Billing / Zuora` · 🏆 1,335th Unit Test Milestone) (`-39%` Bill-Shock Churn & Overage Dispute Loss) FAQ** | [English](saas-hybrid-seat-plus-usage-credit-burndown-midcycle-alert-overage-cap-selection-faq.en.md) · [中文](saas-hybrid-seat-plus-usage-credit-burndown-midcycle-alert-overage-cap-selection-faq.md) |
 | 42 | **🏆 Enterprise B2B Sales Commission (`ICM / SPM`), `50/50 Cash-Collected` Vesting, `90-Day` Churn Clawback, Discount Decelerators & `FASB ASC 340-40` Amortization (`Salesforce Spiff / CaptivateIQ / Xactly / Varicent` · 🏆 Round 345 Milestone) (`-38%` Uncollected Deal & Discount Margin Loss) FAQ** | [English](b2b-sales-commission-icm-spiff-captivateiq-xactly-clawback-split-credit-selection-faq.en.md) · [中文](b2b-sales-commission-icm-spiff-captivateiq-xactly-clawback-split-credit-selection-faq.md) |
 | 43 | **🏆 Enterprise `ASC 606 / IFRS 15` Revenue Recognition, Relative `SSP` Bundle Allocation, `POB` Satisfaction Triggers & Exact-Daily Proration (`Zuora RevPro / NetSuite ARM / Stripe RevRec / RightRev` · 🏆 1,345th Unit Test Milestone) (`-40%` Audit Restatement & Close Cost) FAQ** | [English](enterprise-revrec-asc606-ifrs15-ssp-bundle-allocation-zuora-revpro-netsuite-arm-selection-faq.en.md) · [中文](enterprise-revrec-asc606-ifrs15-ssp-bundle-allocation-zuora-revpro-netsuite-arm-selection-faq.md) |
+| 44 | **🏆 SaaS & Subscription Smart Dunning & Involuntary Churn Recovery (`Butter Payments / FlexPay / Stripe Smart Retries / Recurly` · 🏆 1,360th Unit Test Major Milestone), `ISO 8583` Hard-Decline Zero-Retry Lock, Pre-Retry `VAU / ABU` Card Updater & `7-Day` Silent Payday-Aligned Recovery (`-41%` Churn Loss) FAQ** | [English](saas-subscription-dunning-involuntary-churn-stripe-smart-retries-butter-flexpay-card-updater-selection-faq.en.md) · [中文](saas-subscription-dunning-involuntary-churn-stripe-smart-retries-butter-flexpay-card-updater-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (55 Guides)
