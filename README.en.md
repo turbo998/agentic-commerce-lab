@@ -1,6 +1,6 @@
 # Enterprise Agentic Commerce Lab — Reference Architecture & AI Solution Architect Playbooks
 
-🌐 **Language / 语言切换**: **[中文主页 (`README.md`)](README.md)** | **English (Current)** | **[📚 Full SA Decision Guide Catalog (488 Bilingual FAQs)](docs/index.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](benchmark-cards.en.html)**
+🌐 **Language / 语言切换**: **[中文主页 (`README.md`)](README.md)** | **English (Current)** | **[📚 Full SA Decision Guide Catalog (489 Bilingual FAQs)](docs/index.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](benchmark-cards.en.html)**
 
 > **An Enterprise Engineering & Architecture Reference Hub for AI Solution Architects**
 > Focused exclusively on **Retail & Multi-Merchant E-Commerce, Agent Payment & Cryptographic Mandate Protocols (`Google AP2`, `Stripe SPT`, `Visa VIC & TAP`, `Mastercard Agent Pay`, `PayPal`, `x402`), Enterprise B2B Procurement & ERP 3-Way Match, OTA / Airline (`IATA NDC`) Dynamic Booking, SaaS Usage Metering & FinOps, and Cross-Border Tax (`MoR`) / FX Clearing / `Visa CE 3.0` Chargeback Defense** — pairing executive decision guides with a **6-Plane Reference Architecture, deterministic Python guardrails, and self-contained interactive workbenches**.
@@ -23,7 +23,7 @@ All HTML workbenches and `4:5` 7-Card visual benchmark decks are 100% self-conta
 
 | Deliverable | English Entry | 中文入口 | Architectural Scope & Key Findings |
 |---|---|---|---|
-| **Interactive SA Commerce Workbench** | [`live-demo.en.html`](live-demo.en.html) | [`live-demo.html`](live-demo.html) | Microsoft Web IQ grounding + Google AP2 circuit breaker + Stripe SPT / `x402` dual-rail checkout + **searchable Explorer of 262 Enterprise Policy Sandboxes** |
+| **Interactive SA Commerce Workbench** | [`live-demo.en.html`](live-demo.en.html) | [`live-demo.html`](live-demo.html) | Microsoft Web IQ grounding + Google AP2 circuit breaker + Stripe SPT / `x402` dual-rail checkout + **searchable Explorer of 263 Enterprise Policy Sandboxes** |
 | **Web IQ Grounding & Checkout 7-Card Deck** | [`benchmark-cards.en.html`](benchmark-cards.en.html) | [`benchmark-cards.html`](benchmark-cards.html) | Async parallel `passage` grounding (`2.75x` speedup, `7.1x` token reduction), `100%` hidden DOM injection block rate, and `0.0 pt` option-reversal drift |
 | **6-Plane AI-Native Workload Benchmark** | [`reports/agentic-commerce-6plane-bench/index.html`](reports/agentic-commerce-6plane-bench/index.html) | [`report.json`](reports/agentic-commerce-6plane-bench/report.json) | Evaluates 6-Plane deterministic fiduciary controls vs. classic 3-tier web handling across replay, drift, and authorization edge cases |
 | **Enterprise B2B Procurement & 3-Way Match** | [`reports/agentic-commerce-enterprise-procurement-bench/index.html`](reports/agentic-commerce-enterprise-procurement-bench/index.html) | [`report.json`](reports/agentic-commerce-enterprise-procurement-bench/report.json) | `PO == GRN == Invoice` tolerances, Commit-Reveal Vickrey RFQs, BEC IBAN hijack defense, and `2/10 Net 30` dynamic discounting |
@@ -104,9 +104,9 @@ flowchart TB
 
 ---
 
-## 5. Six Enterprise Pillars & Flagship SA Playbooks (488 Bilingual Guides)
+## 5. Six Enterprise Pillars & Flagship SA Playbooks (489 Bilingual Guides)
 
-> 📚 **Browse the Complete Catalog**: [**English Full Catalog (488 Bilingual FAQs + 21 Blueprints)**](docs/index.en.md) ｜ [**中文总目录 (`docs/index.md`)**](docs/index.md)
+> 📚 **Browse the Complete Catalog**: [**English Full Catalog (489 Bilingual FAQs + 21 Blueprints)**](docs/index.en.md) ｜ [**中文总目录 (`docs/index.md`)**](docs/index.md)
 
 1. **Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance**
    - [Copilot Studio vs Azure AI Foundry + LangGraph vs Agentforce/Shopify Selection](docs/agentic-commerce-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-shopify-selection-faq.en.md) · [中文](docs/agentic-commerce-platform-copilot-studio-vs-foundry-langgraph-vs-agentforce-shopify-selection-faq.md)
@@ -147,7 +147,7 @@ agentic-commerce-lab/
 ├── live-demo.html / live-demo.en.html # Self-contained H5 interactive SA workbenches (ZH / EN)
 ├── benchmark-cards.html / .en.html   # 7-Card 4:5 visual benchmark decks (ZH / EN)
 ├── docs/
-│   ├── index.md / index.en.md        # Categorized catalog of all 488 bilingual SA Decision Guides
+│   ├── index.md / index.en.md        # Categorized catalog of all 489 bilingual SA Decision Guides
 │   ├── *-faq.md / *-faq.en.md        # Scenario FAQs with Mermaid architecture diagrams & checklists
 │   ├── architecture/                 # 21 deterministic domain state-machine & conservation blueprints
 │   └── research/                     # Full-stack 6-plane blueprint, Web IQ competitive matrix & trend reports
@@ -155,7 +155,7 @@ agentic-commerce-lab/
 ├── lab/                              # Zero-dependency Python fiduciary control-plane guards & bench builders
 ├── src/agentic_commerce/             # Microsoft Web IQ × Agentic Commerce evaluation engine
 ├── reports/                          # Sealed benchmark report bundles (JSON data + self-contained HTML)
-└── tests/                            # 1366 deterministic unit tests across 69 test modules
+└── tests/                            # 1367 deterministic unit tests across 69 test modules
 ```
 
 ### Quickstart (Python 3.11+ Standard Library Only)

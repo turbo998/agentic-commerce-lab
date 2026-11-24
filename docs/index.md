@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`488` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`489` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（37 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（61 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（181 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（108 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（109 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（45 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（56 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -321,7 +321,7 @@
 | 181 | **🎟️ 零售电商促销引擎、防优惠券叠加穿仓与联盟营销归因防劫持智能体（`Talon.One / Voucherify / Impact.com / Partnerize / Shopify Functions`）、单客身份绑定单次加密码与排他互斥组防静态码泄露穿仓、拦截浏览器找券插件结账最后 3 秒劫持自然流量佣金及老带新裂变 `POD + 30天` 过退货期解冻奖励净省 41% Agent 架构选型 FAQ** | [中文](ecommerce-promo-coupon-stacking-talon-one-voucherify-impact-affiliate-attribution-hijack-selection-faq.md) · [English](ecommerce-promo-coupon-stacking-talon-one-voucherify-impact-affiliate-attribution-hijack-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（108 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（109 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -435,6 +435,7 @@
 | 106 | **🏆 企业级应付账款（`AP`）、AI 发票解析与采购三单匹配智能体（`Tipalti / Stampli / Coupa Invoicing / Medius + Azure AI Document Intelligence` · 🏆 第 360 轮重大里程碑）、行项目级 `PO-GRN-Invoice` 实收数量与 `2%` 单价容差硬锁、发票面银行账号零信任隔离防 `BEC` 篡改收款 `IBAN` 诈骗及 `2/10 Net 30`（`37.2% APR`）早付折扣抢捕净省 41% Agent 架构选型 FAQ** | [中文](b2b-ap-invoice-three-way-match-tipalti-stampli-coupa-medius-bec-iban-guard-selection-faq.md) · [English](b2b-ap-invoice-three-way-match-tipalti-stampli-coupa-medius-bec-iban-guard-selection-faq.en.md) |
 | 107 | **🏆 企业级 B2B 配置定价报价（`CPQ`）与智能商务审单（`Salesforce Revenue Cloud / Conga CPQ / PROS Smart CPQ / DealHub` · 🏆 第 805 张架构图与第 255 个策略沙盒双里程碑）、必配模块依赖与企业版实施服务配比硬锁（`PS >= 15% ACV`）、阶梯砍量/缩期自动回退重算单价及全要素口袋净毛利瀑布（`Pocket Margin >= 28%`）净省 40% Agent 架构选型 FAQ** | [中文](b2b-cpq-configure-price-quote-salesforce-conga-pros-dealhub-pocket-margin-approval-selection-faq.md) · [English](b2b-cpq-configure-price-quote-salesforce-conga-pros-dealhub-pocket-margin-approval-selection-faq.en.md) |
 | 108 | **🏆 企业 B2B 供应商准入、主数据治理（`KYB`）与制裁筛查智能体（`SAP Ariba SLP / Coupa Supplier Portal / Middesk / LexisNexis Bridger` · 🏆 第 810 张架构图与第 260 个策略沙盒双重大里程碑）、`OFAC 50%` 累计股权穿透与付款前 `<24h` 实时复筛、`IRS TIN/VAT` 法定名称与银行开户名 100% 闭环锁及 `365 天` 休眠僵尸供应商隔离净省 41% Agent 架构选型 FAQ** | [中文](b2b-supplier-onboarding-kyb-ariba-slp-coupa-middesk-ofac-sanctions-bank-match-selection-faq.md) · [English](b2b-supplier-onboarding-kyb-ariba-slp-coupa-middesk-ofac-sanctions-bank-match-selection-faq.en.md) |
+| 109 | **🏆 企业差旅与员工费用报销智能审计智能体（`SAP Concur / Navan Expense / AppZen / Ramp / Brex` · 🏆 第 370 轮重大里程碑）、跨员工与公卡/现金五元组小票去重防双倍报销、酒店水单（`Itemized Folio`）逐行剥离私人酒水/SPA 与 AIGC 假票取证及 `FCPA / Sunshine Act NPI` 参会人合规锁净省 42% Agent 架构选型 FAQ** | [中文](corporate-travel-expense-audit-concur-navan-appzen-duplicate-receipt-folio-fcp-selection-faq.md) · [English](corporate-travel-expense-audit-concur-navan-appzen-duplicate-receipt-folio-fcp-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（45 篇）

@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`488` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`489` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (37 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (61 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (181 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (108 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (109 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (45 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (56 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -321,7 +321,7 @@
 | 181 | **🎟️ E-Commerce Promotion Engine, Coupon-Stacking Guard & Affiliate Attribution Shield (`Talon.One / Voucherify / Impact.com / Partnerize / Shopify Functions`), Identity-Bound Single-Use Codes, Anti-Extension Checkout Poaching & `POD + 30d` Referral Vesting (`-41%` Margin & Commission Loss) FAQ** | [English](ecommerce-promo-coupon-stacking-talon-one-voucherify-impact-affiliate-attribution-hijack-selection-faq.en.md) · [中文](ecommerce-promo-coupon-stacking-talon-one-voucherify-impact-affiliate-attribution-hijack-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (108 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (109 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -435,6 +435,7 @@
 | 106 | **🏆 Enterprise B2B Accounts Payable (`AP`), AI Invoice OCR & 3-Way Match Copilot (`Tipalti / Stampli / Coupa Invoicing / Medius + Azure AI Document Intelligence` · 🏆 Round 360 Major Milestone), Line-Level `PO-GRN-Invoice` Tolerance Locks, Anti-`BEC` Bank-Change Shield & `2/10 Net 30` (`37.2% APR`) Early-Discount Capture (`-41%` Cost) FAQ** | [English](b2b-ap-invoice-three-way-match-tipalti-stampli-coupa-medius-bec-iban-guard-selection-faq.en.md) · [中文](b2b-ap-invoice-three-way-match-tipalti-stampli-coupa-medius-bec-iban-guard-selection-faq.md) |
 | 107 | **🏆 Enterprise B2B CPQ (Configure, Price, Quote) & Deal Desk Copilot (`Salesforce Revenue Cloud / Conga CPQ / PROS Smart CPQ / DealHub` · 🏆 805th SVG & 255th Sandbox Dual Milestone), Mandatory `PS-to-License` Attach (`>=15%`), Volume-Tier Quantity-Drop Repricing & Pocket-Margin Waterfall (`>=28%`) Gating (`-40%` Margin Leakage) FAQ** | [English](b2b-cpq-configure-price-quote-salesforce-conga-pros-dealhub-pocket-margin-approval-selection-faq.en.md) · [中文](b2b-cpq-configure-price-quote-salesforce-conga-pros-dealhub-pocket-margin-approval-selection-faq.md) |
 | 108 | **🏆 Enterprise B2B Supplier Onboarding, Master-Data `KYB` & Sanctions Copilot (`SAP Ariba SLP / Coupa Supplier Portal / Middesk / LexisNexis Bridger` · 🏆 810th SVG & 260th Sandbox Dual Major Milestone), `OFAC 50%-Rule` `UBO` Screening, `IRS TIN-to-Bank-Owner` Name Parity & `365-Day` Dormant Vendor Quarantine (`-41%` Cost) FAQ** | [English](b2b-supplier-onboarding-kyb-ariba-slp-coupa-middesk-ofac-sanctions-bank-match-selection-faq.en.md) · [中文](b2b-supplier-onboarding-kyb-ariba-slp-coupa-middesk-ofac-sanctions-bank-match-selection-faq.md) |
+| 109 | **🏆 Corporate T&E Expense Audit & Per-Diem Copilot (`SAP Concur / Navan Expense / AppZen / Ramp / Brex` · 🏆 Round 370 Major Milestone), Cross-Rail Card-vs-Cash Receipt Deduplication, Itemized Hotel Folio Personal-Spend Stripping & `FCPA / Sunshine Act` Attendee Gating (`-42%` Cost) FAQ** | [English](corporate-travel-expense-audit-concur-navan-appzen-duplicate-receipt-folio-fcp-selection-faq.en.md) · [中文](corporate-travel-expense-audit-concur-navan-appzen-duplicate-receipt-folio-fcp-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (45 Guides)

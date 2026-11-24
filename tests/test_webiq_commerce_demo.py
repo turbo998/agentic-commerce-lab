@@ -33848,6 +33848,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-promo-coupon-affiliate-shield-sandbox", html_zh)
 
+    def test_corporate_travel_expense_audit_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CorporateTravelExpenseAuditPolicyInput,
+            evaluate_corporate_travel_expense_audit_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_corporate_travel_expense_audit_policy(
+            CorporateTravelExpenseAuditPolicyInput(
+                quarterly_duplicate_reimbursement_folio_leakage_and_fcpa_audit_pool_usd=395000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CORPORATE_EXPENSE_AUDIT_AUTHORIZED",
+        )
+
+        dup = evaluate_corporate_travel_expense_audit_policy(
+            CorporateTravelExpenseAuditPolicyInput(
+                receipt_already_matched_to_corporate_card_or_another_employee_claim=True
+            )
+        )
+        self.assertEqual(dup["status_code"], 403)
+        self.assertEqual(
+            dup["decision"],
+            "DUPLICATE_RECEIPT_ACROSS_CARD_CASH_OR_COWORKER",
+        )
+
+        folio = evaluate_corporate_travel_expense_audit_policy(
+            CorporateTravelExpenseAuditPolicyInput(
+                hotel_claim_missing_itemized_folio_or_synthetic_ai_receipt_detected=True
+            )
+        )
+        self.assertEqual(folio["status_code"], 422)
+        self.assertEqual(
+            folio["decision"],
+            "UNITEMIZED_HOTEL_FOLIO_PERSONAL_SPEND_OR_AI_FAKE_RECEIPT",
+        )
+
+        fcpa = evaluate_corporate_travel_expense_audit_policy(
+            CorporateTravelExpenseAuditPolicyInput(
+                meal_attendee_matches_fcpa_public_official_or_hcp_over_statutory_cap=True
+            )
+        )
+        self.assertEqual(fcpa["status_code"], 451)
+        self.assertEqual(
+            fcpa["decision"],
+            "FCPA_PUBLIC_OFFICIAL_OR_SUNSHINE_ACT_ATTENDEE_BREACH",
+        )
+
+        optim = evaluate_corporate_travel_expense_audit_policy(
+            CorporateTravelExpenseAuditPolicyInput(
+                quarterly_duplicate_reimbursement_folio_leakage_and_fcpa_audit_pool_usd=395000.0,
+                cross_rail_dedup_folio_line_strip_and_fcpa_attendee_screen_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 165900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 229100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("corporate_travel_expense_audit_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("corporate-travel-expense-audit-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

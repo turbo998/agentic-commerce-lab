@@ -43227,6 +43227,82 @@ def evaluate_ecommerce_promo_coupon_affiliate_shield_policy(
     }
 
 
+@dataclass(frozen=True)
+class CorporateTravelExpenseAuditPolicyInput:
+    quarterly_duplicate_reimbursement_folio_leakage_and_fcpa_audit_pool_usd: float = 395000.0
+    receipt_already_matched_to_corporate_card_or_another_employee_claim: bool = False
+    hotel_claim_missing_itemized_folio_or_synthetic_ai_receipt_detected: bool = False
+    meal_attendee_matches_fcpa_public_official_or_hcp_over_statutory_cap: bool = False
+    cross_rail_dedup_folio_line_strip_and_fcpa_attendee_screen_ready: bool = False
+
+
+def evaluate_corporate_travel_expense_audit_policy(
+    policy_input: CorporateTravelExpenseAuditPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_duplicate_reimbursement_folio_leakage_and_fcpa_audit_pool_usd
+        ),
+    )
+    if policy_input.meal_attendee_matches_fcpa_public_official_or_hcp_over_statutory_cap:
+        return {
+            "status_code": 451,
+            "decision": "FCPA_PUBLIC_OFFICIAL_OR_SUNSHINE_ACT_ATTENDEE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.receipt_already_matched_to_corporate_card_or_another_employee_claim:
+        return {
+            "status_code": 403,
+            "decision": "DUPLICATE_RECEIPT_ACROSS_CARD_CASH_OR_COWORKER",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hotel_claim_missing_itemized_folio_or_synthetic_ai_receipt_detected:
+        return {
+            "status_code": 422,
+            "decision": "UNITEMIZED_HOTEL_FOLIO_PERSONAL_SPEND_OR_AI_FAKE_RECEIPT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cross_rail_dedup_folio_line_strip_and_fcpa_attendee_screen_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "EXPENSE_CROSS_RAIL_DEDUP_AND_FOLIO_FCPA_AUDIT_CONFIRM",
+            "mandate_token": "corporate_expense_audit_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CORPORATE_EXPENSE_AUDIT_AUTHORIZED",
+        "mandate_token": "corporate_expense_audit_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -58766,6 +58842,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    corporate_travel_expense_audit_guard = {
+        "authorized_200": evaluate_corporate_travel_expense_audit_policy(
+            CorporateTravelExpenseAuditPolicyInput()
+        ),
+        "duplicate_card_or_coworker_403": evaluate_corporate_travel_expense_audit_policy(
+            CorporateTravelExpenseAuditPolicyInput(
+                receipt_already_matched_to_corporate_card_or_another_employee_claim=True
+            )
+        ),
+        "unitemized_folio_or_fake_422": evaluate_corporate_travel_expense_audit_policy(
+            CorporateTravelExpenseAuditPolicyInput(
+                hotel_claim_missing_itemized_folio_or_synthetic_ai_receipt_detected=True
+            )
+        ),
+        "fcpa_or_hcp_breach_451": evaluate_corporate_travel_expense_audit_policy(
+            CorporateTravelExpenseAuditPolicyInput(
+                meal_attendee_matches_fcpa_public_official_or_hcp_over_statutory_cap=True
+            )
+        ),
+        "cross_rail_folio_fcpa_409": evaluate_corporate_travel_expense_audit_policy(
+            CorporateTravelExpenseAuditPolicyInput(
+                cross_rail_dedup_folio_line_strip_and_fcpa_attendee_screen_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -59264,6 +59366,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_supplier_onboarding_kyb_ofac_guard": b2b_supplier_onboarding_kyb_ofac_guard,
         "agent_m2m_micropayments_x402_guard": agent_m2m_micropayments_x402_guard,
         "ecommerce_promo_coupon_affiliate_shield_guard": ecommerce_promo_coupon_affiliate_shield_guard,
+        "corporate_travel_expense_audit_guard": corporate_travel_expense_audit_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -85553,6 +85656,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="prmaff-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PROMO_EXCLUSIVITY_AND_AFFILIATE_INCREMENTALITY_CONFIRM · Mandate: ecommerce_promo_affiliate_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 370 (#489 · SVG #813 · Sandbox #263 · 🏆 Round 370 Major Milestone) Corporate T&E Expense Audit Copilot -->
+      <div class="finops-box" id="corporate-travel-expense-audit-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业差旅与费用报销智能审计 (SAP Concur / Navan Expense / AppZen / Ramp) 沙盒（🏆 第 370 轮重大里程碑）</div>
+            <div class="finops-sub">Round 370 (#489 · SVG #813 · Sandbox #263 · 🏆 Round 370 Milestone) · 全公司跨员工、跨公司卡与个人现金垫付时空指纹查重防“刷公卡再拿小票报现金”或同事一单两报 (HTTP 403) + 酒店强制逐行水单 (Itemized Folio) 剥离酒水/SPA 并检测 AIGC 合成假小票 (HTTP 422) + 商务宴请外部参会人实时穿透 FCPA 公职与医药阳光法案 NPI 名单 (HTTP 451) + 净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="teaud-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度公卡+现金双倍报销与同事重报、酒店水单夹带私人酒水/AI假小票及 FCPA/NPI 合规罚款池 ($)
+            <input type="number" id="teaud-gross-input" value="395000" min="10000" step="5000" oninput="recalcCorporateTravelExpenseAuditSandbox()" />
+          </label>
+          <label>跨员工、跨公司商务卡流水与个人现金垫付 (Card-vs-Cash) 全局时空指纹去重门禁
+            <select id="teaud-dedup-select" onchange="recalcCorporateTravelExpenseAuditSandbox()">
+              <option value="pass">比对全公司 (商户坐标+日期+分钟窗口+税前小计+桌号)，拦截公卡已付再报现金或同事正副联重报 (安全)</option>
+              <option value="block_403">员工用公司虚拟卡刷了 $280 晚餐由公司还款，又拍纸质小票走个人现金垫付再领一次 $280 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>酒店住宿强制逐行水单 (Itemized Hotel Folio) 剥离私人消费与 AIGC 合成假小票取证门禁
+            <select id="teaud-folio-select" onchange="recalcCorporateTravelExpenseAuditSandbox()">
+              <option value="pass">拒绝汇总 POS 刷卡条，逐行剥离 Minibar 红酒/SPA 个人消费，并校验 EXIF/C2PA 拦截 AI 假票 (合规)</option>
+              <option value="block_422">仅凭一张 $1,150 信用卡汇总条掩盖 $230 酒吧红酒与按摩费，或上传 AI 生成的假热敏小票 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>商务招待外部参会人反海外腐败法 (FCPA 公职/国企) 与医药阳光法案 (CMS NPI) 实时筛查门禁
+            <select id="teaud-fcpa-select" onchange="recalcCorporateTravelExpenseAuditSandbox()">
+              <option value="pass">强制录入全体外部就餐人姓名单位，实时比对 PEP/国企/NPI 库并锁死法定人均餐标上限 (合规)</option>
+              <option value="block_451">将人均 $340 的高档晚宴挂入普通会议费，未报备受邀嘉宾实为公立医院主任医师或公职审批官 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>100% 付款前跨轨小票查重 + 水单逐行拆解与假票鉴定 + FCPA/NPI 穿透全链路编排
+            <select id="teaud-opt-select" onchange="recalcCorporateTravelExpenseAuditSandbox()">
+              <option value="enabled" selected>启用 100% 跨轨指纹查重 + 水单剥离与假票取证 + FCPA 筛查 (-42% 舞弊漏损与审计人力 / HTTP 409)</option>
+              <option value="disabled">传统财务共享中心 10% 人工随机抽检基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度重报假票与合规风险池</div>
+            <div class="finops-kpi-val" id="teaud-gross-kpi">$395,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">全量AI审计与去重后净成本</div>
+            <div class="finops-kpi-val" id="teaud-net-kpi" style="color:#6ee7b7;">$229,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净拦截舞弊与审单人力</div>
+            <div class="finops-kpi-val" id="teaud-savings-kpi" style="color:#38bdf8;">$165,900</div>
+          </div>
+        </div>
+        <div id="teaud-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 EXPENSE_CROSS_RAIL_DEDUP_AND_FOLIO_FCPA_AUDIT_CONFIRM · Mandate: corporate_expense_audit_optim_409
         </div>
       </div>
 
@@ -118080,6 +118240,79 @@ function recalcEcommercePromoCouponAffiliateSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_PROMO_AND_AFFILIATE_ATTRIBUTION_AUTHORIZED · Mandate: ecommerce_promo_affiliate_200';
+}}
+
+function recalcCorporateTravelExpenseAuditSandbox() {{
+  const grossInput = document.getElementById('teaud-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '395000'));
+  const dedupGate = document.getElementById('teaud-dedup-select').value;
+  const folioGate = document.getElementById('teaud-folio-select').value;
+  const fcpaGate = document.getElementById('teaud-fcpa-select').value;
+  const optMode = document.getElementById('teaud-opt-select').value;
+
+  const grossKpi = document.getElementById('teaud-gross-kpi');
+  const netKpi = document.getElementById('teaud-net-kpi');
+  const savingsKpi = document.getElementById('teaud-savings-kpi');
+  const statusKpi = document.getElementById('teaud-status-kpi');
+  const banner = document.getElementById('teaud-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (fcpaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FCPA_PUBLIC_OFFICIAL_OR_SUNSHINE_ACT_ATTENDEE_BREACH · Mandate: null';
+    return;
+  }}
+  if (dedupGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DUPLICATE_RECEIPT_ACROSS_CARD_CASH_OR_COWORKER · Mandate: null';
+    return;
+  }}
+  if (folioGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNITEMIZED_HOTEL_FOLIO_PERSONAL_SPEND_OR_AI_FAKE_RECEIPT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 EXPENSE_CROSS_RAIL_DEDUP_AND_FOLIO_FCPA_AUDIT_CONFIRM · Mandate: corporate_expense_audit_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CORPORATE_EXPENSE_AUDIT_AUTHORIZED · Mandate: corporate_expense_audit_200';
 }}
 
 function updateStage1756Sandbox() {{
