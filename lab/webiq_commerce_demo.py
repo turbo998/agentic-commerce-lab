@@ -40415,6 +40415,82 @@ def evaluate_b2b_wholesale_quote_to_cart_policy(
     }
 
 
+@dataclass(frozen=True)
+class GlobalDigitalWalletLocalApmSpcPolicyInput:
+    quarterly_apm_orphan_wallet_misship_and_3ds_drop_pool_usd: float = 390000.0
+    async_apm_qr_ttl_exceeds_inventory_lease_causing_orphan: bool = False
+    express_wallet_silent_address_override_or_unrecalculated_tax: bool = False
+    inapp_webview_3ds2_redirect_drop_or_unlinked_apm_refund: bool = False
+    synced_apm_ttl_wallet_address_lock_and_w3c_spc_ready: bool = False
+
+
+def evaluate_global_digital_wallet_local_apm_spc_policy(
+    policy_input: GlobalDigitalWalletLocalApmSpcPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_apm_orphan_wallet_misship_and_3ds_drop_pool_usd
+        ),
+    )
+    if policy_input.inapp_webview_3ds2_redirect_drop_or_unlinked_apm_refund:
+        return {
+            "status_code": 451,
+            "decision": "INAPP_WEBVIEW_3DS2_REDIRECT_ABANDONMENT_OR_UNLINKED_APM_MANUAL_REFUND",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.async_apm_qr_ttl_exceeds_inventory_lease_causing_orphan:
+        return {
+            "status_code": 403,
+            "decision": "ASYNC_APM_QR_TTL_EXCEEDS_INVENTORY_LEASE_CAUSING_LATE_PAID_ORPHAN",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.express_wallet_silent_address_override_or_unrecalculated_tax:
+        return {
+            "status_code": 422,
+            "decision": "EXPRESS_WALLET_SILENT_ADDRESS_OVERRIDE_OR_UNRECALCULATED_TAX_FREIGHT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.synced_apm_ttl_wallet_address_lock_and_w3c_spc_ready:
+        savings = round(gross_pool * 0.39, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SYNCED_APM_TTL_WALLET_ADDRESS_LOCK_AND_W3C_SPC_BIOMETRIC_CONFIRM",
+            "mandate_token": "global_wallet_apm_spc_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_GLOBAL_DIGITAL_WALLET_AND_LOCAL_APM_AUTHORIZED",
+        "mandate_token": "global_wallet_apm_spc_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -54992,6 +55068,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    global_digital_wallet_local_apm_spc_guard = {
+        "authorized_200": evaluate_global_digital_wallet_local_apm_spc_policy(
+            GlobalDigitalWalletLocalApmSpcPolicyInput()
+        ),
+        "async_apm_orphan_ttl_403": evaluate_global_digital_wallet_local_apm_spc_policy(
+            GlobalDigitalWalletLocalApmSpcPolicyInput(
+                async_apm_qr_ttl_exceeds_inventory_lease_causing_orphan=True
+            )
+        ),
+        "wallet_address_override_422": evaluate_global_digital_wallet_local_apm_spc_policy(
+            GlobalDigitalWalletLocalApmSpcPolicyInput(
+                express_wallet_silent_address_override_or_unrecalculated_tax=True
+            )
+        ),
+        "webview_3ds2_drop_451": evaluate_global_digital_wallet_local_apm_spc_policy(
+            GlobalDigitalWalletLocalApmSpcPolicyInput(
+                inapp_webview_3ds2_redirect_drop_or_unlinked_apm_refund=True
+            )
+        ),
+        "synced_apm_wallet_spc_409": evaluate_global_digital_wallet_local_apm_spc_policy(
+            GlobalDigitalWalletLocalApmSpcPolicyInput(
+                synced_apm_ttl_wallet_address_lock_and_w3c_spc_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -55453,6 +55555,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_corporate_travel_tmc_ndc_guard": ota_corporate_travel_tmc_ndc_guard,
         "saas_cancel_deflection_churn_save_guard": saas_cancel_deflection_churn_save_guard,
         "b2b_wholesale_quote_to_cart_guard": b2b_wholesale_quote_to_cart_guard,
+        "global_digital_wallet_local_apm_spc_guard": global_digital_wallet_local_apm_spc_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -79633,6 +79736,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="b2bqtc-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 B2B_CONTRACT_ISOLATION_TIER_CLAWBACK_AND_RESALE_CERT_TERRITORY_CONFIRM · Mandate: b2b_wholesale_quote_cart_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 333 (#452 · SVG #776 · 🏆 1,330th Test Milestone) Global Digital Wallets, Local APMs & W3C SPC -->
+      <div class="finops-box" id="global-digital-wallet-local-apm-spc-sandbox" style="margin-top:12px;border-color:#059669;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💳 全球数字钱包与本地 APM (Apple Pay / Alipay+ / PIX / UPI / W3C SPC) 防孤儿单与生物核身沙盒</div>
+            <div class="finops-sub">Round 333 (#452 · SVG #776 · 🏆 1,330th Test Milestone) · 异步 PIX/Alipay+ 二维码 TTL 锁在库存预占期内 (Stock_Hold - 120s) 防超时释库后被扣款成孤儿单 (HTTP 403) + Apple/Google Pay 快速结账防静默覆盖购物车自提点/免税地址并强制重算税费 (HTTP 422) + W3C SPC 1.4s 免跳转指纹核身替代内嵌 WebView 3DS2 短信页 (HTTP 451) + 净省 39% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="gblapm-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度异步 APM (PIX/Alipay+/UPI) 孤儿已付单退款、快速钱包覆写旧地址错发件及 WebView 3DS2 掉单池 ($)
+            <input type="number" id="gblapm-gross-input" value="390000" min="10000" step="5000" oninput="recalcGlobalDigitalWalletLocalApmSpcSandbox()" />
+          </label>
+          <label>异步本地钱包 (PIX / Alipay+ / UPI) 收款码有效期与库存锁定期 (Stock Lease - 120s) 同步门禁
+            <select id="gblapm-ttl-select" onchange="recalcGlobalDigitalWalletLocalApmSpcSandbox()">
+              <option value="pass">强制设定付款码 expires_at &lt;= 库存锁定期 - 120 秒，且迟到回调自动重锁库或秒退 (安全)</option>
+              <option value="block_403">锁库 15 分钟却开 60 分钟 PIX 二维码，买家第 18 分钟付款时库存已卖给别人成孤儿单 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>Apple Pay / Google Pay 快速钱包收货地址防覆盖与 onshippingaddresschange 税费重算门禁
+            <select id="gblapm-addr-select" onchange="recalcGlobalDigitalWalletLocalApmSpcSandbox()">
+              <option value="pass">锁定购物车已选自提柜/免税州地址，且切换地址时同步重算目标州消费税与运费 (合规)</option>
+              <option value="block_422">手机钱包里 3 年前旧公寓默认地址静默覆盖购物车地址寄丢包裹，或换州漏收消费税 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>移动端内嵌 WebView W3C SPC (FIDO2) 1.4s 免跳转生物核身与本地 APM 原路退回门禁
+            <select id="gblapm-spc-select" onchange="recalcGlobalDigitalWalletLocalApmSpcSandbox()">
+              <option value="pass">启用 W3C SPC 原生指纹/面容签名免跳银行短信页，且 PIX/UPI 仅走 Referenced 原路退款 (合规)</option>
+              <option value="block_451">在聊天 WebView 强跳全屏 3DS2 短信页致 28% 掉单，或手工电汇退 APM 款项至第三方账户 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>异步 APM 时钟对齐 + 快速钱包地址保护 + W3C SPC 免跳转强核身全链路编排
+            <select id="gblapm-opt-select" onchange="recalcGlobalDigitalWalletLocalApmSpcSandbox()">
+              <option value="enabled" selected>启用 APM 时钟锁 + 钱包地址防覆写 + 1.4s W3C SPC 核身 (-39% 结账损耗 / HTTP 409)</option>
+              <option value="disabled">默认 60m 二维码 + 裸覆写钱包地址 + 传统 3DS2 短信跳转 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度孤儿单与结账流失池</div>
+            <div class="finops-kpi-val" id="gblapm-gross-kpi">$390,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">时钟对齐与SPC核身后净损耗</div>
+            <div class="finops-kpi-val" id="gblapm-net-kpi" style="color:#6ee7b7;">$237,900</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回结账转化与赔付</div>
+            <div class="finops-kpi-val" id="gblapm-savings-kpi" style="color:#38bdf8;">$152,100</div>
+          </div>
+        </div>
+        <div id="gblapm-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SYNCED_APM_TTL_WALLET_ADDRESS_LOCK_AND_W3C_SPC_BIOMETRIC_CONFIRM · Mandate: global_wallet_apm_spc_optim_409
         </div>
       </div>
 
@@ -109459,6 +109619,79 @@ function recalcB2bWholesaleQuoteToCartSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_WHOLESALE_QUOTE_TO_CART_AUTHORIZED · Mandate: b2b_wholesale_quote_cart_200';
+}}
+
+function recalcGlobalDigitalWalletLocalApmSpcSandbox() {{
+  const grossInput = document.getElementById('gblapm-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '390000'));
+  const ttlGate = document.getElementById('gblapm-ttl-select').value;
+  const addrGate = document.getElementById('gblapm-addr-select').value;
+  const spcGate = document.getElementById('gblapm-spc-select').value;
+  const optMode = document.getElementById('gblapm-opt-select').value;
+
+  const grossKpi = document.getElementById('gblapm-gross-kpi');
+  const netKpi = document.getElementById('gblapm-net-kpi');
+  const savingsKpi = document.getElementById('gblapm-savings-kpi');
+  const statusKpi = document.getElementById('gblapm-status-kpi');
+  const banner = document.getElementById('gblapm-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (spcGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 INAPP_WEBVIEW_3DS2_REDIRECT_ABANDONMENT_OR_UNLINKED_APM_MANUAL_REFUND · Mandate: null';
+    return;
+  }}
+  if (ttlGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ASYNC_APM_QR_TTL_EXCEEDS_INVENTORY_LEASE_CAUSING_LATE_PAID_ORPHAN · Mandate: null';
+    return;
+  }}
+  if (addrGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 EXPRESS_WALLET_SILENT_ADDRESS_OVERRIDE_OR_UNRECALCULATED_TAX_FREIGHT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.39);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SYNCED_APM_TTL_WALLET_ADDRESS_LOCK_AND_W3C_SPC_BIOMETRIC_CONFIRM · Mandate: global_wallet_apm_spc_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_GLOBAL_DIGITAL_WALLET_AND_LOCAL_APM_AUTHORIZED · Mandate: global_wallet_apm_spc_200';
 }}
 
 function updateStage1756Sandbox() {{

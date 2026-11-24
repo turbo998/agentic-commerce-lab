@@ -31369,6 +31369,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-wholesale-quote-to-cart-sandbox", html_zh)
 
+    def test_global_digital_wallet_local_apm_spc_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            GlobalDigitalWalletLocalApmSpcPolicyInput,
+            evaluate_global_digital_wallet_local_apm_spc_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_global_digital_wallet_local_apm_spc_policy(
+            GlobalDigitalWalletLocalApmSpcPolicyInput(
+                quarterly_apm_orphan_wallet_misship_and_3ds_drop_pool_usd=390000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_GLOBAL_DIGITAL_WALLET_AND_LOCAL_APM_AUTHORIZED",
+        )
+
+        orphan = evaluate_global_digital_wallet_local_apm_spc_policy(
+            GlobalDigitalWalletLocalApmSpcPolicyInput(
+                async_apm_qr_ttl_exceeds_inventory_lease_causing_orphan=True
+            )
+        )
+        self.assertEqual(orphan["status_code"], 403)
+        self.assertEqual(
+            orphan["decision"],
+            "ASYNC_APM_QR_TTL_EXCEEDS_INVENTORY_LEASE_CAUSING_LATE_PAID_ORPHAN",
+        )
+
+        addr = evaluate_global_digital_wallet_local_apm_spc_policy(
+            GlobalDigitalWalletLocalApmSpcPolicyInput(
+                express_wallet_silent_address_override_or_unrecalculated_tax=True
+            )
+        )
+        self.assertEqual(addr["status_code"], 422)
+        self.assertEqual(
+            addr["decision"],
+            "EXPRESS_WALLET_SILENT_ADDRESS_OVERRIDE_OR_UNRECALCULATED_TAX_FREIGHT",
+        )
+
+        spc = evaluate_global_digital_wallet_local_apm_spc_policy(
+            GlobalDigitalWalletLocalApmSpcPolicyInput(
+                inapp_webview_3ds2_redirect_drop_or_unlinked_apm_refund=True
+            )
+        )
+        self.assertEqual(spc["status_code"], 451)
+        self.assertEqual(
+            spc["decision"],
+            "INAPP_WEBVIEW_3DS2_REDIRECT_ABANDONMENT_OR_UNLINKED_APM_MANUAL_REFUND",
+        )
+
+        optim = evaluate_global_digital_wallet_local_apm_spc_policy(
+            GlobalDigitalWalletLocalApmSpcPolicyInput(
+                quarterly_apm_orphan_wallet_misship_and_3ds_drop_pool_usd=390000.0,
+                synced_apm_ttl_wallet_address_lock_and_w3c_spc_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 152100.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 237900.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("global_digital_wallet_local_apm_spc_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("global-digital-wallet-local-apm-spc-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

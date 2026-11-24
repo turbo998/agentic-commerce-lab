@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`451` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`452` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (31 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (57 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (58 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (173 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (99 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (40 guides)](#saas-finops-micropayments)
@@ -57,7 +57,7 @@
 | 31 | **🏆 Full-Stack Agentic Commerce 6-Protocol Interoperability & Selection Guide (`MCP × A2A × UCP × ACP × AP2 × x402/MPP` · 🏆 440th Bilingual Guide Milestone), Cross-Protocol `checkout_hash` Continuity (`UCP == AP2 == ACP`), Sub-`$2.00` `x402/MPP` Dual-Rail Router & `2026-11-30` Cutover Adapter (`-41%` Protocol Fallout & Fee Loss) FAQ** | [English](agentic-commerce-six-protocol-interop-mcp-a2a-ucp-acp-ap2-x402-selection-faq.en.md) · [中文](agentic-commerce-six-protocol-interop-mcp-a2a-ucp-acp-ap2-x402-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (57 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (58 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -120,6 +120,7 @@
 | 55 | **E-Commerce Embedded `BNPL` (`Affirm vs. Klarna vs. Afterpay vs. PayPal Pay in 4`), `MDR` Margin-Floor Gate (`>=18%`), Isolated `A2UI WebView` `TILA` Handover, Carrier `First-Scan` Autopay Snooze & `Tail-First` Partial-Return Re-Amortization (`-37%` BNPL MDR & Dispute Loss) Agent Architecture Selection FAQ** | [English](ecommerce-bnpl-klarna-affirm-afterpay-mdr-margin-floor-partial-return-reamortization-selection-faq.en.md) · [中文](ecommerce-bnpl-klarna-affirm-afterpay-mdr-margin-floor-partial-return-reamortization-selection-faq.md) |
 | 56 | **Multi-PSP Payment Orchestration (`Primer / Spreedly / Gr4vy vs. Adyen + Stripe + Checkout.com`), `8-Digit BIN` Local Acquiring, US `Durbin Reg II` PINless Debit Routing (`STAR / NYCE / Pulse`), `Cat-1 / MAC-03` Zero-Retry Breaker & `ISO 8583 0420` Timeout Failover Mutex (`-39%` Acquiring MDR & Decline Loss) FAQ** | [English](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.en.md) · [中文](multi-psp-orchestration-primer-spreedly-8digit-bin-durbin-debit-failover-mutex-selection-faq.md) |
 | 57 | **Commercial Fleet Fuel Cards & EV Charging Roaming (`WEX / Fleetcor / Stripe Issuing Fleet / Hubject ISO 15118 / OCPI 2.2.1`), Telematics `GPS + CAN-Bus` Fuel-Theft Lock, Instant `$175 AFD` `0420` Release & Idle-Fee Cap (`-39%` Fuel Slippage & Roaming Loss) FAQ** | [English](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.en.md) · [中文](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.md) |
+| 58 | **🏆 Global Digital Wallets, Local Alternative Payment Methods (`APMs`) & Biometric Checkout (`Apple Pay / Google Pay / Alipay+ / PIX / UPI / iDEAL + W3C SPC` · 🏆 1,330th Unit Test Milestone), Synced QR `TTL <= Stock_Lease - 120s` Orphan Shield, Wallet Address Override Lock & `1.4s W3C SPC` Passkey (`-39%` Orphan & Abandonment Loss) FAQ** | [English](global-digital-wallet-local-apm-apple-pay-alipay-pix-upi-late-webhook-spc-selection-faq.en.md) · [中文](global-digital-wallet-local-apm-apple-pay-alipay-pix-upi-late-webhook-spc-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (173 Guides)
