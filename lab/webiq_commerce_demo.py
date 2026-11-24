@@ -43379,6 +43379,82 @@ def evaluate_b2b_rebate_mdf_coop_management_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bPunchoutCxmlEdiUomPolicyInput:
+    quarterly_maverick_free_text_uom_explosion_and_asn_penalty_pool_usd: float = 380000.0
+    free_text_requisition_submitted_when_contracted_punchout_sku_exists: bool = False
+    cxml_or_edi850_uom_pack_multiplier_mismatch_between_ea_and_case: bool = False
+    edi855_price_drift_unblocked_or_shipment_dispatched_without_856_asn: bool = False
+    catalog_deflector_uom_conservation_and_856_asn_gate_ready: bool = False
+
+
+def evaluate_b2b_punchout_cxml_edi_uom_policy(
+    policy_input: B2bPunchoutCxmlEdiUomPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_maverick_free_text_uom_explosion_and_asn_penalty_pool_usd
+        ),
+    )
+    if policy_input.edi855_price_drift_unblocked_or_shipment_dispatched_without_856_asn:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_EDI_856_ASN_SSCC_OR_UNAPPROVED_855_PRICE_DRIFT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.free_text_requisition_submitted_when_contracted_punchout_sku_exists:
+        return {
+            "status_code": 403,
+            "decision": "FREE_TEXT_PR_BYPASSING_CONTRACTED_PUNCHOUT_CATALOG",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cxml_or_edi850_uom_pack_multiplier_mismatch_between_ea_and_case:
+        return {
+            "status_code": 422,
+            "decision": "CXML_EDI_UOM_PACK_SIZE_MULTIPLIER_MISMATCH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.catalog_deflector_uom_conservation_and_856_asn_gate_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PUNCHOUT_CATALOG_DEFLECTION_AND_EDI_UOM_ASN_CONFIRM",
+            "mandate_token": "b2b_punchout_edi_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_PUNCHOUT_AND_EDI_ORDER_AUTHORIZED",
+        "mandate_token": "b2b_punchout_edi_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -58970,6 +59046,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_punchout_cxml_edi_uom_guard = {
+        "authorized_200": evaluate_b2b_punchout_cxml_edi_uom_policy(
+            B2bPunchoutCxmlEdiUomPolicyInput()
+        ),
+        "free_text_catalog_bypass_403": evaluate_b2b_punchout_cxml_edi_uom_policy(
+            B2bPunchoutCxmlEdiUomPolicyInput(
+                free_text_requisition_submitted_when_contracted_punchout_sku_exists=True
+            )
+        ),
+        "uom_pack_explosion_422": evaluate_b2b_punchout_cxml_edi_uom_policy(
+            B2bPunchoutCxmlEdiUomPolicyInput(
+                cxml_or_edi850_uom_pack_multiplier_mismatch_between_ea_and_case=True
+            )
+        ),
+        "missing_856_or_855_drift_451": evaluate_b2b_punchout_cxml_edi_uom_policy(
+            B2bPunchoutCxmlEdiUomPolicyInput(
+                edi855_price_drift_unblocked_or_shipment_dispatched_without_856_asn=True
+            )
+        ),
+        "punchout_uom_asn_409": evaluate_b2b_punchout_cxml_edi_uom_policy(
+            B2bPunchoutCxmlEdiUomPolicyInput(
+                catalog_deflector_uom_conservation_and_856_asn_gate_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -59470,6 +59572,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_promo_coupon_affiliate_shield_guard": ecommerce_promo_coupon_affiliate_shield_guard,
         "corporate_travel_expense_audit_guard": corporate_travel_expense_audit_guard,
         "b2b_rebate_mdf_coop_management_guard": b2b_rebate_mdf_coop_management_guard,
+        "b2b_punchout_cxml_edi_uom_guard": b2b_punchout_cxml_edi_uom_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -85873,6 +85976,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="rebmfd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 REBATE_CLIFF_PACING_AND_NET_RMA_MDF_AUDIT_CONFIRM · Mandate: b2b_rebate_mdf_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 372 (#491 · 🏆 SVG #815 & 265th Sandbox Dual Milestone!) B2B PunchOut Catalog & EDI 850/855/856 Copilot -->
+      <div class="finops-box" id="b2b-punchout-cxml-edi-uom-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业 B2B 目录直通采购 PunchOut (cXML/OCI) 与电子数据交换 EDI (Coupa / Ariba / SPS Commerce) 沙盒（🏆 第 815 张 SVG 与第 265 个沙盒双里程碑）</div>
+            <div class="finops-sub">Round 372 (#491 · 🏆 SVG #815 &amp; 265th Sandbox Milestone) · 语义检索拦截自由文本请购单 (Free-Text PR) 绕过已签约 7 折 cXML PunchOut 目录 (HTTP 403) + 强制 UN/CEFACT 包装单位 (EA 个 vs. CS 箱) 换算因子与行金额守恒防 24 倍数量乌龙爆仓 (HTTP 422) + 拦截 EDI 855 擅自涨价与强制发货前 EDI 856 ASN (GS1-128 SSCC) 校验 (HTTP 451) + 净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="pchedi-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度自由文本请购绕过签约目录溢价、EA/CS 包装单位错位 24倍错发退货费及缺失 856 ASN 商超罚款池 ($)
+            <input type="number" id="pchedi-gross-input" value="380000" min="10000" step="5000" oninput="recalcB2bPunchoutCxmlEdiSandbox()" />
+          </label>
+          <label>非目录自由文本请购单 (Free-Text PR) 已签约 cXML PunchOut 目录语义导流门禁
+            <select id="pchedi-cat-select" onchange="recalcB2bPunchoutCxmlEdiSandbox()">
+              <option value="pass">自动碰撞内部已签约 PunchOut 目录，命中同款时拦截高价手填单并转换为 72 折协议目录行 (安全)</option>
+              <option value="block_403">员工嫌找目录麻烦手填 $350 零售价自由文本申请，绕过 Dell/固安捷 PunchOut 目录里 $250 的同款协议价 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>cXML / EDI 850 计量包装单位 (UOM: EA 单件 vs. CS 外箱=24件) 换算因子守恒门禁
+            <select id="pchedi-uom-select" onchange="recalcB2bPunchoutCxmlEdiSandbox()">
+              <option value="pass">强制校验 Ordered_Qty * Pack_Factor == 需求件数且行总价守恒，将 24 瓶自动折算为 2 箱 (CS) (合规)</option>
+              <option value="block_422">把员工请购的“50 个 (EA)”直接原样填入按“箱 (CS=24个)”计价的 EDI 850，错发 1,200 个塞爆仓库 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>EDI 855 (订单确认) 零涨价锁与出货前 EDI 856 ASN (含 GS1-128 SSCC 托盘条码) 强校验门禁
+            <select id="pchedi-asn-select" onchange="recalcB2bPunchoutCxmlEdiSandbox()">
+              <option value="pass">拦截单价高于 850 原单的 855 回执，并在发车前校验 856 ASN HL 层级与 20位 SSCC 条码 (合规)</option>
+              <option value="block_451">放任 855 回执暗涨 9% 单价覆盖 PO，或未发有效 856 ASN 即派车到货遭大型零售商罚扣 5% 货款 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>自由文本语义导流 PunchOut + UOM 换算守恒锁 + EDI 855/856 闭环全链路编排
+            <select id="pchedi-opt-select" onchange="recalcB2bPunchoutCxmlEdiSandbox()">
+              <option value="enabled" selected>启用签约目录自动导流 + UOM 换算锁 + 856 ASN 预校验 (-40% 野买溢价与 EDI 罚款损耗 / HTTP 409)</option>
+              <option value="disabled">传统人工审阅自由文本单与事后处理 EDI 错发基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度野买溢价与UOM错发池</div>
+            <div class="finops-kpi-val" id="pchedi-gross-kpi">$380,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">目录导流与UOM锁后净成本</div>
+            <div class="finops-kpi-val" id="pchedi-net-kpi" style="color:#6ee7b7;">$228,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省协议差价与ASN罚金</div>
+            <div class="finops-kpi-val" id="pchedi-savings-kpi" style="color:#38bdf8;">$152,000</div>
+          </div>
+        </div>
+        <div id="pchedi-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PUNCHOUT_CATALOG_DEFLECTION_AND_EDI_UOM_ASN_CONFIRM · Mandate: b2b_punchout_edi_optim_409
         </div>
       </div>
 
@@ -118546,6 +118706,79 @@ function recalcB2bRebateMdfCoopSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_REBATE_AND_MDF_GOVERNANCE_AUTHORIZED · Mandate: b2b_rebate_mdf_200';
+}}
+
+function recalcB2bPunchoutCxmlEdiSandbox() {{
+  const grossInput = document.getElementById('pchedi-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '380000'));
+  const catGate = document.getElementById('pchedi-cat-select').value;
+  const uomGate = document.getElementById('pchedi-uom-select').value;
+  const asnGate = document.getElementById('pchedi-asn-select').value;
+  const optMode = document.getElementById('pchedi-opt-select').value;
+
+  const grossKpi = document.getElementById('pchedi-gross-kpi');
+  const netKpi = document.getElementById('pchedi-net-kpi');
+  const savingsKpi = document.getElementById('pchedi-savings-kpi');
+  const statusKpi = document.getElementById('pchedi-status-kpi');
+  const banner = document.getElementById('pchedi-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (asnGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_EDI_856_ASN_SSCC_OR_UNAPPROVED_855_PRICE_DRIFT · Mandate: null';
+    return;
+  }}
+  if (catGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 FREE_TEXT_PR_BYPASSING_CONTRACTED_PUNCHOUT_CATALOG · Mandate: null';
+    return;
+  }}
+  if (uomGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CXML_EDI_UOM_PACK_SIZE_MULTIPLIER_MISMATCH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PUNCHOUT_CATALOG_DEFLECTION_AND_EDI_UOM_ASN_CONFIRM · Mandate: b2b_punchout_edi_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_PUNCHOUT_AND_EDI_ORDER_AUTHORIZED · Mandate: b2b_punchout_edi_200';
 }}
 
 function updateStage1756Sandbox() {{

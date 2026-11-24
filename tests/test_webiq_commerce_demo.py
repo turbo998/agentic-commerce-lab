@@ -33982,6 +33982,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-rebate-mdf-coop-management-sandbox", html_zh)
 
+    def test_b2b_punchout_cxml_edi_uom_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bPunchoutCxmlEdiUomPolicyInput,
+            evaluate_b2b_punchout_cxml_edi_uom_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_punchout_cxml_edi_uom_policy(
+            B2bPunchoutCxmlEdiUomPolicyInput(
+                quarterly_maverick_free_text_uom_explosion_and_asn_penalty_pool_usd=380000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_PUNCHOUT_AND_EDI_ORDER_AUTHORIZED",
+        )
+
+        cat = evaluate_b2b_punchout_cxml_edi_uom_policy(
+            B2bPunchoutCxmlEdiUomPolicyInput(
+                free_text_requisition_submitted_when_contracted_punchout_sku_exists=True
+            )
+        )
+        self.assertEqual(cat["status_code"], 403)
+        self.assertEqual(
+            cat["decision"],
+            "FREE_TEXT_PR_BYPASSING_CONTRACTED_PUNCHOUT_CATALOG",
+        )
+
+        uom = evaluate_b2b_punchout_cxml_edi_uom_policy(
+            B2bPunchoutCxmlEdiUomPolicyInput(
+                cxml_or_edi850_uom_pack_multiplier_mismatch_between_ea_and_case=True
+            )
+        )
+        self.assertEqual(uom["status_code"], 422)
+        self.assertEqual(
+            uom["decision"],
+            "CXML_EDI_UOM_PACK_SIZE_MULTIPLIER_MISMATCH",
+        )
+
+        asn = evaluate_b2b_punchout_cxml_edi_uom_policy(
+            B2bPunchoutCxmlEdiUomPolicyInput(
+                edi855_price_drift_unblocked_or_shipment_dispatched_without_856_asn=True
+            )
+        )
+        self.assertEqual(asn["status_code"], 451)
+        self.assertEqual(
+            asn["decision"],
+            "MISSING_EDI_856_ASN_SSCC_OR_UNAPPROVED_855_PRICE_DRIFT",
+        )
+
+        optim = evaluate_b2b_punchout_cxml_edi_uom_policy(
+            B2bPunchoutCxmlEdiUomPolicyInput(
+                quarterly_maverick_free_text_uom_explosion_and_asn_penalty_pool_usd=380000.0,
+                catalog_deflector_uom_conservation_and_856_asn_gate_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 152000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 228000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_punchout_cxml_edi_uom_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-punchout-cxml-edi-uom-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
