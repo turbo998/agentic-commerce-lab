@@ -2,12 +2,12 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`469` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`470` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（36 篇）](#platform-grounding)
-- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（59 篇）](#payments-mandates)
+- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（60 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（176 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（102 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（43 篇）](#saas-finops-micropayments)
@@ -62,7 +62,7 @@
 | 36 | **🏆 商业智能体三大构建路径选型对比（`Microsoft Copilot Studio + D365` vs. `Azure AI Foundry + Semantic Kernel / LangGraph` vs. `Salesforce Agentforce / Shopify Sidekick` · 🏆 第 350 轮重大里程碑）、前店后厂跨系统长事务（`Saga`）卸载、连接器 `504` 自动重试幂等外发箱（`Transactional Outbox`）与按对话/按 Token 成本拐点路由净省 41% Agent 架构选型 FAQ** | [中文](agent-platform-build-path-copilot-studio-vs-azure-ai-foundry-langgraph-vs-agentforce-sidekick-selection-faq.md) · [English](agent-platform-build-path-copilot-studio-vs-azure-ai-foundry-langgraph-vs-agentforce-sidekick-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
-## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（59 篇）
+## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（60 篇）
 
 > 涵盖 Google AP2、Stripe SPT、Visa VIC / TAP、Mastercard Agent Pay、PayPal、UCP/ACP 协议互操作、3DS2 无浏览器挑战、FIDO2/Passkey 硬件签名及幂等防重扣架构。
 
@@ -127,6 +127,7 @@
 | 57 | **商业车队加油卡与新能源充电漫游支付（`Fleet Fuel Card & EV Charging Roaming`: `WEX / Fleetcor / Stripe Issuing Fleet / Hubject ISO 15118 / OCPI 2.2.1`）、车载 `GPS/CAN-Bus` 油箱空余容量动态封顶防偷油、`$175` 预授权挂枪 3 秒 `0420` 释放与超时占位费（`Idle Fee`）封顶净省 39% Agent 架构选型 FAQ** | [中文](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.md) · [English](fleet-fuel-card-ev-roaming-iso15118-ocpi-telematics-preauth-escrow-selection-faq.en.md) |
 | 58 | **🏆 全球数字钱包、本地替代支付方式（`Local APMs`）与生物识别快速结账（`Apple Pay / Google Pay / Alipay+ / PIX / UPI / iDEAL + W3C SPC` · 🏆 第 1,330 项单元测试里程碑）、异步二维码 `TTL <= 库存锁定期 - 120s` 防孤儿已付单、防快速钱包静默覆盖购物车收货地址与 `1.4s W3C SPC` 免跳转生物核身净省 39% Agent 架构选型 FAQ** | [中文](global-digital-wallet-local-apm-apple-pay-alipay-pix-upi-late-webhook-spc-selection-faq.md) · [English](global-digital-wallet-local-apm-apple-pay-alipay-pix-upi-late-webhook-spc-selection-faq.en.md) |
 | 59 | **零售电商组合支付（`Split-Tender Checkout`: `礼品卡 Gift Card + 会员积分 Loyalty Points + 信用卡`：`Talon.One / Yotpo / Shopify Plus GiftCard / Adyen + Stripe`）、两阶段软预占（`2PC Soft-Hold`）防刷卡失败吞积分、部分退货“先退积分/礼品卡、后退银行卡现金”反套现瀑布与买赠积分 `14 天` 待过退货期解冻净省 39% Agent 架构选型 FAQ** | [中文](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.md) · [English](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.en.md) |
+| 60 | **🏆 商业智能体支付与结账五大协议横向选型对比（`Stripe Agent Toolkit SPT` vs. `Visa Intelligent Commerce` vs. `Mastercard Agent Pay` vs. `PayPal Agentic Toolkit` vs. `企业单次虚拟卡 JIT VCN` · 🏆 第 470 篇双语决策指南里程碑）、零明文卡号与单商户/限额/15m TTL 范围锁、卡组织 `EMVCo` 动态密文拒付责任转移及长尾单次精确美分虚拟卡降级净省 42% Agent 架构选型 FAQ** | [中文](agent-payment-protocol-matrix-stripe-spt-visa-intelligent-commerce-mastercard-agent-pay-paypal-vcn-selection-faq.md) · [English](agent-payment-protocol-matrix-stripe-spt-visa-intelligent-commerce-mastercard-agent-pay-paypal-vcn-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（176 篇）

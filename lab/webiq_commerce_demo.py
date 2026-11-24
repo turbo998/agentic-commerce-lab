@@ -41783,6 +41783,82 @@ def evaluate_agent_platform_build_path_selection_policy(
     }
 
 
+@dataclass(frozen=True)
+class AgentPaymentProtocolMatrixPolicyInput:
+    quarterly_false_decline_friendly_fraud_and_pci_overcharge_pool_usd: float = 420000.0
+    raw_pan_in_llm_context_or_unscoped_multi_merchant_token: bool = False
+    autonomous_card_charge_without_network_cryptogram_or_passkey_mandate: bool = False
+    fallback_vcn_issued_as_multi_use_or_without_exact_penny_cap: bool = False
+    multi_rail_spt_network_cryptogram_and_exact_vcn_router_ready: bool = False
+
+
+def evaluate_agent_payment_protocol_matrix_policy(
+    policy_input: AgentPaymentProtocolMatrixPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_false_decline_friendly_fraud_and_pci_overcharge_pool_usd
+        ),
+    )
+    if policy_input.fallback_vcn_issued_as_multi_use_or_without_exact_penny_cap:
+        return {
+            "status_code": 451,
+            "decision": "MULTI_USE_OR_UNPADDED_VCN_OVERCHARGE_EXPOSURE",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.raw_pan_in_llm_context_or_unscoped_multi_merchant_token:
+        return {
+            "status_code": 403,
+            "decision": "UNSCOPED_PAYMENT_TOKEN_OR_RAW_PAN_CONTEXT_LEAK",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.autonomous_card_charge_without_network_cryptogram_or_passkey_mandate:
+        return {
+            "status_code": 422,
+            "decision": "MISSING_NETWORK_TOKEN_CRYPTOGRAM_OR_LIABILITY_SHIFT",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.multi_rail_spt_network_cryptogram_and_exact_vcn_router_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MULTI_RAIL_AGENT_PAYMENT_PROTOCOL_ROUTING_CONFIRM",
+            "mandate_token": "agent_payment_protocol_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_AGENT_PAYMENT_PROTOCOL_MATRIX_AUTHORIZED",
+        "mandate_token": "agent_payment_protocol_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -56828,6 +56904,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    agent_payment_protocol_matrix_guard = {
+        "authorized_200": evaluate_agent_payment_protocol_matrix_policy(
+            AgentPaymentProtocolMatrixPolicyInput()
+        ),
+        "unscoped_token_or_pan_403": evaluate_agent_payment_protocol_matrix_policy(
+            AgentPaymentProtocolMatrixPolicyInput(
+                raw_pan_in_llm_context_or_unscoped_multi_merchant_token=True
+            )
+        ),
+        "missing_network_cryptogram_422": evaluate_agent_payment_protocol_matrix_policy(
+            AgentPaymentProtocolMatrixPolicyInput(
+                autonomous_card_charge_without_network_cryptogram_or_passkey_mandate=True
+            )
+        ),
+        "multi_use_vcn_overcharge_451": evaluate_agent_payment_protocol_matrix_policy(
+            AgentPaymentProtocolMatrixPolicyInput(
+                fallback_vcn_issued_as_multi_use_or_without_exact_penny_cap=True
+            )
+        ),
+        "multi_rail_router_409": evaluate_agent_payment_protocol_matrix_policy(
+            AgentPaymentProtocolMatrixPolicyInput(
+                multi_rail_spt_network_cryptogram_and_exact_vcn_router_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -57307,6 +57409,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "enterprise_revrec_asc606_ssp_guard": enterprise_revrec_asc606_ssp_guard,
         "b2b_rfp_security_questionnaire_copilot_guard": b2b_rfp_security_questionnaire_copilot_guard,
         "agent_platform_build_path_selection_guard": agent_platform_build_path_selection_guard,
+        "agent_payment_protocol_matrix_guard": agent_payment_protocol_matrix_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -82513,6 +82616,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="bldpath-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 HYBRID_COPILOT_STUDIO_FOUNDRY_SAGA_AND_FINOPS_ROUTING_CONFIRM · Mandate: agent_build_path_hybrid_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 351 (#470 🏆 470th Guide Milestone · SVG #794 · Sandbox #244) Agent Payment Protocol Matrix -->
+      <div class="finops-box" id="agent-payment-protocol-matrix-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 智能体支付与结账五大协议选型 (Stripe SPT vs. Visa Intelligent Commerce vs. Mastercard Agent Pay vs. PayPal vs. JIT VCN) 沙盒（🏆 第 470 篇指南里程碑）</div>
+            <div class="finops-sub">Round 351 (#470 🏆 470th Guide Milestone · SVG #794 · Sandbox #244) · 零明文 PAN 上下文隔离与单商户/限额/15m TTL 克隆令牌锁 (HTTP 403) + 卡组织 EMVCo 动态密文与 Passkey 委托签名拒付责任转移 (HTTP 422) + 长尾单次精确美分虚拟卡 JIT VCN 防超额多扣款 (HTTP 451) + 净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="payproto-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度发卡行误判机器人盗刷拒付 (False Declines)、10.4 友好欺诈赔付及虚拟卡超额多扣款风险池 ($)
+            <input type="number" id="payproto-gross-input" value="420000" min="10000" step="5000" oninput="recalcAgentPaymentProtocolMatrixSandbox()" />
+          </label>
+          <label>LLM 上下文零明文卡号隔离与 Stripe SPT 三元组范围锁 (MID + Exact_Amount + 15m TTL) 门禁
+            <select id="payproto-spt-select" onchange="recalcAgentPaymentProtocolMatrixSandbox()">
+              <option value="pass">严禁明文 PAN 进入上下文，在控制面内签发锁定唯一目标商户、精确美分与 15m 有效期的 SPT (安全)</option>
+              <option value="block_403">将 16 位明文卡号传入 Prompt 工具参数，或使用未锁定商户与金额的通用绑卡 Token (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>跨商户自主代付卡组织网络密文 (Visa Intelligent Commerce / Mastercard Agent Pay Cryptogram) 门禁
+            <select id="payproto-crypto-select" onchange="recalcAgentPaymentProtocolMatrixSandbox()">
+              <option value="pass">携带用户硬件 Passkey 委托签名与 EMVCo 动态密文过卡，提升发卡行通过率并实现欺诈责任转移 (合规)</option>
+              <option value="block_422">后台云端无密文直接发起无卡扣款 (CNP)，遭发卡行风控拦截或被用户发起 10.4 拒付索赔 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>长尾无 API 商户降级单次虚拟卡 (JIT VCN: Stripe Issuing / Marqeta) 精确美分上限门禁
+            <select id="payproto-vcn-select" onchange="recalcAgentPaymentProtocolMatrixSandbox()">
+              <option value="pass">签发精确等于购物车分值的单次清算虚拟卡，放行 <=$1 验卡预授权并在首笔实质扣款后立即销卡 (合规)</option>
+              <option value="block_451">签发可多次刷或额度放宽至 $500 的通用虚拟卡，被长尾商户恶意捆绑扣取隐形月费 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Stripe SPT + Visa/MC 网络令牌 + PayPal + 单次精确虚拟卡智能多轨路由编排
+            <select id="payproto-opt-select" onchange="recalcAgentPaymentProtocolMatrixSandbox()">
+              <option value="enabled" selected>启用多轨支付协议优选路由 + 动态密文免责 + 精确美分 VCN (-42% 拒付流失与欺诈损耗 / HTTP 409)</option>
+              <option value="disabled">传统跳转收银台手动输卡号与短信 OTP 基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度拒付流失与欺诈损耗池</div>
+            <div class="finops-kpi-val" id="payproto-gross-kpi">$420,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">多轨协议与密文门禁后净成本</div>
+            <div class="finops-kpi-val" id="payproto-net-kpi" style="color:#6ee7b7;">$243,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省拒付赔付与转化增益</div>
+            <div class="finops-kpi-val" id="payproto-savings-kpi" style="color:#38bdf8;">$176,400</div>
+          </div>
+        </div>
+        <div id="payproto-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MULTI_RAIL_AGENT_PAYMENT_PROTOCOL_ROUTING_CONFIRM · Mandate: agent_payment_protocol_optim_409
         </div>
       </div>
 
@@ -113653,6 +113813,79 @@ function recalcAgentPlatformBuildPathSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_COMMERCIAL_AGENT_BUILD_PATH_AUTHORIZED · Mandate: agent_build_path_200';
+}}
+
+function recalcAgentPaymentProtocolMatrixSandbox() {{
+  const grossInput = document.getElementById('payproto-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '420000'));
+  const sptGate = document.getElementById('payproto-spt-select').value;
+  const cryptoGate = document.getElementById('payproto-crypto-select').value;
+  const vcnGate = document.getElementById('payproto-vcn-select').value;
+  const optMode = document.getElementById('payproto-opt-select').value;
+
+  const grossKpi = document.getElementById('payproto-gross-kpi');
+  const netKpi = document.getElementById('payproto-net-kpi');
+  const savingsKpi = document.getElementById('payproto-savings-kpi');
+  const statusKpi = document.getElementById('payproto-status-kpi');
+  const banner = document.getElementById('payproto-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vcnGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MULTI_USE_OR_UNPADDED_VCN_OVERCHARGE_EXPOSURE · Mandate: null';
+    return;
+  }}
+  if (sptGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNSCOPED_PAYMENT_TOKEN_OR_RAW_PAN_CONTEXT_LEAK · Mandate: null';
+    return;
+  }}
+  if (cryptoGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MISSING_NETWORK_TOKEN_CRYPTOGRAM_OR_LIABILITY_SHIFT · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MULTI_RAIL_AGENT_PAYMENT_PROTOCOL_ROUTING_CONFIRM · Mandate: agent_payment_protocol_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_AGENT_PAYMENT_PROTOCOL_MATRIX_AUTHORIZED · Mandate: agent_payment_protocol_200';
 }}
 
 function updateStage1756Sandbox() {{

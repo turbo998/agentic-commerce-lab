@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg794" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="50%" stop-color="#1e1b4b"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+    <linearGradient id="accent794" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg794)"/>
+  <rect x="30" y="24" width="1140" height="582" rx="16" fill="#0f172a" fill-opacity="0.82" stroke="#334155" stroke-width="1.5"/>
+  <rect x="30" y="24" width="1140" height="6" rx="3" fill="url(#accent794)"/>
+
+  <text x="60" y="68" fill="#34d399" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.2">🏆 470TH GUIDE MILESTONE · ROUND 351 · FAQ #470 · SVG #794 · SANDBOX #244 · TEST #1348 · AGENT PAYMENT PROTOCOLS</text>
+  <text x="60" y="102" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="23" font-weight="800">Stripe SPT vs. Visa Intelligent Commerce vs. Mastercard Agent Pay vs. PayPal vs. JIT VCN</text>
+  <text x="60" y="128" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="14">Zero Raw PAN in LLM Context · EMVCo Dynamic Cryptogram &amp; Liability Shift · Single-Use VCN Exact-Penny Fallback (-42% Fraud &amp; Fee Loss)</text>
+
+  <!-- Gate 1 -->
+  <rect x="60" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#ef4444" stroke-width="1.5"/>
+  <text x="80" y="182" fill="#fca5a5" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">1. Zero Raw PAN &amp; Scope-Bound SPT</text>
+  <text x="80" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Blocks passing raw 16-digit card numbers, CVV,</text>
+  <text x="80" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  or reusable multi-merchant vaulted tokens</text>
+  <text x="80" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  into LLM prompt context (PCI-DSS v4.0 breach)</text>
+  <text x="80" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Mandates cryptographically scoped token:</text>
+  <text x="80" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  bound to destination_account / MID,</text>
+  <text x="80" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  exact max_amount_cents, and TTL &lt;= 15 min</text>
+  <rect x="80" y="370" width="305" height="34" rx="6" fill="#450a0a" stroke="#ef4444"/>
+  <text x="92" y="392" fill="#fecaca" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 403 UNSCOPED_TOKEN_OR_RAW_PAN_LEAK</text>
+
+  <!-- Gate 2 -->
+  <rect x="427" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#f97316" stroke-width="1.5"/>
+  <text x="447" y="182" fill="#fdba74" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">2. Network Cryptogram &amp; Liability Shift</text>
+  <text x="447" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Agent-initiated card-not-present (CNP) orders</text>
+  <text x="447" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  without Visa Intelligent Commerce / Mastercard</text>
+  <text x="447" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  Agent Pay Passkey cryptograms suffer 18% false</text>
+  <text x="447" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  declines &amp; 100% merchant friendly-fraud liability</text>
+  <text x="447" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Requires FIDO2/Passkey-bound network</text>
+  <text x="447" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  cryptogram for high-value autonomous spend</text>
+  <rect x="447" y="370" width="305" height="34" rx="6" fill="#431407" stroke="#f97316"/>
+  <text x="459" y="392" fill="#fed7aa" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 422 MISSING_NETWORK_CRYPTOGRAM_AUTH</text>
+
+  <!-- Gate 3 -->
+  <rect x="795" y="152" width="345" height="270" rx="12" fill="#1e293b" stroke="#eab308" stroke-width="1.5"/>
+  <text x="815" y="182" fill="#fde047" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">3. VCN Fallback Over-Auth &amp; Drain Guard</text>
+  <text x="815" y="182" fill="#fde047" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700"></text>
+  <text x="815" y="206" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• When falling back to Virtual Cards (VCN) for</text>
+  <text x="815" y="226" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  legacy merchants without SPT/PayPal APIs,</text>
+  <text x="815" y="246" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  multi-use or padded-limit VCNs risk merchant</text>
+  <text x="815" y="268" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  over-charging or unrevoked orphan float</text>
+  <text x="815" y="288" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Enforces Single-Use Exact-Cents VCN +</text>
+  <text x="815" y="310" fill="#e2e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="13">  auto-burn on first capture or 30m timeout</text>
+  <rect x="815" y="370" width="305" height="34" rx="6" fill="#422006" stroke="#eab308"/>
+  <text x="827" y="392" fill="#fef08a" font-family="Consolas, monospace" font-size="12" font-weight="700">HTTP 451 MULTI_USE_VCN_OVERCHARGE_EXPOSURE</text>
+
+  <!-- Bottom Bar -->
+  <rect x="60" y="444" width="1080" height="138" rx="12" fill="#0f172a" stroke="#10b981" stroke-width="1.5"/>
+  <text x="84" y="476" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="700">🏆 470th Bilingual Guide Selection Matrix (Quarterly False Declines, Friendly Fraud &amp; PCI Scope Pool: $420,000)</text>
+  <text x="84" y="504" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Stripe Ecosystem Merchants: Stripe Shared Payment Tokens (SPT) | Global Card Rails: Visa Intelligent Commerce &amp; Mastercard Agent Pay</text>
+  <text x="84" y="528" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">• Buyer Protection &amp; P2P/Marketplace: PayPal Agentic Toolkit | Legacy Long-Tail Web: Single-Use JIT Virtual Card (Stripe Issuing / Marqeta)</text>
+  <text x="84" y="556" fill="#38bdf8" font-family="Consolas, monospace" font-size="14" font-weight="700">HTTP 409 MULTI_RAIL_AGENT_PAYMENT_PROTOCOL_ROUTING_CONFIRM · Savings: $176,400/qtr (-42.0%) · Net: $243,600</text>
+</svg>
