@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg833" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="55%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <linearGradient id="accent833" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="50%" stop-color="#a855f7" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg833)" />
+  <rect x="24" y="24" width="1152" height="582" rx="18" fill="none" stroke="url(#accent833)" stroke-width="2" opacity="0.45" />
+
+  <text x="52" y="66" fill="#c084fc" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.2">
+    🏆 ROUND 390 MAJOR MILESTONE · FAQ #509 · SVG #833 · SANDBOX #283 · TEST #1,387
+  </text>
+  <text x="52" y="102" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">
+    OTA Dynamic Packaging, Bedbank Rate-Parity Shield &amp; PMS HCN Copilot
+  </text>
+  <text x="52" y="130" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="15">
+    Expedia EPS Rapid vs. Hotelbeds vs. Booking Demand API vs. DerbySoft + Opaque Fence, T-72h HCN Check &amp; ATOL/PTD Lock
+  </text>
+
+  <!-- Panel 1 -->
+  <rect x="52" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#ef4444" stroke-width="1.8" />
+  <rect x="52" y="156" width="350" height="42" rx="14" fill="#7f1d1d" />
+  <text x="72" y="183" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    1. Wholesale Package Fence Lock (403)
+  </text>
+  <text x="72" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: Unbundling Wholesale B2B Package Rates
+  </text>
+  <text x="72" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Agent takes a $220 `Package-Only` wholesale rate
+  </text>
+  <text x="72" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    and sells it as a standalone room undercutting $300 BAR
+  </text>
+  <text x="72" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Hotel cancels API contract &amp; refuses guest check-in!
+  </text>
+  <rect x="72" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#f87171" stroke-width="1" />
+  <text x="86" y="328" fill="#fca5a5" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if Rate_Type == PACKAGE_ONLY and Unbundled_Room:
+  </text>
+  <text x="86" y="348" fill="#fecaca" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_403_WHOLESALE_RATE_PARITY_LEAK_VETO
+  </text>
+  <text x="86" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Enforce opaque bundled total price (Flight + Hotel)
+  </text>
+  <text x="72" y="404" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    Platform Fit: Expedia EPS Rapid / Hotelbeds
+  </text>
+  <text x="72" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Enforces `sale_scenario = package` opaque pricing
+  </text>
+  <text x="72" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Hides component hotel breakdown on buyer invoice
+  </text>
+  <text x="72" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Unlocks 20-30% legitimate package savings safely
+  </text>
+
+  <!-- Panel 2 -->
+  <rect x="425" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#f59e0b" stroke-width="1.8" />
+  <rect x="425" y="156" width="350" height="42" rx="14" fill="#78350f" />
+  <text x="445" y="183" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    2. T-72h PMS HCN &amp; Atomic Saga (422)
+  </text>
+  <text x="445" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: Midnight Front-Desk "Ghost Reservation"
+  </text>
+  <text x="445" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Bedbank returns a broker voucher ID, but the booking
+  </text>
+  <text x="72" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13"></text>
+  <text x="445" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    never synced into the hotel's local OPERA PMS (`HCN`)
+  </text>
+  <text x="445" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Or Flight tickets issue after Hotel room hold fails!
+  </text>
+  <rect x="445" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="1" />
+  <text x="459" y="328" fill="#fcd34d" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if Missing_PMS_HCN_At_T72h or Partial_Bundle_Commit:
+  </text>
+  <text x="459" y="348" fill="#fde68a" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_422_GHOST_BOOKING_OR_HALF_PACKAGE_BREACH
+  </text>
+  <text x="459" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Verify native Hotel Confirmation Number (HCN) at T-72h
+  </text>
+  <text x="445" y="404" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    2-Phase Package Saga + HCN Check (HTTP 409):
+  </text>
+  <text x="445" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Holds Flight PNR + Hotel Room before capturing card
+  </text>
+  <text x="445" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • T-72h automated PMS HCN re-verification &amp; re-book
+  </text>
+  <text x="445" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Cuts walk-relocation &amp; parity penalty loss by 42%
+  </text>
+
+  <!-- Panel 3 -->
+  <rect x="798" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#10b981" stroke-width="1.8" />
+  <rect x="798" y="156" width="350" height="42" rx="14" fill="#064e3b" />
+  <text x="818" y="183" fill="#a7f3d0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    3. EU PTD / ATOL &amp; Resort Fee Lock (451)
+  </text>
+  <text x="818" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: Uninsured Package Liability &amp; Drip Pricing
+  </text>
+  <text x="818" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Selling Flight+Hotel in EU/UK without ATOL/PTD
+  </text>
+  <text x="818" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    insolvency bond or full-package refund on flight cancel
+  </text>
+  <text x="818" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Or hiding $55/night mandatory Las Vegas Resort Fees!
+  </text>
+  <rect x="818" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#34d399" stroke-width="1" />
+  <text x="832" y="328" fill="#6ee7b7" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if Missing_ATOL_Bond or Hidden_Resort_Fee_Drip:
+  </text>
+  <text x="832" y="348" fill="#a7f3d0" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_451_PTD_ATOL_OR_RESORT_FEE_DRIP_BREACH
+  </text>
+  <text x="832" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Include mandatory resort fees upfront per FTC 16 CFR 464
+  </text>
+  <text x="818" y="404" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    Compliant Global Package Organizer:
+  </text>
+  <text x="818" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Mints ATOL/EU PTD certificate on Flight+Hotel bundles
+  </text>
+  <text x="818" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Upfront All-In Price (`Room + Tax + Mandatory Resort`)
+  </text>
+  <text x="818" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Full package cancellation right if flight leg canceled
+  </text>
+
+  <!-- Footer -->
+  <text x="52" y="582" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    Agentic Commerce Fiduciary Architecture · Pillar 3: OTA Dynamic Packaging &amp; Bedbank Rate-Parity Shield · 🏆 Round 390 Milestone!
+  </text>
+</svg>

@@ -35188,6 +35188,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-ar-cash-application-deduction-sandbox", html_zh)
 
+    def test_ota_dynamic_packaging_bedbank_parity_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaDynamicPackagingBedbankParityPolicyInput,
+            evaluate_ota_dynamic_packaging_bedbank_parity_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_dynamic_packaging_bedbank_parity_policy(
+            OtaDynamicPackagingBedbankParityPolicyInput(
+                quarterly_walk_relocation_half_package_and_parity_fine_pool_usd=430000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_OTA_DYNAMIC_PACKAGING_AND_HCN_AUTHORIZED",
+        )
+
+        fence = evaluate_ota_dynamic_packaging_bedbank_parity_policy(
+            OtaDynamicPackagingBedbankParityPolicyInput(
+                wholesale_package_rate_sold_unbundled_or_itemized_on_receipt=True
+            )
+        )
+        self.assertEqual(fence["status_code"], 403)
+        self.assertEqual(
+            fence["decision"],
+            "WHOLESALE_PACKAGE_RATE_UNBUNDLED_PARITY_LEAK_VETO",
+        )
+
+        hcn = evaluate_ota_dynamic_packaging_bedbank_parity_policy(
+            OtaDynamicPackagingBedbankParityPolicyInput(
+                hotel_pms_hcn_missing_at_t72h_or_flight_issued_without_hotel_lock=True
+            )
+        )
+        self.assertEqual(hcn["status_code"], 422)
+        self.assertEqual(
+            hcn["decision"],
+            "MISSING_PRE_ARRIVAL_PMS_HCN_OR_PARTIAL_PACKAGE_COMMIT_BREACH",
+        )
+
+        law = evaluate_ota_dynamic_packaging_bedbank_parity_policy(
+            OtaDynamicPackagingBedbankParityPolicyInput(
+                eu_ptd_atol_bond_missing_or_mandatory_resort_fee_hidden_pre_checkout=True
+            )
+        )
+        self.assertEqual(law["status_code"], 451)
+        self.assertEqual(
+            law["decision"],
+            "EU_PTD_ATOL_UNINSURED_OR_HIDDEN_RESORT_FEE_DRIP_BREACH",
+        )
+
+        optim = evaluate_ota_dynamic_packaging_bedbank_parity_policy(
+            OtaDynamicPackagingBedbankParityPolicyInput(
+                quarterly_walk_relocation_half_package_and_parity_fine_pool_usd=430000.0,
+                opaque_bundle_2pc_saga_and_t72h_pms_hcn_verification_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 180600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 249400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_dynamic_packaging_bedbank_parity_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-dynamic-packaging-bedbank-parity-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

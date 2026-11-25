@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`508` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`509` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（38 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（62 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（190 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（191 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（115 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（46 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（57 篇）](#tax-fx-privacy-disputes)
@@ -134,7 +134,7 @@
 | 62 | **🛡️ 零售电商结账反欺诈、误拒好客挽回（`False-Decline Rescue`）与 100% 拒付包赔担保（`Chargeback Guarantee`）选型对比（`Signifyd / Forter / Riskified / Stripe Radar + Adyen RevenueProtect`）、拦截 eBay 代下单三角诈骗（`Triangulation`）与快递面单禁在途改址锁、灰区拒单二阶承保复活及 WMS 保单有效期出库锁净省 42% Agent 架构选型 FAQ** | [中文](ecommerce-checkout-fraud-false-decline-signifyd-forter-riskified-chargeback-guarantee-selection-faq.md) · [English](ecommerce-checkout-fraud-false-decline-signifyd-forter-riskified-chargeback-guarantee-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（190 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（191 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -330,6 +330,7 @@
 | 188 | **🏆 社交与直播电商（`Social & Livestream Commerce`）、达人免费寄样防白嫖（`Sample Seeding Guard`）与秒杀库存隔离/退货佣金倒扣选型对比（`TikTok Shop / YouTube Shopping + Shopify / Whatnot / Amazon Live` · 🏆 第 385 轮重大里程碑！）、达人历史挂车履约率（`>=85%`）寄样锁与 `POD + 14d` 佣金托管、Redis 直播独立库存桶防 `48h` 超卖罚分及实时语音 `ASR` 合规词熔断净省 42% Agent 架构选型 FAQ** | [中文](social-livestream-commerce-tiktok-shop-shopify-collective-whatnot-sample-seeding-clawback-selection-faq.md) · [English](social-livestream-commerce-tiktok-shop-shopify-collective-whatnot-sample-seeding-clawback-selection-faq.en.md) |
 | 189 | **🏆 零售电商先试穿后付款（`Try-Before-You-Buy, TBYB`）与个性化订阅穿搭盒（`Curated Styling Box`）选型对比（`TryNow / Blackcart / Shopify TBYB + Loop Returns / 自建 Extended-Auth 穿搭盒` · 🏆 第 830 张架构图与第 280 个策略沙盒双里程碑！）、拦截预付虚拟废卡 `BIN` 与第 6 天预授权自动滚动续期防过期跑路、`$20` 造型费抵货款与 5 件全留 8 折杠杆及快递妥投（`POD`）才启动 7 天计时净省 43% Agent 架构选型 FAQ** | [中文](ecommerce-try-before-you-buy-tbyb-curated-box-trynow-blackcart-loop-auth-expiry-pod-selection-faq.md) · [English](ecommerce-try-before-you-buy-tbyb-curated-box-trynow-blackcart-loop-auth-expiry-pod-selection-faq.en.md) |
 | 190 | **🏆 全渠道零售门店私人导购（`Clienteling`）、云货架跨店调拨（`Endless Aisle`）与线上退到门店（`BORIS`）佣金归因选型对比（`Tulip Clienteling / NewStore Omnichannel POS / Salesforce Retail Cloud / Shopify POS Pro` · 🏆 第 1,385 项确定性单元测试重大里程碑！）、导购数字画册 `14天` 跨设备归因保护锁与 `75%/25%` 双店分润、`BORIS` 网退免扣门店业绩与当场换购提成及虚拟中间号防离职带走 VIP 客资净省 41% Agent 架构选型 FAQ** | [中文](omnichannel-clienteling-endless-aisle-tulip-newstore-salesforce-shopify-pos-boris-commission-selection-faq.md) · [English](omnichannel-clienteling-endless-aisle-tulip-newstore-salesforce-shopify-pos-boris-commission-selection-faq.en.md) |
+| 191 | **🏆 酒旅 OTA 动态打包（`Flight + Hotel Dynamic Packaging`）、B2B 床位银行（`Bedbank`）防窜货破价与到店“幽灵订单”零到房抗辩选型对比（`Expedia EPS Rapid / Hotelbeds HBX / Booking.com Demand API / DerbySoft 直连` · 🏆 第 390 轮重大里程碑！）、打包专属暗价（`Opaque Rate`）防裸卖与水单分项隐藏锁、机酒两阶段原子预留（`2PC`）与入住前 `T-72h` 酒店原生 `PMS HCN` 确认号强核验及欧盟套餐指令 `EU PTD / ATOL` 合规净省 42% Agent 架构选型 FAQ** | [中文](ota-dynamic-packaging-bedbank-rate-parity-eps-rapid-hotelbeds-derbysoft-pms-hcn-selection-faq.md) · [English](ota-dynamic-packaging-bedbank-rate-parity-eps-rapid-hotelbeds-derbysoft-pms-hcn-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（115 篇）

@@ -44741,6 +44741,82 @@ def evaluate_b2b_ar_cash_application_deduction_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaDynamicPackagingBedbankParityPolicyInput:
+    quarterly_walk_relocation_half_package_and_parity_fine_pool_usd: float = 430000.0
+    wholesale_package_rate_sold_unbundled_or_itemized_on_receipt: bool = False
+    hotel_pms_hcn_missing_at_t72h_or_flight_issued_without_hotel_lock: bool = False
+    eu_ptd_atol_bond_missing_or_mandatory_resort_fee_hidden_pre_checkout: bool = False
+    opaque_bundle_2pc_saga_and_t72h_pms_hcn_verification_ready: bool = False
+
+
+def evaluate_ota_dynamic_packaging_bedbank_parity_policy(
+    policy_input: OtaDynamicPackagingBedbankParityPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_walk_relocation_half_package_and_parity_fine_pool_usd
+        ),
+    )
+    if policy_input.eu_ptd_atol_bond_missing_or_mandatory_resort_fee_hidden_pre_checkout:
+        return {
+            "status_code": 451,
+            "decision": "EU_PTD_ATOL_UNINSURED_OR_HIDDEN_RESORT_FEE_DRIP_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.wholesale_package_rate_sold_unbundled_or_itemized_on_receipt:
+        return {
+            "status_code": 403,
+            "decision": "WHOLESALE_PACKAGE_RATE_UNBUNDLED_PARITY_LEAK_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hotel_pms_hcn_missing_at_t72h_or_flight_issued_without_hotel_lock:
+        return {
+            "status_code": 422,
+            "decision": "MISSING_PRE_ARRIVAL_PMS_HCN_OR_PARTIAL_PACKAGE_COMMIT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.opaque_bundle_2pc_saga_and_t72h_pms_hcn_verification_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "OPAQUE_BUNDLE_2PC_SAGA_AND_T72H_PMS_HCN_CONFIRM",
+            "mandate_token": "ota_dynamic_packaging_hcn_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_OTA_DYNAMIC_PACKAGING_AND_HCN_AUTHORIZED",
+        "mandate_token": "ota_dynamic_packaging_hcn_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -60800,6 +60876,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_dynamic_packaging_bedbank_parity_guard = {
+        "authorized_200": evaluate_ota_dynamic_packaging_bedbank_parity_policy(
+            OtaDynamicPackagingBedbankParityPolicyInput()
+        ),
+        "unbundled_wholesale_leak_403": evaluate_ota_dynamic_packaging_bedbank_parity_policy(
+            OtaDynamicPackagingBedbankParityPolicyInput(
+                wholesale_package_rate_sold_unbundled_or_itemized_on_receipt=True
+            )
+        ),
+        "missing_hcn_or_half_package_422": evaluate_ota_dynamic_packaging_bedbank_parity_policy(
+            OtaDynamicPackagingBedbankParityPolicyInput(
+                hotel_pms_hcn_missing_at_t72h_or_flight_issued_without_hotel_lock=True
+            )
+        ),
+        "missing_atol_or_resort_drip_451": evaluate_ota_dynamic_packaging_bedbank_parity_policy(
+            OtaDynamicPackagingBedbankParityPolicyInput(
+                eu_ptd_atol_bond_missing_or_mandatory_resort_fee_hidden_pre_checkout=True
+            )
+        ),
+        "opaque_2pc_hcn_verified_409": evaluate_ota_dynamic_packaging_bedbank_parity_policy(
+            OtaDynamicPackagingBedbankParityPolicyInput(
+                opaque_bundle_2pc_saga_and_t72h_pms_hcn_verification_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -61318,6 +61420,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_try_before_you_buy_guard": ecommerce_try_before_you_buy_guard,
         "retail_clienteling_pos_boris_attribution_guard": retail_clienteling_pos_boris_attribution_guard,
         "b2b_ar_cash_application_deduction_guard": b2b_ar_cash_application_deduction_guard,
+        "ota_dynamic_packaging_bedbank_parity_guard": ota_dynamic_packaging_bedbank_parity_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -88747,6 +88850,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="b2bar-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 AUTOMATED_POD_DISPUTE_BUNDLER_AND_INTRADAY_CREDIT_RELEASE_CONFIRM · Mandate: b2b_ar_cash_app_dispute_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 390 (🏆 Round 390 Major Milestone! · #509 · SVG #833 · Sandbox #283 · Test #1,387) OTA Dynamic Packaging & PMS HCN -->
+      <div class="finops-box" id="ota-dynamic-packaging-bedbank-parity-sandbox" style="margin-top:12px;border-color:#06b6d4;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 酒旅 OTA 动态打包 (Flight+Hotel)、B2B 床位银行防破价与 PMS HCN 核验 (Expedia EPS / Hotelbeds / Booking / DerbySoft) 沙盒（🏆 第 390 轮里程碑！）</div>
+            <div class="finops-sub">Round 390 (🏆 Round 390 Milestone · #509 · SVG #833 · Sandbox #283 · Test #1,387) · 拦截 B2B 打包暗价 (Package-Only Rate) 单独裸卖破价与发票暴露酒店底价 (HTTP 403) + 机酒两阶段原子锁位 (2PC) 与入住前 72h 酒店原生 PMS HCN 确认号核验防到店无房 (HTTP 422) + 欧盟 PTD/ATOL 破产保护与强制 Resort Fee 全包价披露锁 (HTTP 451) + 暗价打包与 T-72h 补单净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="otapkg-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度到店查无 PMS 确认号 (HCN) 3 倍改派赔付、机酒单边锁单报废与裸卖批发价违约损耗池 ($)
+            <input type="number" id="otapkg-gross-input" value="430000" min="10000" step="5000" oninput="recalcOtaDynamicPackagingBedbankParitySandbox()" />
+          </label>
+          <label>B2B 打包专属底价 (Package-Only / Opaque Rate) 严禁裸卖与客户收据分项价格隐藏锁
+            <select id="otapkg-fence-select" onchange="recalcOtaDynamicPackagingBedbankParitySandbox()">
+              <option value="pass">强制绑定有效机票/火车票同购，且前端与发票仅展示打包一口总价 (安全)</option>
+              <option value="block_403">将 B2B 机酒打包底价 $210 拆开当单订房挂公网卖破价，或在水单打印酒店单项底价遭封号 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>机酒两阶段原子预留 (Flight PNR + Hotel Pre-Book 2PC) 与入住前 T-72h 原生 PMS HCN 核验门禁
+            <select id="otapkg-hcn-select" onchange="recalcOtaDynamicPackagingBedbankParitySandbox()">
+              <option value="pass">机票与酒店双向锁位成功才扣款，且 T-72h 强制验证酒店前台 OPERA PMS HCN 确认号 (合规)</option>
+              <option value="block_422">先出不可退机票再去订酒店发现满房，或只拿批发商单号未验 PMS HCN 致客人半夜到店无房 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>欧盟套餐指令 (EU PTD / UK ATOL) 破产托管凭证与美国 FTC 强制度假村费 (Resort Fee) 首屏披露门禁
+            <select id="otapkg-law-select" onchange="recalcOtaDynamicPackagingBedbankParitySandbox()">
+              <option value="pass">签发 ATOL/PTD 保护证书并用可退批发房对冲航变，首屏报价 100% 含强制 Resort Fee (合规)</option>
+              <option value="block_451">售卖欧洲机酒套餐未附 ATOL 凭证，或结账最后一页才偷偷加上 $55/晚强制度假村费 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Expedia EPS / Hotelbeds Opaque 动态打包 + T-72h HCN 直连巡检 + 可退批发房航变对冲编排
+            <select id="otapkg-opt-select" onchange="recalcOtaDynamicPackagingBedbankParitySandbox()">
+              <option value="enabled" selected>启用 Opaque 打包围栏 + 机酒 2PC 锁位 + T-72h HCN 自动巡检补单 (-42% 到店无房与破价损耗 / HTTP 409)</option>
+              <option value="disabled">传统异步单边出票与无 HCN 核验批发商基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度到店无房与单边废票池</div>
+            <div class="finops-kpi-val" id="otapkg-gross-kpi">$430,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">2PC 锁位与 HCN 巡检净损耗</div>
+            <div class="finops-kpi-val" id="otapkg-net-kpi" style="color:#6ee7b7;">$249,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省改派赔付与违约金</div>
+            <div class="finops-kpi-val" id="otapkg-savings-kpi" style="color:#38bdf8;">$180,600</div>
+          </div>
+        </div>
+        <div id="otapkg-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 OPAQUE_BUNDLE_2PC_SAGA_AND_T72H_PMS_HCN_CONFIRM · Mandate: ota_dynamic_packaging_hcn_optim_409
         </div>
       </div>
 
@@ -122734,6 +122894,79 @@ function recalcB2bArCashApplicationDeductionSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_AR_CASH_APP_AND_DEDUCTION_AUTHORIZED · Mandate: b2b_ar_cash_app_dispute_200';
+}}
+
+function recalcOtaDynamicPackagingBedbankParitySandbox() {{
+  const grossInput = document.getElementById('otapkg-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '430000'));
+  const fenceGate = document.getElementById('otapkg-fence-select').value;
+  const hcnGate = document.getElementById('otapkg-hcn-select').value;
+  const lawGate = document.getElementById('otapkg-law-select').value;
+  const optMode = document.getElementById('otapkg-opt-select').value;
+
+  const grossKpi = document.getElementById('otapkg-gross-kpi');
+  const netKpi = document.getElementById('otapkg-net-kpi');
+  const savingsKpi = document.getElementById('otapkg-savings-kpi');
+  const statusKpi = document.getElementById('otapkg-status-kpi');
+  const banner = document.getElementById('otapkg-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (lawGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 EU_PTD_ATOL_UNINSURED_OR_HIDDEN_RESORT_FEE_DRIP_BREACH · Mandate: null';
+    return;
+  }}
+  if (fenceGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 WHOLESALE_PACKAGE_RATE_UNBUNDLED_PARITY_LEAK_VETO · Mandate: null';
+    return;
+  }}
+  if (hcnGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 MISSING_PRE_ARRIVAL_PMS_HCN_OR_PARTIAL_PACKAGE_COMMIT_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 OPAQUE_BUNDLE_2PC_SAGA_AND_T72H_PMS_HCN_CONFIRM · Mandate: ota_dynamic_packaging_hcn_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_OTA_DYNAMIC_PACKAGING_AND_HCN_AUTHORIZED · Mandate: ota_dynamic_packaging_hcn_200';
 }}
 
 function updateStage1756Sandbox() {{
