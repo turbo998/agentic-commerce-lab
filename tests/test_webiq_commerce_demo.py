@@ -36284,6 +36284,70 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-post-purchase-one-click-upsell-sandbox", html_zh)
 
+    def test_b2b_procurement_clm_contract_redline_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bProcurementClmContractRedlinePolicyInput,
+            evaluate_b2b_procurement_clm_contract_redline_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_b2b_procurement_clm_contract_redline_policy(
+            B2bProcurementClmContractRedlinePolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(
+            auth["mandate_token"], "b2b_clm_redline_300th_sandbox_200"
+        )
+
+        lol = evaluate_b2b_procurement_clm_contract_redline_policy(
+            B2bProcurementClmContractRedlinePolicyInput(
+                uncapped_liability_or_evergreen_renewal_uplift_exceeds_3pct_cap=True
+            )
+        )
+        self.assertEqual(lol["status_code"], 403)
+        self.assertEqual(
+            lol["decision"],
+            "TOXIC_LIABILITY_CAP_OR_UNCAPPED_EVERGREEN_PRICE_ESCALATOR_VETO",
+        )
+
+        erp = evaluate_b2b_procurement_clm_contract_redline_policy(
+            B2bProcurementClmContractRedlinePolicyInput(
+                signed_rate_card_not_synced_to_erp_or_untracked_silent_diff_detected=True
+            )
+        )
+        self.assertEqual(erp["status_code"], 422)
+        self.assertEqual(
+            erp["decision"],
+            "CLM_TO_ERP_RATE_CARD_SYNC_GAP_OR_UNTRACKED_SILENT_DIFF_BREACH",
+        )
+
+        zdr = evaluate_b2b_procurement_clm_contract_redline_policy(
+            B2bProcurementClmContractRedlinePolicyInput(
+                vendor_trains_ai_on_buyer_data_or_unapproved_governing_law_venue=True
+            )
+        )
+        self.assertEqual(zdr["status_code"], 451)
+        self.assertEqual(
+            zdr["decision"],
+            "VENDOR_AI_TRAINING_ON_BUYER_DATA_OR_UNAPPROVED_VENUE_BREACH",
+        )
+
+        optim = evaluate_b2b_procurement_clm_contract_redline_policy(
+            B2bProcurementClmContractRedlinePolicyInput(
+                quarterly_unsynced_erp_rate_evergreen_uplift_and_redline_pool_usd=510000.0,
+                ast_full_diff_playbook_redline_and_erp_outline_agreement_sync_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 219300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 290700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_procurement_clm_contract_redline_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-procurement-clm-contract-redline-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
