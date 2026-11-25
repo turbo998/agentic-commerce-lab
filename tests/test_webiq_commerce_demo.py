@@ -35724,6 +35724,68 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("online-grocery-substitution-catch-weight-sandbox", html_zh)
 
+    def test_ecommerce_accelerated_checkout_recovery_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceAcceleratedCheckoutRecoveryPolicyInput,
+            evaluate_ecommerce_accelerated_checkout_recovery_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_ecommerce_accelerated_checkout_recovery_policy(
+            EcommerceAcceleratedCheckoutRecoveryPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(auth["mandate_token"], "accelerated_checkout_recovery_200")
+
+        addr = evaluate_ecommerce_accelerated_checkout_recovery_policy(
+            EcommerceAcceleratedCheckoutRecoveryPolicyInput(
+                wallet_stale_address_overwrites_cart_or_pobox_allowed_on_air_courier=True
+            )
+        )
+        self.assertEqual(addr["status_code"], 403)
+        self.assertEqual(
+            addr["decision"],
+            "WALLET_STALE_ADDRESS_OVERRIDE_OR_POBOX_COURIER_VETO",
+        )
+
+        rec = evaluate_ecommerce_accelerated_checkout_recovery_policy(
+            EcommerceAcceleratedCheckoutRecoveryPolicyInput(
+                abandoned_cart_sent_for_oos_sku_or_discount_given_within_180d_cooldown=True
+            )
+        )
+        self.assertEqual(rec["status_code"], 422)
+        self.assertEqual(
+            rec["decision"],
+            "OOS_ABANDONED_CART_PING_OR_COUPON_GAMING_BREACH",
+        )
+
+        sms = evaluate_ecommerce_accelerated_checkout_recovery_policy(
+            EcommerceAcceleratedCheckoutRecoveryPolicyInput(
+                unsolicited_sms_otp_fired_on_email_blur_or_over_2_wallets_blocking_lcp=True
+            )
+        )
+        self.assertEqual(sms["status_code"], 451)
+        self.assertEqual(
+            sms["decision"],
+            "UNSOLICITED_BLUR_SMS_PUMPING_OR_BUTTON_SOUP_LCP_BREACH",
+        )
+
+        optim = evaluate_ecommerce_accelerated_checkout_recovery_policy(
+            EcommerceAcceleratedCheckoutRecoveryPolicyInput(
+                quarterly_coupon_cannibalization_stale_address_and_sms_fraud_pool_usd=430000.0,
+                device_aware_two_wallet_passkey_and_stock_verified_recovery_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 180600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 249400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_accelerated_checkout_recovery_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-accelerated-checkout-recovery-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -45349,6 +45349,84 @@ def evaluate_online_grocery_substitution_catch_weight_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceAcceleratedCheckoutRecoveryPolicyInput:
+    quarterly_coupon_cannibalization_stale_address_and_sms_fraud_pool_usd: float = (
+        430000.0
+    )
+    wallet_stale_address_overwrites_cart_or_pobox_allowed_on_air_courier: bool = False
+    abandoned_cart_sent_for_oos_sku_or_discount_given_within_180d_cooldown: bool = False
+    unsolicited_sms_otp_fired_on_email_blur_or_over_2_wallets_blocking_lcp: bool = False
+    device_aware_two_wallet_passkey_and_stock_verified_recovery_ready: bool = False
+
+
+def evaluate_ecommerce_accelerated_checkout_recovery_policy(
+    policy_input: EcommerceAcceleratedCheckoutRecoveryPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_coupon_cannibalization_stale_address_and_sms_fraud_pool_usd
+        ),
+    )
+    if policy_input.unsolicited_sms_otp_fired_on_email_blur_or_over_2_wallets_blocking_lcp:
+        return {
+            "status_code": 451,
+            "decision": "UNSOLICITED_BLUR_SMS_PUMPING_OR_BUTTON_SOUP_LCP_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.wallet_stale_address_overwrites_cart_or_pobox_allowed_on_air_courier:
+        return {
+            "status_code": 403,
+            "decision": "WALLET_STALE_ADDRESS_OVERRIDE_OR_POBOX_COURIER_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.abandoned_cart_sent_for_oos_sku_or_discount_given_within_180d_cooldown:
+        return {
+            "status_code": 422,
+            "decision": "OOS_ABANDONED_CART_PING_OR_COUPON_GAMING_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.device_aware_two_wallet_passkey_and_stock_verified_recovery_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DEVICE_AWARE_TWO_WALLET_PASSKEY_AND_STOCK_VERIFIED_RECOVERY_CONFIRM",
+            "mandate_token": "accelerated_checkout_recovery_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ACCELERATED_CHECKOUT_AND_CART_RECOVERY_AUTHORIZED",
+        "mandate_token": "accelerated_checkout_recovery_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -61616,6 +61694,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_accelerated_checkout_recovery_guard = {
+        "authorized_200": evaluate_ecommerce_accelerated_checkout_recovery_policy(
+            EcommerceAcceleratedCheckoutRecoveryPolicyInput()
+        ),
+        "wallet_address_or_pobox_403": evaluate_ecommerce_accelerated_checkout_recovery_policy(
+            EcommerceAcceleratedCheckoutRecoveryPolicyInput(
+                wallet_stale_address_overwrites_cart_or_pobox_allowed_on_air_courier=True
+            )
+        ),
+        "oos_cart_or_coupon_gaming_422": evaluate_ecommerce_accelerated_checkout_recovery_policy(
+            EcommerceAcceleratedCheckoutRecoveryPolicyInput(
+                abandoned_cart_sent_for_oos_sku_or_discount_given_within_180d_cooldown=True
+            )
+        ),
+        "sms_pumping_or_button_soup_451": evaluate_ecommerce_accelerated_checkout_recovery_policy(
+            EcommerceAcceleratedCheckoutRecoveryPolicyInput(
+                unsolicited_sms_otp_fired_on_email_blur_or_over_2_wallets_blocking_lcp=True
+            )
+        ),
+        "two_wallet_passkey_recovery_409": evaluate_ecommerce_accelerated_checkout_recovery_policy(
+            EcommerceAcceleratedCheckoutRecoveryPolicyInput(
+                device_aware_two_wallet_passkey_and_stock_verified_recovery_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -62142,6 +62246,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_wholesale_dealer_portal_allocation_guard": b2b_wholesale_dealer_portal_allocation_guard,
         "saas_pls_domain_consolidation_guard": saas_pls_domain_consolidation_guard,
         "online_grocery_substitution_catch_weight_guard": online_grocery_substitution_catch_weight_guard,
+        "ecommerce_accelerated_checkout_recovery_guard": ecommerce_accelerated_checkout_recovery_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -88207,6 +88312,62 @@ def render_webiq_live_demo_html(
       </div>
 
       <!-- Interactive Sandbox: Round 366 (#485 🏆 485th Guide Milestone · SVG #809 · Sandbox #259) Cross-Border Multi-Currency & FX Treasury -->
+      <div class="finops-box" id="ecommerce-accelerated-checkout-recovery-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 零售电商一键极速结账、防钱包覆盖旧地址与弃单召回 (Shop Pay / Fastlane / Stripe Link / Apple Pay) 沙盒（🏆 第 1,395 项单元测试里程碑！）</div>
+            <div class="finops-sub">Round 398 (#517 · SVG #841 · Sandbox #291 · 🏆 1,395th Unit Test Major Milestone!) · 拦截快捷钱包静默将已填新地址覆盖为 5 年前旧宿舍地址或次日达误发 P.O. Box (HTTP 403) + 弃单召回前实时核验库存 ATP&gt;0 与 180d 防故意弃单薅券冷却锁 (HTTP 422) + Passkey 优先并严禁邮箱 onBlur 自动发短信防 SMS Pumping 盗刷 (HTTP 451) + 动态渲染 Top-2 钱包净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="accchk-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度快捷钱包旧地址覆盖寄丢拒付、邮箱失焦 SMS Pumping 短信盗刷与故意弃单薅 85 折券毛利流失池 ($)
+            <input type="number" id="accchk-gross-input" value="430000" min="10000" step="5000" oninput="recalcEcommerceAcceleratedCheckoutRecoverySandbox()" />
+          </label>
+          <label>用户已填收货地址优先级守恒 (Explicit-Input Precedence) 与快递禁寄 P.O. Box 门禁
+            <select id="accchk-addr-select" onchange="recalcEcommerceAcceleratedCheckoutRecoverySandbox()">
+              <option value="pass">保留用户已填新地址或弹窗确认差异，且在钱包回调内实时阻断航空快递发往 P.O. Box (安全)</option>
+              <option value="block_403">Apple Pay/PayPal 回调静默用 5 年前旧宿舍地址覆盖新填地址，或放行次日达发往 P.O. Box (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>弃单挽回前实时库存 (ATP &gt; 0) 核验与 180 天防老客故意弃单薅券冷却门禁
+            <select id="accchk-rec-select" onchange="recalcEcommerceAcceleratedCheckoutRecoverySandbox()">
+              <option value="pass">发送前秒查尺码有货，首触仅发一键免密恢复链接且 180 天内禁重复发放挽留折扣码 (安全)</option>
+              <option value="block_422">向已断码售罄商品发召回邮件，或弃单 30 分钟无冷却群发 85 折码被熟客反复薅羊毛 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>WebAuthn Passkey 免短信核身与防邮箱失焦 (onBlur) 自动发短信遭 SMS Pumping 盗刷门禁
+            <select id="accchk-sms-select" onchange="recalcEcommerceAcceleratedCheckoutRecoverySandbox()">
+              <option value="pass">优先调用设备 Passkey 生物识别，关闭 onBlur 自动发短信并按 OS 动态只渲染 Top-2 钱包 (合规)</option>
+              <option value="block_451">邮箱框失去焦点即自动发国际验证码短信被刷走 $40k，或同屏堆砌 6 个重型钱包阻塞 LCP (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>按操作系统动态双钱包渲染 + Passkey 一键自动填充 + 现货免折扣智能召回编排
+            <select id="accchk-opt-select" onchange="recalcEcommerceAcceleratedCheckoutRecoverySandbox()">
+              <option value="enabled" selected>启用动态双钱包 Passkey + 显式地址保护锁 + 180d 券冷却 (-42% 结账与弃单损耗 / HTTP 409)</option>
+              <option value="disabled">默认单钱包标准结账与定时召回基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度改址丢件与弃单薅券损失池</div>
+            <div class="finops-kpi-val" id="accchk-gross-kpi">$430,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净损耗成本</div>
+            <div class="finops-kpi-val" id="accchk-net-kpi">$249,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回结账毛利与短信费</div>
+            <div class="finops-kpi-val" id="accchk-savings-kpi" style="color:#6ee7b7;">$180,600</div>
+          </div>
+        </div>
+        <div id="accchk-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 DEVICE_AWARE_TWO_WALLET_PASSKEY_AND_STOCK_VERIFIED_RECOVERY_CONFIRM · Mandate: accelerated_checkout_recovery_optim_409
+        </div>
+      </div>
+
       <div class="finops-box" id="cross-border-multi-currency-fx-lock-sandbox" style="margin-top:12px;border-color:#10b981;">
         <div class="finops-hdr">
           <div>
@@ -121605,6 +121766,79 @@ function recalcCrossBorderMorVsDirectSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CROSS_BORDER_MOR_AND_DIRECT_ROUTING_AUTHORIZED · Mandate: cross_border_mor_direct_200';
+}}
+
+function recalcEcommerceAcceleratedCheckoutRecoverySandbox() {{
+  const grossInput = document.getElementById('accchk-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '430000'));
+  const addrGate = document.getElementById('accchk-addr-select').value;
+  const recGate = document.getElementById('accchk-rec-select').value;
+  const smsGate = document.getElementById('accchk-sms-select').value;
+  const optMode = document.getElementById('accchk-opt-select').value;
+
+  const grossKpi = document.getElementById('accchk-gross-kpi');
+  const netKpi = document.getElementById('accchk-net-kpi');
+  const savingsKpi = document.getElementById('accchk-savings-kpi');
+  const statusKpi = document.getElementById('accchk-status-kpi');
+  const banner = document.getElementById('accchk-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (smsGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNSOLICITED_BLUR_SMS_PUMPING_OR_BUTTON_SOUP_LCP_BREACH · Mandate: null';
+    return;
+  }}
+  if (addrGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 WALLET_STALE_ADDRESS_OVERRIDE_OR_POBOX_COURIER_VETO · Mandate: null';
+    return;
+  }}
+  if (recGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 OOS_ABANDONED_CART_PING_OR_COUPON_GAMING_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 DEVICE_AWARE_TWO_WALLET_PASSKEY_AND_STOCK_VERIFIED_RECOVERY_CONFIRM · Mandate: accelerated_checkout_recovery_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_ACCELERATED_CHECKOUT_AND_CART_RECOVERY_AUTHORIZED · Mandate: accelerated_checkout_recovery_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{
