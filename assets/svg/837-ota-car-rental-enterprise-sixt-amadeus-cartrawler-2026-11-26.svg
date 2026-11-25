@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg837" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="55%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <linearGradient id="accent837" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg837)" />
+  <rect x="24" y="24" width="1152" height="582" rx="18" fill="none" stroke="url(#accent837)" stroke-width="2" opacity="0.45" />
+
+  <text x="52" y="66" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.2">
+    ROUND 394 · FAQ #513 · SVG #837 · SANDBOX #287 · TEST #1,391
+  </text>
+  <text x="52" y="102" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">
+    OTA &amp; Corporate Car Rental, CDW Shield &amp; Telematics Settlement Copilot
+  </text>
+  <text x="52" y="130" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="15">
+    Enterprise/National vs. Sixt/Hertz vs. Amadeus Car vs. CarTrawler + Counter CDW Veto, CAN-Bus Fuel &amp; CV Damage Diff
+  </text>
+
+  <!-- Panel 1 -->
+  <rect x="52" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#ef4444" stroke-width="1.8" />
+  <rect x="52" y="156" width="350" height="42" rx="14" fill="#7f1d1d" />
+  <text x="72" y="183" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    1. Duplicate Counter CDW Veto (403)
+  </text>
+  <text x="72" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: $38/Day Counter CDW Sold Over Corporate Policy
+  </text>
+  <text x="72" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Corporate rate or Visa Infinite already covers 100%
+  </text>
+  <text x="72" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    Primary CDW/LDW, yet counter agent pressures traveler
+  </text>
+  <text x="72" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    into signing $38/day duplicate collision insurance!
+  </text>
+  <rect x="72" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#f87171" stroke-width="1" />
+  <text x="86" y="328" fill="#fca5a5" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if Primary_CDW_Active and Counter_CDW_Added:
+  </text>
+  <text x="86" y="348" fill="#fecaca" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_403_DUPLICATE_COUNTER_CDW_UPSELL_VETO
+  </text>
+  <text x="86" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Cap VCN to contracted Base+Tax &amp; bypass counter desk
+  </text>
+  <text x="72" y="404" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    Platform Fit: Enterprise Emerald / Sixt Direct
+  </text>
+  <text x="72" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Pre-binds corporate CDP/Contract ID with CDW=DECLINE
+  </text>
+  <text x="72" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Mobile App "Bypass the Counter" goes straight to lot
+  </text>
+  <text x="72" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Hard-caps virtual card to prevent counter add-ons
+  </text>
+
+  <!-- Panel 2 -->
+  <rect x="425" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#f59e0b" stroke-width="1.8" />
+  <rect x="425" y="156" width="350" height="42" rx="14" fill="#78350f" />
+  <text x="445" y="183" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    2. CAN-Bus Fuel &amp; Toll Cap Gate (422)
+  </text>
+  <text x="445" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: $9.99/Gal False Refuel &amp; $75 Toll Admin Fee
+  </text>
+  <text x="445" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Traveler fills tank 3 miles from airport, yet agency
+  </text>
+  <text x="445" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    bills $85 refueling penalty or $15/day x 5d ($75)
+  </text>
+  <text x="445" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    toll-pass convenience fee for a single $2.00 toll!
+  </text>
+  <rect x="445" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="1" />
+  <text x="459" y="328" fill="#fcd34d" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if CANBus_Fuel_Pct &gt;= 0.94 and Refuel_Billed:
+  </text>
+  <text x="459" y="348" fill="#fde68a" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_422_FALSE_REFUEL_OR_TOLL_ADMIN_BREACH
+  </text>
+  <text x="459" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Verify OBD-II/gas receipt &amp; cap toll admin fee &lt;=$5
+  </text>
+  <text x="445" y="404" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    Flight-Synced Hold + Telematics (HTTP 409):
+  </text>
+  <text x="445" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Links flight number so delayed arrival holds SUV
+  </text>
+  <text x="445" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Auto-reconciles CAN-bus fuel &amp; actual toll transits
+  </text>
+  <text x="445" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Cuts rental ancillary overcharges &amp; disputes by 42%
+  </text>
+
+  <!-- Panel 3 -->
+  <rect x="798" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#10b981" stroke-width="1.8" />
+  <rect x="798" y="156" width="350" height="42" rx="14" fill="#064e3b" />
+  <text x="818" y="183" fill="#a7f3d0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    3. CV Walkaround &amp; 0420 Release (451)
+  </text>
+  <text x="818" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: Mystery Scratch Billed 14d Later &amp; Frozen Hold
+  </text>
+  <text x="818" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Agency bills $1,200 for a bumper scratch 14 days
+  </text>
+  <text x="818" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    after drop-off (after 3 other renters drove the car!)
+  </text>
+  <text x="818" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Or holds $500 security deposit for 21 days post-return
+  </text>
+  <rect x="818" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#34d399" stroke-width="1" />
+  <text x="832" y="328" fill="#6ee7b7" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if Damage_After_Next_Rental or Hold_Not_Reversed:
+  </text>
+  <text x="832" y="348" fill="#a7f3d0" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_451_DELAYED_DAMAGE_OR_DEPOSIT_HOLD_BREACH
+  </text>
+  <text x="832" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Require pre/post CV photo diff &amp; instant 0420 release
+  </text>
+  <text x="818" y="404" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    Cryptographic Walkaround Evidence:
+  </text>
+  <text x="818" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • 4-corner timestamped CV scan at pick-up &amp; drop-off
+  </text>
+  <text x="818" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Blocks damage claims filed after next renter check-out
+  </text>
+  <text x="818" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Fires ISO 8583 0420 deposit reversal within 15m of return
+  </text>
+
+  <!-- Footer -->
+  <text x="52" y="582" fill="#94a3b8" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    Agentic Commerce Fiduciary Architecture · Pillar 3: OTA &amp; Corporate Car Rental Telematics &amp; CDW Shield · Round 394 (#513)
+  </text>
+</svg>

@@ -45045,6 +45045,82 @@ def evaluate_ecommerce_trade_in_recommerce_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaCarRentalTelematicsSettlementPolicyInput:
+    quarterly_counter_cdw_false_refuel_and_mystery_damage_pool_usd: float = 370000.0
+    duplicate_counter_cdw_added_over_corporate_policy_or_uncapped_vcn: bool = False
+    refuel_penalty_billed_on_full_canbus_tank_or_excessive_toll_admin: bool = False
+    post_return_damage_claimed_without_cv_diff_or_deposit_unreversed: bool = False
+    bypass_counter_mobile_pickup_and_flight_synced_hold_ready: bool = False
+
+
+def evaluate_ota_car_rental_telematics_settlement_policy(
+    policy_input: OtaCarRentalTelematicsSettlementPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_counter_cdw_false_refuel_and_mystery_damage_pool_usd
+        ),
+    )
+    if policy_input.post_return_damage_claimed_without_cv_diff_or_deposit_unreversed:
+        return {
+            "status_code": 451,
+            "decision": "POST_RETURN_MYSTERY_DAMAGE_CLAIM_OR_STALE_DEPOSIT_HOLD_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.duplicate_counter_cdw_added_over_corporate_policy_or_uncapped_vcn:
+        return {
+            "status_code": 403,
+            "decision": "DUPLICATE_COUNTER_CDW_OR_UNAUTHORIZED_UPGRADE_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.refuel_penalty_billed_on_full_canbus_tank_or_excessive_toll_admin:
+        return {
+            "status_code": 422,
+            "decision": "FALSE_REFUELING_PENALTY_OR_PREDATORY_TOLL_ADMIN_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bypass_counter_mobile_pickup_and_flight_synced_hold_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "BYPASS_COUNTER_MOBILE_PICKUP_AND_CANBUS_SETTLEMENT_CONFIRM",
+            "mandate_token": "ota_car_rental_telematics_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_OTA_CAR_RENTAL_AND_TELEMATICS_AUTHORIZED",
+        "mandate_token": "ota_car_rental_telematics_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -61208,6 +61284,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_car_rental_telematics_settlement_guard = {
+        "authorized_200": evaluate_ota_car_rental_telematics_settlement_policy(
+            OtaCarRentalTelematicsSettlementPolicyInput()
+        ),
+        "duplicate_cdw_or_uncapped_vcn_403": evaluate_ota_car_rental_telematics_settlement_policy(
+            OtaCarRentalTelematicsSettlementPolicyInput(
+                duplicate_counter_cdw_added_over_corporate_policy_or_uncapped_vcn=True
+            )
+        ),
+        "false_refuel_or_toll_admin_422": evaluate_ota_car_rental_telematics_settlement_policy(
+            OtaCarRentalTelematicsSettlementPolicyInput(
+                refuel_penalty_billed_on_full_canbus_tank_or_excessive_toll_admin=True
+            )
+        ),
+        "mystery_damage_or_stale_hold_451": evaluate_ota_car_rental_telematics_settlement_policy(
+            OtaCarRentalTelematicsSettlementPolicyInput(
+                post_return_damage_claimed_without_cv_diff_or_deposit_unreversed=True
+            )
+        ),
+        "skip_counter_canbus_sync_409": evaluate_ota_car_rental_telematics_settlement_policy(
+            OtaCarRentalTelematicsSettlementPolicyInput(
+                bypass_counter_mobile_pickup_and_flight_synced_hold_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -61730,6 +61832,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_extended_warranty_protection_guard": ecommerce_extended_warranty_protection_guard,
         "b2b_freight_audit_payment_gsr_guard": b2b_freight_audit_payment_gsr_guard,
         "ecommerce_trade_in_recommerce_guard": ecommerce_trade_in_recommerce_guard,
+        "ota_car_rental_telematics_settlement_guard": ota_car_rental_telematics_settlement_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -89387,6 +89490,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="trdrec-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 MIRROR_AI_PRE_GRADING_AND_15PCT_STORE_CREDIT_BOOSTER_CONFIRM · Mandate: trade_in_recommerce_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 394 (#513 · SVG #837 · Sandbox #287 · Test #1,391) OTA & Corporate Car Rental Telematics & CDW Shield -->
+      <div class="finops-box" id="ota-car-rental-telematics-settlement-sandbox" style="margin-top:12px;border-color:#06b6d4;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🚗 酒旅 OTA 与企业差旅租车、防柜台强推重复车损险 (CDW) 与车载遥测结算 (Enterprise / Sixt / Amadeus / CarTrawler) 沙盒</div>
+            <div class="finops-sub">Round 394 (#513 · SVG #837 · Sandbox #287 · Test #1,391) · 协议内置主车损险与受限虚拟卡 (VCN) 硬封顶拒付柜台 $38/天重复保险 (HTTP 403) + 车载 CAN-Bus 油表 (&gt;=94% 满油) 驳回 $9.99/加仑补油罚金与 ETC 管理费封顶 (HTTP 422) + 提还车 4 角视觉存证防 14 天后莫须有划痕讹诈与 15m 秒解押金 (HTTP 451) + 免柜台手机直取净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="carflt-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度机场柜台被忽悠重复买 $38/天 CDW 保险、满油还车误扣补油费与事后神秘划痕讹诈损耗池 ($)
+            <input type="number" id="carflt-gross-input" value="370000" min="10000" step="5000" oninput="recalcOtaCarRentalTelematicsSettlementSandbox()" />
+          </label>
+          <label>企业协议自带 Primary CDW 预绑定与受限单次虚拟卡 (VCN) 锁死柜台重复卖险门禁
+            <select id="carflt-cdw-select" onchange="recalcOtaCarRentalTelematicsSettlementSandbox()">
+              <option value="pass">注入企业 CDP 协议码拒绝柜台险，且 VCN 限额锁死在净租车费，柜台加刷直接拒付 (安全)</option>
+              <option value="block_403">员工深夜在机场柜台被吓唬签下 $38/天重复车损险与道路救援，账单直接翻倍 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>车载 CAN-Bus / OBD-II 熄火油箱液位 (&gt;=94% 满油) 核验与电子路桥费 (ETC) 管理费封顶门禁
+            <select id="carflt-fuel-select" onchange="recalcOtaCarRentalTelematicsSettlementSandbox()">
+              <option value="pass">读取车载 CAN-Bus 98% 油量或加油小票免除补油罚金，且仅按实际过路费结算 (合规)</option>
+              <option value="block_422">明明满油还车仍被扣 $85 补油罚金，或仅过 1 次 $2 收费站被收 $75 按天设备管理费 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>提/还车四宫格 AI 视觉拍照哈希存证 (CV Walkaround Diff) 与还车 15 分钟 0420 押金秒解冻门禁
+            <select id="carflt-dmg-select" onchange="recalcOtaCarRentalTelematicsSettlementSandbox()">
+              <option value="pass">提还车四角拍照存证拦截事后划痕甩锅，且还车 15m 内发送 ISO 8583 0420 解冻押金 (合规)</option>
+              <option value="block_451">还车 14 天后该车已租给别人却发函索赔 $1,200 神秘划痕，或 $500 押金冻结 21 天不放 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>进港航班号绑定延误自动保车 + 免柜台手机直取 (Emerald Aisle / Sixt App) + 遥测秒结编排
+            <select id="carflt-opt-select" onchange="recalcOtaCarRentalTelematicsSettlementSandbox()">
+              <option value="enabled" selected>启用免柜台手机直取 + VCN 锁险 + CAN-Bus 验油与航班保车 (-42% 租车刺客与战损损耗 / HTTP 409)</option>
+              <option value="disabled">传统机场柜台排队取钥匙与敞口信用卡基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度重复买险与战损讹诈池</div>
+            <div class="finops-kpi-val" id="carflt-gross-kpi">$370,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">免柜台与遥测验油净损耗</div>
+            <div class="finops-kpi-val" id="carflt-net-kpi" style="color:#6ee7b7;">$214,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度拦截刺客杂费与赔付净省</div>
+            <div class="finops-kpi-val" id="carflt-savings-kpi" style="color:#38bdf8;">$155,400</div>
+          </div>
+        </div>
+        <div id="carflt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 BYPASS_COUNTER_MOBILE_PICKUP_AND_CANBUS_SETTLEMENT_CONFIRM · Mandate: ota_car_rental_telematics_optim_409
         </div>
       </div>
 
@@ -123666,6 +123826,79 @@ function recalcEcommerceTradeInRecommerceSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_TRADE_IN_AND_RECOMMERCE_AUTHORIZED · Mandate: trade_in_recommerce_200';
+}}
+
+function recalcOtaCarRentalTelematicsSettlementSandbox() {{
+  const grossInput = document.getElementById('carflt-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '370000'));
+  const cdwGate = document.getElementById('carflt-cdw-select').value;
+  const fuelGate = document.getElementById('carflt-fuel-select').value;
+  const dmgGate = document.getElementById('carflt-dmg-select').value;
+  const optMode = document.getElementById('carflt-opt-select').value;
+
+  const grossKpi = document.getElementById('carflt-gross-kpi');
+  const netKpi = document.getElementById('carflt-net-kpi');
+  const savingsKpi = document.getElementById('carflt-savings-kpi');
+  const statusKpi = document.getElementById('carflt-status-kpi');
+  const banner = document.getElementById('carflt-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dmgGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 POST_RETURN_MYSTERY_DAMAGE_CLAIM_OR_STALE_DEPOSIT_HOLD_BREACH · Mandate: null';
+    return;
+  }}
+  if (cdwGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DUPLICATE_COUNTER_CDW_OR_UNAUTHORIZED_UPGRADE_VETO · Mandate: null';
+    return;
+  }}
+  if (fuelGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 FALSE_REFUELING_PENALTY_OR_PREDATORY_TOLL_ADMIN_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 BYPASS_COUNTER_MOBILE_PICKUP_AND_CANBUS_SETTLEMENT_CONFIRM · Mandate: ota_car_rental_telematics_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_OTA_CAR_RENTAL_AND_TELEMATICS_AUTHORIZED · Mandate: ota_car_rental_telematics_200';
 }}
 
 function updateStage1756Sandbox() {{

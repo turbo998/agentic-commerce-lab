@@ -35456,6 +35456,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-trade-in-recommerce-sandbox", html_zh)
 
+    def test_ota_car_rental_telematics_settlement_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaCarRentalTelematicsSettlementPolicyInput,
+            evaluate_ota_car_rental_telematics_settlement_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ota_car_rental_telematics_settlement_policy(
+            OtaCarRentalTelematicsSettlementPolicyInput(
+                quarterly_counter_cdw_false_refuel_and_mystery_damage_pool_usd=370000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_OTA_CAR_RENTAL_AND_TELEMATICS_AUTHORIZED",
+        )
+
+        cdw = evaluate_ota_car_rental_telematics_settlement_policy(
+            OtaCarRentalTelematicsSettlementPolicyInput(
+                duplicate_counter_cdw_added_over_corporate_policy_or_uncapped_vcn=True
+            )
+        )
+        self.assertEqual(cdw["status_code"], 403)
+        self.assertEqual(
+            cdw["decision"],
+            "DUPLICATE_COUNTER_CDW_OR_UNAUTHORIZED_UPGRADE_VETO",
+        )
+
+        fuel = evaluate_ota_car_rental_telematics_settlement_policy(
+            OtaCarRentalTelematicsSettlementPolicyInput(
+                refuel_penalty_billed_on_full_canbus_tank_or_excessive_toll_admin=True
+            )
+        )
+        self.assertEqual(fuel["status_code"], 422)
+        self.assertEqual(
+            fuel["decision"],
+            "FALSE_REFUELING_PENALTY_OR_PREDATORY_TOLL_ADMIN_BREACH",
+        )
+
+        dmg = evaluate_ota_car_rental_telematics_settlement_policy(
+            OtaCarRentalTelematicsSettlementPolicyInput(
+                post_return_damage_claimed_without_cv_diff_or_deposit_unreversed=True
+            )
+        )
+        self.assertEqual(dmg["status_code"], 451)
+        self.assertEqual(
+            dmg["decision"],
+            "POST_RETURN_MYSTERY_DAMAGE_CLAIM_OR_STALE_DEPOSIT_HOLD_BREACH",
+        )
+
+        optim = evaluate_ota_car_rental_telematics_settlement_policy(
+            OtaCarRentalTelematicsSettlementPolicyInput(
+                quarterly_counter_cdw_false_refuel_and_mystery_damage_pool_usd=370000.0,
+                bypass_counter_mobile_pickup_and_flight_synced_hold_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 155400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 214600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_car_rental_telematics_settlement_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-car-rental-telematics-settlement-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
