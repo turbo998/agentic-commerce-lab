@@ -35657,6 +35657,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-pls-domain-consolidation-sandbox", html_zh)
 
+    def test_online_grocery_substitution_catch_weight_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OnlineGrocerySubstitutionCatchWeightPolicyInput,
+            evaluate_online_grocery_substitution_catch_weight_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_online_grocery_substitution_catch_weight_policy(
+            OnlineGrocerySubstitutionCatchWeightPolicyInput(
+                quarterly_oos_sub_rejection_catchweight_decline_and_thaw_pool_usd=460000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_ONLINE_GROCERY_SUB_AND_SNAP_EBT_AUTHORIZED",
+        )
+
+        alg = evaluate_online_grocery_substitution_catch_weight_policy(
+            OnlineGrocerySubstitutionCatchWeightPolicyInput(
+                substitution_violates_allergen_profile_or_unapproved_price_spike=True
+            )
+        )
+        self.assertEqual(alg["status_code"], 403)
+        self.assertEqual(
+            alg["decision"],
+            "ALLERGEN_DIETARY_VIOLATION_OR_UNAPPROVED_PRICE_SPIKE_SUB_VETO",
+        )
+
+        wgt = evaluate_online_grocery_substitution_catch_weight_policy(
+            OnlineGrocerySubstitutionCatchWeightPolicyInput(
+                catch_weight_missing_15pct_auth_buffer_or_scale_exceeds_115pct_cap=True
+            )
+        )
+        self.assertEqual(wgt["status_code"], 422)
+        self.assertEqual(
+            wgt["decision"],
+            "CATCH_WEIGHT_PREAUTH_SHORTFALL_OR_SCALE_OVERWEIGHT_BREACH",
+        )
+
+        ebt = evaluate_online_grocery_substitution_catch_weight_policy(
+            OnlineGrocerySubstitutionCatchWeightPolicyInput(
+                ineligible_hot_food_or_tip_charged_to_snap_ebt_or_cold_chain_over_40m=True
+            )
+        )
+        self.assertEqual(ebt["status_code"], 451)
+        self.assertEqual(
+            ebt["decision"],
+            "SNAP_EBT_INELIGIBLE_SKU_LEAK_OR_COLD_CHAIN_SLA_BREACH",
+        )
+
+        optim = evaluate_online_grocery_substitution_catch_weight_policy(
+            OnlineGrocerySubstitutionCatchWeightPolicyInput(
+                quarterly_oos_sub_rejection_catchweight_decline_and_thaw_pool_usd=460000.0,
+                price_protected_upgrade_sub_and_dual_rail_ebt_overflow_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 193200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 266800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("online_grocery_substitution_catch_weight_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("online-grocery-substitution-catch-weight-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

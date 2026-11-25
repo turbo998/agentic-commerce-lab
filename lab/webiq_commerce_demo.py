@@ -45273,6 +45273,82 @@ def evaluate_saas_pls_domain_consolidation_policy(
     }
 
 
+@dataclass(frozen=True)
+class OnlineGrocerySubstitutionCatchWeightPolicyInput:
+    quarterly_oos_sub_rejection_catchweight_decline_and_thaw_pool_usd: float = 460000.0
+    substitution_violates_allergen_profile_or_unapproved_price_spike: bool = False
+    catch_weight_missing_15pct_auth_buffer_or_scale_exceeds_115pct_cap: bool = False
+    ineligible_hot_food_or_tip_charged_to_snap_ebt_or_cold_chain_over_40m: bool = False
+    price_protected_upgrade_sub_and_dual_rail_ebt_overflow_ready: bool = False
+
+
+def evaluate_online_grocery_substitution_catch_weight_policy(
+    policy_input: OnlineGrocerySubstitutionCatchWeightPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_oos_sub_rejection_catchweight_decline_and_thaw_pool_usd
+        ),
+    )
+    if policy_input.ineligible_hot_food_or_tip_charged_to_snap_ebt_or_cold_chain_over_40m:
+        return {
+            "status_code": 451,
+            "decision": "SNAP_EBT_INELIGIBLE_SKU_LEAK_OR_COLD_CHAIN_SLA_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.substitution_violates_allergen_profile_or_unapproved_price_spike:
+        return {
+            "status_code": 403,
+            "decision": "ALLERGEN_DIETARY_VIOLATION_OR_UNAPPROVED_PRICE_SPIKE_SUB_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.catch_weight_missing_15pct_auth_buffer_or_scale_exceeds_115pct_cap:
+        return {
+            "status_code": 422,
+            "decision": "CATCH_WEIGHT_PREAUTH_SHORTFALL_OR_SCALE_OVERWEIGHT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.price_protected_upgrade_sub_and_dual_rail_ebt_overflow_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PRICE_PROTECTED_ALLERGEN_SUB_AND_CATCH_WEIGHT_OVERFLOW_CONFIRM",
+            "mandate_token": "online_grocery_ebt_sub_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_ONLINE_GROCERY_SUB_AND_SNAP_EBT_AUTHORIZED",
+        "mandate_token": "online_grocery_ebt_sub_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -61514,6 +61590,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    online_grocery_substitution_catch_weight_guard = {
+        "authorized_200": evaluate_online_grocery_substitution_catch_weight_policy(
+            OnlineGrocerySubstitutionCatchWeightPolicyInput()
+        ),
+        "allergen_or_price_spike_403": evaluate_online_grocery_substitution_catch_weight_policy(
+            OnlineGrocerySubstitutionCatchWeightPolicyInput(
+                substitution_violates_allergen_profile_or_unapproved_price_spike=True
+            )
+        ),
+        "catch_weight_auth_or_scale_422": evaluate_online_grocery_substitution_catch_weight_policy(
+            OnlineGrocerySubstitutionCatchWeightPolicyInput(
+                catch_weight_missing_15pct_auth_buffer_or_scale_exceeds_115pct_cap=True
+            )
+        ),
+        "snap_ebt_or_cold_chain_451": evaluate_online_grocery_substitution_catch_weight_policy(
+            OnlineGrocerySubstitutionCatchWeightPolicyInput(
+                ineligible_hot_food_or_tip_charged_to_snap_ebt_or_cold_chain_over_40m=True
+            )
+        ),
+        "price_protected_sub_ebt_409": evaluate_online_grocery_substitution_catch_weight_policy(
+            OnlineGrocerySubstitutionCatchWeightPolicyInput(
+                price_protected_upgrade_sub_and_dual_rail_ebt_overflow_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -62038,7 +62140,8 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_trade_in_recommerce_guard": ecommerce_trade_in_recommerce_guard,
         "ota_car_rental_telematics_settlement_guard": ota_car_rental_telematics_settlement_guard,
         "b2b_wholesale_dealer_portal_allocation_guard": b2b_wholesale_dealer_portal_allocation_guard,
-        "saas_pls_domain_consolidation_guard":saas_pls_domain_consolidation_guard,
+        "saas_pls_domain_consolidation_guard": saas_pls_domain_consolidation_guard,
+        "online_grocery_substitution_catch_weight_guard": online_grocery_substitution_catch_weight_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -89867,6 +89970,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="saaspls-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ATOMIC_DOMAIN_PRORATION_ROLLUP_AND_PQA_ROUTING_CONFIRM · Mandate: saas_pls_domain_rollup_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 397 (🏆 840th SVG & 290th Sandbox Dual Milestone! · #516 · Test #1,394) Online Grocery, Catch-Weight & SNAP/EBT -->
+      <div class="finops-box" id="online-grocery-substitution-catch-weight-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 生鲜商超即时零售、防过敏智能缺货替换、称重缓冲与 SNAP/EBT 分账 (Instacart Carrot / Mercatus / Wynshop / DoorDash) 沙盒（🏆 第 840 张 SVG 与第 290 个沙盒双里程碑！）</div>
+            <div class="finops-sub">Round 397 (🏆 SVG #840 &amp; Sandbox #290 Milestone · #516 · Test #1,394) · 严守 9 大过敏原/清真素食替换红线与换高价品按原低价结算锁 (HTTP 403) + 称重鲜肉蔬果 (+15%) 预授权缓冲与过秤 &lt;=1.15x 上限锁 (HTTP 422) + SNAP EBT 免税冷食与银行卡热食/小费双轨分账及 &lt;=40m 冷链锁 (HTTP 451) + 保价替换与双卡溢流净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="grcsub-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度货架缺货无保价替换直接砍单或乱换退全款、鲜肉称重超预授权扣款失败与冷链化水赔付池 ($)
+            <input type="number" id="grcsub-gross-input" value="460000" min="10000" step="5000" oninput="recalcOnlineGrocerySubstitutionCatchWeightSandbox()" />
+          </label>
+          <label>FDA 9 大过敏原与宗教饮食禁忌 (Kosher/Halal/Vegan) 零妥协过滤及高价替品保原价门禁
+            <select id="grcsub-alg-select" onchange="recalcOnlineGrocerySubstitutionCatchWeightSandbox()">
+              <option value="pass">100% 严守无花生/无乳糖/清真标签，且换高端品牌按原缺货低价向顾客收费 (安全)</option>
+              <option value="block_403">将缺货的 $4.50 无坚果酸奶瞎换成 $9.50 花生牛奶酸奶，违背过敏档案且翻倍加价 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>非标称重商品 (Catch-Weight GS1 DataBar) +15% 预授权缓冲垫与过秤 &lt;=1.15x 封顶门禁
+            <select id="grcsub-wgt-select" onchange="recalcOnlineGrocerySubstitutionCatchWeightSandbox()">
+              <option value="pass">生鲜称重行自动预留 +15% 预授权额度，实秤超重差额封顶或自动溢流备用卡 (合规)</option>
+              <option value="block_422">牛排实秤 2.25 磅 ($33.75) 超出 $30.00 刚性预授权致扣款失败，或乱拿 2 倍大包装 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国农业部 USDA SNAP / EBT 免税冷食与银行卡 (热食/日化/小费) 双轨拆账及 &lt;=40m 冷链门禁
+            <select id="grcsub-ebt-select" onchange="recalcOnlineGrocerySubstitutionCatchWeightSandbox()">
+              <option value="pass">冷食走 EBT (0% 税)，热烤鸡/猫粮/小费走备用银行卡，且冷冻品限制 &lt;=40m 送达 (合规)</option>
+              <option value="block_451">把热烤鸡、宠物粮或骑手小费违规刷入政府 SNAP EBT 卡，或冰淇淋拼单跑 65m 化水 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Instacart/Wynshop 保价升级替换 (Price-Protected Sub) + EBT/信用卡双轨溢流结算全链路编排
+            <select id="grcsub-opt-select" onchange="recalcOnlineGrocerySubstitutionCatchWeightSandbox()">
+              <option value="enabled" selected>启用防过敏保价升级替换 + +15% 称重缓冲溢流 + 40m 冷链锁 (-42% 缺货砍单与拒付损耗 / HTTP 409)</option>
+              <option value="disabled">传统缺货直接砍单与 1:1 刚性预授权基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度生鲜缺货与称重拒付池</div>
+            <div class="finops-kpi-val" id="grcsub-gross-kpi">$460,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">保价替换与双卡溢流净损耗</div>
+            <div class="finops-kpi-val" id="grcsub-net-kpi" style="color:#6ee7b7;">$266,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度挽回缺货营收与防损净省</div>
+            <div class="finops-kpi-val" id="grcsub-savings-kpi" style="color:#38bdf8;">$193,200</div>
+          </div>
+        </div>
+        <div id="grcsub-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 PRICE_PROTECTED_ALLERGEN_SUB_AND_CATCH_WEIGHT_OVERFLOW_CONFIRM · Mandate: online_grocery_ebt_sub_optim_409
         </div>
       </div>
 
@@ -124365,6 +124525,79 @@ function recalcSaasPlsDomainConsolidationSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_SAAS_PLS_AND_DOMAIN_CONSOLIDATION_AUTHORIZED · Mandate: saas_pls_domain_rollup_200';
+}}
+
+function recalcOnlineGrocerySubstitutionCatchWeightSandbox() {{
+  const grossInput = document.getElementById('grcsub-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '460000'));
+  const algGate = document.getElementById('grcsub-alg-select').value;
+  const wgtGate = document.getElementById('grcsub-wgt-select').value;
+  const ebtGate = document.getElementById('grcsub-ebt-select').value;
+  const optMode = document.getElementById('grcsub-opt-select').value;
+
+  const grossKpi = document.getElementById('grcsub-gross-kpi');
+  const netKpi = document.getElementById('grcsub-net-kpi');
+  const savingsKpi = document.getElementById('grcsub-savings-kpi');
+  const statusKpi = document.getElementById('grcsub-status-kpi');
+  const banner = document.getElementById('grcsub-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ebtGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 SNAP_EBT_INELIGIBLE_SKU_LEAK_OR_COLD_CHAIN_SLA_BREACH · Mandate: null';
+    return;
+  }}
+  if (algGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ALLERGEN_DIETARY_VIOLATION_OR_UNAPPROVED_PRICE_SPIKE_SUB_VETO · Mandate: null';
+    return;
+  }}
+  if (wgtGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 CATCH_WEIGHT_PREAUTH_SHORTFALL_OR_SCALE_OVERWEIGHT_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 PRICE_PROTECTED_ALLERGEN_SUB_AND_CATCH_WEIGHT_OVERFLOW_CONFIRM · Mandate: online_grocery_ebt_sub_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_ONLINE_GROCERY_SUB_AND_SNAP_EBT_AUTHORIZED · Mandate: online_grocery_ebt_sub_200';
 }}
 
 function updateStage1756Sandbox() {{
