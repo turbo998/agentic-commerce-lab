@@ -35848,6 +35848,68 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-multilingual-cs-rma-sandbox", html_zh)
 
+    def test_e2e_agentic_commerce_master_blueprint_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EndToEndAgenticCommerceMasterBlueprintPolicyInput,
+            evaluate_e2e_agentic_commerce_master_blueprint_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_e2e_agentic_commerce_master_blueprint_policy(
+            EndToEndAgenticCommerceMasterBlueprintPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(auth["mandate_token"], "e2e_master_blueprint_round400_200")
+
+        hash_veto = evaluate_e2e_agentic_commerce_master_blueprint_policy(
+            EndToEndAgenticCommerceMasterBlueprintPolicyInput(
+                stale_grounding_unverified_or_cart_checkout_hash_drifted_post_hitl=True
+            )
+        )
+        self.assertEqual(hash_veto["status_code"], 403)
+        self.assertEqual(
+            hash_veto["decision"],
+            "STALE_GROUNDING_QUOTE_OR_CART_HASH_DRIFT_VETO",
+        )
+
+        erp = evaluate_e2e_agentic_commerce_master_blueprint_policy(
+            EndToEndAgenticCommerceMasterBlueprintPolicyInput(
+                blind_erp_post_retry_on_504_or_missing_5s_0420_auth_reversal=True
+            )
+        )
+        self.assertEqual(erp["status_code"], 422)
+        self.assertEqual(
+            erp["decision"],
+            "DUPLICATE_ERP_ORDER_RETRY_OR_ORPHAN_PAYMENT_AUTH_BREACH",
+        )
+
+        pan = evaluate_e2e_agentic_commerce_master_blueprint_policy(
+            EndToEndAgenticCommerceMasterBlueprintPolicyInput(
+                raw_pan_exposed_in_prompt_or_unscoped_multi_use_payment_token=True
+            )
+        )
+        self.assertEqual(pan["status_code"], 451)
+        self.assertEqual(
+            pan["decision"],
+            "RAW_PAN_IN_PROMPT_OR_UNSCOPED_PAYMENT_CREDENTIAL_BREACH",
+        )
+
+        optim = evaluate_e2e_agentic_commerce_master_blueprint_policy(
+            EndToEndAgenticCommerceMasterBlueprintPolicyInput(
+                quarterly_wrong_buy_orphan_auth_and_unscoped_token_pool_usd=550000.0,
+                four_stage_webiq_cart_fsm_scoped_spt_and_erp_saga_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 242000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 308000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("e2e_agentic_commerce_master_blueprint_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("e2e-agentic-commerce-master-blueprint-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
