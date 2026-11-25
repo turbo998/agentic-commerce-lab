@@ -36348,6 +36348,68 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-procurement-clm-contract-redline-sandbox", html_zh)
 
+    def test_omnichannel_bopis_curbside_fulfillment_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OmnichannelBopisCurbsideFulfillmentPolicyInput,
+            evaluate_omnichannel_bopis_curbside_fulfillment_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_omnichannel_bopis_curbside_fulfillment_policy(
+            OmnichannelBopisCurbsideFulfillmentPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(auth["mandate_token"], "omnichannel_bopis_1405_200")
+
+        buf = evaluate_omnichannel_bopis_curbside_fulfillment_policy(
+            OmnichannelBopisCurbsideFulfillmentPolicyInput(
+                unbuffered_single_unit_floor_stock_exposed_to_bopis_without_backroom=True
+            )
+        )
+        self.assertEqual(buf["status_code"], 403)
+        self.assertEqual(
+            buf["decision"],
+            "UNBUFFERED_SALES_FLOOR_STOCK_BOPIS_PICK_SHORT_VETO",
+        )
+
+        cap = evaluate_omnichannel_bopis_curbside_fulfillment_policy(
+            OmnichannelBopisCurbsideFulfillmentPolicyInput(
+                card_captured_before_pickup_scan_or_unclaimed_restocked_without_0420=True
+            )
+        )
+        self.assertEqual(cap["status_code"], 422)
+        self.assertEqual(
+            cap["decision"],
+            "PREMATURE_BOPIS_CAPTURE_OR_UNREFUNDED_RESTOCK_BREACH",
+        )
+
+        totp = evaluate_omnichannel_bopis_curbside_fulfillment_policy(
+            OmnichannelBopisCurbsideFulfillmentPolicyInput(
+                high_value_bopis_released_on_static_screenshot_without_totp_or_id=True
+            )
+        )
+        self.assertEqual(totp["status_code"], 451)
+        self.assertEqual(
+            totp["decision"],
+            "BOPIS_MULE_STATIC_SCREENSHOT_OR_UNVERIFIED_PROXY_HANDOVER_BREACH",
+        )
+
+        optim = evaluate_omnichannel_bopis_curbside_fulfillment_policy(
+            OmnichannelBopisCurbsideFulfillmentPolicyInput(
+                quarterly_pick_short_cancel_bopis_mule_and_unclaimed_mdr_pool_usd=400000.0,
+                rfid_backroom_buffer_capture_on_pickup_and_totp_handover_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 168000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 232000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("omnichannel_bopis_curbside_fulfillment_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("omnichannel-bopis-curbside-fulfillment-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
