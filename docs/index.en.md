@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`514` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`515` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -10,7 +10,7 @@
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (62 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (194 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (117 guides)](#b2b-procurement-erp)
-- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (46 guides)](#saas-finops-micropayments)
+- [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (47 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (57 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
@@ -461,7 +461,7 @@
 | 117 | **🏆 Enterprise B2B Wholesale Dealer Portal, Fair-Share Scarce-Inventory Allocation & Blind Drop-Ship Copilot (`Shopify Plus B2B / OroCommerce / Salesforce B2B Commerce / BigCommerce B2B` · 🏆 Round 395 Major Milestone!), Anti-`FBA` Gray-Market Diversion Locks, `35% D2C` High-Margin Ring-Fences, Case-Pack `MOQ` Gates & Zero-Price Blind Packing Slips (`-41%` Cost) FAQ** | [English](b2b-wholesale-dealer-portal-shopify-orocommerce-salesforce-map-allocation-dropship-selection-faq.en.md) · [中文](b2b-wholesale-dealer-portal-shopify-orocommerce-salesforce-map-allocation-dropship-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (46 Guides)
+## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (47 Guides)
 
 > Covers enterprise SaaS seat governance, UUIDv7 usage metering watermarks, FTC Click-to-Cancel & retention guardrails, HTTP 402 (x402 / Stripe MPP Tempo) micropayments, and LLM token FinOps routing.
 
@@ -513,6 +513,7 @@
 | 44 | **🏆 SaaS & Subscription Smart Dunning & Involuntary Churn Recovery (`Butter Payments / FlexPay / Stripe Smart Retries / Recurly` · 🏆 1,360th Unit Test Major Milestone), `ISO 8583` Hard-Decline Zero-Retry Lock, Pre-Retry `VAU / ABU` Card Updater & `7-Day` Silent Payday-Aligned Recovery (`-41%` Churn Loss) FAQ** | [English](saas-subscription-dunning-involuntary-churn-stripe-smart-retries-butter-flexpay-card-updater-selection-faq.en.md) · [中文](saas-subscription-dunning-involuntary-churn-stripe-smart-retries-butter-flexpay-card-updater-selection-faq.md) |
 | 45 | **🏆 Agent-to-Agent (`M2M`) Micropayments, `HTTP 402 (x402 / L402)` & Prepaid Credit Ledger Selection (`Coinbase x402 / Stripe Metered & Credits / Lightning L402 / Skyfire` · 🏆 1,365th Unit Test Milestone), Sub-`$5` Card Fixed-Fee Veto, Per-Call `x402` Bid Caps (`<=$0.05`) & `200 OK` Atomic Settlement (`-43%` Cost) FAQ** | [English](agent-to-agent-m2m-micropayments-x402-l402-stripe-metered-skyfire-subcent-budget-selection-faq.en.md) · [中文](agent-to-agent-m2m-micropayments-x402-l402-stripe-metered-skyfire-subcent-budget-selection-faq.md) |
 | 46 | **🏆 Enterprise B2B SaaS Spend Management (`SMP`), `SCIM` Seat Right-Sizing & Shadow-IT Governance Copilot (`Zylo / Productiv / Torii / Vendr / Tropic` · 🏆 Round 380 Major Milestone), Duplicate Card-Swipe & Unvetted AI `ZDR` Locks, 60-Day `SCIM` Reclamation & `T-95d` Notice Locks, and `Creator -> Viewer` Right-Sizing (`-41%` Spend) FAQ** | [English](b2b-saas-spend-management-smp-zylo-productiv-torii-vendr-scim-shadow-it-selection-faq.en.md) · [中文](b2b-saas-spend-management-smp-zylo-productiv-torii-vendr-scim-shadow-it-selection-faq.md) |
+| 47 | **🏆 B2B SaaS Product-Led Sales (`PLS`), Corporate Domain-Clustered `PQA` Roll-Up & Self-Serve-to-Enterprise Migration Copilot (`Pocus / Common Room / Stripe Billing / Zuora / Paddle` · 🏆 515th Bilingual SA Guide Milestone!), Atomic Child-Card Cancellation & Proration Credit Roll-Up, Deal-Room SMB Promo Shields & Live `EU VIES` VAT Checks (`-42%` Cost) FAQ** | [English](b2b-saas-pls-product-led-sales-domain-consolidation-pocus-stripe-zuora-proration-vat-selection-faq.en.md) · [中文](b2b-saas-pls-product-led-sales-domain-consolidation-pocus-stripe-zuora-proration-vat-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (57 Guides)

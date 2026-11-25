@@ -45197,6 +45197,82 @@ def evaluate_b2b_wholesale_dealer_portal_allocation_policy(
     }
 
 
+@dataclass(frozen=True)
+class SaasPlsDomainConsolidationPolicyInput:
+    quarterly_double_billing_pqa_leak_and_vat_penalty_pool_usd: float = 410000.0
+    master_ea_active_while_child_selfserve_cards_still_billed: bool = False
+    active_deal_room_cannibalized_by_smb_promo_or_sdr_collision: bool = False
+    eu_vies_vat_unverified_on_reverse_charge_or_missing_501c3_cert: bool = False
+    atomic_domain_proration_rollup_and_pqa_routing_ready: bool = False
+
+
+def evaluate_saas_pls_domain_consolidation_policy(
+    policy_input: SaasPlsDomainConsolidationPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_double_billing_pqa_leak_and_vat_penalty_pool_usd
+        ),
+    )
+    if policy_input.eu_vies_vat_unverified_on_reverse_charge_or_missing_501c3_cert:
+        return {
+            "status_code": 451,
+            "decision": "UNVERIFIED_EU_VIES_VAT_OR_TAX_EXEMPT_CERT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.master_ea_active_while_child_selfserve_cards_still_billed:
+        return {
+            "status_code": 403,
+            "decision": "WORKSPACE_CONSOLIDATION_DOUBLE_BILLING_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.active_deal_room_cannibalized_by_smb_promo_or_sdr_collision:
+        return {
+            "status_code": 422,
+            "decision": "PLS_CHANNEL_CONFLICT_OR_SDR_COLLISION_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.atomic_domain_proration_rollup_and_pqa_routing_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ATOMIC_DOMAIN_PRORATION_ROLLUP_AND_PQA_ROUTING_CONFIRM",
+            "mandate_token": "saas_pls_domain_rollup_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_SAAS_PLS_AND_DOMAIN_CONSOLIDATION_AUTHORIZED",
+        "mandate_token": "saas_pls_domain_rollup_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -61412,6 +61488,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    saas_pls_domain_consolidation_guard = {
+        "authorized_200": evaluate_saas_pls_domain_consolidation_policy(
+            SaasPlsDomainConsolidationPolicyInput()
+        ),
+        "workspace_double_bill_403": evaluate_saas_pls_domain_consolidation_policy(
+            SaasPlsDomainConsolidationPolicyInput(
+                master_ea_active_while_child_selfserve_cards_still_billed=True
+            )
+        ),
+        "channel_conflict_or_spam_422": evaluate_saas_pls_domain_consolidation_policy(
+            SaasPlsDomainConsolidationPolicyInput(
+                active_deal_room_cannibalized_by_smb_promo_or_sdr_collision=True
+            )
+        ),
+        "unverified_vies_vat_or_exempt_451": evaluate_saas_pls_domain_consolidation_policy(
+            SaasPlsDomainConsolidationPolicyInput(
+                eu_vies_vat_unverified_on_reverse_charge_or_missing_501c3_cert=True
+            )
+        ),
+        "atomic_proration_pqa_rollup_409": evaluate_saas_pls_domain_consolidation_policy(
+            SaasPlsDomainConsolidationPolicyInput(
+                atomic_domain_proration_rollup_and_pqa_routing_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -61936,6 +62038,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_trade_in_recommerce_guard": ecommerce_trade_in_recommerce_guard,
         "ota_car_rental_telematics_settlement_guard": ota_car_rental_telematics_settlement_guard,
         "b2b_wholesale_dealer_portal_allocation_guard": b2b_wholesale_dealer_portal_allocation_guard,
+        "saas_pls_domain_consolidation_guard":saas_pls_domain_consolidation_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -89707,6 +89810,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="b2bwhs-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 FAIR_SHARE_ALLOCATION_AND_BLIND_DROPSHIP_CONFIRM · Mandate: b2b_wholesale_portal_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 396 (🏆 515th Bilingual SA Guide Milestone! · #515 · SVG #839 · Sandbox #289 · Test #1,393) B2B SaaS Product-Led Sales (PLS) & Domain Roll-Up -->
+      <div class="finops-box" id="saas-pls-domain-consolidation-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 B2B SaaS 产品驱动销售 (PLS)、企业域名工作区聚合并账与按天退差 (Pocus / Stripe Billing / Zuora / Paddle) 沙盒（🏆 第 515 篇指南里程碑！）</div>
+            <div class="finops-sub">Round 396 (🏆 515th Guide Milestone · #515 · SVG #839 · Sandbox #289 · Test #1,393) · 企业主合同 (Master EA) 激活瞬间原子级停扣全部同域名员工信用卡并折算余额冲抵主发票 (HTTP 403) + 同域名聚合成唯一 PQA 防多销售撞单与在谈大单屏蔽小微优惠码 (HTTP 422) + 欧盟 VIES 税号实时验真存证与 501c3 免税证锁 (HTTP 451) + 一键域名认领并账净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="saaspls-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度散落同域名工作区未聚合错失企业扩容、签年框后仍重复扣员工卡引发退订与假 VAT 补税损耗池 ($)
+            <input type="number" id="saaspls-gross-input" value="410000" min="10000" step="5000" oninput="recalcSaasPlsDomainConsolidationSandbox()" />
+          </label>
+          <label>企业主协议 (Master EA) 生效瞬间同域名子订阅原子停扣与剩余预付天数折算冲抵 (Proration Roll-Up) 锁
+            <select id="saaspls-dbl-select" onchange="recalcSaasPlsDomainConsolidationSandbox()">
+              <option value="pass">DNS 域名认领瞬间自动停扣全部 45 张员工卡，并将剩余预付额折算冲减主发票 (安全)</option>
+              <option value="block_403">CIO 签完 $120k 企业总合同后，45 名员工的信用卡仍在每个月被继续扣费且未退剩余年费 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>企业根域名 PQA 唯一聚合路由 (防多 SDR 撞单骚扰) 与活跃谈判期屏蔽自助散客促销码门禁
+            <select id="saaspls-pqa-select" onchange="recalcSaasPlsDomainConsolidationSandbox()">
+              <option value="pass">按 @domain.com 聚合成单一 PQA 分配唯一 AE，且在谈企业大单自动屏蔽官网 7 折散客码 (合规)</option>
+              <option value="block_422">6 名 SDR 同时轰炸同一企业不同研发团队，或采购用小微散客 7 折码自助买断背刺 AE 底价 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>自助结账欧盟 VIES / 英国 HMRC 增值税号实时在线验真与美国 501(c)(3) 免税证书核验门禁
+            <select id="saaspls-vat-select" onchange="recalcSaasPlsDomainConsolidationSandbox()">
+              <option value="pass">实时调用 EU VIES 验证税号并保存唯一 Consultation ID，核验有效 501(c)(3) 免税证 (合规)</option>
+              <option value="block_451">轻信未验真的假欧盟 VAT 税号免除 20% 增值税，或无有效证书放行美国免税结账遭追缴 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Pocus 跨工作区域名信号聚合 + Stripe/Zuora 一键折算收编 + VIES 合规开票全链路编排
+            <select id="saaspls-opt-select" onchange="recalcSaasPlsDomainConsolidationSandbox()">
+              <option value="enabled" selected>启用域名 PQA 聚合 + 原子折算并账 + VIES 实时验真 (-42% 双扣退订与扩容漏失损耗 / HTTP 409)</option>
+              <option value="disabled">传统割裂自助计费与人工寻找线索基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度扩容漏失与双扣退订池</div>
+            <div class="finops-kpi-val" id="saaspls-gross-kpi">$410,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">PQA 聚合与原子并账净损耗</div>
+            <div class="finops-kpi-val" id="saaspls-net-kpi" style="color:#6ee7b7;">$237,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省双扣流失与扩容增收</div>
+            <div class="finops-kpi-val" id="saaspls-savings-kpi" style="color:#38bdf8;">$172,200</div>
+          </div>
+        </div>
+        <div id="saaspls-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 ATOMIC_DOMAIN_PRORATION_ROLLUP_AND_PQA_ROUTING_CONFIRM · Mandate: saas_pls_domain_rollup_optim_409
         </div>
       </div>
 
@@ -124132,6 +124292,79 @@ function recalcB2bWholesaleDealerPortalAllocationSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_WHOLESALE_PORTAL_AND_ALLOCATION_AUTHORIZED · Mandate: b2b_wholesale_portal_200';
+}}
+
+function recalcSaasPlsDomainConsolidationSandbox() {{
+  const grossInput = document.getElementById('saaspls-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '410000'));
+  const dblGate = document.getElementById('saaspls-dbl-select').value;
+  const pqaGate = document.getElementById('saaspls-pqa-select').value;
+  const vatGate = document.getElementById('saaspls-vat-select').value;
+  const optMode = document.getElementById('saaspls-opt-select').value;
+
+  const grossKpi = document.getElementById('saaspls-gross-kpi');
+  const netKpi = document.getElementById('saaspls-net-kpi');
+  const savingsKpi = document.getElementById('saaspls-savings-kpi');
+  const statusKpi = document.getElementById('saaspls-status-kpi');
+  const banner = document.getElementById('saaspls-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (vatGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNVERIFIED_EU_VIES_VAT_OR_TAX_EXEMPT_CERT_BREACH · Mandate: null';
+    return;
+  }}
+  if (dblGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 WORKSPACE_CONSOLIDATION_DOUBLE_BILLING_VETO · Mandate: null';
+    return;
+  }}
+  if (pqaGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 PLS_CHANNEL_CONFLICT_OR_SDR_COLLISION_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 ATOMIC_DOMAIN_PRORATION_ROLLUP_AND_PQA_ROUTING_CONFIRM · Mandate: saas_pls_domain_rollup_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_SAAS_PLS_AND_DOMAIN_CONSOLIDATION_AUTHORIZED · Mandate: saas_pls_domain_rollup_200';
 }}
 
 function updateStage1756Sandbox() {{

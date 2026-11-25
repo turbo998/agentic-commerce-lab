@@ -35590,6 +35590,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-wholesale-dealer-portal-allocation-sandbox", html_zh)
 
+    def test_saas_pls_domain_consolidation_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaasPlsDomainConsolidationPolicyInput,
+            evaluate_saas_pls_domain_consolidation_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_saas_pls_domain_consolidation_policy(
+            SaasPlsDomainConsolidationPolicyInput(
+                quarterly_double_billing_pqa_leak_and_vat_penalty_pool_usd=410000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_SAAS_PLS_AND_DOMAIN_CONSOLIDATION_AUTHORIZED",
+        )
+
+        dbl = evaluate_saas_pls_domain_consolidation_policy(
+            SaasPlsDomainConsolidationPolicyInput(
+                master_ea_active_while_child_selfserve_cards_still_billed=True
+            )
+        )
+        self.assertEqual(dbl["status_code"], 403)
+        self.assertEqual(
+            dbl["decision"],
+            "WORKSPACE_CONSOLIDATION_DOUBLE_BILLING_VETO",
+        )
+
+        pqa = evaluate_saas_pls_domain_consolidation_policy(
+            SaasPlsDomainConsolidationPolicyInput(
+                active_deal_room_cannibalized_by_smb_promo_or_sdr_collision=True
+            )
+        )
+        self.assertEqual(pqa["status_code"], 422)
+        self.assertEqual(
+            pqa["decision"],
+            "PLS_CHANNEL_CONFLICT_OR_SDR_COLLISION_BREACH",
+        )
+
+        vat = evaluate_saas_pls_domain_consolidation_policy(
+            SaasPlsDomainConsolidationPolicyInput(
+                eu_vies_vat_unverified_on_reverse_charge_or_missing_501c3_cert=True
+            )
+        )
+        self.assertEqual(vat["status_code"], 451)
+        self.assertEqual(
+            vat["decision"],
+            "UNVERIFIED_EU_VIES_VAT_OR_TAX_EXEMPT_CERT_BREACH",
+        )
+
+        optim = evaluate_saas_pls_domain_consolidation_policy(
+            SaasPlsDomainConsolidationPolicyInput(
+                quarterly_double_billing_pqa_leak_and_vat_penalty_pool_usd=410000.0,
+                atomic_domain_proration_rollup_and_pqa_routing_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 172200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 237800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_pls_domain_consolidation_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-pls-domain-consolidation-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
