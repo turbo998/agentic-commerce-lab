@@ -35786,6 +35786,68 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-accelerated-checkout-recovery-sandbox", html_zh)
 
+    def test_cross_border_multilingual_support_wms_hold_rma_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderMultilingualSupportWmsHoldRmaPolicyInput,
+            evaluate_cross_border_multilingual_support_wms_hold_rma_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_cross_border_multilingual_support_wms_hold_rma_policy(
+            CrossBorderMultilingualSupportWmsHoldRmaPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(auth["mandate_token"], "cross_border_cs_rma_200")
+
+        ref = evaluate_cross_border_multilingual_support_wms_hold_rma_policy(
+            CrossBorderMultilingualSupportWmsHoldRmaPolicyInput(
+                in_transit_parcel_refunded_or_unapproved_refund_exceeds_50_usd_cap=True
+            )
+        )
+        self.assertEqual(ref["status_code"], 403)
+        self.assertEqual(
+            ref["decision"],
+            "IN_TRANSIT_PARCEL_REFUND_OR_PROMPT_INJECTION_PAYOUT_VETO",
+        )
+
+        wms = evaluate_cross_border_multilingual_support_wms_hold_rma_policy(
+            CrossBorderMultilingualSupportWmsHoldRmaPolicyInput(
+                order_canceled_or_address_edited_after_wms_picked_without_3pl_hold_ack=True
+            )
+        )
+        self.assertEqual(wms["status_code"], 422)
+        self.assertEqual(
+            wms["decision"],
+            "WMS_ALREADY_PICKED_CANCEL_OR_ADDRESS_RACE_BREACH",
+        )
+
+        rma = evaluate_cross_border_multilingual_support_wms_hold_rma_policy(
+            CrossBorderMultilingualSupportWmsHoldRmaPolicyInput(
+                international_air_return_label_exceeds_65pct_item_value_or_ddp_unclaimed=True
+            )
+        )
+        self.assertEqual(rma["status_code"], 451)
+        self.assertEqual(
+            rma["decision"],
+            "NEGATIVE_ROI_CROSS_BORDER_RMA_LABEL_OR_DUTY_LOSS_BREACH",
+        )
+
+        optim = evaluate_cross_border_multilingual_support_wms_hold_rma_policy(
+            CrossBorderMultilingualSupportWmsHoldRmaPolicyInput(
+                quarterly_intransit_refund_wms_race_and_crossborder_rma_pool_usd=390000.0,
+                synchronous_wms_hold_local_hub_consolidation_and_exchange_bonus_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 167700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 222300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_multilingual_support_wms_hold_rma_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-multilingual-cs-rma-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

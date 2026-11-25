@@ -45427,6 +45427,84 @@ def evaluate_ecommerce_accelerated_checkout_recovery_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderMultilingualSupportWmsHoldRmaPolicyInput:
+    quarterly_intransit_refund_wms_race_and_crossborder_rma_pool_usd: float = 390000.0
+    in_transit_parcel_refunded_or_unapproved_refund_exceeds_50_usd_cap: bool = False
+    order_canceled_or_address_edited_after_wms_picked_without_3pl_hold_ack: bool = False
+    international_air_return_label_exceeds_65pct_item_value_or_ddp_unclaimed: bool = (
+        False
+    )
+    synchronous_wms_hold_local_hub_consolidation_and_exchange_bonus_ready: bool = False
+
+
+def evaluate_cross_border_multilingual_support_wms_hold_rma_policy(
+    policy_input: CrossBorderMultilingualSupportWmsHoldRmaPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_intransit_refund_wms_race_and_crossborder_rma_pool_usd
+        ),
+    )
+    if policy_input.international_air_return_label_exceeds_65pct_item_value_or_ddp_unclaimed:
+        return {
+            "status_code": 451,
+            "decision": "NEGATIVE_ROI_CROSS_BORDER_RMA_LABEL_OR_DUTY_LOSS_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.in_transit_parcel_refunded_or_unapproved_refund_exceeds_50_usd_cap:
+        return {
+            "status_code": 403,
+            "decision": "IN_TRANSIT_PARCEL_REFUND_OR_PROMPT_INJECTION_PAYOUT_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.order_canceled_or_address_edited_after_wms_picked_without_3pl_hold_ack:
+        return {
+            "status_code": 422,
+            "decision": "WMS_ALREADY_PICKED_CANCEL_OR_ADDRESS_RACE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.synchronous_wms_hold_local_hub_consolidation_and_exchange_bonus_ready:
+        savings = round(gross_pool * 0.43, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SYNCHRONOUS_WMS_HOLD_AND_LOCAL_HUB_CONSOLIDATION_RMA_CONFIRM",
+            "mandate_token": "cross_border_cs_rma_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CROSS_BORDER_CS_AND_RMA_AUTHORIZED",
+        "mandate_token": "cross_border_cs_rma_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -61720,6 +61798,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_multilingual_support_wms_hold_rma_guard = {
+        "authorized_200": evaluate_cross_border_multilingual_support_wms_hold_rma_policy(
+            CrossBorderMultilingualSupportWmsHoldRmaPolicyInput()
+        ),
+        "in_transit_or_cap_refund_403": evaluate_cross_border_multilingual_support_wms_hold_rma_policy(
+            CrossBorderMultilingualSupportWmsHoldRmaPolicyInput(
+                in_transit_parcel_refunded_or_unapproved_refund_exceeds_50_usd_cap=True
+            )
+        ),
+        "wms_picked_cancel_race_422": evaluate_cross_border_multilingual_support_wms_hold_rma_policy(
+            CrossBorderMultilingualSupportWmsHoldRmaPolicyInput(
+                order_canceled_or_address_edited_after_wms_picked_without_3pl_hold_ack=True
+            )
+        ),
+        "negative_roi_air_rma_451": evaluate_cross_border_multilingual_support_wms_hold_rma_policy(
+            CrossBorderMultilingualSupportWmsHoldRmaPolicyInput(
+                international_air_return_label_exceeds_65pct_item_value_or_ddp_unclaimed=True
+            )
+        ),
+        "wms_hold_local_hub_rma_409": evaluate_cross_border_multilingual_support_wms_hold_rma_policy(
+            CrossBorderMultilingualSupportWmsHoldRmaPolicyInput(
+                synchronous_wms_hold_local_hub_consolidation_and_exchange_bonus_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -62247,6 +62351,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_pls_domain_consolidation_guard": saas_pls_domain_consolidation_guard,
         "online_grocery_substitution_catch_weight_guard": online_grocery_substitution_catch_weight_guard,
         "ecommerce_accelerated_checkout_recovery_guard": ecommerce_accelerated_checkout_recovery_guard,
+        "cross_border_multilingual_support_wms_hold_rma_guard": cross_border_multilingual_support_wms_hold_rma_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -88365,6 +88470,62 @@ def render_webiq_live_demo_html(
         </div>
         <div id="accchk-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
           HTTP 409 DEVICE_AWARE_TWO_WALLET_PASSKEY_AND_STOCK_VERIFIED_RECOVERY_CONFIRM · Mandate: accelerated_checkout_recovery_optim_409
+        </div>
+      </div>
+
+      <div class="finops-box" id="cross-border-multilingual-cs-rma-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🌍 跨境电商多语种智能客服、WMS 同步锁仓与本地集运逆向售后 (Gorgias / Zendesk / Agentforce / Siena AI) 沙盒</div>
+            <div class="finops-sub">Round 399 (#518 · SVG #842 · Sandbox #292 · Test #1,396) · 拦截在途包裹未满 10 天停滞即被话术诱导退现金及超 $50 越权自动退款 (HTTP 403) + 发货前改址/撤单强制先取海外仓 3PL WMS 同步锁单回执防“钱退了货照发” (HTTP 422) + 禁为低货值品开跨国航空直退面单 (>65% 货值) 转本地集运仓 (HTTP 451) + 净省 43% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="xbcs-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度在途包裹被提前退款货款两空、3PL 已拣货仍取消退款白送与跨国高价退货面单损耗池 ($)
+            <input type="number" id="xbcs-gross-input" value="390000" min="10000" step="5000" oninput="recalcCrossBorderMultilingualCsRmaSandbox()" />
+          </label>
+          <label>在途包裹正常流转禁退现金与 AI 单笔免审批退款上限 (&lt;=$50) 门禁
+            <select id="xbcs-ref-select" onchange="recalcCrossBorderMultilingualCsRmaSandbox()">
+              <option value="pass">包裹正常在途严禁触发原路现金退款，且单笔 &gt;$50 赔付自动转人工主管审批 (安全)</option>
+              <option value="block_403">买家发提示词注入或催单话术，AI 对仍在派送途中的 $650 羽绒服秒退全款致货款两空 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>发货前取消订单 / 修改收货地址与海外仓 3PL WMS 同步冻结握手 (Hold-Ack) 门禁
+            <select id="xbcs-wms-select" onchange="recalcCrossBorderMultilingualCsRmaSandbox()">
+              <option value="pass">先调 3PL WMS 同步锁单接口拿到 HOLD_CONFIRMED 回执后，才在 Shopify 执行撤单或改地址 (安全)</option>
+              <option value="block_422">海外仓已拣货打包贴好面单，AI 却在 Shopify 点取消并全额退款导致包裹白送 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>跨国逆向退货运费 ROI (&lt;=65% 商品净值) 与目的国本地集运仓 (Local Return Hub) 门禁
+            <select id="xbcs-rma-select" onchange="recalcCrossBorderMultilingualCsRmaSandbox()">
+              <option value="pass">签发 $3.90 本土面单退至目的国集运仓质检二次上架，尺码不合优先引导本地秒换码 (合规)</option>
+              <option value="block_451">为 $38 T恤开具 $44 跨国 DHL 航空退货面单倒亏运费，且未申报退运关税退税 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>3PL WMS 同步锁仓握手 + 目的国本地退货集运二次上架 + 多语种尺码一键换货编排
+            <select id="xbcs-opt-select" onchange="recalcCrossBorderMultilingualCsRmaSandbox()">
+              <option value="enabled" selected>启用在途防退锁 + WMS 同步冻结握手 + 本地集运仓 RMA (-43% 售后与逆向损耗 / HTTP 409)</option>
+              <option value="disabled">默认标准多语种工单分流与人工审核基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度跨境售后误退与逆向运费池</div>
+            <div class="finops-kpi-val" id="xbcs-gross-kpi">$390,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净售后与逆向成本</div>
+            <div class="finops-kpi-val" id="xbcs-net-kpi">$222,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省误退货款与跨国运费</div>
+            <div class="finops-kpi-val" id="xbcs-savings-kpi" style="color:#6ee7b7;">$167,700</div>
+          </div>
+        </div>
+        <div id="xbcs-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 SYNCHRONOUS_WMS_HOLD_AND_LOCAL_HUB_CONSOLIDATION_RMA_CONFIRM · Mandate: cross_border_cs_rma_optim_409
         </div>
       </div>
 
@@ -121839,6 +122000,79 @@ function recalcEcommerceAcceleratedCheckoutRecoverySandbox() {{
   banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
   banner.style.color = '#bfdbfe';
   banner.textContent = 'HTTP 200 VERIFIED_ACCELERATED_CHECKOUT_AND_CART_RECOVERY_AUTHORIZED · Mandate: accelerated_checkout_recovery_200';
+}}
+
+function recalcCrossBorderMultilingualCsRmaSandbox() {{
+  const grossInput = document.getElementById('xbcs-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '390000'));
+  const refGate = document.getElementById('xbcs-ref-select').value;
+  const wmsGate = document.getElementById('xbcs-wms-select').value;
+  const rmaGate = document.getElementById('xbcs-rma-select').value;
+  const optMode = document.getElementById('xbcs-opt-select').value;
+
+  const grossKpi = document.getElementById('xbcs-gross-kpi');
+  const netKpi = document.getElementById('xbcs-net-kpi');
+  const savingsKpi = document.getElementById('xbcs-savings-kpi');
+  const statusKpi = document.getElementById('xbcs-status-kpi');
+  const banner = document.getElementById('xbcs-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (rmaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 NEGATIVE_ROI_CROSS_BORDER_RMA_LABEL_OR_DUTY_LOSS_BREACH · Mandate: null';
+    return;
+  }}
+  if (refGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 IN_TRANSIT_PARCEL_REFUND_OR_PROMPT_INJECTION_PAYOUT_VETO · Mandate: null';
+    return;
+  }}
+  if (wmsGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 WMS_ALREADY_PICKED_CANCEL_OR_ADDRESS_RACE_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.43);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 SYNCHRONOUS_WMS_HOLD_AND_LOCAL_HUB_CONSOLIDATION_RMA_CONFIRM · Mandate: cross_border_cs_rma_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_CROSS_BORDER_CS_AND_RMA_AUTHORIZED · Mandate: cross_border_cs_rma_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{

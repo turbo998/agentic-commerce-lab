@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`517` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`518` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (38 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (63 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (195 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (196 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (117 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (47 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (57 guides)](#tax-fx-privacy-disputes)
@@ -135,7 +135,7 @@
 | 63 | **🏆 E-Commerce One-Click Accelerated Checkout (`Shop Pay / Fastlane by PayPal / Stripe Link / Apple Pay`), Wallet Address-Override Shield & Margin-Safe Cart Recovery Agent (🏆 1,395th Unit Test Major Milestone!), Explicit Cart-Address Precedence & `P.O. Box` Courier Locks, Live `ATP > 0` Pre-Send Checks with `180d` Promo Cooldowns & `WebAuthn Passkey` Anti-`SMS Pumping` Guards (`-42%` Cost) FAQ** | [English](ecommerce-accelerated-checkout-shop-pay-fastlane-stripe-link-wallet-address-recovery-selection-faq.en.md) · [中文](ecommerce-accelerated-checkout-shop-pay-fastlane-stripe-link-wallet-address-recovery-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (195 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (196 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -336,6 +336,7 @@
 | 193 | **🏆 E-Commerce Trade-In, Branded Circular Recommerce (`Resale`) & Grading-Discrepancy Clawback Agent (`Trove / Archive / Phobio / Assurant Trade-In` · 🏆 1,390th Unit Test Major Milestone!), Pre-Checkout `GSMA / FMI` Activation-Lock Checks, Photo-Backed Downgrade Consent / Free-Return Options, `NIST SP 800-88` Wipe Certificates & `+15%` Store-Credit Boosters (`-42%` Cost) FAQ** | [English](ecommerce-trade-in-recommerce-trove-archive-phobio-assurant-fmi-grading-clawback-selection-faq.en.md) · [中文](ecommerce-trade-in-recommerce-trove-archive-phobio-assurant-fmi-grading-clawback-selection-faq.md) |
 | 194 | **🚗 OTA & Corporate Car Rental (`Mobility Fleet`), Counter `CDW / LDW` Upsell Shield, Telematics Fuel/Toll Audit & Post-Return Damage Copilot (`Enterprise / National API / Sixt / Hertz Direct / Amadeus Car GDS / CarTrawler`), Scoped `VCN` Counter-Upsell Caps, Connected-Car `CAN-Bus` Fuel Proofs (`>=94%`), 4-Corner `CV` Walkaround Diffs & `<15m` `0420` Deposit Reversals (`-42%` Cost) FAQ** | [English](ota-car-rental-mobility-enterprise-sixt-amadeus-cartrawler-cdw-telematics-deposit-selection-faq.en.md) · [中文](ota-car-rental-mobility-enterprise-sixt-amadeus-cartrawler-cdw-telematics-deposit-selection-faq.md) |
 | 195 | **🏆 Online Grocery, Allergen-Safe Smart Substitution, Catch-Weight Pre-Auth Buffer (`+15%`) & `SNAP / EBT` Dual-Tender Checkout Agent (`Instacart Carrot Platform / Mercatus / Wynshop / DoorDash Drive` · 🏆 840th SVG & 290th Sandbox Dual Milestone!), `FDA 9 Allergen` & `Kosher/Halal` Sub Filters, Price-Protected Upgrades, `GS1 DataBar` Scale Caps & `<=40m` Cold-Chain Locks (`-42%` Cost) FAQ** | [English](online-grocery-instacart-mercatus-wynshop-allergen-substitution-catch-weight-snap-ebt-selection-faq.en.md) · [中文](online-grocery-instacart-mercatus-wynshop-allergen-substitution-catch-weight-snap-ebt-selection-faq.md) |
+| 196 | **🌍 Cross-Border E-Commerce Multilingual Customer Support, Pre-Ship `WMS Pick-Lock` & Automated `RMA / Duty-Drawback` Agent (`Gorgias AI Agent / Zendesk AI / Salesforce Agentforce / Siena AI`), In-Transit Refund Vetoes & `<=$50` Autonomous Caps, Synchronous `3PL WMS` Hold-Before-Cancel Handshakes & Local Return Consolidation Hubs (`-43%` Cost) FAQ** | [English](cross-border-multilingual-cs-gorgias-zendesk-agentforce-wms-lock-rma-duty-selection-faq.en.md) · [中文](cross-border-multilingual-cs-gorgias-zendesk-agentforce-wms-lock-rma-duty-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (117 Guides)
