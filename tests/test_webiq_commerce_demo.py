@@ -35972,6 +35972,68 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("digital-gift-card-corporate-incentive-sandbox", html_zh)
 
+    def test_cross_border_local_apm_pix_upi_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderLocalApmPixUpiPolicyInput,
+            evaluate_cross_border_local_apm_pix_upi_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_cross_border_local_apm_pix_upi_policy(
+            CrossBorderLocalApmPixUpiPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(auth["mandate_token"], "cross_border_local_apm_200")
+
+        qr_veto = evaluate_cross_border_local_apm_pix_upi_policy(
+            CrossBorderLocalApmPixUpiPolicyInput(
+                qr_expiry_exceeds_stock_lease_or_unpaid_voucher_locks_flash_inventory=True
+            )
+        )
+        self.assertEqual(qr_veto["status_code"], 403)
+        self.assertEqual(
+            qr_veto["decision"],
+            "ORPHAN_QR_EXPIRY_MISMATCH_OR_VOUCHER_STOCK_HOARDING_VETO",
+        )
+
+        cpf = evaluate_cross_border_local_apm_pix_upi_policy(
+            CrossBorderLocalApmPixUpiPolicyInput(
+                brazil_cpf_mod11_invalid_or_cash_voucher_refund_missing_local_iban=True
+            )
+        )
+        self.assertEqual(cpf["status_code"], 422)
+        self.assertEqual(
+            cpf["decision"],
+            "INVALID_CPF_TAX_ID_CHECKSUM_OR_UNREFUNDABLE_CASH_VOUCHER_BREACH",
+        )
+
+        mid = evaluate_cross_border_local_apm_pix_upi_policy(
+            CrossBorderLocalApmPixUpiPolicyInput(
+                domestic_only_card_routed_to_foreign_mid_or_apm_webhook_unsigned=True
+            )
+        )
+        self.assertEqual(mid["status_code"], 451)
+        self.assertEqual(
+            mid["decision"],
+            "CROSS_BORDER_DOMESTIC_CARD_DECLINE_OR_UNSIGNED_APM_WEBHOOK_BREACH",
+        )
+
+        optim = evaluate_cross_border_local_apm_pix_upi_policy(
+            CrossBorderLocalApmPixUpiPolicyInput(
+                quarterly_crossborder_decline_orphan_qr_and_voucher_hoard_pool_usd=450000.0,
+                synced_qr_ttl_allocate_on_paid_and_local_mid_acquiring_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 189000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 261000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_local_apm_pix_upi_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-local-apm-pix-upi-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

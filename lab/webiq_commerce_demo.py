@@ -45659,6 +45659,82 @@ def evaluate_digital_gift_card_corporate_incentive_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderLocalApmPixUpiPolicyInput:
+    quarterly_crossborder_decline_orphan_qr_and_voucher_hoard_pool_usd: float = 450000.0
+    qr_expiry_exceeds_stock_lease_or_unpaid_voucher_locks_flash_inventory: bool = False
+    brazil_cpf_mod11_invalid_or_cash_voucher_refund_missing_local_iban: bool = False
+    domestic_only_card_routed_to_foreign_mid_or_apm_webhook_unsigned: bool = False
+    synced_qr_ttl_allocate_on_paid_and_local_mid_acquiring_ready: bool = False
+
+
+def evaluate_cross_border_local_apm_pix_upi_policy(
+    policy_input: CrossBorderLocalApmPixUpiPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_crossborder_decline_orphan_qr_and_voucher_hoard_pool_usd
+        ),
+    )
+    if policy_input.domestic_only_card_routed_to_foreign_mid_or_apm_webhook_unsigned:
+        return {
+            "status_code": 451,
+            "decision": "CROSS_BORDER_DOMESTIC_CARD_DECLINE_OR_UNSIGNED_APM_WEBHOOK_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.qr_expiry_exceeds_stock_lease_or_unpaid_voucher_locks_flash_inventory:
+        return {
+            "status_code": 403,
+            "decision": "ORPHAN_QR_EXPIRY_MISMATCH_OR_VOUCHER_STOCK_HOARDING_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.brazil_cpf_mod11_invalid_or_cash_voucher_refund_missing_local_iban:
+        return {
+            "status_code": 422,
+            "decision": "INVALID_CPF_TAX_ID_CHECKSUM_OR_UNREFUNDABLE_CASH_VOUCHER_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.synced_qr_ttl_allocate_on_paid_and_local_mid_acquiring_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SYNCED_QR_TTL_ALLOCATE_ON_PAID_AND_LOCAL_MID_ACQUIRING_CONFIRM",
+            "mandate_token": "cross_border_local_apm_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CROSS_BORDER_LOCAL_APM_AUTHORIZED",
+        "mandate_token": "cross_border_local_apm_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -62030,6 +62106,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_local_apm_pix_upi_guard = {
+        "authorized_200": evaluate_cross_border_local_apm_pix_upi_policy(
+            CrossBorderLocalApmPixUpiPolicyInput()
+        ),
+        "orphan_qr_or_voucher_hoard_403": evaluate_cross_border_local_apm_pix_upi_policy(
+            CrossBorderLocalApmPixUpiPolicyInput(
+                qr_expiry_exceeds_stock_lease_or_unpaid_voucher_locks_flash_inventory=True
+            )
+        ),
+        "invalid_cpf_or_voucher_refund_422": evaluate_cross_border_local_apm_pix_upi_policy(
+            CrossBorderLocalApmPixUpiPolicyInput(
+                brazil_cpf_mod11_invalid_or_cash_voucher_refund_missing_local_iban=True
+            )
+        ),
+        "domestic_card_or_unsigned_hook_451": evaluate_cross_border_local_apm_pix_upi_policy(
+            CrossBorderLocalApmPixUpiPolicyInput(
+                domestic_only_card_routed_to_foreign_mid_or_apm_webhook_unsigned=True
+            )
+        ),
+        "synced_qr_local_mid_409": evaluate_cross_border_local_apm_pix_upi_policy(
+            CrossBorderLocalApmPixUpiPolicyInput(
+                synced_qr_ttl_allocate_on_paid_and_local_mid_acquiring_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -62560,6 +62662,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_multilingual_support_wms_hold_rma_guard": cross_border_multilingual_support_wms_hold_rma_guard,
         "e2e_agentic_commerce_master_blueprint_guard": e2e_agentic_commerce_master_blueprint_guard,
         "digital_gift_card_corporate_incentive_guard": digital_gift_card_corporate_incentive_guard,
+        "cross_border_local_apm_pix_upi_guard": cross_border_local_apm_pix_upi_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -88846,6 +88949,62 @@ def render_webiq_live_demo_html(
         </div>
         <div id="dgift-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
           HTTP 409 ACCOUNT_BOUND_GIFT_CARD_CLAIM_AND_SETTLED_WIRE_SPLIT_LEDGER_CONFIRM · Mandate: digital_gift_card_incentive_optim_409
+        </div>
+      </div>
+
+      <div class="finops-box" id="cross-border-local-apm-pix-upi-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 跨境电商本地替代支付 (PIX / UPI / iDEAL / Konbini) 与异步时效对齐 (dLocal / Adyen / Stripe / Rapyd) 沙盒（🏆 第 845 张 SVG 与第 295 个沙盒双里程碑！）</div>
+            <div class="finops-sub">Round 402 (#521 · 🏆 845th SVG &amp; 295th Sandbox Dual Milestone! · Test #1,399) · 强制动态二维码 TTL &lt;= 库存租约-60s 防已付无货孤儿单，且离线现金凭条 (Konbini/OXXO/Boleto) 到账才分配库存防恶意占库 (HTTP 403) + 巴西 CPF 11位税号模11校验与现金单退款收集本地 PIX Key/银行账号 (HTTP 422) + 本土内卡路由 Local MID 免 45% 拒付 (HTTP 451) + 净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="lapm-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度新兴市场本土卡跨境通道拒付流失、24h 二维码晚付孤儿单与 72h 便利店未付凭条恶意占库池 ($)
+            <input type="number" id="lapm-gross-input" value="450000" min="10000" step="5000" oninput="recalcCrossBorderLocalApmPixUpiSandbox()" />
+          </label>
+          <label>动态二维码过期时间对齐 (QR_TTL &lt;= Stock_Lease - 60s) 与现金凭条防占库门禁
+            <select id="lapm-qr-select" onchange="recalcCrossBorderLocalApmPixUpiSandbox()">
+              <option value="pass">PIX/UPI 二维码设 14m 过期 (&lt;15m 锁库)，Konbini/OXXO/Boleto 现金凭条到账才扣库存 (安全)</option>
+              <option value="block_403">15m 释放库存后买家在第 28m 扫 24h 二维码付成无货孤儿单，或未付凭条锁空大促库存 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>巴西央行 CPF/CNPJ 税号模 11 校验位核验与现金凭条本地退款出金 (Payout) 门禁
+            <select id="lapm-cpf-select" onchange="recalcCrossBorderLocalApmPixUpiSandbox()">
+              <option value="pass">结账前端强制校验 11位 CPF 模11 校验位，现金凭条退货自动收集买家本地 PIX Key/银行账号 (合规)</option>
+              <option value="block_422">未校验 CPF 税号导致清关扣留，或对无原路退回通道的便利店现金单发起盲目原路退款 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>本土内卡路由至 Local MID (免 4.38% IOF 税) 与央行清算流水号 (EndToEndId / RRN) 门禁
+            <select id="lapm-mid-select" onchange="recalcCrossBorderLocalApmPixUpiSandbox()">
+              <option value="pass">经 dLocal/Adyen 本土 MID 收单支持 12期分期，且异步 Webhook 强验 HMAC 与央行清算号 (安全)</option>
+              <option value="block_451">拉美/印度本土卡走欧美跨境 MID 遭 45% 拒付，或未验证签名与 EndToEndId 放行假回调 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>协议级二维码 TTL 同步 + 到账扣库防占 + 本土 MID 收单 + 3s 迟到付款自动秒退编排
+            <select id="lapm-opt-select" onchange="recalcCrossBorderLocalApmPixUpiSandbox()">
+              <option value="enabled" selected>启用本地 PIX/UPI/iDEAL 时效同步 + 到账扣库 + Local MID (-42% 拒付与孤儿单损耗 / HTTP 409)</option>
+              <option value="disabled">默认跨境卡通道与无时效对齐基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度跨境拒付与孤儿单损失池</div>
+            <div class="finops-kpi-val" id="lapm-gross-kpi">$450,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净通道与售后成本</div>
+            <div class="finops-kpi-val" id="lapm-net-kpi">$261,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回新兴市场GMV与库存</div>
+            <div class="finops-kpi-val" id="lapm-savings-kpi" style="color:#6ee7b7;">$189,000</div>
+          </div>
+        </div>
+        <div id="lapm-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 SYNCED_QR_TTL_ALLOCATE_ON_PAID_AND_LOCAL_MID_ACQUIRING_CONFIRM · Mandate: cross_border_local_apm_optim_409
         </div>
       </div>
 
@@ -122539,6 +122698,79 @@ function recalcDigitalGiftCardCorporateIncentiveSandbox() {{
   banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
   banner.style.color = '#bfdbfe';
   banner.textContent = 'HTTP 200 VERIFIED_DIGITAL_GIFT_CARD_AND_B2B_INCENTIVE_AUTHORIZED · Mandate: digital_gift_card_incentive_200';
+}}
+
+function recalcCrossBorderLocalApmPixUpiSandbox() {{
+  const grossInput = document.getElementById('lapm-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '450000'));
+  const qrGate = document.getElementById('lapm-qr-select').value;
+  const cpfGate = document.getElementById('lapm-cpf-select').value;
+  const midGate = document.getElementById('lapm-mid-select').value;
+  const optMode = document.getElementById('lapm-opt-select').value;
+
+  const grossKpi = document.getElementById('lapm-gross-kpi');
+  const netKpi = document.getElementById('lapm-net-kpi');
+  const savingsKpi = document.getElementById('lapm-savings-kpi');
+  const statusKpi = document.getElementById('lapm-status-kpi');
+  const banner = document.getElementById('lapm-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (midGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CROSS_BORDER_DOMESTIC_CARD_DECLINE_OR_UNSIGNED_APM_WEBHOOK_BREACH · Mandate: null';
+    return;
+  }}
+  if (qrGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ORPHAN_QR_EXPIRY_MISMATCH_OR_VOUCHER_STOCK_HOARDING_VETO · Mandate: null';
+    return;
+  }}
+  if (cpfGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 INVALID_CPF_TAX_ID_CHECKSUM_OR_UNREFUNDABLE_CASH_VOUCHER_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 SYNCED_QR_TTL_ALLOCATE_ON_PAID_AND_LOCAL_MID_ACQUIRING_CONFIRM · Mandate: cross_border_local_apm_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_CROSS_BORDER_LOCAL_APM_AUTHORIZED · Mandate: cross_border_local_apm_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{
