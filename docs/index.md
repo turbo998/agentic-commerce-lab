@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`521` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`522` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -10,7 +10,7 @@
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（65 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（196 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（117 篇）](#b2b-procurement-erp)
-- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（47 篇）](#saas-finops-micropayments)
+- [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（48 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（57 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
@@ -467,7 +467,7 @@
 | 117 | **🏆 企业 B2B 经销商批发门户（`Wholesale Dealer Portal`）、稀缺爆款公平配额分配（`Fair-Share Allocation`）与无痕一件代发（`Blind Drop-Ship`）选型对比（`Shopify Plus B2B / OroCommerce / Salesforce B2B Commerce / BigCommerce B2B` · 🏆 第 395 轮重大里程碑！）、拦截 `MAP` 破价违约户与屏蔽未授权亚马逊 `FBA` 收货地址、硬隔离 `35% D2C` 高毛利池与按等级配额拆单预售及代发包裹零价格白标装箱单净省 41% Agent 架构选型 FAQ** | [中文](b2b-wholesale-dealer-portal-shopify-orocommerce-salesforce-map-allocation-dropship-selection-faq.md) · [English](b2b-wholesale-dealer-portal-shopify-orocommerce-salesforce-map-allocation-dropship-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
-## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（47 篇）
+## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（48 篇）
 
 > 涵盖企业 SaaS 席位与影子 IT 治理、高频 Token/API 用量水位线幂等计费、FTC 一键退订（Click-to-Cancel）与挽留护栏、HTTP 402（x402 / Stripe MPP Tempo）亚美分流式微支付及推理 FinOps 成本路由。
 
@@ -520,6 +520,7 @@
 | 45 | **🏆 商业智能体机器微支付（`M2M / Agent-to-Agent Micropayments`）、`HTTP 402 (x402 / L402)` 与预充值积分账本选型对比（`Coinbase x402 / Stripe Metered & Credits / Lightning L402 / Skyfire` · 🏆 第 1,365 项确定性单元测试里程碑）、拦截 `<$5.00` 小额请求走 `$0.30` 固定手续费信用卡通道、单次 `HTTP 402` 出价上限锁（`<=$0.05/call`）及上游 `200 OK` 验真后原子交割净省 43% Agent 架构选型 FAQ** | [中文](agent-to-agent-m2m-micropayments-x402-l402-stripe-metered-skyfire-subcent-budget-selection-faq.md) · [English](agent-to-agent-m2m-micropayments-x402-l402-stripe-metered-skyfire-subcent-budget-selection-faq.en.md) |
 | 46 | **🏆 企业 B2B SaaS 支出管理（`SMP`）、`SCIM` 僵尸席位自动缩容与影子 IT（`Shadow IT`）治理选型对比（`Zylo / Productiv / Torii / Vendr / Tropic` · 🏆 第 380 轮研究重大里程碑）、拦截员工虚拟卡/报销单重复购买已有企业年框软件及未签 `ZDR DPA` 的影子 AI、60 天闲置席位 `SCIM` 自动回收与 `T-95d` 续约死线锁及功能级 `Creator->Viewer` 降配净省 41% Agent 架构选型 FAQ** | [中文](b2b-saas-spend-management-smp-zylo-productiv-torii-vendr-scim-shadow-it-selection-faq.md) · [English](b2b-saas-spend-management-smp-zylo-productiv-torii-vendr-scim-shadow-it-selection-faq.en.md) |
 | 47 | **🏆 B2B SaaS 产品驱动销售（`Product-Led Sales, PLS`）、企业邮箱域名工作区聚合并账（`Domain-Clustered PQA Roll-Up`）与自助转大客户年框按天退差选型对比（`Pocus / Common Room / Stripe Billing / Zuora / Paddle` · 🏆 全库第 515 篇双语决策指南里程碑！）、企业主协议生效瞬间原子级停扣全部同域名员工信用卡并折算余额冲抵主发票、同域名聚合成唯一 `PQA` 防多销售撞单与屏蔽小微打折码及欧盟 `VIES` 税号实时验真净省 42% Agent 架构选型 FAQ** | [中文](b2b-saas-pls-product-led-sales-domain-consolidation-pocus-stripe-zuora-proration-vat-selection-faq.md) · [English](b2b-saas-pls-product-led-sales-domain-consolidation-pocus-stripe-zuora-proration-vat-selection-faq.en.md) |
+| 48 | **🏆 订阅制 SaaS 与 DTC 会员退订挽留（`Cancel-Flow Deflection`）、暂停跳期 vs. 折扣因果归因、美国 `FTC 一键退订法案 (16 CFR Part 464)` 合规与智能催收（`Chargebee Retention / ProsperStack / Recurly / Recharge + Stripe Billing` · 🏆 历史性全库第 1,400 项确定性单元测试重大里程碑！）、囤货原因唯一导流一键暂停 60 天与 `365d` 折扣冷却防每季假退订薅半价、扣前 `VAU` 换卡与 `Visa Cat-1` 硬拒付零重试及发薪日择时重扣净省 43% Agent 架构选型 FAQ** | [中文](saas-subscription-cancel-flow-retention-chargebee-prosperstack-recurly-ftc-dunning-selection-faq.md) · [English](saas-subscription-cancel-flow-retention-chargebee-prosperstack-recurly-ftc-dunning-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
 ## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（57 篇）

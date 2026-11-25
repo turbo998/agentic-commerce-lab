@@ -45735,6 +45735,84 @@ def evaluate_cross_border_local_apm_pix_upi_policy(
     }
 
 
+@dataclass(frozen=True)
+class SaasSubscriptionCancelFlowRetentionPolicyInput:
+    quarterly_involuntary_churn_coupon_gaming_and_ftc_dispute_pool_usd: float = (
+        480000.0
+    )
+    retention_discount_given_within_365d_cooldown_or_on_overstock_reason: bool = False
+    cat1_hard_decline_retried_or_expired_card_charged_without_vau_updater: bool = False
+    cancel_requires_phone_chat_or_lacks_persistent_1click_ftc_cancel_btn: bool = False
+    single_screen_pause_deflection_and_payday_vau_smart_dunning_ready: bool = False
+
+
+def evaluate_saas_subscription_cancel_flow_retention_policy(
+    policy_input: SaasSubscriptionCancelFlowRetentionPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_involuntary_churn_coupon_gaming_and_ftc_dispute_pool_usd
+        ),
+    )
+    if policy_input.cancel_requires_phone_chat_or_lacks_persistent_1click_ftc_cancel_btn:
+        return {
+            "status_code": 451,
+            "decision": "FTC_CLICK_TO_CANCEL_DARK_PATTERN_OR_ARL_NOTICE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.retention_discount_given_within_365d_cooldown_or_on_overstock_reason:
+        return {
+            "status_code": 403,
+            "decision": "SERIAL_CANCEL_DISCOUNT_GAMING_OR_OVERSTOCK_COUPON_MISMATCH_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cat1_hard_decline_retried_or_expired_card_charged_without_vau_updater:
+        return {
+            "status_code": 422,
+            "decision": "VISA_CAT1_HARD_DECLINE_RETRY_OR_MISSING_VAU_UPDATER_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.single_screen_pause_deflection_and_payday_vau_smart_dunning_ready:
+        savings = round(gross_pool * 0.43, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SINGLE_SCREEN_PAUSE_DEFLECTION_AND_PAYDAY_SMART_DUNNING_CONFIRM",
+            "mandate_token": "saas_cancel_flow_retention_1400_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_SUBSCRIPTION_RETENTION_AND_DUNNING_AUTHORIZED",
+        "mandate_token": "saas_cancel_flow_retention_1400_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -62132,6 +62210,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    saas_subscription_cancel_flow_retention_guard = {
+        "authorized_200": evaluate_saas_subscription_cancel_flow_retention_policy(
+            SaasSubscriptionCancelFlowRetentionPolicyInput()
+        ),
+        "coupon_gaming_or_overstock_403": evaluate_saas_subscription_cancel_flow_retention_policy(
+            SaasSubscriptionCancelFlowRetentionPolicyInput(
+                retention_discount_given_within_365d_cooldown_or_on_overstock_reason=True
+            )
+        ),
+        "cat1_retry_or_vau_miss_422": evaluate_saas_subscription_cancel_flow_retention_policy(
+            SaasSubscriptionCancelFlowRetentionPolicyInput(
+                cat1_hard_decline_retried_or_expired_card_charged_without_vau_updater=True
+            )
+        ),
+        "ftc_dark_pattern_cancel_451": evaluate_saas_subscription_cancel_flow_retention_policy(
+            SaasSubscriptionCancelFlowRetentionPolicyInput(
+                cancel_requires_phone_chat_or_lacks_persistent_1click_ftc_cancel_btn=True
+            )
+        ),
+        "pause_deflect_payday_dunning_409": evaluate_saas_subscription_cancel_flow_retention_policy(
+            SaasSubscriptionCancelFlowRetentionPolicyInput(
+                single_screen_pause_deflection_and_payday_vau_smart_dunning_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -62663,6 +62767,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "e2e_agentic_commerce_master_blueprint_guard": e2e_agentic_commerce_master_blueprint_guard,
         "digital_gift_card_corporate_incentive_guard": digital_gift_card_corporate_incentive_guard,
         "cross_border_local_apm_pix_upi_guard": cross_border_local_apm_pix_upi_guard,
+        "saas_subscription_cancel_flow_retention_guard": saas_subscription_cancel_flow_retention_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -89005,6 +89110,62 @@ def render_webiq_live_demo_html(
         </div>
         <div id="lapm-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
           HTTP 409 SYNCED_QR_TTL_ALLOCATE_ON_PAID_AND_LOCAL_MID_ACQUIRING_CONFIRM · Mandate: cross_border_local_apm_optim_409
+        </div>
+      </div>
+
+      <div class="finops-box" id="saas-subscription-cancel-flow-retention-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 订阅制 SaaS 与会员退订挽留、FTC 一键退订合规与智能催收 (Chargebee / ProsperStack / Recurly / Recharge) 沙盒（🏆 历史性第 1,400 项确定性单元测试重大里程碑！）</div>
+            <div class="finops-sub">Round 403 (#522 · SVG #846 · Sandbox #296 · 🏆 Historic 1,400th Deterministic Unit Test Major Milestone!) · 囤货/出差退订原因唯一导流一键暂停 60 天且执行 365 天挽留折扣冷却防每季假退订薅半价 (HTTP 403) + 扣前 VAU/ABU 自动换卡、Visa Cat-1 硬拒付零重试与发薪日择时催收 (HTTP 422) + FTC 16 CFR 464 单屏常驻立即退订按钮 (HTTP 451) + 净省 43% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="scflw-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度续费刷卡失败被动流失、老客每 90 天假点退订白嫖 5 折券毛利流失与 FTC / 13.2 拒付罚金池 ($)
+            <input type="number" id="scflw-gross-input" value="480000" min="10000" step="5000" oninput="recalcSaasSubscriptionCancelFlowRetentionSandbox()" />
+          </label>
+          <label>退订原因精准映射 (Reason-to-Remedy) 与 365 天挽留折扣冷却门禁
+            <select id="scflw-cool-select" onchange="recalcSaasSubscriptionCancelFlowRetentionSandbox()">
+              <option value="pass">囤货/出差推一键暂停 30-60 天，且 365 天内已用过挽留券的账号禁发折扣码 (安全)</option>
+              <option value="block_403">每次点退订都弹 5 折码被老客每 90 天白嫖半价，或向存货吃不完的客户乱发折扣券 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>续费前 VAU/ABU 自动换卡、Visa Cat-1 硬拒付零重试熔断与发薪日智能催收门禁
+            <select id="scflw-dun-select" onchange="recalcSaasSubscriptionCancelFlowRetentionSandbox()">
+              <option value="pass">扣前 48h 同步 VAU 换新卡，Cat-1 死卡 0 重试秒熔断，Code 51 软拒付对齐 1号/15号/周五重扣 (安全)</option>
+              <option value="block_422">未查 VAU 刷过期卡，或对挂失死卡 Cat-1 连续 5 天凌晨盲刷被 Visa 重罚 $15/次 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国 FTC Click-to-Cancel (16 CFR Part 464) 单屏对称常驻“立即取消”按钮与 ARL 预通知门禁
+            <select id="scflw-ftc-select" onchange="recalcSaasSubscriptionCancelFlowRetentionSandbox()">
+              <option value="pass">单屏同时展示 1 项定制挽留方案与常驻可见“立即取消”按钮，年费提前 30 天发提醒 (合规)</option>
+              <option value="block_451">逼客户打电话或跟机器人聊 10 分钟才放出退订按钮，违反 FTC 新规招致 $51,744 重罚 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>FTC 单屏对称暂停/降档挽留 + VAU 自动换卡 + 发薪日择时智能催收全链路编排
+            <select id="scflw-opt-select" onchange="recalcSaasSubscriptionCancelFlowRetentionSandbox()">
+              <option value="enabled" selected>启用单屏一键暂停挽留 + 365d 冷却 + 发薪日智能催收 (-43% 流失与薅券损耗 / HTTP 409)</option>
+              <option value="disabled">默认标准退订问卷与固定间隔重扣基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度主被动流失与薅券损失池</div>
+            <div class="finops-kpi-val" id="scflw-gross-kpi">$480,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净流失与催收成本</div>
+            <div class="finops-kpi-val" id="scflw-net-kpi">$273,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净挽回ARR与正价毛利</div>
+            <div class="finops-kpi-val" id="scflw-savings-kpi" style="color:#6ee7b7;">$206,400</div>
+          </div>
+        </div>
+        <div id="scflw-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 SINGLE_SCREEN_PAUSE_DEFLECTION_AND_PAYDAY_SMART_DUNNING_CONFIRM · Mandate: saas_cancel_flow_retention_1400_optim_409
         </div>
       </div>
 
@@ -122771,6 +122932,79 @@ function recalcCrossBorderLocalApmPixUpiSandbox() {{
   banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
   banner.style.color = '#bfdbfe';
   banner.textContent = 'HTTP 200 VERIFIED_CROSS_BORDER_LOCAL_APM_AUTHORIZED · Mandate: cross_border_local_apm_200';
+}}
+
+function recalcSaasSubscriptionCancelFlowRetentionSandbox() {{
+  const grossInput = document.getElementById('scflw-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '480000'));
+  const coolGate = document.getElementById('scflw-cool-select').value;
+  const dunGate = document.getElementById('scflw-dun-select').value;
+  const ftcGate = document.getElementById('scflw-ftc-select').value;
+  const optMode = document.getElementById('scflw-opt-select').value;
+
+  const grossKpi = document.getElementById('scflw-gross-kpi');
+  const netKpi = document.getElementById('scflw-net-kpi');
+  const savingsKpi = document.getElementById('scflw-savings-kpi');
+  const statusKpi = document.getElementById('scflw-status-kpi');
+  const banner = document.getElementById('scflw-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ftcGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FTC_CLICK_TO_CANCEL_DARK_PATTERN_OR_ARL_NOTICE_BREACH · Mandate: null';
+    return;
+  }}
+  if (coolGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 SERIAL_CANCEL_DISCOUNT_GAMING_OR_OVERSTOCK_COUPON_MISMATCH_VETO · Mandate: null';
+    return;
+  }}
+  if (dunGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 VISA_CAT1_HARD_DECLINE_RETRY_OR_MISSING_VAU_UPDATER_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.43);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 SINGLE_SCREEN_PAUSE_DEFLECTION_AND_PAYDAY_SMART_DUNNING_CONFIRM · Mandate: saas_cancel_flow_retention_1400_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_SUBSCRIPTION_RETENTION_AND_DUNNING_AUTHORIZED · Mandate: saas_cancel_flow_retention_1400_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{

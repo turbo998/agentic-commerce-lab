@@ -36034,6 +36034,70 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("cross-border-local-apm-pix-upi-sandbox", html_zh)
 
+    def test_saas_subscription_cancel_flow_retention_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            SaasSubscriptionCancelFlowRetentionPolicyInput,
+            evaluate_saas_subscription_cancel_flow_retention_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_saas_subscription_cancel_flow_retention_policy(
+            SaasSubscriptionCancelFlowRetentionPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(
+            auth["mandate_token"], "saas_cancel_flow_retention_1400_200"
+        )
+
+        cool = evaluate_saas_subscription_cancel_flow_retention_policy(
+            SaasSubscriptionCancelFlowRetentionPolicyInput(
+                retention_discount_given_within_365d_cooldown_or_on_overstock_reason=True
+            )
+        )
+        self.assertEqual(cool["status_code"], 403)
+        self.assertEqual(
+            cool["decision"],
+            "SERIAL_CANCEL_DISCOUNT_GAMING_OR_OVERSTOCK_COUPON_MISMATCH_VETO",
+        )
+
+        dun = evaluate_saas_subscription_cancel_flow_retention_policy(
+            SaasSubscriptionCancelFlowRetentionPolicyInput(
+                cat1_hard_decline_retried_or_expired_card_charged_without_vau_updater=True
+            )
+        )
+        self.assertEqual(dun["status_code"], 422)
+        self.assertEqual(
+            dun["decision"],
+            "VISA_CAT1_HARD_DECLINE_RETRY_OR_MISSING_VAU_UPDATER_BREACH",
+        )
+
+        ftc = evaluate_saas_subscription_cancel_flow_retention_policy(
+            SaasSubscriptionCancelFlowRetentionPolicyInput(
+                cancel_requires_phone_chat_or_lacks_persistent_1click_ftc_cancel_btn=True
+            )
+        )
+        self.assertEqual(ftc["status_code"], 451)
+        self.assertEqual(
+            ftc["decision"],
+            "FTC_CLICK_TO_CANCEL_DARK_PATTERN_OR_ARL_NOTICE_BREACH",
+        )
+
+        optim = evaluate_saas_subscription_cancel_flow_retention_policy(
+            SaasSubscriptionCancelFlowRetentionPolicyInput(
+                quarterly_involuntary_churn_coupon_gaming_and_ftc_dispute_pool_usd=480000.0,
+                single_screen_pause_deflection_and_payday_vau_smart_dunning_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 206400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 273600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("saas_subscription_cancel_flow_retention_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("saas-subscription-cancel-flow-retention-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

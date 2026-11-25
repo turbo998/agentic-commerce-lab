@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg846" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#090d16" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#064e3b" />
+    </linearGradient>
+    <linearGradient id="accent846" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#10b981" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg846)" />
+  <rect x="24" y="24" width="1152" height="582" rx="18" fill="none" stroke="url(#accent846)" stroke-width="2.5" opacity="0.6" />
+
+  <text x="52" y="66" fill="#fbbf24" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.2">
+    🏆 HISTORIC 1,400TH DETERMINISTIC UNIT TEST MAJOR MILESTONE! · ROUND 403 · FAQ #522 · SVG #846 · SANDBOX #296
+  </text>
+  <text x="52" y="102" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">
+    Subscription Churn-Save, FTC Click-to-Cancel &amp; Smart Dunning Copilot
+  </text>
+  <text x="52" y="130" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="15">
+    Chargebee Retention vs. ProsperStack vs. Recurly vs. Recharge + 365d Offer Cooldown &amp; FTC 16 CFR Part 464 Symmetry
+  </text>
+
+  <!-- Panel 1 -->
+  <rect x="52" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#ef4444" stroke-width="1.8" />
+  <rect x="52" y="156" width="350" height="42" rx="14" fill="#7f1d1d" />
+  <text x="72" y="183" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    1. 365d Cooldown &amp; Pause Match (403)
+  </text>
+  <text x="72" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: Users Clicking "Cancel" Every 90d for 50% Off!
+  </text>
+  <text x="72" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Static cancel-flow modals hand out 50% off every time
+  </text>
+  <text x="72" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    a subscriber clicks Cancel, eroding loyal ARR!
+  </text>
+  <text x="72" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Giving 30% discount when user just has "Too much stock"
+  </text>
+  <rect x="72" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#f87171" stroke-width="1" />
+  <text x="86" y="328" fill="#fca5a5" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if Save_Offer_Used_In_365d or Discount_On_Overstock:
+  </text>
+  <text x="86" y="348" fill="#fecaca" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_403_RETENTION_COUPON_GAMING_OR_MISMATCH_VETO
+  </text>
+  <text x="86" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Enforce 365d discount cooldown &amp; offer 60d Pause/Skip
+  </text>
+  <text x="72" y="404" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    Platform Fit: Chargebee / ProsperStack / Recurly
+  </text>
+  <text x="72" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Routes "Too much product / Vacation" to 1-Click Pause
+  </text>
+  <text x="72" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Enforces 365-day cooldown on monetary save discounts
+  </text>
+  <text x="72" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Offers tier downgrade / seat flex before price cuts
+  </text>
+
+  <!-- Panel 2 -->
+  <rect x="425" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#f59e0b" stroke-width="1.8" />
+  <rect x="425" y="156" width="350" height="42" rx="14" fill="#78350f" />
+  <text x="445" y="183" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    2. Cat-1 Hard Decline &amp; VAU Gate (422)
+  </text>
+  <text x="445" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: Retrying Stolen/Closed Cards ($15 Visa Fine!)
+  </text>
+  <text x="445" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Blind daily cron retries on Visa Category-1 hard
+  </text>
+  <text x="445" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    declines (`04/41/43/R0`) trigger scheme penalty fees
+  </text>
+  <text x="445" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Retries expired card before running VAU/ABU updater!
+  </text>
+  <rect x="445" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="1" />
+  <text x="459" y="328" fill="#fcd34d" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if Retry_On_Cat1_HardDecline or Missing_VAU_PreSync:
+  </text>
+  <text x="459" y="348" fill="#fde68a" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_422_CAT1_HARD_DECLINE_RETRY_OR_VAU_MISS
+  </text>
+  <text x="459" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Halt Cat-1 immediately &amp; schedule Code-51 on Payday
+  </text>
+  <text x="445" y="404" fill="#fbbf24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    1-Screen Save + Payday Dunning (HTTP 409):
+  </text>
+  <text x="445" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Recovers 68%+ of failed renewals via VAU + Payday
+  </text>
+  <text x="445" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Preserves 100% of ARR during 30/60-day Pause window
+  </text>
+  <text x="445" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Cuts churn &amp; discount cannibalization by 43%
+  </text>
+
+  <!-- Panel 3 -->
+  <rect x="798" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#10b981" stroke-width="1.8" />
+  <rect x="798" y="156" width="350" height="42" rx="14" fill="#064e3b" />
+  <text x="818" y="183" fill="#a7f3d0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    3. FTC Click-to-Cancel Lock (451)
+  </text>
+  <text x="818" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: Forcing Phone/Chat or 7 Screens ($51,744 Fine!)
+  </text>
+  <text x="818" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Hiding the cancel button behind mandatory live chat
+  </text>
+  <text x="818" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    or multi-page obstacle courses violates FTC 16 CFR 464
+  </text>
+  <text x="818" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Auto-charging annual renewal without 30d ARL notice
+  </text>
+  <rect x="818" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#34d399" stroke-width="1" />
+  <text x="832" y="328" fill="#6ee7b7" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if Cancel_Clicks &gt; Signup_Clicks or Hidden_Cancel_Btn:
+  </text>
+  <text x="832" y="348" fill="#a7f3d0" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_451_FTC_CLICK_TO_CANCEL_DARK_PATTERN_BREACH
+  </text>
+  <text x="832" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Persistent "Cancel Immediately" button on Screen 1
+  </text>
+  <text x="818" y="404" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    Compliant Retention Architecture:
+  </text>
+  <text x="818" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Shows 1 tailored save offer + persistent Cancel button
+  </text>
+  <text x="818" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Sends CA ARL / NY GBL T-30d annual renewal notices
+  </text>
+  <text x="818" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Issues cryptographic cancellation receipt instantly
+  </text>
+
+  <!-- Footer -->
+  <text x="52" y="582" fill="#fbbf24" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    🏆 Historic 1,400th Deterministic Unit Test Major Milestone! · Pillar 5: SaaS &amp; Subscription Retention (#522)
+  </text>
+</svg>
