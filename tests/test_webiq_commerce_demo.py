@@ -36728,6 +36728,68 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-rfq-bid-leveling-landed-tco-sandbox", html_zh)
 
+    def test_ecommerce_flash_drop_waiting_room_lottery_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceFlashDropWaitingRoomLotteryPolicyInput,
+            evaluate_ecommerce_flash_drop_waiting_room_lottery_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_ecommerce_flash_drop_waiting_room_lottery_policy(
+            EcommerceFlashDropWaitingRoomLotteryPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(auth["mandate_token"], "flash_drop_waiting_room_200")
+
+        edge = evaluate_ecommerce_flash_drop_waiting_room_lottery_policy(
+            EcommerceFlashDropWaitingRoomLotteryPolicyInput(
+                cart_api_called_without_edge_hmac_pass_or_root_domain_blocked=True
+            )
+        )
+        self.assertEqual(edge["status_code"], 403)
+        self.assertEqual(
+            edge["decision"],
+            "WAITING_ROOM_API_BYPASS_OR_ROOT_DOMAIN_BULKHEAD_LEAK_VETO",
+        )
+
+        lua = evaluate_ecommerce_flash_drop_waiting_room_lottery_policy(
+            EcommerceFlashDropWaitingRoomLotteryPolicyInput(
+                unshuffled_fcfs_multi_tab_hoarding_or_non_atomic_sql_oversell=True
+            )
+        )
+        self.assertEqual(lua["status_code"], 422)
+        self.assertEqual(
+            lua["decision"],
+            "UNSHUFFLED_FCFS_BOT_HOARDING_OR_NON_ATOMIC_STOCK_OVERSELL_BREACH",
+        )
+
+        dpbc = evaluate_ecommerce_flash_drop_waiting_room_lottery_policy(
+            EcommerceFlashDropWaitingRoomLotteryPolicyInput(
+                jiggled_address_shares_11digit_usps_dpbc_or_virtual_card_par=True
+            )
+        )
+        self.assertEqual(dpbc["status_code"], 451)
+        self.assertEqual(
+            dpbc["decision"],
+            "ADDRESS_JIGGLING_DPBC_COLLISION_OR_VIRTUAL_CARD_PAR_SCALPER_BREACH",
+        )
+
+        optim = evaluate_ecommerce_flash_drop_waiting_room_lottery_policy(
+            EcommerceFlashDropWaitingRoomLotteryPolicyInput(
+                quarterly_evergreen_downtime_bot_scalping_and_oversell_pool_usd=440000.0,
+                path_scoped_bulkhead_t0_fair_shuffle_and_redis_lua_dpbc_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 189200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 250800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_flash_drop_waiting_room_lottery_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-flash-drop-waiting-room-lottery-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

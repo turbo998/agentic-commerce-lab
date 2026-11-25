@@ -46595,6 +46595,82 @@ def evaluate_b2b_rfq_bid_leveling_landed_tco_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceFlashDropWaitingRoomLotteryPolicyInput:
+    quarterly_evergreen_downtime_bot_scalping_and_oversell_pool_usd: float = 440000.0
+    cart_api_called_without_edge_hmac_pass_or_root_domain_blocked: bool = False
+    unshuffled_fcfs_multi_tab_hoarding_or_non_atomic_sql_oversell: bool = False
+    jiggled_address_shares_11digit_usps_dpbc_or_virtual_card_par: bool = False
+    path_scoped_bulkhead_t0_fair_shuffle_and_redis_lua_dpbc_ready: bool = False
+
+
+def evaluate_ecommerce_flash_drop_waiting_room_lottery_policy(
+    policy_input: EcommerceFlashDropWaitingRoomLotteryPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_evergreen_downtime_bot_scalping_and_oversell_pool_usd
+        ),
+    )
+    if policy_input.jiggled_address_shares_11digit_usps_dpbc_or_virtual_card_par:
+        return {
+            "status_code": 451,
+            "decision": "ADDRESS_JIGGLING_DPBC_COLLISION_OR_VIRTUAL_CARD_PAR_SCALPER_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.cart_api_called_without_edge_hmac_pass_or_root_domain_blocked:
+        return {
+            "status_code": 403,
+            "decision": "WAITING_ROOM_API_BYPASS_OR_ROOT_DOMAIN_BULKHEAD_LEAK_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unshuffled_fcfs_multi_tab_hoarding_or_non_atomic_sql_oversell:
+        return {
+            "status_code": 422,
+            "decision": "UNSHUFFLED_FCFS_BOT_HOARDING_OR_NON_ATOMIC_STOCK_OVERSELL_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.path_scoped_bulkhead_t0_fair_shuffle_and_redis_lua_dpbc_ready:
+        savings = round(gross_pool * 0.43, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "PATH_BULKHEAD_T0_FAIR_SHUFFLE_AND_REDIS_LUA_DPBC_CONFIRM",
+            "mandate_token": "flash_drop_waiting_room_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_FLASH_DROP_WAITING_ROOM_AUTHORIZED",
+        "mandate_token": "flash_drop_waiting_room_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -63278,6 +63354,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_flash_drop_waiting_room_lottery_guard = {
+        "authorized_200": evaluate_ecommerce_flash_drop_waiting_room_lottery_policy(
+            EcommerceFlashDropWaitingRoomLotteryPolicyInput()
+        ),
+        "api_bypass_or_root_bulkhead_403": evaluate_ecommerce_flash_drop_waiting_room_lottery_policy(
+            EcommerceFlashDropWaitingRoomLotteryPolicyInput(
+                cart_api_called_without_edge_hmac_pass_or_root_domain_blocked=True
+            )
+        ),
+        "fcfs_bot_hoard_or_sql_oversell_422": evaluate_ecommerce_flash_drop_waiting_room_lottery_policy(
+            EcommerceFlashDropWaitingRoomLotteryPolicyInput(
+                unshuffled_fcfs_multi_tab_hoarding_or_non_atomic_sql_oversell=True
+            )
+        ),
+        "address_jiggling_or_par_dup_451": evaluate_ecommerce_flash_drop_waiting_room_lottery_policy(
+            EcommerceFlashDropWaitingRoomLotteryPolicyInput(
+                jiggled_address_shares_11digit_usps_dpbc_or_virtual_card_par=True
+            )
+        ),
+        "path_bulkhead_fair_lottery_409": evaluate_ecommerce_flash_drop_waiting_room_lottery_policy(
+            EcommerceFlashDropWaitingRoomLotteryPolicyInput(
+                path_scoped_bulkhead_t0_fair_shuffle_and_redis_lua_dpbc_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -63820,6 +63922,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_virtual_bundle_bom_proration_guard": ecommerce_virtual_bundle_bom_proration_guard,
         "cross_border_saas_mor_vs_sor_tax_nexus_guard": cross_border_saas_mor_vs_sor_tax_nexus_guard,
         "b2b_rfq_bid_leveling_landed_tco_guard": b2b_rfq_bid_leveling_landed_tco_guard,
+        "ecommerce_flash_drop_waiting_room_lottery_guard": ecommerce_flash_drop_waiting_room_lottery_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -90778,6 +90881,62 @@ def render_webiq_live_demo_html(
         </div>
         <div id="rfqlvl-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
           HTTP 409 DDP_WACC_TCO_LEVELING_AND_70_30_SPLIT_AWARD_CONFIRM · Mandate: b2b_rfq_bid_leveling_1410_optim_409
+        </div>
+      </div>
+
+      <div class="finops-box" id="ecommerce-flash-drop-waiting-room-lottery-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">👟 零售电商限量尖货秒杀、边缘排队室舱壁与公平抽签防黄牛 (Queue-it / Cloudflare / EQL / Shopify Plus) 沙盒</div>
+            <div class="finops-sub">Round 414 (#533 · SVG #857 · Sandbox #307 · Test #1,411) · 仅对 /drops/* 路径启用排队舱壁保住全站 99% 日常商品零等待，并在加购 API 强验边缘 HMAC 通行证 (HTTP 403) + 1人1签 T=0 Fisher-Yates 随机洗牌与 Redis Lua 内存原子扣减防超卖 (HTTP 422) + USPS 11位 DPBC 标准地址归一与 EMVCo PAR 穿透虚拟卡限购 (HTTP 451) + 净省 43% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="fldrp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度限量秒杀打崩全站导致日常正价订单陪葬流失、黄牛脚本改地址扫空尖货及并发超卖砍单赔付池 ($)
+            <input type="number" id="fldrp-gross-input" value="440000" min="10000" step="5000" oninput="recalcEcommerceFlashDropWaitingRoomLotterySandbox()" />
+          </label>
+          <label>路径级舱壁隔离 (/drops/* Bulkhead) 与加购/结账 API 边缘 HMAC 通行证门禁
+            <select id="fldrp-edge-select" onchange="recalcEcommerceFlashDropWaitingRoomLotterySandbox()">
+              <option value="pass">仅隔离 /drops/* 保证日常商品 0ms 畅通，且 POST /cart/add 强验边缘签名 Pass (安全)</option>
+              <option value="block_403">全站根域名挂排队室堵死 $400k 日常订单，或被黄牛直调加购 API 绕过 HTML 排队页 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>预等候室 1人1签整点洗牌 (T=0 Fisher-Yates) 与 Redis Lua 原子扣库门禁
+            <select id="fldrp-lua-select" onchange="recalcEcommerceFlashDropWaitingRoomLotterySandbox()">
+              <option value="pass">实名去重后 T=0 公平随机分配队列号，结账前由单线程 Redis Lua 原子预扣减库存 (安全)</option>
+              <option value="block_422">纯先到先得 FCFS 被黄牛开 10,000 个无痕标签霸榜，或 SQL 并发竞态超卖 340 单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>USPS CASS 11位投递点条码 (DPBC) 防改址与 EMVCo PAR 穿透虚拟卡限购门禁
+            <select id="fldrp-dpbc-select" onchange="recalcEcommerceFlashDropWaitingRoomLotterySandbox()">
+              <option value="pass">地址归一为 11位 DPBC 物理门牌码并穿透虚拟卡底层 PAR 主账户，严格执行 1户1双 (合规)</option>
+              <option value="block_451">黄牛微改地址后缀 (#AAA / Unit 1) 并开 45 张同源虚拟卡一人扫走 45 双限量鞋 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>/drops/* 边缘舱壁 + T=0 公平抽签洗牌 + Redis Lua 原子锁 + DPBC/PAR 真粉优先编排
+            <select id="fldrp-opt-select" onchange="recalcEcommerceFlashDropWaitingRoomLotterySandbox()">
+              <option value="enabled" selected>启用路径舱壁 + T=0 公平洗牌 + Redis Lua + DPBC 去重 (-43% 陪葬宕机与黄牛损耗 / HTTP 409)</option>
+              <option value="disabled">默认全站排队与纯 FCFS 先到先得基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度主站陪葬与黄牛扫货池</div>
+            <div class="finops-kpi-val" id="fldrp-gross-kpi">$440,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净发售与防护成本</div>
+            <div class="finops-kpi-val" id="fldrp-net-kpi">$250,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净保住日常GMV与真粉留存</div>
+            <div class="finops-kpi-val" id="fldrp-savings-kpi" style="color:#6ee7b7;">$189,200</div>
+          </div>
+        </div>
+        <div id="fldrp-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 PATH_BULKHEAD_T0_FAIR_SHUFFLE_AND_REDIS_LUA_DPBC_CONFIRM · Mandate: flash_drop_waiting_room_optim_409
         </div>
       </div>
 
@@ -125347,6 +125506,79 @@ function recalcB2bRfqBidLevelingLandedTcoSandbox() {{
   banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
   banner.style.color = '#bfdbfe';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_RFQ_BID_LEVELING_AUTHORIZED · Mandate: b2b_rfq_bid_leveling_1410_200';
+}}
+
+function recalcEcommerceFlashDropWaitingRoomLotterySandbox() {{
+  const grossInput = document.getElementById('fldrp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '440000'));
+  const edgeGate = document.getElementById('fldrp-edge-select').value;
+  const luaGate = document.getElementById('fldrp-lua-select').value;
+  const dpbcGate = document.getElementById('fldrp-dpbc-select').value;
+  const optMode = document.getElementById('fldrp-opt-select').value;
+
+  const grossKpi = document.getElementById('fldrp-gross-kpi');
+  const netKpi = document.getElementById('fldrp-net-kpi');
+  const savingsKpi = document.getElementById('fldrp-savings-kpi');
+  const statusKpi = document.getElementById('fldrp-status-kpi');
+  const banner = document.getElementById('fldrp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dpbcGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 ADDRESS_JIGGLING_DPBC_COLLISION_OR_VIRTUAL_CARD_PAR_SCALPER_BREACH · Mandate: null';
+    return;
+  }}
+  if (edgeGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 WAITING_ROOM_API_BYPASS_OR_ROOT_DOMAIN_BULKHEAD_LEAK_VETO · Mandate: null';
+    return;
+  }}
+  if (luaGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 UNSHUFFLED_FCFS_BOT_HOARDING_OR_NON_ATOMIC_STOCK_OVERSELL_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.43);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 PATH_BULKHEAD_T0_FAIR_SHUFFLE_AND_REDIS_LUA_DPBC_CONFIRM · Mandate: flash_drop_waiting_room_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_FLASH_DROP_WAITING_ROOM_AUTHORIZED · Mandate: flash_drop_waiting_room_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{
