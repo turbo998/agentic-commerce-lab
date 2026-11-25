@@ -34451,6 +34451,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-loyalty-points-liability-sandbox", html_zh)
 
+    def test_ecommerce_reverse_logistics_exchange_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceReverseLogisticsExchangePolicyInput,
+            evaluate_ecommerce_reverse_logistics_exchange_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_reverse_logistics_exchange_policy(
+            EcommerceReverseLogisticsExchangePolicyInput(
+                quarterly_return_margin_loss_freight_and_ftid_fraud_pool_usd=460000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_REVERSE_LOGISTICS_AND_EXCHANGE_AUTHORIZED",
+        )
+
+        ftid = evaluate_ecommerce_reverse_logistics_exchange_policy(
+            EcommerceReverseLogisticsExchangePolicyInput(
+                carrier_weight_mismatch_or_instant_exchange_missing_card_hold=True
+            )
+        )
+        self.assertEqual(ftid["status_code"], 403)
+        self.assertEqual(
+            ftid["decision"],
+            "FTID_WEIGHT_MISMATCH_OR_MISSING_EXCHANGE_HOLD_VETO",
+        )
+
+        ward = evaluate_ecommerce_reverse_logistics_exchange_policy(
+            EcommerceReverseLogisticsExchangePolicyInput(
+                wardrobing_tag_broken_imei_mismatch_or_serial_returner_abuse=True
+            )
+        )
+        self.assertEqual(ward["status_code"], 422)
+        self.assertEqual(
+            ward["decision"],
+            "WARDROBING_SERIAL_MISMATCH_OR_FINAL_SALE_BREACH",
+        )
+
+        econ = evaluate_ecommerce_reverse_logistics_exchange_policy(
+            EcommerceReverseLogisticsExchangePolicyInput(
+                negative_recovery_shipped_or_undisclosed_restocking_fee_charged=True
+            )
+        )
+        self.assertEqual(econ["status_code"], 451)
+        self.assertEqual(
+            econ["decision"],
+            "REVERSE_UNIT_ECONOMICS_OR_UNDISCLOSED_RESTOCK_FEE_BREACH",
+        )
+
+        optim = evaluate_ecommerce_reverse_logistics_exchange_policy(
+            EcommerceReverseLogisticsExchangePolicyInput(
+                quarterly_return_margin_loss_freight_and_ftid_fraud_pool_usd=460000.0,
+                bonus_credit_shop_now_exchange_and_boxfree_return_bar_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 197800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 262200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_reverse_logistics_exchange_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-reverse-logistics-exchange-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

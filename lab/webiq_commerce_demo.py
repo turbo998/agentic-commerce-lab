@@ -43905,6 +43905,82 @@ def evaluate_ecommerce_loyalty_points_liability_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceReverseLogisticsExchangePolicyInput:
+    quarterly_return_margin_loss_freight_and_ftid_fraud_pool_usd: float = 460000.0
+    carrier_weight_mismatch_or_instant_exchange_missing_card_hold: bool = False
+    wardrobing_tag_broken_imei_mismatch_or_serial_returner_abuse: bool = False
+    negative_recovery_shipped_or_undisclosed_restocking_fee_charged: bool = False
+    bonus_credit_shop_now_exchange_and_boxfree_return_bar_ready: bool = False
+
+
+def evaluate_ecommerce_reverse_logistics_exchange_policy(
+    policy_input: EcommerceReverseLogisticsExchangePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_return_margin_loss_freight_and_ftid_fraud_pool_usd
+        ),
+    )
+    if policy_input.negative_recovery_shipped_or_undisclosed_restocking_fee_charged:
+        return {
+            "status_code": 451,
+            "decision": "REVERSE_UNIT_ECONOMICS_OR_UNDISCLOSED_RESTOCK_FEE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.carrier_weight_mismatch_or_instant_exchange_missing_card_hold:
+        return {
+            "status_code": 403,
+            "decision": "FTID_WEIGHT_MISMATCH_OR_MISSING_EXCHANGE_HOLD_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.wardrobing_tag_broken_imei_mismatch_or_serial_returner_abuse:
+        return {
+            "status_code": 422,
+            "decision": "WARDROBING_SERIAL_MISMATCH_OR_FINAL_SALE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bonus_credit_shop_now_exchange_and_boxfree_return_bar_ready:
+        savings = round(gross_pool * 0.43, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SHOP_NOW_BONUS_CREDIT_EXCHANGE_AND_BOXFREE_RETURN_CONFIRM",
+            "mandate_token": "reverse_logistics_exchange_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_REVERSE_LOGISTICS_AND_EXCHANGE_AUTHORIZED",
+        "mandate_token": "reverse_logistics_exchange_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -59678,6 +59754,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_reverse_logistics_exchange_guard = {
+        "authorized_200": evaluate_ecommerce_reverse_logistics_exchange_policy(
+            EcommerceReverseLogisticsExchangePolicyInput()
+        ),
+        "ftid_weight_or_missing_hold_403": evaluate_ecommerce_reverse_logistics_exchange_policy(
+            EcommerceReverseLogisticsExchangePolicyInput(
+                carrier_weight_mismatch_or_instant_exchange_missing_card_hold=True
+            )
+        ),
+        "wardrobing_or_imei_mismatch_422": evaluate_ecommerce_reverse_logistics_exchange_policy(
+            EcommerceReverseLogisticsExchangePolicyInput(
+                wardrobing_tag_broken_imei_mismatch_or_serial_returner_abuse=True
+            )
+        ),
+        "unit_economics_or_restock_fee_451": evaluate_ecommerce_reverse_logistics_exchange_policy(
+            EcommerceReverseLogisticsExchangePolicyInput(
+                negative_recovery_shipped_or_undisclosed_restocking_fee_charged=True
+            )
+        ),
+        "bonus_credit_shop_now_409": evaluate_ecommerce_reverse_logistics_exchange_policy(
+            EcommerceReverseLogisticsExchangePolicyInput(
+                bonus_credit_shop_now_exchange_and_boxfree_return_bar_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -60185,6 +60287,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "retail_media_network_iroas_bidding_guard": retail_media_network_iroas_bidding_guard,
         "cross_border_customs_hts_duty_drawback_guard": cross_border_customs_hts_duty_drawback_guard,
         "ecommerce_loyalty_points_liability_guard": ecommerce_loyalty_points_liability_guard,
+        "ecommerce_reverse_logistics_exchange_guard": ecommerce_reverse_logistics_exchange_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -86987,6 +87090,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="loypts-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 PENDING_ESCROW_AND_HIGH_MARGIN_EXPERIENTIAL_BURN_CONFIRM · Mandate: loyalty_points_asc606_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 379 (#498 · SVG #822 · Sandbox #272 · Test #1,376) Retail Reverse Logistics, Instant Exchange & Anti-FTID Fraud -->
+      <div class="finops-box" id="ecommerce-reverse-logistics-exchange-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">📦 零售电商逆向物流、即时换货挽留 (Shop Now Bonus Credit) 与退货反欺诈 (Loop Returns / Narvar / Happy Returns / AfterShip) 沙盒</div>
+            <div class="finops-sub">Round 379 (#498 · SVG #822 · Sandbox #272 · Test #1,376) · 分拣称重比对 (&lt;=15% 偏差) 与即时换货信用卡预授权担保锁防 FTID 空包骗退 (HTTP 403) + 防拆吊牌/IMEI 核验拦截穿过即退 Wardrobing (HTTP 422) + 无盒驿站聚合路由与低残值免寄回合规锁 (HTTP 451) + Shop Now 加赠 +$15 换货红利金净省 43% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="revlog-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度尺码不合退现金流失毛利、FTID 空包秒退欺诈与单件逆向快递运费损耗池 ($)
+            <input type="number" id="revlog-gross-input" value="460000" min="10000" step="5000" oninput="recalcEcommerceReverseLogisticsExchangeSandbox()" />
+          </label>
+          <label>快递分拣中心实测称重核验 (&lt;=15% 偏差防 FTID) 与即时换货信用卡预授权担保锁
+            <select id="revlog-ftid-select" onchange="recalcEcommerceReverseLogisticsExchangeSandbox()">
+              <option value="pass">核验快递分拣中心电子秤重量匹配 SKU，且即时换货冻结 Stripe Pre-Auth 担保 (安全)</option>
+              <option value="block_403">黑产篡改面单寄空信封 (FTID) 骗取揽收首扫秒退，或无信用卡担保直接发走换货商品 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>一次性防拆封条 (Wardrobing Ribbon) / 3C 序列号 IMEI 核对与高频退货滥用门禁
+            <select id="revlog-ward-select" onchange="recalcEcommerceReverseLogisticsExchangeSandbox()">
+              <option value="pass">核验礼服防拆扣完好与出库 IMEI 序列号一致，拦截 >55% 恶意退货率账号免邮 (合规)</option>
+              <option value="block_422">剪断防拆吊牌穿完即退、掉包假冒旧耳机退回或篡改瑕疵理由逃避 Final Sale (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>线下无盒聚合驿站 (Return Bar) 集运路由、低残值品经济模型与退货费透明披露门禁
+            <select id="revlog-econ-select" onchange="recalcEcommerceReverseLogisticsExchangeSandbox()">
+              <option value="pass">优先路由至 Happy Returns 无盒驿站整托返仓，结账前明确披露退货面单政策 (合规)</option>
+              <option value="block_451">为 $11 清仓 T 恤生成 $14 独立快递盒亏本退运，或扣取未披露的上架费 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Loop Shop Now 全店跨品类加赠 +$15 换货红利金 (Bonus Credit) + 无盒驿站全链路编排
+            <select id="revlog-opt-select" onchange="recalcEcommerceReverseLogisticsExchangeSandbox()">
+              <option value="enabled" selected>启用 Shop Now 加赠 +$15 换货红利金 + Return Bar 无盒集运 (-43% 退货毛利流失与运费损耗 / HTTP 409)</option>
+              <option value="disabled">传统自助退现金门户与单件独立纸箱快递基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度退货毛利流失与欺诈池</div>
+            <div class="finops-kpi-val" id="revlog-gross-kpi">$460,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">加赠换货与无盒集运净损耗</div>
+            <div class="finops-kpi-val" id="revlog-net-kpi" style="color:#6ee7b7;">$262,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度挽留毛利与逆向降本净省</div>
+            <div class="finops-kpi-val" id="revlog-savings-kpi" style="color:#38bdf8;">$197,800</div>
+          </div>
+        </div>
+        <div id="revlog-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SHOP_NOW_BONUS_CREDIT_EXCHANGE_AND_BOXFREE_RETURN_CONFIRM · Mandate: reverse_logistics_exchange_optim_409
         </div>
       </div>
 
@@ -120171,6 +120331,79 @@ function recalcEcommerceLoyaltyPointsLiabilitySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_LOYALTY_POINTS_AND_ASC606_AUTHORIZED · Mandate: loyalty_points_asc606_200';
+}}
+
+function recalcEcommerceReverseLogisticsExchangeSandbox() {{
+  const grossInput = document.getElementById('revlog-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '460000'));
+  const ftidGate = document.getElementById('revlog-ftid-select').value;
+  const wardGate = document.getElementById('revlog-ward-select').value;
+  const econGate = document.getElementById('revlog-econ-select').value;
+  const optMode = document.getElementById('revlog-opt-select').value;
+
+  const grossKpi = document.getElementById('revlog-gross-kpi');
+  const netKpi = document.getElementById('revlog-net-kpi');
+  const savingsKpi = document.getElementById('revlog-savings-kpi');
+  const statusKpi = document.getElementById('revlog-status-kpi');
+  const banner = document.getElementById('revlog-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (econGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 REVERSE_UNIT_ECONOMICS_OR_UNDISCLOSED_RESTOCK_FEE_BREACH · Mandate: null';
+    return;
+  }}
+  if (ftidGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 FTID_WEIGHT_MISMATCH_OR_MISSING_EXCHANGE_HOLD_VETO · Mandate: null';
+    return;
+  }}
+  if (wardGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 WARDROBING_SERIAL_MISMATCH_OR_FINAL_SALE_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.43);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SHOP_NOW_BONUS_CREDIT_EXCHANGE_AND_BOXFREE_RETURN_CONFIRM · Mandate: reverse_logistics_exchange_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_REVERSE_LOGISTICS_AND_EXCHANGE_AUTHORIZED · Mandate: reverse_logistics_exchange_200';
 }}
 
 function updateStage1756Sandbox() {{
