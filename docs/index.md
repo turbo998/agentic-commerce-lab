@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`523` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`524` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（39 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（66 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（196 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（197 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（117 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（48 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（57 篇）](#tax-fx-privacy-disputes)
@@ -139,7 +139,7 @@
 | 66 | **💳 企业预算虚拟卡与商用采购卡（`Corporate Virtual P-Card & Spend Control`）、`ISO 8583` 实时刷卡风控、行项目小票核销（`Level-3 Receipt Match`）与防一单两报（`Ramp / Brex / Airbase / Navan Expense`）、首刷自动绑定供应商唯一 `Acquirer_MID` 与 `24h` 滚动防拆单连刷、公司卡流水与个人现金垫付报销单跨轨去重及 `>$75` 强制行项目明细与 7 天逾期自动冻卡净省 42% Agent 架构选型 FAQ** | [中文](corporate-virtual-card-spend-control-ramp-brex-airbase-navan-level3-double-dip-selection-faq.md) · [English](corporate-virtual-card-spend-control-ramp-brex-airbase-navan-level3-double-dip-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（196 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（197 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -341,6 +341,7 @@
 | 194 | **🚗 酒旅 OTA 与企业差旅租车（`Car Rental & Mobility Fleet`）、防柜台重复强推车损险（`CDW / LDW`）与车载遥测结算选型对比（`Enterprise / National API / Sixt / Hertz Direct / Amadeus Car GDS / CarTrawler`）、企业协议含险预绑定与受限虚拟卡（`VCN`）硬封顶拒付柜台加购、车载 `CAN-Bus` 油表（`>=94%`）驳回假补油罚金及提还车四角视觉存证与 15m `0420` 秒解押金净省 42% Agent 架构选型 FAQ** | [中文](ota-car-rental-mobility-enterprise-sixt-amadeus-cartrawler-cdw-telematics-deposit-selection-faq.md) · [English](ota-car-rental-mobility-enterprise-sixt-amadeus-cartrawler-cdw-telematics-deposit-selection-faq.en.md) |
 | 195 | **🏆 生鲜商超即时零售（`Online Grocery & Q-Commerce`）、防过敏智能缺货替换（`Allergen-Safe Substitution`）、称重商品预授权缓冲（`Catch-Weight +15% Collar`）与福利卡分轨支付（`SNAP / EBT Split-Tender`）选型对比（`Instacart Carrot Platform / Mercatus / Wynshop / DoorDash Drive` · 🏆 第 840 张架构图与第 290 个策略沙盒双里程碑！）、九大过敏原与清真/素食零妥协替换锁、换高端品牌按原低价结算保体验、称重 `+15%` 缓冲溢流及 `<=40m` 冷链配送圈锁净省 42% Agent 架构选型 FAQ** | [中文](online-grocery-instacart-mercatus-wynshop-allergen-substitution-catch-weight-snap-ebt-selection-faq.md) · [English](online-grocery-instacart-mercatus-wynshop-allergen-substitution-catch-weight-snap-ebt-selection-faq.en.md) |
 | 196 | **🌍 跨境电商多语种智能客服（`Multilingual AI Customer Support`）、发货前改址/撤单仓配互斥锁（`WMS Pick-Lock`）与逆向关税退还（`Cross-Border RMA & Duty Drawback`）选型对比（`Gorgias AI Agent / Zendesk AI / Salesforce Agentforce / Siena AI`）、在途包裹未满 10 天停滞禁退现金与 `<=$50` 免审批退款锁、撤单/改地址前强制同步获取 `3PL WMS` 锁单回执及本地集运仓二次上架净省 43% Agent 架构选型 FAQ** | [中文](cross-border-multilingual-cs-gorgias-zendesk-agentforce-wms-lock-rma-duty-selection-faq.md) · [English](cross-border-multilingual-cs-gorgias-zendesk-agentforce-wms-lock-rma-duty-selection-faq.en.md) |
+| 197 | **🏆 酒旅 OTA 与航司辅营动态零售（`Airline Ancillary Merchandising`: 付费选座 / 托运行李 / 贵宾室）、`IATA NDC` 电子杂费单（`EMD-A`）原子绑定与机型更换降级自动退费（`Amadeus Nevio / Sabre Mosaic / ATPCO Routehappy / FLYR` · 🏆 第 405 轮重大里程碑！）、常旅客金卡/品牌运价既有免费额预扣减与跨航司 `IATA Res 302` 联程核验、换机型座位降级 7 日内 `US DOT Part 260` 自动原路退现及 `FAA` 出口排安全锁净省 42% Agent 架构选型 FAQ** | [中文](ota-airline-ancillary-ndc-amadeus-nevio-sabre-mosaic-emd-dot-refund-selection-faq.md) · [English](ota-airline-ancillary-ndc-amadeus-nevio-sabre-mosaic-emd-dot-refund-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（117 篇）

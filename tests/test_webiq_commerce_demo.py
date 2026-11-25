@@ -36160,6 +36160,68 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("corporate-virtual-card-spend-control-sandbox", html_zh)
 
+    def test_ota_airline_ancillary_ndc_merchandising_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaAirlineAncillaryNdcMerchandisingPolicyInput,
+            evaluate_ota_airline_ancillary_ndc_merchandising_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_ota_airline_ancillary_ndc_merchandising_policy(
+            OtaAirlineAncillaryNdcMerchandisingPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(auth["mandate_token"], "ota_airline_ancillary_ndc_200")
+
+        ent = evaluate_ota_airline_ancillary_ndc_merchandising_policy(
+            OtaAirlineAncillaryNdcMerchandisingPolicyInput(
+                ancillary_already_included_in_fqtv_tier_or_interline_emd_unsupported=True
+            )
+        )
+        self.assertEqual(ent["status_code"], 403)
+        self.assertEqual(
+            ent["decision"],
+            "DUPLICATE_TIER_ENTITLEMENT_OR_UNSUPPORTED_INTERLINE_EMD_VETO",
+        )
+
+        dot = evaluate_ota_airline_ancillary_ndc_merchandising_policy(
+            OtaAirlineAncillaryNdcMerchandisingPolicyInput(
+                aircraft_swap_seat_downgraded_without_automatic_dot_part260_refund=True
+            )
+        )
+        self.assertEqual(dot["status_code"], 422)
+        self.assertEqual(
+            dot["decision"],
+            "ORPHAN_EMD_ON_AIRCRAFT_SWAP_OR_DOT_PART260_REFUND_BREACH",
+        )
+
+        faa = evaluate_ota_airline_ancillary_ndc_merchandising_policy(
+            OtaAirlineAncillaryNdcMerchandisingPolicyInput(
+                exit_row_assigned_to_infant_pet_wchr_or_under13_child_split_charged=True
+            )
+        )
+        self.assertEqual(faa["status_code"], 451)
+        self.assertEqual(
+            faa["decision"],
+            "FAA_EXIT_ROW_SAFETY_VIOLATION_OR_CHILD_SEAT_SPLIT_FEE_BREACH",
+        )
+
+        optim = evaluate_ota_airline_ancillary_ndc_merchandising_policy(
+            OtaAirlineAncillaryNdcMerchandisingPolicyInput(
+                quarterly_orphan_emd_duplicate_bag_and_interline_dispute_pool_usd=440000.0,
+                entitlement_aware_ndc_bundle_and_auto_emd_downgrade_refund_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 184800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 255200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_airline_ancillary_ndc_merchandising_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-airline-ancillary-ndc-merchandising-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

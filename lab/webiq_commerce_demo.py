@@ -45891,6 +45891,84 @@ def evaluate_corporate_virtual_card_spend_control_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaAirlineAncillaryNdcMerchandisingPolicyInput:
+    quarterly_orphan_emd_duplicate_bag_and_interline_dispute_pool_usd: float = (
+        440000.0
+    )
+    ancillary_already_included_in_fqtv_tier_or_interline_emd_unsupported: bool = False
+    aircraft_swap_seat_downgraded_without_automatic_dot_part260_refund: bool = False
+    exit_row_assigned_to_infant_pet_wchr_or_under13_child_split_charged: bool = False
+    entitlement_aware_ndc_bundle_and_auto_emd_downgrade_refund_ready: bool = False
+
+
+def evaluate_ota_airline_ancillary_ndc_merchandising_policy(
+    policy_input: OtaAirlineAncillaryNdcMerchandisingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_orphan_emd_duplicate_bag_and_interline_dispute_pool_usd
+        ),
+    )
+    if policy_input.exit_row_assigned_to_infant_pet_wchr_or_under13_child_split_charged:
+        return {
+            "status_code": 451,
+            "decision": "FAA_EXIT_ROW_SAFETY_VIOLATION_OR_CHILD_SEAT_SPLIT_FEE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.ancillary_already_included_in_fqtv_tier_or_interline_emd_unsupported:
+        return {
+            "status_code": 403,
+            "decision": "DUPLICATE_TIER_ENTITLEMENT_OR_UNSUPPORTED_INTERLINE_EMD_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.aircraft_swap_seat_downgraded_without_automatic_dot_part260_refund:
+        return {
+            "status_code": 422,
+            "decision": "ORPHAN_EMD_ON_AIRCRAFT_SWAP_OR_DOT_PART260_REFUND_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.entitlement_aware_ndc_bundle_and_auto_emd_downgrade_refund_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "ENTITLEMENT_AWARE_NDC_BUNDLE_AND_AUTO_DOT_EMD_REFUND_CONFIRM",
+            "mandate_token": "ota_airline_ancillary_ndc_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_OTA_AIRLINE_ANCILLARY_NDC_AUTHORIZED",
+        "mandate_token": "ota_airline_ancillary_ndc_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -62340,6 +62418,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_airline_ancillary_ndc_merchandising_guard = {
+        "authorized_200": evaluate_ota_airline_ancillary_ndc_merchandising_policy(
+            OtaAirlineAncillaryNdcMerchandisingPolicyInput()
+        ),
+        "duplicate_tier_or_interline_403": evaluate_ota_airline_ancillary_ndc_merchandising_policy(
+            OtaAirlineAncillaryNdcMerchandisingPolicyInput(
+                ancillary_already_included_in_fqtv_tier_or_interline_emd_unsupported=True
+            )
+        ),
+        "orphan_emd_on_swap_422": evaluate_ota_airline_ancillary_ndc_merchandising_policy(
+            OtaAirlineAncillaryNdcMerchandisingPolicyInput(
+                aircraft_swap_seat_downgraded_without_automatic_dot_part260_refund=True
+            )
+        ),
+        "faa_exit_row_or_child_split_451": evaluate_ota_airline_ancillary_ndc_merchandising_policy(
+            OtaAirlineAncillaryNdcMerchandisingPolicyInput(
+                exit_row_assigned_to_infant_pet_wchr_or_under13_child_split_charged=True
+            )
+        ),
+        "entitlement_ndc_dot_refund_409": evaluate_ota_airline_ancillary_ndc_merchandising_policy(
+            OtaAirlineAncillaryNdcMerchandisingPolicyInput(
+                entitlement_aware_ndc_bundle_and_auto_emd_downgrade_refund_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -62873,6 +62977,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "cross_border_local_apm_pix_upi_guard": cross_border_local_apm_pix_upi_guard,
         "saas_subscription_cancel_flow_retention_guard": saas_subscription_cancel_flow_retention_guard,
         "corporate_virtual_card_spend_control_guard": corporate_virtual_card_spend_control_guard,
+        "ota_airline_ancillary_ndc_merchandising_guard": ota_airline_ancillary_ndc_merchandising_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -89327,6 +89432,62 @@ def render_webiq_live_demo_html(
         </div>
         <div id="pcard-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
           HTTP 409 FIRST_SWIPE_MID_PIN_LEVEL3_AUTOFETCH_AND_DOUBLE_DIP_LOCK_CONFIRM · Mandate: corporate_virtual_pcard_optim_409
+        </div>
+      </div>
+
+      <div class="finops-box" id="ota-airline-ancillary-ndc-merchandising-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 酒旅 OTA 与航司辅营动态零售、NDC EMD-A 绑定与换机型自动退费 (Amadeus Nevio / Sabre Mosaic / ATPCO / FLYR) 沙盒（🏆 第 405 轮重大里程碑！）</div>
+            <div class="finops-sub">Round 405 (#524 · SVG #848 · Sandbox #298 · Test #1,402 · 🏆 Round 405 Major Milestone!) · 自动扣减常旅客金卡/品牌运价已含免费行李并校验跨航司 IATA Res 302 联程互认 (HTTP 403) + 换机型/改签导致付费座位特征降级时 7 日内自动原路退还 EMD-A 满足 US DOT Part 260 (HTTP 422) + FAA 紧急出口排安全锁与 &lt;=13岁儿童免费邻座 (HTTP 451) + 净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="ndcanc-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度换机型致付费座位降级未退 EMD-A 拒付、向金卡/企业客误售免费行李退单及联程机场二次收费赔付池 ($)
+            <input type="number" id="ndcanc-gross-input" value="440000" min="10000" step="5000" oninput="recalcOtaAirlineAncillaryNdcMerchandisingSandbox()" />
+          </label>
+          <label>常旅客等级 (FQTV) / 品牌运价既有免费额去重与跨航司联程 (IATA Res 302) 门禁
+            <select id="ndcanc-ent-select" onchange="recalcOtaAirlineAncillaryNdcMerchandisingSandbox()">
+              <option value="pass">自动识别金卡/运价包已含首件免费行李改推第 2 件或贵宾室，且强验联程执飞航司 EMD 互认 (安全)</option>
+              <option value="block_403">向自带免费行李额的金卡旅客弹窗忽悠买 $45 首件行李，或售卖第二段执飞方不认的联程 EMD (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>换机型 (Equipment Gauge Swap) 座位特征比对与 US DOT Part 260 自动原路退现门禁
+            <select id="ndcanc-dot-select" onchange="recalcOtaAirlineAncillaryNdcMerchandisingSandbox()">
+              <option value="pass">换机型后若新座缺失原购大空间/靠窗特征且无同级可换，7 日内自动触发 EMD-A 原路退现 (合规)</option>
+              <option value="block_422">换机型把 $89 大空间靠窗座刷成普通中间座却扣留选座费不退，引发拒付潮与 DOT 重罚 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>FAA 14 CFR §121.585 紧急出口排安全资质锁与 &lt;=13岁同行儿童免费邻座门禁
+            <select id="ndcanc-faa-select" onchange="recalcOtaAirlineAncillaryNdcMerchandisingSandbox()">
+              <option value="pass">含婴儿/宠物/轮椅/&lt;15岁订单硬禁选出口排，且 &lt;=13岁儿童自动免费锁定家长邻座 (合规)</option>
+              <option value="block_451">将紧急出口排卖给带婴儿/轮椅旅客导致登机口安全员强行换座，或拆散幼童座位强收选座费 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>NDC ONE Order 原子绑定 + 常旅客权益感知动态打包 + 航变降级自动秒退编排
+            <select id="ndcanc-opt-select" onchange="recalcOtaAirlineAncillaryNdcMerchandisingSandbox()">
+              <option value="enabled" selected>启用既有权益预扣减 + DOT 降级自动退费 + ONE Order (-42% 辅营争议与退单损耗 / HTTP 409)</option>
+              <option value="disabled">默认传统静态辅营弹窗与人工申请退 EMD 基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度孤儿EMD与误售行李损失池</div>
+            <div class="finops-kpi-val" id="ndcanc-gross-kpi">$440,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净售后与赔付成本</div>
+            <div class="finops-kpi-val" id="ndcanc-net-kpi">$255,200</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省辅营拒付与机场赔付</div>
+            <div class="finops-kpi-val" id="ndcanc-savings-kpi" style="color:#6ee7b7;">$184,800</div>
+          </div>
+        </div>
+        <div id="ndcanc-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 ENTITLEMENT_AWARE_NDC_BUNDLE_AND_AUTO_DOT_EMD_REFUND_CONFIRM · Mandate: ota_airline_ancillary_ndc_optim_409
         </div>
       </div>
 
@@ -123239,6 +123400,79 @@ function recalcCorporateVirtualCardSpendControlSandbox() {{
   banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
   banner.style.color = '#bfdbfe';
   banner.textContent = 'HTTP 200 VERIFIED_CORPORATE_VIRTUAL_CARD_SPEND_AUTHORIZED · Mandate: corporate_virtual_pcard_200';
+}}
+
+function recalcOtaAirlineAncillaryNdcMerchandisingSandbox() {{
+  const grossInput = document.getElementById('ndcanc-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '440000'));
+  const entGate = document.getElementById('ndcanc-ent-select').value;
+  const dotGate = document.getElementById('ndcanc-dot-select').value;
+  const faaGate = document.getElementById('ndcanc-faa-select').value;
+  const optMode = document.getElementById('ndcanc-opt-select').value;
+
+  const grossKpi = document.getElementById('ndcanc-gross-kpi');
+  const netKpi = document.getElementById('ndcanc-net-kpi');
+  const savingsKpi = document.getElementById('ndcanc-savings-kpi');
+  const statusKpi = document.getElementById('ndcanc-status-kpi');
+  const banner = document.getElementById('ndcanc-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (faaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FAA_EXIT_ROW_SAFETY_VIOLATION_OR_CHILD_SEAT_SPLIT_FEE_BREACH · Mandate: null';
+    return;
+  }}
+  if (entGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 DUPLICATE_TIER_ENTITLEMENT_OR_UNSUPPORTED_INTERLINE_EMD_VETO · Mandate: null';
+    return;
+  }}
+  if (dotGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 ORPHAN_EMD_ON_AIRCRAFT_SWAP_OR_DOT_PART260_REFUND_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 ENTITLEMENT_AWARE_NDC_BUNDLE_AND_AUTO_DOT_EMD_REFUND_CONFIRM · Mandate: ota_airline_ancillary_ndc_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_OTA_AIRLINE_ANCILLARY_NDC_AUTHORIZED · Mandate: ota_airline_ancillary_ndc_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{
