@@ -36222,6 +36222,68 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-airline-ancillary-ndc-merchandising-sandbox", html_zh)
 
+    def test_ecommerce_post_purchase_one_click_upsell_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommercePostPurchaseOneClickUpsellPolicyInput,
+            evaluate_ecommerce_post_purchase_one_click_upsell_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_ecommerce_post_purchase_one_click_upsell_policy(
+            EcommercePostPurchaseOneClickUpsellPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(auth["mandate_token"], "post_purchase_upsell_525_200")
+
+        wms = evaluate_ecommerce_post_purchase_one_click_upsell_policy(
+            EcommercePostPurchaseOneClickUpsellPolicyInput(
+                wms_released_before_15m_merge_window_or_upsell_in_different_warehouse=True
+            )
+        )
+        self.assertEqual(wms["status_code"], 403)
+        self.assertEqual(
+            wms["decision"],
+            "WMS_PREMATURE_RELEASE_OR_CROSS_WAREHOUSE_SPLIT_PARCEL_VETO",
+        )
+
+        iso = evaluate_ecommerce_post_purchase_one_click_upsell_policy(
+            EcommercePostPurchaseOneClickUpsellPolicyInput(
+                failed_upsell_charge_leaves_paid_primary_order_in_partially_paid_hold=True
+            )
+        )
+        self.assertEqual(iso["status_code"], 422)
+        self.assertEqual(
+            iso["decision"],
+            "PRIMARY_PAID_ORDER_CONTAMINATED_BY_FAILED_UPSELL_BREACH",
+        )
+
+        rosca = evaluate_ecommerce_post_purchase_one_click_upsell_policy(
+            EcommercePostPurchaseOneClickUpsellPolicyInput(
+                one_click_upsell_silently_enrolls_recurring_sub_without_rosca_checkbox=True
+            )
+        )
+        self.assertEqual(rosca["status_code"], 451)
+        self.assertEqual(
+            rosca["decision"],
+            "FTC_ROSCA_UNCONSENTED_ONE_CLICK_SUBSCRIPTION_UPSELL_BREACH",
+        )
+
+        optim = evaluate_ecommerce_post_purchase_one_click_upsell_policy(
+            EcommercePostPurchaseOneClickUpsellPolicyInput(
+                quarterly_split_parcel_postage_stuck_main_order_and_rosca_pool_usd=360000.0,
+                co_located_15m_hold_merge_and_isolated_auth_before_edit_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 151200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 208800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_post_purchase_one_click_upsell_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-post-purchase-one-click-upsell-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

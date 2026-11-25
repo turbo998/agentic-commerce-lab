@@ -45969,6 +45969,86 @@ def evaluate_ota_airline_ancillary_ndc_merchandising_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommercePostPurchaseOneClickUpsellPolicyInput:
+    quarterly_split_parcel_postage_stuck_main_order_and_rosca_pool_usd: float = (
+        360000.0
+    )
+    wms_released_before_15m_merge_window_or_upsell_in_different_warehouse: bool = False
+    failed_upsell_charge_leaves_paid_primary_order_in_partially_paid_hold: bool = False
+    one_click_upsell_silently_enrolls_recurring_sub_without_rosca_checkbox: bool = (
+        False
+    )
+    co_located_15m_hold_merge_and_isolated_auth_before_edit_ready: bool = False
+
+
+def evaluate_ecommerce_post_purchase_one_click_upsell_policy(
+    policy_input: EcommercePostPurchaseOneClickUpsellPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_split_parcel_postage_stuck_main_order_and_rosca_pool_usd
+        ),
+    )
+    if policy_input.one_click_upsell_silently_enrolls_recurring_sub_without_rosca_checkbox:
+        return {
+            "status_code": 451,
+            "decision": "FTC_ROSCA_UNCONSENTED_ONE_CLICK_SUBSCRIPTION_UPSELL_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.wms_released_before_15m_merge_window_or_upsell_in_different_warehouse:
+        return {
+            "status_code": 403,
+            "decision": "WMS_PREMATURE_RELEASE_OR_CROSS_WAREHOUSE_SPLIT_PARCEL_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.failed_upsell_charge_leaves_paid_primary_order_in_partially_paid_hold:
+        return {
+            "status_code": 422,
+            "decision": "PRIMARY_PAID_ORDER_CONTAMINATED_BY_FAILED_UPSELL_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.co_located_15m_hold_merge_and_isolated_auth_before_edit_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "CO_LOCATED_15M_HOLD_MERGE_AND_ISOLATED_UPSELL_AUTH_CONFIRM",
+            "mandate_token": "post_purchase_upsell_525_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_POST_PURCHASE_ONE_CLICK_UPSELL_AUTHORIZED",
+        "mandate_token": "post_purchase_upsell_525_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -62444,6 +62524,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_post_purchase_one_click_upsell_guard = {
+        "authorized_200": evaluate_ecommerce_post_purchase_one_click_upsell_policy(
+            EcommercePostPurchaseOneClickUpsellPolicyInput()
+        ),
+        "wms_premature_or_split_node_403": evaluate_ecommerce_post_purchase_one_click_upsell_policy(
+            EcommercePostPurchaseOneClickUpsellPolicyInput(
+                wms_released_before_15m_merge_window_or_upsell_in_different_warehouse=True
+            )
+        ),
+        "main_order_contaminated_422": evaluate_ecommerce_post_purchase_one_click_upsell_policy(
+            EcommercePostPurchaseOneClickUpsellPolicyInput(
+                failed_upsell_charge_leaves_paid_primary_order_in_partially_paid_hold=True
+            )
+        ),
+        "rosca_sneak_subscription_451": evaluate_ecommerce_post_purchase_one_click_upsell_policy(
+            EcommercePostPurchaseOneClickUpsellPolicyInput(
+                one_click_upsell_silently_enrolls_recurring_sub_without_rosca_checkbox=True
+            )
+        ),
+        "colocated_15m_hold_merge_409": evaluate_ecommerce_post_purchase_one_click_upsell_policy(
+            EcommercePostPurchaseOneClickUpsellPolicyInput(
+                co_located_15m_hold_merge_and_isolated_auth_before_edit_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -62978,6 +63084,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "saas_subscription_cancel_flow_retention_guard": saas_subscription_cancel_flow_retention_guard,
         "corporate_virtual_card_spend_control_guard": corporate_virtual_card_spend_control_guard,
         "ota_airline_ancillary_ndc_merchandising_guard": ota_airline_ancillary_ndc_merchandising_guard,
+        "ecommerce_post_purchase_one_click_upsell_guard": ecommerce_post_purchase_one_click_upsell_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -89488,6 +89595,62 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ndcanc-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
           HTTP 409 ENTITLEMENT_AWARE_NDC_BUNDLE_AND_AUTO_DOT_EMD_REFUND_CONFIRM · Mandate: ota_airline_ancillary_ndc_optim_409
+        </div>
+      </div>
+
+      <div class="finops-box" id="ecommerce-post-purchase-one-click-upsell-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 零售电商购后一键加购、15m WMS 合单窗与主单零污染 (AfterSell / ReConvert / CartHook / Zipify OCU) 沙盒（🏆 全库第 525 篇双语决策指南里程碑！）</div>
+            <div class="finops-sub">Round 406 (#525 🏆 525th Guide Major Milestone · SVG #849 · Sandbox #299 · Test #1,403) · 挂起主单向 3PL 下发 15 分钟并强制同发货仓同箱过滤消灭 $8 拆单运费 (HTTP 403) + 严格“先独立增量扣款成功、后写单合并”防扣款失败卡死已付主订单 (HTTP 422) + 严禁免勾选一键静默绑月度订阅违反 FTC ROSCA (HTTP 451) + 净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="ppups-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度 3PL 抢跑或异地仓加购导致拆发第 2 个包裹运费倒挂、增量扣款失败卡死主单及 ROSCA 拒付池 ($)
+            <input type="number" id="ppups-gross-input" value="360000" min="10000" step="5000" oninput="recalcEcommercePostPurchaseOneClickUpsellSandbox()" />
+          </label>
+          <label>15 分钟 FulfillmentOrder 缓发合单窗与同发货仓 (Same-Node ATP) 过滤门禁
+            <select id="ppups-wms-select" onchange="recalcEcommercePostPurchaseOneClickUpsellSandbox()">
+              <option value="pass">主单置 ON_HOLD 15m 等待合箱，且仅推荐同一仓库节点、不超首重的高毛利配件 (安全)</option>
+              <option value="block_403">主单 0 秒已被 3PL 打单或推荐异地仓加购品，为 $12 配件多花 $7.80 运费发第 2 箱 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>先独立增量扣款成功、后追加订单行项目 (Authorize-Before-Order-Edit) 主单保护门禁
+            <select id="ppups-auth-select" onchange="recalcEcommercePostPurchaseOneClickUpsellSandbox()">
+              <option value="pass">增量扣款拿到 200 OK 后才追加 SKU；若刷卡拒付立即原样放行已付清的 $240 主单 (安全)</option>
+              <option value="block_422">先把 $25 加购品塞进主单再扣款，卡余额不足导致已付 $240 主订单卡在 PARTIALLY_PAID 停发 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国联邦 FTC ROSCA 严禁一键加购静默转月度自动续费订阅合规门禁
+            <select id="ppups-rosca-select" onchange="recalcEcommercePostPurchaseOneClickUpsellSandbox()">
+              <option value="pass">购后一键按钮默认仅限单次购买，转周期订阅强制独立未预勾选的 ROSCA 条款确认框 (合规)</option>
+              <option value="block_451">用一键免密按钮在无勾选框下把一次性买家偷偷变成每月扣款订户，遭 $51,744 重罚 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>15m 合单缓冲 + 同仓零增量运费过滤 + 先扣款后合箱 + 退出页面即时释放 WMS 编排
+            <select id="ppups-opt-select" onchange="recalcEcommercePostPurchaseOneClickUpsellSandbox()">
+              <option value="enabled" selected>启用 15m 合单窗 + 同仓过滤 + 先扣后写隔离 (-42% 拆箱运费与卡单损耗 / HTTP 409)</option>
+              <option value="disabled">默认即时推仓与无分仓过滤加购基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度购后拆箱与卡单损失池</div>
+            <div class="finops-kpi-val" id="ppups-gross-kpi">$360,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净履约与售后成本</div>
+            <div class="finops-kpi-val" id="ppups-net-kpi">$208,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省第2箱邮费与卡单退单</div>
+            <div class="finops-kpi-val" id="ppups-savings-kpi" style="color:#6ee7b7;">$151,200</div>
+          </div>
+        </div>
+        <div id="ppups-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 CO_LOCATED_15M_HOLD_MERGE_AND_ISOLATED_UPSELL_AUTH_CONFIRM · Mandate: post_purchase_upsell_525_optim_409
         </div>
       </div>
 
@@ -123473,6 +123636,79 @@ function recalcOtaAirlineAncillaryNdcMerchandisingSandbox() {{
   banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
   banner.style.color = '#bfdbfe';
   banner.textContent = 'HTTP 200 VERIFIED_OTA_AIRLINE_ANCILLARY_NDC_AUTHORIZED · Mandate: ota_airline_ancillary_ndc_200';
+}}
+
+function recalcEcommercePostPurchaseOneClickUpsellSandbox() {{
+  const grossInput = document.getElementById('ppups-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '360000'));
+  const wmsGate = document.getElementById('ppups-wms-select').value;
+  const authGate = document.getElementById('ppups-auth-select').value;
+  const roscaGate = document.getElementById('ppups-rosca-select').value;
+  const optMode = document.getElementById('ppups-opt-select').value;
+
+  const grossKpi = document.getElementById('ppups-gross-kpi');
+  const netKpi = document.getElementById('ppups-net-kpi');
+  const savingsKpi = document.getElementById('ppups-savings-kpi');
+  const statusKpi = document.getElementById('ppups-status-kpi');
+  const banner = document.getElementById('ppups-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (roscaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 FTC_ROSCA_UNCONSENTED_ONE_CLICK_SUBSCRIPTION_UPSELL_BREACH · Mandate: null';
+    return;
+  }}
+  if (wmsGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 WMS_PREMATURE_RELEASE_OR_CROSS_WAREHOUSE_SPLIT_PARCEL_VETO · Mandate: null';
+    return;
+  }}
+  if (authGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 PRIMARY_PAID_ORDER_CONTAMINATED_BY_FAILED_UPSELL_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 CO_LOCATED_15M_HOLD_MERGE_AND_ISOLATED_UPSELL_AUTH_CONFIRM · Mandate: post_purchase_upsell_525_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_POST_PURCHASE_ONE_CLICK_UPSELL_AUTHORIZED · Mandate: post_purchase_upsell_525_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{
