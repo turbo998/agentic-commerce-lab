@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`500` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`501` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（38 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（61 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（186 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（187 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（112 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（46 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（57 篇）](#tax-fx-privacy-disputes)
@@ -133,7 +133,7 @@
 | 61 | **💳 零售电商先买后付（`BNPL`: `Klarna / Affirm / Afterpay / PayPal Pay in 4`）与分期授信智能体选型对比、扣减贴息后净毛利 `<20%` 或 `AOV < $250` 自动切流 `PayPal Pay in 4 / 买家付息` 方案、同款多尺码盲买（`Bracketing`）屏蔽 `$0` 首付 `Pay in 30` 及预售/跨仓拆单贷款预授权自动续期净省 39% Agent 架构选型 FAQ** | [中文](ecommerce-bnpl-klarna-affirm-afterpay-paypal-pay-in-4-mdr-floor-return-fee-selection-faq.md) · [English](ecommerce-bnpl-klarna-affirm-afterpay-paypal-pay-in-4-mdr-floor-return-fee-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（186 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（187 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -325,6 +325,7 @@
 | 184 | **🏆 零售媒体网络（`Retail Media Network, RMN`）、站内赞助商品竞价与闭环增量归因（`iROAS`）选型对比（`Criteo Retail Media / Koddi / CitrusAd / Mirakl Ads` · 🏆 第 495 篇双语决策指南重大里程碑）、黄金购物车（`Buy Box`）与核心尺码断码 `50ms` 停投锁、扣除退货后净毛利回报率（`Net POAS >= 1.3x`）出价门禁及防自然排名第 1 流量自噬净省 40% Agent 架构选型 FAQ** | [中文](retail-media-network-rmn-sponsored-ads-criteo-koddi-citrusad-buybox-stock-iroas-selection-faq.md) · [English](retail-media-network-rmn-sponsored-ads-criteo-koddi-citrusad-buybox-stock-iroas-selection-faq.en.md) |
 | 185 | **🏆 零售电商与酒旅航司会员积分体系（`Loyalty Wallet`）、退货积分倒扣（`Clawback`）与 `ASC 606` 递延负债（`Breakage`）选型对比（`Antavo / Talon.One / Yotpo / Salesforce Loyalty` · 🏆 第 1,375 项单元测试重大里程碑）、待生效冻结期（`Pending Points`）与退货现金净额倒扣防套现锁、禁兑礼品卡毛利底线门禁及 `1.4x` 高毛利自有品升值兑换净省 41% Agent 架构选型 FAQ** | [中文](ecommerce-loyalty-points-liability-antavo-talon-one-yotpo-return-clawback-asc606-breakage-selection-faq.md) · [English](ecommerce-loyalty-points-liability-antavo-talon-one-yotpo-return-clawback-asc606-breakage-selection-faq.en.md) |
 | 186 | **📦 零售电商逆向物流、即时换货挽留（`Instant Exchange / Bonus Credit`）与退货反欺诈（`FTID / 掉包 / Wardrobing`）选型对比（`Loop Returns / Narvar / Happy Returns / AfterShip Returns`）、分拣称重比对（`<=15%` 偏差）与信用卡预授权担保锁、防拆吊牌/序列号 `IMEI` 核验门禁及 `Shop Now` 加赠 `+$15` 换货红利金净省 43% Agent 架构选型 FAQ** | [中文](ecommerce-reverse-logistics-returns-exchange-loop-narvar-happy-returns-ftid-fraud-selection-faq.md) · [English](ecommerce-reverse-logistics-returns-exchange-loop-narvar-happy-returns-ftid-fraud-selection-faq.en.md) |
+| 187 | **🏆 企业差旅管理（`TMC / OTA`）、航司未使用退票积分池（`Unused Ticket Credit, UTC`）自动核销与多式联运全行程成本（`Total Trip Cost`）选型对比（`Navan / SAP Concur Travel / TravelPerk / Amex GBT Egencia` · 🏆 第 825 张架构图与第 275 个策略沙盒双里程碑）、结账强制优先抵扣 `UTC` 与离职员工客票更名回收锁、防基础经济舱行李改签费倒挂门禁及 `<3h` 高铁优先与酒店省钱返现激励净省 41% Agent 架构选型 FAQ** | [中文](ota-corporate-travel-unused-ticket-credit-navan-concur-travelperk-egencia-ancillary-tco-selection-faq.md) · [English](ota-corporate-travel-unused-ticket-credit-navan-concur-travelperk-egencia-ancillary-tco-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（112 篇）

@@ -34652,6 +34652,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-site-search-merchandising-sandbox", html_zh)
 
+    def test_corporate_travel_utc_multimodal_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CorporateTravelUtcMultiModalPolicyInput,
+            evaluate_corporate_travel_utc_multimodal_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_corporate_travel_utc_multimodal_policy(
+            CorporateTravelUtcMultiModalPolicyInput(
+                quarterly_expired_utc_ancillary_overpay_and_hotel_cap_pool_usd=390000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CORPORATE_TRAVEL_UTC_AND_TCO_AUTHORIZED",
+        )
+
+        utc = evaluate_corporate_travel_utc_multimodal_policy(
+            CorporateTravelUtcMultiModalPolicyInput(
+                unapplied_airline_utc_credit_ignored_or_departed_staff_eticket_unpooled=True
+            )
+        )
+        self.assertEqual(utc["status_code"], 403)
+        self.assertEqual(
+            utc["decision"],
+            "UNAPPLIED_AIRLINE_UTC_CREDIT_OR_ORPHAN_ETICKET_VETO",
+        )
+
+        tco = evaluate_corporate_travel_utc_multimodal_policy(
+            CorporateTravelUtcMultiModalPolicyInput(
+                basic_economy_ancillary_and_change_risk_tco_exceeds_corporate_main=True
+            )
+        )
+        self.assertEqual(tco["status_code"], 422)
+        self.assertEqual(
+            tco["decision"],
+            "BASIC_ECONOMY_ANCILLARY_TRAP_OR_UNBUNDLED_TCO_BREACH",
+        )
+
+        rail = evaluate_corporate_travel_utc_multimodal_policy(
+            CorporateTravelUtcMultiModalPolicyInput(
+                short_haul_rail_corridor_ignored_or_executive_same_flight_cap_breached=True
+            )
+        )
+        self.assertEqual(rail["status_code"], 451)
+        self.assertEqual(
+            rail["decision"],
+            "SHORT_HAUL_RAIL_MANDATE_OR_EXECUTIVE_CONCENTRATION_BREACH",
+        )
+
+        optim = evaluate_corporate_travel_utc_multimodal_policy(
+            CorporateTravelUtcMultiModalPolicyInput(
+                quarterly_expired_utc_ancillary_overpay_and_hotel_cap_pool_usd=390000.0,
+                automated_utc_waiver_pooling_and_split_savings_hotel_rewards_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 159900.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 230100.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("corporate_travel_utc_multimodal_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("corporate-travel-utc-multimodal-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

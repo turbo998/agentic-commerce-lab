@@ -44133,6 +44133,82 @@ def evaluate_ecommerce_site_search_merchandising_policy(
     }
 
 
+@dataclass(frozen=True)
+class CorporateTravelUtcMultiModalPolicyInput:
+    quarterly_expired_utc_ancillary_overpay_and_hotel_cap_pool_usd: float = 390000.0
+    unapplied_airline_utc_credit_ignored_or_departed_staff_eticket_unpooled: bool = False
+    basic_economy_ancillary_and_change_risk_tco_exceeds_corporate_main: bool = False
+    short_haul_rail_corridor_ignored_or_executive_same_flight_cap_breached: bool = False
+    automated_utc_waiver_pooling_and_split_savings_hotel_rewards_ready: bool = False
+
+
+def evaluate_corporate_travel_utc_multimodal_policy(
+    policy_input: CorporateTravelUtcMultiModalPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_expired_utc_ancillary_overpay_and_hotel_cap_pool_usd
+        ),
+    )
+    if policy_input.short_haul_rail_corridor_ignored_or_executive_same_flight_cap_breached:
+        return {
+            "status_code": 451,
+            "decision": "SHORT_HAUL_RAIL_MANDATE_OR_EXECUTIVE_CONCENTRATION_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unapplied_airline_utc_credit_ignored_or_departed_staff_eticket_unpooled:
+        return {
+            "status_code": 403,
+            "decision": "UNAPPLIED_AIRLINE_UTC_CREDIT_OR_ORPHAN_ETICKET_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.basic_economy_ancillary_and_change_risk_tco_exceeds_corporate_main:
+        return {
+            "status_code": 422,
+            "decision": "BASIC_ECONOMY_ANCILLARY_TRAP_OR_UNBUNDLED_TCO_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.automated_utc_waiver_pooling_and_split_savings_hotel_rewards_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "UTC_WAIVER_POOLING_AND_SPLIT_SAVINGS_HOTEL_REWARD_CONFIRM",
+            "mandate_token": "corporate_travel_utc_tco_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CORPORATE_TRAVEL_UTC_AND_TCO_AUTHORIZED",
+        "mandate_token": "corporate_travel_utc_tco_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -59984,6 +60060,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    corporate_travel_utc_multimodal_guard = {
+        "authorized_200": evaluate_corporate_travel_utc_multimodal_policy(
+            CorporateTravelUtcMultiModalPolicyInput()
+        ),
+        "unapplied_utc_or_orphan_ticket_403": evaluate_corporate_travel_utc_multimodal_policy(
+            CorporateTravelUtcMultiModalPolicyInput(
+                unapplied_airline_utc_credit_ignored_or_departed_staff_eticket_unpooled=True
+            )
+        ),
+        "basic_economy_tco_trap_422": evaluate_corporate_travel_utc_multimodal_policy(
+            CorporateTravelUtcMultiModalPolicyInput(
+                basic_economy_ancillary_and_change_risk_tco_exceeds_corporate_main=True
+            )
+        ),
+        "short_haul_rail_or_exec_cap_451": evaluate_corporate_travel_utc_multimodal_policy(
+            CorporateTravelUtcMultiModalPolicyInput(
+                short_haul_rail_corridor_ignored_or_executive_same_flight_cap_breached=True
+            )
+        ),
+        "utc_pooling_split_savings_409": evaluate_corporate_travel_utc_multimodal_policy(
+            CorporateTravelUtcMultiModalPolicyInput(
+                automated_utc_waiver_pooling_and_split_savings_hotel_rewards_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -60494,6 +60596,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_reverse_logistics_exchange_guard": ecommerce_reverse_logistics_exchange_guard,
         "enterprise_saas_spend_management_guard": enterprise_saas_spend_management_guard,
         "ecommerce_site_search_merchandising_guard": ecommerce_site_search_merchandising_guard,
+        "corporate_travel_utc_multimodal_guard": corporate_travel_utc_multimodal_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -87467,6 +87570,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="sitesrch-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 HYBRID_RRF_AND_EXPECTED_NET_PROFIT_RERANKING_CONFIRM · Mandate: site_search_profit_ltr_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 382 (🏆 825th SVG & 275th Sandbox Dual Milestone! · #501 · Test #1,379) Corporate Travel UTC & Multi-Modal TCO -->
+      <div class="finops-box" id="corporate-travel-utc-multimodal-sandbox" style="margin-top:12px;border-color:#06b6d4;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业差旅管理 (TMC)、航司退票积分 (UTC) 自动核销与全行程 TCO (Navan / SAP Concur / TravelPerk / Amex GBT) 沙盒（🏆 第 825 张 SVG 与第 275 个沙盒双里程碑！）</div>
+            <div class="finops-sub">Round 382 (🏆 SVG #825 &amp; Sandbox #275 Milestone · #501 · Test #1,379) · 强制优先核销员工/离职池航司未使用退票积分 (UTC) 防过期作废 (HTTP 403) + 含行李/选座/改签期望损失的全口径 TCO 比价防廉航裸票倒挂 (HTTP 422) + &lt;3h 城际高铁优先 (Scope 3) 与高管同机人数上限锁 (HTTP 451) + 离职票更名回收与酒店省钱奖励员工净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="corptrv-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度航司退票信用 (UTC) 过期作废、基础经济舱行李改签费倒挂与卡上限订酒店损耗池 ($)
+            <input type="number" id="corptrv-gross-input" value="390000" min="10000" step="5000" oninput="recalcCorporateTravelUtcMultiModalSandbox()" />
+          </label>
+          <label>航司未使用退票积分 (UTC / eCredit) 结账强制优先抵扣与离职员工协议更名回收门禁
+            <select id="corptrv-utc-select" onchange="recalcCorporateTravelUtcMultiModalSandbox()">
+              <option value="pass">出票前强制优先抵扣员工及离职回收池内可用 UTC，零新增现金刷卡 (安全)</option>
+              <option value="block_403">忽略账上 $1,100 未使用退票积分直接刷公司卡重买新票，或离职员工名下客票未回收作废 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>全口径期望行程成本 (裸票 + 登机箱 + 选座 + 22% 改期损失 vs NDC 企业协议包) 比价门禁
+            <select id="corptrv-tco-select" onchange="recalcCorporateTravelUtcMultiModalSandbox()">
+              <option value="pass">拉平附加费与改签期望损失，自动优选含行李且免费改签的 NDC 企业协议标准舱 (合规)</option>
+              <option value="block_422">贪 $45 裸票差价买 Basic Economy，结果补交 $130 行李选座费且改期整票 100% 报废 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>&lt;400km / 3 小时城际高铁优先 (Scope 3 减碳 + 省机场打车费) 与高管同机人数上限门禁
+            <select id="corptrv-rail-select" onchange="recalcCorporateTravelUtcMultiModalSandbox()">
+              <option value="pass">&lt;3h 走廊默认锁定市中心直达高铁，且单架航班限制 &lt;=2 名 C-Suite/VP 高管同乘 (合规)</option>
+              <option value="block_451">短途拒坐高铁多花 $145 往返机场打车费并违反 Scope 3，或 4 名高管同乘一架支线飞机 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>离职客票自动更名归池 (Name-Change Waiver) + 酒店动态基准省钱返现激励 (Split-Savings) 编排
+            <select id="corptrv-opt-select" onchange="recalcCorporateTravelUtcMultiModalSandbox()">
+              <option value="enabled" selected>启用离职 UTC 自动更名归池 + 酒店省钱奖励员工 $25 礼品卡 (-41% 差旅浪费与废票损耗 / HTTP 409)</option>
+              <option value="disabled">传统静态差旅上限与裸票最低价排序基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度退票作废与附加费倒挂池</div>
+            <div class="finops-kpi-val" id="corptrv-gross-kpi">$390,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">UTC 强抵与 TCO 归一净成本</div>
+            <div class="finops-kpi-val" id="corptrv-net-kpi" style="color:#6ee7b7;">$230,100</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省退票烂尾与差旅超支</div>
+            <div class="finops-kpi-val" id="corptrv-savings-kpi" style="color:#38bdf8;">$159,900</div>
+          </div>
+        </div>
+        <div id="corptrv-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 UTC_WAIVER_POOLING_AND_SPLIT_SAVINGS_HOTEL_REWARD_CONFIRM · Mandate: corporate_travel_utc_tco_optim_409
         </div>
       </div>
 
@@ -120870,6 +121030,79 @@ function recalcEcommerceSiteSearchMerchandisingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_SITE_SEARCH_AND_PROFIT_MERCHANDISING_AUTHORIZED · Mandate: site_search_profit_ltr_200';
+}}
+
+function recalcCorporateTravelUtcMultiModalSandbox() {{
+  const grossInput = document.getElementById('corptrv-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '390000'));
+  const utcGate = document.getElementById('corptrv-utc-select').value;
+  const tcoGate = document.getElementById('corptrv-tco-select').value;
+  const railGate = document.getElementById('corptrv-rail-select').value;
+  const optMode = document.getElementById('corptrv-opt-select').value;
+
+  const grossKpi = document.getElementById('corptrv-gross-kpi');
+  const netKpi = document.getElementById('corptrv-net-kpi');
+  const savingsKpi = document.getElementById('corptrv-savings-kpi');
+  const statusKpi = document.getElementById('corptrv-status-kpi');
+  const banner = document.getElementById('corptrv-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (railGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 SHORT_HAUL_RAIL_MANDATE_OR_EXECUTIVE_CONCENTRATION_BREACH · Mandate: null';
+    return;
+  }}
+  if (utcGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 UNAPPLIED_AIRLINE_UTC_CREDIT_OR_ORPHAN_ETICKET_VETO · Mandate: null';
+    return;
+  }}
+  if (tcoGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BASIC_ECONOMY_ANCILLARY_TRAP_OR_UNBUNDLED_TCO_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 UTC_WAIVER_POOLING_AND_SPLIT_SAVINGS_HOTEL_REWARD_CONFIRM · Mandate: corporate_travel_utc_tco_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CORPORATE_TRAVEL_UTC_AND_TCO_AUTHORIZED · Mandate: corporate_travel_utc_tco_200';
 }}
 
 function updateStage1756Sandbox() {{
