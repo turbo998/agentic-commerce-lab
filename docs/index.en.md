@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`511` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`512` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (38 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (62 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (192 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (193 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (116 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (46 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (57 guides)](#tax-fx-privacy-disputes)
@@ -134,7 +134,7 @@
 | 62 | **🛡️ E-Commerce Checkout Fraud Prevention, False-Decline Rescue (`Insult Rate`) & 100% Chargeback Guarantee Agent (`Signifyd / Forter / Riskified / Stripe Radar + Adyen RevenueProtect`), Anti-Triangulation Graph Locks, Carrier `Direct-Delivery-Only` Reroute Veto, WMS `7-Day` Guarantee-Token Locks & Selective Two-Tier Underwriting (`-42%` Cost) FAQ** | [English](ecommerce-checkout-fraud-false-decline-signifyd-forter-riskified-chargeback-guarantee-selection-faq.en.md) · [中文](ecommerce-checkout-fraud-false-decline-signifyd-forter-riskified-chargeback-guarantee-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (192 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (193 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -332,6 +332,7 @@
 | 190 | **🏆 Omnichannel Retail Clienteling, Endless-Aisle POS & `BORIS` Commission Attribution Copilot (`Tulip Clienteling / NewStore Omnichannel POS / Salesforce Retail Cloud / Shopify POS Pro` · 🏆 1,385th Unit Test Major Milestone!), `14-Day` Cross-Device Lookbook Locks, `75%/25%` Dual-Store Endless-Aisle Splits, `BORIS` Store-Quota Neutrality & Masked VIP Proxy Relays (`-41%` Cost) FAQ** | [English](omnichannel-clienteling-endless-aisle-tulip-newstore-salesforce-shopify-pos-boris-commission-selection-faq.en.md) · [中文](omnichannel-clienteling-endless-aisle-tulip-newstore-salesforce-shopify-pos-boris-commission-selection-faq.md) |
 | 191 | **🏆 OTA & Hospitality Dynamic Packaging (`Flight + Hotel Opaque Bundles`), Wholesale Bedbank Rate-Parity Shield & Pre-Arrival `PMS HCN` Verification Copilot (`Expedia EPS Rapid / Hotelbeds HBX / Booking.com Demand API / DerbySoft Direct CRS` · 🏆 Round 390 Major Milestone!), Package-Only Unbundled Leak Veto, Two-Phase `Flight PNR + Hotel Room` Sagas, `T-72h OPERA PMS HCN` Probes & `EU PTD / ATOL` Locks (`-42%` Cost) FAQ** | [English](ota-dynamic-packaging-bedbank-rate-parity-eps-rapid-hotelbeds-derbysoft-pms-hcn-selection-faq.en.md) · [中文](ota-dynamic-packaging-bedbank-rate-parity-eps-rapid-hotelbeds-derbysoft-pms-hcn-selection-faq.md) |
 | 192 | **🏆 E-Commerce Embedded Extended Warranty, Accidental Damage Protection (`ADP`) & `Replacement-as-a-Purchase` (`GMV Loop`) Agent (`Extend / Clyde / Mulberry / Assurant` · 🏆 510th Bilingual SA Guide Milestone!), Outbound `Serial/IMEI` Binding, 30-Day Post-POD Waiting Locks, Atomic Parent-`RMA` Co-Cancellation & Insurer-Funded Store Replacement Credits (`-42%` Cost) FAQ** | [English](ecommerce-extended-warranty-protection-extend-clyde-mulberry-assurant-replacement-loop-selection-faq.en.md) · [中文](ecommerce-extended-warranty-protection-extend-clyde-mulberry-assurant-replacement-loop-selection-faq.md) |
+| 193 | **🏆 E-Commerce Trade-In, Branded Circular Recommerce (`Resale`) & Grading-Discrepancy Clawback Agent (`Trove / Archive / Phobio / Assurant Trade-In` · 🏆 1,390th Unit Test Major Milestone!), Pre-Checkout `GSMA / FMI` Activation-Lock Checks, Photo-Backed Downgrade Consent / Free-Return Options, `NIST SP 800-88` Wipe Certificates & `+15%` Store-Credit Boosters (`-42%` Cost) FAQ** | [English](ecommerce-trade-in-recommerce-trove-archive-phobio-assurant-fmi-grading-clawback-selection-faq.en.md) · [中文](ecommerce-trade-in-recommerce-trove-archive-phobio-assurant-fmi-grading-clawback-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (116 Guides)

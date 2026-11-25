@@ -2,13 +2,13 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`511` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`512` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（38 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（62 篇）](#payments-mandates)
-- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（192 篇）](#retail-ota-marketplace)
+- [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（193 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（116 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（46 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（57 篇）](#tax-fx-privacy-disputes)
@@ -134,7 +134,7 @@
 | 62 | **🛡️ 零售电商结账反欺诈、误拒好客挽回（`False-Decline Rescue`）与 100% 拒付包赔担保（`Chargeback Guarantee`）选型对比（`Signifyd / Forter / Riskified / Stripe Radar + Adyen RevenueProtect`）、拦截 eBay 代下单三角诈骗（`Triangulation`）与快递面单禁在途改址锁、灰区拒单二阶承保复活及 WMS 保单有效期出库锁净省 42% Agent 架构选型 FAQ** | [中文](ecommerce-checkout-fraud-false-decline-signifyd-forter-riskified-chargeback-guarantee-selection-faq.md) · [English](ecommerce-checkout-fraud-false-decline-signifyd-forter-riskified-chargeback-guarantee-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（192 篇）
+## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（193 篇）
 
 > 聚焦跨商户购物车两阶段预留 Saga、平台分账美分守恒、滚动保证金（Rolling Reserve）、航司 IATA NDC 退改签动态定价、促销防套利、二手数字产品护照（DPP）与防黄牛票务。
 
@@ -332,6 +332,7 @@
 | 190 | **🏆 全渠道零售门店私人导购（`Clienteling`）、云货架跨店调拨（`Endless Aisle`）与线上退到门店（`BORIS`）佣金归因选型对比（`Tulip Clienteling / NewStore Omnichannel POS / Salesforce Retail Cloud / Shopify POS Pro` · 🏆 第 1,385 项确定性单元测试重大里程碑！）、导购数字画册 `14天` 跨设备归因保护锁与 `75%/25%` 双店分润、`BORIS` 网退免扣门店业绩与当场换购提成及虚拟中间号防离职带走 VIP 客资净省 41% Agent 架构选型 FAQ** | [中文](omnichannel-clienteling-endless-aisle-tulip-newstore-salesforce-shopify-pos-boris-commission-selection-faq.md) · [English](omnichannel-clienteling-endless-aisle-tulip-newstore-salesforce-shopify-pos-boris-commission-selection-faq.en.md) |
 | 191 | **🏆 酒旅 OTA 动态打包（`Flight + Hotel Dynamic Packaging`）、B2B 床位银行（`Bedbank`）防窜货破价与到店“幽灵订单”零到房抗辩选型对比（`Expedia EPS Rapid / Hotelbeds HBX / Booking.com Demand API / DerbySoft 直连` · 🏆 第 390 轮重大里程碑！）、打包专属暗价（`Opaque Rate`）防裸卖与水单分项隐藏锁、机酒两阶段原子预留（`2PC`）与入住前 `T-72h` 酒店原生 `PMS HCN` 确认号强核验及欧盟套餐指令 `EU PTD / ATOL` 合规净省 42% Agent 架构选型 FAQ** | [中文](ota-dynamic-packaging-bedbank-rate-parity-eps-rapid-hotelbeds-derbysoft-pms-hcn-selection-faq.md) · [English](ota-dynamic-packaging-bedbank-rate-parity-eps-rapid-hotelbeds-derbysoft-pms-hcn-selection-faq.en.md) |
 | 192 | **🏆 零售电商嵌入式延保、意外损坏险（`Embedded Extended Warranty & ADP`）与“以换代赔二次销售闭环（`Replacement-as-a-Purchase`）”选型对比（`Extend / Clyde / Mulberry / Assurant` · 🏆 全库第 510 篇双语决策指南里程碑！）、出库序列号（`SN/IMEI`）唯一绑定与签收后补买强制 `30天` 免责等待期防骗保、主商品退货级联退保与已理赔扣除锁及承保商出资发本店置换码生成第 2 笔订单净省/增效 42% Agent 架构选型 FAQ** | [中文](ecommerce-extended-warranty-protection-extend-clyde-mulberry-assurant-replacement-loop-selection-faq.md) · [English](ecommerce-extended-warranty-protection-extend-clyde-mulberry-assurant-replacement-loop-selection-faq.en.md) |
+| 193 | **🏆 零售电商以旧换新（`Trade-In`）、品牌官方二手循环商城（`Branded Recommerce`）与成色降级补差扣回选型对比（`Trove / Archive / Phobio / Assurant Trade-In` · 🏆 第 1,390 项确定性单元测试重大里程碑！）、结账前 `GSMA 黑名单 / FMI 激活锁` 实时核验与 14 天信用卡追索担保锁、仓内成色降级强制推送实拍图并给“接受重估或免费退回旧机”二选一门禁及 `NIST 800-88` 数据粉碎与 `+15%` 店铺换新金净省 42% Agent 架构选型 FAQ** | [中文](ecommerce-trade-in-recommerce-trove-archive-phobio-assurant-fmi-grading-clawback-selection-faq.md) · [English](ecommerce-trade-in-recommerce-trove-archive-phobio-assurant-fmi-grading-clawback-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（116 篇）

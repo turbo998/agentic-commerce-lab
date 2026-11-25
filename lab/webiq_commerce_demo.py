@@ -44969,6 +44969,82 @@ def evaluate_b2b_freight_audit_payment_gsr_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceTradeInRecommercePolicyInput:
+    quarterly_locked_brick_grading_chargeback_and_churn_pool_usd: float = 420000.0
+    activation_locked_fmi_or_gsma_stolen_imei_accepted_without_hold: bool = False
+    grading_downgrade_clawed_back_without_photo_consent_or_free_return: bool = False
+    nist80088_wipe_certificate_missing_or_state_tradein_tax_miscalculated: bool = False
+    mirror_ai_pre_grading_and_15pct_store_credit_booster_ready: bool = False
+
+
+def evaluate_ecommerce_trade_in_recommerce_policy(
+    policy_input: EcommerceTradeInRecommercePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_locked_brick_grading_chargeback_and_churn_pool_usd
+        ),
+    )
+    if policy_input.nist80088_wipe_certificate_missing_or_state_tradein_tax_miscalculated:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_NIST80088_DATA_WIPE_OR_TRADEIN_TAX_BASE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.activation_locked_fmi_or_gsma_stolen_imei_accepted_without_hold:
+        return {
+            "status_code": 403,
+            "decision": "ACTIVATION_LOCKED_STOLEN_IMEI_OR_MISSING_RECOVERY_MANDATE_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.grading_downgrade_clawed_back_without_photo_consent_or_free_return:
+        return {
+            "status_code": 422,
+            "decision": "UNCONSENTED_GRADING_DOWNGRADE_CLAWBACK_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.mirror_ai_pre_grading_and_15pct_store_credit_booster_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "MIRROR_AI_PRE_GRADING_AND_15PCT_STORE_CREDIT_BOOSTER_CONFIRM",
+            "mandate_token": "trade_in_recommerce_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_TRADE_IN_AND_RECOMMERCE_AUTHORIZED",
+        "mandate_token": "trade_in_recommerce_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -61106,6 +61182,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_trade_in_recommerce_guard = {
+        "authorized_200": evaluate_ecommerce_trade_in_recommerce_policy(
+            EcommerceTradeInRecommercePolicyInput()
+        ),
+        "locked_imei_or_missing_hold_403": evaluate_ecommerce_trade_in_recommerce_policy(
+            EcommerceTradeInRecommercePolicyInput(
+                activation_locked_fmi_or_gsma_stolen_imei_accepted_without_hold=True
+            )
+        ),
+        "unconsented_downgrade_clawback_422": evaluate_ecommerce_trade_in_recommerce_policy(
+            EcommerceTradeInRecommercePolicyInput(
+                grading_downgrade_clawed_back_without_photo_consent_or_free_return=True
+            )
+        ),
+        "missing_nist_wipe_or_tax_451": evaluate_ecommerce_trade_in_recommerce_policy(
+            EcommerceTradeInRecommercePolicyInput(
+                nist80088_wipe_certificate_missing_or_state_tradein_tax_miscalculated=True
+            )
+        ),
+        "mirror_ai_store_credit_409": evaluate_ecommerce_trade_in_recommerce_policy(
+            EcommerceTradeInRecommercePolicyInput(
+                mirror_ai_pre_grading_and_15pct_store_credit_booster_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -61627,6 +61729,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ota_dynamic_packaging_bedbank_parity_guard": ota_dynamic_packaging_bedbank_parity_guard,
         "ecommerce_extended_warranty_protection_guard": ecommerce_extended_warranty_protection_guard,
         "b2b_freight_audit_payment_gsr_guard": b2b_freight_audit_payment_gsr_guard,
+        "ecommerce_trade_in_recommerce_guard": ecommerce_trade_in_recommerce_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -89227,6 +89330,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="fapgsr-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 LINE_ITEM_SHORT_PAY_DISPUTE_AND_AUTOMATED_GSR_RECOVERY_CONFIRM · Mandate: b2b_freight_audit_gsr_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 393 (🏆 1,390th Unit Test Major Milestone! · #512 · SVG #836 · Sandbox #286) E-Commerce Trade-In & Circular Recommerce -->
+      <div class="finops-box" id="ecommerce-trade-in-recommerce-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 零售电商以旧换新 (Trade-In)、品牌官方二手循环与成色降级扣回 (Trove / Archive / Phobio / Assurant) 沙盒（🏆 第 1,390 项单测里程碑！）</div>
+            <div class="finops-sub">Round 393 (🏆 1,390th Test Milestone · #512 · SVG #836 · Sandbox #286) · 结账前 GSMA 黑名单/FMI 激活锁实时核验与 14 天信用卡追索担保锁 (HTTP 403) + 仓内成色降级强制推送实拍图并给“接受重估或免费退回旧机”二选一门禁 (HTTP 422) + NIST 800-88 数据粉碎证书与各州以旧换新净额/全额计税锁 (HTTP 451) + 对镜自拍验屏与 +15% 换新金净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="trdrec-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度收进 iCloud 激活锁/被盗砖头坏账、成色降级强扣差价触发拒付败诉与换新现金外流损耗池 ($)
+            <input type="number" id="trdrec-gross-input" value="420000" min="10000" step="5000" oninput="recalcEcommerceTradeInRecommerceSandbox()" />
+          </label>
+          <label>结账前 15 位 IMEI (GSMA 黑名单 / 运营商分期锁 / FMI 激活锁) 实时核验与 14 天追索担保锁
+            <select id="trdrec-fmi-select" onchange="recalcEcommerceTradeInRecommerceSandbox()">
+              <option value="pass">核验 FMI 激活锁已关闭且非挂失欠费机，并绑定 14 天不寄回追索信用卡授权 (安全)</option>
+              <option value="block_403">仅凭网页自填问卷秒减 $500，结果收到未解绑 iCloud 激活锁或 GSMA 报失废砖头 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>仓内质检成色降级 (Grade-A-&gt;Grade-D) 强制带实拍图提供“7天确认接受或免费退回旧机”二选一门禁
+            <select id="trdrec-grd-select" onchange="recalcEcommerceTradeInRecommerceSandbox()">
+              <option value="pass">降级必发开箱瑕疵图，由客户选择接受新估值或免费包邮寄回旧机，零拒付败诉 (合规)</option>
+              <option value="block_422">自评完美 $500 实寄碎屏 $120，仓库未经同意也未给退机选项直接强扣客户卡 $380 触发拒付 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>NIST SP 800-88 Rev. 1 密码学数据粉碎证书签发与各州以旧换新消费税基数 (NY净额 vs CA全额) 门禁
+            <select id="trdrec-nist-select" onchange="recalcEcommerceTradeInRecommerceSandbox()">
+              <option value="pass">每台旧机生成绑定 IMEI 的 NIST 800-88 擦除证书，并按收货州精准切换净额/全额计税 (合规)</option>
+              <option value="block_451">二手设备未彻底擦除前机主照片即转售，或在纽约/加州算错以旧换新消费税应税基数 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>寄前手机对镜自拍 AI 屏幕诊断 + 历史订单一键匹配 + 选本店换新礼品卡额外加赠 +15% 编排
+            <select id="trdrec-opt-select" onchange="recalcEcommerceTradeInRecommerceSandbox()">
+              <option value="enabled" selected>启用对镜自拍 AI 验屏 + 降级二选一确认 + 选换新金多送 15% (-42% 换新坏账与流失损耗 / HTTP 409)</option>
+              <option value="disabled">传统纯文字问卷自评与现金打款基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度废砖坏账与降级拒付池</div>
+            <div class="finops-kpi-val" id="trdrec-gross-kpi">$420,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">FMI 预检与换新金留存净损耗</div>
+            <div class="finops-kpi-val" id="trdrec-net-kpi" style="color:#6ee7b7;">$243,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度拦截废砖与复购净省</div>
+            <div class="finops-kpi-val" id="trdrec-savings-kpi" style="color:#38bdf8;">$176,400</div>
+          </div>
+        </div>
+        <div id="trdrec-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 MIRROR_AI_PRE_GRADING_AND_15PCT_STORE_CREDIT_BOOSTER_CONFIRM · Mandate: trade_in_recommerce_optim_409
         </div>
       </div>
 
@@ -123433,6 +123593,79 @@ function recalcB2bFreightAuditPaymentGsrSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_FREIGHT_AUDIT_AND_GSR_AUTHORIZED · Mandate: b2b_freight_audit_gsr_200';
+}}
+
+function recalcEcommerceTradeInRecommerceSandbox() {{
+  const grossInput = document.getElementById('trdrec-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '420000'));
+  const fmiGate = document.getElementById('trdrec-fmi-select').value;
+  const grdGate = document.getElementById('trdrec-grd-select').value;
+  const nistGate = document.getElementById('trdrec-nist-select').value;
+  const optMode = document.getElementById('trdrec-opt-select').value;
+
+  const grossKpi = document.getElementById('trdrec-gross-kpi');
+  const netKpi = document.getElementById('trdrec-net-kpi');
+  const savingsKpi = document.getElementById('trdrec-savings-kpi');
+  const statusKpi = document.getElementById('trdrec-status-kpi');
+  const banner = document.getElementById('trdrec-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (nistGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_NIST80088_DATA_WIPE_OR_TRADEIN_TAX_BASE_BREACH · Mandate: null';
+    return;
+  }}
+  if (fmiGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ACTIVATION_LOCKED_STOLEN_IMEI_OR_MISSING_RECOVERY_MANDATE_VETO · Mandate: null';
+    return;
+  }}
+  if (grdGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNCONSENTED_GRADING_DOWNGRADE_CLAWBACK_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 MIRROR_AI_PRE_GRADING_AND_15PCT_STORE_CREDIT_BOOSTER_CONFIRM · Mandate: trade_in_recommerce_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_TRADE_IN_AND_RECOMMERCE_AUTHORIZED · Mandate: trade_in_recommerce_200';
 }}
 
 function updateStage1756Sandbox() {{

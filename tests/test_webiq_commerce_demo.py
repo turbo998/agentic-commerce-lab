@@ -35389,6 +35389,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-freight-audit-payment-gsr-sandbox", html_zh)
 
+    def test_ecommerce_trade_in_recommerce_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceTradeInRecommercePolicyInput,
+            evaluate_ecommerce_trade_in_recommerce_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_trade_in_recommerce_policy(
+            EcommerceTradeInRecommercePolicyInput(
+                quarterly_locked_brick_grading_chargeback_and_churn_pool_usd=420000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_TRADE_IN_AND_RECOMMERCE_AUTHORIZED",
+        )
+
+        fmi = evaluate_ecommerce_trade_in_recommerce_policy(
+            EcommerceTradeInRecommercePolicyInput(
+                activation_locked_fmi_or_gsma_stolen_imei_accepted_without_hold=True
+            )
+        )
+        self.assertEqual(fmi["status_code"], 403)
+        self.assertEqual(
+            fmi["decision"],
+            "ACTIVATION_LOCKED_STOLEN_IMEI_OR_MISSING_RECOVERY_MANDATE_VETO",
+        )
+
+        grd = evaluate_ecommerce_trade_in_recommerce_policy(
+            EcommerceTradeInRecommercePolicyInput(
+                grading_downgrade_clawed_back_without_photo_consent_or_free_return=True
+            )
+        )
+        self.assertEqual(grd["status_code"], 422)
+        self.assertEqual(
+            grd["decision"],
+            "UNCONSENTED_GRADING_DOWNGRADE_CLAWBACK_BREACH",
+        )
+
+        nist = evaluate_ecommerce_trade_in_recommerce_policy(
+            EcommerceTradeInRecommercePolicyInput(
+                nist80088_wipe_certificate_missing_or_state_tradein_tax_miscalculated=True
+            )
+        )
+        self.assertEqual(nist["status_code"], 451)
+        self.assertEqual(
+            nist["decision"],
+            "MISSING_NIST80088_DATA_WIPE_OR_TRADEIN_TAX_BASE_BREACH",
+        )
+
+        optim = evaluate_ecommerce_trade_in_recommerce_policy(
+            EcommerceTradeInRecommercePolicyInput(
+                quarterly_locked_brick_grading_chargeback_and_churn_pool_usd=420000.0,
+                mirror_ai_pre_grading_and_15pct_store_credit_booster_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 176400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 243600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_trade_in_recommerce_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-trade-in-recommerce-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
