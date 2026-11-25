@@ -45813,6 +45813,84 @@ def evaluate_saas_subscription_cancel_flow_retention_policy(
     }
 
 
+@dataclass(frozen=True)
+class CorporateVirtualCardSpendControlPolicyInput:
+    quarterly_out_of_policy_swipe_double_dip_and_missing_receipt_pool_usd: float = (
+        370000.0
+    )
+    vendor_card_swiped_at_wrong_mid_or_24h_rolling_split_swipe_detected: bool = False
+    out_of_pocket_cash_claim_matches_corporate_card_transaction_within_72h: bool = False
+    over_75_usd_missing_itemized_level3_receipt_or_disguised_gift_card: bool = False
+    first_swipe_mid_pin_level3_autofetch_and_7d_auto_freeze_ready: bool = False
+
+
+def evaluate_corporate_virtual_card_spend_control_policy(
+    policy_input: CorporateVirtualCardSpendControlPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_out_of_policy_swipe_double_dip_and_missing_receipt_pool_usd
+        ),
+    )
+    if policy_input.over_75_usd_missing_itemized_level3_receipt_or_disguised_gift_card:
+        return {
+            "status_code": 451,
+            "decision": "MISSING_IRS_75_ITEMIZED_LEVEL3_RECEIPT_OR_GIFT_CARD_DISGUISE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.vendor_card_swiped_at_wrong_mid_or_24h_rolling_split_swipe_detected:
+        return {
+            "status_code": 403,
+            "decision": "VENDOR_MID_DRIFT_OR_ROLLING_24H_SPLIT_SWIPE_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.out_of_pocket_cash_claim_matches_corporate_card_transaction_within_72h:
+        return {
+            "status_code": 422,
+            "decision": "CORPORATE_CARD_PLUS_CASH_CLAIM_DOUBLE_DIP_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.first_swipe_mid_pin_level3_autofetch_and_7d_auto_freeze_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FIRST_SWIPE_MID_PIN_LEVEL3_AUTOFETCH_AND_DOUBLE_DIP_LOCK_CONFIRM",
+            "mandate_token": "corporate_virtual_pcard_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CORPORATE_VIRTUAL_CARD_SPEND_AUTHORIZED",
+        "mandate_token": "corporate_virtual_pcard_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -62236,6 +62314,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    corporate_virtual_card_spend_control_guard = {
+        "authorized_200": evaluate_corporate_virtual_card_spend_control_policy(
+            CorporateVirtualCardSpendControlPolicyInput()
+        ),
+        "mid_drift_or_split_swipe_403": evaluate_corporate_virtual_card_spend_control_policy(
+            CorporateVirtualCardSpendControlPolicyInput(
+                vendor_card_swiped_at_wrong_mid_or_24h_rolling_split_swipe_detected=True
+            )
+        ),
+        "card_plus_cash_double_dip_422": evaluate_corporate_virtual_card_spend_control_policy(
+            CorporateVirtualCardSpendControlPolicyInput(
+                out_of_pocket_cash_claim_matches_corporate_card_transaction_within_72h=True
+            )
+        ),
+        "missing_level3_or_gift_card_451": evaluate_corporate_virtual_card_spend_control_policy(
+            CorporateVirtualCardSpendControlPolicyInput(
+                over_75_usd_missing_itemized_level3_receipt_or_disguised_gift_card=True
+            )
+        ),
+        "mid_pin_level3_autofetch_409": evaluate_corporate_virtual_card_spend_control_policy(
+            CorporateVirtualCardSpendControlPolicyInput(
+                first_swipe_mid_pin_level3_autofetch_and_7d_auto_freeze_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -62768,6 +62872,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "digital_gift_card_corporate_incentive_guard": digital_gift_card_corporate_incentive_guard,
         "cross_border_local_apm_pix_upi_guard": cross_border_local_apm_pix_upi_guard,
         "saas_subscription_cancel_flow_retention_guard": saas_subscription_cancel_flow_retention_guard,
+        "corporate_virtual_card_spend_control_guard": corporate_virtual_card_spend_control_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -89166,6 +89271,62 @@ def render_webiq_live_demo_html(
         </div>
         <div id="scflw-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
           HTTP 409 SINGLE_SCREEN_PAUSE_DEFLECTION_AND_PAYDAY_SMART_DUNNING_CONFIRM · Mandate: saas_cancel_flow_retention_1400_optim_409
+        </div>
+      </div>
+
+      <div class="finops-box" id="corporate-virtual-card-spend-control-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">💳 企业预算虚拟卡、ISO 8583 首刷 MID 锁定与 Level-3 小票核销 (Ramp / Brex / Airbase / Navan) 沙盒</div>
+            <div class="finops-sub">Round 404 (#523 · SVG #847 · Sandbox #297 · Test #1,401) · 供应商专卡首刷自动焊死 Acquirer_MID 并执行 24h 滚动累计限额防拆单连刷 (HTTP 403) + 公司卡流水与个人垫付报销单跨轨指纹去重防一单两报 (HTTP 422) + &gt;$75 交易强制 Level-3 行项目明细剥离礼品卡且超 7 天未交票自动冻卡 (HTTP 451) + 净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="pcard-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度拆单连刷绕过审批与挪用专卡、刷公司卡后拿纸质小票二次申请现金报销及汇总小票夹带礼品卡池 ($)
+            <input type="number" id="pcard-gross-input" value="370000" min="10000" step="5000" oninput="recalcCorporateVirtualCardSpendControlSandbox()" />
+          </label>
+          <label>ISO 8583 首刷商户号绑定 (First-Swipe MID Pinning) 与 24 小时滚动累计防拆单门禁
+            <select id="pcard-mid-select" onchange="recalcCorporateVirtualCardSpendControlSandbox()">
+              <option value="pass">首次刷卡即绑定供应商唯一 MID，且 24h 同店滚动累计受单笔审批上限严格约束 (安全)</option>
+              <option value="block_403">将 AWS 采购虚拟卡拿去刷外卖，或 10 分钟内拆成 3 笔 $480 连刷绕过 $500 审批线 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>公司卡刷卡流水与个人现金垫付报销单跨轨指纹去重 (Anti-Double-Dip) 门禁
+            <select id="pcard-dip-select" onchange="recalcCorporateVirtualCardSpendControlSandbox()">
+              <option value="pass">自动比对小票 Last-4 PAN 卡号与 ±72h 公司卡授权流水，重合立即拦截打款 (安全)</option>
+              <option value="block_422">用公司虚拟卡付完 $380 餐费后，拍下纸质小票再提报“个人现金垫付”一单两报套现 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>IRS §274(d) &gt;$75 行项目明细小票 (Level-3 / Folio) 与超 7 天未交票自动冻卡门禁
+            <select id="pcard-l3-select" onchange="recalcCorporateVirtualCardSpendControlSandbox()">
+              <option value="pass">直连 Amazon Business/Uber/Level-3 自动抓取每行 SKU，超 7 天未交明细自动冻卡 (合规)</option>
+              <option value="block_451">仅传 $420 刷卡总额存根隐匿里面的 $400 苹果礼品卡，或长期欠票仍放行刷卡 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>首刷 MID 硬锁定 + 跨轨双报去重 + Amazon/Uber/Level-3 自动抓单与 ERP 科目拆分编排
+            <select id="pcard-opt-select" onchange="recalcCorporateVirtualCardSpendControlSandbox()">
+              <option value="enabled" selected>启用首刷 MID 锁 + 跨轨去重 + Level-3 自动抓单 (-42% 违规刷卡与审计损耗 / HTTP 409)</option>
+              <option value="disabled">默认单笔限额虚拟卡与事后人工催票基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度违规刷卡与双报损失池</div>
+            <div class="finops-kpi-val" id="pcard-gross-kpi">$370,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净费用与对账成本</div>
+            <div class="finops-kpi-val" id="pcard-net-kpi">$214,600</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省违规支出与关账工时</div>
+            <div class="finops-kpi-val" id="pcard-savings-kpi" style="color:#6ee7b7;">$155,400</div>
+          </div>
+        </div>
+        <div id="pcard-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 FIRST_SWIPE_MID_PIN_LEVEL3_AUTOFETCH_AND_DOUBLE_DIP_LOCK_CONFIRM · Mandate: corporate_virtual_pcard_optim_409
         </div>
       </div>
 
@@ -123005,6 +123166,79 @@ function recalcSaasSubscriptionCancelFlowRetentionSandbox() {{
   banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
   banner.style.color = '#bfdbfe';
   banner.textContent = 'HTTP 200 VERIFIED_SUBSCRIPTION_RETENTION_AND_DUNNING_AUTHORIZED · Mandate: saas_cancel_flow_retention_1400_200';
+}}
+
+function recalcCorporateVirtualCardSpendControlSandbox() {{
+  const grossInput = document.getElementById('pcard-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '370000'));
+  const midGate = document.getElementById('pcard-mid-select').value;
+  const dipGate = document.getElementById('pcard-dip-select').value;
+  const l3Gate = document.getElementById('pcard-l3-select').value;
+  const optMode = document.getElementById('pcard-opt-select').value;
+
+  const grossKpi = document.getElementById('pcard-gross-kpi');
+  const netKpi = document.getElementById('pcard-net-kpi');
+  const savingsKpi = document.getElementById('pcard-savings-kpi');
+  const statusKpi = document.getElementById('pcard-status-kpi');
+  const banner = document.getElementById('pcard-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (l3Gate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 MISSING_IRS_75_ITEMIZED_LEVEL3_RECEIPT_OR_GIFT_CARD_DISGUISE_BREACH · Mandate: null';
+    return;
+  }}
+  if (midGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 VENDOR_MID_DRIFT_OR_ROLLING_24H_SPLIT_SWIPE_VETO · Mandate: null';
+    return;
+  }}
+  if (dipGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 CORPORATE_CARD_PLUS_CASH_CLAIM_DOUBLE_DIP_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 FIRST_SWIPE_MID_PIN_LEVEL3_AUTOFETCH_AND_DOUBLE_DIP_LOCK_CONFIRM · Mandate: corporate_virtual_pcard_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_CORPORATE_VIRTUAL_CARD_SPEND_AUTHORIZED · Mandate: corporate_virtual_pcard_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{

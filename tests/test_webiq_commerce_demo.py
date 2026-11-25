@@ -36098,6 +36098,68 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("saas-subscription-cancel-flow-retention-sandbox", html_zh)
 
+    def test_corporate_virtual_card_spend_control_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CorporateVirtualCardSpendControlPolicyInput,
+            evaluate_corporate_virtual_card_spend_control_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_corporate_virtual_card_spend_control_policy(
+            CorporateVirtualCardSpendControlPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(auth["mandate_token"], "corporate_virtual_pcard_200")
+
+        mid = evaluate_corporate_virtual_card_spend_control_policy(
+            CorporateVirtualCardSpendControlPolicyInput(
+                vendor_card_swiped_at_wrong_mid_or_24h_rolling_split_swipe_detected=True
+            )
+        )
+        self.assertEqual(mid["status_code"], 403)
+        self.assertEqual(
+            mid["decision"],
+            "VENDOR_MID_DRIFT_OR_ROLLING_24H_SPLIT_SWIPE_VETO",
+        )
+
+        dip = evaluate_corporate_virtual_card_spend_control_policy(
+            CorporateVirtualCardSpendControlPolicyInput(
+                out_of_pocket_cash_claim_matches_corporate_card_transaction_within_72h=True
+            )
+        )
+        self.assertEqual(dip["status_code"], 422)
+        self.assertEqual(
+            dip["decision"],
+            "CORPORATE_CARD_PLUS_CASH_CLAIM_DOUBLE_DIP_BREACH",
+        )
+
+        l3 = evaluate_corporate_virtual_card_spend_control_policy(
+            CorporateVirtualCardSpendControlPolicyInput(
+                over_75_usd_missing_itemized_level3_receipt_or_disguised_gift_card=True
+            )
+        )
+        self.assertEqual(l3["status_code"], 451)
+        self.assertEqual(
+            l3["decision"],
+            "MISSING_IRS_75_ITEMIZED_LEVEL3_RECEIPT_OR_GIFT_CARD_DISGUISE_BREACH",
+        )
+
+        optim = evaluate_corporate_virtual_card_spend_control_policy(
+            CorporateVirtualCardSpendControlPolicyInput(
+                quarterly_out_of_policy_swipe_double_dip_and_missing_receipt_pool_usd=370000.0,
+                first_swipe_mid_pin_level3_autofetch_and_7d_auto_freeze_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 155400.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 214600.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("corporate_virtual_card_spend_control_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("corporate-virtual-card-spend-control-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

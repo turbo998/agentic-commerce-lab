@@ -2,12 +2,12 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`522` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`523` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（39 篇）](#platform-grounding)
-- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（65 篇）](#payments-mandates)
+- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（66 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（196 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（117 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（48 篇）](#saas-finops-micropayments)
@@ -65,7 +65,7 @@
 | 39 | **🏆 端到端商业智能体架构设计与主流平台/支付/搜索接地全景选型总纲（`End-to-End Agentic Commerce Master Blueprint`: `Web IQ / Sonar / Exa` → `Cart FSM` → `Tiered HITL & Stripe SPT / Visa VIC / Mastercard / PayPal / VCN` → `Shopify / D365 / SAP / Salesforce Saga` · 🏆 历史性第 400 轮夜间深度研究重大里程碑！）、`85/15` 双阶接地与 `checkout_hash` 锁终结 54% 买错货、零明文 `PAN` 受限令牌及跨 ERP `Read-Before-Retry + <5s 0420` 冲正净省 44% Agent 架构选型 FAQ** | [中文](e2e-agentic-commerce-master-architecture-webiq-cart-fsm-spt-vic-erp-saga-selection-faq.md) · [English](e2e-agentic-commerce-master-architecture-webiq-cart-fsm-spt-vic-erp-saga-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
-## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（65 篇）
+## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（66 篇）
 
 > 涵盖 Google AP2、Stripe SPT、Visa VIC / TAP、Mastercard Agent Pay、PayPal、UCP/ACP 协议互操作、3DS2 无浏览器挑战、FIDO2/Passkey 硬件签名及幂等防重扣架构。
 
@@ -136,6 +136,7 @@
 | 63 | **🏆 零售电商一键极速结账（`One-Click Accelerated Checkout`）、防数字钱包静默覆盖收货地址与弃单挽回（`Shop Pay / Fastlane by PayPal / Stripe Link / Apple Pay` · 🏆 全库第 1,395 项确定性单元测试重大里程碑！）、拦截钱包用 5 年前旧宿舍地址覆盖新填地址及禁航空快递发 `P.O. Box`、弃单召回前必验实时库存 `ATP > 0` 与 `180d` 防故意弃单薅券冷却锁及 `Passkey` 防 `SMS Pumping` 盗刷净省 42% Agent 架构选型 FAQ** | [中文](ecommerce-accelerated-checkout-shop-pay-fastlane-stripe-link-wallet-address-recovery-selection-faq.md) · [English](ecommerce-accelerated-checkout-shop-pay-fastlane-stripe-link-wallet-address-recovery-selection-faq.en.md) |
 | 64 | **🏆 零售电商数字礼品卡（`Digital Gift Cards`）、企业 B2B 批量激励采购、防撞库盗刷洗空（`Anti-Enumeration Draining`）与反洗钱合规（`Blackhawk Network / InComm / Tango Card / Tremendous / Rise.ai` · 🏆 全库第 520 篇双语决策指南重大里程碑！）、严禁卡买卡/券折买卡与 B2B 款清激活、8位独立 `Argon2id PIN` 防枚举查余额与 `15–60m` 延迟发码及 `FinCEN $2,000` 日限额与本金/赠金双轨分账净省 43% Agent 架构选型 FAQ** | [中文](ecommerce-digital-gift-card-b2b-incentives-blackhawk-incomm-tango-rise-fincen-aml-selection-faq.md) · [English](ecommerce-digital-gift-card-b2b-incentives-blackhawk-incomm-tango-rise-fincen-aml-selection-faq.en.md) |
 | 65 | **🏆 跨境电商本地替代支付方式（`Local APMs`: 巴西 `PIX` / 印度 `UPI` / 荷兰 `iDEAL` / 日本 `Konbini & PayPay`）、异步二维码过期与锁库对齐及现金单退款出金（`dLocal / EBANX / Adyen / Stripe / Rapyd` · 🏆 第 845 张 SVG 与第 295 个策略沙盒双里程碑！）、动态二维码 `TTL <= 库存租约 - 60s` 与离线凭条到账才扣库、巴西 `CPF` 模11校验与本地退款账号采集及本土 `Local MID` 收单免 `4.38% IOF` 税净省 42% Agent 架构选型 FAQ** | [中文](cross-border-local-apm-pix-upi-ideal-konbini-dlocal-adyen-qr-expiry-selection-faq.md) · [English](cross-border-local-apm-pix-upi-ideal-konbini-dlocal-adyen-qr-expiry-selection-faq.en.md) |
+| 66 | **💳 企业预算虚拟卡与商用采购卡（`Corporate Virtual P-Card & Spend Control`）、`ISO 8583` 实时刷卡风控、行项目小票核销（`Level-3 Receipt Match`）与防一单两报（`Ramp / Brex / Airbase / Navan Expense`）、首刷自动绑定供应商唯一 `Acquirer_MID` 与 `24h` 滚动防拆单连刷、公司卡流水与个人现金垫付报销单跨轨去重及 `>$75` 强制行项目明细与 7 天逾期自动冻卡净省 42% Agent 架构选型 FAQ** | [中文](corporate-virtual-card-spend-control-ramp-brex-airbase-navan-level3-double-dip-selection-faq.md) · [English](corporate-virtual-card-spend-control-ramp-brex-airbase-navan-level3-double-dip-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（196 篇）

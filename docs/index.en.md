@@ -2,12 +2,12 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`522` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`523` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (39 guides)](#platform-grounding)
-- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (65 guides)](#payments-mandates)
+- [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (66 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (196 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (117 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (48 guides)](#saas-finops-micropayments)
@@ -65,7 +65,7 @@
 | 39 | **🏆 Enterprise Agentic Commerce End-to-End Architecture & Platform/Protocol Master Selection Blueprint (`Web IQ / Sonar / Exa` → `Cart FSM` → `Tiered HITL & Stripe SPT / Visa VIC / Mastercard / PayPal / VCN` → `Shopify / D365 / SAP / Salesforce Saga` · 🏆 Historic 400th Nightly Research Round Major Milestone!), `85/15` Grounding Funnel & `checkout_hash` Locks, Zero-Raw-`PAN` Scoped Tokens & Cross-ERP `Read-Before-Retry + <5s 0420` Reversal (`-44%` Cost) FAQ** | [English](e2e-agentic-commerce-master-architecture-webiq-cart-fsm-spt-vic-erp-saga-selection-faq.en.md) · [中文](e2e-agentic-commerce-master-architecture-webiq-cart-fsm-spt-vic-erp-saga-selection-faq.md) |
 
 <a id="payments-mandates"></a>
-## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (65 Guides)
+## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (66 Guides)
 
 > Covers Google AP2, Stripe SPT, Visa VIC / TAP, Mastercard Agent Pay, PayPal, UCP/ACP interoperability, decoupled 3DS2, FIDO2/Passkey hardware binding, and payload-hash idempotency.
 
@@ -136,6 +136,7 @@
 | 63 | **🏆 E-Commerce One-Click Accelerated Checkout (`Shop Pay / Fastlane by PayPal / Stripe Link / Apple Pay`), Wallet Address-Override Shield & Margin-Safe Cart Recovery Agent (🏆 1,395th Unit Test Major Milestone!), Explicit Cart-Address Precedence & `P.O. Box` Courier Locks, Live `ATP > 0` Pre-Send Checks with `180d` Promo Cooldowns & `WebAuthn Passkey` Anti-`SMS Pumping` Guards (`-42%` Cost) FAQ** | [English](ecommerce-accelerated-checkout-shop-pay-fastlane-stripe-link-wallet-address-recovery-selection-faq.en.md) · [中文](ecommerce-accelerated-checkout-shop-pay-fastlane-stripe-link-wallet-address-recovery-selection-faq.md) |
 | 64 | **🏆 E-Commerce Digital Gift Cards, B2B Corporate Bulk Incentives, Anti-Enumeration Draining & `FinCEN AML / CARD Act` Agent (`Blackhawk Network / InComm / Tango Card / Tremendous / Rise.ai` · 🏆 520th Bilingual SA Guide Major Milestone!), Anti-Laundering Tender/Promo Exclusions, `8-Digit Argon2id PIN` Balance Locks + `15–60m` Delivery Buffers & `FinCEN $2,000/Day` Split Ledgers (`-43%` Cost) FAQ** | [English](ecommerce-digital-gift-card-b2b-incentives-blackhawk-incomm-tango-rise-fincen-aml-selection-faq.en.md) · [中文](ecommerce-digital-gift-card-b2b-incentives-blackhawk-incomm-tango-rise-fincen-aml-selection-faq.md) |
 | 65 | **🏆 Cross-Border E-Commerce Local Alternative Payment Methods (`Local APMs`: `PIX` / `UPI` / `iDEAL` / `Konbini & PayPay`), Synced QR-Expiry Locks & Voucher Refund Payout Agent (`dLocal / EBANX / Adyen / Stripe / Rapyd` · 🏆 845th SVG & 295th Sandbox Dual Milestone!), `QR_TTL <= Stock_Lease - 60s` & Allocate-on-Paid Vouchers, Modulo-11 `CPF` Validation & Local-MID Acquiring (`-42%` Cost) FAQ** | [English](cross-border-local-apm-pix-upi-ideal-konbini-dlocal-adyen-qr-expiry-selection-faq.en.md) · [中文](cross-border-local-apm-pix-upi-ideal-konbini-dlocal-adyen-qr-expiry-selection-faq.md) |
+| 66 | **💳 Enterprise Corporate Virtual Cards (`P-Card / T&E Spend Control`), Real-Time `ISO 8583` `MID` Locking, `Level-3` Receipt Auto-Match & Anti-Double-Dip Agent (`Ramp / Brex / Airbase / Navan Expense`), First-Swipe `Acquirer_MID` Pinning & `24h` Split-Swipe Vetoes, Cross-Rail Card-vs-Cash Deduplication & `IRS >$75` `Level-3` Auto-Fetch (`-42%` Cost) FAQ** | [English](corporate-virtual-card-spend-control-ramp-brex-airbase-navan-level3-double-dip-selection-faq.en.md) · [中文](corporate-virtual-card-spend-control-ramp-brex-airbase-navan-level3-double-dip-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (196 Guides)
