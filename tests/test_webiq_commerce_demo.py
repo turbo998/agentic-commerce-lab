@@ -35255,6 +35255,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-dynamic-packaging-bedbank-parity-sandbox", html_zh)
 
+    def test_ecommerce_extended_warranty_protection_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceExtendedWarrantyProtectionPolicyInput,
+            evaluate_ecommerce_extended_warranty_protection_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_extended_warranty_protection_policy(
+            EcommerceExtendedWarrantyProtectionPolicyInput(
+                quarterly_missed_attach_cash_claim_leak_and_adverse_fraud_pool_usd=390000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_EXTENDED_WARRANTY_AND_PROTECTION_AUTHORIZED",
+        )
+
+        sn = evaluate_ecommerce_extended_warranty_protection_policy(
+            EcommerceExtendedWarrantyProtectionPolicyInput(
+                post_delivery_warranty_added_without_30d_wait_or_serial_unbound=True
+            )
+        )
+        self.assertEqual(sn["status_code"], 403)
+        self.assertEqual(
+            sn["decision"],
+            "POST_DELIVERY_ADVERSE_SELECTION_OR_SERIAL_MISMATCH_VETO",
+        )
+
+        rma = evaluate_ecommerce_extended_warranty_protection_policy(
+            EcommerceExtendedWarrantyProtectionPolicyInput(
+                warranty_refunded_after_claim_paid_or_parent_rma_cancel_unsynced=True
+            )
+        )
+        self.assertEqual(rma["status_code"], 422)
+        self.assertEqual(
+            rma["decision"],
+            "POST_CLAIM_WARRANTY_REFUND_OR_UNSYNCED_RMA_BREACH",
+        )
+
+        law = evaluate_ecommerce_extended_warranty_protection_policy(
+            EcommerceExtendedWarrantyProtectionPolicyInput(
+                unlicensed_self_obligor_prechecked_optin_or_tax_code_unsegregated=True
+            )
+        )
+        self.assertEqual(law["status_code"], 451)
+        self.assertEqual(
+            law["decision"],
+            "UNLICENSED_OBLIGOR_PRECHECKED_OPTIN_OR_TAX_CODE_BREACH",
+        )
+
+        optim = evaluate_ecommerce_extended_warranty_protection_policy(
+            EcommerceExtendedWarrantyProtectionPolicyInput(
+                quarterly_missed_attach_cash_claim_leak_and_adverse_fraud_pool_usd=390000.0,
+                replacement_as_a_purchase_store_credit_and_slide_cart_attach_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 163800.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 226200.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_extended_warranty_protection_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-extended-warranty-protection-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
