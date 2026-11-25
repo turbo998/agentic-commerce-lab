@@ -2,11 +2,11 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`499` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`500` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
-- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (37 guides)](#platform-grounding)
+- [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (38 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (61 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (186 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (112 guides)](#b2b-procurement-erp)
@@ -18,7 +18,7 @@
 ---
 
 <a id="platform-grounding"></a>
-## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (37 Guides)
+## 1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (38 Guides)
 
 > Platform selection (Copilot Studio vs Azure AI Foundry vs Agentforce/Shopify), real-time search grounding (Microsoft Web IQ vs Perplexity/Tavily/Exa/Firecrawl), catalog feed barriers, A2UI isolation, and Web Bot Auth vs WAF governance.
 
@@ -61,6 +61,7 @@
 | 35 | **🏆 Headless Browser & GUI Checkout Agents (`Browser-Use / Playwright / Computer-Use vs. WebMCP / UCP API` · 🏆 1,340th Unit Test Milestone), Pre-Submit `AXTree` Dark-Pattern Upsell Guard, Single-Click Submit Mutex & Enclave `VCN` Auto-Fill (`-41%` GUI Checkout & Compute Loss) FAQ** | [English](browser-use-computer-use-headless-checkout-agent-dom-drift-payment-handover-selection-faq.en.md) · [中文](browser-use-computer-use-headless-checkout-agent-dom-drift-payment-handover-selection-faq.md) |
 | 36 | **🏆 Commercial Agent Build-Path Selection (`Microsoft Copilot Studio + D365` vs. `Azure AI Foundry + Semantic Kernel / LangGraph` vs. `Salesforce Agentforce / Shopify Sidekick` · 🏆 Round 350 Major Milestone), Multi-System `Saga` Offloading, Connector Retry Idempotency & Per-Conversation vs. Token FinOps Break-Even (`-41%` Cost) FAQ** | [English](agent-platform-build-path-copilot-studio-vs-azure-ai-foundry-langgraph-vs-agentforce-sidekick-selection-faq.en.md) · [中文](agent-platform-build-path-copilot-studio-vs-azure-ai-foundry-langgraph-vs-agentforce-sidekick-selection-faq.md) |
 | 37 | **🏆 Real-Time Commercial Web Grounding & Search Selection Matrix (`Microsoft Bing Grounding / Web IQ` vs. `Perplexity Sonar API` vs. `Tavily` vs. `Exa` vs. `Firecrawl / Browser-Use` · 🏆 SVG `#795` & 245th Sandbox Milestone), Live `Schema.org Offer` Freshness Locks, Indirect Prompt-Injection DOM Sanitization & Tiered Scrape FinOps (`-40%` Cost) FAQ** | [English](commercial-web-grounding-search-webiq-perplexity-sonar-tavily-exa-firecrawl-selection-faq.en.md) · [中文](commercial-web-grounding-search-webiq-perplexity-sonar-tavily-exa-firecrawl-selection-faq.md) |
+| 38 | **🏆 Omnichannel E-Commerce Site Search, Conversational Discovery & Profit-Weighted Merchandising Agent (`Constructor.io / Algolia AI Search / Coveo for Commerce / Azure AI Search + Vertex AI Search` · 🏆 Historic 500th Bilingual SA Guide Major Milestone!), Primary-Unit Anti-Accessory Pollution Locks, Core-Size `ATP >= 50%` Gates, B2B `ACL` Price Trimming & Net-Profit LTR Reranking (`-42%` Cost) FAQ** | [English](ecommerce-site-search-conversational-discovery-constructor-algolia-coveo-azure-ai-search-profit-reranking-selection-faq.en.md) · [中文](ecommerce-site-search-conversational-discovery-constructor-algolia-coveo-azure-ai-search-profit-reranking-selection-faq.md) |
 
 <a id="payments-mandates"></a>
 ## 2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (61 Guides)

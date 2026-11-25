@@ -34585,6 +34585,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("enterprise-saas-spend-management-sandbox", html_zh)
 
+    def test_ecommerce_site_search_merchandising_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceSiteSearchMerchandisingPolicyInput,
+            evaluate_ecommerce_site_search_merchandising_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_site_search_merchandising_policy(
+            EcommerceSiteSearchMerchandisingPolicyInput(
+                quarterly_search_bounce_broken_size_and_margin_erosion_pool_usd=510000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_SITE_SEARCH_AND_PROFIT_MERCHANDISING_AUTHORIZED",
+        )
+
+        acc = evaluate_ecommerce_site_search_merchandising_policy(
+            EcommerceSiteSearchMerchandisingPolicyInput(
+                accessory_polluting_main_model_query_or_hard_price_filter_relaxed=True
+            )
+        )
+        self.assertEqual(acc["status_code"], 403)
+        self.assertEqual(
+            acc["decision"],
+            "ACCESSORY_POLLUTION_OR_HARD_FILTER_RELAXATION_VETO",
+        )
+
+        size = evaluate_ecommerce_site_search_merchandising_policy(
+            EcommerceSiteSearchMerchandisingPolicyInput(
+                broken_core_size_curve_ranked_top_or_low_margin_high_return_boosted=True
+            )
+        )
+        self.assertEqual(size["status_code"], 422)
+        self.assertEqual(
+            size["decision"],
+            "BROKEN_SIZE_CURVE_OR_PROFIT_MARGIN_EROSION_BREACH",
+        )
+
+        dsa = evaluate_ecommerce_site_search_merchandising_policy(
+            EcommerceSiteSearchMerchandisingPolicyInput(
+                b2b_contract_price_leaked_across_tenants_or_dsa_sponsored_unlabeled=True
+            )
+        )
+        self.assertEqual(dsa["status_code"], 451)
+        self.assertEqual(
+            dsa["decision"],
+            "B2B_PRICE_ENTITLEMENT_LEAK_OR_DSA_TRANSPARENCY_BREACH",
+        )
+
+        optim = evaluate_ecommerce_site_search_merchandising_policy(
+            EcommerceSiteSearchMerchandisingPolicyInput(
+                quarterly_search_bounce_broken_size_and_margin_erosion_pool_usd=510000.0,
+                hybrid_rrf_in_size_bitmask_and_expected_net_profit_reranker_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 214200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 295800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_site_search_merchandising_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-site-search-merchandising-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

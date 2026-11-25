@@ -44057,6 +44057,82 @@ def evaluate_enterprise_saas_spend_management_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceSiteSearchMerchandisingPolicyInput:
+    quarterly_search_bounce_broken_size_and_margin_erosion_pool_usd: float = 510000.0
+    accessory_polluting_main_model_query_or_hard_price_filter_relaxed: bool = False
+    broken_core_size_curve_ranked_top_or_low_margin_high_return_boosted: bool = False
+    b2b_contract_price_leaked_across_tenants_or_dsa_sponsored_unlabeled: bool = False
+    hybrid_rrf_in_size_bitmask_and_expected_net_profit_reranker_ready: bool = False
+
+
+def evaluate_ecommerce_site_search_merchandising_policy(
+    policy_input: EcommerceSiteSearchMerchandisingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_search_bounce_broken_size_and_margin_erosion_pool_usd
+        ),
+    )
+    if policy_input.b2b_contract_price_leaked_across_tenants_or_dsa_sponsored_unlabeled:
+        return {
+            "status_code": 451,
+            "decision": "B2B_PRICE_ENTITLEMENT_LEAK_OR_DSA_TRANSPARENCY_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.accessory_polluting_main_model_query_or_hard_price_filter_relaxed:
+        return {
+            "status_code": 403,
+            "decision": "ACCESSORY_POLLUTION_OR_HARD_FILTER_RELAXATION_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.broken_core_size_curve_ranked_top_or_low_margin_high_return_boosted:
+        return {
+            "status_code": 422,
+            "decision": "BROKEN_SIZE_CURVE_OR_PROFIT_MARGIN_EROSION_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hybrid_rrf_in_size_bitmask_and_expected_net_profit_reranker_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "HYBRID_RRF_AND_EXPECTED_NET_PROFIT_RERANKING_CONFIRM",
+            "mandate_token": "site_search_profit_ltr_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_SITE_SEARCH_AND_PROFIT_MERCHANDISING_AUTHORIZED",
+        "mandate_token": "site_search_profit_ltr_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -59882,6 +59958,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_site_search_merchandising_guard = {
+        "authorized_200": evaluate_ecommerce_site_search_merchandising_policy(
+            EcommerceSiteSearchMerchandisingPolicyInput()
+        ),
+        "accessory_or_hard_filter_403": evaluate_ecommerce_site_search_merchandising_policy(
+            EcommerceSiteSearchMerchandisingPolicyInput(
+                accessory_polluting_main_model_query_or_hard_price_filter_relaxed=True
+            )
+        ),
+        "broken_size_or_margin_bleed_422": evaluate_ecommerce_site_search_merchandising_policy(
+            EcommerceSiteSearchMerchandisingPolicyInput(
+                broken_core_size_curve_ranked_top_or_low_margin_high_return_boosted=True
+            )
+        ),
+        "b2b_entitlement_or_dsa_451": evaluate_ecommerce_site_search_merchandising_policy(
+            EcommerceSiteSearchMerchandisingPolicyInput(
+                b2b_contract_price_leaked_across_tenants_or_dsa_sponsored_unlabeled=True
+            )
+        ),
+        "profit_ltr_hybrid_rrf_409": evaluate_ecommerce_site_search_merchandising_policy(
+            EcommerceSiteSearchMerchandisingPolicyInput(
+                hybrid_rrf_in_size_bitmask_and_expected_net_profit_reranker_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -60391,6 +60493,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_loyalty_points_liability_guard": ecommerce_loyalty_points_liability_guard,
         "ecommerce_reverse_logistics_exchange_guard": ecommerce_reverse_logistics_exchange_guard,
         "enterprise_saas_spend_management_guard": enterprise_saas_spend_management_guard,
+        "ecommerce_site_search_merchandising_guard": ecommerce_site_search_merchandising_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -87307,6 +87410,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="saassmp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 SCIM_POOL_REHARVESTING_AND_VIEWER_DOWNGRADE_CONFIRM · Mandate: saas_smp_rightsizing_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 381 (🏆 500th Bilingual SA Guide Major Milestone! · SVG #824 · Sandbox #274 · Test #1,378) E-Commerce Site Search & Profit Reranking -->
+      <div class="finops-box" id="ecommerce-site-search-merchandising-sandbox" style="margin-top:12px;border-color:#f59e0b;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 全渠道电商站内搜索、对话式商品发现与毛利加权智能重排 (Constructor.io / Algolia / Coveo / Azure AI Search) 沙盒（🏆 第 500 篇双语决策指南里程碑！）</div>
+            <div class="finops-sub">Round 381 (🏆 500th Guide Milestone · #500 · SVG #824 · Sandbox #274 · Test #1,378) · 主从品类意图锁定防搜 $1,199 手机出 $12 手机壳及价格/不含成分布尔硬过滤锁 (HTTP 403) + 核心尺码齐码率 (&gt;=50%) 与扣退货期望净毛利重排锁 (HTTP 422) + B2B 客户级协议价 ACL 隔离与欧盟 DSA Art. 27 广告披露锁 (HTTP 451) + 混合 BM25+Vector RRF 利润感知重排净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="sitesrch-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度搜整机出配件跳出、断码清仓僵尸款霸占首屏浪费与低毛利品挤压损耗池 ($)
+            <input type="number" id="sitesrch-gross-input" value="510000" min="10000" step="5000" oninput="recalcEcommerceSiteSearchMerchandisingSandbox()" />
+          </label>
+          <label>Query NER 主从品类隔离 (拦截 $12 配件污染整机搜索) 与预算/排除词布尔硬过滤锁
+            <select id="sitesrch-acc-select" onchange="recalcEcommerceSiteSearchMerchandisingSandbox()">
+              <option value="pass">搜整机自动过滤配件类目，且将“预算 &lt;=$250 / 无酒精”编译为索引布尔硬过滤 (安全)</option>
+              <option value="block_403">纯向量检索将 $12 手机壳排在 $1,199 手机之前，或擅自放宽用户预算上限返回超标商品 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>核心尺码齐码率门禁 (Core-Size ATP &gt;= 50%) 与扣退货后期望净毛利重排门禁
+            <select id="sitesrch-size-select" onchange="recalcEcommerceSiteSearchMerchandisingSandbox()">
+              <option value="pass">过滤用户断码款并将核心尺码缺货尾货降权，按转化率×(毛利-退货成本)排序 (合规)</option>
+              <option value="block_422">按点击率将仅剩 XXS 码的 3 折清仓款排在榜首致 82% 跳出，或主推微利高退货款 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>B2B 客户级协议价安全修剪 (Document-Level ACL) 与欧盟 DSA Art. 27 赞助位透明度门禁
+            <select id="sitesrch-dsa-select" onchange="recalcEcommerceSiteSearchMerchandisingSandbox()">
+              <option value="pass">按买方租户 JWT 严格隔离 B2B 合同价格本，且首屏 Sponsored 广告位 &lt;=25% 并显著披露 (合规)</option>
+              <option value="block_451">公共搜索缓存跨租户泄露大客户五折协议价，或首屏塞满未标注的竞价广告违反欧盟 DSA (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>BM25 + Vector RRF (k=60) 混合召回 + 个人尺码位图过滤 + 期望净毛利 LTR 重排全链路编排
+            <select id="sitesrch-opt-select" onchange="recalcEcommerceSiteSearchMerchandisingSandbox()">
+              <option value="enabled" selected>启用混合 RRF + 尺码位图过滤 + 期望净毛利重排 (-42% 搜索跳出与毛利侵蚀损耗 / HTTP 409)</option>
+              <option value="disabled">传统纯关键词/纯向量与点击率 (CTR) 排序基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度搜索跳出与毛利侵蚀池</div>
+            <div class="finops-kpi-val" id="sitesrch-gross-kpi">$510,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">齐码率与利润重排后净损耗</div>
+            <div class="finops-kpi-val" id="sitesrch-net-kpi" style="color:#6ee7b7;">$295,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省流量浪费与毛利提升</div>
+            <div class="finops-kpi-val" id="sitesrch-savings-kpi" style="color:#38bdf8;">$214,200</div>
+          </div>
+        </div>
+        <div id="sitesrch-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 HYBRID_RRF_AND_EXPECTED_NET_PROFIT_RERANKING_CONFIRM · Mandate: site_search_profit_ltr_optim_409
         </div>
       </div>
 
@@ -120637,6 +120797,79 @@ function recalcEnterpriseSaasSpendManagementSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_SAAS_SPEND_MANAGEMENT_AND_SCIM_AUTHORIZED · Mandate: saas_smp_rightsizing_200';
+}}
+
+function recalcEcommerceSiteSearchMerchandisingSandbox() {{
+  const grossInput = document.getElementById('sitesrch-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '510000'));
+  const accGate = document.getElementById('sitesrch-acc-select').value;
+  const sizeGate = document.getElementById('sitesrch-size-select').value;
+  const dsaGate = document.getElementById('sitesrch-dsa-select').value;
+  const optMode = document.getElementById('sitesrch-opt-select').value;
+
+  const grossKpi = document.getElementById('sitesrch-gross-kpi');
+  const netKpi = document.getElementById('sitesrch-net-kpi');
+  const savingsKpi = document.getElementById('sitesrch-savings-kpi');
+  const statusKpi = document.getElementById('sitesrch-status-kpi');
+  const banner = document.getElementById('sitesrch-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (dsaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 B2B_PRICE_ENTITLEMENT_LEAK_OR_DSA_TRANSPARENCY_BREACH · Mandate: null';
+    return;
+  }}
+  if (accGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 ACCESSORY_POLLUTION_OR_HARD_FILTER_RELAXATION_VETO · Mandate: null';
+    return;
+  }}
+  if (sizeGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BROKEN_SIZE_CURVE_OR_PROFIT_MARGIN_EROSION_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 HYBRID_RRF_AND_EXPECTED_NET_PROFIT_RERANKING_CONFIRM · Mandate: site_search_profit_ltr_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_SITE_SEARCH_AND_PROFIT_MERCHANDISING_AUTHORIZED · Mandate: site_search_profit_ltr_200';
 }}
 
 function updateStage1756Sandbox() {{
