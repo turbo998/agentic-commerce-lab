@@ -44437,6 +44437,82 @@ def evaluate_social_livestream_commerce_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bVmiConsignmentReplenishmentPolicyInput:
+    quarterly_bullwhip_excess_channel_stuffing_and_shrinkage_pool_usd: float = 430000.0
+    consignment_billed_before_411k_pull_or_asn_exceeds_vmi_max_cap: bool = False
+    edi852_promo_spike_undamped_bullwhip_or_pallet_cube_under_85pct: bool = False
+    cycle_count_shrinkage_unsettled_or_consignment_aged_past_90d_cap: bool = False
+    pos_grounded_bullwhip_damping_and_411k_ers_self_billing_ready: bool = False
+
+
+def evaluate_b2b_vmi_consignment_replenishment_policy(
+    policy_input: B2bVmiConsignmentReplenishmentPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_bullwhip_excess_channel_stuffing_and_shrinkage_pool_usd
+        ),
+    )
+    if policy_input.cycle_count_shrinkage_unsettled_or_consignment_aged_past_90d_cap:
+        return {
+            "status_code": 451,
+            "decision": "CONSIGNMENT_SHRINKAGE_UNBILLED_OR_90D_AGING_BUYOUT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.consignment_billed_before_411k_pull_or_asn_exceeds_vmi_max_cap:
+        return {
+            "status_code": 403,
+            "decision": "PREMATURE_CONSIGNMENT_BILLING_OR_CHANNEL_STUFFING_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.edi852_promo_spike_undamped_bullwhip_or_pallet_cube_under_85pct:
+        return {
+            "status_code": 422,
+            "decision": "BULLWHIP_PROMO_EXTRAPOLATION_OR_LOW_CUBE_FREIGHT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.pos_grounded_bullwhip_damping_and_411k_ers_self_billing_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "POS_GROUNDED_BULLWHIP_DAMPING_AND_411K_ERS_BILLING_CONFIRM",
+            "mandate_token": "b2b_vmi_consignment_ers_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_VMI_AND_CONSIGNMENT_ERS_AUTHORIZED",
+        "mandate_token": "b2b_vmi_consignment_ers_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -60392,6 +60468,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_vmi_consignment_replenishment_guard = {
+        "authorized_200": evaluate_b2b_vmi_consignment_replenishment_policy(
+            B2bVmiConsignmentReplenishmentPolicyInput()
+        ),
+        "premature_billing_or_stuffing_403": evaluate_b2b_vmi_consignment_replenishment_policy(
+            B2bVmiConsignmentReplenishmentPolicyInput(
+                consignment_billed_before_411k_pull_or_asn_exceeds_vmi_max_cap=True
+            )
+        ),
+        "bullwhip_or_low_cube_422": evaluate_b2b_vmi_consignment_replenishment_policy(
+            B2bVmiConsignmentReplenishmentPolicyInput(
+                edi852_promo_spike_undamped_bullwhip_or_pallet_cube_under_85pct=True
+            )
+        ),
+        "shrinkage_or_90d_aging_451": evaluate_b2b_vmi_consignment_replenishment_policy(
+            B2bVmiConsignmentReplenishmentPolicyInput(
+                cycle_count_shrinkage_unsettled_or_consignment_aged_past_90d_cap=True
+            )
+        ),
+        "pos_damping_411k_ers_409": evaluate_b2b_vmi_consignment_replenishment_policy(
+            B2bVmiConsignmentReplenishmentPolicyInput(
+                pos_grounded_bullwhip_damping_and_411k_ers_self_billing_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -60906,6 +61008,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_tail_spend_autonomous_sourcing_guard": b2b_tail_spend_autonomous_sourcing_guard,
         "ecommerce_checkout_fraud_guarantee_guard": ecommerce_checkout_fraud_guarantee_guard,
         "social_livestream_commerce_guard": social_livestream_commerce_guard,
+        "b2b_vmi_consignment_replenishment_guard": b2b_vmi_consignment_replenishment_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -88107,6 +88210,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="soclive-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 RINGFENCED_FLASH_STOCK_AND_POD_14D_COMMISSION_ESCROW_CONFIRM · Mandate: social_livestream_commerce_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 386 (🏆 505th Bilingual SA Guide Milestone! · #505 · SVG #829 · Sandbox #279 · Test #1,383) B2B VMI & Consignment ERS -->
+      <div class="finops-box" id="b2b-vmi-consignment-replenishment-sandbox" style="margin-top:12px;border-color:#38bdf8;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业 B2B 供应商管理库存 (VMI)、寄售领用自开票 (411K ERS) 与防牛鞭效应补货 (SAP IBP / Blue Yonder / Coupa / D365) 沙盒（🏆 第 505 篇指南里程碑！）</div>
+            <div class="finops-sub">Round 386 (🏆 505th Guide Milestone · #505 · SVG #829 · Sandbox #279 · Test #1,383) · 寄售库存扫码领用 (411K) 才触发 ERS 自开票与拦截突破 Max_Stock 季末压货 (HTTP 403) + EDI 852 剥离短期促销脉冲防 5 倍牛鞭效应与 &gt;=85% 满托凑单锁 (HTTP 422) + 寄售盲盘盘亏自动结转与 90 天呆滞买断/FEFO 锁 (HTTP 451) + 终端 POS 协同补货净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="b2bvmi-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度促销牛鞭效应过量补货呆滞、供应商季末超上限压货、零担不满托运费与寄售盘亏损耗池 ($)
+            <input type="number" id="b2bvmi-gross-input" value="430000" min="10000" step="5000" oninput="recalcB2bVmiConsignmentReplenishmentSandbox()" />
+          </label>
+          <label>寄售库存领用扫码 (411K) 触发 ERS 自开票与买方签名 Max_Stock 上限防季末压货门禁
+            <select id="b2bvmi-pull-select" onchange="recalcB2bVmiConsignmentReplenishmentSandbox()">
+              <option value="pass">严禁到货即开票，仅在 411K 实际领用时触发 ERS，且超 21d Max 自动拒批月台码 (安全)</option>
+              <option value="block_403">寄售货物刚卸车未领用即开票催款，或供应商季末强发 3 倍货塞爆买方仓库 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>EDI 852 终端 POS 促销脉冲剥离 (防牛鞭效应放大) 与标准托盘/整车 (&gt;=85% Cube) 凑单门禁
+            <select id="b2bvmi-bull-select" onchange="recalcB2bVmiConsignmentReplenishmentSandbox()">
+              <option value="pass">分离自然动销与周末促销增量防过量补货，且多 SKU 组合凑满 &gt;=85% 托盘/车厢 (合规)</option>
+              <option value="block_422">将 1 天买一送一脉冲当成永久翻倍下达 5 倍补货单，或不满半托频繁零担高价发运 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>寄售仓月度盲盘盘亏 (Shrinkage) 自动结转赔偿与 90 天呆滞批次买断 / FEFO 轮换门禁
+            <select id="b2bvmi-shrk-select" onchange="recalcB2bVmiConsignmentReplenishmentSandbox()">
+              <option value="pass">EDI 846 实盘短少自动计入当期 ERS 结算，且超 90 天呆滞批次强制调回换新或买断 (合规)</option>
+              <option value="block_451">寄售物料在买方仓内丢失拒不认账，或积压超 90 天过期报废未执行 FEFO 轮换 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>EDI 852 POS 真实动销滤波 + 411K 零发票差异 ERS 自开票 + 整托凑单全链路编排
+            <select id="b2bvmi-opt-select" onchange="recalcB2bVmiConsignmentReplenishmentSandbox()">
+              <option value="enabled" selected>启用 POS 促销去噪 + 411K 扫码触发 ERS 自开票 + 满托凑单 (-41% 牛鞭呆滞与运费损耗 / HTTP 409)</option>
+              <option value="disabled">传统按仓库调拨外推与手工寄售发票对账基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度牛鞭呆滞与季末压货池</div>
+            <div class="finops-kpi-val" id="b2bvmi-gross-kpi">$430,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">POS 去噪与 ERS 自开票净成本</div>
+            <div class="finops-kpi-val" id="b2bvmi-net-kpi" style="color:#6ee7b7;">$253,700</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省库存占压与运费损耗</div>
+            <div class="finops-kpi-val" id="b2bvmi-savings-kpi" style="color:#38bdf8;">$176,300</div>
+          </div>
+        </div>
+        <div id="b2bvmi-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 POS_GROUNDED_BULLWHIP_DAMPING_AND_411K_ERS_BILLING_CONFIRM · Mandate: b2b_vmi_consignment_ers_optim_409
         </div>
       </div>
 
@@ -121802,6 +121962,79 @@ function recalcSocialLivestreamCommerceSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_SOCIAL_LIVESTREAM_COMMERCE_AUTHORIZED · Mandate: social_livestream_commerce_200';
+}}
+
+function recalcB2bVmiConsignmentReplenishmentSandbox() {{
+  const grossInput = document.getElementById('b2bvmi-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '430000'));
+  const pullGate = document.getElementById('b2bvmi-pull-select').value;
+  const bullGate = document.getElementById('b2bvmi-bull-select').value;
+  const shrkGate = document.getElementById('b2bvmi-shrk-select').value;
+  const optMode = document.getElementById('b2bvmi-opt-select').value;
+
+  const grossKpi = document.getElementById('b2bvmi-gross-kpi');
+  const netKpi = document.getElementById('b2bvmi-net-kpi');
+  const savingsKpi = document.getElementById('b2bvmi-savings-kpi');
+  const statusKpi = document.getElementById('b2bvmi-status-kpi');
+  const banner = document.getElementById('b2bvmi-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (shrkGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 CONSIGNMENT_SHRINKAGE_UNBILLED_OR_90D_AGING_BUYOUT_BREACH · Mandate: null';
+    return;
+  }}
+  if (pullGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PREMATURE_CONSIGNMENT_BILLING_OR_CHANNEL_STUFFING_VETO · Mandate: null';
+    return;
+  }}
+  if (bullGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BULLWHIP_PROMO_EXTRAPOLATION_OR_LOW_CUBE_FREIGHT_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 POS_GROUNDED_BULLWHIP_DAMPING_AND_411K_ERS_BILLING_CONFIRM · Mandate: b2b_vmi_consignment_ers_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_VMI_AND_CONSIGNMENT_ERS_AUTHORIZED · Mandate: b2b_vmi_consignment_ers_200';
 }}
 
 function updateStage1756Sandbox() {{

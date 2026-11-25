@@ -34920,6 +34920,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("social-livestream-commerce-sandbox", html_zh)
 
+    def test_b2b_vmi_consignment_replenishment_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bVmiConsignmentReplenishmentPolicyInput,
+            evaluate_b2b_vmi_consignment_replenishment_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_vmi_consignment_replenishment_policy(
+            B2bVmiConsignmentReplenishmentPolicyInput(
+                quarterly_bullwhip_excess_channel_stuffing_and_shrinkage_pool_usd=430000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_VMI_AND_CONSIGNMENT_ERS_AUTHORIZED",
+        )
+
+        pull = evaluate_b2b_vmi_consignment_replenishment_policy(
+            B2bVmiConsignmentReplenishmentPolicyInput(
+                consignment_billed_before_411k_pull_or_asn_exceeds_vmi_max_cap=True
+            )
+        )
+        self.assertEqual(pull["status_code"], 403)
+        self.assertEqual(
+            pull["decision"],
+            "PREMATURE_CONSIGNMENT_BILLING_OR_CHANNEL_STUFFING_VETO",
+        )
+
+        bull = evaluate_b2b_vmi_consignment_replenishment_policy(
+            B2bVmiConsignmentReplenishmentPolicyInput(
+                edi852_promo_spike_undamped_bullwhip_or_pallet_cube_under_85pct=True
+            )
+        )
+        self.assertEqual(bull["status_code"], 422)
+        self.assertEqual(
+            bull["decision"],
+            "BULLWHIP_PROMO_EXTRAPOLATION_OR_LOW_CUBE_FREIGHT_BREACH",
+        )
+
+        shrk = evaluate_b2b_vmi_consignment_replenishment_policy(
+            B2bVmiConsignmentReplenishmentPolicyInput(
+                cycle_count_shrinkage_unsettled_or_consignment_aged_past_90d_cap=True
+            )
+        )
+        self.assertEqual(shrk["status_code"], 451)
+        self.assertEqual(
+            shrk["decision"],
+            "CONSIGNMENT_SHRINKAGE_UNBILLED_OR_90D_AGING_BUYOUT_BREACH",
+        )
+
+        optim = evaluate_b2b_vmi_consignment_replenishment_policy(
+            B2bVmiConsignmentReplenishmentPolicyInput(
+                quarterly_bullwhip_excess_channel_stuffing_and_shrinkage_pool_usd=430000.0,
+                pos_grounded_bullwhip_damping_and_411k_ers_self_billing_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 176300.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 253700.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_vmi_consignment_replenishment_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-vmi-consignment-replenishment-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
