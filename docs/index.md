@@ -2,14 +2,14 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`501` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`502` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（38 篇）](#platform-grounding)
 - [二、智能体支付协议、加密授权令牌（Mandates）与强核身（61 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（187 篇）](#retail-ota-marketplace)
-- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（112 篇）](#b2b-procurement-erp)
+- [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（113 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（46 篇）](#saas-finops-micropayments)
 - [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（57 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
@@ -328,7 +328,7 @@
 | 187 | **🏆 企业差旅管理（`TMC / OTA`）、航司未使用退票积分池（`Unused Ticket Credit, UTC`）自动核销与多式联运全行程成本（`Total Trip Cost`）选型对比（`Navan / SAP Concur Travel / TravelPerk / Amex GBT Egencia` · 🏆 第 825 张架构图与第 275 个策略沙盒双里程碑）、结账强制优先抵扣 `UTC` 与离职员工客票更名回收锁、防基础经济舱行李改签费倒挂门禁及 `<3h` 高铁优先与酒店省钱返现激励净省 41% Agent 架构选型 FAQ** | [中文](ota-corporate-travel-unused-ticket-credit-navan-concur-travelperk-egencia-ancillary-tco-selection-faq.md) · [English](ota-corporate-travel-unused-ticket-credit-navan-concur-travelperk-egencia-ancillary-tco-selection-faq.en.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（112 篇）
+## 四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（113 篇）
 
 > 覆盖 Ariba / Coupa / SAP 采购代理集成、PO-GRN-Invoice 三单匹配、Vickrey 密封反向竞价 RFQ、组织级审批委托链、动态现金折扣（2/10 Net 30）、应收账款保理防双押与电子提单（MLETR eBL）。
 
@@ -446,6 +446,7 @@
 | 110 | **🏆 企业 B2B 采购与渠道返利管理（`Rebate Management`）、价保补差（`Ship-and-Debit`）与市场发展基金（`MDF / Co-Op`）选型对比（`Enable / SAP Vistex / Flintfox / Channelscaler` · 🏆 第 490 篇双语决策指南重大里程碑）、全溯阶梯返利临界点（`Retroactive Cliff Tier`）主动凑单寻优、扣除退货与运费税费后的净合格返利基数锁及 `MDF` 50% 共担与 `POP` 视觉核销净省 41% Agent 架构选型 FAQ** | [中文](b2b-rebate-management-enable-vistex-flintfox-mdf-coop-retroactive-cliff-tier-selection-faq.md) · [English](b2b-rebate-management-enable-vistex-flintfox-mdf-coop-retroactive-cliff-tier-selection-faq.en.md) |
 | 111 | **🏆 企业 B2B 目录直通采购（`PunchOut Catalog`: `cXML / OCI`）与电子数据交换（`EDI 850 / 855 / 856`: `Coupa / SAP Ariba / SPS Commerce / Orderful` · 🏆 第 815 张架构图与第 265 个策略沙盒双里程碑）、拦截自由文本请购单绕过签约目录低价、计量单位（`UOM: 个 EA vs. 箱 CS`）24 倍乌龙放大锁及 `EDI 856 ASN (GS1-128 SSCC)` 预校验净省 40% Agent 架构选型 FAQ** | [中文](b2b-punchout-catalog-cxml-oci-edi-850-856-sps-commerce-ariba-coupa-uom-lock-selection-faq.md) · [English](b2b-punchout-catalog-cxml-oci-edi-850-856-sps-commerce-ariba-coupa-uom-lock-selection-faq.en.md) |
 | 112 | **🏆 企业 B2B 贸易信用保险（`Trade Credit Insurance`）、账期赊销（`Net 30/60/90`）与应收账款保理选型对比（`Allianz Trade / Coface / Atradius` vs. `Hokodo / Balance / Resolve` · 🏆 第 375 轮重大里程碑）、含未开票发货全口径敞口与逾期 15 天停供锁、凭 `POD` 签收单防一票多融保理锁及破产在途停运拦截净省 41% Agent 架构选型 FAQ** | [中文](b2b-trade-credit-insurance-net-terms-hokodo-balance-allianz-trade-dso-hold-factoring-selection-faq.md) · [English](b2b-trade-credit-insurance-net-terms-hokodo-balance-allianz-trade-dso-hold-factoring-selection-faq.en.md) |
+| 113 | **🏆 企业 B2B 长尾支出（`Tail Spend`）自主寻源、自动三方比价（`Instant 3-Bid Micro-RFQ`）与防拆单规避审批（`Anti-PO-Splitting`）选型对比（`Fairmarkit / Globality / Amazon Business Guided Buying / SAP Ariba Spot Buy` · 🏆 第 1,380 项确定性单元测试重大里程碑！）、14 天滑动窗口拦截连环拆单规避 `$10k` 招标锁、单家 PDF 报价自动转 3 家微招标及免建一次性僵尸供应商主数据净省 40% Agent 架构选型 FAQ** | [中文](b2b-tail-spend-autonomous-sourcing-fairmarkit-globality-amazon-business-po-splitting-selection-faq.md) · [English](b2b-tail-spend-autonomous-sourcing-fairmarkit-globality-amazon-business-po-splitting-selection-faq.en.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（46 篇）

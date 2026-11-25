@@ -44209,6 +44209,82 @@ def evaluate_corporate_travel_utc_multimodal_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bTailSpendAutonomousSourcingPolicyInput:
+    quarterly_single_bid_overpay_po_splitting_and_vendor_sprawl_pool_usd: float = 450000.0
+    rolling_14d_po_splitting_detected_or_maverick_pcard_bypass: bool = False
+    contract_catalog_match_ignored_or_spot_buy_awarded_with_under_3_bids: bool = False
+    one_off_erp_vendor_created_or_onsite_service_missing_active_coi_w9: bool = False
+    autonomous_3bid_micro_rfq_and_tail_aggregator_consolidation_ready: bool = False
+
+
+def evaluate_b2b_tail_spend_autonomous_sourcing_policy(
+    policy_input: B2bTailSpendAutonomousSourcingPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_single_bid_overpay_po_splitting_and_vendor_sprawl_pool_usd
+        ),
+    )
+    if policy_input.one_off_erp_vendor_created_or_onsite_service_missing_active_coi_w9:
+        return {
+            "status_code": 451,
+            "decision": "ONE_TIME_VENDOR_SPRAWL_OR_MISSING_COI_W9_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.rolling_14d_po_splitting_detected_or_maverick_pcard_bypass:
+        return {
+            "status_code": 403,
+            "decision": "PO_SPLITTING_THRESHOLD_EVASION_OR_MAVERICK_SPEND_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.contract_catalog_match_ignored_or_spot_buy_awarded_with_under_3_bids:
+        return {
+            "status_code": 422,
+            "decision": "SINGLE_BID_SPOT_BUY_OR_CONTRACT_CATALOG_BYPASS_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.autonomous_3bid_micro_rfq_and_tail_aggregator_consolidation_ready:
+        savings = round(gross_pool * 0.40, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "AUTONOMOUS_3BID_MICRO_RFQ_AND_TAIL_AGGREGATOR_CONFIRM",
+            "mandate_token": "b2b_tail_spend_rfq_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_TAIL_SPEND_SOURCING_AUTHORIZED",
+        "mandate_token": "b2b_tail_spend_rfq_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -60086,6 +60162,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_tail_spend_autonomous_sourcing_guard = {
+        "authorized_200": evaluate_b2b_tail_spend_autonomous_sourcing_policy(
+            B2bTailSpendAutonomousSourcingPolicyInput()
+        ),
+        "po_splitting_or_maverick_403": evaluate_b2b_tail_spend_autonomous_sourcing_policy(
+            B2bTailSpendAutonomousSourcingPolicyInput(
+                rolling_14d_po_splitting_detected_or_maverick_pcard_bypass=True
+            )
+        ),
+        "single_bid_or_catalog_bypass_422": evaluate_b2b_tail_spend_autonomous_sourcing_policy(
+            B2bTailSpendAutonomousSourcingPolicyInput(
+                contract_catalog_match_ignored_or_spot_buy_awarded_with_under_3_bids=True
+            )
+        ),
+        "vendor_sprawl_or_missing_coi_451": evaluate_b2b_tail_spend_autonomous_sourcing_policy(
+            B2bTailSpendAutonomousSourcingPolicyInput(
+                one_off_erp_vendor_created_or_onsite_service_missing_active_coi_w9=True
+            )
+        ),
+        "autonomous_3bid_micro_rfq_409": evaluate_b2b_tail_spend_autonomous_sourcing_policy(
+            B2bTailSpendAutonomousSourcingPolicyInput(
+                autonomous_3bid_micro_rfq_and_tail_aggregator_consolidation_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -60597,6 +60699,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "enterprise_saas_spend_management_guard": enterprise_saas_spend_management_guard,
         "ecommerce_site_search_merchandising_guard": ecommerce_site_search_merchandising_guard,
         "corporate_travel_utc_multimodal_guard": corporate_travel_utc_multimodal_guard,
+        "b2b_tail_spend_autonomous_sourcing_guard": b2b_tail_spend_autonomous_sourcing_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -87627,6 +87730,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="corptrv-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 UTC_WAIVER_POOLING_AND_SPLIT_SAVINGS_HOTEL_REWARD_CONFIRM · Mandate: corporate_travel_utc_tco_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 383 (🏆 1,380th Unit Test Major Milestone! · #502 · SVG #826 · Sandbox #276) B2B Tail-Spend & Anti-PO-Splitting -->
+      <div class="finops-box" id="b2b-tail-spend-autonomous-sourcing-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业 B2B 长尾支出 (Tail Spend) 自主寻源、自动 3 家比价与防拆单逃审 (Fairmarkit / Globality / Amazon Business / Ariba) 沙盒（🏆 第 1,380 项单测里程碑！）</div>
+            <div class="finops-sub">Round 383 (🏆 1,380th Test Milestone · #502 · SVG #826 · Sandbox #276) · 14 天滑动窗口拦截将 $27k 采购拆成 3 张 $9k 请购单逃避招标 (HTTP 403) + 签约主目录拦截与强制自动 3 家微招标锁 (HTTP 422) + 免建一次性僵尸供应商主数据与进场服务 COI 责任险核验锁 (HTTP 451) + Fairmarkit 自动解析 PDF 发起 3 家竞标净省 40% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="tailsp-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度单家 PDF 报价直采加价、拆单逃避招标 (PO Splitting) 与一次性供应商建档维护损耗池 ($)
+            <input type="number" id="tailsp-gross-input" value="450000" min="10000" step="5000" oninput="recalcB2bTailSpendAutonomousSourcingSandbox()" />
+          </label>
+          <label>14 天滑动时间窗同供应商/同部门累计防拆单 (Anti-PO-Splitting) 与拦截无单刷 P-Card 门禁
+            <select id="tailsp-split-select" onchange="recalcB2bTailSpendAutonomousSourcingSandbox()">
+              <option value="pass">实时汇总 14 天内同供应商/同项目请购单，突破 $10,000 自动合并升级招标与 VP 审批 (安全)</option>
+              <option value="block_403">将 $27,000 采购拆成 3 张 $9,000 请购单连续提交，企图绕过 $10,000 三方比价红线 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>签约目录直通拦截 (Guided Buying Deflection) 与 $2.5k-$25k 强制自动 3 家微招标门禁
+            <select id="tailsp-rfq-select" onchange="recalcB2bTailSpendAutonomousSourcingSandbox()">
+              <option value="pass">优先命中 Amazon Business/签约目录，无目录则由 Fairmarkit 自动向 3+ 在库供应商询价 (合规)</option>
+              <option value="block_422">忽略签约目录低价现货，或仅凭申请人上传的 1 家高价 PDF 报价单直接签发 PO (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>&lt;$2,500 一次性采购免建 ERP 供应商主数据 (Tail MoR 聚合) 与入场施工责任险保单 (COI/W-9) 门禁
+            <select id="tailsp-coi-select" onchange="recalcB2bTailSpendAutonomousSourcingSandbox()">
+              <option value="pass">一次性小额采购走名义代采商统一结算免污染 ERP 主数据，且入场服务必审在期 COI (合规)</option>
+              <option value="block_451">为 $800 一次性采购耗费 $1,800 新建永久 ERP 供应商主数据，或放行无 COI 保单承包商进场 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Fairmarkit OCR 解析单家 PDF 报价单自动触发 3 家 AVL 闪电微竞标 + 长尾聚合商编排
+            <select id="tailsp-opt-select" onchange="recalcB2bTailSpendAutonomousSourcingSandbox()">
+              <option value="enabled" selected>启用单家 PDF 自动转 3 家微招标 + Amazon Business/MoR 聚合 (-40% 长尾溢价与建档损耗 / HTTP 409)</option>
+              <option value="disabled">传统孤立审单与单家报价直采基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度长尾溢价与拆单损耗池</div>
+            <div class="finops-kpi-val" id="tailsp-gross-kpi">$450,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">自动 3 家竞标与聚合净成本</div>
+            <div class="finops-kpi-val" id="tailsp-net-kpi" style="color:#6ee7b7;">$270,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省比价降本与建档费</div>
+            <div class="finops-kpi-val" id="tailsp-savings-kpi" style="color:#38bdf8;">$180,000</div>
+          </div>
+        </div>
+        <div id="tailsp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 AUTONOMOUS_3BID_MICRO_RFQ_AND_TAIL_AGGREGATOR_CONFIRM · Mandate: b2b_tail_spend_rfq_optim_409
         </div>
       </div>
 
@@ -121103,6 +121263,79 @@ function recalcCorporateTravelUtcMultiModalSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_CORPORATE_TRAVEL_UTC_AND_TCO_AUTHORIZED · Mandate: corporate_travel_utc_tco_200';
+}}
+
+function recalcB2bTailSpendAutonomousSourcingSandbox() {{
+  const grossInput = document.getElementById('tailsp-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '450000'));
+  const splitGate = document.getElementById('tailsp-split-select').value;
+  const rfqGate = document.getElementById('tailsp-rfq-select').value;
+  const coiGate = document.getElementById('tailsp-coi-select').value;
+  const optMode = document.getElementById('tailsp-opt-select').value;
+
+  const grossKpi = document.getElementById('tailsp-gross-kpi');
+  const netKpi = document.getElementById('tailsp-net-kpi');
+  const savingsKpi = document.getElementById('tailsp-savings-kpi');
+  const statusKpi = document.getElementById('tailsp-status-kpi');
+  const banner = document.getElementById('tailsp-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (coiGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 ONE_TIME_VENDOR_SPRAWL_OR_MISSING_COI_W9_BREACH · Mandate: null';
+    return;
+  }}
+  if (splitGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 PO_SPLITTING_THRESHOLD_EVASION_OR_MAVERICK_SPEND_VETO · Mandate: null';
+    return;
+  }}
+  if (rfqGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 SINGLE_BID_SPOT_BUY_OR_CONTRACT_CATALOG_BYPASS_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.40);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 AUTONOMOUS_3BID_MICRO_RFQ_AND_TAIL_AGGREGATOR_CONFIRM · Mandate: b2b_tail_spend_rfq_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_TAIL_SPEND_SOURCING_AUTHORIZED · Mandate: b2b_tail_spend_rfq_200';
 }}
 
 function updateStage1756Sandbox() {{

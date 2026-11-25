@@ -34719,6 +34719,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("corporate-travel-utc-multimodal-sandbox", html_zh)
 
+    def test_b2b_tail_spend_autonomous_sourcing_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bTailSpendAutonomousSourcingPolicyInput,
+            evaluate_b2b_tail_spend_autonomous_sourcing_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_tail_spend_autonomous_sourcing_policy(
+            B2bTailSpendAutonomousSourcingPolicyInput(
+                quarterly_single_bid_overpay_po_splitting_and_vendor_sprawl_pool_usd=450000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_TAIL_SPEND_SOURCING_AUTHORIZED",
+        )
+
+        split = evaluate_b2b_tail_spend_autonomous_sourcing_policy(
+            B2bTailSpendAutonomousSourcingPolicyInput(
+                rolling_14d_po_splitting_detected_or_maverick_pcard_bypass=True
+            )
+        )
+        self.assertEqual(split["status_code"], 403)
+        self.assertEqual(
+            split["decision"],
+            "PO_SPLITTING_THRESHOLD_EVASION_OR_MAVERICK_SPEND_VETO",
+        )
+
+        rfq = evaluate_b2b_tail_spend_autonomous_sourcing_policy(
+            B2bTailSpendAutonomousSourcingPolicyInput(
+                contract_catalog_match_ignored_or_spot_buy_awarded_with_under_3_bids=True
+            )
+        )
+        self.assertEqual(rfq["status_code"], 422)
+        self.assertEqual(
+            rfq["decision"],
+            "SINGLE_BID_SPOT_BUY_OR_CONTRACT_CATALOG_BYPASS_BREACH",
+        )
+
+        coi = evaluate_b2b_tail_spend_autonomous_sourcing_policy(
+            B2bTailSpendAutonomousSourcingPolicyInput(
+                one_off_erp_vendor_created_or_onsite_service_missing_active_coi_w9=True
+            )
+        )
+        self.assertEqual(coi["status_code"], 451)
+        self.assertEqual(
+            coi["decision"],
+            "ONE_TIME_VENDOR_SPRAWL_OR_MISSING_COI_W9_BREACH",
+        )
+
+        optim = evaluate_b2b_tail_spend_autonomous_sourcing_policy(
+            B2bTailSpendAutonomousSourcingPolicyInput(
+                quarterly_single_bid_overpay_po_splitting_and_vendor_sprawl_pool_usd=450000.0,
+                autonomous_3bid_micro_rfq_and_tail_aggregator_consolidation_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 180000.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 270000.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_tail_spend_autonomous_sourcing_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-tail-spend-autonomous-sourcing-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
