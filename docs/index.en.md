@@ -2,14 +2,14 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`527` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`528` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (39 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (66 guides)](#payments-mandates)
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (199 guides)](#retail-ota-marketplace)
-- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (118 guides)](#b2b-procurement-erp)
+- [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (119 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (48 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (57 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
@@ -346,7 +346,7 @@
 | 199 | **🏆 Omnichannel Retail Click-and-Collect (`BOPIS / Curbside Pickup`), Display-Floor Safety Buffer, Dynamic `TOTP` Handover & `Capture-on-Pickup / Day-5 Auto-0420 Restock` Agent (`Manhattan Active Omni / Fluent Commerce / Blue Yonder / Shopify POS` · 🏆 1,405th Deterministic Unit Test Major Milestone!), Backroom `RFID` vs. Sales-Floor Safety Buffers, `Capture-on-Pickup` + `Day-5 0420` Restocks & Rotating `30s TOTP` Anti-Mule Handover (`-42%` Cost) FAQ** | [English](omnichannel-bopis-curbside-manhattan-fluent-shopify-pos-safety-buffer-totp-selection-faq.en.md) · [中文](omnichannel-bopis-curbside-manhattan-fluent-shopify-pos-safety-buffer-totp-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
-## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (118 Guides)
+## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (119 Guides)
 
 > Covers Ariba / Coupa / SAP procurement integration, PO-GRN-Invoice 3-way match, sealed-bid Vickrey RFQs, organizational approval delegation, 2/10 Net 30 dynamic discounting, invoice factoring lien guards, and MLETR eBL / eUCP 600.
 
@@ -470,6 +470,7 @@
 | 116 | **🏆 E-Commerce Parcel & Enterprise B2B Freight Audit & Payment (`FAP`), Laser `DIM-Weight` Dispute & Guaranteed Service Refund (`GSR`) Copilot (`Intelligent Audit / Loop AI / Trax Technologies / Cass Information Systems` · 🏆 835th SVG & 285th Sandbox Dual Milestone!), 180-Day Duplicate `PRO/1Z` Locks, WMS Carton-Master `DIM` Disputes, `USPS RDI` Commercial Checks & `POD + 24h` `15-Day GSR` Recovery (`-41%` Cost) FAQ** | [English](b2b-freight-audit-payment-fap-intelligent-audit-loop-trax-dim-weight-gsr-selection-faq.en.md) · [中文](b2b-freight-audit-payment-fap-intelligent-audit-loop-trax-dim-weight-gsr-selection-faq.md) |
 | 117 | **🏆 Enterprise B2B Wholesale Dealer Portal, Fair-Share Scarce-Inventory Allocation & Blind Drop-Ship Copilot (`Shopify Plus B2B / OroCommerce / Salesforce B2B Commerce / BigCommerce B2B` · 🏆 Round 395 Major Milestone!), Anti-`FBA` Gray-Market Diversion Locks, `35% D2C` High-Margin Ring-Fences, Case-Pack `MOQ` Gates & Zero-Price Blind Packing Slips (`-41%` Cost) FAQ** | [English](b2b-wholesale-dealer-portal-shopify-orocommerce-salesforce-map-allocation-dropship-selection-faq.en.md) · [中文](b2b-wholesale-dealer-portal-shopify-orocommerce-salesforce-map-allocation-dropship-selection-faq.md) |
 | 118 | **🏆 Enterprise B2B Contract Lifecycle Management (`CLM`), AI Supplier `MSA / SOW` Redlining, Evergreen Escalation Cap (`CPI <= 3%`) & `ERP` Rate-Card Sync Copilot (`Icertis ICI / Ironclad AI / DocuSign IAM / Sirion + Agiloft` · 🏆 Historic 850th SVG & 300th Enterprise Sandbox Dual Major Milestone!), Cyber/IP `Super-Cap` & `<=3%` Evergreen Locks, Baseline-Pinned Full-Text `AST Diffs` + `SAP/Coupa` Price-Master Sync & Mandatory `ZDR` No-AI-Training Riders (`-43%` Cost) FAQ** | [English](b2b-clm-contract-redlining-icertis-ironclad-docusign-evergreen-erp-sync-selection-faq.en.md) · [中文](b2b-clm-contract-redlining-icertis-ironclad-docusign-evergreen-erp-sync-selection-faq.md) |
+| 119 | **🧾 Enterprise B2B Accounts Payable (`AP`) Line-Level 3-Way Match (`PO == GRN == Invoice`), `UoM` Conversion Guard, `2/10 Net 30` Dynamic Discounting & Anti-`BEC` Bank-Change Agent (`Coupa Pay / SAP Ariba + S/4HANA / Tipalti / Stampli + Medius`), Material-Master `Base-EA` `UoM` Normalization & `MIGO 101 GRN` Locks, Alphanumeric-Stripped Cross-Channel Dedup + `<4h` `2/10` (`36.7% APR`) Fast-Track & Read-Only Bank Master `BEC` Shields (`-43%` Cost) FAQ** | [English](b2b-ap-three-way-match-coupa-ariba-tipalti-uom-dynamic-discount-bec-selection-faq.en.md) · [中文](b2b-ap-three-way-match-coupa-ariba-tipalti-uom-dynamic-discount-bec-selection-faq.md) |
 
 <a id="saas-finops-micropayments"></a>
 ## 5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (48 Guides)
