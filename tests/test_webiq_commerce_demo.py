@@ -35054,6 +35054,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-try-before-you-buy-sandbox", html_zh)
 
+    def test_retail_clienteling_pos_boris_attribution_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            RetailClientelingPosBorisAttributionPolicyInput,
+            evaluate_retail_clienteling_pos_boris_attribution_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_retail_clienteling_pos_boris_attribution_policy(
+            RetailClientelingPosBorisAttributionPolicyInput(
+                quarterly_walkout_stockout_boris_friction_and_vip_churn_pool_usd=470000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_OMNICHANNEL_CLIENTELING_AND_POS_AUTHORIZED",
+        )
+
+        attr = evaluate_retail_clienteling_pos_boris_attribution_policy(
+            RetailClientelingPosBorisAttributionPolicyInput(
+                lookbook_14d_commission_poached_by_web_or_endless_aisle_unsplit=True
+            )
+        )
+        self.assertEqual(attr["status_code"], 403)
+        self.assertEqual(
+            attr["decision"],
+            "LOOKBOOK_ATTRIBUTION_POACHING_OR_UNSPLIT_ENDLESS_AISLE_VETO",
+        )
+
+        boris = evaluate_retail_clienteling_pos_boris_attribution_policy(
+            RetailClientelingPosBorisAttributionPolicyInput(
+                boris_online_return_deducted_from_store_quota_or_stockout_unrescued=True
+            )
+        )
+        self.assertEqual(boris["status_code"], 422)
+        self.assertEqual(
+            boris["decision"],
+            "BORIS_STORE_QUOTA_PENALTY_OR_ENDLESS_AISLE_STOCKOUT_BREACH",
+        )
+
+        pii = evaluate_retail_clienteling_pos_boris_attribution_policy(
+            RetailClientelingPosBorisAttributionPolicyInput(
+                raw_vip_phone_exposed_to_personal_device_or_tcpa_quiet_hours_breached=True
+            )
+        )
+        self.assertEqual(pii["status_code"], 451)
+        self.assertEqual(
+            pii["decision"],
+            "VIP_PII_EXFILTRATION_OR_TCPA_CONSENT_BREACH",
+        )
+
+        optim = evaluate_retail_clienteling_pos_boris_attribution_policy(
+            RetailClientelingPosBorisAttributionPolicyInput(
+                quarterly_walkout_stockout_boris_friction_and_vip_churn_pool_usd=470000.0,
+                dual_store_75_25_split_boris_exchange_bounty_and_masked_relay_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 192700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 277300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("retail_clienteling_pos_boris_attribution_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("omnichannel-clienteling-endless-aisle-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

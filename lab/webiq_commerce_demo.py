@@ -44589,6 +44589,82 @@ def evaluate_ecommerce_try_before_you_buy_policy(
     }
 
 
+@dataclass(frozen=True)
+class RetailClientelingPosBorisAttributionPolicyInput:
+    quarterly_walkout_stockout_boris_friction_and_vip_churn_pool_usd: float = 470000.0
+    lookbook_14d_commission_poached_by_web_or_endless_aisle_unsplit: bool = False
+    boris_online_return_deducted_from_store_quota_or_stockout_unrescued: bool = False
+    raw_vip_phone_exposed_to_personal_device_or_tcpa_quiet_hours_breached: bool = False
+    dual_store_75_25_split_boris_exchange_bounty_and_masked_relay_ready: bool = False
+
+
+def evaluate_retail_clienteling_pos_boris_attribution_policy(
+    policy_input: RetailClientelingPosBorisAttributionPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_walkout_stockout_boris_friction_and_vip_churn_pool_usd
+        ),
+    )
+    if policy_input.raw_vip_phone_exposed_to_personal_device_or_tcpa_quiet_hours_breached:
+        return {
+            "status_code": 451,
+            "decision": "VIP_PII_EXFILTRATION_OR_TCPA_CONSENT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.lookbook_14d_commission_poached_by_web_or_endless_aisle_unsplit:
+        return {
+            "status_code": 403,
+            "decision": "LOOKBOOK_ATTRIBUTION_POACHING_OR_UNSPLIT_ENDLESS_AISLE_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.boris_online_return_deducted_from_store_quota_or_stockout_unrescued:
+        return {
+            "status_code": 422,
+            "decision": "BORIS_STORE_QUOTA_PENALTY_OR_ENDLESS_AISLE_STOCKOUT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.dual_store_75_25_split_boris_exchange_bounty_and_masked_relay_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "DUAL_STORE_ENDLESS_AISLE_SPLIT_AND_BORIS_EXCHANGE_CONFIRM",
+            "mandate_token": "omnichannel_clienteling_pos_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_OMNICHANNEL_CLIENTELING_AND_POS_AUTHORIZED",
+        "mandate_token": "omnichannel_clienteling_pos_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -60596,6 +60672,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    retail_clienteling_pos_boris_attribution_guard = {
+        "authorized_200": evaluate_retail_clienteling_pos_boris_attribution_policy(
+            RetailClientelingPosBorisAttributionPolicyInput()
+        ),
+        "lookbook_poach_or_unsplit_403": evaluate_retail_clienteling_pos_boris_attribution_policy(
+            RetailClientelingPosBorisAttributionPolicyInput(
+                lookbook_14d_commission_poached_by_web_or_endless_aisle_unsplit=True
+            )
+        ),
+        "boris_penalty_or_stockout_422": evaluate_retail_clienteling_pos_boris_attribution_policy(
+            RetailClientelingPosBorisAttributionPolicyInput(
+                boris_online_return_deducted_from_store_quota_or_stockout_unrescued=True
+            )
+        ),
+        "vip_pii_leak_or_tcpa_451": evaluate_retail_clienteling_pos_boris_attribution_policy(
+            RetailClientelingPosBorisAttributionPolicyInput(
+                raw_vip_phone_exposed_to_personal_device_or_tcpa_quiet_hours_breached=True
+            )
+        ),
+        "dual_store_boris_exchange_409": evaluate_retail_clienteling_pos_boris_attribution_policy(
+            RetailClientelingPosBorisAttributionPolicyInput(
+                dual_store_75_25_split_boris_exchange_bounty_and_masked_relay_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -61112,6 +61214,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "social_livestream_commerce_guard": social_livestream_commerce_guard,
         "b2b_vmi_consignment_replenishment_guard": b2b_vmi_consignment_replenishment_guard,
         "ecommerce_try_before_you_buy_guard": ecommerce_try_before_you_buy_guard,
+        "retail_clienteling_pos_boris_attribution_guard": retail_clienteling_pos_boris_attribution_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -88427,6 +88530,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="tbyb-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 ROLLING_AUTH_REFRESH_POD_TIMER_AND_KEEP_ALL_DISCOUNT_CONFIRM · Mandate: tbyb_curated_box_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 388 (🏆 1,385th Unit Test Major Milestone! · #507 · SVG #831 · Sandbox #281) Omnichannel Clienteling & Endless Aisle -->
+      <div class="finops-box" id="omnichannel-clienteling-endless-aisle-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 全渠道零售门店私人导购 (Clienteling)、云货架跨店调拨与 BORIS 佣金归因 (Tulip / NewStore / Salesforce / Shopify POS) 沙盒（🏆 第 1,385 项单测里程碑！）</div>
+            <div class="finops-sub">Round 388 (🏆 1,385th Test Milestone · #507 · SVG #831 · Sandbox #281) · 导购数字画册 14 天跨设备归因锁与云货架 75%/25% 双店分润防拒单 (HTTP 403) + BORIS 网退免扣门店业绩与当场换购 100% 提成锁 (HTTP 422) + 虚拟中间号防离职带走 VIP 客资与 TCPA 静默锁 (HTTP 451) + 断码云货架挽留净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="omncli-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度门店断码空手离店、电商截胡导购提成、门店拒收 BORIS 网购退货与导购离职带走 VIP 损耗池 ($)
+            <input type="number" id="omncli-gross-input" value="470000" min="10000" step="5000" oninput="recalcOmnichannelClientelingEndlessAisleSandbox()" />
+          </label>
+          <label>导购微画册 (Shoppable Lookbook) 14 天跨端归因保护锁与云货架 (75%销售店/25%发货店) 双店分润门禁
+            <select id="omncli-attr-select" onchange="recalcOmnichannelClientelingEndlessAisleSandbox()">
+              <option value="pass">14 天内回家用电脑/优惠码下单仍归属门店导购，且跨店发货自动按 75%/25% 分润 (安全)</option>
+              <option value="block_403">顾客用邮件 9 折码在官网买画册商品被电商部抢走 100% 提成，或调出门店无分润故意拒单 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>线上买退到门店 (BORIS) 门店考核业绩中性锁与店内断码秒级云货架包邮挽留门禁
+            <select id="omncli-boris-select" onchange="recalcOmnichannelClientelingEndlessAisleSandbox()">
+              <option value="pass">网退回溯冲减线上账面不扣门店分毫，且店员引导当场换购享 100% 新单提成 (合规)</option>
+              <option value="block_422">网购退回门店直接倒扣门店当日 $900 业绩致店员拒收，或店内缺码任由顾客空手离店 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>VIP 客户真实手机号脱敏代理 (Masked SMS/WhatsApp Relay) 防离职带走客资与 TCPA 门禁
+            <select id="omncli-pii-select" onchange="recalcOmnichannelClientelingEndlessAisleSandbox()">
+              <option value="pass">导购端全程使用虚拟中间号沟通零明文暴露，离职秒级收回并移交 VIP 关系本 (合规)</option>
+              <option value="block_451">允许导购用私人手机存 400 名 VIP 号码离职带去竞品店，或夜间违规群发营销短信 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>Endless Aisle 75/25 双店共享库存 + BORIS 免扣退转换 + 脱敏 AI 导购传承全链路编排
+            <select id="omncli-opt-select" onchange="recalcOmnichannelClientelingEndlessAisleSandbox()">
+              <option value="enabled" selected>启用 14d 跨端归因 + 75/25 双店云货架 + BORIS 换购激励 (-41% 断码与客资流失 / HTTP 409)</option>
+              <option value="disabled">传统渠道割裂 POS 与网退倒扣门店业绩基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度门店断码与客资流失池</div>
+            <div class="finops-kpi-val" id="omncli-gross-kpi">$470,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">双店分润与脱敏导购净损耗</div>
+            <div class="finops-kpi-val" id="omncli-net-kpi" style="color:#6ee7b7;">$277,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度云货架挽留与留存净省</div>
+            <div class="finops-kpi-val" id="omncli-savings-kpi" style="color:#38bdf8;">$192,700</div>
+          </div>
+        </div>
+        <div id="omncli-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 DUAL_STORE_ENDLESS_AISLE_SPLIT_AND_BORIS_EXCHANGE_CONFIRM · Mandate: omnichannel_clienteling_pos_optim_409
         </div>
       </div>
 
@@ -122268,6 +122428,79 @@ function recalcEcommerceTryBeforeYouBuySandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_TBYB_AND_CURATED_BOX_AUTHORIZED · Mandate: tbyb_curated_box_200';
+}}
+
+function recalcOmnichannelClientelingEndlessAisleSandbox() {{
+  const grossInput = document.getElementById('omncli-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '470000'));
+  const attrGate = document.getElementById('omncli-attr-select').value;
+  const borisGate = document.getElementById('omncli-boris-select').value;
+  const piiGate = document.getElementById('omncli-pii-select').value;
+  const optMode = document.getElementById('omncli-opt-select').value;
+
+  const grossKpi = document.getElementById('omncli-gross-kpi');
+  const netKpi = document.getElementById('omncli-net-kpi');
+  const savingsKpi = document.getElementById('omncli-savings-kpi');
+  const statusKpi = document.getElementById('omncli-status-kpi');
+  const banner = document.getElementById('omncli-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (piiGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 VIP_PII_EXFILTRATION_OR_TCPA_CONSENT_BREACH · Mandate: null';
+    return;
+  }}
+  if (attrGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 LOOKBOOK_ATTRIBUTION_POACHING_OR_UNSPLIT_ENDLESS_AISLE_VETO · Mandate: null';
+    return;
+  }}
+  if (borisGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 BORIS_STORE_QUOTA_PENALTY_OR_ENDLESS_AISLE_STOCKOUT_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 DUAL_STORE_ENDLESS_AISLE_SPLIT_AND_BORIS_EXCHANGE_CONFIRM · Mandate: omnichannel_clienteling_pos_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_OMNICHANNEL_CLIENTELING_AND_POS_AUTHORIZED · Mandate: omnichannel_clienteling_pos_200';
 }}
 
 function updateStage1756Sandbox() {{
