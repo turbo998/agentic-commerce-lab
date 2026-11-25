@@ -36536,6 +36536,70 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-corporate-hotel-virtual-card-folio-sandbox", html_zh)
 
+    def test_ecommerce_virtual_bundle_bom_proration_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceVirtualBundleBomProrationPolicyInput,
+            evaluate_ecommerce_virtual_bundle_bom_proration_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_ecommerce_virtual_bundle_bom_proration_policy(
+            EcommerceVirtualBundleBomProrationPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(
+            auth["mandate_token"], "virtual_bundle_bom_530th_guide_200"
+        )
+
+        atp = evaluate_ecommerce_virtual_bundle_bom_proration_policy(
+            EcommerceVirtualBundleBomProrationPolicyInput(
+                bundle_atp_exceeds_bottleneck_child_sku_or_splits_across_warehouses=True
+            )
+        )
+        self.assertEqual(atp["status_code"], 403)
+        self.assertEqual(
+            atp["decision"],
+            "BOTTLENECK_COMPONENT_ATP_SHORTFALL_OR_SPLIT_DC_BUNDLE_VETO",
+        )
+
+        bom = evaluate_ecommerce_virtual_bundle_bom_proration_policy(
+            EcommerceVirtualBundleBomProrationPolicyInput(
+                unexploded_virtual_parent_sent_to_3pl_or_proration_penny_drift_nonzero=True
+            )
+        )
+        self.assertEqual(bom["status_code"], 422)
+        self.assertEqual(
+            bom["decision"],
+            "UNEXPLODED_VIRTUAL_PARENT_IN_WMS_OR_PRORATION_PENNY_DRIFT_BREACH",
+        )
+
+        rma = evaluate_ecommerce_virtual_bundle_bom_proration_policy(
+            EcommerceVirtualBundleBomProrationPolicyInput(
+                partial_bundle_or_bogo_return_refunds_full_price_keeping_free_gift=True
+            )
+        )
+        self.assertEqual(rma["status_code"], 451)
+        self.assertEqual(
+            rma["decision"],
+            "BOGO_BUNDLE_PARTIAL_RETURN_FREE_GIFT_ARBITRAGE_BREACH",
+        )
+
+        optim = evaluate_ecommerce_virtual_bundle_bom_proration_policy(
+            EcommerceVirtualBundleBomProrationPolicyInput(
+                quarterly_bogo_return_arbitrage_bundle_oversell_and_3pl_freeze_pool_usd=390000.0,
+                live_bottleneck_atp_largest_remainder_bom_and_kept_item_deduct_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 167700.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 222300.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_virtual_bundle_bom_proration_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-virtual-bundle-bom-proration-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()

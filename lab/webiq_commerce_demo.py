@@ -46359,6 +46359,86 @@ def evaluate_ota_corporate_hotel_virtual_card_folio_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceVirtualBundleBomProrationPolicyInput:
+    quarterly_bogo_return_arbitrage_bundle_oversell_and_3pl_freeze_pool_usd: float = (
+        390000.0
+    )
+    bundle_atp_exceeds_bottleneck_child_sku_or_splits_across_warehouses: bool = False
+    unexploded_virtual_parent_sent_to_3pl_or_proration_penny_drift_nonzero: bool = (
+        False
+    )
+    partial_bundle_or_bogo_return_refunds_full_price_keeping_free_gift: bool = False
+    live_bottleneck_atp_largest_remainder_bom_and_kept_item_deduct_ready: bool = False
+
+
+def evaluate_ecommerce_virtual_bundle_bom_proration_policy(
+    policy_input: EcommerceVirtualBundleBomProrationPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_bogo_return_arbitrage_bundle_oversell_and_3pl_freeze_pool_usd
+        ),
+    )
+    if policy_input.partial_bundle_or_bogo_return_refunds_full_price_keeping_free_gift:
+        return {
+            "status_code": 451,
+            "decision": "BOGO_BUNDLE_PARTIAL_RETURN_FREE_GIFT_ARBITRAGE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.bundle_atp_exceeds_bottleneck_child_sku_or_splits_across_warehouses:
+        return {
+            "status_code": 403,
+            "decision": "BOTTLENECK_COMPONENT_ATP_SHORTFALL_OR_SPLIT_DC_BUNDLE_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unexploded_virtual_parent_sent_to_3pl_or_proration_penny_drift_nonzero:
+        return {
+            "status_code": 422,
+            "decision": "UNEXPLODED_VIRTUAL_PARENT_IN_WMS_OR_PRORATION_PENNY_DRIFT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.live_bottleneck_atp_largest_remainder_bom_and_kept_item_deduct_ready:
+        savings = round(gross_pool * 0.43, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "LIVE_BOTTLENECK_ATP_LARGEST_REMAINDER_BOM_AND_RMA_CLAWBACK_CONFIRM",
+            "mandate_token": "virtual_bundle_bom_530th_guide_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_VIRTUAL_BUNDLE_BOM_PRORATION_AUTHORIZED",
+        "mandate_token": "virtual_bundle_bom_530th_guide_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -62964,6 +63044,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_virtual_bundle_bom_proration_guard = {
+        "authorized_200": evaluate_ecommerce_virtual_bundle_bom_proration_policy(
+            EcommerceVirtualBundleBomProrationPolicyInput()
+        ),
+        "bottleneck_atp_or_split_dc_403": evaluate_ecommerce_virtual_bundle_bom_proration_policy(
+            EcommerceVirtualBundleBomProrationPolicyInput(
+                bundle_atp_exceeds_bottleneck_child_sku_or_splits_across_warehouses=True
+            )
+        ),
+        "unexploded_parent_or_cent_drift_422": evaluate_ecommerce_virtual_bundle_bom_proration_policy(
+            EcommerceVirtualBundleBomProrationPolicyInput(
+                unexploded_virtual_parent_sent_to_3pl_or_proration_penny_drift_nonzero=True
+            )
+        ),
+        "bogo_partial_return_arbitrage_451": evaluate_ecommerce_virtual_bundle_bom_proration_policy(
+            EcommerceVirtualBundleBomProrationPolicyInput(
+                partial_bundle_or_bogo_return_refunds_full_price_keeping_free_gift=True
+            )
+        ),
+        "bottleneck_atp_bom_clawback_409": evaluate_ecommerce_virtual_bundle_bom_proration_policy(
+            EcommerceVirtualBundleBomProrationPolicyInput(
+                live_bottleneck_atp_largest_remainder_bom_and_kept_item_deduct_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -63503,6 +63609,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "omnichannel_bopis_curbside_fulfillment_guard": omnichannel_bopis_curbside_fulfillment_guard,
         "enterprise_ap_uom_three_way_match_bec_guard": enterprise_ap_uom_three_way_match_bec_guard,
         "ota_corporate_hotel_virtual_card_folio_guard": ota_corporate_hotel_virtual_card_folio_guard,
+        "ecommerce_virtual_bundle_bom_proration_guard": ecommerce_virtual_bundle_bom_proration_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -90293,6 +90400,62 @@ def render_webiq_live_demo_html(
         </div>
         <div id="htlvcn-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
           HTTP 409 T24H_SERTIFI_PMS_BIND_8PCT_COLLAR_AND_48H_SWEEP_CONFIRM · Mandate: ota_hotel_vcn_folio_round410_optim_409
+        </div>
+      </div>
+
+      <div class="finops-box" id="ecommerce-virtual-bundle-bom-proration-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 零售电商虚拟套装、同仓木桶短板 ATP 与买赠部分退货反白嫖 (Shopify Bundles / Simple Bundles / Pipe17 / NetSuite) 沙盒（🏆 全库第 530 篇双语决策指南重大里程碑！）</div>
+            <div class="finops-sub">Round 411 (#530 🏆 530th Guide Major Milestone · SVG #854 · Sandbox #304 · Test #1,408) · 按同仓木桶短板公式 min(floor(Child_ATP/Qty)) 实时计算套装库存防 1 件断货超卖 40 套 (HTTP 403) + 下发 3PL/海关强制拆解为物理子件 GTIN 并用最大余数法保证 0 美分尾差 (HTTP 422) + 买赠/套装部分退货强制按单买正价扣除保留品防 0 元白嫖赠品 (HTTP 451) + 净省 43% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="vbomb-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度买赠/套装只退高价主品 0 元白嫖赠品套利、短板子件断货引发礼盒超卖及未拆父 SKU 致 3PL 卡单池 ($)
+            <input type="number" id="vbomb-gross-input" value="390000" min="10000" step="5000" oninput="recalcEcommerceVirtualBundleBomProrationSandbox()" />
+          </label>
+          <label>同仓木桶短板子件库存公式 min(floor(Child_ATP / BOM_Qty)) 与禁跨仓拆礼盒门禁
+            <select id="vbomb-atp-select" onchange="recalcEcommerceVirtualBundleBomProrationSandbox()">
+              <option value="pass">实时取同一仓库内最短板子件计算套装库存，任一子件售罄毫秒级下架套装 (安全)</option>
+              <option value="block_403">精华液已被单买清空但静态套装库存仍卖出 40 套死单，或跨两个仓库拆发同一礼盒 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>3PL WMS / 海关报关物理子件 BOM 拆解与最大余数法 (Largest-Remainder) 美分守恒门禁
+            <select id="vbomb-bom-select" onchange="recalcEcommerceVirtualBundleBomProrationSandbox()">
+              <option value="pass">100% 拆解为物理子 SKU 条码与独立 HS 编码，最大余数法补齐最后 1 美分尾差 (安全)</option>
+              <option value="block_422">把虚拟父 SKU 直接推给 3PL 致拣货巴枪扫不出条码卡死，或分摊丢 $0.01 报关报错 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>买一赠一 (BOGO / GWP) 与成套折扣订单部分退货“保留品正价倒扣”反套利门禁
+            <select id="vbomb-rma-select" onchange="recalcEcommerceVirtualBundleBomProrationSandbox()">
+              <option value="pass">单退主品时可退上限 = 实付总额 - 保留品单买正价 (或要求将赠品一并寄回) (合规)</option>
+              <option value="block_451">花 $200 买大衣送 $60 卫衣，收货后单退大衣拿走 $200 全额退款、0 元白嫖卫衣 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>同仓木桶短板实时图计算 + Cart Transform 物理拆单 + 售后保留品正价倒扣编排
+            <select id="vbomb-opt-select" onchange="recalcEcommerceVirtualBundleBomProrationSandbox()">
+              <option value="enabled" selected>启用木桶短板 ATP + 最大余数 BOM 拆解 + 退货防白嫖 (-43% 超卖与买赠套利损耗 / HTTP 409)</option>
+              <option value="disabled">默认静态套装库存与 $0 赠品行基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度套装超卖与买赠白嫖池</div>
+            <div class="finops-kpi-val" id="vbomb-gross-kpi">$390,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净履约与退货成本</div>
+            <div class="finops-kpi-val" id="vbomb-net-kpi">$222,300</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省买赠白嫖与超卖赔付</div>
+            <div class="finops-kpi-val" id="vbomb-savings-kpi" style="color:#6ee7b7;">$167,700</div>
+          </div>
+        </div>
+        <div id="vbomb-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 LIVE_BOTTLENECK_ATP_LARGEST_REMAINDER_BOM_AND_RMA_CLAWBACK_CONFIRM · Mandate: virtual_bundle_bom_530th_guide_optim_409
         </div>
       </div>
 
@@ -124643,6 +124806,79 @@ function recalcOtaCorporateHotelVirtualCardFolioSandbox() {{
   banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
   banner.style.color = '#bfdbfe';
   banner.textContent = 'HTTP 200 VERIFIED_OTA_CORPORATE_HOTEL_VCN_AUTHORIZED · Mandate: ota_hotel_vcn_folio_round410_200';
+}}
+
+function recalcEcommerceVirtualBundleBomProrationSandbox() {{
+  const grossInput = document.getElementById('vbomb-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '390000'));
+  const atpGate = document.getElementById('vbomb-atp-select').value;
+  const bomGate = document.getElementById('vbomb-bom-select').value;
+  const rmaGate = document.getElementById('vbomb-rma-select').value;
+  const optMode = document.getElementById('vbomb-opt-select').value;
+
+  const grossKpi = document.getElementById('vbomb-gross-kpi');
+  const netKpi = document.getElementById('vbomb-net-kpi');
+  const savingsKpi = document.getElementById('vbomb-savings-kpi');
+  const statusKpi = document.getElementById('vbomb-status-kpi');
+  const banner = document.getElementById('vbomb-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (rmaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 BOGO_BUNDLE_PARTIAL_RETURN_FREE_GIFT_ARBITRAGE_BREACH · Mandate: null';
+    return;
+  }}
+  if (atpGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 BOTTLENECK_COMPONENT_ATP_SHORTFALL_OR_SPLIT_DC_BUNDLE_VETO · Mandate: null';
+    return;
+  }}
+  if (bomGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 UNEXPLODED_VIRTUAL_PARENT_IN_WMS_OR_PRORATION_PENNY_DRIFT_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.43);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 LIVE_BOTTLENECK_ATP_LARGEST_REMAINDER_BOM_AND_RMA_CLAWBACK_CONFIRM · Mandate: virtual_bundle_bom_530th_guide_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_VIRTUAL_BUNDLE_BOM_PRORATION_AUTHORIZED · Mandate: virtual_bundle_bom_530th_guide_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{
