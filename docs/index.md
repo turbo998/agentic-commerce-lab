@@ -2,12 +2,12 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`502` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`503` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
 - [一、智能体商业平台选型、实时网页接地（Web IQ）与入口治理（38 篇）](#platform-grounding)
-- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（61 篇）](#payments-mandates)
+- [二、智能体支付协议、加密授权令牌（Mandates）与强核身（62 篇）](#payments-mandates)
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（187 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（113 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（46 篇）](#saas-finops-micropayments)
@@ -64,7 +64,7 @@
 | 38 | **🏆 全渠道电商站内搜索、对话式商品发现与毛利加权智能重排（`Profit-Weighted Merchandising`）选型对比（`Constructor.io / Algolia AI Search / Coveo for Commerce / Azure AI Search + Vertex AI Search` · 🏆 全库第 500 篇双语决策指南历史性里程碑！）、主商品意图锁防 `$12` 手机壳霸榜 `$1,199` 整机搜索、核心尺码齐码率（`>=50%`）门禁与扣退货期望净毛利重排及 B2B 协议价 `ACL` 隔离净省 42% Agent 架构选型 FAQ** | [中文](ecommerce-site-search-conversational-discovery-constructor-algolia-coveo-azure-ai-search-profit-reranking-selection-faq.md) · [English](ecommerce-site-search-conversational-discovery-constructor-algolia-coveo-azure-ai-search-profit-reranking-selection-faq.en.md) |
 
 <a id="payments-mandates"></a>
-## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（61 篇）
+## 二、智能体支付协议、加密授权令牌（Mandates）与强核身（62 篇）
 
 > 涵盖 Google AP2、Stripe SPT、Visa VIC / TAP、Mastercard Agent Pay、PayPal、UCP/ACP 协议互操作、3DS2 无浏览器挑战、FIDO2/Passkey 硬件签名及幂等防重扣架构。
 
@@ -131,6 +131,7 @@
 | 59 | **零售电商组合支付（`Split-Tender Checkout`: `礼品卡 Gift Card + 会员积分 Loyalty Points + 信用卡`：`Talon.One / Yotpo / Shopify Plus GiftCard / Adyen + Stripe`）、两阶段软预占（`2PC Soft-Hold`）防刷卡失败吞积分、部分退货“先退积分/礼品卡、后退银行卡现金”反套现瀑布与买赠积分 `14 天` 待过退货期解冻净省 39% Agent 架构选型 FAQ** | [中文](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.md) · [English](ecommerce-split-tender-gift-card-loyalty-points-card-2pc-reverse-refund-waterfall-selection-faq.en.md) |
 | 60 | **🏆 商业智能体支付与结账五大协议横向选型对比（`Stripe Agent Toolkit SPT` vs. `Visa Intelligent Commerce` vs. `Mastercard Agent Pay` vs. `PayPal Agentic Toolkit` vs. `企业单次虚拟卡 JIT VCN` · 🏆 第 470 篇双语决策指南里程碑）、零明文卡号与单商户/限额/15m TTL 范围锁、卡组织 `EMVCo` 动态密文拒付责任转移及长尾单次精确美分虚拟卡降级净省 42% Agent 架构选型 FAQ** | [中文](agent-payment-protocol-matrix-stripe-spt-visa-intelligent-commerce-mastercard-agent-pay-paypal-vcn-selection-faq.md) · [English](agent-payment-protocol-matrix-stripe-spt-visa-intelligent-commerce-mastercard-agent-pay-paypal-vcn-selection-faq.en.md) |
 | 61 | **💳 零售电商先买后付（`BNPL`: `Klarna / Affirm / Afterpay / PayPal Pay in 4`）与分期授信智能体选型对比、扣减贴息后净毛利 `<20%` 或 `AOV < $250` 自动切流 `PayPal Pay in 4 / 买家付息` 方案、同款多尺码盲买（`Bracketing`）屏蔽 `$0` 首付 `Pay in 30` 及预售/跨仓拆单贷款预授权自动续期净省 39% Agent 架构选型 FAQ** | [中文](ecommerce-bnpl-klarna-affirm-afterpay-paypal-pay-in-4-mdr-floor-return-fee-selection-faq.md) · [English](ecommerce-bnpl-klarna-affirm-afterpay-paypal-pay-in-4-mdr-floor-return-fee-selection-faq.en.md) |
+| 62 | **🛡️ 零售电商结账反欺诈、误拒好客挽回（`False-Decline Rescue`）与 100% 拒付包赔担保（`Chargeback Guarantee`）选型对比（`Signifyd / Forter / Riskified / Stripe Radar + Adyen RevenueProtect`）、拦截 eBay 代下单三角诈骗（`Triangulation`）与快递面单禁在途改址锁、灰区拒单二阶承保复活及 WMS 保单有效期出库锁净省 42% Agent 架构选型 FAQ** | [中文](ecommerce-checkout-fraud-false-decline-signifyd-forter-riskified-chargeback-guarantee-selection-faq.md) · [English](ecommerce-checkout-fraud-false-decline-signifyd-forter-riskified-chargeback-guarantee-selection-faq.en.md) |
 
 <a id="retail-ota-marketplace"></a>
 ## 三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（187 篇）

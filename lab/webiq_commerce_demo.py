@@ -44285,6 +44285,82 @@ def evaluate_b2b_tail_spend_autonomous_sourcing_policy(
     }
 
 
+@dataclass(frozen=True)
+class EcommerceCheckoutFraudGuaranteePolicyInput:
+    quarterly_false_decline_margin_loss_and_chargeback_fraud_pool_usd: float = 480000.0
+    triangulation_reshipper_detected_or_carrier_reroute_lock_disabled: bool = False
+    gray_zone_order_hard_declined_without_guarantee_rescue_or_3ds2: bool = False
+    wms_shipped_without_active_guarantee_token_or_past_7d_sla_window: bool = False
+    selective_two_tier_guarantee_rescue_and_direct_delivery_lock_ready: bool = False
+
+
+def evaluate_ecommerce_checkout_fraud_guarantee_policy(
+    policy_input: EcommerceCheckoutFraudGuaranteePolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_false_decline_margin_loss_and_chargeback_fraud_pool_usd
+        ),
+    )
+    if policy_input.wms_shipped_without_active_guarantee_token_or_past_7d_sla_window:
+        return {
+            "status_code": 451,
+            "decision": "GUARANTEE_VOID_OVERRIDE_OR_EXPIRED_SHIP_SLA_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.triangulation_reshipper_detected_or_carrier_reroute_lock_disabled:
+        return {
+            "status_code": 403,
+            "decision": "TRIANGULATION_MISMATCH_OR_CARRIER_REROUTE_UNLOCKED_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.gray_zone_order_hard_declined_without_guarantee_rescue_or_3ds2:
+        return {
+            "status_code": 422,
+            "decision": "UNRESCUED_FALSE_DECLINE_INSULT_RATE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.selective_two_tier_guarantee_rescue_and_direct_delivery_lock_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "SELECTIVE_TWO_TIER_GUARANTEE_RESCUE_AND_CARRIER_LOCK_CONFIRM",
+            "mandate_token": "checkout_fraud_guarantee_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CHECKOUT_FRAUD_AND_GUARANTEE_AUTHORIZED",
+        "mandate_token": "checkout_fraud_guarantee_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -60188,6 +60264,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ecommerce_checkout_fraud_guarantee_guard = {
+        "authorized_200": evaluate_ecommerce_checkout_fraud_guarantee_policy(
+            EcommerceCheckoutFraudGuaranteePolicyInput()
+        ),
+        "triangulation_or_reroute_403": evaluate_ecommerce_checkout_fraud_guarantee_policy(
+            EcommerceCheckoutFraudGuaranteePolicyInput(
+                triangulation_reshipper_detected_or_carrier_reroute_lock_disabled=True
+            )
+        ),
+        "unrescued_false_decline_422": evaluate_ecommerce_checkout_fraud_guarantee_policy(
+            EcommerceCheckoutFraudGuaranteePolicyInput(
+                gray_zone_order_hard_declined_without_guarantee_rescue_or_3ds2=True
+            )
+        ),
+        "guarantee_void_or_late_ship_451": evaluate_ecommerce_checkout_fraud_guarantee_policy(
+            EcommerceCheckoutFraudGuaranteePolicyInput(
+                wms_shipped_without_active_guarantee_token_or_past_7d_sla_window=True
+            )
+        ),
+        "selective_guarantee_rescue_409": evaluate_ecommerce_checkout_fraud_guarantee_policy(
+            EcommerceCheckoutFraudGuaranteePolicyInput(
+                selective_two_tier_guarantee_rescue_and_direct_delivery_lock_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -60700,6 +60802,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "ecommerce_site_search_merchandising_guard": ecommerce_site_search_merchandising_guard,
         "corporate_travel_utc_multimodal_guard": corporate_travel_utc_multimodal_guard,
         "b2b_tail_spend_autonomous_sourcing_guard": b2b_tail_spend_autonomous_sourcing_guard,
+        "ecommerce_checkout_fraud_guarantee_guard": ecommerce_checkout_fraud_guarantee_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -87787,6 +87890,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="tailsp-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 AUTONOMOUS_3BID_MICRO_RFQ_AND_TAIL_AGGREGATOR_CONFIRM · Mandate: b2b_tail_spend_rfq_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 384 (#503 · SVG #827 · Sandbox #277 · Test #1,381) E-Commerce Checkout Fraud, False-Decline Rescue & Chargeback Guarantee -->
+      <div class="finops-box" id="ecommerce-checkout-fraud-guarantee-sandbox" style="margin-top:12px;border-color:#ef4444;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🛡️ 零售电商结账反欺诈、误拒好客挽回 (False-Decline Rescue) 与 100% 拒付包赔 (Signifyd / Forter / Riskified / Stripe Radar) 沙盒</div>
+            <div class="finops-sub">Round 384 (#503 · SVG #827 · Sandbox #277 · Test #1,381) · 拦截 eBay 代下单三角诈骗 (Triangulation) 与锁定快递面单严禁在途改址 (HTTP 403) + 严禁静态规则无包赔/无 3DS2 升权直接硬拒异地送礼好客 (HTTP 422) + WMS 出库强制核验有效 Guarantee Token 与 7 天发货 SLA 防脱保 (HTTP 451) + 前筛后保双层选择性承保复活净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="chkfrd-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度静态规则误杀异地送礼/差旅好客毛利流失、三角诈骗拒付赔穿与超期脱保损耗池 ($)
+            <input type="number" id="chkfrd-gross-input" value="480000" min="10000" step="5000" oninput="recalcEcommerceCheckoutFraudGuaranteeSandbox()" />
+          </label>
+          <label>三角诈骗 (Triangulation) 持卡人-收货人身份图谱核验与快递面单禁在途改址 (Direct-Delivery-Only) 锁
+            <select id="chkfrd-tri-select" onchange="recalcEcommerceCheckoutFraudGuaranteeSandbox()">
+              <option value="pass">核验全局身份图谱排除盗刷代下单，且快递面单强制开启 Direct_Delivery_Only 禁改址 (安全)</option>
+              <option value="block_403">黑产拿盗刷卡为闲鱼/eBay 买家代下单 (三角诈骗)，或包裹发出后通过快递 App 改派截胡 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>灰区订单误杀挽回 (False-Decline Rescue: 自动转交联盟身份图谱 100% 包赔承保或 3DS2 升权) 门禁
+            <select id="chkfrd-insult-select" onchange="recalcEcommerceCheckoutFraudGuaranteeSandbox()">
+              <option value="pass">账单!=收货地址或连 VPN 的灰区大单自动转 Signifyd/Forter 核保复活，挽回 87% 误杀单 (合规)</option>
+              <option value="block_422">仅因异地送礼地址不同或使用 VPN 就直接执行静态规则硬拒付，白白气走高价值真客户 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>WMS 拣货出库有效拒付保单令牌 (Active Guarantee Token) 与 7 天发货时效 / ASR 签收门禁
+            <select id="chkfrd-sla-select" onchange="recalcEcommerceCheckoutFraudGuaranteeSandbox()">
+              <option value="pass">WMS 凭 &lt;7 天有效 Guarantee Token 出库，预售超期自动重审且 &gt;$750 强制成人签收 (合规)</option>
+              <option value="block_451">销售人工强行放行已拒保高危单，或预售单超 7 天保单有效期未重审即发货导致 100% 拒赔 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>前筛后保双层路由 (85% 白名单走 $0.02 原生 Radar + 15% 灰区单走 Signifyd 100% 包赔复活) 编排
+            <select id="chkfrd-opt-select" onchange="recalcEcommerceCheckoutFraudGuaranteeSandbox()">
+              <option value="enabled" selected>启用前筛后保双层选择性承保复活 + 快递禁改址锁 (-42% 误杀毛利流失与欺诈损耗 / HTTP 409)</option>
+              <option value="disabled">传统单层静态规则硬拒或全量高成本投保基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度误杀好客与盗刷拒付池</div>
+            <div class="finops-kpi-val" id="chkfrd-gross-kpi">$480,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">前筛后保与锁址后净成本</div>
+            <div class="finops-kpi-val" id="chkfrd-net-kpi" style="color:#6ee7b7;">$278,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度挽回误杀毛利与防欺诈净省</div>
+            <div class="finops-kpi-val" id="chkfrd-savings-kpi" style="color:#38bdf8;">$201,600</div>
+          </div>
+        </div>
+        <div id="chkfrd-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 SELECTIVE_TWO_TIER_GUARANTEE_RESCUE_AND_CARRIER_LOCK_CONFIRM · Mandate: checkout_fraud_guarantee_optim_409
         </div>
       </div>
 
@@ -121336,6 +121496,79 @@ function recalcB2bTailSpendAutonomousSourcingSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_TAIL_SPEND_SOURCING_AUTHORIZED · Mandate: b2b_tail_spend_rfq_200';
+}}
+
+function recalcEcommerceCheckoutFraudGuaranteeSandbox() {{
+  const grossInput = document.getElementById('chkfrd-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '480000'));
+  const triGate = document.getElementById('chkfrd-tri-select').value;
+  const insultGate = document.getElementById('chkfrd-insult-select').value;
+  const slaGate = document.getElementById('chkfrd-sla-select').value;
+  const optMode = document.getElementById('chkfrd-opt-select').value;
+
+  const grossKpi = document.getElementById('chkfrd-gross-kpi');
+  const netKpi = document.getElementById('chkfrd-net-kpi');
+  const savingsKpi = document.getElementById('chkfrd-savings-kpi');
+  const statusKpi = document.getElementById('chkfrd-status-kpi');
+  const banner = document.getElementById('chkfrd-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (slaGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 GUARANTEE_VOID_OVERRIDE_OR_EXPIRED_SHIP_SLA_BREACH · Mandate: null';
+    return;
+  }}
+  if (triGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 TRIANGULATION_MISMATCH_OR_CARRIER_REROUTE_UNLOCKED_VETO · Mandate: null';
+    return;
+  }}
+  if (insultGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 UNRESCUED_FALSE_DECLINE_INSULT_RATE_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 SELECTIVE_TWO_TIER_GUARANTEE_RESCUE_AND_CARRIER_LOCK_CONFIRM · Mandate: checkout_fraud_guarantee_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_CHECKOUT_FRAUD_AND_GUARANTEE_AUTHORIZED · Mandate: checkout_fraud_guarantee_200';
 }}
 
 function updateStage1756Sandbox() {{

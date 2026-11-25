@@ -34786,6 +34786,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-tail-spend-autonomous-sourcing-sandbox", html_zh)
 
+    def test_ecommerce_checkout_fraud_guarantee_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            EcommerceCheckoutFraudGuaranteePolicyInput,
+            evaluate_ecommerce_checkout_fraud_guarantee_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_ecommerce_checkout_fraud_guarantee_policy(
+            EcommerceCheckoutFraudGuaranteePolicyInput(
+                quarterly_false_decline_margin_loss_and_chargeback_fraud_pool_usd=480000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_CHECKOUT_FRAUD_AND_GUARANTEE_AUTHORIZED",
+        )
+
+        tri = evaluate_ecommerce_checkout_fraud_guarantee_policy(
+            EcommerceCheckoutFraudGuaranteePolicyInput(
+                triangulation_reshipper_detected_or_carrier_reroute_lock_disabled=True
+            )
+        )
+        self.assertEqual(tri["status_code"], 403)
+        self.assertEqual(
+            tri["decision"],
+            "TRIANGULATION_MISMATCH_OR_CARRIER_REROUTE_UNLOCKED_VETO",
+        )
+
+        insult = evaluate_ecommerce_checkout_fraud_guarantee_policy(
+            EcommerceCheckoutFraudGuaranteePolicyInput(
+                gray_zone_order_hard_declined_without_guarantee_rescue_or_3ds2=True
+            )
+        )
+        self.assertEqual(insult["status_code"], 422)
+        self.assertEqual(
+            insult["decision"],
+            "UNRESCUED_FALSE_DECLINE_INSULT_RATE_BREACH",
+        )
+
+        sla = evaluate_ecommerce_checkout_fraud_guarantee_policy(
+            EcommerceCheckoutFraudGuaranteePolicyInput(
+                wms_shipped_without_active_guarantee_token_or_past_7d_sla_window=True
+            )
+        )
+        self.assertEqual(sla["status_code"], 451)
+        self.assertEqual(
+            sla["decision"],
+            "GUARANTEE_VOID_OVERRIDE_OR_EXPIRED_SHIP_SLA_BREACH",
+        )
+
+        optim = evaluate_ecommerce_checkout_fraud_guarantee_policy(
+            EcommerceCheckoutFraudGuaranteePolicyInput(
+                quarterly_false_decline_margin_loss_and_chargeback_fraud_pool_usd=480000.0,
+                selective_two_tier_guarantee_rescue_and_direct_delivery_lock_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 201600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 278400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ecommerce_checkout_fraud_guarantee_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ecommerce-checkout-fraud-guarantee-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
