@@ -2,7 +2,7 @@
 
 🌐 **语言切换 / Language**: **中文总目录 (当前)** | **[English Full Catalog (`docs/index.en.md`)](index.en.md)** | **[返回仓库首页 (`README.md`)](../README.md)** | **[🚀 交互式架构工作台 (`live-demo.html`)](../live-demo.html)** | **[📊 7-Card 基准测试报告 (`benchmark-cards.html`)](../benchmark-cards.html)**
 
-> 本目录汇集 **`530` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
+> 本目录汇集 **`531` 篇中英双语 AI Solution Architect 架构选型与决策指南（FAQ）**、**`21` 份确定性架构蓝图** 与 **核心专题研究**，全部围绕企业级智能体商业的六大核心架构域组织，提供清晰的技术对比矩阵、Mermaid 架构图与生产落地清单。
 
 ## 快速导航
 
@@ -11,7 +11,7 @@
 - [三、多商户零售编排、平台分账清结算与酒旅航司（OTA / NDC）（201 篇）](#retail-ota-marketplace)
 - [四、B2B 企业采购寻源、ERP 三单匹配与供应链贸易金融（119 篇）](#b2b-procurement-erp)
 - [五、SaaS 订阅生命周期、用量计费（Usage Metering）与机器微支付（48 篇）](#saas-finops-micropayments)
-- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（57 篇）](#tax-fx-privacy-disputes)
+- [六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（58 篇）](#tax-fx-privacy-disputes)
 - [七、确定性领域架构蓝图（`docs/architecture/` · 21 份）](#architecture-blueprints)
 - [八、深度架构专题与行业趋势研究（`docs/research/`）](#deep-dive-research)
 
@@ -531,7 +531,7 @@
 | 48 | **🏆 订阅制 SaaS 与 DTC 会员退订挽留（`Cancel-Flow Deflection`）、暂停跳期 vs. 折扣因果归因、美国 `FTC 一键退订法案 (16 CFR Part 464)` 合规与智能催收（`Chargebee Retention / ProsperStack / Recurly / Recharge + Stripe Billing` · 🏆 历史性全库第 1,400 项确定性单元测试重大里程碑！）、囤货原因唯一导流一键暂停 60 天与 `365d` 折扣冷却防每季假退订薅半价、扣前 `VAU` 换卡与 `Visa Cat-1` 硬拒付零重试及发薪日择时重扣净省 43% Agent 架构选型 FAQ** | [中文](saas-subscription-cancel-flow-retention-chargebee-prosperstack-recurly-ftc-dunning-selection-faq.md) · [English](saas-subscription-cancel-flow-retention-chargebee-prosperstack-recurly-ftc-dunning-selection-faq.en.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（57 篇）
+## 六、跨境税务（MoR）、外汇资金池、隐私脱敏与拒付抗辩（CE 3.0）（58 篇）
 
 > 聚焦 Merchant of Record（MoR）选型、跨境 HS 编码完税价（DDP）与 VAT/Sales Tax 合规、实时锁汇与 ISO 20022 多币种净额轧差、PCI-DSS v4.0.1 / GDPR 加密粉碎，以及 Visa CE 3.0 / VAMP 友好欺诈抗辩证据链。
 
@@ -594,6 +594,7 @@
 | 55 | **🏆 跨境商业名义商户（`Merchant of Record - MoR`: `Paddle / FastSpring / Global-e`）vs. 自建本地直连收单（`Direct Acquiring`: `Stripe / Adyen + Avalara` · 🏆 第 475 篇双语决策指南里程碑）、海外零阈值数字税（`VAT / GST`）代征免责、实物包裹 10 位 `HS Code` 完税交付（`Guaranteed DDP`）防上门收税拒收及 `$3.5M GMV` 核心国/长尾国双轨分流净省 41% Agent 架构选型 FAQ** | [中文](cross-border-merchant-of-record-mor-paddle-global-e-vs-stripe-direct-tax-acquiring-selection-faq.md) · [English](cross-border-merchant-of-record-mor-paddle-global-e-vs-stripe-direct-tax-acquiring-selection-faq.en.md) |
 | 56 | **🏆 跨境多币种定价、本币原路归集（`Like-for-Like Settlement`）与锁汇退款智能体（`Airwallex / Adyen / Stripe Adaptive Pricing / Kantox / Wise` · 🏆 第 485 篇双语决策指南里程碑）、消灭收外币强转 `USD` 再买回外币的 `400 bps` 双重换汇、退货强制锚定原单展示币种从本币池直退及 `Lock-FX TTL / ±1.5%` 汇率走廊净省 42% Agent 架构选型 FAQ** | [中文](cross-border-multi-currency-fx-hedging-airwallex-adyen-stripe-like-for-like-refund-rate-lock-selection-faq.md) · [English](cross-border-multi-currency-fx-hedging-airwallex-adyen-stripe-like-for-like-refund-rate-lock-selection-faq.en.md) |
 | 57 | **🏆 跨境电商海关商品编码归类（`10-Digit HTS`）、小额免税（`Section 321 / EU IOSS`）与退货 `99%` 退税选型对比（`Zonos / Avalara Cross-Border / Global-e / Flexport` · 🏆 第 820 张架构图与第 270 个策略沙盒双里程碑）、10 位税号材质与真实原产地（`CoO`）强校验锁、同收货人 24h 免税额聚合防违规拆包及 `CBP Form 7551` 退税闭环净省 41% Agent 架构选型 FAQ** | [中文](cross-border-customs-hts-tariff-zonos-avalara-flexport-de-minimis-duty-drawback-selection-faq.md) · [English](cross-border-customs-hts-tariff-zonos-avalara-flexport-de-minimis-duty-drawback-selection-faq.en.md) |
+| 58 | **🏆 跨境 SaaS、AI 应用与数字商品名义商户（`Merchant of Record, MoR`）vs. 自建税务引擎（`Paddle / FastSpring / Lemon Squeezy vs. Stripe Tax + Anrok / Avalara` · 🏆 第 855 张 SVG 与第 305 个策略沙盒双里程碑！）、欧盟 `VAT Art. 24b` 双重无矛盾位置证据（`2-of-3 Quorum`）防挂 VPN 逃税、`<$2,500` 全球自助单走 `MoR` + `>=$2,500` 企业大单走自营 `ACH/Anrok` 双轨分流及得州 `80%` 规则/芝加哥 `9%` 云租赁税精准编码净省 42% Agent 架构选型 FAQ** | [中文](cross-border-saas-mor-vs-sor-paddle-fastspring-anrok-stripe-tax-nexus-selection-faq.md) · [English](cross-border-saas-mor-vs-sor-paddle-fastspring-anrok-stripe-tax-nexus-selection-faq.en.md) |
 
 <a id="architecture-blueprints"></a>
 ## 七、确定性领域架构蓝图（`docs/architecture/` · 21 份）

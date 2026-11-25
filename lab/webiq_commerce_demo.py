@@ -46439,6 +46439,84 @@ def evaluate_ecommerce_virtual_bundle_bom_proration_policy(
     }
 
 
+@dataclass(frozen=True)
+class CrossBorderSaasMorVsSorTaxNexusPolicyInput:
+    quarterly_mor_fee_bleed_unregistered_nexus_and_vat_audit_pool_usd: float = (
+        460000.0
+    )
+    vpn_ip_overrides_contradictory_card_bin_and_billing_zip_for_eu_vat: bool = False
+    enterprise_b2b_over_2500_routed_to_5pct_mor_or_us_nexus_unregistered: bool = False
+    saas_ptc_misclassified_in_tx_chicago_or_exempt_granted_without_cert: bool = False
+    hybrid_plg_mor_and_enterprise_sor_anrok_router_ready: bool = False
+
+
+def evaluate_cross_border_saas_mor_vs_sor_tax_nexus_policy(
+    policy_input: CrossBorderSaasMorVsSorTaxNexusPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_mor_fee_bleed_unregistered_nexus_and_vat_audit_pool_usd
+        ),
+    )
+    if policy_input.saas_ptc_misclassified_in_tx_chicago_or_exempt_granted_without_cert:
+        return {
+            "status_code": 451,
+            "decision": "SAAS_PTC_TAXABILITY_MISCLASSIFICATION_OR_MISSING_EXEMPT_CERT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.vpn_ip_overrides_contradictory_card_bin_and_billing_zip_for_eu_vat:
+        return {
+            "status_code": 403,
+            "decision": "EU_ART24B_CONTRADICTORY_LOCATION_EVIDENCE_VAT_EVASION_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.enterprise_b2b_over_2500_routed_to_5pct_mor_or_us_nexus_unregistered:
+        return {
+            "status_code": 422,
+            "decision": "HIGH_TICKET_B2B_MOR_FEE_BLEED_OR_UNREGISTERED_US_NEXUS_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.hybrid_plg_mor_and_enterprise_sor_anrok_router_ready:
+        savings = round(gross_pool * 0.42, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "HYBRID_PLG_MOR_AND_ENTERPRISE_SOR_ANROK_ROUTER_CONFIRM",
+            "mandate_token": "cross_border_saas_mor_305th_sandbox_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_CROSS_BORDER_SAAS_MOR_VS_SOR_AUTHORIZED",
+        "mandate_token": "cross_border_saas_mor_305th_sandbox_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -63070,6 +63148,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    cross_border_saas_mor_vs_sor_tax_nexus_guard = {
+        "authorized_200": evaluate_cross_border_saas_mor_vs_sor_tax_nexus_policy(
+            CrossBorderSaasMorVsSorTaxNexusPolicyInput()
+        ),
+        "vpn_ip_eu_vat_evasion_403": evaluate_cross_border_saas_mor_vs_sor_tax_nexus_policy(
+            CrossBorderSaasMorVsSorTaxNexusPolicyInput(
+                vpn_ip_overrides_contradictory_card_bin_and_billing_zip_for_eu_vat=True
+            )
+        ),
+        "b2b_mor_bleed_or_nexus_422": evaluate_cross_border_saas_mor_vs_sor_tax_nexus_policy(
+            CrossBorderSaasMorVsSorTaxNexusPolicyInput(
+                enterprise_b2b_over_2500_routed_to_5pct_mor_or_us_nexus_unregistered=True
+            )
+        ),
+        "saas_ptc_or_exempt_cert_451": evaluate_cross_border_saas_mor_vs_sor_tax_nexus_policy(
+            CrossBorderSaasMorVsSorTaxNexusPolicyInput(
+                saas_ptc_misclassified_in_tx_chicago_or_exempt_granted_without_cert=True
+            )
+        ),
+        "hybrid_plg_mor_b2b_sor_409": evaluate_cross_border_saas_mor_vs_sor_tax_nexus_policy(
+            CrossBorderSaasMorVsSorTaxNexusPolicyInput(
+                hybrid_plg_mor_and_enterprise_sor_anrok_router_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -63610,6 +63714,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "enterprise_ap_uom_three_way_match_bec_guard": enterprise_ap_uom_three_way_match_bec_guard,
         "ota_corporate_hotel_virtual_card_folio_guard": ota_corporate_hotel_virtual_card_folio_guard,
         "ecommerce_virtual_bundle_bom_proration_guard": ecommerce_virtual_bundle_bom_proration_guard,
+        "cross_border_saas_mor_vs_sor_tax_nexus_guard": cross_border_saas_mor_vs_sor_tax_nexus_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -90456,6 +90561,62 @@ def render_webiq_live_demo_html(
         </div>
         <div id="vbomb-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
           HTTP 409 LIVE_BOTTLENECK_ATP_LARGEST_REMAINDER_BOM_AND_RMA_CLAWBACK_CONFIRM · Mandate: virtual_bundle_bom_530th_guide_optim_409
+        </div>
+      </div>
+
+      <div class="finops-box" id="cross-border-saas-mor-vs-sor-tax-nexus-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 跨境 SaaS 与数字商品名义商户 (MoR) vs. 自建税务引擎 (Paddle / FastSpring / Lemon Squeezy / Anrok) 沙盒（🏆 第 855 张 SVG 与第 305 个策略沙盒双里程碑！）</div>
+            <div class="finops-sub">Round 412 (#531 · 🏆 855th SVG &amp; 305th Sandbox Dual Milestone! · Test #1,409) · 强制欧盟 VAT Art. 24b 双重无矛盾位置证据 (IP+BIN+ZIP 2-of-3) 防挂美国 VPN 逃避 20% 欧洲增值税 (HTTP 403) + 将 &gt;=$2,500 企业大单切流自有主体 ACH/Wire+Anrok 防被 5% MoR 抽走 $1,250 并监控各州 $100k/200笔经济联结 (HTTP 422) + 得州 80% 规则/芝加哥 9% 云税精准 PTC 与免税证验真 (HTTP 451) + 净省 42% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="morsor-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度大额 B2B 年框走 5% MoR 抽成失血、漏报欧盟 VAT / 美国各州 200 笔经济联结罚金及跨国代理报税开销池 ($)
+            <input type="number" id="morsor-gross-input" value="460000" min="10000" step="5000" oninput="recalcCrossBorderSaasMorVsSorTaxNexusSandbox()" />
+          </label>
+          <label>欧盟 VAT Directive Art. 24b 双重无矛盾位置证据 (2-of-3 Location Quorum) 门禁
+            <select id="morsor-geo-select" onchange="recalcCrossBorderSaasMorVsSorTaxNexusSandbox()">
+              <option value="pass">综合比对 IP、发卡行 BIN 与账单邮编 (2-of-3 多数仲裁)，拦截 VPN 伪装并封存 10 年证据 (安全)</option>
+              <option value="block_403">法国买家挂美国 VPN 但刷法国卡填巴黎邮编，系统轻信 IP 按 0% 免税遭欧盟追缴重罚 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>大额企业合同 (&gt;=$2,500) 切流自营 ACH/SoR 与美国各州经济联结 (Economic Nexus 80%) 门禁
+            <select id="morsor-nex-select" onchange="recalcCrossBorderSaasMorVsSorTaxNexusSandbox()">
+              <option value="pass">&lt;$2.5k 全球自助单走 Paddle MoR 免报税，&gt;=$2.5k 企业大单走 $5 ACH+Anrok 并监控 80% 联结线 (安全)</option>
+              <option value="block_422">把 $25,000 企业年框塞进 5% MoR 刷卡通道白扣 $1,250，或突破 200 笔州联结未注册裸奔 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>美国各州 SaaS 专属税目码 (PTC: 得州 80% 规则 / 芝加哥 9% PPLTT) 与免税证核验门禁
+            <select id="morsor-ptc-select" onchange="recalcCrossBorderSaasMorVsSorTaxNexusSandbox()">
+              <option value="pass">绑定 SaaS/AI 精确 PTC 自动执行得州 80% 应税额与芝加哥云租赁税，凭有效免税证才免税 (合规)</option>
+              <option value="block_451">按普通实物税码在得州按 100% 乱收税、漏收芝加哥 9% 云税，或未收免税证即免税 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>全球长尾自助 PLG 走 MoR (&lt;$2.5k) + 核心企业年框走自营 SoR+Anrok (&gt;=$2.5k) 双轨混合编排
+            <select id="morsor-opt-select" onchange="recalcCrossBorderSaasMorVsSorTaxNexusSandbox()">
+              <option value="enabled" selected>启用 PLG-MoR 与 Enterprise-SoR 双轨混合路由 (-42% 通道抽成与税务合规损耗 / HTTP 409)</option>
+              <option value="disabled">默认单一全量 5% MoR 或自营手工报税基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度MoR抽成与跨国报税损失池</div>
+            <div class="finops-kpi-val" id="morsor-gross-kpi">$460,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净通道与税务成本</div>
+            <div class="finops-kpi-val" id="morsor-net-kpi">$266,800</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省大单抽成与补税罚金</div>
+            <div class="finops-kpi-val" id="morsor-savings-kpi" style="color:#6ee7b7;">$193,200</div>
+          </div>
+        </div>
+        <div id="morsor-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 HYBRID_PLG_MOR_AND_ENTERPRISE_SOR_ANROK_ROUTER_CONFIRM · Mandate: cross_border_saas_mor_305th_sandbox_optim_409
         </div>
       </div>
 
@@ -124879,6 +125040,79 @@ function recalcEcommerceVirtualBundleBomProrationSandbox() {{
   banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
   banner.style.color = '#bfdbfe';
   banner.textContent = 'HTTP 200 VERIFIED_VIRTUAL_BUNDLE_BOM_PRORATION_AUTHORIZED · Mandate: virtual_bundle_bom_530th_guide_200';
+}}
+
+function recalcCrossBorderSaasMorVsSorTaxNexusSandbox() {{
+  const grossInput = document.getElementById('morsor-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '460000'));
+  const geoGate = document.getElementById('morsor-geo-select').value;
+  const nexGate = document.getElementById('morsor-nex-select').value;
+  const ptcGate = document.getElementById('morsor-ptc-select').value;
+  const optMode = document.getElementById('morsor-opt-select').value;
+
+  const grossKpi = document.getElementById('morsor-gross-kpi');
+  const netKpi = document.getElementById('morsor-net-kpi');
+  const savingsKpi = document.getElementById('morsor-savings-kpi');
+  const statusKpi = document.getElementById('morsor-status-kpi');
+  const banner = document.getElementById('morsor-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (ptcGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 SAAS_PTC_TAXABILITY_MISCLASSIFICATION_OR_MISSING_EXEMPT_CERT_BREACH · Mandate: null';
+    return;
+  }}
+  if (geoGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 EU_ART24B_CONTRADICTORY_LOCATION_EVIDENCE_VAT_EVASION_VETO · Mandate: null';
+    return;
+  }}
+  if (nexGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 HIGH_TICKET_B2B_MOR_FEE_BLEED_OR_UNREGISTERED_US_NEXUS_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.42);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 HYBRID_PLG_MOR_AND_ENTERPRISE_SOR_ANROK_ROUTER_CONFIRM · Mandate: cross_border_saas_mor_305th_sandbox_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_CROSS_BORDER_SAAS_MOR_VS_SOR_AUTHORIZED · Mandate: cross_border_saas_mor_305th_sandbox_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{

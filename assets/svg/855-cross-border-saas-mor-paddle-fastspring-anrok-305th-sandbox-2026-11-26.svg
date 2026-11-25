@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg855" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1120" />
+      <stop offset="55%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#064e3b" />
+    </linearGradient>
+    <linearGradient id="accent855" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg855)" />
+  <rect x="24" y="24" width="1152" height="582" rx="18" fill="none" stroke="url(#accent855)" stroke-width="2" opacity="0.5" />
+
+  <text x="52" y="66" fill="#10b981" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.2">
+    🏆 855TH SVG &amp; 305TH SANDBOX DUAL MILESTONE! · ROUND 412 · FAQ #531 · TEST #1,409
+  </text>
+  <text x="52" y="102" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="800">
+    Cross-Border SaaS Merchant of Record (MoR) vs. DIY Tax Engine Copilot
+  </text>
+  <text x="52" y="130" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="15">
+    Paddle vs. FastSpring vs. Lemon Squeezy vs. Stripe Tax + Anrok/Avalara + EU 2-of-3 Location Proof &amp; Hybrid Router
+  </text>
+
+  <!-- Panel 1 -->
+  <rect x="52" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#ef4444" stroke-width="1.8" />
+  <rect x="52" y="156" width="350" height="42" rx="14" fill="#7f1d1d" />
+  <text x="72" y="183" fill="#fecaca" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    1. EU 2-of-3 Location Proof (403)
+  </text>
+  <text x="72" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: French Buyer Uses US VPN to Evade 20% VAT!
+  </text>
+  <text x="72" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • French buyer turns on US VPN (`IP=US`), but pays
+  </text>
+  <text x="72" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    with a French card (`BIN=FR`) and Paris ZIP (`75001`)
+  </text>
+  <text x="72" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    → trusting IP alone violates EU VAT Art. 24b!
+  </text>
+  <rect x="72" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#f87171" stroke-width="1" />
+  <text x="86" y="328" fill="#fca5a5" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if VPN_IP_Contradicts_Card_BIN_And_Billing_ZIP:
+  </text>
+  <text x="86" y="348" fill="#fecaca" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_403_EU_ART24B_TWO_EVIDENCE_VAT_VETO
+  </text>
+  <text x="86" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Require 2 non-contradictory proofs (BIN + ZIP)
+  </text>
+  <text x="72" y="404" fill="#6ee7b7" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    Platform Fit: Paddle / FastSpring / Anrok / Stripe Tax
+  </text>
+  <text x="72" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Resolves 2-of-3 location quorum (`IP, Card BIN, ZIP`)
+  </text>
+  <text x="72" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Archives 10-year immutable tax location proof log
+  </text>
+  <text x="72" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Transfers 100% EU OSS/UK/JP VAT audit liability to MoR
+  </text>
+
+  <!-- Panel 2 -->
+  <rect x="425" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#f59e0b" stroke-width="1.8" />
+  <rect x="425" y="156" width="350" height="42" rx="14" fill="#78350f" />
+  <text x="445" y="183" fill="#fde68a" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    2. B2B MoR Fee &amp; Nexus Gate (422)
+  </text>
+  <text x="445" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: Paying 5% MoR Fee ($1,250!) on $25k B2B Deal
+  </text>
+  <text x="445" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Routing a $25,000 enterprise annual contract through
+  </text>
+  <text x="445" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    a 5% consumer MoR card checkout burns $1,250 in fees!
+  </text>
+  <text x="445" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Or crossing $100k US state nexus without registering!
+  </text>
+  <rect x="445" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#fbbf24" stroke-width="1" />
+  <text x="459" y="328" fill="#fcd34d" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if B2B_ACV &gt;= $5000_On_5pct_MoR or Unregistered_Nexus:
+  </text>
+  <text x="459" y="348" fill="#fde68a" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_422_HIGH_ACV_MOR_BLEED_OR_NEXUS_BREACH
+  </text>
+  <text x="459" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Route &gt;=$2.5k B2B to Direct SoR ACH + Anrok
+  </text>
+  <text x="445" y="404" fill="#38bdf8" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    Hybrid PLG-MoR + B2B-SoR Router (HTTP 409):
+  </text>
+  <text x="445" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Routes global PLG self-serve (`&lt;$2,500`) to Paddle MoR
+  </text>
+  <text x="445" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Routes enterprise invoices (`&gt;=$2,500`) to Stripe+Anrok
+  </text>
+  <text x="445" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Cuts combined MDR fees &amp; tax compliance TCO 42%
+  </text>
+
+  <!-- Panel 3 -->
+  <rect x="798" y="156" width="350" height="390" rx="14" fill="#0f172a" stroke="#10b981" stroke-width="1.8" />
+  <rect x="798" y="156" width="350" height="42" rx="14" fill="#064e3b" />
+  <text x="818" y="183" fill="#a7f3d0" font-family="Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    3. State SaaS PTC &amp; Exemption (451)
+  </text>
+  <text x="818" y="222" fill="#f8fafc" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">
+    Problem: Texas 80% SaaS Rule &amp; Unverified Tax-Exempt
+  </text>
+  <text x="818" y="244" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Charging 100% tax in Texas (where 20% of SaaS is
+  </text>
+  <text x="818" y="264" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    statutorily exempt under TX Tax Code §151.351)
+  </text>
+  <text x="818" y="284" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+    • Or missing Chicago 9% PPLTT cloud lease tax!
+  </text>
+  <rect x="818" y="304" width="310" height="72" rx="8" fill="#1e293b" stroke="#34d399" stroke-width="1" />
+  <text x="832" y="328" fill="#6ee7b7" font-family="Consolas, monospace" font-size="12" font-weight="700">
+    if Wrong_SaaS_PTC_Rule or Missing_Exempt_Cert_Doc:
+  </text>
+  <text x="832" y="348" fill="#a7f3d0" font-family="Consolas, monospace" font-size="12">
+    raise HTTP_451_SAAS_PTC_MISCLASSIFICATION_OR_CERT_GAP
+  </text>
+  <text x="832" y="366" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">
+    # Map exact SaaS/AI PTC &amp; verify state MTC certificate
+  </text>
+  <text x="818" y="404" fill="#c4b5fd" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    Granular SaaS Tax Governance:
+  </text>
+  <text x="818" y="426" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Applies exact TX 80% taxable base &amp; Chicago PPLTT
+  </text>
+  <text x="818" y="446" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    •Separates B2B SaaS vs. B2C digital download rules
+  </text>
+  <text x="818" y="466" fill="#cbd5e1" font-family="Segoe UI, Arial, sans-serif" font-size="12">
+    • Validates &amp; vaults state exemption certificates
+  </text>
+
+  <!-- Footer -->
+  <text x="52" y="582" fill="#10b981" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700">
+    🏆 855th SVG &amp; 305th Sandbox Dual Milestone! · Pillar 6: Cross-Border SaaS MoR vs. SoR Tax Engine (#531)
+  </text>
+</svg>

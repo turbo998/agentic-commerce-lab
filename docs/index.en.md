@@ -2,7 +2,7 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`530` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`531` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
@@ -11,7 +11,7 @@
 - [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (201 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (119 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (48 guides)](#saas-finops-micropayments)
-- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (57 guides)](#tax-fx-privacy-disputes)
+- [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (58 guides)](#tax-fx-privacy-disputes)
 - [7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 specs)](#architecture-blueprints)
 - [8. Deep-Dive Research & Industry Trend Reports (`docs/research/`)](#deep-dive-research)
 
@@ -531,7 +531,7 @@
 | 48 | **🏆 Subscription SaaS & DTC Membership Churn-Save (`Cancel-Flow Deflection`), `Pause-vs-Discount` Uplift, `FTC Click-to-Cancel (16 CFR Part 464)` & Smart Dunning Agent (`Chargebee Retention / ProsperStack / Recurly / Recharge + Stripe Billing` · 🏆 Historic 1,400th Deterministic Unit Test Major Milestone!), Overstock-to-Pause Routing & `365d` Discount Cooldowns, Pre-Bill `VAU` + `Cat-1` Zero-Retry Breakers & Payday Smart Dunning (`-43%` Cost) FAQ** | [English](saas-subscription-cancel-flow-retention-chargebee-prosperstack-recurly-ftc-dunning-selection-faq.en.md) · [中文](saas-subscription-cancel-flow-retention-chargebee-prosperstack-recurly-ftc-dunning-selection-faq.md) |
 
 <a id="tax-fx-privacy-disputes"></a>
-## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (57 Guides)
+## 6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (58 Guides)
 
 > Covers Merchant of Record (MoR) vs DIY PSP, HS-code DDP landed cost & VAT/Sales Tax nexus, FX quote collars & ISO 20022 netting, ZK eligibility / PCI redaction / GDPR crypto-shredding, and Visa CE 3.0 / VAMP dispute defense.
 
@@ -594,6 +594,7 @@
 | 55 | **🏆 Cross-Border Merchant of Record (`MoR`: `Paddle / FastSpring / Global-e`) vs. Direct Local Acquiring (`Stripe / Adyen + Avalara` · 🏆 475th Bilingual Guide Milestone), Zero-Threshold Global `VAT / GST` Shield, Guaranteed `DDP` Landed-Cost Lock & `$3.5M GMV` Hybrid Routing (`-41%` Tax & MDR Loss) FAQ** | [English](cross-border-merchant-of-record-mor-paddle-global-e-vs-stripe-direct-tax-acquiring-selection-faq.en.md) · [中文](cross-border-merchant-of-record-mor-paddle-global-e-vs-stripe-direct-tax-acquiring-selection-faq.md) |
 | 56 | **🏆 Cross-Border Multi-Currency Pricing, `Like-for-Like` Settlement & `Lock-FX` Treasury (`Airwallex / Adyen / Stripe Adaptive Pricing / Kantox / Wise` · 🏆 485th Bilingual Guide Milestone), Eliminating `400 bps` Double-FX Round-Trips, Original-Capture Refund Locks & Bounded `FX Quote TTL` (`-42%` FX Loss) FAQ** | [English](cross-border-multi-currency-fx-hedging-airwallex-adyen-stripe-like-for-like-refund-rate-lock-selection-faq.en.md) · [中文](cross-border-multi-currency-fx-hedging-airwallex-adyen-stripe-like-for-like-refund-rate-lock-selection-faq.md) |
 | 57 | **🏆 Cross-Border Customs Tariff Classification (`10-Digit HTS`), De Minimis (`Section 321 / EU IOSS`) & `99%` Duty-Drawback Agent (`Zonos / Avalara Cross-Border / Global-e / Flexport` · 🏆 820th SVG & 270th Sandbox Dual Milestone), Material/Origin `GRI` Locks, Anti-Structuring Split-Parcel Guards & Return Duty Recovery (`-41%` Cost) FAQ** | [English](cross-border-customs-hts-tariff-zonos-avalara-flexport-de-minimis-duty-drawback-selection-faq.en.md) · [中文](cross-border-customs-hts-tariff-zonos-avalara-flexport-de-minimis-duty-drawback-selection-faq.md) |
+| 58 | **🏆 Cross-Border SaaS & Digital Commerce Merchant of Record (`MoR` vs. `DIY Seller of Record + Tax Engine`: `Paddle / FastSpring / Lemon Squeezy vs. Stripe Tax + Anrok / Avalara` · 🏆 855th SVG & 305th Sandbox Dual Milestone!), `EU VAT Art. 24b` 2-of-3 Location Quorum Locks, Hybrid `PLG-on-MoR (<$2.5k)` + `Enterprise-on-SoR (>=$2.5k)` Routing & Texas `80%` / Chicago `PPLTT` `PTC` Rules (`-42%` Cost) FAQ** | [English](cross-border-saas-mor-vs-sor-paddle-fastspring-anrok-stripe-tax-nexus-selection-faq.en.md) · [中文](cross-border-saas-mor-vs-sor-paddle-fastspring-anrok-stripe-tax-nexus-selection-faq.md) |
 
 <a id="architecture-blueprints"></a>
 ## 7. Deterministic Domain Architecture Blueprints (`docs/architecture/` · 21 Specs)

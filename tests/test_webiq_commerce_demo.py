@@ -36600,6 +36600,70 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ecommerce-virtual-bundle-bom-proration-sandbox", html_zh)
 
+    def test_cross_border_saas_mor_vs_sor_tax_nexus_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            CrossBorderSaasMorVsSorTaxNexusPolicyInput,
+            evaluate_cross_border_saas_mor_vs_sor_tax_nexus_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_cross_border_saas_mor_vs_sor_tax_nexus_policy(
+            CrossBorderSaasMorVsSorTaxNexusPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(
+            auth["mandate_token"], "cross_border_saas_mor_305th_sandbox_200"
+        )
+
+        geo = evaluate_cross_border_saas_mor_vs_sor_tax_nexus_policy(
+            CrossBorderSaasMorVsSorTaxNexusPolicyInput(
+                vpn_ip_overrides_contradictory_card_bin_and_billing_zip_for_eu_vat=True
+            )
+        )
+        self.assertEqual(geo["status_code"], 403)
+        self.assertEqual(
+            geo["decision"],
+            "EU_ART24B_CONTRADICTORY_LOCATION_EVIDENCE_VAT_EVASION_VETO",
+        )
+
+        nex = evaluate_cross_border_saas_mor_vs_sor_tax_nexus_policy(
+            CrossBorderSaasMorVsSorTaxNexusPolicyInput(
+                enterprise_b2b_over_2500_routed_to_5pct_mor_or_us_nexus_unregistered=True
+            )
+        )
+        self.assertEqual(nex["status_code"], 422)
+        self.assertEqual(
+            nex["decision"],
+            "HIGH_TICKET_B2B_MOR_FEE_BLEED_OR_UNREGISTERED_US_NEXUS_BREACH",
+        )
+
+        ptc = evaluate_cross_border_saas_mor_vs_sor_tax_nexus_policy(
+            CrossBorderSaasMorVsSorTaxNexusPolicyInput(
+                saas_ptc_misclassified_in_tx_chicago_or_exempt_granted_without_cert=True
+            )
+        )
+        self.assertEqual(ptc["status_code"], 451)
+        self.assertEqual(
+            ptc["decision"],
+            "SAAS_PTC_TAXABILITY_MISCLASSIFICATION_OR_MISSING_EXEMPT_CERT_BREACH",
+        )
+
+        optim = evaluate_cross_border_saas_mor_vs_sor_tax_nexus_policy(
+            CrossBorderSaasMorVsSorTaxNexusPolicyInput(
+                quarterly_mor_fee_bleed_unregistered_nexus_and_vat_audit_pool_usd=460000.0,
+                hybrid_plg_mor_and_enterprise_sor_anrok_router_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 193200.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 266800.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("cross_border_saas_mor_vs_sor_tax_nexus_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("cross-border-saas-mor-vs-sor-tax-nexus-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
