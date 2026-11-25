@@ -46281,6 +46281,84 @@ def evaluate_enterprise_ap_uom_three_way_match_bec_policy(
     }
 
 
+@dataclass(frozen=True)
+class OtaCorporateHotelVirtualCardFolioPolicyInput:
+    quarterly_checkin_decline_double_room_charge_and_missing_folio_pool_usd: float = (
+        420000.0
+    )
+    zero_buffer_vcn_declined_on_incidental_deposit_or_missing_split_folio: bool = False
+    unconfirmed_fax_vcn_lost_or_both_guest_and_corporate_vcn_charged_room: bool = False
+    minibar_spa_charged_to_room_vcn_or_unused_vcn_open_over_48h_post_stay: bool = False
+    t24h_sertifi_pms_bind_8pct_tax_collar_and_48h_folio_sweep_ready: bool = False
+
+
+def evaluate_ota_corporate_hotel_virtual_card_folio_policy(
+    policy_input: OtaCorporateHotelVirtualCardFolioPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_checkin_decline_double_room_charge_and_missing_folio_pool_usd
+        ),
+    )
+    if policy_input.minibar_spa_charged_to_room_vcn_or_unused_vcn_open_over_48h_post_stay:
+        return {
+            "status_code": 451,
+            "decision": "UNAUTHORIZED_MINIBAR_ON_ROOM_VCN_OR_ORPHANED_POST_STAY_FLOAT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.zero_buffer_vcn_declined_on_incidental_deposit_or_missing_split_folio:
+        return {
+            "status_code": 403,
+            "decision": "INCIDENTAL_DEPOSIT_BUNDLED_DECLINE_OR_ZERO_TAX_BUFFER_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.unconfirmed_fax_vcn_lost_or_both_guest_and_corporate_vcn_charged_room:
+        return {
+            "status_code": 422,
+            "decision": "UNCONFIRMED_FAX_VCN_DELIVERY_OR_DUPLICATE_CARD_CHARGE_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.t24h_sertifi_pms_bind_8pct_tax_collar_and_48h_folio_sweep_ready:
+        savings = round(gross_pool * 0.43, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "T24H_SERTIFI_PMS_BIND_8PCT_COLLAR_AND_48H_SWEEP_CONFIRM",
+            "mandate_token": "ota_hotel_vcn_folio_round410_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_OTA_CORPORATE_HOTEL_VCN_AUTHORIZED",
+        "mandate_token": "ota_hotel_vcn_folio_round410_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -62860,6 +62938,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    ota_corporate_hotel_virtual_card_folio_guard = {
+        "authorized_200": evaluate_ota_corporate_hotel_virtual_card_folio_policy(
+            OtaCorporateHotelVirtualCardFolioPolicyInput()
+        ),
+        "incidental_bundled_or_zero_buffer_403": evaluate_ota_corporate_hotel_virtual_card_folio_policy(
+            OtaCorporateHotelVirtualCardFolioPolicyInput(
+                zero_buffer_vcn_declined_on_incidental_deposit_or_missing_split_folio=True
+            )
+        ),
+        "lost_fax_or_double_room_bill_422": evaluate_ota_corporate_hotel_virtual_card_folio_policy(
+            OtaCorporateHotelVirtualCardFolioPolicyInput(
+                unconfirmed_fax_vcn_lost_or_both_guest_and_corporate_vcn_charged_room=True
+            )
+        ),
+        "minibar_leak_or_orphan_float_451": evaluate_ota_corporate_hotel_virtual_card_folio_policy(
+            OtaCorporateHotelVirtualCardFolioPolicyInput(
+                minibar_spa_charged_to_room_vcn_or_unused_vcn_open_over_48h_post_stay=True
+            )
+        ),
+        "t24h_sertifi_split_folio_409": evaluate_ota_corporate_hotel_virtual_card_folio_policy(
+            OtaCorporateHotelVirtualCardFolioPolicyInput(
+                t24h_sertifi_pms_bind_8pct_tax_collar_and_48h_folio_sweep_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -63398,6 +63502,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_procurement_clm_contract_redline_guard": b2b_procurement_clm_contract_redline_guard,
         "omnichannel_bopis_curbside_fulfillment_guard": omnichannel_bopis_curbside_fulfillment_guard,
         "enterprise_ap_uom_three_way_match_bec_guard": enterprise_ap_uom_three_way_match_bec_guard,
+        "ota_corporate_hotel_virtual_card_folio_guard": ota_corporate_hotel_virtual_card_folio_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -90132,6 +90237,62 @@ def render_webiq_live_demo_html(
         </div>
         <div id="ap3wm-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
           HTTP 409 BASE_UOM_THREE_WAY_MATCH_AND_DYNAMIC_DISCOUNT_CONFIRM · Mandate: b2b_ap_three_way_match_optim_409
+        </div>
+      </div>
+
+      <div class="finops-box" id="ota-corporate-hotel-virtual-card-folio-sandbox" style="margin-top:12px;border-color:#10b981;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业差旅与 OTA 酒店单次虚拟卡 (VCN) 双账窗分流、数字授权与水单对账 (Conferma / Sertifi / Amadeus / WEX) 沙盒（🏆 第 410 轮重大里程碑！）</div>
+            <div class="finops-sub">Round 410 (#529 · SVG #853 · Sandbox #303 · Test #1,407 · 🏆 Round 410 Major Milestone!) · 配置 +8% 城市税/度假村费浮动走廊并绑定 OPERA Window 1 (房费刷VCN) 与 Window 2 (杂费押金刷住客卡) 防前台合刷被拒 (HTTP 403) + 入住前 T-24h Sertifi/Canary 数字授权回执核验与防双卡重扣房费 (HTTP 422) + 剥离迷你吧私人消费并在退房后 48h 自动清零剩余授信 (HTTP 451) + 净省 43% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="htlvcn-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度前台合刷押金致虚拟卡被拒、传真丢失致员工卡与公司VCN被酒店双扣房费及漏退欧洲 VAT 水单池 ($)
+            <input type="number" id="htlvcn-gross-input" value="420000" min="10000" step="5000" oninput="recalcOtaCorporateHotelVirtualCardFolioSandbox()" />
+          </label>
+          <label>OPERA PMS 双账窗分流指令 (Window 1 房费 vs. Window 2 杂费) 与 +8% 税费缓冲门禁
+            <select id="htlvcn-split-select" onchange="recalcOtaCorporateHotelVirtualCardFolioSandbox()">
+              <option value="pass">VCN 预留 +8% 地方税费缓冲且硬锁定 Window 1 房费，杂费押金路由至 Window 2 住客卡 (安全)</option>
+              <option value="block_403">零缓冲 VCN 被前台连带 $300 杂费押金合在一起刷，半夜 11 点超限被拒逼员工自掏腰包 (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>入住前 T-24h 数字授权确认 (Sertifi / Canary) 与防员工卡+VCN双倍扣房费门禁
+            <select id="htlvcn-fax-select" onchange="recalcOtaCorporateHotelVirtualCardFolioSandbox()">
+              <option value="pass">T-24h 确认酒店 PMS 已绑定 VCN 并同步推入员工 Apple Pay 备查，严防双卡重扣 (安全)</option>
+              <option value="block_422">古老传真丢失导致入住刷了员工个人卡、夜审又刷了公司 VCN，一间房付两次钱 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>迷你吧/SPA 私人消费剥离与离店后 48 小时未用 VCN 授信自动清零门禁
+            <select id="htlvcn-fol-select" onchange="recalcOtaCorporateHotelVirtualCardFolioSandbox()">
+              <option value="pass">离店自动拉取 e-Folio 水单剥离迷你吧并提取 VAT 税额，退房 48h 内自动清零剩余额度 (合规)</option>
+              <option value="block_451">酒店把 $140 迷你吧/SPA 混进房费 VCN 扣走，或提前退房剩余 $220 授信挂账 30 天未关 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>T-24h 数字直写 PMS + +8% 税费走廊 + 手机钱包备卡 + 离店水单 VAT 自动拆行编排
+            <select id="htlvcn-opt-select" onchange="recalcOtaCorporateHotelVirtualCardFolioSandbox()">
+              <option value="enabled" selected>启用双账窗分流 + T-24h 数字直连 + 48h 自动清零 (-43% 入住被拒与双扣损耗 / HTTP 409)</option>
+              <option value="disabled">默认零缓冲传真授权与事后人工追讨水单基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度酒店VCN拒付与双扣损失池</div>
+            <div class="finops-kpi-val" id="htlvcn-gross-kpi">$420,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">控制面介入后净差旅与对账成本</div>
+            <div class="finops-kpi-val" id="htlvcn-net-kpi">$239,400</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度净省双倍房费与挽回VAT</div>
+            <div class="finops-kpi-val" id="htlvcn-savings-kpi" style="color:#6ee7b7;">$180,600</div>
+          </div>
+        </div>
+        <div id="htlvcn-decision-banner" style="margin-top:10px;padding:8px 12px;border-radius:8px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);color:#a7f3d0;font-family:monospace;font-size:0.8rem;">
+          HTTP 409 T24H_SERTIFI_PMS_BIND_8PCT_COLLAR_AND_48H_SWEEP_CONFIRM · Mandate: ota_hotel_vcn_folio_round410_optim_409
         </div>
       </div>
 
@@ -124409,6 +124570,79 @@ function recalcB2bApThreeWayMatchDynamicDiscountSandbox() {{
   banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
   banner.style.color = '#bfdbfe';
   banner.textContent = 'HTTP 200 VERIFIED_B2B_AP_THREE_WAY_MATCH_AUTHORIZED · Mandate: b2b_ap_three_way_match_200';
+}}
+
+function recalcOtaCorporateHotelVirtualCardFolioSandbox() {{
+  const grossInput = document.getElementById('htlvcn-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '420000'));
+  const splitGate = document.getElementById('htlvcn-split-select').value;
+  const faxGate = document.getElementById('htlvcn-fax-select').value;
+  const folGate = document.getElementById('htlvcn-fol-select').value;
+  const optMode = document.getElementById('htlvcn-opt-select').value;
+
+  const grossKpi = document.getElementById('htlvcn-gross-kpi');
+  const netKpi = document.getElementById('htlvcn-net-kpi');
+  const savingsKpi = document.getElementById('htlvcn-savings-kpi');
+  const statusKpi = document.getElementById('htlvcn-status-kpi');
+  const banner = document.getElementById('htlvcn-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (folGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 UNAUTHORIZED_MINIBAR_ON_ROOM_VCN_OR_ORPHANED_POST_STAY_FLOAT_BREACH · Mandate: null';
+    return;
+  }}
+  if (splitGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 INCIDENTAL_DEPOSIT_BUNDLED_DECLINE_OR_ZERO_TAX_BUFFER_VETO · Mandate: null';
+    return;
+  }}
+  if (faxGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fbbf24';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(245, 158, 11, 0.16)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.45)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 422 UNCONFIRMED_FAX_VCN_DELIVERY_OR_DUPLICATE_CARD_CHARGE_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.43);
+    const net = Math.round(gross - savings);
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#6ee7b7';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(16, 185, 129, 0.14)';
+    banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+    banner.style.color = '#a7f3d0';
+    banner.textContent = 'HTTP 409 T24H_SERTIFI_PMS_BIND_8PCT_COLLAR_AND_48H_SWEEP_CONFIRM · Mandate: ota_hotel_vcn_folio_round410_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#93c5fd';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(59, 130, 246, 0.14)';
+  banner.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+  banner.style.color = '#bfdbfe';
+  banner.textContent = 'HTTP 200 VERIFIED_OTA_CORPORATE_HOTEL_VCN_AUTHORIZED · Mandate: ota_hotel_vcn_folio_round410_200';
 }}
 
 function recalcEnterpriseErpOrderSagaOutboxSandbox() {{

@@ -2,13 +2,13 @@
 
 🌐 **Language / 语言切换**: **[中文总目录 (`docs/index.md`)](index.md)** | **English Full Catalog (Current)** | **[Back to Repository Home (`README.en.md`)](../README.en.md)** | **[🚀 Interactive SA Workbench (`live-demo.en.html`)](../live-demo.en.html)** | **[📊 7-Card Benchmark Deck (`benchmark-cards.en.html`)](../benchmark-cards.en.html)**
 
-> Complete catalog of **`528` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
+> Complete catalog of **`529` bilingual AI Solution Architect Decision Guides (FAQs)**, **`21` Deterministic Architecture Blueprints**, and **Research Deep Dives**, organized across the 6 core Enterprise Agentic Commerce architectural pillars.
 
 ## Quick Navigation
 
 - [1. Agentic Platform Selection, Real-Time Web Grounding (Web IQ) & Edge Governance (39 guides)](#platform-grounding)
 - [2. Agent Payment Protocols, Cryptographic Mandates & Strong Authentication (66 guides)](#payments-mandates)
-- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (199 guides)](#retail-ota-marketplace)
+- [3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (200 guides)](#retail-ota-marketplace)
 - [4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (119 guides)](#b2b-procurement-erp)
 - [5. SaaS Subscription Lifecycle, Usage Metering & Machine Micropayments (48 guides)](#saas-finops-micropayments)
 - [6. Cross-Border Tax / MoR, Treasury FX, Privacy Redaction & Chargeback Defense (57 guides)](#tax-fx-privacy-disputes)
@@ -139,7 +139,7 @@
 | 66 | **💳 Enterprise Corporate Virtual Cards (`P-Card / T&E Spend Control`), Real-Time `ISO 8583` `MID` Locking, `Level-3` Receipt Auto-Match & Anti-Double-Dip Agent (`Ramp / Brex / Airbase / Navan Expense`), First-Swipe `Acquirer_MID` Pinning & `24h` Split-Swipe Vetoes, Cross-Rail Card-vs-Cash Deduplication & `IRS >$75` `Level-3` Auto-Fetch (`-42%` Cost) FAQ** | [English](corporate-virtual-card-spend-control-ramp-brex-airbase-navan-level3-double-dip-selection-faq.en.md) · [中文](corporate-virtual-card-spend-control-ramp-brex-airbase-navan-level3-double-dip-selection-faq.md) |
 
 <a id="retail-ota-marketplace"></a>
-## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (199 Guides)
+## 3. Multi-Merchant Retail Sagas, Marketplace Split Settlement & Travel / OTA (NDC) (200 Guides)
 
 > Covers multi-merchant cart reservation sagas, Largest-Remainder marketplace split settlement, KYB rolling reserves, IATA NDC / OTA dynamic pricing, promo anti-arbitrage, DPP provenance, and anti-scalping ticketing.
 
@@ -344,6 +344,7 @@
 | 197 | **🏆 OTA & Airline Dynamic Ancillary Merchandising (`Paid Seats / Baggage / Lounge`), `IATA NDC` `EMD-A` Binding & `US DOT Part 260` Auto-Refund Agent (`Amadeus Nevio / Sabre Mosaic / ATPCO Routehappy / FLYR` · 🏆 Round 405 Major Milestone!), Pre-Offer `FQTV / Fare` Entitlement Dedup & Interline `Res 302` Checks, Aircraft-Swap Seat-Attribute Diffs with Automatic 7d `DOT` Refunds & `FAA §121.585` Exit-Row Safety Locks (`-42%` Cost) FAQ** | [English](ota-airline-ancillary-ndc-amadeus-nevio-sabre-mosaic-emd-dot-refund-selection-faq.en.md) · [中文](ota-airline-ancillary-ndc-amadeus-nevio-sabre-mosaic-emd-dot-refund-selection-faq.md) |
 | 198 | **🏆 E-Commerce Post-Purchase 1-Click Upsell (`Thank-You Page Add-On`), `15-Minute WMS Hold-for-Merge`, Same-Warehouse `ATP` Filter & Isolated Incremental Capture Agent (`AfterSell by Rokt / ReConvert / CartHook / Zipify OCU` · 🏆 525th Bilingual SA Guide Major Milestone!), `15m FulfillmentOrder Hold` + Co-Located Box-Weight Filters, `Authorize-Before-Edit` Primary-Order Isolation & `FTC ROSCA` Subscription Locks (`-42%` Cost) FAQ** | [English](ecommerce-post-purchase-upsell-aftersell-reconvert-carthook-wms-hold-merge-selection-faq.en.md) · [中文](ecommerce-post-purchase-upsell-aftersell-reconvert-carthook-wms-hold-merge-selection-faq.md) |
 | 199 | **🏆 Omnichannel Retail Click-and-Collect (`BOPIS / Curbside Pickup`), Display-Floor Safety Buffer, Dynamic `TOTP` Handover & `Capture-on-Pickup / Day-5 Auto-0420 Restock` Agent (`Manhattan Active Omni / Fluent Commerce / Blue Yonder / Shopify POS` · 🏆 1,405th Deterministic Unit Test Major Milestone!), Backroom `RFID` vs. Sales-Floor Safety Buffers, `Capture-on-Pickup` + `Day-5 0420` Restocks & Rotating `30s TOTP` Anti-Mule Handover (`-42%` Cost) FAQ** | [English](omnichannel-bopis-curbside-manhattan-fluent-shopify-pos-safety-buffer-totp-selection-faq.en.md) · [中文](omnichannel-bopis-curbside-manhattan-fluent-shopify-pos-safety-buffer-totp-selection-faq.md) |
+| 200 | **🏆 Corporate Travel & OTA Hotel Single-Use Virtual Card (`VCN`) Check-In, Split-Folio Incidental Routing, Pre-Arrival Digital Auth (`Sertifi / Canary`) & Post-Stay Folio Reconciliation Agent (`Conferma Pay / Sertifi / Amadeus B2B Wallet / WEX + Stripe Issuing` · 🏆 Round 410 & 200th Pillar-3 Guide Dual Milestone!), `OPERA Window 1/2` Split-Folio + `+8%` Tax Collars, `T-24h` Digital PMS Auth Ack & `48h` Post-Stay Float Sweep (`-43%` Cost) FAQ** | [English](ota-corporate-hotel-virtual-card-vcn-conferma-sertifi-split-folio-selection-faq.en.md) · [中文](ota-corporate-hotel-virtual-card-vcn-conferma-sertifi-split-folio-selection-faq.md) |
 
 <a id="b2b-procurement-erp"></a>
 ## 4. Enterprise B2B Procurement, ERP 3-Way Match & Supply-Chain Trade Finance (119 Guides)

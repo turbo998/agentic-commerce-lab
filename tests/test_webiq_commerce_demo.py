@@ -36472,6 +36472,70 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("b2b-ap-three-way-match-dynamic-discount-sandbox", html_zh)
 
+    def test_ota_corporate_hotel_virtual_card_folio_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            OtaCorporateHotelVirtualCardFolioPolicyInput,
+            evaluate_ota_corporate_hotel_virtual_card_folio_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        auth = evaluate_ota_corporate_hotel_virtual_card_folio_policy(
+            OtaCorporateHotelVirtualCardFolioPolicyInput()
+        )
+        self.assertEqual(auth["status_code"], 200)
+        self.assertEqual(
+            auth["mandate_token"], "ota_hotel_vcn_folio_round410_200"
+        )
+
+        split = evaluate_ota_corporate_hotel_virtual_card_folio_policy(
+            OtaCorporateHotelVirtualCardFolioPolicyInput(
+                zero_buffer_vcn_declined_on_incidental_deposit_or_missing_split_folio=True
+            )
+        )
+        self.assertEqual(split["status_code"], 403)
+        self.assertEqual(
+            split["decision"],
+            "INCIDENTAL_DEPOSIT_BUNDLED_DECLINE_OR_ZERO_TAX_BUFFER_VETO",
+        )
+
+        fax = evaluate_ota_corporate_hotel_virtual_card_folio_policy(
+            OtaCorporateHotelVirtualCardFolioPolicyInput(
+                unconfirmed_fax_vcn_lost_or_both_guest_and_corporate_vcn_charged_room=True
+            )
+        )
+        self.assertEqual(fax["status_code"], 422)
+        self.assertEqual(
+            fax["decision"],
+            "UNCONFIRMED_FAX_VCN_DELIVERY_OR_DUPLICATE_CARD_CHARGE_BREACH",
+        )
+
+        fol = evaluate_ota_corporate_hotel_virtual_card_folio_policy(
+            OtaCorporateHotelVirtualCardFolioPolicyInput(
+                minibar_spa_charged_to_room_vcn_or_unused_vcn_open_over_48h_post_stay=True
+            )
+        )
+        self.assertEqual(fol["status_code"], 451)
+        self.assertEqual(
+            fol["decision"],
+            "UNAUTHORIZED_MINIBAR_ON_ROOM_VCN_OR_ORPHANED_POST_STAY_FLOAT_BREACH",
+        )
+
+        optim = evaluate_ota_corporate_hotel_virtual_card_folio_policy(
+            OtaCorporateHotelVirtualCardFolioPolicyInput(
+                quarterly_checkin_decline_double_room_charge_and_missing_folio_pool_usd=420000.0,
+                t24h_sertifi_pms_bind_8pct_tax_collar_and_48h_folio_sweep_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 180600.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 239400.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("ota_corporate_hotel_virtual_card_folio_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("ota-corporate-hotel-virtual-card-folio-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
