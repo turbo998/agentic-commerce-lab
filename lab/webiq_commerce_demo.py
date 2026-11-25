@@ -45121,6 +45121,82 @@ def evaluate_ota_car_rental_telematics_settlement_policy(
     }
 
 
+@dataclass(frozen=True)
+class B2bWholesaleDealerPortalAllocationPolicyInput:
+    quarterly_map_erosion_d2c_stockout_and_dropship_leak_pool_usd: float = 450000.0
+    active_map_violator_shipped_to_fba_or_territory_exclusivity_breached: bool = False
+    whale_dealer_exceeds_tier_quota_draining_d2c_or_broken_case_pack_moq: bool = False
+    blind_dropship_exposes_wholesale_price_or_resale_tax_cert_expired: bool = False
+    fair_share_sellthrough_allocation_and_whitelabel_dropship_ready: bool = False
+
+
+def evaluate_b2b_wholesale_dealer_portal_allocation_policy(
+    policy_input: B2bWholesaleDealerPortalAllocationPolicyInput,
+) -> dict[str, Any]:
+    gross_pool = max(
+        0.0,
+        float(
+            policy_input.quarterly_map_erosion_d2c_stockout_and_dropship_leak_pool_usd
+        ),
+    )
+    if policy_input.blind_dropship_exposes_wholesale_price_or_resale_tax_cert_expired:
+        return {
+            "status_code": 451,
+            "decision": "BLIND_DROPSHIP_PRICE_LEAK_OR_EXPIRED_RESALE_TAX_CERT_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.active_map_violator_shipped_to_fba_or_territory_exclusivity_breached:
+        return {
+            "status_code": 403,
+            "decision": "MAP_VIOLATOR_FBA_DIVERSION_OR_TERRITORY_BREACH_VETO",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.whale_dealer_exceeds_tier_quota_draining_d2c_or_broken_case_pack_moq:
+        return {
+            "status_code": 422,
+            "decision": "WHALE_HOARDING_QUOTA_EXCEEDED_OR_CASE_PACK_MOQ_BREACH",
+            "mandate_token": None,
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": round(gross_pool, 2),
+            "quarterly_savings_usd": 0.0,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    if policy_input.fair_share_sellthrough_allocation_and_whitelabel_dropship_ready:
+        savings = round(gross_pool * 0.41, 2)
+        net_cost = round(gross_pool - savings, 2)
+        return {
+            "status_code": 409,
+            "decision": "FAIR_SHARE_ALLOCATION_AND_BLIND_DROPSHIP_CONFIRM",
+            "mandate_token": "b2b_wholesale_portal_optim_409",
+            "gross_quarterly_pool_usd": round(gross_pool, 2),
+            "net_Execution_cost_usd": net_cost,
+            "quarterly_savings_usd": savings,
+            "provenance": "synthetic",
+            "independently_reproduced": False,
+        }
+    return {
+        "status_code": 200,
+        "decision": "VERIFIED_B2B_WHOLESALE_PORTAL_AND_ALLOCATION_AUTHORIZED",
+        "mandate_token": "b2b_wholesale_portal_200",
+        "gross_quarterly_pool_usd": round(gross_pool, 2),
+        "net_Execution_cost_usd": round(gross_pool, 2),
+        "quarterly_savings_usd": 0.0,
+        "provenance": "synthetic",
+        "independently_reproduced": False,
+    }
+
+
 def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
     """Run all 12 deterministic Web IQ × Agentic Commerce scenarios and return sealed report data."""
     client = WebIQClient()
@@ -61310,6 +61386,32 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         ),
     }
 
+    b2b_wholesale_dealer_portal_allocation_guard = {
+        "authorized_200": evaluate_b2b_wholesale_dealer_portal_allocation_policy(
+            B2bWholesaleDealerPortalAllocationPolicyInput()
+        ),
+        "map_violator_or_fba_diversion_403": evaluate_b2b_wholesale_dealer_portal_allocation_policy(
+            B2bWholesaleDealerPortalAllocationPolicyInput(
+                active_map_violator_shipped_to_fba_or_territory_exclusivity_breached=True
+            )
+        ),
+        "whale_hoarding_or_case_pack_422": evaluate_b2b_wholesale_dealer_portal_allocation_policy(
+            B2bWholesaleDealerPortalAllocationPolicyInput(
+                whale_dealer_exceeds_tier_quota_draining_d2c_or_broken_case_pack_moq=True
+            )
+        ),
+        "blind_dropship_or_resale_cert_451": evaluate_b2b_wholesale_dealer_portal_allocation_policy(
+            B2bWholesaleDealerPortalAllocationPolicyInput(
+                blind_dropship_exposes_wholesale_price_or_resale_tax_cert_expired=True
+            )
+        ),
+        "fair_share_blind_dropship_409": evaluate_b2b_wholesale_dealer_portal_allocation_policy(
+            B2bWholesaleDealerPortalAllocationPolicyInput(
+                fair_share_sellthrough_allocation_and_whitelabel_dropship_ready=True
+            )
+        ),
+    }
+
     return {
         "benchmark_id": "agentic-commerce-webiq-grounding-demo-bench",
         "benchmark_version": DEMO_VERSION,
@@ -61833,6 +61935,7 @@ def run_webiq_commerce_benchmark_suite() -> dict[str, Any]:
         "b2b_freight_audit_payment_gsr_guard": b2b_freight_audit_payment_gsr_guard,
         "ecommerce_trade_in_recommerce_guard": ecommerce_trade_in_recommerce_guard,
         "ota_car_rental_telematics_settlement_guard": ota_car_rental_telematics_settlement_guard,
+        "b2b_wholesale_dealer_portal_allocation_guard": b2b_wholesale_dealer_portal_allocation_guard,
         "scenarios": scenarios,
         "perturbation_checks": [
             {
@@ -89547,6 +89650,63 @@ def render_webiq_live_demo_html(
         </div>
         <div id="carflt-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
           HTTP 409 BYPASS_COUNTER_MOBILE_PICKUP_AND_CANBUS_SETTLEMENT_CONFIRM · Mandate: ota_car_rental_telematics_optim_409
+        </div>
+      </div>
+
+      <!-- Interactive Sandbox: Round 395 (🏆 Round 395 Major Milestone! · #514 · SVG #838 · Sandbox #288 · Test #1,392) B2B Wholesale Dealer Portal & Fair-Share Allocation -->
+      <div class="finops-box" id="b2b-wholesale-dealer-portal-allocation-sandbox" style="margin-top:12px;border-color:#a855f7;">
+        <div class="finops-hdr">
+          <div>
+            <div class="finops-title">🏆 企业 B2B 经销商批发门户、稀缺爆款公平配额与无痕一件代发 (Shopify Plus B2B / OroCommerce / Salesforce / BigCommerce) 沙盒（🏆 第 395 轮里程碑！）</div>
+            <div class="finops-sub">Round 395 (🏆 Round 395 Milestone · #514 · SVG #838 · Sandbox #288 · Test #1,392) · 拦截 MAP 破价违约户、禁止直发亚马逊 FBA 仓与跨独家防区串货 (HTTP 403) + 隔离 35% D2C 高毛利池、按经销商等级限购防巨鲸包圆与整箱倍数 MOQ 锁 (HTTP 422) + B2B2C 代发强制打印零价格白标装箱单与转售免税证效期锁 (HTTP 451) + 公平配额与拆单预售净省 41% (HTTP 409)</div>
+          </div>
+          <span class="finops-badge" id="b2bwhs-status-kpi">HTTP 409</span>
+        </div>
+        <div class="finops-controls">
+          <label>季度大户抢空首发库存致 75% 高毛利 D2C 断货、批发客直发亚马逊 FBA 破价砸盘与代发漏价损耗池 ($)
+            <input type="number" id="b2bwhs-gross-input" value="450000" min="10000" step="5000" oninput="recalcB2bWholesaleDealerPortalAllocationSandbox()" />
+          </label>
+          <label>MAP 最低标价违约红牌停供、屏蔽未授权亚马逊 FBA 仓收货地址与独家代理邮编围栏锁
+            <select id="b2bwhs-map-select" onchange="recalcB2bWholesaleDealerPortalAllocationSandbox()">
+              <option value="pass">拦截发往亚马逊 FBA/贴标仓的野生批发单，校验独家代理邮编并冻结 MAP 破价户 (安全)</option>
+              <option value="block_403">二道贩子拿 5 折批发货直发亚马逊 FBA 仓以 75 折跟卖，抢走品牌官方 Buy Box (触发 HTTP 403)</option>
+            </select>
+          </label>
+          <label>35% D2C 高毛利库存硬隔离、经销商等级公平配额 (Fair-Share Quota) 与整箱倍数 (Case-Pack) 门禁
+            <select id="b2bwhs-qta-select" onchange="recalcB2bWholesaleDealerPortalAllocationSandbox()">
+              <option value="pass">优先锁死 35% D2C 现货，按经销商等级限购且强制按 12 件/箱整箱倍数下单 (合规)</option>
+              <option value="block_422">3 家大批发商用脚本 2 分钟买空 5,000 件新品致 D2C 与 400 家门店断货，或零散拆箱下单 (触发 HTTP 422)</option>
+            </select>
+          </label>
+          <label>B2B2C 无痕一件代发 (Blind Drop-Ship 零价格白标装箱单) 与州转售免税证 (Resale Cert ST-120) 门禁
+            <select id="b2bwhs-drp-select" onchange="recalcB2bWholesaleDealerPortalAllocationSandbox()">
+              <option value="pass">代发单物理抹除批发单价打印经销商白标单，且实时核验收货州有效 ST-120 免税证 (合规)</option>
+              <option value="block_451">代发包裹内误塞印有 $140 批发进货价的发票遭终端买家投诉，或免税证过期漏税 (触发 HTTP 451)</option>
+            </select>
+          </label>
+          <label>按历史正价动销率动态分配配额 + 超额自动拆单转远期批次预售 + 无痕代发全链路编排
+            <select id="b2bwhs-opt-select" onchange="recalcB2bWholesaleDealerPortalAllocationSandbox()">
+              <option value="enabled" selected>启用 35% D2C 保护池 + 公平配额拆单预售 + 白标无痕代发 (-41% 窜货与断货毛利损耗 / HTTP 409)</option>
+              <option value="disabled">传统先到先得全仓共享与通用装箱单基线 (HTTP 200)</option>
+            </select>
+          </label>
+        </div>
+        <div class="finops-kpis">
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度窜货砸盘与D2C断货池</div>
+            <div class="finops-kpi-val" id="b2bwhs-gross-kpi">$450,000</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">公平配额与防窜货净损耗</div>
+            <div class="finops-kpi-val" id="b2bwhs-net-kpi" style="color:#6ee7b7;">$265,500</div>
+          </div>
+          <div class="finops-kpi">
+            <div class="finops-kpi-label">季度护住BuyBox与D2C毛利净省</div>
+            <div class="finops-kpi-val" id="b2bwhs-savings-kpi" style="color:#38bdf8;">$184,500</div>
+          </div>
+        </div>
+        <div id="b2bwhs-decision-banner" style="margin-top:10px; padding:10px 14px; border-radius:8px; background:rgba(245, 158, 11, 0.14); border:1px solid rgba(245, 158, 11, 0.4); color:#fde68a; font-family:monospace; font-size:0.8rem;">
+          HTTP 409 FAIR_SHARE_ALLOCATION_AND_BLIND_DROPSHIP_CONFIRM · Mandate: b2b_wholesale_portal_optim_409
         </div>
       </div>
 
@@ -123899,6 +124059,79 @@ function recalcOtaCarRentalTelematicsSettlementSandbox() {{
   banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
   banner.style.color = '#a7f3d0';
   banner.textContent = 'HTTP 200 VERIFIED_OTA_CAR_RENTAL_AND_TELEMATICS_AUTHORIZED · Mandate: ota_car_rental_telematics_200';
+}}
+
+function recalcB2bWholesaleDealerPortalAllocationSandbox() {{
+  const grossInput = document.getElementById('b2bwhs-gross-input');
+  if (!grossInput) return;
+  const gross = Math.max(0, parseFloat(grossInput.value || '450000'));
+  const mapGate = document.getElementById('b2bwhs-map-select').value;
+  const qtaGate = document.getElementById('b2bwhs-qta-select').value;
+  const drpGate = document.getElementById('b2bwhs-drp-select').value;
+  const optMode = document.getElementById('b2bwhs-opt-select').value;
+
+  const grossKpi = document.getElementById('b2bwhs-gross-kpi');
+  const netKpi = document.getElementById('b2bwhs-net-kpi');
+  const savingsKpi = document.getElementById('b2bwhs-savings-kpi');
+  const statusKpi = document.getElementById('b2bwhs-status-kpi');
+  const banner = document.getElementById('b2bwhs-decision-banner');
+
+  grossKpi.textContent = '$' + gross.toLocaleString('en-US');
+
+  if (drpGate === 'block_451') {{
+    statusKpi.textContent = 'HTTP 451';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 451 BLIND_DROPSHIP_PRICE_LEAK_OR_EXPIRED_RESALE_TAX_CERT_BREACH · Mandate: null';
+    return;
+  }}
+  if (mapGate === 'block_403') {{
+    statusKpi.textContent = 'HTTP 403';
+    statusKpi.style.color = '#f87171';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(239, 68, 68, 0.16)';
+    banner.style.borderColor = 'rgba(239, 68, 68, 0.45)';
+    banner.style.color = '#fecaca';
+    banner.textContent = 'HTTP 403 MAP_VIOLATOR_FBA_DIVERSION_OR_TERRITORY_BREACH_VETO · Mandate: null';
+    return;
+  }}
+  if (qtaGate === 'block_422') {{
+    statusKpi.textContent = 'HTTP 422';
+    statusKpi.style.color = '#fb923c';
+    netKpi.textContent = '$' + gross.toLocaleString('en-US');
+    savingsKpi.textContent = '$0';
+    banner.style.background = 'rgba(249, 115, 22, 0.16)';
+    banner.style.borderColor = 'rgba(249, 115, 22, 0.45)';
+    banner.style.color = '#fed7aa';
+    banner.textContent = 'HTTP 422 WHALE_HOARDING_QUOTA_EXCEEDED_OR_CASE_PACK_MOQ_BREACH · Mandate: null';
+    return;
+  }}
+  if (optMode === 'enabled') {{
+    const savings = Math.round(gross * 0.41);
+    const net = gross - savings;
+    statusKpi.textContent = 'HTTP 409';
+    statusKpi.style.color = '#fcd34d';
+    netKpi.textContent = '$' + net.toLocaleString('en-US');
+    savingsKpi.textContent = '$' + savings.toLocaleString('en-US');
+    banner.style.background = 'rgba(245, 158, 11, 0.14)';
+    banner.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+    banner.style.color = '#fde68a';
+    banner.textContent = 'HTTP 409 FAIR_SHARE_ALLOCATION_AND_BLIND_DROPSHIP_CONFIRM · Mandate: b2b_wholesale_portal_optim_409';
+    return;
+  }}
+  statusKpi.textContent = 'HTTP 200';
+  statusKpi.style.color = '#6ee7b7';
+  netKpi.textContent = '$' + gross.toLocaleString('en-US');
+  savingsKpi.textContent = '$0';
+  banner.style.background = 'rgba(16, 185, 129, 0.14)';
+  banner.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+  banner.style.color = '#a7f3d0';
+  banner.textContent = 'HTTP 200 VERIFIED_B2B_WHOLESALE_PORTAL_AND_ALLOCATION_AUTHORIZED · Mandate: b2b_wholesale_portal_200';
 }}
 
 function updateStage1756Sandbox() {{

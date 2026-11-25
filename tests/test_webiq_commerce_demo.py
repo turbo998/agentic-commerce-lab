@@ -35523,6 +35523,73 @@ class WebIQCommerceScenariosTest(unittest.TestCase):
         html_zh = render_webiq_live_demo_html(suite, lang="zh")
         self.assertIn("ota-car-rental-telematics-settlement-sandbox", html_zh)
 
+    def test_b2b_wholesale_dealer_portal_allocation_selection(self) -> None:
+        from lab.webiq_commerce_demo import (
+            B2bWholesaleDealerPortalAllocationPolicyInput,
+            evaluate_b2b_wholesale_dealer_portal_allocation_policy,
+            render_webiq_live_demo_html,
+            run_webiq_commerce_benchmark_suite,
+        )
+
+        ok = evaluate_b2b_wholesale_dealer_portal_allocation_policy(
+            B2bWholesaleDealerPortalAllocationPolicyInput(
+                quarterly_map_erosion_d2c_stockout_and_dropship_leak_pool_usd=450000.0
+            )
+        )
+        self.assertEqual(ok["status_code"], 200)
+        self.assertEqual(
+            ok["decision"],
+            "VERIFIED_B2B_WHOLESALE_PORTAL_AND_ALLOCATION_AUTHORIZED",
+        )
+
+        map_v = evaluate_b2b_wholesale_dealer_portal_allocation_policy(
+            B2bWholesaleDealerPortalAllocationPolicyInput(
+                active_map_violator_shipped_to_fba_or_territory_exclusivity_breached=True
+            )
+        )
+        self.assertEqual(map_v["status_code"], 403)
+        self.assertEqual(
+            map_v["decision"],
+            "MAP_VIOLATOR_FBA_DIVERSION_OR_TERRITORY_BREACH_VETO",
+        )
+
+        qta = evaluate_b2b_wholesale_dealer_portal_allocation_policy(
+            B2bWholesaleDealerPortalAllocationPolicyInput(
+                whale_dealer_exceeds_tier_quota_draining_d2c_or_broken_case_pack_moq=True
+            )
+        )
+        self.assertEqual(qta["status_code"], 422)
+        self.assertEqual(
+            qta["decision"],
+            "WHALE_HOARDING_QUOTA_EXCEEDED_OR_CASE_PACK_MOQ_BREACH",
+        )
+
+        drp = evaluate_b2b_wholesale_dealer_portal_allocation_policy(
+            B2bWholesaleDealerPortalAllocationPolicyInput(
+                blind_dropship_exposes_wholesale_price_or_resale_tax_cert_expired=True
+            )
+        )
+        self.assertEqual(drp["status_code"], 451)
+        self.assertEqual(
+            drp["decision"],
+            "BLIND_DROPSHIP_PRICE_LEAK_OR_EXPIRED_RESALE_TAX_CERT_BREACH",
+        )
+
+        optim = evaluate_b2b_wholesale_dealer_portal_allocation_policy(
+            B2bWholesaleDealerPortalAllocationPolicyInput(
+                quarterly_map_erosion_d2c_stockout_and_dropship_leak_pool_usd=450000.0,
+                fair_share_sellthrough_allocation_and_whitelabel_dropship_ready=True,
+            )
+        )
+        self.assertEqual(optim["status_code"], 409)
+        self.assertAlmostEqual(optim["quarterly_savings_usd"], 184500.0)
+        self.assertAlmostEqual(optim["net_Execution_cost_usd"], 265500.0)
+
+        suite = run_webiq_commerce_benchmark_suite()
+        self.assertIn("b2b_wholesale_dealer_portal_allocation_guard", suite)
+        html_zh = render_webiq_live_demo_html(suite, lang="zh")
+        self.assertIn("b2b-wholesale-dealer-portal-allocation-sandbox", html_zh)
+
 
 if __name__ == "__main__":
     unittest.main()
